@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package oidc.client.claimsDefinition.servlets;
 
@@ -19,13 +19,12 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebServlet;
-import oidc.client.base.servlets.SimpleServlet;
+import oidc.client.base.servlets.BaseServlet;
+import oidc.client.base.utils.ServletLogger;
 
 // TODO - Make sure all possible attrs using EL values
 @WebServlet("/ClaimsDefinitionServlet")
-@OpenIdAuthenticationMechanismDefinition(
-                                         providerURI = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1",
-                                         clientId = "client_1",
+@OpenIdAuthenticationMechanismDefinition(providerURI = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1", clientId = "client_1",
                                          clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger",
                                          claimsDefinition = @ClaimsDefinition(callerNameClaim = "${openIdConfig.callerNameClaim}",
                                                                               callerGroupsClaim = "${openIdConfig.callerGroupsClaim}"),
@@ -33,15 +32,14 @@ import oidc.client.base.servlets.SimpleServlet;
 //redirectURI = "${providerBean.clientSecureRoot}/ClaimsDefinition/Callback")
 @DeclareRoles("all")
 @ServletSecurity(@HttpConstraint(rolesAllowed = "all"))
-public class ClaimsDefinitionServlet extends SimpleServlet {
+public class ClaimsDefinitionServlet extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected void recordHelloWorld(ServletOutputStream output) throws IOException {
+    protected void recordHelloWorld(ServletOutputStream outputStream) throws IOException {
 
-        super.recordHelloWorld(output);
-        System.out.println("Hello world from MaximumAnnotationServlet");
-        output.println("Hello world from MaximumAnnotationServlet!");
+        super.recordHelloWorld(outputStream);
+        ServletLogger.printLine(outputStream, "Hello world from ClaimsDefinitionServlet");
 
     }
 }

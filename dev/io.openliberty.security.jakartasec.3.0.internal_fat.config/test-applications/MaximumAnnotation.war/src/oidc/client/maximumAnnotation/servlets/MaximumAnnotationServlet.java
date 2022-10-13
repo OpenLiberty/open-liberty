@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package oidc.client.maximumAnnotation.servlets;
 
@@ -23,15 +23,15 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebServlet;
-import oidc.client.base.servlets.SimpleServlet;
+import oidc.client.base.servlets.BaseServlet;
+import oidc.client.base.utils.ServletLogger;
 
 // TODO - Make sure all possible attrs using EL values
 @WebServlet("/MaximumAnnotationServlet")
-@OpenIdAuthenticationMechanismDefinition(
-                                         providerURI = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1",
+@OpenIdAuthenticationMechanismDefinition(providerURI = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1",
                                          clientId = "client_1",
                                          clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger",
-                                         claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub", callerGroupsClaim = "groups"),
+                                         claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub", callerGroupsClaim = "groupIds"),
                                          logout = @LogoutDefinition(),
                                          redirectURI = "${providerBean.clientSecureRoot}/MaximumAnnotation/Callback",
                                          redirectToOriginalResource = false,
@@ -39,8 +39,7 @@ import oidc.client.base.servlets.SimpleServlet;
                                          scope = { Constants.OPENID_SCOPE, Constants.EMAIL_SCOPE, Constants.PROFILE_SCOPE },
                                          scopeExpression = "",
                                          responseType = Constants.CODE_FLOW,
-                                         responseMode = "",
-                                         prompt = {},
+                                         responseMode = "", prompt = {},
                                          promptExpression = "",
                                          display = DisplayType.PAGE,
                                          displayExpression = "",
@@ -56,20 +55,18 @@ import oidc.client.base.servlets.SimpleServlet;
                                          tokenAutoRefreshExpression = "",
                                          tokenMinValidity = Constants.TOKEN_MIN_VALIDITY,
                                          tokenMinValidityExpression = "",
-                                         providerMetadata = @OpenIdProviderMetadata(
-                                                                                    authorizationEndpoint = "https://localhost:8920/oidc/endpoint/OP1/authorize",
+                                         providerMetadata = @OpenIdProviderMetadata(authorizationEndpoint = "https://localhost:8920/oidc/endpoint/OP1/authorize",
                                                                                     tokenEndpoint = "https://localhost:8920/oidc/endpoint/OP1/token"))
 @DeclareRoles("all")
 @ServletSecurity(@HttpConstraint(rolesAllowed = "all"))
-public class MaximumAnnotationServlet extends SimpleServlet {
+public class MaximumAnnotationServlet extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected void recordHelloWorld(ServletOutputStream output) throws IOException {
+    protected void recordHelloWorld(ServletOutputStream outputStream) throws IOException {
 
-        super.recordHelloWorld(output);
-        System.out.println("Hello world from MaximumAnnotationServlet");
-        output.println("Hello world from MaximumAnnotationServlet!");
+        super.recordHelloWorld(outputStream);
+        ServletLogger.printLine(outputStream, "Hello world from MaximumAnnotationServlet");
 
     }
 }

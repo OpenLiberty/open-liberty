@@ -23,7 +23,8 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebServlet;
-import oidc.client.base.servlets.SimpleServlet;
+import oidc.client.base.servlets.BaseServlet;
+import oidc.client.base.utils.ServletLogger;
 
 @WebServlet("/MaximumAnnotationUsingELServlet")
 //TODO - us Expression var values - maybe put bad values in the non-el attr (that have expression attrs to show that we do override)
@@ -62,15 +63,14 @@ import oidc.client.base.servlets.SimpleServlet;
                                                                                     tokenEndpoint = "https://localhost:8920/oidc/endpoint/OP1/token"))
 @DeclareRoles("all")
 @ServletSecurity(@HttpConstraint(rolesAllowed = "all"))
-public class MaximumAnnotationUsingELServlet extends SimpleServlet {
+public class MaximumAnnotationUsingELServlet extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected void recordHelloWorld(ServletOutputStream output) throws IOException {
+    protected void recordHelloWorld(ServletOutputStream outputStream) throws IOException {
 
-        super.recordHelloWorld(output);
-        System.out.println("Hello world from MaximumAnnotationUsingELServlet");
-        output.println("Hello world from MaximumAnnotationUsingELServlet!");
+        super.recordHelloWorld(outputStream);
+        ServletLogger.printLine(outputStream, "Hello world from MaximumAnnotationUsingELServlet");
 
     }
 }

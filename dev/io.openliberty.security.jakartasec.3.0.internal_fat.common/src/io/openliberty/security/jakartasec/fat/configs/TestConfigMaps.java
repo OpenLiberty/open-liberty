@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.security.jakartasec.fat.configs;
 
@@ -44,7 +44,7 @@ public class TestConfigMaps {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
         updatedMap.put(Constants.CLIENT_SECRET, "badCLientSecret");
-//        updatedMap.put(Constants.CLIENT_SECRET, "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger");
+        //        updatedMap.put(Constants.CLIENT_SECRET, "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger");
         return updatedMap;
     }
 
@@ -98,7 +98,7 @@ public class TestConfigMaps {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
         updatedMap.put(Constants.CALLER_GROUPS_CLAIM, Constants.EMPTY_VALUE);
-//        updatedMap.put(Constants.CALLER_GROUPS_CLAIM, "groups");
+        //        updatedMap.put(Constants.CALLER_GROUPS_CLAIM, "groups");
         return updatedMap;
 
     }

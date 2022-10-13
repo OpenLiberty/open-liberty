@@ -17,6 +17,7 @@
 	<oauthProvider
 		id="OAuth1"
 		autoAuthorize="true"
+		tokenFormat="${opTokenFormat}"
 	>
 		<autoAuthorizeClient>client_1</autoAuthorizeClient>
 		

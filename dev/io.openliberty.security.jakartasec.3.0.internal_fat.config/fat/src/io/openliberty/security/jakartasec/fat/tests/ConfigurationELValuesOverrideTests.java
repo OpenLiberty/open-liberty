@@ -13,6 +13,7 @@ package io.openliberty.security.jakartasec.fat.tests;
 import java.util.List;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -20,10 +21,12 @@ import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurityTests;
 import io.openliberty.security.jakartasec.fat.configs.TestConfigMaps;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
+import io.openliberty.security.jakartasec.fat.utils.ResponseValues;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 
 /**
@@ -46,10 +49,16 @@ public class ConfigurationELValuesOverrideTests extends CommonAnnotatedSecurityT
 
     protected static ShrinkWrapHelpers swh = null;
 
+    @ClassRule
+    public static RepeatTests repeat = createTokenTypeRepeats();
+
     @BeforeClass
     public static void setUp() throws Exception {
 
         transformAppsInDefaultDirs(opServer, "dropins");
+
+        // write property that is used to configure the OP to generate JWT or Opaque tokens
+        setTokenTypeInBootstrap(opServer);
 
         // Add servers to server trackers that will be used to clean servers up and prevent servers
         // from being restored at the end of each test (so far, the tests are not reconfiguring the servers)
@@ -70,6 +79,9 @@ public class ConfigurationELValuesOverrideTests extends CommonAnnotatedSecurityT
         rpHttpsBase = "https://localhost:" + rpServer.getBvtSecurePort();
 
         deployMyApps(); // run this after starting the RP so we have the rp port to update the openIdConfig.properties file within the apps - ShrinkHelper will call transform
+
+        rspValues = new ResponseValues();
+        rspValues.setIssuer(opHttpsBase + "/oidc/endpoint/OP1");
 
     }
 

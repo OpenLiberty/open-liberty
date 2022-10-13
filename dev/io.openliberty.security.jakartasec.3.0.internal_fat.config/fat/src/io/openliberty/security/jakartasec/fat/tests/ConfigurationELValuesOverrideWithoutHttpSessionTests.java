@@ -13,6 +13,7 @@ package io.openliberty.security.jakartasec.fat.tests;
 import java.util.List;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -20,18 +21,23 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
+import com.ibm.ws.security.fat.common.expectations.ResponseMessageExpectation;
+import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurityTests;
 import io.openliberty.security.jakartasec.fat.configs.TestConfigMaps;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
 import io.openliberty.security.jakartasec.fat.utils.MessageConstants;
+import io.openliberty.security.jakartasec.fat.utils.ResponseValues;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Tests appSecurity-5.0
@@ -48,10 +54,16 @@ public class ConfigurationELValuesOverrideWithoutHttpSessionTests extends Common
 
     protected static ShrinkWrapHelpers swh = null;
 
+    @ClassRule
+    public static RepeatTests repeat = createTokenTypeRepeats();
+
     @BeforeClass
     public static void setUp() throws Exception {
 
         transformAppsInDefaultDirs(opServer, "dropins");
+
+        // write property that is used to configure the OP to generate JWT or Opaque tokens
+        setTokenTypeInBootstrap(opServer);
 
         // Add servers to server trackers that will be used to clean servers up and prevent servers
         // from being restored at the end of each test (so far, the tests are not reconfiguring the servers)
@@ -72,6 +84,9 @@ public class ConfigurationELValuesOverrideWithoutHttpSessionTests extends Common
         rpHttpsBase = "https://localhost:" + rpServer.getBvtSecurePort();
 
         deployMyApps(); // run this after starting the RP so we have the rp port to update the openIdConfig.properties file within the apps - ShrinkHelper will call transform
+
+        rspValues = new ResponseValues();
+        rspValues.setIssuer(opHttpsBase + "/oidc/endpoint/OP1");
 
     }
 
@@ -133,15 +148,14 @@ public class ConfigurationELValuesOverrideWithoutHttpSessionTests extends Common
         response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
 
         Expectations expectations = new Expectations();
-//        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
-        expectations.addSuccessCodeForCurrentAction();
-        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, "got here", "Did not land on the callback."));
-////        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
-////                                                                                          + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_DOES_NOT_CONTAIN, "got here", "Landed on the callback and should NOT have."));
+        expectations.addExpectation(new ResponseMessageExpectation(null, Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the \""
+                                                                                                                                    + Constants.UNAUTHORIZED_MESSAGE + "\""));
 //        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2407E_ERROR_VERIFYING_RESPONSE, "Did not receive an error message stating that the response could not be verified."));
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2410E_CANNOT_FIND_STATE, "Did not receive an error message stating that a matching client state could not be found."));
 //        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2416E_FAILED_TO_REACH_ENdPOINT, "Did not receive an error message stating that we couldn't react the token endpoint."));
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1652A_AUTH_SEND_FAILURE, "Did not receive an error message stating that Authentication failed with a SEND_FAILURE."));
+//        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1652A_AUTH_SEND_FAILURE, "Did not receive an error message stating that Authentication failed with a SEND_FAILURE."));
 //        expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWOAU0038E_CLIENT_COULD_NOT_BE_VERIFIED, "Did not receive an error message stating that the client could not be verified."));
 
         validationUtils.validateResult(response, expectations);
@@ -178,15 +192,16 @@ public class ConfigurationELValuesOverrideWithoutHttpSessionTests extends Common
         response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
 
         Expectations expectations = new Expectations();
-//        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
-        expectations.addSuccessCodeForCurrentAction();
-        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, "got here", "Did not land on the callback."));
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_DOES_NOT_CONTAIN, "got here", "Landed on the callback and should NOT have."));
+        expectations.addExpectation(new ResponseMessageExpectation(null, Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the \""
+                                                                                                                                    + Constants.UNAUTHORIZED_MESSAGE + "\""));
 ////        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
 ////                                                                                          + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
 //        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2407E_ERROR_VERIFYING_RESPONSE, "Did not receive an error message stating that the response could not be verified."));
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2410E_CANNOT_FIND_STATE, "Did not receive an error message stating that a matching client state could not be found."));
 //        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2416E_FAILED_TO_REACH_ENdPOINT, "Did not receive an error message stating that we couldn't react the token endpoint."));
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1652A_AUTH_SEND_FAILURE, "Did not receive an error message stating that Authentication failed with a SEND_FAILURE."));
+//        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1652A_AUTH_SEND_FAILURE, "Did not receive an error message stating that Authentication failed with a SEND_FAILURE."));
 //        expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWOAU0038E_CLIENT_COULD_NOT_BE_VERIFIED, "Did not receive an error message stating that the client could not be verified."));
 
         validationUtils.validateResult(response, expectations);

@@ -19,25 +19,25 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebServlet;
-import oidc.client.base.servlets.SimpleServlet;
+import oidc.client.base.servlets.BaseServlet;
+import oidc.client.base.utils.ServletLogger;
 
 @WebServlet("/NoProviderURIInAnnotationWithoutProviderMetadataServlet")
 @OpenIdAuthenticationMechanismDefinition(
                                          clientId = "client_1",
                                          clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger",
                                          redirectURI = "${providerBean.clientSecureRoot}/NoProviderURIInAnnotationWithoutProviderMetadata/Callback",
-                                         claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub"))
+                                         claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub", callerGroupsClaim = "groupIds"))
 @DeclareRoles("all")
 @ServletSecurity(@HttpConstraint(rolesAllowed = "all"))
-public class NoProviderURIInAnnotationWithoutProviderMetadataServlet extends SimpleServlet {
+public class NoProviderURIInAnnotationWithoutProviderMetadataServlet extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected void recordHelloWorld(ServletOutputStream output) throws IOException {
+    protected void recordHelloWorld(ServletOutputStream outputStream) throws IOException {
 
-        super.recordHelloWorld(output);
-        System.out.println("Hello world from NoProviderURIInAnnotationWithoutProviderMetadataServlet");
-        output.println("Hello world from NoProviderURIInAnnotationWithoutProviderMetadataServlet!");
+        super.recordHelloWorld(outputStream);
+        ServletLogger.printLine(outputStream, "Hello world from NoProviderURIInAnnotationWithoutProviderMetadataServlet");
 
     }
 }

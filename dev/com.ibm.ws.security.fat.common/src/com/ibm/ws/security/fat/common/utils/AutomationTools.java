@@ -25,9 +25,12 @@ import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.Constants;
+import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
 
 public class AutomationTools {
     public static Class<?> thisClass = AutomationTools.class;
+
+    protected final CommonFatLoggingUtils loggingUtils = new CommonFatLoggingUtils();
 
     public static String getResponseText(Object pageOrResponse) throws Exception {
 
@@ -427,6 +430,30 @@ public class AutomationTools {
             return " Full response content was: [" + AutomationTools.getResponseText(response) + "].";
         } catch (Exception e) {
             return " (Failed to read the response text due to exception: " + e + ").";
+        }
+    }
+
+    public static String getTokenFromResponse(Object response, String searchString) throws Exception {
+
+        String thisMethod = "getTokenLineFromResponse";
+
+        try {
+            String respReceived = AutomationTools.getResponseText(response);
+
+            String tokenValue = null;
+            if (respReceived.indexOf(searchString) != -1) {
+                Log.info(thisClass, thisMethod, Integer.toString(respReceived.indexOf(searchString)));
+                Log.info(thisClass, thisMethod, Integer.toString(respReceived.indexOf(System.getProperty("line.separator"))));
+                tokenValue = respReceived.substring(
+                        respReceived.indexOf(searchString) + searchString.length());
+                tokenValue = tokenValue.substring(0, tokenValue.indexOf(System.getProperty("line.separator"))).trim();
+            }
+            Log.info(thisClass, thisMethod, "Returning value: " + tokenValue);
+            return tokenValue;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.error(thisClass, thisMethod, e, "Error obtaining token from response");
+            throw e;
         }
     }
 

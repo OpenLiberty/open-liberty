@@ -189,6 +189,10 @@ public class Constants {
     public static final String LTPA_TOKEN = "LtpaToken2";
     public static final String JWT_SSO_COOKIE_NAME = "JWT";
 
+    public static final String JWT_TOKEN_FORMAT = "jwt";
+    public static final String MP_JWT_TOKEN_FORMAT = "mpjwt";
+    public static final String OPAQUE_TOKEN_FORMAT = "opaque";
+
     public static final String LOGIN_PROMPT = "Enter your username and password to login";
     public static final String LOGIN_ERROR = "Error: username and password doesn't match";
     public static final String LOGIN_TITLE = "Login";

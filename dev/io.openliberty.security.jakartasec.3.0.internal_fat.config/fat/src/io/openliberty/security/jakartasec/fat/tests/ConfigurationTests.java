@@ -6,13 +6,14 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.security.jakartasec.fat.tests;
 
 import java.util.List;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -29,15 +30,18 @@ import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurityTests;
 import io.openliberty.security.jakartasec.fat.configs.TestConfigMaps;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
 import io.openliberty.security.jakartasec.fat.utils.MessageConstants;
+import io.openliberty.security.jakartasec.fat.utils.ResponseValues;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 
 /**
- * Tests various values set for annotation attributes that do NOT have Expression attributes (test the attributes that can have EL values without having to have a separate attribute defined)
+ * Tests various values set for annotation attributes that do NOT have Expression attributes (test the attributes that can have EL
+ * values without having to have a separate attribute defined)
  */
 /**
  * Tests appSecurity-5.0
@@ -54,10 +58,16 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
 
     protected static ShrinkWrapHelpers swh = null;
 
+    @ClassRule
+    public static RepeatTests repeat = createTokenTypeRepeats();
+
     @BeforeClass
     public static void setUp() throws Exception {
 
         transformAppsInDefaultDirs(opServer, "dropins");
+
+        // write property that is used to configure the OP to generate JWT or Opaque tokens
+        setTokenTypeInBootstrap(opServer);
 
         // Add servers to server trackers that will be used to clean servers up and prevent servers
         // from being restored at the end of each test (so far, the tests are not reconfiguring the servers)
@@ -78,6 +88,9 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         rpHttpsBase = "https://localhost:" + rpServer.getBvtSecurePort();
 
         deployMyApps(); // run this after starting the RP so we have the rp port to update the openIdConfig.properties file within the apps - ShrinkHelper will call transform
+
+        rspValues = new ResponseValues();
+        rspValues.setIssuer(opHttpsBase + "/oidc/endpoint/OP1");
 
     }
 
@@ -102,31 +115,24 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         // deploy the apps that will be updated at runtime (now) (such as deploying the same app runtime with different names and embedded configs)
         swh.deployConfigurableTestApps(rpServer, "badClientId.war", "GenericOIDCAuthMechanism.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "badClientId", "allValues.openIdConfig.properties", TestConfigMaps.getBadClientId()),
-                                       "oidc.simple.client.generic.servlets",
-                                       "oidc.client.base.*");
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "omittedClientId.war", "GenericOIDCAuthMechanism.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "omittedClientId", "allValues.openIdConfig.properties", TestConfigMaps.getEmptyClientId()),
-                                       "oidc.simple.client.generic.servlets",
-                                       "oidc.client.base.*");
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "badClientSecret.war", "GenericOIDCAuthMechanism.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "badClientSecret", "allValues.openIdConfig.properties", TestConfigMaps.getBadClientSecret()),
-                                       "oidc.simple.client.generic.servlets",
-                                       "oidc.client.base.*");
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "omittedClientSecret.war", "GenericOIDCAuthMechanism.war",
-                                       buildUpdatedConfigMap(opServer, rpServer, "omittedClientSecret", "allValues.openIdConfig.properties",
-                                                             TestConfigMaps.getEmptyClientSecret()),
-                                       "oidc.simple.client.generic.servlets",
-                                       "oidc.client.base.*");
+                                       buildUpdatedConfigMap(opServer, rpServer, "omittedClientSecret", "allValues.openIdConfig.properties", TestConfigMaps.getEmptyClientSecret()),
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "useSessionTrue.war", "GenericOIDCAuthMechanism.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "useSessionTrue", "allValues.openIdConfig.properties",
                                                              TestConfigMaps.getUseSessionExpressionTrue()),
-                                       "oidc.simple.client.generic.servlets",
-                                       "oidc.client.base.*");
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "useSessionFalse.war", "GenericOIDCAuthMechanism.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "useSessionFalse", "allValues.openIdConfig.properties",
                                                              TestConfigMaps.getUseSessionExpressionFalse()),
-                                       "oidc.simple.client.generic.servlets",
-                                       "oidc.client.base.*");
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
 
     }
 
@@ -173,7 +179,8 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
     }
 
     /**
-     * Test with providerURI omitted from the annotation. We'll also omit the providerMetadata. We should see failures indicating that we haven't provided needed info to perform
+     * Test with providerURI omitted from the annotation. We'll also omit the providerMetadata. We should see failures indicating
+     * that we haven't provided needed info to perform
      * discovery and have also not provided the info that discovery could have provided
      *
      * @throws Exception
@@ -205,7 +212,8 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
     }
 
     /**
-     * Test with providerURI omitted from the annotation. We'll include the providerMetadata. With the providerMetadata, we don't need the values from discovery.
+     * Test with providerURI omitted from the annotation. We'll include the providerMetadata. With the providerMetadata, we don't
+     * need the values from discovery.
      *
      * @throws Exception
      */
@@ -218,7 +226,8 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
     }
 
     /**
-     * Only specify the providerURI - we should fail because the clientId is missing (the provider that is discovered can't provide a default clientId)
+     * Only specify the providerURI - we should fail because the clientId is missing (the provider that is discovered can't
+     * provide a default clientId)
      *
      * @throws Exception
      */
@@ -291,7 +300,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
                                                                                           + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
         expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, MessageConstants.CWOAU0033E_REQ_RUNTIME_PARAM_MISSING, "Did not receive an error message stating that the required client_id was missing"));
-//        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2500W_MISSING_CLIENTID_EL, "Did not receive an error message stating that the specified Expression Langauge value for clientId was missing"));
+        //        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2500W_MISSING_CLIENTID_EL, "Did not receive an error message stating that the specified Expression Langauge value for clientId was missing"));
 
         validationUtils.validateResult(response, expectations);
 
@@ -316,8 +325,10 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
 
         Expectations expectations = new Expectations();
         expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
-//        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
-//                                                                                          + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
+        // TODO  - beef up checking
+        //        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_DOES_NOT_CONTAIN, "got here", "Landed on the callback and should not have."));
+        //        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
+        //                                                                                          + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1406E_INVALID_CLIENT_CREDENTIAL, "Did not receive an error message stating that the client credential was invalid."));
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2416E_FAILED_TO_REACH_ENdPOINT, "Did not receive an error message stating that we couldn't react the token endpoint."));
         expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWOAU0038E_CLIENT_COULD_NOT_BE_VERIFIED, "Did not receive an error message stating that the client could not be verified."));
@@ -345,10 +356,11 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
 
         Expectations expectations = new Expectations();
         expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
-//        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
-//                                                                                          + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
-//        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1406E_INVALID_CLIENT_CREDENTIAL, "Did not receive an error message stating that the client credential was invalid."));
-//        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2416E_FAILED_TO_REACH_ENdPOINT, "Did not receive an error message stating that we couldn't react the token endpoint."));
+        // TODO  - beef up checking
+        //        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
+        //                                                                                          + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
+        //        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1406E_INVALID_CLIENT_CREDENTIAL, "Did not receive an error message stating that the client credential was invalid."));
+        //        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2416E_FAILED_TO_REACH_ENdPOINT, "Did not receive an error message stating that we couldn't react the token endpoint."));
         expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWOAU0038E_CLIENT_COULD_NOT_BE_VERIFIED, "Did not receive an error message stating that the client could not be verified."));
 
         validationUtils.validateResult(response, expectations);
@@ -361,35 +373,35 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
     // test claimsDefinition with invalid and omitted name and groups (omitted name will fail - make sure we get a useful msg - ommited groups should work just fine)
 
     // these need to be run with both testSession and testSessionExpression
-//    /**
-//     * Specify useSession set to true - the overall server configs specify
-//     * <httpSession cookieHttpOnly="false" cookieName="<serverUniqueName"/>
-//     * This means that the useSession flag will not really make a difference.
-//     * The ConfigurationWithoutHttpSessionTests_noServerWideHttpSession_useSession_true will test without the httpSession config
-//     *
-//     * @throws Exception
-//     */
-//    @Test
-//    public void ConfigurationTests_serverWideUniqueHttpSession_useSession_true() throws Exception {
-//
-//        runGoodEndToEndTest("useSessionTrue", "GenericOIDCAuthMechanism");
-//
-//    }
-//
-//    /**
-//     * Specify useSession set to false - the overall server configs specify
-//     * <httpSession cookieHttpOnly="false" cookieName="<serverUniqueName"/>
-//     * This means that the useSession flag will not really make a difference.
-//     * The ConfigurationWithoutHttpSessionTests_noServerWideHttpSession_useSession_false will test without the httpSession config
-//     *
-//     * @throws Exception
-//     */
-//    @Test
-//    public void ConfigurationTests_serverWideUniqueHttpSession_useSession_false() throws Exception {
-//
-//        runGoodEndToEndTest("useSessionFalse", "GenericOIDCAuthMechanism");
-//
-//    }
+    //    /**
+    //     * Specify useSession set to true - the overall server configs specify
+    //     * <httpSession cookieHttpOnly="false" cookieName="<serverUniqueName"/>
+    //     * This means that the useSession flag will not really make a difference.
+    //     * The ConfigurationWithoutHttpSessionTests_noServerWideHttpSession_useSession_true will test without the httpSession config
+    //     *
+    //     * @throws Exception
+    //     */
+    //    @Test
+    //    public void ConfigurationTests_serverWideUniqueHttpSession_useSession_true() throws Exception {
+    //
+    //        runGoodEndToEndTest("useSessionTrue", "GenericOIDCAuthMechanism");
+    //
+    //    }
+    //
+    //    /**
+    //     * Specify useSession set to false - the overall server configs specify
+    //     * <httpSession cookieHttpOnly="false" cookieName="<serverUniqueName"/>
+    //     * This means that the useSession flag will not really make a difference.
+    //     * The ConfigurationWithoutHttpSessionTests_noServerWideHttpSession_useSession_false will test without the httpSession config
+    //     *
+    //     * @throws Exception
+    //     */
+    //    @Test
+    //    public void ConfigurationTests_serverWideUniqueHttpSession_useSession_false() throws Exception {
+    //
+    //        runGoodEndToEndTest("useSessionFalse", "GenericOIDCAuthMechanism");
+    //
+    //    }
 
     // useSession - may need a different OP with different httpSession values in the server config in order to fully test
     // <httpSession cookieHttpOnly="false" cookieName="clientJSESSIONID"/>

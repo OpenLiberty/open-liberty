@@ -9,16 +9,6 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-
-<!-- 
-		signatureAlgorithm="RS256"
-		keyAliasName="RS256"
-		keyStoreRef="key_allSigAlg"
-		
-						redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SimplestAnnotated/Callback"
-				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_1"
-		
-		 -->
 		 
 	<openidConnectProvider
 		id="OP1"
@@ -27,6 +17,7 @@
 	<oauthProvider
 		id="OAuth1"
 		autoAuthorize="true"
+		tokenFormat="${opTokenFormat}"
 	>
 		<autoAuthorizeClient>client_1</autoAuthorizeClient>
 		
@@ -34,7 +25,10 @@
 			<client
 				name="client_1"
 				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
-				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SimplestAnnotated/Callback,
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ApplicationScoped/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/RequestScoped/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SessionScoped/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SimplestAnnotated/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SimplestAnnotatedWithEL/Callback"
 				scope="ALL_SCOPES"
 				enabled="true"
