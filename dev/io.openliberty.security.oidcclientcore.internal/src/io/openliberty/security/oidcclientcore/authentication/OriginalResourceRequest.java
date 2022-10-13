@@ -13,6 +13,7 @@ package io.openliberty.security.oidcclientcore.authentication;
 import static io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants.WAS_OIDC_REQ_HEADERS;
 import static io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants.WAS_OIDC_REQ_METHOD;
 import static io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants.WAS_OIDC_REQ_PARAMS;
+import static io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants.WAS_REQ_URL_OIDC;
 
 import java.util.ArrayList;
 import java.util.Base64;
@@ -33,6 +34,8 @@ import io.openliberty.security.oidcclientcore.utils.Utils;
 
 public class OriginalResourceRequest extends HttpServletRequestWrapper {
 
+    private String requestUrl; // methods involving request url should already be restored after redirecting to original resource
+    private String queryStringParams;
     private String method;
     private Map<String, List<String>> headers;
     private Map<String, String[]> params;
@@ -41,6 +44,8 @@ public class OriginalResourceRequest extends HttpServletRequestWrapper {
 
     public OriginalResourceRequest(HttpServletRequest request, HttpServletResponse response, boolean useSession) {
         super(request);
+        this.requestUrl = "";
+        this.queryStringParams = null;
         this.method = "";
         this.headers = new HashMap<>();
         this.params = new HashMap<>();
@@ -52,10 +57,24 @@ public class OriginalResourceRequest extends HttpServletRequestWrapper {
     private void restoreOriginalRequest(String state) {
         Base64.Decoder decoder = Base64.getDecoder();
         String stateHash = Utils.getStrHashCode(state);
+        restoreReqUrlAndQueryParams(stateHash);
         restoreCookies(decoder, stateHash);
         restoreMethod(decoder, stateHash);
         restoreHeaders(decoder, stateHash);
         restoreParams(decoder, stateHash);
+    }
+
+    private void restoreReqUrlAndQueryParams(String stateHash) {
+        String key = WAS_REQ_URL_OIDC + stateHash;
+        String requestUrlWithQueryParams = storage.get(key); // don't remove since it is used later
+        if (requestUrlWithQueryParams == null || requestUrlWithQueryParams.isEmpty()) {
+            return;
+        }
+        String[] requestUrlSplitFromQueryParams = requestUrlWithQueryParams.split(Pattern.quote("?"));
+        this.requestUrl = requestUrlSplitFromQueryParams[0];
+        if (requestUrlSplitFromQueryParams.length > 1) {
+            this.queryStringParams = requestUrlSplitFromQueryParams[1];
+        }
     }
 
     private void restoreCookies(Base64.Decoder decoder, String stateHash) {
@@ -122,6 +141,11 @@ public class OriginalResourceRequest extends HttpServletRequestWrapper {
             storage.remove(key);
         }
         return value;
+    }
+
+    @Override
+    public String getQueryString() {
+        return queryStringParams;
     }
 
     @Override

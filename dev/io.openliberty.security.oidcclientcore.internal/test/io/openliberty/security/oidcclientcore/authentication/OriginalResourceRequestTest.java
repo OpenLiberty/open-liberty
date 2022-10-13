@@ -49,6 +49,10 @@ public class OriginalResourceRequestTest extends CommonTestClass {
     @Rule
     public TestName testName = new TestName();
 
+    private static final String REQUEST_URL = "https://localhost:3000/test";
+    private static final String QUERY_STRING_PARAMS = "foo=bar";
+    private static final String REQUEST_URL_WITH_PARAMS = REQUEST_URL + "?" + QUERY_STRING_PARAMS;
+
     // POST
     private static final String METHOD = "UE9TVA==";
 
@@ -81,6 +85,9 @@ public class OriginalResourceRequestTest extends CommonTestClass {
                 allowing(request).getSession();
                 will(returnValue(httpSession));
 
+                one(httpSession).getAttribute(OidcClientStorageConstants.WAS_REQ_URL_OIDC + stateHash);
+                will(returnValue(REQUEST_URL_WITH_PARAMS));
+
                 one(httpSession).getAttribute(OidcClientStorageConstants.WAS_OIDC_REQ_METHOD + stateHash);
                 will(returnValue(METHOD));
                 one(httpSession).removeAttribute(OidcClientStorageConstants.WAS_OIDC_REQ_METHOD + stateHash);
@@ -107,6 +114,13 @@ public class OriginalResourceRequestTest extends CommonTestClass {
     public static void tearDownAfterClass() throws Exception {
         outputMgr.dumpStreams();
         outputMgr.restoreStreams();
+    }
+
+    @Test
+    public void test_getQueryString() {
+        String queryString = originalResourceRequest.getQueryString();
+
+        assertThat(queryString, equalTo(QUERY_STRING_PARAMS));
     }
 
     @Test
