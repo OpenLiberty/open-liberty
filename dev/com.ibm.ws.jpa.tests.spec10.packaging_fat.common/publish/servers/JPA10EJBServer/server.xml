@@ -23,12 +23,12 @@
     
     <dataSource id="jdbc/JPA_DS" jndiName="jdbc/JPA_DS" fat.modify="true">
             <jdbcDriver libraryRef="AnonymousJDBCLib"/>
-            <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" />
+            <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
 
     <dataSource id="jdbc/JPA_NJTADS" jndiName="jdbc/JPA_NJTADS" fat.modify="true" transactional="false">
             <jdbcDriver libraryRef="AnonymousJDBCLib"/>
-            <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" />
+            <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
 
   <library id="AnonymousJDBCLib">

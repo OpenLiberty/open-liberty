@@ -21,7 +21,7 @@
   <dataSource id="DefaultDataSource" fat.modify="true">
     <jdbcDriver libraryRef="AnonymousJDBCLib"/>
     <!-- Properties modified by fat for database rotation -->
-    <properties.derby.embedded createDatabase="create" databaseName="memory:pxlocktest" />
+    <properties.derby.embedded createDatabase="create" databaseName="memory:pxlocktest" user="dbuser1" password="{xor}Oz0vKDtu"/>
   </dataSource>
   
   <library id="AnonymousJDBCLib">

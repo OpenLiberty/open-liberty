@@ -18,17 +18,17 @@
     
     <include location="../fatTestPorts.xml"/>
     
-    <dataSource id="DefaultDataSource" fat.modify="true">
+    <dataSource id="DefaultDataSource" >
     	    <jdbcDriver libraryRef="DerbyLib"/>
     	    <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
     </dataSource>
     
-    <dataSource id="jdbc/NonTransactionalDataSource" jndiName="jdbc/NonTransactionalDataSource" fat.modify="true" transactional="false">
+    <dataSource id="jdbc/NonTransactionalDataSource" jndiName="jdbc/NonTransactionalDataSource"  transactional="false">
     	    <jdbcDriver libraryRef="DerbyLib"/>
     	    <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
     </dataSource>
     
-    <library id="DerbyLib" fat.modify="true">
+    <library id="DerbyLib" >
     	<fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
     </library>
     

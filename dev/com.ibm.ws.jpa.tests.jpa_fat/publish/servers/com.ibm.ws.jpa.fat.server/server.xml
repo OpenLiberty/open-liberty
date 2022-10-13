@@ -13,7 +13,7 @@
         defaultJtaDataSourceJndiName="default/jtadatasource"
         defaultNonJtaDataSourceJndiName="default/nonjtadatasource" />
 
-    <library id="AnonymousJDBCLib" fat.modify="true">
+    <library id="AnonymousJDBCLib" >
         <file name="${shared.resource.dir}/derby/derby.jar"/>
     </library>
   

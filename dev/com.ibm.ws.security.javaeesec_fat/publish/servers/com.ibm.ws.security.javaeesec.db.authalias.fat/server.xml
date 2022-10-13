@@ -33,13 +33,13 @@
 		<classloader commonLibraryRef="DerbyLib" />
 	</application>
 
-	<dataSource id="derby1" jndiName="jdbc/derby1fat" fat.modify="true">
+	<dataSource id="derby1" jndiName="jdbc/derby1fat" >
     	<jdbcDriver libraryRef="DerbyLib"/>
     	<properties.derby.embedded databaseName="memory:derby1" createDatabase="create" />
     	<containerAuthData user="dbuser1" password="{xor}Oz0vKDtu" />
     </dataSource>
     
-    <library id="DerbyLib" fat.modify="true">
+    <library id="DerbyLib" >
     	<fileset dir="${shared.resource.dir}/derby" includes="*.jar"/>
     </library>
 

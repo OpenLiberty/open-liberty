@@ -42,7 +42,7 @@ import web.generic.ContainersTestServlet;
 @RunWith(FATRunner.class)
 public class ProgrammaticImageTest {
 
-    public static final String APP_NAME = "containerApp";
+    public static final String APP_NAME = "app";
 
     @Server("build.example.testcontainers")
     @TestServlet(servlet = ContainersTestServlet.class, contextRoot = APP_NAME)

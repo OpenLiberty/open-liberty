@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
@@ -42,6 +43,7 @@ import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -1139,7 +1141,7 @@ public class DataTestServlet extends FATServlet {
 
         r1.invitees = Set.of("testRepository-1a@example.org", "testRepository-1b@example.org", "testRepository-1c@example.org");
 
-        Iterable<Reservation> insertedOrUpdated = reservations.save(new Iterable<>() {
+        Iterable<Reservation> insertedOrUpdated = reservations.saveAll(new Iterable<>() {
             @Override
             public Iterator<Reservation> iterator() {
                 return Arrays.asList(r1, r2, r3, r4).iterator();
@@ -1171,19 +1173,13 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(4, reservations.count());
 
-        Reservation r2found = null, r4found = null;
-        for (Reservation found : reservations.findById(List.of(r4.meetingID, r2.meetingID))) {
-            if (found.meetingID == r2.meetingID && r2found == null)
-                r2found = found;
-            else if (found.meetingID == r4.meetingID && r4found == null)
-                r4found = found;
-            else
-                fail("Found unexpected entity with meetingID of " + found.meetingID);
-        }
-        assertNotNull(r2found);
-        assertNotNull(r4found);
-        assertEquals(r2.location, r2found.location);
-        assertEquals(r4.location, r4found.location);
+        Map<Long, Reservation> found = reservations.findAllById(List.of(r4.meetingID, r2.meetingID))
+                        .collect(Collectors.toMap(rr -> rr.meetingID, Function.identity()));
+        assertEquals(found.toString(), 2, found.size());
+        assertEquals(true, found.containsKey(r2.meetingID));
+        assertEquals(true, found.containsKey(r4.meetingID));
+        assertEquals(r2.location, found.get(r2.meetingID).location);
+        assertEquals(r4.location, found.get(r4.meetingID).location);
 
         reservations.deleteById(r2.meetingID);
 
@@ -1193,7 +1189,7 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(3, reservations.count());
 
-        reservations.deleteById(Set.of(r1.meetingID, r4.meetingID));
+        reservations.deleteAllById(Set.of(r1.meetingID, r4.meetingID));
 
         assertEquals(false, reservations.existsById(r4.meetingID));
 
@@ -1297,7 +1293,7 @@ public class DataTestServlet extends FATServlet {
         r9.start = OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT);
         r9.stop = OffsetDateTime.of(2022, 5, 25, 15, 0, 0, 0, CDT);
 
-        reservations.save(List.of(r1, r2, r3, r4, r5, r6, r7, r8, r9));
+        reservations.saveAll(List.of(r1, r2, r3, r4, r5, r6, r7, r8, r9));
 
         List<Reservation> reservationList = new ArrayList<Reservation>();
         reservations.findByHost("testRepositoryCustom-host2@example.org").forEach(reservationList::add);
@@ -1619,7 +1615,7 @@ public class DataTestServlet extends FATServlet {
         r4.start = OffsetDateTime.of(2022, 8, 25, 13, 0, 0, 0, CDT);
         r4.stop = OffsetDateTime.of(2022, 8, 25, 14, 30, 0, 0, CDT);
 
-        reservations.save(List.of(r1, r2, r3, r4));
+        reservations.saveAll(List.of(r1, r2, r3, r4));
 
         // Update by primary key
         assertEquals(true, reservations.updateByMeetingIDSetHost(1012004, "testRepositoryUpdateMethods-host2@example.org"));
@@ -1691,7 +1687,7 @@ public class DataTestServlet extends FATServlet {
         p6.height = 19.2f;
         p6.id = 990006;
 
-        packages.save(List.of(p1, p2, p3, p4, p5, p6));
+        packages.saveAll(List.of(p1, p2, p3, p4, p5, p6));
 
         // multiply, divide, and add within same update
         assertEquals(true, packages.updateByIdAddHeightMultiplyLengthDivideWidth(990003, 1.0f, 0.95f, 1.05f));
@@ -1725,7 +1721,19 @@ public class DataTestServlet extends FATServlet {
         assertEquals(13.8f, p.width, 0.01f);
         assertEquals(19.5f, p.height, 0.01f);
 
-        packages.deleteById(List.of(990001, 990002, 990003, 990004, 990005, 990006));
+        packages.delete(p3);
+
+        assertIterableEquals(List.of(990001, 990002, 990004, 990005, 990006),
+                             packages.findAll().map(pack -> pack.id).sorted().collect(Collectors.toList()));
+
+        packages.deleteAll(List.of(p1, p6));
+
+        assertIterableEquals(List.of(990002, 990004, 990005),
+                             packages.findAll().map(pack -> pack.id).sorted().collect(Collectors.toList()));
+
+        packages.deleteAll();
+
+        assertEquals(0, packages.count());
     }
 
     /**
@@ -1773,7 +1781,7 @@ public class DataTestServlet extends FATServlet {
         r4.start = OffsetDateTime.of(2022, 6, 3, 9, 0, 0, 0, CDT);
         r4.stop = OffsetDateTime.of(2022, 6, 3, 10, 0, 0, 0, CDT);
 
-        reservations.save(Set.of(r1, r2, r3, r4));
+        reservations.saveAll(Set.of(r1, r2, r3, r4));
 
         ReservedTimeSlot[] reserved = reservations.findByLocationAndStartBetweenOrderByStart("30-2 C206",
                                                                                              OffsetDateTime.of(2022, 6, 3, 0, 0, 0, 0, CDT),

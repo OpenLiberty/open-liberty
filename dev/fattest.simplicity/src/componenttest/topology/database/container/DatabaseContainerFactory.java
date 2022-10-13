@@ -147,7 +147,7 @@ public class DatabaseContainerFactory {
                     acceptSQLServerLicense.invoke(cont);
                     //Init Script
                     Method initScript = cont.getClass().getMethod("withInitScript", String.class);
-                    initScript.invoke(cont, "resources/init-sqlserver.sql");
+                    initScript.invoke(cont, "init-sqlserver.sql");
                     break;
                 default:
                     break;
