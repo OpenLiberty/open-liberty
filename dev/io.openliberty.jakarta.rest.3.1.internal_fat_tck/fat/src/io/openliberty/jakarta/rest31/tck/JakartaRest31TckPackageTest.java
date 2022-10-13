@@ -11,6 +11,8 @@
 package io.openliberty.jakarta.rest31.tck;
 
 
+import java.util.HashMap;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -53,6 +55,10 @@ public class JakartaRest31TckPackageTest {
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void testJakarta31RestTck() throws Exception {
-        MvnUtils.runTCKMvnCmd(server, "io.openliberty.jakarta.rest.3.1.internal_fat_tck", this.getClass() + ":testJakartaRest31Tck");
+        HashMap<String, String> props = new HashMap<String, String>(); 
+        // The Java Se Bootstrap API added in EE10 is optional and not supported by Open Liberty.   So the 
+        // following property is being added to exclude those tests.
+        props.put("excludedGroups","se_bootstrap");
+        MvnUtils.runTCKMvnCmd(server, "io.openliberty.jakarta.rest.3.1.internal_fat_tck", this.getClass() + ":testJakartaRest31Tck",props);
     }
 }
