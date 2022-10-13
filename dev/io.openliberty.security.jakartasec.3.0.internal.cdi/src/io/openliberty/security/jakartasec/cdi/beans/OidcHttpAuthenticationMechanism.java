@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec.cdi.beans;
 
+import static io.openliberty.security.oidcclientcore.authentication.JakartaOidcAuthorizationRequest.IS_CONTAINER_INITIATED_FLOW;
+
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Optional;
@@ -126,7 +128,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         boolean alreadyAuthenticated = isAlreadyAuthenticated(request);
 
         if (isAuthenticationRequired(request, httpMessageContext, alreadyAuthenticated) && !containsStoredState(request, response, client)) {
-            status = processStartFlowResult(client.startFlow(request, response), httpMessageContext);
+            status = processStartFlow(client, request, response, httpMessageContext);
         } else if (isCallbackRequest(request)) {
             status = processCallback(client, request, response, httpMessageContext);
         } else if (alreadyAuthenticated) {
@@ -172,6 +174,12 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
 
     private boolean isAlreadyAuthenticated(HttpServletRequest request) {
         return request.getUserPrincipal() != null;
+    }
+
+    private AuthenticationStatus processStartFlow(Client client, HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) {
+        request.setAttribute(IS_CONTAINER_INITIATED_FLOW, isContainerInitiatedFlow(httpMessageContext.getAuthParameters()));
+        ProviderAuthenticationResult providerAuthenticationResult = client.startFlow(request, response);
+        return processStartFlowResult(providerAuthenticationResult, httpMessageContext);
     }
 
     private AuthenticationStatus processStartFlowResult(ProviderAuthenticationResult providerAuthenticationResult, HttpMessageContext httpMessageContext) {
@@ -271,9 +279,11 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
     }
 
     private boolean shouldRestoreOriginalRequest(OidcClientConfig clientConfig, AuthenticationParameters authParams) {
-        boolean isRedirectToOriginalResource = clientConfig.isRedirectToOriginalResource();
-        boolean isContainerInitiatedFlow = (authParams == null || !authParams.isNewAuthentication());
-        return isRedirectToOriginalResource && isContainerInitiatedFlow;
+        return clientConfig.isRedirectToOriginalResource() && isContainerInitiatedFlow(authParams);
+    }
+
+    private boolean isContainerInitiatedFlow(AuthenticationParameters authParams) {
+        return (authParams == null || !authParams.isNewAuthentication());
     }
 
     protected OriginalResourceRequest getOriginalResourceRequest(HttpServletRequest request, HttpServletResponse response, boolean useSession) {

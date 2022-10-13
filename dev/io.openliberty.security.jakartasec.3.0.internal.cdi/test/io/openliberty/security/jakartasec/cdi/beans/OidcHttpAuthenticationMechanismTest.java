@@ -1,5 +1,6 @@
 package io.openliberty.security.jakartasec.cdi.beans;
 
+import static io.openliberty.security.oidcclientcore.authentication.JakartaOidcAuthorizationRequest.IS_CONTAINER_INITIATED_FLOW;
 import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
@@ -116,6 +117,7 @@ public class OidcHttpAuthenticationMechanismTest {
     @Test
     public void testValidateRequest_authenticationRequest_redirects() throws Exception {
         mechanismValidatesRequestForProtectedResource();
+        isContainerInitatedFlow();
         clientStartsFlow(REDIRECTION_PROVIDER_AUTH_RESULT);
         mechanismRedirectsTo(REDIRECTION_URL);
         OidcHttpAuthenticationMechanism mechanism = new TestOidcHttpAuthenticationMechanism();
@@ -128,6 +130,7 @@ public class OidcHttpAuthenticationMechanismTest {
     @Test
     public void testValidateRequest_authenticationRequest_fails() throws Exception {
         mechanismValidatesRequestForProtectedResource();
+        isContainerInitatedFlow();
         clientStartsFlow(FAILURE_AUTH_RESULT);
         mechanismSetsResponseUnauthorized();
         OidcHttpAuthenticationMechanism mechanism = new TestOidcHttpAuthenticationMechanism();
@@ -293,8 +296,6 @@ public class OidcHttpAuthenticationMechanismTest {
                 will(returnValue(authParams));
                 one(oidcClientConfig).isRedirectToOriginalResource();
                 will(returnValue(false));
-                one(authParams).isNewAuthentication();
-                will(returnValue(true));
             }
         });
     }
@@ -429,6 +430,18 @@ public class OidcHttpAuthenticationMechanismTest {
                 will(returnValue(state));
                 one(httpMessageContext).redirect(redirectUrl);
                 will(returnValue(AuthenticationStatus.SEND_CONTINUE));
+            }
+        });
+    }
+
+    private void isContainerInitatedFlow() {
+        mockery.checking(new Expectations() {
+            {
+                one(httpMessageContext).getAuthParameters();
+                will(returnValue(authParams));
+                one(authParams).isNewAuthentication();
+                will(returnValue(false));
+                one(request).setAttribute(IS_CONTAINER_INITIATED_FLOW, true);
             }
         });
     }

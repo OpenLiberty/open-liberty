@@ -45,6 +45,8 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
 
     public static final TraceComponent tc = Tr.register(JakartaOidcAuthorizationRequest.class);
 
+    public static final String IS_CONTAINER_INITIATED_FLOW = "IS_CONTAINER_INITIATED_FLOW";
+
     private enum StorageType {
         COOKIE, SESSION
     }
@@ -276,7 +278,11 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
     }
 
     boolean isContainerInitiatedFlow() {
-        // TODO
+        Object isContainerInitiatedFlow = request.getAttribute(IS_CONTAINER_INITIATED_FLOW);
+        if (isContainerInitiatedFlow instanceof Boolean) {
+            request.removeAttribute(IS_CONTAINER_INITIATED_FLOW);
+            return (boolean) isContainerInitiatedFlow;
+        }
         return false;
     }
 
