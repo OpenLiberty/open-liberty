@@ -24,7 +24,8 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -59,6 +60,12 @@ public class JakartaRest31TckPackageTest {
         // The Java Se Bootstrap API added in EE10 is optional and not supported by Open Liberty.   So the 
         // following property is being added to exclude those tests.
         props.put("excludedGroups","se_bootstrap");
-        MvnUtils.runTCKMvnCmd(server, "io.openliberty.jakarta.rest.3.1.internal_fat_tck", this.getClass() + ":testJakartaRest31Tck",props);
+        
+        String bucketName = "io.openliberty.jakarta.rest.3.1.internal_fat_tck";
+        String testName = this.getClass() + ":testJakarta31RestTck";
+        Type type = Type.JAKARTA;
+        String specName = "Restful Web Services";
+        String specVersion = "3.1";
+        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion, props);
     }
 }

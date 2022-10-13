@@ -16,18 +16,6 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -36,8 +24,8 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.JavaInfo;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKUtils;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -67,11 +55,11 @@ public class Config20TCKLauncher {
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchConfig20Tck() throws Exception {
-        MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.config.2.0.internal_fat_tck", this.getClass() + ":launchConfig20Tck");
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "Config");
-        resultInfo.put("feature_version", "2.0");
-        MvnUtils.preparePublicationFile(resultInfo);
+        String bucketName = "io.openliberty.microprofile.config.2.0.internal_fat_tck";
+        String testName = this.getClass() + ":launchConfig20Tck";
+        Type type = Type.MICROPROFILE;
+        String specName = "Config";
+        String specVersion = "2.0";
+        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion);
     }
 }

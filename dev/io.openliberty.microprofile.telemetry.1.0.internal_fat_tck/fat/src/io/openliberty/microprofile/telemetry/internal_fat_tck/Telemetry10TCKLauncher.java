@@ -10,8 +10,6 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal_fat_tck;
 
-import java.util.Map;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -26,7 +24,8 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKUtils;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -58,11 +57,11 @@ public class Telemetry10TCKLauncher {
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchTelemetry10Tck() throws Exception {
-        MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.telemetry.1.0.internal_fat_tck", this.getClass() + ":launchTelemetry10Tck");
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "Telemetry");
-        resultInfo.put("feature_version", "1.0");
-        MvnUtils.preparePublicationFile(resultInfo);
+        String bucketName = "io.openliberty.microprofile.telemetry.1.0.internal_fat_tck";
+        String testName = this.getClass() + ":launchTelemetry10Tck";
+        Type type = Type.MICROPROFILE;
+        String specName = "Telemetry";
+        String specVersion = "1.0";
+        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion);
     }
 }

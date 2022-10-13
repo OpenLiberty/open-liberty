@@ -10,7 +10,6 @@
  *******************************************************************************/
 package io.openliberty.microprofile.faulttolerance40.tck;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +29,8 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKUtils;
 
 /**
  * This is a test class that runs the whole Fault Tolerance TCK. The TCK results
@@ -116,7 +116,7 @@ public class FaultToleranceTck40Launcher {
      */
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
-    public void launchFaultToleranceTCK() throws Exception {
+    public void launchFaultTolerance40TCK() throws Exception {
         boolean isFullMode = TestModeFilter.shouldRun(TestMode.FULL);
 
         String suiteFileName = isFullMode ? "tck-suite.xml" : "tck-suite-lite.xml";
@@ -127,13 +127,12 @@ public class FaultToleranceTck40Launcher {
             additionalProps.put("timeoutMultiplier", "1.0");
         }
 
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.faulttolerance.4.0_fat_tck", this.getClass() + ":launchFaultToleranceTCK", suiteFileName,
-                              additionalProps, Collections.emptySet());
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "Fault Tolerance");
-        resultInfo.put("feature_version", "4.0");
-        MvnUtils.preparePublicationFile(resultInfo);
+        String bucketName = "io.openliberty.microprofile.faulttolerance.4.0.internal_fat_tck";
+        String testName = this.getClass() + ":launchFaultTolerance40TCK";
+        Type type = Type.MICROPROFILE;
+        String specName = "Fault Tolerance";
+        String specVersion = "4.0";
+        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion, suiteFileName, additionalProps);
     }
 
 }

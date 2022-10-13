@@ -12,9 +12,6 @@ package io.openliberty.microprofile.health31.tck;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -27,8 +24,8 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.JavaInfo;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKUtils;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -60,12 +57,12 @@ public class Health31TCKLauncher {
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("test.url", protocol + "://" + host + ":" + port);
 
-        MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.health.3.1.internal_fat_tck", this.getClass() + ":launchHealth31Tck", additionalProps);
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "Health");
-        resultInfo.put("feature_version", "3.1");
-        MvnUtils.preparePublicationFile(resultInfo);
+        String bucketName = "io.openliberty.microprofile.health.3.1.internal_fat_tck";
+        String testName = this.getClass() + ":launchHealth31Tck";
+        Type type = Type.MICROPROFILE;
+        String specName = "Health";
+        String specVersion = "3.1";
+        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion, additionalProps);
     }
 
 }
