@@ -15,7 +15,7 @@
         <repository>
             <id>ibmdhe</id>
             <name>IBM_DHE File Server</name>
-            <url>http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/</url>
+            <url>https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/</url>
             <releases>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
