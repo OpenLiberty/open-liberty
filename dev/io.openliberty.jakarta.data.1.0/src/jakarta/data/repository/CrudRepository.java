@@ -11,25 +11,33 @@
 package jakarta.data.repository;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
- * Interface copied from Jakarta Data.
- * Methods copied from Jakarta NoSQL Repository.
+ * Interface methods copied from Jakarta Data.
  */
 public interface CrudRepository<T, K> extends DataRepository<T, K> {
     long count();
 
-    void deleteById(Iterable<K> ids);
+    void delete(T entity);
+
+    void deleteAll();
+
+    void deleteAll(Iterable<? extends T> entities);
+
+    void deleteAllById(Iterable<K> ids);
 
     void deleteById(K id);
 
     boolean existsById(K id);
 
-    Iterable<T> findById(Iterable<K> ids);
+    Stream<T> findAll();
+
+    Stream<T> findAllById(Iterable<K> ids);
 
     Optional<T> findById(K id);
 
-    <S extends T> Iterable<S> save(Iterable<S> entities);
-
     <S extends T> S save(S entity);
+
+    <S extends T> Iterable<S> saveAll(Iterable<S> entities);
 }
