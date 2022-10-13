@@ -111,7 +111,7 @@ Private-Package: com.ibm.ws.eclipselink.osgi
 
 Include-Resource: \
   @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.antlr;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.asm;${asmFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.asm;${asmFullVersion};EXACT}!/!(META-INF/maven/*|module-info.class),\
   @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.core;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen;${eclFullVersion};EXACT}!/!META-INF/maven/*,\

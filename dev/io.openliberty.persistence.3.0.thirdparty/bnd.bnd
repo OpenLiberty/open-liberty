@@ -109,7 +109,7 @@ DynamicImport-Package: \
 Private-Package: io.openliberty.persistence.internal.helper
 
 Include-Resource: \
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.asm;${asmFullVersion};EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.asm;${asmFullVersion};EXACT}!/!(META-INF/maven/*|module-info.class),\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.core;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
