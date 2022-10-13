@@ -62,7 +62,7 @@ Import-Package: \
 Export-Package: \
   com.ibm.ws.jsf.cdi, \
   com.ibm.ws.jsf.config.*;thread-context=true, \
-  com.ibm.ws.jsf.ee;version=1.0.44, \
+  com.ibm.ws.jsf.ee, \
   com.ibm.ws.jsf.spi.impl, \
   com.ibm.ws.jsf.extprocessor
 
