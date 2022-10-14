@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.ws.cdi.impl.managedobject;
 
 import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionTarget;
 
 import org.jboss.weld.construction.api.WeldCreationalContext;
@@ -42,7 +43,8 @@ public class CDIInterceptorManagedObjectFactoryImpl<T> extends AbstractManagedOb
 
         @SuppressWarnings("unchecked")
         WeldCreationalContext<T> creationalContext = managedObjectContext.getContextData(WeldCreationalContext.class);
-        creationalContext = CreationalContextResolver.resolve(creationalContext, getBean());
+        Bean<T> bean = getBean();
+        creationalContext = CreationalContextResolver.resolve(creationalContext, bean);
 
         return creationalContext;
     }
@@ -73,6 +75,13 @@ public class CDIInterceptorManagedObjectFactoryImpl<T> extends AbstractManagedOb
         }
 
         return injectionTarget;
+    }
+
+    @Override
+    protected synchronized Bean<T> getBean() throws ManagedObjectException {
+        //in theory this MOF is only used with the @Interceptors annotation
+        //such interceptors are never CDI beans
+        return null;
     }
 
     @Override
