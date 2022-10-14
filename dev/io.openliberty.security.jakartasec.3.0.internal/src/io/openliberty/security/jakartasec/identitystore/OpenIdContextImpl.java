@@ -55,6 +55,10 @@ public class OpenIdContextImpl implements OpenIdContext {
     private RefreshToken refreshToken;
     private Long expiresIn;
 
+    public OpenIdContextImpl() {
+        this(null, null, null, null, null, null, null, false, null);
+    }
+
     public OpenIdContextImpl(String subjectIdentifier, String tokenType, AccessToken accessToken, IdentityToken identityToken, OpenIdClaims userinfoClaims,
                              JsonObject providerMetadata, String state, boolean useSession, String clientId) {
         this.subjectIdentifier = subjectIdentifier;
