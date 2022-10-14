@@ -60,6 +60,7 @@ public class SimplestAnnotatedTest extends CommonAnnotatedSecurityTests {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.with(new SecurityTestRepeatAction(Constants.JWT_TOKEN_FORMAT)).andWith(new SecurityTestRepeatAction(Constants.OPAQUE_TOKEN_FORMAT));
+//    public static RepeatTests r = RepeatTests.with(new SecurityTestRepeatAction(Constants.JWT_TOKEN_FORMAT));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -67,8 +68,6 @@ public class SimplestAnnotatedTest extends CommonAnnotatedSecurityTests {
 
         // write property that is used to configure the OP to generate JWT or Opaque tokens
         rpServer = setTokenTypeInBootstrap(opServer, rpJwtServer, rpOpaqueServer);
-
-        transformAppsInDefaultDirs(opServer, "dropins");
 
         // Add servers to server trackers that will be used to clean servers up and prevent servers
         // from being restored at the end of each test (so far, the tests are not reconfiguring the servers)
@@ -79,8 +78,6 @@ public class SimplestAnnotatedTest extends CommonAnnotatedSecurityTests {
         SecurityFatHttpUtils.saveServerPorts(opServer, Constants.BVT_SERVER_1_PORT_NAME_ROOT);
         opHttpBase = "https://localhost:" + opServer.getBvtPort();
         opHttpsBase = "https://localhost:" + opServer.getBvtSecurePort();
-
-        transformAppsInDefaultDirs(rpServer, "dropins");
 
         rpServer.startServerUsingExpandedConfiguration("server_orig.xml", waitForMsgs);
         SecurityFatHttpUtils.saveServerPorts(rpServer, Constants.BVT_SERVER_2_PORT_NAME_ROOT);
@@ -170,33 +167,9 @@ public class SimplestAnnotatedTest extends CommonAnnotatedSecurityTests {
         // invoke the app again with the same context
         Page response2 = actions.invokeUrl(_testName, webClient, url);
 
-        //        Expectations firstExpectations = CommonExpectations.successfullyReachedOidcLoginPage();
-        //
-        //        validationUtils.validateResult(response, firstExpectations);
-        //
-        //
-        //        runGoodEndToEndTest(webClient, "SimplestAnnotatedWithEL", "OidcAnnotatedServletWithEL", Constants.TESTUSER, Constants.TESTUSERPWD);
-        //
-        //        Page response = actions.invokeUrl(_testName, webClient, url);
-        //
-        //        runGoodEndToEndTest(webClient, "SimplestAnnotatedWithEL", "OidcAnnotatedServletWithEL", Constants.TESTUSER, Constants.TESTUSERPWD);
+        Expectations secondLoginExpectations = getProcessLoginExpectations("OidcAnnotatedServletWithEL");
 
-        //        runGoodEndToEndTest(webClient, "SimplestAnnotatedWithEL", "OidcAnnotatedServletWithEL", Constants.TESTUSER, Constants.TESTUSERPWD);
-    }
-
-    /**
-     * Test deplying an app that has multiple annotations embedded - we should see a failure trying to deploy it.
-     *
-     * @throws Exception
-     */
-    //@Test
-    public void testSimplestAnnotatedServlet_multiple_OpenIdAuthenticationMechanismDefinition_annotations_inTheSameWar() throws Exception {
-
-        swh.defaultDropinApp(rpServer, "SimplestAnnotatedWithAndWithoutEL" + ".war", "oidc.simple.client.withAndWithoutEL.servlets", "oidc.client.base.*");
-
-        Expectations deployExpectations = new Expectations();
-        deployExpectations.addExpectation(new ServerMessageExpectation(rpServer, "someMessage", "Message log did not contain an error indicating that the War contained multiple \"@OpenIdAuthenticationMechanismDefinition\" annotations."));
-        validationUtils.validateResult(deployExpectations);
+        validationUtils.validateResult(response2, secondLoginExpectations);
 
     }
 
@@ -261,6 +234,44 @@ public class SimplestAnnotatedTest extends CommonAnnotatedSecurityTests {
         List<NameValuePair> parms = new ArrayList<NameValuePair>();
         parms.add(new NameValuePair("parmName", "parmValue"));
         runGoodEndToEndTest(webClient, "SimplestAnnotatedWithEL", "OidcAnnotatedServletWithEL", Constants.TESTUSER, Constants.TESTUSERPWD, headers, parms);
+
+    }
+
+    /**
+     * Test deploying an app that has multiple annotations embedded - we should see a failure trying to deploy it.
+     *
+     * @throws Exception
+     */
+    // TODO - enable once the runtime issues message CWWKS1925E @Test
+    public void testSimplestAnnotatedServlet_multiple_OpenIdAuthenticationMechanismDefinition_annotations_inTheSameWar_similar() throws Exception {
+
+        swh.defaultDropinApp(rpServer, "MultipleServletsSimilarAnnotations" + ".war", "oidc.client.similarAnnotations.servlets", "oidc.client.base.*");
+
+        Expectations deployExpectations = new Expectations();
+        deployExpectations.addExpectation(new ServerMessageExpectation(rpServer, "someMessage", "Message log did not contain an error indicating that the War contained multiple \"@OpenIdAuthenticationMechanismDefinition\" annotations."));
+        validationUtils.validateResult(deployExpectations);
+
+    }
+
+    // TODO - enable once the runtime issues message CWWKS1925E @Test
+    public void testSimplestAnnotatedServlet_multiple_OpenIdAuthenticationMechanismDefinition_annotations_inTheSameWar_diffProvider() throws Exception {
+
+        swh.defaultDropinApp(rpServer, "MultipleServletsDifferentProviders" + ".war", "oidc.client.differentProviders.servlets", "oidc.client.base.*");
+
+        Expectations deployExpectations = new Expectations();
+        deployExpectations.addExpectation(new ServerMessageExpectation(rpServer, "someMessage", "Message log did not contain an error indicating that the War contained multiple \"@OpenIdAuthenticationMechanismDefinition\" annotations."));
+        validationUtils.validateResult(deployExpectations);
+
+    }
+
+    // TODO - enable once the runtime issues message CWWKS1925E @Test
+    public void testSimplestAnnotatedServlet_multiple_OpenIdAuthenticationMechanismDefinition_annotations_inTheSameWar_diffRoke() throws Exception {
+
+        swh.defaultDropinApp(rpServer, "MultipleServletsDifferentRoles" + ".war", "oidc.client.differentRoles.servlets", "oidc.client.base.*");
+
+        Expectations deployExpectations = new Expectations();
+        deployExpectations.addExpectation(new ServerMessageExpectation(rpServer, "someMessage", "Message log did not contain an error indicating that the War contained multiple \"@OpenIdAuthenticationMechanismDefinition\" annotations."));
+        validationUtils.validateResult(deployExpectations);
 
     }
 

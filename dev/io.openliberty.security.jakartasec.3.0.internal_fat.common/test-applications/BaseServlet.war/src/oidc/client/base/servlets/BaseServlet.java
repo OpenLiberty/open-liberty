@@ -42,8 +42,7 @@ public class BaseServlet extends HttpServlet {
 
         ServletOutputStream outputStream = response.getOutputStream();
 
-        ServletLogger.printLine(outputStream, "Class: " + this.getClass().getName());
-        ServletLogger.printLine(outputStream, "got here");
+        recordHelloWorld(outputStream);
 
         RequestLogger requestLogger = new RequestLogger(request, ServletMessageConstants.SERVLET + ServletMessageConstants.REQUEST);
         requestLogger.printRequest(outputStream);
@@ -54,15 +53,24 @@ public class BaseServlet extends HttpServlet {
         WSSubjectLogger subjectLogger = new WSSubjectLogger(request, ServletMessageConstants.SERVLET + ServletMessageConstants.WSSUBJECT);
         subjectLogger.printProgrammaticApiValues(outputStream);
 
-        recordHelloWorld(outputStream);
-
     }
 
     protected void recordHelloWorld(ServletOutputStream outputStream) throws IOException {
 
-        ServletLogger.printLine(outputStream, "Hello world from BaseServlet");
-        ServletLogger.printLine(outputStream, this.getClass().getSuperclass().getName());
-        ServletLogger.printLine(outputStream, this.getClass().getName());
+        ServletLogger.printLine(outputStream, "got here servlet");
+        String prefix = "Hello world from ";
+        ServletLogger.printLine(outputStream, prefix + getShortName(this.getClass().getSuperclass().getName()));
+        ServletLogger.printLine(outputStream, prefix + getShortName(this.getClass().getName()));
+
+    }
+
+    protected String getShortName(String longClassName) throws IOException {
+
+        if (longClassName != null) {
+            String[] splitClassName = longClassName.split("\\.");
+            return splitClassName[splitClassName.length - 1];
+        }
+        return null;
 
     }
 }

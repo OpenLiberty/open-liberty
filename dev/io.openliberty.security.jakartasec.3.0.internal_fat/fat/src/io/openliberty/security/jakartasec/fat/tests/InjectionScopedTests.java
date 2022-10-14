@@ -56,8 +56,6 @@ public class InjectionScopedTests extends CommonAnnotatedSecurityTests {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        transformAppsInDefaultDirs(opServer, "dropins");
-
         // write property that is used to configure the OP to generate JWT or Opaque tokens
         rpServer = setTokenTypeInBootstrap(opServer, rpJwtServer, rpOpaqueServer);
 
@@ -70,8 +68,6 @@ public class InjectionScopedTests extends CommonAnnotatedSecurityTests {
         SecurityFatHttpUtils.saveServerPorts(opServer, Constants.BVT_SERVER_1_PORT_NAME_ROOT);
         opHttpBase = "https://localhost:" + opServer.getBvtPort();
         opHttpsBase = "https://localhost:" + opServer.getBvtSecurePort();
-
-        transformAppsInDefaultDirs(rpServer, "dropins");
 
         rpServer.startServerUsingExpandedConfiguration("server_orig.xml", waitForMsgs);
         SecurityFatHttpUtils.saveServerPorts(rpServer, Constants.BVT_SERVER_2_PORT_NAME_ROOT);
@@ -110,7 +106,7 @@ public class InjectionScopedTests extends CommonAnnotatedSecurityTests {
      * @throws Exception
      */
     @Test
-    public void testSimplestAnnotatedServlet_multipleDifferentUsers_ApplicationScoped() throws Exception {
+    public void InjectionScopedTests_multipleDifferentUsers_ApplicationScoped() throws Exception {
 
         // the test app has the OP secure port hard coded (since it doesn't use expression language vars
         // if we end up using a different port, we'll need to skip this test
@@ -133,7 +129,7 @@ public class InjectionScopedTests extends CommonAnnotatedSecurityTests {
      * @throws Exception
      */
     @Test
-    public void testSimplestAnnotatedServlet_multipleSameUsers_ApplicationScoped() throws Exception {
+    public void InjectionScopedTests_multipleSameUsers_ApplicationScoped() throws Exception {
 
         // the test app has the OP secure port hard coded (since it doesn't use expression language vars
         // if we end up using a different port, we'll need to skip this test
@@ -155,7 +151,7 @@ public class InjectionScopedTests extends CommonAnnotatedSecurityTests {
      * @throws Exception
      */
     @Test
-    public void testSimplestAnnotatedServlet_multipleDifferentUsers_RequestScoped() throws Exception {
+    public void InjectionScopedTests_multipleDifferentUsers_RequestScoped() throws Exception {
 
         // the test app has the OP secure port hard coded (since it doesn't use expression language vars
         // if we end up using a different port, we'll need to skip this test
@@ -178,7 +174,7 @@ public class InjectionScopedTests extends CommonAnnotatedSecurityTests {
      * @throws Exception
      */
     @Test
-    public void testSimplestAnnotatedServlet_multipleSameUsers_RequestScoped() throws Exception {
+    public void InjectionScopedTests_multipleSameUsers_RequestScoped() throws Exception {
 
         // the test app has the OP secure port hard coded (since it doesn't use expression language vars
         // if we end up using a different port, we'll need to skip this test
@@ -200,7 +196,7 @@ public class InjectionScopedTests extends CommonAnnotatedSecurityTests {
      * @throws Exception
      */
     @Test
-    public void testSimplestAnnotatedServlet_multipleDifferentUsers_SessionScoped() throws Exception {
+    public void InjectionScopedTests_multipleDifferentUsers_SessionScoped() throws Exception {
 
         // the test app has the OP secure port hard coded (since it doesn't use expression language vars
         // if we end up using a different port, we'll need to skip this test
@@ -223,7 +219,7 @@ public class InjectionScopedTests extends CommonAnnotatedSecurityTests {
      * @throws Exception
      */
     @Test
-    public void testSimplestAnnotatedServlet_multipleSameUsers_SessionScoped() throws Exception {
+    public void InjectionScopedTests_multipleSameUsers_SessionScoped() throws Exception {
 
         // the test app has the OP secure port hard coded (since it doesn't use expression language vars
         // if we end up using a different port, we'll need to skip this test

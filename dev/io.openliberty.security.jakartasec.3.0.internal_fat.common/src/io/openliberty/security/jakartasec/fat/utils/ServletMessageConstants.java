@@ -53,6 +53,7 @@ public class ServletMessageConstants {
     public static final String RUNAS_SUBJECT = "RunAs subject: ";
     public static final String JAKARTA_OIDC = "JAKARTA_OIDC";
     public static final String BASIC = "BASIC";
+    public static final String BASE_SERVLET = "BaseServlet";
 
     /** messages **/
     public static final String SUBS_MISMATCH_NULL = "OpenIdContext subjects do NOT match since there are no claims";
@@ -62,5 +63,6 @@ public class ServletMessageConstants {
     public static final String SUBS_MISMATCH_PART1 = "OpenIdContext subjects do NOT match: claimsSub: ";
     public static final String SUBS_MISMATCH_PART2 = " does not match contextSub: ";
     public static final String GETTING_COOKIES = "Getting cookies";
+    public static final String HELLO_MSG = "Hello world from ";
 
 }

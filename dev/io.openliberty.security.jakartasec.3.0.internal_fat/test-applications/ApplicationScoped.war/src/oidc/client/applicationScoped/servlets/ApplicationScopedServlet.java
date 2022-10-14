@@ -10,41 +10,28 @@
  *******************************************************************************/
 package oidc.client.applicationScoped.servlets;
 
-import java.io.IOException;
-
 import jakarta.annotation.security.DeclareRoles;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.security.enterprise.authentication.mechanism.http.OpenIdAuthenticationMechanismDefinition;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.ClaimsDefinition;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdProviderMetadata;
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebServlet;
 import oidc.client.base.servlets.BaseServlet;
-import oidc.client.base.utils.ServletLogger;
 
 @WebServlet("/ApplicationScopedServlet")
 @ApplicationScoped
 @OpenIdAuthenticationMechanismDefinition(providerURI = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1", clientId = "${openIdConfig.clientId}",
                                          clientSecret = "${openIdConfig.clientSecret}",
-                                         //                                         redirectURI = "${openIdConfig.redirectURI}",
                                          redirectURI = "${baseURL}/Callback",
                                          claimsDefinition = @ClaimsDefinition(callerNameClaim = "${openIdConfig.callerNameClaim}",
                                                                               callerGroupsClaim = "${openIdConfig.callerGroupsClaim}"),
-                                         providerMetadata = @OpenIdProviderMetadata(authorizationEndpoint = "https://localhost:8920/oidc/endpoint/OP1/authorize",
-                                                                                    tokenEndpoint = "https://localhost:8920/oidc/endpoint/OP1/token"))
+                                         providerMetadata = @OpenIdProviderMetadata(authorizationEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/authorize",
+                                                                                    tokenEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/token"))
 @DeclareRoles("all")
 @ServletSecurity(@HttpConstraint(rolesAllowed = "all"))
 public class ApplicationScopedServlet extends BaseServlet {
     private static final long serialVersionUID = 1L;
-
-    @Override
-    protected void recordHelloWorld(ServletOutputStream outputStream) throws IOException {
-
-        super.recordHelloWorld(outputStream);
-        ServletLogger.printLine(outputStream, "Hello world from ApplicationScopedServlet");
-
-    }
 
 }

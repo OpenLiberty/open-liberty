@@ -36,8 +36,9 @@ public class SimpleServlet extends HttpServlet {
 
         ServletOutputStream outputStream = response.getOutputStream();
 
-        ServletLogger.printLine(outputStream, "Class: " + this.getClass().getName());
-        ServletLogger.printLine(outputStream, "got here");
+        ServletLogger.printLine(outputStream, "Hello world from SimpleServlet");
+
+        ServletLogger.printLine(outputStream, "got here servlet");
 
         RequestLogger requestLogger = new RequestLogger(request, ServletMessageConstants.SERVLET + ServletMessageConstants.REQUEST);
         requestLogger.printRequest(outputStream);
@@ -45,15 +46,6 @@ public class SimpleServlet extends HttpServlet {
         WSSubjectLogger subjectLogger = new WSSubjectLogger(request, ServletMessageConstants.SERVLET + ServletMessageConstants.WSSUBJECT);
         subjectLogger.printProgrammaticApiValues(outputStream);
 
-        recordHelloWorld(outputStream);
-
     }
 
-    protected void recordHelloWorld(ServletOutputStream outputStream) throws IOException {
-
-        ServletLogger.printLine(outputStream, "Hello world from SimpleServlet");
-        ServletLogger.printLine(outputStream, this.getClass().getSuperclass().getName());
-        ServletLogger.printLine(outputStream, this.getClass().getName());
-
-    }
 }

@@ -38,8 +38,6 @@ dependencies {
 
 }
 
-addRequiredLibraries.dependsOn addJakartaTransformer
-
 autoFVT.doLast {
   
    copy {
@@ -63,7 +61,7 @@ autoFVT.doLast {
   servers.each { server ->
 
     copy { 
-      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      from new File(project(':io.openliberty.security.jakartasec.3.0.internal_fat.common').buildDir, 'test-application/testmarker.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
    }
       

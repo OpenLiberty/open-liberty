@@ -19,7 +19,9 @@ src: \
     test-applications/SimpleUnprotected.war/src,\
     test-applications/SimplestAnnotated.war/src,\
     test-applications/SimplestAnnotatedWithEL.war/src,\
-    test-applications/SimplestAnnotatedWithAndWithoutEL.war/src
+    test-applications/MultipleServletsDifferentProviders.war/src,\
+    test-applications/MultipleServletsDifferentRoles.war/src,\
+    test-applications/MultipleServletsSimilarAnnotations.war/src
     
 -dependson: \
     build.changeDetector,\

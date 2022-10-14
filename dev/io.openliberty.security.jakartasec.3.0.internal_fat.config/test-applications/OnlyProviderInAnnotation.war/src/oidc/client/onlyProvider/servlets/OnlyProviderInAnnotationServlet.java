@@ -10,16 +10,12 @@
  *******************************************************************************/
 package oidc.client.onlyProvider.servlets;
 
-import java.io.IOException;
-
 import jakarta.annotation.security.DeclareRoles;
 import jakarta.security.enterprise.authentication.mechanism.http.OpenIdAuthenticationMechanismDefinition;
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebServlet;
 import oidc.client.base.servlets.BaseServlet;
-import oidc.client.base.utils.ServletLogger;
 
 @WebServlet("/OnlyProviderInAnnotationServlet")
 @OpenIdAuthenticationMechanismDefinition(
@@ -29,11 +25,4 @@ import oidc.client.base.utils.ServletLogger;
 public class OnlyProviderInAnnotationServlet extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
-    @Override
-    protected void recordHelloWorld(ServletOutputStream outputStream) throws IOException {
-
-        super.recordHelloWorld(outputStream);
-        ServletLogger.printLine(outputStream, "Hello world from OnlyProviderInAnnotationServlet");
-
-    }
 }

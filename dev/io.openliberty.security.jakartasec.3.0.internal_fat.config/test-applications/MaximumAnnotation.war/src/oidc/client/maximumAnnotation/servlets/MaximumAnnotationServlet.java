@@ -10,8 +10,6 @@
  *******************************************************************************/
 package oidc.client.maximumAnnotation.servlets;
 
-import java.io.IOException;
-
 import io.openliberty.security.jakartasec.fat.utils.Constants;
 import jakarta.annotation.security.DeclareRoles;
 import jakarta.security.enterprise.authentication.mechanism.http.OpenIdAuthenticationMechanismDefinition;
@@ -19,12 +17,10 @@ import jakarta.security.enterprise.authentication.mechanism.http.openid.ClaimsDe
 import jakarta.security.enterprise.authentication.mechanism.http.openid.DisplayType;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.LogoutDefinition;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdProviderMetadata;
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebServlet;
 import oidc.client.base.servlets.BaseServlet;
-import oidc.client.base.utils.ServletLogger;
 
 // TODO - Make sure all possible attrs using EL values
 @WebServlet("/MaximumAnnotationServlet")
@@ -55,18 +51,11 @@ import oidc.client.base.utils.ServletLogger;
                                          tokenAutoRefreshExpression = "",
                                          tokenMinValidity = Constants.TOKEN_MIN_VALIDITY,
                                          tokenMinValidityExpression = "",
-                                         providerMetadata = @OpenIdProviderMetadata(authorizationEndpoint = "https://localhost:8920/oidc/endpoint/OP1/authorize",
-                                                                                    tokenEndpoint = "https://localhost:8920/oidc/endpoint/OP1/token"))
+                                         providerMetadata = @OpenIdProviderMetadata(authorizationEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/authorize",
+                                                                                    tokenEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/token"))
 @DeclareRoles("all")
 @ServletSecurity(@HttpConstraint(rolesAllowed = "all"))
 public class MaximumAnnotationServlet extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
-    @Override
-    protected void recordHelloWorld(ServletOutputStream outputStream) throws IOException {
-
-        super.recordHelloWorld(outputStream);
-        ServletLogger.printLine(outputStream, "Hello world from MaximumAnnotationServlet");
-
-    }
 }

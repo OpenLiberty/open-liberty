@@ -42,7 +42,7 @@ public class BaseCallbackServlet extends HttpServlet {
         ServletLogger.printLine(ps, "Class: " + this.getClass().getName());
         ServletLogger.printLine(ps, "Super Class: " + this.getClass().getSuperclass().getName());
 
-        ServletLogger.printLine(ps, "got here");
+        ServletLogger.printLine(ps, "got here callback");
 
         RequestLogger requestLogger = new RequestLogger(request, ServletMessageConstants.CALLBACK + ServletMessageConstants.REQUEST);
         requestLogger.printRequest(ps);

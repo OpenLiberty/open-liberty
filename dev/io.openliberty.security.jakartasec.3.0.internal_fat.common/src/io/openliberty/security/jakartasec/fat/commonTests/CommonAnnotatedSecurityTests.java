@@ -194,29 +194,37 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
 
     public Page processLogin(Page response, String user, String pw, String app) throws Exception {
 
-        Expectations currentExpectations = new Expectations();
-        currentExpectations.addSuccessCodeForCurrentAction();
-        currentExpectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, "got here", "Did not land on the callback."));
-        currentExpectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_DOES_NOT_CONTAIN, "Callback: OpenIdContext: null", "The context was null and should not have been"));
-        Log.info(thisClass, _testName, "TODO Need to add a check for the app: " + app);
-        // TODO - update to look for the actual app instead of landing on the callback
-        // Maybe call a method to compare values from the OpenIdContext Logger when it is called from the callback and when it is called from the test servlet
-        //        currentExpectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, app, "Did not land on the test app."));
+        Expectations currentExpectations = getProcessLoginExpectations(app);
 
-//        // check for the correct values from the callback in the server log
-//        OpenIdContextExpectationHelpers.getOpenIdContextExpectations(null, currentExpectations, ServletMessageConstants.CALLBACK, rspValues);
-//        WsSubjectExpectationHelpers.getWsSubjectExpectations(null, currentExpectations, ServletMessageConstants.CALLBACK, rspValues);
-        // check for the correct values from the servlet in the response
-        OpenIdContextExpectationHelpers.getOpenIdContextExpectations(null, currentExpectations, ServletMessageConstants.SERVLET, rspValues);
-        WsSubjectExpectationHelpers.getWsSubjectExpectations(null, currentExpectations, ServletMessageConstants.SERVLET, rspValues);
         response = actions.doFormLogin(response, user, pw);
         // confirm protected resource was accessed
         validationUtils.validateResult(response, currentExpectations);
 //        validateTheSameContext(ServletMessageConstants.CALLBACK, response);
         validateTheSameContext(ServletMessageConstants.SERVLET, response);
-        // TODO - can't get to the servlet yet validateTheSameContext(ServletMessageConstants.SERVLET, response);
 
         return response;
+    }
+
+    public Expectations getProcessLoginExpectations(String app) throws Exception {
+
+        Expectations processLoginexpectations = new Expectations();
+        processLoginexpectations.addSuccessCodeForCurrentAction();
+        processLoginexpectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, "got here servlet", "Did not land on the servlet."));
+        processLoginexpectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_DOES_NOT_CONTAIN, "Callback: OpenIdContext: null", "The context was null and should not have been"));
+
+        processLoginexpectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, ServletMessageConstants.HELLO_MSG
+                                                                                                             + ServletMessageConstants.BASE_SERVLET, "Did not land on the test app."));
+        processLoginexpectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, ServletMessageConstants.HELLO_MSG
+                                                                                                             + app, "Did not land on the test app."));
+
+//            // check for the correct values from the callback in the server log
+//            OpenIdContextExpectationHelpers.getOpenIdContextExpectations(null, processLoginexpectations, ServletMessageConstants.CALLBACK, rspValues);
+//            WsSubjectExpectationHelpers.getWsSubjectExpectations(null, processLoginexpectations, ServletMessageConstants.CALLBACK, rspValues);
+        // check for the correct values from the servlet in the response
+        OpenIdContextExpectationHelpers.getOpenIdContextExpectations(null, processLoginexpectations, ServletMessageConstants.SERVLET, rspValues);
+        WsSubjectExpectationHelpers.getWsSubjectExpectations(null, processLoginexpectations, ServletMessageConstants.SERVLET, rspValues);
+
+        return processLoginexpectations;
     }
 
     /**
@@ -278,14 +286,6 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
 
         return runGoodEndToEndTest(webClient, appRoot, app, user, pw, null, null);
 
-        //        String url = rpHttpsBase + "/" + appRoot + "/" + app;
-        //
-        //        Page response = invokeAppReturnLoginPage(webClient, url);
-        //
-        //        response = processLogin(response, user, pw, app);
-        //
-        //        // TODO - will we need to perform any other step?
-        //        return response;
     }
 
     public Page runGoodEndToEndTest(WebClient webClient, String appRoot, String app, String user, String pw, Map<String, String> headers,
