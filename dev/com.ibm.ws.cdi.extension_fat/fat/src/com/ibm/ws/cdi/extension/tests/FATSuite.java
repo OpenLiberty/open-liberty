@@ -27,7 +27,8 @@ import com.ibm.ws.fat.util.FatLogHandler;
                 CDI12ExtensionSPIConstructorExceptionTest.class,
                 CDI12ExtensionSPITest.class,
                 DynamicBeanExtensionTest.class,
-                ObserverTest.class
+                ObserverTest.class,
+                WeldDevModeTest.class
 })
 
 public class FATSuite {

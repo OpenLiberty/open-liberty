@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.web.impl;
+package com.ibm.ws.cdi.impl;
 
 import javax.servlet.http.HttpServlet;
 

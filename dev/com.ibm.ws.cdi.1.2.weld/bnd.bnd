@@ -18,7 +18,8 @@ Bundle-Description:CDI 1.2 Weld Integration, version ${bVersion}
 
 -dsannotations: com.ibm.ws.cdi.impl.DefaultSecurityService,\
                 com.ibm.ws.cdi.impl.CDI12BeansXmlParserImpl,\
-                com.ibm.ws.cdi.impl.CDI12AggregatedConfigurationImpl
+                com.ibm.ws.cdi.impl.CDI12AggregatedConfigurationImpl,\
+                com.ibm.ws.cdi.impl.CDI12WeldDevelopmentModeImpl
 
 Export-Package: com.ibm.ws.cdi.executor, \
                 com.ibm.ws.cdi.utils, \
@@ -34,12 +35,14 @@ WS-TraceGroup: JCDI
 
 -buildpath: \
         com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+        com.ibm.websphere.javaee.servlet.3.1;version=latest,\
         com.ibm.ws.org.jboss.weld.2.4.8;version=latest,\
         com.ibm.websphere.appserver.spi.kernel.service,\
         com.ibm.websphere.org.osgi.core,\
         com.ibm.websphere.org.osgi.service.component,\
         com.ibm.wsspi.org.osgi.service.component.annotations,\
         com.ibm.ws.logging.core,\
+        com.ibm.ws.injection,\
         com.ibm.ws.cdi.internal;version=latest,\
         com.ibm.ws.cdi.interfaces;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
