@@ -42,4 +42,6 @@ public class JakartaSec30Constants extends JavaEESecConstants {
 
     public static final String JWT_ID_IDENTIFIER = "jti";
 
+    public static final String DELIMITER = ".";
+
 }

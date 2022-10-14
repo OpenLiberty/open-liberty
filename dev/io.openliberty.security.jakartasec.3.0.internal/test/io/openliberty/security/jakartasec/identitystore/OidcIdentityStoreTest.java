@@ -12,6 +12,7 @@ package io.openliberty.security.jakartasec.identitystore;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -38,6 +39,7 @@ import com.ibm.ws.security.test.common.CommonTestClass;
 import io.openliberty.security.jakartasec.tokens.OpenIdClaimsImpl;
 import io.openliberty.security.oidcclientcore.client.ClaimsMappingConfig;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
+import io.openliberty.security.oidcclientcore.token.TokenResponse;
 import jakarta.security.enterprise.identitystore.openid.AccessToken;
 import jakarta.security.enterprise.identitystore.openid.OpenIdClaims;
 import test.common.SharedOutputManager;
@@ -457,6 +459,52 @@ public class OidcIdentityStoreTest extends CommonTestClass {
         Long claim = 0L;
         // Anything other than String and Set will just return true
         assertTrue(identityStore.valueExistsAndIsNotEmpty(claim, Long.class));
+    }
+
+    /**
+     * Test with an existing AccessTokenString that we parse it, create a claims map and mark it as JWT.
+     */
+    @Test
+    public void test_createAccessTokenFromTokenResponse_jwt() {
+        String JWT_ACCESS_TOKEN_STRING = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKYWNrc29uIiwiYXRfaGFzaCI6ImJrR0NWcy1EcndMMGMycEtoN0ZVNGciLCJyZWFsbU5hbWUiOiJCYXNpY1JlZ2lzdHJ5IiwidW5pcXVlU2VjdXJpdHlOYW1lIjoiSmFja3NvbiIsInNpZCI6InFTTzBXeWs0VVNjMWFCYlMyUVlmIiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6OTQ0My9vaWRjL2VuZHBvaW50L09QIiwiYXVkIjoib2lkY2NsaWVudCIsImV4cCI6MTY2MTIwNzIwOCwiaWF0IjoxNjYxMjAwMDA4fQ.a4PRKYeG18vsmBOukcjmNve10KnVSBGVgwh2RqXkNbY";
+        TokenResponse tokenResponse = new TokenResponse(null, "", JWT_ACCESS_TOKEN_STRING, "");
+        // should contain uniqueSecurityName=Jackson when parsed.
+
+        AccessToken result = identityStore.createAccessTokenFromTokenResponse(10000, tokenResponse);
+        assertNotNull("Should have been able to parse claimsMap", result.getJwtClaims());
+        assertNotNull("Should have been able to parse claimsMap", result.getClaims());
+        assertEquals("Should contain uniqueSecurityName=Jackson in claimsMap", "Jackson", result.getClaim("uniqueSecurityName"));
+        assertFalse("Claims map should be populated", result.getClaims().isEmpty());
+        assertTrue("Should be marked as JWT token", result.isJWT());
+
+    }
+
+    /**
+     * Test with a non jwt string, make sure we don't have any errors and mark it as non-jwt
+     */
+    @Test
+    public void test_createAccessTokenFromTokenResponse_notjwt() {
+        TokenResponse tokenResponse = new TokenResponse(null, "", "HxcmkeFrEXVkB4KxpudAW9GDEBDgNtcGjrBAIUkW", "");
+
+        AccessToken result = identityStore.createAccessTokenFromTokenResponse(10000, tokenResponse);
+        assertEquals("Should not have claimsMap", jakarta.security.enterprise.identitystore.openid.JwtClaims.NONE, result.getJwtClaims());
+        assertTrue("Claims map should be not populated", result.getClaims().isEmpty());
+        assertFalse("Should not be marked as JWT token", result.isJWT());
+    }
+
+    /**
+     * Test with a semi-jwt string where the second part, when parse, does not create a valid claims map.
+     */
+    @Test
+    public void test_createAccessTokenFromTokenResponse_badjwt() {
+        String BAD_JWT_ACCESS_TOKEN_STRING = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKYWNrc29uIiwiYXRfaGFzaCI6ImJdHJ5IiwidW5pcXVlU2VjdXJpdHlOYW1lIjoiSmFja3NvbiIsInNpZCI6InFTTzBXeWs0VVNjMWFCYlMyUVlmIiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6OTQ0My9vaWRjL2VuZHBvaW50L09QIiwiYXVkIjoib2lkY2NsaWVudCIsImV4cCI6MTY2MTIwNzIwOCwiaWF0IjoxNjYxMjAwMDA4fQ.a4PRKYeG18vsmBOukcjmNve10KnVSBGVgwh2RqXkNbY";
+
+        TokenResponse tokenResponse = new TokenResponse(null, "", BAD_JWT_ACCESS_TOKEN_STRING, "");
+
+        AccessToken result = identityStore.createAccessTokenFromTokenResponse(10000, tokenResponse);
+        assertEquals("Should not have claimsMap", jakarta.security.enterprise.identitystore.openid.JwtClaims.NONE, result.getJwtClaims());
+        assertTrue("Claims map should be not populated", result.getClaims().isEmpty());
+        assertTrue("Should be marked as JWT token", result.isJWT());
     }
 
 }

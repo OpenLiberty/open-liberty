@@ -48,8 +48,8 @@ public class AccessTokenImpl implements AccessToken, Serializable {
     public AccessTokenImpl(String tokenString, Map<String, Object> accessTokenClaimsMap, Instant responseGenerationTime, Long expirationTimeInSeconds,
                            Long tokenMinValidityInMillis) {
         this(tokenString, responseGenerationTime, expirationTimeInSeconds, tokenMinValidityInMillis);
-        this.accessTokenClaimsMap = accessTokenClaimsMap;
-        jwtClaims = new JwtClaimsImpl(accessTokenClaimsMap);
+        this.accessTokenClaimsMap = accessTokenClaimsMap == null ? Collections.emptyMap() : accessTokenClaimsMap;
+        jwtClaims = accessTokenClaimsMap == null ? JwtClaims.NONE : new JwtClaimsImpl(accessTokenClaimsMap);
         type = Type.BEARER;
     }
 
