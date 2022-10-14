@@ -11,12 +11,14 @@
 package com.ibm.ws.security.token.ltpa.internal;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
+import java.util.Enumeration;
 
 import org.junit.Test;
 
@@ -65,19 +67,47 @@ public class LTPAToken2SerializationTest {
 
     /**
      * Test to deserialize LTPAToken2_1.ser.
-     * Validate token bytes.
+     * Validate token bytes and attributes.
      */
     @Test
     public void deserializeLTPAToken2_1() throws Exception {
-        String filename = "test-resources/test data/ser-files/LTPAToken2_1.ser";
-        FileInputStream file = new FileInputStream(filename);
-        ObjectInputStream in = new ObjectInputStream(file);
+        final String filename = "test-resources/test data/ser-files/LTPAToken2_1.ser";
 
-        LTPAToken2 object = (LTPAToken2) in.readObject();
-        in.close();
+        /*
+         * Deserialize the token instance from the file.
+         */
+        LTPAToken2 object = null;
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))) {
+            object = (LTPAToken2) in.readObject();
+        }
+        assertNotNull("SAML token should not be null.", object);
 
-        //Check token
+        /*
+         * Check attribute names and values
+         */
+        assertEquals("The attribute names should be u|expire|", "u|expire|", getEnumerationString(object.getAttributeNames()));
+        assertEquals("The u attribute should be user:BasicRealm/user1", "user:BasicRealm/user1", object.getAttributes("u")[0]);
+        assertEquals("The expire attribute should be 1658180685586", "1658180685586", object.getAttributes("expire")[0]);
+
+        /*
+         * Check expiration
+         */
+        assertEquals("The expiration should be 1666025876388L", 1666025876388L, object.getExpiration());
+
+        /*
+         * Check version
+         */
+        assertEquals("The version should be 1", 1, object.getVersion());
+
+        /*
+         * Check token. The userData, privateKey, sharedKey, and cipher are used to return the byte array.
+         */
         assertEquals("The token byte string should be: " + getByteString(test), getByteString(test), getByteString(object.getBytes()));
+
+        /*
+         * Validate the token. Validation uses signature and publicKey.
+         */
+        assertEquals("The token should be valid.", true, object.isValid());
 
     }
 
@@ -94,6 +124,22 @@ public class LTPAToken2SerializationTest {
     }
 
     /**
+     * @param arr the byte array to convert
+     * @return A string representation of the byte array
+     */
+    private String getEnumerationString(Enumeration<String> e) {
+        if (e == null) {
+            return null;
+        }
+        String s = "";
+        while (e.hasMoreElements()) {
+            String param = e.nextElement();
+            s += param + "|";
+        }
+        return s;
+    }
+
+    /**
      * Method used to create and serialize the LTPAToken2 for testing.
      *
      * If LTPAToken2 changes, previously serialized versions of
@@ -104,6 +150,8 @@ public class LTPAToken2SerializationTest {
      * previous LTPAToken2_x.ser files.
      */
     public static void main(String[] args) throws Exception {
+        final String filename = "test-resources/test data/ser-files/LTPAToken2_x.ser";
+
         LTPAKeyInfoManager keyInfoManager = new LTPAKeyInfoManager();
         keyInfoManager.prepareLTPAKeyInfo(UTLocationHelper.getLocationManager(),
                                           KEYIMPORTFILE,
@@ -112,26 +160,30 @@ public class LTPAToken2SerializationTest {
         ltpaPublicKey = new LTPAPublicKey(keyInfoManager.getPublicKey(KEYIMPORTFILE));
         sharedKey = encodedSharedKey.getBytes();
 
-        //Create LTPAToken2
+        /*
+         * Create LTPAToken2
+         */
         LTPAToken2 object = null;
-        try {
-            object = new LTPAToken2(test, sharedKey, ltpaPrivateKey, ltpaPublicKey, 1L);
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail();
+        object = new LTPAToken2(test, sharedKey, ltpaPrivateKey, ltpaPublicKey, 1L);
+
+        /*
+         * Set expiration via reflection so we don't need to update this test constantly for the token verification to pass. If the test fails validation, there may be something
+         * wrong with the expiration
+         */
+        Field byteField = object.getClass().getDeclaredField("expirationInMilliseconds");
+        byteField.setAccessible(true);
+
+        /*
+         * Set time to 100 years from 10/04/2022
+         */
+        long time = System.currentTimeMillis() + 52560000 * 60 * 1000;
+        byteField.set(object, time);
+
+        /*
+         * Serialize the object instance to a file.
+         */
+        try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(filename))) {
+            output.writeObject(object);
         }
-
-        String filename = "test-resources/test data/ser-files/LTPAToken2_x.ser";
-
-        // Serialization
-        //Saving of object in a file
-        FileOutputStream file = new FileOutputStream(filename);
-        ObjectOutputStream output = new ObjectOutputStream(file);
-
-        // Method for serialization of object
-        output.writeObject(object);
-
-        output.close();
-        file.close();
     }
 }
