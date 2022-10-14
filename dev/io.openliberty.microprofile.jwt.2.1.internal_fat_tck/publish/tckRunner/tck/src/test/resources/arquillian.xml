@@ -26,6 +26,7 @@
             <property name="appDeployTimeout">${tck_appDeployTimeout}</property>
             <property name="appUndeployTimeout">${tck_appUndeployTimeout}</property>
             <property name="deployType">xml</property> <!--  avoid windows file locking issues -->
+            <property name="testProtocol">rest</property>
         </configuration>
     </container>
 </arquillian>
