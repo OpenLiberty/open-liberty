@@ -35,4 +35,6 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
 
     public static final String CWWKS2500W_MISSING_CLIENTID_EL = "CWWKS2500W";
 
+    public static final String CWWKS9104A_NO_ACCESS_FOR_USER = "CWWKS9104A";
+
 }

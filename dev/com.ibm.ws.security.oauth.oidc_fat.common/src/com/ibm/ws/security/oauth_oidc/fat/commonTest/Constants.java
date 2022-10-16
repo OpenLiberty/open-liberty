@@ -606,9 +606,6 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String SCOPE_KEY = "scope";
     public static final String JWT_TOKEN = "jwt_token";
     public static final String MP_JWT_TOKEN = "mpJwt_token";
-    public static final String JWT_TOKEN_FORMAT = "jwt";
-    public static final String MP_JWT_TOKEN_FORMAT = "mpjwt";
-    public static final String OPAQUE_TOKEN_FORMAT = "opaque";
     public static final String JWS_TOKEN_FORMAT = "jws_token";
     public static final String JWE_TOKEN_FORMAT = "jwe_token";
     public static final String APP_PASSWORD_KEY = "app_password";
