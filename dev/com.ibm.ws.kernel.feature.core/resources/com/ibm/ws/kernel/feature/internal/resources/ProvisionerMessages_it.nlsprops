@@ -228,11 +228,6 @@ UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: L
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=La configurazione del server contiene una combinazione incompatibile di funzioni per i modelli di programmazione indicati. Questo conflitto pu\u00f2 accadere se le due funzioni incompatibili sono configurate direttamente nella configurazione del server o se le funzioni configurate includono versioni differenti di una funzione che sono incompatibili.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=Tentare specificando una versione compatibile delle funzioni configurate che hanno causato il conflitto nel file server.xml. Se non sono disponibili altre versioni, le funzioni configurate non sono compatibili tra loro e non possono essere configurate contemporaneamente.
 
-#CWWKF0048E
-CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING=CWWKF0048E: Il comando server specificava l'azione del punto di controllo. Non \u00e8 possibile acquisire un punto di controllo, in quanto la funzione checkpoint-1.0 non \u00e8 configurata nel file server.xml.
-CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING.explanation=L'azione del punto di controllo del server richiede che la funzione checkpoint-1.0 sia configurata.  
-CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING.useraction=La funzione checkpoint-1.0 deve essere configurata per utilizzare un'azione del punto di controllo del server.
-
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: La funzione {0} esiste gi\u00e0. Essa non sar\u00e0 reinstallata. Per modificare una funzione esistente, \u00e8 necessario prima disinstallarla manualmente.

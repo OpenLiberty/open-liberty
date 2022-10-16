@@ -1,0 +1,16 @@
+<server description="Server for testing EJB on CDI">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>osgiconsole-1.0</feature>
+        <feature>cdi-1.2</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>servlet-3.1</feature>
+        <feature>componentTest-1.0</feature>
+        <feature>jsf-2.2</feature>
+    </featureManager>
+<!--  
+    <logging traceSpecification="**=info:JCDI=all:com.ibm.ws.cdi*=all:com.ibm.ws.weld*=all:org.jboss.*=all:Injection=all"/>
+-->    
+</server>

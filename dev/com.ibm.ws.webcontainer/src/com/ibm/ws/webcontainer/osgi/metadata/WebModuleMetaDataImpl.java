@@ -37,6 +37,8 @@ public class WebModuleMetaDataImpl extends MetaDataImpl implements WebModuleMeta
     private BaseJspComponentMetaData jspComponentMetaData = null;
     private String sessionCookieNameInUse = null;
     public ServiceRegistration<?> mBeanServiceReg;
+    // Have 3 states to track: not checked (null), checked and doesn't have HAM (Boolean.FALSE), checked and has HAM (Boolean.TRUE)
+    private Boolean hasHAM = null;
 
     /**
      * @param slotCnt
@@ -169,4 +171,12 @@ public class WebModuleMetaDataImpl extends MetaDataImpl implements WebModuleMeta
         
     }
 
+    public boolean checkForHAM() {
+        // Only return false if it has been checked and found to be false.
+        return hasHAM != Boolean.FALSE;
+    }
+    
+    public void setHasHAM(boolean hamFound) {
+        hasHAM = (hamFound ? Boolean.TRUE : Boolean.FALSE);
+    }
 }

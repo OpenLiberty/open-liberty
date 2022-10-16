@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.app.manager.ApplicationManager;
+import com.ibm.ws.app.manager.CacheUtils;
 import com.ibm.ws.app.manager.module.AbstractDeployedAppInfoFactory;
 import com.ibm.ws.app.manager.module.DeployedAppInfo;
 import com.ibm.ws.app.manager.module.DeployedAppInfoFactory;
@@ -72,8 +73,7 @@ public class WARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
         return deployedAppServices.getLocationAdmin().resolveResource(applicationManager.getExpandLocation() + appName + ".war/");
     }
 
-    protected void expand(
-                          String name, File collapsedFile,
+    protected void expand(String name, File collapsedFile,
                           WsResource expandedResource, File expandedFile) throws IOException {
 
         String collapsedPath = collapsedFile.getAbsolutePath();
@@ -93,26 +93,30 @@ public class WARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
         expandedResource.create();
 
         ZipUtils.unzip(collapsedFile, expandedFile, ZipUtils.IS_NOT_EAR, collapsedFile.lastModified()); // throws IOException
-
     }
 
     @Override
     public WARDeployedAppInfo createDeployedAppInfo(ApplicationInformation<DeployedAppInfo> appInfo) throws UnableToAdaptException {
 
+        String warId = (String) appInfo.getConfigProperty("id");
         String warPid = appInfo.getPid();
         String warName = appInfo.getName();
         String warPath = appInfo.getLocation();
-        File warFile = new File(warPath);
 
-        Tr.debug(tc, "Create deployed application: PID [ " + warPid + " ] Name [ " + warName + " ] Location [ " + warPath + " ]");
+        Tr.debug(tc, "Create deployed application:" +
+                     " ID [ " + warId + " ]" + " PID [ " + warPid + " ]" +
+                     " Name [ " + warName + " ]" + " Location [ " + warPath + " ]");
+
+        File warFile = new File(warPath);
 
         BinaryType appType = getApplicationType(warFile, warPath);
         if (appType == BinaryType.LOOSE) {
             Tr.info(tc, "info.loose.app", warName, warPath);
+
         } else if (appType == BinaryType.DIRECTORY) {
             Tr.info(tc, "info.directory.app", warName, warPath);
-        } else if (applicationManager.getExpandApps()) {
 
+        } else if (applicationManager.getExpandApps()) {
             try {
                 prepareExpansion(warName);
 
@@ -134,27 +138,23 @@ public class WARDeployedAppInfoFactoryImpl extends AbstractDeployedAppInfoFactor
                 // When this information is available, ApplicationInfoImpl.getUseJandex() delegates it for the use jandex value.
                 //
                 // Interface 'ApplicationInfoForContainer' is implemented by concrete type
-                // 'dev/com.ibm.ws.app.manager/src/com/ibm/ws/app/manager/internal/ApplicationInstallInfo'.  
+                // 'dev/com.ibm.ws.app.manager/src/com/ibm/ws/app/manager/internal/ApplicationInstallInfo'.
                 //
                 // ApplicationInstallInfo.<init> is created using an application container.  The initializer has a step which
-                // stores the new instance to the application container's non-persistent cache.                
+                // stores the new instance to the application container's non-persistent cache.
 
                 // Part 1: Retrieve the container info from the initial container.
-                NonPersistentCache initialCache =
-                    appInfo.getContainer().adapt(NonPersistentCache.class);
+                NonPersistentCache initialCache = appInfo.getContainer().adapt(NonPersistentCache.class);
                 ApplicationInfoForContainer appContainerInfo = (ApplicationInfoForContainer)
                     initialCache.getFromCache(ApplicationInfoForContainer.class);
 
-                // Tr.info(tc, "Initial 'useJandex' [ " +
-                //     ((appContainerInfo == null) ? "unavailable" : appContainerInfo.getUseJandex()) + " ]");
-
-                Container expandedContainer = deployedAppServices.setupContainer(warPid, expandedFile);
+                String cacheId = CacheUtils.getCacheId(warPid, warId);
+                Container expandedContainer = deployedAppServices.setupContainer(cacheId, expandedFile);
                 appInfo.setContainer(expandedContainer);
-                
-                // Part 2: Store the container info on the expanded container.                
-                if ( appContainerInfo != null ) {
-                    NonPersistentCache finalCache =
-                        appInfo.getContainer().adapt(NonPersistentCache.class);
+
+                // Part 2: Store the container info on the expanded container.
+                if (appContainerInfo != null) {
+                    NonPersistentCache finalCache = appInfo.getContainer().adapt(NonPersistentCache.class);
                     finalCache.addToCache(ApplicationInfoForContainer.class, appContainerInfo);
                 }
 

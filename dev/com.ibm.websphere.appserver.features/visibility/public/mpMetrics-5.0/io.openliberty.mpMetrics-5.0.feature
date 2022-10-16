@@ -6,10 +6,10 @@ IBM-API-Package: org.eclipse.microprofile.metrics.annotation;  type="stable", \
  org.eclipse.microprofile.metrics; type="stable"
 IBM-ShortName: mpMetrics-5.0
 Subsystem-Name: MicroProfile Metrics 5.0
--features=com.ibm.websphere.appserver.restHandler-1.0, \
+-features=io.openliberty.restHandler.internal-1.0, \
   io.openliberty.mpConfig-3.0, \
   io.openliberty.jakarta.annotation-2.1,\
-  com.ibm.websphere.appserver.servlet-6.0, \
+  io.openliberty.servlet.internal-6.0, \
   io.openliberty.mpCompatible-6.0, \
   io.openliberty.cdi-4.0, \
   io.openliberty.org.eclipse.microprofile.metrics-5.0, \

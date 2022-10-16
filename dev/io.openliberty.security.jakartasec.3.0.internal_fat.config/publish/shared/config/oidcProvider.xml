@@ -17,6 +17,7 @@
 	<oauthProvider
 		id="OAuth1"
 		autoAuthorize="true"
+		tokenFormat="${opTokenFormat}"
 	>
 		<autoAuthorizeClient>client_1</autoAuthorizeClient>
 		
@@ -39,6 +40,7 @@
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/useSessionFalseELTrue/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/useSessionFalseELFalse/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ClaimsDefinition/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ClaimsDefinitionNoRole/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/badCallerNameClaim/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/emptyCallerNameClaim/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/badCallerGroupsClaim/Callback,

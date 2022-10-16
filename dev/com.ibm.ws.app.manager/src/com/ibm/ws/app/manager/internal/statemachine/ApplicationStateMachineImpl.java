@@ -37,6 +37,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.app.manager.AppMessageHelper;
 import com.ibm.ws.app.manager.ApplicationStateCoordinator;
+import com.ibm.ws.app.manager.CacheUtils;
 import com.ibm.ws.app.manager.internal.AppManagerConstants;
 import com.ibm.ws.app.manager.internal.ApplicationConfig;
 import com.ibm.ws.app.manager.internal.ApplicationConfigurator;
@@ -601,9 +602,17 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
             }
         }
 
+        @Deprecated
         @Override
         public Container setupContainer(String pid, File locationFile) {
-            File cacheDir = new File(getCacheDir(), pid);
+            return setupContainer(pid, null, locationFile);
+        }
+
+        @Override
+        public Container setupContainer(String pid, String configId, File locationFile) {
+            String cacheId = CacheUtils.getCacheId(pid, configId);
+
+            File cacheDir = new File(getCacheDir(), cacheId);
             if (!FileUtils.ensureDirExists(cacheDir)) {
                 if (_tc.isEventEnabled()) {
                     Tr.event(_tc, asmLabel() + "Could not create directory at {0}.", cacheDir.getAbsolutePath());
@@ -616,7 +625,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                 return null;
             }
 
-            File cacheDirAdapt = new File(getCacheAdaptDir(), pid);
+            File cacheDirAdapt = new File(getCacheAdaptDir(), cacheId);
             if (!FileUtils.ensureDirExists(cacheDirAdapt)) {
                 if (_tc.isEventEnabled()) {
                     Tr.event(_tc, asmLabel() + "Could not create directory at {0}.", cacheDirAdapt.getAbsolutePath());
@@ -624,7 +633,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                 return null;
             }
 
-            File cacheDirOverlay = new File(getCacheOverlayDir(), pid);
+            File cacheDirOverlay = new File(getCacheOverlayDir(), cacheId);
             if (!FileUtils.ensureDirExists(cacheDirOverlay)) {
                 if (_tc.isEventEnabled()) {
                     Tr.event(_tc, asmLabel() + "Could not create directory at {0}.", cacheDirOverlay.getAbsolutePath());
@@ -1321,13 +1330,14 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                         synchronized (_stateLock) {
                             resolveFileCallback = new ResolveFileCallback();
                             ApplicationConfig appConfig = _appConfig.get();
+                            String configId = (String) appConfig.getConfigProperty("id");
                             String configPid = appConfig.getConfigPid();
                             String location = appConfig.getLocation();
                             if (isLocationAURL(location)) {
-                                resolveFileAction = new DownloadFileAction(_locAdmin, configPid, location, resolveFileCallback, _handler);
+                                resolveFileAction = new DownloadFileAction(_locAdmin, configPid, configId, location, resolveFileCallback, _handler);
                             } else {
                                 ApplicationMonitorConfig appMonitorConfig = _appMonitor.getConfig();
-                                resolveFileAction = new ResolveFileAction(_ctx, appMonitorConfig.getPollingRate(), appMonitorConfig.getUpdateTrigger(), _locAdmin, appConfig.getName(), configPid, location, resolveFileCallback, _handler);
+                                resolveFileAction = new ResolveFileAction(_ctx, appMonitorConfig.getPollingRate(), appMonitorConfig.getUpdateTrigger(), _locAdmin, appConfig.getName(), configPid, configId, location, resolveFileCallback, _handler);
                                 _rfa.set((ResolveFileAction) resolveFileAction);
                             }
                             _currentAction.set(resolveFileAction);

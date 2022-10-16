@@ -206,8 +206,14 @@ public interface CDIRuntime extends CDIService {
     public BuildCompatibleExtensionFinder getBuildCompatibleExtensionFinder();
 
     /**
-     * @return the CDIContainerEventManager
+     * @return the CDIContainerEventManager, or {@code null} if there is not one
      */
     public CDIContainerEventManager getCDIContainerEventManager();
 
+    /**
+     * Get the WeldDevelopmentMode service if it exists and it is enabled
+     *
+     * @return the WeldDevelopmentMode, or {@code null} if does not exist or it is not enabled
+     */
+    public WeldDevelopmentMode getWeldDevelopmentMode();
 }

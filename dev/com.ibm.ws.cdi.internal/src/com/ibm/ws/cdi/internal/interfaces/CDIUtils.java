@@ -91,8 +91,6 @@ public class CDIUtils {
     public static final String META_INF_SERVICES_CDI_EXTENSION = META_INF_SERVICES + SPI_EXTENSION;
     public static final String WEB_INF_CLASSES_META_INF_SERVICES_CDI_EXTENSION = WEB_INF_CLASSES + META_INF_SERVICES_CDI_EXTENSION;
 
-    private final static String PROXY_CLASS_SIGNATURE = "$Proxy$_$$_WeldSubclass";
-
     static {
         Set<String> names = new HashSet<String>();
         for (Class<? extends Annotation> anno : CDIUtils.BEAN_DEFINING_ANNOTATIONS) {
@@ -105,26 +103,6 @@ public class CDIUtils {
             metaNames.add(anno.getName());
         }
         BEAN_DEFINING_META_ANNOTATION_NAMES = Collections.unmodifiableSet(metaNames);
-    }
-    private final static String DEVELOPMENT_MODE = "org.jboss.weld.development";
-    private static final boolean developmentMode =
-
-                    AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
-                        @Override
-                        public Boolean run() {
-                            String developmentModeStr = System.getProperty(DEVELOPMENT_MODE);
-                            Boolean developmentMode = Boolean.valueOf(developmentModeStr);
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "CDIUtils",
-                                         "The system property " + DEVELOPMENT_MODE + " : " + developmentMode);
-                            }
-                            return developmentMode;
-
-                        }
-                    });
-
-    public static boolean isDevelopementMode() {
-        return developmentMode;
     }
 
     /*

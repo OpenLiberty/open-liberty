@@ -10,7 +10,6 @@
  */
 package com.ibm.ws.jsf22.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -32,14 +31,15 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -47,7 +47,6 @@ import componenttest.topology.impl.LibertyServer;
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE10_FEATURES)
 public class JSF22FlashEventsTests {
     @Rule
     public TestName name = new TestName();
@@ -66,7 +65,19 @@ public class JSF22FlashEventsTests {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(jsfTestServer1, "JSF22FlashEvents.war", "com.ibm.ws.jsf22.fat.flashevents.*");
+        boolean isEE10 = JakartaEE10Action.isActive();
+
+        ShrinkHelper.defaultDropinApp(jsfTestServer1, "JSF22FlashEvents.war",
+                                      "com.ibm.ws.jsf22.fat.flashevents.factory",
+                                      isEE10 ? "com.ibm.ws.jsf22.fat.flashevents.flash.faces40" : "com.ibm.ws.jsf22.fat.flashevents.flash.jsf22",
+                                      "com.ibm.ws.jsf22.fat.flashevents.listener");
+
+        if (isEE10) {
+            // For Faces 4.0, CDI @Named is used since @ManagedBean is no longer available.
+            ServerConfiguration config = jsfTestServer1.getServerConfiguration();
+            config.getFeatureManager().getFeatures().add("cdi-4.0");
+            jsfTestServer1.updateServerConfiguration(config);
+        }
 
         jsfTestServer1.startServer(JSF22FlashEventsTests.class.getSimpleName() + ".log");
 

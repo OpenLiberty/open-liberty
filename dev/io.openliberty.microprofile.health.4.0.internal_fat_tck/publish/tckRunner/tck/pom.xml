@@ -18,7 +18,7 @@
 
     <properties>
         <microprofile.health.version>4.0.1</microprofile.health.version>
-        <arquillian.version>1.7.0.Alpha12</arquillian.version>
+        <arquillian.version>1.7.0.Alpha13</arquillian.version>
 
         <!-- the below is used in arquillian.xml -->
         <wlp>${wlp}</wlp>

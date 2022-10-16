@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -382,6 +382,62 @@ class ChangeHandler {
         configUpdater.update(true, infos);
     }
 
+    /**
+     * Answer the singleton elements of the server configuration in their natural order.
+     *
+     * Ignore disabled elements.
+     *
+     * @param serverConfiguration The configuration from which to retrieve the elements.
+     *
+     * @return The singleton elements of the configuration in natural order.
+     *
+     * @throws ConfigMergeException Thrown if retrieval of a singleton fails.
+     */
+    private List<SingletonElement> orderSingletons(ServerConfiguration serverConfiguration) throws ConfigMergeException {
+
+        Set<String> singletonPids = serverConfiguration.getSingletonNames();
+        List<SingletonElement> singletonElements = new ArrayList<>(singletonPids.size());
+        for (String singletonPid : singletonPids) {
+            SingletonElement singletonElement = serverConfiguration.getSingleton(singletonPid, null);
+            if (singletonElement.isEnabled()) {
+                singletonElements.add(singletonElement);
+            }
+        }
+        singletonElements.sort((s1, s2) -> s1.getSequenceId() - s2.getSequenceId());
+        return singletonElements;
+    }
+
+    /**
+     * Answer the factory elements of the server configuration, for the specified factory PID,
+     * in natural order.
+     *
+     * Ignore disabled elements.
+     *
+     * @param serverConfiguration The configuration from which to retrieve the elements.
+     * @param factoryPid          The factory PID of the elements which are to be retrieved.
+     *
+     * @return The factory elements of the configuration, for the specied factory PID,
+     *         in natural order.
+     * 
+     * @throws ConfigMergeException Thrown if retrieval of factory instances fails.
+     */
+    private List<FactoryElement> orderFactories(ServerConfiguration serverConfiguration, String factoryPid) throws ConfigMergeException {
+
+        Map<ConfigID, FactoryElement> factoryInstances = serverConfiguration.getFactoryInstances(factoryPid, null);
+
+        List<FactoryElement> factoryElements = new ArrayList<>(factoryInstances.size());
+
+        factoryInstances.forEach((configId, factoryElement) -> {
+            if (factoryElement.isEnabled()) {
+                factoryElements.add(factoryElement);
+            }
+        });
+
+        factoryElements.sort((f1, f2) -> f1.getSequenceId() - f2.getSequenceId());
+
+        return factoryElements;
+    }
+
     @FFDCIgnore(ConfigNotFoundException.class)
     private List<ConfigurationInfo> getConfigurationsToPopulate(ServerConfiguration serverConfiguration) throws ConfigUpdateException {
         // Step 1: Get all existing configurations (if any)
@@ -408,11 +464,13 @@ class ChangeHandler {
         List<ConfigurationInfo> infos = new ArrayList<ConfigurationInfo>();
         List<ExtendedConfiguration> newConfigurations = new ArrayList<ExtendedConfiguration>();
 
-        for (String pid : serverConfiguration.getSingletonNames()) {
-            SingletonElement configElement = serverConfiguration.getSingleton(pid, null);
-            if (!configElement.isEnabled()) {
-                continue;
-            }
+        // Per issue 22058 "Unnecessary application expansion on restart",
+        // the configuration elements must be processed in a consistent order.
+        // 'orderSingletons' orders the retrieved singleton elements by sequence
+        // number.  See also "com.ibm.ws.config.admin.internal.ConfigurationStore",
+        // which has additional required changes for 22058.
+
+        for (SingletonElement configElement : orderSingletons(serverConfiguration)) {
             try {
                 ConfigurationInfo info = createConfigurationInfo(configElement, null);
                 infos.add(info);
@@ -424,11 +482,13 @@ class ChangeHandler {
         }
 
         for (String factoryPid : serverConfiguration.getFactoryNames()) {
-            Map<ConfigID, FactoryElement> factoryInstances = serverConfiguration.getFactoryInstances(factoryPid, null);
-            for (FactoryElement configElement : factoryInstances.values()) {
-                if (!configElement.isEnabled()) {
-                    continue;
-                }
+            // Per issue 22058 "Unnecessary application expansion on restart",
+            // the configuration elements must be processed in a consistent order.
+            // 'orderFactories' orders the retrieved factory elements by sequence
+            // number.  See also "com.ibm.ws.config.admin.internal.ConfigurationStore",
+            // which has additional required changes for 22058.
+
+            for (FactoryElement configElement : orderFactories(serverConfiguration, factoryPid)) {
                 try {
                     ConfigurationInfo info = createConfigurationInfo(configElement, null);
                     infos.add(info);

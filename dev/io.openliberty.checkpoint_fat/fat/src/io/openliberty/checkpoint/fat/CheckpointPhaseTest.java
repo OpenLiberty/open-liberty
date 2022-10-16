@@ -29,6 +29,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
@@ -110,6 +111,7 @@ public class CheckpointPhaseTest {
     }
 
     @Test
+    @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
     public void testCheckpointFeatureMissingError() throws Exception {
         server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, true, true, null));
         ServerConfiguration svrCfg = server.getServerConfiguration();
@@ -120,8 +122,8 @@ public class CheckpointPhaseTest {
         server.startServerAndValidate(LibertyServer.DEFAULT_PRE_CLEAN, LibertyServer.DEFAULT_CLEANSTART,
                                       LibertyServer.DEFAULT_VALIDATE_APPS, true /* expectStartFailure */ );
 
-        assertNotNull("'CWWKF0048E:",
-                      server.waitForStringInLogUsingMark("CWWKF0048E: .* the checkpoint-1.0 feature is not configured in the server.xml file", 0));
+        assertNotNull("'CWWKC0460E:",
+                      server.waitForStringInLogUsingMark(".* CWWKC0460E: .* the checkpoint-1.0 feature is not configured in the server.xml file", 0));
     }
 
     @Before
