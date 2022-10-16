@@ -15,6 +15,8 @@ bVersion=1.0
 src: \
 	fat/src
 
+tested.features=webprofile-10.0
+
 fat.project: true
 
 
