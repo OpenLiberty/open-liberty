@@ -228,11 +228,6 @@ UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: F
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=Konfigurace serveru obsahuje nekompatibiln\u00ed kombinaci funkc\u00ed pro uveden\u00e9 programovac\u00ed modely. K tomuto konfliktu doch\u00e1z\u00ed, pokud jsou dv\u011b nekompatibiln\u00ed funkce nakonfigurov\u00e1ny p\u0159\u00edmo v konfiguraci serveru nebo pokud nakonfigurovan\u00e9 funkce zahrnuj\u00ed r\u016fzn\u00e9 verze nekompatibiln\u00ed funkce.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=Pokuste se zadat do souboru server.xml kompatibiln\u00ed verzi nakonfigurovan\u00fdch funkc\u00ed, kter\u00e9 zp\u016fsobuj\u00ed konflikt. Pokud nem\u00e1te k dispozici jin\u00e9 verze, nejsou nakonfigurovan\u00e9 funkce mezi sebou kompatibiln\u00ed a nelze je sou\u010dasn\u011b nakonfigurovat.
 
-#CWWKF0048E
-CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING=CWWKF0048E: P\u0159\u00edkaz serveru ur\u010dil akci kontroln\u00edho bodu. Kontroln\u00ed bod nelze prov\u00e9st, proto\u017ee funkce checkpoint-1.0 nen\u00ed nakonfigurov\u00e1na v souboru server.xml.
-CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING.explanation=Akce kontroln\u00edho bodu serveru vy\u017eaduje, aby byla nakonfigurov\u00e1na funkce checkpoint-1.0.  
-CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING.useraction=Funkce checkpoint-1.0 mus\u00ed b\u00fdt nakonfigurov\u00e1na pro pou\u017eit\u00ed akce kontroln\u00edho bodu serveru.
-
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: Funkce {0} ji\u017e existuje. Nebude p\u0159einstalov\u00e1na. Chcete-li upravit existuj\u00edc\u00ed funkci, mus\u00edte ji nejprve ru\u010dn\u011b odinstalovat.
