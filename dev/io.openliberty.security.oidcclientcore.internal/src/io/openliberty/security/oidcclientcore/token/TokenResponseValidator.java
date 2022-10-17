@@ -30,6 +30,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.wsspi.ssl.SSLSupport;
 
+import io.openliberty.security.common.jwt.JwtParsingUtils;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestParameters;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
@@ -104,7 +105,7 @@ public class TokenResponseValidator {
 
         JwtContext jwtcontext = null;
         try {
-            jwtcontext = CommonJose4jUtils.parseJwtWithoutValidation(idtoken);
+            jwtcontext = JwtParsingUtils.parseJwtWithoutValidation(idtoken);
 
         } catch (Exception e) {
             String error = e.getMessage() != null ? e.getMessage() : "not a valid id token";
@@ -146,7 +147,7 @@ public class TokenResponseValidator {
             }
 
             try {
-                JsonWebStructure jsonStruct = jose4jutil.getJsonWebStructureFromJwtContext(jwtcontext);
+                JsonWebStructure jsonStruct = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtcontext);
                 if (jsonStruct == null || !(jsonStruct instanceof JsonWebSignature)) {
                     throw new TokenValidationException(this.clientConfig.getClientId(), "jsonwebsignature error");
                 }

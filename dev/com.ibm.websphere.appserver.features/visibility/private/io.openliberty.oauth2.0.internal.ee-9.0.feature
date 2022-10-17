@@ -8,6 +8,7 @@ visibility = private
 -bundles=\
   io.openliberty.security.oauth.internal.2.0, \
   io.openliberty.security.jwt.internal, \
-  io.openliberty.security.common.internal
+  io.openliberty.security.common.internal, \
+  io.openliberty.security.common.jwt.internal
 kind=ga
 edition=core

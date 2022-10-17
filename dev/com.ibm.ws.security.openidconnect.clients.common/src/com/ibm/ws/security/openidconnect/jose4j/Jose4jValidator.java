@@ -282,6 +282,7 @@ public class Jose4jValidator {
     }
 
     public JwtClaims validateJwsSignature(JsonWebSignature signature, String jwtString) throws JWTTokenValidationFailedException, InvalidJwtException {
+        // TODO - replace with io.openliberty.security.common.jwt.jws.JwsSignatureVerifier
         verifySignAlgOnly(signature);
 
         JwtConsumerBuilder builder = new JwtConsumerBuilder();

@@ -8,7 +8,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.security.common.jwt.signature;
+package io.openliberty.security.common.jwt.jws;
 
 import java.security.Key;
 
@@ -18,23 +18,31 @@ import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.jwt.consumer.JwtContext;
+import org.jose4j.jwx.JsonWebStructure;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import io.openliberty.security.common.jwt.JwtParsingUtils;
 import io.openliberty.security.common.jwt.exceptions.EncodedSignatureEmptyException;
+import io.openliberty.security.common.jwt.exceptions.JwtContextMissingJoseObjects;
 import io.openliberty.security.common.jwt.exceptions.SignatureAlgorithmDoesNotMatchHeaderException;
 
-public class SignatureVerifier {
+public class JwsSignatureVerifier {
 
-    private static final TraceComponent tc = Tr.register(SignatureVerifier.class);
+    private static final TraceComponent tc = Tr.register(JwsSignatureVerifier.class);
 
     private final Key key;
     private final String signatureAlgorithm;
 
-    private SignatureVerifier(SignatureVerifierBuilder builder) {
+    private JwsSignatureVerifier(Builder builder) {
         this.key = builder.key;
-        this.signatureAlgorithm = builder.signatureAlgorithm;
+        this.signatureAlgorithm = (builder.signatureAlgorithm != null) ? builder.signatureAlgorithm : "RS256";
+    }
+
+    public JwtClaims validateJwsSignature(JwtContext jwtContext) throws JwtContextMissingJoseObjects, EncodedSignatureEmptyException, SignatureAlgorithmDoesNotMatchHeaderException, InvalidJwtException {
+        JsonWebStructure jws = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
+        return validateJwsSignature((JsonWebSignature) jws, jwtContext.getJwt());
     }
 
     public JwtClaims validateJwsSignature(JsonWebSignature signature, String jwtString) throws EncodedSignatureEmptyException, SignatureAlgorithmDoesNotMatchHeaderException, InvalidJwtException {
@@ -71,23 +79,23 @@ public class SignatureVerifier {
         }
     }
 
-    public static class SignatureVerifierBuilder {
+    public static class Builder {
 
         private Key key = null;
         private String signatureAlgorithm = null;
 
-        public SignatureVerifierBuilder key(Key key) {
+        public Builder key(Key key) {
             this.key = key;
             return this;
         }
         
-        public SignatureVerifierBuilder signatureAlgorithm(String signatureAlgorithm) {
+        public Builder signatureAlgorithm(String signatureAlgorithm) {
             this.signatureAlgorithm = signatureAlgorithm;
             return this;
         }
 
-        public SignatureVerifier build() {
-            return new SignatureVerifier(this);
+        public JwsSignatureVerifier build() {
+            return new JwsSignatureVerifier(this);
         }
 
     }
