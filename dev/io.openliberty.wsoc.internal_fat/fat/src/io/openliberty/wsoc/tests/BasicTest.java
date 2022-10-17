@@ -841,7 +841,7 @@ public class BasicTest {
 
     @Mode(TestMode.FULL)
     @Test
-    public void TestSSCPathParamOnOpenAndTestOnClose() throws Exception {
+    public void TestSSCPathParamOnClose() throws Exception {
         this.runAsLSAndVerifyResponse("PathParamTest", "TestPathParamOnClose");
     }
 
