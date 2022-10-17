@@ -10,12 +10,10 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.token;
 
+import java.util.ArrayList;
 import java.util.List;
 
-
 import org.jose4j.jwt.NumericDate;
-
-import com.ibm.websphere.ras.Tr;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 
@@ -25,16 +23,16 @@ import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 public class TokenValidator {
 
     private String issuer;
+    private String issuerconfigured;
     private String subject = null;
     private List<String> audiences;
     private String azp = null;
     private NumericDate iat;
     private NumericDate exp;
     private NumericDate notBefore = null;
-    private OidcClientConfig oidcConfig;
-    
-    private long clockSkewInSeconds = 120; // default value in seconds
-    
+    protected OidcClientConfig oidcConfig;
+
+    private final long clockSkewInSeconds = 120; // default value in seconds
 
     /**
      * @param clientConfig
@@ -48,7 +46,7 @@ public class TokenValidator {
      * @return
      */
     public TokenValidator issuer(String issuer) {
-        this.issuer= issuer;
+        this.issuer = issuer;
         return this;
     }
 
@@ -64,7 +62,7 @@ public class TokenValidator {
      * @param audience
      */
     public TokenValidator audiences(List<String> audience) {
-        this.audiences = audiences;
+        this.audiences = new ArrayList<String>(audience);
         return this;
     }
 
@@ -73,7 +71,7 @@ public class TokenValidator {
      */
     public TokenValidator azp(String azp) {
         this.azp = azp;
-        return this;     
+        return this;
     }
 
     /**
@@ -86,7 +84,7 @@ public class TokenValidator {
 
     /**
      * @param expirationTime
-     * @return 
+     * @return
      */
     public TokenValidator exp(NumericDate exp) {
         this.exp = exp;
@@ -95,7 +93,7 @@ public class TokenValidator {
 
     /**
      * @param notBefore
-     * @return 
+     * @return
      */
     public TokenValidator nbf(NumericDate notBefore) {
         this.notBefore = notBefore;
@@ -103,7 +101,7 @@ public class TokenValidator {
     }
 
     /**
-     * 
+     *
      */
     public void validate() throws TokenValidationException {
         validateIssuer();
@@ -113,11 +111,11 @@ public class TokenValidator {
         validateExpiration();
         validateIssuedAt();
         validateNotBefore();
-        
+
     }
 
     /**
-     * 
+     *
      */
     protected void validateNotBefore() throws TokenValidationException {
         if (this.notBefore != null) {
@@ -125,11 +123,11 @@ public class TokenValidator {
             if (now + (this.clockSkewInSeconds * 1000) < this.iat.getValueInMillis()) {
                 throw new TokenValidationException(oidcConfig.getClientId(), "nbf claim must be in past");
             }
-        } 
+        }
     }
 
     /**
-     * 
+     *
      */
     protected void validateIssuedAt() throws TokenValidationException {
         long now = System.currentTimeMillis();
@@ -139,30 +137,30 @@ public class TokenValidator {
     }
 
     /**
-     * @throws TokenValidationException 
-     * 
+     * @throws TokenValidationException
+     *
      */
     protected void validateExpiration() throws TokenValidationException {
         long now = System.currentTimeMillis();
         if (now - (this.clockSkewInSeconds * 1000) > this.exp.getValueInMillis()) {
             throw new TokenValidationException(oidcConfig.getClientId(), "exp claim must be in future");
-        }        
+        }
     }
 
     /**
-     * 
+     *
      */
     protected void validateAZP() throws TokenValidationException {
         if (this.azp != null) {
             if (!(oidcConfig.getClientId().equals(this.azp))) {
                 throw new TokenValidationException(oidcConfig.getClientId(), "azp is [ " + this.azp + " ], expecting  [ " + oidcConfig.getClientId() + " ]");
             }
-        } 
+        }
     }
 
     /**
-     * @throws TokenValidationException 
-     * 
+     * @throws TokenValidationException
+     *
      */
     protected void validateAudiences() throws TokenValidationException {
         if (this.audiences != null && !(this.audiences.isEmpty())) {
@@ -172,64 +170,41 @@ public class TokenValidator {
                     throw new TokenValidationException(oidcConfig.getClientId(), "audience is [ " + this.audiences.get(0) + " ], expecting [ " + oidcConfig.getClientId() + " ]");
                 }
             } else if (this.azp == null) {
-                // if more than one audience, then azp claim is a must     
-                throw new TokenValidationException(oidcConfig.getClientId(), "multiple audiences present [ " + this.audiences(audiences).toString() + " ], but required azp claim is missing");
+                // if more than one audience, then azp claim is a must
+                throw new TokenValidationException(oidcConfig.getClientId(), "multiple audiences present [ " + this.audiences(audiences).toString()
+                                                                             + " ], but required azp claim is missing");
             }
-        }  
+        }
     }
 
     /**
-     * @throws TokenValidationException 
-     * 
+     * @throws TokenValidationException
+     *
      */
     protected void validateSubject() throws TokenValidationException {
         if (this.subject != null) {
             if (this.subject.isEmpty()) {
                 throw new TokenValidationException(oidcConfig.getClientId(), "subject claim is present but empty");
             }
-        }      
+        }
     }
-
 
     /**
-     * @throws TokenValidationException 
-     * 
+     * @throws TokenValidationException
+     *
      */
     protected void validateIssuer() throws TokenValidationException {
-        String iss = getIssuer(oidcConfig);//oidcConfig.getProviderMetadata().getIssuer();        
-        if (!iss.equals(this.issuer)) {           
+        if (!issuerconfigured.equals(this.issuer)) {
             throw new TokenValidationException(oidcConfig.getClientId(), "issuer is [ " + this.issuer + " ], expecting  [ " + oidcConfig.getProviderMetadata().getIssuer() + " ]");
-        }       
-    }
-    
-    public static String getIssuer(OidcClientConfig clientConfig) {
-        String issuer = null;
-        issuer = clientConfig.getProviderMetadata().getIssuer();
-        if (issuer == null || issuer.isEmpty()) {
-            issuer = getIssuerFromTokenEndpoint(clientConfig);
-            if (issuer != null) {
-                return issuer;
-            }
         }
-        //TODO : try discovery data?       
-        return issuer;
     }
 
-    static String getIssuerFromTokenEndpoint(OidcClientConfig clientConfig) {
-        String issuer = null;
-        String tokenEndpoint = clientConfig.getProviderMetadata().getTokenEndpoint();
-        if (tokenEndpoint != null) {
-            int endOfSchemeIndex = tokenEndpoint.indexOf("//");
-            int lastSlashIndex = tokenEndpoint.lastIndexOf("/");
-            boolean urlContainsScheme = endOfSchemeIndex > -1;
-            boolean urlContainsSlash = lastSlashIndex > -1;
-            if ((!urlContainsScheme && !urlContainsSlash) || (urlContainsScheme && (lastSlashIndex == (endOfSchemeIndex + 1)))) {
-                issuer = tokenEndpoint;
-            } else {
-                issuer = tokenEndpoint.substring(0, lastSlashIndex);
-            }
-        }       
-        return issuer;
+    /**
+     * @param issuerFromDiscovery
+     * @return
+     */
+    public TokenValidator issuerconfigured(String issuerFromProviderMetadata) {
+        this.issuerconfigured = issuerFromProviderMetadata;
+        return this;
     }
-
 }

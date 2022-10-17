@@ -1,0 +1,57 @@
+#*******************************************************************************
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
+Bundle-Name: Jakarta Data Liberty Persistence Integration
+Bundle-SymbolicName: io.openliberty.data.internal.persistence
+Bundle-Description: Maps Jakarta Data to Jakarta Persistence; version=${bVersion}
+
+WS-TraceGroup: data
+
+Import-Package: \
+  io.openliberty.data.internal,\
+  *
+
+Private-Package: \
+  io.openliberty.data.internal.persistence.*,\
+  io.openliberty.data.internal.persistence.resources.*
+
+Include-Resource:\
+  OSGI-INF=resources/OSGI-INF
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+-dsannotations: io.openliberty.data.internal.persistence.PersistenceDataProvider
+
+instrument.classesExcludes: io/openliberty/data/internal/persistence/resources/*.class
+
+-buildpath: \
+  com.ibm.tx.jta.jakarta;version=latest,\
+  com.ibm.websphere.appserver.spi.logging,\
+  com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+  com.ibm.websphere.org.osgi.core,\
+  com.ibm.websphere.org.osgi.service.component,\
+  com.ibm.wsspi.org.osgi.service.component.annotations,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.persistence.jakarta;version=latest,\
+  com.ibm.ws.threading,\
+  com.ibm.ws.tx.embeddable.jakarta;version=latest,\
+  io.openliberty.data.internal,\
+  io.openliberty.jakarta.annotation.2.1,\
+  io.openliberty.jakarta.data.1.0,\
+  io.openliberty.jakarta.persistence.3.1,\
+  io.openliberty.jakarta.transaction.2.0

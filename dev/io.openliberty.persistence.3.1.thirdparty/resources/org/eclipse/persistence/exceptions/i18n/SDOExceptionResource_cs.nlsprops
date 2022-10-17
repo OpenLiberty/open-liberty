@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -135,7 +135,7 @@
 
 45207=Do\u0161lo k chyb\u011b p\u0159i pokusu o vy\u0159e\u0161en\u00ed sch\u00e9matu pomoc\u00ed poskytnut\u00e9 t\u0159\u00eddy SchemaResolver.
 
-45208=Nelze mapovat vlastnost {0} z typu {1}. K mapov\u00e1n\u00ed vlastnost\u00ed typu DataHandler jsou nezbytn\u00e9 bal\u00edky javax.activation a javax.mail. Zkontrolujte, zda jsou na cest\u011b ke t\u0159\u00edd\u011b dostupn\u00e9 oba tyto bal\u00edky.
+45208=Nelze mapovat vlastnost {0} z typu {1}. K mapov\u00e1n\u00ed vlastnost\u00ed typu DataHandler jsou nezbytn\u00e9 bal\u00edky jakarta.activation a jakarta.mail. Zkontrolujte, zda jsou na cest\u011b ke t\u0159\u00edd\u011b dostupn\u00e9 oba tyto bal\u00edky.
 
 45209=Do\u0161lo k pokusu o resetov\u00e1n\u00ed instance ApplicationResolver na t\u0159\u00edd\u011b SDOHelperContext. Povolena je pouze jedna sada.
 

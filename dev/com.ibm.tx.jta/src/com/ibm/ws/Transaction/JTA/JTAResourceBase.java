@@ -1,7 +1,5 @@
-package com.ibm.ws.Transaction.JTA;
-
 /*******************************************************************************
- * Copyright (c) 2002, 2021 IBM Corporation and others.
+ * Copyright (c) 2002, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +8,7 @@ package com.ibm.ws.Transaction.JTA;
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.ws.Transaction.JTA;
 
 import javax.transaction.SystemException;
 import javax.transaction.xa.XAException;
@@ -65,11 +64,14 @@ public abstract class JTAResourceBase extends ResourceWrapper implements JTAReso
     public final static int PREPARE_DIAGNOSTICS = 1;
 
     private static final TraceComponent tc = Tr.register(JTAResourceBase.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
-    // TODO - reinstate this
-    // private static final TraceComponent tcSummary = Tr.register("TRANSUMMARY", TranConstants.SUMMARY_TRACE_GROUP, null);
-    private static final TraceComponent tcSummary = tc;
+
+    private class TransactionSummary {
+    }
+
+    private static final TraceComponent tcSummary = Tr.register(TransactionSummary.class, TranConstants.SUMMARY_TRACE_GROUP, TranConstants.NLS_FILE);
 
     /**
+     *
      * Associate the underlying XAResource with a transaction.
      *
      * @exception XAException thrown if raised by the xa_start request
@@ -79,7 +81,7 @@ public abstract class JTAResourceBase extends ResourceWrapper implements JTAReso
     @Override
     public final void start() throws XAException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "start", new Object[] { _resource, printState(_state) });
+            Tr.entry(tc, "start", _resource, printState(_state));
         if (tcSummary.isDebugEnabled())
             Tr.debug(tcSummary, "xa_start", this);
 
@@ -159,9 +161,9 @@ public abstract class JTAResourceBase extends ResourceWrapper implements JTAReso
     @Override
     public final void end(int flag) throws XAException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "end", new Object[] { _resource, Util.printFlag(flag), printState(_state) });
+            Tr.entry(tc, "end", _resource, Util.printFlag(flag), printState(_state));
         if (tcSummary.isDebugEnabled())
-            Tr.debug(tcSummary, "xa_end", new Object[] { this, "flags = " + Util.printFlag(flag) });
+            Tr.debug(tcSummary, "xa_end", this, "flags = " + Util.printFlag(flag));
 
         int newstate;
         int rc = -1; // not an XA RC
@@ -298,10 +300,9 @@ public abstract class JTAResourceBase extends ResourceWrapper implements JTAReso
      */
     protected void processXAException(String operation, XAException xae) {
         if (tc.isEventEnabled()) {
-            Tr.event(tc, "XAResource {0} threw an XAException during {1}.  The error code provided was {2}.", new Object[] {
-                                                                                                                             _resource,
-                                                                                                                             operation,
-                                                                                                                             XAReturnCodeHelper.convertXACode(xae.errorCode) });
+            Tr.event(tc, "XAResource {0} threw an XAException during {1}.  The error code provided was {2}.", _resource,
+                     operation,
+                     XAReturnCodeHelper.convertXACode(xae.errorCode));
         }
 
         FFDCFilter.processException(
@@ -327,10 +328,9 @@ public abstract class JTAResourceBase extends ResourceWrapper implements JTAReso
      */
     protected void processThrowable(String operation, Throwable t) throws XAException {
         if (tc.isEventEnabled()) {
-            Tr.event(tc, "XAResource {0} threw an unchecked exception during {1}.  The original exception was {2}.", new Object[] {
-                                                                                                                                    _resource,
-                                                                                                                                    operation,
-                                                                                                                                    t });
+            Tr.event(tc, "XAResource {0} threw an unchecked exception during {1}.  The original exception was {2}.", _resource,
+                     operation,
+                     t);
         }
 
         FFDCFilter.processException(
@@ -392,7 +392,7 @@ public abstract class JTAResourceBase extends ResourceWrapper implements JTAReso
         if (rc == XAResource.XA_OK) {
             switch (diagType) {
                 case PREPARE_DIAGNOSTICS:
-                    Tr.info(tc, "WTRN0089_PREPARED", new Object[] { _resource, _vote.name() });
+                    Tr.info(tc, "WTRN0089_PREPARED", _resource, _vote.name());
                     break;
 
                 case OUTCOME_DIAGNOSTICS:
@@ -417,12 +417,12 @@ public abstract class JTAResourceBase extends ResourceWrapper implements JTAReso
                         }
                     }
 
-                    Tr.info(tc, "WTRN0090_COMPLETED", new Object[] { _resource, _vote.name(), result.name() });
+                    Tr.info(tc, "WTRN0090_COMPLETED", _resource, _vote.name(), result.name());
                     break;
             }
         } else {
             // Resource operation failed
-            Tr.info(tc, "WTRN0088_EXCEPTION_DIAG", new Object[] { _resource, XAReturnCodeHelper.convertXACode(rc) });
+            Tr.info(tc, "WTRN0088_EXCEPTION_DIAG", _resource, XAReturnCodeHelper.convertXACode(rc));
         }
     }
 
@@ -436,6 +436,6 @@ public abstract class JTAResourceBase extends ResourceWrapper implements JTAReso
 
     protected void traceCreate() {
         if (tcSummary.isDebugEnabled())
-            Tr.debug(tcSummary, "JTA Resource created:", new Object[] { this, describe() });
+            Tr.debug(tcSummary, "JTA Resource created:", this, describe());
     }
 }

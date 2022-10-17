@@ -14,8 +14,7 @@ bVersion=1.0
 src: \
   fat/src,\
   test-applications/DataTestApp/src,\
-  test-applications/TemplateTestApp/src,\
-  test-bundles/data/src
+  test-applications/TemplateTestApp/src
 
 # TODO 17
 javac.source: 11
@@ -42,6 +41,7 @@ fat.project: true
   io.openliberty.jakarta.annotation.2.1,\
   io.openliberty.jakarta.cdi.4.0,\
   io.openliberty.jakarta.concurrency.3.0,\
+  io.openliberty.jakarta.data.1.0,\
   io.openliberty.jakarta.interceptor.2.1,\
   io.openliberty.jakarta.persistence.3.1,\
   io.openliberty.jakarta.servlet.6.0;version=latest,\

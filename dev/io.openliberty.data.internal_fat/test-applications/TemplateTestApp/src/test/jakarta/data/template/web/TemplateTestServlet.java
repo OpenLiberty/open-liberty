@@ -27,6 +27,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import jakarta.annotation.Resource;
+import jakarta.data.Entities;
+import jakarta.data.DataException;
+import jakarta.data.Template;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.HeuristicMixedException;
@@ -40,9 +43,6 @@ import jakarta.transaction.UserTransaction;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
-import io.openliberty.data.Entities;
-import io.openliberty.data.MappingException;
-import io.openliberty.data.Template;
 
 @Entities({ House.class, Vehicle.class })
 @WebServlet("/*")
@@ -122,7 +122,7 @@ public class TemplateTestServlet extends FATServlet {
         try {
             h = template.insert(h3);
             fail("Inserted duplicate: " + h);
-        } catch (MappingException x) {
+        } catch (DataException x) {
             // expected
             if (x.getCause() == null)
                 throw x;

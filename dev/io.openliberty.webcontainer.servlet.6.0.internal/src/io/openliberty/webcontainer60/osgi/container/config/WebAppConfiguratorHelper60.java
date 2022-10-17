@@ -10,12 +10,18 @@
  *******************************************************************************/
 package io.openliberty.webcontainer60.osgi.container.config;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.container.service.config.ServletConfigurator;
+import com.ibm.ws.container.service.config.ServletConfigurator.ConfigItem;
+import com.ibm.ws.javaee.dd.web.common.AttributeValue;
+import com.ibm.ws.javaee.dd.web.common.CookieConfig;
+import com.ibm.ws.javaee.dd.web.common.SessionConfig;
 import com.ibm.ws.resource.ResourceRefConfigFactory;
 import com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants;
 import com.ibm.ws.webcontainer40.osgi.container.config.WebAppConfiguratorHelper40;
@@ -35,16 +41,67 @@ public class WebAppConfiguratorHelper60 extends WebAppConfiguratorHelper40 {
 
         String moduleName = moduleInfo.getName();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Constructor , web module--> " + moduleName);
+            Tr.debug(tc, "WebAppConfiguratorHelper60 Constructor , web module--> " + moduleName);
+        }
+    }
+
+    @Override
+    protected void configureSessionConfig(SessionConfig sessionConfig) {
+        if (sessionConfig == null) {
+            return;
         }
 
-        if (webAppConfiguration.getSessionCookieConfig() == null) {
-            SessionCookieConfig sessionCookieConfig = new SessionCookieConfigImpl60();
-            webAppConfiguration.setSessionCookieConfig(sessionCookieConfig);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.entry(tc, "WebAppConfiguratorHelper60 configureSessionConfig", "");
+        }
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, " Created sessionCookieConfig [{0}]", sessionCookieConfig);
+        CookieConfig cookieConfig = sessionConfig.getCookieConfig();
+
+        if (cookieConfig != null) {
+            SessionCookieConfig sessionCookieConfigImpl = webAppConfiguration.getSessionCookieConfig();
+
+            //create SessionCookieConfigImpl60 only if the <cookie-config> presents in web.xml
+            // AND if the webApp does not have SCC yet. create here so the super can use it.
+            if (sessionCookieConfigImpl == null) {
+                sessionCookieConfigImpl = new SessionCookieConfigImpl60();
+                webAppConfiguration.setSessionCookieConfig(sessionCookieConfigImpl);
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, " Created sessionCookieConfig [{0}]", sessionCookieConfigImpl);
+                }
             }
+
+            super.configureSessionConfig(sessionConfig);
+
+            Map<String, ConfigItem<String>> sessionConfigItemMap = configurator.getConfigItemMap("session-config");
+
+            List<AttributeValue> attributes = cookieConfig.getAttributes();
+            if (attributes != null) {
+                String attName;
+                String attValue;
+                Iterator<AttributeValue> attIterator = attributes.iterator();
+                while (attIterator.hasNext()) {
+                    AttributeValue attribute = attIterator.next();
+                    attName = attribute.getAttributeName();
+                    attValue = attribute.getAttributeValue();
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, " configureSessionConfig , attribute name [{0}] , attribute value [{1}]", attName, attValue);
+                    }
+                    ConfigItem<String> existedAttValue = sessionConfigItemMap.get(attName);
+
+                    if (existedAttValue == null) {
+                        ((SessionCookieConfigImpl60) sessionCookieConfigImpl).setAttribute(attName, attValue, false);
+                        sessionConfigItemMap.put(attName, createConfigItem(attValue));
+                    } else {
+                        validateDuplicateConfiguration("cookie-config", attName, attValue, existedAttValue);
+                    }
+                }
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.exit(tc, "configureSessionConfig");
         }
     }
 }

@@ -58,10 +58,6 @@ public class JPATestOLGH19998Logic extends AbstractTestLogic {
         }
 
         JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
-        //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
-        if ((isUsingJPA30Feature()) && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
-            return;
-        }
 
         int flag1 = 0;
         int flag2 = 1;
@@ -296,10 +292,6 @@ public class JPATestOLGH19998Logic extends AbstractTestLogic {
         }
 
         JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
-        //TODO: Disable test until EclipseLink 3.0 is updated to include the fix
-        if ((isUsingJPA30Feature()) && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
-            return;
-        }
 
         int flag1 = 0;
         String pk1 = "11006";

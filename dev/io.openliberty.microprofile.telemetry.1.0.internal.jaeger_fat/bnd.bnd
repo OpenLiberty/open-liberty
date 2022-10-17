@@ -11,6 +11,11 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+javac.source: 11
+javac.target: 11
+
+fat.minimum.java.level: 11
+
 src: \
     fat/src, \
     test-applications/system/src
@@ -23,9 +28,7 @@ fat.project: true
 fat.test.container.images: jaegertracing/all-in-one:1.37
 
 -buildpath: \
-    io.openliberty.jakarta.restfulWS.3.0;version=latest,\
-    io.openliberty.jakarta.cdi.3.0;version=latest,\
-    com.ibm.ws.logging;version=latest,\
-    httpunit:httpunit;version=1.5.4,\
+    io.openliberty.jakarta.restfulWS.3.1;version=latest,\
+    io.openliberty.jakarta.cdi.4.0;version=latest,\
     org.json:json;version=20080701,\
     io.openliberty.org.testcontainers;version=latest

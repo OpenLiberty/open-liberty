@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -31,7 +31,8 @@
 
 7501=Modul de validare bean pe marshaller-ul {0} este setat la o valoare nesuportat\u0103, "{1}".
 
-7510=Au fost \u00eenc\u0103lcate constr\u00e2ngeri pentru bean-ul pentru care s-a efectuat marshalling {0}: {1}{2}
+7510=Au fost \u00eenc\u0103lcate constr\u00e2ngeri pentru bean-ul pentru care s-a efectuat marshalling {0}:
+{1}{2}
 
 7525=Nu se poate parsa proprietatea {0}, deoarece este at\u00e2t adnotat\u0103 cu @NotNull, c\u00e2t \u015fi are atributul "xs:nillable=true".
 

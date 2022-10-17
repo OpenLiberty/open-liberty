@@ -15,6 +15,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import jakarta.data.repository.Query;
+
 /**
  * Annotates a repository method to designate it as a delete operation.
  * The <code>@Where</code> annotation can be added to provide conditions.

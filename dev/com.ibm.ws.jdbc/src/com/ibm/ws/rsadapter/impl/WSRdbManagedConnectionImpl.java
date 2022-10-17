@@ -27,6 +27,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference; 
 
 import javax.security.auth.Subject;
@@ -95,7 +96,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 StatementEventListener, 
                 FFDCSelfIntrospectable {
 
-    private boolean aborted;
+    private AtomicBoolean aborted = new AtomicBoolean(false);
 
     /**
      * Indicates whether any Vendor Specific Connection properties have changed.
@@ -3130,7 +3131,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                     // Continue with the rollback if an exception is thrown on end. 
                 }
                 
-                if (aborted) {
+                if (aborted.get()) {
                     break;
                 }
 
@@ -3148,7 +3149,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                     throw new DataStoreAdapterException("DSA_ERROR", xae, getClass());
                 }
 
-                if (inCleanup && !aborted) 
+                if (inCleanup && !aborted.get()) 
                 {
                     String message =
                                     "Cannot call 'cleanup' on a ManagedConnection while it is still in a " +
@@ -3173,7 +3174,7 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
                 // be on.  In this case, just no-op, since some drivers like ConnectJDBC 3.1
                 // don't allow commit/rollback when autoCommit is on.  
 
-                if (aborted) {
+                if (aborted.get()) {
                     break;
                 }
                 
@@ -4474,13 +4475,13 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
     public boolean isAborted() {
         if (mcf.beforeJDBCVersion(JDBCRuntimeVersion.VERSION_4_1))
             return false;
-        return aborted;
+        return aborted.get();
     }
     
     public void setAborted(boolean aborted) throws SQLFeatureNotSupportedException{
         if (mcf.beforeJDBCVersion(JDBCRuntimeVersion.VERSION_4_1))
           throw new SQLFeatureNotSupportedException();
-        this.aborted = aborted;
+        this.aborted.set(aborted);
     }
     
     public int getNetworkTimeout() throws SQLException {

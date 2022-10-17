@@ -11,6 +11,7 @@
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
 
+Multi-Release: true
 
 WS-TraceGroup: SAML20
 
@@ -44,7 +45,7 @@ Import-Package: \
  
  Include-Resource: \
   @${repo;net.shibboleth.utilities:java-support;7.5.1}!/!META-INF/MANIFEST.MF|META-INF/maven/*, \
-  @${repo;org.bouncycastle:bcprov-jdk15on;1.69;EXACT}, \
-  @${repo;org.bouncycastle:bcpkix-jdk15on;1.69;EXACT}, \
-  @${repo;org.bouncycastle:bcutil-jdk15on;1.69;EXACT}
+  @${repo;org.bouncycastle:bcprov-jdk15on;1.69;EXACT}!/!META-INF/versions/9/module-info.class, \
+  @${repo;org.bouncycastle:bcpkix-jdk15on;1.69;EXACT}!/!META-INF/versions/9/module-info.class, \
+  @${repo;org.bouncycastle:bcutil-jdk15on;1.69;EXACT}!/!META-INF/versions/9/module-info.class
 

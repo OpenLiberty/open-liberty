@@ -21,17 +21,17 @@
 
     <include location="../fatTestPorts.xml"/>
 
-    <dataSource id="jdbc/JPA_JTA_DS" jndiName="jdbc/JPA_JTA_DS" fat.modify="true">
+    <dataSource id="jdbc/JPA_JTA_DS" jndiName="jdbc/JPA_JTA_DS" >
             <jdbcDriver libraryRef="AnonymousJDBCLib"/>
             <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" />
     </dataSource>
 
-    <dataSource id="jdbc/JPA_NJTA_DS" jndiName="jdbc/JPA_NJTA_DS" fat.modify="true" transactional="false">
+    <dataSource id="jdbc/JPA_NJTA_DS" jndiName="jdbc/JPA_NJTA_DS"  transactional="false">
             <jdbcDriver libraryRef="AnonymousJDBCLib"/>
             <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" />
     </dataSource>
 
-    <library id="AnonymousJDBCLib" fat.modify="true">
+    <library id="AnonymousJDBCLib" >
         <file name="${shared.resource.dir}/derby/derby.jar"/>
     </library>
   

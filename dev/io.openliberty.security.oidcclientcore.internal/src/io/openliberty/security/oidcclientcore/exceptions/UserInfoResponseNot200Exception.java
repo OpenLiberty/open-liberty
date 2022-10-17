@@ -13,24 +13,19 @@ package io.openliberty.security.oidcclientcore.exceptions;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-public class UserInfoResponseNot200Exception extends Exception {
+public class UserInfoResponseNot200Exception extends UserInfoResponseException {
 
     public static final TraceComponent tc = Tr.register(UserInfoResponseNot200Exception.class);
 
     private static final long serialVersionUID = 1L;
 
-    private final String userInfoEndpoint;
     private final String statusCode;
     private final String responseStr;
 
     public UserInfoResponseNot200Exception(String userInfoEndpoint, String statusCode, String responseStr) {
-        this.userInfoEndpoint = userInfoEndpoint;
+        super(userInfoEndpoint, Tr.formatMessage(tc, "USERINFO_RESPONSE_NOT_200", userInfoEndpoint, statusCode, responseStr));
         this.statusCode = statusCode;
         this.responseStr = responseStr;
-    }
-
-    public String getUserInfoEndpoint() {
-        return userInfoEndpoint;
     }
 
     public String getStatusCode() {

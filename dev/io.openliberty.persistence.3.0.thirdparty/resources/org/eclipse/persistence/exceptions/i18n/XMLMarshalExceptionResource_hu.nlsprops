@@ -65,7 +65,7 @@
 
 25020=A "getResult()" met\u00f3dus nem h\u00edvhat\u00f3 meg az "endDocument()" esem\u00e9ny h\u00edv\u00e1sa el\u0151tt.
 
-25021=A(z) {0} \u00e9rv\u00e9nytelen az SwaRef eset\u00e9n. Csak javax.activation.DataHandler lehet.
+25021=A(z) {0} \u00e9rv\u00e9nytelen az SwaRef eset\u00e9n. Az oszt\u00e1ly csak a jakarta.activation.DataHandler lehet.
 
 25022=A k\u00e9p nem rendezhet\u0151 el. A(z) {0} mimeType sz\u00e1m\u00e1ra nem \u00e9rhet\u0151 el k\u00f3dol\u00f3.
 

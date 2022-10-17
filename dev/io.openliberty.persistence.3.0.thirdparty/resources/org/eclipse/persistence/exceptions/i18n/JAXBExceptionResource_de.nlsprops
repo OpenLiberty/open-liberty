@@ -153,7 +153,7 @@
 
 50063=Beim Versuch, die XML-Adapterklasse [{0}] zu instanziieren, ist eine Ausnahme eingetreten. Eine m\u00f6gliche Ursache hierf\u00fcr ist, dass die Adapterklasse keinen Nullargumentkonstruktor hat.
 
-50064=Die XML-Adapterklasse [{0}] erweitert "javax.xml.bind.annotation.adapters.XmlAdapter" nicht wie erwartet. Es ist erforderlich, dass die Adapterklasse "javax.xml.bind.annotation.adapters.XmlAdapter" erweitert und die Methoden "public abstract BoundType unmarshal(ValueType v)" und "public abstract ValueType marshal(BoundType v)" deklariert.
+50064=Die XML-Adapterklasse [{0}] erweitert "jakarta.xml.bind.annotation.adapters.XmlAdapter" nicht wie erwartet.  Es ist erforderlich, dass die Adapterklasse "jakarta.xml.bind.annotation.adapters.XmlAdapter" erweitert und die Methoden "public abstract BoundType unmarshal(ValueType v)" sowie "public abstract ValueType marshal(BoundType v)" deklariert.
 
 50065=Die Angabe von XmlJavaTypeAdapter [{0}] f\u00fcr das Paket [{1}] ist nicht g\u00fcltig. M\u00f6gliche Ursachen hierf\u00fcr sind ein falscher Adapterklassenname oder die Definition des falschen Ladeprogramms.
 

@@ -1,0 +1,9 @@
+-include= ~../cnf/resources/bnd/transform.props
+
+Bundle-SymbolicName: test.exceptionmapper.jakarta
+
+Private-Package: com.ibm.ws.jaxrs.defaultexceptionmapper_fat.mapper
+
+bVersion=1.0
+
+-dsannotations: *

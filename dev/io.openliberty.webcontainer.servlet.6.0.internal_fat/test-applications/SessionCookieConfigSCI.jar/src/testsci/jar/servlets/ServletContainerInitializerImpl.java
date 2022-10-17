@@ -84,13 +84,41 @@ public class ServletContainerInitializerImpl implements ServletContainerInitiali
         scc.setSecure(true);
 
         //Servlet 6.0 new API
-        scc.setAttribute("AttName1", "AttValue1");
-        scc.setAttribute("AttName2", "AttValue2");
+        scc.setAttribute("AttName1", "AttValue1SCI");      //overwrite web.xml setting - precendence test
+        scc.setAttribute("AttName2", "AttValue2SCI");      //overwrite web.xml setting - precendence test
         scc.setAttribute("AttName5", "AttToBeReplaced");
-        scc.setAttribute("AttName5", "AttValue5");        
+        scc.setAttribute("AttName5", "AttValue5");         //replace attribute 
+        
+        //Set specific attributes using setAttribute()
         scc.setAttribute("SameSite", "None");        
-
         scc.setAttribute("Domain", "setAttDomain_viaSCI");        
+        
+        //Test null and invalid  attribute names
+        try {
+            scc.setAttribute(null,"NameIsNull");
+            scc.setAttribute("ReportedNullAttName", "FAIL");
+        }
+        catch (Exception e) {
+            LOG.info(" scc.setAtttribute null name.  Expecting IllegalArgumentException.  actual exception [" + e + "]");
+            if (e.getMessage().contains("SESN8600E")) {                 // translated message contains prefix+code
+                scc.setAttribute("ReportedNullAttName", "PASS");
+            }
+            else
+                scc.setAttribute("ReportedNullAttName", "FAIL");
+        }
+        
+        try {
+            scc.setAttribute("Name?Invalid","NameHasQuestionMark");
+            scc.setAttribute("ReportedInvalidAttName", "FAIL");
+        }
+        catch (Exception e) {
+            LOG.info(" scc.setAtttribute name has invalid character.  Expecting IllegalArgumentException.  actual exception [" + e + "]");
+            if (e.getMessage().contains("SESN8601E")) {
+                scc.setAttribute("ReportedInvalidAttName", "PASS");
+            }
+            else
+                scc.setAttribute("ReportedInvalidAttName", "FAIL");
+        }
 
         LOG.info("RETURN addSessionCookieConfig");
     }

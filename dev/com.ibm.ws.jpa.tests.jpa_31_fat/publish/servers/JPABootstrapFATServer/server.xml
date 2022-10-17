@@ -22,7 +22,7 @@
     	<properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
     </dataSource>
 
-    <library id="AnonymousJDBCLib" fat.modify="true">
+    <library id="AnonymousJDBCLib">
         <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
     </library>
 

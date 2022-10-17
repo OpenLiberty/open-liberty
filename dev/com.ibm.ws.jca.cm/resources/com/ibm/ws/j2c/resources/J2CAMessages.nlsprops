@@ -336,6 +336,16 @@ SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003=J2CA1003E: Failed to remove MCW
 SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.explanation=The attempt to remove an MCWrapper failed, causing a potential problem in the shared pool.
 SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.useraction=CMSG0002
 
+# --------------------------------
+RA_FREE_CONNECTION_ERROR_J2CA1004=J2CA1004I: The Connection Manager received a fatal connection error from the Resource Adapter for the {1} resource. The connections state is: {2}. The exception is: {0}
+RA_FREE_CONNECTION_ERROR_J2CA1004.explanation=The connection manager was notified by the resource adapter that an error occurred on the connection. This message is logged so that the user can see the exception that was returned.
+RA_FREE_CONNECTION_ERROR_J2CA1004.useraction=The connection manager marks the connection as unusable. The connection is removed during the next connection maintenance interval. The purge policy does not apply to this connection. This behavior is normal. If this error appears unexpected, investigate the exception to determine the possible source of the problem.
+
+# ---------------------------------
+NO_RA_FREE_EXCEPTION_J2CA1005=J2CA1005I: The Connection Manager received a fatal connection error from the Resource Adapter for the  {0} resource. The connections state is: {1}. Information might be available in previous messages or exceptions.
+NO_RA_FREE_EXCEPTION_J2CA1005.explanation=The connection manager was notified by the resource adapter that an error occurred on the connection. This message is logged so that the user can see the exception that was returned. 
+NO_RA_FREE_EXCEPTION_J2CA1005.useraction=The connection manager marks the connection as unusable. The connection is removed during the next connection maintenance interval. The purge policy does not apply to this connection. This behavior is normal. If this error appears unexpected, investigate the exception to determine the possible source of the problem.
+
 # ---------------------------------
 # End of File
 #

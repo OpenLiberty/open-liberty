@@ -25,6 +25,8 @@ import com.ibm.ws.kernel.boot.LaunchException;
 import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.ws.kernel.boot.internal.KernelUtils;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 /**
  * The framework configurator takes care of property customizations required to
  * launch a framework.
@@ -176,6 +178,12 @@ public class FrameworkConfigurator {
 
         config.put("ds.global.extender", "true");
         config.putIfAbsent("ds.cache.metadata", "true");
+
+        if (CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE) {
+            // For checkpoint we disable the bundle file closer to
+            // workaround a Java bug for now.
+            config.putIfAbsent("osgi.bundlefile.limit", "0");
+        }
     }
 
     /**

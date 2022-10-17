@@ -27,5 +27,5 @@ mariadb:10.3
 mcr.microsoft.com/mssql/server:2019-CU10-ubuntu-16.04
 postgres:14.1-alpine
 ryanesch/acme-boulder:1.2
-testcontainers/ryuk:0.3.3
-testcontainers/sshd:1.0.0
+testcontainers/ryuk:0.3.4
+testcontainers/sshd:1.1.0

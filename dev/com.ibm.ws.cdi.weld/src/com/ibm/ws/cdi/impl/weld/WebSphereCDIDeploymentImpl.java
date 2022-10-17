@@ -36,7 +36,6 @@ import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.manager.api.ExecutorServices;
-import org.jboss.weld.probe.ProbeExtension;
 import org.jboss.weld.security.spi.SecurityServices;
 import org.jboss.weld.serialization.spi.ProxyServices;
 import org.jboss.weld.transaction.spi.TransactionServices;
@@ -55,6 +54,7 @@ import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.TransactionService;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
+import com.ibm.ws.cdi.internal.interfaces.WeldDevelopmentMode;
 import com.ibm.ws.cdi.liberty.ExtensionMetaData;
 import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
@@ -494,10 +494,10 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
                 }
             }
             //if the probe is enabled, add the probe extension
-
-            if (CDIUtils.isDevelopementMode()) {
-                extensionSet.add(getProbeExtension());
-                WebSphereBeanDeploymentArchive bda = getBeanDeploymentArchive(ProbeExtension.class);
+            WeldDevelopmentMode devMode = this.cdiRuntime.getWeldDevelopmentMode();
+            if (devMode != null) {
+                extensionSet.add(devMode.getProbeExtension());
+                WebSphereBeanDeploymentArchive bda = devMode.getProbeBDA(this);
                 extensionBDAs.put(bda.getId(), bda);
             }
 
@@ -530,12 +530,6 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
             extensions = extensionSet;
         }
         return extensions;
-    }
-
-    private Metadata<Extension> getProbeExtension() {
-
-        return CDIUtils.loadExtension(ProbeExtension.class.getName(), ProbeExtension.class.getClassLoader());
-
     }
 
     /** {@inheritDoc} */
@@ -729,14 +723,14 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
             if (beansXml == null) { //check that there is a beans.xml file
                 continue;
             }
-            
+
             URL parsedURL = beansXml.getUrl();
             //if the URL is null then that means it was an empty beans.xml file
             //note that this may be an undocumented "feature" of the Weld SPI
             if (parsedURL == null) {
                 continue;
             }
-            
+
             //if the beans.xml was not an empty file then check if the version was set or not
             boolean unversionedBeansXml = beansXml.getVersion() == null;
             if (unversionedBeansXml) {

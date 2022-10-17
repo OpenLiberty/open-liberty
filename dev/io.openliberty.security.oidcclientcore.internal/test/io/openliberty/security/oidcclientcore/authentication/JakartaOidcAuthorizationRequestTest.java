@@ -10,8 +10,15 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.authentication;
 
+import static io.openliberty.security.oidcclientcore.authentication.JakartaOidcAuthorizationRequest.STORED_REQUEST_HEADERS;
+import static io.openliberty.security.oidcclientcore.authentication.JakartaOidcAuthorizationRequest.STORED_REQUEST_METHOD;
+import static io.openliberty.security.oidcclientcore.authentication.JakartaOidcAuthorizationRequest.STORED_REQUEST_PARAMS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +38,8 @@ import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
 import io.openliberty.security.oidcclientcore.discovery.DiscoveryHandler;
 import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
+import io.openliberty.security.oidcclientcore.storage.SessionBasedStorage;
+import io.openliberty.security.oidcclientcore.utils.Utils;
 import test.common.SharedOutputManager;
 
 public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
@@ -43,6 +52,7 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
     private final OidcProviderMetadata providerMetadata = mockery.mock(OidcProviderMetadata.class);
     private final DiscoveryHandler discoveryHandler = mockery.mock(DiscoveryHandler.class);
     private final AuthorizationRequestParameters authzParameters = mockery.mock(AuthorizationRequestParameters.class);
+    private final SessionBasedStorage sessionBasedStorage = mockery.mock(SessionBasedStorage.class);
 
     private final String CWWKS2403E_DISCOVERY_EXCEPTION = "CWWKS2403E";
     private final String CWWKS2405E_DISCOVERY_METADATA_MISSING_VALUE = "CWWKS2405E";
@@ -90,6 +100,11 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
             }
         });
         return new JakartaOidcAuthorizationRequest(request, response, config) {
+
+            {
+                this.storage = sessionBasedStorage;
+            }
+
             @Override
             public DiscoveryHandler getDiscoveryHandler() {
                 return discoveryHandler;
@@ -247,6 +262,45 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
             }
         });
         authzRequest.addExtraParameters(authzParameters);
+    }
+
+    @Test
+    public void test_storeFullRequest() throws Exception {
+        String state = "12345";
+        String stateHash = Utils.getStrHashCode(state);
+
+        String requestMethod = "POST";
+
+        Enumeration<String> headerNames = Collections.enumeration(Arrays.asList("Content-Type"));
+        Enumeration<String> contentTypes = Collections.enumeration(Arrays.asList("application/x-www-form-urlencoded"));
+
+        Enumeration<String> paramNames = Collections.enumeration(Arrays.asList("id", "language"));
+        String[] ids = new String[] { "1234" };
+        String[] languages = new String[] { "Java" };
+
+        mockery.checking(new Expectations() {
+            {
+                one(request).getMethod();
+                will(returnValue(requestMethod));
+                one(sessionBasedStorage).store(with(equal(STORED_REQUEST_METHOD + stateHash)), with(any(String.class)));
+
+                one(request).getHeaderNames();
+                will(returnValue(headerNames));
+                one(request).getHeaders("Content-Type");
+                will(returnValue(contentTypes));
+                one(sessionBasedStorage).store(with(equal(STORED_REQUEST_HEADERS + stateHash)), with(any(String.class)));
+
+                one(request).getParameterNames();
+                will(returnValue(paramNames));
+                one(request).getParameterValues("id");
+                will(returnValue(ids));
+                one(request).getParameterValues("language");
+                will(returnValue(languages));
+                one(sessionBasedStorage).store(with(equal(STORED_REQUEST_PARAMS + stateHash)), with(any(String.class)));
+            }
+        });
+
+        authzRequest.storeFullRequest(state);
     }
 
 }

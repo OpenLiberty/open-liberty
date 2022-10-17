@@ -1407,16 +1407,26 @@ public class XAResourceImpl implements XAResource, Serializable {
         return _resources.size();
     }
 
-    public static synchronized void clear() {
-        _XAEvents.clear();
+    public static synchronized boolean clear() {
+		final File f = new File(STATE_FILE);
+		System.out.println("XAResourceImpl.clear(): Deleting state file: " + f.getAbsolutePath());
+
+		_XAEvents.clear();
         _resources.clear();
         _nextKey.set(0);
 
-        AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+        return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
 
 			@Override
 			public Boolean run() {
-				return new File(STATE_FILE).delete();
+				if (f.exists()) {
+					boolean result = f.delete();
+					System.out.println("Deletion " + (result ? "succeeded" : "failed"));
+					return result;
+				} else {
+					System.out.println("Deletion not required");
+					return false;
+				}
 			}
         });
     }
@@ -1560,7 +1570,6 @@ public class XAResourceImpl implements XAResource, Serializable {
      * @param stateFile
      */
     public static synchronized void loadState(String stateFile) {
-        new Throwable("loadState: " + STATE_FILE).printStackTrace(System.out);
         setStateFile(stateFile);
         loadState();
     }

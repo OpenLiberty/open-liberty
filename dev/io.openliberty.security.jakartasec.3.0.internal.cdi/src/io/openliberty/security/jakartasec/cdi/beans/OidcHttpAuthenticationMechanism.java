@@ -10,18 +10,27 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec.cdi.beans;
 
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
+import java.util.Set;
+
+import javax.security.auth.Subject;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.context.SubjectManager;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.security.javaeesec.cdi.beans.Utils;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
+import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 import io.openliberty.security.jakartasec.JakartaSec30Constants;
+import io.openliberty.security.jakartasec.OpenIdAuthenticationMechanismDefinitionHolder;
 import io.openliberty.security.jakartasec.OpenIdAuthenticationMechanismDefinitionWrapper;
 import io.openliberty.security.jakartasec.credential.OidcTokensCredential;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestUtils;
@@ -40,11 +49,11 @@ import jakarta.security.enterprise.AuthenticationException;
 import jakarta.security.enterprise.AuthenticationStatus;
 import jakarta.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import jakarta.security.enterprise.authentication.mechanism.http.HttpMessageContext;
-import jakarta.security.enterprise.authentication.mechanism.http.OpenIdAuthenticationMechanismDefinition;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
-import jakarta.security.enterprise.credential.Credential;
-import jakarta.security.enterprise.identitystore.CredentialValidationResult;
 import jakarta.security.enterprise.identitystore.IdentityStoreHandler;
+import jakarta.security.enterprise.identitystore.openid.IdentityToken;
+import jakarta.security.enterprise.identitystore.openid.OpenIdContext;
+import jakarta.security.enterprise.identitystore.openid.RefreshToken;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -71,7 +80,8 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
          * Build the baseURL from the incoming HttpRequest as the redirectURL may contain baseURL variable, such as ${baseURL}/Callback
          */
         String baseURL = requestUtils.getBaseURL(request);
-        return new OpenIdAuthenticationMechanismDefinitionWrapper((OpenIdAuthenticationMechanismDefinition) props.get(JakartaSec30Constants.OIDC_ANNOTATION), baseURL);
+        OpenIdAuthenticationMechanismDefinitionHolder openIdAuthenticationMechanismDefinitionHolder = (OpenIdAuthenticationMechanismDefinitionHolder) props.get(JakartaSec30Constants.OIDC_ANNOTATION);
+        return new OpenIdAuthenticationMechanismDefinitionWrapper(openIdAuthenticationMechanismDefinitionHolder.getOpenIdAuthenticationMechanismDefinition(), baseURL);
     }
 
     @SuppressWarnings("unchecked")
@@ -116,10 +126,9 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
             status = processStartFlowResult(client.startFlow(request, response), httpMessageContext);
         } else if (isCallbackRequest(request)) {
             status = processCallback(client, request, response, httpMessageContext);
+        } else if (alreadyAuthenticated) {
+            status = processExpiredTokenResult(processExpiredToken(client, request, response), httpMessageContext);
         }
-
-        // Else if isAuthenticationSessionEstablished
-        //   status = processTokenExpirationIfNeeded - client.processExpiredToken() / logout();
 
         return status;
     }
@@ -176,39 +185,35 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         return request.getParameter(OpenIdConstant.STATE) != null;
     }
 
+    /**
+     * Use SEND_CONTINUE rather than SEND_FAILURE for failures since JaspiServiceImpl converts a SEND_FAILURE to AuthenticationResult(AuthResult.RETURN, detail)
+     * and the WebContainerSecurityCollaboratorImpl allows access to unprotected resources for AuthResult.RETURN. SEND_CONTINUE will prevent this by properly
+     * returning a 401 and not continue to the redirectUri.
+     */
     private AuthenticationStatus processCallback(Client client, HttpServletRequest request, HttpServletResponse response,
                                                  HttpMessageContext httpMessageContext) throws AuthenticationException {
-        AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
+        AuthenticationStatus status = AuthenticationStatus.SEND_CONTINUE;
 
         try {
             ProviderAuthenticationResult providerAuthenticationResult = client.continueFlow(request, response);
-            status = processContinueFlowResult(providerAuthenticationResult, httpMessageContext, client);
-        } catch (AuthenticationResponseException e) {
-            status = httpMessageContext.notifyContainerAboutLogin(getCredentialValidationResultFromException(e));
-        } catch (TokenRequestException e) {
-            status = httpMessageContext.notifyContainerAboutLogin(CredentialValidationResult.INVALID_RESULT);
+            status = processContinueFlowResult(providerAuthenticationResult, httpMessageContext, request, response, client);
+        } catch (AuthenticationResponseException | TokenRequestException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
 
         return status;
     }
 
-    private CredentialValidationResult getCredentialValidationResultFromException(AuthenticationResponseException exception) {
-        if (AuthenticationResponseException.ValidationResult.NOT_VALIDATED_RESULT == exception.getValidationResult()) {
-            return CredentialValidationResult.NOT_VALIDATED_RESULT;
-        } else {
-            return CredentialValidationResult.INVALID_RESULT;
-        }
-    }
-
     private AuthenticationStatus processContinueFlowResult(ProviderAuthenticationResult providerAuthenticationResult,
-                                                           HttpMessageContext httpMessageContext, Client client) throws AuthenticationException {
+                                                           HttpMessageContext httpMessageContext, HttpServletRequest request, HttpServletResponse response,
+                                                           Client client) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
 
         if (providerAuthenticationResult != null) {
             AuthResult authResult = providerAuthenticationResult.getStatus();
 
             if (AuthResult.SUCCESS.equals(authResult)) {
-                status = handleOidcLogin(providerAuthenticationResult, httpMessageContext, client);
+                status = handleOidcLogin(providerAuthenticationResult, httpMessageContext, request, response, client);
             }
         }
 
@@ -216,35 +221,40 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
     }
 
     private AuthenticationStatus handleOidcLogin(ProviderAuthenticationResult providerAuthenticationResult, HttpMessageContext httpMessageContext,
-                                                 Client client) throws AuthenticationException {
-        Credential credential = createOidcTokensCredential(providerAuthenticationResult, client);
-        // TODO: "When available in the "Token Response", the optional fields "refresh_token" and "expires_in" must be stored internally." Store full credential in the subject.
+                                                 HttpServletRequest request, HttpServletResponse response, Client client) throws AuthenticationException {
+        OidcTokensCredential credential = createOidcTokensCredential(providerAuthenticationResult, request, response, client);
+
         return validateCredentials(credential, httpMessageContext);
     }
 
-    private Credential createOidcTokensCredential(ProviderAuthenticationResult providerAuthenticationResult, Client client) {
-        Credential credential = null;
+    private OidcTokensCredential createOidcTokensCredential(ProviderAuthenticationResult providerAuthenticationResult, HttpServletRequest request, HttpServletResponse response,
+                                                            Client client) {
+        OidcTokensCredential credential = null;
 
         Hashtable<String, Object> customProperties = providerAuthenticationResult.getCustomProperties();
         if (customProperties != null) {
             TokenResponse tokenResponse = (TokenResponse) customProperties.get(JakartaOidcTokenRequest.AUTH_RESULT_CUSTOM_PROP_TOKEN_RESPONSE);
             if (tokenResponse != null) {
-                credential = new OidcTokensCredential(tokenResponse, client);
+                credential = new OidcTokensCredential(tokenResponse, client, request, response);
             }
         }
 
         return credential;
     }
 
-    private AuthenticationStatus validateCredentials(Credential credential, HttpMessageContext httpMessageContext) throws AuthenticationException {
+    private AuthenticationStatus validateCredentials(OidcTokensCredential credential, HttpMessageContext httpMessageContext) throws AuthenticationException {
         int rspStatus;
         String issuer = JavaEESecConstants.DEFAULT_REALM; // TODO: Set to "iss" claim from the identity token.
-        AuthenticationStatus status = utils.handleAuthenticate(getCDI(), issuer, credential, httpMessageContext.getClientSubject(), httpMessageContext);
+        Subject clientSubject = httpMessageContext.getClientSubject();
+        AuthenticationStatus status = utils.handleAuthenticate(getCDI(), issuer, credential, clientSubject, httpMessageContext);
 
         if (status == AuthenticationStatus.SUCCESS) {
+            setOpenIdContextInSubject(clientSubject, credential.getOpenIdContext());
+
             Map<String, Object> messageInfoMap = httpMessageContext.getMessageInfo().getMap();
             messageInfoMap.put("jakarta.servlet.http.authType", "JAKARTA_OIDC");
             messageInfoMap.put("jakarta.servlet.http.registerSession", Boolean.TRUE.toString());
+
             rspStatus = HttpServletResponse.SC_OK;
         } else if (status == AuthenticationStatus.NOT_DONE) {
             // set SC_OK, since if the target is not protected, it'll be processed.
@@ -256,6 +266,91 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         httpMessageContext.getResponse().setStatus(rspStatus);
 
         return status;
+    }
+
+    private void setOpenIdContextInSubject(Subject clientSubject, OpenIdContext openIdContext) {
+        if (openIdContext != null) {
+            clientSubject.getPrivateCredentials().add(openIdContext);
+            Hashtable<String, Object> hashtable = utils.getSubjectExistingHashtable(clientSubject);
+            if (hashtable != null) {
+                IdentityToken idToken = openIdContext.getIdentityToken();
+                if (idToken != null) {
+                    hashtable.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, String.valueOf(idToken.hashCode()));
+                }
+            }
+        }
+    }
+
+    private AuthenticationStatus processExpiredTokenResult(ProviderAuthenticationResult providerAuthenticationResult, HttpMessageContext httpMessageContext) {
+        AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
+
+        if (providerAuthenticationResult != null) {
+            AuthResult authResult = providerAuthenticationResult.getStatus();
+
+            if (AuthResult.REDIRECT_TO_PROVIDER.equals(authResult)) {
+                status = httpMessageContext.redirect(providerAuthenticationResult.getRedirectUrl());
+            } else if (AuthResult.SUCCESS.equals(authResult)) {
+                status = AuthenticationStatus.SUCCESS;
+            }
+        }
+
+        return status;
+    }
+
+    private ProviderAuthenticationResult processExpiredToken(Client client, HttpServletRequest request, HttpServletResponse response) {
+        OpenIdContext openIdContext = getOpenIdContextFromSubject();
+
+        if (openIdContext == null) {
+            // TODO add debug. should not be here.
+            return new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+        IdentityToken idToken = openIdContext.getIdentityToken();
+        boolean isAccessTokenExpired = openIdContext.getAccessToken().isExpired();
+        boolean isIdTokenExpired = idToken.isExpired();
+        String idTokenString = idToken.getToken();
+        String refreshTokenString = getRefreshToken(openIdContext);
+        return client.processExpiredToken(request, response, isAccessTokenExpired, isIdTokenExpired, idTokenString, refreshTokenString);
+
+    }
+
+    private OpenIdContext getOpenIdContextFromSubject() {
+        Subject sessionSubject = getSessionSubject();
+        if (sessionSubject == null) {
+            return null;
+        }
+        Set<OpenIdContext> creds = sessionSubject.getPrivateCredentials(OpenIdContext.class);
+        for (OpenIdContext openIdContext : creds) {
+            // there should only be one OpenIdContext in the clientSubject.getPrivateCredentials(OpenIdContext.class) set.
+            return openIdContext;
+        }
+        return null;
+    }
+
+    @FFDCIgnore(PrivilegedActionException.class)
+    private Subject getSessionSubject() {
+        Subject sessionSubject = null;
+        try {
+            sessionSubject = (Subject) java.security.AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                @Override
+                public Object run() throws Exception {
+                    return new SubjectManager().getCallerSubject();
+                }
+            });
+        } catch (PrivilegedActionException pae) {
+
+        }
+        return sessionSubject;
+    }
+
+    private String getRefreshToken(OpenIdContext openIdContext) {
+        Optional<RefreshToken> optionalRefreshToken = openIdContext.getRefreshToken();
+        if (optionalRefreshToken.isPresent()) {
+            RefreshToken refreshToken = optionalRefreshToken.get();
+            if (refreshToken != null) {
+                return refreshToken.getToken();
+            }
+        }
+        return null;
     }
 
     @Override

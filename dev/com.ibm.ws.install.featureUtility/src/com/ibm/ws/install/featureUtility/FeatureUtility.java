@@ -244,24 +244,8 @@ public class FeatureUtility {
 						Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PROXY_PORT_MISSING"),
 						InstallException.MISSING_CONTENT);
 			}
-
-			String decodedPwd = password;
-			if (decodedPwd != null && !decodedPwd.isEmpty()) {
-				try {
-					// Decode encrypted proxy server password
-					decodedPwd = PasswordUtil.decode(password);
-				} catch (InvalidPasswordDecodingException ipde) {
-					decodedPwd = password;
-					logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES
-							.getLogMessage("LOG_PASSWORD_NOT_ENCODED_PROXY", host + ":" + port) + InstallUtils.NEWLINE);
-				} catch (UnsupportedCryptoAlgorithmException ucae) {
-					throw new InstallException(
-							Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED"),
-							ucae, InstallException.RUNTIME_EXCEPTION);
-				}
-			}
 			overrideMap.put(protocol + ".proxyUser", username);
-			overrideMap.put(protocol + ".proxyPassword", decodedPwd);
+			overrideMap.put(protocol + ".proxyPassword", password);
 
 		}
 

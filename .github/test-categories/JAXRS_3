@@ -1,8 +1,0 @@
-com.ibm.ws.jaxrs.defaultexceptionmapper_fat
-com.ibm.ws.jaxrs.2.0.cdi.1.2_fat
-com.ibm.ws.jaxrs.2.0.client_fat
-com.ibm.ws.jaxrs.2.0_fat
-com.ibm.ws.jaxrs.2.1.cdi.2.0_fat
-io.openliberty.jakarta.rest.3.1.internal_fat_tck
-io.openliberty.restfulWS.3.0.cdi.3.0_fat
-io.openliberty.ws.jaxrs.global.handler.internal_fat

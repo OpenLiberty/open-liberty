@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
@@ -38,6 +39,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -63,7 +65,19 @@ public class JSF22FlashEventsTests {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(jsfTestServer1, "JSF22FlashEvents.war", "com.ibm.ws.jsf22.fat.flashevents.*");
+        boolean isEE10 = JakartaEE10Action.isActive();
+
+        ShrinkHelper.defaultDropinApp(jsfTestServer1, "JSF22FlashEvents.war",
+                                      "com.ibm.ws.jsf22.fat.flashevents.factory",
+                                      isEE10 ? "com.ibm.ws.jsf22.fat.flashevents.flash.faces40" : "com.ibm.ws.jsf22.fat.flashevents.flash.jsf22",
+                                      "com.ibm.ws.jsf22.fat.flashevents.listener");
+
+        if (isEE10) {
+            // For Faces 4.0, CDI @Named is used since @ManagedBean is no longer available.
+            ServerConfiguration config = jsfTestServer1.getServerConfiguration();
+            config.getFeatureManager().getFeatures().add("cdi-4.0");
+            jsfTestServer1.updateServerConfiguration(config);
+        }
 
         jsfTestServer1.startServer(JSF22FlashEventsTests.class.getSimpleName() + ".log");
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBContext;
 
@@ -43,6 +48,7 @@ import com.ibm.ws.jaxrs.fat.exceptionmappers.mapped.CommentError;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
@@ -608,7 +614,7 @@ public class ExceptionMappersTest {
         HttpPut putMethod = new HttpPut(nullconditionsUri + "/webappexceptionwithcauseandresponse");
         HttpResponse resp = client.execute(putMethod);
         String response = asString(resp);
-        if (JakartaEE9Action.isActive()) {
+        if ((JakartaEE9Action.isActive()) || (JakartaEE10Action.isActive())) {
             // my reading of section 3.3.4 says RESTEasy does it the right way...
             assertThat(response, Matchers.containsString("Entity inside response"));
         } else {
@@ -713,7 +719,18 @@ public class ExceptionMappersTest {
         HttpDelete deleteMethod = new HttpDelete(nullconditionsUri + "/throwsthrowable");
         HttpResponse resp = client.execute(deleteMethod);
         assertEquals(500, resp.getStatusLine().getStatusCode());
-        String strResp = asString(resp);
-        assertTrue(strResp.contains("nullconditions.GuestbookResource$1: Throwable was thrown"));
+
+        //EE10 and beyond has a default exception mapper that returns the message within the Throwable
+        if (JakartaEE10Action.isActive()) {
+            InputStream is = resp.getEntity().getContent();
+            InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
+            BufferedReader br = new BufferedReader(isr);
+            String text = br.lines().collect(Collectors.joining("\n"));
+            assertEquals("Throwable was thrown", text);
+        } else {  //EE9 and before
+            String strResp = asString(resp);
+            assertTrue(strResp.contains("nullconditions.GuestbookResource$1: Throwable was thrown"));
+
+        }
     }
 }

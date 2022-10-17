@@ -506,7 +506,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             return false;
         }
         Set<String> features = provisionerService.getInstalledFeatures();
-        return features.contains("appSecurity-3.0") || features.contains("appSecurity-4.0") || features.contains("appSecurity-5.0");
+        return features.contains("appSecurity-3.0") || features.contains("appSecurity-4.0") || features.contains("appSecurity-5.0") || features.contains("mpJwt-2.1");
     }
 
     /**

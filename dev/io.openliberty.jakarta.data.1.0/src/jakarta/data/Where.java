@@ -15,6 +15,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import jakarta.data.repository.Query;
+
 /**
  * Annotates a repository method to provide the conditional expression of
  * the <code>WHERE</code> clause of a JPQL or Jakarta NoSQL text query.

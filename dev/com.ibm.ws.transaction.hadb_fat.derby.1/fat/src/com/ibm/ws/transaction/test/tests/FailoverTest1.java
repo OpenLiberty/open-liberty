@@ -30,12 +30,10 @@ import com.ibm.tx.jta.ut.util.TxTestUtils;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.test.FATSuite;
-import com.ibm.ws.transaction.web.FailoverServlet;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -123,24 +121,27 @@ public class FailoverTest1 extends FailoverTest {
     public static final String SERVLET_NAME = "transaction/FailoverServlet";
 
     @Server("com.ibm.ws.transaction")
-    @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
     public static LibertyServer defaultServer;
 
     @Server("com.ibm.ws.transaction_recover")
-    @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
     public static LibertyServer recoverServer;
 
     @Server("com.ibm.ws.transaction_retriable")
-    @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
     public static LibertyServer retriableServer;
 
     @Server("com.ibm.ws.transaction_nonretriable")
-    @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
     public static LibertyServer nonRetriableServer;
 
     @Server("com.ibm.ws.transaction_multipleretries")
-    @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
     public static LibertyServer retriesServer;
+
+    public static String[] serverNames = new String[] {
+                                                        "com.ibm.ws.transaction",
+                                                        "com.ibm.ws.transaction_recover",
+                                                        "com.ibm.ws.transaction_retriable",
+                                                        "com.ibm.ws.transaction_nonretriable",
+                                                        "com.ibm.ws.transaction_multipleretries",
+    };
 
     @AfterClass
     public static void afterSuite() {
@@ -149,14 +150,12 @@ public class FailoverTest1 extends FailoverTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        servers = new LibertyServer[] { defaultServer, recoverServer, retriableServer, nonRetriableServer, retriesServer };
-
-        FailoverTest.commonSetUp();
+        FailoverTest.commonSetUp(FailoverTest1.class.getName());
     }
 
     @After
     public void cleanup() throws Exception {
-        FailoverTest.commonCleanup();
+        FailoverTest.commonCleanup(this.getClass().getName());
     }
 
     // Test we get back the actual exception that scuppered the test

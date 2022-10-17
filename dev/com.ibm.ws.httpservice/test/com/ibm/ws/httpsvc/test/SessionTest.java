@@ -52,6 +52,9 @@ import com.ibm.wsspi.http.HttpInputStream;
 import com.ibm.wsspi.http.HttpRequest;
 import com.ibm.wsspi.http.HttpResponse;
 import com.ibm.wsspi.http.SSLContext;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
+
+import io.openliberty.http.ext.HttpRequestExt;
 
 /**
  * Test session related apis.
@@ -117,7 +120,7 @@ public class SessionTest {
         }
     }
 
-    private class MockRequest implements HttpRequest {
+    private class MockRequest implements HttpRequestExt {
         public String uri = null;
 
         public MockRequest() {
@@ -151,6 +154,11 @@ public class SessionTest {
 
         @Override
         public String getHeader(String name) {
+            return null;
+        }
+
+        @Override
+        public String getHeader(HttpHeaderKeys key) {
             return null;
         }
 

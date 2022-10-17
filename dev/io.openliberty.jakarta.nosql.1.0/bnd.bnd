@@ -8,10 +8,13 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/bundle.props
--sub: *.bnd
+-include= ~../cnf/resources/bnd/bundle.props, ~../cnf/resources/bnd/transform.props
 
 bVersion=1.0
+
+Bundle-Name: Jakarta NoSQL 1.0
+Bundle-SymbolicName: io.openliberty.jakarta.nosql.1.0; singleton:=true
+Bundle-Description: Jakarta NoSQL 1.0 Communication and Mapping Layers; version=${bVersion}
 
 javac.source: 11
 javac.target: 11

@@ -34,16 +34,16 @@ public class IdentityTokenImplTest {
     private Map<String, Object> idTokenClaimsMap;
     private IdentityToken identityToken;
 
-    private Map<String, Object> createClaimsMap(String tokenString) throws UnsupportedEncodingException, InvalidJwtException {
-        String[] parts = tokenString.split(("\\."));
-        String claimsAsJsonString = new String(Base64.getDecoder().decode(parts[1]), "UTF-8");
-        return org.jose4j.jwt.JwtClaims.parse(claimsAsJsonString).getClaimsMap();
-    }
-
     @Before
     public void setUp() throws Exception {
         idTokenClaimsMap = createClaimsMap(JWT_ID_TOKEN_STRING);
         identityToken = new IdentityTokenImpl(JWT_ID_TOKEN_STRING, idTokenClaimsMap, TOKEN_MIN_VALIDITY_10_MILLIS);
+    }
+
+    private Map<String, Object> createClaimsMap(String tokenString) throws UnsupportedEncodingException, InvalidJwtException {
+        String[] parts = tokenString.split(("\\."));
+        String claimsAsJsonString = new String(Base64.getDecoder().decode(parts[1]), "UTF-8");
+        return org.jose4j.jwt.JwtClaims.parse(claimsAsJsonString).getClaimsMap();
     }
 
     @Test

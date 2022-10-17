@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,6 @@ import com.ibm.ws.security.common.http.AuthUtils;
 import com.ibm.ws.security.jwt.config.MpConfigProperties;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
-import com.ibm.ws.security.mp.jwt.config.MpConstants;
 import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
 import com.ibm.ws.security.mp.jwt.impl.utils.MicroProfileJwtTaiRequest;
 
@@ -212,9 +211,9 @@ public class TAIRequestHelper {
             return serverConfigTokenHeader;
         }
         String defaultValue = Authorization_Header;
-        String tokenHeaderName = getValueFromMpConfigProps(request, MpConstants.TOKEN_HEADER, defaultValue);
+        String tokenHeaderName = getValueFromMpConfigProps(request, MpConfigProperties.TOKEN_HEADER, defaultValue);
         if (!isSupportedTokenHeaderName(tokenHeaderName)) {
-            Tr.warning(tc, "MP_CONFIG_VALUE_NOT_SUPPORTED", new Object[] { tokenHeaderName, MpConstants.TOKEN_HEADER, getSupportedTokenHeaderNames(), defaultValue });
+            Tr.warning(tc, "MP_CONFIG_VALUE_NOT_SUPPORTED", new Object[] { tokenHeaderName, MpConfigProperties.TOKEN_HEADER, getSupportedTokenHeaderNames(), defaultValue });
             return defaultValue;
         }
         return tokenHeaderName;
@@ -269,7 +268,7 @@ public class TAIRequestHelper {
         if (serverConfigCookieName != null) {
             return serverConfigCookieName;
         }
-        return getValueFromMpConfigProps(request, MpConstants.TOKEN_COOKIE, "Bearer");
+        return getValueFromMpConfigProps(request, MpConfigProperties.TOKEN_COOKIE, "Bearer");
     }
 
     @Sensitive

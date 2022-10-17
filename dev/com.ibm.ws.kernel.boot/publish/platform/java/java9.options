@@ -7,6 +7,8 @@ java.base/sun.security.action=ALL-UNNAMED
 java.naming/com.sun.jndi.ldap=ALL-UNNAMED
 --add-exports
 java.naming/com.sun.jndi.url.ldap=ALL-UNNAMED
+--add-exports
+jdk.naming.dns/com.sun.jndi.dns=ALL-UNNAMED
 # for Oracle Kerberos
 --add-exports
 java.security.jgss/sun.security.krb5.internal=ALL-UNNAMED

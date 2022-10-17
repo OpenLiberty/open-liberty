@@ -13,11 +13,12 @@ bVersion=1.0
 
 src: \
     fat/src,\
-    test-applications/SimpleTest.war/src,\
-    test-applications/GetRealPathTest.war/src,\
     test-applications/CookieSetAttributeTest.war/src,\
+    test-applications/GetRealPathTest.war/src,\
     test-applications/RequestConnectionTest.war/src,\
-    test-applications/SessionCookieConfigSCI.jar/src
+    test-applications/RequestCookieHeaderTest.war/src,\
+    test-applications/SessionCookieConfigSCI.jar/src,\
+    test-applications/SimpleTest.war/src
 
 fat.project: true
 
@@ -42,4 +43,3 @@ javac.target: 11
     io.openliberty.jakarta.servlet.6.0;version=latest,\
     org.apache.httpcomponents.client5:httpclient5;version=5.0.2,\
     org.apache.httpcomponents.core5:httpcore5;version=5.0.2
-

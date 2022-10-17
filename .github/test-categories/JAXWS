@@ -1,9 +1,0 @@
-com.ibm.ws.jaxws.2.2.webcontainer_fat
-com.ibm.ws.jaxws.2.2.webcontainer_fat_extended
-com.ibm.ws.jaxws.cdi_fat
-com.ibm.ws.jaxws.clientcontainer_fat
-com.ibm.ws.jaxws.ejb_fat
-com.ibm.ws.jaxws.X.wsat_fat
-io.openliberty.ws.jaxws.global.handler.internal_fat
-io.openliberty.ws.jaxws.tools_fat
-io.openliberty.ws.jaxrs.2.1.jaxws.2.2_fat

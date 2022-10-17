@@ -63,3 +63,5 @@
 
 22118=Nezda\u0159ilo se vytvo\u0159it p\u0159ipojen\u00ed JGroups pomoc\u00ed konfigura\u010dn\u00edho souboru: {0}
 
+22119=Chyba p\u0159i inicializaci {0}, p\u0159idejte soubor org.eclipse.persistence.corba.jar do cesty ke t\u0159\u00edd\u011b.
+

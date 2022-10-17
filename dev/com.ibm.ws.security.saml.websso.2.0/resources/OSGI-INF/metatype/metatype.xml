@@ -110,7 +110,7 @@
              required="false" type="String"  />
         <AD id="disableLtpaCookie" name ="%disableLtpaCookie" description="%disableLtpaCookie.desc"
             required="false" type="Boolean" default="true"/>
-        <AD id="spCookieName" name="internal" description="internal use only"
+        <AD id="spCookieName" name="%spCookieName" description="%spCookieName.desc"
             required="false" type="String" />
         <AD id="realmName" name="%realmName" description="%realmName.desc"
             required="false" type="String" />            

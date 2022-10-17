@@ -28,21 +28,20 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import io.openliberty.data.Data;
-import io.openliberty.data.Limit;
-import io.openliberty.data.Page;
-import io.openliberty.data.Pagination;
-import io.openliberty.data.Repository;
-import io.openliberty.data.Result;
-import io.openliberty.data.Select;
-import io.openliberty.data.Sort;
-import io.openliberty.data.Sorts;
+import jakarta.data.Page;
+import jakarta.data.Result;
+import jakarta.data.Select;
+import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.Limit;
+import jakarta.data.repository.Pageable;
+import jakarta.data.repository.Repository;
+import jakarta.data.repository.Sort;
 
 /**
  * Uses the Repository interface that is copied from Jakarta NoSQL
  */
-@Data
-public interface Reservations extends Repository<Reservation, Long> {
+@Repository
+public interface Reservations extends CrudRepository<Reservation, Long> {
     boolean deleteByHostIn(List<String> hosts);
 
     long deleteByHostNot(String host);
@@ -61,8 +60,7 @@ public interface Reservations extends Repository<Reservation, Long> {
 
     ArrayList<Reservation> findByStartBetweenAndLocationIn(OffsetDateTime minStart, OffsetDateTime maxStart, List<String> locations);
 
-    @Limit(4)
-    CopyOnWriteArrayList<Reservation> findByStartGreaterThanOrderByStartDescOrderByStopDesc(OffsetDateTime startAfter);
+    CopyOnWriteArrayList<Reservation> findByStartGreaterThanOrderByStartDescOrderByStopDesc(OffsetDateTime startAfter, Limit maxResults);
 
     Reservation[] findByStartLessThanOrStartGreaterThanOrderByMeetingIDDesc(OffsetDateTime startBefore, OffsetDateTime startAfter);
 
@@ -72,7 +70,7 @@ public interface Reservations extends Repository<Reservation, Long> {
 
     Stack<Reservation> findByStopGreaterThanOrderByLocationDescOrderByHostOrderByStopAsc(OffsetDateTime endAfter);
 
-    UserDefinedCollection<Reservation> findByStopLessThan(OffsetDateTime maxEndTime, Sorts sorts);
+    UserDefinedCollection<Reservation> findByStopLessThan(OffsetDateTime maxEndTime, Sort... sortBy);
 
     AbstractCollection<Reservation> findByStopLessThanEqual(OffsetDateTime maxEndTime);
 
@@ -98,7 +96,7 @@ public interface Reservations extends Repository<Reservation, Long> {
 
     Publisher<Reservation> findByHostLikeOrderByMeetingID(String hostMatcher);
 
-    Page<Reservation> findByHostStartsWith(String hostPrefix, Pagination pagination, Sort sort);
+    Page<Reservation> findByHostStartsWith(String hostPrefix, Pageable pagination, Sort sort);
 
     LinkedHashSet<Reservation> findByInviteesContainsOrderByMeetingID(String invitee);
 

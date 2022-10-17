@@ -12,6 +12,7 @@ package com.ibm.ws.security.javaeesec.cdi.extensions;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -43,6 +44,7 @@ public class HttpAuthenticationMechanismsTrackerTest {
     public void testInitialize_nullAppName_nullMap() {
         HttpAuthenticationMechanismsTracker httpAuthenticationMechanismsTracker = new HttpAuthenticationMechanismsTracker();
         httpAuthenticationMechanismsTracker.initialize(null);
+
         assertNull("There must not be a module map for a null application name.", httpAuthenticationMechanismsTracker.getModuleMap(null));
     }
 
@@ -50,7 +52,24 @@ public class HttpAuthenticationMechanismsTrackerTest {
     public void testInitialize_nonNullAppName_nonNullMap() {
         HttpAuthenticationMechanismsTracker httpAuthenticationMechanismsTracker = new HttpAuthenticationMechanismsTracker();
         httpAuthenticationMechanismsTracker.initialize(APP_NAME);
+
         assertNotNull("There must be a module map for a non null application name.", httpAuthenticationMechanismsTracker.getModuleMap(APP_NAME));
+    }
+
+    @Test
+    public void testGetAuthMechs_nullAppName_null() {
+        HttpAuthenticationMechanismsTracker httpAuthenticationMechanismsTracker = new HttpAuthenticationMechanismsTracker();
+        httpAuthenticationMechanismsTracker.initialize(null);
+
+        assertNull("There must not be AuthMechs for a null application name.", httpAuthenticationMechanismsTracker.getAuthMechs(null, null));
+    }
+
+    @Test
+    public void testIsEmptyModuleMap_nullAppName_true() {
+        HttpAuthenticationMechanismsTracker httpAuthenticationMechanismsTracker = new HttpAuthenticationMechanismsTracker();
+        httpAuthenticationMechanismsTracker.initialize(null);
+
+        assertTrue("The module map is empty for a null application name.", httpAuthenticationMechanismsTracker.isEmptyModuleMap(null));
     }
 
 }

@@ -79,8 +79,9 @@ public class ArtifactoryImageNameSubstitutor extends ImageNameSubstitutor {
 
     static String getPrivateRegistry() {
         String artifactoryServer = System.getProperty(artifactoryRegistryKey);
-        if (artifactoryServer == null || artifactoryServer.isEmpty() || artifactoryServer.startsWith("${"))
-            throw new IllegalStateException("No private registry configured. System property '" + artifactoryRegistryKey + "' was: " + artifactoryServer);
+        if (artifactoryServer == null || artifactoryServer.isEmpty() || artifactoryServer.startsWith("${") || artifactoryServer.equals("null"))
+            throw new IllegalStateException("No private registry configured. System property '" + artifactoryRegistryKey + "' was: " + artifactoryServer + "  "
+                                            + "Ensure artifactory properties are set in gradle.startup.properties");
         if (artifactoryServer.startsWith("na.") || artifactoryServer.startsWith("eu."))
             artifactoryServer = artifactoryServer.substring(3);
         return "wasliberty-docker-remote." + artifactoryServer;

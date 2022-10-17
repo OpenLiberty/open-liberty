@@ -42,14 +42,6 @@ task copyCommonFiles {
       from project(':com.ibm.ws.transaction.cloud_fat.base').file('test-applications')
       into new File('test-applications')
     }
-
-    /*
-     * Copy common publish files.
-     */
-    copy {
-      from project(':com.ibm.ws.transaction.cloud_fat.base').file('publish')
-      into new File('publish')
-    }
   }
 }
 
@@ -66,9 +58,6 @@ autoFVT.dependsOn copyCommonFiles
 clean.doLast {
   if (file('test-applications').exists()){
     file('test-applications').deleteDir()
-  }
-  if (file('publish').exists()){
-    file('publish').deleteDir()
   }
   if (file('build').exists()){
     file('build').deleteDir()

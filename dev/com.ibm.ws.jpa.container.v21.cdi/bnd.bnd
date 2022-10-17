@@ -47,4 +47,5 @@ Private-Package: \
 	com.ibm.ws.cdi.interfaces;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service,\
  	com.ibm.websphere.javaee.el.3.0,\
-        com.ibm.ws.classloading;version=latest
+        com.ibm.ws.classloading;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

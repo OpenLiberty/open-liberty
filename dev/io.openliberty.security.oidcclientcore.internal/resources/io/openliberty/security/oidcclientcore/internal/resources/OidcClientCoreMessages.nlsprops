@@ -91,3 +91,24 @@ TOKEN_ENDPOINT_MISSING=CWWKS2417E: The {0} OpenID Connect client cannot find a v
 TOKEN_ENDPOINT_MISSING.explanation=The token endpoint URL is missing from the OpenID Connect provider metadata and the OpenID Connect client configuration.
 TOKEN_ENDPOINT_MISSING.useraction=Verify that the OpenID Connect provider metadata contains a token_endpoint value. A token endpoint can also be specified in the OpenID Connect client configuration.
 
+USERINFO_RESPONSE_ERROR=CWWKS2418W: The OpenID Connect client encountered the following error when it sent a request to the [{0}] User Info URL of the OpenID Connect provider: {1}
+USERINFO_RESPONSE_ERROR.explanation=The User Info response from the OpenID Connect provider might be malformed or missing information, or the OpenID Connect provider encountered an error when it handled the request.
+USERINFO_RESPONSE_ERROR.useraction=For more information, see the error in the message. Verify that the User Info URL for the OpenID Connect provider is correct.
+
+USERINFO_RESPONSE_NOT_200=CWWKS2419W: The request to the [{0}] User Info URL of the OpenID Connect provider returned a {1} HTTP status code. The OpenID Connect provider returned the following response: {2}
+USERINFO_RESPONSE_NOT_200.explanation=The OpenID Connect client did not receive a successful response from the OpenID Connect provider.
+USERINFO_RESPONSE_NOT_200.useraction=For more information, see the status code and error response in the message.
+
+VERIFICATION_KEY_ERROR=CWWKS2420E: The {0} OpenID Connect client encountered the following error while getting the key to verify the identity token from the OpenID Connect provider: {1}
+VERIFICATION_KEY_ERROR.explanation=The verification key might be missing, the OpenID Connect client encountered an error while fetching the key from the OpenID Connect provider, or another error occurred.
+VERIFICATION_KEY_ERROR.useraction=For more information, see the error in the message.
+
+# Do not translate "jwksConnectTimeout"
+JWK_CONNECTION_TIMED_OUT=CWWKS2421E: The OpenID Connect client failed to connect to the [{0}] JWK URI of the OpenID Connect provider within {1} milliseconds. Consider updating the jwksConnectTimeout property in the OpenID Connect client configuration.
+JWK_CONNECTION_TIMED_OUT.explanation=The OpenID Connect client cannot establish a connection with the JWK URI within the configured time frame.
+JWK_CONNECTION_TIMED_OUT.useraction=Update the jwksConnectTimeout property in the OpenID Connect client configuration. Verify that the OpenID Connect provider is reachable.
+
+# Do not translate "jwksReadTimeout"
+JWK_READ_TIMED_OUT=CWWKS2422E: The OpenID Connect client failed to read data from the [{0}] JWK URI of the OpenID Connect provider within {1} milliseconds. Consider updating the jwksReadTimeout property in the OpenID Connect client configuration.
+JWK_READ_TIMED_OUT.explanation=The OpenID Connect client cannot read the JWK data from the JWK URI within the configured time frame.
+JWK_READ_TIMED_OUT.useraction=Update the jwksReadTimeout property in the OpenID Connect client configuration. Verify that the OpenID Connect provider is reachable.

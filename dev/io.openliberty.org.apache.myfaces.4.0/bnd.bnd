@@ -66,11 +66,11 @@ DynamicImport-Package: \
 # Additionally, a subset of these org.apache.myfaces packages are exported by the thirdparty.faces-3.0 bundle - so we exclude them here.
 Export-Package: \
   !org.apache.myfaces.buildtools.*, \
+  !org.apache.myfaces.config, \
+  !org.apache.myfaces.renderkit, \
   !org.apache.myfaces.renderkit.html, \
-  !org.apache.myfaces.shared.config, \
-  !org.apache.myfaces.shared.renderkit, \
-  !org.apache.myfaces.shared.renderkit.html, \
-  !org.apache.myfaces.shared.renderkit.html.util, \
+  !org.apache.myfaces.renderkit.html.base, \
+  !org.apache.myfaces.renderkit.html.util, \
   com.ibm.ws.faces.taglibconfig, \
   org.apache.myfaces.application;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.application.viewstate;thread-context=true;version=${Implementation-Version}, \
@@ -133,13 +133,13 @@ Import-Package: \
   org.apache.myfaces.core:myfaces-impl;strategy=exact;version=4.0.0.RC1,\
   io.openliberty.jakarta.faces.4.0;version=latest,\
   com.ibm.ws.classloading;version=latest,\
-  com.ibm.ws.webcontainer;version=latest,\
+  com.ibm.ws.webcontainer.jakarta;version=latest,\
   com.ibm.ws.serialization;version=latest,\
   com.ibm.ws.container.service;version=latest,\
   com.ibm.ws.adaptable.module;version=latest,\
   com.ibm.ws.anno;version=latest,\
   com.ibm.ws.managedobject;version=latest,\
-  com.ibm.ws.jsp;version=latest,\
+  com.ibm.ws.jsp.jakarta;version=latest,\
   io.openliberty.jakarta.expressionLanguage.5.0;version=latest,\
   io.openliberty.jakarta.servlet.6.0;version=latest, \
   io.openliberty.jakarta.cdi.4.0;version=latest,\

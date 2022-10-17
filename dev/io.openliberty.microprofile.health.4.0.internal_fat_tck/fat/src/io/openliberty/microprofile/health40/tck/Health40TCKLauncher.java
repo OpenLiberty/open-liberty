@@ -27,7 +27,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKUtils;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -64,12 +65,12 @@ public class Health40TCKLauncher {
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("test.url", protocol + "://" + host + ":" + port);
 
-        MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.health.4.0.internal_fat_tck", this.getClass() + ":launchHealth40Tck", additionalProps);
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "Health");
-        resultInfo.put("feature_version", "4.0");
-        MvnUtils.preparePublicationFile(resultInfo);
+        String bucketName = "io.openliberty.microprofile.health.4.0.internal_fat_tck";
+        String testName = this.getClass() + ":launchHealth40Tck";
+        Type type = Type.MICROPROFILE;
+        String specName = "Health";
+        String specVersion = "4.0";
+        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion, additionalProps);
     }
 
 }

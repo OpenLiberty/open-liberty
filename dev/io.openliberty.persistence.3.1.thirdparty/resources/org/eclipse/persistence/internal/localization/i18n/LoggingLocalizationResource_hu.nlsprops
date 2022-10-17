@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -517,7 +517,7 @@ metadata_warning_ignore_mapped_superclass_primary_key=A(z) [{0}] entit\u00e1s os
 
 metadata_warning_ignore_mapped_superclass_read_only=A(z) [{0}] entit\u00e1s oszt\u00e1lyhoz tartoz\u00f3 [{1}] lek\u00e9pezett sz\u00fcl\u0151oszt\u00e1lyon a csak olvashat\u00f3 be\u00e1ll\u00edt\u00e1s figyelmen k\u00edv\u00fcl hagy\u00e1sa, mivel az adott entit\u00e1shoz csak olvashat\u00f3 metaadatok el\u0151z\u0151leg felt\u00e9rk\u00e9pez\u00e9sre ker\u00fcltek (mag\u00e1n az entit\u00e1son vagy egy m\u00e1sik lek\u00e9pezett sz\u00fcl\u0151oszt\u00e1lyon).
 
-metadata_warning_ignore_mapping_metadata=A(z) [{1}] oszt\u00e1lyb\u00f3l a(z) [{0}] attrib\u00fatumra alkalmazott javax.persistence metaadatok figyelmen k\u00edv\u00fcl hagy\u00e1sa. A javax.persistence metaadatok az \u00e1tmeneti, statikus \u00e9s absztrakt mez\u0151k vagy \u00e1tmeneti eset\u00e9ben figyelmen k\u00edv\u00fcl maradnak.
+metadata_warning_ignore_mapping_metadata=A(z) [{1}] oszt\u00e1lyb\u00f3l a(z) [{0}] attrib\u00fatumra alkalmazott jakarta.persistence metaadatok figyelmen k\u00edv\u00fcl hagy\u00e1sa. A jakarta.persistence metaadatok az \u00e1tmeneti, statikus \u00e9s absztrakt mez\u0151k vagy \u00e1tmeneti eset\u00e9ben figyelmen k\u00edv\u00fcl maradnak.
 
 metadata_warning_ignore_serialized=A(z) [{0}] entit\u00e1s oszt\u00e1lyon bel\u00fcli [{1}] elemen az alap\u00e9rtelmezett soros\u00edt\u00e1s figyelmen k\u00edv\u00fcl hagy\u00e1sa, mivel EclipseLink \u00e1talak\u00edt\u00e1si metaadatok lettek megadva.
 
@@ -581,7 +581,7 @@ no_jar_entry_migratable_in_ear=A(z) ({0}) bemeneti EAR f\u00e1jl egyik jar bejeg
 
 no_session_found=A(z) [{0}] nev\u0171 munkamenet nem tal\u00e1lhat\u00f3 a session.xml f\u00e1jlban [{1}]
 
-non_jpa_allowed_type_used_for_collection_using_lazy_access=A(z) [{1}] elem a(z) [{0}] entit\u00e1s oszt\u00e1lyon bel\u00fcl [{2}] gy\u0171jtem\u00e9nyt\u00edpust haszn\u00e1l, m\u00edg a JPA specifik\u00e1ci\u00f3 csak java.util.Collection, java.util.Set, java.util.List vagy java.util.Map t\u00edpust t\u00e1mogat.  Ez a t\u00edpus a szorgalmas bet\u00f6lt\u00e9ssel t\u00e1mogatott; ezzel a gy\u0171jtem\u00e9nyt\u00edpussal a k\u00e9sleltetett bet\u00f6lt\u00e9s haszn\u00e1lata tov\u00e1bbi konfigur\u00e1ci\u00f3t a(z) k\u00f6vetkez\u0151t: [{2}] kiterjeszt\u0151 IndirectContainer megval\u00f3s\u00edt\u00e1st ig\u00e9nyel, vagy azt k\u00f6veteli meg, hogy a lek\u00e9pez\u00e9s alapszint\u0171 k\u00f6zvetett elj\u00e1r\u00e1s haszn\u00e1lat\u00e1ra legyen be\u00e1ll\u00edtva, a t\u00edpus pedig ValueholderInterface legyen.
+non_jpa_allowed_type_used_for_collection_using_lazy_access=A(z) [{1}] elem a(z) [{0}] entit\u00e1s oszt\u00e1lyon bel\u00fcl [{2}] gy\u0171jtem\u00e9nyt\u00edpust haszn\u00e1l, m\u00edg a Jakarta Persistence specifik\u00e1ci\u00f3 csak java.util.Collection, java.util.Set, java.util.List vagy java.util.Map t\u00edpust t\u00e1mogat.  Ez a t\u00edpus a szorgalmas bet\u00f6lt\u00e9ssel t\u00e1mogatott; ezzel a gy\u0171jtem\u00e9nyt\u00edpussal a k\u00e9sleltetett bet\u00f6lt\u00e9s haszn\u00e1lata tov\u00e1bbi konfigur\u00e1ci\u00f3t a(z) k\u00f6vetkez\u0151t: [{2}] kiterjeszt\u0151 IndirectContainer megval\u00f3s\u00edt\u00e1st ig\u00e9nyel, vagy azt k\u00f6veteli meg, hogy a lek\u00e9pez\u00e9s alapszint\u0171 k\u00f6zvetett elj\u00e1r\u00e1s haszn\u00e1lat\u00e1ra legyen be\u00e1ll\u00edtva, a t\u00edpus pedig ValueholderInterface legyen.
 
 objectchangepolicy_turned_off=M\u00f3dos\u00edt\u00e1sk\u00f6vet\u00e9s kikapcsolva a k\u00f6vetkez\u0151re: {0}
 

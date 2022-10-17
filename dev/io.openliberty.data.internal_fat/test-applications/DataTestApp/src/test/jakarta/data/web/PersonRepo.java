@@ -12,16 +12,18 @@ package test.jakarta.data.web;
 
 import java.util.List;
 
-import io.openliberty.data.Data;
-import io.openliberty.data.Query;
+import jakarta.data.repository.Query;
+import jakarta.data.repository.Repository;
 
 /**
- *
+ * This example only references the entity class as a parameterized type.
+ * Do not add methods or inheritance that would allow the entity class
+ * to be discovered another way.
  */
-@Data
+@Repository
 public interface PersonRepo {
     @Query("SELECT o FROM Person o WHERE o.lastName=?1")
     List<Person> find(String lastName);
 
-    void save(Person p);
+    void save(List<Person> people);
 }

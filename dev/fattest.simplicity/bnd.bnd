@@ -46,6 +46,7 @@ Export-Package: \
         componenttest.topology.impl;version=2.0,\
         componenttest.topology.ldap;version=2.0,\
         componenttest.topology.utils;version=2.0,\
+        componenttest.topology.utils.tck;version=2.0,\
         componenttest.vulnerability;version=2.0,\
         io.openliberty.checkpoint.spi
 	
@@ -56,13 +57,13 @@ Private-Package: \
 	com.ibm.websphere.simplicity.configuration
 
 Include-Resource: \
-    resources/init-sqlserver.sql=resources/init-sqlserver.sql, \
+    init-sqlserver.sql=resources/init-sqlserver.sql, \
 	META-INF=resources/META-INF
 
 test.project: true
 
 # These are the images used by the org.testcontainers and componenttest.topology.database.container packages
-fat.test.container.images: testcontainers/ryuk:0.3.3, testcontainers/sshd:1.0.0, kyleaure/db2:1.0, kyleaure/oracle-18.4.0-expanded:1.0.full, postgres:14.1-alpine, mcr.microsoft.com/mssql/server:2019-CU10-ubuntu-16.04
+fat.test.container.images: testcontainers/ryuk:0.3.4, testcontainers/sshd:1.1.0, kyleaure/db2:1.0, kyleaure/oracle-18.4.0-expanded:1.0.full, postgres:14.1-alpine, mcr.microsoft.com/mssql/server:2019-CU10-ubuntu-16.04
 
 -buildpath: \
 	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\

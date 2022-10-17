@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -535,7 +535,7 @@
 
 7306=L''\u00e9l\u00e9ment annot\u00e9 [{0}] de la classe [{1}] indique un type d''acc\u00e8s explicite incorrect. Il doit indiquer un type d''acc\u00e8s [{2}].
 
-7307=Cha\u00eene de contexte de consignation manquante pour le contexte [{0}]. Il s''agit d''une exception interne qui s''est produite lors de l''extraction d''un message de journal pour le traitement des m\u00e9tadonn\u00e9es JPA. Signalez-le comme bogue.
+7307=Cha\u00eene de contexte de consignation manquante pour le contexte [{0}]. Il s''agit d''une exception interne qui s''est produite lors de l''extraction d''un message de journal pour le traitement des m\u00e9tadonn\u00e9es Jakarta Persistence. Signalez-le comme bogue.
 
 7308=La valeur sp\u00e9cifi\u00e9e [{0}] pour la propri\u00e9t\u00e9 de persistance [{1}] n''est pas valide - [{2}].
 
@@ -593,7 +593,7 @@
 
 7336=Plusieurs propri\u00e9t\u00e9s de contexte [{2}] et [{3}] sp\u00e9cifi\u00e9es pour la m\u00eame zone de discriminateur de titulaire [{1}] pour la classe [{0}]
 
-7337=La colonne de discriminateur de titulaire mapp\u00e9e [{1}] sur la classe [{0}] doit \u00eatre marqu\u00e9e en lecture seule. Dans JPA, cela s''effectue en d\u00e9finissant setting insertable=false et updatable=false sur la colonne, par exemple, @Column(name="TENANT_ID", insertable=false, updatable=false).
+7337=La colonne de discriminateur de titulaire mapp\u00e9e [{1}] sur la classe [{0}] doit \u00eatre marqu\u00e9e en lecture seule. Dans Jakarta Persistence API, cela s''effectue en d\u00e9finissant setting insertable=false et updatable=false sur la colonne, par exemple, @Column(name="TENANT_ID", insertable=false, updatable=false).
 
 7338=Vous ne pouvez pas ajouter des s\u00e9quences \u00e0 un \u00e9l\u00e9ment SessionBroker.
 
@@ -621,7 +621,7 @@
 
 7351=La classe de convertisseur [{2}] sp\u00e9cifi\u00e9e sur l''attribut de mappage [{1}] de la classe [{0}] est introuvable. Assurez-vous que le nom de la classe de convertisseur est correct et qu''il existe avec la d\u00e9finition d''unit\u00e9 de persistance.
 
-7352=La classe de convertisseur [{0}] doit impl\u00e9menter l''interface JPA javax.persistence.AttributeConverter<X, Y> afin qu''elle soit une classe de convertisseur valide.
+7352=La classe de convertisseur [{0}] doit impl\u00e9menter l''interface Jakarta Persistence jakarta.persistence.AttributeConverter<X, Y> afin qu''elle soit une classe de convertisseur valide.
 
 7353=L''attribut de mappage [{1}] de la classe [{0}] n''est pas un type de mappage valide pour une sp\u00e9cification de conversion.
 

@@ -127,7 +127,7 @@ public class Jose4jEllipticCurveJWK extends EllipticCurveJsonWebKey implements J
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Entry Key:" + entry.getKey() + " value:" + entry.getValue().toString());
             }
-            params.put(entry.getKey(), entry.getValue().toString());
+            params.put(entry.getKey(), entry.getValue());
         }
 
         Jose4jEllipticCurveJWK jwk = null;
@@ -136,7 +136,7 @@ public class Jose4jEllipticCurveJWK extends EllipticCurveJsonWebKey implements J
         } catch (JoseException e) {
             // TODO error handling
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "hit exception", e);
+                Tr.debug(tc, "hit exception = " + e.getMessage());
             }
         }
         return jwk;

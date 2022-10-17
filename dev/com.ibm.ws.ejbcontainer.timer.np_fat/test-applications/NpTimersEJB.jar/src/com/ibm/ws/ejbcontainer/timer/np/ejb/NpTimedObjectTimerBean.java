@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2021 IBM Corporation and others.
+ * Copyright (c) 2009, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,7 +61,7 @@ public class NpTimedObjectTimerBean implements NpTimedObjectTimerLocal, TimedObj
     public static final String keyTimerCommitNotSupported = "keyTimerCommitNotSupported";
 
     private static final long LATCH_AWAIT_TIME = 2 * 60 * 1000;
-    public static final int COMMIT_PROCESSING_FUDGE = 250; // ms
+    public static final int COMMIT_PROCESSING_FUDGE = 350; // ms
     public static final int TIMER_PRECISION = 400;
     public static final int RETRY_INTERVAL = TIMER_PRECISION;
     public static final int DEFAULT_EXPIRATION = 800;

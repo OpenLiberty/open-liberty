@@ -45,11 +45,23 @@ public abstract class DDParser implements PlatformVersion {
     protected static final TraceComponent tc = Tr.register(DDParser.class);
 
     /**
-     * Display a warning message.  Do not fail parsing.
+     * Format a message.
+     *
+     * @param msgId A message which is to be formatted.
+     * @param parms Parameters to the message.
+     *
+     * @return The formatted message.
+     */
+    public String formatMessage(String msgId, Object... parms) {
+        return Tr.formatMessage(tc, msgId, parms);
+    }
+
+    /**
+     * Display a warning message. Do not fail parsing.
      *
      * @param message The warning message which is to be displayed.
      */
-    protected void warning(String message) {
+    public void warning(String message) {
         Tr.warning(tc, message);
     }
 
@@ -58,7 +70,7 @@ public abstract class DDParser implements PlatformVersion {
      *
      * @param message The error message which is to be displayed.
      */
-    protected void error(String message) {
+    public void error(String message) {
         Tr.error(tc, message);
     }
 
@@ -66,14 +78,14 @@ public abstract class DDParser implements PlatformVersion {
      * Display an error message.
      *
      * @param message The error message which is to be displayed.
-     * 
+     *
      * @throws ParseException Always thrown.
      */
     protected void fatal(String message) throws ParseException {
         Tr.error(tc, message);
         throw new ParseException(message);
     }
-    
+
     //
 
     public static class ParseException extends Exception {
@@ -100,12 +112,15 @@ public abstract class DDParser implements PlatformVersion {
 
     public interface ParsableElement extends Parsable {
         void setNil(boolean nilled);
+
         boolean isNil();
 
         boolean isIdAllowed();
 
         boolean handleAttribute(DDParser parser, String nsURI, String localName, int index) throws ParseException;
+
         boolean handleChild(DDParser parser, String localName) throws ParseException;
+
         boolean handleContent(DDParser parser) throws ParseException;
 
         void finish(DDParser parser) throws ParseException;
@@ -166,7 +181,7 @@ public abstract class DDParser implements PlatformVersion {
         protected List<T> list = new ArrayList<T>();
 
         public T newInstance(DDParser parser) {
-        	throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException();
         }
 
         @Trivial
@@ -191,7 +206,7 @@ public abstract class DDParser implements PlatformVersion {
         public void describe(Diagnostics diag) {
             boolean isFirst = true;
             for (T t : list) {
-                if ( !isFirst ) {
+                if (!isFirst) {
                     isFirst = false;
                     diag.sb.append(',');
                 }
@@ -238,24 +253,24 @@ public abstract class DDParser implements PlatformVersion {
         @Trivial
         public Object getComponentForId(String id) {
             Object comp = idToComponentMap.get(id);
-            if ( comp == DUPLICATE ) {
-                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {                
+            if (comp == DUPLICATE) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     // Should this be a warning??
                     Tr.debug(tc, "Lookup of duplicate ID [ {0} ] forced to null.", id);
                 }
                 comp = null;
-            } else if ( comp == null ) {
-                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+            } else if (comp == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Failed lookup of ID [ {0} ]", id);
-                    if ( !didDisplayIds ) {                                
+                    if (!didDisplayIds) {
                         didDisplayIds = true;
-                        for ( Map.Entry<String, Object> idEntry : idToComponentMap.entrySet() ) {
+                        for (Map.Entry<String, Object> idEntry : idToComponentMap.entrySet()) {
                             Tr.debug(tc, "ID [ {0} ]: [ {1} ]", idEntry.getKey(), idEntry.getValue());
                         }
                     }
                 }
             } else {
-                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Lookup of ID [ {0} ]: [ {1} ]", id, comp);
                 }
             }
@@ -265,19 +280,19 @@ public abstract class DDParser implements PlatformVersion {
         // Mark as trivial to turn off logging as a fix for defect 53155
         @Trivial
         public String getIdForComponent(Object ddComponent) {
-            if ( ddComponent == null ) {
+            if (ddComponent == null) {
                 return null; // Unexpected
-            } else if ( ddComponent == DUPLICATE ) {
+            } else if (ddComponent == DUPLICATE) {
                 return null;
             }
 
-            if ( componentToIdMap == null ) {
+            if (componentToIdMap == null) {
                 Map<Object, String> useMap =
                     new IdentityHashMap<>( idToComponentMap.size() );
-                for ( Map.Entry<String, Object> idEntry : idToComponentMap.entrySet() ) {
+                for (Map.Entry<String, Object> idEntry : idToComponentMap.entrySet()) {
                     String id = idEntry.getKey();
                     Object component = idEntry.getValue();
-                    if ( component != DUPLICATE ) {
+                    if (component != DUPLICATE) {
                         useMap.put(component, id);
                     }
                 }
@@ -416,16 +431,16 @@ public abstract class DDParser implements PlatformVersion {
         /**
          * Override to answer an empty input stream.
          *
-         * As a side effect, store the public ID.  This is used
+         * As a side effect, store the public ID. This is used
          * when processing the XML header.
          *
-         * @return The resolved entity.  This implementation
-         *     always answers an empty input stream.
+         * @return The resolved entity. This implementation
+         *         always answers an empty input stream.
          */
         @Override
         public Object resolveEntity(
-            String publicID, String systemID,
-            String baseURI, String namespace) throws XMLStreamException {
+                                    String publicID, String systemID,
+                                    String baseURI, String namespace) throws XMLStreamException {
 
             dtdPublicId = publicID;
 
@@ -439,22 +454,22 @@ public abstract class DDParser implements PlatformVersion {
         throws ParseException {
 
         this(ddRootContainer, ddEntry, UNUSED_MAX_SCHEMA_VERSION, expectedRootName);
-    }    
-    
+    }
+
     protected static final int UNUSED_MAX_SCHEMA_VERSION = -1;
 
     /**
      * Construct a parser for a specified container and container entry.
-     * 
-     * 
-     * @param ddRootContainer The root container containing the entry which is to be parsed.
-     * @param ddEntry The container entry which is to be parsed.
+     *
+     *
+     * @param ddRootContainer  The root container containing the entry which is to be parsed.
+     * @param ddEntry          The container entry which is to be parsed.
      * @param maxSchemaVersion The maximum schema version which will be
-     *     parsed.
+     *                             parsed.
      * @param expectedRootName The expected root element name.
      *
-     * @throws ParseException Thrown in case of a parse error.  Not currently thrown.
-     *    Declared for future use.
+     * @throws ParseException Thrown in case of a parse error. Not currently thrown.
+     *                            Declared for future use.
      */
     public DDParser(Container ddRootContainer, Entry ddEntry,
                     int maxSchemaVersion,
@@ -471,9 +486,9 @@ public abstract class DDParser implements PlatformVersion {
 
     /**
      * Answer the type of the linked descriptor.
-     * 
+     *
      * The presence of this API on {@link DDParser} is
-     * a historical artifact.  Cross component types are
+     * a historical artifact. Cross component types are
      * only used for BND and EXT documents, and the API
      * should have only been exposed to {@link DDParserBndExt}.
      * Rewiring the many parse types is too big of a change,
@@ -484,8 +499,8 @@ public abstract class DDParser implements PlatformVersion {
     public Class<?> getCrossComponentType() {
         throw new UnsupportedOperationException("Cross components require a BND or EXT parser");
     }
-    
-    // Control parameters ... 
+
+    // Control parameters ...
 
     /** The current maximum supported schema version. */
     public final int maxVersion;
@@ -509,8 +524,8 @@ public abstract class DDParser implements PlatformVersion {
     protected InputStream openEntry() throws ParseException {
         try {
             return adaptableEntry.adapt(InputStream.class);
-        } catch ( UnableToAdaptException e ) {
-            throw new ParseException( xmlError(e), e );
+        } catch (UnableToAdaptException e) {
+            throw new ParseException(xmlError(e), e);
         }
     }
 
@@ -527,28 +542,28 @@ public abstract class DDParser implements PlatformVersion {
     /**
      * Obtain a target value from the root container using the
      * {@link Container#adapt(Class)} API.
-     * 
+     *
      * First look in a local cache, and answer any value cached
      * locally.
-     * 
+     *
      * Otherwise, obtain the value using <code>adapt</code>, store
      * the value in the local cache, and return the value.
      *
-     * @param <T> The type of value which is to be retrieved.
+     * @param <T>         The type of value which is to be retrieved.
      * @param targetClass The class of the value which is to be retrieved.
      *
      * @return The value which was retrieved.
      *
      * @throws ParseException Thrown in case of failure of the
-     *     <code>adapt</code> invocation.
+     *                            <code>adapt</code> invocation.
      */
     @Trivial
     public <T> T adaptRootContainer(Class<T> targetClass) throws ParseException {
         Object target = adaptCache.get(targetClass);
-        if ( target != null ) {
-            if ( target == adaptNull ) {
+        if (target != null) {
+            if (target == adaptNull) {
                 return null;
-            } else  if ( target instanceof ParseException ) {
+            } else if (target instanceof ParseException) {
                 throw (ParseException) target;
             } else {
                 return targetClass.cast(target);
@@ -557,13 +572,13 @@ public abstract class DDParser implements PlatformVersion {
 
         try {
             T result = rootContainer.adapt(targetClass);
-            adaptCache.put( targetClass, ((result == null) ? adaptNull : result ) );
+            adaptCache.put(targetClass, ((result == null) ? adaptNull : result));
             return result;
 
-        } catch ( UnableToAdaptException e ) {
+        } catch (UnableToAdaptException e) {
             ParseException pe;
             Throwable cause = e.getCause();
-            if ( cause instanceof ParseException ) {
+            if (cause instanceof ParseException) {
                 pe = (ParseException) cause;
             }
             pe = new ParseException(xmlError(e), e);
@@ -576,50 +591,50 @@ public abstract class DDParser implements PlatformVersion {
 
     /**
      * Retrieve data stored in relation to a target class from the non-persistent
-     * cache of the root container.  While the non-persistent cache stored data
+     * cache of the root container. While the non-persistent cache stored data
      * not necessarily of the same type as the target class, this implementation
      * expected the value to be of the same type.
-     *  
-     * @param <T> The type of data to be retrieved.
+     * 
+     * @param <T>         The type of data to be retrieved.
      * @param targetClass The class of the data which is to be retrieved.
      *
      * @return Data of the specified type, retrieved from the non-persistent
-     *     cache of the root container.  Answer null if no non-persistent
-     *     cache is available, or if no data is stored for the specified type.
+     *         cache of the root container. Answer null if no non-persistent
+     *         cache is available, or if no data is stored for the specified type.
      */
     @SuppressWarnings("unchecked")
     public <T> T cacheGet(Class<T> targetClass) {
         NonPersistentCache cache = null;
         try {
             cache = rootContainer.adapt(NonPersistentCache.class);
-        } catch ( UnableToAdaptException e ) {
+        } catch (UnableToAdaptException e) {
             // FFDC
         }
-        return ( (cache == null) ? null : (T) cache.getFromCache(targetClass) );
-    }    
+        return ((cache == null) ? null : (T) cache.getFromCache(targetClass));
+    }
 
     // Parse parameterization ...
-    
+
     private final String expectedRootName;
-    
+
     public String getExpectedRootName() {
         return expectedRootName;
     }
-    
+
     protected void validateRootElementName() throws ParseException {
         String useExpectedName = getExpectedRootName();
-        if ( !useExpectedName.equals(rootElementLocalName)) {
-            throw new ParseException( unexpectedRootElement(useExpectedName) );
+        if (!useExpectedName.equals(rootElementLocalName)) {
+            throw new ParseException(unexpectedRootElement(useExpectedName));
         }
-    }    
-    
+    }
+
     // XML header values ...
 
-    // Schema version    
+    // Schema version
     public int version;
-    // Schema version turned into a platform version.    
+    // Schema version turned into a platform version.
     public int eePlatformVersion;
-    
+
     public String dtdPublicId;
     public String namespace;
     public String namespaceOriginal;
@@ -638,14 +653,14 @@ public abstract class DDParser implements PlatformVersion {
      * and store the original namespace.
      *
      * The code update may assign a namespace which is different from the
-     * namespace which is actually used by the XML text.  That breaks
-     * namespace checking for child elements.  Remember the original
+     * namespace which is actually used by the XML text. That breaks
+     * namespace checking for child elements. Remember the original
      * namespace and perform an update element namespaces when validating
      * element namespaces.
-     * 
+     *
      * See {@link com.ibm.ws.javaee.ddmodel.DDParserBndExt.createXMLRootParsable()
      * com.ibm.ws.javaee.ddmodel.DDParserSpec.createRootParsable()
-     * A
+     *
      * @param namespaceOverride
      */
     protected void patchNamespace(String namespaceOverride) {
@@ -660,52 +675,52 @@ public abstract class DDParser implements PlatformVersion {
      * @param localNamespace The local namespace which is to be tested.
      *
      * @return True or false telling if the local namespace matches the
-     *     default namespace.
+     *         default namespace.
      */
     protected boolean matchNamespace(String localNamespace) {
-        if ( ((namespaceOriginal != null) && namespaceOriginal.equals(localNamespace)) ||
-             ((namespaceOriginal == null) && (localNamespace == null)) ) {
+        if (((namespaceOriginal != null) && namespaceOriginal.equals(localNamespace)) ||
+            ((namespaceOriginal == null) && (localNamespace == null))) {
             localNamespace = namespace;
         }
 
-        if ( namespace == null ) {
-            return ( localNamespace == null );
+        if (namespace == null) {
+            return (localNamespace == null);
         } else {
             return namespace.equals(localNamespace);
         }
     }
 
     // Root parse objects ...
-    
-    protected ParsableElement rootParsable;    
+
+    protected ParsableElement rootParsable;
     public String rootElementLocalName;
-    
+
     public ComponentIDMap idMap = new ComponentIDMap();
-    
+
     public void putId(String elementName, String id, Object value) {
         Object oldValue = idMap.get(id);
-        if ( oldValue == null ) {
+        if (oldValue == null) {
             idMap.put(id, value);
             return;
 
-        } else if ( oldValue == value ) {
+        } else if (oldValue == value) {
             return;
 
         } else {
             idMap.put(id, ComponentIDMap.DUPLICATE);
 
-            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 String entryPath = describeEntry();
                 int lineNo = getLineNumber();
 
                 // Should this be a warning??
                 Tr.debug(tc,
-                    "Duplicate ID [ {0} ] in element [ {1} ] of [ {2} ] at line [ {3} ]",
-                    id, elementName, entryPath, lineNo);
+                         "Duplicate ID [ {0} ] in element [ {1} ] of [ {2} ] at line [ {3} ]",
+                         id, elementName, entryPath, lineNo);
             }
         }
     }
-    
+
     protected String currentElementLocalName;
 
     protected final Object describeRootParsable = new Object() {
@@ -724,9 +739,9 @@ public abstract class DDParser implements PlatformVersion {
     }
 
     // Reading primitives ...
-    
+
     private XMLStreamReader xsr;
-    
+
     @Trivial
     public String getNamespaceURI(String prefix) {
         return xsr.getNamespaceURI(prefix);
@@ -734,17 +749,17 @@ public abstract class DDParser implements PlatformVersion {
 
     @Trivial
     public int getLineNumber() {
-        return ( (xsr == null) ? -1 : xsr.getLocation().getLineNumber() );
+        return ((xsr == null) ? -1 : xsr.getLocation().getLineNumber());
     }
 
     @Trivial
     public boolean isWhiteSpace() {
         return xsr.isWhiteSpace();
     }
-    
+
     /**
      * Retrieve the value of an attribute.
-     * 
+     *
      * Match on the target local name and optionally on a target namespace.
      *
      * Match only on the target local name if the target namespace is null.
@@ -752,29 +767,29 @@ public abstract class DDParser implements PlatformVersion {
      * Match an empty target namespace against empty attribute namespaces
      * and against null attribute namespaces.
      *
-     * @param targetNS The namespace of the target attribute.
+     * @param targetNS        The namespace of the target attribute.
      * @param targetLocalName The local name of the target attribute.
      *
-     * @return The value of the target attribute.  Null if the target
-     *     attribute is not found.
+     * @return The value of the target attribute. Null if the target
+     *         attribute is not found.
      */
     @Trivial
     public String getAttributeValue(String targetNS, String targetLocalName) {
         int attrCount = xsr.getAttributeCount();
-        for ( int attrNo = 0; attrNo < attrCount; attrNo++ ) {
+        for (int attrNo = 0; attrNo < attrCount; attrNo++) {
             String attrLocalName = xsr.getAttributeLocalName(attrNo);
 
             // First check is against the attribute local name.
             // This must match the target local name.
 
-            if ( !targetLocalName.equals(attrLocalName) ) {
+            if (!targetLocalName.equals(attrLocalName)) {
                 continue;
             }
 
             // Second check is against the attribute namespace.
             // Ignore this check if a null target namespace was provided.
 
-            if ( targetNS == null ) {
+            if (targetNS == null) {
                 return xsr.getAttributeValue(attrNo);
             }
 
@@ -782,10 +797,10 @@ public abstract class DDParser implements PlatformVersion {
             // matches a null attribute namespace as well as an
             // empty attribute namespace.  A non-null target namespace
             // must exactly match the attribute namespace.
-            
+
             String attrNS = xsr.getAttributeNamespace(attrNo);
-            if ( attrNS == null ) {
-                if ( targetNS.isEmpty() ) {
+            if (attrNS == null) {
+                if (targetNS.isEmpty()) {
                     return xsr.getAttributeValue(attrNo);
                 } else {
                     // Keep looking: The target namespace is
@@ -793,7 +808,7 @@ public abstract class DDParser implements PlatformVersion {
                     // attribute namespace is null.
                 }
             } else {
-                if ( targetNS.equals(attrNS) ) {
+                if (targetNS.equals(attrNS)) {
                     // This test works if either namespace is empty.
                     return xsr.getAttributeValue(attrNo);
                 } else {
@@ -853,7 +868,7 @@ public abstract class DDParser implements PlatformVersion {
     // Element content primitives ...
 
     protected StringBuilder contentBuilder = new StringBuilder();
-    
+
     @Trivial
     public void appendTextToContent() {
         contentBuilder.append(xsr.getText());
@@ -861,15 +876,15 @@ public abstract class DDParser implements PlatformVersion {
 
     /**
      * Answer the accumulated content, conditionally
-     * trimming whitespace.  Reset the content accumulator.
+     * trimming whitespace. Reset the content accumulator.
      *
      * This default implementation never trims whitespace.
      * See {@link DDParserSpec#getContentString(boolean)}.
-     * 
+     *
      * @param untrimmed Control parameter: Tell if trimming
-     *    (if enabled for this type), is to be performed.
+     *                      (if enabled for this type), is to be performed.
      * @return The accumulated content.
-     */    
+     */
     @Trivial
     public String getContentString(boolean untrimmed) {
         return getContentString();
@@ -877,7 +892,7 @@ public abstract class DDParser implements PlatformVersion {
 
     /**
      * Answer the accumulated content, including
-     * whitespace.  Reset the content accumulator.
+     * whitespace. Reset the content accumulator.
      *
      * @return The accumulated content.
      */
@@ -901,7 +916,7 @@ public abstract class DDParser implements PlatformVersion {
             stream = openEntry();
 
             DTDPublicIDResolver resolver = new DTDPublicIDResolver();
-            
+
             try {
                 xsr = createXMLStreamReader(resolver, stream);
 
@@ -914,25 +929,25 @@ public abstract class DDParser implements PlatformVersion {
                 currentElementLocalName = rootElementLocalName;
                 rootParsable = createRootParsable();
 
-                if ( rootParsable != null ) {
+                if (rootParsable != null) {
                     parse(rootParsable);
                 }
 
             } finally {
-                if ( xsr != null ) {
+                if (xsr != null) {
                     try {
                         xsr.close();
-                    } catch ( XMLStreamException xse ) {
+                    } catch (XMLStreamException xse) {
                         // FFDC
                     }
                 }
             }
 
         } finally {
-            if ( stream != null ) {
+            if (stream != null) {
                 try {
                     stream.close();
-                } catch ( IOException ioe ) {
+                } catch (IOException ioe) {
                     //FFDC
                 }
             }
@@ -946,17 +961,17 @@ public abstract class DDParser implements PlatformVersion {
             // IBM XML parser requires a special property to enable line numbers.
             try {
                 inputFactory.setProperty("javax.xml.stream.isSupportingLocationCoordinates", true);
-            } catch ( IllegalArgumentException e ) {
+            } catch (IllegalArgumentException e) {
                 // FFDC
             }
             inputFactory.setXMLResolver(resolver);
             return inputFactory.createXMLStreamReader(stream);
 
-        } catch ( XMLStreamException e ) {
+        } catch (XMLStreamException e) {
             throw new ParseException(xmlError(e), e);
         }
     }
-    
+
     @FFDCIgnore(XMLStreamException.class)
     private void parseToRootElement() throws ParseException {
         try {
@@ -966,7 +981,7 @@ public abstract class DDParser implements PlatformVersion {
                 }
                 xsr.next();
             }
-        } catch ( XMLStreamException e ) {
+        } catch (XMLStreamException e) {
             e.printStackTrace(System.out);
             throw new ParseException(xmlError(e), e);
         }
@@ -994,7 +1009,7 @@ public abstract class DDParser implements PlatformVersion {
     }
 
     protected abstract ParsableElement createRootParsable() throws ParseException;
-    
+
     // Body parsing ...
 
     /**
@@ -1059,8 +1074,8 @@ public abstract class DDParser implements PlatformVersion {
                     case XMLStreamConstants.START_ELEMENT:
                         String localName = xsr.getLocalName();
                         String localNamespace = xsr.getNamespaceURI();
-                        if ( !matchNamespace(localNamespace) ) {
-                            throw new ParseException( incorrectChildElementNamespace(localNamespace, localName) );
+                        if (!matchNamespace(localNamespace)) {
+                            throw new ParseException(incorrectChildElementNamespace(localNamespace, localName));
                         }
                         boolean handledChild = parsable.handleChild(this, localName);
                         currentElementLocalName = elementLocalName;
@@ -1076,8 +1091,8 @@ public abstract class DDParser implements PlatformVersion {
                         int eventType = xsr.getEventType();
                         RuntimeException re = new RuntimeException(
                             "unexpected event " + eventType +
-                            " while processing element \"" + elementName + "\"" +
-                            " of " + describeEntry() + ".");
+                                                                   " while processing element \"" + elementName + "\"" +
+                                                                   " of " + describeEntry() + ".");
                         FFDCFilter.processException(re, "com.ibm.ws.javaee.ddmodel.DDParser", "410", this);
                         break;
                 }
@@ -1193,7 +1208,7 @@ public abstract class DDParser implements PlatformVersion {
         public final int platformVersion;
 
         public VersionData(
-            String versionAttr, String publicId, String namespace, int version, int platformVersion) {
+                           String versionAttr, String publicId, String namespace, int version, int platformVersion) {
 
             this.versionAttr = versionAttr;
             this.namespace = namespace;
@@ -1201,24 +1216,25 @@ public abstract class DDParser implements PlatformVersion {
             this.version = version;
             this.platformVersion = platformVersion;
         }
-        
+
         public boolean accept(String ddVersionAttr, String ddPublicId, String ddNamespace) {
-            if ( ddVersionAttr == null ) {
-                return ( ((publicId != null) && publicId.equals(ddPublicId)) ||
-                         ((namespace != null) && namespace.equals(ddNamespace)) );
+            if (ddVersionAttr == null) {
+                return (((publicId != null) && publicId.equals(ddPublicId)) ||
+                        ((namespace != null) && namespace.equals(ddNamespace)));
             } else {
                 return versionAttr.equals(ddVersionAttr);
             }
         }
-        
+
+        @Override
         public String toString() {
             return super.toString() +
-                '(' + versionAttr +
-                ", " + namespace +
-                ", " + publicId +
-                ", " + version +
-                ", " + platformVersion +
-                ')';
+                   '(' + versionAttr +
+                   ", " + namespace +
+                   ", " + publicId +
+                   ", " + version +
+                   ", " + platformVersion +
+                   ')';
         }
     }
 
@@ -1236,27 +1252,27 @@ public abstract class DDParser implements PlatformVersion {
      *
      * Ignore mismatches between the version attribute and the namespace.
      * The version value takes precedence.
-     * 
-     * @param versions The versions from which to select.
-     * @param versionAttr The version attribute value from an XML header.
-     *     Will be null if parsing a DTD based descriptor.  May be null,
-     *     in which case the public ID or namespace will be used for
-     *     matching.
-     * @param publicId The public ID from an XML header.  Will be null
-     *     unless parsing a DTD based descriptor.
-     * @param namespace The namespace value from an XML header.  Will
-     *     be null if parsing a DTD based descriptor.  May be null,
-     *     in which case the version or public ID will be used for matching.
+     *
+     * @param versions         The versions from which to select.
+     * @param versionAttr      The version attribute value from an XML header.
+     *                             Will be null if parsing a DTD based descriptor. May be null,
+     *                             in which case the public ID or namespace will be used for
+     *                             matching.
+     * @param publicId         The public ID from an XML header. Will be null
+     *                             unless parsing a DTD based descriptor.
+     * @param namespace        The namespace value from an XML header. Will
+     *                             be null if parsing a DTD based descriptor. May be null,
+     *                             in which case the version or public ID will be used for matching.
      * @param maxSchemaVersion The current maximum provisioned
-     *     schema version.
-     *     
-     * @return The selected version.  Null if no matching version was
-     *     selected.
+     *                             schema version.
+     * 
+     * @return The selected version. Null if no matching version was
+     *         selected.
      */
     protected static VersionData selectVersion(
-        VersionData[] versions,
-        String versionAttr, String publicId, String namespace,
-        int maxSchemaVersion) {
+                                               VersionData[] versions,
+                                               String versionAttr, String publicId, String namespace,
+                                               int maxSchemaVersion) {
 
         // There are two selection rules which interact to
         // give rise to the loop termination test:
@@ -1273,69 +1289,69 @@ public abstract class DDParser implements PlatformVersion {
         // version, or will be the last version which matches and
         // which is provisioned.
         VersionData lastSelected = null;
-        for ( VersionData version : versions ) {
-            if ( (lastSelected != null) && (version.version > maxSchemaVersion) ) {
+        for (VersionData version : versions) {
+            if ((lastSelected != null) && (version.version > maxSchemaVersion)) {
                 break;
             }
 
-            if ( version.accept(versionAttr, publicId, namespace) ) {
+            if (version.accept(versionAttr, publicId, namespace)) {
                 lastSelected = version;
             }
         }
         return lastSelected;
     }
-    
+
     // Error handling ...
 
     public String describeEntry() {
-        return describeEntry(adaptableEntry, null, null); 
+        return describeEntry(adaptableEntry, null, null);
     }
-    
+
     /**
      * Describe an entry, providing paths to parent archives
      * back to the root-of-roots container.
-     * 
+     *
      * The starting point is either an entry, or is an imputed
-     * entry beneath an initial container.  (Either the initial
+     * entry beneath an initial container. (Either the initial
      * entry or both the initial container and the initial path
      * must be specified.)
-     * 
+     *
      * If possible, display the simple name of the physical path
-     * of the root-of-roots container.  Do not display the full
+     * of the root-of-roots container. Do not display the full
      * physical path, as that would leak information about the
      * server location on disk.
      *
      * For example:
      * <code>
-     *     WEB-INF/web.xml
-     *     webModule.war : WEB-INF/web.xml
-     *     myEar.ear : webModule.war : WEB-INF/web.xml
-     *     WEB-INF/lib/fragment1.jar : META-INF/web-fragment.xml
+     * WEB-INF/web.xml
+     * webModule.war : WEB-INF/web.xml
+     * myEar.ear : webModule.war : WEB-INF/web.xml
+     * WEB-INF/lib/fragment1.jar : META-INF/web-fragment.xml
      * </code>
      *
      * @param initialEntry An initial entry.
-     * @param initialRoot An initial container.
-     * @param initialPath An initial path.
+     * @param initialRoot  An initial container.
+     * @param initialPath  An initial path.
      *
      * @return A description of the target entry, including
-     *     relative paths of enclosing entries.
+     *         relative paths of enclosing entries.
      */
     public static String describeEntry(Entry initialEntry, Container initialRoot, String initialPath) {
         StringBuilder builder = new StringBuilder();
 
         Entry nextEntry = initialEntry;
-        while ( (nextEntry != null) || (initialPath != null) ) {
+        while ((nextEntry != null) || (initialPath != null)) {
             String nextPath;
             Container nextRoot;
 
-            if ( nextEntry != null ) {
-                if ( builder.length() > 0 ) {
+            if (nextEntry != null) {
+                if (builder.length() > 0) {
                     builder.insert(0, " : ");
                 }
                 nextPath = nextEntry.getPath();
-                if ( (nextPath.length() > 1) && (nextPath.charAt(0) == '/') ) {
+                if ((nextPath.length() > 1) && (nextPath.charAt(0) == '/')) {
                     nextPath = nextPath.substring(1); // Strip leading '/'
-                }        
+                }
 
                 nextRoot = nextEntry.getRoot();
 
@@ -1349,11 +1365,11 @@ public abstract class DDParser implements PlatformVersion {
 
             try {
                 nextEntry = nextRoot.adapt(Entry.class);
-            } catch ( UnableToAdaptException e ) {
+            } catch (UnableToAdaptException e) {
                 break; // Unexpected
             }
 
-            if ( nextEntry == null ) {
+            if (nextEntry == null) {
                 // We have reached the root-of-roots ...
                 //
                 // Do our best to display information about the root-of-roots
@@ -1363,7 +1379,7 @@ public abstract class DDParser implements PlatformVersion {
                 // Don't display anything if the root has just '/' as its path.
 
                 String path = getSimpleName(nextRoot);
-                if ( (path != null) && !path.isEmpty() ) {
+                if ((path != null) && !path.isEmpty()) {
                     builder.insert(0, " : ");
                     builder.insert(0, path);
                 }
@@ -1374,22 +1390,22 @@ public abstract class DDParser implements PlatformVersion {
         // System.out.println("Description [ " + description + " ]"); // Temp for debugging.
         return description;
     }
-    
+
     public static String getSimpleName(Container container) {
         @SuppressWarnings("deprecation")
         String path = container.getPhysicalPath();
-        if ( path == null ) {
+        if (path == null) {
             return null;
         }
 
         path = path.replace('\\', '/');
         int slashOffset = path.lastIndexOf('/');
-        if ( slashOffset != -1 ) {
+        if (slashOffset != -1) {
             path = path.substring(slashOffset + 1);
         }
         return path;
     }
-    
+
     //
 
     public String requiredAttributeMissing(String attrLocal) {
@@ -1434,17 +1450,17 @@ public abstract class DDParser implements PlatformVersion {
 
     public String invalidHRef(String hrefElementName, String href) {
         return Tr.formatMessage(tc, "invalid.href", describeEntry(), getLineNumber(), hrefElementName, href);
-    }    
-    
+    }
+
     public String invalidHRefPrefix(String hrefElementName, String href, String hrefPrefix, String expectedPrefix) {
         return Tr.formatMessage(tc, "invalid.href.prefix", describeEntry(), getLineNumber(), hrefElementName, href, hrefPrefix, expectedPrefix);
     }
 
     public String incorrectHRefType(String hrefElementName, String href, Class<?> referentClass, Object referent) {
         return Tr.formatMessage(tc, "incorrect.href.type", describeEntry(), getLineNumber(),
-                hrefElementName, href, referentClass.getName(), referent.getClass().getName() );
-    }    
-    
+                                hrefElementName, href, referentClass.getName(), referent.getClass().getName());
+    }
+
     public String unresolvedReference(String hrefElementName, String href, String hrefId, String hrefPath) {
         return Tr.formatMessage(tc, "unresolved.href", describeEntry(), getLineNumber(), hrefElementName, href, hrefId, hrefPath);
     }
@@ -1491,7 +1507,7 @@ public abstract class DDParser implements PlatformVersion {
     // protected String missingDeploymentDescriptorVersion() {
     //     return Tr.formatMessage(tc, "missing.deployment.descriptor.version", describeEntry(), getLineNumber());
     // }
-    
+
     protected String missingDescriptorVersion() {
         // The deployment descriptor {0} specifies neither a version, nor a PUBLIC ID, nor a schema.
         return Tr.formatMessage(tc, "missing.descriptor.version", describeEntry());
@@ -1500,7 +1516,7 @@ public abstract class DDParser implements PlatformVersion {
     // protected String invalidDeploymentDescriptorVersion(String useVersion) {
     //     return Tr.formatMessage(tc, "invalid.deployment.descriptor.version", describeEntry(), getLineNumber(), useVersion);
     // }
-    
+
     // protected String unknownDeploymentDescriptorVersion() {
     //     return Tr.formatMessage(tc, "unknown.deployment.descriptor.version", describeEntry());
     // }
@@ -1512,11 +1528,11 @@ public abstract class DDParser implements PlatformVersion {
     protected String unprovisionedDescriptorVersion(int schemaVersion, int maxSchemaVersion) {
         return Tr.formatMessage(tc, "unprovisioned.descriptor.version", describeEntry(), getLineNumber(), schemaVersion, maxSchemaVersion);
     }
-    
+
     // protected String missingDeploymentDescriptorNamespace() {
     //     return Tr.formatMessage(tc, "missing.deployment.descriptor.namespace", describeEntry(), getLineNumber());
     // }
-    
+
     protected String missingDescriptorNamespace(String ddNamespace) {
         return Tr.formatMessage(tc, "missing.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace);
     }
@@ -1528,14 +1544,14 @@ public abstract class DDParser implements PlatformVersion {
     // protected String invalidDeploymentDescriptorNamespace(String useVersion) {
     //     return Tr.formatMessage(tc, "invalid.deployment.descriptor.namespace", describeEntry(), getLineNumber(), namespace, useVersion);
     // }
-    
+
     protected String incorrectDescriptorNamespace(String ddVersion, String ddNamespace, String expectedNamespace) {
-        return Tr.formatMessage(tc, "incorrect.descriptor.namespace.for.version", describeEntry(), getLineNumber(), ddVersion, ddNamespace, expectedNamespace);        
+        return Tr.formatMessage(tc, "incorrect.descriptor.namespace.for.version", describeEntry(), getLineNumber(), ddVersion, ddNamespace, expectedNamespace);
     }
-    
+
     protected String incorrectDescriptorNamespace(String ddNamespace, String expectedNamespace) {
-        return Tr.formatMessage(tc, "incorrect.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace, expectedNamespace);        
-    }    
+        return Tr.formatMessage(tc, "incorrect.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace, expectedNamespace);
+    }
 
     protected String unsupportedDescriptorPublicId(String ddPublicId) {
         return Tr.formatMessage(tc, "unsupported.descriptor.public.id", describeEntry(), getLineNumber(), ddPublicId);

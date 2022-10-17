@@ -23,7 +23,7 @@ import java.beans.SimpleBeanInfo;
  *
  */
 public class IfxConnectionPoolDataSourceBeanInfo extends SimpleBeanInfo {
-    private final static Class myClass = IfxConnectionPoolDataSource.class;
+    private final static Class<IfxConnectionPoolDataSource> myClass = IfxConnectionPoolDataSource.class;
 
     //
     // Note that here we create an array of 5 PropertyDescriptor

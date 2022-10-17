@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 
 import com.ibm.websphere.simplicity.LocalFile;
 import com.ibm.websphere.simplicity.Machine;
+import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -75,10 +76,10 @@ public class LibertyFileManager {
     /**
      * Searches the given file for multiple instances of the given regular expression.
      *
-     * @param numberOfMatches number of matches required
-     * @param regexp a regular expression (or just a text snippet) to search for
-     * @param fileToSearch the file to search
-     * @return Number of matches found
+     * @param  numberOfMatches number of matches required
+     * @param  regexp          a regular expression (or just a text snippet) to search for
+     * @param  fileToSearch    the file to search
+     * @return                 Number of matches found
      * @throws Exception
      */
     static int findMultipleStringsInFile(int numberOfMatches, String regexp,
@@ -107,9 +108,9 @@ public class LibertyFileManager {
     /**
      * Searches the given file for the given regular expression.
      *
-     * @param regexp a regular expression (or just a text snippet) to search for
-     * @param fileToSearch the file to search
-     * @return The first line which includes the pattern, or null if the pattern isn't found or if the file doesn't exist
+     * @param  regexp       a regular expression (or just a text snippet) to search for
+     * @param  fileToSearch the file to search
+     * @return              The first line which includes the pattern, or null if the pattern isn't found or if the file doesn't exist
      * @throws Exception
      */
     static String findStringInFile(String regexp,
@@ -139,11 +140,11 @@ public class LibertyFileManager {
      * regular expression. Halts on the first match and returns the offset
      * of the first match.
      *
-     * @param regexp a regular expression (or just a text snippet) to search for
-     * @param fileToSearch the file to search
-     * @param offset the position to start the search
-     * @return LogSearchResult containing the new offset for the log and a {@code List<String>} holding the matches found.
-     *         The list is empty if no matches found.
+     * @param  regexp       a regular expression (or just a text snippet) to search for
+     * @param  fileToSearch the file to search
+     * @param  offset       the position to start the search
+     * @return              LogSearchResult containing the new offset for the log and a {@code List<String>} holding the matches found.
+     *                      The list is empty if no matches found.
      * @throws Exception
      */
     static LogSearchResult findStringInFile(String regexp, RemoteFile fileToSearch, Long offset) throws Exception {
@@ -159,9 +160,9 @@ public class LibertyFileManager {
     /**
      * Searches the given file for the given regular expression.
      *
-     * @param regexp a regular expression (or just a text snippet) to search for
-     * @param fileToSearch the file to search
-     * @return List of Strings which match the pattern. No match results in an empty list.
+     * @param  regexp       a regular expression (or just a text snippet) to search for
+     * @param  fileToSearch the file to search
+     * @return              List of Strings which match the pattern. No match results in an empty list.
      * @throws Exception
      */
     public static List<String> findStringsInFile(String regexp,
@@ -184,11 +185,11 @@ public class LibertyFileManager {
     /**
      * Searches the given file starting at the given offset for the given regular expression.
      *
-     * @param regexp a regular expression (or just a text snippet) to search for
-     * @param fileToSearch the file to search
-     * @param offset the position to start the search
-     * @return LogSearchResult containing the new offset for the log and a {@code List<String>} holding the matches found.
-     *         The list is empty if no matches found.
+     * @param  regexp       a regular expression (or just a text snippet) to search for
+     * @param  fileToSearch the file to search
+     * @param  offset       the position to start the search
+     * @return              LogSearchResult containing the new offset for the log and a {@code List<String>} holding the matches found.
+     *                      The list is empty if no matches found.
      * @throws Exception
      */
     static LogSearchResult findStringsInFile(String regexp, RemoteFile fileToSearch, Long offset) throws Exception {
@@ -204,11 +205,11 @@ public class LibertyFileManager {
     /**
      * Searches the given file for the given regular expressions, starting at the given file offset.
      *
-     * @param regexpList a list of regular expressions to search for
-     * @param fileToSearch the file to search
-     * @param offset the position in the file to start the search
-     * @return LogSearchResult containing the new offset for the log and a {@code List<String>} holding the matches found.
-     *         The list is empty if no matches found.
+     * @param  regexpList   a list of regular expressions to search for
+     * @param  fileToSearch the file to search
+     * @param  offset       the position in the file to start the search
+     * @return              LogSearchResult containing the new offset for the log and a {@code List<String>} holding the matches found.
+     *                      The list is empty if no matches found.
      * @throws Exception
      */
     static LogSearchResult findStringsInFile(List<String> regexpList, RemoteFile fileToSearch, Long offset) throws Exception {
@@ -224,13 +225,13 @@ public class LibertyFileManager {
     /**
      * Searches the given file for the given regular expression.
      *
-     * @param regexpList a list of regular expressions to search for
-     * @param searchLimit the maximum number of times the regexps will be searched for.
-     * @param fileToSearch the file to search
-     * @param offset the position to start the search
-     * @return LogSearchResult containing the new offset for the log and a {@code List<String>} holding the matches found.
-     *         The list is empty if no matches found.
-     *         If the file does not exist, {@code null} is returned.
+     * @param  regexpList   a list of regular expressions to search for
+     * @param  searchLimit  the maximum number of times the regexps will be searched for.
+     * @param  fileToSearch the file to search
+     * @param  offset       the position to start the search
+     * @return              LogSearchResult containing the new offset for the log and a {@code List<String>} holding the matches found.
+     *                      The list is empty if no matches found.
+     *                      If the file does not exist, {@code null} is returned.
      * @throws Exception
      */
     static LogSearchResult findStringsInFileCommon(List<String> regexpList,
@@ -268,7 +269,7 @@ public class LibertyFileManager {
             reader = new LineReader(rawReader);
 
             Log.finer(CLASS, method, "Now looking for strings " + regexpList
-                                 + " in the file " + fileToSearch.getName());
+                                     + " in the file " + fileToSearch.getName());
 
             Pattern[] patterns = new Pattern[regexpList.size()];
             for (int i = 0; i < regexpList.size(); i++) {
@@ -328,17 +329,17 @@ public class LibertyFileManager {
     /**
      * Answer a remote file on a specified machine and having a specified absolute
      * path.
-     * 
-     * @param machine The machine which has the specified file.
-     * @param absPath The absolute path of the file.
      *
-     * @return A remote file which encapsulates the machine and path.
+     * @param  machine   The machine which has the specified file.
+     * @param  absPath   The absolute path of the file.
+     *
+     * @return           A remote file which encapsulates the machine and path.
      *
      * @throws Exception Thrown if the target file does not exist.
      */
     public static RemoteFile getLibertyFile(Machine machine, String absPath) throws Exception {
         RemoteFile remoteFile = createRemoteFile(machine, absPath);
-        if ( !remoteFile.exists() ) {
+        if (!remoteFile.exists()) {
             String msg = "File \'" + absPath + "\' on machine '" + machine + "' does not exist.";
             throw new FileNotFoundException(msg);
         }
@@ -348,12 +349,12 @@ public class LibertyFileManager {
     /**
      * Tell if a remote file exists.
      *
-     * @param machine The machine which has the specified file.
-     * @param absPath The absolute path of the file.
+     * @param  machine The machine which has the specified file.
+     * @param  absPath The absolute path of the file.
      *
-     * @return True or false telling if the target remote file exists.
+     * @return         True or false telling if the target remote file exists.
      */
-    
+
     public static boolean libertyFileExists(Machine machine, String absPath) throws Exception {
         RemoteFile file = createRemoteFile(machine, absPath);
         return file.exists();
@@ -363,10 +364,10 @@ public class LibertyFileManager {
      * Create a remote file which encapsulates a machine and an absolute path.
      * The target remote file need not exist.
      *
-     * @param machine The machine which has the specified file.
-     * @param absPath The absolute path of the file.
+     * @param  machine The machine which has the specified file.
+     * @param  absPath The absolute path of the file.
      *
-     * @return A remote file which encapsulates the machine and path.
+     * @return         A remote file which encapsulates the machine and path.
      */
     public static RemoteFile createRemoteFile(Machine machine, String absPath) {
         return new RemoteFile(machine, LibertyServerUtils.makeJavaCompatible(absPath, machine));
@@ -386,8 +387,8 @@ public class LibertyFileManager {
      * Retry the deletion operation if the first attempt fails.
      * See {@link RemoteFile#delete()}.
      *
-     * @param machine The machine which has the specified file.
-     * @param absPath The absolute path of the file.
+     * @param  machine   The machine which has the specified file.
+     * @param  absPath   The absolute path of the file.
      *
      * @throws Exception Thrown in case of an error deleting the file.
      */
@@ -401,10 +402,10 @@ public class LibertyFileManager {
         Log.finer(CLASS, method, prefix);
 
         RemoteFile remoteFile = createRemoteFile(machine, absPath);
-        if ( !remoteFile.exists() ) {
+        if (!remoteFile.exists()) {
             Log.finer(CLASS, method, prefix + " does not exist");
         } else {
-            if ( remoteFile.delete() ) { // throws Exception
+            if (remoteFile.delete()) { // throws Exception
                 Log.finer(CLASS, method, prefix + " was deleted");
             } else {
                 Log.finer(CLASS, method, prefix + " could not be deleted");
@@ -422,10 +423,10 @@ public class LibertyFileManager {
      * This copies the named file into the liberty server and maintains the name of the file. This is equivalent to calling
      * {@link #copyFileIntoLiberty(Machine, String, String, String)} with the file name set to the name part of the <code>relPathTolocalFile</code> parameter.
      *
-     * @param machine The machine to copy the file to
-     * @param path The path to copy the file to
-     * @param relPathTolocalFile The path to the file being copied
-     * @return The path of the copied file
+     * @param  machine            The machine to copy the file to
+     * @param  path               The path to copy the file to
+     * @param  relPathTolocalFile The path to the file being copied
+     * @return                    The path of the copied file
      * @throws Exception
      */
     public static String copyFileIntoLiberty(Machine machine, String path, String relPathTolocalFile) throws Exception {
@@ -438,10 +439,11 @@ public class LibertyFileManager {
     public static boolean renameLibertyFile(Machine machine, String oldFilePath, String newFilePath) throws Exception {
         RemoteFile source = createRemoteFile(machine, oldFilePath);
         RemoteFile target = createRemoteFile(machine, newFilePath);
-        if ( source.exists() ) {
+        if (source.exists()) {
             return source.rename(target);
         } else {
-            Log.info(CLASS, "renameLibertyFile", "Copying: " + source.getAbsolutePath() + " to " + target.getAbsolutePath() + " failed because " + source.getAbsolutePath() + "does not exist");
+            Log.info(CLASS, "renameLibertyFile",
+                     "Copying: " + source.getAbsolutePath() + " to " + target.getAbsolutePath() + " failed because " + source.getAbsolutePath() + "does not exist");
         }
         return false;
     }
@@ -449,10 +451,11 @@ public class LibertyFileManager {
     public static boolean renameLibertyFileNoRetry(Machine machine, String oldFilePath, String newFilePath) throws Exception {
         RemoteFile source = createRemoteFile(machine, oldFilePath);
         RemoteFile target = createRemoteFile(machine, newFilePath);
-        if ( source.exists() ) {
+        if (source.exists()) {
             return source.renameNoRetry(target);
         } else {
-            Log.info(CLASS, "renameLibertyFileNoRetry", "Copying: " + source.getAbsolutePath() + " to " + target.getAbsolutePath() + " failed because " + source.getAbsolutePath() + "does not exist");
+            Log.info(CLASS, "renameLibertyFileNoRetry",
+                     "Copying: " + source.getAbsolutePath() + " to " + target.getAbsolutePath() + " failed because " + source.getAbsolutePath() + "does not exist");
         }
         return false;
     }
@@ -462,12 +465,12 @@ public class LibertyFileManager {
     /**
      * This method will copy a file into the Liberty server using the file name provided, it will not copy the contents of the file if it is a directory.
      *
-     * @param machine The machine to copy the file to
-     * @param path The path to copy the file to
-     * @param destinationFileName The name of the file in the destination, this needs to be Java compatible
-     * @param relPathTolocalFile The path to the file being copied
-     * @return The path of the copied file
-     * @see LibertyServerUtils#makeJavaCompatible(String)
+     * @param  machine             The machine to copy the file to
+     * @param  path                The path to copy the file to
+     * @param  destinationFileName The name of the file in the destination, this needs to be Java compatible
+     * @param  relPathTolocalFile  The path to the file being copied
+     * @return                     The path of the copied file
+     * @see                        LibertyServerUtils#makeJavaCompatible(String)
      * @throws Exception
      */
     public static String copyFileIntoLiberty(Machine machine, String path, String destinationFileName, String relPathTolocalFile) throws Exception {
@@ -477,13 +480,13 @@ public class LibertyFileManager {
     /**
      * This method will copy a file into the Liberty server using the file name provided.
      *
-     * @param machine The machine to copy the file to
-     * @param path The path to copy the file to
-     * @param destinationFileName The name of the file in the destination, this needs to be Java compatible
-     * @param relPathTolocalFile The path to the file being copied
-     * @param recursivelyCopy <code>true</code> if child files should also be copied
-     * @return The path of the copied file
-     * @see LibertyServerUtils#makeJavaCompatible(String)
+     * @param  machine             The machine to copy the file to
+     * @param  path                The path to copy the file to
+     * @param  destinationFileName The name of the file in the destination, this needs to be Java compatible
+     * @param  relPathTolocalFile  The path to the file being copied
+     * @param  recursivelyCopy     <code>true</code> if child files should also be copied
+     * @return                     The path of the copied file
+     * @see                        LibertyServerUtils#makeJavaCompatible(String)
      * @throws Exception
      */
     public static String copyFileIntoLiberty(Machine machine, String path, String destinationFileName, String relPathTolocalFile, boolean recursivelyCopy) throws Exception {
@@ -496,14 +499,14 @@ public class LibertyFileManager {
      * is specified, then the file will be copied to a temporary file and then renamed
      * into place, which avoids other processes reading a partially written file.
      *
-     * @param machine The machine to copy the file to
-     * @param path The path to copy the file to
-     * @param destinationFileName The name of the file in the destination, this needs to be Java compatible
-     * @param relPathTolocalFile The path to the file being copied
-     * @param recursivelyCopy <code>true</code> if child files should also be copied
-     * @param tmpDir The temporary directory to use if atomically copying
-     * @return The path of the copied file
-     * @see LibertyServerUtils#makeJavaCompatible(String)
+     * @param  machine             The machine to copy the file to
+     * @param  path                The path to copy the file to
+     * @param  destinationFileName The name of the file in the destination, this needs to be Java compatible
+     * @param  relPathTolocalFile  The path to the file being copied
+     * @param  recursivelyCopy     <code>true</code> if child files should also be copied
+     * @param  tmpDir              The temporary directory to use if atomically copying
+     * @return                     The path of the copied file
+     * @see                        LibertyServerUtils#makeJavaCompatible(String)
      * @throws Exception
      */
     public static String copyFileIntoLiberty(Machine machine,
@@ -583,18 +586,77 @@ public class LibertyFileManager {
         return remoteFile.getAbsolutePath();
     }
 
+    /**
+     * Move a source file onto a destination file.
+     *
+     * An attempt is made to rename the file. If this fails, the file is copied
+     * instead.
+     *
+     * If the destination is on WINDOWS and already exists, the rename is not
+     * attempted. The implementation proceeds directly to copy the file. Note
+     * that if the destination is a server configuration of a running server,
+     * copy may provide to the server a partially updated configuration.
+     *
+     * If a rename is not performed, the implementation deletes the source file,
+     * even if processing failed with an exception.
+     *
+     * @param  srcFile   The source file which is to be moved.
+     * @param  dstFile   The destination file which is to be replaced.
+     *
+     * @throws Exception Thrown by a failure of remote file operations.
+     */
     public static void moveLibertyFile(RemoteFile srcFile, RemoteFile dstFile) throws Exception {
-        Log.info(CLASS, "moveLibertyFile", "Moving " + srcFile.getAbsolutePath() + " to " + dstFile.getAbsolutePath());
-        if (srcFile.rename(dstFile)) {
-            Log.info(CLASS, "moveLibertyFile", dstFile.getName() + " was successfully moved.");
-        } else {
-            // rename failed, let's copy
-            if (srcFile.copyToDest(dstFile)) {
-                srcFile.delete();
-                Log.info(CLASS, "moveLibertyFile", dstFile.getName() + " was successfully copied.");
+        String m = "moveLibertyFile";
+
+        boolean didRename = false;
+        boolean didCopy = false;
+
+        try {
+            String banner = "Source [ " + srcFile.getAbsolutePath() + " ]" +
+                            " destination [ " + dstFile.getAbsolutePath() + " ] ...";
+            logInfo(m, banner);
+
+            // Do *NOT* attempt to rename on windows when the destination exists.
+            // That always fails, with a time cost of maximum retries (currently, 10s).
+            // This operation, when successful, should take about 0.1s, or less.
+            //
+            // The extra 10s can add significantly to a FAT bucket running time.
+            // For example, the feature start tests currently start about 65 features,
+            // which would add 650s to the FAT running time.
+            //
+            // On average, the single startups take 10-15s, not counting this move
+            // overhead.  Adding 10s increases the running time to 20-25s.  For 65
+            // tests that is an increase from about 650-975s to 1300-1625, which
+            // nearly doubles the FAT running time.
+            //
+            // The impact to other FATS is not known, but may be substantial on
+            // windows, and may account for the slowness of running FATS on windows
+            // environments.
+
+            if ((dstFile.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS) && dstFile.exists()) {
+                logInfo(m, "Move not attempted (WINDOWS overwrite)");
             } else {
+                didRename = logTimeNs(m, "rename", () -> srcFile.rename(dstFile));
+                if (didRename) {
+                    logInfo(m, banner + " Success (moved)");
+                    return;
+                } else {
+                    logInfo(m, "Move failure");
+                }
+            }
+
+            didCopy = logTimeNs(m, "copy", () -> srcFile.copyToDest(dstFile));
+            if (didCopy) {
+                logInfo(m, banner + " Success (copied)");
+            } else {
+                String failureMsg = banner + " Failure";
+                logInfo(m, failureMsg);
+                throw new TopologyException(failureMsg);
+            }
+
+        } finally {
+            if (!didRename) {
                 srcFile.delete();
-                throw new TopologyException("Failed to move " + srcFile.getAbsolutePath() + " to " + dstFile.getAbsolutePath());
             }
         }
     }
@@ -603,5 +665,50 @@ public class LibertyFileManager {
         String installPath = bootstrap.getValue("libertyInstallPath");
         Machine machine = LibertyServerUtils.createMachine(bootstrap);
         return getLibertyFile(machine, installPath).getAbsolutePath();
+    }
+
+    //
+
+    public static void logInfo(String m, String msg) {
+        Log.info(CLASS, m, msg);
+    }
+
+    public static final long NS_IN_SEC = 1000000000;
+    public static final long UNSET_NS = -1L;
+
+    public static long getTimeNs() {
+        return System.nanoTime();
+    }
+
+    public static String nsAsSec(long ns) {
+        return String.format("%.4f", Float.valueOf(((float) ns) / NS_IN_SEC));
+    }
+
+    public static long logTimeNs(String m, String event, long initialNs) {
+        long currentNs = getTimeNs();
+
+        String msg;
+        if (initialNs == UNSET_NS) {
+            msg = "Start [ " + event + " ]: [ " + nsAsSec(currentNs) + " ]";
+        } else {
+            long deltaNs = currentNs - initialNs;
+            msg = "Finish [ " + event + " ]: [ " + nsAsSec(deltaNs) + " ]";
+        }
+
+        logInfo(m, msg);
+
+        return currentNs;
+    }
+
+    @FunctionalInterface
+    public static interface FailableBooleanSupplier {
+        boolean getAsBoolean() throws Exception;
+    }
+
+    public static boolean logTimeNs(String m, String event, FailableBooleanSupplier action) throws Exception {
+        long initialNs = getTimeNs();
+        boolean rv = action.getAsBoolean();
+        logTimeNs(m, event, initialNs);
+        return rv;
     }
 }

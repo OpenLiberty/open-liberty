@@ -335,7 +335,9 @@ public class CookieUtils {
         int expires = cookie.getMaxAge();
         if (-1 < expires) {
             if (0 == expires) {
-                if (!isRFC1123DateEnabled) {
+                if (HttpDispatcher.useEE10Cookies()) { //Since Servlet 6.0 - RFC 6265
+                    buffer.append("; max-age=0");
+                } else if (!isRFC1123DateEnabled) {
                     buffer.append(longAgo);
                 } else {
                     buffer.append(longAgoRFC1123);

@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.transaction.test.dbrotationtests.DualServerDynamicDBRotationTest1;
 import com.ibm.ws.transaction.test.dbrotationtests.DualServerDynamicDBRotationTest2;
 import com.ibm.ws.transaction.test.tests.FATSuiteBase;
 
@@ -34,7 +35,7 @@ public class FATSuite extends FATSuiteBase {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly());
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(DualServerDynamicDBRotationTest2.serverNames))
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers(DualServerDynamicDBRotationTest2.serverNames))
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().forServers(DualServerDynamicDBRotationTest2.serverNames));
 }

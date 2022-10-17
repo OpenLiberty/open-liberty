@@ -27,7 +27,7 @@
 #   (single quote must be coded as one single quote '). 
 #
 # -------------------------------------------------------------------------------------------------
-3001=Obiectul [{0}], de clas\u0103 [{1}] nu poate fi convertit la [{2}].
+3001=Obiectul [{0}], de clas\u0103 [{1}], nu a putut fi convertit la [{2}].
 
 3002=Obiectul [{0}], de clas\u0103 [{1}], din maparea [{2}] cu descriptorul [{3}], nu a putut fi convertit la [{4}].
 
@@ -39,7 +39,7 @@
 
 3006=[{0}] trebuie s\u0103 fie de lungime egal\u0103 pentru a fi convertit \u00eentr-o matrice octet.
 
-3007=Obiectul [{0}], de clas\u0103 [{1}] nu poate fi convertit la [{2}].  Asigura\u0163i-v\u0103 c\u0103 clasa [{2}] este \u00een CLASSPATH.  S-ar putea s\u0103 fie nevoie s\u0103 utiliza\u0163i API-ul alternativ care trece \u00een \u00eenc\u0103rc\u0103torul de clase corespunz\u0103tor, dup\u0103 cum este necesar, sau s\u0103 o seta\u0163i \u00een ConversionManager implicit.
+3007=Obiectul [{0}], de clas\u0103 [{1}], nu a putut fi convertit la [{2}].  Asigura\u0163i-v\u0103 dac\u0103 clasa [{2}] este \u00een Calea de clase.  Este posibil s\u0103 trebuiasc\u0103 s\u0103 utiliza\u0163i transmiterea API alternat \u00een \u00eenc\u0103rc\u0103torul de clas\u0103 corespunz\u0103tor dup\u0103 cum este necesar, sau setarea acestuia \u00een ConversionManager implicit
 
 3008=Format dat\u0103-or\u0103 incorect: [{0}] (a\u015fteptat [YYYY-MM-DD''T''HH:MM:SS])
 

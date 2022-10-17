@@ -66,8 +66,6 @@
 
 	<!--
 		SAML configuration.
-		
-		NOTE: spCookieName is not public and is used for experimental testing.
 	 -->
 	<samlWebSso20 id="defaultSP" authFilterRef="myAuthFilter1"
 		idpMetadata="${server.config.dir}/resources/security/TestRealm-samlIdpMetadata.xml"

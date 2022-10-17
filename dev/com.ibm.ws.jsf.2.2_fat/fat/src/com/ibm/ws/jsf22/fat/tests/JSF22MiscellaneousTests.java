@@ -10,8 +10,9 @@
  */
 package com.ibm.ws.jsf22.fat.tests;
 
-import static org.junit.Assert.assertTrue;
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
 
@@ -30,13 +31,14 @@ import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -49,6 +51,7 @@ import junit.framework.Assert;
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
+@SkipForRepeat(EE10_FEATURES)
 public class JSF22MiscellaneousTests {
     @Rule
     public TestName name = new TestName();
@@ -88,6 +91,8 @@ public class JSF22MiscellaneousTests {
         ShrinkHelper.defaultDropinApp(jsf22MiscellaneousServer, "FunctionMapper.war", "com.ibm.ws.jsf23.fat.functionmapper");
 
         ShrinkHelper.defaultDropinApp(jsf22MiscellaneousServer, "ViewScopeLeak.war", "com.ibm.ws.jsf22.fat.viewscopedleak");
+
+        ShrinkHelper.defaultDropinApp(jsf22MiscellaneousServer, "OLGH22397.war");
 
         jsf22MiscellaneousServer.startServer(JSF22MiscellaneousTests.class.getSimpleName() + ".log");
     }
@@ -473,7 +478,7 @@ public class JSF22MiscellaneousTests {
 
     /**
      * Check to make sure that an app starts correctly when it has a faces-config.xml which is missing a "xmlns" declaration.
-     * 
+     *
      * See https://github.com/OpenLiberty/open-liberty/issues/18155
      *
      * @throws Exception
@@ -496,7 +501,7 @@ public class JSF22MiscellaneousTests {
 
     /**
      *
-     * Check that a ClassNotFoundException is not thrown when a custom tag uses Application.createValueBinding() 
+     * Check that a ClassNotFoundException is not thrown when a custom tag uses Application.createValueBinding()
      * See https://github.com/OpenLiberty/open-liberty/issues/18437
      *
      * @throws Exception
@@ -523,9 +528,9 @@ public class JSF22MiscellaneousTests {
     /*
      * https://github.com/OpenLiberty/open-liberty/issues/20950
      * https://issues.apache.org/jira/browse/MYFACES-4433
-     * 
-     *  Verifies there is no leak when ViewScope Beans are used.
-     *  There was previously a memory leak with the ViewScopeBeanHolder's storageMap. See issues above.
+     *
+     * Verifies there is no leak when ViewScope Beans are used.
+     * There was previously a memory leak with the ViewScopeBeanHolder's storageMap. See issues above.
      */
     @Test
     public void testMyFaces4433() throws Exception {
@@ -537,31 +542,77 @@ public class JSF22MiscellaneousTests {
             String size2 = "2";
 
             // Goes to index.xhtml to create a new view. Goes to new page (invalidate) to end the view.
-            // invalidate.xhtml will list size of WELD_S#0 via SessionSizeHelper. Then it loops again. 
+            // invalidate.xhtml will list size of WELD_S#0 via SessionSizeHelper. Then it loops again.
             // The size should be the same for both runs.
-            // WELD_S#0 is the attribute where the ViewScope related storage is saved via CDI. 
-            for(int i = 0; i < 2; i++){
+            // WELD_S#0 is the attribute where the ViewScope related storage is saved via CDI.
+            for (int i = 0; i < 2; i++) {
                 Log.info(c, name.getMethodName(), "MYFACES-4433: Making a request to " + url);
                 HtmlPage page = (HtmlPage) webClient.getPage(url);
-    
+
                 Log.info(c, name.getMethodName(), "Clicking invalidate.....");
                 HtmlSubmitInput submitButton = (HtmlSubmitInput) page.getElementById("form1:invalidate");
                 page = submitButton.click();
-    
+
                 assertTrue("MYFACES-4433: the app output was null!", page != null);
-    
+
                 String sessionSize = page.getElementById("form2:sessionSize").getTextContent();
-                if(i == 0){
+                if (i == 0) {
                     size1 = sessionSize;
                 } else {
                     size2 = sessionSize;
                 }
-                
+
                 Log.info(c, name.getMethodName(), "Session Size -> " + sessionSize);
             }
 
             assertTrue("WELD_S# attribute size differed! Leak Detected!", size1.equals(size2));
+
+        }
+    }
+
+    /*
+     * https://github.com/OpenLiberty/open-liberty/issues/22397
+     * https://issues.apache.org/jira/projects/MYFACES/issues/MYFACES-4450
+     * 
+     *  Verify tabindex (and other attributes) are rendered
+     *
+     */
+    @Test
+    public void testMyFaces4450() throws Exception {
+        try (WebClient webClient = new WebClient()) {
+
+            URL url = JSFUtils.createHttpUrl(jsf22MiscellaneousServer, "OLGH22397", "index.xhtml");
             
+            Log.info(c, name.getMethodName(), "MYFACES-4433: Making a request to " + url);
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
+
+            Log.info(c, name.getMethodName(), page.asXml());
+
+            String[] expected = { "onclick=\"onclick\"",
+                                "ondblclick=\"ondblclick\"",
+                                "onmousedown=\"onmousedown\"",
+                                "onmouseup=\"onmouseup\"",
+                                "onmouseover=\"onmouseover\"",
+                                "onmousemove=\"onmousemove\"",
+                                "onmouseout=\"onmouseout\"",
+                                "onkeypress=\"onkeypress\"",
+                                "onkeydown=\"onkeydown\"",
+                                "onkeyup=\"onkeyup\"",
+                                "onfocus=\"onfocus\"",
+                                "onblur=\"onblur\"",
+                                "accesskey=\"accesskey\"",
+                                "tabindex=\"tabindex\"",
+                                "style=\"color:red\"",
+                                "class=\"styleClass\"",
+                                "dir=\"dir\"",
+                                "lang=\"lang\"",
+                                "title=\"title\"",
+                                "role=\"role\"" };
+
+            for(String attribute : expected){
+                assertTrue("Failed to render expected attribute: \n" + attribute, page.asXml().contains(attribute));
+            }
+
         }
     }
 }

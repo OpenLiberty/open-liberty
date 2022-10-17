@@ -118,7 +118,6 @@ public class JCacheSamlAuthenticationCacheTest extends BaseTestCase {
          */
         startServer1(server1, groupName, null, null);
         waitForDefaultHttpsEndpoint(server1);
-        waitForCachingProvider(server1, AUTH_CACHE_NAME);
         waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
 
         /*
@@ -126,7 +125,6 @@ public class JCacheSamlAuthenticationCacheTest extends BaseTestCase {
          */
         startServer2(server2, groupName);
         waitForDefaultHttpsEndpoint(server2);
-        waitForCachingProvider(server2, AUTH_CACHE_NAME);
         waitForCreatedOrExistingJCache(server2, AUTH_CACHE_NAME);
 
         /*
@@ -190,7 +188,7 @@ public class JCacheSamlAuthenticationCacheTest extends BaseTestCase {
      * 2. Request the resource from server 1 again. We should be able to directly access it
      *    without an authentication challenge. This time the JCache authentication cache
      *    should have a hit.
-     * 3. EXPERIMENTAL: Request the resource from server 2 using the same conversation (and cookies/tokens)
+     * 3. Request the resource from server 2 using the same conversation (and cookies/tokens)
      *    as the request we made to server 1. Again we should be able to directly access
      *    the resource without an authentication challenge as we should have a JCache authentication
      *    cache hit.
@@ -235,10 +233,7 @@ public class JCacheSamlAuthenticationCacheTest extends BaseTestCase {
             assertJCacheSamlAuthCacheHit(true, server1, samlCacheKey);
 
             /*
-             * NOTE: This is an experimental test and is not supported in production environments,
-             * and if it were to ever be supported more testing would be needed to validate.
-             *
-             * 3. EXPERIMENTAL: Request the resource from server 2 using the same conversation (and cookies/tokens)
+             * 3. Request the resource from server 2 using the same conversation (and cookies/tokens)
              * as the request we made to server 1. Again we should be able to directly access
              * the resource without an authentication challenge as we should have a JCache authentication
              * cache hit.

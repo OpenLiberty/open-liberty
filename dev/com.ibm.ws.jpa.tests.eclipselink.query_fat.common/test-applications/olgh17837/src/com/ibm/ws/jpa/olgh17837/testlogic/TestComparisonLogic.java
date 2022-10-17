@@ -12548,7 +12548,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA22Feature() || isUsingJPA31Feature()) {
+            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?)))",
                                     sql.remove(0));
             } else {
@@ -12574,7 +12574,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             if (isUsingJPA31Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?)))",
                                     sql.remove(0));
-            } else if (isUsingJPA22Feature()) {
+            } else if (isUsingJPA22Feature() || isUsingJPA30Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = 'HELLO')))",
                                         sql.remove(0));
@@ -12688,7 +12688,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA22Feature() || isUsingJPA31Feature()) {
+            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?)))",
                                     sql.remove(0));
             } else {
@@ -12714,7 +12714,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             if (isUsingJPA31Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?)))",
                                     sql.remove(0));
-            } else if (isUsingJPA22Feature()) {
+            } else if (isUsingJPA22Feature() || isUsingJPA30Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = 'HELLO')))",
                                         sql.remove(0));
@@ -12818,7 +12818,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA22Feature() || isUsingJPA31Feature()) {
+            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?)))",
                                     sql.remove(0));
             } else {
@@ -12841,7 +12841,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA22Feature() || isUsingJPA31Feature()) {
+            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?)))",
                                     sql.remove(0));
             } else {
@@ -12948,7 +12948,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA22Feature() || isUsingJPA31Feature()) {
+            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT CASE WHEN NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = 'HELLO'))) THEN 1 ELSE 0 END  FROM OLGH17837ENTITY t0",
                                         sql.remove(0));
@@ -12985,7 +12985,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA22Feature() || isUsingJPA31Feature()) {
+            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT CASE WHEN NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = 'HELLO'))) THEN 1 ELSE 0 END  FROM OLGH17837ENTITY t0",
                                         sql.remove(0));
@@ -13113,7 +13113,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA22Feature() || isUsingJPA31Feature()) {
+            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT CASE WHEN NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?))) THEN 1 ELSE 0 END  FROM OLGH17837ENTITY t0",
                                         sql.remove(0));
@@ -13158,7 +13158,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
                     Assert.assertEquals("SELECT CASE WHEN NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?))) THEN ? ELSE ? END  FROM OLGH17837ENTITY t0",
                                         sql.remove(0));
                 }
-            } else if (isUsingJPA22Feature()) {
+            } else if (isUsingJPA22Feature() || isUsingJPA30Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT CASE WHEN NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = 'HELLO'))) THEN 1 ELSE 0 END  FROM OLGH17837ENTITY t0",
                                         sql.remove(0));
@@ -13276,7 +13276,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA22Feature() || isUsingJPA31Feature()) {
+            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT CASE WHEN NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?))) THEN 1 ELSE 0 END  FROM OLGH17837ENTITY t0",
                                         sql.remove(0));
@@ -13313,7 +13313,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA22Feature() || isUsingJPA31Feature()) {
+            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT CASE WHEN NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?))) THEN 1 ELSE 0 END  FROM OLGH17837ENTITY t0",
                                         sql.remove(0));

@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.jakartasec.3.0.internal/resources/io/openliberty/security/jakartasec/internal/resources/JakartaSecurity30Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Jakarta Security 3.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: 2500-2519
+
+#Note to translator, do not translate EL or OpenID
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG=CWWKS2500W: La expresi\u00f3n de lenguaje de expresi\u00f3n (EL) para el atributo {0} de la anotaci\u00f3n de definici\u00f3n de mecanismo de autenticaci\u00f3n de OpenID no se puede resolver en un valor v\u00e1lido. El valor proporcionado era ''{1}''. Aseg\u00farese de que la expresi\u00f3n EL y el resultado son v\u00e1lidos y de que los beans de referencia que se utilizan en la expresi\u00f3n se pueden resolver. Se utiliza el valor de atributo predeterminado de ''{2}''.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG.explanation=El atributo no se puede resolver como una expresi\u00f3n. Es posible que el resultado EL y el tipo de valor de atributo esperado no coincidan. Por ejemplo, si el tipo de atributo esperado es Serie, el resultado EL debe ser una Serie.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG.useraction=Aseg\u00farese de que la anotaci\u00f3n contiene un valor de configuraci\u00f3n v\u00e1lido. Aseg\u00farese de que las expresiones EL son v\u00e1lidas, que los beans referenciados en la expresi\u00f3n se pueden resolver y que el tipo del resultado se corresponde con el atributo.
+
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG=CWWKS2501W: La expresi\u00f3n de lenguaje de expresi\u00f3n (EL) para el atributo {0} de la anotaci\u00f3n de definici\u00f3n de reclamaciones no se puede resolver en un valor v\u00e1lido. El valor proporcionado era ''{1}''. Aseg\u00farese de que la expresi\u00f3n EL y el resultado son v\u00e1lidos y de que los beans de referencia que se utilizan en la expresi\u00f3n se pueden resolver. Se utiliza el valor de atributo predeterminado de ''{2}''.
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG.explanation=El atributo no se puede resolver como una expresi\u00f3n. Es posible que el resultado EL y el tipo de valor de atributo esperado no coincidan. Por ejemplo, si el tipo de atributo esperado es Serie, el resultado EL debe ser una Serie.
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG.useraction=Aseg\u00farese de que la anotaci\u00f3n contiene un valor de configuraci\u00f3n v\u00e1lido. Aseg\u00farese de que las expresiones EL son v\u00e1lidas, que los beans referenciados en la expresi\u00f3n se pueden resolver y que el tipo del resultado se corresponde con el atributo.
+
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG=CWWKS2502W: La expresi\u00f3n de lenguaje de expresi\u00f3n (EL) para el atributo {0} de la anotaci\u00f3n de definici\u00f3n de cierre de sesi\u00f3n no se puede resolver en un valor v\u00e1lido. El valor proporcionado era ''{1}''. Aseg\u00farese de que la expresi\u00f3n EL y el resultado son v\u00e1lidos y de que los beans de referencia que se utilizan en la expresi\u00f3n se pueden resolver. Se utiliza el valor de atributo predeterminado de ''{2}''.
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG.explanation=El atributo no se puede resolver como una expresi\u00f3n. Es posible que el resultado EL y el tipo de valor de atributo esperado no coincidan. Por ejemplo, si el tipo de atributo esperado es Serie, el resultado EL debe ser una Serie.
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG.useraction=Aseg\u00farese de que la anotaci\u00f3n contiene un valor de configuraci\u00f3n v\u00e1lido. Aseg\u00farese de que las expresiones EL son v\u00e1lidas, que los beans referenciados en la expresi\u00f3n se pueden resolver y que el tipo del resultado se corresponde con el atributo.
+
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG=CWWKS2502W: La expresi\u00f3n de lenguaje de expresi\u00f3n (EL) para el atributo {0} de la anotaci\u00f3n de metadatos del proveedor de OpenID no se puede resolver en un valor v\u00e1lido. El valor proporcionado era ''{1}''. Aseg\u00farese de que la expresi\u00f3n EL y el resultado son v\u00e1lidos y de que los beans de referencia que se utilizan en la expresi\u00f3n se pueden resolver. Se utiliza el valor de atributo predeterminado de ''{2}''.
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG.explanation=El atributo no se puede resolver como una expresi\u00f3n. Es posible que el resultado EL y el tipo de valor de atributo esperado no coincidan. Por ejemplo, si el tipo de atributo esperado es Serie, el resultado EL debe ser una Serie.
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG.useraction=Aseg\u00farese de que la anotaci\u00f3n contiene un valor de configuraci\u00f3n v\u00e1lido. Aseg\u00farese de que las expresiones EL son v\u00e1lidas, que los beans referenciados en la expresi\u00f3n se pueden resolver y que el tipo del resultado se corresponde con el atributo.

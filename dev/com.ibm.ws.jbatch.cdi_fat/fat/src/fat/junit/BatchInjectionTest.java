@@ -59,6 +59,7 @@ public class BatchInjectionTest extends FATServletClient {
     public static RepeatTests r = RepeatTests.withoutModification()
                     .andWith(FeatureReplacementAction.EE8_FEATURES().forServers("BatchInjection"))
                     .andWith(new JakartaEE9Action().forServers("BatchInjection"));
+    //.andWith(new JakartaEE10Action().forServers("BatchInjection"));
 
     @Server("BatchInjection")
     @TestServlet(servlet = BatchInjectionServlet.class, path = "implicit/BatchInjectionServlet")
@@ -80,7 +81,7 @@ public class BatchInjectionTest extends FATServletClient {
 
     /**
      * @param implicit archive
-     * @param jslName Batch Job JSL name
+     * @param jslName  Batch Job JSL name
      */
     private static void addBatchJob(WebArchive implicit, String jslName) {
         Log.info(BatchInjectionTest.class, "addBatchJob", "Adding jslName = " + jslName);

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018, 2021 IBM Corporation and others.
+# Copyright (c) 2018, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -15,13 +15,21 @@ quietTransformer=true
 
 tested.features: \
   enterprisebeanslite-4.0, \
+  enterprisebeanslite-5.0, \
   facesContainer-3.0, \
+  facesContainer-4.0, \
   cdi-3.0, \
+  cdi-4.0, \
   xmlBinding-3.0, \
+  xmlBinding-4.0, \
   concurrent-2.0, \
+  concurrent-3.0, \
   persistenceContainer-3.0, \
+  persistenceContainer-3.1, \
   beanvalidation-3.0, \
-  faces-3.0
+  beanvalidation-4.0, \
+  faces-3.0, \
+  faces-4.0
 
 src: \
     fat/src,\

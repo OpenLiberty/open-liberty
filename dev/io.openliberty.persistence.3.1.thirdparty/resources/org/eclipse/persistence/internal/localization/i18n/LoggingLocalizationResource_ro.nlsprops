@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -517,7 +517,7 @@ metadata_warning_ignore_mapped_superclass_primary_key=Se ignor\u0103 setarea de 
 
 metadata_warning_ignore_mapped_superclass_read_only=Se ignor\u0103 setarea numai-citire de pe superclasa mapat\u0103 [{1}] pentru clasa de entitate [{0}] \u00eentruc\u00e2t s-au descoperit anterior metadate numai-citire pentru acea entitate (fie pe entitatea \u00een sine, fie pe alt\u0103 superclas\u0103 mapat\u0103).
 
-metadata_warning_ignore_mapping_metadata=Se ignor\u0103 metadatele javax.persistence aplicate atributului [{0}] din clasa [{1}]. Metadatele javax.persistence sunt ignorate pe c\u00e2mpuri sau propriet\u0103\u0163i care sunt ocazionale, statice sau abstracte.
+metadata_warning_ignore_mapping_metadata=Se ignor\u0103 metadatele jakarta.persistence aplicate atributului [{0}] din clasa [{1}]. Metadatele jakarta.persistence sunt ignorate pe c\u00e2mpuri sau propriet\u0103\u0163i care sunt ocazionale, statice sau abstracte.
 
 metadata_warning_ignore_serialized=Se ignor\u0103 serializarea implicit\u0103 pe elementul [{1}] \u00een clasa de entitate [{0}] \u00eentruc\u00e2t sunt specificate metadate de conversie EclipseLink.
 
@@ -581,7 +581,7 @@ no_jar_entry_migratable_in_ear=Niciuna din intr\u0103rile jar din fi\u015fierul 
 
 no_session_found=Nu s-a putut g\u0103si sesiunea cu numele [{0}] \u00een fi\u015fierul session.xml [{1}]
 
-non_jpa_allowed_type_used_for_collection_using_lazy_access=Elementul [{1}] din clasa de entitate [{0}] folose\u015fte un tip de colec\u0163ie [{2}] c\u00e2nd specifica\u0163ia JPA suport\u0103 numai java.util.Collection, java.util.Set, java.util.List sau java.util.Map.  Acest tip este suportat cu \u00eenc\u0103rcare rapid\u0103; folosind \u00eenc\u0103rcarea lent\u0103 cu acest tip de colec\u0163ie necesit\u0103 configurare suplimentar\u0103 \u015fi o implementare IndirectContainer care extinde [{2}] sau setarea map\u0103rii s\u0103 foloseasc\u0103 ocolire de baz\u0103 \u015fi tipul s\u0103 fie ValueholderInterface.
+non_jpa_allowed_type_used_for_collection_using_lazy_access=Elementul [{1}] din clasa de entitate [{0}] folose\u015fte un tip de colec\u0163ie [{2}] c\u00e2nd specifica\u0163ia Jakarta Persistence suport\u0103 numai java.util.Collection, java.util.Set, java.util.List sau java.util.Map.  Acest tip este suportat cu \u00eenc\u0103rcare rapid\u0103; folosind \u00eenc\u0103rcarea lent\u0103 cu acest tip de colec\u0163ie necesit\u0103 configurare suplimentar\u0103 \u015fi o implementare IndirectContainer care extinde [{2}] sau setarea map\u0103rii s\u0103 foloseasc\u0103 ocolire de baz\u0103 \u015fi tipul s\u0103 fie ValueholderInterface.
 
 objectchangepolicy_turned_off=Urm\u0103rirea modific\u0103rilor dezactivat\u0103 pentru: {0}
 

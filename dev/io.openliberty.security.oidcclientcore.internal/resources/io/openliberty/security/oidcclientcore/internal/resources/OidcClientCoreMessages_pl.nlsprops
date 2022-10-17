@@ -48,3 +48,46 @@ ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.useraction=Wi\u0119cej informacji na t
 AUTHENTICATION_RESPONSE_ERROR=CWWKS2407E: Klient OpenID Connect {0} napotka\u0142 nast\u0119puj\u0105cy b\u0142\u0105d podczas weryfikowania odpowiedzi uwierzytelniania od dostawcy OpenID Connect: {1}
 AUTHENTICATION_RESPONSE_ERROR.explanation=W odpowiedzi od dostawcy OpenID Connect mo\u017ce brakowa\u0107 informacji. By\u0107 mo\u017ce wyst\u0105pi\u0142 problem z kodem zwr\u00f3conym przez dostawc\u0119 OpenID Connect.
 AUTHENTICATION_RESPONSE_ERROR.useraction=Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d w komunikacie.
+
+CALLBACK_MISSING_STATE_PARAMETER=CWWKS2408E: W \u017c\u0105daniu wywo\u0142ania zwrotnego od dostawcy OpenID Connect brakuje parametru stanu.
+CALLBACK_MISSING_STATE_PARAMETER.explanation=\u017b\u0105danie autoryzacji u dostawcy OpenID Connect nie zawiera\u0142o parametru stanu.
+CALLBACK_MISSING_STATE_PARAMETER.useraction=Upewnij si\u0119, \u017ce \u017c\u0105danie autoryzacji u dostawcy OpenID Connect zawiera parametr stanu.
+
+STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH=CWWKS2409E: Parametr stanu [{0}], kt\u00f3ry znajduje si\u0119 w \u017c\u0105daniu wywo\u0142ania zwrotnego od dostawcy OpenID Connect, nie ma poprawnej d\u0142ugo\u015bci. Oczekiwano, \u017ce parametr b\u0119dzie mie\u0107 d\u0142ugo\u015b\u0107 {1} znak\u00f3w.
+STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH.explanation=Warto\u015b\u0107 stanu mog\u0142a zosta\u0107 obci\u0119ta lub warto\u015b\u0107 stanu nie pochodzi od tego klienta OpenID Connect.
+STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH.useraction=Sprawd\u017a format parametru stanu. Por\u00f3wnaj warto\u015b\u0107 z parametrami stanu z ostatnich \u017c\u0105da\u0144 OpenID Connect, kt\u00f3re zosta\u0142y obs\u0142u\u017cone przez tego klienta OpenID Connect.
+
+STATE_VALUE_IN_CALLBACK_NOT_STORED=CWWKS2410E: Klient OpenID Connect nie mo\u017ce znale\u017a\u0107 warto\u015bci stanu, kt\u00f3ra jest zgodna z parametrem stanu [{0}] w \u017c\u0105daniu wywo\u0142ania zwrotnego od dostawcy OpenID Connect.
+STATE_VALUE_IN_CALLBACK_NOT_STORED.explanation=Parametr stanu mo\u017ce pochodzi\u0107 ze starego \u017c\u0105dania autoryzacji lub warto\u015b\u0107 parametru stanu jest niepoprawna.
+STATE_VALUE_IN_CALLBACK_NOT_STORED.useraction=Upewnij si\u0119, \u017ce parametr stanu w \u017c\u0105daniu wywo\u0142ania zwrotnego jest zgodny z warto\u015bci\u0105 stanu z ostatniego \u017c\u0105dania OpenID Connect.
+
+STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE=CWWKS2411E: Parametr stanu [{0}], kt\u00f3ry jest zawarty w \u017c\u0105daniu wywo\u0142ania zwrotnego, nie jest zgodny z warto\u015bci\u0105 stanu zapisan\u0105 przez klienta OpenID Connect.
+STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE.explanation=Parametr stanu mo\u017ce pochodzi\u0107 ze starego \u017c\u0105dania autoryzacji lub warto\u015b\u0107 parametru stanu jest niepoprawna.
+STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE.useraction=Upewnij si\u0119, \u017ce parametr stanu w \u017c\u0105daniu wywo\u0142ania zwrotnego jest zgodny z warto\u015bci\u0105 stanu z ostatniego \u017c\u0105dania OpenID Connect.
+
+STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME=CWWKS2412E: Parametr stanu [{0}], kt\u00f3ry jest zawarty w \u017c\u0105daniu wywo\u0142ania zwrotnego, jest poza swoim poprawnym zakresem czasu. Warto\u015b\u0107 stanu zosta\u0142a utworzona o {1} i jest poprawna od {2} do {3}. Bie\u017c\u0105cy czas: {4}.
+STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME.explanation=Dostawca OpenID Connect zbyt d\u0142ugo odpowiada\u0142 lub u\u017cytkownik zbyt d\u0142ugo uwierzytelnia\u0142 si\u0119 u dostawcy OpenID Connect.
+STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME.useraction=Upewnij si\u0119, \u017ce u\u017cytkownikowi uwierzytelnianie si\u0119 u dostawcy OpenID Connect nie zajmuje zbyt du\u017co czasu.
+
+CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI=CWWKS2413E: Adres URL \u017c\u0105dania wywo\u0142ania zwrotnego [{0}] nie jest zgodny z identyfikatorem URI przekierowania [{1}], kt\u00f3ry jest skonfigurowany dla klienta OpenID Connect {2}.
+CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI.explanation=Klient OpenID Connect m\u00f3g\u0142 u\u017cy\u0107 innej warto\u015bci dla parametru redirect_uri w \u017c\u0105daniu autoryzacji, kt\u00f3re zosta\u0142o wys\u0142ane do dostawcy OpenID Connect.
+CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI.useraction=Sprawd\u017a konfiguracj\u0119 klienta OpenID Connect, aby upewni\u0107 si\u0119, \u017ce identyfikator URI przekierowania jest poprawnie skonfigurowany.
+
+# Do not translate "error"
+CALLBACK_URL_INCLUDES_ERROR_PARAMETER=CWWKS2414E: \u017b\u0105danie wywo\u0142ania zwrotnego od dostawcy OpenID Connect zawiera nast\u0119puj\u0105c\u0105 warto\u015b\u0107 parametru b\u0142\u0119du: [{0}]
+CALLBACK_URL_INCLUDES_ERROR_PARAMETER.explanation=Dostawca OpenID Connect napotka\u0142 b\u0142\u0105d podczas pr\u00f3by przetworzenia \u017c\u0105dania uwierzytelnienia.
+CALLBACK_URL_INCLUDES_ERROR_PARAMETER.useraction=Aby uzyska\u0107 wi\u0119cej informacji, zapoznaj si\u0119 z warto\u015bci\u0105 podan\u0105 w komunikacie. Kody b\u0142\u0119d\u00f3w s\u0105 definiowane przez dokument RFC 6749.
+
+TOKEN_VALIDATION_EXCEPTION=CWWKS2415E: Klient OpenID Connect {0} napotka\u0142 nast\u0119puj\u0105cy b\u0142\u0105d podczas sprawdzania poprawno\u015bci tokenu, kt\u00f3ry zosta\u0142 odebrany od dostawcy OpenID Connect: {1}
+TOKEN_VALIDATION_EXCEPTION.explanation=Mo\u017cliwe, \u017ce wyst\u0105pi\u0142 problem ze sprawdzaniem poprawno\u015bci roszczenia azp, iat lub exp przez wystawc\u0119 albo ze sprawdzaniem poprawno\u015bci podpisu tokenu.
+TOKEN_VALIDATION_EXCEPTION.useraction=Wi\u0119cej informacji na ten temat zawiera opis b\u0142\u0119du w komunikacie.
+
+TOKEN_REQUEST_ERROR=CWWKS2416E: Klient OpenID Connect {0} napotka\u0142 nast\u0119puj\u0105cy b\u0142\u0105d podczas wysy\u0142ania \u017c\u0105dania do punktu ko\u0144cowego tokenu dostawcy OpenID Connect: {1}
+TOKEN_REQUEST_ERROR.explanation=Klient OpenID Connect mo\u017ce nie mie\u0107 informacji, \u017c\u0105danie do punktu ko\u0144cowego tokenu si\u0119 nie powiod\u0142o lub wyst\u0105pi\u0142 inny b\u0142\u0105d podczas przetwarzania odpowiedzi punktu ko\u0144cowego tokenu.
+TOKEN_REQUEST_ERROR.useraction=Wi\u0119cej informacji na ten temat zawiera b\u0142\u0105d w komunikacie. Sprawd\u017a, czy dostawca OpenID Connect zwr\u00f3ci\u0142 kod w odpowiedzi uwierzytelniania.
+
+# Do not translate "token_endpoint"
+TOKEN_ENDPOINT_MISSING=CWWKS2417E: Klient OpenID Connect o nazwie {0} nie mo\u017ce znale\u017a\u0107 warto\u015bci dla punktu ko\u0144cowego tokenu dla dostawcy OpenID Connect.
+TOKEN_ENDPOINT_MISSING.explanation=Brak adresu URL punktu ko\u0144cowego tokenu z metadanych dostawcy OpenID Connect i konfiguracji klienta OpenID Connect.
+TOKEN_ENDPOINT_MISSING.useraction=Sprawd\u017a, czy metadane dostawcy OpenID Connect zawieraj\u0105 warto\u015b\u0107 token_endpoint. Punkt ko\u0144cowy tokenu mo\u017ce by\u0107 r\u00f3wnie\u017c okre\u015blony w konfiguracji klienta OpenID Connect.
+

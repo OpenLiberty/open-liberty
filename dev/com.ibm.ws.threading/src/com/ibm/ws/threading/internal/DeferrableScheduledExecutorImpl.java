@@ -78,6 +78,20 @@ public class DeferrableScheduledExecutorImpl implements ScheduledExecutorService
         executor.execute(command);
     }
 
+    // Java 19 Method
+    public void close() {
+        if (executor instanceof AutoCloseable) {
+            // Java 19
+            try {
+                ((AutoCloseable) executor).close();
+            } catch (Exception e) {
+                // Should not happen - the executor close method does not throw an exception
+            }
+        } else {
+            throw new UnsupportedOperationException("Method 'close' is not supported prior to Java 19");
+        }
+    }
+
     @Override
     public void shutdown() {
         executor.shutdown();

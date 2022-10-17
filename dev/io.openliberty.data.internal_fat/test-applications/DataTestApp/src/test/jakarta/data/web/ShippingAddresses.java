@@ -10,15 +10,15 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import io.openliberty.data.Data;
-import io.openliberty.data.Delete;
-import io.openliberty.data.Query;
-import io.openliberty.data.Select;
+import jakarta.data.Delete;
+import jakarta.data.Select;
+import jakarta.data.repository.Query;
+import jakarta.data.repository.Repository;
 
 /**
  *
  */
-@Data
+@Repository
 public interface ShippingAddresses {
     @Select({ "houseNumber", "streetName" })
     StreetAddress[] findByHouseNumberBetweenOrderByStreetNameOrderByHouseNumber(int minHouseNumber, int maxHouseNumber);

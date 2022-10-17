@@ -31,7 +31,7 @@
   <dataSource id="DefaultDataSource" fat.modify="true">
     <jdbcDriver libraryRef="AnonymousJDBCLib"/>
     <!-- properties modified by FATRunner during database rotation. -->
-    <properties createDatabase="create" databaseName="memory:persistmultidb"/>
+    <properties createDatabase="create" databaseName="memory:persistmultidb" user="dbuser1" password="{xor}Oz0vKDtu"/>
   </dataSource>
   
   <javaPermission codebase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>

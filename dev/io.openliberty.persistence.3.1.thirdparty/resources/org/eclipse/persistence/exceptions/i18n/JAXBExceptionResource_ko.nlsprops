@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -153,7 +153,7 @@
 
 50063=XmlAdapterClass [{0}]\uc744(\ub97c) \uc778\uc2a4\ud134\uc2a4\ud654\ud558\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc5b4\ub311\ud130 \ud074\ub798\uc2a4\uc5d0 0 \uc778\uc218 \uc0dd\uc131\uc790\uac00 \uc5c6\uae30 \ub54c\ubb38\uc77c \uc218 \uc788\uc2b5\ub2c8\ub2e4.
 
-50064=XmlAdapterClass [{0}]\uc774(\uac00) \uc608\uc0c1\ub300\ub85c "javax.xml.bind.annotation.adapters.XmlAdapter"\ub97c \ud655\uc7a5\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc5b4\ub311\ud130 \ud074\ub798\uc2a4\ub294 "javax.xml.bind.annotation.adapters.XmlAdapter"\ub97c \ud655\uc7a5\ud558\uace0 "public abstract BoundType unmarshal(ValueType v)" \ubc0f "public abstract ValueType marshal(BoundType v)"\uc744 \uc120\uc5b8\ud574\uc57c \ud569\ub2c8\ub2e4.
+50064=XmlAdapterClass [{0}]\uc774(\uac00) \uc608\uc0c1\ub300\ub85c "jakarta.xml.bind.annotation.adapters.XmlAdapter"\ub97c \ud655\uc7a5\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc5b4\ub311\ud130 \ud074\ub798\uc2a4\ub294 "jakarta.xml.bind.annotation.adapters.XmlAdapter"\ub97c \ud655\uc7a5\ud558\uace0 "public abstract BoundType unmarshal(ValueType v)" \ubc0f "public abstract ValueType marshal(BoundType v)"\uc744 \uc120\uc5b8\ud574\uc57c \ud569\ub2c8\ub2e4.
 
 50065=\uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 XmlJavaTypeAdapter [{0}]\uc774(\uac00) [{1}] \ud328\ud0a4\uc9c0\uc5d0 \uc9c0\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc774\ub294 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \uc5b4\ub311\ud130 \ud074\ub798\uc2a4 \uc774\ub984 \ub54c\ubb38\uc774\uac70\ub098 \uc798\ubabb\ub41c \ub85c\ub354\uac00 \uc124\uc815\ub418\uc5c8\uae30 \ub54c\ubb38\uc77c \uc218 \uc788\uc2b5\ub2c8\ub2e4.
 

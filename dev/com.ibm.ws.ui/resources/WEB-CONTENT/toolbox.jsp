@@ -78,6 +78,7 @@
     response.setHeader("X-XSS-Protection", "1");	
     response.setHeader("X-Content-Type-Options", "nosniff");	
     response.setHeader("X-Frame-Options", "SAMEORIGIN");
+    response.setHeader("Content-Security-Policy", "default-src 'self' 'unsafe-inline' 'unsafe-eval'");
 
     String hasBidi = "";       // used to initialize dojo
     String userId = request.getRemoteUser();     // passed to widgets

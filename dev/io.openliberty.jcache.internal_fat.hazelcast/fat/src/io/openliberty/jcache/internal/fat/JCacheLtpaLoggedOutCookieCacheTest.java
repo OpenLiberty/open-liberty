@@ -73,7 +73,6 @@ public class JCacheLtpaLoggedOutCookieCacheTest extends BaseTestCase {
         server1.addInstalledAppForValidation("formlogin");
         startServer1(server1, groupName.toString(), null, null);
         waitForDefaultHttpsEndpoint(server1);
-        waitForCachingProvider(server1, COOKIE_CACHE_NAME);
         waitForCreatedOrExistingJCache(server1, COOKIE_CACHE_NAME);
 
         /*
@@ -82,7 +81,6 @@ public class JCacheLtpaLoggedOutCookieCacheTest extends BaseTestCase {
         server2.addInstalledAppForValidation("formlogin");
         startServer2(server2, groupName.toString());
         waitForDefaultHttpsEndpoint(server2);
-        waitForCachingProvider(server2, COOKIE_CACHE_NAME);
         waitForCreatedOrExistingJCache(server2, COOKIE_CACHE_NAME);
 
         formLoginClient1 = new SSLFormLoginClient(server1, FormLoginClient.DEFAULT_SERVLET_NAME, FormLoginClient.DEFAULT_CONTEXT_ROOT);

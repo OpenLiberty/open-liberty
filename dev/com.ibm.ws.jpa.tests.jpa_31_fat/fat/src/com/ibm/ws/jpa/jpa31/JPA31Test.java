@@ -79,7 +79,7 @@ public class JPA31Test extends JPAFATServletClient {
                     @TestServlet(servlet = TestCaseConditionExpressionServlet.class, path = CONTEXT_ROOT + "/" + "TestCaseConditionExpressionServlet"),
                     @TestServlet(servlet = TestUUIDEntityIDServlet.class, path = CONTEXT_ROOT + "/" + "TestUUIDEntityIDServlet"),
                     @TestServlet(servlet = TestNewQueryMathFunctionsServlet.class, path = CONTEXT_ROOT + "/" + "TestNewQueryMathFunctionsServlet"),
-                    @TestServlet(servlet = TestNewQueryTimeFunctionsServlet.class, path = CONTEXT_ROOT + "/" + "TestNewQueryTimeFunctionsServlet")
+                    @TestServlet(servlet = TestNewQueryTimeFunctionsServlet.class, path = CONTEXT_ROOT + "/" + "TestNewQueryTimeFunctionsServlet"),
 
     })
     public static LibertyServer server;

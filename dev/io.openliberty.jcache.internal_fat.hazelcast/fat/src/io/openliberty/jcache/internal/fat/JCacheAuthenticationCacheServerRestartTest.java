@@ -62,7 +62,6 @@ public class JCacheAuthenticationCacheServerRestartTest extends BaseTestCase {
         server1.addInstalledAppForValidation("basicauth");
         startServer1(server1, groupName, null, null);
         basicAuthClient1 = new BasicAuthClient(server1);
-        waitForCachingProvider(server1, AUTH_CACHE_NAME);
         waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
         waitForDefaultHttpsEndpoint(server1);
     }

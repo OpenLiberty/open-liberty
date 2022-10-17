@@ -16,6 +16,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
+import componenttest.containers.TestContainerSuite;
+
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.test.tests.FailoverTestLease;
@@ -28,20 +30,18 @@ import componenttest.topology.database.container.DatabaseContainerType;
 
 @RunWith(Suite.class)
 @SuiteClasses({ FailoverTestLease.class })
-public class FATSuite {
+public class FATSuite extends TestContainerSuite {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly());
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(FailoverTestLease.serverNames))
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers(FailoverTestLease.serverNames))
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().forServers(FailoverTestLease.serverNames));
 
     public static DatabaseContainerType type = DatabaseContainerType.Derby;
     public static JdbcDatabaseContainer<?> testContainer;
 
     public static void beforeSuite() throws Exception {
-        //Allows local tests to switch between using a local docker client, to using a remote docker client.
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
         testContainer = DatabaseContainerFactory.createType(type);
         Log.info(FATSuite.class, "beforeSuite", "starting test container of type: " + type);
         testContainer.withStartupTimeout(FATUtils.TESTCONTAINER_STARTUP_TIMEOUT).start();

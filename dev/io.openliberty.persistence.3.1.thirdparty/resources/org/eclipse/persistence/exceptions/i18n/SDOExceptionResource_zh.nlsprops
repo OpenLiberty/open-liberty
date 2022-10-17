@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -135,7 +135,7 @@
 
 45207=\u5c1d\u8bd5\u4f7f\u7528\u6240\u63d0\u4f9b SchemaResolver \u89e3\u6790\u6a21\u5f0f\u65f6\u53d1\u751f\u4e86\u9519\u8bef\u3002
 
-45208=\u65e0\u6cd5\u6620\u5c04\u7c7b\u578b {1} \u4e2d\u7684\u5c5e\u6027 {0}\u3002\u9700\u8981 javax.activation \u548c javax.mail \u5305\uff0c\u4ee5\u6620\u5c04\u7c7b\u578b\u4e3a DataHandler \u7684\u5c5e\u6027\u3002\u8bf7\u786e\u4fdd\u7c7b\u8def\u5f84\u4e0a\u540c\u65f6\u63d0\u4f9b\u4e86\u8fd9\u4e24\u9879\u3002
+45208=\u65e0\u6cd5\u6620\u5c04\u7c7b\u578b {1} \u4e2d\u7684\u5c5e\u6027 {0}\u3002\u9700\u8981 jakarta.activation \u548c jakarta.mail \u5305\uff0c\u4ee5\u6620\u5c04\u7c7b\u578b\u4e3a DataHandler \u7684\u5c5e\u6027\u3002\u8bf7\u786e\u4fdd\u7c7b\u8def\u5f84\u4e0a\u540c\u65f6\u63d0\u4f9b\u4e86\u8fd9\u4e24\u9879\u3002
 
 45209=\u5df2\u5c1d\u8bd5\u91cd\u7f6e SDOHelperContext \u4e0a\u7684 ApplicationResolver \u5b9e\u4f8b\u3002\u4ec5\u5141\u8bb8\u8fdb\u884c\u4e00\u6b21\u8bbe\u7f6e\u3002
 

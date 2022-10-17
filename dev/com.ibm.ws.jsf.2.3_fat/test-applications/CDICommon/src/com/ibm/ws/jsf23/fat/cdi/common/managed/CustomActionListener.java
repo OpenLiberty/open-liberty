@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,10 +20,10 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
 import javax.inject.Inject;
 
-import com.ibm.ws.jsf23.fat.cdi.common.beans.ActionListenerBean;
 import com.ibm.ws.jsf23.fat.cdi.common.beans.injected.FieldBean;
 import com.ibm.ws.jsf23.fat.cdi.common.beans.injected.ManagedBeanType;
 import com.ibm.ws.jsf23.fat.cdi.common.beans.injected.MethodBean;
+import com.ibm.ws.jsf23.fat.cdi.common.beans.jsf23.ActionListenerBean;
 
 /**
  * Custom action listener that tests field and method injection. No constructor injection.

@@ -84,7 +84,7 @@
                clientId="oidc_client"
                clientSecret="FILL ME IN"
                userNameAttribute="preferred_username" 
-               discoveryEndoint="FILL ME IN"
+               discoveryEndpoint="FILL ME IN"
                hostNameVerificationEnabled="false">
                  
 		<jwt builder="myJwtBuilder" />

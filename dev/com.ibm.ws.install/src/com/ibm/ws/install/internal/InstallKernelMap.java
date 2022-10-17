@@ -1209,7 +1209,7 @@ public class InstallKernelMap implements Map {
                 this.put(ACTION_ERROR_MESSAGE, ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", "required", "feature(s)", repos).getMessage());
                 return null;
             }
-            return artifactDownloader.getDownloadedEsas();
+            return artifactDownloader.getDownloadedEsas(featureList);
         }
     }
 
@@ -1641,6 +1641,7 @@ public class InstallKernelMap implements Map {
                 File groupDir = new File(rootDir, groupId.replace(".", "/"));
                 if (!groupDir.exists()) {
                     missingArtifactIndexes.add(index);
+                    index += 1;
                     continue;
                 }
 

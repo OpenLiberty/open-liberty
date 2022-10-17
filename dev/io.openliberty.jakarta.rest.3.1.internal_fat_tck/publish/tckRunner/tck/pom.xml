@@ -6,7 +6,7 @@
 
     <groupId>io.openliberty.jakarta.rest</groupId>
     <artifactId>tck-runner</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>war</packaging>
     <name>jakarta-rest-tck-runner</name>
     <description>A project that will run the Jakarta REST 3.1 TCK against the specified app server to test compliance</description>
@@ -15,7 +15,7 @@
         <repository>
             <id>ibmdhe</id>
             <name>IBM_DHE File Server</name>
-            <url>http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
+            <url>https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/</url>
             <releases>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
@@ -40,6 +40,7 @@
 
     <properties>
         <!-- Global Maven settings -->
+        
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
@@ -61,10 +62,11 @@
         <maven-surefire-report-plugin.version>3.0.0-M5</maven-surefire-report-plugin.version>
 
         <!-- Jakarta EE API -->
-        <jakarta.ws.rs.version>3.1.0</jakarta.ws.rs.version>
+        <jakarta.ws.rs-api.version>3.1.0</jakarta.ws.rs-api.version>
+        <jakarta.ws.rs-tck.version>3.1.2</jakarta.ws.rs-tck.version>
 
         <!-- TODO: update Arquillian BOM -->
-        <arquillian-bom.version>1.7.0.Alpha12</arquillian-bom.version>
+        <arquillian-bom.version>1.7.0.Alpha13</arquillian-bom.version>
         <junit-jupiter.version>5.7.2</junit-jupiter.version>
 
         <!-- Test Utilities -->
@@ -78,7 +80,6 @@
         <liberty.runtime.version>21.0.0.12-beta</liberty.runtime.version>
         <liberty-maven-plugin.version>3.3.4</liberty-maven-plugin.version>
         <arquillian-liberty-jakarta.version>2.1.0</arquillian-liberty-jakarta.version>
-        <jersey.version>3.0.5</jersey.version>
 
         <!-- By default, skip tests -->
         <skip.unit.tests>true</skip.unit.tests>
@@ -89,7 +90,7 @@
             <dependency>
                 <groupId>jakarta.ws.rs</groupId>
                 <artifactId>jakarta.ws.rs-api</artifactId>
-                <version>${jakarta.ws.rs.version}</version>
+                <version>${jakarta.ws.rs-api.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -164,6 +165,131 @@
         </dependencies>
     </dependencyManagement>
     <dependencies>
+		<dependency>
+            <groupId>org.netbeans.tools</groupId>
+            <artifactId>sigtest-maven-plugin</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>io.openliberty.jakarta.restfulWS.3.1</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.jakarta.restfulWS.3.1_}</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>io.openliberty.jakarta.jsonb.3.0</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.jakarta.jsonb.3.0_}</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>io.openliberty.jakarta.jsonp.2.1</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.jakarta.jsonp.2.1_}</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>io.openliberty.jakarta.xmlBinding.4.0</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.jakarta.xmlBinding.4.0_}</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>io.openliberty.jakarta.annotation.2.1</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.jakarta.annotation.2.1_}</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>io.openliberty.jakarta.activation.2.1</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.jakarta.activation.2.1_}</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>io.openliberty.xmlBinding.4.0.internal.tools</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.xmlBinding.4.0.internal.tools_}</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>io.openliberty.restfulWS30.jsonb20provider</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.restfulWS30.jsonb20provider_}</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>io.openliberty.org.jboss.resteasy.common.ee10</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.org.jboss.resteasy.common.ee10_}</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>io.openliberty.org.jboss.resteasy.jaxb.provider.ee10</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.org.jboss.resteasy.jaxb.provider.ee10_}</systemPath>
+        </dependency>        
+        <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>io.openliberty.org.jboss.logging35</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.org.jboss.logging35_}</systemPath>
+        </dependency>        
+        <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>com.ibm.ws.logging</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.logging_}</systemPath>
+        </dependency>        
+        <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>io.openliberty.org.eclipse.yasson.3.0</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.org.eclipse.yasson.3.0_}</systemPath>
+        </dependency>        
+        <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>io.openliberty.org.eclipse.parsson.1.1</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.org.eclipse.parsson.1.1_}</systemPath>
+        </dependency>        
+        <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>com.ibm.ws.org.apache.httpcomponents</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.org.apache.httpcomponents_}</systemPath>
+        </dependency>    
+        <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>com.ibm.ws.org.jboss.jandex</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.org.jboss.jandex_}</systemPath>
+        </dependency>    
+        <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>com.ibm.websphere.org.reactivestreams.reactive-streams.1.0</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.websphere.org.reactivestreams.reactive-streams.1.0_}</systemPath>
+        </dependency>    
+    
         <dependency>
             <groupId>com.ibm.ws</groupId>
             <artifactId>fattest.simplicity</artifactId>
@@ -182,17 +308,7 @@
         <dependency>
             <groupId>io.openliberty.jakarta.ws.rs</groupId>
             <artifactId>jakarta-restful-ws-tck</artifactId>
-            <version>${jakarta.ws.rs.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.ws.rs</groupId>
-            <artifactId>jakarta.ws.rs-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
-            <version>4.0.0</version>
+            <version>${jakarta.ws.rs-tck.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -233,27 +349,11 @@
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
-        <!--<dependency>
-            <groupId>org.awaitility</groupId>
-            <artifactId>awaitility</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.skyscreamer</groupId>
-            <artifactId>jsonassert</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.jayway.jsonpath</groupId>
-            <artifactId>json-path</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.jayway.jsonpath</groupId>
-            <artifactId>json-path-assert</artifactId>
-        </dependency>-->
     </dependencies>
     <build>
         <finalName>${project.artifactId}</finalName>
         <directory>${targetDirectory}</directory>
-        <defaultGoal>clean test integration-test</defaultGoal>
+        <defaultGoal>clean build-classpath test integration-test</defaultGoal>
         <testResources>
             <testResource>
                 <directory>src/main/resources</directory>
@@ -263,23 +363,44 @@
             </testResource>
         </testResources>
         <plugins>
+<!-- The following were added in an attempt to enable the JAXRSSigTestIT test that is currently excluded.   Leaving this in case we re-visited attempting to enable this test 
+     that requires the addition of properties to the signature.sigTestClasspath below.
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.9</version>
+                
                 <executions>
                     <execution>
+     
                         <id>build-classpath</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>build-classpath</goal>
                         </goals>
                         <configuration>
-                            <!-- configure the plugin here -->
+                            
+			              <target>
+			                <copy file="${io.openliberty.jakarta.restfulWS.3.1}" tofile="${project.build.directory}/signaturedirectory/jakarta.ws.rs-api.jar"/>
+			                <copy file="${io.openliberty.jakarta.xmlBinding.4.0}" tofile="${project.build.directory}/signaturedirectory/jakarta.xml.bind-api.jar"/>
+			              </target>
                         </configuration>
                     </execution>
+                    <execution>
+			            <id>copy-apis</id>
+			            <phase>generate-test-sources</phase>
+			            <goals>
+			                <goal>run</goal>
+			            </goals>
+			            <configuration>
+			              <target>
+			                <copy file="${io.openliberty.jakarta.restfulws.3.1}" tofile="${project.build.directory}/signaturedirectory/jakarta.ws.rs-api.jar"/>
+			              </target>
+			            </configuration>
+			        </execution>                     
                 </executions>
             </plugin>
+-->            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -319,18 +440,18 @@
                     </systemPropertyVariables>
                     <testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
                     <dependenciesToScan>
-                        <dependency>io.openliberty.jakarta.ws.rs:jakarta-restful-ws-tck</dependency>
-                    </dependenciesToScan>
+                         <dependency>io.openliberty.jakarta.ws.rs:jakarta-restful-ws-tck</dependency>   
+                     </dependenciesToScan>
                     <includes>
                         <!--  Example to run just one test. 
-                        <include>ee/jakarta/tck/ws/rs/spec/contextprovider/JsonbContextProviderIT</include> 
-                        -->                        
-                        <include>**/tck/**/*Test</include>
-                        <include>**/tck/**/*IT</include>
+                        <include>ee.jakarta.tck.ws.rs.signaturetest.jaxrs.JAXRSSigTestIT</include> -->                          
+                    
+                         <include>**/tck/**/*Test</include>
+                        <include>**/tck/**/*IT</include>  
                      </includes>
-<!--                      <excludes>
-                        <exclude>**/tck/**/SeBootstrapIT</exclude>
-                    </excludes>  -->
+                     <excludes>
+                        <exclude>**/tck/**/JAXRSSigTestIT</exclude>
+                     </excludes>
                 </configuration>
             </plugin>
             <!-- The following commented lines may be useful for running the TCK as integration tests (failsafe) rather than unit tests (surefire). -->
@@ -409,41 +530,7 @@
                     <artifactId>arquillian-liberty-managed-jakarta</artifactId>
                     <version>${arquillian-liberty-jakarta.version}</version>
                 </dependency>
-
-                <!-- Use Jersey Client in the test codes here. -->
-                <dependency>
-                    <groupId>org.glassfish.jersey.media</groupId>
-                    <artifactId>jersey-media-json-binding</artifactId>
-                    <version>${jersey.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.glassfish.jersey.inject</groupId>
-                    <artifactId>jersey-hk2</artifactId>
-                    <version>${jersey.version}</version>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.glassfish.jersey.core</groupId>
-                    <artifactId>jersey-client</artifactId>
-                    <version>${jersey.version}</version>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.glassfish.jersey.media</groupId>
-                    <artifactId>jersey-media-jaxb</artifactId>
-                    <version>${jersey.version}</version>
-                    <scope>test</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.glassfish.jersey.media</groupId>
-                    <artifactId>jersey-media-sse</artifactId>
-                    <version>3.0.5</version>
-                </dependency>
-            </dependencies>
+             </dependencies>
             <build>
                 <testResources>
                     <testResource>
@@ -521,6 +608,11 @@
                                 <password>j2ee</password>
                                 <authuser>javajoe</authuser>
                                 <authpassword>javajoe</authpassword>
+								<jimage.dir>${project.build.directory}/jdk11-bundle</jimage.dir>
+								
+<!-- Potentially revisit enabling the addition of properties to the class path to enable the signature test.
+                                <signature.sigTestClasspath>${project.build.directory}/signaturedirectory/jakarta.ws.rs-api.jar:${project.build.directory}/signaturedirectory/jakarta.xml.bind-api.jar:${project.build.directory}/jdk11-bundle/java.base</signature.sigTestClasspath>
+-->
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>

@@ -17,7 +17,10 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
 
+import io.openliberty.org.apache.jasper.expressionLanguage50.fat.tests.EL50ArrayCoercionTest;
+import io.openliberty.org.apache.jasper.expressionLanguage50.fat.tests.EL50BasicTests;
 import io.openliberty.org.apache.jasper.expressionLanguage50.fat.tests.EL50DefaultMethodsTest;
+import io.openliberty.org.apache.jasper.expressionLanguage50.fat.tests.EL50LambdaExpressionCoercionTest;
 import io.openliberty.org.apache.jasper.expressionLanguage50.fat.tests.EL50MethodReferenceTest;
 
 /**
@@ -38,7 +41,11 @@ import io.openliberty.org.apache.jasper.expressionLanguage50.fat.tests.EL50Metho
 @RunWith(Suite.class)
 @SuiteClasses({
                 EL50DefaultMethodsTest.class,
-                EL50MethodReferenceTest.class
+                EL50MethodReferenceTest.class,
+                EL50LambdaExpressionCoercionTest.class,
+                EL50ArrayCoercionTest.class,
+                EL50BasicTests.class,
+
 })
 public class FATSuite {
 

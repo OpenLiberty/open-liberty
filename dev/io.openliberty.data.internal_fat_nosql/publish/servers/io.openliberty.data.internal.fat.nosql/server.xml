@@ -14,7 +14,7 @@
     <!-- Do not add JDBC or Jakarta Persistence/JPA features to this test bucket -->
     <!-- This test bucket is for testing with Jakarta NoSQL only -->
     <feature>componenttest-2.0</feature>
-    <!-- TODO <feature>data-1.0</feature> -->
+    <feature>data-1.0</feature>
     <feature>nosql-1.0</feature>
     <feature>servlet-6.0</feature>
   </featureManager>

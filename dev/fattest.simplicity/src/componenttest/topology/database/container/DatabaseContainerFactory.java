@@ -117,7 +117,7 @@ public class DatabaseContainerFactory {
                     acceptDB2License.invoke(cont);
                     //Add startup timeout since DB2 tends to take longer than the default 3 minutes on build machines.
                     Method withStartupTimeoutDB2 = cont.getClass().getMethod("withStartupTimeout", Duration.class);
-                    withStartupTimeoutDB2.invoke(cont, Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 15));
+                    withStartupTimeoutDB2.invoke(cont, Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN && !FATRunner.ARM_ARCHITECTURE ? 5 : 15));
                     break;
                 case Derby:
                     break;
@@ -147,7 +147,7 @@ public class DatabaseContainerFactory {
                     acceptSQLServerLicense.invoke(cont);
                     //Init Script
                     Method initScript = cont.getClass().getMethod("withInitScript", String.class);
-                    initScript.invoke(cont, "resources/init-sqlserver.sql");
+                    initScript.invoke(cont, "init-sqlserver.sql");
                     break;
                 default:
                     break;

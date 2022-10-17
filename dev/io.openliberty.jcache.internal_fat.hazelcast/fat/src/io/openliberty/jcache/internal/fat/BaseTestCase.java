@@ -77,17 +77,17 @@ public abstract class BaseTestCase {
      * Start server 1.
      *
      * @param server           The server to start.
-     * @param groupName        The group name (Hazelcast).
+     * @param clusterName      The cluster name (Hazelcast).
      * @param authCacheMaxSize The maximum size of the 'AuthCache' cache. 25000 if null.
      * @param authCacheTtl     The time to live for the 'AuthCache' cache. 600s if null.
      * @throws Exception If starting the server failed for some unforeseen reason.
      */
-    protected static void startServer1(LibertyServer server, String groupName, Integer authCacheMaxSize, Integer authCacheTtl) throws Exception {
+    protected static void startServer1(LibertyServer server, String clusterName, Integer authCacheMaxSize, Integer authCacheTtl) throws Exception {
 
         /*
          * Go to the specific provider's setup.
          */
-        TestPluginHelper.getTestPlugin().setupServer1(server, groupName, authCacheMaxSize, authCacheTtl);
+        TestPluginHelper.getTestPlugin().setupServer1(server, clusterName, authCacheMaxSize, authCacheTtl);
 
         /*
          * Start the server.
@@ -109,16 +109,16 @@ public abstract class BaseTestCase {
     /**
      * Start server 2.
      *
-     * @param server    The server to start.
-     * @param groupName The group name (Hazelcast).
+     * @param server      The server to start.
+     * @param clusterName The cluster name (Hazelcast).
      * @throws Exception If starting the server failed for some unforeseen reason.
      */
-    protected static void startServer2(LibertyServer server, String groupName) throws Exception {
+    protected static void startServer2(LibertyServer server, String clusterName) throws Exception {
 
         /*
          * Go to the specific provider's setup.
          */
-        TestPluginHelper.getTestPlugin().setupServer2(server, groupName);
+        TestPluginHelper.getTestPlugin().setupServer2(server, clusterName);
 
         /*
          * Setup HTTP(S) ports.
@@ -433,19 +433,9 @@ public abstract class BaseTestCase {
      * @param cacheName The name of the cache to check for the message.
      */
     protected static void waitForCreatedOrExistingJCache(LibertyServer server, String cacheName) {
-        String pattern = "CWLJC0001I:.*" + cacheName + ".*was created|CWLJC0002I:.*" + cacheName + ".*was found";
+        String pattern = "(CWLJC0001I:.*" + cacheName + ".*was created|CWLJC0002I:.*" + cacheName + ".*was found) in .+ ms and is using the "
+                         + TestPluginHelper.getTestPlugin().getCachingProviderName() + " caching provider";
         assertNotNull("Expected message indicating cache " + cacheName + " was found or created.", server.waitForStringInLog(pattern, 60000));
-    }
-
-    /**
-     * Wait for a message indicating the JCache provider that was used for the named cache.
-     *
-     * @param server    The server to check the logs for the message.
-     * @param cacheName The name of the cache to check for the message.
-     */
-    protected static void waitForCachingProvider(LibertyServer server, String cacheName) {
-        assertNotNull("Expected caching provider would be loaded for " + cacheName + ".",
-                      server.waitForStringInLog("CWLJC0003I:.*" + cacheName + ".*" + TestPluginHelper.getTestPlugin().getCachingProviderName()));
     }
 
     /**

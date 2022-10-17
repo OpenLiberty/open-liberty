@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,9 +9,6 @@
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt11.fat;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -27,35 +24,27 @@ import com.ibm.ws.security.mp.jwt11.fat.configInAppTests.MPJwtMPConfigInApp_BadK
 import com.ibm.ws.security.mp.jwt11.fat.configInAppTests.MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_Tests;
 import com.ibm.ws.security.mp.jwt11.fat.configInAppTests.MPJwtMPConfigInApp_NoMPJwtConfigInServerXml_Tests;
 import com.ibm.ws.security.mp.jwt11.fat.configInAppTests.MPJwtMPOtherSigAlgConfigInApp_SigAlgOnlyMPJwtConfigInServerXml_Tests;
-import com.ibm.ws.security.mp.jwt11.fat.envVarsTests.MPJwtBadMPConfigAsEnvVars;
-import com.ibm.ws.security.mp.jwt11.fat.envVarsTests.MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseJwksUri_JWK;
-import com.ibm.ws.security.mp.jwt11.fat.envVarsTests.MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseJwksUri_X509;
-import com.ibm.ws.security.mp.jwt11.fat.envVarsTests.MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLoc;
-import com.ibm.ws.security.mp.jwt11.fat.envVarsTests.MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLocES256RelativeFile;
-import com.ibm.ws.security.mp.jwt11.fat.envVarsTests.MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLocES512JwksUri;
-import com.ibm.ws.security.mp.jwt11.fat.envVarsTests.MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLocRS384Url;
-import com.ibm.ws.security.mp.jwt11.fat.envVarsTests.MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLocRS512File;
-import com.ibm.ws.security.mp.jwt11.fat.envVarsTests.MPJwtGoodMPConfigAsEnvVars_UseES384PublicKey_NoKeyLoc;
-import com.ibm.ws.security.mp.jwt11.fat.envVarsTests.MPJwtGoodMPConfigAsEnvVars_UsePublicKey_NoKeyLoc;
 import com.ibm.ws.security.mp.jwt11.fat.featureSupportTests.MPJwtNoMpJwtConfig;
 import com.ibm.ws.security.mp.jwt11.fat.propagationTests.MPJwtPropagationTests_notUsingWebTarget;
 import com.ibm.ws.security.mp.jwt11.fat.propagationTests.MPJwtPropagationTests_usingWebTarget;
-import com.ibm.ws.security.mp.jwt11.fat.systemPropertiesTests.MPJwtBadMPConfigAsSystemProperties;
-import com.ibm.ws.security.mp.jwt11.fat.systemPropertiesTests.MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseJwksUri_JWK;
-import com.ibm.ws.security.mp.jwt11.fat.systemPropertiesTests.MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseJwksUri_X509;
-import com.ibm.ws.security.mp.jwt11.fat.systemPropertiesTests.MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLoc;
-import com.ibm.ws.security.mp.jwt11.fat.systemPropertiesTests.MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLocES2564Url;
-import com.ibm.ws.security.mp.jwt11.fat.systemPropertiesTests.MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLocES384File;
-import com.ibm.ws.security.mp.jwt11.fat.systemPropertiesTests.MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLocES512RelativeFile;
-import com.ibm.ws.security.mp.jwt11.fat.systemPropertiesTests.MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLocRS512JwksUri;
-import com.ibm.ws.security.mp.jwt11.fat.systemPropertiesTests.MPJwtGoodMPConfigAsSystemProperties_UsePublicKey_NoKeyLoc;
-import com.ibm.ws.security.mp.jwt11.fat.systemPropertiesTests.MPJwtGoodMPConfigAsSystemProperties_UseRS384PublicKey_NoKeyLoc;
 
 import componenttest.rules.repeater.RepeatTests;
 
+/**
+ * NOTE:
+ * This project has been split into 3 parts.
+ * The original 1.1 project runs without issue using the 1.1 mpJwt feature as well as the 1.2 feature.
+ * When we run these tests using the 2.0 or 2.1 features, we have to/must run the transformer on the test apps (EE9 or EE10).
+ * This extra step is causing the 2.0 and 2.1 projects to time out, so we're splitting them.
+ * com.ibm.ws.security.mp.jwt.1.1_fat.mpJwt-2.0 will become
+ *
+ * com.ibm.ws.security.mp.jwt.1.1_fat.mpJwt-2.0 - base/targetted tests
+ * com.ibm.ws.security.mp.jwt.1.1_fat.mpJwt-2.0.envVars - environment variable tests
+ * com.ibm.ws.security.mp.jwt.1.1_fat.mpJwt-2.0.sysProps - system properties tests
+ */
 @RunWith(Suite.class)
 @SuiteClasses({
-        // Ported list of tests (some already renamed)
+
         AlwaysRunAndPassTest.class,
         // Basic Functional tests
         // -- These tests will run 3 times - tests that pass the token in the Authorization header
@@ -77,28 +66,10 @@ import componenttest.rules.repeater.RepeatTests;
         MPJwtMPConfigInApp_BadJwksUriMPJwtConfigInServerXml_Tests.class,
         MPJwtMPConfigInApp_BadKeyNameMPJwtConfigInServerXml_Tests.class,
         MPJwtMPConfigInApp_GoodMPJwtConfigInServerXml_Tests.class,
-        // mp-config specified as system properties
-        MPJwtGoodMPConfigAsSystemProperties_UsePublicKey_NoKeyLoc.class,
-        MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLoc.class,
-        MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseJwksUri_X509.class,
-        MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseJwksUri_JWK.class,
-        MPJwtBadMPConfigAsSystemProperties.class,
-        MPJwtGoodMPConfigAsSystemProperties_UseRS384PublicKey_NoKeyLoc.class,
-        MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLocES2564Url.class,
-        MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLocES384File.class,
-        MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLocES512RelativeFile.class,
-        MPJwtGoodMPConfigAsSystemProperties_NoPublicKey_UseKeyLocRS512JwksUri.class,
-        // mp-config specified as env vars
-        MPJwtGoodMPConfigAsEnvVars_UsePublicKey_NoKeyLoc.class,
-        MPJwtGoodMPConfigAsEnvVars_UseES384PublicKey_NoKeyLoc.class,
-        MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLocRS384Url.class,
-        MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLocRS512File.class,
-        MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLocES256RelativeFile.class,
-        MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLocES512JwksUri.class,
-        MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLoc.class,
-        MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseJwksUri_X509.class,
-        MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseJwksUri_JWK.class,
-        MPJwtBadMPConfigAsEnvVars.class,
+
+        // mp-config specified as system properties - run in project com.ibm.ws.security.mp.jwt.1.1_fat.mpJwt-2.0.sysProps
+
+        // mp-config specified as env vars - run in project run in project com.ibm.ws.security.mp.jwt.1.1_fat.mpJwt-2.0.envVars
 
         MPJwtJwkTokenCacheTests.class
 
@@ -108,8 +79,6 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
 
     public static String authHeaderPrefix = MPJwt11FatConstants.TOKEN_TYPE_BEARER;
-    //    private static final Set<String> REMOVE = new HashSet<String>();
-    //    private static final Set<String> INSERT = new HashSet<String>();
 
     /**
      * Tests were written to use repeat to run the tests with each version of the mpJwt feature. Now that the project has been

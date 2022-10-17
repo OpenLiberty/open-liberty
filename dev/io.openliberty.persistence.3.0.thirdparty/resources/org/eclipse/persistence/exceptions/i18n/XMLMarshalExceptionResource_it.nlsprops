@@ -65,7 +65,7 @@
 
 25020=Il metodo "getResult()" non deve essere chiamato prima di aver chiamato l''evento "endDocument()".
 
-25021=Classe {0} non valida per SwaRef. Deve essere javax.activation.DataHandler.
+25021=Classe {0} non valida per SwaRef. Deve essere jakarta.activation.DataHandler.
 
 25022=Impossibile eseguire il marshalling dell''immagine. Nessun programma di codifica disponibile per mimeType {0}.
 

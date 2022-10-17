@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -535,7 +535,7 @@
 
 7306=L''elemento annotato [{0}] dalla classe [{1}] ha un tipo di accesso esplicito non corretto specificato. Deve specificare un tipo di accesso [{2}].
 
-7307=Manca un stringa di contesto di registrazione per il contesto [{0}]. Si tratta di un''eccezione interna che si \u00e8 verificata durante il richiamo di un messaggio di log per l''elaborazione dei metadati JPA, segnalare un bug.
+7307=Manca un stringa di contesto di registrazione per il contesto [{0}]. Si tratta di un''eccezione interna che si \u00e8 verificata durante il richiamo di un messaggio di log per l''elaborazione dei metadati Jakarta Persistence, segnalare un bug.
 
 7308=Il valore specificato [{0}] per la propriet\u00e0 permanente [{1}] non \u00e8 valido - [{2}].
 
@@ -593,7 +593,7 @@
 
 7336=Pi\u00f9 propriet\u00e0 di contesto [{2}] e [{3}] specificate per lo stesso campo discriminatore titolare [{1}] per la classe [{0}]
 
-7337=La colonna del discriminatore titolare associata [{1}] sulla classe [{0}] deve essere contrassegnata come di sola lettura. In JPA ci\u00f2 viene effettuato impostando insertable=false e updatable=false sulla colonna, ad esempio @Column(name="TENANT_ID", insertable=false, updatable=false).
+7337=La colonna del discriminatore titolare associata [{1}] sulla classe [{0}] deve essere contrassegnata come di sola lettura. In Jakarta Persistence API ci\u00f2 viene effettuato impostando insertable=false e updatable=false sulla colonna, ad esempio @Column(name="TENANT_ID", insertable=false, updatable=false).
 
 7338=Non \u00e8 possibile aggiungere sequenze a un  SessionBroker.
 
@@ -621,7 +621,7 @@
 
 7351=La classe converter [{2}] specificata nell''attributo di associazione [{1}] dalla classe [{0}] non \u00e8 stata trovata. Assicurarsi che il nome classe converter sia corretto e che esista con la definizione dell''unit\u00e0 permanente.
 
-7352=La classe converter [{0}] deve implementare l''interfaccia javax.persistence.AttributeConverter<X, Y> JPA per essere una classe converter valida.
+7352=La classe converter [{0}] deve implementare l''interfaccia jakarta.persistence.AttributeConverter<X, Y> Jakarta Persistence per essere una classe converter valida.
 
 7353=L''attributo associazione [{1}] dalla classe [{0}] non \u00e8 un tipo di associazione valido per una specifica di conversione.
 

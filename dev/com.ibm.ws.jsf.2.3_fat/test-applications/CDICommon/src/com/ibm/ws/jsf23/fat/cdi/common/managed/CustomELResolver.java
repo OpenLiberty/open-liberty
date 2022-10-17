@@ -19,10 +19,10 @@ import javax.el.ELContext;
 import javax.el.ELResolver;
 import javax.inject.Inject;
 
-import com.ibm.ws.jsf23.fat.cdi.common.beans.TestCustomBean;
 import com.ibm.ws.jsf23.fat.cdi.common.beans.injected.FieldBean;
 import com.ibm.ws.jsf23.fat.cdi.common.beans.injected.ManagedBeanType;
 import com.ibm.ws.jsf23.fat.cdi.common.beans.injected.MethodBean;
+import com.ibm.ws.jsf23.fat.cdi.common.beans.jsf23.TestCustomBean;
 
 /**
  * Custom EL resolver that tests field and method injection. No constructor injection.
@@ -70,7 +70,7 @@ public class CustomELResolver extends ELResolver {
 
         boolean className40Found = false;
         String outcome = null;
-        String className = "com.ibm.ws.jsf23.fat.cdi.common.beans.TestCustomBean";
+        String className = "com.ibm.ws.jsf23.fat.cdi.common.beans.jsf23.TestCustomBean";
         String classNameFaces40 = "com.ibm.ws.jsf23.fat.cdi.common.beans.faces40.TestCustomBean";
 
         if (base != null) {

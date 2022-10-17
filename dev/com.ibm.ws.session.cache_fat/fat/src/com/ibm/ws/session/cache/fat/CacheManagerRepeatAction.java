@@ -31,4 +31,9 @@ public class CacheManagerRepeatAction implements RepeatTestAction {
     public String getID() {
         return ID;
     }
+
+    @Override
+    public String toString() {
+        return ID;
+    }
 }

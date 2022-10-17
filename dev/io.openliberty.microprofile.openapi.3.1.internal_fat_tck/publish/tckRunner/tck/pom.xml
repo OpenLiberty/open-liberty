@@ -8,13 +8,20 @@
     <packaging>jar</packaging>
 
     <name>MicroProfile OpenAPI TCK Runner</name>
-
+    
+    <repositories>
+        <repository>
+            <id>eclipse-staging</id>
+            <url>https://oss.sonatype.org/content/repositories/orgeclipsemicroprofile-1611</url>
+        </repository>
+    </repositories>
+    
     <properties>
-        <microprofile.openapi.version>3.1-RC3</microprofile.openapi.version>
+        <microprofile.openapi.version>3.1</microprofile.openapi.version>
 
         <surefire.version>2.17</surefire.version> <!-- Any changes to the surefire version must be tested against ZOS-->
 
-        <arquillian.version>1.7.0.Alpha12</arquillian.version>
+        <arquillian.version>1.7.0.Alpha13</arquillian.version>
         <arquillian-wlp.version>2.1.0</arquillian-wlp.version>
 
         <defaultSuiteFiles>tck-suite.xml</defaultSuiteFiles>

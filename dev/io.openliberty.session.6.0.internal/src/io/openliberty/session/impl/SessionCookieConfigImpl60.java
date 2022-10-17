@@ -10,7 +10,6 @@
  *******************************************************************************/
 package io.openliberty.session.impl;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -29,8 +28,7 @@ import jakarta.servlet.SessionCookieConfig;
 public class SessionCookieConfigImpl60 extends SessionCookieConfigImpl implements SessionCookieConfig, Cloneable {
     private static final String methodClassName = "SessionCookieConfigImpl60";
 
-    private static TraceNLS nls = TraceNLS.getTraceNLS(SessionCookieConfigImpl60.class, "com.ibm.ws.webcontainer.resources.Messages");
-
+    private static TraceNLS nls = TraceNLS.getTraceNLS(SessionCookieConfigImpl60.class, "io.openliberty.session60.internal.resources.SessionMessages");
     //Enforced characters NOT for use in Cookie names; see Cookie API for this String
     private static final String TSPECIALS = "/()<>@,;:\\\"[]?={} \t";
 
@@ -57,7 +55,7 @@ public class SessionCookieConfigImpl60 extends SessionCookieConfigImpl implement
 
     @Override
     public Map<String, String> getAttributes() {
-        return (this.attributes == null) ? Collections.<String, String> emptyMap() : Collections.<String, String> unmodifiableMap(this.attributes);
+        return super.getAttributes();
     }
 
     @Override
@@ -90,10 +88,14 @@ public class SessionCookieConfigImpl60 extends SessionCookieConfigImpl implement
             throwWarning();
         }
 
-        if (name == null || name.isEmpty())
-            throw new IllegalArgumentException("err.cookie_attribute_name_blank"); //translation
-        if (hasReservedCharacters(name))
-            throw new IllegalArgumentException("err.cookie_attribute_name_invalid" + name);
+        if (name == null)
+            throw new IllegalArgumentException(nls.getString("cookie.attribute.name.null"));
+
+        if (hasReservedCharacters(name)) {
+            String msg = nls.getFormattedMessage("cookie.attribute.name.invalid.[{0}]", new Object[] { name }, "Cookie attribute name is invalid [" + name + "]");
+            throw new IllegalArgumentException(msg);
+        }
+
         if ("Max-Age".equalsIgnoreCase(name) && value != null) {
             setMaxAge(Integer.parseInt(value), externalCall);
         } else {
@@ -111,6 +113,9 @@ public class SessionCookieConfigImpl60 extends SessionCookieConfigImpl implement
         temp.attributes = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         temp.attributes.putAll(this.attributes);
 
+        if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINER)) {
+            LoggingUtil.SESSION_LOGGER_CORE.log(Level.FINE, methodClassName + " returns cloned SessionCookieConfig [" + temp + "]");
+        }
         return temp;
     }
 

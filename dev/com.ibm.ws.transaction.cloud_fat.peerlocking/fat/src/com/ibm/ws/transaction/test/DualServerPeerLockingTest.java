@@ -68,6 +68,17 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
     @TestServlet(servlet = Simple2PCCloudServlet.class, contextRoot = APP_NAME)
     public static LibertyServer peerLockingEnabledServer1;
 
+    public static String[] serverNames = new String[] {
+                                                        "com.ibm.ws.transaction_LKCLOUD001",
+                                                        "com.ibm.ws.transaction_LKCLOUD002",
+                                                        "defaultAttributesServer1",
+                                                        "defaultAttributesServer2",
+                                                        "longPeerStaleTimeServer1",
+                                                        "longPeerStaleTimeServer2",
+                                                        "peerLockingDisabledServer1",
+                                                        "peerLockingEnabledServer1",
+    };
+
     @BeforeClass
     public static void setUp() throws Exception {
         System.out.println("NYTRACE: DualServerPeerLockingTest.setUp called");

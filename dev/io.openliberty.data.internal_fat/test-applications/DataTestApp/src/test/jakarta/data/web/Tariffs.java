@@ -14,26 +14,24 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
-import io.openliberty.data.Data;
-import io.openliberty.data.Paginated;
-import io.openliberty.data.Pagination;
+import jakarta.data.repository.Pageable;
+import jakarta.data.repository.Repository;
 
 /**
  *
  */
-@Data
+@Repository
 public interface Tariffs {
 
     int deleteByLeviedBy(String country);
 
     Stream<Tariff> findByLeviedAgainst(String country);
 
-    @Paginated(3)
-    Iterator<Tariff> findByLeviedAgainstLessThanOrderByKeyDesc(String countryNameBefore);
+    Iterator<Tariff> findByLeviedAgainstLessThanOrderByKeyDesc(String countryNameBefore, Pageable pagination);
 
     Tariff findByLeviedByAndLeviedAgainstAndLeviedOn(String taxingCountry, String taxedCountry, String item);
 
-    List<Tariff> findByLeviedByOrderByKey(String country, Pagination pagination);
+    List<Tariff> findByLeviedByOrderByKey(String country, Pageable pagination);
 
     Tariff save(Tariff t);
 }

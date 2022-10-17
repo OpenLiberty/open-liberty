@@ -1124,9 +1124,16 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         for (Class<?> cl = d.getClass(); cl != null; cl = cl.getSuperclass())
             classes.addAll(Arrays.asList(cl.getInterfaces()));
         
-        return Proxy.newProxyInstance(jdbcDriverLoader,
-                                      classes.toArray(new Class[classes.size()]),
-                                      tracer);
+        try {
+            return Proxy.newProxyInstance(jdbcDriverLoader,
+                                          classes.toArray(new Class[classes.size()]),
+                                          tracer);
+        } catch (IllegalArgumentException e) {
+            //Creating a proxy can fail based on jdbc driver restrictions.
+            //Throw a resource exception and let caller handle it. 
+            throw new ResourceException(e);
+        } //TODO handle security exceptions
+        
     }
 
     /**

@@ -17,13 +17,6 @@ src: \
 	
 fat.project: true
 
-tested.features:\
-  restfulwsclient-3.1,\
-  restfulws-3.1,\
-  jsonp-2.1,\
-  xmlbinding-4.0,\
-  cdi-4.0
-
 -buildpath: \
 	io.openliberty.jakarta.servlet.5.0;version=latest,\
 	com.ibm.ws.componenttest.2.0

@@ -9,8 +9,8 @@
 #     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME ws/code/jsp/src/com/ibm/ws/jsp/resources/messages.nlsprops
-#COMPONENTPREFIX JSPG
-#COMPONENTNAMEFOR JSPG jsp
+#COMPONENTPREFIX JSPG CWWJS
+#COMPONENTNAMEFOR JSPG CWWJS jsp
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
@@ -310,8 +310,8 @@ jsp.error.usebean.class.must.be.assignable.to.type.explanation=
 jsp.error.usebean.class.must.be.assignable.to.type.useraction=
 
 jsp.error.usebean.cannot.locate.class.to.validate.assignable=JSPG0074E: \u627e\u4e0d\u5230\u985e\u5225\uff0c\u7121\u6cd5\u5224\u65b7 useBean \u985e\u5225 "{0}" \u662f\u5426\u53ef\u6307\u6d3e\u7d66 JSP \u5143\u7d20 {2} \u7684 "{1}" \u985e\u578b
-jsp.error.usebean.cannot.locate.class.to.validate.assignable.explanation
-jsp.error.usebean.cannot.locate.class.to.validate.assignable.useraction
+#jsp.error.usebean.cannot.locate.class.to.validate.assignable.explanation
+#jsp.error.usebean.cannot.locate.class.to.validate.assignable.useraction
 
 jsp.error.multiple.attribute.definitions=JSPG0075E: \u5c0d JSP \u5143\u7d20 {1} \u800c\u8a00\uff0c{0} \u5c6c\u6027\u4e0d\u5bb9\u8a31\u51fa\u73fe\u591a\u6b21
 jsp.error.multiple.attribute.definitions.explanation=
@@ -387,7 +387,6 @@ jsp.error.multiple.line.number.explanation=
 jsp.error.multiple.line.number.useraction=
 
 jsp.error.corresponding.servlet=JSPG0093E: {0} \u6a94\u7522\u751f Servlet \u932f\u8aa4
-
 jsp.error.corresponding.servlet.explanation=
 jsp.error.corresponding.servlet.useraction=
 
@@ -574,7 +573,6 @@ jsp.error.tagfile.invoke.scope_invalid.explanation=
 jsp.error.tagfile.invoke.scope_invalid.useraction=
 
 jsp.error.tagfile.dobody.scope_invalid=JSPG0141E: jsp:doBody scope \u503c\u7121\u6548
-
 jsp.error.tagfile.dobody.scope_invalid.explanation=
 jsp.error.tagfile.dobody.scope_invalid.useraction=
 
@@ -843,7 +841,6 @@ jsp.error.no.doctype-root-element.attr.explanation=
 jsp.error.no.doctype-root-element.attr.useraction=
 
 jsp.error.no.doctype-system.attr=JSPG0214E: \u672a\u63d0\u4f9b doctype-system\u3002
-
 jsp.error.no.doctype-system.attr.explanation=
 jsp.error.no.doctype-system.attr.useraction=
 
@@ -925,25 +922,25 @@ jsp.error.failed.load.tlv.class=JSPG0236E: JSP \u5132\u5b58\u5668\u7121\u6cd5\u8
 jsp.error.failed.load.tlv.class.explanation=JSP \u5132\u5b58\u5668\u7121\u6cd5\u8f09\u5165\u6a19\u7c64\u5eab\u63cf\u8ff0\u5b50 (TLD) \u4e2d\u6307\u5b9a\u7684 TagLibraryValidator \u985e\u5225\u3002
 jsp.error.failed.load.tlv.class.useraction=\u8acb\u9a57\u8b49 TagLibraryValidator \u985e\u5225\u5df2\u5b58\u5728\uff0c\u4e14\u53ef\u4f9b\u9019\u500b Web \u6a21\u7d44\u5b58\u53d6\u3002
 
-jsp.error.tagfile.nameFrom.noAttribute=JSPG0237E: \u627e\u4e0d\u5230 name \u5c6c\u6027\u503c\u70ba \"{0}\"\uff08\u9019\u500b name-from-attribute \u5c6c\u6027\u7684\u503c\uff09\u7684 attribute \u6307\u5f15\u3002
+jsp.error.tagfile.nameFrom.noAttribute=JSPG0237E: \u627e\u4e0d\u5230 name \u5c6c\u6027\u503c\u70ba "{0}"\uff08\u9019\u500b name-from-attribute \u5c6c\u6027\u7684\u503c\uff09\u7684 attribute \u6307\u5f15\u3002
 jsp.error.tagfile.nameFrom.noAttribute.explanation=\u8aaa\u660e
 jsp.error.tagfile.nameFrom.noAttribute.useraction=\u4f7f\u7528\u8005\u52d5\u4f5c
 
-jsp.error.tagfile.nameFrom.badAttribute=JSPG0238E: attribute \u6307\u5f15\uff08\u5ba3\u544a\u65bc\u7b2c {0} \u884c\uff0cname \u5c6c\u6027\u70ba \"{1}\"\uff0c\u662f\u9019\u500b name-from-attribute \u5c6c\u6027\u7684\u503c\uff09\u7684\u985e\u578b\u5fc5\u9808\u662f java.lang.String\uff0c\u4e14\u662f \"required\"\uff0c\u800c\u975e \"rtexprvalue\"\u3002
+jsp.error.tagfile.nameFrom.badAttribute=JSPG0238E: attribute \u6307\u5f15\uff08\u5ba3\u544a\u65bc\u7b2c {0} \u884c\uff0cname \u5c6c\u6027\u70ba "{1}"\uff0c\u662f\u9019\u500b name-from-attribute \u5c6c\u6027\u7684\u503c\uff09\u7684\u985e\u578b\u5fc5\u9808\u662f java.lang.String\uff0c\u4e14\u662f "required"\uff0c\u800c\u975e "rtexprvalue"\u3002
 jsp.error.tagfile.nameFrom.badAttribute.explanation=\u8aaa\u660e
 jsp.error.tagfile.nameFrom.badAttribute.useraction=\u4f7f\u7528\u8005\u52d5\u4f5c
 
-jsp.error.jspoutput.conflict=JSPG0239E: <jsp:output>: \"{0}\" \u591a\u6b21\u51fa\u73fe\u800c\u542b\u6709\u4e0d\u540c\u7684\u503c\uff08\u820a\uff1a{1}\u3001\u65b0\uff1a{2}\uff09\u4e0d\u5408\u6cd5
+jsp.error.jspoutput.conflict=JSPG0239E: <jsp:output>: "{0}" \u591a\u6b21\u51fa\u73fe\u800c\u542b\u6709\u4e0d\u540c\u7684\u503c\uff08\u820a\uff1a{1}\u3001\u65b0\uff1a{2}\uff09\u4e0d\u5408\u6cd5
 jsp.error.jspoutput.conflict.explanation=<jsp:output> \u542b\u6709\u591a\u6b21\u51fa\u73fe\u7684\u5c6c\u6027\uff0c\u4f46\u5b83\u5011\u7684\u503c\u4e0d\u540c\u3002
 jsp.error.jspoutput.conflict.useraction=\u8acb\u78ba\u5b9a\u591a\u6b21\u51fa\u73fe\u7684\u5c6c\u6027\u6709\u76f8\u540c\u7684\u503c\u3002
 
 # defect 396002
-jsp.error.prefix.redefined=JSPG0240E: \u8a66\u5716\u5c07 \"{0}\" \u5b57\u9996\u91cd\u65b0\u5b9a\u7fa9\u6210 \"{1}\"\uff0c\u4f46\u5728\u73fe\u884c\u7bc4\u570d\u4e2d\uff0c\u5b83\u5df2\u5b9a\u7fa9\u6210 \"{2}\"\u3002
+jsp.error.prefix.redefined=JSPG0240E: \u8a66\u5716\u5c07 "{0}" \u5b57\u9996\u91cd\u65b0\u5b9a\u7fa9\u6210 "{1}"\uff0c\u4f46\u5728\u73fe\u884c\u7bc4\u570d\u4e2d\uff0c\u5b83\u5df2\u5b9a\u7fa9\u6210 "{2}"\u3002
 jsp.error.prefix.redefined.explanation= \u5df2\u5229\u7528\u4e0d\u540c\u7684 URI \u4f86\u5b9a\u7fa9 taglibrary \u5b57\u9996\u3002
 jsp.error.prefix.redefined.useraction= \u8acb\u78ba\u5b9a\u53ea\u7528\u55ae\u4e00 URI \u4f86\u5b9a\u7fa9\u5b57\u9996
 
 # defect 396002
-jsp.error.prefix.use_before_dcl=JSPG0241E: {1} \u6a94\u4e2d\u7684\u52d5\u4f5c\u5148\u524d\u5df2\u4f7f\u7528\u4e86\u9019\u500b tag \u6307\u5f15\u6240\u6307\u5b9a\u7684 \"{0}\" \u5b57\u9996\u3002
+jsp.error.prefix.use_before_dcl=JSPG0241E: {1} \u6a94\u4e2d\u7684\u52d5\u4f5c\u5148\u524d\u5df2\u4f7f\u7528\u4e86\u9019\u500b tag \u6307\u5f15\u6240\u6307\u5b9a\u7684 "{0}" \u5b57\u9996\u3002
 jsp.error.prefix.use_before_dcl.explanation= \u5728\u5b9a\u7fa9\u5b57\u9996\u7684 tag \u6307\u5f15\u4e4b\u524d\uff0c\u5df2\u4f7f\u7528\u4e86 taglibrary \u5b57\u9996\u3002
 jsp.error.prefix.use_before_dcl.useraction= \u8acb\u5c07 tag \u6307\u5f15\u79fb\u5230\u6240\u6709\u4f7f\u7528\u9019\u500b\u5b57\u9996\u7684\u52d5\u4f5c\u4e4b\u4e0a\u3002
 
@@ -958,7 +955,7 @@ jsp.error.page.invalid.deferredsyntaxallowedasliteral.explanation=
 jsp.error.page.invalid.deferredsyntaxallowedasliteral.useraction=
 
 # jsp2.1ELwork
-jsp.error.el.template.deferred=JSPG0244E: \u5728\u7bc4\u672c\u6587\u5b57\u4e2d\uff0c\u4e0d\u5141\u8a31\u4f7f\u7528 \"{0}\"\u3002
+jsp.error.el.template.deferred=JSPG0244E: \u5728\u7bc4\u672c\u6587\u5b57\u4e2d\uff0c\u4e0d\u5141\u8a31\u4f7f\u7528 "{0}"\u3002
 jsp.error.el.template.deferred.explanation=
 jsp.error.el.template.deferred.useraction=
 
@@ -983,7 +980,7 @@ jsp.error.tag.conflict.trimdirectivewhitespaces.explanation=
 jsp.error.tag.conflict.trimdirectivewhitespaces.useraction=
 
 # jsp2.1ELwork
-jsp.error.tag.conflict.attr=JSPG0249E: tag \u6307\u5f15\uff1a\"{0}\" \u5c6c\u6027\u591a\u6b21\u51fa\u73fe\u800c\u542b\u6709\u4e0d\u540c\u7684\u503c\uff08\u820a\uff1a{1}\u3001\u65b0\uff1a{2}\uff09\u4e0d\u5408\u6cd5
+jsp.error.tag.conflict.attr=JSPG0249E: tag \u6307\u5f15\uff1a"{0}" \u5c6c\u6027\u591a\u6b21\u51fa\u73fe\u800c\u542b\u6709\u4e0d\u540c\u7684\u503c\uff08\u820a\uff1a{1}\u3001\u65b0\uff1a{2}\uff09\u4e0d\u5408\u6cd5
 jsp.error.tag.conflict.attr.explanation=
 jsp.error.tag.conflict.attr.useraction=
 
@@ -1033,7 +1030,7 @@ jsp.error.xml.spaceRequiredBeforeVersionInXMLDecl.explanation=
 jsp.error.xml.spaceRequiredBeforeVersionInXMLDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.versionNotSupported=JSPG0259E: \u4e0d\u652f\u63f4 XML \u7248\u672c \"{0}\"\uff0c\u53ea\u652f\u63f4 XML 1.0\u3002
+jsp.error.xml.versionNotSupported=JSPG0259E: \u4e0d\u652f\u63f4 XML \u7248\u672c "{0}"\uff0c\u53ea\u652f\u63f4 XML 1.0\u3002
 jsp.error.xml.versionNotSupported.explanation=
 jsp.error.xml.versionNotSupported.useraction=
 
@@ -1058,22 +1055,22 @@ jsp.error.xml.spaceRequiredBeforeEncodingInXMLDecl.explanation=
 jsp.error.xml.spaceRequiredBeforeEncodingInXMLDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.eqRequiredInTextDecl=JSPG0264E: \u5728\u6587\u5b57\u5ba3\u544a\u4e2d\uff0c\"{0}\" \u5f8c\u9762\u5fc5\u9808\u63a5\u8457 '' = '' \u5b57\u5143\u3002
+jsp.error.xml.eqRequiredInTextDecl=JSPG0264E: \u5728\u6587\u5b57\u5ba3\u544a\u4e2d\uff0c"{0}" \u5f8c\u9762\u5fc5\u9808\u63a5\u8457 '' = '' \u5b57\u5143\u3002
 jsp.error.xml.eqRequiredInTextDecl.explanation=
 jsp.error.xml.eqRequiredInTextDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.eqRequiredInXMLDecl=JSPG0265E: \u5728 XML \u5ba3\u544a\u4e2d\uff0c\"{0}\" \u5f8c\u9762\u5fc5\u9808\u63a5\u8457 '' = '' \u5b57\u5143\u3002
+jsp.error.xml.eqRequiredInXMLDecl=JSPG0265E: \u5728 XML \u5ba3\u544a\u4e2d\uff0c"{0}" \u5f8c\u9762\u5fc5\u9808\u63a5\u8457 '' = '' \u5b57\u5143\u3002
 jsp.error.xml.eqRequiredInXMLDecl.explanation=
 jsp.error.xml.eqRequiredInXMLDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.quoteRequiredInTextDecl=JSPG0266E: \u6587\u5b57\u5ba3\u544a\u4e2d \"{0}\" \u5f8c\u9762\u7684\u503c\u5fc5\u9808\u662f\u5f15\u865f\u5167\u7684\u5b57\u4e32\u3002
+jsp.error.xml.quoteRequiredInTextDecl=JSPG0266E: \u6587\u5b57\u5ba3\u544a\u4e2d "{0}" \u5f8c\u9762\u7684\u503c\u5fc5\u9808\u662f\u5f15\u865f\u5167\u7684\u5b57\u4e32\u3002
 jsp.error.xml.quoteRequiredInTextDecl.explanation=
 jsp.error.xml.quoteRequiredInTextDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.quoteRequiredInXMLDecl=JSPG0267E: XML \u5ba3\u544a\u4e2d \"{0}\" \u5f8c\u9762\u7684\u503c\u5fc5\u9808\u662f\u5f15\u865f\u5167\u7684\u5b57\u4e32\u3002
+jsp.error.xml.quoteRequiredInXMLDecl=JSPG0267E: XML \u5ba3\u544a\u4e2d "{0}" \u5f8c\u9762\u7684\u503c\u5fc5\u9808\u662f\u5f15\u865f\u5167\u7684\u5b57\u4e32\u3002
 jsp.error.xml.quoteRequiredInXMLDecl.explanation=
 jsp.error.xml.quoteRequiredInXMLDecl.useraction=
 
@@ -1088,22 +1085,22 @@ jsp.error.xml.invalidCharInXMLDecl.explanation=
 jsp.error.xml.invalidCharInXMLDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.closeQuoteMissingInTextDecl=JSPG0270E: \u5728\u6587\u5b57\u5ba3\u544a\u4e2d\uff0c\u907a\u6f0f \"{0}\" \u5f8c\u9762\u7684\u503c\u7684\u53f3\u5f15\u865f\u3002
+jsp.error.xml.closeQuoteMissingInTextDecl=JSPG0270E: \u5728\u6587\u5b57\u5ba3\u544a\u4e2d\uff0c\u907a\u6f0f "{0}" \u5f8c\u9762\u7684\u503c\u7684\u53f3\u5f15\u865f\u3002
 jsp.error.xml.closeQuoteMissingInTextDecl.explanation=
 jsp.error.xml.closeQuoteMissingInTextDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.closeQuoteMissingInXMLDecl=JSPG0271E: \u5728 XML \u5ba3\u544a\u4e2d\uff0c\u907a\u6f0f \"{0}\" \u5f8c\u9762\u7684\u503c\u7684\u53f3\u5f15\u865f\u3002
+jsp.error.xml.closeQuoteMissingInXMLDecl=JSPG0271E: \u5728 XML \u5ba3\u544a\u4e2d\uff0c\u907a\u6f0f "{0}" \u5f8c\u9762\u7684\u503c\u7684\u53f3\u5f15\u865f\u3002
 jsp.error.xml.closeQuoteMissingInXMLDecl.explanation=
 jsp.error.xml.closeQuoteMissingInXMLDecl.useraction=
 
 # jsp2.1work
-jsp.error.xml.encodingByteOrderUnsupported=JSPG0272E: \u4e0d\u652f\u63f4 \"{0}\" \u7de8\u78bc\u7684\u7d66\u5b9a\u4f4d\u5143\u7d44\u9806\u5e8f\u3002
+jsp.error.xml.encodingByteOrderUnsupported=JSPG0272E: \u4e0d\u652f\u63f4 "{0}" \u7de8\u78bc\u7684\u7d66\u5b9a\u4f4d\u5143\u7d44\u9806\u5e8f\u3002
 jsp.error.xml.encodingByteOrderUnsupported.explanation=
 jsp.error.xml.encodingByteOrderUnsupported.useraction=
 
 # jsp2.1work
-jsp.error.xml.encodingDeclInvalid=JSPG0273E: \u7de8\u78bc\u540d\u7a31 \"{0}\" \u7121\u6548\u3002
+jsp.error.xml.encodingDeclInvalid=JSPG0273E: \u7de8\u78bc\u540d\u7a31 "{0}" \u7121\u6548\u3002
 jsp.error.xml.encodingDeclInvalid.explanation=
 jsp.error.xml.encodingDeclInvalid.useraction=
 
@@ -1113,7 +1110,7 @@ jsp.error.xml.spaceRequiredBeforeStandalone.explanation=
 jsp.error.xml.spaceRequiredBeforeStandalone.useraction=
 
 # jsp2.1work
-jsp.error.xml.sdDeclInvalid=JSPG0275E: \u7368\u7acb\u5f0f\u6587\u4ef6\u5ba3\u544a\u503c\u5fc5\u9808\u662f \"yes\" \u6216 \"no\"\uff0c\u800c\u4e0d\u662f \"{0}\"\u3002
+jsp.error.xml.sdDeclInvalid=JSPG0275E: \u7368\u7acb\u5f0f\u6587\u4ef6\u5ba3\u544a\u503c\u5fc5\u9808\u662f "yes" \u6216 "no"\uff0c\u800c\u4e0d\u662f "{0}"\u3002
 jsp.error.xml.sdDeclInvalid.explanation=
 jsp.error.xml.sdDeclInvalid.useraction=
 
@@ -1128,7 +1125,7 @@ jsp.error.xml.morePseudoAttributes.explanation=
 jsp.error.xml.morePseudoAttributes.useraction=
 
 # jsp2.1work
-jsp.error.xml.xmlDeclUnterminated=JSPG0278E: XML \u5ba3\u544a\u7684\u7d50\u5c3e\u5fc5\u9808\u662f \"?>\"\u3002
+jsp.error.xml.xmlDeclUnterminated=JSPG0278E: XML \u5ba3\u544a\u7684\u7d50\u5c3e\u5fc5\u9808\u662f "?>"\u3002
 jsp.error.xml.xmlDeclUnterminated.explanation=
 jsp.error.xml.xmlDeclUnterminated.useraction=
 
@@ -1138,7 +1135,7 @@ jsp.error.xml.pseudoAttrNameExpected.explanation=
 jsp.error.xml.pseudoAttrNameExpected.useraction=
 
 # jsp2.1work
-jsp.error.xml.reservedPITarget=JSPG0280E: \u4e0d\u63a5\u53d7\u7b26\u5408 \"[xX][mM][lL]\" \u7684\u8655\u7406\u6307\u793a\u76ee\u6a19\u3002
+jsp.error.xml.reservedPITarget=JSPG0280E: \u4e0d\u63a5\u53d7\u7b26\u5408 "[xX][mM][lL]" \u7684\u8655\u7406\u6307\u793a\u76ee\u6a19\u3002
 jsp.error.xml.reservedPITarget.explanation=
 jsp.error.xml.reservedPITarget.useraction=
 
@@ -1158,12 +1155,12 @@ jsp.error.xml.invalidCharInContent.explanation=
 jsp.error.xml.invalidCharInContent.useraction=
 
 # jsp2.1work
-jsp.error.xml.operationNotSupported=JSPG0284E: {1} \u8b80\u53d6\u5668\u4e0d\u652f\u63f4 \"{0}\" \u4f5c\u696d\u3002
+jsp.error.xml.operationNotSupported=JSPG0284E: {1} \u8b80\u53d6\u5668\u4e0d\u652f\u63f4 "{0}" \u4f5c\u696d\u3002
 jsp.error.xml.operationNotSupported.explanation=
 jsp.error.xml.operationNotSupported.useraction=
 
 # jsp2.1work
-jsp.error.xml.invalidASCII=JSPG0285E: \"{0}\" \u4f4d\u5143\u7d44\u4e0d\u662f 7 \u4f4d\u5143 ASCII\u3002
+jsp.error.xml.invalidASCII=JSPG0285E: "{0}" \u4f4d\u5143\u7d44\u4e0d\u662f 7 \u4f4d\u5143 ASCII\u3002
 jsp.error.xml.invalidASCII.explanation=
 jsp.error.xml.invalidASCII.useraction=
 
@@ -1188,7 +1185,7 @@ jsp.error.prolog_config_encoding_mismatch.explanation=
 jsp.error.prolog_config_encoding_mismatch.useraction=
 
 # jsp2.1work
-jsp.error.invalid.tagdir=JSPG0290E: \u6a19\u7c64\u6a94\u76ee\u9304 {0} \u7684\u958b\u982d\u4e0d\u662f \"/WEB-INF/tags\"
+jsp.error.invalid.tagdir=JSPG0290E: \u6a19\u7c64\u6a94\u76ee\u9304 {0} \u7684\u958b\u982d\u4e0d\u662f "/WEB-INF/tags"
 jsp.error.invalid.tagdir.explanation=
 jsp.error.invalid.tagdir.useraction=
 
@@ -1250,9 +1247,9 @@ jsp.load.class.exception=JSPG0302W: \u7121\u6cd5\u8f09\u5165\u4e0b\u5217 JSP \u9
 jsp.load.class.exception.explanation=\u8f09\u5165 JSP \u985e\u5225\u6642\u767c\u751f\u554f\u984c\u3002JSP \u5132\u5b58\u5668\u6703\u5617\u8a66\u6539\u4ee5 org.apache.jsp \u5957\u4ef6\u540d\u7a31\u4f86\u8f09\u5165\u985e\u5225\u6a94\u3002
 jsp.load.class.exception.useraction=\u5982\u679c\u4ecd\u6709\u554f\u984c\uff0c\u8acb\u91cd\u65b0\u555f\u52d5\u61c9\u7528\u7a0b\u5f0f\u3002
 
-jsp.jdksourcelevel.value =JSPG8502I: JSP \u5c6c\u6027 jdkSourceLevel \u7684\u503c\u662f \"{0}\"\u3002
-jsp.jdksourcelevel.value.explanation =
-jsp.jdksourcelevel.value.useraction =
+jsp.jdksourcelevel.value=JSPG8502I: JSP \u5c6c\u6027 jdkSourceLevel \u7684\u503c\u662f "{0}"\u3002
+jsp.jdksourcelevel.value.explanation=
+jsp.jdksourcelevel.value.useraction=
 
 jsp.parse.tld.exception=JSPG0303W: \u7cfb\u7d71\u7121\u6cd5\u5256\u6790\u4e0b\u5217\u300cJSP \u6a19\u7c64\u5eab\u63cf\u8ff0\u5b50\u300d\uff1a{0}\u3002\u5256\u6790\u932f\u8aa4\u6642\u767c\u751f\u7684\u7570\u5e38\u72c0\u6cc1\u662f\uff1a{1}
 jsp.parse.tld.exception.explanation=\u5256\u6790\u300cJSP \u6a19\u7c64\u5eab\u63cf\u8ff0\u5b50\u300d\u6a94\u6848\u6642\u767c\u751f\u554f\u984c\u3002\u6b64\u932f\u8aa4\u53ef\u80fd\u662f XML \u6a94\u5f62\u614b\u7570\u5e38\u6240\u9020\u6210\u3002
@@ -1262,6 +1259,14 @@ system.java.compiler.not.found=JSPG0304W: JSP \u5c6c\u6027 useJDKCompiler \u8a2d
 system.java.compiler.not.found.explanation=JSP \u5132\u5b58\u5668\u627e\u4e0d\u5230\u7cfb\u7d71\u7de8\u8b6f\u5668\uff0c\u9019\u901a\u5e38\u8868\u793a\u5728\u985e\u5225\u8def\u5f91\u4e2d\u627e\u4e0d\u5230 Java SDK JAR \u6a94 tools.jar\u3002
 system.java.compiler.not.found.useraction=\u8acb\u78ba\u5b9a Java SDK JAR \u6a94 tools.jar \u4f4d\u65bc\u985e\u5225\u8def\u5f91\u4e2d\uff0c\u4e26\u9a57\u8b49 Java SDK \u652f\u63f4\u300cJava \u7de8\u8b6f\u5668 API\u300d\u3002\u5982\u9700\u76f8\u95dc\u8cc7\u8a0a\uff0c\u8acb\u53c3\u95b1\u300cJava \u898f\u683c\u8981\u6c42 199\u300d\u3002
 
-jsp.feature.not.loaded.correctly=CWWJS0001: \u8f09\u5165 JSP [Pages] \u7279\u6027\u6642\uff0c\u672a\u4f7f\u7528\u5408\u9069\u7684\u7248\u672c\u3002
+jsp.feature.not.loaded.correctly=CWWJS0001E: JSP [\u9801\u9762] \u7279\u6027\u672a\u8f09\u5165\u53ef\u63a5\u53d7\u7684\u7248\u672c\u3002
 jsp.feature.not.loaded.correctly.explanation=\u8f09\u5165 JSP [Pages] \u7279\u6027\u6642\uff0c\u6703\u4f7f\u7528\u5c0d\u61c9\u81f3\u8a72 JSP [Pages] \u7279\u6027\u4e4b Java [Jakarta] EE \u898f\u683c\u7684\u7248\u672c\u3002\u8f09\u5165\u7279\u6027\u6642\uff0c\u672a\u5b9a\u7fa9\u4efb\u4f55\u7248\u672c\u3002
-jsp.feature.not.loaded.correctly.useraction=\u8acb\u6aa2\u67e5 server.xml \u6a94\u4e2d\u662f\u5426\u5b58\u5728 JSP [Pages] \u7279\u6027\u3002\u53ea\u61c9\u6307\u5b9a\u4e00\u500b\u3002
+jsp.feature.not.loaded.correctly.useraction=\u8acb\u6aa2\u67e5 server.xml \u6a94\u4e2d\u662f\u5426\u5b58\u5728\u591a\u500b JSP [\u9801\u9762] \u7279\u6027\u3002 \u6a94\u6848\u5fc5\u9808\u6307\u5b9a\u4e0d\u8d85\u904e\u4e00\u500b\u300c\u9801\u9762\u300d\u7279\u6027\u3002
+
+jsp.error.page.invalid.erroronelnotfound=CWWJS0002E: errorOnELNotFound \u5c6c\u6027\u7684\u503c\u7121\u6548
+jsp.error.page.invalid.erroronelnotfound.explanation=
+jsp.error.page.invalid.erroronelnotfound.useraction=
+
+jsp.isthreadsafe.warning=CWWJS0003W: \u9801\u9762 3.1 \u898f\u683c\u5f37\u70c8\u5efa\u8b70\u9801\u9762\u958b\u767c\u4eba\u54e1\u4e0d\u8981\u4f7f\u7528\u5df2\u6dd8\u6c70\u7684\u9801\u9762\u6307\u5f15 isThreadSafe\u3002
+jsp.isthreadsafe.warning.explanation=SingleThreadModel \u5df2\u5f9e Servlet 6.0 \u4e2d\u79fb\u9664\u3002 \u9801\u9762 3.1 \u5df2\u6dd8\u6c70 isThreadSafe\uff0c\u4e26\u8a08\u5283\u5728\u672a\u4f86\u9801\u9762\u66f4\u65b0\u4e2d\u79fb\u9664\u5b83\u3002
+jsp.isthreadsafe.warning.useraction=\u5f9e\u6240\u6709\u9801\u9762\u4e2d\u79fb\u9664 isThreadSafe \u6307\u5f15\u3002

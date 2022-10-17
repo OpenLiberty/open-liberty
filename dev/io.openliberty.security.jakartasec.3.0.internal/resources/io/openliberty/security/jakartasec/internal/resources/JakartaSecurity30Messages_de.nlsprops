@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.jakartasec.3.0.internal/resources/io/openliberty/security/jakartasec/internal/resources/JakartaSecurity30Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Jakarta Security 3.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: 2500-2519
+
+#Note to translator, do not translate EL or OpenID
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG=CWWKS2500W: Der EL-Ausdruck (Expression Language) f\u00fcr das Attribut {0} der Definitionsannotation f\u00fcr das OpenID-Authentifizierungsverfahren kann nicht in einen g\u00fcltigen Wert aufgel\u00f6st werden. Es war ''{1}'' als Wert angegeben. Stellen Sie sicher, dass der EL-Ausdruck und das Ergebnis g\u00fcltig sind, und dass alle referenzierten Beans, die in dem Ausdruck verwendet werden, aufgel\u00f6st werden k\u00f6nnen. Es wird der Standardattributwert ''{2}'' verwendet.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG.explanation=Das Attribut kann nicht als Ausdruck aufgel\u00f6st werden. Das Ergebnis der EL und der erwartete Typ von Attributwert stimmen m\u00f6glicherweise nicht \u00fcberein. Wenn beispielsweise eine Zeichenfolge (String) als Attributtyp erwartet wird, muss es sich bei dem EL-Ergebnis um eine Zeichenfolge handeln.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG.useraction=Stellen Sie sicher, dass die Annotation einen g\u00fcltigen Konfigurationswert enth\u00e4lt. Stellen Sie sicher, dass die EL-Ausdr\u00fccke g\u00fcltig sind, dass alle referenzierten Beans im Ausdruck aufgel\u00f6st werden k\u00f6nnen und dass der Typ des Ergebnisses dem Attribut entspricht.
+
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG=CWWKS2501W: Der EL-Ausdruck (Expression Language) f\u00fcr das Attribut {0} der Definitionsannotation f\u00fcr Anspr\u00fcche (Claims) kann nicht in einen g\u00fcltigen Wert aufgel\u00f6st werden. Es war ''{1}'' als Wert angegeben. Stellen Sie sicher, dass der EL-Ausdruck und das Ergebnis g\u00fcltig sind, und dass alle referenzierten Beans, die in dem Ausdruck verwendet werden, aufgel\u00f6st werden k\u00f6nnen. Es wird der Standardattributwert ''{2}'' verwendet.
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG.explanation=Das Attribut kann nicht als Ausdruck aufgel\u00f6st werden. Das Ergebnis der EL und der erwartete Typ von Attributwert stimmen m\u00f6glicherweise nicht \u00fcberein. Wenn beispielsweise eine Zeichenfolge (String) als Attributtyp erwartet wird, muss es sich bei dem EL-Ergebnis um eine Zeichenfolge handeln.
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG.useraction=Stellen Sie sicher, dass die Annotation einen g\u00fcltigen Konfigurationswert enth\u00e4lt. Stellen Sie sicher, dass die EL-Ausdr\u00fccke g\u00fcltig sind, dass alle referenzierten Beans im Ausdruck aufgel\u00f6st werden k\u00f6nnen und dass der Typ des Ergebnisses dem Attribut entspricht.
+
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG=CWWKS2502W: Der EL-Ausdruck (Expression Language) f\u00fcr das Attribut {0} der Definitionsannotation f\u00fcr die Abmeldung kann nicht in einen g\u00fcltigen Wert aufgel\u00f6st werden. Es war ''{1}'' als Wert angegeben. Stellen Sie sicher, dass der EL-Ausdruck und das Ergebnis g\u00fcltig sind, und dass alle referenzierten Beans, die in dem Ausdruck verwendet werden, aufgel\u00f6st werden k\u00f6nnen. Es wird der Standardattributwert ''{2}'' verwendet.
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG.explanation=Das Attribut kann nicht als Ausdruck aufgel\u00f6st werden. Das Ergebnis der EL und der erwartete Typ von Attributwert stimmen m\u00f6glicherweise nicht \u00fcberein. Wenn beispielsweise eine Zeichenfolge (String) als Attributtyp erwartet wird, muss es sich bei dem EL-Ergebnis um eine Zeichenfolge handeln.
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG.useraction=Stellen Sie sicher, dass die Annotation einen g\u00fcltigen Konfigurationswert enth\u00e4lt. Stellen Sie sicher, dass die EL-Ausdr\u00fccke g\u00fcltig sind, dass alle referenzierten Beans im Ausdruck aufgel\u00f6st werden k\u00f6nnen und dass der Typ des Ergebnisses dem Attribut entspricht.
+
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG=CWWKS2502W: Der EL-Ausdruck (Expression Language) f\u00fcr das Attribut {0} der Annotation f\u00fcr Metadaten des OpenID-Providers kann nicht in einen g\u00fcltigen Wert aufgel\u00f6st werden. Es war ''{1}'' als Wert angegeben. Stellen Sie sicher, dass der EL-Ausdruck und das Ergebnis g\u00fcltig sind, und dass alle referenzierten Beans, die in dem Ausdruck verwendet werden, aufgel\u00f6st werden k\u00f6nnen. Es wird der Standardattributwert ''{2}'' verwendet.
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG.explanation=Das Attribut kann nicht als Ausdruck aufgel\u00f6st werden. Das Ergebnis der EL und der erwartete Typ von Attributwert stimmen m\u00f6glicherweise nicht \u00fcberein. Wenn beispielsweise eine Zeichenfolge (String) als Attributtyp erwartet wird, muss es sich bei dem EL-Ergebnis um eine Zeichenfolge handeln.
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG.useraction=Stellen Sie sicher, dass die Annotation einen g\u00fcltigen Konfigurationswert enth\u00e4lt. Stellen Sie sicher, dass die EL-Ausdr\u00fccke g\u00fcltig sind, dass alle referenzierten Beans im Ausdruck aufgel\u00f6st werden k\u00f6nnen und dass der Typ des Ergebnisses dem Attribut entspricht.

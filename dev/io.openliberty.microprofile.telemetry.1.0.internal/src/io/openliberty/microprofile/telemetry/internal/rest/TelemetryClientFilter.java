@@ -12,53 +12,44 @@ package io.openliberty.microprofile.telemetry.internal.rest;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import java.util.HashMap;
 
-import java.lang.reflect.Method;
-import java.net.URI;
 import java.util.List;
 
-import jakarta.inject.Inject;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.client.ClientRequestContext;
-import jakarta.ws.rs.client.ClientRequestFilter;
-import jakarta.ws.rs.client.ClientResponseContext;
-import jakarta.ws.rs.client.ClientResponseFilter;
-import jakarta.ws.rs.core.UriBuilder;
-import jakarta.ws.rs.ext.Provider;
-
-import jakarta.enterprise.inject.spi.CDI;
+import org.eclipse.microprofile.config.Config;
 
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.context.propagation.TextMapSetter;
 import io.opentelemetry.instrumentation.api.instrumenter.Instrumenter;
-
-import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.instrumentation.api.instrumenter.InstrumenterBuilder;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpClientAttributesExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpClientAttributesGetter;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanNameExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanStatusExtractor;
-
-import org.eclipse.microprofile.config.Config;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.client.ClientRequestContext;
+import jakarta.ws.rs.client.ClientRequestFilter;
+import jakarta.ws.rs.client.ClientResponseContext;
+import jakarta.ws.rs.client.ClientResponseFilter;
+import jakarta.ws.rs.ext.Provider;
 
 @Provider
 public class TelemetryClientFilter implements ClientRequestFilter, ClientResponseFilter {
 
     private Instrumenter<ClientRequestContext, ClientResponseContext> instrumenter;
 
-    private String configString = "otel.span.client.";
+    private final String configString = "otel.span.client.";
 
     @Inject
     Config config;
 
     @Inject
     OpenTelemetry openTelemetry;
-    
+
     // RESTEasy requires no-arg constructor for CDI injection: https://issues.redhat.com/browse/RESTEASY-1538
-    public TelemetryClientFilter() {}
+    public TelemetryClientFilter() {
+    }
 
     @jakarta.annotation.PostConstruct
     public void PostConstruct() {
@@ -66,14 +57,14 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
         ClientAttributesExtractor clientAttributesExtractor = new ClientAttributesExtractor();
 
         InstrumenterBuilder<ClientRequestContext, ClientResponseContext> builder = Instrumenter.builder(
-            openTelemetry,
-            "Client filter",
-            HttpSpanNameExtractor.create(clientAttributesExtractor));
+                                                                                                        openTelemetry,
+                                                                                                        "Client filter",
+                                                                                                        HttpSpanNameExtractor.create(clientAttributesExtractor));
 
         this.instrumenter = builder
-            .setSpanStatusExtractor(HttpSpanStatusExtractor.create(clientAttributesExtractor))
-            .addAttributesExtractor(HttpClientAttributesExtractor.create(clientAttributesExtractor))
-            .newClientInstrumenter(new ClientRequestContextTextMapSetter());
+                        .setSpanStatusExtractor(HttpSpanStatusExtractor.create(clientAttributesExtractor))
+                        .addAttributesExtractor(HttpClientAttributesExtractor.create(clientAttributesExtractor))
+                        .newClientInstrumenter(new ClientRequestContextTextMapSetter());
     }
 
     @Override
@@ -115,8 +106,7 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
         }
     }
 
-    private static class ClientAttributesExtractor
-            implements HttpClientAttributesGetter<ClientRequestContext, ClientResponseContext> {
+    private static class ClientAttributesExtractor implements HttpClientAttributesGetter<ClientRequestContext, ClientResponseContext> {
 
         @Override
         public String flavor(final ClientRequestContext request, final ClientResponseContext response) {
@@ -152,7 +142,7 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
 
         @Override
         public Long requestContentLengthUncompressed(final ClientRequestContext request,
-                final ClientResponseContext response) {
+                                                     final ClientResponseContext response) {
             return null;
         }
 
@@ -163,14 +153,14 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
 
         @Override
         public Long responseContentLengthUncompressed(final ClientRequestContext request,
-                final ClientResponseContext response) {
+                                                      final ClientResponseContext response) {
             return null;
         }
 
         @Override
         public List<String> responseHeader(final ClientRequestContext request, final ClientResponseContext response,
-                final String name) {
+                                           final String name) {
             return response.getHeaders().getOrDefault(name, emptyList());
         }
     }
-} 
+}

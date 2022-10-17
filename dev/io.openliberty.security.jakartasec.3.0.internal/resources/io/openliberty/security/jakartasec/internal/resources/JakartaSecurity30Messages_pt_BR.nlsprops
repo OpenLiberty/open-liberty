@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.jakartasec.3.0.internal/resources/io/openliberty/security/jakartasec/internal/resources/JakartaSecurity30Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Jakarta Security 3.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: 2500-2519
+
+#Note to translator, do not translate EL or OpenID
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG=CWWKS2500W: A express\u00e3o Expression Language (EL) para o atributo {0} da anota\u00e7\u00e3o de defini\u00e7\u00e3o do mecanismo de autentica\u00e7\u00e3o OpenID n\u00e3o pode ser resolvida para um valor v\u00e1lido. O valor fornecido foi ''{1}''. Certifique-se de que a express\u00e3o EL e o resultado sejam v\u00e1lidos e assegure-se de que os beans referenciados utilizados na express\u00e3o possam ser resolvidos. O valor de atributo padr\u00e3o de ''{2}'' \u00e9 usado.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG.explanation=O atributo n\u00e3o pode ser resolvido como uma express\u00e3o. O resultado EL e o tipo de valor de atributo esperado podem ser incompat\u00edveis. Por exemplo, se o tipo de atributo esperado for String, ent\u00e3o o resultado EL dever\u00e1 ser uma String.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG.useraction=Certifique-se de que a anota\u00e7\u00e3o contenha um valor de configura\u00e7\u00e3o v\u00e1lido. Certifique-se de que as express\u00f5es EL sejam v\u00e1lidas, que quaisquer beans referenciados na express\u00e3o sejam resolv\u00edveis e que o tipo do resultado corresponda ao atributo.
+
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG=CWWKS2501W: A express\u00e3o Expression Language (EL) para o atributo {0} da anota\u00e7\u00e3o de defini\u00e7\u00e3o de solicita\u00e7\u00f5es n\u00e3o pode ser resolvida para um valor v\u00e1lido. O valor fornecido foi ''{1}''. Certifique-se de que a express\u00e3o EL e o resultado sejam v\u00e1lidos e assegure-se de que os beans referenciados utilizados na express\u00e3o possam ser resolvidos. O valor de atributo padr\u00e3o de ''{2}'' \u00e9 usado.
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG.explanation=O atributo n\u00e3o pode ser resolvido como uma express\u00e3o. O resultado EL e o tipo de valor de atributo esperado podem ser incompat\u00edveis. Por exemplo, se o tipo de atributo esperado for String, ent\u00e3o o resultado EL dever\u00e1 ser uma String.
+JAKARTASEC_WARNING_CLAIM_DEF_CONFIG.useraction=Certifique-se de que a anota\u00e7\u00e3o contenha um valor de configura\u00e7\u00e3o v\u00e1lido. Certifique-se de que as express\u00f5es EL sejam v\u00e1lidas, que quaisquer beans referenciados na express\u00e3o sejam resolv\u00edveis e que o tipo do resultado corresponda ao atributo.
+
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG=CWWKS2502W: A express\u00e3o Expression Language (EL) para o atributo {0} da anota\u00e7\u00e3o de defini\u00e7\u00e3o de logout n\u00e3o pode ser resolvida para um valor v\u00e1lido. O valor fornecido foi ''{1}''. Certifique-se de que a express\u00e3o EL e o resultado sejam v\u00e1lidos e assegure-se de que os beans referenciados utilizados na express\u00e3o possam ser resolvidos. O valor de atributo padr\u00e3o de ''{2}'' \u00e9 usado.
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG.explanation=O atributo n\u00e3o pode ser resolvido como uma express\u00e3o. O resultado EL e o tipo de valor de atributo esperado podem ser incompat\u00edveis. Por exemplo, se o tipo de atributo esperado for String, ent\u00e3o o resultado EL dever\u00e1 ser uma String.
+JAKARTASEC_WARNING_LOGOUT_DEF_CONFIG.useraction=Certifique-se de que a anota\u00e7\u00e3o contenha um valor de configura\u00e7\u00e3o v\u00e1lido. Certifique-se de que as express\u00f5es EL sejam v\u00e1lidas, que quaisquer beans referenciados na express\u00e3o sejam resolv\u00edveis e que o tipo do resultado corresponda ao atributo.
+
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG=CWWKS2502W: A express\u00e3o Expression Language (EL) para o atributo {0} da anota\u00e7\u00e3o de metadados do provedor OpenID n\u00e3o pode ser resolvida para um valor v\u00e1lido. O valor fornecido foi ''{1}''. Certifique-se de que a express\u00e3o EL e o resultado sejam v\u00e1lidos e assegure-se de que os beans referenciados utilizados na express\u00e3o possam ser resolvidos. O valor de atributo padr\u00e3o de ''{2}'' \u00e9 usado.
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG.explanation=O atributo n\u00e3o pode ser resolvido como uma express\u00e3o. O resultado EL e o tipo de valor de atributo esperado podem ser incompat\u00edveis. Por exemplo, se o tipo de atributo esperado for String, ent\u00e3o o resultado EL dever\u00e1 ser uma String.
+JAKARTASEC_WARNING_PROV_METADATA_CONFIG.useraction=Certifique-se de que a anota\u00e7\u00e3o contenha um valor de configura\u00e7\u00e3o v\u00e1lido. Certifique-se de que as express\u00f5es EL sejam v\u00e1lidas, que quaisquer beans referenciados na express\u00e3o sejam resolv\u00edveis e que o tipo do resultado corresponda ao atributo.

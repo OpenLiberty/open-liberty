@@ -13,7 +13,7 @@ bVersion=1.0
 
 # Eclipselink version info
 eclVersion=4.0.0
-eclFullVersion=${eclVersion}.202d992
+eclFullVersion=${eclVersion}.RC2
 eclPackageVersion=4.0.0
 asmFullVersion=9.3.0
 
@@ -32,6 +32,10 @@ javac.source: 11
 javac.target: 11
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
+app-resources= \
+  META-INF/services/org.eclipse.persistence.internal.databaseaccess.spi.JsonPlatformProvider | \
+  META-INF/services/org.eclipse.persistence.mappings.converters.spi.ConverterProvider
+
 Export-Package: \
             org.eclipse.persistence.javax.persistence.osgi;version="${eclPackageVersion}", \
             org.eclipse.persistence.jpa.config;version="${eclPackageVersion}", \
@@ -42,6 +46,7 @@ Export-Package: \
             org.eclipse.persistence.internal.libraries.asm*;version="${asmFullVersion}", \
             org.eclipse.persistence.internal.libraries.antlr.runtime*;version="${eclPackageVersion}", \
             org.eclipse.persistence.jpa.jpql*;version="${eclPackageVersion}", \
+            org.eclipse.persistence.json;version="${eclPackageVersion}";thread-context="true", \
             org.eclipse.persistence.*;version="${eclVersion}"
 
 Import-Package: \
@@ -49,6 +54,7 @@ Import-Package: \
             com.ibm.websphere.ras, \
             com.ibm.ws.Transaction;resolution:=optional, \
             com.ibm.ws.jpa.container.eclipselink.logging;resolution:=optional, \
+            com.ibm.wsspi.classloading,\
             !javax.activation, \
             javax.crypto;resolution:=optional, \
             javax.crypto.spec;resolution:=optional, \
@@ -112,22 +118,29 @@ DynamicImport-Package: \
 
 Private-Package: io.openliberty.persistence.internal.helper
 
-
 Include-Resource: \
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.asm;${asmFullVersion};EXACT}!/!META-INF/maven/*,\
-  @${repo;io.openliberty.org.eclipse.persistence:org.eclipse.persistence.core;${eclVersion}}!/!META-INF/maven/*,\
-  @${repo;io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa;${eclVersion}}!/!META-INF/maven/*,\
-  @${repo;io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclVersion}}!/!META-INF/maven/*,\
-  @${repo;io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor;${eclVersion}}!/!META-INF/maven/*
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.asm;${asmFullVersion};EXACT}!/!(META-INF/maven/*|module-info.class),\
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.core;${eclFullVersion};EXACT}!/!(META-INF/maven/*|module-info.class),\
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa;${eclFullVersion};EXACT}!/!(META-INF/maven/*|module-info.class),\
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclFullVersion};EXACT}!/!(META-INF/maven/*|module-info.class),\
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor;${eclFullVersion};EXACT}!/!(META-INF/maven/*|module-info.class),\
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.json;${eclFullVersion};EXACT}!/!(META-INF/maven/*|module-info.class)
 
 publish.wlp.jar.suffix: dev/api/third-party
 
-instrument.classesExcludes: \
-  org/eclipse/persistence/exceptions/i18n/*.class, \
-  org/eclipse/persistence/internal/localization/i18n/*.class
+# Exclude this bundle from instrumentation (RAS & FFDC trace injection)
+instrument.disabled: true
+instrument.ffdc: false
+
+Service-Component: \
+  io.openliberty.org.eclipse.persistence_${replace;${bVersion};\\.;_}.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=ignore; \
+    properties:="resources=${app-resources}"
 
 -buildpath: \
-    io.openliberty.org.eclipse.persistence:org.eclipse.persistence.core;version="[4.0.0,4.1.0)",\
-    io.openliberty.org.eclipse.persistence:org.eclipse.persistence.jpa;version="[4.0.0,4.1.0)",\
+    org.eclipse.persistence:org.eclipse.persistence.core;version=${eclFullVersion};strategy=exact,\
+    org.eclipse.persistence:org.eclipse.persistence.jpa;version=${eclFullVersion};strategy=exact,\
     io.openliberty.jakarta.persistence.3.1;version=latest,\
     com.ibm.websphere.org.osgi.core

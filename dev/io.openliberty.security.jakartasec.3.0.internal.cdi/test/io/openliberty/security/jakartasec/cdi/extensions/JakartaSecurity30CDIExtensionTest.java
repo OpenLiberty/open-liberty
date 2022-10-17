@@ -28,6 +28,7 @@ import org.junit.Test;
 import com.ibm.ws.security.javaeesec.cdi.extensions.PrimarySecurityCDIExtension;
 
 import io.openliberty.security.jakartasec.JakartaSec30Constants;
+import io.openliberty.security.jakartasec.OpenIdAuthenticationMechanismDefinitionHolder;
 import io.openliberty.security.jakartasec.cdi.beans.OidcHttpAuthenticationMechanism;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.AnnotatedType;
@@ -93,7 +94,7 @@ public class JakartaSecurity30CDIExtensionTest {
     public void testAfterBeanDiscovery() {
         withAnnotatedClassEvent();
         cdiExtensionAddsAuthenticationMechanism();
-        cdiExtensionAddsIdentityStoreBean();
+        cdiExtensionAddsBeans();
 
         jakartaSecurity30CDIExtension.processAnnotatedOidc(event, beanManager);
         jakartaSecurity30CDIExtension.afterBeanDiscovery(afterBeanDiscovery, beanManager);
@@ -102,7 +103,7 @@ public class JakartaSecurity30CDIExtensionTest {
     private void withAnnotatedClassEvent() {
         event = mockery.mock(ProcessAnnotatedType.class);
         annotatedType = mockery.mock(AnnotatedType.class);
-        oidcAnnotation = mockery.mock(Annotation.class);
+        oidcAnnotation = mockery.mock(OpenIdAuthenticationMechanismDefinition.class);
 
         mockery.checking(new Expectations() {
             {
@@ -125,11 +126,12 @@ public class JakartaSecurity30CDIExtensionTest {
         });
     }
 
-    private void cdiExtensionAddsIdentityStoreBean() {
+    private void cdiExtensionAddsBeans() {
         afterBeanDiscovery = mockery.mock(AfterBeanDiscovery.class);
         mockery.checking(new Expectations() {
             {
                 one(afterBeanDiscovery).addBean(with(aNonNull(OidcIdentityStoreBean.class)));
+                one(afterBeanDiscovery).addBean(with(aNonNull(OpenIdContextBean.class)));
             }
         });
     }
@@ -153,7 +155,8 @@ public class JakartaSecurity30CDIExtensionTest {
         public boolean matches(Object arg0) {
             boolean result = false;
             if (arg0 instanceof Properties) {
-                Annotation annotation = (Annotation) ((Properties) arg0).get(JakartaSec30Constants.OIDC_ANNOTATION);
+                OpenIdAuthenticationMechanismDefinitionHolder holder = (OpenIdAuthenticationMechanismDefinitionHolder) ((Properties) arg0).get(JakartaSec30Constants.OIDC_ANNOTATION);
+                Annotation annotation = holder.getOpenIdAuthenticationMechanismDefinition();
                 result = oidcAnnotation == annotation;
             }
             return result;

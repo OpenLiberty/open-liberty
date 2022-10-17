@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
@@ -37,6 +38,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -57,8 +59,17 @@ public class JSFHtml5Tests {
 
     @BeforeClass
     public static void setup() throws Exception {
+        boolean isEE10 = JakartaEE10Action.isActive();
 
-        ShrinkHelper.defaultDropinApp(jsfTestServer1, "JSF22HTML5.war", "com.ibm.ws.jsf22.fat.html5.*");
+        ShrinkHelper.defaultDropinApp(jsfTestServer1, "JSF22HTML5.war",
+                                      isEE10 ? "com.ibm.ws.jsf22.fat.html5.faces40" : "com.ibm.ws.jsf22.fat.html5.jsf22");
+
+        if (isEE10) {
+            // For Faces 4.0, CDI @Named is used since @ManagedBean is no longer available.
+            ServerConfiguration config = jsfTestServer1.getServerConfiguration();
+            config.getFeatureManager().getFeatures().add("cdi-4.0");
+            jsfTestServer1.updateServerConfiguration(config);
+        }
 
         jsfTestServer1.startServer(JSFHtml5Tests.class.getSimpleName() + ".log");
     }

@@ -43,21 +43,21 @@ public interface TestPlugin {
      * Provider specific setup to run before starting server 1.
      *
      * @param server           The server to setup.
-     * @param groupName        The name of the group the server should be a member of (hazelcast).
+     * @param clusterName      The name of the cluster the server should be a member of (hazelcast).
      * @param authCacheMaxSize The size of the authentication cache.
      * @param authCacheTtlSecs The TTL of the authentication cache.
      * @throws Exception If there was an error setting up server 1.
      */
-    public void setupServer1(LibertyServer server, String groupName, Integer authCacheMaxSize, Integer authCacheTtlSecs) throws Exception;
+    public void setupServer1(LibertyServer server, String clusterName, Integer authCacheMaxSize, Integer authCacheTtlSecs) throws Exception;
 
     /**
      * Provider specific setup to run before starting server 2.
      *
-     * @param server    The server to setup.
-     * @param groupName The name of the group the server should be a member of (hazelcast).
+     * @param server      The server to setup.
+     * @param clusterName The name of the cluster the server should be a member of (hazelcast).
      * @throws Exception If there was an error setting up server 2.
      */
-    public void setupServer2(LibertyServer server, String groupName) throws Exception;
+    public void setupServer2(LibertyServer server, String clusterName) throws Exception;
 
     /**
      * Whether to skip any TTL tests.

@@ -145,7 +145,7 @@ public class QuickLogTest extends HttpServlet {
 			return new RunResult(action, reqThreads, duration, delay, 0);
 		
 		Logger logger = Logger.getLogger("com.ibm.somelogger.QuickLogTest");
-		logger.setLevel(Level.ALL);
+		//logger.setLevel(Level.ALL);
 
 		// create the action runnables
         Action actions[] = new Action[reqThreads];

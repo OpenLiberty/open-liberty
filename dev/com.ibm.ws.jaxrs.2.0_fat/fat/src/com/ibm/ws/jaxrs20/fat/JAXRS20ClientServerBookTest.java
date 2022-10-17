@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat("EE9_FEATURES") // this test application uses CXF-specific extras that are not available in RESTEasy / EE9
+@SkipForRepeat({"EE9_FEATURES", "EE10_FEATURES"}) // this test application uses CXF-specific extras that are not available in RESTEasy / EE9
 public class JAXRS20ClientServerBookTest extends AbstractTest {
 
     @Server("com.ibm.ws.jaxrs.fat.bookstore")

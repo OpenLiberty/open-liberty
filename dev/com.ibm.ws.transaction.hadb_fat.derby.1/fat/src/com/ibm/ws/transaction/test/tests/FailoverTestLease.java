@@ -22,7 +22,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
-import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
@@ -34,8 +33,6 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
@@ -118,8 +115,8 @@ import componenttest.topology.utils.FATServletClient;
  * 7/ The handling of duplicate rows in recovery is signalled by the presence of "NMTEST: Replacing item" strings in the server trace. This string is
  * written by SQLRecoverableUnitSectionImpl.addData() when a duplicate log entry is encountered.
  */
-@Mode
 @RunWith(FATRunner.class)
+@AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
 public class FailoverTestLease extends FATServletClient {
     private static final int LOG_SEARCH_TIMEOUT = 300000;
     public static final String APP_NAME = "transaction";
@@ -128,6 +125,10 @@ public class FailoverTestLease extends FATServletClient {
     @Server("com.ibm.ws.transaction_retriablecloud")
     @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
     public static LibertyServer retriableCloudServer;
+
+    public static String[] serverNames = new String[] {
+                                                        "com.ibm.ws.transaction_retriablecloud",
+    };
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -169,19 +170,13 @@ public class FailoverTestLease extends FATServletClient {
 
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
 
-        // Clean up XA resource files
-        retriableCloudServer.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
-
-        // Remove tranlog DB
-        retriableCloudServer.deleteDirectoryFromLibertyInstallRoot("/usr/shared/resources/data");
+        FailoverTest.commonCleanup(this.getClass().getName());
     }
 
     /**
      * Run a set of transactions and simulate an HA condition
      */
-    @Mode(TestMode.LITE)
     @Test
-    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
     public void testHADBLeaseUpdateFailover() throws Exception {
         final String method = "testHADBLeaseUpdateFailover";
         StringBuilder sb = null;
@@ -213,9 +208,7 @@ public class FailoverTestLease extends FATServletClient {
     /**
      * Run a set of transactions and simulate an HA condition
      */
-    @Mode(TestMode.LITE)
     @Test
-    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
     public void testHADBLeaseDeleteFailover() throws Exception {
         final String method = "testHADBLeaseDeleteFailover";
         StringBuilder sb = null;
@@ -243,7 +236,7 @@ public class FailoverTestLease extends FATServletClient {
         // WTRN0108I: Have recovered from SQLException when deleting server lease for server with identity cloud0011
         List<String> recoveredAlready = retriableCloudServer.findStringsInLogs("Have recovered from SQLException when deleting server lease");
         // if not yet recovered, then wait for message
-        if (recoveredAlready == null || !recoveredAlready.isEmpty()) {
+        if (recoveredAlready == null || recoveredAlready.isEmpty()) {
             assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException when deleting server lease"));
         }
 
@@ -255,9 +248,7 @@ public class FailoverTestLease extends FATServletClient {
     /**
      * Run a set of transactions and simulate an HA condition
      */
-    @Mode(TestMode.LITE)
     @Test
-    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
     public void testHADBLeaseClaimFailover() throws Exception {
         final String method = "testHADBLeaseClaimFailover";
         StringBuilder sb = null;
@@ -285,7 +276,7 @@ public class FailoverTestLease extends FATServletClient {
         // WTRN0108I: Have recovered from SQLException when deleting server lease for server with identity cloud0011
         List<String> recoveredAlready = retriableCloudServer.findStringsInLogs("Have recovered from SQLException for server with recovery identity");
         // if not yet recovered, then wait for message
-        if (recoveredAlready == null || !recoveredAlready.isEmpty()) {
+        if (recoveredAlready == null || recoveredAlready.isEmpty()) {
             assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException for server with recovery identity"));
         }
 
@@ -297,9 +288,7 @@ public class FailoverTestLease extends FATServletClient {
     /**
      * Run a set of transactions and simulate an HA condition
      */
-    @Mode(TestMode.LITE)
     @Test
-    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
     public void testHADBLeaseGetFailover() throws Exception {
         final String method = "testHADBLeaseGetFailover";
         StringBuilder sb = null;
@@ -327,7 +316,7 @@ public class FailoverTestLease extends FATServletClient {
         // WTRN0108I: Have recovered from SQLException when deleting server lease for server with identity cloud0011
         List<String> recoveredAlready = retriableCloudServer.findStringsInLogs("Have recovered from SQLException when retrieving server leases");
         // if not yet recovered, then wait for message
-        if (recoveredAlready == null || !recoveredAlready.isEmpty()) {
+        if (recoveredAlready == null || recoveredAlready.isEmpty()) {
             assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException when retrieving server leases"));
         }
 

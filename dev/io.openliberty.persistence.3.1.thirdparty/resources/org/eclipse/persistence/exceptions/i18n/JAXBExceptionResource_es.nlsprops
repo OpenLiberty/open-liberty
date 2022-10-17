@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -153,7 +153,7 @@
 
 50063=Se ha producido una excepci\u00f3n al intentar crear una instancia de la XmlAdapterClass [{0}]. Una causa posible es que la clase de adaptador no tenga un constructor de argumento cero.
 
-50064=La XmlAdapterClass [{0}] no ampl\u00eda "javax.xml.bind.annotation.adapters.XmlAdapter" como se esperaba.  La clase de adaptador debe ampliar "javax.xml.bind.annotation.adapters.XmlAdapter" y declarar los m\u00e9todos "public abstract BoundType unmarshal(ValueType v)" y "public abstract ValueType marshal(BoundType v)".
+50064=La XmlAdapterClass [{0}] no ampl\u00eda "jakarta.xml.bind.annotation.adapters.XmlAdapter" como se esperaba.  La clase de adaptador debe ampliar "jakarta.xml.bind.annotation.adapters.XmlAdapter" y declarar los m\u00e9todos "public abstract BoundType unmarshal(ValueType v)" y "public abstract ValueType marshal(BoundType v)".
 
 50065=Se ha especificado un XmlJavaTypeAdapter no v\u00e1lido [{0}] para el paquete [{1}]. Las causas posibles son un nombre de clase de adaptador incorrecto o que se ha establecido el cargador incorrecto.
 

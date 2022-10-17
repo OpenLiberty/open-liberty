@@ -77,7 +77,6 @@ public class JCacheAuthCacheFailureTest extends BaseTestCase {
         startServer1(server1, groupName, 25000, 600);
         basicAuthClient1 = new BasicAuthClient(server1);
         waitForDefaultHttpsEndpoint(server1);
-        waitForCachingProvider(server1, AUTH_CACHE_NAME);
         waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
 
         /*
@@ -87,7 +86,6 @@ public class JCacheAuthCacheFailureTest extends BaseTestCase {
         startServer2(server2, groupName);
         basicAuthClient2 = new BasicAuthClient(server2);
         waitForDefaultHttpsEndpoint(server2);
-        waitForCachingProvider(server2, AUTH_CACHE_NAME);
         waitForCreatedOrExistingJCache(server2, AUTH_CACHE_NAME);
     }
 

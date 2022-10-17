@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,8 +42,6 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 public class JwtEndpointServices {
     private static TraceComponent tc = Tr.register(JwtEndpointServices.class, TraceConstants.TRACE_GROUP,
             TraceConstants.MESSAGE_BUNDLE);
-
-    private final KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
 
     /***********************************
      * Begin OSGi-related fields and methods
@@ -296,16 +294,14 @@ public class JwtEndpointServices {
     }
 
     boolean isPossibleJwkAlgorithm(String signatureAlgorithm) {
-        return (keyAlgChecker.isRSAlgorithm(signatureAlgorithm) || keyAlgChecker.isESAlgorithm(signatureAlgorithm));
+        return (KeyAlgorithmChecker.isRSAlgorithm(signatureAlgorithm)
+                || KeyAlgorithmChecker.isESAlgorithm(signatureAlgorithm));
     }
 
     String getAcceptableJwkSignatureAlgorithms() {
-        return Constants.SIGNATURE_ALG_RS256 + ", " +
-                Constants.SIGNATURE_ALG_RS384 + ", " +
-                Constants.SIGNATURE_ALG_RS512 + ", " +
-                Constants.SIGNATURE_ALG_ES256 + ", " +
-                Constants.SIGNATURE_ALG_ES384 + ", " +
-                Constants.SIGNATURE_ALG_ES512;
+        return Constants.SIGNATURE_ALG_RS256 + ", " + Constants.SIGNATURE_ALG_RS384 + ", "
+                + Constants.SIGNATURE_ALG_RS512 + ", " + Constants.SIGNATURE_ALG_ES256 + ", "
+                + Constants.SIGNATURE_ALG_ES384 + ", " + Constants.SIGNATURE_ALG_ES512;
     }
 
     /**

@@ -24,6 +24,7 @@ import org.junit.rules.TestName;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.authorization.jacc.provider.WSPolicyConfigurationFactoryImpl;
 import com.ibm.ws.security.authorization.jacc.provider.WSPolicyConfigurationImpl;
+import com.ibm.ws.security.authorization.jacc.provider.AllPolicyConfigs;
 
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.Mode;
@@ -254,9 +255,12 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
         inputPermCollection.add(ejbMethodPerm1);
         inputPermCollection.add(ejbMethodPerm2);
         policyConfig.addToUncheckedPolicy(inputPermCollection);
+
         policyConfig.commit();
 
         PolicyContext.setContextID(contextID);
+        AllPolicyConfigs policyConfigs = AllPolicyConfigs.getInstance();
+        policyConfigs.setPolicyConfig(contextID, policyConfig);
 
         PolicyConfiguration policyConfigNoContextID = pcf.getPolicyConfiguration();
         if (policyConfigNoContextID == null) {
@@ -294,6 +298,8 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
         policyConfig.commit();
 
         PolicyContext.setContextID(contextID);
+        AllPolicyConfigs policyConfigs = AllPolicyConfigs.getInstance();
+        policyConfigs.setPolicyConfig(contextID, policyConfig);
 
         PolicyConfiguration policyConfigOnlyContextID = pcf.getPolicyConfiguration(contextID);
         if (policyConfigOnlyContextID.getContextID() != contextID) {

@@ -10,15 +10,15 @@
 		<feature>localConnector-1.0</feature>
 	</featureManager>
 
-    <application type="war" location="sharedLibraryAppWeb1.war" >
+    <application type="war" location="sharedLibraryInjection.war" >
     	<classloader commonLibraryRef="InjectionSharedLibrary" />
     </application>        
     
-    <application type="war" location="sharedLibraryNoInjectionApp.war" >
+    <application type="war" location="sharedLibraryNoInjection.war" >
     	<classloader commonLibraryRef="InjectionSharedLibrary" />
     </application>
 
-    <application type="war" location="commonLibraryCrossInjectionTest.war" >
+    <application type="war" location="crossInjection.war" >
     	<classloader commonLibraryRef="CrossInjectSharedLibrary" />
     </application>
        
@@ -27,8 +27,8 @@
     </library>
 
     <library id="CrossInjectSharedLibrary">
-        <fileset dir="${server.config.dir}/commonLibraryCrossInjectionTest" includes="commonLibraryCrossInjectionTestJarOne.jar" />
-        <fileset dir="${server.config.dir}/commonLibraryCrossInjectionTest" includes="commonLibraryCrossInjectionTestJarTwo.jar" />
+        <fileset dir="${server.config.dir}/commonLibraryCrossInjectionTest" includes="crossInjectionLib1.jar" />
+        <fileset dir="${server.config.dir}/commonLibraryCrossInjectionTest" includes="crossInjectionLib2.jar" />
     </library>
     
     <orb id="defaultOrb" orbSSLInitTimeout="60"/>

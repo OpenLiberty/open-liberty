@@ -31,30 +31,61 @@ import java.lang.annotation.Target;
  * For example:<br>
  * 
  * <pre>
- * &#064;FFDCIgnore({ InterruptedException.class, NameAlreadyBoundException.class })
- * public void doSomeWork()
- * {
- * try
- * {
- * Thread.sleep(900);
- * context.bind(&quot;context/binding&quot;, &quot;hello&quot;);
+ * &#064;FFDCIgnore({ RuntimeException.class, MyException2.class })
+ * public void doSomeWork() {
+ *     try {
+ *         someMethod();
+ *     } catch (MyException e) {
+ *         // This block will have FFDC instrumentation added
+ *     } catch (MyException2 e) {
+ *         // This block will not
+ *     } catch (RuntimeException e) {
+ *         // This block will not either
+ *     } catch (Throwable e) {
+ *         // This block will have FFDC instrumentation added
+ *     }
  * }
- * catch (InterruptedException ie)
- * {
- * // Nothing to do. No need for FFDC.
- * }
- * catch (NameAlreadyBoundException nabe)
- * {
- * // I guess it's already in naming. No need for FFDC.
- * }
- * catch (Throwable t)
- * {
- * // Don't know what's going on here. I'd better get FFDC.
- * }
+ * </pre>
+ *
+ * <p>
+ * <strong>Multi-catch blocks</strong>
+ * <p>
+ * For a multi-catch block, the <em>last</em> exception in the multi-catch should be listed in {@code @FFDCIgnore}.
+ * <p>
+ * <pre>
+ * &#064;FFDCIgnore(InvalidStateException.class)
+ * public void doSomeWork() {
+ *     try {
+ *         someMethod();
+ *     } catch (IOException | InvalidStateException e) {
+ *         // This block will not have FFDC instrumentation added
+ *     } catch (Exception e) {
+ *         // This block will have FFDC instrumentation added
+ *     }
  * }
  * </pre>
  * 
- * will omit FFDC for the first two catch blocks but will add it to the third.
+ * <p>
+ * <strong>try-with-resources limitation</strong>
+ * <p>
+ * When using the try-with-resources construction, the compiler will generate several {@code catch (Throwable)} blocks and
+ * the FFDC instrumentation cannot currently tell these apart from catch blocks which are actually in the code.
+ * <p>
+ * Therefore, when using try-with-resources, you currently need to add {@code @FFDCIgnore(Throwable.class)} to avoid having 
+ * these extra catch blocks instrumented.
+ * <p>
+ * <pre>
+ * &#064;FFDCIgnore(Throwable.class)
+ * public void readSomeFile(File file) {
+ *     try (InputStream is = new FileInputStream(file)) {
+ *        // Read the file here
+ *     }
+ * }
+ * </pre>
+ * See <a href="https://github.com/OpenLiberty/open-liberty/issues/22396" >issue 22396</a> for the issue for this limitation
+ * <p>
+ * See <a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-14.html#jls-14.20.3.1">JLS 14.20.3.1</a> for more information
+ * about the equivalent code generated for a try-with-resources statement.
  */
 @Retention(CLASS)
 @Target({ METHOD, CONSTRUCTOR })

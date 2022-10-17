@@ -12,9 +12,6 @@ package io.openliberty.microprofile.openapi30.fat.tck;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -27,8 +24,8 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.JavaInfo;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKUtils;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -52,7 +49,7 @@ public class OpenAPITckTest {
 
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
-    public void testOpenAPITck() throws Exception {
+    public void testOpenAPI30Tck() throws Exception {
         String protocol = "http";
         String host = server.getHostname();
         String port = Integer.toString(server.getPort(PortType.WC_defaulthost));
@@ -60,12 +57,12 @@ public class OpenAPITckTest {
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("test.url", protocol + "://" + host + ":" + port);
 
-        MvnUtils.runTCKMvnCmd(server, "io.openliberty.microprofile.openapi.3.0.internal_fat_tck", "testOpenAPITck", additionalProps);
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "Open API");
-        resultInfo.put("feature_version", "3.0");
-        MvnUtils.preparePublicationFile(resultInfo);
+        String bucketName = "io.openliberty.microprofile.openapi.3.0.internal_fat_tck";
+        String testName = this.getClass() + ":testOpenAPI30Tck";
+        Type type = Type.MICROPROFILE;
+        String specName = "Open API";
+        String specVersion = "3.0";
+        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion, additionalProps);
     }
 
 }

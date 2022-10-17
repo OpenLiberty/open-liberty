@@ -18,7 +18,7 @@ javac.target: 11
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
-resteasy-version=6.1.0.Final
+resteasy-version=6.2.0.Final
 
 src: src, resources
 
@@ -69,15 +69,15 @@ Import-Package: \
   jakarta.ws.rs.ext;version="[3.0,4.0)", \
   jakarta.ws.rs.sse;version="[3.0,4.0)", \
   org.jboss.logging;version="[3.5,4)", \
-  org.jboss.resteasy.cdi;version="[6.1,7)", \
-  org.jboss.resteasy.cdi.i18n;version="[6.1,7)", \
-  org.jboss.resteasy.core;version="[6.1,7)", \
-  org.jboss.resteasy.plugins.providers.multipart;version="[6.1,7)", \
-  org.jboss.resteasy.spi;version="[6.1,7)", \
-  org.jboss.resteasy.spi.metadata;version="[6.1,7)", \
-  org.jboss.resteasy.spi.util;version="[6.1,7)", \
-  org.jboss.resteasy.spi.validation;version="[6.1,7)", \
-  org.jboss.resteasy.util;version="[6.1,7)", \
+  org.jboss.resteasy.cdi;version="[6.2,7)", \
+  org.jboss.resteasy.cdi.i18n;version="[6.2,7)", \
+  org.jboss.resteasy.core;version="[6.2,7)", \
+  org.jboss.resteasy.plugins.providers.multipart;version="[6.2,7)", \
+  org.jboss.resteasy.spi;version="[6.2,7)", \
+  org.jboss.resteasy.spi.metadata;version="[6.2,7)", \
+  org.jboss.resteasy.spi.util;version="[6.2,7)", \
+  org.jboss.resteasy.spi.validation;version="[6.2,7)", \
+  org.jboss.resteasy.util;version="[6.2,7)", \
   org.jboss.weld.proxy, \
   *
 

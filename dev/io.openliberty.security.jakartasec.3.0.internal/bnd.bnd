@@ -42,11 +42,12 @@ instrument.classesExcludes: io/openliberty/security/jakartasec/internal/resource
     com.ibm.ws.logging;version=latest,\
     com.ibm.ws.logging.core;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-    com.ibm.ws.security.javaeesec.1.0,\
+    io.openliberty.security.jakartasec.2.0.internal,\
     io.openliberty.jakarta.security.3.0,\
     io.openliberty.security.oidcclientcore.internal.jakarta,\
     io.openliberty.jakarta.jsonp.2.1,\
-	io.openliberty.jakarta.servlet.6.0
+	io.openliberty.jakarta.servlet.6.0,\
+	com.ibm.ws.org.jose4j;version=latest
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file,\
@@ -54,9 +55,10 @@ instrument.classesExcludes: io/openliberty/security/jakartasec/internal/resource
     com.ibm.ws.junit.extensions;version=latest,\
     com.ibm.ws.container.service;version=latest,\
     com.ibm.ws.kernel.boot;version=latest,\
-    com.ibm.websphere.javaee.cdi.2.0;version=latest,\
-    com.ibm.websphere.javaee.el.3.0;version=latest,\
-    com.ibm.ws.org.apache.jasper.el.3.0;version=latest,\
+    io.openliberty.jakarta.cdi.4.0;version=latest,\
+    io.openliberty.jakarta.expressionLanguage.5.0;version=latest,\
+    io.openliberty.org.apache.jasper.expressionLanguage.5.0;version=latest,\
+    io.openliberty.org.eclipse.parsson.1.1,\
     io.openliberty.jakarta.security.3.0,\
     com.ibm.ws.security.test.common;version=latest,\
     org.jmock:jmock-legacy;version=2.5.0,\

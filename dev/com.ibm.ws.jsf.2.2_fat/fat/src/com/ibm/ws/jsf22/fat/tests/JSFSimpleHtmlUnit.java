@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,11 +29,13 @@ import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
@@ -47,20 +49,30 @@ public class JSFSimpleHtmlUnit {
     @Rule
     public TestName name = new TestName();
 
-    protected static final Class<?> c = JSFSimpleHtmlUnit.class;
-
-    String contextRoot = "JSF22SimpleHTML";
+    private static final Class<?> c = JSFSimpleHtmlUnit.class;
+    private static final String APP_NAME = "JSF22SimpleHTML";
 
     @Server("jsfTestServer1")
     public static LibertyServer jsfTestServer1;
 
     @BeforeClass
     public static void setup() throws Exception {
+        boolean isEE10 = JakartaEE10Action.isActive();
 
-        ShrinkHelper.defaultDropinApp(jsfTestServer1, "JSF22SimpleHTML.war", "com.ibm.ws.jsf22.fat.simple.bean", "com.ibm.ws.jsf22.fat.simple.cforeach",
-                                      "com.ibm.ws.jsf22.fat.simple.externalContext");
+        ShrinkHelper.defaultDropinApp(jsfTestServer1, APP_NAME + ".war",
+                                      isEE10 ? "com.ibm.ws.jsf22.fat.simple.bean.faces40" : "com.ibm.ws.jsf22.fat.simple.bean.jsf22",
+                                      "com.ibm.ws.jsf22.fat.simple.cforeach",
+                                      isEE10 ? "com.ibm.ws.jsf22.fat.simple.cforeach.faces40" : "com.ibm.ws.jsf22.fat.simple.cforeach.jsf22",
+                                      isEE10 ? "com.ibm.ws.jsf22.fat.simple.externalContext.faces40" : "com.ibm.ws.jsf22.fat.simple.externalContext.jsf22");
 
-        jsfTestServer1.startServer(JSFServerTest.class.getSimpleName() + ".log");
+        if (isEE10) {
+            // For Faces 4.0, CDI @Named is used since @ManagedBean is no longer available.
+            ServerConfiguration config = jsfTestServer1.getServerConfiguration();
+            config.getFeatureManager().getFeatures().add("cdi-4.0");
+            jsfTestServer1.updateServerConfiguration(config);
+        }
+
+        jsfTestServer1.startServer(JSFSimpleHtmlUnit.class.getSimpleName() + ".log");
     }
 
     @AfterClass
@@ -79,7 +91,7 @@ public class JSFSimpleHtmlUnit {
     @Test
     public void sampleTest() throws Exception {
         try (WebClient webClient = new WebClient()) {
-            URL url = JSFUtils.createHttpUrl(jsfTestServer1, contextRoot, "");
+            URL url = JSFUtils.createHttpUrl(jsfTestServer1, APP_NAME, "");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             assertTrue(page.asText().contains("Hello World"));
@@ -96,7 +108,7 @@ public class JSFSimpleHtmlUnit {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsfTestServer1, contextRoot, "testValue.jsf");
+            URL url = JSFUtils.createHttpUrl(jsfTestServer1, APP_NAME, "testValue.jsf");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
             // Log.info(c, name.getMethodName(), "testEditableValueHoldergetSubmittedValue:: page " + page.asXml());
 
@@ -118,7 +130,7 @@ public class JSFSimpleHtmlUnit {
     public void testDatainCdataSectionWorks() throws Exception {
         try (WebClient webClient = new WebClient()) {
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsfTestServer1, contextRoot, "testCdata.jsf");
+            URL url = JSFUtils.createHttpUrl(jsfTestServer1, APP_NAME, "testCdata.jsf");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
             Log.info(c, name.getMethodName(), "testEditableValueHoldergetSubmittedValue:: page --> " + page.asText());
 
@@ -140,7 +152,7 @@ public class JSFSimpleHtmlUnit {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsfTestServer1, contextRoot, "forEach-equals.jsf");
+            URL url = JSFUtils.createHttpUrl(jsfTestServer1, APP_NAME, "forEach-equals.jsf");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             // Page without clicking the button of the form called Change Items
@@ -204,7 +216,7 @@ public class JSFSimpleHtmlUnit {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsfTestServer1, contextRoot, "testCommandButton.jsf");
+            URL url = JSFUtils.createHttpUrl(jsfTestServer1, APP_NAME, "testCommandButton.jsf");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             assertTrue(page.asText().contains("Testing h:commandButton on first click"));
@@ -233,9 +245,10 @@ public class JSFSimpleHtmlUnit {
         try (WebClient webClient = new WebClient()) {
 
             // Make a request to a dummy page to ensure that MyFaces initializes if it has not done so already
-            URL url = JSFUtils.createHttpUrl(jsfTestServer1, contextRoot, "dummy.jsf");
+            URL url = JSFUtils.createHttpUrl(jsfTestServer1, APP_NAME, "dummy.jsf");
 
-            String msg = "No context init parameter '" + (JakartaEE9Action.isActive() ? "jakarta" : "javax") + ".faces.FACELETS_BUFFER_SIZE' found, using default value '1024'";
+            String msg = "No context init parameter '" + (JakartaEE9Action.isActive() || JakartaEE10Action.isActive() ? "jakarta" : "javax")
+                         + ".faces.FACELETS_BUFFER_SIZE' found, using default value '1024'";
             // Check the trace.log
             // There should be a match so fail if there is not.
             assertFalse(msg, jsfTestServer1.findStringsInLogs(msg).isEmpty());
@@ -253,7 +266,7 @@ public class JSFSimpleHtmlUnit {
         try (WebClient webClient = new WebClient()) {
 
             // Make a request to a dummy page to ensure that MyFaces initializes if it has not done so already
-            URL url = JSFUtils.createHttpUrl(jsfTestServer1, contextRoot, "dummy.jsf");
+            URL url = JSFUtils.createHttpUrl(jsfTestServer1, APP_NAME, "dummy.jsf");
             webClient.getPage(url);
 
             String msg = "No context init parameter 'org.apache.myfaces.AUTOCOMPLETE_OFF_VIEW_STATE' found, using default value 'true'";
@@ -276,7 +289,7 @@ public class JSFSimpleHtmlUnit {
         try (WebClient webClient = new WebClient()) {
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsfTestServer1, contextRoot, "getInitParam.jsf");
+            URL url = JSFUtils.createHttpUrl(jsfTestServer1, APP_NAME, "getInitParam.jsf");
             HtmlPage page = webClient.getPage(url);
 
             Log.info(c, name.getMethodName(), "Response: " + page.asText());
@@ -298,7 +311,7 @@ public class JSFSimpleHtmlUnit {
             webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
 
             // Construct the URL for the test
-            URL url = JSFUtils.createHttpUrl(jsfTestServer1, contextRoot, "forEach-varStatus.jsf");
+            URL url = JSFUtils.createHttpUrl(jsfTestServer1, APP_NAME, "forEach-varStatus.jsf");
             HtmlPage page = webClient.getPage(url);
 
             // Page without clicking the button of the form called Change Items

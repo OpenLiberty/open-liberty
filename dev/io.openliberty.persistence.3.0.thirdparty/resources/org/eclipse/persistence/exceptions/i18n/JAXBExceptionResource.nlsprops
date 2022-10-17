@@ -153,7 +153,7 @@
 
 50063=An exception occurred while attempting to instantiate XmlAdapterClass [{0}]. A possible cause is that the adapter class has no zero argument constructor.
 
-50064=XmlAdapterClass [{0}] does not extend "javax.xml.bind.annotation.adapters.XmlAdapter" as expected.  It is required that the adapter class extend "javax.xml.bind.annotation.adapters.XmlAdapter", and declare methods "public abstract BoundType unmarshal(ValueType v)" and "public abstract ValueType marshal(BoundType v)".
+50064=XmlAdapterClass [{0}] does not extend "jakarta.xml.bind.annotation.adapters.XmlAdapter" as expected.  It is required that the adapter class extend "jakarta.xml.bind.annotation.adapters.XmlAdapter", and declare methods "public abstract BoundType unmarshal(ValueType v)" and "public abstract ValueType marshal(BoundType v)".
 
 50065=An invalid XmlJavaTypeAdapter [{0}] was specified for package [{1}]. Possible causes are an incorrect adapter class name or the wrong loader has been set.
 

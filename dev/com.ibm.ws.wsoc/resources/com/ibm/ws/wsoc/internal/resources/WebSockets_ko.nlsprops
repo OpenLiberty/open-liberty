@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2013 IBM Corporation and others.
+# Copyright (c) 2002, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -229,3 +229,11 @@ missingslashornull.uri.useraction=/\ub85c \uc2dc\uc791\ud558\uace0 \ub110\uc774 
 wsoc.feature.not.loaded.correctly=CWWKH0053E: websocket \uae30\ub2a5\uc774 \ud5c8\uc6a9\ub418\ub294 \ubc84\uc804\uc73c\ub85c \ub85c\ub4dc\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
 wsoc.feature.not.loaded.correctly.explanation=websocket \uae30\ub2a5\uc740 \ud574\ub2f9 websocket \uae30\ub2a5\uc758 Java [Jakarta] EE \uc2a4\ud399\uc5d0 \ud574\ub2f9\ud558\ub294 \ubc84\uc804\uc73c\ub85c \ub85c\ub4dc\ub429\ub2c8\ub2e4. \uc774 \uae30\ub2a5\uc774 \ubc84\uc804\uc774 \uc815\uc758\ub418\uc9c0 \uc54a\uc740 \uc0c1\ud0dc\uc5d0\uc11c \ub85c\ub4dc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 wsoc.feature.not.loaded.correctly.useraction=\uc5ec\ub7ec websocket \uae30\ub2a5\uc774 \uc788\ub294\uc9c0 server.xml \ud30c\uc77c\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \ud558\ub098\ub9cc \uc9c0\uc815\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+
+scheme.incorrect.error=CWWKH0054E: {0} URI\uc5d0\uc11c \uc2dd\ubcc4\ub418\uc9c0 \uc54a\uc740 \uc2a4\ud0b4\uc774 \uc0ac\uc6a9\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+scheme.incorrect.error.explanation=\uc694\uccad \ucc98\ub9ac \uc911\uc5d0 \uc2dd\ubcc4\ub418\uc9c0 \uc54a\uc740 \uc2a4\ud0b4\uc774 \ubc1c\uacac\ub418\uc5c8\uc2b5\ub2c8\ub2e4. 
+scheme.incorrect.error.useraction=\uc2a4\ud0b4 \uc720\ud615\uc740 http, https, ws \ub610\ub294 wss\uc5ec\uc57c \ud569\ub2c8\ub2e4. 
+
+upgradeHttpToWebSocket.failed=CWWKH0055E: {0}(\uc73c)\ub85c \uc778\ud574 jakarta.websocket.server.ServerContainer#upgradeHttpToWebSocket \ud638\ucd9c\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. 
+upgradeHttpToWebSocket.failed.explanation=\uc11c\ubc84\uac00 HTTP \ub610\ub294 HTTPS \uc694\uccad\uc744 ws/wss \ud504\ub85c\ud1a0\ucf5c\ub85c \uc5c5\uadf8\ub808\uc774\ub4dc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+upgradeHttpToWebSocket.failed.useraction=\uc624\ub958\ub97c \uac80\ud1a0\ud558\uc5ec \uc694\uccad\uc744 \uc5c5\uadf8\ub808\uc774\ub4dc\ud558\ub294 \ub370 \uc2e4\ud328\ud55c \uc774\uc720\ub97c \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.

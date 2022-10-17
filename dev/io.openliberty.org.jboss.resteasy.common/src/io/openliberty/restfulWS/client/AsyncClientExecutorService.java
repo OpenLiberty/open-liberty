@@ -60,6 +60,20 @@ public class AsyncClientExecutorService implements ExecutorService {
     public void shutdown() {
         delegate.shutdown();
     }
+    
+    public void close() {
+        if ( delegate instanceof AutoCloseable ) {
+            // Java 19
+            try {
+                ((AutoCloseable)delegate).close();
+            } catch (Exception e) {
+               // Should never happen, ExecutorService.close() does not throw an exception
+            }
+        } else {
+            // Java < 19
+            throw new UnsupportedOperationException("close");
+        }
+    }
 
     /**
      * @return

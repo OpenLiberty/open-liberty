@@ -48,3 +48,46 @@ ERROR_BUILDING_AUTHORIZATION_ENDPOINT_URL.useraction=Suchen Sie in der Fehlernac
 AUTHENTICATION_RESPONSE_ERROR=CWWKS2407E: Der OpenID Connect-Client {0} hat beim \u00dcberpr\u00fcfen der Authentifizierungsantwort vom OpenID Connect-Provider den folgenden Fehler festgestellt: {1}
 AUTHENTICATION_RESPONSE_ERROR.explanation=In der Antwort des OpenID Connect-Providers fehlen m\u00f6glicherweise Informationen. M\u00f6glicherweise liegt ein Problem mit dem vom OpenID Connect-Provider zur\u00fcckgegebenen Code vor.
 AUTHENTICATION_RESPONSE_ERROR.useraction=Suchen Sie in der Fehlernachricht nach weiteren Informationen.
+
+CALLBACK_MISSING_STATE_PARAMETER=CWWKS2408E: In der Callback-Anforderung des OpenID Connect-Providers fehlt der Statusparameter.
+CALLBACK_MISSING_STATE_PARAMETER.explanation=Die Berechtigungsanforderung an den OpenID Connect-Provider enthielt keinen Statusparameter.
+CALLBACK_MISSING_STATE_PARAMETER.useraction=Stellen Sie sicher, dass die Berechtigungsanforderung an den OpenID Connect-Provider einen Statusparameter enth\u00e4lt.
+
+STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH=CWWKS2409E: Der Statusparameter [{0}], der in der Callback-Anforderung vom OpenID Connect-Provider enthalten ist, weist nicht die richtige L\u00e4nge auf. Es wird erwartet, dass der Parameter eine L\u00e4nge von {1} Zeichen hat.
+STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH.explanation=M\u00f6glicherweise wurde der Statuswert abgeschnitten oder stammt nicht von diesem OpenID Connect-Client.
+STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH.useraction=\u00dcberpr\u00fcfen Sie das Format des Statusparameters. Vergleichen Sie den Wert mit den Statusparametern der letzten OpenID Connect-Anforderungen, die durch diesen OpenID Connect-Client verarbeitet wurden.
+
+STATE_VALUE_IN_CALLBACK_NOT_STORED=CWWKS2410E: Der OpenID Connect-Client kann keinen Statuswert finden, der dem Statusparameter [{0}] in der Callback-Anforderung vom OpenID Connect-Provider entspricht.
+STATE_VALUE_IN_CALLBACK_NOT_STORED.explanation=M\u00f6glicherweise stammt der Statusparameter aus einer alten Berechtigungsanforderung oder der Wert f\u00fcr den Statusparameter ist falsch.
+STATE_VALUE_IN_CALLBACK_NOT_STORED.useraction=Stellen Sie sicher, dass der Statusparameter in der Callback-Anforderung mit einem Statuswert f\u00fcr eine aktuelle OpenID Connect-Anforderung \u00fcbereinstimmt.
+
+STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE=CWWKS2411E: Der Statusparameter [{0}], der in der Callback-Anforderung enthalten ist, stimmt nicht mit dem Statuswert \u00fcberein, den der OpenID Connect-Client gespeichert hat.
+STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE.explanation=M\u00f6glicherweise stammt der Statusparameter aus einer alten Berechtigungsanforderung oder der Wert f\u00fcr den Statusparameter ist falsch.
+STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE.useraction=Stellen Sie sicher, dass der Statusparameter in der Callback-Anforderung mit einem Statuswert f\u00fcr eine aktuelle OpenID Connect-Anforderung \u00fcbereinstimmt.
+
+STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME=CWWKS2412E: Der Statusparameter [{0}], der in der Callback-Anforderung enthalten ist, liegt au\u00dferhalb seines g\u00fcltigen Zeitrahmens. Der Statuswert wurde am {1} erstellt und ist g\u00fcltig von {2} bis {3}. Die aktuelle Uhrzeit ist {4}.
+STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME.explanation=Die Antwort des OpenID Connect-Providers ist zu schleppend erfolgt oder die Authentifizierung des Benutzers beim OpenID Connect-Provider hat zu lange gedauert.
+STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME.useraction=Stellen Sie sicher, dass der Benutzer nicht zu viel Zeit f\u00fcr die Authentifizierung beim OpenID Connect-Provider in Anspruch nimmt.
+
+CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI=CWWKS2413E: Die URL der Callback-Anforderung [{0}] stimmt nicht mit dem Umleitungs-URI [{1}] \u00fcberein, der f\u00fcr den OpenID Connect-Client {2} konfiguriert ist.
+CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI.explanation=M\u00f6glicherweise hat der OpenID Connect-Client in der Berechtigungsanforderung, die an den OpenID Connect-Provider gesendet wurde, einen anderen Wert f\u00fcr den Parameter "redirect_uri" verwendet.
+CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI.useraction=\u00dcberpr\u00fcfen Sie die Konfiguration des OpenID Connect-Clients, um sicherzustellen, dass der Umleitungs-URI ordnungsgem\u00e4\u00df konfiguriert ist.
+
+# Do not translate "error"
+CALLBACK_URL_INCLUDES_ERROR_PARAMETER=CWWKS2414E: Die Callback-Anforderung vom OpenID Connect-Provider enth\u00e4lt den folgenden Fehlerparameterwert: [{0}]
+CALLBACK_URL_INCLUDES_ERROR_PARAMETER.explanation=Bei dem Versuch des OpenID Connect-Providers, die Authentifizierungsanforderung zu verarbeiten, ist ein Fehler aufgetreten.
+CALLBACK_URL_INCLUDES_ERROR_PARAMETER.useraction=Weitere Informationen k\u00f6nnen Sie dem Wert entnehmen, der in der Nachricht enthalten ist. Fehlercodes werden durch RFC 6749 definiert.
+
+TOKEN_VALIDATION_EXCEPTION=CWWKS2415E: Der OpenID Connect-Client {0} hat w\u00e4hrend der Validierung des Tokens, das vom OpenID Connect-Provider empfangen wurde, den folgenden Fehler festgestellt: {1}
+TOKEN_VALIDATION_EXCEPTION.explanation=M\u00f6glicherweise liegt ein Problem bei der Validierung des Ausstellers, der Validierung von azp-, iat- oder exp-Anspr\u00fcchen (Claims) oder bei der Validierung der Tokensignatur vor.
+TOKEN_VALIDATION_EXCEPTION.useraction=Weitere Informationen k\u00f6nnen Sie dem Fehler in der Nachricht entnehmen.
+
+TOKEN_REQUEST_ERROR=CWWKS2416E: Der OpenID Connect-Client {0} hat beim Senden einer Anforderung an den Tokenendpunkt des OpenID Connect-Providers folgenden Fehler festgestellt: {1}
+TOKEN_REQUEST_ERROR.explanation=M\u00f6glicherweise fehlen dem OpenID Connect-Client Informationen oder die Anforderung an den Tokenendpunkt ist fehlgeschlagen oder bei der Verarbeitung der Antwort des Tokenendpunkts ist ein anderer Fehler aufgetreten.
+TOKEN_REQUEST_ERROR.useraction=Suchen Sie in der Fehlernachricht nach weiteren Informationen. \u00dcberpr\u00fcfen Sie, ob der OpenID Connect-Provider einen Code in der Authentifizierungsantwort zur\u00fcckgegeben hat.
+
+# Do not translate "token_endpoint"
+TOKEN_ENDPOINT_MISSING=CWWKS2417E: Der OpenID Connect-Client {0} kann keinen Wert f\u00fcr den Tokenendpunkt f\u00fcr den OpenID Connect-Provider finden.
+TOKEN_ENDPOINT_MISSING.explanation=In den Metadaten des OpenID Connect-Providers und in der Konfiguration des OpenID Connect-Clients fehlt die URL f\u00fcr den Tokenendpunkt.
+TOKEN_ENDPOINT_MISSING.useraction=Stellen Sie sicher, dass die Metadaten des OpenID Connect-Providers einen Wert f\u00fcr den Tokenend (token_endpoint) enthalten. Ein Tokenendpunkt kann auch in der Konfiguration des OpenID Connect-Clients angegeben werden.
+

@@ -80,18 +80,15 @@ bell.no.services.config=CWWKL0058W: Cannot find the {0} service in META-INF/serv
 bell.no.services.config.explanation=There is no matching service declared in the META-INF/services folder.
 bell.no.services.config.useraction= No user action is required.
 
-# BETA
 # {0} - library identifier
 bell.spi.visibility.enabled=CWWKL0059I: BELL SPI visibility is enabled for the {0} library. The BELL references the {0} library through a unique class loader that can see SPI packages.
 bell.spi.visibility.enabled.explanation=To prevent applications and resources from seeing SPI packages, the BELL references the library through a unique class loader that is not shared with applications that reference the same library.
 bell.spi.visibility.enabled.useraction=Disable SPI visibility in the BELL configuration whenever the BELL must reference a library through a class loader that is shared with applications that reference the same library. Otherwise, no action is required.
 
-# BETA
 bell.spi.visibility.disabled.libref.global=CWWKL0060E: BELL SPI visibility is not supported for the Liberty global shared library.
 bell.spi.visibility.disabled.libref.global.explanation=BELL SPI visibility cannot be enabled for the Liberty global shared library.
 bell.spi.visibility.disabled.libref.global.useraction=Modify the BELL configuration to reference a library other than the Liberty global shared library.
 
-# BETA
 # {0} - the name of the implementation class
 # {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
 # {2} - the name of the library

@@ -14,8 +14,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.UUID;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -54,8 +54,8 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
      */
     private static ServerConfiguration emptyConfiguration = null;
 
-    @BeforeClass
-    public static void setup() throws Exception {
+    @Before
+    public void setup() throws Exception {
         assumeShouldNotSkipTests();
 
         String groupName = UUID.randomUUID().toString();
@@ -67,8 +67,8 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
         emptyConfiguration = server1.getServerConfiguration();
     }
 
-    @AfterClass
-    public static void after() throws Exception {
+    @After
+    public void after() throws Exception {
         /*
          * Stop the servers in the reverse order they were started.
          */
@@ -94,10 +94,20 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
 
         CachingProvider cachingProvider = new CachingProvider("CachingProvider", jCacheLibraryRef, commonLibraryRef, providerClass);
 
+        /*
+         * Remove any duplicates of the Cache, CacheManager or CachingProviders and add in the new ones.
+         */
+        server.getCaches().removeIf(c -> cache.getId().equals(c.getId()));
         server.getCaches().add(cache);
+
+        server.getCacheManagers().removeIf(cm -> cacheManager.getId().equals(cm.getId()));
+        server.getCacheManagers().add(cacheManager);
+
+        server.getCachingProviders().removeIf(cp -> cachingProvider.getId().equals(cp.getId()));
+        server.getCachingProviders().add(cachingProvider);
+
+        server.getAuthCaches().clear();
         server.getAuthCaches().add(authCache);
-        server.getcacheManagers().add(cacheManager);
-        server.getcachingProviders().add(cachingProvider);
 
         updateConfigDynamically(server1, server);
     }
@@ -283,7 +293,6 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
         /*
          * All issues have been fixed, so wait for the auth cache to start.
          */
-        waitForCachingProvider(server1, AUTH_CACHE_NAME);
         waitForCreatedOrExistingJCache(server1, AUTH_CACHE_NAME);
     }
 }

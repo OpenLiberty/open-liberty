@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import com.ibm.ws.jsf23.fat.JSFUtils;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -41,7 +42,6 @@ import junit.framework.Assert;
  * We're extending CDITestBase, which has common test code.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat(SkipForRepeat.EE10_FEATURES)
 public class JSF23CDIInjectionTests extends CDITestBase {
     private static final Logger LOG = Logger.getLogger(JSF23CDIInjectionTests.class.getName());
 
@@ -50,10 +50,11 @@ public class JSF23CDIInjectionTests extends CDITestBase {
 
     @BeforeClass
     public static void setup() throws Exception {
+        // Include @Named beans if Faces 4.0 is being tested. Include @ManagedBean beans otherwise.
         ShrinkHelper.defaultDropinApp(server, "CDIInjectionTests.war",
                                       "com.ibm.ws.jsf23.fat.cdi.injection.beans.injected",
                                       "com.ibm.ws.jsf23.fat.cdi.injection.beans.viewscope",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.beans",
+                                      JakartaEE10Action.isActive() ? "com.ibm.ws.jsf23.fat.cdi.common.beans.faces40" : "com.ibm.ws.jsf23.fat.cdi.common.beans.jsf23",
                                       "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
                                       "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
                                       "com.ibm.ws.jsf23.fat.cdi.common.managed",
@@ -61,7 +62,7 @@ public class JSF23CDIInjectionTests extends CDITestBase {
                                       "com.ibm.ws.jsf23.fat.cdi.common.managed.factories.client.window");
 
         ShrinkHelper.defaultDropinApp(server, "ActionListenerInjection.war",
-                                      "com.ibm.ws.jsf23.fat.cdi.common.beans",
+                                      JakartaEE10Action.isActive() ? "com.ibm.ws.jsf23.fat.cdi.common.beans.faces40" : "com.ibm.ws.jsf23.fat.cdi.common.beans.jsf23",
                                       "com.ibm.ws.jsf23.fat.cdi.common.beans.factory",
                                       "com.ibm.ws.jsf23.fat.cdi.common.beans.injected",
                                       "com.ibm.ws.jsf23.fat.cdi.common.managed",
@@ -90,6 +91,7 @@ public class JSF23CDIInjectionTests extends CDITestBase {
      *
      */
     @Test
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) // looking in sessionmap for session bean
     public void testActionListenerInjection_CDIInjectionTests() throws Exception {
         testActionListenerInjectionByApp("ActionListenerInjection", server);
     }
@@ -103,6 +105,7 @@ public class JSF23CDIInjectionTests extends CDITestBase {
      *
      */
     @Test
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) // looking in sessionmap for session bean
     public void testNavigationHandlerInjection_CDIInjectionTests() throws Exception {
         testNavigationHandlerInjectionByApp("CDIInjectionTests", server);
     }
@@ -218,6 +221,7 @@ public class JSF23CDIInjectionTests extends CDITestBase {
      * Does some simple verifications of the 4 scopes and instances ( through hashcode) are what is expected for multiple requests.
      */
     @Test
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testViewScopeInjections() throws Exception {
         String contextRoot = "CDIInjectionTests";
 

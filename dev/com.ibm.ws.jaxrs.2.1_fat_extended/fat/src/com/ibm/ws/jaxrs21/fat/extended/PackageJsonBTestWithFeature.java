@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,12 +24,13 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jaxrs21.fat.jsonb.JsonBTestServlet;
 
-@SkipForRepeat(JakartaEE9Action.ID) //JSON-B Provider implementation seems to be broken in Jakarta package space...
+@SkipForRepeat({JakartaEE9Action.ID, JakartaEE10Action.ID}) //JSON-B Provider implementation seems to be broken in Jakarta package space...
 @RunWith(FATRunner.class)
 public class PackageJsonBTestWithFeature extends FATServletClient {
 
