@@ -49,7 +49,7 @@ import org.apache.myfaces.view.facelets.tag.TagLibrary;
  */
 public class CompositeResourceLibrary implements TagLibrary
 {
-    public final static String NAMESPACE_PREFIX = "jakarta.faces.composite";
+    public final static String NAMESPACE_PREFIX = "jakarta.faces.composite/"; // Forward slash added under MYFACES-4484
     public final static String JCP_NAMESPACE_PREFIX = "http://xmlns.jcp.org/jsf/composite/";
     public final static String SUN_NAMESPACE_PREFIX = "http://java.sun.com/jsf/composite/";
     
