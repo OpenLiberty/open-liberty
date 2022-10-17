@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,6 +61,37 @@ public class InstallConstants {
     public static final String LICENSE_EPL_PREFIX = "https://www.eclipse.org/legal/epl-";
     public static final String LICENSE_FEATURE_TERMS = "http://www.ibm.com/licenses/wlp-featureterms-v1";
     public static final String LICENSE_FEATURE_TERMS_RESTRICTED = "http://www.ibm.com/licenses/wlp-featureterms-restricted-v1";
+
+    public static final String ENVIRONMENT_VARIABLE_MAP = "environment.variable.map";
+    public static final String ACTION_ERROR_MESSAGE = "action.error.message";
+    public static final String ACTION_EXCEPTION_STACKTRACE = "action.exception.stacktrace";
+    public static final String JSON_PROVIDED = "json.provided";
+    public static final String IS_OPEN_LIBERTY = "is.open.liberty";
+    public static final String CLEANUP_NEEDED = "cleanup.needed";
+    public static final String IS_FEATURE_UTILITY = "is.feature.utility";
+    public static final String RUNTIME_INSTALL_DIR = "runtime.install.dir";
+    public static final String INSTALL_LOCAL_ESA = "install.local.esa";
+    public static final String SINGLE_JSON_FILE = "single.json.file";
+    public static final String FEATURES_TO_RESOLVE = "features.to.resolve";
+    public static final String INDIVIDUAL_ESAS = "individual.esas";
+    public static final String INSTALL_INDIVIDUAL_ESAS = "install.individual.esas";
+    public static final String LICENSE_ACCEPT = "license.accept";
+    public static final String INSTALL_KERNEL_INIT_CODE = "install.kernel.init.code";
+    public static final String OVERRIDE_ENVIRONMENT_VARIABLES = "override.environment.variables";
+    public static final String ACTION_FIND = "action.find";
+    public static final String FROM_REPO = "from.repo";
+    public static final String DOWNLOAD_ARTIFACT_LIST = "download.artifact.list";
+    public static final String DOWNLOAD_INDIVIDUAL_ARTIFACT = "download.individual.artifact";
+    public static final String DOWNLOAD_RESULT = "download.result";
+    public static final String ACTION_RESULT = "action.result";
+    public static final String IS_INSTALL_SERVER_FEATURE = "is.install.server.feature";
+    public static final String UPGRADE_COMPLETE = "upgrade.complete";
+    public static final String CAUSED_UPGRADE = "caused.upgrade";
+    public static final String CLEANUP_UPGRADE = "cleanup.upgrade";
+    public static final String ACTION_INSTALL = "action.install";
+    public static final String TO_EXTENSION = "to.extension";
+    public static final String DOWNLOAD_LOCATION = "download.location";
+    public static final String CLEANUP_TEMP_LOCATION = "cleanup.temp.location";
 
     /**
      * An enum for specifying what action to take if a file to be installed

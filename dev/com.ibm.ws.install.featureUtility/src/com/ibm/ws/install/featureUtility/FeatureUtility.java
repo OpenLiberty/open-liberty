@@ -50,7 +50,6 @@ import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.feature.internal.cmdline.NLS;
 import com.ibm.ws.repository.exceptions.RepositoryException;
-//import com.sun.org.apache.xpath.internal.operations.Bool;
 
 /**
  *
@@ -64,16 +63,16 @@ public class FeatureUtility {
     private final Boolean licenseAccepted;
     private final List<String> featuresToInstall;
     private final List<String> additionalJsons;
-    private static String openLibertyVersion;
-    private static String openLibertyEdition;
+    private String openLibertyVersion;
+    private String openLibertyEdition;
     private final Logger logger;
     private ProgressBar progressBar;
     private Map<String, String> featureToExt;
-    private final static String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
-    private final static String WEBSPHERE_LIBERTY_GROUP_ID = "com.ibm.websphere.appserver.features";
-    private final static String BETA_EDITION = "EARLY_ACCESS";
-    private final static String CONNECTION_FAILED_ERROR = "CWWKF1390E";
-    private static String to;
+    private static final String OPEN_LIBERTY_PRODUCT_ID = "io.openliberty";
+    private static final String WEBSPHERE_LIBERTY_GROUP_ID = "com.ibm.websphere.appserver.features";
+    private static final String BETA_EDITION = "EARLY_ACCESS";
+    private static final String CONNECTION_FAILED_ERROR = "CWWKF1390E";
+    private String to;
     private boolean isInstallServerFeature = false;
 
 
@@ -87,18 +86,16 @@ public class FeatureUtility {
             throw new InstallException(
                             Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_BETA_EDITION_NOT_SUPPORTED"));
         }
-        this.additionalJsons = builder.additionalJsons;
-        
+	this.additionalJsons = builder.additionalJsons;
         this.to = builder.to;
+	this.fromDir = builder.fromDir; // this can be overwritten by the env prop
 
-        this.fromDir = builder.fromDir; //this can be overwritten by the env prop
-        // this.featuresToInstall = new ArrayList<>(builder.featuresToInstall);
         List<String> rawFeatures = new ArrayList<>(builder.featuresToInstall);
         Map<String, Set<String>> jsonsAndFeatures = getJsonsAndFeatures(rawFeatures);
 
         this.featuresToInstall = new ArrayList<>(jsonsAndFeatures.get("features"));
         Set<String> jsonsList = jsonsAndFeatures.get("jsons");
-        Set<String> jsonsRequired = new HashSet<String>();
+	Set<String> jsonsRequired = new HashSet<>();
         for (String groupId: jsonsList) {
         	jsonsRequired.add(String.format("%s:%s:%s", groupId, "features", openLibertyVersion));
         }
@@ -110,13 +107,12 @@ public class FeatureUtility {
         this.licenseAccepted = builder.licenseAccepted;
         this.featureToExt = new HashMap<String, String>();
 
-
         map = new InstallKernelMap();
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INITIALIZING"));
-        Map<String, Object> envMap = (Map<String, Object>) map.get("environment.variable.map");
+	Map<String, Object> envMap = (Map<String, Object>) map.get(InstallConstants.ENVIRONMENT_VARIABLE_MAP);
         
         if (envMap == null) {
-        	throw new InstallException((String) map.get("action.error.message"));
+	    throw new InstallException((String) map.get(InstallConstants.ACTION_ERROR_MESSAGE));
         }
 
         fine("Environment variables: ");
@@ -132,7 +128,7 @@ public class FeatureUtility {
         		fine(key +": " + (envMap.get(key)));
         	}
         }
-        map.put("json.provided", false);
+	map.put(InstallConstants.JSON_PROVIDED, false);
         overrideEnvMapWithProperties();
         
         fine("additional jsons: " + additionalJsons);
@@ -142,10 +138,10 @@ public class FeatureUtility {
         		//if additionalJson is for user feature, add websphere json for license update
         		jsonsRequired.add(String.format("com.ibm.websphere.appserver.features:features:%s", openLibertyVersion));
         	}
-        	map.put("json.provided", true);
+		map.put(InstallConstants.JSON_PROVIDED, true);
         }
 
-        boolean isOpenLiberty = (Boolean) map.get("is.open.liberty");
+	boolean isOpenLiberty = (Boolean) map.get(InstallConstants.IS_OPEN_LIBERTY);
         if (!isOpenLiberty) {
         	jsonsRequired.add(String.format("com.ibm.websphere.appserver.features:features:%s", openLibertyVersion));
         }else { //check if user is trying to install CL feature onto OL runtime without specifying json cord in featureUtility.prop. 
@@ -159,7 +155,7 @@ public class FeatureUtility {
         if (noCache != null && noCache) {
             fine("Features installed from the remote repository will not be cached locally");
         }
-        map.put("cleanup.needed", noCache);
+	map.put(InstallConstants.CLEANUP_NEEDED, noCache);
         
         List<File> jsonPaths = getJsonFiles(fromDir, jsonsRequired);
         
@@ -184,26 +180,24 @@ public class FeatureUtility {
      * Initialize the Install kernel map.
      *
      * @param jsonPaths
-     * @throws IOException
      */
     @SuppressWarnings("restriction")
-	private void initializeMap(List<File> jsonPaths) throws IOException {
-        map.put("is.feature.utility", true);
-        map.put("runtime.install.dir", Utils.getInstallDir());
-        map.put("install.local.esa", true);
-        
-        map.put("single.json.file", jsonPaths);
+    private void initializeMap(List<File> jsonPaths) {
+	    map.put(InstallConstants.IS_FEATURE_UTILITY, true);
+	    map.put(InstallConstants.RUNTIME_INSTALL_DIR, Utils.getInstallDir());
+	    map.put(InstallConstants.INSTALL_LOCAL_ESA, true);
+	    map.put(InstallConstants.SINGLE_JSON_FILE, jsonPaths);
         if (featuresToInstall != null) {
-            map.put("features.to.resolve", featuresToInstall);
+	    map.put(InstallConstants.FEATURES_TO_RESOLVE, featuresToInstall);
 
         }
         if (esaFiles != null && !esaFiles.isEmpty()) {
-            map.put("individual.esas", esaFiles);
-            map.put("install.individual.esas", true);
+	    map.put(InstallConstants.INDIVIDUAL_ESAS, esaFiles);
+	    map.put(InstallConstants.INSTALL_INDIVIDUAL_ESAS, true);
         }
 
-        map.put("license.accept", licenseAccepted);
-        map.get("install.kernel.init.code");
+	map.put(InstallConstants.LICENSE_ACCEPT, licenseAccepted);
+	map.get(InstallConstants.INSTALL_KERNEL_INIT_CODE);
 
     }
 
@@ -272,12 +266,12 @@ public class FeatureUtility {
         		String artifactId = "features";
         		String version = bomSplit[2];
         		this.additionalJsons.add(String.format("%s:%s:%s", groupId, artifactId, version));
-            	map.put("json.provided", true);
+			map.put(InstallConstants.JSON_PROVIDED, true);
         	}
         	
         }
 
-        map.put("override.environment.variables", overrideMap);
+	map.put(InstallConstants.OVERRIDE_ENVIRONMENT_VARIABLES, overrideMap);
     }
 
     /**
@@ -286,17 +280,15 @@ public class FeatureUtility {
      * artifact ids.
      * @param featureNames a list of feature shortnames or maven coordinates
      * @return hashmap with group ids and artifact ids seperated
-     * @throws IOException
      * @throws InstallException
      */
     private Map<String, Set<String>> getJsonsAndFeatures(List<String> featureNames)
-                    throws IOException, InstallException {
+	    throws InstallException {
         Map<String, Set<String>> jsonsAndFeatures = new HashMap<>();
 
         Set<String> jsonsRequired = new HashSet<>();
         Set<String> featuresRequired = new HashSet<>();
 
-        String openLibertyVersion = getLibertyVersion();
         String groupId, artifactId, version, packaging = null;
         for (String feature : featureNames) {
             String[] mavenCoords = feature.split(":");
@@ -304,13 +296,13 @@ public class FeatureUtility {
                 case 1: // artifactId
                     groupId = "io.openliberty.features";
                     artifactId = mavenCoords[0];
-                    version = openLibertyVersion;
+		    version = this.openLibertyVersion;
                     packaging = "esa";
                     break;
                 case 2: // groupId:artifactId
                     groupId = mavenCoords[0];
                     artifactId = mavenCoords[1];
-                    version = openLibertyVersion;
+		    version = this.openLibertyVersion;
                     packaging = "esa";
                     break;
                 case 3: // groupId:artifactId:version
@@ -339,25 +331,19 @@ public class FeatureUtility {
 
     }
 
-    private void verifyMavenCoordinate(String feature, String groupId, String artifactId, String version, String packaging) throws IOException, InstallException {
+    private void verifyMavenCoordinate(String feature, String groupId, String artifactId, String version,
+	    String packaging) throws InstallException {
         // check for any empty parameters
         if(groupId.isEmpty() || artifactId.isEmpty() || version.isEmpty() || packaging.isEmpty()){
             throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_COORDINATE_INVALID", feature));
         }
-
-        String openLibertyVersion = getLibertyVersion();
-        if (!version.equals(openLibertyVersion)) {
+	if (!version.equals(this.openLibertyVersion)) {
             throw new InstallException(
                             Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_COORDINATE_WRONG_VERSION", feature, openLibertyVersion));
         }
         if(!"esa".equals(packaging)){
             throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_MAVEN_COORDINATE_WRONG_PACKAGING", feature));
         }
-//        // block closed liberty features
-//        if("com.ibm.websphere.appserver.features".equals(groupId)){
-//            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_FAILED_TO_RESOLVE_FEATURES_FOR_OPEN_LIBERTY", feature));
-//        }
-
     }
 
     /**
@@ -375,8 +361,8 @@ public class FeatureUtility {
             return this.openLibertyEdition;
         }
         File propertiesFile = new File(Utils.getInstallDir(), "lib/versions/openliberty.properties");
-        String openLibertyVersion = null;
-        String openLibertyEdition = null;
+	String olVersion = null;
+	String olEdition = null;
         Properties properties = new Properties();
         try (InputStream input = new FileInputStream(propertiesFile)) {
             properties.load(input);
@@ -384,26 +370,25 @@ public class FeatureUtility {
             String productVersion = properties.getProperty("com.ibm.websphere.productVersion");
             String productEdition = properties.getProperty("com.ibm.websphere.productEdition");
             if (productId.equals(OPEN_LIBERTY_PRODUCT_ID)) {
-                openLibertyVersion = productVersion;
-                openLibertyEdition = productEdition;
+		olVersion = productVersion;
+		olEdition = productEdition;
             }
-
         }
 
-        if (openLibertyVersion == null || openLibertyEdition == null) {
+	if (olVersion == null || olEdition == null) {
             // openliberty.properties file is missing or invalidly formatted
             throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getMessage("ERROR_COULD_NOT_DETERMINE_RUNTIME_PROPERTIES_FILE", propertiesFile.getAbsolutePath()));
 
         }
-        this.openLibertyVersion = openLibertyVersion;
-        this.openLibertyEdition = openLibertyEdition;
+	this.openLibertyVersion = olVersion;
+	this.openLibertyEdition = olEdition;
         return openLibertyVersion;
     }
 
     public Set<String> findFeatures(){
         String query = String.join(" ", featuresToInstall);
-        map.put("action.find", query);
-        Set<String> features = (Set<String>) map.get("action.result");
+	map.put(InstallConstants.ACTION_FIND, query);
+	Set<String> features = (Set<String>) map.get(InstallConstants.ACTION_RESULT);
 
         if(features.isEmpty()){
             info(Messages.INSTALL_KERNEL_MESSAGES.getMessage("MSG_NO_FEATURES_FOUND"));
@@ -428,28 +413,27 @@ public class FeatureUtility {
     public void installFeatures() throws InstallException, IOException {
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_RESOLVING"));
         if (fromDir != null) {
-        	map.put("from.repo", fromDir.toString());
+	    map.put(InstallConstants.FROM_REPO, fromDir.toString());
         }
-        map.put("is.install.server.feature", isInstallServerFeature);
-        Collection<String> resolvedFeatures = (Collection<String>) map.get("action.result");
+	map.put(InstallConstants.IS_INSTALL_SERVER_FEATURE, isInstallServerFeature);
+	Collection<String> resolvedFeatures = (Collection<String>) map.get(InstallConstants.ACTION_RESULT);
         checkResolvedFeatures(resolvedFeatures);
-		if (resolvedFeatures.isEmpty()) { // all features are already installed
-			return;
-		}
-
-        boolean upgraded = (boolean) map.get("upgrade.complete");
-        List<String> causedUpgrade = (List<String>) map.get("caused.upgrade");
+	if (resolvedFeatures.isEmpty()) { // all features are already installed
+	    return;
+	}
+	boolean upgraded = (boolean) map.get(InstallConstants.UPGRADE_COMPLETE);
+        List<String> causedUpgrade = (List<String>) map.get(InstallConstants.CAUSED_UPGRADE);
         if (upgraded) {
         	LicenseUpgradeUtility luu = new LicenseUpgradeUtility.LicenseUpgradeUtilityBuilder().setFeatures(featuresToInstall).setAcceptLicense(licenseAccepted).build();
         	boolean isLicenseAccepted = false;
         	try {
             	isLicenseAccepted = luu.handleLicenses(featureFormat(causedUpgrade));
             } catch (InstallException e) {
-            	map.get("cleanup.upgrade"); //cleans up the files we put down during upgrade
+		map.get(InstallConstants.CLEANUP_UPGRADE); // cleans up the files we put down during upgrade
             	throw e;
             }
             if (!isLicenseAccepted) {
-                map.get("cleanup.upgrade"); //cleans up the files we put down during upgrade
+		map.get(InstallConstants.CLEANUP_UPGRADE); // cleans up the files we put down during upgrade
                 throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_LICENSES_NOT_ACCEPTED"));
             } else {
             	luu.handleOLLicense();
@@ -461,7 +445,7 @@ public class FeatureUtility {
         Collection<File> artifacts = fromDir != null ? downloadFeaturesFrom(resolvedFeatures, fromDir) : downloadFeatureEsas((List<String>) resolvedFeatures);
 
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_STARTING_INSTALL"));
-        Collection<String> actionReturnResult = new ArrayList<String>();
+	Collection<String> actionReturnResult = new ArrayList<>();
         List<String> currentReturnResult;
         try {
 
@@ -469,23 +453,23 @@ public class FeatureUtility {
 		double increment = ((progressBar.getMethodIncrement("installFeatures")) / (artifacts.size()));
             	String featureName = extractFeature(esaFile.getName());
                 fine(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_INSTALLING", featureName));
-                map.put("license.accept", true);
-                map.put("action.install", esaFile);
+		map.put(InstallConstants.LICENSE_ACCEPT, true);
+		map.put(InstallConstants.ACTION_INSTALL, esaFile);
                 String ext = featureToExt.get(featureName);
                 if (to != null) {
-                    map.put("to.extension", to);
+		    map.put(InstallConstants.TO_EXTENSION, to);
                     fine("Installing to extension: " + to);
                 }
-                if (ext != null && ext != "") {
-                	map.put("to.extension", ext);
+		if (ext != null && !ext.equals("")) {
+		    map.put(InstallConstants.TO_EXTENSION, ext);
                 	fine("Installing to extension from server.xml: " + ext);
                 }
-                map.get("action.result");
+		map.get(InstallConstants.ACTION_RESULT);
                 
-                if (map.get("action.error.message") != null) {
+		if (map.get(InstallConstants.ACTION_ERROR_MESSAGE) != null) {
                     // error with installation
-                    fine("action.exception.stacktrace: " + map.get("action.error.stacktrace"));
-                    String exceptionMessage = (String) map.get("action.error.message");
+		    fine("action.exception.stacktrace: " + map.get(InstallConstants.ACTION_EXCEPTION_STACKTRACE));
+		    String exceptionMessage = (String) map.get(InstallConstants.ACTION_ERROR_MESSAGE);
                     throw new InstallException(exceptionMessage);
                 } else if ((currentReturnResult = (List<String>) map.get("action.install.result")) != null) {
                     // installation was successful
@@ -500,7 +484,7 @@ public class FeatureUtility {
                         progressBar.manuallyUpdate();
                     }
                 }
-                map.put("to.extension", InstallConstants.TO_USER);
+		map.put(InstallConstants.TO_EXTENSION, InstallConstants.TO_USER);
             }
             info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("TOOL_FEATURES_INSTALLATION_COMPLETED"));
         } finally {
@@ -516,17 +500,17 @@ public class FeatureUtility {
 			return causedUpgrade.get(0) + " and " + causedUpgrade.get(1);
 		}
 		if (causedUpgrade.size() > 2) {
-			String result = "";
+		    StringBuilder result = new StringBuilder();
 			for (String str: causedUpgrade) {
 				if (causedUpgrade.indexOf(str) == 0) {
-					result += causedUpgrade.get(0);
+				    result.append(causedUpgrade.get(0));
 				} else if (causedUpgrade.indexOf(str) < causedUpgrade.size() - 1) {
-					result += ", " + causedUpgrade.get(causedUpgrade.indexOf(str));
+				    result.append(", " + causedUpgrade.get(causedUpgrade.indexOf(str)));
 				} else {
-					result += ", and " + causedUpgrade.get(causedUpgrade.indexOf(str));
+				    result.append(", and " + causedUpgrade.get(causedUpgrade.indexOf(str)));
 				}
 			}
-			return result;
+			return result.toString();
 		}
 		return null;
 	}
@@ -540,16 +524,17 @@ public class FeatureUtility {
      */
     private void checkResolvedFeatures(Collection<String> resolvedFeatures) throws InstallException {
         if (resolvedFeatures == null) {
-            throw new InstallException((String) map.get("action.error.message"));
+	    throw new InstallException((String) map.get(InstallConstants.ACTION_ERROR_MESSAGE));
         } else if (resolvedFeatures.isEmpty()) {
-            String exceptionMessage = (String) map.get("action.error.message");
+	    String exceptionMessage = (String) map.get(InstallConstants.ACTION_ERROR_MESSAGE);
             if (exceptionMessage == null) {
 				if (isInstallServerFeature) {
 					logger.info(InstallLogUtils.Messages.INSTALL_KERNEL_MESSAGES
 							.getMessage("MSG_SERVER_NEW_FEATURES_NOT_REQUIRED"));
 				} else {
 					throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ALREADY_INSTALLED",
-							map.get("features.to.resolve")), InstallException.ALREADY_EXISTS);
+						map.get(InstallConstants.FEATURES_TO_RESOLVE)),
+						InstallException.ALREADY_EXISTS);
 				}
             } else if (exceptionMessage.contains("CWWKF1250I")) {
                 throw new InstallException(exceptionMessage);
@@ -561,19 +546,19 @@ public class FeatureUtility {
     }
 
     private List<File> downloadFeaturesFrom(Collection<String> resolvedFeatures, File fromDir) throws InstallException {
-        map.put("from.repo", fromDir.toString());
+	map.put(InstallConstants.FROM_REPO, fromDir.toString());
         return downloadFeatureEsas(resolvedFeatures);
     }
 
     private List<File> downloadFeatureEsas(Collection<String> resolvedFeatures) throws InstallException {
-        map.put("download.artifact.list", resolvedFeatures);
+	map.put(InstallConstants.DOWNLOAD_ARTIFACT_LIST, resolvedFeatures);
         boolean singleArtifactInstall = false;
-        map.put("download.individual.artifact", singleArtifactInstall);
+	map.put(InstallConstants.DOWNLOAD_INDIVIDUAL_ARTIFACT, singleArtifactInstall);
         
-        List<File> result = (List<File>) map.get("download.result");
-        if (map.get("action.error.message") != null) {
-            fine("action.exception.stacktrace: " + map.get("action.error.stacktrace"));
-            String exceptionMessage = (String) map.get("action.error.message");
+	List<File> result = (List<File>) map.get(InstallConstants.DOWNLOAD_RESULT);
+	if (map.get(InstallConstants.ACTION_ERROR_MESSAGE) != null) {
+	    fine("action.exception.stacktrace: " + map.get(InstallConstants.ACTION_EXCEPTION_STACKTRACE));
+	    String exceptionMessage = (String) map.get(InstallConstants.ACTION_ERROR_MESSAGE);
 	    if (exceptionMessage.contains(CONNECTION_FAILED_ERROR)) {
 		throw new InstallException(exceptionMessage, InstallException.CONNECTION_FAILED);
 	    }
@@ -584,9 +569,9 @@ public class FeatureUtility {
 
 
     public List<String> resolveFeatures(boolean isShortNames) throws InstallException {
-        map.put("download.location", fromDir.toString());
+	map.put(InstallConstants.DOWNLOAD_LOCATION, fromDir.toString());
 
-        List<String> shortNames = new ArrayList<String>();
+	List<String> shortNames = new ArrayList<>();
         if (!isShortNames) {
             info("Preparing assets for installation. This process might take several minutes to complete.");
             info("Resolving features...");
@@ -597,9 +582,9 @@ public class FeatureUtility {
             featuresToInstall.addAll(shortNames);
         }
         if (featuresToInstall != null) {
-            map.put("features.to.resolve", featuresToInstall);
+	    map.put(InstallConstants.FEATURES_TO_RESOLVE, featuresToInstall);
         }
-        List<String> resolvedFeatures = (List<String>) map.get("action.result");
+	List<String> resolvedFeatures = (List<String>) map.get(InstallConstants.ACTION_RESULT);
         checkResolvedFeatures(resolvedFeatures);
         if (!isShortNames) {
             updateProgress(progressBar.getMethodIncrement("resolveArtifact"));
@@ -639,7 +624,7 @@ public class FeatureUtility {
         }
         List<File> jsonFiles = new ArrayList<>();
         if (fromDir != null) {
-            map.put("download.location", fromDir.toString());
+	    map.put(InstallConstants.DOWNLOAD_LOCATION, fromDir.toString());
         }
 
         fine("JSONs required: " + jsonsRequired.toString());
@@ -650,10 +635,10 @@ public class FeatureUtility {
             fine("Could not find all json files from local directories, now downloading from Maven..");
             jsonsRequired.removeAll(foundJsons);
             jsonFiles.addAll(map.getJsonsFromMavenCentral(jsonsRequired));
-            if (map.get("action.error.message") != null) {
+	    if (map.get(InstallConstants.ACTION_ERROR_MESSAGE) != null) {
                 // error with installation
-                fine("action.exception.stacktrace: " + map.get("action.error.stacktrace"));
-                String exceptionMessage = (String) map.get("action.error.message");
+		fine("action.exception.stacktrace: " + map.get(InstallConstants.ACTION_EXCEPTION_STACKTRACE));
+		String exceptionMessage = (String) map.get(InstallConstants.ACTION_ERROR_MESSAGE);
                 throw new InstallException(exceptionMessage);
             }
         }
@@ -666,11 +651,11 @@ public class FeatureUtility {
      * @throws IOException
      */
     private void cleanUp() throws IOException {
-        String tempStr = (String) map.get("cleanup.temp.location");
-        Boolean cleanupNeeded = (Boolean) map.get("cleanup.needed");
+	String tempStr = (String) map.get(InstallConstants.CLEANUP_TEMP_LOCATION);
+	Boolean cleanupNeeded = (Boolean) map.get(InstallConstants.CLEANUP_NEEDED);
         boolean deleted = true;
 
-        if (cleanupNeeded != null && cleanupNeeded) { //change this to a map.get("cleanup.needed")
+	if (cleanupNeeded != null && cleanupNeeded) { // change this to a map.get(InstallConstants.CLEANUP_NEEDED)
             File temp = new File(tempStr);
             fine("Cleaning directory: " +tempStr);
             deleted = deleteFolder(temp);
@@ -714,10 +699,7 @@ public class FeatureUtility {
     }
 
     private File getM2Cache() { // check for maven_home specified mirror stuff
-        // File m2Folder = getM2Path().toFile();
-
         return Paths.get(System.getProperty("user.home"), ".m2", "repository", "").toFile();
-
     }
 
     private void updateProgress(double increment) {
@@ -727,14 +709,7 @@ public class FeatureUtility {
 
     // log message types
     private void info(String msg) {
-//        if (isWindows) {
-//            logger.info(msg);
-//        } else {
-//            progressBar.clearProgress(); // Erase line content
-            logger.info(msg);
-//            progressBar.display();
-//        }
-
+	logger.info(msg);
     }
 
     private void fine(String msg) {
@@ -795,8 +770,8 @@ public class FeatureUtility {
 
     }
 
-    public static List<String> getMissingArtifactsFromFolder(List<String> artifacts, String location, boolean isShortName) throws IOException, InstallException{
-        List<String> result = new ArrayList<String>();
+    public List<String> getMissingArtifactsFromFolder(List<String> artifacts, String location, boolean isShortName) {
+	List<String> result = new ArrayList<>();
 
         for (String id: artifacts) {
             Path featurePath;
@@ -808,7 +783,7 @@ public class FeatureUtility {
                     continue;
                 }
                 String featureEsa = id + "-" + openLibertyVersion + ".esa";
-                featurePath = Paths.get(groupDir.getAbsolutePath().toString(), id, openLibertyVersion, featureEsa);
+		featurePath = Paths.get(groupDir.getAbsolutePath(), id, openLibertyVersion, featureEsa);
             } else {
                 String groupId = id.split(":")[0];
                 String featureName = id.split(":")[1];
@@ -818,7 +793,7 @@ public class FeatureUtility {
                     continue;
                 }
                 String featureEsa = featureName + "-" + openLibertyVersion + ".esa";
-                featurePath = Paths.get(groupDir.getAbsolutePath().toString(), featureName, openLibertyVersion, featureEsa);
+		featurePath = Paths.get(groupDir.getAbsolutePath(), featureName, openLibertyVersion, featureEsa);
             }
             if (!Files.isRegularFile(featurePath)) {
                 result.add(id);
@@ -828,7 +803,7 @@ public class FeatureUtility {
     }
 
     public List<String> getMavenCoords(List<String> artifactShortNames) {
-        List<String> result = new ArrayList<String>();
+	List<String> result = new ArrayList<>();
         for (String shortName: artifactShortNames) {
             result.add(OPEN_LIBERTY_PRODUCT_ID + ".feature:" + shortName + ":" + openLibertyVersion);
         }
