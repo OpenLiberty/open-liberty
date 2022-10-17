@@ -43,7 +43,7 @@
     </dataSource>
   
     <authData id="auth1" user="dbuser" password="dbpass" fat.modify="true"/>
-    <authData id="auth99" user="bad" password="badpass"/>
+    <authData id="auth99" user="bad" password="badpass" fat.modify="false"/>
   
     <application location="transaction.war">
         <classloader commonLibraryRef="AnonymousJDBCLib"/>

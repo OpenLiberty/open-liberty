@@ -18,7 +18,6 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.config.AuthData;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
-import com.ibm.websphere.simplicity.config.AuthDataProperties;
 import com.ibm.websphere.simplicity.config.DataSource;
 import com.ibm.websphere.simplicity.config.DataSourceProperties;
 import com.ibm.websphere.simplicity.config.DatabaseStore;
@@ -128,7 +127,7 @@ public final class DatabaseContainerUtil {
         Transaction tran = cloneConfig.getTransaction();
         for (DataSource ds : tran.getDataSources())
             if (ds.getFatModify() != null && ds.getFatModify().equals("true"))
-                datasources.add(ds);
+                datasources.put(ds.getId(), ds);
 
         return datasources;
     }
@@ -142,7 +141,7 @@ public final class DatabaseContainerUtil {
 
         //Get general authDatas
         for (AuthData ad : cloneConfig.getAuthDataElements())
-            if (ad.getFatModify() != null && ad.getFatModify().equals("true"))
+            if (ad.getFatModify() != null) // && ad.getFatModify().equals("true"))
                 authDatas.put(ad.getId(), ad);
 
         //Get authDatas that are nested under datasources
@@ -151,7 +150,7 @@ public final class DatabaseContainerUtil {
             ads.addAll(ds.getContainerAuthDatas());
             ads.addAll(ds.getRecoveryAuthDatas());
             for (AuthData ad : ads)
-                if (ad.getFatModify() != null && ad.getFatModify().equals("true"))
+                if (ad.getFatModify() != null) // && ad.getFatModify().equals("true"))
                     authDatas.put(ad.getId(), ad);
         }
 
@@ -169,18 +168,8 @@ public final class DatabaseContainerUtil {
 
         //Create general properties
         DataSourceProperties props = new Properties();
-
-        for (DataSource ds : datasources) {
-            Log.info(c, "modifyDataSourcePropsGeneric", "FOUND: DataSource to be checked for user/password.  ID: " + ds.getId());
-            if (ds.getContainerAuthDataRef() != null) {
-                Log.info(c, "modifyDataSourcePropsGeneric", "found containerAuthDataRef, don't set user or password");
-            } else {
-                Log.info(c, "modifyDataSourcePropsGeneric", "Set user and password");
-                props.setUser(cont.getUsername());
-                props.setPassword(cont.getPassword());
-            }
-        }
-
+        props.setUser(cont.getUsername());
+        props.setPassword(cont.getPassword());
         props.setServerName(cont.getHost());
         props.setPortNumber(Integer.toString(cont.getFirstMappedPort()));
         try {
@@ -220,16 +209,20 @@ public final class DatabaseContainerUtil {
             switch (authLoc) {
                 case inAuthDataRef:
                     assertAuthDataWillBeModified(entry.getKey(), authLoc.id, authDatas);
+                    Log.info(c, "setupDataSourceProperties", "replace inAuthDataRef");
                     entry.getValue().replaceDatasourceProperties(noAuthProps);
                     break;
                 case inEmbeddedAuthData:
                     assertAuthDataWillBeModified(entry.getKey(), authLoc.id, authDatas);
+                    Log.info(c, "setupDataSourceProperties", "replace inEmbeddedAuthData");
                     entry.getValue().replaceDatasourceProperties(noAuthProps);
                     break;
                 case inProperties:
+                    Log.info(c, "setupDataSourceProperties", "replace inProperties");
                     entry.getValue().replaceDatasourceProperties(props);
                     break;
                 case none:
+                    Log.info(c, "setupDataSourceProperties", "replace none");
                     Log.warning(c,
                                 "The datasource (" + entry.getKey()
                                    + ") did not have username/password set in properties element, ContainerAuthData element, or ContainerAuthDataRef attribute. "
@@ -238,6 +231,7 @@ public final class DatabaseContainerUtil {
                     break;
                 default:
                     //Replace default properties
+                    Log.info(c, "setupDataSourceProperties", "replace default");
                     entry.getValue().replaceDatasourceProperties(props);
                     break;
 
@@ -247,36 +241,13 @@ public final class DatabaseContainerUtil {
         for (Map.Entry<String, AuthData> entry : authDatas.entrySet()) {
             Log.info(c, "setupDataSourceProperties", "FOUND: AuthData to be enlisted in database rotation.  ID: " + entry.getKey());
             //Replace derby auth data
-            entry.getValue().setUser(cont.getUsername());
-            entry.getValue().setPassword(cont.getPassword());
-        }
-//NEW
-        //Get a list of auth stanzas that need to be updated
-        List<AuthData> auths = new ArrayList<>();
-        //Create auth properties
-        AuthDataProperties authProps = new AuthDataProperties();
-
-        //Get general datasources
-        for (DataSource ds : cloneConfig.getDataSources())
-            if (ds.getFatModify() != null && ds.getFatModify().equals("true"))
-                datasources.add(ds);
-
-        //Get general auth stanzas
-        for (AuthData auth : cloneConfig.getAuthDataElements()) {
-            if (auth.getFatModify() != null && auth.getFatModify().equals("true")) {
-                String uName = cont.getUsername();
-                Log.info(c, "modifyDataSourcePropsGeneric", "Set user in Auth to " + uName);
-                authProps.setUser(uName);
-
-                String pWord = cont.getPassword();
-                Log.info(c, "modifyDataSourcePropsGeneric", "Set password in Auth to " + pWord);
-                authProps.setPassword(pWord);
-                //Replace derby properties
-                auth.updateAuthData(uName, pWord);
+            if (entry.getValue().getFatModify().equals("true")) {
+                Log.info(c, "setupDataSourceProperties", "fat.modify is true, reset user/password");
+                entry.getValue().setUser(cont.getUsername());
+                entry.getValue().setPassword(cont.getPassword());
             }
         }
 
-// eof NEW
         //Update config
         serv.updateServerConfiguration(cloneConfig);
     }
@@ -292,18 +263,8 @@ public final class DatabaseContainerUtil {
 
         //Create properties based on type
         DataSourceProperties props = type.getDataSourceProps();
-
-        for (DataSource ds : datasources) {
-            Log.info(c, "modifyDataSourcePropsForDatabase", "FOUND: DataSource to be checked for user/password.  ID: " + ds.getId());
-            if (ds.getContainerAuthDataRef() != null) {
-                Log.info(c, "modifyDataSourcePropsForDatabase", "found containerAuthDataRef, don't set user or password");
-            } else {
-                Log.info(c, "modifyDataSourcePropsForDatabase", "Set user and password");
-                props.setUser(cont.getUsername());
-                props.setPassword(cont.getPassword());
-            }
-        }
-
+        props.setUser(cont.getUsername());
+        props.setPassword(cont.getPassword());
         props.setServerName(cont.getHost());
         props.setPortNumber(Integer.toString(cont.getFirstMappedPort()));
         try {
@@ -359,8 +320,11 @@ public final class DatabaseContainerUtil {
         for (Map.Entry<String, AuthData> entry : authDatas.entrySet()) {
             Log.info(c, "setupDataSourceProperties", "FOUND: AuthData to be enlisted in database rotation.  ID: " + entry.getKey());
             //Replace derby auth data
-            entry.getValue().setUser(cont.getUsername());
-            entry.getValue().setPassword(cont.getPassword());
+            if (entry.getValue().getFatModify().equals("true")) {
+                Log.info(c, "setupDataSourceProperties", "fat.modify is true, reset user/password");
+                entry.getValue().setUser(cont.getUsername());
+                entry.getValue().setPassword(cont.getPassword());
+            }
         }
 
         //Update config
