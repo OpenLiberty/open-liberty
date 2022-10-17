@@ -15,13 +15,13 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import io.openliberty.security.jakartasec.fat.tests.BasicOIDCAnnotationTests;
 import io.openliberty.security.jakartasec.fat.tests.InjectionScopedTests;
-import io.openliberty.security.jakartasec.fat.tests.SimplestAnnotatedTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                SimplestAnnotatedTest.class,
+                BasicOIDCAnnotationTests.class,
                 InjectionScopedTests.class
 })
 public class FATSuite {

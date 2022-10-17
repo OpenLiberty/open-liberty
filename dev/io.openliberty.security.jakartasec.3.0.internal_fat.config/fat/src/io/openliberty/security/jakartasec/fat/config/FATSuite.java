@@ -16,6 +16,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationClaimsDefinitionTests;
+import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationELValuesOverrideTests;
+import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationELValuesOverrideWithoutHttpSessionTests;
 import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationTests;
 
 @RunWith(Suite.class)
@@ -23,8 +25,8 @@ import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationTests;
                 AlwaysPassesTest.class,
                 ConfigurationTests.class,
                 ConfigurationClaimsDefinitionTests.class,
-//                ConfigurationELValuesOverrideTests.class,
-//                ConfigurationELValuesOverrideWithoutHttpSessionTests.class
+                ConfigurationELValuesOverrideTests.class,
+                ConfigurationELValuesOverrideWithoutHttpSessionTests.class
 })
 public class FATSuite {
 

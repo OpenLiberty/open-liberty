@@ -1,0 +1,38 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="Jakarta Security 3.0 Test Server">
+
+<!-- cdi12 enableImplicitBeanArchives="false"/ -->
+
+ 	<include location="${shared.config.dir}/rp_features.xml" />
+ 	<include location="${shared.config.dir}/rp_fatTestPorts.xml" />
+ 	<include location="${shared.config.dir}/allAlgSSLSettings.xml" />
+ 	<include location="${shared.config.dir}/RPMisc.xml" />
+ 
+ 	<sslDefault sslRef="ssl_allSigAlg" />
+ 	
+ <!-- create an oidc client config that wouldn't work with the OP config that we have -->
+ <!-- with no filter, this client should be used for all apps that are not otherwise protected - this 
+ 		config would show that we didn't use the annotation and tried to use the server specified oidc client config -->
+ 	        <openidConnectClient
+                id="client_99"
+                scope="openid profile"
+                clientId="client_99"
+                clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+                sharedKey="secret"
+                mapIdentityToRegistryUser="true"
+                httpsRequired="false"
+                redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+                discoveryEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP1/.well-known/openid-configuration"
+        >
+        </openidConnectClient>
+
+</server>

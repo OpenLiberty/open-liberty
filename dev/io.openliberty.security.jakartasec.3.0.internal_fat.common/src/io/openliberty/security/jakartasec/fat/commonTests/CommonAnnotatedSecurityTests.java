@@ -59,6 +59,8 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
     protected static String rpHttpBase = null;
     protected static String rpHttpsBase = null;
 
+    protected static final String withOidcClientConfig = "_withOidcClientConfig";
+
     protected static ResponseValues rspValues;
 
     public static RepeatTests createTokenTypeRepeats() {
@@ -103,11 +105,24 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
 
     public static LibertyServer setTokenTypeInBootstrap(LibertyServer opServer, LibertyServer rpJwtServer, LibertyServer rpOpaqueServer) throws Exception {
 
+        return setTokenTypeInBootstrap(opServer, rpJwtServer, rpOpaqueServer, null, null);
+
+    }
+
+    public static LibertyServer setTokenTypeInBootstrap(LibertyServer opServer, LibertyServer rpJwtServer, LibertyServer rpOpaqueServer, LibertyServer rpJwtOidcClServer,
+                                                        LibertyServer rpOpaqueOidcClServer) throws Exception {
+
         if (RepeatTestFilter.getRepeatActionsAsString().contains(Constants.JWT_TOKEN_FORMAT)) {
             bootstrapUtils.writeBootstrapProperty(opServer, "opTokenFormat", "jwt");
+            if ((rpJwtOidcClServer != null) && (RepeatTestFilter.getRepeatActionsAsString().contains(withOidcClientConfig))) {
+                return rpJwtOidcClServer;
+            }
             return rpJwtServer;
         } else {
             bootstrapUtils.writeBootstrapProperty(opServer, "opTokenFormat", "opaque");
+            if ((rpOpaqueOidcClServer != null) && (RepeatTestFilter.getRepeatActionsAsString().contains(withOidcClientConfig))) {
+                return rpOpaqueOidcClServer;
+            }
             return rpOpaqueServer;
         }
         // not testing with mpJwt at the moment

@@ -31,20 +31,22 @@ import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurityTests;
 import io.openliberty.security.jakartasec.fat.configs.TestConfigMaps;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
+import io.openliberty.security.jakartasec.fat.utils.MessageConstants;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 
 /**
  * Tests appSecurity-5.0
  */
 @RunWith(FATRunner.class)
-public class SimplestAnnotatedTest extends CommonAnnotatedSecurityTests {
+public class BasicOIDCAnnotationTests extends CommonAnnotatedSecurityTests {
 
-    protected static Class<?> thisClass = SimplestAnnotatedTest.class;
+    protected static Class<?> thisClass = BasicOIDCAnnotationTests.class;
 
     protected static ShrinkWrapHelpers swh = null;
 
@@ -54,11 +56,17 @@ public class SimplestAnnotatedTest extends CommonAnnotatedSecurityTests {
     public static LibertyServer rpJwtServer;
     @Server("jakartasec-3.0_fat.opaque.rp")
     public static LibertyServer rpOpaqueServer;
+    @Server("jakartasec-3.0_fat.jwt.rp.withOidcClientConfig")
+    public static LibertyServer rpJwtOidcServer;
+    @Server("jakartasec-3.0_fat.opaque.rp.withOidcClientConfig")
+    public static LibertyServer rpOpaqueOidcServer;
 
     public static LibertyServer rpServer;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new SecurityTestRepeatAction(Constants.JWT_TOKEN_FORMAT)).andWith(new SecurityTestRepeatAction(Constants.OPAQUE_TOKEN_FORMAT));
+    public static RepeatTests r = RepeatTests.with(new SecurityTestRepeatAction(Constants.JWT_TOKEN_FORMAT)).andWith(new SecurityTestRepeatAction(Constants.OPAQUE_TOKEN_FORMAT)).andWith(new SecurityTestRepeatAction(Constants.JWT_TOKEN_FORMAT
+                                                                                                                                                                                                                       + withOidcClientConfig)).andWith(new SecurityTestRepeatAction(Constants.OPAQUE_TOKEN_FORMAT
+                                                                                                                                                                                                                                                                                     + withOidcClientConfig));
 //    public static RepeatTests r = RepeatTests.with(new SecurityTestRepeatAction(Constants.JWT_TOKEN_FORMAT));
 
     @BeforeClass
@@ -66,7 +74,7 @@ public class SimplestAnnotatedTest extends CommonAnnotatedSecurityTests {
         Log.info(thisClass, "setUp", "starting setup");
 
         // write property that is used to configure the OP to generate JWT or Opaque tokens
-        rpServer = setTokenTypeInBootstrap(opServer, rpJwtServer, rpOpaqueServer);
+        rpServer = setTokenTypeInBootstrap(opServer, rpJwtServer, rpOpaqueServer, rpJwtOidcServer, rpOpaqueOidcServer);
 
         // Add servers to server trackers that will be used to clean servers up and prevent servers
         // from being restored at the end of each test (so far, the tests are not reconfiguring the servers)
@@ -78,7 +86,11 @@ public class SimplestAnnotatedTest extends CommonAnnotatedSecurityTests {
         opHttpBase = "https://localhost:" + opServer.getBvtPort();
         opHttpsBase = "https://localhost:" + opServer.getBvtSecurePort();
 
-        rpServer.startServerUsingExpandedConfiguration("server_orig.xml", waitForMsgs);
+        if (RepeatTestFilter.getRepeatActionsAsString().contains(withOidcClientConfig)) {
+            rpServer.startServerUsingExpandedConfiguration("server_withOidcClientConfig.xml", waitForMsgs);
+        } else {
+            rpServer.startServerUsingExpandedConfiguration("server_orig.xml", waitForMsgs);
+        }
         SecurityFatHttpUtils.saveServerPorts(rpServer, Constants.BVT_SERVER_2_PORT_NAME_ROOT);
 
         rpHttpBase = "https://localhost:" + rpServer.getBvtPort();
@@ -119,7 +131,7 @@ public class SimplestAnnotatedTest extends CommonAnnotatedSecurityTests {
      * @throws Exception
      */
     @Test
-    public void testSimplestAnnotatedServlet_unprotected() throws Exception {
+    public void BasicOIDCAnnotationTests_unprotected() throws Exception {
 
         WebClient webClient = getAndSaveWebClient();
 
@@ -136,7 +148,7 @@ public class SimplestAnnotatedTest extends CommonAnnotatedSecurityTests {
     }
 
     @Test
-    public void testSimplestAnnotatedServlet_withoutEL() throws Exception {
+    public void BasicOIDCAnnotationTests_withoutEL() throws Exception {
 
         // the test app has the OP secure port hard coded (since it doesn't use expression language vars
         // if we end up using a different port, we'll need to skip this test
@@ -146,14 +158,14 @@ public class SimplestAnnotatedTest extends CommonAnnotatedSecurityTests {
     }
 
     @Test
-    public void testSimplestAnnotatedServlet_WithEL() throws Exception {
+    public void BasicOIDCAnnotationTests_WithEL() throws Exception {
 
         runGoodEndToEndTest("SimplestAnnotatedWithEL", "OidcAnnotatedServletWithEL");
 
     }
 
     @Test
-    public void testSimplestAnnotatedServlet_useSameWebClientMultipleRequests() throws Exception {
+    public void BasicOIDCAnnotationTests_useSameWebClientMultipleRequests() throws Exception {
 
         WebClient webClient = getAndSaveWebClient();
 
@@ -172,7 +184,7 @@ public class SimplestAnnotatedTest extends CommonAnnotatedSecurityTests {
 
     }
 
-    public void testSimplestAnnotatedServlet_ServletUsesCallbackFromAnotherApp() throws Exception {
+    public void BasicOIDCAnnotationTests_ServletUsesCallbackFromAnotherApp() throws Exception {
 
         // TODO Placeholder for new test - need a new app and need to determine what the behavior should be
     }
@@ -184,7 +196,7 @@ public class SimplestAnnotatedTest extends CommonAnnotatedSecurityTests {
      * @throws Exception
      */
     @Test
-    public void testSimplestAnnotatedServlet_multipleDifferentUsers() throws Exception {
+    public void BasicOIDCAnnotationTests_multipleDifferentUsers() throws Exception {
 
         // the test app has the OP secure port hard coded (since it doesn't use expression language vars
         // if we end up using a different port, we'll need to skip this test
@@ -207,7 +219,7 @@ public class SimplestAnnotatedTest extends CommonAnnotatedSecurityTests {
      * @throws Exception
      */
     @Test
-    public void testSimplestAnnotatedServlet_multipleSameUser() throws Exception {
+    public void BasicOIDCAnnotationTests_multipleSameUser() throws Exception {
 
         // the test app has the OP secure port hard coded (since it doesn't use expression language vars
         // if we end up using a different port, we'll need to skip this test
@@ -223,7 +235,7 @@ public class SimplestAnnotatedTest extends CommonAnnotatedSecurityTests {
     }
 
     @Test
-    public void testSimplestAnnotatedServlet_passParmsToServlet() throws Exception {
+    public void BasicOIDCAnnotationTests_passParmsToServlet() throws Exception {
 
         WebClient webClient = getAndSaveWebClient();
 
@@ -242,34 +254,34 @@ public class SimplestAnnotatedTest extends CommonAnnotatedSecurityTests {
      * @throws Exception
      */
     // TODO - enable once the runtime issues message CWWKS1925E @Test
-    public void testSimplestAnnotatedServlet_multiple_OpenIdAuthenticationMechanismDefinition_annotations_inTheSameWar_similar() throws Exception {
+    public void BasicOIDCAnnotationTests_multiple_OpenIdAuthenticationMechanismDefinition_annotations_inTheSameWar_similar() throws Exception {
 
         swh.defaultDropinApp(rpServer, "MultipleServletsSimilarAnnotations" + ".war", "oidc.client.similarAnnotations.servlets", "oidc.client.base.*");
 
         Expectations deployExpectations = new Expectations();
-        deployExpectations.addExpectation(new ServerMessageExpectation(rpServer, "someMessage", "Message log did not contain an error indicating that the War contained multiple \"@OpenIdAuthenticationMechanismDefinition\" annotations."));
+        deployExpectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1925E_MULTIPLE_ANNOTATIONS, "Message log did not contain an error indicating that the War contained multiple \"@OpenIdAuthenticationMechanismDefinition\" annotations."));
         validationUtils.validateResult(deployExpectations);
 
     }
 
     // TODO - enable once the runtime issues message CWWKS1925E @Test
-    public void testSimplestAnnotatedServlet_multiple_OpenIdAuthenticationMechanismDefinition_annotations_inTheSameWar_diffProvider() throws Exception {
+    public void BasicOIDCAnnotationTests_multiple_OpenIdAuthenticationMechanismDefinition_annotations_inTheSameWar_diffProvider() throws Exception {
 
         swh.defaultDropinApp(rpServer, "MultipleServletsDifferentProviders" + ".war", "oidc.client.differentProviders.servlets", "oidc.client.base.*");
 
         Expectations deployExpectations = new Expectations();
-        deployExpectations.addExpectation(new ServerMessageExpectation(rpServer, "someMessage", "Message log did not contain an error indicating that the War contained multiple \"@OpenIdAuthenticationMechanismDefinition\" annotations."));
+        deployExpectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1925E_MULTIPLE_ANNOTATIONS, "Message log did not contain an error indicating that the War contained multiple \"@OpenIdAuthenticationMechanismDefinition\" annotations."));
         validationUtils.validateResult(deployExpectations);
 
     }
 
     // TODO - enable once the runtime issues message CWWKS1925E @Test
-    public void testSimplestAnnotatedServlet_multiple_OpenIdAuthenticationMechanismDefinition_annotations_inTheSameWar_diffRoke() throws Exception {
+    public void BasicOIDCAnnotationTests_multiple_OpenIdAuthenticationMechanismDefinition_annotations_inTheSameWar_diffRoke() throws Exception {
 
         swh.defaultDropinApp(rpServer, "MultipleServletsDifferentRoles" + ".war", "oidc.client.differentRoles.servlets", "oidc.client.base.*");
 
         Expectations deployExpectations = new Expectations();
-        deployExpectations.addExpectation(new ServerMessageExpectation(rpServer, "someMessage", "Message log did not contain an error indicating that the War contained multiple \"@OpenIdAuthenticationMechanismDefinition\" annotations."));
+        deployExpectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1925E_MULTIPLE_ANNOTATIONS, "Message log did not contain an error indicating that the War contained multiple \"@OpenIdAuthenticationMechanismDefinition\" annotations."));
         validationUtils.validateResult(deployExpectations);
 
     }

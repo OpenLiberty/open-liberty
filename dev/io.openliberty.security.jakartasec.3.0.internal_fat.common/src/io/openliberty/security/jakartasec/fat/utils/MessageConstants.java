@@ -23,6 +23,8 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
 
     public static final String CWWKS1652A_AUTH_SEND_FAILURE = "CWWKS1652A";
 
+    public static final String CWWKS1925E_MULTIPLE_ANNOTATIONS = "CWWKS1925E";
+
     public static final String CWWKS2104I_USER_NOT_IN_STATE = "CWWKS2104I";
 
     public static final String CWWKS2400E_AUTHORIZATION_REQ_FAILED = "CWWKS2400E";
