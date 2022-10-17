@@ -19,7 +19,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -31,7 +30,6 @@ import componenttest.topology.utils.tck.TCKUtils;
  *
  */
 //@Mode(TestMode.QUARANTINE)
-@MaximumJavaLevel(javaLevel = 18)
 @RunWith(FATRunner.class)
 public class Mpjwt12TCKLauncher_aud_noenv {
 

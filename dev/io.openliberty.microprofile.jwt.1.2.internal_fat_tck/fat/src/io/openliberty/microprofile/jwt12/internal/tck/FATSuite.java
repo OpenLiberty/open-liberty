@@ -14,8 +14,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.annotation.MaximumJavaLevel;
-
 @RunWith(Suite.class)
 @SuiteClasses({
                 Mpjwt12TCKLauncher_aud_env.class,
@@ -26,6 +24,5 @@ import componenttest.annotation.MaximumJavaLevel;
                 DummyForQuarantine.class
 })
 
-@MaximumJavaLevel(javaLevel = 18)
 public class FATSuite {
 }
