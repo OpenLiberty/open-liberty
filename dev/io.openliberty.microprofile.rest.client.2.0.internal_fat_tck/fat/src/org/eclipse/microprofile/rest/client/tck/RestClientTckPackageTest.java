@@ -27,7 +27,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
-import componenttest.topology.utils.tck.TCKUtils;
+import componenttest.topology.utils.tck.TCKRunner;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -69,8 +69,7 @@ public class RestClientTckPackageTest {
         String testName = this.getClass() + ":testRestClient20Tck";
         Type type = Type.MICROPROFILE;
         String specName = "Rest Client";
-        String specVersion = "2.0";
-        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion);
+        TCKRunner.runTCK(server, bucketName, testName, type, specName);
     }
 
 }

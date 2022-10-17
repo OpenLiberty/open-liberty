@@ -25,7 +25,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
-import componenttest.topology.utils.tck.TCKUtils;
+import componenttest.topology.utils.tck.TCKRunner;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -61,8 +61,7 @@ public class Health31TCKLauncher {
         String testName = this.getClass() + ":launchHealth31Tck";
         Type type = Type.MICROPROFILE;
         String specName = "Health";
-        String specVersion = "3.1";
-        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion, additionalProps);
+        TCKRunner.runTCK(server, bucketName, testName, type, specName, additionalProps);
     }
 
 }

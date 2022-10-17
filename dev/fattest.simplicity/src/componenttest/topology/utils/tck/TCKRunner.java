@@ -10,17 +10,12 @@
  *******************************************************************************/
 package componenttest.topology.utils.tck;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -31,9 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Scanner;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,6 +57,7 @@ import com.ibm.ws.fat.util.Props;
 
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.tck.TCKResultsInfo.TCKJarInfo;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import junit.framework.AssertionFailedError;
 
@@ -71,9 +65,9 @@ import junit.framework.AssertionFailedError;
  * MvnUtils allows an arquillian based MicroProfile TCK suite to be launched via Maven. The results will then be converted to junit format and presented
  * as if they were the output of a normal FAT project.
  */
-public class TCKUtils {
+public class TCKRunner {
 
-    private static final Class<TCKUtils> c = TCKUtils.class;
+    private static final Class<TCKRunner> c = TCKRunner.class;
 
     private static final String DEFAULT_FAILSAFE_UNDEPLOYMENT = "true";
     private static final String DEFAULT_APP_DEPLOY_TIMEOUT = "180";
@@ -88,14 +82,12 @@ public class TCKUtils {
     private static final String RELATIVE_TCK_RUNNER = "publish/tckRunner";
     private static final String MVN_CLEAN = "clean";
     private static final String MVN_TEST = "test";
-    private static final String MVN_INSTALL = "install";
     private static final String MVN_DEPENDENCY = "dependency:list";
 
     private static final String SUREFIRE_REPORTS = "surefire-reports";
     private static final String TESTNG_REPORTS = SUREFIRE_REPORTS + "/junitreports";
 
     private static final String MVN_TEST_OUTPUT_FILENAME_PREFIX = MVN_FILENAME_PREFIX + MVN_TEST + "_";
-    private static final String MVN_INSTALL_OUTPUT_FILENAME_PREFIX = MVN_FILENAME_PREFIX + MVN_INSTALL + "_";
     private static final String MVN_TARGET_FOLDER_PREFIX = "tck_";
 
     private final String bucketName;
@@ -104,21 +96,20 @@ public class TCKUtils {
     private final String suiteFileName;
     private final Map<String, String> additionalMvnProps;
     private final boolean isTestNG;
-
-    private final TCKResultsInfo resultsInfo;
+    private final Type type;
+    private final String specName;
 
     /**
      * runs "mvn clean test" in the tck folder
      *
-     * @param server      the liberty server which should be used to run the TCK
-     * @param bucketName  the name of the test project
-     * @param testName    the name of the method that's being used to launch the TCK
-     * @param type        the type of TCK (either MICROPROFILE or JAKARTA)
-     * @param specName    the formal name for the specification being tested
-     * @param specVersion the full version of the specification being tested
+     * @param server     the liberty server which should be used to run the TCK
+     * @param bucketName the name of the test project
+     * @param testName   the name of the method that's being used to launch the TCK
+     * @param type       the type of TCK (either MICROPROFILE or JAKARTA)
+     * @param specName   the formal name for the specification being tested
      */
-    public static int runTCKMvnCmd(LibertyServer server, String bucketName, String testName, Type type, String specName, String specVersion) throws Exception {
-        return runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion, DEFAULT_SUITE_FILENAME, Collections.<String, String> emptyMap());
+    public static void runTCK(LibertyServer server, String bucketName, String testName, Type type, String specName) throws Exception {
+        runTCK(server, bucketName, testName, type, specName, DEFAULT_SUITE_FILENAME, Collections.<String, String> emptyMap());
     }
 
     /**
@@ -129,12 +120,11 @@ public class TCKUtils {
      * @param testName        the name of the method that's being used to launch the TCK
      * @param type            the type of TCK (either MICROPROFILE or JAKARTA)
      * @param specName        the formal name for the specification being tested
-     * @param specVersion     the full version of the specification being tested
      * @param additionalProps java properties to set when running the mvn command
      */
-    public static int runTCKMvnCmd(LibertyServer server, String bucketName, String testName, Type type, String specName, String specVersion,
-                                   Map<String, String> additionalProps) throws Exception {
-        return runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion, DEFAULT_SUITE_FILENAME, additionalProps);
+    public static void runTCK(LibertyServer server, String bucketName, String testName, Type type, String specName,
+                              Map<String, String> additionalProps) throws Exception {
+        runTCK(server, bucketName, testName, type, specName, DEFAULT_SUITE_FILENAME, additionalProps);
     }
 
     /**
@@ -145,16 +135,15 @@ public class TCKUtils {
      * @param  testName        the name of the method that's being used to launch the TCK
      * @param  type            the type of TCK (either MICROPROFILE or JAKARTA)
      * @param  specName        the formal name for the specification being tested
-     * @param  specVersion     the full version of the specification being tested
      * @param  suiteFileName   the name of the suite xml file
      * @param  additionalProps java properties to set when running the mvn command
      * @param  versionedJars   A set of versioned jars
      * @return                 the integer return code from the mvn command. Anything other than 0 should be regarded as a failure.
      * @throws Exception       occurs if anything goes wrong in setting up and running the mvn command.
      */
-    public static int runTCKMvnCmd(LibertyServer server, String bucketName, String testName, Type type, String specName, String specVersion,
-                                   String suiteFileName) throws Exception {
-        return runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion, suiteFileName, Collections.<String, String> emptyMap());
+    public static void runTCK(LibertyServer server, String bucketName, String testName, Type type, String specName,
+                              String suiteFileName) throws Exception {
+        runTCK(server, bucketName, testName, type, specName, suiteFileName, Collections.<String, String> emptyMap());
     }
 
     /**
@@ -165,18 +154,15 @@ public class TCKUtils {
      * @param  testName        the name of the method that's being used to launch the TCK
      * @param  type            the type of TCK (either MICROPROFILE or JAKARTA)
      * @param  specName        the formal name for the specification being tested
-     * @param  specVersion     the full version of the specification being tested
      * @param  suiteFileName   the name of the suite xml file
      * @param  additionalProps java properties to set when running the mvn command
      * @return                 the integer return code from the mvn command. Anything other than 0 should be regarded as a failure.
      * @throws Exception       occurs if anything goes wrong in setting up and running the mvn command.
      */
-    public static int runTCKMvnCmd(LibertyServer server, String bucketName, String testName, Type type, String specName, String specVersion, String suiteFileName,
-                                   Map<String, String> additionalProps) throws Exception {
-        TCKUtils mvn = new TCKUtils(server, bucketName, testName, type, specName, specVersion, suiteFileName, additionalProps);
-        int result = mvn.runCleanTest();
-        assertEquals("TCK Failed: " + bucketName + ":" + testName, 0, result);
-        return result;
+    public static void runTCK(LibertyServer server, String bucketName, String testName, Type type, String specName, String suiteFileName,
+                              Map<String, String> additionalProps) throws Exception {
+        TCKRunner mvn = new TCKRunner(server, bucketName, testName, type, specName, suiteFileName, additionalProps);
+        mvn.runTCK();
     }
 
     /**
@@ -187,20 +173,54 @@ public class TCKUtils {
      * @param testName        the name of the method that's being used to launch the TCK
      * @param type            the type of TCK (either MICROPROFILE or JAKARTA)
      * @param specName        the formal name for the specification being tested
-     * @param specVersion     the full version of the specification being tested
      * @param suiteFileName   the name of the suite xml file
      * @param additionalProps java properties to set when running the mvn command
      */
-    private TCKUtils(LibertyServer server, String bucketName, String testName, Type type, String specName, String specVersion, String suiteFileName,
-                     Map<String, String> additionalMvnProps) {
+    private TCKRunner(LibertyServer server, String bucketName, String testName, Type type, String specName, String suiteFileName,
+                      Map<String, String> additionalMvnProps) {
         this.server = server;
         this.suiteFileName = suiteFileName;
         this.bucketName = bucketName;
         this.testName = testName;
-        this.resultsInfo = new TCKResultsInfo(type, specName, specVersion, server.getOpenLibertyVersion());
+        this.type = type;
+        this.specName = specName;
         this.additionalMvnProps = additionalMvnProps;
         this.isTestNG = suiteFileName != null;
 
+    }
+
+    /**
+     * run the TCK and process the results
+     */
+    private void runTCK() throws Exception {
+        String[] testOutput = runCleanTestCmd();
+        List<String> failingTestsList = postProcessTestResults(testOutput);
+        assertTestsPassed(this.bucketName, this.testName, failingTestsList);
+
+        String[] dependencyOutput = runDependencyCmd();
+        TCKJarInfo tckJarInfo = getTCKJarInfo(this.type, dependencyOutput);
+        TCKResultsInfo resultsInfo = new TCKResultsInfo(this.type, this.specName, this.server.getOpenLibertyVersion(), tckJarInfo);
+        TCKResultsWriter.preparePublicationFile(resultsInfo);
+    }
+
+    /**
+     * runs "mvn clean test" in the tck folder, passing through all the required properties
+     */
+    private String[] runCleanTestCmd() throws Exception {
+        String[] testcmd = getMvnCommandArray(MVN_CLEAN, MVN_TEST);
+        String[] mvnOutput = runCmd(testcmd, getTCKRunnerDir());
+        TCKUtilities.writeStringsToFile(mvnOutput, getMvnTestOutputFile());
+        return mvnOutput;
+    }
+
+    /**
+     * runs "mvn dependency:list" in the tck folder, passing through all the required properties
+     */
+    private String[] runDependencyCmd() throws Exception {
+        String[] dependencyCmd = getMvnCommandArray(MVN_DEPENDENCY);
+        String[] mvnOutput = runCmd(dependencyCmd, getTCKRunnerDir());
+        TCKUtilities.writeStringsToFile(mvnOutput, getMvnDependencyOutputFile());
+        return mvnOutput;
     }
 
     /**
@@ -208,7 +228,7 @@ public class TCKUtils {
      *
      * @return a list of junit XML results files
      */
-    private List<File> findJunitResultFiles() {
+    private List<File> findJunitResultFiles(String[] mvnOutput) {
         File surefileResultsDir = getSureFireResultsDir();
 
         File[] resultsFiles = surefileResultsDir.listFiles(new FilenameFilter() {
@@ -222,58 +242,22 @@ public class TCKUtils {
             Assert.fail("No TCK test JUnit result files were found in the results directory (" + surefileResultsDir.toString() +
                         ") which suggests the TCK tests did not run\n"
                         + "Errors found in mvnOutput were:\n" +
-                        getErrorsFromMvnOutput());
+                        getErrorsFromMvnOutput(mvnOutput));
         }
 
         return Arrays.asList(resultsFiles);
     }
 
-    private String getErrorsFromMvnOutput() {
+    private static String getErrorsFromMvnOutput(String[] mvnOutput) {
         StringBuilder sb = new StringBuilder();
-        File installOutput = getMvnInstallOutputFile();
-        if (installOutput.exists() && installOutput.canRead()) {
-            sb.append("### maven install output:\n");
-            try (Scanner s = new Scanner(installOutput)) {
-                while (s.hasNextLine() && sb.length() < 20000) {
-                    String line = s.nextLine();
-                    if (line.contains("[ERROR]"))
-                        sb.append(line).append("\n");
-                }
-            } catch (FileNotFoundException e) {
+        sb.append("### maven test output:\n");
+        for (String line : mvnOutput) {
+            if (line.contains("[ERROR]")) {
+                sb.append(line).append("\n");
             }
         }
 
-        File testOutput = getMvnTestOutputFile();
-        if (testOutput.exists() && testOutput.canRead()) {
-            sb.append("### maven test output:\n");
-            try (Scanner s = new Scanner(testOutput)) {
-                while (s.hasNextLine() && sb.length() < 20000) {
-                    String line = s.nextLine();
-                    if (line.contains("[ERROR]"))
-                        sb.append(line).append("\n");
-                }
-            } catch (FileNotFoundException e) {
-            }
-        }
         return sb.toString();
-    }
-
-    /**
-     * Get the map of additional properties which should be passed in to the mvn command as "-Dkey=value" parameters
-     *
-     * @return the additionalMvnProps
-     */
-    private Map<String, String> getAdditionalMvnProps() {
-        return additionalMvnProps;
-    }
-
-    /**
-     * Get the name of the FAT bucket to use
-     *
-     * @return the FAT bucket name
-     */
-    private String getBucketName() {
-        return this.bucketName;
     }
 
     /**
@@ -305,18 +289,20 @@ public class TCKUtils {
     }
 
     /**
-     * Generate the array of Strings which will be used to run the "mvn clean test" command with all the appropriate parameters
+     * Generate the array of Strings which will be used to run the given commands with all the appropriate parameters
      *
      * @return           an array of Strings representing the command to be run
      * @throws Exception thrown if there was a problem assembling the parameters to the mvn command
      */
-    private String[] getMvnTestCommandArray() throws Exception {
+    private String[] getMvnCommandArray(String... commands) throws Exception {
         String mvn = getMvn();
 
         ArrayList<String> stringArrayList = new ArrayList<>();
         stringArrayList.add(mvn);
-        stringArrayList.add(MVN_CLEAN); //TODO do we always want to clean?
-        stringArrayList.add(MVN_TEST);
+        for (String command : commands) {
+            stringArrayList.add(command);
+        }
+        stringArrayList.add("-DoutputAbsoluteArtifactFilename");
         stringArrayList.add("-DtrimStackTrace=false"); //According to the mvn docs this should default to false, but we needed to set this to get full stacks.
         stringArrayList.add("-Dwlp=" + getWLPInstallRoot());
         stringArrayList.add("-Dtck_server=" + getServerName());
@@ -343,52 +329,7 @@ public class TCKUtils {
         stringArrayList.add("-B");
 
         // add any additional properties passed
-        for (Entry<String, String> prop : getAdditionalMvnProps().entrySet()) {
-            stringArrayList.add("-D" + prop.getKey() + "=" + prop.getValue());
-        }
-
-        String[] cmd = stringArrayList.toArray(new String[0]);
-        return cmd;
-    }
-
-    /**
-     * Generate the array of Strings which will be used to run the "mvn dependency:list" command with all the appropriate parameters
-     *
-     * @return           an array of Strings representing the command to be run
-     * @throws Exception thrown if there was a problem assembling the parameters to the mvn command
-     */
-    private String[] getMvnDependencyCommandArray() throws Exception {
-        String mvn = getMvn();
-
-        ArrayList<String> stringArrayList = new ArrayList<>();
-        stringArrayList.add(mvn);
-        stringArrayList.add(MVN_DEPENDENCY);
-        stringArrayList.add("-Dwlp=" + getWLPInstallRoot());
-        stringArrayList.add("-Dtck_server=" + getServerName());
-        stringArrayList.add("-Dtck_hostname=" + getServerHostName());
-        stringArrayList.add("-Dtck_failSafeUndeployment=" + DEFAULT_FAILSAFE_UNDEPLOYMENT);
-        stringArrayList.add("-Dtck_appDeployTimeout=" + DEFAULT_APP_DEPLOY_TIMEOUT);
-        stringArrayList.add("-Dtck_appUndeployTimeout=" + DEFAULT_APP_UNDEPLOY_TIMEOUT);
-        stringArrayList.add("-Dtck_port=" + getPort());
-        stringArrayList.add("-Dtck_port_secure=" + getPortSecure());
-        stringArrayList.add("-DtargetDirectory=" + getTargetDir().getAbsolutePath());
-        stringArrayList.add("-DcomponentRootDir=" + getComponentRootDir());
-        stringArrayList.add("-Dsun.rmi.transport.tcp.responseTimeout=" + DEFAULT_MBEAN_TIMEOUT);
-
-        stringArrayList.addAll(getJarCliProperties());
-
-        // The cmd below is a base for running the TCK as a whole for this project.
-        // It is possible to use other Testng control xml files (and even generate them
-        // based on examining the TCK jar) in which case the value for suiteXmlFile would
-        // be different.
-        if (isTestNG)
-            stringArrayList.add("-DsuiteXmlFile=" + getSuiteFileName());
-
-        // Batch mode, gives better output when logged to a file and allows timestamps to be enabled
-        stringArrayList.add("-B");
-
-        // add any additional properties passed
-        for (Entry<String, String> prop : getAdditionalMvnProps().entrySet()) {
+        for (Entry<String, String> prop : this.additionalMvnProps.entrySet()) {
             stringArrayList.add("-D" + prop.getKey() + "=" + prop.getValue());
         }
 
@@ -517,17 +458,8 @@ public class TCKUtils {
      *
      * @return The TCK runner dir
      */
-    private File getTCKRunnerDir() {
+    private static File getTCKRunnerDir() {
         return new File(RELATIVE_TCK_RUNNER);
-    }
-
-    /**
-     * Get the test name. This will have been provided by the caller and is only used as part of error messages.
-     *
-     * @return the test name
-     */
-    private String getTestName() {
-        return this.testName;
     }
 
     /**
@@ -544,7 +476,7 @@ public class TCKUtils {
      *
      * @return
      */
-    private File getJunitResultsDir() {
+    private static File getJunitResultsDir() {
         return new File(getResultsDir(), "junit");
     }
 
@@ -559,9 +491,9 @@ public class TCKUtils {
      * @throws TransformerFactoryConfigurationError
      * @throws TransformerException
      */
-    private List<String> postProcessTestResults() throws IOException, SAXException, XPathExpressionException, ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
+    private List<String> postProcessTestResults(String[] mvnOutput) throws IOException, SAXException, XPathExpressionException, ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
 
-        List<File> resultsFiles = findJunitResultFiles(); //the raw input files
+        List<File> resultsFiles = findJunitResultFiles(mvnOutput); //the raw input files
         File targetDir = getJunitResultsDir(); //the output dir
 
         copyResultsAndAppendId(targetDir, resultsFiles);
@@ -569,11 +501,11 @@ public class TCKUtils {
         // Get the failing tests out of the JUnit result files
         List<String> failingTestsList = getNonPassingTestsNamesList(resultsFiles);
         if (!failingTestsList.isEmpty()) {
-            printStdOutAndScreenIfLocal("\nTCK TESTS THAT DID NOT PASS:");
+            TCKUtilities.printStdOutAndScreenIfLocal("\nTCK TESTS THAT DID NOT PASS:");
             for (String failedTest : failingTestsList) {
-                printStdOutAndScreenIfLocal("                               " + failedTest);
+                TCKUtilities.printStdOutAndScreenIfLocal("                               " + failedTest);
             }
-            printStdOutAndScreenIfLocal("\n");
+            TCKUtilities.printStdOutAndScreenIfLocal("\n");
             new File("output").mkdirs();
             try (FileOutputStream fos = new FileOutputStream("output/fail.log")) {
                 fos.write("Test FAILED".getBytes());
@@ -683,44 +615,20 @@ public class TCKUtils {
     }
 
     /**
-     * runs "mvn clean test" in the tck folder, passing through all the required properties
-     */
-    public int runCleanTest() throws Exception {
-        String[] testcmd = getMvnTestCommandArray();
-        // Everything under autoFVT/results is collected from the child build machine
-        int rc = runCmd(testcmd, getTCKRunnerDir(), getMvnTestOutputFile());
-
-        List<String> failingTestsList = postProcessTestResults();
-
-        String[] mvnDependencyList = getMvnDependencyCommandArray();
-
-        runCmd(mvnDependencyList, getTCKRunnerDir(), getMvnDependencyOutputFile());
-
-        // mvn returns 0 on success, anything else represents a failure.
-        // Usually this is caused by failing tests, but if we didn't detect any failing tests then we should raise an exception
-        if (rc != 0 && failingTestsList.isEmpty()) {
-            Assert.fail("In " + getBucketName() + ":" + getTestName() + " the TCK (" + Arrays.toString(testcmd) + ") has returned non-zero return code of: " + rc + "\n"
-                        + "but did not report any failing tests.\n"
-                        + "see: ...autoFVT/results/" + getMvnTestOutputFileName() + " for more details");
-        }
-
-        TCKResultsWriter.preparePublicationFile(resultsInfo);
-
-        return rc;
-    }
-
-    /**
-     * @return a File which represents the mvn output when "install" is run
-     */
-    private static File getMvnInstallOutputFile() {
-        return new File(getResultsDir(), MVN_INSTALL_OUTPUT_FILENAME_PREFIX + RepeatTestFilter.getRepeatActionsAsString());
-    }
-
-    /**
      * @return a File which represents the mvn output when "dependency:list" is run
      */
     private static File getMvnDependencyOutputFile() {
         return new File(getResultsDir(), "dependency.txt");
+    }
+
+    private static void assertTestsPassed(String bucketName, String testName, List<String> failingTestsList) {
+        if (failingTestsList != null && failingTestsList.size() > 0) {
+            String msg = bucketName + ":" + testName + " tests failed:";
+            for (String test : failingTestsList) {
+                msg += "\n - " + test;
+            }
+            throw new AssertionFailedError(msg);
+        }
     }
 
     /**
@@ -804,16 +712,6 @@ public class TCKUtils {
     }
 
     /**
-     * Return the version from the <repo>/spec/pom.xml
-     *
-     * @param  repo
-     * @return
-     */
-    public static String getApiSpecVersionAfterClone(File repo) {
-        return getPomVersionInDir(repo, "spec");
-    }
-
-    /**
      * Get the basic mvn command ... "mvn.cmd" on Windows, otherwise just "mvn"
      *
      * @return the mvn command
@@ -841,33 +739,6 @@ public class TCKUtils {
             result.addAll(getQueryInXml(resultFile, notPassingTestsQuery, excludes));
         }
         return result;
-    }
-
-    /**
-     * Return the project/version String of a directory's pom.xml file
-     *
-     * @param  repo
-     * @param  subdir
-     * @return
-     */
-    private static String getPomVersionInDir(File repo, String subdir) {
-        Assert.assertTrue("The cloned into directory " + repo.getAbsolutePath() + " does not exist", repo != null && repo.exists());
-        File dir = new File(repo, subdir);
-        Assert.assertTrue("The pom.xml parent directory " + dir.getAbsolutePath() + " does not exist", dir.exists());
-        File pomXml = new File(dir, "pom.xml");
-        Assert.assertTrue("The pom.xml file " + pomXml.getAbsolutePath() + " does not exist", pomXml.exists());
-        String query = "/project/version";
-        List<String> projectVersion = getQueryInXml(pomXml, query, null);
-        // Some pom.xml files have no version but inherit it from the
-        // parent
-        if (!projectVersion.isEmpty() && projectVersion.get(0).trim().length() > 0) {
-            return projectVersion.get(0).trim();
-        } else {
-            query = "/project/parent/version";
-            List<String> parentVersion = getQueryInXml(pomXml, query, null);
-            return parentVersion.isEmpty() ? null : parentVersion.get(0).trim();
-        }
-
     }
 
     /**
@@ -917,16 +788,6 @@ public class TCKUtils {
      */
     private static File getResultsDir() {
         return Props.getInstance().getFileProperty(Props.DIR_LOG);
-    }
-
-    /**
-     * Return the version from the <repo>/tck/pom.xml
-     *
-     * @param  repo
-     * @return
-     */
-    public static String getTckVersionAfterClone(File repo) {
-        return getPomVersionInDir(repo, "tck");
     }
 
     /**
@@ -983,51 +844,69 @@ public class TCKUtils {
     }
 
     /**
-     * Run "mvn clean install" to populate a given maven repository
+     * Run a command using a ProcessBuilder.
      *
-     * @param repo the maven repository directory
+     * @param  cmd
+     * @param  workingDirectory
+     * @param  outputFile
+     * @return                  The return code of the process. (TCKs return 0 if all tests pass and !=0 otherwise).
+     * @throws Exception
      */
-    public static int mvnCleanInstall(File repo) {
+    private static Process startProcess(String[] cmd, File workingDirectory) throws IOException, InterruptedException {
+        ProcessBuilder pb = new ProcessBuilder(cmd);
 
-        String mvn = getMvn();
-        String[] mvnCleanInstall = new String[] { mvn, MVN_CLEAN, MVN_INSTALL };
+        // Enables timestamps in the mvnOutput logs
+        Map<String, String> mvnEnv = pb.environment();
+        mvnEnv.put("MAVEN_OPTS", "-Dorg.slf4j.simpleLogger.showDateTime=true" +
+                                 " -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss,SSS");
 
-        // Everything under autoFVT/results is collected from the child build machine
-        int rc = -1;
-        try {
-            rc = runCmd(mvnCleanInstall, repo, getMvnInstallOutputFile());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        pb.directory(workingDirectory);
+        pb.redirectErrorStream(true);
 
-        // mvn returns 0 if all surefire tests pass and -1 otherwise - this Assert is enough to mark the build as having failed
-        // the TCK regression
-        Assert.assertEquals("maven clean install in " + repo + " has a non-zero return code of: "
-                            + rc +
-                            ".\nThis indicates build failure", 0, rc);
+        Log.info(c, "runCmd", "Running command " + Arrays.asList(cmd));
 
-        return rc;
-
+        Process process = pb.start();
+        return process;
     }
 
-    /**
-     * This method will print a String reliably to the 'standard' Standard.out
-     * (i.e. the developers screen when running locally)
-     *
-     * @param msg
-     */
-    private static void printStdOutAndScreenIfLocal(String msg) {
-        // If running locally print to screen and stdout if different else print to 'stdout' only
-        if (Boolean.valueOf(System.getProperty("fat.test.localrun"))) {
-            // Developers laptop FAT
-            PrintStream screen = new PrintStream(new FileOutputStream(FileDescriptor.out));
-            screen.println(msg);
-            if (!System.out.equals(screen)) {
-                System.out.println(msg);
+    private static void assertNotTimedOut(boolean timeout, ArrayList<String> output, long hardTimeout, long softTimeout) {
+        if (timeout) {
+            ArrayList<String> lastLines = new ArrayList<String>();
+            int numOfLinesToInclude = 7; // We will include the last 7 lines of the output file in the timeout message
+            int lineNum = output.size() - numOfLinesToInclude;
+            if (lineNum < 0) {
+                lineNum = 0;
             }
-        } else {
-            // Build engine FAT
-            System.out.println(msg);
+            while (lineNum < output.size()) {
+                lastLines.add(output.get(lineNum));
+                lineNum++;
+            }
+
+            // Prepare the timeout message
+            String timeoutMsg = "Timeout occurred. FAT timeout set to: " + hardTimeout + "ms (soft timeout set to " + softTimeout + "ms). The last " +
+                                numOfLinesToInclude + " lines from the mvn logs are as follows:\n";
+            boolean slowDownload = false;
+            while (lineNum < output.size()) {
+                String line = output.get(lineNum);
+                timeoutMsg += line + "\n";
+
+                if (lineNum > (output.size() - 3)) {
+                    if (line.toLowerCase().matches(".* downloading .*|.* downloaded .*")) {
+                        slowDownload = true;
+                    }
+                }
+
+                lineNum++;
+            }
+
+            // Special Case: Check if the last or second line has the text "downloading" or "downloaded"
+            if (slowDownload) {
+                timeoutMsg += "It appears there were some issues gathering dependencies. This may be due to network issues such as slow download speeds.";
+            }
+
+            // Throw custom timeout error message rather then the one provided by the JUnitTask
+            Log.info(c, "runCmd", timeoutMsg); // Log the timeout message into messages.log or the default log
+            throw new AssertionFailedError(timeoutMsg);
         }
     }
 
@@ -1040,20 +919,9 @@ public class TCKUtils {
      * @return                  The return code of the process. (TCKs return 0 if all tests pass and !=0 otherwise).
      * @throws Exception
      */
-    public static int runCmd(String[] cmd, File workingDirectory, File outputFile) throws IOException, InterruptedException {
-        ProcessBuilder pb = new ProcessBuilder(cmd);
+    private static String[] runCmd(String[] cmd, File workingDirectory) throws IOException, InterruptedException {
 
-        // Enables timestamps in the mvnOutput logs
-        pb.environment()
-                        .put("MAVEN_OPTS", "-Dorg.slf4j.simpleLogger.showDateTime=true" +
-                                           " -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss,SSS");
-
-        pb.directory(workingDirectory);
-        pb.redirectOutput(outputFile);
-        pb.redirectErrorStream(true);
-
-        Log.info(c, "runCmd", "Running command " + Arrays.asList(cmd));
-
+        //calculate the timeout
         int hardTimeout = Integer.parseInt(System.getProperty("fat.timeout", "10800000"));
         long softTimeout = -1;
 
@@ -1061,164 +929,53 @@ public class TCKUtils {
         if (hardTimeout >= 30000) {
             softTimeout = hardTimeout - 15000; // Soft timeout is 15 seconds less than hard timeout
         }
+        boolean timeout = false;
 
-        Process p = pb.start();
-        int returnCode = 1;
-        boolean returnStatus;
-        if (softTimeout > -1) {
-            returnStatus = p.waitFor(softTimeout, TimeUnit.MILLISECONDS); // Requires Java 8+
-            if (returnStatus == false) {
-                // Parse through the mvn logs
-                if (outputFile.exists() && outputFile.canRead()) {
-                    try (Scanner s = new Scanner(outputFile)) {
-                        // Get the last few lines from the MVN log
-                        ArrayList<String> lastLines = new ArrayList<String>();
-                        int numOfLinesToInclude = 7; // We will include the last 7 lines of the output file in the timeout message
-                        while (s.hasNextLine()) {
-                            if (lastLines.size() < numOfLinesToInclude) {
-                                lastLines.add(s.nextLine());
-                            } else {
-                                lastLines.remove(0);
-                                lastLines.add(s.nextLine());
-                            }
-                        }
+        //TODO might need an async timeout thread?
 
-                        // Prepare the timeout message
-                        String timeoutMsg = "Timeout occurred. FAT timeout set to: " + hardTimeout + "ms (soft timeout set to " + softTimeout + "ms). The last " +
-                                            numOfLinesToInclude + " lines from the mvn logs are as follows:\n";
-                        for (String line : lastLines) {
-                            timeoutMsg += line + "\n";
-                        }
-
-                        // Special Case: Check if the last or second line has the text "downloading" or "downloaded"
-                        if ((lastLines.get(lastLines.size() - 1).toLowerCase().matches(".* downloading .*|.* downloaded .*"))
-                            || (lastLines.get(lastLines.size() - 2).toLowerCase().matches(".* downloading .*|.* downloaded .*"))) {
-                            timeoutMsg += "It appears there were some issues gathering dependencies. This may be due to network issues such as slow download speeds.";
-                        }
-
-                        // Throw custom timeout error message rather then the one provided by the JUnitTask
-                        Log.info(c, "runCmd", timeoutMsg); // Log the timeout message into messages.log or the default log
-                        throw new AssertionFailedError(timeoutMsg);
-                    } catch (FileNotFoundException FileError) {
-                        // Do nothing as we can't look at the mvn log. This leads to hard timeout handled by the JUnit Task in p.waitFor()
-                    }
-                }
-                // Return to normal behavior and let it timeout through the Junit Task using the hard timeout
-                returnCode = p.waitFor();
-            } else {
-                returnCode = 0;
+        //start the process
+        Process process = startProcess(cmd, workingDirectory);
+        //read the output
+        ArrayList<String> output = new ArrayList<>();
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            String line;
+            while ((line = in.readLine()) != null) {
+                output.add(line);
             }
-        } else {
-            // The soft timeout could not be used so return to normal behavior and let the Junit Task take care of the timeout
-            returnCode = p.waitFor();
+
+            //wait for it to finish
+            timeout = TCKUtilities.waitForProcess(process, softTimeout);
         }
 
-        return returnCode;
+        //if the process timed out throw an Error
+        assertNotTimedOut(timeout, output, hardTimeout, softTimeout);
+
+        String[] lines = output.toArray(new String[0]);
+        return lines;
     }
 
-    /**
-     * @param  version
-     * @return
-     */
-    private static String takeOffFinalOrSnapshot(String version) {
-        if (version != null && version.length() > 1) {
-            // Remove anything after a dash
-            String[] bits = version.split("-");
-            version = bits[0];
-            // Remove and Final specifier
-            version = version.replace(".Final", "");
-        }
-        return version;
-    }
-
-//    /**
-//     * Generate a TCK Results file in AsciiDoc format
-//     *
-//     * @param resultInfo TCK Results metadata
-//     */
-//    private static void preparePublicationFile(Map<String, String> resultInfo) {
-//        String javaMajorVersion = resultInfo.get("java_major_version");
-//        String javaVersion = resultInfo.get("java_info");
-//        String openLibertyVersion = resultInfo.get("product_version");
-//        String type = resultInfo.get("results_type");
-//        String osVersion = resultInfo.get("os_name");
-//        String specName = resultInfo.get("feature_name");
-//        String specVersion = resultInfo.get("feature_version");
-//        String rcVersion = getSpec()[2];
-//
-//        TCKResultsInfo info = new TCKResultsInfo();
-//        info.setJavaMajorVersion(javaMajorVersion);
-//        info.setJavaVersion(javaVersion);
-//        info.setOpenLibertyVersion(openLibertyVersion);
-//        info.setType(type);
-//        info.setOsVersion(osVersion);
-//        info.setSpecName(specName);
-//        info.setSpecVersion(specVersion);
-//        info.setRcVersion(rcVersion);
-//        preparePublicationFile(info);
-//    }
-
-    /**
-     * Generate a TCK Results file in AsciiDoc format
-     *
-     * @param resultInfo TCK Results metadata
-     */
-    private static void preparePublicationFile(TCKResultsInfo resultInfo) {
-        TCKResultsWriter.preparePublicationFile(resultInfo);
-    }
-
-    private static String[] getSpec() {
-        Pattern specNamePattern = Pattern.compile("microprofile(.*?)-tck:jar", Pattern.DOTALL);
-        String specName = "";
-        String specVersion = "";
-        String RC = "";
-        String[] parts = {};
-        String[] returnArray = { "", "", "" };
-        Pattern specVersionPattern = Pattern.compile("jar:(.*?):compile", Pattern.DOTALL);
-        try (BufferedReader br = new BufferedReader(new FileReader(getMvnDependencyOutputFile()))) {
-
-            String sCurrentLine;
-            while ((sCurrentLine = br.readLine()) != null) {
-                if (sCurrentLine.contains("-tck:jar")) {
-                    Matcher nameMatcher = specNamePattern.matcher(sCurrentLine);
-                    Matcher versionMatcher = specVersionPattern.matcher(sCurrentLine);
-                    if (nameMatcher.find()) {
-                        specName = nameMatcher.group(1).replaceAll("-", " ");
-                    }
-                    if (versionMatcher.find()) {
-                        specVersion = versionMatcher.group(1);
-                        if (specVersion.contains("-RC")) {
-                            parts = specVersion.split("-RC");
-                            RC = "-RC" + parts[1];
-                            specVersion = parts[0];
-                        }
-                        returnArray[0] = specName;
-                        returnArray[1] = specVersion;
-                        returnArray[2] = RC;
-                        return returnArray;
-                    }
+    private static TCKJarInfo getTCKJarInfo(Type type, String[] dependencyOutput) {
+        //org.eclipse.microprofile.config:microprofile-config-tck:jar:3.0.2:compile:/Users/tevans/.m2/repository/org/eclipse/microprofile/config/microprofile-config-tck/3.0.2/microprofile-config-tck-3.0.2.jar
+        Pattern tckPattern = Pattern.compile(type.toString().toLowerCase() + "(.*):(.*-tck):jar:(.*):.*:(/.*\\.jar)", Pattern.DOTALL);
+        TCKJarInfo tckJar = null;
+        for (String sCurrentLine : dependencyOutput) {
+            if (sCurrentLine.contains("-tck:jar")) {
+                Matcher nameMatcher = tckPattern.matcher(sCurrentLine);
+                if (nameMatcher.find()) {
+                    tckJar = new TCKJarInfo();
+                    tckJar.group = nameMatcher.group(1);
+                    tckJar.artifact = nameMatcher.group(2);
+                    tckJar.version = nameMatcher.group(3);
+                    tckJar.jarPath = nameMatcher.group(4);
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return returnArray;
-    }
 
-    public static String capitalise(String spec) {
-        char[] charArray = spec.toCharArray();
-        boolean foundSpace = true;
-        for (int i = 0; i < charArray.length; i++) {
-            if (Character.isLetter(charArray[i])) {
-                if (foundSpace) {
-                    charArray[i] = Character.toUpperCase(charArray[i]);
-                    foundSpace = false;
-                }
-            } else {
-                foundSpace = true;
-            }
+        if (tckJar != null) {
+            String sha = TCKUtilities.generateSHA256(tckJar.jarPath);
+            tckJar.sha = sha;
         }
-        spec = String.valueOf(charArray);
-        return spec;
+
+        return tckJar;
     }
 }
