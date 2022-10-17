@@ -20,6 +20,4 @@
     <feature>jaxrs-2.0</feature> <!-- EE feature to ensure we get the expected EE version -->
   </featureManager>
 
-  <keyStore id="defaultKeyStore" password="password" />
-
 </server>
