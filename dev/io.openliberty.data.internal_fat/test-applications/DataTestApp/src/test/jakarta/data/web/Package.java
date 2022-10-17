@@ -21,6 +21,17 @@ public class Package {
 
     public float length, width, height;
 
+    public Package() {
+    }
+
+    public Package(int id, float length, float width, float height, String description) {
+        this.id = id;
+        this.length = length;
+        this.width = width;
+        this.height = height;
+        this.description = description;
+    }
+
     @Override
     public String toString() {
         return "Package type=" + id + "; L=" + length + "; W=" + width + " H=" + height + " " + description;

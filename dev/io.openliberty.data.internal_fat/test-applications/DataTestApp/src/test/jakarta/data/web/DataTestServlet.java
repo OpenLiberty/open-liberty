@@ -53,6 +53,7 @@ import jakarta.data.DataException;
 import jakarta.data.Entities;
 import jakarta.data.Page;
 import jakarta.data.Template;
+import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.Limit;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Sort;
@@ -869,6 +870,111 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Access pages in a forward direction while entities are being added and removed,
+     * using a keyset to avoid duplicates.
+     */
+    @Test
+    public void testKeysetForwardPagination() {
+        packages.deleteAll();
+
+        packages.saveAll(List.of(new Package(114, 14.0f, 90.0f, 15.0f, "package#114"), // page1
+                                 new Package(116, 16.0f, 88.0f, 36.0f, "package#116"),
+                                 new Package(118, 18.0f, 95.0f, 22.0f, "package#118"),
+                                 // will add 117: 17.0f, ... between page requests     // not on any page because it is added after
+                                 // will add 120: 20.0f, ... between page requests     // page2
+                                 new Package(122, 22.0f, 90.0f, 60.0f, "package#122"),
+                                 new Package(124, 22.0f, 80.0f, 62.0f, "package#124"),
+                                 // will add 130: 22.0f, 70.0f, ... between page requests // page 3
+                                 new Package(132, 22.0f, 60.0f, 66.0f, "package#132"),
+                                 new Package(133, 33.0f, 56.0f, 65.0f, "package#133"),
+                                 new Package(140, 33.0f, 56.0f, 64.0f, "package#140"), // page 4
+                                 new Package(144, 33.0f, 56.0f, 63.0f, "package#144"),
+                                 new Package(148, 48.0f, 45.0f, 50.0f, "package#148"),
+                                 new Package(150, 48.0f, 45.0f, 50.0f, "package#150"), // page 5
+                                 new Package(151, 48.0f, 45.0f, 41.0f, "package#151")));
+
+        KeysetAwarePage<Package> page;
+
+        // Page 1
+        page = packages.findByHeightGreaterThanOrderByLengthAscOrderByWidthDescOrderByHeightDescOrderByIdAsc(10.0f, Pageable.size(3));
+
+        assertIterableEquals(List.of(114, 116, 118),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        // should not appear on next page because we already read up to length 18.0:
+        packages.save(new Package(117, 17.0f, 23.0f, 12.0f, "package#117"));
+
+        // should appear on next page because length 20.0 is beyond the keyset value of 18.0:
+        packages.save(new Package(120, 20.0f, 23.0f, 12.0f, "package#120"));
+
+        // Page 2
+        page = packages.findByHeightGreaterThanOrderByLengthAscOrderByWidthDescOrderByHeightDescOrderByIdAsc(10.0f, page.next());
+
+        assertIterableEquals(List.of(120, 122, 124),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        // remove some entries that we already read:
+        packages.deleteAllById(List.of(116, 118, 120, 122, 124));
+
+        // should appear on next page because length 22.0 matches the keyset value and width 70.0 is beyond the keyset value:
+        packages.save(new Package(130, 22.0f, 70.0f, 67.0f, "package#130"));
+
+        // Page 3
+        page = packages.findByHeightGreaterThanOrderByLengthAscOrderByWidthDescOrderByHeightDescOrderByIdAsc(10.0f, page.next());
+
+        assertIterableEquals(List.of(130, 132, 133),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        packages.deleteById(130);
+
+        // Page 4
+        page = packages.findByHeightGreaterThanOrderByLengthAscOrderByWidthDescOrderByHeightDescOrderByIdAsc(10.0f, page.next());
+
+        assertIterableEquals(List.of(140, 144, 148),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        packages.deleteAllById(List.of(132, 140));
+
+        // Page 5
+        page = packages.findByHeightGreaterThanOrderByLengthAscOrderByWidthDescOrderByHeightDescOrderByIdAsc(10.0f, page.next());
+
+        assertIterableEquals(List.of(150, 151),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        // No more pages
+        assertEquals(null, page.next());
+
+        // At this point, the following should remain:
+        // 114: 14.0f, 90.0f, 15.0f
+        // 117: 17.0f, 23.0f, 12.0f
+        // 133: 33.0f, 56.0f, 65.0f
+        // 144: 33.0f, 56.0f, 63.0f
+        // 148: 48.0f, 45.0f, 50.0f
+        // 150: 48.0f, 45.0f, 50.0f
+        // 151: 48.0f, 45.0f, 41.0f
+
+        // Switch to pages of size 4.
+
+        // Page 1
+        page = packages.findByHeightGreaterThanOrderByLengthAscOrderByWidthDescOrderByHeightDescOrderByIdAsc(10.0f, Pageable.size(4));
+
+        assertIterableEquals(List.of(114, 117, 133, 144),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        packages.saveAll(List.of(new Package(115, 15.0f, 36.0f, 39.0f, "package#115"),
+                                 new Package(145, 45.0f, 28.0f, 53.0f, "package#145")));
+
+        // Page 2
+        page = packages.findByHeightGreaterThanOrderByLengthAscOrderByWidthDescOrderByHeightDescOrderByIdAsc(10.0f, page.next());
+
+        assertIterableEquals(List.of(145, 148, 150, 151),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        // No more pages
+        assertEquals(null, page.next());
+    }
+
+    /**
      * Add, find, and remove entities with a mapped superclass.
      * Also tests automatically paginated iterator and list.
      */
@@ -1655,6 +1761,8 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testRepositoryUpdateMethodsMultiplyAndDivide() {
+        packages.deleteAll();
+
         Package p1 = new Package();
         p1.description = "Cereal Box";
         p1.length = 7.0f;

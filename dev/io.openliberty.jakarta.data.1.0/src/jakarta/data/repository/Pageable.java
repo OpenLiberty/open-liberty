@@ -16,11 +16,19 @@ package jakarta.data.repository;
 public class Pageable {
     private final long pageNumber, pageSize;
 
-    private Pageable(long pageNumber, long pageSize) {
+    Pageable(long pageNumber, long pageSize) {
         if (pageNumber < 1 || pageSize < 1)
             throw new IllegalArgumentException();
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;
+    }
+
+    public KeysetPageable afterKeyset(Object... keyset) {
+        return new KeysetPageable(this, KeysetPageable.Mode.NEXT, keyset);
+    }
+
+    public KeysetPageable beforeKeyset(Object... keyset) {
+        return new KeysetPageable(this, KeysetPageable.Mode.PREVIOUS, keyset);
     }
 
     public long getPage() {
@@ -41,6 +49,10 @@ public class Pageable {
 
     public static Pageable page(long page) {
         return new Pageable(page, 10);
+    }
+
+    public static Pageable size(long size) {
+        return new Pageable(1, size);
     }
 
     @Override
