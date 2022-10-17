@@ -22,7 +22,6 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.cdi.CDIServiceUtils;
 import com.ibm.ws.security.javaeesec.cdi.extensions.HttpAuthenticationMechanismsTracker;
 import com.ibm.ws.security.javaeesec.cdi.extensions.PrimarySecurityCDIExtension;
 
@@ -89,12 +88,30 @@ public class JakartaSecurity30CDIExtension implements Extension {
     }
 
     private void addOidcIdentityStore(BeanManager beanManager) {
-        // TODO: Check for duplicates
+        //TODO: look for better way to check for duplicates
+        for (Bean b : beansToAdd) {
+            if (OidcIdentityStoreBean.class.equals(b.getClass())) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "OidcIdentityStoreBean already registered.");
+                return;
+            }
+        }
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "adding OidcIdentityStoreBean.");
         beansToAdd.add(new OidcIdentityStoreBean(beanManager));
     }
 
     private void addOpenIdContext(BeanManager beanManager) {
-        // TODO: Check for duplicates
+        //TODO: look for better way to check for duplicates
+        for (Bean b : beansToAdd) {
+            if (OpenIdContextBean.class.equals(b.getClass())) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "OpenIdContextBean already registered.");
+                return;
+            }
+        }
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "adding OpenIdContextBean.");
         beansToAdd.add(new OpenIdContextBean(beanManager));
     }
 
@@ -114,10 +131,8 @@ public class JakartaSecurity30CDIExtension implements Extension {
         }
 
         // Verification of mechanisms and registration of ModulePropertiesProviderBean performed in JavaEESecCDIExtension's afterBeanDiscovery()
-
         for (Bean bean : beansToAdd) {
             afterBeanDiscovery.addBean(bean);
         }
     }
-
 }
