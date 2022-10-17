@@ -19,6 +19,7 @@ public class WsSubjectExpectationHelpers {
 
         String updatedRequester = requester + ServletMessageConstants.WSSUBJECT;
         // remove check for BASIC once 22940 is resolved - we should always get JAKARTA_OIDC from both the callback and test servlet.
+        // TODO this should always return JAKARTA_OIDC - fix when issue is resolved
         if (requester.equals(ServletMessageConstants.SERVLET)) {
             expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, updatedRequester + ServletMessageConstants.GET_AUTH_TYPE
                                                                                                        + ServletMessageConstants.BASIC, "Did not find the correct auth type in the WSSubject."));
@@ -33,8 +34,13 @@ public class WsSubjectExpectationHelpers {
 
     public static void getWSSubjectExpectations(String action, Expectations expectations, String requester, ResponseValues rspValues) throws Exception {
 
-        expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, requester + ServletMessageConstants.GET_USER_PRINCIPAL_GET_NAME
-                                                                                                   + rspValues.getSubject(), "Did not find the correct principal in the WSSubject."));
+        if (rspValues.getSubject() != null) {
+            expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, requester + ServletMessageConstants.GET_USER_PRINCIPAL_GET_NAME
+                                                                                                       + rspValues.getSubject(), "Did not find the correct principal in the WSSubject."));
+        } else {
+            expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_DOES_NOT_CONTAIN, requester
+                                                                                                               + ServletMessageConstants.GET_USER_PRINCIPAL_GET_NAME, "Did not find the correct principal in the WSSubject."));
+        }
 
     }
 

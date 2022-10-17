@@ -161,7 +161,8 @@ public class OpenIdContextLogger {
     protected void logRefreshTokenClaims(ServletOutputStream ps) throws IOException {
 
         Optional<RefreshToken> refreshToken = context.getRefreshToken();
-        if (refreshToken != null) {
+        if (refreshToken != null && refreshToken.isPresent()) {
+//            if (refreshToken != null && refreshToken.get() != null) {
             RefreshToken tokenContent = refreshToken.get();
             ServletLogger.printLine(ps, caller, ServletMessageConstants.REFRESH_TOKEN + ServletMessageConstants.RAW + tokenContent.toString());
             ServletLogger.printLine(ps, caller, ServletMessageConstants.REFRESH_TOKEN + tokenContent.getToken());
@@ -213,7 +214,7 @@ public class OpenIdContextLogger {
 
     protected void logStoredValues(ServletOutputStream ps) throws IOException {
 
-        //        logStoredValue(ps, OpenIdConstant.ORIGINAL_REQUEST);
+//                logStoredValue(ps, OpenIdConstant.ORIGINAL_REQUEST);
         //        logStoredValue(ps, OpenIdConstant.SUBJECT_IDENTIFIER);
         //        logStoredValue(ps, OpenIdConstant.CLIENT_ID);
         //        logStoredValue(ps, OpenIdConstant.CLIENT_SECRET);

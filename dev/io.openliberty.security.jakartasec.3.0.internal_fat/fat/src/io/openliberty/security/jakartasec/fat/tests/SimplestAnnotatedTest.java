@@ -41,7 +41,6 @@ import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 /**
  * Tests appSecurity-5.0
  */
-@SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
 public class SimplestAnnotatedTest extends CommonAnnotatedSecurityTests {
 
@@ -232,7 +231,7 @@ public class SimplestAnnotatedTest extends CommonAnnotatedSecurityTests {
         headers.put("testHeaderName", "testHeaderValue");
 
         List<NameValuePair> parms = new ArrayList<NameValuePair>();
-        parms.add(new NameValuePair("parmName", "parmValue"));
+        parms.add(new NameValuePair("testParmName", "testParmValue"));
         runGoodEndToEndTest(webClient, "SimplestAnnotatedWithEL", "OidcAnnotatedServletWithEL", Constants.TESTUSER, Constants.TESTUSERPWD, headers, parms);
 
     }

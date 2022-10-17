@@ -33,7 +33,6 @@ import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 /**
  * Tests appSecurity-5.0
  */
-@SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
 public class InjectionScopedTests extends CommonAnnotatedSecurityTests {
 

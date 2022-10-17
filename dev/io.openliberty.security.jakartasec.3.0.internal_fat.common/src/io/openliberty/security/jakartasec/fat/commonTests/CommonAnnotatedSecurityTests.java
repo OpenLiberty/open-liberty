@@ -43,6 +43,7 @@ import io.openliberty.security.jakartasec.fat.utils.Constants;
 import io.openliberty.security.jakartasec.fat.utils.OpenIdContextExpectationHelpers;
 import io.openliberty.security.jakartasec.fat.utils.ResponseValues;
 import io.openliberty.security.jakartasec.fat.utils.ServletMessageConstants;
+import io.openliberty.security.jakartasec.fat.utils.ServletRequestExpectationHelpers;
 import io.openliberty.security.jakartasec.fat.utils.WsSubjectExpectationHelpers;
 
 public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
@@ -64,8 +65,8 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
 
         String accessTokenType = Utils.getRandomSelection(Constants.JWT_TOKEN_FORMAT, Constants.OPAQUE_TOKEN_FORMAT);
 
-        Log.info(thisClass, "createRepeats", "Will be running tests using a " + accessTokenType + " access_token");
-        // note:  using the method addRepeat below instead of adding test repeats in line to simplify hacking up the tests locally to ony run one or 2 variations (all the calls are the same - dont' have to worry about using "with" vs "andWith")
+        Log.info(thisClass, "createRepeats", "Will be running tests using a/an " + accessTokenType + " access_token");
+        // note:  using the method addRepeat below instead of adding test repeats in line to simplify hacking up the tests locally to only run one or 2 variations (all the calls are the same - dont' have to worry about using "with" vs "andWith")
         RepeatTests rTests = null;
 
         rTests = addRepeat(rTests, new SecurityTestRepeatAction(accessTokenType));
@@ -194,7 +195,14 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
 
     public Page processLogin(Page response, String user, String pw, String app) throws Exception {
 
-        Expectations currentExpectations = getProcessLoginExpectations(app);
+        return processLogin(response, user, pw, app, null, null);
+
+    }
+
+    public Page processLogin(Page response, String user, String pw, String app, Map<String, String> headers,
+                             List<NameValuePair> parms) throws Exception {
+
+        Expectations currentExpectations = getProcessLoginExpectations(app, headers, parms);
 
         response = actions.doFormLogin(response, user, pw);
         // confirm protected resource was accessed
@@ -206,11 +214,16 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
     }
 
     public Expectations getProcessLoginExpectations(String app) throws Exception {
+        return getProcessLoginExpectations(app, null, null);
+    }
+
+    public Expectations getProcessLoginExpectations(String app, Map<String, String> headers, List<NameValuePair> parms) throws Exception {
 
         Expectations processLoginexpectations = new Expectations();
         processLoginexpectations.addSuccessCodeForCurrentAction();
         processLoginexpectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, "got here servlet", "Did not land on the servlet."));
-        processLoginexpectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_DOES_NOT_CONTAIN, "Callback: OpenIdContext: null", "The context was null and should not have been"));
+        processLoginexpectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_DOES_NOT_CONTAIN, ServletMessageConstants.SERVLET
+                                                                                                                     + "OpenIdContext: null", "The context was null and should not have been"));
 
         processLoginexpectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, ServletMessageConstants.HELLO_MSG
                                                                                                              + ServletMessageConstants.BASE_SERVLET, "Did not land on the test app."));
@@ -223,6 +236,7 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
         // check for the correct values from the servlet in the response
         OpenIdContextExpectationHelpers.getOpenIdContextExpectations(null, processLoginexpectations, ServletMessageConstants.SERVLET, rspValues);
         WsSubjectExpectationHelpers.getWsSubjectExpectations(null, processLoginexpectations, ServletMessageConstants.SERVLET, rspValues);
+        ServletRequestExpectationHelpers.getServletRequestExpectations(null, processLoginexpectations, ServletMessageConstants.SERVLET, headers, parms);
 
         return processLoginexpectations;
     }
@@ -295,7 +309,7 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
 
         Page response = invokeAppReturnLoginPage(webClient, url, headers, parms);
 
-        response = processLogin(response, user, pw, app);
+        response = processLogin(response, user, pw, app, headers, parms);
 
         // TODO - will we need to perform any other step?
         return response;
