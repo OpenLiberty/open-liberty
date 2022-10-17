@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -254,8 +254,7 @@ task publishFeatureResources {
       if (kind == null) {
         throw new GradleException('Feature ' + symbolicName + ' does not contain a kind property')
       }
-      String version = ('beta'.equals(kind) ? bnd.libertyBetaVersion : bnd.libertyServiceVersion)
-
+      
       File l10nResources = new File(featureFolder, 'resources/l10n')
       if (l10nResources.exists()) {
         copy {
@@ -270,59 +269,63 @@ task publishFeatureResources {
           into buildImage.file('wlp/lib/features/icons')
         }
       }
-
-      ant.featureBnd(bnd: featureFile.getPath(),
-              workspaceDir: bndWorkspace.getBase(),
-              createESA: "true",
-              dir: buildImage.file('wlp'),
-              esaDir: new File(project.buildDir, 'repo'),
-              createFor: kind,
-              buildType: kind,
-              junit: new File(project.buildDir, 'report/featureChecks.xml')) {
-        defaultEdition(licenseURL: "https://www.eclipse.org/legal/epl-v10.html",
-                licensePath: buildImage.file('lafiles/featureTerms'),
-                version: version,
-                licenseType: "EPL",
-                displayVersion: "OpenLiberty")
-        edition(baseEdition: "beta")
-        edition(baseEdition: "core",
-                validEditions: "")
-        edition(baseEdition: "base",
-                validEditions: "Open")
-        edition(baseEdition: "full")
+      
+      boolean gaFeature = 'ga'.equals(kind)
+      if(gaFeature){
+        String version = bnd.libertyServiceVersion
+  
+        ant.featureBnd(bnd: featureFile.getPath(),
+                workspaceDir: bndWorkspace.getBase(),
+                createESA: "true",
+                dir: buildImage.file('wlp'),
+                esaDir: new File(project.buildDir, 'repo'),
+                createFor: kind,
+                buildType: kind,
+                junit: new File(project.buildDir, 'report/featureChecks.xml')) {
+          defaultEdition(licenseURL: "https://www.eclipse.org/legal/epl-v10.html",
+                  licensePath: buildImage.file('lafiles/featureTerms'),
+                  version: version,
+                  licenseType: "EPL",
+                  displayVersion: "OpenLiberty")
+          edition(baseEdition: "beta")
+          edition(baseEdition: "core",
+                  validEditions: "")
+          edition(baseEdition: "base",
+                  validEditions: "Open")
+          edition(baseEdition: "full")
+        }
+  
+        delete "${buildDir}/repo/description.html"
+        ant.propertyfile(file: "${buildDir}/repo/assetInfo.properties") {
+          entry(key: "licenseType", value: "UNSPECIFIED")
+        }
+        ant.generateEsaDescriptionHtml(featureManifestFile: ant.properties['feature.manifest.file'],
+                descriptionHtmlOutputFile: "${buildDir}/repo/description.html",
+                generateKnowledgeCentreLinks: "true",
+                licenseType: "EPL")
+        ant.zip(destfile: "${buildDir}/repo/${symbolicName}.esa.metadata.zip") {
+          fileset(dir: "${buildDir}/repo", includes: "description.html,assetInfo.properties")
+          zipfileset(dir: buildImage.file("lafiles/featureTerms_html"), fullpath: "lafiles/en.html", includes: "en.html")
+        }
+        delete "${buildDir}/repo/description.html"
+        delete "${buildDir}/repo/assetInfo.properties"
       }
-
-      delete "${buildDir}/repo/description.html"
-      ant.propertyfile(file: "${buildDir}/repo/assetInfo.properties") {
-        entry(key: "licenseType", value: "UNSPECIFIED")
-      }
-      ant.generateEsaDescriptionHtml(featureManifestFile: ant.properties['feature.manifest.file'],
-              descriptionHtmlOutputFile: "${buildDir}/repo/description.html",
-              generateKnowledgeCentreLinks: "true",
-              licenseType: "EPL")
-      ant.zip(destfile: "${buildDir}/repo/${symbolicName}.esa.metadata.zip") {
-        fileset(dir: "${buildDir}/repo", includes: "description.html,assetInfo.properties")
-        zipfileset(dir: buildImage.file("lafiles/featureTerms_html"), fullpath: "lafiles/en.html", includes: "en.html")
-      }
-      delete "${buildDir}/repo/description.html"
-      delete "${buildDir}/repo/assetInfo.properties"
     }
   }
 }
 
 publishing {
   publications {
-    Map<String,Properties> map = getFeatureMap()
-    map.keySet().each { featureName ->
-      Properties featureProps = map[featureName]
-      "feature-${featureName}" (MavenPublication) {
-        artifactId featureName
+    getGaFeatures().each { gaFeature ->
+      Properties featureProps = map[gaFeature]
+      "feature-${gaFeature}" (MavenPublication) {
+        artifactId gaFeature
         version project.version
-        artifact(new File(project.buildDir, 'repo/' + featureName + ".esa")) {
+        artifact(new File(project.buildDir, 'repo/' + gaFeature + ".esa")) {
           extension 'esa'
           builtBy publishFeatureResources
         }
-        artifact(new File(project.buildDir, 'repo/' + featureName + ".esa.metadata.zip")) {
+        artifact(new File(project.buildDir, 'repo/' + gaFeature + ".esa.metadata.zip")) {
           extension 'esa.metadata.zip'
           builtBy publishFeatureResources
         }
@@ -340,7 +343,7 @@ task generateModifiedGAFeatureList {
         project.mkdir('build/temp')
         String features = ""
         getGaFeatures().each { gaFeature ->
-            features += gaFeature + "*.esa\n"
+            features += gaFeature + ".esa\n"
 
         }
         modifiedgaFeatureList.text = features
