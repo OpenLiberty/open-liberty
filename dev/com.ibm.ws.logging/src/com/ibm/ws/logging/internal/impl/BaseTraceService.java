@@ -12,6 +12,8 @@ package com.ibm.ws.logging.internal.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -31,6 +33,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -46,6 +49,7 @@ import com.ibm.websphere.ras.TruncatableThrowable;
 import com.ibm.ws.collector.manager.buffer.BufferManagerEMQHelper;
 import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
 import com.ibm.ws.collector.manager.buffer.SimpleRotatingSoftQueue;
+import com.ibm.ws.ffdc.FFDCConfigurator;
 import com.ibm.ws.kernel.boot.logging.LoggerHandlerManager;
 import com.ibm.ws.kernel.boot.logging.WsLogManager;
 import com.ibm.ws.logging.RoutedMessage;
@@ -224,6 +228,9 @@ public class BaseTraceService implements TrService {
     /** The rollover start time for time based messages/trace.log rollover. */
     private volatile long rolloverInterval = -1;
 
+    /** The maximum FFDC file age before deletion. */
+    private volatile long maxFfdcAge = -1;
+
     /** Early msgs issued before MessageRouter is started. */
     protected volatile Queue<RoutedMessage> earlierMessages = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[100]);
     protected volatile Queue<RoutedMessage> earlierTraces = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[200]);
@@ -239,6 +246,8 @@ public class BaseTraceService implements TrService {
 
     private volatile Timer timedLogRollover_Timer = new Timer(true);
 
+    private volatile Timer ffdcCleanup_Timer = new Timer(true);
+
     protected volatile String serverName = null;
     protected volatile String wlpUserDir = null;
 
@@ -248,8 +257,22 @@ public class BaseTraceService implements TrService {
     private static final String OMIT_FIELDS_STRING = "@@@OMIT@@@";
     private static final String ROLLOVER_START_TIME_FORMAT = "([0-1][0-9]|2[0-3]):[0-5][0-9]";
     private boolean isLogRolloverScheduled = false;
+    private boolean isFfdcCleanupScheduled = false;
 
+    private static Boolean isBetaEdition;
     private static TraceComponent tc = Tr.register(BaseTraceService.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
+
+    public Boolean betaFenceCheck() {
+        if (isBetaEdition == null) {
+            if (Boolean.getBoolean("com.ibm.ws.beta.edition")) {
+                isBetaEdition = true;
+            } else {
+                Tr.warning(tc, "The 'maxFfdcAge' logging configuration option is in beta and is not available in this version of OpenLiberty.");
+                isBetaEdition = false;
+            }
+        }
+        return isBetaEdition;
+    }
 
     /** Flags for suppressing traceback output to the console */
     private static class StackTraceFlags {
@@ -379,6 +402,8 @@ public class BaseTraceService implements TrService {
 
         scheduleTimeBasedLogRollover(trConfig);
 
+        if (betaFenceCheck())
+            scheduleFfdcFileDeletion(trConfig);
         /*
          * Need to know the values of wlpServerName and wlpUserDir
          * They are passed into the handlers for use as part of the jsonified output
@@ -1413,6 +1438,56 @@ public class BaseTraceService implements TrService {
         this.isLogRolloverScheduled = true;
     }
 
+    /**
+     * Schedule FFDC file age based deletion
+     */
+    private void scheduleFfdcFileDeletion(LogProviderConfigImpl config) {
+        long maxFfdcAge = config.getMaxFfdcAge();
+        int startDelay = config.getFfdcCleanupStartDelay();
+
+        if (this.isFfdcCleanupScheduled) {
+            //Return if the ffdcMaxAge attribute doesn't change. Otherwise, cancel the schedule.
+            if (this.maxFfdcAge == maxFfdcAge) {
+                return;
+            } else {
+                ffdcCleanup_Timer.cancel();
+                ffdcCleanup_Timer.purge();
+                this.isFfdcCleanupScheduled = false;
+            }
+        }
+
+        if(maxFfdcAge < 0) {
+            return;
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Scheduling ffdc log cleanup...");
+            Tr.debug(tc, "maxFfdcAge=" + maxFfdcAge);
+        }
+
+        this.maxFfdcAge = maxFfdcAge;
+
+        //set calendar start time
+        Calendar sched = Calendar.getInstance();
+
+        if(startDelay < 0) {
+            sched.set(Calendar.HOUR_OF_DAY, 0);
+            sched.set(Calendar.MINUTE, 0);
+            sched.add(Calendar.DATE, 1);                //The cleanup will run everyday at midnight.
+        }
+        else {
+            sched.add(Calendar.SECOND, startDelay);      //Used for test cases in order to trigger the cleanup event after the configured delay.
+        }
+
+        Date firstFfdcCleanup = sched.getTime();
+
+        //schedule rollover
+        ffdcCleanup_Timer = new Timer(true);
+        TimedFfdcCleanup tlr = new TimedFfdcCleanup(maxFfdcAge);
+        ffdcCleanup_Timer.scheduleAtFixedRate(tlr, firstFfdcCleanup, 24 * 60 * 60000);
+        this.isFfdcCleanupScheduled = true;
+    }
+
     private FileLogHeader newFileLogHeader(boolean trace, LogProviderConfigImpl config) {
         boolean isJSON = false;
         String messageFormat = config.getMessageFormat();
@@ -2102,4 +2177,57 @@ public class BaseTraceService implements TrService {
             }
         }
     }
+
+    /**
+     * FFDC task to be run/scheduled in maxFfdcAge Deletion
+     */
+    private class TimedFfdcCleanup extends TimerTask {
+        private final long maxFfdcAge;
+
+        TimedFfdcCleanup(long maxFfdcAge) {
+            this.maxFfdcAge = maxFfdcAge;
+        }
+
+        @Override
+        public void run() {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+            File[] postExceptionFiles = getFfdcLogs();
+            int deletedCounter = 0;
+            for (int i = 0; i < postExceptionFiles.length; i++) {
+                try {
+                    Date fileLastModifiedDate = sdf.parse(sdf.format(postExceptionFiles[i].lastModified()));
+                    long fileAge = TimeUnit.MINUTES.convert(System.currentTimeMillis() - fileLastModifiedDate.getTime(),TimeUnit.MILLISECONDS);
+
+                    if (fileAge > maxFfdcAge) {
+                        postExceptionFiles[i].delete();
+                        deletedCounter++;
+                    }
+                } catch (Exception e) {
+                    Tr.info(tc, "lwas.FFDCIncidentEmitted", "Error: " + e.getStackTrace());
+                }
+            }
+            if(deletedCounter > 0) {
+                Tr.info(tc, "Deleted " + deletedCounter + " FFDC file(s) based on the maxFfdcAge value configured.");
+            }
+        }
+    }
+
+    private File[] getFfdcLogs() {
+        File target = FFDCConfigurator.getFFDCLocation();
+        if (target.exists()) {
+            File[] ffdcFiles = target.listFiles(ffdcLogFilter);
+            return ffdcFiles;
+        }
+
+        // If the folder didn't exist just return an empty array
+        return new File[0];
+    }
+
+    static FilenameFilter ffdcLogFilter = new FilenameFilter() {
+
+        @Override
+        public boolean accept(File dir, String name) {
+            return name.startsWith("ffdc_") && name.endsWith(".log");
+        }
+    };
 }
