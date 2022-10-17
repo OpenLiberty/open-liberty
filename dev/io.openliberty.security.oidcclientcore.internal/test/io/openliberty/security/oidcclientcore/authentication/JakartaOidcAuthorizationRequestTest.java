@@ -10,10 +10,13 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.authentication;
 
-import static io.openliberty.security.oidcclientcore.authentication.JakartaOidcAuthorizationRequest.STORED_REQUEST_HEADERS;
-import static io.openliberty.security.oidcclientcore.authentication.JakartaOidcAuthorizationRequest.STORED_REQUEST_METHOD;
-import static io.openliberty.security.oidcclientcore.authentication.JakartaOidcAuthorizationRequest.STORED_REQUEST_PARAMS;
+import static io.openliberty.security.oidcclientcore.authentication.JakartaOidcAuthorizationRequest.IS_CONTAINER_INITIATED_FLOW;
+import static io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants.WAS_OIDC_REQ_HEADERS;
+import static io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants.WAS_OIDC_REQ_METHOD;
+import static io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants.WAS_OIDC_REQ_PARAMS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
@@ -282,13 +285,13 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
             {
                 one(request).getMethod();
                 will(returnValue(requestMethod));
-                one(sessionBasedStorage).store(with(equal(STORED_REQUEST_METHOD + stateHash)), with(any(String.class)));
+                one(sessionBasedStorage).store(with(equal(WAS_OIDC_REQ_METHOD + stateHash)), with(any(String.class)));
 
                 one(request).getHeaderNames();
                 will(returnValue(headerNames));
                 one(request).getHeaders("Content-Type");
                 will(returnValue(contentTypes));
-                one(sessionBasedStorage).store(with(equal(STORED_REQUEST_HEADERS + stateHash)), with(any(String.class)));
+                one(sessionBasedStorage).store(with(equal(WAS_OIDC_REQ_HEADERS + stateHash)), with(any(String.class)));
 
                 one(request).getParameterNames();
                 will(returnValue(paramNames));
@@ -296,11 +299,55 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
                 will(returnValue(ids));
                 one(request).getParameterValues("language");
                 will(returnValue(languages));
-                one(sessionBasedStorage).store(with(equal(STORED_REQUEST_PARAMS + stateHash)), with(any(String.class)));
+                one(sessionBasedStorage).store(with(equal(WAS_OIDC_REQ_PARAMS + stateHash)), with(any(String.class)));
             }
         });
 
         authzRequest.storeFullRequest(state);
+    }
+
+    @Test
+    public void test_isContainerInitiatedFlow() {
+        mockery.checking(new Expectations() {
+            {
+                one(request).getAttribute(IS_CONTAINER_INITIATED_FLOW);
+                will(returnValue(true));
+                one(request).removeAttribute(IS_CONTAINER_INITIATED_FLOW);
+            }
+        });
+
+        boolean result = authzRequest.isContainerInitiatedFlow();
+
+        assertTrue("It should be return true, indicating that it is a container initiated flow.", result);
+    }
+
+    @Test
+    public void test_isContainerInitiatedFlow_notContainerInitiated() {
+        mockery.checking(new Expectations() {
+            {
+                one(request).getAttribute(IS_CONTAINER_INITIATED_FLOW);
+                will(returnValue(false));
+                one(request).removeAttribute(IS_CONTAINER_INITIATED_FLOW);
+            }
+        });
+
+        boolean result = authzRequest.isContainerInitiatedFlow();
+
+        assertFalse("It should return false, indiciating that it is not a container initiated flow (caller initiated flow).", result);
+    }
+
+    @Test
+    public void test_isContainerInitiatedFlow_attributeIsNull() {
+        mockery.checking(new Expectations() {
+            {
+                one(request).getAttribute(IS_CONTAINER_INITIATED_FLOW);
+                will(returnValue(null)); // this should not happen
+            }
+        });
+
+        boolean result = authzRequest.isContainerInitiatedFlow();
+
+        assertFalse("It should return false, defaulting to not a container initiated flow (caller initiated flow).", result);
     }
 
 }

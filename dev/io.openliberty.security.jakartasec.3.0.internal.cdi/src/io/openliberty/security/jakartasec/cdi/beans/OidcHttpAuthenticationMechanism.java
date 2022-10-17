@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec.cdi.beans;
 
+import static io.openliberty.security.oidcclientcore.authentication.JakartaOidcAuthorizationRequest.IS_CONTAINER_INITIATED_FLOW;
+
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Hashtable;
@@ -17,6 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.security.auth.Subject;
 
@@ -34,10 +37,15 @@ import io.openliberty.security.jakartasec.OpenIdAuthenticationMechanismDefinitio
 import io.openliberty.security.jakartasec.OpenIdAuthenticationMechanismDefinitionWrapper;
 import io.openliberty.security.jakartasec.credential.OidcTokensCredential;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestUtils;
+import io.openliberty.security.oidcclientcore.authentication.OriginalResourceRequest;
 import io.openliberty.security.oidcclientcore.client.Client;
 import io.openliberty.security.oidcclientcore.client.ClientManager;
+import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException;
 import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
+import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
+import io.openliberty.security.oidcclientcore.storage.Storage;
+import io.openliberty.security.oidcclientcore.storage.StorageFactory;
 import io.openliberty.security.oidcclientcore.token.JakartaOidcTokenRequest;
 import io.openliberty.security.oidcclientcore.token.TokenResponse;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -47,6 +55,7 @@ import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
 import jakarta.security.enterprise.AuthenticationException;
 import jakarta.security.enterprise.AuthenticationStatus;
+import jakarta.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
 import jakarta.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import jakarta.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
@@ -122,8 +131,8 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
 
         boolean alreadyAuthenticated = isAlreadyAuthenticated(request);
 
-        if (isAuthenticationRequired(request, httpMessageContext, alreadyAuthenticated)) {
-            status = processStartFlowResult(client.startFlow(request, response), httpMessageContext);
+        if (isAuthenticationRequired(request, httpMessageContext, alreadyAuthenticated) && !containsStoredState(request, response, client)) {
+            status = processStartFlow(client, request, response, httpMessageContext);
         } else if (isCallbackRequest(request)) {
             status = processCallback(client, request, response, httpMessageContext);
         } else if (alreadyAuthenticated) {
@@ -157,8 +166,24 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         return httpMessageContext.isAuthenticationRequest() && !alreadyAuthenticated;
     }
 
+    private boolean containsStoredState(HttpServletRequest request, HttpServletResponse response, Client client) {
+        String state = request.getParameter(OpenIdConstant.STATE);
+        if (state == null) {
+            return false;
+        }
+        OidcClientConfig clientConfig = client.getOidcClientConfig();
+        Storage storage = StorageFactory.instantiateStorage(request, response, clientConfig.isUseSession());
+        return storage.get(OidcStorageUtils.getStateStorageKey(state)) != null;
+    }
+
     private boolean isAlreadyAuthenticated(HttpServletRequest request) {
         return request.getUserPrincipal() != null;
+    }
+
+    private AuthenticationStatus processStartFlow(Client client, HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) {
+        request.setAttribute(IS_CONTAINER_INITIATED_FLOW, isContainerInitiatedFlow(httpMessageContext.getAuthParameters()));
+        ProviderAuthenticationResult providerAuthenticationResult = client.startFlow(request, response);
+        return processStartFlowResult(providerAuthenticationResult, httpMessageContext);
     }
 
     private AuthenticationStatus processStartFlowResult(ProviderAuthenticationResult providerAuthenticationResult, HttpMessageContext httpMessageContext) {
@@ -192,16 +217,81 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
      */
     private AuthenticationStatus processCallback(Client client, HttpServletRequest request, HttpServletResponse response,
                                                  HttpMessageContext httpMessageContext) throws AuthenticationException {
-        AuthenticationStatus status = AuthenticationStatus.SEND_CONTINUE;
+        OidcClientConfig clientConfig = client.getOidcClientConfig();
 
+        Optional<String> originalRequestUrl = getOriginalRequestUrlForRedirect(request, response, clientConfig);
+        if (originalRequestUrl.isPresent()) {
+            return httpMessageContext.redirect(originalRequestUrl.get());
+        }
+
+        AuthenticationStatus status = AuthenticationStatus.SEND_CONTINUE;
+        Optional<HttpServletRequest> originalResourceRequest = getOriginalResourceRequest(clientConfig, httpMessageContext);
         try {
             ProviderAuthenticationResult providerAuthenticationResult = client.continueFlow(request, response);
             status = processContinueFlowResult(providerAuthenticationResult, httpMessageContext, request, response, client);
         } catch (AuthenticationResponseException | TokenRequestException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
-
+        if (status == AuthenticationStatus.SUCCESS && originalResourceRequest.isPresent()) {
+            httpMessageContext.setRequest(originalResourceRequest.get());
+            httpMessageContext.getMessageInfo().setRequestMessage(originalResourceRequest.get());
+        }
         return status;
+    }
+
+    private Optional<String> getOriginalRequestUrlForRedirect(HttpServletRequest request, HttpServletResponse response, OidcClientConfig clientConfig) {
+        if (clientConfig.isRedirectToOriginalResource()) {
+            String currentRequestUrl = request.getRequestURL().toString();
+            String originalRequestUrl = getOriginalRequestUrl(request, response, clientConfig.isUseSession());
+            if (originalRequestUrl != null && !originalRequestUrl.equals(currentRequestUrl)) {
+                originalRequestUrl = appendCodeAndStateParams(originalRequestUrl, request);
+                return Optional.of(originalRequestUrl);
+            }
+        }
+        return Optional.empty();
+    }
+
+    private String getOriginalRequestUrl(HttpServletRequest request, HttpServletResponse response, boolean useSession) {
+        String state = request.getParameter(OpenIdConstant.STATE);
+        if (state == null) {
+            return null;
+        }
+        Storage storage = StorageFactory.instantiateStorage(request, response, useSession);
+        String originalRequestUrl = storage.get(OidcStorageUtils.getOriginalReqUrlStorageKey(state));
+        if (originalRequestUrl == null) {
+            return null;
+        }
+        String originalRequestUrlWithoutQueryParams = originalRequestUrl.split(Pattern.quote("?"))[0];
+        return originalRequestUrlWithoutQueryParams;
+    }
+
+    private String appendCodeAndStateParams(String originalRequestUrl, HttpServletRequest request) {
+        originalRequestUrl += "?code=" + request.getParameter(OpenIdConstant.CODE);
+        originalRequestUrl += "&state=" + request.getParameter(OpenIdConstant.STATE);
+        return originalRequestUrl;
+    }
+
+    private Optional<HttpServletRequest> getOriginalResourceRequest(OidcClientConfig clientConfig, HttpMessageContext context) {
+        AuthenticationParameters authParams = context.getAuthParameters();
+        HttpServletRequest originalResourceRequest = null;
+        if (shouldRestoreOriginalRequest(clientConfig, authParams)) {
+            HttpServletRequest request = context.getRequest();
+            HttpServletResponse response = context.getResponse();
+            originalResourceRequest = getOriginalResourceRequest(request, response, clientConfig.isUseSession());
+        }
+        return Optional.ofNullable(originalResourceRequest);
+    }
+
+    private boolean shouldRestoreOriginalRequest(OidcClientConfig clientConfig, AuthenticationParameters authParams) {
+        return clientConfig.isRedirectToOriginalResource() && isContainerInitiatedFlow(authParams);
+    }
+
+    private boolean isContainerInitiatedFlow(AuthenticationParameters authParams) {
+        return (authParams == null || !authParams.isNewAuthentication());
+    }
+
+    protected OriginalResourceRequest getOriginalResourceRequest(HttpServletRequest request, HttpServletResponse response, boolean useSession) {
+        return new OriginalResourceRequest(request, response, useSession);
     }
 
     private AuthenticationStatus processContinueFlowResult(ProviderAuthenticationResult providerAuthenticationResult,

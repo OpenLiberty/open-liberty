@@ -15,6 +15,9 @@ public class OidcClientStorageConstants {
     public static final String WAS_OIDC_STATE_KEY = "WASOidcState";
     public static final String WAS_OIDC_NONCE = "WASOidcNonce";
     public static final String WAS_REQ_URL_OIDC = "WASReqURLOidc";
+    public static final String WAS_OIDC_REQ_METHOD = "WASOidcReqMethod";
+    public static final String WAS_OIDC_REQ_HEADERS = "WASOidcReqHeaders";
+    public static final String WAS_OIDC_REQ_PARAMS = "WASOidcReqParams";
 
     public static final int DEFAULT_STATE_STORAGE_LIFETIME_SECONDS = 420;
     public static final int DEFAULT_REQ_URL_STORAGE_LIFETIME_SECONDS = DEFAULT_STATE_STORAGE_LIFETIME_SECONDS;
