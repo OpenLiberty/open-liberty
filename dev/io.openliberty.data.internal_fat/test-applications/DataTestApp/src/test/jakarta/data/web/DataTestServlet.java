@@ -944,30 +944,31 @@ public class DataTestServlet extends FATServlet {
         // No more pages
         assertEquals(null, page.next());
 
-        // At this point, the following should remain:
+        // At this point, the following should remain (sorted by witdh descending, height ascending, id descending):
         // 114: 14.0f, 90.0f, 15.0f
-        // 117: 17.0f, 23.0f, 12.0f
-        // 133: 33.0f, 56.0f, 65.0f
         // 144: 33.0f, 56.0f, 63.0f
-        // 148: 48.0f, 45.0f, 50.0f
-        // 150: 48.0f, 45.0f, 50.0f
+        // 133: 33.0f, 56.0f, 65.0f
         // 151: 48.0f, 45.0f, 41.0f
+        // 150: 48.0f, 45.0f, 50.0f
+        // 148: 48.0f, 45.0f, 50.0f
+        // 117: 17.0f, 23.0f, 12.0f
 
         // Switch to pages of size 4.
 
         // Page 1
-        page = packages.findByHeightGreaterThanOrderByLengthAscOrderByWidthDescOrderByHeightDescOrderByIdAsc(10.0f, Pageable.size(4));
+        page = packages.findByHeightGreaterThan(10.0f, Pageable.size(4));
 
-        assertIterableEquals(List.of(114, 117, 133, 144),
+        assertIterableEquals(List.of(114, 144, 133, 151),
                              page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
 
-        packages.saveAll(List.of(new Package(115, 15.0f, 36.0f, 39.0f, "package#115"),
-                                 new Package(145, 45.0f, 28.0f, 53.0f, "package#145")));
+        packages.saveAll(List.of(new Package(128, 28.0f, 45.0f, 53.0f, "package#128"), // comes after the keyset values, should be included in next page
+                                 new Package(153, 53.0f, 45.0f, 28.0f, "package#153") // comes before the keyset values, should not be on next page
+        ));
 
         // Page 2
-        page = packages.findByHeightGreaterThanOrderByLengthAscOrderByWidthDescOrderByHeightDescOrderByIdAsc(10.0f, page.next());
+        page = packages.findByHeightGreaterThan(10.0f, page.next());
 
-        assertIterableEquals(List.of(145, 148, 150, 151),
+        assertIterableEquals(List.of(150, 148, 128, 117),
                              page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
 
         // No more pages

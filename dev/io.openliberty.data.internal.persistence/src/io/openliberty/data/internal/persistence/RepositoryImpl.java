@@ -140,20 +140,20 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             Where where = queryInfo.method.getAnnotation(Where.class);
             if (update == null) {
                 if (queryInfo.method.getAnnotation(Delete.class) == null) {
-                    if (where != null) {
+                    if (queryInfo.hasWhere = (where != null)) {
                         queryInfo.type = QueryInfo.Type.SELECT;
                         q = generateSelect(queryInfo).append(" WHERE ").append(where.value());
                     }
                 } else {
                     queryInfo.type = QueryInfo.Type.DELETE;
                     q = new StringBuilder(200).append("DELETE FROM ").append(entityInfo.name).append(" o");
-                    if (where != null)
+                    if (queryInfo.hasWhere = (where != null))
                         q.append(" WHERE ").append(where.value());
                 }
             } else {
                 queryInfo.type = QueryInfo.Type.UPDATE;
                 q = new StringBuilder(200).append("UPDATE ").append(entityInfo.name).append(" o SET ").append(update.value());
-                if (where != null)
+                if (queryInfo.hasWhere = (where != null))
                     q.append(" WHERE ").append(where.value());
             }
 
@@ -190,11 +190,22 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 else
                     q = new StringBuilder(queryInfo.jpql);
 
-            // TODO keyset conditions first and before the other place for OrderBy
+            boolean needsKeysetQueries = KeysetAwarePage.class.equals(queryInfo.method.getReturnType())
+                                         || KeysetAwarePage.class.equals(queryInfo.returnTypeParam);
+            StringBuilder o = needsKeysetQueries ? new StringBuilder(100) : q;
+            List<Sort> keyset = needsKeysetQueries ? new ArrayList<>(orderBy.length) : null;
+
             for (int i = 0; i < orderBy.length; i++) {
-                q.append(i == 0 ? " ORDER BY o." : ", o.").append(orderBy[i].value());
+                o.append(i == 0 ? " ORDER BY o." : ", o.").append(orderBy[i].value());
                 if (orderBy[i].descending())
-                    q.append(" DESC");
+                    o.append(" DESC");
+                if (needsKeysetQueries)
+                    keyset.add(orderBy[i].descending() ? Sort.desc(orderBy[i].value()) : Sort.asc(orderBy[i].value()));
+            }
+
+            if (needsKeysetQueries) {
+                generateKeysetQueries(queryInfo, keyset, q, o);
+                q.append(o);
             }
         }
 
@@ -239,12 +250,12 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      * @param q         query up to the WHERE clause, if present
      * @param o         ORDER BY clause
      */
-    private void generateKeysetQueries(QueryInfo queryInfo, List<Sort> keyset, boolean hasWhere, StringBuilder q, StringBuilder o) {
+    private void generateKeysetQueries(QueryInfo queryInfo, List<Sort> keyset, StringBuilder q, StringBuilder o) {
         int numKeys = keyset.size();
         StringBuilder a = new StringBuilder(200); // afterKeyset forward direction
         StringBuilder b = new StringBuilder(200); // beforeKeyset reverse direction
-        a.append(hasWhere ? " AND (" : " WHERE (");
-        b.append(hasWhere ? " AND (" : " WHERE (");
+        a.append(queryInfo.hasWhere ? " AND (" : " WHERE (");
+        b.append(queryInfo.hasWhere ? " AND (" : " WHERE (");
         for (int i = 0; i < numKeys; i++) {
             a.append(i == 0 ? "(" : " OR (");
             b.append(i == 0 ? "(" : " OR (");
@@ -286,13 +297,12 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             }
             int orderBy = methodName.indexOf("OrderBy", c);
             q = generateSelect(queryInfo);
-            boolean hasWhere;
-            if (hasWhere = (orderBy > c || orderBy == -1 && methodName.length() > c)) {
+            if (orderBy > c || orderBy == -1 && methodName.length() > c) {
                 String s = orderBy > 0 ? methodName.substring(c, orderBy) : methodName.substring(c);
                 generateRepositoryQueryConditions(queryInfo, s, q);
             }
             if (orderBy >= c)
-                generateRepositoryQueryOrderBy(queryInfo, orderBy, hasWhere, q);
+                generateRepositoryQueryOrderBy(queryInfo, orderBy, q);
             queryInfo.type = QueryInfo.Type.SELECT;
         } else if (methodName.startsWith("delete")) {
             int by = methodName.indexOf("By", 6);
@@ -345,10 +355,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
     /**
      * Generates JPQL for a findBy or deleteBy condition such as MyColumn[Not?]Like
-     *
-     * @return true if the condition was added. False if not added and the WHERE clause was removed.
      */
-    private boolean generateRepositoryQueryCondition(QueryInfo queryInfo, String expression, StringBuilder q) {
+    private void generateRepositoryQueryCondition(QueryInfo queryInfo, String expression, StringBuilder q) {
         int length = expression.length();
 
         Condition condition = Condition.EQUALS;
@@ -416,7 +424,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             int len = q.length(), where = q.lastIndexOf(" WHERE (");
             if (where + 8 == len)
                 q.delete(where, len); // Remove " WHERE " because there are no conditions
-            return false;
+            queryInfo.hasWhere = false;
+            return;
         }
 
         StringBuilder a = new StringBuilder();
@@ -451,7 +460,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             default:
                 q.append(attributeExpr).append(negated ? " NOT " : "").append(condition.operator).append('?').append(++queryInfo.paramCount);
         }
-        return true;
     }
 
     /**
@@ -459,29 +467,29 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      */
     private void generateRepositoryQueryConditions(QueryInfo queryInfo, String conditions, StringBuilder q) {
         queryInfo.paramCount = 0;
+        queryInfo.hasWhere = true;
         q.append(" WHERE (");
-        boolean hasWhere = true;
-        for (int and = 0, or = 0, iNext, i = 0; hasWhere && i >= 0; i = iNext) {
+        for (int and = 0, or = 0, iNext, i = 0; queryInfo.hasWhere && i >= 0; i = iNext) {
             and = and == -1 || and > i ? and : conditions.indexOf("And", i);
             or = or == -1 || or > i ? or : conditions.indexOf("Or", i);
             iNext = Math.min(and, or);
             if (iNext < 0)
                 iNext = Math.max(and, or);
             String condition = iNext < 0 ? conditions.substring(i) : conditions.substring(i, iNext);
-            hasWhere = generateRepositoryQueryCondition(queryInfo, condition, q);
+            generateRepositoryQueryCondition(queryInfo, condition, q);
             if (iNext > 0) {
                 q.append(iNext == and ? " AND " : " OR ");
                 iNext += (iNext == and ? 3 : 2);
             }
         }
-        if (hasWhere)
+        if (queryInfo.hasWhere)
             q.append(')');
     }
 
     /**
      * Generates the JPQL ORDER BY clause for a repository findBy method such as findByLastNameLikeOrderByLastNameOrderByFirstName
      */
-    private void generateRepositoryQueryOrderBy(QueryInfo queryInfo, int orderBy, boolean hasWhere, StringBuilder q) {
+    private void generateRepositoryQueryOrderBy(QueryInfo queryInfo, int orderBy, StringBuilder q) {
         String methodName = queryInfo.method.getName();
         boolean needsKeysetQueries = KeysetAwarePage.class.equals(queryInfo.method.getReturnType())
                                      || KeysetAwarePage.class.equals(queryInfo.returnTypeParam);
@@ -515,7 +523,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         } while (orderBy > 0);
 
         if (needsKeysetQueries) {
-            generateKeysetQueries(queryInfo, keyset, hasWhere, q, o);
+            generateKeysetQueries(queryInfo, keyset, q, o);
             q.append(o);
         }
     }

@@ -14,6 +14,7 @@ import java.util.List;
 
 import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.KeysetAwarePage;
+import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Repository;
 
@@ -23,6 +24,11 @@ import jakarta.data.repository.Repository;
 @Repository
 public interface Packages extends CrudRepository<Package, Integer> {
     List<Package> findByHeightBetween(float minHeight, float maxHeight);
+
+    @OrderBy(value = "width", descending = true)
+    @OrderBy(value = "height")
+    @OrderBy(value = "id", descending = true)
+    KeysetAwarePage<Package> findByHeightGreaterThan(float minHeight, Pageable pagination);
 
     KeysetAwarePage<Package> findByHeightGreaterThanOrderByLengthAscOrderByWidthDescOrderByHeightDescOrderByIdAsc(float minHeight, Pageable pagination);
 

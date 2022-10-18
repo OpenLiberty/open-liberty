@@ -10,16 +10,29 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
 /**
  *
  */
+@Entity
 public class Package {
 
     public String description;
 
+    @Id
     public int id;
 
-    public float length, width, height;
+    @Column(columnDefinition = "DECIMAL(8,5) NOT NULL")
+    public float height;
+
+    @Column(columnDefinition = "DECIMAL(9,4) NOT NULL")
+    public float length;
+
+    @Column(columnDefinition = "DECIMAL(8,4) NOT NULL")
+    public float width;
 
     public Package() {
     }

@@ -36,6 +36,12 @@ class QueryInfo {
     EntityInfo entityInfo;
 
     /**
+     * Indicates if the query has a WHERE clause.
+     * This is accurate only for generated or partially provided queries.
+     */
+    boolean hasWhere;
+
+    /**
      * JPQL for the query. Null if a save operation.
      */
     String jpql;
@@ -191,6 +197,7 @@ class QueryInfo {
     QueryInfo withJPQL(String jpql) {
         QueryInfo q = new QueryInfo(method, returnArrayType, returnTypeParam);
         q.entityInfo = entityInfo;
+        q.hasWhere = hasWhere;
         q.jpql = jpql;
         q.jpqlAfterKeyset = jpqlAfterKeyset;
         q.jpqlBeforeKeyset = jpqlBeforeKeyset;
