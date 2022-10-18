@@ -30,25 +30,33 @@ import com.ibm.ws.security.token.TokenService;
  * Each new version should be able to deserialze every previous version.
  * This is necessary to maintain version to version compatibility for the distributed authentication cache.
  */
-public class SerializationTest {
+public class SingleSignonTokenImplSerializationTest {
     /**
      * Test to deserialize SingleSignonTokenImpl_1.ser.
-     * Validate version and name.
+     * Validate token, version, and name.
      */
     @Test
     public void deserializeSingleSignonTokenImpl_1() throws Exception {
-        String filename = "test-resources/ser-files/SingleSignonTokenImpl_1.ser";
-        FileInputStream file = new FileInputStream(filename);
-        ObjectInputStream in = new ObjectInputStream(file);
+        final String filename = "test-resources/ser-files/SingleSignonTokenImpl_1.ser";
 
-        SingleSignonTokenImpl object = (SingleSignonTokenImpl) in.readObject();
-        in.close();
+        /*
+         * Deserialize the token from the file.
+         */
+        SingleSignonTokenImpl object = null;
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))) {
+            object = (SingleSignonTokenImpl) in.readObject();
+        }
 
-        //Check version and name
+        /*
+         * Check version and name
+         */
         assertEquals("The version number should be: 2.", 2, object.getVersion());
         assertEquals("The name should be: LtpaToken", "LtpaToken", object.getName());
 
-        //Check Token
+        /*
+         * Check token and token expiration
+         */
+        assertEquals("The token string should be: tokenstring: 0.5967827720935945.", "tokenstring: 0.5967827720935945", object.getToken().toString());
         assertEquals("The token expiration should be: 123456789L.", 123456789L, object.getToken().getExpiration());
 
     }
@@ -63,28 +71,26 @@ public class SerializationTest {
      * Then write a test that deserializes that version and all
      * previous SingleSignonTokenImpl_x.ser files.
      */
-    public void writeSingleSignonTokenImpl() throws Exception {
-        //Create TokenService
+    public static void main() throws Exception {
+        final String filename = "test-resources/ser-files/SingleSignonTokenImpl_x.ser";
+
+        /*
+         * Create TokenService
+         */
         TokenService ts = new TestTokenServiceImpl();
 
-        //Create SingleSignonTokenImpl
+        /*
+         * Create SingleSignonTokenImpl
+         */
         SingleSignonTokenImpl object = new SingleSignonTokenImpl(ts, "tokenType_1");
         object.initializeToken(new byte[] {});
 
-        String filename = "test-resources/ser-files/SingleSignonTokenImpl_1.ser";
-
-        // Serialization
-        //Saving of object in a file
-        FileOutputStream file = new FileOutputStream(filename);
-        ObjectOutputStream output = new ObjectOutputStream(file);
-
-        // Method for serialization of object
-        output.writeObject(object);
-
-        output.close();
-        file.close();
-
+        /*
+         * Serialize the object instance to a file.
+         */
+        try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(filename))) {
+            output.writeObject(object);
+        }
         System.out.println("Object has been serialized");
-
     }
 }
