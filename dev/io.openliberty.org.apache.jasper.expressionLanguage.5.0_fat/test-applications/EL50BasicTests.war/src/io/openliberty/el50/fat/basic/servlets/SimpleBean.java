@@ -13,7 +13,7 @@ package io.openliberty.el50.fat.basic.servlets;
 import java.util.Arrays;
 
 /**
- * Bean for testing basic changes in EL 5.0
+ * Bean for testing basic changes in Expression Language 5.0
  */
 public class SimpleBean {
 

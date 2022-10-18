@@ -35,7 +35,7 @@ import jakarta.servlet.annotation.WebServlet;
 
 
 /**
- * Servlet for testing basic changes in EL 5.0
+ * Servlet for testing basic changes in Expression Language 5.0
  */
 @WebServlet({ "/EL50BasicTests" })
 @Mode(TestMode.FULL)
@@ -95,7 +95,7 @@ public class EL50BasicTestsServlet extends FATServlet {
 
     /**
      * 
-     * Expression Language 5.0 in Jakarta EE10 switched ELResolver getFeatureDescriptors to return a default value of null and deprecated it to be remove in EL 6.0.
+     * Expression Language 5.0 in Jakarta EE10 switched ELResolver getFeatureDescriptors to return a default value of null and deprecated it to be remove in Expression Language 6.0.
      * https://github.com/jakartaee/expression-language/issues/167
      * @throws Exception
      */
@@ -108,7 +108,7 @@ public class EL50BasicTestsServlet extends FATServlet {
     /**
      *
      * Expression Language 5.0 in Jakarta EE10 clarified and documented getType must return null if property is read-only
-     * and switched implementation of StaticFieldELResolver getType to match this behavior as it was inconsistent before EL 5.0.
+     * and switched implementation of StaticFieldELResolver getType to match this behavior as it was inconsistent before Expression Language 5.0.
      * https://github.com/jakartaee/expression-language/issues/168
      * @throws Exception
      */
@@ -122,14 +122,14 @@ public class EL50BasicTestsServlet extends FATServlet {
         Object bean = new ELClass(SimpleBean.class);
         Class<?> type = resolver.getType(context, bean, "staticString");
         assertTrue("When calling getType for StaticFieldELResolver, the property was not resolved!", context.isPropertyResolved());
-        assertNull("When calling getType for StaticFieldELResolver, did not return null instead returned: " +type, type);
+        assertNull("When calling getType for StaticFieldELResolver, the returned value was not null and instead was: " + type, type);
 
         BeanELResolver  beanResolver = new BeanELResolver();
         elm.addELResolver(beanResolver);
         context.setPropertyResolved(false);
         type = beanResolver.getType(context, new SimpleBean(), "simpleProperty");
         assertTrue("When calling getType for BeanELResolver, the property was not resolved!", context.isPropertyResolved());
-        assertNull("When calling getType for BeanELResolver, did not return null instead returned: " +type, type);
+        assertNull("When calling getType for BeanELResolver, the returned value was not null and instead was: " + type, type);
     }
 
     /*

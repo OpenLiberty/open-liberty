@@ -27,7 +27,7 @@ import jakarta.el.ELException;
 import jakarta.el.ELProcessor;
 
 /**
- * Servlet for testing Array coercion in EL 5.0
+ * Servlet for testing Array coercion in Expression Language 5.0
  * https://github.com/jakartaee/expression-language/issues/172
  */
 @WebServlet({ "/EL50ArrayCoercion" })
