@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,22 +10,26 @@
  */
 package com.ibm.ws.jsf22.el.beans.faces40;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import java.io.Serializable;
+
+import javax.enterprise.context.SessionScoped;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ValueChangeEvent;
+import javax.inject.Named;
 
 /**
  * Bean used to test the JSF 2.2 Jira http://java.net/jira/browse/JAVASERVERFACES_SPEC_PUBLIC-1092
- * 
+ *
  * This Jira makes sure that the exception thrown due to ValueChangeEvent doesn't get wrapped into AbortProcessingException in
  * JSF implementation. Instead it gets propagated as is to the web page, as response. If user invokes xtml corresponds to this bean,
  * then user should be seeing NullPointerException on the response page.
- * 
+ *
  */
-@ManagedBean(name = "elException")
+@Named("elException")
 @SessionScoped
-public class ELExceptionBean {
+public class ELExceptionBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String stringVal;
 

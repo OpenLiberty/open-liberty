@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,13 +10,13 @@
  */
 package com.ibm.ws.jsf22.el.beans.faces40;
 
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 
 /**
  * Simple bean, with a few fields and methods needed to test EL 3.0
  */
-@ManagedBean(name = "staticbean")
+@Named("staticbean")
 @ApplicationScoped
 public class EL30StaticFieldsAndMethodsBean {
 
@@ -28,7 +28,7 @@ public class EL30StaticFieldsAndMethodsBean {
     /*
      * A non-static string
      */
-    public String nonStaticReference = "non-static reference";
+    private String nonStaticReference = "non-static reference";
 
     /*
      * A static method
