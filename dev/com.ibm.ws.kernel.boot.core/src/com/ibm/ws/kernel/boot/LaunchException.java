@@ -27,6 +27,11 @@ public class LaunchException extends ServerException {
         super(message, translatedMsg);
     }
 
+    public LaunchException(String message, String translatedMsg, ReturnCode rc) {
+        super(message, translatedMsg);
+        this.setReturnCode(rc);
+    }
+
     public LaunchException(String message, String translatedMsg, Throwable cause) {
         super(message, translatedMsg, cause);
     }

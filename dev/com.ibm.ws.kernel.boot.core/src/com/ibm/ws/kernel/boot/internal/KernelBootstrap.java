@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -77,7 +77,7 @@ public class KernelBootstrap {
 
     /**
      * @param bootProps BootstrapProperties carry forward all of the parameters and
-     *            options used to launch the kernel.
+     *                      options used to launch the kernel.
      */
     public KernelBootstrap(BootstrapConfig bootProps) {
         this.bootProps = bootProps;
@@ -98,6 +98,8 @@ public class KernelBootstrap {
      * <li>Launch the OSGi framework via the LauncherDelegate
      */
     public ReturnCode go() {
+        verifyJavaVersion();
+
         try {
             // obtaining a lock for the server (with timeout)
             serverLock.obtainServerLock();
@@ -456,7 +458,61 @@ public class KernelBootstrap {
             Policy wlpPolicy = new WLPDynamicPolicy(Policy.getPolicy(), urlList);
             Policy.setPolicy(wlpPolicy);
         }
+    }
 
+    // For (mostly) internal use:
+    // Provide a back door in case the version check breaks existing customers.
+    public static final String IGNORE_JAVA_VERSION_PROPERTY_NAME = "com.ibm.ws.IGNORE_JAVA_VERSION";
+
+    public static final int MIN_SUPPORTED_JAVA_VERSION = 8;
+    public static final String MIN_SUPPORTED_JAVA_VERSION_TEXT = "8.0";
+
+    // Java 8 or lower: 1.6.0_23, 1.7.0, 1.7.0_80, 1.8.0_211
+    // Java 9 or higher: 9.0.1, 11.0.4, 12, 12.0.1
+
+    public static void verifyJavaVersion() throws LaunchException {
+        verifyJavaVersion(System.getProperty("java.version").trim());
+    }
+
+    public static void verifyJavaVersion(String javaVersion) throws LaunchException {
+        int majorStart = (javaVersion.startsWith("1.") ? 2 : 0);
+        int majorEnd = javaVersion.indexOf('.', majorStart);
+
+        String major;
+        if (majorEnd == -1) {
+            major = javaVersion.substring(majorStart);
+        } else {
+            major = javaVersion.substring(majorStart, majorEnd);
+        }
+
+        int majorValue;
+        if (major.isEmpty()) {
+            majorValue = -1;
+        } else {
+            try {
+                majorValue = Integer.parseInt(major);
+            } catch (NumberFormatException e) {
+                majorValue = -1;
+            }
+        }
+
+        if (majorValue >= MIN_SUPPORTED_JAVA_VERSION) {
+            return;
+        }
+
+        if (Boolean.valueOf(System.getProperty(IGNORE_JAVA_VERSION_PROPERTY_NAME))) {
+            // CWWKE0961W: Proceeding with server launch. The {0} Java version is less than the {1} minimum supported Java version.
+            String message = MessageFormat.format(BootstrapConstants.messages.getString("warning.unsupported.java.version"),
+                                                  javaVersion, MIN_SUPPORTED_JAVA_VERSION_TEXT);
+            System.out.println(message);
+            return;
+        }
+
+        String translatedMessage = MessageFormat.format(BootstrapConstants.messages.getString("error.unsupported.java.version"),
+                                                        javaVersion, MIN_SUPPORTED_JAVA_VERSION_TEXT);
+        String untranslatedMessage = "CWWKE0963E: Failing server launch. The " + javaVersion + " is less than the {1} minimum supported Java version.";
+        System.out.println(translatedMessage);
+        throw new LaunchException(untranslatedMessage, translatedMessage, ReturnCode.ERROR_BAD_JAVA_VERSION);
     }
 
     /**
