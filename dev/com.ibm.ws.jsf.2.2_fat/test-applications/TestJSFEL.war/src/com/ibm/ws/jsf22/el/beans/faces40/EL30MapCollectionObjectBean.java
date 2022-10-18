@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jsf22.el.beans;
+package com.ibm.ws.jsf22.el.beans.faces40;
 
 import java.util.Collection;
 import java.util.HashMap;
