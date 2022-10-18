@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,23 +8,24 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jsf22.el.beans;
+package com.ibm.ws.jsf22.el.beans.faces40;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
 /**
  * Simple bean used for Map Collection Object
  */
 
-@ManagedBean(name = "mapbean")
+@Named("mapbean")
 @SessionScoped
-public class EL30MapCollectionObjectBean implements java.io.Serializable {
+public class EL30MapCollectionObjectBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

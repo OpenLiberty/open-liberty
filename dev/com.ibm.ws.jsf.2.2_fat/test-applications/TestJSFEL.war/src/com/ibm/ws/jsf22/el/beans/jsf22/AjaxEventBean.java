@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jsf22.el.beans;
+package com.ibm.ws.jsf22.el.beans.jsf22;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
