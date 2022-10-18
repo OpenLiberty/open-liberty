@@ -22,7 +22,6 @@ import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
-import org.jose4j.jwt.consumer.JwtContext;
 import org.jose4j.jwx.JsonWebStructure;
 import org.jose4j.keys.HmacKey;
 
@@ -35,6 +34,7 @@ import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
 import com.ibm.wsspi.ssl.SSLSupport;
 
+import io.openliberty.security.common.jwt.JwtParsingUtils;
 import io.openliberty.security.oidcclientcore.exceptions.VerificationKeyException;
 
 /**
@@ -197,10 +197,7 @@ public class CommonJose4jUtils {
                                                                                                                                       this.issuerconfigured).setRequireSubject().setSkipDefaultAudienceValidation().setVerificationKey(key).setRelaxVerificationKeyValidation();
 
             JwtConsumer jwtConsumer = builder.build();
-
-            JwtContext validatedJwtContext = jwtConsumer.process(jwtString);
-            return validatedJwtContext.getJwtClaims();
-
+            return JwtParsingUtils.parseJwtWithValidation(jwtString, jwtConsumer);
         }
     }
 

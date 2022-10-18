@@ -8,13 +8,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.security.oidcclientcore.userinfo;
+package io.openliberty.security.oidcclientcore.config;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-
-import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.jmock.Expectations;
 import org.junit.After;
@@ -27,31 +24,29 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.ws.security.test.common.CommonTestClass;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
+import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
 import io.openliberty.security.oidcclientcore.discovery.DiscoveryHandler;
 import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
-import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseException;
+import io.openliberty.security.oidcclientcore.http.EndpointRequest;
 import test.common.SharedOutputManager;
 
-public class UserInfoHandlerTest extends CommonTestClass {
+public class MetadataUtilsTest extends CommonTestClass {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
 
     public static final String CWWKS2403E_DISCOVERY_EXCEPTION = "CWWKS2403E";
     public static final String CWWKS2405E_DISCOVERY_METADATA_MISSING_VALUE = "CWWKS2405E";
-    public static final String CWWKS2418W_USERINFO_RESPONSE_ERROR = "CWWKS2418W";
 
     private final OidcClientConfig oidcClientConfig = mockery.mock(OidcClientConfig.class);
+    private final EndpointRequest endpointRequestClass = mockery.mock(EndpointRequest.class);
+    private final OidcProviderMetadata providerMetadata = mockery.mock(OidcProviderMetadata.class);
     private final DiscoveryHandler discoveryHandler = mockery.mock(DiscoveryHandler.class);
-    private final UserInfoRequestor userInfoRequestor = mockery.mock(UserInfoRequestor.class);
-    private final UserInfoResponse userInfoResponse = mockery.mock(UserInfoResponse.class);
 
     private final String clientId = "myClientId";
     private final String discoveryUrl = "https://localhost/OP/" + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
     private final String userInfoEndpoint = "https://localhost/OP/userinfo";
-    private final String accessToken = "qOuZdH6Anmxclul5d71AXoDbFVmRG2dPnHn9moaw";
-
-    UserInfoHandler handler;
+    private final String sampleStringValue = "some string value";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -68,17 +63,6 @@ public class UserInfoHandlerTest extends CommonTestClass {
                 will(returnValue(clientId));
             }
         });
-        handler = new UserInfoHandler() {
-            @Override
-            public DiscoveryHandler getDiscoveryHandler() {
-                return discoveryHandler;
-            }
-
-            @Override
-            UserInfoRequestor createUserInfoRequestor(String userInfoEndpoint, OidcClientConfig oidcClientConfig, String accessToken) {
-                return userInfoRequestor;
-            }
-        };
     }
 
     @After
@@ -94,62 +78,63 @@ public class UserInfoHandlerTest extends CommonTestClass {
     }
 
     @Test
-    public void test_getUserInfoClaims_noUserInfoEndpoint() throws Exception {
+    public void test_getValueFromProviderOrDiscoveryMetadata_providerMetadataHasValue() throws OidcDiscoveryException {
+        mockery.checking(new Expectations() {
+            {
+                one(oidcClientConfig).getProviderMetadata();
+                will(returnValue(providerMetadata));
+                one(providerMetadata).getUserinfoEndpoint();
+                will(returnValue(userInfoEndpoint));
+            }
+        });
+        String result = MetadataUtils.getValueFromProviderOrDiscoveryMetadata(endpointRequestClass,
+                                                                              oidcClientConfig,
+                                                                              metadata -> metadata.getUserinfoEndpoint(),
+                                                                              OidcDiscoveryConstants.METADATA_KEY_USERINFO_ENDPOINT);
+        assertEquals(userInfoEndpoint, result);
+    }
+
+    @Test
+    public void test_getValueFromProviderOrDiscoveryMetadata_providerMetadataHasEmptyValue() throws OidcDiscoveryException {
+        JSONObject discoveryData = new JSONObject();
+        discoveryData.put(OidcDiscoveryConstants.METADATA_KEY_ISSUER, sampleStringValue);
+        mockery.checking(new Expectations() {
+            {
+                one(oidcClientConfig).getProviderMetadata();
+                will(returnValue(providerMetadata));
+                one(providerMetadata).getIssuer();
+                will(returnValue(""));
+                one(endpointRequestClass).getProviderDiscoveryMetadata(oidcClientConfig);
+                will(returnValue(discoveryData));
+            }
+        });
+        String result = MetadataUtils.getValueFromProviderOrDiscoveryMetadata(endpointRequestClass,
+                                                                              oidcClientConfig,
+                                                                              metadata -> metadata.getIssuer(),
+                                                                              OidcDiscoveryConstants.METADATA_KEY_ISSUER);
+        assertEquals(sampleStringValue, result);
+    }
+
+    @Test
+    public void test_getValueFromProviderOrDiscoveryMetadata_noProviderMetadata_discoveryMissingEntry() {
+        JSONObject discoveryData = new JSONObject();
         mockery.checking(new Expectations() {
             {
                 one(oidcClientConfig).getProviderMetadata();
                 will(returnValue(null));
-                one(discoveryHandler).fetchDiscoveryDataJson(discoveryUrl, clientId);
-                will(returnValue(new JSONObject()));
+                one(endpointRequestClass).getProviderDiscoveryMetadata(oidcClientConfig);
+                will(returnValue(discoveryData));
             }
         });
         try {
-            Map<String, Object> result = handler.getUserInfoClaims(oidcClientConfig, accessToken);
+            String result = MetadataUtils.getValueFromProviderOrDiscoveryMetadata(endpointRequestClass,
+                                                                                  oidcClientConfig,
+                                                                                  metadata -> metadata.getTokenEndpoint(),
+                                                                                  OidcDiscoveryConstants.METADATA_KEY_TOKEN_ENDPOINT);
             fail("Should have thrown an exception but got: [" + result + "].");
         } catch (OidcDiscoveryException e) {
-            verifyException(e, CWWKS2403E_DISCOVERY_EXCEPTION + ".*" + CWWKS2405E_DISCOVERY_METADATA_MISSING_VALUE + ".*" + OidcDiscoveryConstants.METADATA_KEY_USERINFO_ENDPOINT);
+            verifyException(e, CWWKS2403E_DISCOVERY_EXCEPTION + ".*" + CWWKS2405E_DISCOVERY_METADATA_MISSING_VALUE + ".*" + OidcDiscoveryConstants.METADATA_KEY_TOKEN_ENDPOINT);
         }
-    }
-
-    @Test
-    public void test_getUserInfoClaims_requestThrowsException() throws Exception {
-        JSONObject discoveryData = new JSONObject();
-        discoveryData.put(OidcDiscoveryConstants.METADATA_KEY_USERINFO_ENDPOINT, userInfoEndpoint);
-        mockery.checking(new Expectations() {
-            {
-                one(oidcClientConfig).getProviderMetadata();
-                will(returnValue(null));
-                one(discoveryHandler).fetchDiscoveryDataJson(discoveryUrl, clientId);
-                will(returnValue(discoveryData));
-                one(userInfoRequestor).requestUserInfo();
-                will(throwException(new UserInfoResponseException(userInfoEndpoint, new Exception(defaultExceptionMsg))));
-            }
-        });
-        try {
-            Map<String, Object> result = handler.getUserInfoClaims(oidcClientConfig, accessToken);
-            fail("Should have thrown an exception but got: [" + result + "].");
-        } catch (UserInfoResponseException e) {
-            verifyException(e, CWWKS2418W_USERINFO_RESPONSE_ERROR + ".+" + Pattern.quote(defaultExceptionMsg));
-        }
-    }
-
-    @Test
-    public void test_getUserInfoClaims() throws Exception {
-        JSONObject discoveryData = new JSONObject();
-        discoveryData.put(OidcDiscoveryConstants.METADATA_KEY_USERINFO_ENDPOINT, userInfoEndpoint);
-        mockery.checking(new Expectations() {
-            {
-                one(oidcClientConfig).getProviderMetadata();
-                will(returnValue(null));
-                one(discoveryHandler).fetchDiscoveryDataJson(discoveryUrl, clientId);
-                will(returnValue(discoveryData));
-                one(userInfoRequestor).requestUserInfo();
-                will(returnValue(userInfoResponse));
-                one(userInfoResponse).asMap();
-            }
-        });
-        Map<String, Object> result = handler.getUserInfoClaims(oidcClientConfig, accessToken);
-        assertNotNull("Should have gotten back a non-null map.", result);
     }
 
 }

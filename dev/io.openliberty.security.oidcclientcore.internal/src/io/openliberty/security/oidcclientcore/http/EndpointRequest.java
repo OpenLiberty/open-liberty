@@ -28,21 +28,25 @@ import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 
-
 @Component(service = EndpointRequest.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class EndpointRequest {
 
     public static final TraceComponent tc = Tr.register(EndpointRequest.class);
+
     private static final String KEY_SSL_SUPPORT = "sslSupport";
-    private static volatile SSLSupport sslSupport;
+    protected static volatile SSLSupport sslSupport;
 
     @Reference(name = KEY_SSL_SUPPORT, policy = ReferencePolicy.DYNAMIC)
-    protected void setSslSupport(SSLSupport sslSupportSvc) {
+    public void setSslSupport(SSLSupport sslSupportSvc) {
         sslSupport = sslSupportSvc;
     }
 
-    protected void unsetSslSupport(SSLSupport sslSupportSvc) {
+    public void unsetSslSupport(SSLSupport sslSupportSvc) {
         sslSupport = null;
+    }
+
+    public SSLSupport getSSLSupport() {
+        return sslSupport;
     }
 
     public SSLSocketFactory getSSLSocketFactory() {

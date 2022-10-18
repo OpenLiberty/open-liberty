@@ -40,12 +40,20 @@ public class JwsSignatureVerifier {
         this.signatureAlgorithm = (builder.signatureAlgorithm != null) ? builder.signatureAlgorithm : "RS256";
     }
 
-    public JwtClaims validateJwsSignature(JwtContext jwtContext) throws JwtContextMissingJoseObjects, EncodedSignatureEmptyException, SignatureAlgorithmDoesNotMatchHeaderException, InvalidJwtException {
+    public Key getKey() {
+        return key;
+    }
+
+    public String getSignatureAlgorithm() {
+        return signatureAlgorithm;
+    }
+
+    public JwtClaims validateJwsSignature(JwtContext jwtContext) throws EncodedSignatureEmptyException, SignatureAlgorithmDoesNotMatchHeaderException, InvalidJwtException, JwtContextMissingJoseObjects {
         JsonWebStructure jws = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
         return validateJwsSignature((JsonWebSignature) jws, jwtContext.getJwt());
     }
 
-    public JwtClaims validateJwsSignature(JsonWebSignature signature, String jwtString) throws EncodedSignatureEmptyException, SignatureAlgorithmDoesNotMatchHeaderException, InvalidJwtException {
+    JwtClaims validateJwsSignature(JsonWebSignature signature, String jwtString) throws EncodedSignatureEmptyException, SignatureAlgorithmDoesNotMatchHeaderException, InvalidJwtException {
         verifySignAlgOnly(signature);
 
         JwtConsumerBuilder builder = new JwtConsumerBuilder();
@@ -88,7 +96,7 @@ public class JwsSignatureVerifier {
             this.key = key;
             return this;
         }
-        
+
         public Builder signatureAlgorithm(String signatureAlgorithm) {
             this.signatureAlgorithm = signatureAlgorithm;
             return this;

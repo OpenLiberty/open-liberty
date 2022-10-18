@@ -33,7 +33,6 @@ import io.openliberty.security.jakartasec.tokens.RefreshTokenImpl;
 import io.openliberty.security.oidcclientcore.client.ClaimsMappingConfig;
 import io.openliberty.security.oidcclientcore.client.Client;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
-import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseException;
 import io.openliberty.security.oidcclientcore.token.TokenResponse;
 import io.openliberty.security.oidcclientcore.userinfo.UserInfoHandler;
 import jakarta.json.JsonObject;
@@ -190,7 +189,7 @@ public class OidcIdentityStore implements IdentityStore {
         Map<String, Object> userInfoClaims = null;
         try {
             userInfoClaims = userInfoHandler.getUserInfoClaims(oidcClientConfig, accessToken.getToken());
-        } catch (UserInfoResponseException e) {
+        } catch (Exception e) {
             Tr.warning(tc, e.toString());
             return null;
         }

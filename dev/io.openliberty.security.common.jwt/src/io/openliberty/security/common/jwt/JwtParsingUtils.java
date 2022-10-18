@@ -23,9 +23,7 @@ import org.jose4j.jwx.JsonWebStructure;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import io.openliberty.security.common.jwt.exceptions.EncodedSignatureEmptyException;
 import io.openliberty.security.common.jwt.exceptions.JwtContextMissingJoseObjects;
-import io.openliberty.security.common.jwt.exceptions.SignatureAlgorithmDoesNotMatchHeaderException;
 import io.openliberty.security.common.jwt.jws.JwsSignatureVerifier;
 
 public class JwtParsingUtils {
@@ -51,6 +49,29 @@ public class JwtParsingUtils {
             }
         }
         return jsonStruct;
+    }
+
+    public static JwtClaims parseJwtWithValidation(String jwtString, JwtConsumer jwtConsumer) throws InvalidJwtException {
+        JwtContext validatedJwtContext = jwtConsumer.process(jwtString);
+        return validatedJwtContext.getJwtClaims();
+    }
+
+    public static JwtClaims parseJwtWithValidation(String jwtString, JwsSignatureVerifier signatureVerifier) throws Exception {
+        //        JwtConsumerBuilder builder = new JwtConsumerBuilder();
+        //        builder.setRequireExpirationTime()
+        //               .setAllowedClockSkewInSeconds(120)
+        //               .setExpectedAudience(this.clientid)
+        //               .setExpectedIssuer(false, this.issuerconfigured)
+        //               .setRequireSubject()
+        //               .setSkipDefaultAudienceValidation()
+        //               .setVerificationKey(signatureVerifier.getKey())
+        //               .setRelaxVerificationKeyValidation();
+        //
+        //        JwtConsumer jwtConsumer = builder.build();
+        //
+        //        JwtContext validatedJwtContext = jwtConsumer.process(jwtString);
+        //        return validatedJwtContext.getJwtClaims();
+        return null;
     }
 
 }
