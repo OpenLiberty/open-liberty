@@ -43,10 +43,10 @@ import com.ibm.ws.jpa.fvt.cdi.jpalib.model.Widget;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 @WebServlet(urlPatterns = { "/JPACDIJPALibServlet" })
-public class JPACDIJPALibServlet extends JPATestServlet implements CDITestComponent {
+public class JPACDIJPALibServlet extends JPADBTestServlet implements CDITestComponent {
     private static final long serialVersionUID = -3888645553607380940L;
     private static final String CLASS_NAME = JPACDIJPALibServlet.class.getName();
     private static final Logger svLogger = Logger.getLogger(CLASS_NAME);

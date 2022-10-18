@@ -20,12 +20,12 @@ import org.junit.Test;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
 /**
  *
  */
-public class DFI_Inh_AnoOvrd_EIW_SF_EJBTestServlet extends EJBTestVehicleServlet {
+public class DFI_Inh_AnoOvrd_EIW_SF_EJBTestServlet extends EJBDBTestVehicleServlet {
     private final String testLogicClassName = "com.ibm.ws.jpa.fvt.ejbinwar.testlogic.JPAInjectionTestLogic";
     private final String testMethod = "testInjectionTarget";
     private final PersistenceInjectionType piType = PersistenceInjectionType.FIELD;

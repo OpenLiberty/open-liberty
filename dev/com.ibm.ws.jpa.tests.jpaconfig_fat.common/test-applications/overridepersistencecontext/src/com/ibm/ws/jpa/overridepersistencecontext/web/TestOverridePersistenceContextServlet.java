@@ -25,11 +25,11 @@ import com.ibm.ws.jpa.overridepersistencecontext.testlogic.OverridePersistenceCo
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestOverridePersistenceContextServlet")
-public class TestOverridePersistenceContextServlet extends JPATestServlet {
+public class TestOverridePersistenceContextServlet extends JPADBTestServlet {
     // Container Managed Transaction Scope
     @PersistenceContext(unitName = "OverridePersistenceContext_JTA", properties = { @PersistenceProperty(name = "javax.persistence.lock.timeout", value = "34567") })
     private EntityManager cmtsEm;

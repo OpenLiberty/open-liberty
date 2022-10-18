@@ -24,10 +24,10 @@ import com.ibm.ws.jpa.fvt.util.testlogic.UtilTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 @WebServlet(urlPatterns = "/UtilWebTestServlet")
-public class UtilWebTestServlet extends JPATestServlet {
+public class UtilWebTestServlet extends JPADBTestServlet {
     // Container Managed Transaction Scope
     @PersistenceContext(unitName = "Util_JEE")
     private EntityManager cmtsEm;

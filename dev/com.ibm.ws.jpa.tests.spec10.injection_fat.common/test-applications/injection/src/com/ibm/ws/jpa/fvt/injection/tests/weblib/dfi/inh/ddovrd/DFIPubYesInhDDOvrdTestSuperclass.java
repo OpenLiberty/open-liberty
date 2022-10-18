@@ -17,7 +17,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 import javax.persistence.PersistenceUnit;
 
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 /**
  * JPA Injection Test Servlet
@@ -28,7 +28,7 @@ import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
  *
  *
  */
-public abstract class DFIPubYesInhDDOvrdTestSuperclass extends JPATestServlet {
+public abstract class DFIPubYesInhDDOvrdTestSuperclass extends JPADBTestServlet {
     private static final long serialVersionUID = 4408562037616998166L;
 
     /*

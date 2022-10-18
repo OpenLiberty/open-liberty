@@ -26,11 +26,11 @@ import com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.annotationoverride.testlogic.
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestAnnotationOverrideServlet")
-public class TestAnnotationOverrideServlet extends JPATestServlet {
+public class TestAnnotationOverrideServlet extends JPADBTestServlet {
     // Container Managed Transaction Scope
     @PersistenceContext(unitName = "AnnotationOverrideUnit_JTA")
     private EntityManager cmtsEm;

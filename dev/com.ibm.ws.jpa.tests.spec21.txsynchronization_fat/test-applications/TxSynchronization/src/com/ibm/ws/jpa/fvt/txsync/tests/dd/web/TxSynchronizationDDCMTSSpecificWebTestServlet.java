@@ -24,13 +24,13 @@ import com.ibm.ws.jpa.fvt.txsync.testlogic.cm.CMTSAndBMTSpecificTxSynchronizatio
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.TransactionSynchronization;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 import componenttest.annotation.ExpectedFFDC;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TxSynchronizationDDCMTSSpecificWebTestServlet")
-public class TxSynchronizationDDCMTSSpecificWebTestServlet extends JPATestServlet {
+public class TxSynchronizationDDCMTSSpecificWebTestServlet extends JPADBTestServlet {
     // Container Managed Transaction Scope
 //    @PersistenceContext(unitName = "TxSync",
 //                        type = PersistenceContextType.TRANSACTION,

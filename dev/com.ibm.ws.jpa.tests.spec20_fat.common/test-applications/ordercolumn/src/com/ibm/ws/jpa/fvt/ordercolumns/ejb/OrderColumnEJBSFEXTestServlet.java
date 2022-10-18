@@ -22,11 +22,11 @@ import com.ibm.ws.jpa.fvt.ordercolumns.OrderColumnTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/OrderColumnEJBSFEXTestServlet")
-public class OrderColumnEJBSFEXTestServlet extends EJBTestVehicleServlet {
+public class OrderColumnEJBSFEXTestServlet extends EJBDBTestVehicleServlet {
 
     @PostConstruct
     private void initFAT() {

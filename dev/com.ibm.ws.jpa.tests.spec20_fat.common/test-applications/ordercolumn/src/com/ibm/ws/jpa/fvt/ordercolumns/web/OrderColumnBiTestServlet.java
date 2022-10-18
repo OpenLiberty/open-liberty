@@ -26,11 +26,11 @@ import com.ibm.ws.jpa.fvt.ordercolumns.OrderColumnTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/OrderColumnBiTestServlet")
-public class OrderColumnBiTestServlet extends JPATestServlet {
+public class OrderColumnBiTestServlet extends JPADBTestServlet {
     // Container Managed Transaction Scope
     @PersistenceContext(unitName = "OrderColumn_JEE")
     private EntityManager cmtsEm;
