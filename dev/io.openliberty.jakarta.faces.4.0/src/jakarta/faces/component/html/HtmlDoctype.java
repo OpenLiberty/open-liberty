@@ -33,6 +33,7 @@ import jakarta.faces.convert.Converter;
 // WARNING: This file was automatically generated. Do not edit it directly,
 //          or you will lose your changes.
 public class HtmlDoctype extends jakarta.faces.component.UIOutput
+    implements jakarta.faces.component.Doctype
 {
 
     static public final String COMPONENT_FAMILY =
@@ -51,6 +52,7 @@ public class HtmlDoctype extends jakarta.faces.component.UIOutput
     {
         return COMPONENT_FAMILY;
     }
+
 
 
 

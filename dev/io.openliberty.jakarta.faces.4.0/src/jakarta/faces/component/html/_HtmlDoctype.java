@@ -27,24 +27,24 @@ import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFPropert
 /**
  * @since 2.1
  */
-@JSFComponent(name="h:doctype", clazz = "jakarta.faces.component.html.HtmlDoctype",
-        defaultRendererType="jakarta.faces.Doctype",template=true)
-abstract class _HtmlDoctype extends UIOutput implements Doctype
+@JSFComponent(name="h:doctype",
+        clazz = "jakarta.faces.component.html.HtmlDoctype",
+        defaultRendererType="jakarta.faces.Doctype",
+        template=true,
+        implementz="jakarta.faces.component.Doctype")
+abstract class _HtmlDoctype extends UIOutput
 {
 
     static public final String COMPONENT_FAMILY = "jakarta.faces.Output";
     static public final String COMPONENT_TYPE = "jakarta.faces.OutputDoctype";
 
     @JSFProperty
-    @Override
     public abstract String getPublic();
 
     @JSFProperty
-    @Override
     public abstract String getRootElement(); 
 
     @JSFProperty
-    @Override
     public abstract String getSystem(); 
 
 }
