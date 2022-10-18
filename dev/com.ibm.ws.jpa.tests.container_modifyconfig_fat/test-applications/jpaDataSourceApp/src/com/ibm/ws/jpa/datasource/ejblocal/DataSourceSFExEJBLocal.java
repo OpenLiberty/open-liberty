@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,17 +9,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpaContainer.fat;
+package com.ibm.ws.jpa.datasource.ejblocal;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import com.ibm.ws.testtooling.vehicle.ejb.EJBTestVehicle;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                JPAContainerModifyConfigTest.class,
-                JPADataSourceModifyConfigTest_EJB.class,
-                JPADataSourceModifyConfigTest_Web.class
-})
-public class FATSuite {
+public interface DataSourceSFExEJBLocal extends EJBTestVehicle {
+
 }
