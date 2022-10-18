@@ -19,13 +19,20 @@ dependencies {
 
 File sharedDir = new File(autoFvtDir, 'publish/shared/resources')
 
+task addDerbyToSharedDir(type: Copy) {
+  from configurations.derby
+  into new File(sharedDir, 'derby')
+  rename 'derby-.*.jar', 'derby.jar'
+}
+
+addRequiredLibraries.dependsOn addDerbyToSharedDir
 addRequiredLibraries.dependsOn copyJdbcDrivers
 addRequiredLibraries.dependsOn addJakartaTransformer
 addRequiredLibraries.dependsOn copyTestContainers
 
 
 clean.doLast {
-  if (file('test-bundles').exists()){
-    file('test-bundles').deleteDir()
+  if (file('build').exists()){
+    file('build').deleteDir()
   }
 }
