@@ -944,7 +944,7 @@ public class DataTestServlet extends FATServlet {
         // No more pages
         assertEquals(null, page.next());
 
-        // At this point, the following should remain (sorted by witdh descending, height ascending, id descending):
+        // At this point, the following should remain (sorted by width descending, height ascending, id descending):
         // 114: 14.0f, 90.0f, 15.0f
         // 144: 33.0f, 56.0f, 63.0f
         // 133: 33.0f, 56.0f, 65.0f
@@ -952,6 +952,15 @@ public class DataTestServlet extends FATServlet {
         // 150: 48.0f, 45.0f, 50.0f
         // 148: 48.0f, 45.0f, 50.0f
         // 117: 17.0f, 23.0f, 12.0f
+
+        // Dynamically request forward sorting where the criteria is the reverse of the above,
+        // starting after (but not including) the first position
+
+        page = packages.findByHeightGreaterThan(10.0f, Pageable.size(5).afterKeyset(23.0f, 12.0f, 117),
+                                                Sort.asc("width"), Sort.desc("height"), Sort.asc("id"));
+
+        assertIterableEquals(List.of(148, 150, 151, 133, 144),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
 
         // Switch to pages of size 4.
 

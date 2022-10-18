@@ -17,6 +17,7 @@ import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Sort;
 
 /**
  *
@@ -29,6 +30,8 @@ public interface Packages extends CrudRepository<Package, Integer> {
     @OrderBy(value = "height")
     @OrderBy(value = "id", descending = true)
     KeysetAwarePage<Package> findByHeightGreaterThan(float minHeight, Pageable pagination);
+
+    KeysetAwarePage<Package> findByHeightGreaterThan(float minHeight, Pageable pagination, Sort... orderBy);
 
     KeysetAwarePage<Package> findByHeightGreaterThanOrderByLengthAscOrderByWidthDescOrderByHeightDescOrderByIdAsc(float minHeight, Pageable pagination);
 

@@ -29,6 +29,13 @@ public class KeysetPageable extends Pageable {
         public int size() {
             return keyset.length;
         }
+
+        @Override
+        public String toString() {
+            return new StringBuilder("Cursor@").append(Integer.toHexString(hashCode())) //
+                            .append(" with ").append(keyset.length).append(" keys") //
+                            .toString();
+        }
     }
 
     private final Cursor cursor;
@@ -46,5 +53,15 @@ public class KeysetPageable extends Pageable {
 
     public Mode getMode() {
         return mode;
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder("KeysetPageable{size=") //
+                        .append(getSize()).append(", page=") //
+                        .append(getPage()).append(", mode=") //
+                        .append(mode).append(", cursor=") //
+                        .append(cursor).append("}") //
+                        .toString();
     }
 }

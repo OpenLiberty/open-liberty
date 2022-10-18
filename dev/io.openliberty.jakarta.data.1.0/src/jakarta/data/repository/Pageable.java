@@ -57,6 +57,6 @@ public class Pageable {
 
     @Override
     public String toString() {
-        return new StringBuilder("Pageable@").append(Integer.toHexString(hashCode())).append('#').append(pageNumber).append(" max page size ").append(pageSize).toString();
+        return new StringBuilder("Pageable{size=").append(pageSize).append(", page=").append(pageNumber).append("}").toString();
     }
 }

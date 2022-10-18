@@ -204,7 +204,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             }
 
             if (needsKeysetQueries) {
-                generateKeysetQueries(queryInfo, keyset, q, o);
+                generateKeysetQueries(queryInfo, keyset, null, q, o);
                 q.append(o);
             }
         }
@@ -247,36 +247,47 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      *
      * @param queryInfo query information
      * @param keyset    key names and direction
+     * @param direction keyset cursor direction if known from the repository method args. Otherwise null and JPQL is generated for both directions.
      * @param q         query up to the WHERE clause, if present
      * @param o         ORDER BY clause
      */
-    private void generateKeysetQueries(QueryInfo queryInfo, List<Sort> keyset, StringBuilder q, StringBuilder o) {
+    private void generateKeysetQueries(QueryInfo queryInfo, List<Sort> keyset, KeysetPageable.Mode direction, StringBuilder q, StringBuilder o) {
         int numKeys = keyset.size();
-        StringBuilder a = new StringBuilder(200); // afterKeyset forward direction
-        StringBuilder b = new StringBuilder(200); // beforeKeyset reverse direction
-        a.append(queryInfo.hasWhere ? " AND (" : " WHERE (");
-        b.append(queryInfo.hasWhere ? " AND (" : " WHERE (");
+        StringBuilder a = direction == null || direction == KeysetPageable.Mode.NEXT //
+                        ? new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (") //
+                        : null;
+        StringBuilder b = direction == null || direction == KeysetPageable.Mode.PREVIOUS //
+                        ? new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (") //
+                        : null;
         for (int i = 0; i < numKeys; i++) {
-            a.append(i == 0 ? "(" : " OR (");
-            b.append(i == 0 ? "(" : " OR (");
+            if (a != null)
+                a.append(i == 0 ? "(" : " OR (");
+            if (b != null)
+                b.append(i == 0 ? "(" : " OR (");
             for (int k = 0; k <= i; k++) {
                 Sort keyInfo = keyset.get(k);
                 String name = keyInfo.getProperty();
                 boolean asc = keyInfo.isAscending();
-                a.append(k == 0 ? "o." : " AND o.").append(name);
-                b.append(k == 0 ? "o." : " AND o.").append(name);
-                a.append(k < i ? "=?" : (asc ? ">?" : "<?"));
-                b.append(k < i ? "=?" : (asc ? "<?" : ">?"));
-                a.append(queryInfo.paramCount + 1 + k);
-                b.append(queryInfo.paramCount + 1 + k);
+                if (a != null) {
+                    a.append(k == 0 ? "o." : " AND o.").append(name);
+                    a.append(k < i ? "=?" : (asc ? ">?" : "<?"));
+                    a.append(queryInfo.paramCount + 1 + k);
+                }
+                if (b != null) {
+                    b.append(k == 0 ? "o." : " AND o.").append(name);
+                    b.append(k < i ? "=?" : (asc ? "<?" : ">?"));
+                    b.append(queryInfo.paramCount + 1 + k);
+                }
             }
-            a.append(')');
-            b.append(')');
+            if (a != null)
+                a.append(')');
+            if (b != null)
+                b.append(')');
         }
-        a.append(')');
-        b.append(')');
-        queryInfo.jpqlAfterKeyset = new StringBuilder(q).append(a).append(o).toString();
-        queryInfo.jpqlBeforeKeyset = new StringBuilder(q).append(b).append(o).toString();
+        if (a != null)
+            queryInfo.jpqlAfterKeyset = new StringBuilder(q).append(a).append(')').append(o).toString();
+        if (b != null)
+            queryInfo.jpqlBeforeKeyset = new StringBuilder(q).append(b).append(')').append(o).toString();
         queryInfo.keyset = keyset;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -523,7 +534,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         } while (orderBy > 0);
 
         if (needsKeysetQueries) {
-            generateKeysetQueries(queryInfo, keyset, q, o);
+            generateKeysetQueries(queryInfo, keyset, null, q, o);
             q.append(o);
         }
     }
@@ -744,13 +755,17 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     case SELECT: {
                         Collector<Object, Object, Object> collector = null;
                         Consumer<Object> consumer = null;
+                        List<Sort> keyset = null;
                         Limit limit = null;
                         Pageable pagination = null;
+                        StringBuilder o = null; // for ORDER BY clause generated from Sorts
+
+                        boolean needsKeysetQueries = KeysetAwarePage.class.equals(returnType) ||
+                                                     KeysetAwarePage.class.equals(queryInfo.returnTypeParam);
 
                         // Jakarta Data allows the method parameter positions after those used as query parameters
                         // to be used for purposes such as pagination and sorting.
                         // Collector is added here for experimentation.
-                        StringBuilder q = null;
                         for (int i = queryInfo.paramCount; i < (args == null ? 0 : args.length); i++) {
                             Object param = args[i];
                             if (param instanceof Collector)
@@ -763,26 +778,35 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                 pagination = (Pageable) param;
                             else if (param instanceof Sort) {
                                 Sort sort = (Sort) param;
-                                q = q == null ? new StringBuilder(queryInfo.jpql).append(" ORDER BY o.") : q.append(", o.");
-                                q.append(sort.getProperty());
+                                o = o == null ? new StringBuilder(100).append(" ORDER BY o.") : o.append(", o.");
+                                o.append(sort.getProperty());
                                 if (sort.isDescending())
-                                    q.append(" DESC");
+                                    o.append(" DESC");
+                                if (needsKeysetQueries)
+                                    (keyset == null ? (keyset = new ArrayList<>()) : keyset).add(sort);
                             } else if (param instanceof Sort[]) {
                                 Sort[] sorts = (Sort[]) param;;
                                 for (int s = 0; s < sorts.length; s++)
                                     if (sorts[s] == null)
                                         throw new NullPointerException("Sort: null");
                                     else {
-                                        q = q == null ? new StringBuilder(queryInfo.jpql).append(" ORDER BY o.") : q.append(", o.");
-                                        q.append(sorts[s].getProperty());
+                                        o = o == null ? new StringBuilder(100).append(" ORDER BY o.") : o.append(", o.");
+                                        o.append(sorts[s].getProperty());
                                         if (sorts[s].isDescending())
-                                            q.append(" DESC");
+                                            o.append(" DESC");
+                                        if (needsKeysetQueries)
+                                            (keyset == null ? (keyset = new ArrayList<>()) : keyset).add(sorts[s]);
                                     }
                             }
                         }
 
-                        if (q != null)
-                            queryInfo = queryInfo.withJPQL(q.toString());
+                        if (o != null) {
+                            StringBuilder q = new StringBuilder(queryInfo.jpql);
+                            if (needsKeysetQueries && pagination instanceof KeysetPageable)
+                                generateKeysetQueries(queryInfo = queryInfo.withJPQL(null), keyset, ((KeysetPageable) pagination).getMode(), q, o);
+                            else
+                                queryInfo = queryInfo.withJPQL(q.append(o).toString());
+                        }
 
                         boolean asyncCompatibleResultForPagination = pagination != null &&
                                                                      (void.class.equals(returnType) || CompletableFuture.class.equals(returnType)
@@ -847,8 +871,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         } else if (queryInfo.returnArrayType != null) {
                             Object r = Array.newInstance(queryInfo.returnArrayType, results.size());
                             int i = 0;
-                            for (Object o : results)
-                                Array.set(r, i++, o);
+                            for (Object result : results)
+                                Array.set(r, i++, result);
                             returnValue = r;
                         } else if (Collection.class.isAssignableFrom(type)) {
                             try {
