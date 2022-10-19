@@ -131,7 +131,7 @@ public class HandshakeProcessor {
             }
         }
 
-        if (WebSocketVersionServiceManager.isWsoc21rHigher()) {
+        if (WebSocketVersionServiceManager.isWsoc21OrHigher()) {
             requestURI = buildFullURI(httpRequest);
         } else {
             requestURI = new URI(httpRequest.getRequestURI());

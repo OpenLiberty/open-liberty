@@ -35,9 +35,8 @@ import com.ibm.ws.wsoc.ServerEndpointConfigCopyPerSession;
 import com.ibm.ws.wsoc.WebSocketContainerManager;
 import com.ibm.ws.wsoc.WebSocketVersionServiceManager;
 import com.ibm.ws.wsoc.WsocUpgradeHandler;
-import com.ibm.ws.wsoc.util.Utils;
-
 import com.ibm.ws.wsoc.servercontainer.ServerContainerExt;
+import com.ibm.ws.wsoc.util.Utils;
 
 /**
  *
@@ -201,7 +200,7 @@ public class WsocHandlerImpl implements WsocHandler {
         }
 
         if (endPointConfig != null) {
-            if(WebSocketVersionServiceManager.isWsoc21rHigher()){
+            if (WebSocketVersionServiceManager.isWsoc21OrHigher()) {
                 endPointConfig = new ServerEndpointConfigCopyPerSession(endPointConfig);
             }
             endPointClass = endPointConfig.getEndpointClass();
