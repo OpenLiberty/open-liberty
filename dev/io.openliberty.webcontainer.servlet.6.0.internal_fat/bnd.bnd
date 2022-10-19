@@ -17,6 +17,7 @@ src: \
     test-applications/GetRealPathTest.war/src,\
     test-applications/RequestConnectionTest.war/src,\
     test-applications/RequestCookieHeaderTest.war/src,\
+    test-applications/ResponseNullCharacterEncodingTest.war/src,\
     test-applications/SessionCookieConfigSCI.jar/src,\
     test-applications/SimpleTest.war/src
 
