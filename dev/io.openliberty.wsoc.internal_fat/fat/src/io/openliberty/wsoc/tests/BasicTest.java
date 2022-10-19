@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -823,14 +823,26 @@ public class BasicTest {
 
     @Mode(TestMode.FULL)
     @Test
-    public void TestPathParamOnOpenAndTestOnClose() throws Exception {
-        ppt.TestOnOpenAndTestOnClose();
+    public void TestPathParamOnOpen() throws Exception {
+        ppt.TestPathParamOnOpen();
     }
 
     @Mode(TestMode.FULL)
     @Test
-    public void TestSSCPathParamOnOpenAndTestOnClose() throws Exception {
-        this.runAsLSAndVerifyResponse("PathParamTest", "TestOnOpenAndTestOnClose");
+    public void TestPathParamOnClose() throws Exception {
+        ppt.TestPathParamOnClose();
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    public void TestSSCPathParamOnOpen() throws Exception {
+        this.runAsLSAndVerifyResponse("PathParamTest", "TestPathParamOnOpen");
+    }
+
+    @Mode(TestMode.FULL)
+    @Test
+    public void TestSSCPathParamOnClose() throws Exception {
+        this.runAsLSAndVerifyResponse("PathParamTest", "TestPathParamOnClose");
     }
 
     /*
