@@ -956,8 +956,9 @@ public class DataTestServlet extends FATServlet {
         // Dynamically request forward sorting where the criteria is the reverse of the above,
         // starting after (but not including) the first position
 
-        page = packages.findByHeightGreaterThan(10.0f, Pageable.size(5).afterKeyset(23.0f, 12.0f, 117),
-                                                Sort.asc("width"), Sort.desc("height"), Sort.asc("id"));
+        page = packages.whereHeightNotWithin(20.0f, 40.0f,
+                                             Pageable.size(5).afterKeyset(23.0f, 12.0f, 117),
+                                             Sort.asc("width"), Sort.desc("height"), Sort.asc("id"));
 
         assertIterableEquals(List.of(148, 150, 151, 133, 144),
                              page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
@@ -982,6 +983,33 @@ public class DataTestServlet extends FATServlet {
 
         // No more pages
         assertEquals(null, page.next());
+
+        // At this point, the following should remain (sorted by width descending, length ascending, id ascending):
+        // 114: 14.0f, 90.0f, 15.0f
+        // 133: 33.0f, 56.0f, 65.0f
+        // 144: 33.0f, 56.0f, 63.0f
+        // 128: 28.0f, 45.0f, 53.0f
+        // 148: 48.0f, 45.0f, 50.0f
+        // 150: 48.0f, 45.0f, 50.0f
+        // 151: 48.0f, 45.0f, 41.0f
+        // 153: 53.0f, 45.0f, 28.0f
+        // 117: 17.0f, 23.0f, 12.0f (will not match query condition)
+
+        // Page 1
+        page = packages.whereVolumeWithin(5000.0f, 123456.0f, Pageable.size(6));
+
+        assertIterableEquals(List.of(114, 133, 144, 128, 148, 150),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        packages.deleteAllById(List.of(144, 148, 150));
+
+        packages.save(new Package(152, 48.0f, 45.0f, 52.0f, "package#152"));
+
+        // Page 2
+        page = packages.whereVolumeWithin(5000.0f, 123456.0f, page.next());
+
+        assertIterableEquals(List.of(151, 152, 153),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
     }
 
     /**
@@ -1448,14 +1476,14 @@ public class DataTestServlet extends FATServlet {
 
         assertIterableEquals(List.of(10030009L, 10030007L, 10030008L, 10030006L),
                              reservations.findByStartGreaterThanOrderByStartDescStopDesc(OffsetDateTime.of(2022, 5, 25, 0, 0, 0, 0, CDT),
-                                                                                                Limit.of(4))
+                                                                                         Limit.of(4))
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(10030007L, 10030008L, 10030006L),
                              reservations.findByStartGreaterThanOrderByStartDescStopDesc(OffsetDateTime.of(2022, 5, 25, 0, 0, 0, 0, CDT),
-                                                                                                Limit.range(2, 4))
+                                                                                         Limit.range(2, 4))
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));

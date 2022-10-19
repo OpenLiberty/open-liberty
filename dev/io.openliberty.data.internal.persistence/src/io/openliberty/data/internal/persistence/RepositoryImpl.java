@@ -142,7 +142,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 if (queryInfo.method.getAnnotation(Delete.class) == null) {
                     if (queryInfo.hasWhere = (where != null)) {
                         queryInfo.type = QueryInfo.Type.SELECT;
-                        q = generateSelect(queryInfo).append(" WHERE ").append(where.value());
+                        q = generateSelect(queryInfo).append(" WHERE (").append(where.value()).append(')');
                     }
                 } else {
                     queryInfo.type = QueryInfo.Type.DELETE;
@@ -177,6 +177,30 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         }
                     }
                 }
+        } else { // @Query annotation
+            String upper = queryInfo.jpql.toUpperCase();
+            if (upper.startsWith("SELECT"))
+                queryInfo.type = QueryInfo.Type.SELECT;
+            else if (upper.startsWith("UPDATE"))
+                queryInfo.type = QueryInfo.Type.UPDATE;
+            else if (upper.startsWith("DELETE"))
+                queryInfo.type = QueryInfo.Type.DELETE;
+            else
+                throw new UnsupportedOperationException(queryInfo.jpql);
+
+            queryInfo.hasWhere = upper.contains("WHERE");
+        }
+
+        // If we don't already know from generating the JPQL, find out how many
+        // parameters the JPQL takes and which parameters are named parameters.
+        if (queryInfo.paramCount < 0 && queryInfo.type != QueryInfo.Type.MERGE) {
+            Parameter[] params = queryInfo.method.getParameters();
+            for (int i = 0; i < params.length && !SPECIAL_PARAM_TYPES.contains(params[i].getType()); i++) {
+                List<String> paramNames = i == 0 ? (queryInfo.paramNames = new ArrayList<>()) : queryInfo.paramNames;
+                Param param = params[i].getAnnotation(Param.class);
+                paramNames.add(param == null ? null : param.value());
+            }
+            queryInfo.paramCount = queryInfo.paramNames.size();
         }
 
         // The Sorts parameter is from JNoSQL and might get added to Jakarta Data.
@@ -210,30 +234,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         }
 
         queryInfo.jpql = q == null ? queryInfo.jpql : q.toString();
-
-        if (queryInfo.type == null) {
-            String upper = queryInfo.jpql.toUpperCase();
-            if (upper.startsWith("SELECT"))
-                queryInfo.type = QueryInfo.Type.SELECT;
-            else if (upper.startsWith("UPDATE"))
-                queryInfo.type = QueryInfo.Type.UPDATE;
-            else if (upper.startsWith("DELETE"))
-                queryInfo.type = QueryInfo.Type.DELETE;
-            else
-                throw new UnsupportedOperationException(queryInfo.jpql);
-        }
-
-        // If we don't already know from generating the JPQL, find out how many
-        // parameters the JPQL takes and which parameters are named parameters.
-        if (queryInfo.jpql != null && queryInfo.paramCount < 0) {
-            Parameter[] params = queryInfo.method.getParameters();
-            for (int i = 0; i < params.length && !SPECIAL_PARAM_TYPES.contains(params[i].getType()); i++) {
-                List<String> paramNames = i == 0 ? (queryInfo.paramNames = new ArrayList<>()) : queryInfo.paramNames;
-                Param param = params[i].getAnnotation(Param.class);
-                paramNames.add(param == null ? null : param.value());
-            }
-            queryInfo.paramCount = queryInfo.paramNames.size();
-        }
 
         return queryInfo;
     }
