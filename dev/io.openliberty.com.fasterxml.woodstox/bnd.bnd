@@ -22,9 +22,19 @@ woodstox-version: 6.2.4
 stax2-version: 4.2
 
 Export-Package: \
-  org.codehaus.stax2.*;version=${woodstox-version}, \
-  com.ctc.wstx.*;version=${stax2-version}
+  org.codehaus.stax2.*;version=${stax2-version}, \
+  com.ctc.wstx.*;thread-context=true;version=${woodstox-version}
 
+Import-Package: \
+  !com.sun.msv.*, \
+  !org.relaxng.datatype, \
+  *
+  
+Include-Resource: \
+  @${repo;org.codehaus.woodstox:stax2-api;${stax2-version};EXACT}!/!META-INF/maven/*, \
+  @${repo;com.fasterxml.woodstox:woodstox-core;${woodstox-version};EXACT}!/!META-INF/maven/*, \
+  @${repo;com.fasterxml.woodstox:woodstox-core;${woodstox-version};EXACT}!/!META-INF/services/*
+  
 app-resources= \
   META-INF/services/javax.xml.stream.XMLEventFactory | \
   META-INF/services/javax.xml.stream.XMLInputFactory | \

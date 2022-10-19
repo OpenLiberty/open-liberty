@@ -67,7 +67,9 @@ DynamicImport-Package: com.sun.xml.bind.v2, \
    org.glassfish.jaxb.runtime.v2.*, \
    com.ibm.xml.xlxp2.jaxb, \
    com.ibm.xml.xlxp2.api.stax, \
-   com.ibm.xml.xlxp2.api.wssec
+   com.ibm.xml.xlxp2.api.wssec, \
+   org.codehaus.stax2.*, \
+   com.ctc.wstx.*
 
 -dsannotations:\
   com.ibm.ws.jaxws.metadata.builder.AnnotationEndpointInfoConfigurator,\
