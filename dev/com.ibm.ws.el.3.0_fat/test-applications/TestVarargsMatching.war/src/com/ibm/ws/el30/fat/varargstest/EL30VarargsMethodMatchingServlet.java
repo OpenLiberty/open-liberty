@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -113,6 +113,16 @@ public class EL30VarargsMethodMatchingServlet extends FATServlet {
     public void testString_VarargsBird() throws Exception {
 
         getMethodExpression("testBean.chirp('string1', bird, bird)", "(String string1, Bird... bird2)");
+
+    }
+
+    @Test
+    public void selectMethodWithNullVarargs() throws Exception {
+        // Test for verifying null varargs or varargs with null values to verify functionality
+        // See https://github.com/openliberty/open-liberty/issues/20460
+        getMethodExpression("testBean.chirp('string1', null)", "(String string1, Bird... bird2)");
+        getMethodExpression("testBean.chirp('string1', null, bird)", "(String string1, Bird... bird2)");
+        getMethodExpression("testBean.chirp('string1', bird, null)", "(String string1, Bird... bird2)");
 
     }
 

@@ -24,7 +24,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 /**
- * Tests to ensure EL 5.0 basic changes are covered by testing
+ * Tests to ensure Expression Language 5.0 basic changes are covered by testing
  */
 @RunWith(FATRunner.class)
 public class EL50BasicTests extends FATServletClient {

@@ -31,7 +31,7 @@ import jakarta.el.ELException;
 import jakarta.el.ELProcessor;
 
 /**
- * Servlet for testing LambdaExpression coercion in EL 5.0
+ * Servlet for testing LambdaExpression coercion in Expression Language 5.0
  * https://github.com/jakartaee/expression-language/issues/45
  */
 @WebServlet({ "/EL50LambdaExpressionCoercion" })

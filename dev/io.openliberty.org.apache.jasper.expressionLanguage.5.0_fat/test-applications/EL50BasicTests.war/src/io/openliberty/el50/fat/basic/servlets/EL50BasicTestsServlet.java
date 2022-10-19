@@ -10,29 +10,35 @@
  *******************************************************************************/
 package io.openliberty.el50.fat.basic.servlets;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import java.util.Arrays;
 
 import componenttest.app.FATServlet;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import jakarta.el.BeanELResolver;
+import jakarta.el.ELClass;
 import jakarta.el.ELContext;
 import jakarta.el.ELManager;
 import jakarta.el.ELProcessor;
 import jakarta.el.ELResolver;
 import jakarta.el.ExpressionFactory;
 import jakarta.el.StandardELContext;
+import jakarta.el.StaticFieldELResolver;
 import jakarta.el.ValueExpression;
 import jakarta.servlet.annotation.WebServlet;
 
 
 /**
- * Servlet for testing basic changes in EL 5.0
+ * Servlet for testing basic changes in Expression Language 5.0
  */
 @WebServlet({ "/EL50BasicTests" })
+@Mode(TestMode.FULL)
 public class EL50BasicTestsServlet extends FATServlet {
     private static final long serialVersionUID = 1L;
 
@@ -55,7 +61,6 @@ public class EL50BasicTestsServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.FULL)
     public void testGenerics() throws Exception {
         // Test generics with ELProcessor uses ValueExpression.getValue internally that uses generics
         // No need to cast this to boolean like previous versions
@@ -90,24 +95,41 @@ public class EL50BasicTestsServlet extends FATServlet {
 
     /**
      * 
-     * Expression Language 5.0 in Jakarta EE10 switched ELResolver getFeatureDescriptors to return a default value of null and deprecated it to be remove in EL 6.0.
+     * Expression Language 5.0 in Jakarta EE10 switched ELResolver getFeatureDescriptors to return a default value of null and deprecated it to be remove in Expression Language 6.0.
      * https://github.com/jakartaee/expression-language/issues/167
      * @throws Exception
      */
     @Test
-    @Mode(TestMode.FULL)
     public void testGetFeatureDescriptors_returnsNull() throws Exception {
         ELResolver resolver = new CustomELResolver();
         assertNull("The result was expected to be null for ELResolver getFeatureDescriptors but was not.",resolver.getFeatureDescriptors(new StandardELContext(ELManager.getExpressionFactory()),new Object()));
     }
 
+    /**
+     *
+     * Expression Language 5.0 in Jakarta EE10 clarified and documented getType must return null if property is read-only
+     * and switched implementation of StaticFieldELResolver getType to match this behavior as it was inconsistent before Expression Language 5.0.
+     * https://github.com/jakartaee/expression-language/issues/168
+     * @throws Exception
+     */
+    @Test
+    public void testGetType_returnsNull() throws Exception {
+        ELManager elm = new ELManager();
+        StaticFieldELResolver resolver = new StaticFieldELResolver();
+        elm.addELResolver(resolver);
+        ELContext context = elm.getELContext();
+        context.setPropertyResolved(false);
+        Object bean = new ELClass(SimpleBean.class);
+        Class<?> type = resolver.getType(context, bean, "staticString");
+        assertTrue("When calling getType for StaticFieldELResolver, the property was not resolved!", context.isPropertyResolved());
+        assertNull("When calling getType for StaticFieldELResolver, the returned value was not null and instead was: " + type, type);
 
-    public class SimpleBean {
-
-        public int getNumber() {
-            return 25;
-        }
-
+        BeanELResolver  beanResolver = new BeanELResolver();
+        elm.addELResolver(beanResolver);
+        context.setPropertyResolved(false);
+        type = beanResolver.getType(context, new SimpleBean(), "simpleProperty");
+        assertTrue("When calling getType for BeanELResolver, the property was not resolved!", context.isPropertyResolved());
+        assertNull("When calling getType for BeanELResolver, the returned value was not null and instead was: " + type, type);
     }
 
     /*
