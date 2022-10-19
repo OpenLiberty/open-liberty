@@ -593,7 +593,7 @@ public class DataTestServlet extends FATServlet {
                                           .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.zipCode)));
 
         assertIterableEquals(List.of("200 1st Ave SW", "151 4th St SE", "201 4th St SE"),
-                             Stream.of(shippingAddresses.findByHouseNumberBetweenOrderByStreetNameOrderByHouseNumber(150, 250))
+                             Stream.of(shippingAddresses.findByHouseNumberBetweenOrderByStreetNameAscHouseNumber(150, 250))
                                              .map(a -> a.houseNumber + " " + a.streetName)
                                              .collect(Collectors.toList()));
 
@@ -860,7 +860,7 @@ public class DataTestServlet extends FATServlet {
                                           .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.streetAddress.houseNumber))
                                           .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.zipCode)));
 
-        StreetAddress[] streetAddresses = shippingAddresses.findByHouseNumberBetweenOrderByStreetNameOrderByHouseNumber(1000, 3000);
+        StreetAddress[] streetAddresses = shippingAddresses.findByHouseNumberBetweenOrderByStreetNameAscHouseNumber(1000, 3000);
 
         assertArrayEquals(new StreetAddress[] { work.streetAddress, home.streetAddress }, streetAddresses,
                           Comparator.<StreetAddress, Integer> comparing(o -> o.houseNumber)
@@ -896,7 +896,7 @@ public class DataTestServlet extends FATServlet {
         KeysetAwarePage<Package> page;
 
         // Page 1
-        page = packages.findByHeightGreaterThanOrderByLengthAscOrderByWidthDescOrderByHeightDescOrderByIdAsc(10.0f, Pageable.size(3));
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, Pageable.size(3));
 
         assertIterableEquals(List.of(114, 116, 118),
                              page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
@@ -908,7 +908,7 @@ public class DataTestServlet extends FATServlet {
         packages.save(new Package(120, 20.0f, 23.0f, 12.0f, "package#120"));
 
         // Page 2
-        page = packages.findByHeightGreaterThanOrderByLengthAscOrderByWidthDescOrderByHeightDescOrderByIdAsc(10.0f, page.next());
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, page.next());
 
         assertIterableEquals(List.of(120, 122, 124),
                              page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
@@ -920,7 +920,7 @@ public class DataTestServlet extends FATServlet {
         packages.save(new Package(130, 22.0f, 70.0f, 67.0f, "package#130"));
 
         // Page 3
-        page = packages.findByHeightGreaterThanOrderByLengthAscOrderByWidthDescOrderByHeightDescOrderByIdAsc(10.0f, page.next());
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, page.next());
 
         assertIterableEquals(List.of(130, 132, 133),
                              page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
@@ -928,7 +928,7 @@ public class DataTestServlet extends FATServlet {
         packages.deleteById(130);
 
         // Page 4
-        page = packages.findByHeightGreaterThanOrderByLengthAscOrderByWidthDescOrderByHeightDescOrderByIdAsc(10.0f, page.next());
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, page.next());
 
         assertIterableEquals(List.of(140, 144, 148),
                              page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
@@ -936,7 +936,7 @@ public class DataTestServlet extends FATServlet {
         packages.deleteAllById(List.of(132, 140));
 
         // Page 5
-        page = packages.findByHeightGreaterThanOrderByLengthAscOrderByWidthDescOrderByHeightDescOrderByIdAsc(10.0f, page.next());
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, page.next());
 
         assertIterableEquals(List.of(150, 151),
                              page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
@@ -1447,14 +1447,14 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(10030009L, 10030007L, 10030008L, 10030006L),
-                             reservations.findByStartGreaterThanOrderByStartDescOrderByStopDesc(OffsetDateTime.of(2022, 5, 25, 0, 0, 0, 0, CDT),
+                             reservations.findByStartGreaterThanOrderByStartDescStopDesc(OffsetDateTime.of(2022, 5, 25, 0, 0, 0, 0, CDT),
                                                                                                 Limit.of(4))
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(10030007L, 10030008L, 10030006L),
-                             reservations.findByStartGreaterThanOrderByStartDescOrderByStopDesc(OffsetDateTime.of(2022, 5, 25, 0, 0, 0, 0, CDT),
+                             reservations.findByStartGreaterThanOrderByStartDescStopDesc(OffsetDateTime.of(2022, 5, 25, 0, 0, 0, 0, CDT),
                                                                                                 Limit.range(2, 4))
                                              .stream()
                                              .map(r -> r.meetingID)
@@ -1486,13 +1486,13 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(10030003L, 10030001L, 10030004L, 10030006L, 10030009L, 10030005L, 10030007L, 10030002L, 10030008L),
-                             reservations.findByStopGreaterThanOrderByLocationDescOrderByHostOrderByStopAsc(OffsetDateTime.of(2022, 5, 25, 8, 0, 0, 0, CDT))
+                             reservations.findByStopGreaterThanOrderByLocationDescHostAscStopAsc(OffsetDateTime.of(2022, 5, 25, 8, 0, 0, 0, CDT))
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(10030001L, 10030005L, 10030007L, 10030002L, 10030003L, 10030006L, 10030009L, 10030004L, 10030008L),
-                             reservations.findByStopLessThanOrderByHostAscOrderByLocationDescOrderByStart(OffsetDateTime.of(2022, 5, 26, 0, 0, 0, 0, CDT))
+                             reservations.findByStopLessThanOrderByHostAscLocationDescStart(OffsetDateTime.of(2022, 5, 26, 0, 0, 0, 0, CDT))
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));

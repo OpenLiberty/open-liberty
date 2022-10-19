@@ -33,7 +33,7 @@ public interface Packages extends CrudRepository<Package, Integer> {
 
     KeysetAwarePage<Package> findByHeightGreaterThan(float minHeight, Pageable pagination, Sort... orderBy);
 
-    KeysetAwarePage<Package> findByHeightGreaterThanOrderByLengthAscOrderByWidthDescOrderByHeightDescOrderByIdAsc(float minHeight, Pageable pagination);
+    KeysetAwarePage<Package> findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(float minHeight, Pageable pagination);
 
     boolean updateByIdAddHeightMultiplyLengthDivideWidth(int id, float heightToAdd, float lengthMultiplier, float widthDivisor);
 

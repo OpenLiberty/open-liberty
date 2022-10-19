@@ -306,7 +306,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 else
                     parseFindBy(queryInfo, methodName.substring(4, by));
             }
-            int orderBy = methodName.indexOf("OrderBy", c);
+            int orderBy = methodName.lastIndexOf("OrderBy");
             q = generateSelect(queryInfo);
             if (orderBy > c || orderBy == -1 && methodName.length() > c) {
                 String s = orderBy > 0 ? methodName.substring(c, orderBy) : methodName.substring(c);
@@ -498,7 +498,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     }
 
     /**
-     * Generates the JPQL ORDER BY clause for a repository findBy method such as findByLastNameLikeOrderByLastNameOrderByFirstName
+     * Generates the JPQL ORDER BY clause for a repository findBy method such as findByLastNameLikeOrderByLastNameAscFirstNameDesc
      */
     private void generateRepositoryQueryOrderBy(QueryInfo queryInfo, int orderBy, StringBuilder q) {
         String methodName = queryInfo.method.getName();
@@ -506,32 +506,31 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                      || KeysetAwarePage.class.equals(queryInfo.returnTypeParam);
         StringBuilder o = needsKeysetQueries ? new StringBuilder(100) : q;
         List<Sort> keyset = needsKeysetQueries ? new ArrayList<>() : null;
-        o.append(" ORDER BY ");
-        do {
-            int i = orderBy + 7;
-            orderBy = methodName.indexOf("OrderBy", i);
-            int stopAt = orderBy == -1 ? methodName.length() : orderBy;
-            boolean desc = false;
-            if (methodName.charAt(stopAt - 1) == 'c' && methodName.charAt(stopAt - 2) == 's')
-                if (methodName.charAt(stopAt - 3) == 'A') {
-                    stopAt -= 3;
-                } else if (methodName.charAt(stopAt - 3) == 'e' && methodName.charAt(stopAt - 4) == 'D') {
-                    stopAt -= 4;
-                    desc = true;
-                }
 
-            String attribute = methodName.substring(i, stopAt);
+        o.append(" ORDER BY ");
+
+        for (int length = methodName.length(), asc = 0, desc = 0, iNext, i = orderBy + 7; i >= 0 && i < length; i = iNext) {
+            asc = asc == -1 || asc > i ? asc : methodName.indexOf("Asc", i);
+            desc = desc == -1 || desc > i ? desc : methodName.indexOf("Desc", i);
+            iNext = Math.min(asc, desc);
+            if (iNext < 0)
+                iNext = Math.max(asc, desc);
+
+            String attribute = iNext < 0 ? methodName.substring(i) : methodName.substring(i, iNext);
             String name = queryInfo.entityInfo.getAttributeName(attribute);
             o.append("o.").append(name);
 
             if (needsKeysetQueries)
-                keyset.add(desc ? Sort.desc(name) : Sort.asc(name));
+                keyset.add(iNext > 0 && iNext == desc ? Sort.desc(name) : Sort.asc(name));
 
-            if (desc)
-                o.append(" DESC");
-            if (orderBy > 0)
-                o.append(", ");
-        } while (orderBy > 0);
+            if (iNext > 0) {
+                if (iNext == desc)
+                    o.append(" DESC");
+                iNext += (iNext == desc ? 4 : 3);
+                if (iNext < length)
+                    o.append(", ");
+            }
+        }
 
         if (needsKeysetQueries) {
             generateKeysetQueries(queryInfo, keyset, null, q, o);
