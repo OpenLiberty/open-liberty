@@ -28,7 +28,8 @@ public class EmployeeBean implements Serializable {
     protected String lastName = null;
     protected String windowId = null;
 
-    public EmployeeBean() {}
+    public EmployeeBean() {
+    }
 
     public String getFirstName() {
         return firstName;

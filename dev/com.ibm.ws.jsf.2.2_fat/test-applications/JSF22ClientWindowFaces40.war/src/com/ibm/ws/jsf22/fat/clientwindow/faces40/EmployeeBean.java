@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  2015  IBM Corporation and others.
+ * Copyright (c)  2015, 2022  IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,13 +12,13 @@ package com.ibm.ws.jsf22.fat.clientwindow.faces40;
 
 import java.io.Serializable;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.lifecycle.ClientWindow;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
 @SessionScoped
 public class EmployeeBean implements Serializable {
 
@@ -28,7 +28,8 @@ public class EmployeeBean implements Serializable {
     protected String lastName = null;
     protected String windowId = null;
 
-    public EmployeeBean() {}
+    public EmployeeBean() {
+    }
 
     public String getFirstName() {
         return firstName;
