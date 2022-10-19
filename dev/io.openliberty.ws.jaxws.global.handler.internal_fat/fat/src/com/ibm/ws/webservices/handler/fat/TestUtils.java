@@ -236,7 +236,7 @@ public class TestUtils {
     }
 
     public static void setServerConfigurationFile(LibertyServer server, String newConfigFile) throws Exception {
-        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
+        if (JakartaEE9Action.isActive()) {
             server.setServerConfigurationFile(newConfigFile + ".ee9");
         } else if (JakartaEE10Action.isActive()) {
             server.setServerConfigurationFile(newConfigFile + ".ee10");

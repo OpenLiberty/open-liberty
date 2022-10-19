@@ -141,6 +141,9 @@ public class EJBWSBasicTest {
         // Strip the Test Rerun id's out of the method name
         String testMethod = testName.getMethodName().replace("_EE9_FEATURES", "");
 
+        // Remove automatically added extension to match proper method name
+        testMethod = testMethod.replace("_EE10_FEATURES", "");
+
         StringBuilder sBuilder = new StringBuilder("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append(SERVLET_PATH).append("?testMethod=").append(testMethod);
         String urlStr = sBuilder.toString();
         Log.info(this.getClass(), testMethod, "Calling Application with URL=" + urlStr);
