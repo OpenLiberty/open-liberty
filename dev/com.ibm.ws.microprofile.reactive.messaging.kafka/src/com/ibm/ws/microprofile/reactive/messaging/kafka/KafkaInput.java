@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -72,6 +73,13 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
      * When modifying this map it's very important that the map is <i>replaced</i> rather than <i>updated</i> as parts of the code rely on being able to take an immutable copy.
      */
     private volatile Map<TopicPartition, PartitionTracker> partitionTrackers = Collections.emptyMap();
+
+    /**
+     * Partitions we have been given to add but haven't yet processed
+     * <p>
+     * This should be {@code null} unless onPartitionsAssigned() has been interrupted by a WakeupException
+     */
+    private volatile Collection<TopicPartition> newPartitionsPending = null;
 
     /**
      * Lock to synchronize access to the kafkaConsumer instance
@@ -341,21 +349,47 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
     /** {@inheritDoc} */
     @Override
     public void onPartitionsRevoked(Collection<TopicPartition> partitions) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            if (newPartitionsPending != null) {
+                Tr.debug(this, tc, "onPartitionsRevoked called while new partitions pending:", newPartitionsPending);
+            }
+        }
         Map<TopicPartition, PartitionTracker> newMap = new HashMap<>(partitionTrackers);
         for (TopicPartition partition : partitions) {
-            newMap.get(partition).close();
-            newMap.remove(partition);
+            PartitionTracker tracker = newMap.get(partition);
+            if (tracker != null) {
+                tracker.close();
+                newMap.remove(partition);
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Partition revoked that we didn't know we were assigned", partition);
+                }
+            }
         }
         partitionTrackers = newMap;
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onPartitionsAssigned(Collection<TopicPartition> partitions) {
+    public void onPartitionsAssigned(Collection<TopicPartition> newPartitions) {
+
+        // If this method ends up throwing a WakeupException and doesn't complete, kafka will call it again but won't pass in the new partitions the second time
+        // Therefore we must immediately store the list of new partitions we've been assigned when we receive them the first time
+        if (newPartitionsPending != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "onPartitionsAssigned called with pending partitions", newPartitionsPending);
+            }
+            newPartitionsPending.addAll(newPartitions);
+        } else {
+            newPartitionsPending = new HashSet<>(newPartitions);
+        }
+
         Map<TopicPartition, PartitionTracker> newMap = new HashMap<>(partitionTrackers);
-        for (TopicPartition partition : partitions) {
+        for (TopicPartition partition : newPartitionsPending) {
             newMap.put(partition, partitionTrackerFactory.create(this, partition, kafkaConsumer.position(partition)));
         }
+
+        newPartitionsPending = null;
         partitionTrackers = newMap;
     }
 
