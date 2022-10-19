@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>JSF 2.2 Test Page for Client Window</title>
+</h:head>
+<h:body  onload="getClientWindowId()">
+<script type="text/javascript">
+        function getClientWindowId() {
+            var clientWindowId = jsf.getClientWindow(document.forms[0]);
+            var clientWindowDisplay = document.getElementById("clientWindowDisplay");
+            clientWindowDisplay.innerHTML = clientWindowId;
+            return true;
+        }        
+    </script>
+    <h:form id="testForm">
+	<p>Test various links and buttons to ensure the ClientWindow feature is working.</p>
+	<p>ClientWindow ID from javascript: <label id="clientWindowDisplay"></label></p>
+	<p><h:link id="link1" value="link to page2" outcome="page2"/></p>
+	
+	<p><h:link id="link2" value="link to page2 in new tab" outcome="page2" target="_blank"/></p>
+	
+    <p><h:link id="linkDisabled1" value="link to page2 with disabled attribute" outcome="page2Disabled" disableClientWindow="true" target="_blank" /></p>
+      
+     <hr/>    
+    <p>Employee Bean</p>
+	<p>First name: <h:inputText id="firstName" value="#{employeeBean.firstName}" /></p> 
+	<p>Last name: <h:inputText id="lastName" value="#{employeeBean.lastName}" /></p>
+	
+    <p><h:commandButton id="buttonAjax1" value="submit Ajax">
+		<f:ajax execute="@form" render="ajaxPanel" />
+       </h:commandButton>    
+    </p>
+    <p><h:commandButton id="submitCommandButton1" value="submit commandButton" action="page2"/> </p>    
+      
+    <p><h:commandLink id="commandLink1" value="page2 via commandLink" action="page2" /></p>
+    <p><h:button id="button1" value="page2 via button" outcome="page2"/></p>
+	<p><h:button id="button2Disabled" value="page2 via button attribute disabled" outcome="page2Disabled" disableClientWindow="true"/></p>
+	
+    <hr/>
+    <h:panelGroup id="ajaxPanel">
+		<p>First Name: <h:outputText id="ajaxFirstName" value="#{employeeBean.firstName}" /></p>
+		<p>Last Name: <h:outputText id="ajaxLastName" value="#{employeeBean.lastName}" /></p>
+		<p>Window ID: <h:outputText id="ajaxWindowId" value="#{employeeBean.windowId}" /></p>
+	</h:panelGroup>	
+	</h:form>
+</h:body>
+</html>
+
