@@ -351,6 +351,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
             rspStatus = HttpServletResponse.SC_OK;
         } else {
             rspStatus = HttpServletResponse.SC_UNAUTHORIZED;
+            status = AuthenticationStatus.SEND_CONTINUE;
         }
 
         httpMessageContext.getResponse().setStatus(rspStatus);
