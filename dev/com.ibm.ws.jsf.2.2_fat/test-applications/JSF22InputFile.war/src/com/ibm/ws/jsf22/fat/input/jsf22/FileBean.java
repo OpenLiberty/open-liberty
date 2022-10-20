@@ -27,7 +27,8 @@ public class FileBean implements Serializable {
     private Part file;
     private String fileContents;
 
-    public FileBean() {}
+    public FileBean() {
+    }
 
     public String uploadFile() {
         try {
