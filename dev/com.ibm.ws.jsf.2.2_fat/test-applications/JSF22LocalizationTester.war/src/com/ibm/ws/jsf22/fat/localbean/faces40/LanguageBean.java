@@ -1,4 +1,4 @@
-package com.ibm.ws.jsf22.fat.localbean;
+package com.ibm.ws.jsf22.fat.localbean.faces40;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
