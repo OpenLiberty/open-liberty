@@ -13,6 +13,7 @@ bVersion=1.0
 
 Bundle-Name: io.openliberty.microprofile.telemetry.1.0.internal
 Bundle-SymbolicName: io.openliberty.microprofile.telemetry.1.0.internal
+Bundle-Activator: io.openliberty.microprofile.telemetry.internal.helper.InstrumenterActivator
 Bundle-Description: MicroProfile.telemetry, version 1.0
 
 javac.source: 11
@@ -53,16 +54,18 @@ Export-Package: \
   io.openliberty.microprofile.telemetry.internal.rest;version=1.0;thread-context=true
 
 Private-Package: \
-  io.openliberty.microprofile.telemetry.internal.cdi
+  io.openliberty.microprofile.telemetry.internal.cdi,\
+  io.openliberty.microprofile.telemetry.internal.helper
 
 -buildpath: \
-    io.openliberty.jakarta.restfulWS.3.1;version=latest,\
-    io.openliberty.jakarta.annotation.2.1;version=latest,\
-    io.openliberty.jakarta.interceptor.2.1;version=latest,\
-    io.openliberty.jakarta.cdi.4.0;version=latest,\
-    com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-    com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
-    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-    io.openliberty.io.opentelemetry.internal;version=latest, \
-    io.openliberty.io.opentelemetry;version=latest,\
-    io.openliberty.org.eclipse.microprofile.config.3.0
+	io.openliberty.jakarta.restfulWS.3.1;version=latest,\
+	io.openliberty.jakarta.annotation.2.1;version=latest,\
+	io.openliberty.jakarta.interceptor.2.1;version=latest,\
+	io.openliberty.jakarta.cdi.4.0;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	io.openliberty.io.opentelemetry.internal;version=latest,\
+	io.openliberty.io.opentelemetry;version=latest,\
+	io.openliberty.org.eclipse.microprofile.config.3.0,\
+	com.ibm.websphere.org.osgi.core
