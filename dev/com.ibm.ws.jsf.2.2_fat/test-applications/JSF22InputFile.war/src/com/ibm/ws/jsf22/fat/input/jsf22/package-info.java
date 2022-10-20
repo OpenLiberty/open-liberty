@@ -8,4 +8,4 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jsf22.fat.input;
+package com.ibm.ws.jsf22.fat.input.jsf22;

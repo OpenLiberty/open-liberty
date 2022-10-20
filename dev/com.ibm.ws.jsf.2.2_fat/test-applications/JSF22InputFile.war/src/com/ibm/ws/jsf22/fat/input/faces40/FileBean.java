@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jsf22.fat.input;
+package com.ibm.ws.jsf22.fat.input.faces40;
 
 import java.io.IOException;
 import java.io.Serializable;
