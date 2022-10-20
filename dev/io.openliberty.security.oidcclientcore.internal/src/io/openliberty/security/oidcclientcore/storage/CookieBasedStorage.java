@@ -58,6 +58,7 @@ public class CookieBasedStorage implements Storage {
     }
 
     @Override
+    @Sensitive
     public String get(String name) {
         Cookie[] cookies = request.getCookies();
         for (Cookie c : cookies) {
