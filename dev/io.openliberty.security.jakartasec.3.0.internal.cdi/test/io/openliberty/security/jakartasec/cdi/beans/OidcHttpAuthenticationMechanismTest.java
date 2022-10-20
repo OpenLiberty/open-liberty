@@ -77,10 +77,12 @@ public class OidcHttpAuthenticationMechanismTest {
     private MessageInfo messageInfo;
     private Map<String, Object> messageInfoMap;
     private TokenResponse tokenResponse;
+
     private OidcClientConfig oidcClientConfig;
     private AuthenticationParameters authParams;
     private OriginalResourceRequest originalResourceRequest;
     private HttpSession httpSession;
+
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -116,8 +118,10 @@ public class OidcHttpAuthenticationMechanismTest {
 
     @Test
     public void testValidateRequest_authenticationRequest_redirects() throws Exception {
-        mechanismValidatesRequestForProtectedResource();
-        isContainerInitatedFlow();
+
+        mechanismValidatesRequestForProtectedResource(); // protected resource, no new authentication
+        containerInitatedFlowTrue();
+
         clientStartsFlow(REDIRECTION_PROVIDER_AUTH_RESULT);
         mechanismRedirectsTo(REDIRECTION_URL);
         OidcHttpAuthenticationMechanism mechanism = new TestOidcHttpAuthenticationMechanism();
@@ -130,7 +134,7 @@ public class OidcHttpAuthenticationMechanismTest {
     @Test
     public void testValidateRequest_authenticationRequest_fails() throws Exception {
         mechanismValidatesRequestForProtectedResource();
-        isContainerInitatedFlow();
+        containerInitatedFlowTrue();
         clientStartsFlow(FAILURE_AUTH_RESULT);
         mechanismSetsResponseUnauthorized();
         OidcHttpAuthenticationMechanism mechanism = new TestOidcHttpAuthenticationMechanism();
@@ -138,6 +142,30 @@ public class OidcHttpAuthenticationMechanismTest {
         AuthenticationStatus authenticationStatus = mechanism.validateRequest(request, response, httpMessageContext);
 
         assertEquals("The AuthenticationStatus must be SEND_FAILURE.", AuthenticationStatus.SEND_FAILURE, authenticationStatus);
+    }
+     
+    @Test
+    public void testValidateRequest_unprotectedResource() throws Exception {
+        
+        mechanismValidatesRequestForUnprotectedResource(false); // not a protected resource, not a new authentication
+        OidcHttpAuthenticationMechanism mechanism = new TestOidcHttpAuthenticationMechanism();
+
+        AuthenticationStatus authenticationStatus = mechanism.validateRequest(request, response, httpMessageContext);
+        assertEquals("The AuthenticationStatus must be SEND_FAILURE.", AuthenticationStatus.SEND_FAILURE, authenticationStatus);
+    }
+
+    
+    @Test
+    public void testValidateRequest_unprotectedResource_newAuthentication() throws Exception {
+        
+        mechanismValidatesRequestForUnprotectedResource(true); // not a protected resource, new authentication
+        containerInitatedFlowFalse();
+        clientStartsFlow(REDIRECTION_PROVIDER_AUTH_RESULT);
+        mechanismRedirectsTo(REDIRECTION_URL);
+        OidcHttpAuthenticationMechanism mechanism = new TestOidcHttpAuthenticationMechanism();
+
+        AuthenticationStatus authenticationStatus = mechanism.validateRequest(request, response, httpMessageContext);
+        assertEquals("The AuthenticationStatus must be SEND_CONTINUE.", AuthenticationStatus.SEND_CONTINUE, authenticationStatus);
     }
 
     @Test
@@ -216,6 +244,14 @@ public class OidcHttpAuthenticationMechanismTest {
         withoutJaspicSessionPrincipal();
         doesNotContainStateParam();
     }
+    
+    private void mechanismValidatesRequestForUnprotectedResource(boolean newAuthentication) {
+        OpenIdAuthenticationMechanismDefinition openIdAuthenticationMechanismDefinition = TestOpenIdAuthenticationMechanismDefinition.getInstanceofAnnotation(null);
+        setModulePropertiesProvider(openIdAuthenticationMechanismDefinition);
+        setHttpMessageContextExpectations(false, newAuthentication);
+        withoutJaspicSessionPrincipal();
+        doesNotContainStateParam();
+    }
 
     private void mechanismReceivesCallbackFromOP() {
         OpenIdAuthenticationMechanismDefinition openIdAuthenticationMechanismDefinition = TestOpenIdAuthenticationMechanismDefinition.getInstanceofAnnotation(null);
@@ -240,7 +276,7 @@ public class OidcHttpAuthenticationMechanismTest {
         });
     }
 
-    private void setHttpMessageContextExpectations(boolean protectedResource, boolean authenticationRequest) {
+    private void setHttpMessageContextExpectations(boolean protectedResource, boolean newAuthentication) {
         mockery.checking(new Expectations() {
             {
                 allowing(httpMessageContext).getClientSubject();
@@ -251,8 +287,10 @@ public class OidcHttpAuthenticationMechanismTest {
                 will(returnValue(response));
                 allowing(httpMessageContext).isProtected();
                 will(returnValue(protectedResource));
-                allowing(httpMessageContext).isAuthenticationRequest();
-                will(returnValue(authenticationRequest));
+                atMost(2).of(httpMessageContext).getAuthParameters();
+                will(returnValue(authParams));
+                atMost(2).of(authParams).isNewAuthentication();
+                will(returnValue(newAuthentication));
             }
         });
     }
@@ -273,12 +311,8 @@ public class OidcHttpAuthenticationMechanismTest {
             {
                 one(client).getOidcClientConfig();
                 will(returnValue(oidcClientConfig));
-                one(httpMessageContext).getAuthParameters();
-                will(returnValue(authParams));
                 one(oidcClientConfig).isRedirectToOriginalResource();
                 will(returnValue(true));
-                one(authParams).isNewAuthentication();
-                will(returnValue(false));
                 one(oidcClientConfig).isUseSession();
                 will(returnValue(true));
                 one(httpMessageContext).setRequest(originalResourceRequest);
@@ -292,8 +326,6 @@ public class OidcHttpAuthenticationMechanismTest {
             {
                 one(client).getOidcClientConfig();
                 will(returnValue(oidcClientConfig));
-                one(httpMessageContext).getAuthParameters();
-                will(returnValue(authParams));
                 one(oidcClientConfig).isRedirectToOriginalResource();
                 will(returnValue(false));
             }
@@ -434,14 +466,18 @@ public class OidcHttpAuthenticationMechanismTest {
         });
     }
 
-    private void isContainerInitatedFlow() {
+    private void containerInitatedFlowTrue() {
         mockery.checking(new Expectations() {
             {
-                one(httpMessageContext).getAuthParameters();
-                will(returnValue(authParams));
-                one(authParams).isNewAuthentication();
-                will(returnValue(false));
                 one(request).setAttribute(IS_CONTAINER_INITIATED_FLOW, true);
+            }
+        });
+    }
+    
+    private void containerInitatedFlowFalse() {
+        mockery.checking(new Expectations() {
+            {
+                one(request).setAttribute(IS_CONTAINER_INITIATED_FLOW, false);
             }
         });
     }
