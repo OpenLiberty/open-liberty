@@ -23,7 +23,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.tck.TCKUtils;
+import componenttest.topology.utils.tck.TCKRunner;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 
 /**
@@ -59,8 +59,7 @@ public class GraphQLTckPackageTest {
         String testName = this.getClass() + ":testGraphQL10Tck";
         Type type = Type.MICROPROFILE;
         String specName = "GraphQL";
-        String specVersion = "1.0";
-        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion);
+        TCKRunner.runTCK(server, bucketName, testName, type, specName);
     }
 
 }

@@ -25,7 +25,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
-import componenttest.topology.utils.tck.TCKUtils;
+import componenttest.topology.utils.tck.TCKRunner;
 
 /**
  * This is a test class that runs the whole Jakarta JSON-B TCK. The TCK results
@@ -73,8 +73,7 @@ public class JsonbTckLauncher {
         String testName = this.getClass() + ":launchJsonb30TCK";
         Type type = Type.JAKARTA;
         String specName = "JSON Binding";
-        String specVersion = "3.0";
-        TCKUtils.runTCKMvnCmd(DONOTSTART, bucketName, testName, type, specName, specVersion, additionalProps);
+        TCKRunner.runTCK(DONOTSTART, bucketName, testName, type, specName, additionalProps);
 
     }
 }

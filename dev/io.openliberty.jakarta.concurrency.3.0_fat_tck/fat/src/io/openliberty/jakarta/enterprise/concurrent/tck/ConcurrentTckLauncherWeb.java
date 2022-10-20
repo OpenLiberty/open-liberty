@@ -26,7 +26,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
-import componenttest.topology.utils.tck.TCKUtils;
+import componenttest.topology.utils.tck.TCKRunner;
 
 /**
  * This is a test class that runs the entire Jakarta Concurrency TCK against Web Profile.
@@ -102,8 +102,7 @@ public class ConcurrentTckLauncherWeb {
         String bucketName = "io.openliberty.jakarta.concurrency.3.0_fat_tck";
         String testName = this.getClass() + ":launchConcurrent30TCKWeb";
         Type type = Type.JAKARTA;
-        String specName = "Concurrency";
-        String specVersion = "3.0-web";
-        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion, suiteXmlFile, additionalProps);
+        String specName = "Concurrency (Web)";
+        TCKRunner.runTCK(server, bucketName, testName, type, specName, suiteXmlFile, additionalProps);
     }
 }

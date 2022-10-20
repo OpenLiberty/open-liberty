@@ -19,7 +19,7 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.tck.TCKUtils;
+import componenttest.topology.utils.tck.TCKRunner;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.impl.JavaInfo;
 
@@ -68,7 +68,6 @@ public class OpentracingTCKLauncher {
         String testName = this.getClass() + ":launchOpenTracing11Tck";
         Type type = Type.MICROPROFILE;
         String specName = "Open Tracing";
-        String specVersion = "1.1";
-        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion);
+        TCKRunner.runTCK(server, bucketName, testName, type, specName);
     }
 }
