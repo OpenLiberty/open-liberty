@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,10 +13,7 @@
 dependencies {
   requiredLibs project(':com.ibm.ws.org.slf4j.api'),
                project(':com.ibm.ws.org.slf4j.jdk14'),
-               'com.ibm.ws.com.icegreen:greenmail:2.0.0.fd826131f671b0d3230b0d0e1638d8c4',
                'org.eclipse.angus:angus-mail:1.0.0',
-               // Deps needed for when running on Java 9 (EE-type APIs were removed from JDK)
-               'com.sun.mail:jakarta.mail:2.0.0-RC6',
                'com.ibm.ws.org.apache.yoko:yoko-spec-corba:1.5.+',
                'javax.xml.bind:jaxb-api:2.2.+',
                'com.sun.xml.bind:jaxb-core:2.2.+',

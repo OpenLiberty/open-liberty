@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,24 +11,18 @@
 package io.openliberty.mail.fat;
 
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                IMAPTest.class,
-                POP3Test.class,
-                SMTPTest.class,
-                MailSessionInjectionTest.class
+                StreamProviderTest.class
 })
 public class FATSuite {
 
@@ -37,8 +31,6 @@ public class FATSuite {
     @BeforeClass
     public static void setupApp() throws Exception {
         ShrinkHelper.defaultApp(mailSesionServer, "TestingApp", "TestingApp.*");
-    }
 
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(new JakartaEE10Action().withID("EE10"));
+    }
 }
