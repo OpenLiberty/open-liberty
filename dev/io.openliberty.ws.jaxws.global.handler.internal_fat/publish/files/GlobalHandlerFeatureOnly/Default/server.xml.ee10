@@ -1,6 +1,6 @@
 <server>
     <featureManager>
-        <feature>pages-3.0</feature>
+        <feature>pages-3.1</feature>
         <feature>restfulWS-3.1</feature>
     </featureManager>
 
