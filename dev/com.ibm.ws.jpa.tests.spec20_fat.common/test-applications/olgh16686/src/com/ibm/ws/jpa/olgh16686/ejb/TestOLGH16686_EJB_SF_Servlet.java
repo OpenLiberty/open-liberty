@@ -20,11 +20,11 @@ import com.ibm.ws.jpa.olgh16686.testlogic.JPATestOLGH16686Logic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestOLGH16686_EJB_SF_Servlet")
-public class TestOLGH16686_EJB_SF_Servlet extends EJBTestVehicleServlet {
+public class TestOLGH16686_EJB_SF_Servlet extends EJBDBTestVehicleServlet {
 
     @PostConstruct
     private void initFAT() {

@@ -22,9 +22,9 @@ import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
-public class DeploymentDescriptorJNDIWebLibServlet extends JPATestServlet {
+public class DeploymentDescriptorJNDIWebLibServlet extends JPADBTestServlet {
     private static final long serialVersionUID = -7642267902342523971L;
 
     private final String testLogicClassName = JPAInjectionTestLogic.class.getName();

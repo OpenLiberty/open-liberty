@@ -19,7 +19,7 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
 /*
  * JPA Spec 2.1: 7.6.1 Persistence Context Synchronization Type
@@ -121,7 +121,7 @@ import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TxSynchronizationDDCMTCMTSSpecificEJBSLTestServlet")
-public class TxSynchronizationDDCMTCMTSSpecificEJBSLTestServlet extends EJBTestVehicleServlet {
+public class TxSynchronizationDDCMTCMTSSpecificEJBSLTestServlet extends EJBDBTestVehicleServlet {
     @PostConstruct
     private void initFAT() {
         testClassName = "com.ibm.ws.jpa.fvt.txsync.testlogic.cm.CMTSAndCMTSpecificTxSynchronizationTestLogic";

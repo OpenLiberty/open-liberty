@@ -22,10 +22,10 @@ import com.ibm.ws.jpa.fvt.cdi.simple.CDISimpleTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
 @WebServlet(urlPatterns = { "/JPACDISimpleEJBServlet" })
-public class JPACDISimpleEJBServlet extends EJBTestVehicleServlet {
+public class JPACDISimpleEJBServlet extends EJBDBTestVehicleServlet {
     private static final long serialVersionUID = -3888645553607380940L;
     private static final String CLASS_NAME = JPACDISimpleEJBServlet.class.getName();
     private static final Logger svLogger = Logger.getLogger(CLASS_NAME);

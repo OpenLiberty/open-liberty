@@ -22,10 +22,10 @@ import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
 @WebServlet(urlPatterns = "/TestManyXManyCompoundPK_EJB_SFEX_Servlet")
-public class TestManyXManyCompoundPK_EJB_SFEX_Servlet extends EJBTestVehicleServlet {
+public class TestManyXManyCompoundPK_EJB_SFEX_Servlet extends EJBDBTestVehicleServlet {
     private static final long serialVersionUID = -6684407686587457314L;
 
     private final String testLogicClassName = "com.ibm.ws.jpa.fvt.relationships.manyXmany.testlogic.ManyXManyCompoundPKTestLogic";
