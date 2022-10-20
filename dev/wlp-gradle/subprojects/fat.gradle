@@ -130,6 +130,7 @@ task copyFeatureBundles {
 }
 
 task autoFVT {
+  mustRunAfter cleanFat
   dependsOn jar
   dependsOn ':cnf:copyMavenLibs'
   dependsOn addRequiredLibraries
