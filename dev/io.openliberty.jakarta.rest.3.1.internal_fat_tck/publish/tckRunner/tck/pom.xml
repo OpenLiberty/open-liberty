@@ -79,7 +79,7 @@
         <!-- TODO: OpenLiberty server -->
         <liberty.runtime.version>21.0.0.12-beta</liberty.runtime.version>
         <liberty-maven-plugin.version>3.3.4</liberty-maven-plugin.version>
-        <arquillian-liberty-jakarta.version>2.1.0</arquillian-liberty-jakarta.version>
+        <arquillian-liberty-jakarta.version>2.1.1</arquillian-liberty-jakarta.version>
 
         <!-- By default, skip tests -->
         <skip.unit.tests>true</skip.unit.tests>
