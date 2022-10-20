@@ -20,6 +20,7 @@ Subsystem-Name: MicroProfile Config 2.0
   com.ibm.websphere.appserver.javax.cdi-2.0
 -bundles=io.openliberty.io.smallrye.config, \
  io.openliberty.io.smallrye.common, \
+ io.openliberty.microprofile.config.internal.smallrye, \
  io.openliberty.microprofile.config.internal.common, \
  io.openliberty.microprofile.config.internal.serverxml, \
  com.ibm.ws.org.apache.commons.lang3, \

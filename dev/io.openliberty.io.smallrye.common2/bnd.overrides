@@ -6,12 +6,12 @@ Build-Identifier: SNAPSHOT-${now}
 Bundle-Version: ${bFullVersion}.${if;${driver;gradle};${version.qualifier};eclipse}
 
 Export-Package: \
- io.smallrye.common.*;version="1.6.0"
+ io.smallrye.common.*;version="2.0.0"
 
 Import-Package: \
  !sun.misc,\
- !jakarta.enterprise.util,\
- !jakarta.inject,\
- javax.enterprise.util,\
- javax.inject,\
+ !javax.enterprise.util,\
+ !javax.inject,\
+ jakarta.enterprise.util;version="[3.0,5)",\
+ jakarta.inject;version="[2.0,3)",\
  *

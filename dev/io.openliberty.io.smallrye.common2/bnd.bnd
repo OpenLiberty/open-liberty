@@ -1,0 +1,39 @@
+#*******************************************************************************
+# Copyright (c) 2020, 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+Bundle-SymbolicName: io.openliberty.io.smallrye.common2; singleton:=true
+
+bVersion=1.0
+
+-include= jar:${fileuri;${repo;io.smallrye.common:smallrye-common-annotation;2.0.0;EXACT}}!/META-INF/MANIFEST.MF,\
+          jar:${fileuri;${repo;io.smallrye.common:smallrye-common-expression;2.0.0;EXACT}}!/META-INF/MANIFEST.MF,\
+          jar:${fileuri;${repo;io.smallrye.common:smallrye-common-constraint;2.0.0;EXACT}}!/META-INF/MANIFEST.MF,\
+          jar:${fileuri;${repo;io.smallrye.common:smallrye-common-function;2.0.0;EXACT}}!/META-INF/MANIFEST.MF,\
+          jar:${fileuri;${repo;io.smallrye.common:smallrye-common-classloader;2.0.0;EXACT}}!/META-INF/MANIFEST.MF,\
+              bnd.overrides
+
+-includeresource: \
+  @${repo;io.smallrye.common:smallrye-common-annotation;2.0.0;EXACT},\
+  @${repo;io.smallrye.common:smallrye-common-expression;2.0.0;EXACT},\
+  @${repo;io.smallrye.common:smallrye-common-constraint;2.0.0;EXACT},\
+  @${repo;io.smallrye.common:smallrye-common-function;2.0.0;EXACT},\
+  @${repo;io.smallrye.common:smallrye-common-classloader;2.0.0;EXACT}
+
+-buildpath: \
+  io.smallrye.common:smallrye-common-annotation;strategy=exact;version=2.0.0, \
+  io.smallrye.common:smallrye-common-expression;strategy=exact;version=2.0.0, \
+  io.smallrye.common:smallrye-common-constraint;strategy=exact;version=2.0.0, \
+  io.smallrye.common:smallrye-common-function;strategy=exact;version=2.0.0, \
+  io.smallrye.common:smallrye-common-classloader;strategy=exact;version=2.0.0, \
+  io.openliberty.jakarta.cdi.3.0;version=latest, \
+  io.openliberty.jakarta.annotation.2.0;version=latest
+
