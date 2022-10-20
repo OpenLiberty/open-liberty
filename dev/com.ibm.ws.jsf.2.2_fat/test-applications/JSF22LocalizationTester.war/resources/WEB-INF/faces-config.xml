@@ -16,19 +16,20 @@
     version="2.2">
 
      <application>
-     	<locale-config>
-     		<default-locale>en</default-locale>
-     		<supported-locale>zh_CN</supported-locale>
-     	</locale-config>
-     	
-		<resource-bundle>
-			<base-name>com.ibm.ws.jsf22.fat.localprops.messages</base-name>
-			<var>msg</var>
-		</resource-bundle>
+        <locale-config>
+            <default-locale>en</default-locale>
+            <supported-locale>zh_CN</supported-locale>
+        </locale-config>
 
-		<message-bundle>
-			com.ibm.ws.jsf22.fat.localprops.resources
-		</message-bundle>     
+        <resource-bundle>
+            <base-name>com.ibm.ws.jsf22.fat.localprops.messages</base-name>
+            <var>msg</var>
+        </resource-bundle>
+
+        <message-bundle>
+            com.ibm.ws.jsf22.fat.localprops.resources
+        </message-bundle>
     </application>
-     
+
 </faces-config>
+
