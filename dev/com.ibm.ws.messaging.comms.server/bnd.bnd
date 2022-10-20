@@ -28,7 +28,9 @@ com.ibm.ws.sib.jfapchannel.server,\
 com.ibm.ws.sib.jfapchannel.server.impl,\
 com.ibm.ws.sib.trm.attach
 
--dsannotations: com.ibm.ws.jfap.inbound.channel.CommsServerServiceFacade
+-dsannotations: \
+	com.ibm.ws.jfap.inbound.channel.CommsServerServiceFacade, \
+	com.ibm.ws.jfap.inbound.channel.SecureSocketsLayerFacetImpl
 
 instrument.disabled: true
 

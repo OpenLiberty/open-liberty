@@ -180,8 +180,8 @@ public class CommsInboundChain implements ChainEventListener {
         Map<String, Object> sslOptions = (_isSecureChain) ? _commsServerFacade.getSslOptions() : null;
 
         final ChainConfiguration newConfig = new ChainConfiguration(
-                        (_isSecureChain) ? _commsServerFacade.getConfigured_wasJmsSSLPort() : _commsServerFacade.getConfigured_wasJmsPort(),
-                        _commsServerFacade.getConfigured_Host(),
+                        (_isSecureChain) ? _commsServerFacade.getSecurePort() : _commsServerFacade.getBasicPort(),
+                        _commsServerFacade.getHost(),
                         tcpOptions,
                         sslOptions);
 
