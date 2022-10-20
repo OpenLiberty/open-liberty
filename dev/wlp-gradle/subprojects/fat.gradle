@@ -165,7 +165,7 @@ task autoFVT {
 
     // Copy the infra jar
     copy {
-      from cnf.file('mavenlibs/infra.buildtasks-core-6.0.6.jar')
+      from cnf.file('mavenlibs/infra.buildtasks-core-7.0.2.jar')
       into new File(autoFvtDir, 'build/lib')
     }
 
