@@ -10,7 +10,6 @@
  */
 package com.ibm.ws.jsf22.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -29,14 +28,15 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 // import com.ibm.ws.fat.Props;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -44,7 +44,6 @@ import componenttest.topology.impl.LibertyServer;
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE10_FEATURES)
 public class JSF22InputFileTests {
     @Rule
     public TestName name = new TestName();
@@ -59,7 +58,17 @@ public class JSF22InputFileTests {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(jsfTestServer2, "JSF22InputFile.war", "com.ibm.ws.jsf22.fat.input");
+        boolean isEE10 = JakartaEE10Action.isActive();
+
+        ShrinkHelper.defaultDropinApp(jsfTestServer2, "JSF22InputFile.war",
+                                      isEE10 ? "com.ibm.ws.jsf22.fat.input.faces40" : "com.ibm.ws.jsf22.fat.input.jsf22");
+
+        if (isEE10) {
+            // For Faces 4.0, CDI @Named is used since @ManagedBean is no longer available.
+            ServerConfiguration config = jsfTestServer2.getServerConfiguration();
+            config.getFeatureManager().getFeatures().add("cdi-4.0");
+            jsfTestServer2.updateServerConfiguration(config);
+        }
 
         jsfTestServer2.startServer(JSF22InputFileTests.class.getSimpleName() + ".log");
     }
