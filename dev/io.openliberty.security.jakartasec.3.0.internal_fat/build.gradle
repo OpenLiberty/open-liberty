@@ -81,11 +81,13 @@ autoFVT.doLast {
 /** copies of the same source for each server                                   **/
    def rpCopyServers = [
 	'jakartasec-3.0_fat.jwt.rp',
-	'jakartasec-3.0_fat.jwt.rp.withOidcClientConfig',
 	'jakartasec-3.0_fat.opaque.rp',
-	'jakartasec-3.0_fat.opaque.rp.withOidcClientConfig',
-	'jakartasec-3.0_fat.injectionScope.jwt.rp',
-	'jakartasec-3.0_fat.injectionScope.opaque.rp'
+	'jakartasec-3.0_fat.useCallbacks.jwt.rp',
+	'jakartasec-3.0_fat.useCallbacks.opaque.rp',
+	'jakartasec-3.0_fat.useRedirectToOriginalResource.jwt.rp',
+    'jakartasec-3.0_fat.useRedirectToOriginalResource.opaque.rp',
+	'jakartasec-3.0_fat.withOidcClientConfig.jwt.rp',
+    'jakartasec-3.0_fat.withOidcClientConfig.opaque.rp'
   ]
 
   rpCopyServers.each { rpServer ->

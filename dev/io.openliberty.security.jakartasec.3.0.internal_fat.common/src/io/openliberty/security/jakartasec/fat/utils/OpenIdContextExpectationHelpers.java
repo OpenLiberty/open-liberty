@@ -10,8 +10,13 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec.fat.utils;
 
+import java.util.List;
+
+import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
+
+import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
 
 public class OpenIdContextExpectationHelpers {
 
@@ -108,7 +113,23 @@ public class OpenIdContextExpectationHelpers {
 
     public static void getOpenIdContextStoredValueExpectations(String action, Expectations expectations, String requester, ResponseValues rspValues) throws Exception {
 
-        //      expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_MATCHES, requester  + ServletMessageConstants.STORED_VALUE + OpenIdConstant.ORIGINAL_REQUEST + ".*" + rspValues.getOriginalRequest(), "Did not find the original request in the Stored Value in the OpenIdContext."));
+        List<NameValuePair> parms = rspValues.getParms();
+
+        if (parms != null) {
+            for (NameValuePair parm : parms) {
+                expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_MATCHES, requester + ServletMessageConstants.STORED_VALUE
+                                                                                                          + OpenIdConstant.ORIGINAL_REQUEST
+                                                                                                          + ".*" + rspValues.getOriginalRequest()
+                                                                                                          + ".*" + parm.getName() + "="
+                                                                                                          + parm.getValue(), "Did not find the original request in the Stored Value in the OpenIdContext."));
+
+            }
+        } else {
+            expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_MATCHES, requester + ServletMessageConstants.STORED_VALUE
+                                                                                                      + OpenIdConstant.ORIGINAL_REQUEST
+                                                                                                      + ".*"
+                                                                                                      + rspValues.getOriginalRequest(), "Did not find the original request in the Stored Value in the OpenIdContext."));
+        }
 
     }
 

@@ -16,9 +16,11 @@ src: \
     test-applications/ApplicationScoped.war/src,\
     test-applications/RequestScoped.war/src,\
     test-applications/SessionScoped.war/src,\
-    test-applications/SimpleUnprotected.war/src,\
     test-applications/SimplestAnnotated.war/src,\
     test-applications/SimplestAnnotatedWithEL.war/src,\
+    test-applications/SimplestAnnotatedWithELAltOP.war/src,\
+    test-applications/SimplestAnnotatedWithELAltOPAndRole.war/src,\
+    test-applications/SimplestAnnotatedWithELAltRole.war/src,
     test-applications/MultipleServletsDifferentProviders.war/src,\
     test-applications/MultipleServletsDifferentRoles.war/src,\
     test-applications/MultipleServletsSimilarAnnotations.war/src

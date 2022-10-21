@@ -15,6 +15,7 @@ import java.util.Enumeration;
 
 import io.openliberty.security.jakartasec.fat.utils.ServletMessageConstants;
 import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 public class RequestLogger {
@@ -35,6 +36,8 @@ public class RequestLogger {
 
         printRequestHeader(ps);
 
+        printRequestCookies(ps);
+
         printRequestParms(ps);
 
         ServletLogger.printSeparator(ps);
@@ -51,6 +54,20 @@ public class RequestLogger {
 
     }
 
+    public void printRequestCookies(ServletOutputStream ps) throws IOException {
+
+        Cookie[] cookies = req.getCookies();
+        if (cookies != null && cookies.length != 0) {
+            for (Cookie c : cookies) {
+                String cookieName = c.getName();
+                String cookieValue = c.getValue();
+                ServletLogger.printLine(ps, caller, ServletMessageConstants.COOKIE + ServletMessageConstants.NAME + cookieName + " " + ServletMessageConstants.VALUE + cookieValue
+                                                    + " " + "Domain: " + c.getDomain());
+            }
+        }
+
+    }
+
     public void printRequestParms(ServletOutputStream ps) throws IOException {
 
         Enumeration<String> parmNames = req.getParameterNames();
@@ -61,4 +78,5 @@ public class RequestLogger {
         }
 
     }
+
 }

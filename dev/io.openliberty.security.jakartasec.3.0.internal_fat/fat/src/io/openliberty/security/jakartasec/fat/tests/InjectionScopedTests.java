@@ -65,13 +65,13 @@ public class InjectionScopedTests extends CommonAnnotatedSecurityTests {
         List<String> waitForMsgs = null;
         opServer.startServerUsingExpandedConfiguration("server_orig.xml", waitForMsgs);
         SecurityFatHttpUtils.saveServerPorts(opServer, Constants.BVT_SERVER_1_PORT_NAME_ROOT);
-        opHttpBase = "https://localhost:" + opServer.getBvtPort();
+        opHttpBase = "http://localhost:" + opServer.getBvtPort();
         opHttpsBase = "https://localhost:" + opServer.getBvtSecurePort();
 
         rpServer.startServerUsingExpandedConfiguration("server_orig.xml", waitForMsgs);
         SecurityFatHttpUtils.saveServerPorts(rpServer, Constants.BVT_SERVER_2_PORT_NAME_ROOT);
 
-        rpHttpBase = "https://localhost:" + rpServer.getBvtPort();
+        rpHttpBase = "http://localhost:" + rpServer.getBvtPort();
         rpHttpsBase = "https://localhost:" + rpServer.getBvtSecurePort();
 
         deployMyApps();
@@ -107,9 +107,6 @@ public class InjectionScopedTests extends CommonAnnotatedSecurityTests {
     @Test
     public void InjectionScopedTests_multipleDifferentUsers_ApplicationScoped() throws Exception {
 
-        // the test app has the OP secure port hard coded (since it doesn't use expression language vars
-        // if we end up using a different port, we'll need to skip this test
-
         WebClient webClient1 = getAndSaveWebClient();
         Page response1 = runGoodEndToEndTest(webClient1, "ApplicationScoped", "ApplicationScopedServlet", Constants.TESTUSER, Constants.TESTUSERPWD);
 
@@ -130,9 +127,6 @@ public class InjectionScopedTests extends CommonAnnotatedSecurityTests {
     @Test
     public void InjectionScopedTests_multipleSameUsers_ApplicationScoped() throws Exception {
 
-        // the test app has the OP secure port hard coded (since it doesn't use expression language vars
-        // if we end up using a different port, we'll need to skip this test
-
         WebClient webClient1 = getAndSaveWebClient();
         Page response1 = runGoodEndToEndTest(webClient1, "ApplicationScoped", "ApplicationScopedServlet", Constants.TESTUSER, Constants.TESTUSERPWD);
 
@@ -151,9 +145,6 @@ public class InjectionScopedTests extends CommonAnnotatedSecurityTests {
      */
     @Test
     public void InjectionScopedTests_multipleDifferentUsers_RequestScoped() throws Exception {
-
-        // the test app has the OP secure port hard coded (since it doesn't use expression language vars
-        // if we end up using a different port, we'll need to skip this test
 
         WebClient webClient1 = getAndSaveWebClient();
         Page response1 = runGoodEndToEndTest(webClient1, "RequestScoped", "RequestScopedServlet", Constants.TESTUSER, Constants.TESTUSERPWD);
@@ -175,9 +166,6 @@ public class InjectionScopedTests extends CommonAnnotatedSecurityTests {
     @Test
     public void InjectionScopedTests_multipleSameUsers_RequestScoped() throws Exception {
 
-        // the test app has the OP secure port hard coded (since it doesn't use expression language vars
-        // if we end up using a different port, we'll need to skip this test
-
         WebClient webClient1 = getAndSaveWebClient();
         Page response1 = runGoodEndToEndTest(webClient1, "RequestScoped", "RequestScopedServlet", Constants.TESTUSER, Constants.TESTUSERPWD);
 
@@ -196,9 +184,6 @@ public class InjectionScopedTests extends CommonAnnotatedSecurityTests {
      */
     @Test
     public void InjectionScopedTests_multipleDifferentUsers_SessionScoped() throws Exception {
-
-        // the test app has the OP secure port hard coded (since it doesn't use expression language vars
-        // if we end up using a different port, we'll need to skip this test
 
         WebClient webClient1 = getAndSaveWebClient();
         Page response1 = runGoodEndToEndTest(webClient1, "SessionScoped", "SessionScopedServlet", Constants.TESTUSER, Constants.TESTUSERPWD);
@@ -219,9 +204,6 @@ public class InjectionScopedTests extends CommonAnnotatedSecurityTests {
      */
     @Test
     public void InjectionScopedTests_multipleSameUsers_SessionScoped() throws Exception {
-
-        // the test app has the OP secure port hard coded (since it doesn't use expression language vars
-        // if we end up using a different port, we'll need to skip this test
 
         WebClient webClient1 = getAndSaveWebClient();
         Page response1 = runGoodEndToEndTest(webClient1, "SessionScoped", "SessionScopedServlet", Constants.TESTUSER, Constants.TESTUSERPWD);

@@ -41,6 +41,11 @@
 			<member name="user1" />
 			<member name="user2" />
 		</group>
+
+		<group name="group4">
+			<member name="user1" />
+			<member name="user2" />
+		</group>
 			
 		<group name="all">
 			<member name="testuser" />

@@ -8,7 +8,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package oidc.client.withEL.servlets;
+package oidc.client.withELAltRole.servlets;
 
 import jakarta.annotation.security.DeclareRoles;
 import jakarta.security.enterprise.authentication.mechanism.http.OpenIdAuthenticationMechanismDefinition;
@@ -28,8 +28,8 @@ import oidc.client.base.servlets.BaseServlet;
                                                                               callerGroupsClaim = "${openIdConfig.callerGroupsClaim}"),
                                          providerMetadata = @OpenIdProviderMetadata(authorizationEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/authorize",
                                                                                     tokenEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/token"))
-@DeclareRoles("all")
-@ServletSecurity(@HttpConstraint(rolesAllowed = "all"))
+@DeclareRoles("group4")
+@ServletSecurity(@HttpConstraint(rolesAllowed = "group4"))
 public class OidcAnnotatedServletWithEL extends BaseServlet {
     private static final long serialVersionUID = 1L;
 

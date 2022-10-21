@@ -6,6 +6,9 @@
 	<classpathentry kind="src" path="test-applications/SessionScoped.war/src"/>
 	<classpathentry kind="src" path="test-applications/SimplestAnnotated.war/src"/>
 	<classpathentry kind="src" path="test-applications/SimplestAnnotatedWithEL.war/src"/>
+	<classpathentry kind="src" path="test-applications/SimplestAnnotatedWithELAltOP.war/src"/>
+	<classpathentry kind="src" path="test-applications/SimplestAnnotatedWithELAltOPAndRole.war/src"/>"
+	<classpathentry kind="src" path="test-applications/SimplestAnnotatedWithELAltRole.war/src"/>"
 	<classpathentry kind="src" path="test-applications/MultipleServletsDifferentProviders.war/src"/>
 	<classpathentry kind="src" path="test-applications/MultipleServletsDifferentRoles.war/src"/>
 	<classpathentry kind="src" path="test-applications/MultipleServletsSimilarAnnotations.war/src"/>
@@ -13,6 +16,7 @@
 		<accessrules>
 			<accessrule kind="accessible" pattern="io/openliberty/security/jakartasec/fat/**"/>
 			<accessrule kind="accessible" pattern="com/ibm/ws/security/fat/common/**"/>
+			<accessrule kind="accessible" pattern="oidc/client/base/servlets/**"/>
 		</accessrules>
 	</classpathentry>
 	

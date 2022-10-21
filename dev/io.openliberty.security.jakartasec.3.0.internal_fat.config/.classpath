@@ -15,6 +15,7 @@
 		<accessrules>
 			<accessrule kind="accessible" pattern="io/openliberty/security/jakartasec/fat/**"/>
 			<accessrule kind="accessible" pattern="com/ibm/ws/security/fat/common/**"/>
+			<accessrule kind="accessible" pattern="oidc/client/base/servlets/**"/>
 		</accessrules>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11">

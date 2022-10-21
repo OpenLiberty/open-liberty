@@ -61,7 +61,7 @@ public class ConfigurationClaimsDefinitionTests extends CommonAnnotatedSecurityT
     protected static String app = "ClaimsDefinitionServlet";
 
     @ClassRule
-    public static RepeatTests repeat = createTokenTypeRepeats();
+    public static RepeatTests repeat = createRandomTokenTypeRepeats();
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -76,13 +76,13 @@ public class ConfigurationClaimsDefinitionTests extends CommonAnnotatedSecurityT
         List<String> waitForMsgs = null;
         opServer.startServerUsingExpandedConfiguration("server_orig.xml", waitForMsgs);
         SecurityFatHttpUtils.saveServerPorts(opServer, Constants.BVT_SERVER_1_PORT_NAME_ROOT);
-        opHttpBase = "https://localhost:" + opServer.getBvtPort();
+        opHttpBase = "http://localhost:" + opServer.getBvtPort();
         opHttpsBase = "https://localhost:" + opServer.getBvtSecurePort();
 
         rpServer.startServerUsingExpandedConfiguration("server_orig.xml", waitForMsgs);
         SecurityFatHttpUtils.saveServerPorts(rpServer, Constants.BVT_SERVER_2_PORT_NAME_ROOT);
 
-        rpHttpBase = "https://localhost:" + rpServer.getBvtPort();
+        rpHttpBase = "http://localhost:" + rpServer.getBvtPort();
         rpHttpsBase = "https://localhost:" + rpServer.getBvtSecurePort();
 
         deployMyApps(); // run this after starting the RP so we have the rp port to update the openIdConfig.properties file within the apps

@@ -15,13 +15,17 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import io.openliberty.security.jakartasec.fat.tests.BasicOIDCAnnotationTests;
+import io.openliberty.security.jakartasec.fat.tests.BasicOIDCAnnotationUseCallbacksTests;
+import io.openliberty.security.jakartasec.fat.tests.BasicOIDCAnnotationUseRedirectToOriginalResourceTests;
+import io.openliberty.security.jakartasec.fat.tests.BasicOIDCAnnotationWithOidcClientConfigTests;
 import io.openliberty.security.jakartasec.fat.tests.InjectionScopedTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                BasicOIDCAnnotationTests.class,
+                BasicOIDCAnnotationUseCallbacksTests.class,
+                BasicOIDCAnnotationUseRedirectToOriginalResourceTests.class,
+                BasicOIDCAnnotationWithOidcClientConfigTests.class,
                 InjectionScopedTests.class
 })
 public class FATSuite {

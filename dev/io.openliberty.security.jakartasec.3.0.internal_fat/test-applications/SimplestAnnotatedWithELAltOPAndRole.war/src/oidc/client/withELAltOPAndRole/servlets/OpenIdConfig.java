@@ -8,7 +8,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package oidc.client.withEL.servlets;
+package oidc.client.withELAltOPAndRole.servlets;
 
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Named;

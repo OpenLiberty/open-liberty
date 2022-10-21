@@ -13,6 +13,8 @@ package io.openliberty.security.jakartasec.fat.commonTests;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,7 @@ import org.junit.Before;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
@@ -31,9 +34,11 @@ import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
+import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
 import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
 import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.ibm.ws.security.fat.common.utils.CommonExpectations;
+import com.ibm.ws.security.fat.common.utils.MySkipRule;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 
 import componenttest.custom.junit.runner.RepeatTestFilter;
@@ -53,28 +58,74 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
     protected final TestActions actions = new TestActions();
     protected final TestValidationUtils validationUtils = new TestValidationUtils();
     protected static ServerBootstrapUtils bootstrapUtils = new ServerBootstrapUtils();
+    protected CommonFatLoggingUtils loggingUtils = new CommonFatLoggingUtils();
 
     protected static String opHttpBase = null;
     protected static String opHttpsBase = null;
     protected static String rpHttpBase = null;
     protected static String rpHttpsBase = null;
 
-    protected static final String withOidcClientConfig = "_withOidcClientConfig";
+    protected static final String withOidcClientConfig = "withOidcClientConfig";
+    protected static final String useRedirectToOriginalResource = "useRedirectToOriginalResource";
+    protected static final String useCallbacks = "useCallbacks";
 
     protected static ResponseValues rspValues;
 
-    public static RepeatTests createTokenTypeRepeats() {
+    public static class skipIfUseRedirectToOriginalResource extends MySkipRule {
+        @Override
+        public Boolean callSpecificCheck() {
+
+            if (RepeatTestFilter.getRepeatActionsAsString().contains(useRedirectToOriginalResource)) {
+                Log.info(thisClass, "skipIfUseRedirectToOriginalResource",
+                         "Test case is using useRedirectToOriginalResource - App annotation of this test does not contain that setting - skip test");
+                testSkipped();
+                return true;
+            }
+            Log.info(thisClass, "skipIfUseRedirectToOriginalResource",
+                     "Test case is NOT using useRedirectToOriginalResource - App annotation of this test contains that setting - run test");
+            return false;
+        }
+    }
+
+    public static RepeatTests createRandomTokenTypeRepeats() {
 
         String accessTokenType = Utils.getRandomSelection(Constants.JWT_TOKEN_FORMAT, Constants.OPAQUE_TOKEN_FORMAT);
 
         Log.info(thisClass, "createRepeats", "Will be running tests using a/an " + accessTokenType + " access_token");
-        // note:  using the method addRepeat below instead of adding test repeats in line to simplify hacking up the tests locally to only run one or 2 variations (all the calls are the same - dont' have to worry about using "with" vs "andWith")
-        RepeatTests rTests = null;
 
-        rTests = addRepeat(rTests, new SecurityTestRepeatAction(accessTokenType));
+        RepeatTests rTests = addRepeat(null, new SecurityTestRepeatAction(accessTokenType));
 
         return rTests;
 
+    }
+
+    protected static RepeatTests createTokenTypeRepeats() {
+        return createTokenTypeRepeats(null);
+
+    }
+
+    /**
+     * Creates repeats for a calling test class. The caller passes in a unique string that will be used in the repeat name. This method will create 2 repeats
+     * <uniqueString>_jwt and
+     * <uniqueString>_opaque
+     *
+     * @param specialCase
+     * @return
+     */
+    protected static RepeatTests createTokenTypeRepeats(String specialCase) {
+
+        String additionalString = "";
+//        List<String> repeatTokenTypes = Arrays.asList(Constants.JWT_TOKEN_FORMAT);
+        List<String> repeatTokenTypes = Arrays.asList(Constants.JWT_TOKEN_FORMAT, Constants.OPAQUE_TOKEN_FORMAT);
+
+        if (specialCase != null) {
+            additionalString = specialCase + "_";
+        }
+        RepeatTests rTests = null;
+        for (String tokenType : repeatTokenTypes) {
+            rTests = addRepeat(rTests, new SecurityTestRepeatAction(additionalString + tokenType));
+        }
+        return rTests;
     }
 
     public static RepeatTests addRepeat(RepeatTests rTests, SecurityTestRepeatAction currentRepeat) {
@@ -83,6 +134,11 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
         } else {
             return rTests.andWith(currentRepeat);
         }
+    }
+
+    public static Class<?> getMyClassName() {
+
+        return thisClass;
     }
 
     public static void updateTrackers(LibertyServer opServer, LibertyServer rpServer, boolean serversAreReconfigured) throws Exception {
@@ -105,24 +161,11 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
 
     public static LibertyServer setTokenTypeInBootstrap(LibertyServer opServer, LibertyServer rpJwtServer, LibertyServer rpOpaqueServer) throws Exception {
 
-        return setTokenTypeInBootstrap(opServer, rpJwtServer, rpOpaqueServer, null, null);
-
-    }
-
-    public static LibertyServer setTokenTypeInBootstrap(LibertyServer opServer, LibertyServer rpJwtServer, LibertyServer rpOpaqueServer, LibertyServer rpJwtOidcClServer,
-                                                        LibertyServer rpOpaqueOidcClServer) throws Exception {
-
         if (RepeatTestFilter.getRepeatActionsAsString().contains(Constants.JWT_TOKEN_FORMAT)) {
             bootstrapUtils.writeBootstrapProperty(opServer, "opTokenFormat", "jwt");
-            if ((rpJwtOidcClServer != null) && (RepeatTestFilter.getRepeatActionsAsString().contains(withOidcClientConfig))) {
-                return rpJwtOidcClServer;
-            }
             return rpJwtServer;
         } else {
             bootstrapUtils.writeBootstrapProperty(opServer, "opTokenFormat", "opaque");
-            if ((rpOpaqueOidcClServer != null) && (RepeatTestFilter.getRepeatActionsAsString().contains(withOidcClientConfig))) {
-                return rpOpaqueOidcClServer;
-            }
             return rpOpaqueServer;
         }
         // not testing with mpJwt at the moment
@@ -155,7 +198,6 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
         try {
             initResponseValues();
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -177,12 +219,43 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
     }
 
     public Page invokeAppReturnLoginPage(WebClient webClient, String url, Map<String, String> headers, List<NameValuePair> parms) throws Exception {
+        return invokeAppReturnLoginPage(webClient, url, headers, parms, (Cookie[]) null);
+    }
 
-        rspValues.setOriginalRequest(url);
-        Page response = actions.invokeUrlWithParametersAndHeaders(_testName, webClient, url, parms, headers);
+    public Page invokeAppReturnLoginPage(WebClient webClient, String url, Map<String, String> headers, List<NameValuePair> parms, Cookie... cookies) throws Exception {
+
+        Page response = null;
+        rspValues.setOriginalRequest(url, headers, parms, cookies);
+
+        HashMap<String, String> tempHeaders = null;
+        if (headers != null) {
+            tempHeaders = new HashMap<String, String>();
+            for (Map.Entry<String, String> header : headers.entrySet()) {
+                Log.info(thisClass, _testName, "Testing with header before invoke: " + header.getKey());
+                tempHeaders.put(header.getKey(), header.getValue());
+            }
+        }
+
+        if (cookies != null && cookies.length != 0) {
+            if (tempHeaders == null) {
+                tempHeaders = new HashMap<String, String>();
+            }
+
+            for (Cookie c : cookies) {
+                webClient.addCookie(c.getName() + "=" + c.getValue(), new URL("https://localhost"), null);
+            }
+
+        }
+        response = actions.invokeUrlWithParametersAndHeaders(_testName, webClient, url, parms, tempHeaders);
+        loggingUtils.printAllCookies(webClient);
 
         Expectations firstExpectations = CommonExpectations.successfullyReachedOidcLoginPage();
 
+        if (headers != null) {
+            for (Map.Entry<String, String> header : headers.entrySet()) {
+                Log.info(thisClass, _testName, "Testing with header after invoke: " + header.getKey());
+            }
+        }
         validationUtils.validateResult(response, firstExpectations);
 
         return response;
@@ -210,14 +283,14 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
 
     public Page processLogin(Page response, String user, String pw, String app) throws Exception {
 
-        return processLogin(response, user, pw, app, null, null);
+        return processLogin(response, user, pw, app, null, null, (Cookie[]) null);
 
     }
 
     public Page processLogin(Page response, String user, String pw, String app, Map<String, String> headers,
-                             List<NameValuePair> parms) throws Exception {
+                             List<NameValuePair> parms, Cookie... cookies) throws Exception {
 
-        Expectations currentExpectations = getProcessLoginExpectations(app, headers, parms);
+        Expectations currentExpectations = getProcessLoginExpectations(app, headers, parms, cookies);
 
         response = actions.doFormLogin(response, user, pw);
         // confirm protected resource was accessed
@@ -232,7 +305,7 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
         return getProcessLoginExpectations(app, null, null);
     }
 
-    public Expectations getProcessLoginExpectations(String app, Map<String, String> headers, List<NameValuePair> parms) throws Exception {
+    public Expectations getProcessLoginExpectations(String app, Map<String, String> headers, List<NameValuePair> parms, Cookie... cookies) throws Exception {
 
         Expectations processLoginexpectations = new Expectations();
         processLoginexpectations.addSuccessCodeForCurrentAction();
@@ -251,7 +324,7 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
         // check for the correct values from the servlet in the response
         OpenIdContextExpectationHelpers.getOpenIdContextExpectations(null, processLoginexpectations, ServletMessageConstants.SERVLET, rspValues);
         WsSubjectExpectationHelpers.getWsSubjectExpectations(null, processLoginexpectations, ServletMessageConstants.SERVLET, rspValues);
-        ServletRequestExpectationHelpers.getServletRequestExpectations(null, processLoginexpectations, ServletMessageConstants.SERVLET, headers, parms);
+        ServletRequestExpectationHelpers.getServletRequestExpectations(null, processLoginexpectations, ServletMessageConstants.SERVLET, headers, parms, cookies);
 
         return processLoginexpectations;
     }
@@ -313,43 +386,43 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
      */
     public Page runGoodEndToEndTest(WebClient webClient, String appRoot, String app, String user, String pw) throws Exception {
 
-        return runGoodEndToEndTest(webClient, appRoot, app, user, pw, null, null);
+        return runGoodEndToEndTest(webClient, appRoot, app, user, pw, null, null, (Cookie[]) null);
 
     }
 
     public Page runGoodEndToEndTest(WebClient webClient, String appRoot, String app, String user, String pw, Map<String, String> headers,
-                                    List<NameValuePair> parms) throws Exception {
+                                    List<NameValuePair> parms, Cookie... cookies) throws Exception {
 
         String url = rpHttpsBase + "/" + appRoot + "/" + app;
 
-        Page response = invokeAppReturnLoginPage(webClient, url, headers, parms);
+        Page response = invokeAppReturnLoginPage(webClient, url, headers, parms, cookies);
 
-        response = processLogin(response, user, pw, app, headers, parms);
+        response = processLogin(response, user, pw, app, headers, parms, cookies);
 
-        // TODO - will we need to perform any other step?
         return response;
     }
 
     public static Map<String, Object> buildUpdatedConfigMap(LibertyServer opServer, LibertyServer rpServer, String appName, String configFileName,
                                                             Map<String, Object> overrideConfigSettings) throws Exception {
 
-        String sourceConfigFile = "publish/shared/config/oidcClient/" + configFileName;
-        Log.info(thisClass, "buildUpdatedConfigMap", "sourceConfigFile: " + sourceConfigFile);
-
         Map<String, Object> updatedMap = new HashMap<String, Object>();
 
-        File cf = new File(sourceConfigFile);
-        InputStream configFile = new FileInputStream(cf);
-        if (configFile != null) {
-            Log.info(thisClass, "deployConfigurableTestApps", "Loading config from: " + sourceConfigFile);
-            Properties config = new Properties();
-            config.load(configFile);
-            for (Entry<Object, Object> entry : config.entrySet()) {
-                updatedMap.put((String) entry.getKey(), fixConfigValue(opServer, rpServer, appName, entry.getValue()));
-                Log.info(thisClass, "deployConfigurableTestApps", "key: " + entry.getKey() + " updatedValue: " + updatedMap.get(entry.getKey()));
+        if (configFileName != null) {
+            String sourceConfigFile = "publish/shared/config/oidcClient/" + configFileName;
+            Log.info(thisClass, "buildUpdatedConfigMap", "sourceConfigFile: " + sourceConfigFile);
+
+            File cf = new File(sourceConfigFile);
+            InputStream configFile = new FileInputStream(cf);
+            if (configFile != null) {
+                Log.info(thisClass, "deployConfigurableTestApps", "Loading config from: " + sourceConfigFile);
+                Properties config = new Properties();
+                config.load(configFile);
+                for (Entry<Object, Object> entry : config.entrySet()) {
+                    updatedMap.put((String) entry.getKey(), fixConfigValue(opServer, rpServer, appName, entry.getValue()));
+                    Log.info(thisClass, "deployConfigurableTestApps", "key: " + entry.getKey() + " updatedValue: " + updatedMap.get(entry.getKey()));
+                }
             }
         }
-
         if (overrideConfigSettings != null) {
             for (Entry<String, Object> entry : overrideConfigSettings.entrySet()) {
                 updatedMap.put(entry.getKey(), fixConfigValue(opServer, rpServer, appName, entry.getValue()));
