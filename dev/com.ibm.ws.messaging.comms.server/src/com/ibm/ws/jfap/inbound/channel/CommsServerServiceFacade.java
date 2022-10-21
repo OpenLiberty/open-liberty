@@ -147,14 +147,18 @@ public class CommsServerServiceFacade implements Singleton {
     void bindSecureFacet(SecureFacet facet) {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "bindSecureFacet", facet);
         if (securePort >= 0 && facet.areSecureSocketsEnabled()) inboundSecureChain.enable(true);
-        this.secureFacetRef.set(facet);
-        factotum.updateSecureChain();
+        synchronized (factotum) {
+            this.secureFacetRef.set(facet);
+            factotum.updateSecureChain();
+        }
     }
 
     void unbindSecureFacet(SecureFacet facet) {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "unbindSecureFacet", facet);
-        factotum.stopSecureChain();
-        this.secureFacetRef.compareAndSet(facet, null);
+        synchronized (factotum) {
+            if (this.secureFacetRef.compareAndSet(facet, null))
+                factotum.stopSecureChain(); // only stop the chain if facet was the last bound facet
+        }
     }
 
     private final class SynchronizedActions {
