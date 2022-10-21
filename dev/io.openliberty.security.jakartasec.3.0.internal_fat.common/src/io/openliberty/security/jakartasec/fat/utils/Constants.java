@@ -28,6 +28,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String USE_SESSION = "useSession";
     public static final String USE_SESSION_EXPRESSION = "useSessionExpression";
     public static final String PROVIDER = "provider";
+    public static final String Logout = "logout";
 
     public static final String CALLER_NAME_CLAIM = "callerNameClaim";
     public static final String CALLER_GROUPS_CLAIM = "callerGroupsClaim";
