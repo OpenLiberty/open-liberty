@@ -47,12 +47,12 @@ public abstract class URBridgeEntity {
     /**
      * Create an URBridgeEntity.
      *
-     * @param inEntity The entity to be wrapped by the URBridgeEntity. This
-     *            entity's type determines which type of URBridgeEntity
-     *            is created.
-     * @param urBridge The UserRegisty associated with the adapter.
-     * @param inAttrMap An attribute map containing the configuration information
-     *            on how underlying UR attributes map to WIM attributes.
+     * @param inEntity      The entity to be wrapped by the URBridgeEntity. This
+     *                          entity's type determines which type of URBridgeEntity
+     *                          is created.
+     * @param urBridge      The UserRegisty associated with the adapter.
+     * @param inAttrMap     An attribute map containing the configuration information
+     *                          on how underlying UR attributes map to WIM attributes.
      * @param baseEntryName The name of the baseEntryName.
      */
     public URBridgeEntity(Entity inEntity, URBridge urBridge, Map<String, String> inAttrMap, String inBaseEntryName,
@@ -69,7 +69,7 @@ public abstract class URBridgeEntity {
      * Retrieve the groupSecurityName or userSecurityName from the registry.
      *
      * @param uniqueId the uniqueGroupId or uniqueUserId of the group
-     *            or user in the underlying registry.
+     *                     or user in the underlying registry.
      */
     public abstract String getSecurityNameForEntity(String arg) throws Exception;
 
@@ -77,7 +77,7 @@ public abstract class URBridgeEntity {
      * Retrieve the uniqueGroupId or uniqueUserId from the registry.
      *
      * @param securityName the groupSecurityName or userSecurityName of the user
-     *            or group in the underlying registry.
+     *                         or group in the underlying registry.
      */
     public abstract String getUniqueIdForEntity(String arg) throws Exception;
 
@@ -85,7 +85,7 @@ public abstract class URBridgeEntity {
      * Retrieve the groupDisplayName or userDisplayName from the registry.
      *
      * @param securityName the securityName of the user or group in the
-     *            underlying registry.
+     *                         underlying registry.
      */
     public abstract String getDisplayNameForEntity(String arg) throws Exception;
 
@@ -95,10 +95,9 @@ public abstract class URBridgeEntity {
      *
      * @param attrList a list of attributes to be added to the entity
      * @throws Exception an invalid attribute was requested or an exception
-     *             was thrown from an underlying function.
+     *                       was thrown from an underlying function.
      */
     public void populateEntity(List<String> attrList) throws WIMException {
-        boolean uniqueIdPropSet = false;
         setIdentifierProperties();
 
         // Loop through the attributes to try to set each.
@@ -125,9 +124,6 @@ public abstract class URBridgeEntity {
         }
         if (entity.getIdentifier().isSet(uniqueIdProp)) {
             entity.getIdentifier().set(SchemaConstants.PROP_EXTERNAL_ID, entity.getIdentifier().get(uniqueIdProp));
-        }
-        if (!uniqueIdPropSet) {
-            entity.getIdentifier().unset(uniqueIdProp);
         }
     }
 
@@ -166,10 +162,10 @@ public abstract class URBridgeEntity {
      * Returns the securityName of a user or a group.
      *
      * @param setAttr a boolean indicating whether to actually set the attribute
-     *            in the entity or just perform a lookup.
+     *                    in the entity or just perform a lookup.
      * @return the user or group's securityName.
      * @throws Exception identifier values are missing or the underlying
-     *             registry threw an error.
+     *                       registry threw an error.
      */
     public String getSecurityName(boolean setAttr) throws Exception {
         String securityName = null;
@@ -211,10 +207,10 @@ public abstract class URBridgeEntity {
      * Returns the uniqueId of a user or a group.
      *
      * @param setAttr a boolean indicating whether to actually set the attribute
-     *            in the entity or just perform a lookup.
+     *                    in the entity or just perform a lookup.
      * @return the user or group's uniqueId.
      * @throws Exception identifier values are missing or the underlying
-     *             registry threw an error.
+     *                       registry threw an error.
      */
     public String getUniqueId(boolean setAttr) throws Exception {
         String uniqueName = null;
@@ -245,10 +241,10 @@ public abstract class URBridgeEntity {
      * Returns the displayName of a user or a group.
      *
      * @param setAttr a boolean indicating whether to actually set the attribute
-     *            in the entity or just perform a lookup.
+     *                    in the entity or just perform a lookup.
      * @return the user or group's displayName.
      * @throws Exception identifier values are missing or the underlying
-     *             registry threw an error.
+     *                       registry threw an error.
      */
     @SuppressWarnings("unchecked")
     public String getDisplayName(boolean setAttr) throws Exception {
