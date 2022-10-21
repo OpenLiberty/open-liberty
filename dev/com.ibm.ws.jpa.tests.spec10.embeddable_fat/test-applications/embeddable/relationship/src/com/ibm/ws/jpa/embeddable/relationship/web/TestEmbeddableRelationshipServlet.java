@@ -24,11 +24,11 @@ import com.ibm.ws.jpa.embeddable.relationship.testlogic.EmbeddableRelationshipLo
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestEmbeddableRelationshipServlet")
-public class TestEmbeddableRelationshipServlet extends JPATestServlet {
+public class TestEmbeddableRelationshipServlet extends JPADBTestServlet {
     // Container Managed Transaction Scope
     @PersistenceContext(unitName = "EMBEDDABLE_RELATIONSHIP_JTA")
     private EntityManager cmtsEm;

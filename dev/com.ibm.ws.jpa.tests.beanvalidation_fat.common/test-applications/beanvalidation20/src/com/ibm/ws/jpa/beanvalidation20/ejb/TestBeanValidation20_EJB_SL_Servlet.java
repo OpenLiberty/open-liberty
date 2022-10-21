@@ -20,13 +20,13 @@ import com.ibm.ws.jpa.beanvalidation20.testlogic.BeanValidation20Logic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
 import componenttest.annotation.AllowedFFDC;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestBeanValidation20_EJB_SL_Servlet")
-public class TestBeanValidation20_EJB_SL_Servlet extends EJBTestVehicleServlet {
+public class TestBeanValidation20_EJB_SL_Servlet extends EJBDBTestVehicleServlet {
 
     @PostConstruct
     private void initFAT() {

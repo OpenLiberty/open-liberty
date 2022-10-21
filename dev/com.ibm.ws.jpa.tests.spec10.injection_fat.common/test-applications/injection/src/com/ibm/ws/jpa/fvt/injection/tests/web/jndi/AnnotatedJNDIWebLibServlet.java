@@ -26,7 +26,7 @@ import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 @PersistenceUnits({
                     // Persistence Units defined in the webapp
@@ -63,7 +63,7 @@ import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
                        // Cleanup Persistence Context
                        @PersistenceContext(unitName = "CLEANUP", name = "jpa/web/jndi/ano/cleanup_cmts")
 })
-public class AnnotatedJNDIWebLibServlet extends JPATestServlet {
+public class AnnotatedJNDIWebLibServlet extends JPADBTestServlet {
     private static final long serialVersionUID = -3611473513604477785L;
 
     private final String testLogicClassName = JPAInjectionTestLogic.class.getName();

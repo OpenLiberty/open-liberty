@@ -20,7 +20,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
-import componenttest.topology.utils.tck.TCKUtils;
+import componenttest.topology.utils.tck.TCKRunner;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -52,7 +52,6 @@ public class OpentracingTCKLauncherMicroProfile {
         String testName = this.getClass() + ":launchOpenTracing13RestClientTck";
         Type type = Type.MICROPROFILE;
         String specName = "Open Tracing";
-        String specVersion = "1.3";
-        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion, suiteName);
+        TCKRunner.runTCK(server, bucketName, testName, type, specName, suiteName);
     }
 }

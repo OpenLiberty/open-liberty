@@ -23,11 +23,11 @@ import com.ibm.ws.query.utils.SetupQueryTestCase;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/JULoopQueryAnoTest_016_Servlet")
-public class JULoopQueryAnoTest_016_Servlet extends JPATestServlet {
+public class JULoopQueryAnoTest_016_Servlet extends JPADBTestServlet {
     // Application Managed JTA
     @PersistenceUnit(unitName = "QUERY_JTA")
     private EntityManagerFactory amjtaEmf;

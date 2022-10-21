@@ -14,23 +14,24 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     
-  <display-name>JSF22FileUpload</display-name>
-  
-  <context-param>
-    <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
-    <param-value>server</param-value>
-  </context-param>
- 
-  <servlet>
-    <servlet-name>Faces Servlet</servlet-name>
-    <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+    <display-name>JSF22FileUpload</display-name>
 
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>Faces Servlet</servlet-name>
-    <url-pattern>*.jsf</url-pattern>
-  </servlet-mapping>
-  <welcome-file-list>
-    <welcome-file>fileUploadTest.jsf</welcome-file>
-  </welcome-file-list>  
+    <context-param>
+        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-value>server</param-value>
+    </context-param>
+
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.jsf</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>fileUploadTest.jsf</welcome-file>
+    </welcome-file-list>
 </web-app>

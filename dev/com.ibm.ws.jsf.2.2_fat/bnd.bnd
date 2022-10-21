@@ -30,6 +30,7 @@ src: \
     test-applications/JSF22InputFile.war/src,\
     test-applications/JSF22ComponentTester.war/src,\
     test-applications/JSF22ClientWindow.war/src,\
+    test-applications/JSF22ClientWindowFaces40.war/src,\
     test-applications/JSF22ComponentRenderer.war/src,\
     test-applications/JSF22FacesFlows.war/src,\
     test-applications/CDIFacesFlows.war/src,\

@@ -19,11 +19,11 @@ import org.junit.Test;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.TransactionSynchronization;
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TxSynchronizationDDEJBSLTestServlet")
-public class TxSynchronizationDDEJBSLTestServlet extends EJBTestVehicleServlet {
+public class TxSynchronizationDDEJBSLTestServlet extends EJBDBTestVehicleServlet {
     @PostConstruct
     private void initFAT() {
         testClassName = "com.ibm.ws.jpa.fvt.txsync.testlogic.TxSynchronizationTestLogic";

@@ -24,11 +24,11 @@ import com.ibm.ws.jpa.beanvalidation20.testlogic.BeanValidation20Logic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestBeanValidation20Servlet")
-public class TestBeanValidation20Servlet extends JPATestServlet {
+public class TestBeanValidation20Servlet extends JPADBTestServlet {
     // Container Managed Transaction Scope
     @PersistenceContext(unitName = "BEANVALIDATION20_JTA")
     private EntityManager cmtsEm;

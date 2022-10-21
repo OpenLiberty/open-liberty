@@ -20,11 +20,11 @@ import com.ibm.ws.jpa.embeddable.basic.testlogic.EmbeddableBasicLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestEmbeddableBasic_EJB_SFEx_Servlet")
-public class TestEmbeddableBasic_EJB_SFEx_Servlet extends EJBTestVehicleServlet {
+public class TestEmbeddableBasic_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
 
     @PostConstruct
     private void initFAT() {

@@ -20,7 +20,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
-import componenttest.topology.utils.tck.TCKUtils;
+import componenttest.topology.utils.tck.TCKRunner;
 
 @RunWith(FATRunner.class)
 public class MPContextPropagationTCKLauncher {
@@ -50,7 +50,6 @@ public class MPContextPropagationTCKLauncher {
         String testName = this.getClass() + ":launchMPContextPropagation_1_2_Tck";
         Type type = Type.MICROPROFILE;
         String specName = "Context Propogation";
-        String specVersion = "1.2";
-        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion);
+        TCKRunner.runTCK(server, bucketName, testName, type, specName);
     }
 }

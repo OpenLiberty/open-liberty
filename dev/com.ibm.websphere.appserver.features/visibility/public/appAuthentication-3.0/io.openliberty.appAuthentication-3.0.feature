@@ -19,5 +19,5 @@ Subsystem-Name: Jakarta Authentication 3.0
   com.ibm.websphere.appserver.eeCompatible-10.0
 -bundles=\
   io.openliberty.security.jaspic.2.0.internal
-kind=noship
-edition=full
+kind=beta
+edition=core

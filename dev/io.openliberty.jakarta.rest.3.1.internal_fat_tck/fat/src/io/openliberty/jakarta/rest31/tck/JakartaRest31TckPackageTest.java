@@ -30,7 +30,7 @@ import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.tck.TCKUtils;
+import componenttest.topology.utils.tck.TCKRunner;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 
 /**
@@ -89,7 +89,6 @@ public class JakartaRest31TckPackageTest {
         String testName = this.getClass() + ":testJakarta31RestTck";
         Type type = Type.JAKARTA;
         String specName = "Restful Web Services";
-        String specVersion = "3.1";
-        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion, props);
+        TCKRunner.runTCK(server, bucketName, testName, type, specName, props);
     }
 }

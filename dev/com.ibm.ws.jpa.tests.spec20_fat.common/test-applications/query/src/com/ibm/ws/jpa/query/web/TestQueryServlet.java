@@ -24,13 +24,13 @@ import com.ibm.ws.jpa.query.testlogic.QueryLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 import componenttest.annotation.AllowedFFDC;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestQueryServlet")
-public class TestQueryServlet extends JPATestServlet {
+public class TestQueryServlet extends JPADBTestServlet {
     // Container Managed Transaction Scope
     @PersistenceContext(unitName = "QUERY_JTA")
     private EntityManager cmtsEm;

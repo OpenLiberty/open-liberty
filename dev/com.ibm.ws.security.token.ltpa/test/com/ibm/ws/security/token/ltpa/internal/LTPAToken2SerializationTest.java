@@ -92,7 +92,7 @@ public class LTPAToken2SerializationTest {
         /*
          * Check expiration
          */
-        assertEquals("The expiration should be 1666025876388L", 1666025876388L, object.getExpiration());
+        assertEquals("The expiration should be 4666196170449L", 4666196170449L, object.getExpiration());
 
         /*
          * Check version
@@ -174,9 +174,9 @@ public class LTPAToken2SerializationTest {
         byteField.setAccessible(true);
 
         /*
-         * Set time to 100 years from 10/04/2022
+         * Set expiration time to Fri Nov 12 15:36:10 CST 2117
          */
-        long time = System.currentTimeMillis() + 52560000 * 60 * 1000;
+        long time = System.currentTimeMillis() + 3000000000000L;
         byteField.set(object, time);
 
         /*

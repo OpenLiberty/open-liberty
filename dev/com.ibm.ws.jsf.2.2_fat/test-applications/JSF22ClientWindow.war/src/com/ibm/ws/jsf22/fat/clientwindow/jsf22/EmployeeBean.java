@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jsf22.fat.clientwindow;
+package com.ibm.ws.jsf22.fat.clientwindow.jsf22;
 
 import java.io.Serializable;
 
@@ -28,7 +28,8 @@ public class EmployeeBean implements Serializable {
     protected String lastName = null;
     protected String windowId = null;
 
-    public EmployeeBean() {}
+    public EmployeeBean() {
+    }
 
     public String getFirstName() {
         return firstName;

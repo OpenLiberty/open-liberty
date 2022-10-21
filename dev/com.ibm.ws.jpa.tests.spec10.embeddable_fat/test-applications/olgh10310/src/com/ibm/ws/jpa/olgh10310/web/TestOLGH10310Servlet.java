@@ -24,11 +24,11 @@ import com.ibm.ws.jpa.olgh10310.testlogic.JPATestOLGH10310Logic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestOLGH10310Servlet")
-public class TestOLGH10310Servlet extends JPATestServlet {
+public class TestOLGH10310Servlet extends JPADBTestServlet {
     // Container Managed Transaction Scope
     @PersistenceContext(unitName = "OLGH10310_JTA")
     private EntityManager cmtsEm;

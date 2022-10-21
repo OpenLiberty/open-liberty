@@ -13,9 +13,9 @@ package com.ibm.ws.jpa.fvt.txsync.dd.web;
 
 import javax.persistence.EntityManager;
 
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
-public class TxSyncTestDDServlet extends JPATestServlet {
+public class TxSyncTestDDServlet extends JPADBTestServlet {
     private EntityManager emCMTSTxSync;
     private EntityManager emCMTSTxUnsync;
 }
