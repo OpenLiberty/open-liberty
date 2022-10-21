@@ -22,6 +22,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                AlwaysRunAndPassTest.class,
                 StreamProviderTest.class
 })
 public class FATSuite {
