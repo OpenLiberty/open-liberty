@@ -35,14 +35,12 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
 
     public void testLeaseTableAccess(HttpServletRequest request,
                                      HttpServletResponse response) throws Exception {
-        Connection con = getConnection(ds);
-        con.setAutoCommit(false);
 
-        try {
+        try (Connection con = getConnection(ds)) {
+            con.setAutoCommit(false);
+
             // Statement used to drop table
-            Statement stmt = con.createStatement();
-
-            try {
+            try (Statement stmt = con.createStatement()) {
                 String selForUpdateString = "SELECT LEASE_OWNER" +
                                             " FROM WAS_LEASES_LOG" +
                                             " WHERE SERVER_IDENTITY='cloud0011' FOR UPDATE OF LEASE_OWNER";
@@ -79,17 +77,14 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
     public void modifyLeaseOwner(HttpServletRequest request,
                                  HttpServletResponse response) throws Exception {
 
-        Connection con = getConnection(dsTranLog);
-        con.setAutoCommit(false);
-        DatabaseMetaData mdata = con.getMetaData();
-        String dbName = mdata.getDatabaseProductName();
-        boolean isPostgreSQL = dbName.toLowerCase().contains("postgresql");
+        try (Connection con = getConnection(dsTranLog)) {
+            con.setAutoCommit(false);
+            DatabaseMetaData mdata = con.getMetaData();
+            String dbName = mdata.getDatabaseProductName();
+            boolean isPostgreSQL = dbName.toLowerCase().contains("postgresql");
 
-        try {
             // Statement used to drop table
-            Statement stmt = con.createStatement();
-
-            try {
+            try (Statement stmt = con.createStatement()) {
                 String selForUpdateString = "SELECT LEASE_OWNER" +
                                             " FROM WAS_LEASES_LOG" +
                                             " WHERE SERVER_IDENTITY='cloud0011' FOR UPDATE" +
@@ -126,12 +121,9 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
     public void setLatch(HttpServletRequest request,
                          HttpServletResponse response) throws Exception {
 
-        Connection con = getConnection(dsTranLog);
-        try {
+        try (Connection con = getConnection(dsTranLog)) {
             // Statement used to drop table
-            Statement stmt = con.createStatement();
-
-            try {
+            try (Statement stmt = con.createStatement()) {
 
                 long latch = 255L;
                 String updateString = "UPDATE " + "WAS_PARTNER_LOGcloud0011" +
@@ -152,12 +144,9 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
     public void setPeerOwnership(HttpServletRequest request,
                                  HttpServletResponse response) throws Exception {
 
-        Connection con = getConnection(dsTranLog);
-        try {
+        try (Connection con = getConnection(dsTranLog)) {
             // Statement used to drop table
-            Statement stmt = con.createStatement();
-
-            try {
+            try (Statement stmt = con.createStatement()) {
                 String updateString = "UPDATE " + "WAS_PARTNER_LOGcloud0011" +
                                       " SET SERVER_NAME = 'cloud0021'" +
                                       " WHERE RU_ID = -1";
@@ -175,10 +164,10 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
 
     public void testTranlogTableAccess(HttpServletRequest request,
                                        HttpServletResponse response) throws Exception {
-        Connection con = getConnection(dsTranLog);
-        con.setAutoCommit(false);
 
-        try {
+        try (Connection con = getConnection(dsTranLog)) {
+            con.setAutoCommit(false);
+
             DatabaseMetaData mdata = con.getMetaData();
 
             System.out.println("testTranlogTableAccess: get metadata tables - " + mdata);
@@ -245,29 +234,30 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
 
     /**
      * This method supports a retry when a connection is required.
-     * 
+     *
      * @param dSource
      * @return
      * @throws Exception
      */
-    private Connection getConnection(DataSource dSource) throws Exception {
+    private Connection getConnection(DataSource dSource) throws SQLException {
         Connection conn = null;
         int retries = 0;
-        boolean retrievedConn = false;
-        Exception excToThrow = null;
-        while (retries < 2 && !retrievedConn) {
+
+        SQLException excToThrow = null;
+        while (retries < 2 && conn == null) {
             try {
                 System.out.println("Simple2PCCloudServlet: getConnection called against resource - " + dSource);
                 conn = dSource.getConnection();
-                retrievedConn = true;
-            } catch (Exception ex) {
+            } catch (SQLException ex) {
                 System.out.println("Simple2PCCloudServlet: getConnection caught exception - " + ex);
                 excToThrow = ex;
                 retries++;
             }
         }
-        if (!retrievedConn && excToThrow != null)
+
+        if (conn == null && excToThrow != null) {
             throw excToThrow;
+        }
 
         System.out.println("Simple2PCCloudServlet: getConnection returned connection - " + conn);
         return conn;

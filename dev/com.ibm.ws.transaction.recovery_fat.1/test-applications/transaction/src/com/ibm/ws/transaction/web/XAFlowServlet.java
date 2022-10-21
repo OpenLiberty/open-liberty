@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -71,7 +71,7 @@ public class XAFlowServlet extends FATServlet {
             final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
-            XAResourceImpl.dumpState();
+            XAResourceImpl.dumpState(true);
 
             // Activate the server killer
             XAFlowCallbackImpl.activateXAFlowCallback();

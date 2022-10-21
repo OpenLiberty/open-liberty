@@ -23,10 +23,10 @@ import javax.servlet.annotation.WebServlet;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 @WebServlet(urlPatterns = "/TCEVS")
-public class TestConcurrentEnhancementVerificationServlet extends JPATestServlet {
+public class TestConcurrentEnhancementVerificationServlet extends JPADBTestServlet {
     @PersistenceUnit(unitName = "CEV")
     private EntityManagerFactory amjtaEmf;
 

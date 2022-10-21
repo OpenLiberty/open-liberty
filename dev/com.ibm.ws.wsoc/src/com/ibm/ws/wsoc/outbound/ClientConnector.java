@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,9 +30,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.wsoc.AnnotatedEndpoint;
+import com.ibm.ws.wsoc.ClientEndpointConfigCopyPerSession;
 import com.ibm.ws.wsoc.EndpointHelper;
 import com.ibm.ws.wsoc.ParametersOfInterest;
-import com.ibm.ws.wsoc.ClientEndpointConfigCopyPerSession;
 import com.ibm.ws.wsoc.SessionImpl;
 import com.ibm.ws.wsoc.WebSocketVersionServiceManager;
 import com.ibm.ws.wsoc.external.SessionExt;
@@ -70,8 +70,8 @@ public class ClientConnector {
 
         ParametersOfInterest things = new ParametersOfInterest();
 
-        if(WebSocketVersionServiceManager.isWsoc21rHigher()){
-            config  = new ClientEndpointConfigCopyPerSession(config);
+        if (WebSocketVersionServiceManager.isWsoc21OrHigher()) {
+            config = new ClientEndpointConfigCopyPerSession(config);
             things.setUserProperties(config.getUserProperties());
         }
 

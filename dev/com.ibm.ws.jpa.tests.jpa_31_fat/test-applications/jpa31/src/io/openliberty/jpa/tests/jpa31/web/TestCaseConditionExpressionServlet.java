@@ -15,7 +15,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 import io.openliberty.jpa.tests.jpa31.models.Case2Entity;
 import io.openliberty.jpa.tests.jpa31.models.Case2Entity_;
@@ -39,7 +39,7 @@ import jakarta.transaction.UserTransaction;
 import junit.framework.Assert;
 
 @WebServlet(urlPatterns = "/TestCaseConditionExpressionServlet")
-public class TestCaseConditionExpressionServlet extends JPATestServlet {
+public class TestCaseConditionExpressionServlet extends JPADBTestServlet {
     private static final long serialVersionUID = 1L;
 
     private final static String PUNAME = "CASE_CONDITION";

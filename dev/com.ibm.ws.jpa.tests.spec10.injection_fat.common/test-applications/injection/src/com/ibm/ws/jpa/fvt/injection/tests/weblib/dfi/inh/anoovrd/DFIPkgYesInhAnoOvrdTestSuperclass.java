@@ -26,7 +26,7 @@ import com.ibm.ws.jpa.fvt.injection.testlogic.JPAInjectionTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 /**
  * JPA Injection Test Servlet
@@ -37,7 +37,7 @@ import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
  *
  *
  */
-public abstract class DFIPkgYesInhAnoOvrdTestSuperclass extends JPATestServlet {
+public abstract class DFIPkgYesInhAnoOvrdTestSuperclass extends JPADBTestServlet {
     private static final long serialVersionUID = -5112398751016717597L;
 
     /*

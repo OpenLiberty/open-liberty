@@ -26,11 +26,11 @@ import com.ibm.ws.jpa.fvt.jarfile.testlogic.JarFileSupportTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/JarFileWebClassesLibTestServlet")
-public class JarFileWebClassesLibTestServlet extends JPATestServlet {
+public class JarFileWebClassesLibTestServlet extends JPADBTestServlet {
     // Container Managed Transaction Scope
     @PersistenceContext(unitName = "JarFileSupport_JEE")
     private EntityManager cmtsEm;

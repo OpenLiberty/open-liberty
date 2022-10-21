@@ -12,6 +12,7 @@ package com.ibm.ws.security.token.internal;
 
 import java.io.Serializable;
 import java.util.Enumeration;
+import java.util.Random;
 
 import com.ibm.websphere.security.auth.InvalidTokenException;
 import com.ibm.websphere.security.auth.TokenExpiredException;
@@ -24,6 +25,11 @@ import com.ibm.wsspi.security.ltpa.Token;
  */
 @SuppressWarnings("serial")
 public class TestToken implements Token, Serializable {
+    private final double random;
+
+    public TestToken() {
+        random = new Random().nextDouble();
+    }
 
     @Override
     public boolean isValid() throws InvalidTokenException, TokenExpiredException {
@@ -65,4 +71,8 @@ public class TestToken implements Token, Serializable {
         return null;
     }
 
+    @Override
+    public String toString() {
+        return "tokenstring: " + random;
+    }
 }

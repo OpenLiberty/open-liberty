@@ -22,13 +22,13 @@ import com.ibm.ws.jpa.fvt.entity.testlogic.BasicAnnotationTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
 import componenttest.annotation.AllowedFFDC;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/BasicAnnotation_EJB_SL_TestServlet")
-public class BasicAnnotation_EJB_SL_TestServlet extends EJBTestVehicleServlet {
+public class BasicAnnotation_EJB_SL_TestServlet extends EJBDBTestVehicleServlet {
     @PostConstruct
     private void initFAT() {
         testClassName = BasicAnnotationTestLogic.class.getName();

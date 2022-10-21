@@ -45,7 +45,12 @@ tested.features: \
   servlet-5.0, \
   appSecurity-4.0, \
   xmlBinding-3.0, \
-  xmlWS-3.0
+  xmlWS-3.0, \
+  expressionlanguage-5.0, \
+  xmlws-4.0, \
+  xmlbinding-4.0, \
+  pages-3.1, \
+  servlet-6.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\

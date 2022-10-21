@@ -29,7 +29,7 @@ import oidc.client.base.servlets.BaseServlet;
                                                                                     tokenEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/token",
                                                                                     issuer = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1",
                                                                                     idTokenSigningAlgorithmsSupported = "RS256",
-                                                                                    jwksURI = "",
+                                                                                    jwksURI = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/jwk",
                                                                                     responseTypeSupported = "code,id_token,token id_token",
                                                                                     subjectTypeSupported = "public",
                                                                                     userinfoEndpoint = ""))

@@ -41,7 +41,7 @@ import org.junit.Test;
 import com.ibm.ws.jpa.cache.model.JPA20EMEntityA;
 import com.ibm.ws.jpa.cache.model.JPA20EMEntityB;
 import com.ibm.ws.jpa.cache.model.JPA20EMEntityC;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 import componenttest.annotation.AllowedFFDC;
 
@@ -50,7 +50,7 @@ import componenttest.annotation.AllowedFFDC;
  */
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/RefreshCacheTestServlet")
-public class RefreshCacheTestServlet extends JPATestServlet {
+public class RefreshCacheTestServlet extends JPADBTestServlet {
     // Can switch the value of this constant to enable validation of @preUpdate
     // on exception paths if EclipseLink is ever updated to support this behavior.
     public static final boolean ECLIPSELINK_VALIDATE_PREUPDATE_ON_EXCEPTION = false;

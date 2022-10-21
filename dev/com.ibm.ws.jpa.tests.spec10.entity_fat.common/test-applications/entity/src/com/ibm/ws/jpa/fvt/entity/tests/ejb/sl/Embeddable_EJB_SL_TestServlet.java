@@ -22,11 +22,11 @@ import com.ibm.ws.jpa.fvt.entity.testlogic.EmbeddableTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/Embeddable_EJB_SL_TestServlet")
-public class Embeddable_EJB_SL_TestServlet extends EJBTestVehicleServlet {
+public class Embeddable_EJB_SL_TestServlet extends EJBDBTestVehicleServlet {
     @PostConstruct
     private void initFAT() {
         testClassName = EmbeddableTestLogic.class.getName();

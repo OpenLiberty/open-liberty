@@ -86,7 +86,7 @@ public class OidcIdentityStoreBeanTest {
 
     @Test
     public void testGetBeanClass() {
-        assertEquals("Must be ApplicationScoped.", OidcIdentityStoreBean.class, oidcIdentityStoreBean.getBeanClass());
+        assertEquals("Must be OidcIdentityStoreBean.", OidcIdentityStoreBean.class, oidcIdentityStoreBean.getBeanClass());
     }
 
 }

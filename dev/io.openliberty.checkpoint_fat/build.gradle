@@ -35,7 +35,10 @@ configurations {
 }
 
 dependencies {
+  requiredLibs project(':com.ibm.ws.security.fat.common.jwt')
   requiredLibs 'org.glassfish:javax.json:1.1'
+  requiredLibs 'org.glassfish.jersey.core:jersey-client:2.30.1'
+  requiredLibs 'org.glassfish.jersey.inject:jersey-hk2:2.30.1'
   jaegerClient 'io.opentracing:opentracing-util:0.33.0'
   jaegerClient 'io.opentracing:opentracing-noop:0.33.0'
   jaegerClient 'io.jaegertracing:jaeger-core:1.6.0'

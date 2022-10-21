@@ -24,7 +24,7 @@ import jakarta.el.StandardELContext;
 import jakarta.servlet.annotation.WebServlet;
 
 /**
- * Servlet for testing default methods in EL 5.0
+ * Servlet for testing default methods in Expression Language 5.0
  * https://github.com/jakartaee/expression-language/issues/43
  */
 @WebServlet({ "/EL50DefaultMethodsServlet" })

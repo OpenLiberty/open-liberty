@@ -10,7 +10,6 @@
  */
 package com.ibm.ws.jsf22.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -29,13 +28,14 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -44,12 +44,13 @@ import junit.framework.Assert;
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE10_FEATURES)
 public class JSF22ClientWindowTests {
     @Rule
     public TestName name = new TestName();
 
-    String contextRoot = "JSF22ClientWindow";
+    private static final String APP_NAME = "JSF22ClientWindow";
+    private static final String APP_NAME_FACES40 = "JSF22ClientWindowFaces40";
+    private static boolean isEE10;
 
     protected static final Class<?> c = JSF22ClientWindowTests.class;
 
@@ -58,7 +59,20 @@ public class JSF22ClientWindowTests {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(jsfTestServer2, "JSF22ClientWindow.war", "com.ibm.ws.jsf22.fat.clientwindow");
+        isEE10 = JakartaEE10Action.isActive();
+
+        if (isEE10) {
+            ShrinkHelper.defaultDropinApp(jsfTestServer2, APP_NAME_FACES40 + ".war",
+                                          "com.ibm.ws.jsf22.fat.clientwindow.faces40");
+
+            // For Faces 4.0, CDI @Named is used since @ManagedBean is no longer available.
+            ServerConfiguration config = jsfTestServer2.getServerConfiguration();
+            config.getFeatureManager().getFeatures().add("cdi-4.0");
+            jsfTestServer2.updateServerConfiguration(config);
+        } else {
+            ShrinkHelper.defaultDropinApp(jsfTestServer2, APP_NAME + ".war",
+                                          "com.ibm.ws.jsf22.fat.clientwindow.jsf22");
+        }
 
         jsfTestServer2.startServer(JSF22ClientWindowTests.class.getSimpleName() + ".log");
     }
@@ -79,6 +93,8 @@ public class JSF22ClientWindowTests {
      */
     @Test
     public void JSF22ClientWindow_TestSimpleLink() throws Exception {
+        String contextRoot = isEE10 ? APP_NAME_FACES40 : APP_NAME;
+
         try (WebClient webClient = new WebClient()) {
 
             URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "index.jsf");
@@ -113,6 +129,8 @@ public class JSF22ClientWindowTests {
      */
     @Test
     public void JSF22ClientWindow_TestSimpleLinkNewWindow() throws Exception {
+        String contextRoot = isEE10 ? APP_NAME_FACES40 : APP_NAME;
+
         try (WebClient webClient = new WebClient()) {
 
             URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "index.jsf");
@@ -146,6 +164,8 @@ public class JSF22ClientWindowTests {
      */
     @Test
     public void JSF22ClientWindow_TestDisabledLink() throws Exception {
+        String contextRoot = isEE10 ? APP_NAME_FACES40 : APP_NAME;
+
         try (WebClient webClient = new WebClient()) {
 
             URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "index.jsf");
@@ -173,6 +193,8 @@ public class JSF22ClientWindowTests {
      */
     @Test
     public void JSF22ClientWindow_TestAjax() throws Exception {
+        String contextRoot = isEE10 ? APP_NAME_FACES40 : APP_NAME;
+
         try (WebClient webClient = new WebClient()) {
             // Use a synchronizing ajax controller to allow proper ajax updating
             webClient.setAjaxController(new NicelyResynchronizingAjaxController());
@@ -221,6 +243,8 @@ public class JSF22ClientWindowTests {
      */
     @Test
     public void JSF22ClientWindow_TestCommandButton() throws Exception {
+        String contextRoot = isEE10 ? APP_NAME_FACES40 : APP_NAME;
+
         try (WebClient webClient = new WebClient()) {
 
             URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "index.jsf");
@@ -266,6 +290,8 @@ public class JSF22ClientWindowTests {
      */
     @Test
     public void JSF22ClientWindow_TestCommandLink() throws Exception {
+        String contextRoot = isEE10 ? APP_NAME_FACES40 : APP_NAME;
+
         try (WebClient webClient = new WebClient()) {
 
             URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "index.jsf");
@@ -311,6 +337,8 @@ public class JSF22ClientWindowTests {
      */
     @Test
     public void JSF22ClientWindow_TestButton() throws Exception {
+        String contextRoot = isEE10 ? APP_NAME_FACES40 : APP_NAME;
+
         try (WebClient webClient = new WebClient()) {
 
             URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "index.jsf");
@@ -349,6 +377,8 @@ public class JSF22ClientWindowTests {
      */
     @Test
     public void JSF22ClientWindow_TestButtonDisabled() throws Exception {
+        String contextRoot = isEE10 ? APP_NAME_FACES40 : APP_NAME;
+
         try (WebClient webClient = new WebClient()) {
 
             URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "index.jsf");
@@ -380,6 +410,8 @@ public class JSF22ClientWindowTests {
      */
     @Test
     public void JSF22ClientWindow_TestMultipleBasePages() throws Exception {
+        String contextRoot = isEE10 ? APP_NAME_FACES40 : APP_NAME;
+
         try (WebClient webClient = new WebClient()) {
 
             //index.xhtml link

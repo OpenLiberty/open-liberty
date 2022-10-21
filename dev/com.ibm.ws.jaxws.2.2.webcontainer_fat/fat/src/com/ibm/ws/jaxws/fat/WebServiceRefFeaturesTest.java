@@ -28,6 +28,8 @@ import com.ibm.ws.jaxws.fat.util.TestUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -100,6 +102,7 @@ public class WebServiceRefFeaturesTest {
     }
 
     @Test
+    @Mode(TestMode.FULL)
     public void testWSAddressingEnabledInWSDL() throws Exception {
         URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/webServiceRefFeatures/wsaclient");
         Log.info(c, "testWSAddressingEnabledInWSDL",

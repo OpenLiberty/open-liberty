@@ -14,9 +14,9 @@ package com.ibm.ws.jpa.fvt.injection.tests.web.dmi.inh;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
-public abstract class DMIInhCommonServletSuperclass extends JPATestServlet {
+public abstract class DMIInhCommonServletSuperclass extends JPADBTestServlet {
     /*
      * JPA Resource Injection with No Override by Deployment Descriptor
      */

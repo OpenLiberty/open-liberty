@@ -22,13 +22,13 @@ import com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.metadatacomplete.testlogic.Me
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
 import componenttest.annotation.ExpectedFFDC;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestMetadataCompleteEJBSFEXServlet")
-public class TestMetadataCompleteEJBSFEXServlet extends EJBTestVehicleServlet {
+public class TestMetadataCompleteEJBSFEXServlet extends EJBDBTestVehicleServlet {
 
     @PostConstruct
     private void initFAT() {

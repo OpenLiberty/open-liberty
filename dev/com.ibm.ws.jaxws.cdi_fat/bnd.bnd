@@ -25,7 +25,11 @@ tested.features: \
   servlet-4.0, \
   servlet-5.0, \
   xmlBinding-3.0, \
-  xmlWS-3.0
+  xmlWS-3.0, \
+  xmlws-4.0, \
+  xmlbinding-4.0, \
+  cdi-4.0, \
+  servlet-6.0
 
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)

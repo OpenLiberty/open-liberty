@@ -136,7 +136,7 @@ public class SessionImpl {
 
         connLink.setEndpointManager(things.getEndpointManager());
 
-        if (WebSocketVersionServiceManager.isWsoc21rHigher()) {
+        if (WebSocketVersionServiceManager.isWsoc21OrHigher()) {
             things.setUserProperties(endpointConfig.getUserProperties());
         } else {
             userProperties = new HashMap<String, Object>();

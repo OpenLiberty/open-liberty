@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -137,7 +137,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
     protected int _statusCode = 200;
     private SRTConnectionContext _connContext;
     private IOutputMethodListener outputMethodListener = null;
-    private String _contentType;
+    protected String _contentType;
 
     // Custom property to revert to HttpDate
     // Deprecated since WAS 7.0
@@ -151,6 +151,11 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
     private static ThreadLocal<SimpleDateFormat> dateFormat = new ThreadLocal<SimpleDateFormat>();
     private static String formatStr = "EEE, dd MMM yyyy HH:mm:ss z";
     private static TimeZone gmtTimeZone = TimeZone.getTimeZone("GMT");
+   
+    /*Since Servlet 6.0 - need additional flag to tell when _encoding is set via setLocal.
+     * The isCharEncodingExplicit is used only in setCharacterEncoding and setContentType
+     */
+    protected boolean isCharEncodingExplicitViaSetLocale = false; 
     
     /**
      * 
@@ -311,6 +316,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
         _firstWriterRetrieval = true;
         _firstOutputStreamRetrieval = true;
         isCharEncodingExplicit = false;
+        isCharEncodingExplicitViaSetLocale = false;
 
         if (com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= 31) {
             _gotOutputStream = false;
@@ -1230,12 +1236,20 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
         return _encoding;
     }
 
+    //Servlet 6.0 - don't auto setContentType if header's contenttype is null; otherwise setContentType(null) will clear the set _encoding
     public String getContentType() {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"getContentType","["+this+"]");
         }
         if (_contentType == null) {
-           setContentType(getHeader(HEADER_CONTENT_TYPE));
+            String contentTypeHeader = getHeader(HEADER_CONTENT_TYPE);
+
+            if (contentTypeHeader != null ) {
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
+                    logger.logp(Level.FINE, CLASS_NAME,"getContentType"," content-type header is null, skip setContentType ["+this+"]");
+                }
+                setContentType(contentTypeHeader);
+            }
         }
         
         return _contentType;
@@ -2089,7 +2103,9 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
          * @since Servlet 2.4
          */
 
-        isCharEncodingExplicit = false;
+       
+        isCharEncodingExplicitViaSetLocale = true;      //since servlet 6.0 
+        isCharEncodingExplicit = false;                 //reset since encoding is now set via setLocale
         _encoding = dispatchContext.getWebApp().getConfiguration().getLocaleEncoding(_locale);
 
         if (_encoding == null) {
@@ -2118,7 +2134,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
     /**
      * @return
      */
-    private boolean isCharEncodingSet()
+    protected boolean isCharEncodingSet()
     {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"isCharEncodingSet", "_locale = " + _locale+ " ["+this+"]");
@@ -2132,9 +2148,12 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
                 return isCharEncodingExplicit;
             }
         }
+        // if contentType is null, it means setContentType was NOT called before, but setCharacterEncoding may have been called
+        // so return isCharEncodingExplicit.
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))  //306998.15
-            logger.logp(Level.FINE, CLASS_NAME,"isCharEncodingSet", "false");
-        return false;
+            logger.logp(Level.FINE, CLASS_NAME,"isCharEncodingSet", " [" + isCharEncodingExplicit +"]");
+        
+        return isCharEncodingExplicit;
 
     }
 

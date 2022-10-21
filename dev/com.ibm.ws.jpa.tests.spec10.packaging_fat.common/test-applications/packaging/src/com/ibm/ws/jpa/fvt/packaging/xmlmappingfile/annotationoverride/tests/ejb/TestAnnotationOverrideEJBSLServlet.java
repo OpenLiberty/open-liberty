@@ -22,13 +22,13 @@ import com.ibm.ws.jpa.fvt.packaging.xmlmappingfile.annotationoverride.testlogic.
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
 import componenttest.annotation.ExpectedFFDC;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestAnnotationOverrideEJBSLServlet")
-public class TestAnnotationOverrideEJBSLServlet extends EJBTestVehicleServlet {
+public class TestAnnotationOverrideEJBSLServlet extends EJBDBTestVehicleServlet {
     @PostConstruct
     private void initFAT() {
         testClassName = AnnotationOverrideTestLogic.class.getName();

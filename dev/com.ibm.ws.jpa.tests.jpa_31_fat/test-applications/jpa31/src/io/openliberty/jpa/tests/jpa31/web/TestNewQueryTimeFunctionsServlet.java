@@ -18,7 +18,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 import io.openliberty.jpa.tests.jpa31.models.QueryDateTimeEntity;
 import jakarta.annotation.PostConstruct;
@@ -40,7 +40,7 @@ import jakarta.transaction.UserTransaction;
 import junit.framework.Assert;
 
 @WebServlet(urlPatterns = "/TestNewQueryTimeFunctionsServlet")
-public class TestNewQueryTimeFunctionsServlet extends JPATestServlet {
+public class TestNewQueryTimeFunctionsServlet extends JPADBTestServlet {
     private static final long serialVersionUID = 3866874746696149833L;
 
     private final static String PUNAME = "QueryFeatures";

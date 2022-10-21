@@ -178,9 +178,9 @@ public class LastingXAResourceImpl extends XAResourceImpl {
 
     static class LastingStateKeeperImpl implements StateKeeper {
 
-        @Override
-        public void dumpState() {
-        	dumped = true;
+    	@Override
+        public void dumpState(boolean quietly) {
+        	dumped = !quietly; // For some tests (e.g. XAFlow) we need to continue after dumping state.
             if (STORE_STATE_IN_DATABASE) {
                 System.out.println("Dumping state to database");
                 // Defect 168553 - this string needs to be written in order for the test infrastructure to see that the

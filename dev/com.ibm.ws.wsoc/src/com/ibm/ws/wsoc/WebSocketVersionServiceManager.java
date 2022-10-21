@@ -10,25 +10,22 @@
  *******************************************************************************/
 package com.ibm.ws.wsoc;
 
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.component.ComponentContext;
-
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
+
 import com.ibm.websphere.channelfw.osgi.CHFWBundle;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.wsoc.external.WebSocketFactory;
+import com.ibm.ws.wsoc.servercontainer.ServletContainerFactory;
+import com.ibm.ws.wsoc.servercontainer.v10.ServerContainerImplFactory10;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
-
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-
-import com.ibm.ws.wsoc.servercontainer.ServletContainerFactory;
-import com.ibm.ws.wsoc.servercontainer.ServerContainerExt;
-import com.ibm.ws.wsoc.servercontainer.v10.ServerContainerImplFactory10;
 
 /**
  * Provides various services for differnet features.
@@ -41,8 +38,7 @@ public class WebSocketVersionServiceManager {
     private static final AtomicServiceReference<CHFWBundle> cfwBundleRef = new AtomicServiceReference<CHFWBundle>("chfwBundle");
 
     //websocket 1.1 SessionExt for WebSocket 1.1 API support
-    private static final AtomicServiceReference<WebSocketFactory> websocketFactoryServiceRef =
-                    new AtomicServiceReference<WebSocketFactory>("websocketFactoryService");
+    private static final AtomicServiceReference<WebSocketFactory> websocketFactoryServiceRef = new AtomicServiceReference<WebSocketFactory>("websocketFactoryService");
 
     private static final AtomicServiceReference<ServletContainerFactory> servletContainerFactorySRRef = new AtomicServiceReference<ServletContainerFactory>("servletContainerFactoryService");
 
@@ -150,11 +146,11 @@ public class WebSocketVersionServiceManager {
         websocketFactoryServiceRef.unsetReference(ref);
     }
 
-    private static synchronized String loadWsocVersion(){
+    private static synchronized String loadWsocVersion() {
 
         try (InputStream input = WebSocketVersionServiceManager.class.getClassLoader().getResourceAsStream("io/openliberty/wsoc/speclevel/wsocSpecLevel.properties")) {
 
-            if(input != null){
+            if (input != null) {
                 Properties prop = new Properties();
                 prop.load(input);
                 String version = prop.getProperty("version");
@@ -177,8 +173,8 @@ public class WebSocketVersionServiceManager {
         return WebSocketVersionServiceManager.DEFAULT_VERSION;
     }
 
-    public static boolean isWsoc21rHigher(){
-        if(Double.parseDouble(WebSocketVersionServiceManager.LOADED_SPEC_LEVEL) >= 2.1) {
+    public static boolean isWsoc21OrHigher() {
+        if (Double.parseDouble(WebSocketVersionServiceManager.LOADED_SPEC_LEVEL) >= 2.1) {
             return true;
         }
         return false;

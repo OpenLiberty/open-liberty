@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
+@SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
 public class EJBWSBasicTest {
 
     @Server("com.ibm.ws.jaxws.ejb.fat.ejbwsbasic")
@@ -140,6 +140,9 @@ public class EJBWSBasicTest {
 
         // Strip the Test Rerun id's out of the method name
         String testMethod = testName.getMethodName().replace("_EE9_FEATURES", "");
+
+        // Remove automatically added extension to match proper method name
+        testMethod = testMethod.replace("_EE10_FEATURES", "");
 
         StringBuilder sBuilder = new StringBuilder("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append(SERVLET_PATH).append("?testMethod=").append(testMethod);
         String urlStr = sBuilder.toString();

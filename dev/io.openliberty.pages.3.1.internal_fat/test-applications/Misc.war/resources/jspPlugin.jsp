@@ -18,7 +18,7 @@
 
     <p> Verify jsp:plugin logging occurs in trace </p>
 
-     Nothing should be generated <jsp:plugin /> in between. 
+     Nothing should be generated <jsp:plugin type="bean" code="bar.class" codebase="/" ></jsp:plugin> in between. 
     
 </body>
 </html>

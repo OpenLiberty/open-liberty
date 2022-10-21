@@ -13,7 +13,7 @@ package io.openliberty.jpa.tests.jpa31.web;
 
 import org.junit.Test;
 
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
@@ -25,7 +25,7 @@ import jakarta.transaction.UserTransaction;
 import junit.framework.Assert;
 
 @WebServlet(urlPatterns = "/TestAutoClosableServlet")
-public class TestAutoClosableServlet extends JPATestServlet {
+public class TestAutoClosableServlet extends JPADBTestServlet {
     private static final long serialVersionUID = 1L;
 
     private final static String PUNAME = "AutoClosable";

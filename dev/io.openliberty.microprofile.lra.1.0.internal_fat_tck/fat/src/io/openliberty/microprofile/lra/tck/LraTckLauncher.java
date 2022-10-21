@@ -25,7 +25,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
-import componenttest.topology.utils.tck.TCKUtils;
+import componenttest.topology.utils.tck.TCKRunner;
 
 /**
  * This is a test class that runs the whole LRA TCK. The TCK results
@@ -90,8 +90,7 @@ public class LraTckLauncher {
         String testName = this.getClass() + ":launchLRA10TCK";
         Type type = Type.MICROPROFILE;
         String specName = "LRA";
-        String specVersion = "1.0";
-        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion, additionalProps);
+        TCKRunner.runTCK(server, bucketName, testName, type, specName, additionalProps);
     }
 
     /**
@@ -117,8 +116,7 @@ public class LraTckLauncher {
         String testName = this.getClass() + ":launchLRA10TCKFull";
         Type type = Type.MICROPROFILE;
         String specName = "LRA";
-        String specVersion = "1.0";
-        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion, additionalProps);
+        TCKRunner.runTCK(server, bucketName, testName, type, specName, additionalProps);
 
     }
 }
