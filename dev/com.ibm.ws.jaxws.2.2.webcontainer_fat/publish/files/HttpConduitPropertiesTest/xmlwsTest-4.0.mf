@@ -1,8 +1,8 @@
 Subsystem-ManifestVersion: 1
-IBM-ShortName: xmlWSTest-3.0
-Subsystem-SymbolicName: io.openliberty.xmlWSTest-3.0; visibility:=public
+IBM-ShortName: xmlwsTest-4.0
+Subsystem-SymbolicName: com.ibm.websphere.appserver.xmlwsTest-4.0; visibility:=public
 Subsystem-Version: 1.0.0
-Subsystem-Content: io.openliberty.xmlWS-3.0; type="osgi.subsystem.feature"
+Subsystem-Content: io.openliberty.xmlWS-4.0; type="osgi.subsystem.feature"
 Subsystem-Type: osgi.subsystem.feature
 IBM-Feature-Version: 2
 IBM-App-ForceRestart: uninstall,install
@@ -15,8 +15,7 @@ IBM-API-Package: org.apache.cxf; type="internal",
  org.apache.cxf.transport.http; type="internal",
  org.apache.cxf.transports.http.configuration; type="internal",
  org.apache.cxf.configuration.security; type="internal",
- org.apache.cxf.configuration.jsse; type="internal",
- org.apache.cxf.service.model; type="internal"
+ org.apache.cxf.configuration.jsse; type="internal"
 Subsystem-Name: %name
 Subsystem-Description: %description
 Subsystem-Localization: OSGI-INF/l10n/subsystem

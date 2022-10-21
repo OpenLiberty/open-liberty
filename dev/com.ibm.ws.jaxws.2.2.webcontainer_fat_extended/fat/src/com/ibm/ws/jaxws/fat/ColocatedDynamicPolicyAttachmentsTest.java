@@ -196,7 +196,7 @@ public class ColocatedDynamicPolicyAttachmentsTest {
      * Service and Client used by test: Web Service impl - HelloService3, Web Service Client - HelloService3
      *
      */
-    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
     @Test
     @ExpectedFFDC("javax.xml.ws.soap.SOAPFaultException")
     public void testPolicyAttachments_serviceURI_Annon_NonResponses_Failure() throws Exception {
@@ -227,7 +227,7 @@ public class ColocatedDynamicPolicyAttachmentsTest {
      *
      * Service and Client used by test: Web Service impl - HelloService4, Web Service Client - HelloService4
      */
-    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
     @Test
     @ExpectedFFDC("javax.xml.ws.soap.SOAPFaultException")
     public void testPolicyAttachments_serviceURI_Non_AnnonResponses_Failure() throws Exception {

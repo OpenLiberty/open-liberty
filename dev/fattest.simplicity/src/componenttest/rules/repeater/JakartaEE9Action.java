@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
@@ -155,6 +156,11 @@ public class JakartaEE9Action extends FeatureReplacementAction {
     @Override
     public JakartaEE9Action fullFATOnly() {
         return (JakartaEE9Action) super.fullFATOnly();
+    }
+
+    @Override
+    public JakartaEE9Action conditionalFullFATOnly(Predicate<FeatureReplacementAction> conditional) {
+        return (JakartaEE9Action) super.conditionalFullFATOnly(conditional);
     }
 
     @Override

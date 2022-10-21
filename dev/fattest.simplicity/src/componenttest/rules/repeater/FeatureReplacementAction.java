@@ -31,6 +31,7 @@ import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Predicate;
 
 import com.ibm.websphere.simplicity.config.ClientConfiguration;
 import com.ibm.websphere.simplicity.config.ClientConfigurationFactory;
@@ -92,6 +93,9 @@ public class FeatureReplacementAction implements RepeatTestAction {
         featureNameMapping.put("el", "expressionLanguage");
         featuresWithNameChangeOnEE9 = Collections.unmodifiableMap(featureNameMapping);
     }
+
+    public static final Predicate<FeatureReplacementAction> GREATER_THAN_OR_EQUAL_JAVA_11 = (action) -> JavaInfo.JAVA_VERSION >= 11;
+    public static final Predicate<FeatureReplacementAction> GREATER_THAN_OR_EQUAL_JAVA_17 = (action) -> JavaInfo.JAVA_VERSION >= 17;
 
     public static EmptyAction NO_REPLACEMENT() {
         return new EmptyAction();
@@ -294,6 +298,14 @@ public class FeatureReplacementAction implements RepeatTestAction {
     public FeatureReplacementAction fullFATOnly() {
         this.testRunMode = TestMode.FULL;
         liteFATOnly = false;
+        return this;
+    }
+
+    public FeatureReplacementAction conditionalFullFATOnly(Predicate<FeatureReplacementAction> conditional) {
+        if (conditional.test(this)) {
+            this.testRunMode = TestMode.FULL;
+            liteFATOnly = false;
+        }
         return this;
     }
 
@@ -607,7 +619,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     @Override
     public void cleanup() {
-        if(optionsFileBackupMapping.isEmpty()) // Nothing to clean up
+        if (optionsFileBackupMapping.isEmpty()) // Nothing to clean up
             return;
         // Undo changes done to jvm.options
         for (Entry<File, File> mapping : optionsFileBackupMapping.entrySet()) {
@@ -624,7 +636,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
         optionsFileBackupMapping.clear();
         // Clean up backup folder
         Path backupsDir = Paths.get("publish/backups");
-        try{
+        try {
             Log.info(c, "cleanup", "Deleting backups directory.");
             FileUtils.recursiveDelete(backupsDir.toFile());
         } catch (IOException e) {
