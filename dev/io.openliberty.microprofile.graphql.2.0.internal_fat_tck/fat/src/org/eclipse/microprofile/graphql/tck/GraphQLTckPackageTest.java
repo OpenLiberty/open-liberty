@@ -12,12 +12,14 @@ package org.eclipse.microprofile.graphql.tck;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
@@ -29,7 +31,12 @@ import componenttest.topology.utils.tck.TCKRunner;
 @RunWith(FATRunner.class)
 public class GraphQLTckPackageTest {
 
-    @Server("FATServer")
+    private static final String SERVER_NAME = "FATServer";
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP50);
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @BeforeClass
@@ -45,7 +52,6 @@ public class GraphQLTckPackageTest {
     }
 
     @Test
-    @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void testGraphQL20Tck() throws Exception {
         String bucketName = "io.openliberty.microprofile.graphql.2.0.internal_fat_tck";
         String testName = this.getClass() + ":testGraphQL20Tck";
