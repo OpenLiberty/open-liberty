@@ -28,7 +28,7 @@ fat.minimum.java.level: 11
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
 	io.openliberty.jakarta.enterpriseBeans.4.0;version=latest,\
 	io.openliberty.jakarta.mail.2.1;version=latest,\
-	io.openliberty.org.eclipse.angus.mail.2.1;version=latest,\
+	io.openliberty.org.eclipse.angus.mail;version=latest,\
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.ws.org.slf4j.api;version=latest,\
 	com.ibm.ws.org.slf4j.jdk14;version=latest,\
