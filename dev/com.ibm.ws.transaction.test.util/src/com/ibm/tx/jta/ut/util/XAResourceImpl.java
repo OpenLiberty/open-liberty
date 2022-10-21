@@ -53,14 +53,9 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     static class StateKeeperImpl implements StateKeeper {
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see com.ibm.tx.jta.ut.util.StateKeeper#dumpState()
-         */
         @Override
-        public void dumpState() {
-        	dumped = true;
+        public void dumpState(boolean quietly) {
+        	dumped = !quietly; // For some tests (e.g. XAFlow) we need to continue after dumping state.
             printState();
             FileOutputStream fos = null;
             ObjectOutputStream oos = null;
@@ -668,7 +663,9 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     @Override
     public void commit(Xid xid, boolean onePhase) throws XAException {
-        System.out.println("commit(" + _key + ", " + xid + ", " + onePhase
+    	if (dumped) throw new RuntimeException("Test resource state was already dumped");
+
+    	System.out.println("commit(" + _key + ", " + xid + ", " + onePhase
                            + ")");
 
         self().setCommitOrder(_commitSequence.incrementAndGet());
@@ -781,7 +778,9 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     @Override
     public void end(Xid xid, int flags) throws XAException {
-        System.out.println("end(" + _key + ", " + xid + ", " + flags + ")");
+    	if (dumped) throw new RuntimeException("Test resource state was already dumped");
+
+    	System.out.println("end(" + _key + ", " + xid + ", " + flags + ")");
 
         _XAEvents.add(new XAEvent(XAEventCode.END, _key));
 
@@ -804,7 +803,9 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     @Override
     public void forget(Xid xid) throws XAException {
-        System.out.println("forget(" + _key + ", " + xid + ")");
+    	if (dumped) throw new RuntimeException("Test resource state was already dumped");
+
+    	System.out.println("forget(" + _key + ", " + xid + ")");
 
         _XAEvents.add(new XAEvent(XAEventCode.FORGET, _key));
 
@@ -849,7 +850,9 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     @Override
     public int prepare(Xid xid) throws XAException {
-        System.out.println("prepare(" + _key + ", " + xid + ") = "
+    	if (dumped) throw new RuntimeException("Test resource state was already dumped");
+
+    	System.out.println("prepare(" + _key + ", " + xid + ") = "
                            + actionFormatter(self().getPrepareAction()));
 
         _XAEvents.add(new XAEvent(XAEventCode.PREPARE, _key));
@@ -904,7 +907,9 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     @Override
     public Xid[] recover(int flag) throws XAException {
-        System.out.println("recover(" + _key + ", " + flag + ")");
+    	if (dumped) throw new RuntimeException("Test resource state was already dumped");
+
+    	System.out.println("recover(" + _key + ", " + flag + ")");
 
         if (self() == null) {
             if (DEBUG_OUTPUT)
@@ -952,7 +957,9 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     @Override
     public void rollback(Xid xid) throws XAException {
-        System.out.println("rollback(" + _key + ", " + xid + ")");
+    	if (dumped) throw new RuntimeException("Test resource state was already dumped");
+
+    	System.out.println("rollback(" + _key + ", " + xid + ")");
 
         if (self().getExpectedDirection() != DIRECTION_ROLLBACK && self().getExpectedDirection() != DIRECTION_EITHER) {
             System.out.println("Rollback is not the expected direction! Test failed.");
@@ -1030,7 +1037,9 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     @Override
     public void start(Xid xid, int flags) throws XAException {
-        System.out.println("start(" + _key + ", " + xid + ", " + flags + ")");
+    	if (dumped) throw new RuntimeException("Test resource state was already dumped");
+
+    	System.out.println("start(" + _key + ", " + xid + ", " + flags + ")");
         _XAEvents.add(new XAEvent(XAEventCode.START, _key));
 
         setState(STARTED);
@@ -1053,11 +1062,6 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     private void setState(int state) {
         self().setState(state);
-        
-        if (dumped) {
-        	System.out.println("Dumping again to reflect new state");
-        	dumpState();
-        }
     }
 
     public XAResourceImpl setPrepareAction(int action) {
@@ -1432,7 +1436,11 @@ public class XAResourceImpl implements XAResource, Serializable {
     }
 
     public static synchronized void dumpState() {
-        stateKeeper.dumpState();
+    	dumpState(false);	
+    }
+
+    public static synchronized void dumpState(boolean quietly) {
+        stateKeeper.dumpState(quietly);
 
         // Defect 168553 - this string needs to be written in order for the
         // test infrastructure to see that the
