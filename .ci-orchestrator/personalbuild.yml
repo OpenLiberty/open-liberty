@@ -1,0 +1,84 @@
+type: pipeline_definition
+product: Liberty
+name: Liberty Personal Build
+description: A build run against Open Liberty Pull Requests
+triggers:
+- type: github
+  triggerName: "ol-pbbeta"
+  triggerRank: 20
+  triggerMonitored: false
+  keyword: "#ol-pbbeta"
+- type: github
+  triggerName: "ol-fullpbbeta"
+  triggerRank: 20
+  triggerMonitored: false
+  keyword: "#ol-fullpbbeta"
+  propertyDefinitions:
+  - name: fat.test.mode
+    defaultValue: full
+    steps:
+    - stepName: fats
+  - name: create.im.repo
+    defaultValue: true
+    steps:
+    - stepName: compile
+  - name: spawn.zos
+    defaultValue: true
+    steps:
+    - stepName: compile
+
+steps:
+- stepName: compile
+  workType: RTC
+  projectName: "Liberty Personal Build CI Orchestrator - EBC"
+  timeoutInMinutes: 1440
+  includeProperties:
+  - file: compilePersonal.properties
+  - file: compile.properties
+
+- stepName: dependencymapping
+  workType: Jenkins
+  projectName: dependencyMapper
+  dependsOn:
+    - stepName: compile
+      awaitOutputProperties: true
+  timeoutInMinutes: 30
+  properties:
+    artifact_execution_id: ${compile:execution_id}
+    aggregationId: ${compile:execution_id}
+    buildType: personal
+    bndFilesZipUrl: ${compile:bndFilesZipUrl}
+    imageUrl: ${compile:imageUrl}
+    changeDetectorImageUrl: ${compile:changeDetectorImageUrl}
+    fatFeatureJsonUrl: ${compile:fatFeatureJsonUrl}
+    githubPRApi: ${github_pr_api}
+
+- stepName: fats
+  workType: FAT
+  dependsOn:
+    - stepName: compile
+      awaitOutputProperties: true
+    - stepName: dependencymapping
+      allowFailures: true
+  timeoutInMinutes: 1920
+  properties:
+    artifact_execution_id: ${compile:execution_id}
+    runner_projectName: ebcTestRunner
+    runner_workType: Jenkins
+    runner_threshold: 40
+    fat.buckets.to.run: auto
+    fat.test.mode: lite
+    fats_to_omit: "com.ibm.ws.collective.controller.deploy_fat, com.ibm.ws.health.manager.odrlib_fat, com.ibm.ws.dynamic.routing_ihs_fat, com.ibm.ws.node.scaling_fat, com.ibm.ws.scaling.member_fat_multinode, com.ibm.ws.node.health_fat"
+    fat_uploads_to_expect: ${compile:fat_uploads_to_expect}
+    outputServer: libertyfs.hursley.ibm.com
+    outputPath: /liberty/personal/2/ciorchestrator
+    command: ant -f build-test.xml localrun -propertyfile ../../../buildandbucket.properties -DhaltOnFailure=false -lib ../ant_build/lib.antClasspath
+    aggregationId: ${compile:execution_id}
+    buildType: personal
+    reportingJVM: system_java
+    reportingOS: ubuntu18_x86
+    retry_failing_fats: true
+    repeat_if_few_fats: true  #If there are fewer than x fat buckets then we will run each fat multiple times
+  includeProperties:
+  - file: fatMaxDurationOverrides.properties
+  - file: jvms/dev/linux_x86_64.properties
