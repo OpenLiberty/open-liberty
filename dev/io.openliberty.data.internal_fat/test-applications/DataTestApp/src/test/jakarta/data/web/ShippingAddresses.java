@@ -21,7 +21,7 @@ import jakarta.data.repository.Repository;
 @Repository
 public interface ShippingAddresses {
     @Select({ "houseNumber", "streetName" })
-    StreetAddress[] findByHouseNumberBetweenOrderByStreetNameOrderByHouseNumber(int minHouseNumber, int maxHouseNumber);
+    StreetAddress[] findByHouseNumberBetweenOrderByStreetNameAscHouseNumber(int minHouseNumber, int maxHouseNumber);
 
     WorkAddress[] findByStreetNameAndFloorNumber(String streetName, int floorNumber);
 
