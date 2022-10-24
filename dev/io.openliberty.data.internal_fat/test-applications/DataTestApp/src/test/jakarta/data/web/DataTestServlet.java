@@ -54,6 +54,7 @@ import jakarta.data.Entities;
 import jakarta.data.Page;
 import jakarta.data.Template;
 import jakarta.data.repository.KeysetAwarePage;
+import jakarta.data.repository.KeysetPageable;
 import jakarta.data.repository.Limit;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Sort;
@@ -1110,6 +1111,48 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(215, 210),
                              page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
 
+        packages.save(new Package(216, 15.0f, 50.0f, 61.0f, "package#216"));
+
+        // With dynamically specified Sorts: width ascending, length descending, id ascending
+
+        // id   length width  height
+        // 240, 40.0f, 21.0f, 42.0f // page 3
+        // 220, 20.0f, 22.0f, 38.0f // non-matching
+        // 233, 33.0f, 32.0f, 43.0f // page 4
+        // 224, 24.0f, 32.0f, 39.0f // page 4
+        // 219, 19.0f, 39.0f, 19.0f // page 4
+        // 236, 36.0f, 50.0f, 93.0f // page 4
+        // 215, 15.0f, 50.0f, 55.0f // page 5
+        // 216, 15.0f, 50.0f, 61.0f // page 5
+        // 210, 10.0f, 50.0f, 55.0f // page 5
+        // 228, 28.0f, 62.0f, 87.0f // page 5
+        // 230, 30.0f, 81.0f, 88.0f // starting point for beforeKeyset
+
+        Package p230 = packages.findById(230).orElseThrow();
+
+        KeysetPageable pagination = Pageable.of(5, 4).beforeKeyset(p230.width, p230.length, p230.id);
+        page = packages.whereHeightNotWithin(20.0f, 38.5f, pagination, Sort.asc("width"), Sort.desc("length"), Sort.asc("id"));
+
+        assertEquals(5L, page.getPage());
+
+        assertIterableEquals(List.of(215, 216, 210, 228),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        page = packages.whereHeightNotWithin(20.0f, 38.5f, page.previous(), Sort.asc("width"), Sort.desc("length"), Sort.asc("id"));
+
+        assertEquals(4L, page.getPage());
+
+        assertIterableEquals(List.of(233, 224, 219, 236),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        page = packages.whereHeightNotWithin(20.0f, 38.5f, page.previous(), Sort.asc("width"), Sort.desc("length"), Sort.asc("id"));
+
+        assertEquals(3L, page.getPage());
+
+        assertIterableEquals(List.of(240),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        assertEquals(null, page.previous());
     }
 
     /**
