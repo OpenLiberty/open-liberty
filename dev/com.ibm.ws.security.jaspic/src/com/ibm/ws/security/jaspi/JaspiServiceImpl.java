@@ -93,7 +93,6 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
     private static final TraceComponent tc = Tr.register(JaspiServiceImpl.class);
     private static final String AUTH_TYPE = "javax.servlet.http.authType";
     private static final String IS_MANDATORY_POLICY = "javax.security.auth.message.MessagePolicy.isMandatory";
-    private static final String JAKARTA_IS_AUTHENTICATION_REQUEST = "jakarta.servlet.http.isAuthenticationRequest";
     private static final String JACC_POLICY_CONTEXT = "javax.security.jacc.PolicyContext";
     public static final String UNAUTHENTICATED_ID = "UNAUTHENTICATED"; // TODO find a better home for this
 
@@ -457,7 +456,8 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
             }
             authResult = mapToAuthenticationResult(status, jaspiRequest, callerSubject);
             setRequestAuthType(msgInfo, jaspiRequest);
-        } else {
+        } 
+	else {
             authResult = mapToAuthenticationResult(status, jaspiRequest, null);
         }
         return authResult;
@@ -539,7 +539,6 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         HttpServletRequest req = jaspiRequest.getHttpServletRequest();
         MessageInfo msgInfo = new JaspiMessageInfo(req, jaspiRequest.getHttpServletResponse());
         msgInfo.getMap().put(IS_MANDATORY_POLICY, Boolean.toString(jaspiRequest.isMandatory()));
-        msgInfo.getMap().put(JAKARTA_IS_AUTHENTICATION_REQUEST, Boolean.toString(jaspiRequest.isRequestAuthenticate()));
         return msgInfo;
     }
 
@@ -697,12 +696,11 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         AuthenticationResult authResult = null;
         String pretty = "FAILURE";
         if (AuthStatus.SEND_SUCCESS == status) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "SEND_SUCCES received. Returning without going to the service.");
-            int responseStatus = getResponseStatus(jaspiRequest.getHttpServletResponse());
-            authResult = new AuthenticationResult(AuthResult.RETURN, "Returning response from JASPIC Authenticated with status: " + responseStatus);
-            pretty = "SEND_SUCCESS";
-        }
+	    if (tc.isDebugEnabled()) Tr.debug(tc, "SEND_SUCCES received. Returning without going to the service."); 
+	    int responseStatus = getResponseStatus(jaspiRequest.getHttpServletResponse());
+	    authResult = new AuthenticationResult(AuthResult.RETURN, "Returning response from JASPIC Authenticated with status: " + responseStatus);
+	    pretty = "SEND_SUCCESS";
+	}
         if (AuthStatus.SUCCESS == status) {
             authResult = new AuthenticationResult(AuthResult.SUCCESS, clientSubject);
             pretty = "SUCCESS";
