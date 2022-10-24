@@ -15,7 +15,6 @@ import java.security.Key;
 import java.security.PrivilegedAction;
 import java.util.Date;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 
 import javax.security.auth.Subject;
@@ -25,8 +24,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
-import org.jose4j.jwt.consumer.JwtConsumer;
-import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.jwt.consumer.JwtContext;
 import org.jose4j.jwx.JsonWebStructure;
 import org.jose4j.keys.HmacKey;
@@ -59,6 +56,7 @@ import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 import com.ibm.wsspi.ssl.SSLSupport;
 
+import io.openliberty.security.common.jwt.JwtParsingUtils;
 import io.openliberty.security.oidcclientcore.utils.CommonJose4jUtils;
 import io.openliberty.security.oidcclientcore.utils.Utils;
 
@@ -270,7 +268,7 @@ public class Jose4jUtil extends CommonJose4jUtils {
             JwtContext jwtContext,
             OidcClientRequest oidcClientRequest) throws JWTTokenValidationFailedException, IllegalStateException, Exception {
         try {
-            JsonWebStructure jsonStruct = getJsonWebStructureFromJwtContext(jwtContext);
+            JsonWebStructure jsonStruct = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
 
             Key key = getSignatureVerificationKeyFromJsonWebStructure(jsonStruct, clientConfig, oidcClientRequest);
 
@@ -289,7 +287,6 @@ public class Jose4jUtil extends CommonJose4jUtils {
             throw e;
         }
     }
-    
 
     @FFDCIgnore({ Exception.class })
     public Key getSignatureVerificationKeyFromJsonWebStructure(JsonWebStructure jsonStruct, ConvergedClientConfig clientConfig, OidcClientRequest oidcClientRequest) throws JWTTokenValidationFailedException {
@@ -385,7 +382,7 @@ public class Jose4jUtil extends CommonJose4jUtils {
             if (JweHelper.isJwe(jwtString)) {
                 jwtString = JweHelper.extractJwsFromJweToken(jwtString, clientConfig, null);
             }
-            JwtContext jwtContext = parseJwtWithoutValidation(jwtString);
+            JwtContext jwtContext = JwtParsingUtils.parseJwtWithoutValidation(jwtString);
             JwtClaims jwtClaims = parseJwtWithValidation(clientConfig, jwtString, jwtContext, oidcClientRequest);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "jwtClaims: " + jwtClaims);
@@ -467,7 +464,7 @@ public class Jose4jUtil extends CommonJose4jUtils {
         if (JweHelper.isJwe(jwtString)) {
             jwtString = JweHelper.extractJwsFromJweToken(jwtString, clientConfig, null);
         }
-        return parseJwtWithoutValidation(jwtString);
+        return JwtParsingUtils.parseJwtWithoutValidation(jwtString);
     }
 
     public JwtClaims validateJwsSignature(JwtContext jwtContext, ConvergedClientConfig clientConfig) throws Exception {
@@ -476,7 +473,7 @@ public class Jose4jUtil extends CommonJose4jUtils {
     }
 
     public JwtClaims validateJwsSignature(JwtContext jwtContext, ConvergedClientConfig clientConfig, OidcClientRequest oidcClientRequest) throws Exception {
-        JsonWebStructure jwStructure = getJsonWebStructureFromJwtContext(jwtContext);
+        JsonWebStructure jwStructure = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
         Key key = getSignatureVerificationKeyFromJsonWebStructure(jwStructure, clientConfig, oidcClientRequest);
 
         // Clock skew and issuer aren't needed to validate the signature

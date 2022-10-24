@@ -34,9 +34,9 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
-import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 
+import io.openliberty.security.common.jwt.JwtParsingUtils;
 import io.openliberty.security.common.osgi.SecurityOSGiUtils;
 
 public class BackchannelLogoutRequestHelper {
@@ -167,7 +167,7 @@ public class BackchannelLogoutRequestHelper {
     JwtClaims getLogoutTokenClaims(BackchannelLogoutRequest bclRequest) {
         String logoutToken = bclRequest.getLogoutToken();
         try {
-            JwtContext jwtContext = Jose4jUtil.parseJwtWithoutValidation(logoutToken);
+            JwtContext jwtContext = JwtParsingUtils.parseJwtWithoutValidation(logoutToken);
             return jwtContext.getJwtClaims();
         } catch (Exception e) {
             // We built the logout token, so this should never happen

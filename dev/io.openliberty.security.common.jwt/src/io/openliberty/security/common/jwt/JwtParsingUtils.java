@@ -26,20 +26,15 @@ import com.ibm.websphere.ras.TraceComponent;
 import io.openliberty.security.common.jwt.exceptions.EncodedSignatureEmptyException;
 import io.openliberty.security.common.jwt.exceptions.JwtContextMissingJoseObjects;
 import io.openliberty.security.common.jwt.exceptions.SignatureAlgorithmDoesNotMatchHeaderException;
-import io.openliberty.security.common.jwt.signature.SignatureVerifier;
+import io.openliberty.security.common.jwt.jws.JwsSignatureVerifier;
 
-public class Jose4jUtils {
+public class JwtParsingUtils {
 
-    private static final TraceComponent tc = Tr.register(Jose4jUtils.class);
+    private static final TraceComponent tc = Tr.register(JwtParsingUtils.class);
 
     public static JwtContext parseJwtWithoutValidation(String jwtString) throws Exception {
         JwtConsumer firstPassJwtConsumer = new JwtConsumerBuilder().setSkipAllValidators().setDisableRequireSignature().setSkipSignatureVerification().build();
         return firstPassJwtConsumer.process(jwtString);
-    }
-
-    public static JwtClaims validateJwsSignature(JwtContext jwtContext, SignatureVerifier signatureVerifier) throws JwtContextMissingJoseObjects, EncodedSignatureEmptyException, SignatureAlgorithmDoesNotMatchHeaderException, InvalidJwtException {
-        JsonWebStructure jws = getJsonWebStructureFromJwtContext(jwtContext);
-        return signatureVerifier.validateJwsSignature((JsonWebSignature) jws, jwtContext.getJwt());
     }
 
     public static JsonWebStructure getJsonWebStructureFromJwtContext(JwtContext jwtContext) throws JwtContextMissingJoseObjects {

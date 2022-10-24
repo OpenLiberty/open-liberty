@@ -12,4 +12,4 @@
  * @version 1.0.0
  */
 @org.osgi.annotation.versioning.Version("1.0.0")
-package io.openliberty.security.common.jwt.signature;
+package io.openliberty.security.common.jwt.jws;

@@ -47,6 +47,7 @@ public class UserInfoRequestorTest extends CommonTestClass {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
 
+    private static final String clientId = "myOidcClientId";
     private static final String userInfoEndpoint = "https://some-domain.com/path/userinfo";
     private static final String accessToken = "qOuZdH6Anmxclul5d71AXoDbFVmRG2dPnHn9moaw";
 
@@ -92,7 +93,7 @@ public class UserInfoRequestorTest extends CommonTestClass {
 
     @Test
     public void test_requestUserInfo() throws Exception {
-        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(userInfoEndpoint, accessToken, sslSocketFactory).build();
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(clientId, userInfoEndpoint, accessToken, sslSocketFactory).build();
         userInfoRequestor.oidcClientHttpUtil = oidcClientHttpUtil;
 
         BasicHttpEntity httpEntity = createBasicHttpEntity(userInfoJSONResponseEntity, HttpConstants.APPLICATION_JSON);
@@ -115,7 +116,7 @@ public class UserInfoRequestorTest extends CommonTestClass {
     }
 
     public void test_requestUserInfo_withHostnameVerification() throws Exception {
-        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(userInfoEndpoint, accessToken, sslSocketFactory).hostnameVerification(true).build();
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(clientId, userInfoEndpoint, accessToken, sslSocketFactory).hostnameVerification(true).build();
         userInfoRequestor.oidcClientHttpUtil = oidcClientHttpUtil;
 
         BasicHttpEntity httpEntity = createBasicHttpEntity(userInfoJSONResponseEntity, HttpConstants.APPLICATION_JSON);
@@ -138,7 +139,7 @@ public class UserInfoRequestorTest extends CommonTestClass {
     }
 
     public void test_requestUserInfo_useSystemPropertiesForHttpClientConnections() throws Exception {
-        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(userInfoEndpoint, accessToken, sslSocketFactory).useSystemPropertiesForHttpClientConnections(true).build();
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(clientId, userInfoEndpoint, accessToken, sslSocketFactory).useSystemPropertiesForHttpClientConnections(true).build();
         userInfoRequestor.oidcClientHttpUtil = oidcClientHttpUtil;
 
         BasicHttpEntity httpEntity = createBasicHttpEntity(userInfoJSONResponseEntity, HttpConstants.APPLICATION_JSON);
@@ -161,7 +162,7 @@ public class UserInfoRequestorTest extends CommonTestClass {
     }
 
     public void test_requestUserInfo_withHostnameVerificationAndUseSystemPropertiesForHttpClientConnections() throws Exception {
-        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(userInfoEndpoint, accessToken, sslSocketFactory).hostnameVerification(true).useSystemPropertiesForHttpClientConnections(true).build();
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(clientId, userInfoEndpoint, accessToken, sslSocketFactory).hostnameVerification(true).useSystemPropertiesForHttpClientConnections(true).build();
         userInfoRequestor.oidcClientHttpUtil = oidcClientHttpUtil;
 
         BasicHttpEntity httpEntity = createBasicHttpEntity(userInfoJSONResponseEntity, HttpConstants.APPLICATION_JSON);
@@ -185,14 +186,14 @@ public class UserInfoRequestorTest extends CommonTestClass {
 
     @Test(expected = UserInfoEndpointNotHttpsException.class)
     public void test_requestUserInfo_urlNotHTTPS() throws Exception {
-        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder("http://superfoo", accessToken, sslSocketFactory).build();
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(clientId, "http://superfoo", accessToken, sslSocketFactory).build();
 
         userInfoRequestor.requestUserInfo();
     }
 
     @Test(expected = UserInfoResponseException.class)
     public void test_requestUserInfo_httpResponseIsNull() throws Exception {
-        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(userInfoEndpoint, accessToken, sslSocketFactory).build();
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(clientId, userInfoEndpoint, accessToken, sslSocketFactory).build();
         userInfoRequestor.oidcClientHttpUtil = oidcClientHttpUtil;
 
         userInfoResponseMap.put(HttpConstants.RESPONSEMAP_CODE, null);
@@ -208,7 +209,7 @@ public class UserInfoRequestorTest extends CommonTestClass {
 
     @Test(expected = UserInfoResponseException.class)
     public void test_requestUserInfo_responseHasMalformedJSON() throws Exception {
-        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(userInfoEndpoint, accessToken, sslSocketFactory).build();
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(clientId, userInfoEndpoint, accessToken, sslSocketFactory).build();
         userInfoRequestor.oidcClientHttpUtil = oidcClientHttpUtil;
 
         BasicHttpEntity httpEntity = createBasicHttpEntity("notJSON", HttpConstants.APPLICATION_JSON);
@@ -230,7 +231,7 @@ public class UserInfoRequestorTest extends CommonTestClass {
 
     @Test(expected = UserInfoResponseNot200Exception.class)
     public void test_requestUserInfo_responseStatusCodeNot200() throws Exception {
-        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(userInfoEndpoint, accessToken, sslSocketFactory).build();
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(clientId, userInfoEndpoint, accessToken, sslSocketFactory).build();
         userInfoRequestor.oidcClientHttpUtil = oidcClientHttpUtil;
 
         BasicHttpEntity httpEntity = createBasicHttpEntity(userInfoJSONResponseEntity, HttpConstants.APPLICATION_JSON);
@@ -252,7 +253,7 @@ public class UserInfoRequestorTest extends CommonTestClass {
 
     @Test
     public void test_requestUserInfo_contentTypeUnknown() throws Exception {
-        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(userInfoEndpoint, accessToken, sslSocketFactory).build();
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(clientId, userInfoEndpoint, accessToken, sslSocketFactory).build();
         userInfoRequestor.oidcClientHttpUtil = oidcClientHttpUtil;
 
         BasicHttpEntity httpEntity = createBasicHttpEntity(userInfoJSONResponseEntity, "unknownContentType");

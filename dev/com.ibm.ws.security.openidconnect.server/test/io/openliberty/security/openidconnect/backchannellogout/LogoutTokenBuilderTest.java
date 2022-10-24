@@ -51,12 +51,12 @@ import com.ibm.ws.security.oauth20.plugins.OAuth20TokenImpl;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
 import com.ibm.ws.security.oauth20.util.HashUtils;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
-import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.security.openidconnect.server.plugins.IDTokenImpl;
 import com.ibm.ws.security.test.common.CommonTestClass;
 import com.ibm.ws.security.test.common.jwt.utils.JwtUnitTestUtils;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 
+import io.openliberty.security.common.jwt.JwtParsingUtils;
 import test.common.SharedOutputManager;
 
 public class LogoutTokenBuilderTest extends CommonTestClass {
@@ -1336,7 +1336,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         assertNotNull("Logout token string should not have been null but was.", logoutTokenString);
 
         // Verify token header values
-        JwtContext resultContext = Jose4jUtil.parseJwtWithoutValidation(logoutTokenString);
+        JwtContext resultContext = JwtParsingUtils.parseJwtWithoutValidation(logoutTokenString);
         JsonWebStructure jsonWebStructure = resultContext.getJoseObjects().get(0);
         assertEquals("JWT alg header did not match expected value.", "HS256", jsonWebStructure.getAlgorithmHeaderValue());
 
