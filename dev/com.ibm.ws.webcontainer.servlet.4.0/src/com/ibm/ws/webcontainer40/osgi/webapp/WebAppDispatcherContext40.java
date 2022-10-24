@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -95,11 +95,23 @@ public class WebAppDispatcherContext40 extends WebAppDispatcherContext {
             }
             _mapping = ((WebAppDispatcherContext40) this.getParentContext()).getServletMapping();
         } else if (this.isInclude() || this.isAsync()) {
-            //Set the mapping to the mapping of the (original) first servlet in the invocation chain when this is an include or async dispatch
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "This is an include or async dispatch. Setting the HttpServletMapping to the original mapping.");
+            /*
+             * Servlet 6.0
+             * DispatcherType.REQUEST, DispatcherType.ASYNC, DispatcherType.Error
+             * Return the mapping for the target of the dispatch i.e. the mapping for the current Servlet.
+             */
+            if (this.isAsync() && (com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_60)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "This is an async dispatch. Setting the HttpServletMapping to the current mapping.");
+                }
+                _mapping = _currentMapping;
+            } else {
+                //Set the mapping to the mapping of the (original) first servlet in the invocation chain when this is an include or async dispatch
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "This is an include or async dispatch. Setting the HttpServletMapping to the original mapping.");
+                }
+                _mapping = _originalMapping;
             }
-            _mapping = _originalMapping;
         } else {
             //This is a forward or the original request, set the mapping to the current servlet's mapping
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
