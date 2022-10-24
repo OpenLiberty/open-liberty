@@ -60,6 +60,7 @@
 			</security-role>
 		</application-bnd>
 	</application>
+
 	<javaPermission className="javax.security.auth.PrivateCredentialPermission"  name='* * "*"' actions="read" />
 	
 	<include location="../fatTestPorts.xml" />

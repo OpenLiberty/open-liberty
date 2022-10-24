@@ -19,6 +19,7 @@ bVersion=1.0
 # Generate an Jakarta EE compliant JAR for the bundle.
 #
 
+
 WS-TraceGroup: \
   JASPI
 

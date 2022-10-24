@@ -36,6 +36,7 @@
 	
 	<application type="war" id="JASPIFormLoginServlet" name="JASPIFormLoginServlet" location="JASPIFormLoginServlet.war">
 	</application>
+
 	<javaPermission className="javax.security.auth.PrivateCredentialPermission"  name='* * "*"' actions="read" />
 
 	<include location="../fatTestPorts.xml" />

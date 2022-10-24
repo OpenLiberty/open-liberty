@@ -27,6 +27,7 @@
 		</group>
 	</basicRegistry>
 
+
  	<application type="war" id="JASPIBasicAuthServlet" name="JASPIBasicAuthServlet" location="JASPIBasicAuthServlet.war">
  		<application-bnd>
 			<security-role name="jaspi_basic">

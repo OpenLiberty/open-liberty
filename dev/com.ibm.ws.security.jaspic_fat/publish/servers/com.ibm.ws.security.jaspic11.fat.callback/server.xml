@@ -65,7 +65,8 @@
 				<special-subject type="ALL_AUTHENTICATED_USERS" />
 			</security-role>
 		</application-bnd>
-	</application>	
+	</application>
+
 	<javaPermission className="javax.security.auth.PrivateCredentialPermission"  name='* * "*"' actions="read" />
 	
 
