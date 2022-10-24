@@ -29,7 +29,10 @@ src: \
 	test-applications/eventMgr/frontendUI/src/java,\
 	test-applications/eventMgr/backendServices/src/java,\
 	test-applications/openAPItest/src,\
-	test-applications/mpjwt/src
+	test-applications/mpjwt/src,\
+	test-applications/EJBearApp/src,\
+	test-applications/ServletEARapp/src,\
+	test-applications/webEARapp/src
 
 fat.project: true
 
