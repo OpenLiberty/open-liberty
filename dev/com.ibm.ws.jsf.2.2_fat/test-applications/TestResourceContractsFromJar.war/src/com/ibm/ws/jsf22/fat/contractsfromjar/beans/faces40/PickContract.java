@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jsf22.fat.contractsfromjar.beans;
+package com.ibm.ws.jsf22.fat.contractsfromjar.beans.faces40;
 
 import java.io.Serializable;
 
