@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -296,9 +297,23 @@ public class OpenIdContextImplTest {
             }
         });
 
-        Optional<String> originalRequestStringOptional = openIdContext.getStoredValue(request, response, OpenIdConstant.ORIGINAL_REQUEST);
-
+        Optional<String> originalRequestStringOptional = openIdContext.getStoredValue(request, response, OpenIdConstant.ORIGINAL_REQUEST);      
+        
         assertEquals("The original request must be found in the OpenIdContext.", originalRequestUrl, originalRequestStringOptional.get());
     }
 
+    @Test
+    public void testGetStoredValue_missingStoredValue_shouldReturnEmpty() {
+        request = mockery.mock(HttpServletRequest.class);
+        response = mockery.mock(HttpServletResponse.class);
+
+        try {
+
+            Optional<String> someMissingStoredValue = openIdContext.getStoredValue(request, response, OpenIdConstant.SUBJECT_IDENTIFIER);
+            assertFalse(someMissingStoredValue.isPresent());
+           
+        } catch(Exception ex) {
+            fail("Unexpected exception was thrown: " + ex);
+        }
+    }
 }
