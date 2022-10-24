@@ -27,10 +27,10 @@ instrument.ffdc: false
 instrument.classesExcludes: \
   org/**/*.class
 
-# Use this format once we have an offical release and not an RC1
+# Use this format once we have an offical release and not an RC2
 # @${repo;org.apache.myfaces.core.impl;${Implementation-Version};EXACT}!/jakarta/faces, \
 Include-Resource: \
-  @${repo;org.apache.myfaces.core.impl;4.0.0.RC1;EXACT}!/META-INF/**, \
+  @${repo;org.apache.myfaces.core.impl;4.0.0.RC2;EXACT}!/META-INF/**, \
   @${repo;io.openliberty.jakarta.faces.4.0}!/META-INF/resources/**, \
   @${repo;io.openliberty.jakarta.faces.4.0}!/META-INF/internal-resources/**, \
   META-INF=@src/META-INF
@@ -66,7 +66,7 @@ DynamicImport-Package: \
 # Additionally, a subset of these org.apache.myfaces packages are exported by the thirdparty.faces-3.0 bundle - so we exclude them here.
 Export-Package: \
   !org.apache.myfaces.buildtools.*, \
-  !org.apache.myfaces.config, \
+  !org.apache.myfaces.config.webparameters, \
   !org.apache.myfaces.renderkit, \
   !org.apache.myfaces.renderkit.html, \
   !org.apache.myfaces.renderkit.html.base, \
@@ -127,10 +127,10 @@ Import-Package: \
   !org.apache.tomcat, \
   *
 
-# Use this once we have a non RC1 release
+# Use this once we have a non RC2 release
 # org.apache.myfaces.core:myfaces-impl;strategy=exact;version=${Implementation-Version},\
 -buildpath: \
-  org.apache.myfaces.core:myfaces-impl;strategy=exact;version=4.0.0.RC1,\
+  org.apache.myfaces.core:myfaces-impl;strategy=exact;version=4.0.0.RC2,\
   io.openliberty.jakarta.faces.4.0;version=latest,\
   com.ibm.ws.classloading;version=latest,\
   com.ibm.ws.webcontainer.jakarta;version=latest,\
