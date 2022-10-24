@@ -1,6 +1,5 @@
-
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,8 +16,6 @@ import static org.junit.Assert.assertNotNull;
 import java.io.File;
 
 import javax.security.auth.message.config.AuthConfigProvider;
-import javax.security.auth.message.module.ServerAuthModule;
-import javax.servlet.ServletContext;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -37,8 +34,6 @@ public class ProviderRegistryTest {
     };
     private final ProviderService mockProviderService = mock.mock(ProviderService.class);
     private final AuthConfigProvider mockAuthConfigProvider = mock.mock(AuthConfigProvider.class);
-    private final ServerAuthModule mockServerAuthModule = mock.mock(ServerAuthModule.class);
-    private final javax.servlet.ServletContext mockContext = mock.mock(ServletContext.class);
 
     /**
      * This class was ported from twas and only 2 methods were changed for liberty,
@@ -69,35 +64,4 @@ public class ProviderRegistryTest {
         assertNotNull(pm.getFile());
         assertEquals(pm.getFile().getName(), "jaspiConfig.xml");
     }
-    
-    /**
-     * The following tests are added for the 2 new methods introduced by Jakarta 10 authentication.
-     */
-    
-    @Test
-    public void testRegisterServerAuthModule() throws Exception  {
-     	final ProviderRegistry reg = new ProviderRegistry();
-        mock.checking(new Expectations()  {
-            {
-		allowing(mockContext).getContextPath();
-                allowing(mockContext).setAttribute((with(any(String.class))), (with(any(String.class))));
-            }
-        });
-     	String registrationId = reg.registerServerAuthModule(mockServerAuthModule, mockContext);
-     	assertNotNull(registrationId);
-    }
-
-    @Test
-    public void testRemoveServerAuthModule() throws Exception  {
-     	final ProviderRegistry reg = new ProviderRegistry();
-        mock.checking(new Expectations()  {
-            {
-                allowing(mockContext).getAttribute((with(any(String.class))));
-
-            }
-        });
-     	reg.removeServerAuthModule("HttpServlet[ ]");
-    }
-
 }
-
