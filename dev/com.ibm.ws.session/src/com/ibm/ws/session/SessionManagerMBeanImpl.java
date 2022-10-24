@@ -78,6 +78,9 @@ public class SessionManagerMBeanImpl extends StandardEmitterMBean implements Ses
 
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> props) {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+            LoggingUtil.SESSION_LOGGER_CORE.entering(methodClassName, "activate");
+        }
         //make sure we have defaults available
         SessionManagerConfig sessionManagerConfig = SessionMgrComponentImpl.getServerSessionManagerConfig();
         if( sessionManagerConfig != null ) {
@@ -109,6 +112,9 @@ public class SessionManagerMBeanImpl extends StandardEmitterMBean implements Ses
 
     @Modified
     protected void modified(Map<String, Object> props) {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+            LoggingUtil.SESSION_LOGGER_CORE.entering(methodClassName, "modified");
+        }
         // If session manager config property is not found during activate, try again...
         if( !sessionManagerConfigFound ) {
             SessionManagerConfig sessionManagerConfig = SessionMgrComponentImpl.getServerSessionManagerConfig();
@@ -120,7 +126,7 @@ public class SessionManagerMBeanImpl extends StandardEmitterMBean implements Ses
             }
             else {
                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
-                    LoggingUtil.SESSION_LOGGER_CORE.exiting(methodClassName, "activate", "No session manager config found, so no session cookie names are available.");
+                    LoggingUtil.SESSION_LOGGER_CORE.exiting(methodClassName, "modified", "No session manager config found, so no session cookie names are available.");
                 }
             }            
         }
@@ -148,6 +154,9 @@ public class SessionManagerMBeanImpl extends StandardEmitterMBean implements Ses
             newCloneID = SessionManagerConfig.getCloneId();
             allowedProps.put(CFG_CLONE_ID, newCloneID);
         }
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+            LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, "modified", "Publishing to repository, oldCloneID = " + oldCloneID + " newCloneID = " + newCloneID);
+        }
         publishToRepository(ATTRIBUTE_NAME_COOKIE, "java.lang.String", oldCookieName, newCookieName);            
         publishToRepository(ATTRIBUTE_NAME_CLONE_SEPARATOR, "java.lang.String", oldSeparatorName, newSeparatorName);
         publishToRepository(ATTRIBUTE_NAME_CLONE_ID, "java.lang.String", oldCloneID, newCloneID);        
@@ -173,6 +182,9 @@ public class SessionManagerMBeanImpl extends StandardEmitterMBean implements Ses
      * Send attribute change notification
      */
     private void publishToRepository(String attributeName, String attributeType, Object oldValue, Object newValue) {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+            LoggingUtil.SESSION_LOGGER_CORE.entering(methodClassName, "publishToRepository");
+        }
         super.sendNotification(new AttributeChangeNotification(
                         this,
                         sequenceNum.incrementAndGet(),
