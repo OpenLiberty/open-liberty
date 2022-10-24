@@ -17,6 +17,7 @@ import java.lang.reflect.Method;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -78,13 +79,20 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
                 for (int i = 0; i < keysetCursor.size(); i++) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, "set keyset parameter ?" + (queryInfo.paramCount + i + 1));
+                    // TODO detect if user provides a wrong-sized keyset? Or let JPA error surface?
                     query.setParameter(queryInfo.paramCount + i + 1, keysetCursor.getKeysetElement(i));
                 }
 
             query.setFirstResult(firstResult);
-            query.setMaxResults((int) maxPageSize + 1);
+            query.setMaxResults((int) maxPageSize + 1); // extra position is for knowing whether to expect another page
 
             results = query.getResultList();
+
+            // Keyset pagination involves reversing the ORDER BY to obtain the previous page, but the entries
+            // on the page will also be in reverse order, so we need to reverse again to correct that
+            if (!isForward)
+                for (int size = results.size(), i = 0, j = size - (size > maxPageSize ? 2 : 1); i < j; i++, j--)
+                    Collections.swap(results, i, j);
         } catch (Exception x) {
             throw new DataException(x);
         } finally {
@@ -132,13 +140,12 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
 
     @Override
     public KeysetPageable next() {
-        Object entity;
-        if (isForward) {
-            if (results.size() <= pagination.getSize())
-                return null;
-            entity = results.get((int) pagination.getSize() - 1);
-        } else
-            throw new UnsupportedOperationException(); // TODO
+        // The extra position is only available for identifying a next page if the current page was obtained in the forward direction
+        int max = (int) pagination.getSize() + (isForward ? 1 : 0);
+        if (results.size() < max)
+            return null;
+
+        Object entity = results.get((int) pagination.getSize() - 1);
 
         ArrayList<Object> keyValues = new ArrayList<>();
         for (Sort keyInfo : queryInfo.keyset)
@@ -152,13 +159,33 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
                 throw new DataException(x.getCause());
             }
 
-        return isForward ? pagination.next().afterKeyset(keyValues.toArray()) //
-                        : null; // TODO pagination.previous().beforeKeyset(keyValues.toArray());
+        return pagination.next().afterKeyset(keyValues.toArray());
     }
 
     @Override
     public KeysetPageable previous() {
-        throw new UnsupportedOperationException(); // TODO
+        // The extra position is only available for identifying a previous page if the current page was obtained in the reverse direction
+        int max = (int) pagination.getSize() + (isForward ? 0 : 1);
+        if (results.size() < max)
+            return null;
+
+        Object entity = results.get(0);
+
+        ArrayList<Object> keyValues = new ArrayList<>();
+        for (Sort keyInfo : queryInfo.keyset)
+            try {
+                Member accessor = queryInfo.entityInfo.attributeAccessors.get(keyInfo.getProperty());
+                if (accessor instanceof Method)
+                    keyValues.add(((Method) accessor).invoke(entity));
+                else
+                    keyValues.add(((Field) accessor).get(entity));
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException x) {
+                throw new DataException(x.getCause());
+            }
+
+        // Decrement page number by 1 unless it would go below 1.
+        Pageable p = pagination.getPage() == 1 ? pagination : Pageable.of(pagination.getPage() - 1, pagination.getSize());
+        return p.beforeKeyset(keyValues.toArray());
     }
 
     @Override

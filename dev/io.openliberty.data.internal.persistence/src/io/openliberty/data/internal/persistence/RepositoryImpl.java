@@ -217,18 +217,24 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             boolean needsKeysetQueries = KeysetAwarePage.class.equals(queryInfo.method.getReturnType())
                                          || KeysetAwarePage.class.equals(queryInfo.returnTypeParam);
             StringBuilder o = needsKeysetQueries ? new StringBuilder(100) : q;
+            StringBuilder r = needsKeysetQueries ? new StringBuilder(100) : null; // reverse order
             List<Sort> keyset = needsKeysetQueries ? new ArrayList<>(orderBy.length) : null;
 
             for (int i = 0; i < orderBy.length; i++) {
                 o.append(i == 0 ? " ORDER BY o." : ", o.").append(orderBy[i].value());
                 if (orderBy[i].descending())
                     o.append(" DESC");
-                if (needsKeysetQueries)
+                if (needsKeysetQueries) {
+                    r.append(i == 0 ? " ORDER BY o." : ", o.").append(orderBy[i].value());
+                    if (!orderBy[i].descending())
+                        r.append(" DESC");
+
                     keyset.add(orderBy[i].descending() ? Sort.desc(orderBy[i].value()) : Sort.asc(orderBy[i].value()));
+                }
             }
 
             if (needsKeysetQueries) {
-                generateKeysetQueries(queryInfo, keyset, null, q, o);
+                generateKeysetQueries(queryInfo, keyset, q, o, r);
                 q.append(o);
             }
         }
@@ -247,18 +253,14 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      *
      * @param queryInfo query information
      * @param keyset    key names and direction
-     * @param direction keyset cursor direction if known from the repository method args. Otherwise null and JPQL is generated for both directions.
      * @param q         query up to the WHERE clause, if present
-     * @param o         ORDER BY clause
+     * @param o         ORDER BY clause in forward direction. Null if forward direction is not needed.
+     * @param r         ORDER BY clause in reverse direction. Null if reverse direction is not needed.
      */
-    private void generateKeysetQueries(QueryInfo queryInfo, List<Sort> keyset, KeysetPageable.Mode direction, StringBuilder q, StringBuilder o) {
+    private void generateKeysetQueries(QueryInfo queryInfo, List<Sort> keyset, StringBuilder q, StringBuilder o, StringBuilder r) {
         int numKeys = keyset.size();
-        StringBuilder a = direction == null || direction == KeysetPageable.Mode.NEXT //
-                        ? new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (") //
-                        : null;
-        StringBuilder b = direction == null || direction == KeysetPageable.Mode.PREVIOUS //
-                        ? new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (") //
-                        : null;
+        StringBuilder a = o == null ? null : new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (");
+        StringBuilder b = r == null ? null : new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (");
         for (int i = 0; i < numKeys; i++) {
             if (a != null)
                 a.append(i == 0 ? "(" : " OR (");
@@ -287,7 +289,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         if (a != null)
             queryInfo.jpqlAfterKeyset = new StringBuilder(q).append(a).append(')').append(o).toString();
         if (b != null)
-            queryInfo.jpqlBeforeKeyset = new StringBuilder(q).append(b).append(')').append(o).toString();
+            queryInfo.jpqlBeforeKeyset = new StringBuilder(q).append(b).append(')').append(r).toString();
         queryInfo.keyset = keyset;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -504,7 +506,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         String methodName = queryInfo.method.getName();
         boolean needsKeysetQueries = KeysetAwarePage.class.equals(queryInfo.method.getReturnType())
                                      || KeysetAwarePage.class.equals(queryInfo.returnTypeParam);
-        StringBuilder o = needsKeysetQueries ? new StringBuilder(100) : q;
+        StringBuilder o = needsKeysetQueries ? new StringBuilder(100) : q; // forward order
+        StringBuilder r = needsKeysetQueries ? new StringBuilder(100).append(" ORDER BY ") : null; // reverse order
         List<Sort> keyset = needsKeysetQueries ? new ArrayList<>() : null;
 
         o.append(" ORDER BY ");
@@ -520,20 +523,27 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             String name = queryInfo.entityInfo.getAttributeName(attribute);
             o.append("o.").append(name);
 
-            if (needsKeysetQueries)
+            if (needsKeysetQueries) {
+                r.append("o.").append(name);
                 keyset.add(iNext > 0 && iNext == desc ? Sort.desc(name) : Sort.asc(name));
+            }
 
             if (iNext > 0) {
                 if (iNext == desc)
                     o.append(" DESC");
+                else if (needsKeysetQueries)
+                    r.append(" DESC");
                 iNext += (iNext == desc ? 4 : 3);
-                if (iNext < length)
+                if (iNext < length) {
                     o.append(", ");
+                    if (needsKeysetQueries)
+                        r.append(", ");
+                }
             }
         }
 
         if (needsKeysetQueries) {
-            generateKeysetQueries(queryInfo, keyset, null, q, o);
+            generateKeysetQueries(queryInfo, keyset, q, o, r);
             q.append(o);
         }
     }
@@ -780,7 +790,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                 o = o == null ? new StringBuilder(100).append(" ORDER BY o.") : o.append(", o.");
                                 o.append(sort.getProperty());
                                 if (sort.isDescending())
-                                    o.append(" DESC");
+                                    o.append(" DESC"); // TODO defer until we know mode of next vs previous
                                 if (needsKeysetQueries)
                                     (keyset == null ? (keyset = new ArrayList<>()) : keyset).add(sort);
                             } else if (param instanceof Sort[]) {
@@ -792,7 +802,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                         o = o == null ? new StringBuilder(100).append(" ORDER BY o.") : o.append(", o.");
                                         o.append(sorts[s].getProperty());
                                         if (sorts[s].isDescending())
-                                            o.append(" DESC");
+                                            o.append(" DESC"); // TODO
                                         if (needsKeysetQueries)
                                             (keyset == null ? (keyset = new ArrayList<>()) : keyset).add(sorts[s]);
                                     }
@@ -801,10 +811,12 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
                         if (o != null) {
                             StringBuilder q = new StringBuilder(queryInfo.jpql);
-                            if (needsKeysetQueries && pagination instanceof KeysetPageable)
-                                generateKeysetQueries(queryInfo = queryInfo.withJPQL(null), keyset, ((KeysetPageable) pagination).getMode(), q, o);
-                            else
+                            if (keyset != null && pagination instanceof KeysetPageable) {
+                                boolean forward = ((KeysetPageable) pagination).getMode() == KeysetPageable.Mode.NEXT;
+                                generateKeysetQueries(queryInfo = queryInfo.withJPQL(null), keyset, q, forward ? o : null, forward ? null : o);
+                            } else {
                                 queryInfo = queryInfo.withJPQL(q.append(o).toString());
+                            }
                         }
 
                         boolean asyncCompatibleResultForPagination = pagination != null &&
