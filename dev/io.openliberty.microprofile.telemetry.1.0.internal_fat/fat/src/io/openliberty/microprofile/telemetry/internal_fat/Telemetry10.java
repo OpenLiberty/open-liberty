@@ -27,10 +27,10 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import io.openliberty.microprofile.telemetry.internal_fat.apps.hotadd.BaggageServlet;
-import io.openliberty.microprofile.telemetry.internal_fat.apps.hotadd.PatchTestApp;
-import io.openliberty.microprofile.telemetry.internal_fat.apps.hotadd.SpanCurrentServlet;
-import io.openliberty.microprofile.telemetry.internal_fat.apps.hotadd.Telemetry10Servlet;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.BaggageServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.PatchTestApp;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.SpanCurrentServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.Telemetry10Servlet;
 
 @RunWith(FATRunner.class)
 public class Telemetry10 extends FATServletClient {

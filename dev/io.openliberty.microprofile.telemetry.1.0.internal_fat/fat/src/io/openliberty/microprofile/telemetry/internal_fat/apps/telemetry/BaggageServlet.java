@@ -8,34 +8,38 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry.internal_fat.apps.hotadd;
+package io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
-import io.opentelemetry.api.trace.Span;
-import io.opentelemetry.api.trace.SpanContext;
+import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
+import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("/SpanCurrentServlet")
-public class SpanCurrentServlet extends FATServlet {
+@WebServlet("/BaggageServlet")
+public class BaggageServlet extends FATServlet {
+
+    @Inject
+    private Baggage baggage;
 
     @Test
-    public void testGetCurrentSpan_Default() {
-        Span span = Span.current();
-        assertEquals(span, Span.getInvalid()); //Current span has no context as none was created
+    public void current_empty() {
+        try (Scope scope = Context.root().makeCurrent()) {
+            assertEquals(Baggage.current(), Baggage.empty());
+        }
     }
 
     @Test
-    public void testGetCurrentSpan_SetSpan() {
-        Span span = Span.wrap(SpanContext.getInvalid()); //Creates span with no context
-        try (Scope ignored = Context.current().with(span).makeCurrent()) {
-            assertEquals(Span.current(), span);
+    public void current() {
+        try (Scope scope = Context.root().with(Baggage.builder().put("foo", "bar").build()).makeCurrent()) {
+            Baggage result = Baggage.current();
+            assertEquals(result.getEntryValue("foo"), "bar");
         }
     }
 
