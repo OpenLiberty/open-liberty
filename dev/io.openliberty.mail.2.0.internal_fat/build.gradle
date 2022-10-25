@@ -21,3 +21,5 @@ dependencies {
                'com.sun.xml.bind:jaxb-core:2.2.+',
                'com.sun.xml.bind:jaxb-impl:2.2.+'
 }
+
+addRequiredLibraries.dependsOn addJakartaTransformer
