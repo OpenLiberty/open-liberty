@@ -22,6 +22,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,6 +55,7 @@ public class FfdcCleanupTest {
 
     }
 
+    @Before
     public void setUp() throws Exception {
         if (server != null && !server.isStarted()) {
             // Restore the original server configuration, before starting the server for each test case.
@@ -72,7 +74,6 @@ public class FfdcCleanupTest {
     @Test
     @ExpectedFFDC("java.lang.ArithmeticException")
     public void testFfdcCleanupDeletion() throws Exception {
-        setUp();
         hitWebPage("ffdc-servlet", "FFDCServlet", true, "?generateFFDC=true");
 
         ServerConfiguration serverConfig = server.getServerConfiguration();
@@ -82,7 +83,7 @@ public class FfdcCleanupTest {
         server.updateServerConfiguration(serverConfig);
 
         RemoteFile messagesLogFile = server.getDefaultLogFile();
-        String line = server.waitForStringInLogUsingMark("based on the maxFfdcAge value configured.", messagesLogFile);
+        String line = server.waitForStringInLog("based on the maxFfdcAge value configured.", 15000, messagesLogFile);
         assertTrue("The FFDC file was not deleted.", line.contains("Deleted 1 FFDC file"));
     }
 
@@ -90,7 +91,6 @@ public class FfdcCleanupTest {
     @ExpectedFFDC("java.lang.ArithmeticException")
     public void testFfdcCleanupNoDeletion() {
         try {
-            setUp();
             hitWebPage("ffdc-servlet", "FFDCServlet", true, "?generateFFDC=true");
 
             ServerConfiguration serverConfig = server.getServerConfiguration();
@@ -100,8 +100,8 @@ public class FfdcCleanupTest {
             server.updateServerConfiguration(serverConfig);
 
             RemoteFile messagesLogFile = server.getDefaultLogFile();
-            String line = server.waitForStringInLogUsingMark("based on the maxFfdcAge value configured.", messagesLogFile);
-            assertNull("The FFDC file was deleted.", line);
+            String line = server.waitForStringInLog("based on the maxFfdcAge value configured.", 15000, messagesLogFile);
+            assertNull("The FFDC file was incorrectly deleted.", line);
         } catch (Exception e) {
 
         }
@@ -110,12 +110,11 @@ public class FfdcCleanupTest {
     @Test
     @ExpectedFFDC("java.lang.ArithmeticException")
     public void testFfdcCleanupNotConfigured() throws Exception {
-        setUp();
         hitWebPage("ffdc-servlet", "FFDCServlet", true, "?generateFFDC=true");
         Thread.sleep(61000);
         RemoteFile messagesLogFile = server.getDefaultLogFile();
-        String line = server.waitForStringInLogUsingMark("based on the maxFfdcAge value configured.", messagesLogFile);
-        assertNull("The FFDC file was deleted.", line);
+        String line = server.waitForStringInLog("based on the maxFfdcAge value configured.", 15000, messagesLogFile);
+        assertNull("The FFDC file was incorrectly deleted.", line);
     }
 
     private static void hitWebPage(String contextRoot, String servletName, boolean failureAllowed,
