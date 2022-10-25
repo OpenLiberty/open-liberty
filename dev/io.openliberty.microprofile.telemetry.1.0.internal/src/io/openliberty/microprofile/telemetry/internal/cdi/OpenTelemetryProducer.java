@@ -28,8 +28,8 @@ import jakarta.inject.Inject;
 public class OpenTelemetryProducer {
 
     private static final String INSTRUMENTATION_NAME = "io.openliberty.microprofile.telemetry";
-    private static final String ENV_ENABLE_PROPERTY = "OTEL_EXPERIMENTAL_SDK_ENABLED";
-    private static final String CONFIG_ENABLE_PROPERTY = "otel.experimental.sdk.enabled";
+    private static final String ENV_DISABLE_PROPERTY = "OTEL_SDK_DISABLED";
+    private static final String CONFIG_DISABLE_PROPERTY = "otel.sdk.disabled";
 
     @Inject
     Config config;
@@ -40,7 +40,7 @@ public class OpenTelemetryProducer {
     public OpenTelemetry getOpenTelemetry() {
         HashMap<String, String> telemetryProperties = getTelemetryProperties();
         //Builds tracer provider if user has enabled tracing aspects with config properties
-        if (checkEnabled(telemetryProperties)) {
+        if (!checkDisabled(telemetryProperties)) {
 
             OpenTelemetry openTelemetry = AutoConfiguredOpenTelemetrySdk.builder()
                             .addPropertiesSupplier(() -> telemetryProperties)
@@ -62,18 +62,14 @@ public class OpenTelemetryProducer {
 
     }
 
-    private boolean checkEnabled(Map<String, String> oTelConfigs) {
-        //In order to enable any of the tracing aspects, the configuration otel.experimental.sdk.enabled=true must be specified in any of the config sources available via MicroProfile Config
-        if (oTelConfigs.get(ENV_ENABLE_PROPERTY) != null) {
-            if (oTelConfigs.get(ENV_ENABLE_PROPERTY).equals("true")) {
-                return true;
-            }
-        } else if (oTelConfigs.get(CONFIG_ENABLE_PROPERTY) != null) {
-            if (oTelConfigs.get(CONFIG_ENABLE_PROPERTY).equals("true")) {
-                return true;
-            }
+    private boolean checkDisabled(Map<String, String> oTelConfigs) {
+        //In order to enable any of the tracing aspects, the configuration otel.sdk.disabled=false must be specified in any of the configuration sources available via MicroProfile Config.
+        if (oTelConfigs.get(ENV_DISABLE_PROPERTY) != null) {
+            return Boolean.valueOf(oTelConfigs.get(ENV_DISABLE_PROPERTY));
+        } else if (oTelConfigs.get(CONFIG_DISABLE_PROPERTY) != null) {
+            return Boolean.valueOf(oTelConfigs.get(CONFIG_DISABLE_PROPERTY));
         }
-        return false;
+        return true;
     }
 
     private HashMap<String, String> getTelemetryProperties() {

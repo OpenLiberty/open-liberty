@@ -49,9 +49,8 @@ public abstract class MicroProfileTelemetryTestBase {
     public static final int JAEGER_GRPC_PORT = 14250;
     public static final Duration CONTAINER_STARTUP_TIMEOUT = Duration.ofSeconds(240);
 
-
-    public static final String ENV_OTEL_SDK_ENABLED = "OTEL_EXPERIMENTAL_SDK_ENABLED";
-    public static final String OTEL_SDK_ENABLED = "true";
+    public static final String ENV_OTEL_SDK_DISABLED = "OTEL_SDK_DISABLED";
+    public static final String OTEL_SDK_DISABLED = "false";
     public static final String ENV_OTEL_SERVICE_NAME = "OTEL_SERVICE_NAME";
     public static final String OTEL_SERVICE_NAME_SYSTEM = "system";
     public static final String ENV_OTEL_TRACES_EXPORTER = "OTEL_TRACES_EXPORTER";
