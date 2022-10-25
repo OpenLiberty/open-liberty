@@ -62,6 +62,12 @@ import static org.junit.Assert.fail;
 
 public class StaxUtilsTest {
 
+    // Liberty Change: Add insecure parser variable since we do not ship WoodStox
+    static {
+        System.setProperty("org.apache.cxf.stax.allowInsecureParser", "true");
+    }
+    // Liberty Change End
+
     @Test
     public void testFactoryCreation() {
         XMLStreamReader reader = StaxUtils.createXMLStreamReader(getTestStream("./resources/amazon.xml"));
@@ -75,8 +81,7 @@ public class StaxUtilsTest {
     @Test
     public void testCommentNode() throws Exception {
         //CXF-3034
-        Document document = DocumentBuilderFactory.newInstance()
-                .newDocumentBuilder().newDocument();
+        Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         Element root = document.createElementNS("urn:test", "root");
         root.appendChild(document.createComment("test comment"));
         StaxUtils.copy(StaxUtils.createXMLStreamReader(root), StaxUtils.createXMLStreamWriter(System.out));
@@ -158,8 +163,7 @@ public class StaxUtilsTest {
     @Test
     public void testNonNamespaceAwareParser() throws Exception {
         String xml = "<blah xmlns=\"http://blah.org/\" xmlns:snarf=\"http://snarf.org\">"
-            + "<foo snarf:blop=\"blop\">foo</foo></blah>";
-
+                     + "<foo snarf:blop=\"blop\">foo</foo></blah>";
 
         StringReader reader = new StringReader(xml);
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -172,7 +176,6 @@ public class StaxUtilsTest {
         reader = new StringReader(xml);
         Document docNs = dbf.newDocumentBuilder().parse(new InputSource(reader));
         Source sourceNs = new DOMSource(docNs);
-
 
         XMLStreamReader sreader = StaxUtils.createXMLStreamReader(source);
 
@@ -190,7 +193,6 @@ public class StaxUtilsTest {
         assertTrue(output.contains("snarf"));
         assertTrue(output.contains("blop"));
 
-
         sreader = StaxUtils.createXMLStreamReader(sourceNs);
         sw = new StringWriter();
         swriter = StaxUtils.createXMLStreamWriter(sw);
@@ -204,7 +206,6 @@ public class StaxUtilsTest {
         assertTrue(output.contains("foo"));
         assertTrue(output.contains("snarf"));
         assertTrue(output.contains("blop"));
-
 
         sreader = StaxUtils.createXMLStreamReader(source);
 
@@ -224,20 +225,20 @@ public class StaxUtilsTest {
     @Test
     public void testEmptyNamespace() throws Exception {
         String testString = "<ns1:a xmlns:ns1=\"http://www.apache.org/\"><s1 xmlns=\"\">"
-            + "abc</s1><s2 xmlns=\"\">def</s2></ns1:a>";
+                            + "abc</s1><s2 xmlns=\"\">def</s2></ns1:a>";
 
         cycleString(testString);
 
         testString = "<a xmlns=\"http://www.apache.org/\"><s1 xmlns=\"\">"
-            + "abc</s1><s2 xmlns=\"\">def</s2></a>";
+                     + "abc</s1><s2 xmlns=\"\">def</s2></a>";
         cycleString(testString);
 
         testString = "<a xmlns=\"http://www.apache.org/\"><s1 xmlns=\"\">"
-            + "abc</s1><s2>def</s2></a>";
+                     + "abc</s1><s2>def</s2></a>";
         cycleString(testString);
 
         testString = "<ns1:a xmlns:ns1=\"http://www.apache.org/\"><s1>"
-            + "abc</s1><s2 xmlns=\"\">def</s2></ns1:a>";
+                     + "abc</s1><s2 xmlns=\"\">def</s2></ns1:a>";
 
         cycleString(testString);
     }
@@ -351,8 +352,7 @@ public class StaxUtilsTest {
     public void testDefaultPrefixInRootElementWithJDKInternalCopyTransformer() throws Exception {
         TransformerFactory trf = null;
         try {
-            trf = TransformerFactory
-                .newInstance("com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl", null);
+            trf = TransformerFactory.newInstance("com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl", null);
             trf.setFeature(javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING, true);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             String xml = "<root xmlns=\"urn:org.apache.cxf:test\">Text</root>";
@@ -398,11 +398,11 @@ public class StaxUtilsTest {
     public void testCopyWithEmptyNamespace() throws Exception {
         StringBuilder in = new StringBuilder(128);
         in.append("<foo xmlns=\"http://example.com/\">");
-        in.append("<bar xmlns=\"\"/>");
+        in.append("<bar xmlns=\"\"></bar>");
         in.append("</foo>");
 
         XMLStreamReader reader = StaxUtils.createXMLStreamReader(
-             new ByteArrayInputStream(in.toString().getBytes()));
+                                                                 new ByteArrayInputStream(in.toString().getBytes()));
 
         Writer out = new StringWriter();
         XMLStreamWriter writer = StaxUtils.createXMLStreamWriter(out);
@@ -422,7 +422,7 @@ public class StaxUtilsTest {
         in.append("</f:foo>");
 
         XMLStreamReader reader = StaxUtils.createXMLStreamReader(
-             new ByteArrayInputStream(in.toString().getBytes()));
+                                                                 new ByteArrayInputStream(in.toString().getBytes()));
 
         QName qname = new QName("http://example.com/", "Bar");
         assertEquals(XMLStreamConstants.START_ELEMENT, reader.next());
@@ -444,14 +444,12 @@ public class StaxUtilsTest {
 
     @Test
     public void testCopyFromTheMiddle() throws Exception {
-        String innerXml =
-                "<inner>\n"
-                + "<body>body text here</body>\n"
-                + "</inner>\n";
-        String xml =
-                "<outer>\n"
-                + innerXml
-                + "</outer>";
+        String innerXml = "<inner>\n"
+                          + "<body>body text here</body>\n"
+                          + "</inner>\n";
+        String xml = "<outer>\n"
+                     + innerXml
+                     + "</outer>";
 
         StringReader reader = new StringReader(xml);
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -479,7 +477,7 @@ public class StaxUtilsTest {
         assertEquals(innerXml, sw.toString());
     }
 
-    @Test
+    //@Test - Disable since we do not ship woodstox
     public void testIsSecureReader() {
         Document doc = DOMUtils.newDocument();
         Element documentElement = doc.createElementNS(null, "root");
@@ -489,7 +487,7 @@ public class StaxUtilsTest {
         assertTrue(StaxUtils.isSecureReader(reader, null));
     }
 
-    @Test
+    //@Test - Disable since we do not ship woodstox
     public void testDefaultMaxAttributeCount() throws XMLStreamException {
         Document doc = DOMUtils.newDocument();
         Element documentElement = doc.createElementNS(null, "root");
@@ -519,7 +517,7 @@ public class StaxUtilsTest {
         }
     }
 
-    @Test
+    //@Test - Disable since we do not ship woodstox
     public void testDefaultMaxAttributeLength() throws XMLStreamException {
         Document doc = DOMUtils.newDocument();
         Element documentElement = doc.createElementNS(null, "root");
@@ -554,7 +552,7 @@ public class StaxUtilsTest {
 
     }
 
-    @Test
+    //@Test - Disable since we do not ship woodstox
     public void testDefaultMaxElementDepth() throws XMLStreamException {
         Document doc = DOMUtils.newDocument();
         Element documentElement = doc.createElementNS(null, "root");
@@ -587,7 +585,7 @@ public class StaxUtilsTest {
         }
     }
 
-    @Test
+    //@Test - Disable since we do not ship woodstox
     public void testDefaultMaxChildElements() throws XMLStreamException {
         Document doc = DOMUtils.newDocument();
         Element documentElement = doc.createElementNS(null, "root");
