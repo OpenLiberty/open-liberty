@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jsf22.fat.beanvalidation;
+package com.ibm.ws.jsf22.fat.beanvalidation.faces40;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
