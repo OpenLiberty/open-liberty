@@ -116,6 +116,7 @@ public class JaspiRequest {
     /**
      * The request is protected if there are required roles
      * or it's not mapped everyones role
+     *
      * @return true if there is a proected url.
      */
     public boolean isProtected() {
@@ -129,9 +130,16 @@ public class JaspiRequest {
     /**
      * Per section 3.9.3 of the JSR-196 (JASPIC) specification, when handling an HttpServletRequest.authenticate:
      * The MessageInfo map must unconditionally contain the javax.security.auth.message.MessagePolicy.isMandatory key (with associated true value).
+     * Per the Jakarta Authentication 3.0 specification, when handling an HttPServletRequest.authenticate:
+     * The MessageInfo map must unconditionally contain the jakarta.security.auth.message.MessagePolicy.isMandatory key (with associated true value)
+     * and the jakarta.servlet.http.isAuthenticationRequest key (with associated `true` value).
      */
     public boolean isMandatory() {
         return isProtected() || webRequest.isRequestAuthenticate();
+    }
+
+    public boolean isRequestAuthenticate() {
+        return webRequest.isRequestAuthenticate();
     }
 
     public String getApplicationName() {

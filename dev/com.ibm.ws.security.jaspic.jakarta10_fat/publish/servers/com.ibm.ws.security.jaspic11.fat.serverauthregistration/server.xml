@@ -1,15 +1,10 @@
 <server description="JASPIC 1.1 Security FAT">
 
 	<featureManager>
-		<feature>servlet-3.1</feature>
-		<feature>appSecurity-2.0</feature>
+		<feature>servlet-3.0</feature>
 		<feature>jsp-2.3</feature>
-		<feature>usr:jaspicUserTestFeature-1.0</feature>
-		<feature>usr:jaccTestProvider-1.0</feature>
+		<feature>usr:jaspicUserTestFeature-3.0</feature>
 	</featureManager>
-
-	 <jaccTestProvider roleMappingFile="${server.config.dir}/resources/security/roleMapping.props"/>
-	 <webContainer deferServletLoad="false"/>
 
 	<basicRegistry id="basic1" realm="JaspiRealm">
 		<user name="jaspiuser2" password="s3cur1ty" />
@@ -31,12 +26,17 @@
 		</group>
 	</basicRegistry>
 
- 	<application type="war" id="JASPIBasicAuthServlet" name="JASPIBasicAuthServlet" location="JASPIBasicAuthServlet.war">
+	<application type="war" id="JASPIServerAuthRegistrationTestServlet" name="JASPIServerAuthRegistrationTestServlet" location="JASPIServerAuthRegistrationTestServlet.war">
+ 		<application-bnd>
+			<security-role name="jaspi_basic">
+				<user name="jaspiuser1" />
+				<group name="group2" />
+			</security-role>	
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
 	</application>
-	
-	<application type="war" id="JASPIFormLoginServlet" name="JASPIFormLoginServlet" location="JASPIFormLoginServlet.war">
-	</application>
-	<javaPermission className="javax.security.auth.PrivateCredentialPermission"  name='* * "*"' actions="read" />
 
 	<include location="../fatTestPorts.xml" />
 </server>
