@@ -142,6 +142,12 @@ public class StaxSource extends SAXSource implements XMLReader {
                         if (nsUri == null) {
                             nsUri = "";
                         }
+                        
+                        // Liberty Change Start - Handle a null nsPrefix to prevent NPE in TRAX
+                        if (nsPrefix == null) {
+                            nsPrefix = "";
+                        } 
+                        // Liberty Change End
                         contentHandler.startPrefixMapping(nsPrefix, nsUri);
                     }
                     contentHandler.startElement(uri == null ? "" : uri, localName, qname, getAttributes());
