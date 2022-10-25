@@ -141,11 +141,11 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     @Override
     public KeysetPageable next() {
         // The extra position is only available for identifying a next page if the current page was obtained in the forward direction
-        int max = (int) pagination.getSize() + (isForward ? 1 : 0);
-        if (results.size() < max)
+        int minToHaveNextPage = isForward ? ((int) pagination.getSize() + 1) : 1;
+        if (results.size() < minToHaveNextPage)
             return null;
 
-        Object entity = results.get((int) pagination.getSize() - 1);
+        Object entity = results.get(Math.min(results.size(), (int) pagination.getSize()) - 1);
 
         ArrayList<Object> keyValues = new ArrayList<>();
         for (Sort keyInfo : queryInfo.keyset)
@@ -165,8 +165,8 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     @Override
     public KeysetPageable previous() {
         // The extra position is only available for identifying a previous page if the current page was obtained in the reverse direction
-        int max = (int) pagination.getSize() + (isForward ? 0 : 1);
-        if (results.size() < max)
+        int minToHavePreviousPage = isForward ? 1 : ((int) pagination.getSize() + 1);
+        if (results.size() < minToHavePreviousPage)
             return null;
 
         Object entity = results.get(0);
