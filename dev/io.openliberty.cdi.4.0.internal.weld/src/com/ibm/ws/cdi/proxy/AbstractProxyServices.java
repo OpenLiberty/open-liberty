@@ -36,11 +36,13 @@ public abstract class AbstractProxyServices implements ProxyServices {
     private static final ManifestElement[] WELD_PACKAGES;
     private static final ClassLoader CLASS_LOADER_FOR_SYSTEM_CLASSES = org.jboss.weld.bean.ManagedBean.class.getClassLoader(); //I'm using this classloader because we'll need the weld classes to proxy anything.
 
+    //A static enum with no instances is a way of ensuring nothing can create instances of this class. We only care about the static block.
     private static enum ClassLoaderMethods {
         ;//No enum instances
 
         private static final Method defineClass1, defineClass2, getClassLoadingLock;
 
+        //This will be evaluated lazily when ClassLoaderMethods is first called. 
         static {
             try {
                 Method[] methods = AccessController.doPrivileged(new PrivilegedExceptionAction<Method[]>() {
@@ -182,22 +184,6 @@ public abstract class AbstractProxyServices implements ProxyServices {
 
     //implemented on a platform specific basis
     protected abstract void addWeldDynamicImports(Bundle b, ManifestElement[] dynamicImports);
-
-    //TODO: this method was removed from the Weld 5 API - https://github.com/OpenLiberty/open-liberty/issues/19911
-    //@Override
-    public Class<?> loadBeanClass(final String className) {
-        //This is tricky. Sometimes we need to use app classloader to load some app class
-        try {
-            return (Class<?>) AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
-                @Override
-                public Object run() throws Exception {
-                    return Class.forName(className, true, getClassLoader(this.getClass()));
-                }
-            });
-        } catch (PrivilegedActionException pae) {
-            throw new CDIRuntimeException(pae.getException());
-        }
-    }
 
     private final ClassValue<ClassLoader> loaderMap = new ClassValue<ClassLoader>() {
         @Override
