@@ -13,19 +13,23 @@ package io.openliberty.microprofile.telemetry.internal.cdi;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.extension.annotations.SpanAttribute;
-import io.opentelemetry.extension.annotations.WithSpan;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
 import io.opentelemetry.instrumentation.api.annotation.support.MethodSpanAttributesExtractor;
 import io.opentelemetry.instrumentation.api.annotation.support.ParameterAttributeNamesExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.Instrumenter;
 import io.opentelemetry.instrumentation.api.instrumenter.InstrumenterBuilder;
 import io.opentelemetry.instrumentation.api.instrumenter.SpanNameExtractor;
-import io.opentelemetry.instrumentation.api.util.SpanNames;
+import io.opentelemetry.instrumentation.api.instrumenter.util.SpanNames;
 import jakarta.annotation.Priority;
+import jakarta.inject.Inject;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
@@ -34,11 +38,18 @@ import jakarta.interceptor.InvocationContext;
 @Interceptor
 @Priority(100)
 public class WithSpanInterceptor {
+    private static final TraceComponent tc = Tr.register(WithSpanInterceptor.class);
 
     private final String instrumentationName = "io.openliberty.microprofile.telemetry";
 
     private final Instrumenter<MethodRequest, Void> instrumenter;
 
+    public WithSpanInterceptor() {
+        // Required public no-arg constructor for interceptor
+        instrumenter = null;
+    }
+
+    @Inject
     public WithSpanInterceptor(final OpenTelemetry openTelemetry) {
         InstrumenterBuilder<MethodRequest, Void> builder = Instrumenter.builder(openTelemetry, instrumentationName, new MethodRequestSpanNameExtractor());
         MethodSpanAttributesExtractor<MethodRequest, Void> attributesExtractor = MethodSpanAttributesExtractor.newInstance(
@@ -47,7 +58,7 @@ public class WithSpanInterceptor {
                                                                                                                            MethodRequest::getArgs);
 
         this.instrumenter = builder.addAttributesExtractor(attributesExtractor)
-                        .newInstrumenter(methodRequest -> spanKindFromMethod(methodRequest.getMethod()));
+                        .buildInstrumenter(methodRequest -> spanKindFromMethod(methodRequest.getMethod()));
     }
 
     private static SpanKind spanKindFromMethod(Method method) {
@@ -66,6 +77,10 @@ public class WithSpanInterceptor {
         Context spanContext = null;
         Scope scope = null;
         boolean shouldStart = instrumenter.shouldStart(parentContext, methodRequest);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Should start: " + shouldStart);
+        }
+
         if (shouldStart) {
             spanContext = instrumenter.start(parentContext, methodRequest);
             scope = spanContext.makeCurrent();
