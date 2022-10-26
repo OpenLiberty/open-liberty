@@ -25,16 +25,15 @@ public class ServletRequestExpectationHelpers {
 
     protected static Class<?> thisClass = ServletRequestExpectationHelpers.class;
 
-    public static void getServletRequestExpectations(String action, Expectations expectations, String requester, Map<String, String> headers,
-                                                     List<NameValuePair> parms, Cookie... cookies) throws Exception {
+    public static void getServletRequestExpectations(String action, Expectations expectations, String requester, ResponseValues rspValues) throws Exception {
 
         String updatedRequester = requester + ServletMessageConstants.REQUEST;
 
         if (RepeatTestFilter.getRepeatActionsAsString().contains("useRedirectToOriginalResource")) {
-            getRequestHeaderExpectations(action, expectations, updatedRequester, headers);
+            getRequestHeaderExpectations(action, expectations, updatedRequester, rspValues.getHeaders());
         }
-        getRequestParmsExpectations(action, expectations, updatedRequester, parms);
-        getRequestCookieExpectations(action, expectations, updatedRequester, cookies);
+        getRequestParmsExpectations(action, expectations, updatedRequester, rspValues.getParms());
+        getRequestCookieExpectations(action, expectations, updatedRequester, rspValues.getCookies());
 
     }
 
@@ -68,10 +67,10 @@ public class ServletRequestExpectationHelpers {
         }
     }
 
-    public static void getRequestCookieExpectations(String action, Expectations expectations, String requester, Cookie... cookies) throws Exception {
+    public static void getRequestCookieExpectations(String action, Expectations expectations, String requester, List<Cookie> cookies) throws Exception {
 
         Log.info(thisClass, "getRequestParmsExpectations", "Setting extra cookie expectations");
-        if (cookies != null && cookies.length != 0) {
+        if (cookies != null && cookies.size() != 0) {
             for (Cookie cookie : cookies) {
                 Log.info(thisClass, "getRequestCookieExpectations", "Adding expectation for " + cookie.getName());
                 expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_MATCHES, requester + ServletMessageConstants.HEADER + ServletMessageConstants.NAME

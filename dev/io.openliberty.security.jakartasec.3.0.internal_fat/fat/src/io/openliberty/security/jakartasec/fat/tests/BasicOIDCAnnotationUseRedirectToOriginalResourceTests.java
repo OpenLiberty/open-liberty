@@ -25,6 +25,7 @@ import io.openliberty.security.jakartasec.fat.sharedTests.BasicOIDCAnnotationTes
 /**
  * Tests appSecurity-5.0
  */
+@SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
 public class BasicOIDCAnnotationUseRedirectToOriginalResourceTests extends BasicOIDCAnnotationTests {
 

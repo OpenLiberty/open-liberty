@@ -36,7 +36,6 @@ import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurit
 import io.openliberty.security.jakartasec.fat.configs.TestConfigMaps;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
 import io.openliberty.security.jakartasec.fat.utils.MessageConstants;
-import io.openliberty.security.jakartasec.fat.utils.ResponseValues;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 
 /**
@@ -46,6 +45,7 @@ import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 /**
  * Tests appSecurity-5.0
  */
+@SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
 public class ConfigurationTests extends CommonAnnotatedSecurityTests {
 
@@ -84,9 +84,6 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         rpHttpsBase = "https://localhost:" + rpServer.getBvtSecurePort();
 
         deployMyApps(); // run this after starting the RP so we have the rp port to update the openIdConfig.properties file within the apps
-
-        rspValues = new ResponseValues();
-        rspValues.setIssuer(opHttpsBase + "/oidc/endpoint/OP1");
 
     }
 

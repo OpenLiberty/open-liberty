@@ -26,7 +26,6 @@ import org.junit.Before;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.util.Cookie;
-import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
 import com.ibm.ws.security.fat.common.Utils;
@@ -69,7 +68,7 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
     protected static final String useRedirectToOriginalResource = "useRedirectToOriginalResource";
     protected static final String useCallbacks = "useCallbacks";
 
-    protected static ResponseValues rspValues;
+    protected ResponseValues rspValues;
 
     public static class skipIfUseRedirectToOriginalResource extends MySkipRule {
         @Override
@@ -186,9 +185,11 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
 
     }
 
-    public static void initResponseValues() throws Exception {
+    public void initResponseValues() throws Exception {
+
         rspValues = new ResponseValues();
         rspValues.setIssuer(opHttpsBase + "/oidc/endpoint/OP1");
+
     }
 
     @Override
@@ -214,48 +215,29 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
      */
     public Page invokeAppReturnLoginPage(WebClient webClient, String url) throws Exception {
 
-        return invokeAppReturnLoginPage(webClient, url, null, null);
-
-    }
-
-    public Page invokeAppReturnLoginPage(WebClient webClient, String url, Map<String, String> headers, List<NameValuePair> parms) throws Exception {
-        return invokeAppReturnLoginPage(webClient, url, headers, parms, (Cookie[]) null);
-    }
-
-    public Page invokeAppReturnLoginPage(WebClient webClient, String url, Map<String, String> headers, List<NameValuePair> parms, Cookie... cookies) throws Exception {
-
         Page response = null;
-        rspValues.setOriginalRequest(url, headers, parms, cookies);
+        rspValues.setOriginalRequest(url);
 
+        // the call to invokeUrlWithParametersAndHeaders mangles the headers, so make a copy
         HashMap<String, String> tempHeaders = null;
-        if (headers != null) {
-            tempHeaders = new HashMap<String, String>();
-            for (Map.Entry<String, String> header : headers.entrySet()) {
-                Log.info(thisClass, _testName, "Testing with header before invoke: " + header.getKey());
-                tempHeaders.put(header.getKey(), header.getValue());
-            }
+        if (rspValues.getHeaders() != null) {
+            tempHeaders = new HashMap<String, String>(rspValues.getHeaders());
         }
 
-        if (cookies != null && cookies.length != 0) {
-            if (tempHeaders == null) {
-                tempHeaders = new HashMap<String, String>();
-            }
-
+        List<Cookie> cookies = rspValues.getCookies();
+        if (cookies != null && cookies.size() != 0) {
             for (Cookie c : cookies) {
                 webClient.addCookie(c.getName() + "=" + c.getValue(), new URL("https://localhost"), null);
             }
 
         }
-        response = actions.invokeUrlWithParametersAndHeaders(_testName, webClient, url, parms, tempHeaders);
+
+        response = actions.invokeUrlWithParametersAndHeaders(_testName, webClient, url, rspValues.getParms(), tempHeaders);
+
         loggingUtils.printAllCookies(webClient);
 
         Expectations firstExpectations = CommonExpectations.successfullyReachedOidcLoginPage();
 
-        if (headers != null) {
-            for (Map.Entry<String, String> header : headers.entrySet()) {
-                Log.info(thisClass, _testName, "Testing with header after invoke: " + header.getKey());
-            }
-        }
         validationUtils.validateResult(response, firstExpectations);
 
         return response;
@@ -283,14 +265,7 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
 
     public Page processLogin(Page response, String user, String pw, String app) throws Exception {
 
-        return processLogin(response, user, pw, app, null, null, (Cookie[]) null);
-
-    }
-
-    public Page processLogin(Page response, String user, String pw, String app, Map<String, String> headers,
-                             List<NameValuePair> parms, Cookie... cookies) throws Exception {
-
-        Expectations currentExpectations = getProcessLoginExpectations(app, headers, parms, cookies);
+        Expectations currentExpectations = getProcessLoginExpectations(app);
 
         response = actions.doFormLogin(response, user, pw);
         // confirm protected resource was accessed
@@ -302,10 +277,6 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
     }
 
     public Expectations getProcessLoginExpectations(String app) throws Exception {
-        return getProcessLoginExpectations(app, null, null);
-    }
-
-    public Expectations getProcessLoginExpectations(String app, Map<String, String> headers, List<NameValuePair> parms, Cookie... cookies) throws Exception {
 
         Expectations processLoginexpectations = new Expectations();
         processLoginexpectations.addSuccessCodeForCurrentAction();
@@ -324,7 +295,7 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
         // check for the correct values from the servlet in the response
         OpenIdContextExpectationHelpers.getOpenIdContextExpectations(null, processLoginexpectations, ServletMessageConstants.SERVLET, rspValues);
         WsSubjectExpectationHelpers.getWsSubjectExpectations(null, processLoginexpectations, ServletMessageConstants.SERVLET, rspValues);
-        ServletRequestExpectationHelpers.getServletRequestExpectations(null, processLoginexpectations, ServletMessageConstants.SERVLET, headers, parms, cookies);
+        ServletRequestExpectationHelpers.getServletRequestExpectations(null, processLoginexpectations, ServletMessageConstants.SERVLET, rspValues);
 
         return processLoginexpectations;
     }
@@ -386,18 +357,13 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
      */
     public Page runGoodEndToEndTest(WebClient webClient, String appRoot, String app, String user, String pw) throws Exception {
 
-        return runGoodEndToEndTest(webClient, appRoot, app, user, pw, null, null, (Cookie[]) null);
-
-    }
-
-    public Page runGoodEndToEndTest(WebClient webClient, String appRoot, String app, String user, String pw, Map<String, String> headers,
-                                    List<NameValuePair> parms, Cookie... cookies) throws Exception {
+        Log.info(thisClass, _testName, "headers: " + rspValues.getHeaders());
 
         String url = rpHttpsBase + "/" + appRoot + "/" + app;
 
-        Page response = invokeAppReturnLoginPage(webClient, url, headers, parms, cookies);
+        Page response = invokeAppReturnLoginPage(webClient, url);
 
-        response = processLogin(response, user, pw, app, headers, parms, cookies);
+        response = processLogin(response, user, pw, app);
 
         return response;
     }

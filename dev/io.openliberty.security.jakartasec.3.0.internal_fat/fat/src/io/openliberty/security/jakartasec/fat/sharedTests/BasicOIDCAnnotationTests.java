@@ -42,6 +42,7 @@ import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 /**
  * Tests appSecurity-5.0
  */
+@SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
 public class BasicOIDCAnnotationTests extends CommonAnnotatedSecurityTests {
 
@@ -309,9 +310,6 @@ public class BasicOIDCAnnotationTests extends CommonAnnotatedSecurityTests {
     @Test
     public void BasicOIDCAnnotationTests_multipleDifferentUsers() throws Exception {
 
-        // the test app has the OP secure port hard coded (since it doesn't use expression language vars
-        // if we end up using a different port, we'll need to skip this test
-
         WebClient webClient1 = getAndSaveWebClient();
         Page response1 = runGoodEndToEndTest(webClient1, "SimplestAnnotatedWithEL", "OidcAnnotatedServletWithEL", Constants.TESTUSER, Constants.TESTUSERPWD);
 
@@ -332,9 +330,6 @@ public class BasicOIDCAnnotationTests extends CommonAnnotatedSecurityTests {
     @Test
     public void BasicOIDCAnnotationTests_multipleSameUser() throws Exception {
 
-        // the test app has the OP secure port hard coded (since it doesn't use expression language vars
-        // if we end up using a different port, we'll need to skip this test
-
         WebClient webClient1 = getAndSaveWebClient();
         Page response1 = runGoodEndToEndTest(webClient1, "SimplestAnnotatedWithEL", "OidcAnnotatedServletWithEL", Constants.TESTUSER, Constants.TESTUSERPWD);
 
@@ -353,8 +348,9 @@ public class BasicOIDCAnnotationTests extends CommonAnnotatedSecurityTests {
         HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("testHeaderName1", "testHeaderValue1");
         headers.put("testHeaderName2", "testHeaderValue2");
+        rspValues.setHeaders(headers);
 
-        runGoodEndToEndTest(webClient, "SimplestAnnotatedWithEL", "OidcAnnotatedServletWithEL", Constants.TESTUSER, Constants.TESTUSERPWD, headers, null, (Cookie[]) null);
+        runGoodEndToEndTest(webClient, "SimplestAnnotatedWithEL", "OidcAnnotatedServletWithEL", Constants.TESTUSER, Constants.TESTUSERPWD);
 
     }
 
@@ -366,7 +362,9 @@ public class BasicOIDCAnnotationTests extends CommonAnnotatedSecurityTests {
         List<NameValuePair> parms = new ArrayList<NameValuePair>();
         parms.add(new NameValuePair("testParmName1", "testParmValue2"));
         parms.add(new NameValuePair("testParmName2", "testParmValue2"));
-        runGoodEndToEndTest(webClient, "SimplestAnnotatedWithEL", "OidcAnnotatedServletWithEL", Constants.TESTUSER, Constants.TESTUSERPWD, null, parms, (Cookie[]) null);
+        rspValues.setParms(parms);
+
+        runGoodEndToEndTest(webClient, "SimplestAnnotatedWithEL", "OidcAnnotatedServletWithEL", Constants.TESTUSER, Constants.TESTUSERPWD);
 
     }
 
@@ -377,8 +375,9 @@ public class BasicOIDCAnnotationTests extends CommonAnnotatedSecurityTests {
 
         Cookie testCookie1 = new Cookie("", "testCookieName1", "testCookieValue1");
         Cookie testCookie2 = new Cookie("", "testCookieName2", "testCookieValue2");
+        rspValues.setCookies(testCookie1, testCookie2);
 
-        runGoodEndToEndTest(webClient, "SimplestAnnotatedWithEL", "OidcAnnotatedServletWithEL", Constants.TESTUSER, Constants.TESTUSERPWD, null, null, testCookie1, testCookie2);
+        runGoodEndToEndTest(webClient, "SimplestAnnotatedWithEL", "OidcAnnotatedServletWithEL", Constants.TESTUSER, Constants.TESTUSERPWD);
 
     }
 

@@ -43,7 +43,7 @@ public class WsSubjectExpectationHelpers {
                                                                                                        + rspValues.getSubject(), "Did not find the correct principal in the WSSubject."));
         } else {
             expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_DOES_NOT_CONTAIN, requester
-                                                                                                               + ServletMessageConstants.GET_USER_PRINCIPAL_GET_NAME, "Did not find the correct principal in the WSSubject."));
+                                                                                                               + ServletMessageConstants.GET_USER_PRINCIPAL_GET_NAME, "Found a principal name in the WSSubject but should not have."));
         }
     }
 

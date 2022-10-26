@@ -12,14 +12,7 @@
 	<classpathentry kind="src" path="test-applications/MultipleServletsDifferentProviders.war/src"/>
 	<classpathentry kind="src" path="test-applications/MultipleServletsDifferentRoles.war/src"/>
 	<classpathentry kind="src" path="test-applications/MultipleServletsSimilarAnnotations.war/src"/>
-	<classpathentry kind="con" path="aQute.bnd.classpath.container">
-		<accessrules>
-			<accessrule kind="accessible" pattern="io/openliberty/security/jakartasec/fat/**"/>
-			<accessrule kind="accessible" pattern="com/ibm/ws/security/fat/common/**"/>
-			<accessrule kind="accessible" pattern="oidc/client/base/servlets/**"/>
-		</accessrules>
-	</classpathentry>
-	
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>	
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11">
 		<attributes>
 			<attribute name="module" value="true"/>

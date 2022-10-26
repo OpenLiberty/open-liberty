@@ -23,15 +23,10 @@
  <!-- with no filter, this client should be used for all apps that are not otherwise protected - this 
  		config would show that we didn't use the annotation and tried to use the server specified oidc client config -->
  	        <openidConnectClient
-                id="client_99"
-                scope="openid profile"
+                id="client_that_should_not_be_used"
                 clientId="client_99"
                 clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
-                sharedKey="secret"
-                mapIdentityToRegistryUser="true"
-                httpsRequired="false"
-                redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
-                discoveryEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP1/.well-known/openid-configuration"
+                authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default.secure}"
         >
         </openidConnectClient>
 

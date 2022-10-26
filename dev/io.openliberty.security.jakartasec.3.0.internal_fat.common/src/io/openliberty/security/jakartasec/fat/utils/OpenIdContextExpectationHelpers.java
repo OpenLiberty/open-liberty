@@ -106,7 +106,7 @@ public class OpenIdContextExpectationHelpers {
                                                                                                        + Constants.TOKEN_TYPE_BEARER, "Did not find the token_type set to Bearer in the OpenIdContext."));
         } else {
             expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, requester + ServletMessageConstants.TOKEN_TYPE
-                                                                                                       + ServletMessageConstants.NULL, "Did not find the token_type set to Bearer in the OpenIdContext."));
+                                                                                                       + ServletMessageConstants.NULL, "Found a token_type in the OpenIdContext and should not have."));
         }
 
     }

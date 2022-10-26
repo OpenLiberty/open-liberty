@@ -100,18 +100,6 @@ public class ResponseValues {
     public void setOriginalRequest(String inOriginalRequest) {
 
         originalRequest = inOriginalRequest;
-        headers = null;
-        parms = null;
-
-    }
-
-    public void setOriginalRequest(String inOriginalRequest, Map<String, String> inHeaders, List<NameValuePair> inParms, Cookie... inCookies) {
-
-        originalRequest = inOriginalRequest;
-
-        setHeaders(inHeaders);
-        setParms(inParms);
-        setCookies(inCookies);
 
     }
 
