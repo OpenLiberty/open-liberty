@@ -58,9 +58,7 @@ public class FATSuite {
         if(JavaInfo.JAVA_VERSION>=11)
         {
             repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
-                                // .andWith(FeatureReplacementAction.EE9_FEATURES());
-                                // Use once MyFaces 4.0.0-RC2 is released
-                                // .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
+                                .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
                                 .andWith(FeatureReplacementAction.EE10_FEATURES());
         } else {
             repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
