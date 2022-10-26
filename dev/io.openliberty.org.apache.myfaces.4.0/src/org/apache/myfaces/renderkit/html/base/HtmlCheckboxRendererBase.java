@@ -233,14 +233,22 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
             {
                 writer.write(selectItem.getLabel());
             }
-            writer.endElement(usingTable != null ? HTML.TD_ELEM : HTML.LI_ELEM);
+
+            if (usingTable != null)
+            {
+                writer.endElement(HTML.TD_ELEM);
+            }
 
             if (usingTable == Boolean.TRUE)
             {
                 writer.endElement(HTML.TR_ELEM);
                 writer.startElement(HTML.TR_ELEM, null);
             }
-            writer.startElement(usingTable != null ? HTML.TD_ELEM : HTML.LI_ELEM, null);
+
+            if (usingTable != null)
+            {
+                writer.startElement(HTML.TD_ELEM, null);
+            }
 
             writer.startElement(usingTable != null ? HTML.TABLE_ELEM : HTML.UL_ELEM, null);
             if (usingTable != null)
