@@ -233,7 +233,7 @@ public class OpenIdContextImpl implements OpenIdContext {
             value = (T) storage.get(storageName);
         }
 
-        return Optional.of(value);
+        return value != null ? Optional.of(value) : Optional.empty();
     }
 
     private Storage getStorage(HttpServletRequest request, HttpServletResponse response) {
