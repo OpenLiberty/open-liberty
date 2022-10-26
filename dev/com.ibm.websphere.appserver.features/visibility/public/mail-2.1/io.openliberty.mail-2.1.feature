@@ -19,7 +19,7 @@ IBM-API-Package: \
   com.ibm.websphere.appserver.injection-2.0
 -bundles=\
   io.openliberty.mail.2.1.internal, \
-  io.openliberty.org.eclipse.angus.mail.2.1, \
+  io.openliberty.org.eclipse.angus.mail, \
   com.ibm.ws.javamail.config
 kind=beta
 edition=core
