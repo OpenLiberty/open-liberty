@@ -10,8 +10,6 @@
  */
 package com.ibm.ws.jsf22.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
-
 import java.net.URL;
 
 import org.junit.AfterClass;
@@ -26,16 +24,17 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
@@ -45,7 +44,6 @@ import junit.framework.Assert;
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE10_FEATURES)
 public class JSF22BeanValidationTests {
     @Rule
     public TestName name = new TestName();
@@ -59,7 +57,17 @@ public class JSF22BeanValidationTests {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(jsf22beanvalServer, "BeanValidationTests.war", "com.ibm.ws.jsf22.fat.beanvalidation");
+        boolean isEE10 = JakartaEE10Action.isActive();
+
+        ShrinkHelper.defaultDropinApp(jsf22beanvalServer, "BeanValidationTests.war",
+                                      isEE10 ? "com.ibm.ws.jsf22.fat.beanvalidation.faces40" : "com.ibm.ws.jsf22.fat.beanvalidation.jsf22");
+
+        if (isEE10) {
+            // For Faces 4.0, CDI @Named is used since @ManagedBean is no longer available.
+            ServerConfiguration config = jsf22beanvalServer.getServerConfiguration();
+            config.getFeatureManager().getFeatures().add("cdi-4.0");
+            jsf22beanvalServer.updateServerConfiguration(config);
+        }
 
         jsf22beanvalServer.startServer(JSF22BeanValidationTests.class.getSimpleName() + ".log");
     }
@@ -94,7 +102,7 @@ public class JSF22BeanValidationTests {
             Log.info(c, name.getMethodName(), "Navigating to: /BeanValidationTests/BeanValidation.jsf");
 
             String logMessage;
-            if (JakartaEE9Action.isActive() || RepeatTestFilter.isRepeatActionActive(EE8FeatureReplacementAction.ID)) {
+            if (JakartaEE10Action.isActive() || JakartaEE9Action.isActive() || RepeatTestFilter.isRepeatActionActive(EE8FeatureReplacementAction.ID)) {
                 Log.info(c, name.getMethodName(), "Looking for message " + msgToSearchForMyFaces30 + " in the logs");
                 logMessage = jsf22beanvalServer.waitForStringInLog(msgToSearchForMyFaces30);
             } else {
