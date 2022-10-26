@@ -296,8 +296,6 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      */
     private volatile boolean deactivated;
 
-    private final CheckpointPhase checkpointPhase = CheckpointPhase.getPhase();
-
     private volatile LibertyBootRuntime libertyBoot;
 
     private FrameworkWiring frameworkWiring;
@@ -782,7 +780,6 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                     // even if no features are loaded
                     BundleLifecycleStatus startStatus = setStartLevel(ProvisionerConstants.LEVEL_ACTIVE);
                     checkBundleStatus(startStatus); // FFDC, etc.
-                    checkIfCheckpointFeatureMissing(Arrays.asList(featureChange.features));
                     checkServerReady();
 
                     //register a service that can be looked up for server start.
@@ -978,6 +975,10 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
      */
     private void writeFeatureChangeMessages(long startTime, ProvisioningMode provisioningMode) {
         String time = TimestampUtils.getElapsedTimeNanos(startTime);
+
+        if (provisioningMode == ProvisioningMode.INITIAL_PROVISIONING && CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE) {
+            time = TimestampUtils.getElapsedTime();
+        }
 
         if (provisioningMode == ProvisioningMode.UPDATE) {
             Tr.audit(tc, "COMPLETE_AUDIT", time);
@@ -1911,23 +1912,6 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
 
         return reportedErrors;
 
-    }
-
-    /**
-     * If server launch was requested with a checkpoint, and checkpoint feature is not enabled, an
-     * error message is issued and the jvm is exited.
-     */
-    private void checkIfCheckpointFeatureMissing(Collection<String> features) {
-
-        //TODO remove beta check on feature release.
-        if (checkpointPhase != CheckpointPhase.INACTIVE && ProductInfo.getBetaEdition()) {
-            if (!features.contains("checkpoint-1.0")) {
-                Tr.error(tc, "CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING");
-
-                // Exit in thread to avoid blocking the server quiesce.
-                new Thread(() -> System.exit(1), "Checkpoint failed, exiting...").start();
-            }
-        }
     }
 
     private ConflictRecord getConflictRecord(Chain chain, Collection<Chain> inConflict, String compatibleFeatureBase) {

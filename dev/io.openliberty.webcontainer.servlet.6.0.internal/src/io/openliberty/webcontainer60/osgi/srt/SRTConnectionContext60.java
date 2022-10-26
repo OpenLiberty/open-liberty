@@ -18,11 +18,10 @@ import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.srt.SRTServletResponse;
 import com.ibm.ws.webcontainer40.osgi.srt.SRTConnectionContext40;
 import com.ibm.ws.webcontainer40.osgi.webapp.WebAppDispatcherContext40;
-import com.ibm.ws.webcontainer40.srt.SRTServletResponse40;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
 
 import io.openliberty.webcontainer60.srt.SRTServletRequest60;
-
+import io.openliberty.webcontainer60.srt.SRTServletResponse60;
 
 public class SRTConnectionContext60 extends SRTConnectionContext40 {
     protected static final Logger logger = LoggerFactory.getInstance().getLogger("io.openliberty.webcontainer60.osgi.srt");
@@ -36,10 +35,10 @@ public class SRTConnectionContext60 extends SRTConnectionContext40 {
     @Override
     protected void init() {
         if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
-            logger.logp(Level.FINE, CLASS_NAME, "init", "this [" + this + "] , request ["+ _request +"]");
+            logger.logp(Level.FINE, CLASS_NAME, "init", "this [" + this + "] , request [" + _request + "]");
         }
 
-        //Reuse 4.0 until there is something new in servlet 6.0 dispatch context 
+        //Reuse 4.0 until there is something new in servlet 6.0 dispatch context
         this._dispatchContext = new WebAppDispatcherContext40(_request);
         _request.setWebAppDispatcherContext(_dispatchContext);
     }
@@ -49,11 +48,8 @@ public class SRTConnectionContext60 extends SRTConnectionContext40 {
         return new SRTServletRequest60(this);
     }
 
-    /*
-     * Reuse SRTServletResponse40 as nothing new in servlet 6.0 response.
-     */
     @Override
     protected SRTServletResponse newSRTServletResponse() {
-        return new SRTServletResponse40(this);
+        return new SRTServletResponse60(this);
     }
 }

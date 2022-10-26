@@ -39,7 +39,6 @@ Import-Package: \
         com.ibm.ws.cdi.internal.interfaces, \
         org.jboss.weld.bean.builtin;version="[2.4,4)",\
         org.jboss.weld.manager;version="[2.4,4)",\
-        org.jboss.weld.probe;version="[2.4,4)",\
         *
 
 WS-TraceGroup: JCDI

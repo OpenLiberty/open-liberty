@@ -82,12 +82,9 @@ public class DBWithoutAssertionTest extends DBTestBase {
 	
 	@After
 	public void restoreServerConfigs() throws Exception {
-		client.restoreServerConfiguration();
-		server1.restoreServerConfiguration();
-		server2.restoreServerConfiguration();
-		client.waitForStringInLog("CWWKG001[78]I");
-		server1.waitForStringInLog("CWWKG001[78]I");
-		server2.waitForStringInLog("CWWKG001[78]I");
+		client.restoreServerConfigurationAndWaitForApps();
+		server1.restoreServerConfigurationAndWaitForApps();
+		server2.restoreServerConfigurationAndWaitForApps();
 	}
 
 	@Test

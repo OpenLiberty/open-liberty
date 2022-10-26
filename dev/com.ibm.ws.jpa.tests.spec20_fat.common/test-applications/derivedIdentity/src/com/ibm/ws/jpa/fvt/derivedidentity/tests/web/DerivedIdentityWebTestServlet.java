@@ -24,10 +24,10 @@ import com.ibm.ws.jpa.fvt.derivedidentity.testlogic.DerivedIdentityTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 @WebServlet(urlPatterns = "/DerivedIdentityWebTestServlet")
-public class DerivedIdentityWebTestServlet extends JPATestServlet {
+public class DerivedIdentityWebTestServlet extends JPADBTestServlet {
     // Container Managed Transaction Scope
     @PersistenceContext(unitName = "DerivedIdentity_JEE")
     private EntityManager cmtsEm;

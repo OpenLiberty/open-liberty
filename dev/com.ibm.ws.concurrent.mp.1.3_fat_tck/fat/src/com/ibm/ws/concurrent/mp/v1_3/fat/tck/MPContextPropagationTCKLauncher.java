@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.mp.v1_3.fat.tck;
 
-import java.util.Map;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -24,7 +22,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKRunner;
 
 @RunWith(FATRunner.class)
 public class MPContextPropagationTCKLauncher {
@@ -55,11 +54,10 @@ public class MPContextPropagationTCKLauncher {
     public void launchMPContextPropagation_1_3_Tck() throws Exception {
         // TODO use this to only test with local build (when tckRunner/tck.pom.xml specifies a #.#-SNAPSHOT version)
         //if (FATRunner.FAT_TEST_LOCALRUN)
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.concurrency.mp.1.3_fat_tck", this.getClass() + ":launchMPContextPropagationTck");
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "Context Propogation");
-        resultInfo.put("feature_version", "1.3");
-        MvnUtils.preparePublicationFile(resultInfo);
+        String bucketName = "com.ibm.ws.concurrency.mp.1.3_fat_tck";
+        String testName = this.getClass() + ":launchMPContextPropagation_1_3_Tck";
+        Type type = Type.MICROPROFILE;
+        String specName = "Context Propogation";
+        TCKRunner.runTCK(server, bucketName, testName, type, specName);
     }
 }

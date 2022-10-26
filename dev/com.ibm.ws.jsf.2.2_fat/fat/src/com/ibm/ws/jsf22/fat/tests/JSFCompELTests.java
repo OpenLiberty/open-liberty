@@ -10,7 +10,6 @@
  */
 package com.ibm.ws.jsf22.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertFalse;
 
 import java.net.URL;
@@ -28,14 +27,15 @@ import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
@@ -47,7 +47,6 @@ import junit.framework.Assert;
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE10_FEATURES)
 public class JSFCompELTests {
     @Rule
     public TestName name = new TestName();
@@ -61,7 +60,18 @@ public class JSFCompELTests {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(jsfTestServer2, "TestJSFEL.war", "com.ibm.ws.jsf22.el.*");
+        boolean isEE10 = JakartaEE10Action.isActive();
+
+        ShrinkHelper.defaultDropinApp(jsfTestServer2, "TestJSFEL.war",
+                                      isEE10 ? "com.ibm.ws.jsf22.el.beans.faces40" : "com.ibm.ws.jsf22.el.beans.jsf22",
+                                      "com.ibm.ws.jsf22.el.components");
+
+        if (isEE10) {
+            // For Faces 4.0, CDI @Named is used since @ManagedBean is no longer available.
+            ServerConfiguration config = jsfTestServer2.getServerConfiguration();
+            config.getFeatureManager().getFeatures().add("cdi-4.0");
+            jsfTestServer2.updateServerConfiguration(config);
+        }
 
         jsfTestServer2.startServer(JSFCompELTests.class.getSimpleName() + ".log");
     }
@@ -160,7 +170,8 @@ public class JSFCompELTests {
             }
 
             //Test case on the server, which is ELExceptionBean intentionally throws exception for valueChangeListener. Hence check if it's in the log
-            String msgToSearchFor = (JakartaEE9Action.isActive() ? "jakarta." : "javax.") + "servlet.ServletException: " + (JakartaEE9Action.isActive() ? "jakarta." : "javax.")
+            String msgToSearchFor = (JakartaEE10Action.isActive() || JakartaEE9Action.isActive() ? "jakarta." : "javax.") + "servlet.ServletException: "
+                                    + (JakartaEE10Action.isActive() || JakartaEE9Action.isActive() ? "jakarta." : "javax.")
                                     + "el.ELException: java.lang.NullPointerException";
             List<String> msgs = jsfTestServer2.findStringsInLogs(msgToSearchFor);
 

@@ -445,28 +445,10 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
      */
     public AppClassLoader getSharedLibrarySpiClassLoader(Library lib, final String ownerId) {
 
-        if (!!!betaFenceCheck()) {
-            return null; // no-op
-        }
-
         if (ownerId == null || "".equals(ownerId)) {
             throw new IllegalArgumentException("Argument ownerId cannot be null or empty");
         }
         return getSharedLibraryClassLoader(lib, true, ownerId);
-    }
-
-    private static boolean issuedBetaMessage = false;
-    private boolean betaFenceCheck() {
-        boolean isBeta = com.ibm.ws.kernel.productinfo.ProductInfo.getBetaEdition();
-        if (!issuedBetaMessage) {
-            if (!isBeta) {
-                // no-op
-            } else {
-                Tr.info(tc, "BETA: BELL SPI visibility has been invoked by class " + this.getClass().getName() + " for the first time.");
-            }
-            issuedBetaMessage = true;
-        }
-        return isBeta;
     }
 
     @Override

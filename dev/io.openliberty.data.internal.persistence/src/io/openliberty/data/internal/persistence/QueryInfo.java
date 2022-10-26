@@ -10,6 +10,19 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import com.ibm.websphere.ras.annotation.Trivial;
+
+import jakarta.data.repository.Sort;
+import jakarta.persistence.Query;
+
 /**
  */
 class QueryInfo {
@@ -20,12 +33,62 @@ class QueryInfo {
     /**
      * Information about the type of entity to which the query pertains.
      */
-    final EntityInfo entityInfo;
+    EntityInfo entityInfo;
 
     /**
-     * Generated JPQL for the query. Null if a save operation.
+     * Indicates if the query has a WHERE clause.
+     * This is accurate only for generated or partially provided queries.
      */
-    final String jpql;
+    boolean hasWhere;
+
+    /**
+     * JPQL for the query. Null if a save operation.
+     */
+    String jpql;
+
+    /**
+     * JPQL for a find query after a keyset. Otherwise null.
+     */
+    String jpqlAfterKeyset;
+
+    /**
+     * JPQL for a find query before a keyset. Otherwise null.
+     */
+    String jpqlBeforeKeyset;
+
+    /**
+     * Keyset consisting of key names and sort direction.
+     */
+    List<Sort> keyset;
+
+    /**
+     * Value from findFirst#By, or 1 for findFirstBy, otherwise 0.
+     */
+    long maxResults;
+
+    /**
+     * Repository method to which this query information pertains.
+     */
+    final Method method;
+
+    /**
+     * Number of parameters to the JPQL query.
+     */
+    int paramCount = Integer.MIN_VALUE; // initialize to undefined
+
+    /**
+     * Names that specified by the <code>Param</code> annotation for each query parameter.
+     * Null for positions of parameters that lack the annotation. (These will use ?1, ?2, ...)
+     */
+    List<String> paramNames = Collections.emptyList();
+
+    /**
+     * Indicates that parameters are supplied to the repository method
+     * as entity or Iterable of entity and need conversion to entity id
+     * or list of entity id.
+     * This is currently only used for delete(entity) and delete(Iterable of entities).
+     */
+    boolean paramsNeedConversionToId;
 
     /**
      * Array element type if the repository method returns an array, such as,
@@ -49,33 +112,102 @@ class QueryInfo {
     /**
      * Type of the first parameter to a save operation. Null if not a save operation.
      */
-    final Class<?> saveParamType;
+    Class<?> saveParamType;
 
     /**
      * Categorization of query type.
      */
-    final Type type;
+    Type type;
 
-    QueryInfo(Type type, String jpql, EntityInfo entityInfo,
-              Class<?> saveParamType, Class<?> returnArrayType, Class<?> returnParamType) {
-        this.jpql = jpql;
-        this.entityInfo = entityInfo;
+    /**
+     * Construct partially complete query information.
+     */
+    QueryInfo(Method method, Class<?> returnArrayType, Class<?> returnTypeParam) {
+        this.method = method;
         this.returnArrayType = returnArrayType;
-        this.returnTypeParam = returnParamType;
-        this.saveParamType = saveParamType;
+        this.returnTypeParam = returnTypeParam;
+    }
 
-        if (type == null) {
-            String q = jpql.toUpperCase();
-            if (q.startsWith("SELECT"))
-                this.type = Type.SELECT;
-            else if (q.startsWith("UPDATE"))
-                this.type = Type.UPDATE;
-            else if (q.startsWith("DELETE"))
-                this.type = Type.DELETE;
-            else
-                throw new UnsupportedOperationException(jpql);
-        } else {
-            this.type = type;
+    /**
+     * Sets query parameters from repository method arguments.
+     *
+     * @param query the query
+     * @param args  repository method arguments
+     * @throws Exception if an error occurs
+     */
+    void setParameters(Query query, Object... args) throws Exception {
+        for (int i = 0, count = paramNames.size(); i < paramCount; i++) {
+            Object arg = paramsNeedConversionToId ? //
+                            toEntityId(args[i], entityInfo.keyAccessor) : //
+                            args[i];
+            String paramName = count > i ? paramNames.get(i) : null;
+            if (paramName == null)
+                query.setParameter(i + 1, arg);
+            else // named parameter
+                query.setParameter(paramName, arg);
         }
+    }
+
+    /**
+     * Converts a repository method parameter that is an entity or iterable of entities
+     * into an entity id or list of entity ids.
+     *
+     * @param value       value of the repository method parameter.
+     * @param keyAccessor accessor method or field for the entity id.
+     * @return entity id or list of entity ids.
+     */
+    private static final Object toEntityId(Object value, Member keyAccessor) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        Class<?> entityClass = keyAccessor.getDeclaringClass();
+        if (value instanceof Iterable) {
+            List<Object> list = new ArrayList<>();
+            if (keyAccessor instanceof Method) {
+                Method keyAccessorMethod = (Method) keyAccessor;
+                for (Object p : (Iterable<?>) value)
+                    if (entityClass.isInstance(p))
+                        list.add(keyAccessorMethod.invoke(p));
+                    else
+                        list.add(p);
+            } else { // Field
+                Field keyAccessorField = (Field) keyAccessor;
+                for (Object p : (Iterable<?>) value)
+                    if (entityClass.isInstance(p))
+                        list.add(keyAccessorField.get(p));
+                    else
+                        list.add(p);
+            }
+            value = list;
+        } else if (entityClass.isInstance(value)) { // single entity
+            if (keyAccessor instanceof Method)
+                value = ((Method) keyAccessor).invoke(value);
+            else // Field
+                value = ((Field) keyAccessor).get(value);
+        }
+        return value;
+    }
+
+    @Override
+    @Trivial
+    public String toString() {
+        return new StringBuilder("QueryInfo@").append(Integer.toHexString(hashCode())).append(':').append(method).toString();
+    }
+
+    /**
+     * Copy of query information, but with updated JPQL.
+     */
+    QueryInfo withJPQL(String jpql) {
+        QueryInfo q = new QueryInfo(method, returnArrayType, returnTypeParam);
+        q.entityInfo = entityInfo;
+        q.hasWhere = hasWhere;
+        q.jpql = jpql;
+        q.jpqlAfterKeyset = jpqlAfterKeyset;
+        q.jpqlBeforeKeyset = jpqlBeforeKeyset;
+        q.keyset = keyset;
+        q.maxResults = maxResults;
+        q.paramCount = paramCount;
+        q.paramNames = paramNames;
+        q.paramsNeedConversionToId = paramsNeedConversionToId;
+        q.saveParamType = saveParamType;
+        q.type = type;
+        return q;
     }
 }

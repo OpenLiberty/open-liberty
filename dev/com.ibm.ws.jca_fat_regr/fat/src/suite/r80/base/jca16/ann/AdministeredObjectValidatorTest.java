@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -127,6 +128,7 @@ public class AdministeredObjectValidatorTest {
      *                                  when the test case fails.
      */
     @Test
+    @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testValidationOfEmptyInterfaceList() throws Throwable {
         if (LOGGER.isLoggable(Level.FINER)) {
             LOGGER.entering(CLASSNAME, "testValidationOfEmptyInterfaceList");
@@ -161,6 +163,7 @@ public class AdministeredObjectValidatorTest {
      *                                  when the test case fails.
      */
     @Test
+    @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testValidationOfUnspecifiedInterface() throws Throwable {
 
         if (LOGGER.isLoggable(Level.FINER)) {
@@ -194,6 +197,7 @@ public class AdministeredObjectValidatorTest {
      *                                  when the test case fails.
      */
     @Test
+    @AllowedFFDC({ "java.lang.IllegalStateException", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testValidationOfAOSuperClass() throws Throwable {
         if (LOGGER.isLoggable(Level.FINER)) {
             LOGGER.entering(CLASSNAME, "testValidationOfAOSuperClass");

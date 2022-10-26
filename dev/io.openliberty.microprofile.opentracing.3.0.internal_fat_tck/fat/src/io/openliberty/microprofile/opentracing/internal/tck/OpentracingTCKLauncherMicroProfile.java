@@ -10,13 +10,6 @@
  *******************************************************************************/
 package io.openliberty.microprofile.opentracing.internal.tck;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,8 +19,8 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.JavaInfo;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKRunner;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -53,12 +46,12 @@ public class OpentracingTCKLauncherMicroProfile {
 
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
-    public void launchOpentracingTckMP() throws Exception {
-        MvnUtils.runTCKMvnCmd(server, "io.openliberty.opentracing.3.0.internal_fat", this.getClass() + ":launchOpentracingRestClientTck", "tck-and-rest-client-tck.xml", Collections.emptyMap(), Collections.emptySet());
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "Open Tracing");
-        resultInfo.put("feature_version", "3.0");
-        MvnUtils.preparePublicationFile(resultInfo);
+    public void launchOpenTracing30TckMP() throws Exception {
+        String suiteName = "tck-and-rest-client-tck.xml";
+        String bucketName = "io.openliberty.opentracing.3.0.internal_fat_tck";
+        String testName = this.getClass() + ":launchOpenTracing30TckMP";
+        Type type = Type.MICROPROFILE;
+        String specName = "Open Tracing";
+        TCKRunner.runTCK(server, bucketName, testName, type, specName, suiteName);
     }
 }

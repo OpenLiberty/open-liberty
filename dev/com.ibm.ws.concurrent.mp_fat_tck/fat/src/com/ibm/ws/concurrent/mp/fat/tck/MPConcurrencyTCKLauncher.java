@@ -15,18 +15,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.JavaInfo;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKRunner;
 
 @RunWith(FATRunner.class)
 public class MPConcurrencyTCKLauncher {
@@ -50,12 +44,10 @@ public class MPConcurrencyTCKLauncher {
     })
     @Test
     public void launchMPConcurrency10Tck() throws Exception {
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.concurrency.mp_fat_tck", this.getClass() + ":launchMPConcurrency10Tck");
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "Concurrency");
-        resultInfo.put("feature_version", "1.0");
-        MvnUtils.preparePublicationFile(resultInfo);
-        
+        String bucketName = "com.ibm.ws.concurrency.mp_fat_tck";
+        String testName = this.getClass() + ":launchMPConcurrency10Tck";
+        Type type = Type.MICROPROFILE;
+        String specName = "Concurrency";
+        TCKRunner.runTCK(server, bucketName, testName, type, specName);
     }
 }

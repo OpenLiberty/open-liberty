@@ -24,11 +24,11 @@ import com.ibm.ws.jpa.overridepersistencexml.testlogic.OverridePersistenceXmlLog
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestOverridePersistenceXmlServlet")
-public class TestOverridePersistenceXmlServlet extends JPATestServlet {
+public class TestOverridePersistenceXmlServlet extends JPADBTestServlet {
     // Container Managed Transaction Scope
     @PersistenceContext(unitName = "OverridePersistenceXml_JTA")
     private EntityManager cmtsEm;

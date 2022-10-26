@@ -19,11 +19,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import componenttest.annotation.SkipForRepeat;
 
 @SuppressWarnings("serial")
 @WebServlet("/BeanValTestServlet")
 public class BeanValTestServlet extends FATServlet {
 
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void testValidatorInServletContext(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Object val = request.getServletContext().getAttribute(BeanValidator.VALIDATOR_FACTORY_KEY);

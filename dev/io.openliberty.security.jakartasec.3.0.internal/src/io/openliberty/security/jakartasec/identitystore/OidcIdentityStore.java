@@ -10,10 +10,12 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec.identitystore;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
@@ -22,6 +24,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.security.jakartasec.JakartaSec30Constants;
 import io.openliberty.security.jakartasec.credential.OidcTokensCredential;
 import io.openliberty.security.jakartasec.tokens.AccessTokenImpl;
 import io.openliberty.security.jakartasec.tokens.IdentityTokenImpl;
@@ -82,12 +85,19 @@ public class OidcIdentityStore implements IdentityStore {
                     JsonObject providerMetadata = getProviderMetadataAsJsonObject();
 
                     OpenIdContext openIdContext = createOpenIdContext(credentialValidationResult.getCallerUniqueId(), tokenResponse, accessToken, identityToken, userInfoClaims,
-                                                                      providerMetadata, request.getParameter(OpenIdConstant.STATE), oidcClientConfig.isUseSession());
+                                                                      providerMetadata, request.getParameter(OpenIdConstant.STATE), oidcClientConfig.isUseSession(),
+                                                                      client.getOidcClientConfig().getClientId());
 
                     castCredential.setOpenIdContext(openIdContext);
 
                     return credentialValidationResult;
                 } catch (Exception e) {
+                    /*
+                     * Optionally provide the stack in trace, since we're ignoring the FFDC here.
+                     */
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "validate", "Exception occurred for client " + client.getOidcClientConfig().getClientId(), e);
+                    }
                     Tr.error(tc, "CREDENTIAL_VALIDATION_ERROR", client.getOidcClientConfig().getClientId(), e.toString());
                     return CredentialValidationResult.INVALID_RESULT;
                 }
@@ -97,7 +107,7 @@ public class OidcIdentityStore implements IdentityStore {
     }
 
     private OpenIdContext createOpenIdContext(String subjectIdentifier, TokenResponse tokenResponse, AccessToken accessToken, IdentityToken identityToken,
-                                              OpenIdClaims userinfoClaims, JsonObject providerMetadata, String state, boolean useSession) {
+                                              OpenIdClaims userinfoClaims, JsonObject providerMetadata, String state, boolean useSession, String clientId) {
         Map<String, String> tokenResponseRawMap = tokenResponse.asMap();
         // TODO: Move getting expires_in to TokenResponse
         long expiresIn = 0L;
@@ -105,7 +115,7 @@ public class OidcIdentityStore implements IdentityStore {
             expiresIn = Long.parseLong(tokenResponseRawMap.get(OpenIdConstant.EXPIRES_IN));
         }
 
-        OpenIdContextImpl openIdContext = new OpenIdContextImpl(subjectIdentifier, tokenResponseRawMap.get(OpenIdConstant.TOKEN_TYPE), accessToken, identityToken, userinfoClaims, providerMetadata, state, useSession);
+        OpenIdContextImpl openIdContext = new OpenIdContextImpl(subjectIdentifier, tokenResponseRawMap.get(OpenIdConstant.TOKEN_TYPE), accessToken, identityToken, userinfoClaims, providerMetadata, state, useSession, clientId);
         openIdContext.setExpiresIn(expiresIn);
 
         String refreshTokenString = tokenResponse.getRefreshTokenString();
@@ -116,15 +126,59 @@ public class OidcIdentityStore implements IdentityStore {
         return openIdContext;
     }
 
-    private AccessToken createAccessTokenFromTokenResponse(long tokenMinValidityInMillis, TokenResponse tokenResponse) {
+    @FFDCIgnore({ Exception.class })
+    protected AccessToken createAccessTokenFromTokenResponse(long tokenMinValidityInMillis, TokenResponse tokenResponse) {
+        final String METHODNAME = "createAccessTokenFromTokenResponse";
+
         Map<String, String> tokenResponseRawMap = tokenResponse.asMap();
         long expiresIn = 0L;
-        if (tokenResponseRawMap.containsKey(OpenIdConstant.EXPIRES_IN)) {
+        if (tokenResponseRawMap != null && tokenResponseRawMap.containsKey(OpenIdConstant.EXPIRES_IN)) {
             expiresIn = Long.parseLong(tokenResponseRawMap.get(OpenIdConstant.EXPIRES_IN));
         }
 
-        // TODO: Determine if this is a JWT Access Token and use proper constructor.
-        return new AccessTokenImpl(tokenResponse.getAccessTokenString(), tokenResponse.getResponseGenerationTime(), expiresIn, tokenMinValidityInMillis);
+        String accessTokenString = tokenResponse.getAccessTokenString();
+
+        boolean isJWT = false;
+        Map<String, Object> jwtClaims = null;
+
+        String[] parts = accessTokenString.split(Pattern.quote(JakartaSec30Constants.DELIMITER)); // split out the "parts" (header, payload and signature)
+
+        if (parts.length > 1) {
+            try {
+                try {
+                    String claimsAsJsonString = new String(Base64.getDecoder().decode(parts[0]), "UTF-8");
+                    org.jose4j.jwt.JwtClaims.parse(claimsAsJsonString).getClaimsMap();
+                    isJWT = true;
+                } catch (Exception e1) {
+                    String claimsAsJsonString = new String(Base64.getDecoder().decode(parts[1]), "UTF-8");
+                    jwtClaims = org.jose4j.jwt.JwtClaims.parse(claimsAsJsonString).getClaimsMap();
+                    isJWT = true;
+                }
+            } catch (Exception e2) {
+                // do nothing
+            }
+        } else {
+            // do nothing
+        }
+
+        if (isJWT) {
+            if (jwtClaims == null) { // grab the claims map if we haven't already
+                try {
+                    String claimsAsJsonString = new String(Base64.getDecoder().decode(parts[1]), "UTF-8");
+                    jwtClaims = org.jose4j.jwt.JwtClaims.parse(claimsAsJsonString).getClaimsMap();
+                } catch (Exception e1) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, METHODNAME, "The tokenResponse accessTokenString was parsable for the first part, but couldn't parse out a claimsMap.", e1);
+                    }
+                }
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, METHODNAME, "Creating a jwt access token based on the tokenResponse accessTokenString");
+            }
+            return new AccessTokenImpl(accessTokenString, jwtClaims, tokenResponse.getResponseGenerationTime(), expiresIn, tokenMinValidityInMillis);
+        }
+
+        return new AccessTokenImpl(accessTokenString, tokenResponse.getResponseGenerationTime(), expiresIn, tokenMinValidityInMillis);
     }
 
     private IdentityToken createIdentityTokenFromTokenResponse(long tokenMinValidityInMillis, TokenResponse tokenResponse, JwtClaims idTokenClaims) {

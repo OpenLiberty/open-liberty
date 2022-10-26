@@ -1,0 +1,30 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <applicationManager startTimeout="90s"/>
+    <featureManager>
+    	<feature>checkpoint-1.0</feature>
+    	<feature>mpJwt-1.2</feature>
+        <feature>jaxrs-2.1</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+    
+    <keyStore id="defaultKeyStore" password="secret"/>
+    
+    <webApplication location="mpjwt.war" context-root="/" />
+    <variable id = "issuer" name = "issuer" value ="client1" />
+    <variable id = "audience" name = "audience" value ="audience1" />
+    <variable id = "clockSkew" name = "clockSkew" value ="300000" />
+    <mpJwt id="myMpJwt" tokenHeader="Authorization" issuer="${issuer}" audiences="${audience}" publickeyAlgorithm="RS256" cookieName="Bearer" clockSkew="${clockSkew}" />
+            
+</server>

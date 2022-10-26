@@ -373,6 +373,30 @@ public class JakartaOidcAuthenticationResponseValidatorTest extends CommonTestCl
     }
 
     @Test
+    public void test_checkRequestAgainstRedirectUri_isRedirectToOriginalResource_comparesUrlsWithoutTheirQueryParams() {
+        String storageLookupKey = OidcStorageUtils.getOriginalReqUrlStorageKey(state);
+        mockery.checking(new Expectations() {
+            {
+                one(request).getRequestURL();
+                will(returnValue(new StringBuffer(requestUrl)));
+                one(config).isRedirectToOriginalResource();
+                will(returnValue(true));
+                one(request).getCookies();
+                will(returnValue(new Cookie[] { cookie }));
+                one(cookie).getName();
+                will(returnValue(storageLookupKey));
+                one(cookie).getValue();
+                will(returnValue(requestUrl + "?type=test"));
+            }
+        });
+        try {
+            validator.checkRequestAgainstRedirectUri(state);
+        } catch (AuthenticationResponseException e) {
+            outputMgr.failWithThrowable(testName.getMethodName(), e);
+        }
+    }
+
+    @Test
     public void test_checkRequestAgainstRedirectUri_urlDoesNotMatchConfiguredValue() {
         final String configuredUri = "https://localhost/some/other/path";
         mockery.checking(new Expectations() {

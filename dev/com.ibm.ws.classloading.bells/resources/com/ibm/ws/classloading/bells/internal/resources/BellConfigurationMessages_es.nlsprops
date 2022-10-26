@@ -80,18 +80,15 @@ bell.no.services.config=CWWKL0058W: No se puede encontrar el servicio {0} en la 
 bell.no.services.config.explanation=No hay ning\u00fan servicio coincidente declarado en la carpeta META-INF/services.
 bell.no.services.config.useraction= No se requiere ninguna acci\u00f3n del usuario.
 
-# BETA
 # {0} - library identifier
 bell.spi.visibility.enabled=CWWKL0059I: La visibilidad de SPI de BELL est\u00e1 habilitada para la biblioteca {0}. BELL hace referencia a la biblioteca {0} mediante un cargador de clases exclusivo que puede ver paquetes de SPI.
 bell.spi.visibility.enabled.explanation=Para evitar que las aplicaciones y los recursos vean paquetes de SPI, BELL hace referencia a la biblioteca mediante un cargador de clases exclusivo que no se comparte con aplicaciones que hacen referencia a la misma biblioteca.
 bell.spi.visibility.enabled.useraction=Inhabilite la visibilidad de SPI en la configuraci\u00f3n de BELL siempre que BELL deba hacer referencia a una biblioteca mediante un cargador de clases compartido con aplicaciones que hagan referencia a la misma biblioteca. De lo contrario, no es necesaria ninguna acci\u00f3n.
 
-# BETA
 bell.spi.visibility.disabled.libref.global=CWWKL0060E: La visibilidad de SPI de BELL no est\u00e1 soportada para la biblioteca compartida global de Liberty.
 bell.spi.visibility.disabled.libref.global.explanation=La visibilidad BELL SPI no se puede habilitar para la biblioteca compartida global de Liberty.
 bell.spi.visibility.disabled.libref.global.useraction=Modifique la configuraci\u00f3n de BELL para que haga referencia a una biblioteca distinta de la biblioteca compartida global de Liberty.
 
-# BETA
 # {0} - the name of the implementation class
 # {1} - the location of the META-INF/services file, probably a URL that also indicates which jar it is in
 # {2} - the name of the library

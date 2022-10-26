@@ -10,12 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.tck;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,8 +21,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.JavaInfo;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKRunner;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -52,13 +46,12 @@ public class ReactiveMessagingTCKLauncher {
     @Test
     @Mode(TestMode.FULL)
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
-    public void launchReactiveMessagingTck() throws Exception {
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.reactive.messaging_fat_tck", this.getClass() + ":launchReactiveMessagingTck");
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "Reactive Messaging");
-        resultInfo.put("feature_version", "1.0");
-        MvnUtils.preparePublicationFile(resultInfo);
+    public void launchReactiveMessaging10Tck() throws Exception {
+        String bucketName = "com.ibm.ws.microprofile.reactive.messaging_fat_tck";
+        String testName = this.getClass() + ":launchReactiveMessaging10Tck";
+        Type type = Type.MICROPROFILE;
+        String specName = "Reactive Messaging";
+        TCKRunner.runTCK(server, bucketName, testName, type, specName);
     }
 
 }

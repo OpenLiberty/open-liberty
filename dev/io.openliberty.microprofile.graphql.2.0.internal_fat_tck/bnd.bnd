@@ -17,6 +17,8 @@ src: \
 
 fat.project: true
 
+tested.features=concurrent-3.0, jsonb-3.0, jsonp-2.1, cdi-4.0
+
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}

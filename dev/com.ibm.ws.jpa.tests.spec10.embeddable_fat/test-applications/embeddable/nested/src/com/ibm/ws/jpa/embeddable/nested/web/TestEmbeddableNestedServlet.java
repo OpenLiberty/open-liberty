@@ -24,11 +24,11 @@ import com.ibm.ws.jpa.embeddable.nested.testlogic.EmbeddableNestedLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestEmbeddableNestedServlet")
-public class TestEmbeddableNestedServlet extends JPATestServlet {
+public class TestEmbeddableNestedServlet extends JPADBTestServlet {
     // Container Managed Transaction Scope
     @PersistenceContext(unitName = "EMBEDDABLE_NESTED_JTA")
     private EntityManager cmtsEm;

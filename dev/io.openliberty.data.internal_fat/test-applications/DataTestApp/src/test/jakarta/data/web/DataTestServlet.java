@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
@@ -42,6 +43,7 @@ import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -51,10 +53,13 @@ import jakarta.data.DataException;
 import jakarta.data.Entities;
 import jakarta.data.Page;
 import jakarta.data.Template;
+import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.Limit;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Sort;
 import jakarta.inject.Inject;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.NotSupportedException;
 import jakarta.transaction.Status;
@@ -83,6 +88,10 @@ public class DataTestServlet extends FATServlet {
     @Inject
     Personnel personnel;
 
+    // Only add to this repository within the Servlet.init method so that all tests can rely on its data:
+    @Inject
+    Primes primes;
+
     @Inject
     ProductRepo products;
 
@@ -103,6 +112,27 @@ public class DataTestServlet extends FATServlet {
 
     @Resource
     private UserTransaction tran;
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        // Do not add or remove from this data in tests.
+        // Tests must be able to rely on this data always being present.
+        primes.save(new Prime(2, "2", "10", "II", "two"),
+                    new Prime(3, "3", "11", "III", "three"),
+                    new Prime(5, "5", "101", "V", "five"),
+                    new Prime(7, "7", "111", "VII", "seven"),
+                    new Prime(11, "B", "1011", "XI", "eleven"),
+                    new Prime(13, "D", "1101", "XIII", "thirteen"),
+                    new Prime(17, "11", "10001", "XVII", "seventeen"),
+                    new Prime(19, "13", "10011", "XIX", "nineteen"),
+                    new Prime(23, "17", "10111", "XXIII", "twenty-three"),
+                    new Prime(29, "1D", "11101", "XXIX", "twenty-nine"),
+                    new Prime(31, "1F", "11111", "XXXI", "thirty-one"),
+                    new Prime(37, "25", "100101", "XXXVII", "thirty-seven"),
+                    new Prime(41, "29", "101001", "XLI", "forty-one"),
+                    new Prime(43, "2B", "101011", "XLIII", "forty-three"),
+                    new Prime(47, "2F", "101111", "XLVII", "forty-seven"));
+    }
 
     /**
      * Use repository methods with aggregate functions in the select clause.
@@ -413,6 +443,21 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Count the number of matching elements in the database.
+     */
+    @Test
+    public void testCount() throws ExecutionException, InterruptedException, TimeoutException {
+
+        assertEquals(15, primes.countByNumberLessThan(50));
+
+        assertEquals(Integer.valueOf(0), primes.countNumberBetween(32, 36));
+
+        assertEquals(Integer.valueOf(3), primes.countNumberBetween(40, 50));
+
+        assertEquals(Short.valueOf((short) 14), primes.countByNumberBetweenAndEvenNot(0, 50, true).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+    }
+
+    /**
      * Delete multiple entries.
      */
     @Test
@@ -548,11 +593,23 @@ public class DataTestServlet extends FATServlet {
                                           .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.zipCode)));
 
         assertIterableEquals(List.of("200 1st Ave SW", "151 4th St SE", "201 4th St SE"),
-                             Stream.of(shippingAddresses.findByHouseNumberBetweenOrderByStreetNameOrderByHouseNumber(150, 250))
+                             Stream.of(shippingAddresses.findByHouseNumberBetweenOrderByStreetNameAscHouseNumber(150, 250))
                                              .map(a -> a.houseNumber + " " + a.streetName)
                                              .collect(Collectors.toList()));
 
         assertEquals(4, shippingAddresses.removeAll());
+    }
+
+    /**
+     * Identify whether elements exist in the database.
+     */
+    @Test
+    public void testExists() {
+        assertEquals(true, primes.existsByNumber(19));
+        assertEquals(false, primes.existsByNumber(9));
+
+        assertEquals(Boolean.TRUE, primes.existsNumberBetween(Long.valueOf(14), Long.valueOf(18)));
+        assertEquals(Boolean.FALSE, primes.existsNumberBetween(Long.valueOf(24), Long.valueOf(28)));
     }
 
     /**
@@ -575,6 +632,25 @@ public class DataTestServlet extends FATServlet {
         assertEquals(prod.name, p.name);
         assertEquals(prod.price, p.price, 0.001f);
         assertEquals(prod.description, p.description);
+    }
+
+    /**
+     * Find the first or first 3 of a list of sorted results.
+     */
+    @Test
+    public void testFindFirst() throws Exception {
+        Prime prime = primes.findFirstByNameLikeOrderByNumber("%ven");
+        assertNotNull(prime);
+        assertEquals(7, prime.number);
+
+        Prime[] p = primes.findFirst5ByNumberLessThanEqual(25); // descending order by name
+        assertNotNull(p);
+        assertEquals(Arrays.toString(p), 5, p.length);
+        assertEquals("two", p[0].name);
+        assertEquals("twenty-three", p[1].name);
+        assertEquals("three", p[2].name);
+        assertEquals("thirteen", p[3].name);
+        assertEquals("seventeen", p[4].name);
     }
 
     /**
@@ -784,13 +860,156 @@ public class DataTestServlet extends FATServlet {
                                           .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.streetAddress.houseNumber))
                                           .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.zipCode)));
 
-        StreetAddress[] streetAddresses = shippingAddresses.findByHouseNumberBetweenOrderByStreetNameOrderByHouseNumber(1000, 3000);
+        StreetAddress[] streetAddresses = shippingAddresses.findByHouseNumberBetweenOrderByStreetNameAscHouseNumber(1000, 3000);
 
         assertArrayEquals(new StreetAddress[] { work.streetAddress, home.streetAddress }, streetAddresses,
                           Comparator.<StreetAddress, Integer> comparing(o -> o.houseNumber)
                                           .thenComparing(Comparator.<StreetAddress, String> comparing(o -> o.streetName)));
 
         shippingAddresses.removeAll();
+    }
+
+    /**
+     * Access pages in a forward direction while entities are being added and removed,
+     * using a keyset to avoid duplicates.
+     */
+    @Test
+    public void testKeysetForwardPagination() {
+        packages.deleteAll();
+
+        packages.saveAll(List.of(new Package(114, 14.0f, 90.0f, 15.0f, "package#114"), // page1
+                                 new Package(116, 16.0f, 88.0f, 36.0f, "package#116"),
+                                 new Package(118, 18.0f, 95.0f, 22.0f, "package#118"),
+                                 // will add 117: 17.0f, ... between page requests     // not on any page because it is added after
+                                 // will add 120: 20.0f, ... between page requests     // page2
+                                 new Package(122, 22.0f, 90.0f, 60.0f, "package#122"),
+                                 new Package(124, 22.0f, 80.0f, 62.0f, "package#124"),
+                                 // will add 130: 22.0f, 70.0f, ... between page requests // page 3
+                                 new Package(132, 22.0f, 60.0f, 66.0f, "package#132"),
+                                 new Package(133, 33.0f, 56.0f, 65.0f, "package#133"),
+                                 new Package(140, 33.0f, 56.0f, 64.0f, "package#140"), // page 4
+                                 new Package(144, 33.0f, 56.0f, 63.0f, "package#144"),
+                                 new Package(148, 48.0f, 45.0f, 50.0f, "package#148"),
+                                 new Package(150, 48.0f, 45.0f, 50.0f, "package#150"), // page 5
+                                 new Package(151, 48.0f, 45.0f, 41.0f, "package#151")));
+
+        KeysetAwarePage<Package> page;
+
+        // Page 1
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, Pageable.size(3));
+
+        assertIterableEquals(List.of(114, 116, 118),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        // should not appear on next page because we already read up to length 18.0:
+        packages.save(new Package(117, 17.0f, 23.0f, 12.0f, "package#117"));
+
+        // should appear on next page because length 20.0 is beyond the keyset value of 18.0:
+        packages.save(new Package(120, 20.0f, 23.0f, 12.0f, "package#120"));
+
+        // Page 2
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, page.next());
+
+        assertIterableEquals(List.of(120, 122, 124),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        // remove some entries that we already read:
+        packages.deleteAllById(List.of(116, 118, 120, 122, 124));
+
+        // should appear on next page because length 22.0 matches the keyset value and width 70.0 is beyond the keyset value:
+        packages.save(new Package(130, 22.0f, 70.0f, 67.0f, "package#130"));
+
+        // Page 3
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, page.next());
+
+        assertIterableEquals(List.of(130, 132, 133),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        packages.deleteById(130);
+
+        // Page 4
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, page.next());
+
+        assertIterableEquals(List.of(140, 144, 148),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        packages.deleteAllById(List.of(132, 140));
+
+        // Page 5
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, page.next());
+
+        assertIterableEquals(List.of(150, 151),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        // No more pages
+        assertEquals(null, page.next());
+
+        // At this point, the following should remain (sorted by width descending, height ascending, id descending):
+        // 114: 14.0f, 90.0f, 15.0f
+        // 144: 33.0f, 56.0f, 63.0f
+        // 133: 33.0f, 56.0f, 65.0f
+        // 151: 48.0f, 45.0f, 41.0f
+        // 150: 48.0f, 45.0f, 50.0f
+        // 148: 48.0f, 45.0f, 50.0f
+        // 117: 17.0f, 23.0f, 12.0f
+
+        // Dynamically request forward sorting where the criteria is the reverse of the above,
+        // starting after (but not including) the first position
+
+        page = packages.whereHeightNotWithin(20.0f, 40.0f,
+                                             Pageable.size(5).afterKeyset(23.0f, 12.0f, 117),
+                                             Sort.asc("width"), Sort.desc("height"), Sort.asc("id"));
+
+        assertIterableEquals(List.of(148, 150, 151, 133, 144),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        // Switch to pages of size 4.
+
+        // Page 1
+        page = packages.findByHeightGreaterThan(10.0f, Pageable.size(4));
+
+        assertIterableEquals(List.of(114, 144, 133, 151),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        packages.saveAll(List.of(new Package(128, 28.0f, 45.0f, 53.0f, "package#128"), // comes after the keyset values, should be included in next page
+                                 new Package(153, 53.0f, 45.0f, 28.0f, "package#153") // comes before the keyset values, should not be on next page
+        ));
+
+        // Page 2
+        page = packages.findByHeightGreaterThan(10.0f, page.next());
+
+        assertIterableEquals(List.of(150, 148, 128, 117),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        // No more pages
+        assertEquals(null, page.next());
+
+        // At this point, the following should remain (sorted by width descending, length ascending, id ascending):
+        // 114: 14.0f, 90.0f, 15.0f
+        // 133: 33.0f, 56.0f, 65.0f
+        // 144: 33.0f, 56.0f, 63.0f
+        // 128: 28.0f, 45.0f, 53.0f
+        // 148: 48.0f, 45.0f, 50.0f
+        // 150: 48.0f, 45.0f, 50.0f
+        // 151: 48.0f, 45.0f, 41.0f
+        // 153: 53.0f, 45.0f, 28.0f
+        // 117: 17.0f, 23.0f, 12.0f (will not match query condition)
+
+        // Page 1
+        page = packages.whereVolumeWithin(5000.0f, 123456.0f, Pageable.size(6));
+
+        assertIterableEquals(List.of(114, 133, 144, 128, 148, 150),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        packages.deleteAllById(List.of(144, 148, 150));
+
+        packages.save(new Package(152, 48.0f, 45.0f, 52.0f, "package#152"));
+
+        // Page 2
+        page = packages.whereVolumeWithin(5000.0f, 123456.0f, page.next());
+
+        assertIterableEquals(List.of(151, 152, 153),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
     }
 
     /**
@@ -1066,7 +1285,7 @@ public class DataTestServlet extends FATServlet {
 
         r1.invitees = Set.of("testRepository-1a@example.org", "testRepository-1b@example.org", "testRepository-1c@example.org");
 
-        Iterable<Reservation> insertedOrUpdated = reservations.save(new Iterable<>() {
+        Iterable<Reservation> insertedOrUpdated = reservations.saveAll(new Iterable<>() {
             @Override
             public Iterator<Reservation> iterator() {
                 return Arrays.asList(r1, r2, r3, r4).iterator();
@@ -1098,19 +1317,13 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(4, reservations.count());
 
-        Reservation r2found = null, r4found = null;
-        for (Reservation found : reservations.findById(List.of(r4.meetingID, r2.meetingID))) {
-            if (found.meetingID == r2.meetingID && r2found == null)
-                r2found = found;
-            else if (found.meetingID == r4.meetingID && r4found == null)
-                r4found = found;
-            else
-                fail("Found unexpected entity with meetingID of " + found.meetingID);
-        }
-        assertNotNull(r2found);
-        assertNotNull(r4found);
-        assertEquals(r2.location, r2found.location);
-        assertEquals(r4.location, r4found.location);
+        Map<Long, Reservation> found = reservations.findAllById(List.of(r4.meetingID, r2.meetingID))
+                        .collect(Collectors.toMap(rr -> rr.meetingID, Function.identity()));
+        assertEquals(found.toString(), 2, found.size());
+        assertEquals(true, found.containsKey(r2.meetingID));
+        assertEquals(true, found.containsKey(r4.meetingID));
+        assertEquals(r2.location, found.get(r2.meetingID).location);
+        assertEquals(r4.location, found.get(r4.meetingID).location);
 
         reservations.deleteById(r2.meetingID);
 
@@ -1120,7 +1333,7 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(3, reservations.count());
 
-        reservations.deleteById(Set.of(r1.meetingID, r4.meetingID));
+        reservations.deleteAllById(Set.of(r1.meetingID, r4.meetingID));
 
         assertEquals(false, reservations.existsById(r4.meetingID));
 
@@ -1224,7 +1437,7 @@ public class DataTestServlet extends FATServlet {
         r9.start = OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT);
         r9.stop = OffsetDateTime.of(2022, 5, 25, 15, 0, 0, 0, CDT);
 
-        reservations.save(List.of(r1, r2, r3, r4, r5, r6, r7, r8, r9));
+        reservations.saveAll(List.of(r1, r2, r3, r4, r5, r6, r7, r8, r9));
 
         List<Reservation> reservationList = new ArrayList<Reservation>();
         reservations.findByHost("testRepositoryCustom-host2@example.org").forEach(reservationList::add);
@@ -1262,15 +1475,15 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(10030009L, 10030007L, 10030008L, 10030006L),
-                             reservations.findByStartGreaterThanOrderByStartDescOrderByStopDesc(OffsetDateTime.of(2022, 5, 25, 0, 0, 0, 0, CDT),
-                                                                                                Limit.of(4))
+                             reservations.findByStartGreaterThanOrderByStartDescStopDesc(OffsetDateTime.of(2022, 5, 25, 0, 0, 0, 0, CDT),
+                                                                                         Limit.of(4))
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(10030007L, 10030008L, 10030006L),
-                             reservations.findByStartGreaterThanOrderByStartDescOrderByStopDesc(OffsetDateTime.of(2022, 5, 25, 0, 0, 0, 0, CDT),
-                                                                                                Limit.of(3, 2))
+                             reservations.findByStartGreaterThanOrderByStartDescStopDesc(OffsetDateTime.of(2022, 5, 25, 0, 0, 0, 0, CDT),
+                                                                                         Limit.range(2, 4))
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
@@ -1301,13 +1514,13 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(10030003L, 10030001L, 10030004L, 10030006L, 10030009L, 10030005L, 10030007L, 10030002L, 10030008L),
-                             reservations.findByStopGreaterThanOrderByLocationDescOrderByHostOrderByStopAsc(OffsetDateTime.of(2022, 5, 25, 8, 0, 0, 0, CDT))
+                             reservations.findByStopGreaterThanOrderByLocationDescHostAscStopAsc(OffsetDateTime.of(2022, 5, 25, 8, 0, 0, 0, CDT))
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(10030001L, 10030005L, 10030007L, 10030002L, 10030003L, 10030006L, 10030009L, 10030004L, 10030008L),
-                             reservations.findByStopLessThanOrderByHostAscOrderByLocationDescOrderByStart(OffsetDateTime.of(2022, 5, 26, 0, 0, 0, 0, CDT))
+                             reservations.findByStopLessThanOrderByHostAscLocationDescStart(OffsetDateTime.of(2022, 5, 26, 0, 0, 0, 0, CDT))
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
@@ -1413,18 +1626,24 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(10030009L, 10030008L, 10030007L, 10030006L),
                              page1
                                              .getContent()
+                                             .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
-        Page<Reservation> page2 = page1.next();
+        Page<Reservation> page2 = reservations.findByHostStartsWith("testRepositoryCustom-host",
+                                                                    page1.next(),
+                                                                    Sort.desc("meetingID"));
         assertIterableEquals(List.of(10030005L, 10030004L, 10030003L, 10030002L),
                              page2
                                              .get()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
-        Page<Reservation> page3 = page2.next();
+        Page<Reservation> page3 = reservations.findByHostStartsWith("testRepositoryCustom-host",
+                                                                    page2.next(),
+                                                                    Sort.desc("meetingID"));
         assertIterableEquals(List.of(10030001L),
                              page3
                                              .getContent()
+                                             .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
         assertEquals(null, page3.next());
@@ -1436,12 +1655,16 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(10030006L, 10030005L, 10030004L),
                              page2
                                              .getContent()
+                                             .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
-        page3 = page2.next();
+        page3 = reservations.findByHostStartsWith("testRepositoryCustom-host",
+                                                  page2.next(),
+                                                  Sort.desc("meetingID"));
         assertIterableEquals(List.of(10030003L, 10030002L, 10030001L),
                              page3
                                              .getContent()
+                                             .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
         assertEquals(null, page3.next());
@@ -1546,7 +1769,7 @@ public class DataTestServlet extends FATServlet {
         r4.start = OffsetDateTime.of(2022, 8, 25, 13, 0, 0, 0, CDT);
         r4.stop = OffsetDateTime.of(2022, 8, 25, 14, 30, 0, 0, CDT);
 
-        reservations.save(List.of(r1, r2, r3, r4));
+        reservations.saveAll(List.of(r1, r2, r3, r4));
 
         // Update by primary key
         assertEquals(true, reservations.updateByMeetingIDSetHost(1012004, "testRepositoryUpdateMethods-host2@example.org"));
@@ -1576,6 +1799,8 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testRepositoryUpdateMethodsMultiplyAndDivide() {
+        packages.deleteAll();
+
         Package p1 = new Package();
         p1.description = "Cereal Box";
         p1.length = 7.0f;
@@ -1618,7 +1843,7 @@ public class DataTestServlet extends FATServlet {
         p6.height = 19.2f;
         p6.id = 990006;
 
-        packages.save(List.of(p1, p2, p3, p4, p5, p6));
+        packages.saveAll(List.of(p1, p2, p3, p4, p5, p6));
 
         // multiply, divide, and add within same update
         assertEquals(true, packages.updateByIdAddHeightMultiplyLengthDivideWidth(990003, 1.0f, 0.95f, 1.05f));
@@ -1652,7 +1877,19 @@ public class DataTestServlet extends FATServlet {
         assertEquals(13.8f, p.width, 0.01f);
         assertEquals(19.5f, p.height, 0.01f);
 
-        packages.deleteById(List.of(990001, 990002, 990003, 990004, 990005, 990006));
+        packages.delete(p3);
+
+        assertIterableEquals(List.of(990001, 990002, 990004, 990005, 990006),
+                             packages.findAll().map(pack -> pack.id).sorted().collect(Collectors.toList()));
+
+        packages.deleteAll(List.of(p1, p6));
+
+        assertIterableEquals(List.of(990002, 990004, 990005),
+                             packages.findAll().map(pack -> pack.id).sorted().collect(Collectors.toList()));
+
+        packages.deleteAll();
+
+        assertEquals(0, packages.count());
     }
 
     /**
@@ -1700,7 +1937,7 @@ public class DataTestServlet extends FATServlet {
         r4.start = OffsetDateTime.of(2022, 6, 3, 9, 0, 0, 0, CDT);
         r4.stop = OffsetDateTime.of(2022, 6, 3, 10, 0, 0, 0, CDT);
 
-        reservations.save(Set.of(r1, r2, r3, r4));
+        reservations.saveAll(Set.of(r1, r2, r3, r4));
 
         ReservedTimeSlot[] reserved = reservations.findByLocationAndStartBetweenOrderByStart("30-2 C206",
                                                                                              OffsetDateTime.of(2022, 6, 3, 0, 0, 0, 0, CDT),

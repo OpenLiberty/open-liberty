@@ -23,7 +23,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKRunner;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -53,13 +54,12 @@ public class GraphQLTckPackageTest {
 
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
-    public void testGraphQLTck() throws Exception {
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.graphql_fat_tck", this.getClass() + ":testGraphQLTck");
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "GraphQL");
-        resultInfo.put("feature_version", "1.0");
-        MvnUtils.preparePublicationFile(resultInfo);
+    public void testGraphQL10Tck() throws Exception {
+        String bucketName = "com.ibm.ws.microprofile.graphql_fat_tck";
+        String testName = this.getClass() + ":testGraphQL10Tck";
+        Type type = Type.MICROPROFILE;
+        String specName = "GraphQL";
+        TCKRunner.runTCK(server, bucketName, testName, type, specName);
     }
 
 }

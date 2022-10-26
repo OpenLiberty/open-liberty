@@ -77,8 +77,7 @@ public class SessionCacheTimeoutTest extends FATServletClient {
 
         server.setJvmOptions(Arrays.asList("-Dhazelcast.group.name=" + UUID.randomUUID(),
                                            "-Dhazelcast.config.file=" + hazelcastConfigFile,
-                                           "-Dsession.cache.config.file=" + sessionCacheConfigFile,
-                                           "-Dcom.ibm.ws.beta.edition=true")); // TODO Remove when JCache is GA'd
+                                           "-Dsession.cache.config.file=" + sessionCacheConfigFile));
 
         server.startServer();
 

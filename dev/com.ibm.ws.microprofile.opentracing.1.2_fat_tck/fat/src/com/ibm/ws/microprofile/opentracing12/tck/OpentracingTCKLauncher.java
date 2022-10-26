@@ -15,18 +15,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.JavaInfo;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKRunner;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -52,12 +46,11 @@ public class OpentracingTCKLauncher {
 
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
-    public void launchOpentracingTck() throws Exception {
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.opentracing.1.2_fat", this.getClass() + ":launchOpentracingTck");
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "Open Tracing");
-        resultInfo.put("feature_version", "1.2");
-        MvnUtils.preparePublicationFile(resultInfo);
+    public void launchOpenTracing12Tck() throws Exception {
+        String bucketName = "com.ibm.ws.opentracing.1.2_fat_tck";
+        String testName = this.getClass() + ":launchOpenTracing12Tck";
+        Type type = Type.MICROPROFILE;
+        String specName = "Open Tracing";
+        TCKRunner.runTCK(server, bucketName, testName, type, specName);
     }
 }

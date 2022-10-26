@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -517,7 +517,7 @@ metadata_warning_ignore_mapped_superclass_primary_key=Se ignora el valor de la c
 
 metadata_warning_ignore_mapped_superclass_read_only=Se ignora el valor de solo lectura en la superclase gestionada [{1}] para la clase de entidad [{0}] puesto que se hab\u00edan descubierto previamente metadatos de solo lectura para dicha entidad (ya sea en la propia entidad o en otra superclase correlacionada).
 
-metadata_warning_ignore_mapping_metadata=Se ignoran los metadatos javax.persistence aplicados al atributo [{0}] desde la clase [{1}]. Los metadatos javax.persistence se ignoran en los campos o propiedades que son transitorios, est\u00e1ticos o abstractos.
+metadata_warning_ignore_mapping_metadata=Se ignoran los metadatos jakarta.persistence aplicados al atributo [{0}] desde la clase [{1}]. Los metadatos jakarta.persistence se ignoran en los campos o propiedades que son transitorios, est\u00e1ticos o abstractos.
 
 metadata_warning_ignore_serialized=Se ignora el elemento de serializaci\u00f3n predeterminado [{1}] en la clase de entidad [{0}] puesto que se han especificado metadatos de conversi\u00f3n EclipseLink.
 
@@ -581,7 +581,7 @@ no_jar_entry_migratable_in_ear=Ninguna de la entrada jar del archivo EAR de entr
 
 no_session_found=No se ha podido encontrar la sesi\u00f3n con el nombre [{0}] en el archivo session.xml [{1}]
 
-non_jpa_allowed_type_used_for_collection_using_lazy_access=El elemento [{1}] dentro de la clase de entidad [{0}] utiliza un tipo de colecci\u00f3n [{2}] cuando la especificaci\u00f3n JPA solo soporta java.util.Collection, java.util.Set, java.util.List o java.util.Map.  Este tipo est\u00e1 soportado con una carga intensiva; utiliza la carga poco activa con este tipo de colecci\u00f3n requiere una configuraci\u00f3n adicional y una implementaci\u00f3n IndirectContainer que ampl\u00eda [{2}] o definir la correlaci\u00f3n para utilizar la indirecci\u00f3n b\u00e1sica y para que el tipo sea ValueholderInterface.
+non_jpa_allowed_type_used_for_collection_using_lazy_access=El elemento [{1}] dentro de la clase de entidad [{0}] utiliza un tipo de colecci\u00f3n [{2}] cuando la especificaci\u00f3n Jakarta Persistence solo soporta java.util.Collection, java.util.Set, java.util.List o java.util.Map.  Este tipo est\u00e1 soportado con una carga intensiva; utiliza la carga poco activa con este tipo de colecci\u00f3n requiere una configuraci\u00f3n adicional y una implementaci\u00f3n IndirectContainer que ampl\u00eda [{2}] o definir la correlaci\u00f3n para utilizar la indirecci\u00f3n b\u00e1sica y para que el tipo sea ValueholderInterface.
 
 objectchangepolicy_turned_off=Rastreo de cambios desactivado para: {0}
 

@@ -20,8 +20,7 @@ Subsystem-Name: MicroProfile JSON Web Token 2.0
   com.ibm.websphere.appserver.authFilter-1.0
 -bundles=io.openliberty.security.mp.jwt.internal,\
   io.openliberty.security.mp.jwt.cdi.internal,\
-  io.openliberty.security.mp.jwt.1.2.config,\
-  com.ibm.ws.security.mp.jwt.1.1.config
+  io.openliberty.security.mp.jwt.1.2.config
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

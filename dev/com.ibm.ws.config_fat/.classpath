@@ -13,6 +13,8 @@
 	<classpathentry kind="src" path="test-bundles/test.prod.extensions/src"/>
 	<classpathentry kind="src" path="test-bundles/test.user.prod.extensions/src"/>
 	<classpathentry kind="src" path="test-applications/restart/src"/>
+	<classpathentry kind="src" path="test-applications/cacheid0/src"/>
+	<classpathentry kind="src" path="test-applications/cacheid1/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="output" path="bin"/>

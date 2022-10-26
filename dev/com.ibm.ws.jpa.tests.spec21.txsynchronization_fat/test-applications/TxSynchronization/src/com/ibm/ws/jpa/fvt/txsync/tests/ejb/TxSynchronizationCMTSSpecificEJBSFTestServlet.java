@@ -22,13 +22,13 @@ import org.junit.Test;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.TransactionSynchronization;
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
 import componenttest.annotation.ExpectedFFDC;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TxSynchronizationCMTSSpecificEJBSFTestServlet")
-public class TxSynchronizationCMTSSpecificEJBSFTestServlet extends EJBTestVehicleServlet {
+public class TxSynchronizationCMTSSpecificEJBSFTestServlet extends EJBDBTestVehicleServlet {
     @PostConstruct
     private void initFAT() {
         testClassName = "com.ibm.ws.jpa.fvt.txsync.testlogic.cm.CMTSAndBMTSpecificTxSynchronizationTestLogic";

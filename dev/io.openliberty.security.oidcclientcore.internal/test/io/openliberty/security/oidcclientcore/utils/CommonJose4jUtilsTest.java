@@ -29,9 +29,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.wsspi.ssl.SSLSupport;
 
+import io.openliberty.security.common.jwt.JwtParsingUtils;
 import io.openliberty.security.oidcclientcore.utils.CommonJose4jUtils.TokenSignatureValidationBuilder;
 import test.common.SharedOutputManager;
 
@@ -73,9 +73,9 @@ public class CommonJose4jUtilsTest {
      */
     @Before
     public void setUp() throws Exception {
-        jwtcontext = CommonJose4jUtils.parseJwtWithoutValidation(idToken);
+        jwtcontext = JwtParsingUtils.parseJwtWithoutValidation(idToken);
         jwtClaims = jwtcontext.getJwtClaims();
-        jsonStruct = jose4jutils.getJsonWebStructureFromJwtContext(jwtcontext);
+        jsonStruct = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtcontext);
         tokenSignatureValidationBuilder = jose4jutils.signaturevalidationbuilder();
     }
 

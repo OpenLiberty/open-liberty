@@ -25,7 +25,30 @@
 		<user
 			name="user2"
 			password="user2pwd" />
+
+		<group name="group1">
+			<member name="testuser" />
+			<member name="user1" />
+		</group>
 			
+		<group name="group2">
+			<member name="testuser" />
+			<member name="user2" />
+		</group>
+			
+		<group name="group3">
+			<member name="testuser" />
+			<member name="user1" />
+			<member name="user2" />
+		</group>
+			
+		<group name="all">
+			<member name="testuser" />
+			<member name="user1" />
+			<member name="user2" />
+		</group>
+			
+
 	</basicRegistry>
 
 </server>

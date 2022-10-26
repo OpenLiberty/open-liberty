@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
+import org.jboss.arquillian.container.test.spi.client.deployment.AuxiliaryArchiveAppender;
 import org.jboss.arquillian.core.spi.LoadableExtension.ExtensionBuilder;
 
 public enum TCKArchiveModifications implements ArchiveModification {
@@ -46,6 +47,13 @@ public enum TCKArchiveModifications implements ArchiveModification {
         public void applyModification(ExtensionBuilder extensionBuilder) {
             LOG.log(Level.INFO, "WLP: Adding Extension com.ibm.ws.fat.util.tck.TestLoggingObserverArchiveProcessor");
             extensionBuilder.service(ApplicationArchiveProcessor.class, TestLoggingObserverArchiveProcessor.class);
+        }
+    },
+    SLF4J {
+        @Override
+        public void applyModification(ExtensionBuilder extensionBuilder) {
+            LOG.log(Level.INFO, "WLP: Adding Extension com.ibm.ws.fat.util.tck.Slf4JArchiveAppender");
+            extensionBuilder.service(AuxiliaryArchiveAppender.class, Slf4JArchiveAppender.class);
         }
     },
     WIREMOCK {

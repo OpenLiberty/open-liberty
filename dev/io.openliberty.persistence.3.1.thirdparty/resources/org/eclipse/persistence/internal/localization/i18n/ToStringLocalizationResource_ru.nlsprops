@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -141,11 +141,11 @@ staticweave_commandline_help_message_15of19= \u0415\u0441\u043b\u0438 \u0438\u04
 
 staticweave_commandline_help_message_16of19= \u041f\u0440\u0438\u043c\u0435\u0440:
 
-staticweave_commandline_help_message_17of19= \u0421\u0432\u044f\u0437\u044b\u0432\u0430\u043d\u0438\u0435 \u0432\u0441\u0435\u0445 \u0441\u0443\u0449\u043d\u043e\u0441\u0442\u0435\u0439, \u0441\u043e\u0434\u0435\u0440\u0436\u0430\u0449\u0438\u0445\u0441\u044f \u0432 C:\\foo-source.jar, \u0441 \u0438\u0445 \u0444\u0430\u0439\u043b\u043e\u043c persistence.xml, \u0441\u043e\u0434\u0435\u0440\u0436\u0430\u0449\u0438\u043c\u0441\u044f \u0432 \u043a\u0430\u0442\u0430\u043b\u043e\u0433\u0435 C:\\foo-containing-persistence-xml.jar,
+staticweave_commandline_help_message_17of19= \u0421\u0432\u044f\u0437\u044b\u0432\u0430\u043d\u0438\u0435 \u0432\u0441\u0435\u0445 \u0441\u0443\u0449\u043d\u043e\u0441\u0442\u0435\u0439, \u0441\u043e\u0434\u0435\u0440\u0436\u0430\u0449\u0438\u0445\u0441\u044f \u0432 C:\foo-source.jar, \u0441 \u0438\u0445 \u0444\u0430\u0439\u043b\u043e\u043c persistence.xml, \u0441\u043e\u0434\u0435\u0440\u0436\u0430\u0449\u0438\u043c\u0441\u044f \u0432 \u043a\u0430\u0442\u0430\u043b\u043e\u0433\u0435 C:\foo-containing-persistence-xml.jar,
 
-staticweave_commandline_help_message_18of19= \u0438 \u0432\u044b\u0432\u043e\u0434\u0430 \u0432 \u0444\u0430\u0439\u043b C:\\foo-target.jar:
+staticweave_commandline_help_message_18of19= \u0438 \u0432\u044b\u0432\u043e\u0434\u0430 \u0432 \u0444\u0430\u0439\u043b C:\foo-target.jar:
 
-staticweave_commandline_help_message_19of19= StaticWeave -persistenceinfo C:\\foo-containing-persistence-xml.jar -classpath C:\\classpath1;C:\\classpath2 C:\\foo-source.jar C:\\foo-target.jar
+staticweave_commandline_help_message_19of19= StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:\classpath1;C:\classpath2 C:\foo-source.jar C:\foo-target.jar
 
 staticweave_commandline_help_message_1of19= \u0424\u043e\u0440\u043c\u0430\u0442: StaticWeave [\u043e\u043f\u0446\u0438\u0438] \u0438\u0441\u0442\u043e\u0447\u043d\u0438\u043a \u043f\u0440\u0438\u0435\u043c\u043d\u0438\u043a
 

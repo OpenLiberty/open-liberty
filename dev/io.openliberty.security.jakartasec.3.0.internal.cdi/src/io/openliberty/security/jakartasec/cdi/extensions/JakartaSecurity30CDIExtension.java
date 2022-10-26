@@ -22,7 +22,6 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.cdi.CDIServiceUtils;
 import com.ibm.ws.security.javaeesec.cdi.extensions.HttpAuthenticationMechanismsTracker;
 import com.ibm.ws.security.javaeesec.cdi.extensions.PrimarySecurityCDIExtension;
 
@@ -34,7 +33,6 @@ import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.enterprise.inject.spi.ProcessBeanAttributes;
@@ -62,11 +60,6 @@ public class JakartaSecurity30CDIExtension implements Extension {
         applicationName = HttpAuthenticationMechanismsTracker.getApplicationName();
     }
 
-    public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
-        AnnotatedType<OpenIdContextProducer> producer = bm.createAnnotatedType(OpenIdContextProducer.class);
-        bbd.addAnnotatedType(producer, CDIServiceUtils.getAnnotatedTypeIdentifier(producer, this.getClass()));
-    }
-
     @SuppressWarnings("static-access")
     @Reference
     protected void setPrimarySecurityCDIExtension(PrimarySecurityCDIExtension primarySecurityCDIExtension) {
@@ -85,6 +78,7 @@ public class JakartaSecurity30CDIExtension implements Extension {
         Class<?> annotatedClass = annotatedType.getJavaClass();
         addOidcHttpAuthenticationMechanismBean(oidcAnnotation, annotatedClass);
         addOidcIdentityStore(beanManager);
+        addOpenIdContext(beanManager);
     }
 
     private void addOidcHttpAuthenticationMechanismBean(Annotation annotation, Class<?> annotatedClass) {
@@ -94,8 +88,31 @@ public class JakartaSecurity30CDIExtension implements Extension {
     }
 
     private void addOidcIdentityStore(BeanManager beanManager) {
-        // TODO: Check for duplicates
+        //TODO: look for better way to check for duplicates
+        for (Bean b : beansToAdd) {
+            if (OidcIdentityStoreBean.class.equals(b.getClass())) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "OidcIdentityStoreBean already registered.");
+                return;
+            }
+        }
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "adding OidcIdentityStoreBean.");
         beansToAdd.add(new OidcIdentityStoreBean(beanManager));
+    }
+
+    private void addOpenIdContext(BeanManager beanManager) {
+        //TODO: look for better way to check for duplicates
+        for (Bean b : beansToAdd) {
+            if (OpenIdContextBean.class.equals(b.getClass())) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "OpenIdContextBean already registered.");
+                return;
+            }
+        }
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "adding OpenIdContextBean.");
+        beansToAdd.add(new OpenIdContextBean(beanManager));
     }
 
     public void processOidcHttpAuthMechNeeded(@Observes ProcessBeanAttributes<OidcHttpAuthenticationMechanism> processBeanAttributes, BeanManager beanManager) {
@@ -114,10 +131,8 @@ public class JakartaSecurity30CDIExtension implements Extension {
         }
 
         // Verification of mechanisms and registration of ModulePropertiesProviderBean performed in JavaEESecCDIExtension's afterBeanDiscovery()
-
         for (Bean bean : beansToAdd) {
             afterBeanDiscovery.addBean(bean);
         }
     }
-
 }

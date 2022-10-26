@@ -45,7 +45,6 @@ import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.extension.CDIExtensionMetadataInternal;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.cdi.impl.weld.BDAFactory;
-import com.ibm.ws.cdi.impl.weld.ProbeExtensionArchive;
 import com.ibm.ws.cdi.impl.weld.WebSphereCDIDeploymentImpl;
 import com.ibm.ws.cdi.impl.weld.WebSphereEEModuleDescriptor;
 import com.ibm.ws.cdi.internal.interfaces.Application;
@@ -59,6 +58,7 @@ import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveProvider;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
+import com.ibm.ws.cdi.internal.interfaces.WeldDevelopmentMode;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
@@ -303,7 +303,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
      * Create a BDA for each runtime extension and add it to the deployment.
      *
      * @param webSphereCDIDeployment
-     * @param excludedBdas           a set of application BDAs which should not be visible to runtime extensions
+     * @param excludedBdas a set of application BDAs which should not be visible to runtime extensions
      * @throws CDIException
      */
     private void addRuntimeExtensions(WebSphereCDIDeployment webSphereCDIDeployment,
@@ -676,21 +676,16 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
             extensionSet.addAll(provider.getArchives(cdiRuntime, applicationContext));
         }
 
-        if (CDIUtils.isDevelopementMode()) {
+        WeldDevelopmentMode devMode = this.cdiRuntime.getWeldDevelopmentMode();
+        if (devMode != null) {
+            if (this.probeExtensionArchive == null) {
+                this.probeExtensionArchive = devMode.getProbeExtensionArchive(this.cdiRuntime);
+            }
             //add the probeExcension
-            extensionSet.add(getProbeExtensionArchive());
+            extensionSet.add(this.probeExtensionArchive);
         }
 
         return extensionSet;
-    }
-
-    private ExtensionArchive getProbeExtensionArchive() {
-        synchronized (this) {
-            if (this.probeExtensionArchive == null) {
-                this.probeExtensionArchive = new ProbeExtensionArchive(cdiRuntime, null);
-            }
-        }
-        return this.probeExtensionArchive;
     }
 
     private ExtensionArchive newSPIExtensionArchive(ServiceReference<CDIExtensionMetadata> sr,

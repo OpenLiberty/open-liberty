@@ -14,6 +14,7 @@ instrument.disabled: true
 
 -includeresource: \
    @${repo;org.eclipse:yasson;3.0.0;EXACT}!/org/eclipse/yasson/*,\
+   @${repo;org.eclipse:yasson;3.0.0;EXACT}!/META-INF/versions/*,\
    @${repo;org.eclipse:yasson;3.0.0;EXACT}!/META-INF/services/jakarta.json.bind.spi.JsonbProvider,\
    yasson-messages.properties=resources/yasson-messages.properties
 

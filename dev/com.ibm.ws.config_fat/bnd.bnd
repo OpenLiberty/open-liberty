@@ -22,6 +22,8 @@ src: \
 	test-applications/mergedconfig/src,\
 	test-applications/restart/src,\
 	test-applications/varmerge/src,\
+	test-applications/cacheid0/src,\
+	test-applications/cacheid1/src,\
 	test-bundles/metatype/src,\
 	test-bundles/test.config.childalias/src,\
 	test-bundles/test.config.childalias.b/src,\

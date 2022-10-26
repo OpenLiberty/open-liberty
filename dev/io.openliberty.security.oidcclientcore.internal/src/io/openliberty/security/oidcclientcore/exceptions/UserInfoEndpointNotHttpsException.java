@@ -19,8 +19,8 @@ public class UserInfoEndpointNotHttpsException extends UserInfoResponseException
 
     private static final long serialVersionUID = 1L;
 
-    public UserInfoEndpointNotHttpsException(String userInfoEndpoint) {
-        super(userInfoEndpoint, Tr.formatMessage(tc, "URL_NOT_HTTPS", userInfoEndpoint));
+    public UserInfoEndpointNotHttpsException(String userInfoEndpoint, String clientId) {
+        super(userInfoEndpoint, Tr.formatMessage(tc, "URL_NOT_HTTPS", userInfoEndpoint, clientId));
     }
 
 }

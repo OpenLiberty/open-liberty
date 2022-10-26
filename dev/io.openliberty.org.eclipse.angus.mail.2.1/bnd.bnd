@@ -55,14 +55,10 @@ Service-Component: \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
     configuration-policy:=ignore; \
     properties:= "resources=${app-resources}"
-  
+
 -includeresource: \
-  @${repo;org.eclipse.angus:angus-mail;${Implementation-Version};EXACT}!/!META-INF/maven/*, \
-  @${repo;org.eclipse.angus:angus-mail;${Implementation-Version};EXACT}!/!META-INF/mailcap, \
-  @${repo;org.eclipse.angus:angus-mail;${Implementation-Version};EXACT}!/!META-INF/gfprobe-provider.xml, \
-  @${repo;org.eclipse.angus:angus-mail;${Implementation-Version};EXACT}!/!META-INF/javamail.charset.map, \
-  @${repo;org.eclipse.angus:angus-mail;${Implementation-Version};EXACT}!/!META-INF/javamail.default.address.map, \
-  @${repo;org.eclipse.angus:angus-mail;${Implementation-Version};EXACT}!/!META-INF/javamail.default.providers
+  @${repo;org.eclipse.angus:angus-mail;${Implementation-Version};EXACT}!/!(module-info.class|META-INF/maven/*| \
+    META-INF/mailcap|META-INF/gfprobe-provider.xml|META-INF/javamail.charset.map|META-INF/javamail.default.address.map|META-INF/javamail.default.providers)
    
 -buildpath: \
   org.eclipse.angus:angus-mail;version=${Implementation-Version};strategy=exact, \

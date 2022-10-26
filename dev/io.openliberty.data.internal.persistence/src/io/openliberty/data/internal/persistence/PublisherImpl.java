@@ -10,15 +10,12 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SubmissionPublisher;
 
 import jakarta.data.repository.Limit;
 import jakarta.data.repository.Pageable;
-import jakarta.data.repository.Param;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
@@ -29,18 +26,14 @@ import jakarta.persistence.TypedQuery;
 public class PublisherImpl<T> extends SubmissionPublisher<T> implements Runnable {
     private final Object[] args;
     private final Limit limit;
-    private final Method method;
-    private final int numParams; // can differ from args.length due to Consumer/Pagination/Sort/Sorts parameters
     private final Pageable pagination;
     private final QueryInfo queryInfo;
 
-    PublisherImpl(QueryInfo queryInfo, ExecutorService executor, Limit limit, Pageable pagination, Method method, int numParams, Object[] args) {
+    PublisherImpl(QueryInfo queryInfo, ExecutorService executor, Limit limit, Pageable pagination, Object[] args) {
         super(executor, 200);
 
         this.queryInfo = queryInfo;
         this.limit = limit;
-        this.method = method;
-        this.numParams = numParams;
         this.pagination = pagination;
         this.args = args;
 
@@ -54,19 +47,11 @@ public class PublisherImpl<T> extends SubmissionPublisher<T> implements Runnable
             em = queryInfo.entityInfo.persister.createEntityManager();
             @SuppressWarnings("unchecked")
             TypedQuery<T> query = (TypedQuery<T>) em.createQuery(queryInfo.jpql, queryInfo.entityInfo.type);
-            if (args != null) {
-                Parameter[] params = method.getParameters();
-                for (int i = 0; i < numParams; i++) {
-                    Param param = params[i].getAnnotation(Param.class);
-                    if (param == null)
-                        query.setParameter(i + 1, args[i]);
-                    else // named parameter
-                        query.setParameter(param.value(), args[i]);
-                }
-            }
+            queryInfo.setParameters(query, args);
 
             if (pagination != null) {
                 for (Pageable p = pagination; p != null; p = p == null ? null : p.next()) {
+                    // TODO KeysetPageable
                     // TODO possible overflow with both of these.
                     long maxPageSize = p.getSize();
                     query.setFirstResult((int) ((p.getPage() - 1) * maxPageSize));
@@ -83,10 +68,11 @@ public class PublisherImpl<T> extends SubmissionPublisher<T> implements Runnable
                 // instead of using Java's SubmissionPublisher.
 
                 long startAt = limit == null ? 0 : (limit.startAt() - 1);
+                long maxResults = limit == null ? queryInfo.maxResults : limit.maxResults();
 
                 // TODO possible overflow with both of these.
-                if (limit != null)
-                    query.setMaxResults((int) limit.maxResults());
+                if (maxResults > 0)
+                    query.setMaxResults((int) maxResults);
                 if (startAt > 0)
                     query.setFirstResult((int) startAt);
 

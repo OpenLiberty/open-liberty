@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -535,7 +535,7 @@
 
 7306=Element z adnotacj\u0105 [{0}] z klasy [{1}] ma okre\u015blony niepoprawny jawny typ dost\u0119pu. Nale\u017cy okre\u015bli\u0107 typ dost\u0119pu [{2}].
 
-7307=Brak \u0142a\u0144cucha kontekstu rejestrowania dla kontekstu [{0}]. Jest to wewn\u0119trzny wyj\u0105tek, kt\u00f3ry wyst\u0105pi\u0142 podczas pobierania komunikatu dziennika na potrzeby przetwarzania metadanych JPA. Zg\u0142o\u015b b\u0142\u0105d.
+7307=Brak \u0142a\u0144cucha kontekstu rejestrowania dla kontekstu [{0}]. Jest to wewn\u0119trzny wyj\u0105tek, kt\u00f3ry wyst\u0105pi\u0142 podczas pobierania komunikatu dziennika na potrzeby przetwarzania metadanych Jakarta Persistence. Zg\u0142o\u015b b\u0142\u0105d.
 
 7308=Podana warto\u015b\u0107 [{0}] w\u0142a\u015bciwo\u015bci trwa\u0142o\u015bci [{1}] jest niepoprawna - [{2}].
 
@@ -593,7 +593,7 @@
 
 7336=Okre\u015blono wiele w\u0142a\u015bciwo\u015bci kontekstu [{2}] i [{3}] dla tego samego pola wyr\u00f3\u017cnika klienta [{1}] dla klasy [{0}]
 
-7337=Odwzorowana kolumna wyr\u00f3\u017cnika klienta [{1}] w klasie [{0}] musi by\u0107 oznaczona jako tylko do odczytu. W JPA jest to wykonywane przez ustawienie insertable=false i updatable=false w kolumnie np. @Column(name="TENANT_ID", insertable=false, updatable=false).
+7337=Odwzorowana kolumna wyr\u00f3\u017cnika klienta [{1}] w klasie [{0}] musi by\u0107 oznaczona jako tylko do odczytu. W Jakarta Persistence API jest to wykonywane przez ustawienie insertable=false i updatable=false w kolumnie np. @Column(name="TENANT_ID", insertable=false, updatable=false).
 
 7338=Nie mo\u017cna dodawa\u0107 sekwencji do brokera sesji.
 
@@ -621,7 +621,7 @@
 
 7351=Nie znaleziono klasy konwertera [{2}] okre\u015blonej w atrybucie odwzorowania [{1}] z klasy [{0}]. Upewnij si\u0119, \u017ce nazwa klasy konwertera jest poprawna i istnieje z definicj\u0105 jednostki trwa\u0142o\u015bci.
 
-7352=Klasa konwertera [{0}] musi implementowa\u0107 interfejs javax.persistence.AttributeConverter<X, Y>, aby by\u0142a poprawn\u0105 klas\u0105 konwertera.
+7352=Klasa konwertera [{0}] musi implementowa\u0107 interfejs Jakarta Persistence jakarta.persistence.AttributeConverter<X, Y>, aby by\u0142a poprawn\u0105 klas\u0105 konwertera.
 
 7353=Atrybut odwzorowania [{1}] z klasy [{0}] nie jest poprawnym typem odwzorowania dla specyfikacji konwersji.
 

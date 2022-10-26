@@ -260,6 +260,10 @@ public final class CRIUSupport {
 		return this;
 	}
 
+	public CRIUSupport registerPreSnapshotHook(Runnable hook) {
+		return this;
+	}
+
 	/**
 	 * User hook that is run after restoring a checkpoint image.
 	 *
@@ -273,8 +277,7 @@ public final class CRIUSupport {
 	 *
 	 * TODO: Additional JVM capabilities will be added to prevent certain deadlock scenarios
 	 */
-	public CRIUSupport registerPreSnapshotHook(Runnable hook) {
-
+	public CRIUSupport registerPreCheckpointHook(Runnable hook) {
 		return this;
 	}
 

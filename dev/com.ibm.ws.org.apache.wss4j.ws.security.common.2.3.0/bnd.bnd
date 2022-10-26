@@ -24,4 +24,5 @@ instrument.classesExcludes:\
    com.ibm.ws.org.slf4j.api;version=latest, \
    com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest, \
    com.ibm.websphere.appserver.spi.logging;version=latest, \
-   com.ibm.ws.org.ehcache.ehcache.107.3.8.1;version=latest
+   com.ibm.ws.org.ehcache.ehcache.107.3.8.1;version=latest, \
+   com.ibm.ws.org.joda.time.2.9.9;version=latest

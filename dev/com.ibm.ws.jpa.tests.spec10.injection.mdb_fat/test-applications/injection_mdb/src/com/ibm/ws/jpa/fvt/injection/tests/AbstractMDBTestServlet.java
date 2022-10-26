@@ -21,14 +21,14 @@ import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 import junit.framework.Assert;
 
 /**
  *
  */
-public abstract class AbstractMDBTestServlet extends JPATestServlet {
+public abstract class AbstractMDBTestServlet extends JPADBTestServlet {
     /**  */
     private static final long serialVersionUID = -4510787067548883519L;
 

@@ -65,7 +65,8 @@ instrument.classesExcludes: com/ibm/ws/security/jaspi/internal/resources/*.class
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.ws.security.token;version=latest,\
 	com.ibm.ws.webcontainer;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	io.openliberty.jakarta.authentication.3.0;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

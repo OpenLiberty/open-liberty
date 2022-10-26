@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="test-applications/ClaimsDefinition.war/src"/>
+	<classpathentry kind="src" path="test-applications/ClaimsDefinitionNoRole.war/src"/>
 	<classpathentry kind="src" path="test-applications/MaximumAnnotation.war/src"/>
 	<classpathentry kind="src" path="test-applications/MaximumAnnotationUsingEL.war/src"/>
 	<classpathentry kind="src" path="test-applications/MinimumAnnotation.war/src"/>

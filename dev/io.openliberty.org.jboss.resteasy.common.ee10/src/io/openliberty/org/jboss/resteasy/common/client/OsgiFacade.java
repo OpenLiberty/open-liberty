@@ -16,10 +16,10 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -30,7 +30,7 @@ import org.osgi.framework.ServiceReference;
 
 class OsgiFacade {
     private static final boolean isSecurityManagerPresent = null != System.getSecurityManager();
-    private static final Map<Integer, Tuple<?>> tupleMap = new HashMap<>();
+    private static final Map<Integer, Tuple<?>> tupleMap = new ConcurrentHashMap<>();
     private static final AtomicInteger counter = new AtomicInteger(0);
 
     static Optional<OsgiFacade> instance() {

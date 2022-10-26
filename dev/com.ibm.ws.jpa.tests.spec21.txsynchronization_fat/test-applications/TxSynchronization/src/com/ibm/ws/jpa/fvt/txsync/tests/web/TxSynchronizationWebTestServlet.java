@@ -23,11 +23,11 @@ import org.junit.Test;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.TransactionSynchronization;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TxSynchronizationWebTestServlet")
-public class TxSynchronizationWebTestServlet extends JPATestServlet {
+public class TxSynchronizationWebTestServlet extends JPADBTestServlet {
     // Container Managed Transaction Scope
     @PersistenceContext(unitName = "TxSync",
                         type = PersistenceContextType.TRANSACTION,

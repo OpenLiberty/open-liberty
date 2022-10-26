@@ -10,9 +10,6 @@
  *******************************************************************************/
 package io.openliberty.jakarta.enterprise.concurrent.tck;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +25,8 @@ import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKRunner;
 
 /**
  * This is a test class that runs the entire Jakarta Concurrency TCK against Web Profile.
@@ -92,30 +90,19 @@ public class ConcurrentTckLauncherWeb {
      */
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
-    public void launchConcurrentTCK() throws Exception {
+    public void launchConcurrent30TCKWeb() throws Exception {
 
         suiteXmlFile = FATSuite.createSuiteXML(FATSuite.PROFILE.WEB);
-
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
 
         /**
          * The runTCKMvnCmd will set the following properties for use by arquillian
          * [ wlp, tck_server, tck_port, tck_failSafeUndeployment, tck_appDeployTimeout, tck_appUndeployTimeout ]
          * and then run the mvn test command.
          */
-        int result = MvnUtils.runTCKMvnCmd(
-                                           server, //server to run on
-                                           "io.openliberty.jakarta.concurrency.3.0_fat_tck", //bucket name
-                                           this.getClass() + ":launchConcurrentTCK", //launching method
-                                           suiteXmlFile, //tck suite
-                                           additionalProps, //additional props
-                                           Collections.emptySet() //additional jars
-        );
-
-        resultInfo.put("results_type", "Jakarta");
-        resultInfo.put("feature_name", "Concurrency");
-        resultInfo.put("feature_version", "3.0-web");
-        MvnUtils.preparePublicationFile(resultInfo);
-        assertEquals(0, result);
+        String bucketName = "io.openliberty.jakarta.concurrency.3.0_fat_tck";
+        String testName = this.getClass() + ":launchConcurrent30TCKWeb";
+        Type type = Type.JAKARTA;
+        String specName = "Concurrency (Web)";
+        TCKRunner.runTCK(server, bucketName, testName, type, specName, suiteXmlFile, additionalProps);
     }
 }

@@ -30,11 +30,11 @@ import com.ibm.ws.jpa.fvt.callback.testlogic.CallbackTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestCallbackDefaultListenerServlet")
-public class TestCallbackDefaultListenerServlet extends JPATestServlet {
+public class TestCallbackDefaultListenerServlet extends JPADBTestServlet {
     // Container Managed Transaction Scope
     @PersistenceContext(unitName = "Callback-DefaultListener_JTA")
     private EntityManager cmtsEm;

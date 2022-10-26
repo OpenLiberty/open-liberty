@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -33,9 +33,9 @@
 
 6003=The number of arguments provided to the query for execution does not match the number of arguments in the query definition.
 
-6004=The object [{0}], of class [{1}], with identity hashcode (System.identityHashCode()) [{2}], {3}is not from this UnitOfWork object space, but the parent session''s.  The object was never registered in this UnitOfWork, {3}but read from the parent session and related to an object registered in the UnitOfWork.  Ensure that you are correctly{3}registering your objects.  If you are still having problems, you can use the UnitOfWork.validateObjectSpace() method to {3}help debug where the error occurred.  For more information, see the manual or FAQ.
+6004=The object [{0}], of class [{1}], with identity hashcode (System.identityHashCode()) [{2}], {3} is not from this UnitOfWork object space, but the parent session''s. The object was never registered in this UnitOfWork, {3} but read from the parent session and related to an object registered in the UnitOfWork. Ensure that you are correctly {3} registering your objects. If you are still having problems, you can use the UnitOfWork.validateObjectSpace() method to {3} help debug where the error occurred. For more information, see the manual or FAQ.
 
-6005=The object [{0}], of class [{1}], with identity hashcode (System.identityHashCode()) [{2}], {3}is the original to a registered new object.  The UnitOfWork clones registered new objects, so you must ensure that an object {3}is registered before it is referenced by another object.  If you do not want the new object to be cloned, use the{3}UnitOfWork.registerNewObject(Object) API.  If you are still having problems, you can use the UnitOfWork.validateObjectSpace() {3}method to help debug where the error occurred.  For more information, see the manual or FAQ.
+6005=The object [{0}], of class [{1}], with identity hashcode (System.identityHashCode()) [{2}], {3} is the original to a registered new object. The UnitOfWork clones registered new objects, so you must ensure that an object {3} is registered before it is referenced by another object. If you do not want the new object to be cloned, use the {3}UnitOfWork.registerNewObject(Object) API. If you are still having problems, you can use the UnitOfWork.validateObjectSpace() {3} method to help debug where the error occurred. For more information, see the manual or FAQ.
 
 6006=The mapping [{0}] does not support batch reading.
 
@@ -193,7 +193,7 @@
 
 6100=Multiple values detected for single-object read query.
 
-6101=Executing this query could violate the integrity of the global session cache which must contain only the latest versions of objects.  In order to execute a query that returns objects as of a past time, try one of the following: Use a HistoricalSession (acquireSessionAsOf), all objects read will be cached and automatically read as of the same time.  This will apply even to triggering object relationships.  Set shouldMaintainCache to false.  You may make any object expression as of a past time, provided none of its fields are represented in the result set (i.e. used only in the where clause).
+6101=Executing this query could violate the integrity of the global session cache which must contain only the latest versions of objects. In order to execute a query that returns objects as of a past time, try one of the following: Use a HistoricalSession (acquireSessionAsOf), all objects read will be cached and automatically read as of the same time.  This will apply even to triggering object relationships. Set shouldMaintainCache to false.  You may make any object expression as of a past time, provided none of its fields are represented in the result set (i.e. used only in the where clause).
 
 6102=At present historical queries only work with Oracle 9R2 or later databases, as it uses Oracle''s Flashback feature.
 
@@ -261,7 +261,7 @@
 
 6134=Attribute name or expression passed as a first parameter to addUpdate method does not define a field. {1}Attribute name or Expression: [{2}]{1}Descriptor: [{0}]
 
-6135=Attribute name or expression passed as a first parameter to addUpdate method defines a field from a table that''s not mapped to query descriptor. {1}Attribute name or Expression: [{2}]{1}Wrong field: [{3}]{1}Descriptor: [{0}]
+6135=Attribute name or expression passed as a first parameter to addUpdate method defines a field from a table that is not mapped to query descriptor. {1}Attribute name or Expression: [{2}]{1}Wrong field: [{3}]{1}Descriptor: [{0}]
 
 6136=Classes mapped with multi table inheritance cannot be ReportQuery items. Item: {0}, Expression: {1}.
 
@@ -293,9 +293,9 @@
 
 6150=A null value cannot be used as a key in a container of type [{1}]. Ensure your key values for the objects of type [{0}] cannot be null.
 
-6151=An exception occurred while attempting to set a Redirector {0} passed through a JPA Query Hint {1}.  Please verify that the provided Redirector implements org.eclipse.persistence.queries.QueryRedirector.
+6151=An exception occurred while attempting to set a Redirector {0} passed through a Jakarta Persistence Query Hint {1}.  Please verify that the provided Redirector implements org.eclipse.persistence.queries.QueryRedirector.
 
-6152=An exception occurred while attempting to instantiate the class {0} passed through a JPA Query Hint {1}.  Please verify that the class has a default constructor.
+6152=An exception occurred while attempting to instantiate the class {0} passed through a Jakarta Persistence Query Hint {1}.  Please verify that the class has a default constructor.
 
 6153=CompatibleType must be set on complex type: {0}.
 

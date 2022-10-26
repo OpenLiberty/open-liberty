@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,11 +14,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -26,8 +21,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.JavaInfo;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKRunner;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -52,13 +47,12 @@ public class ConfigTCKLauncher {
 
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
-    public void launchConfigTck() throws Exception {
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.config_fat_tck", this.getClass() + ":launchConfig11Tck");
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "Config");
-        resultInfo.put("feature_version", "1.1");
-        MvnUtils.preparePublicationFile(resultInfo);
+    public void launchConfig11Tck() throws Exception {
+        String bucketName = "com.ibm.ws.microprofile.config_fat_tck";
+        String testName = this.getClass() + ":launchConfig11Tck";
+        Type type = Type.MICROPROFILE;
+        String specName = "Config";
+        TCKRunner.runTCK(server, bucketName, testName, type, specName);
     }
 
 }

@@ -9,17 +9,17 @@
         IBM Corporation - initial API and implementation
  -->
  <server>
-    <dataSource id="jdbc/JPA_DS" jndiName="jdbc/JPA_DS" fat.modify="true">
+    <dataSource id="jdbc/JPA_DS" jndiName="jdbc/JPA_DS" >
             <jdbcDriver libraryRef="JDBCLib"/>
             <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
     </dataSource>
 
-    <dataSource id="jdbc/JPA_NJTADS" jndiName="jdbc/JPA_NJTADS" fat.modify="true" transactional="false">
+    <dataSource id="jdbc/JPA_NJTADS" jndiName="jdbc/JPA_NJTADS"  transactional="false">
             <jdbcDriver libraryRef="JDBCLib"/>
             <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
     </dataSource>
 
-    <library id="JDBCLib" fat.modify="true" apiTypeVisibility="+third-party">
+    <library id="JDBCLib"  apiTypeVisibility="+third-party">
         <fileset dir="${shared.resource.dir}/derby" includes="*.jar"/>
     </library>
 

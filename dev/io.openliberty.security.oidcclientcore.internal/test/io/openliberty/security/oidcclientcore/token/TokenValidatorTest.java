@@ -26,9 +26,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import io.openliberty.security.common.jwt.JwtParsingUtils;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
-import io.openliberty.security.oidcclientcore.utils.CommonJose4jUtils;
 import test.common.SharedOutputManager;
 
 /**
@@ -54,7 +54,7 @@ public class TokenValidatorTest {
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        jwtClaims = CommonJose4jUtils.parseJwtWithoutValidation(idToken).getJwtClaims();
+        jwtClaims = JwtParsingUtils.parseJwtWithoutValidation(idToken).getJwtClaims();
 
     }
 

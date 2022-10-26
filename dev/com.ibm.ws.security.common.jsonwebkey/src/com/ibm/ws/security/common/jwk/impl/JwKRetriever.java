@@ -96,8 +96,6 @@ public class JwKRetriever {
     String keyText = null;
     String locationUsed = null;
 
-    KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
-    
     public HttpUtils httpUtils;
 
     public JwKRetriever(JWKSet jwkSet) {
@@ -528,7 +526,7 @@ public class JwKRetriever {
     }
 
     boolean isPemSupportedAlgorithm(String signatureAlgorithm) {
-        return keyAlgChecker.isRSAlgorithm(signatureAlgorithm) || keyAlgChecker.isESAlgorithm(signatureAlgorithm);
+        return KeyAlgorithmChecker.isRSAlgorithm(signatureAlgorithm) || KeyAlgorithmChecker.isESAlgorithm(signatureAlgorithm);
     }
 
     @Sensitive
@@ -556,7 +554,7 @@ public class JwKRetriever {
 
     JWK parsePublicKeyJwk(String keyText, String signatureAlgorithm) throws Exception {
         PublicKey pubKey = PemKeyUtil.getPublicKey(keyText);
-        if (keyAlgChecker.isESAlgorithm(signatureAlgorithm)) {
+        if (KeyAlgorithmChecker.isESAlgorithm(signatureAlgorithm)) {
             return getEcJwkPublicKey(pubKey, signatureAlgorithm);
         } else {
             return getRsaJwkPublicKey(pubKey, signatureAlgorithm);
@@ -566,7 +564,7 @@ public class JwKRetriever {
     @Sensitive
     JWK parsePrivateKeyJwk(@Sensitive String keyText, String signatureAlgorithm) throws Exception {
         PrivateKey privateKey = PemKeyUtil.getPrivateKey(keyText);
-        if (keyAlgChecker.isESAlgorithm(signatureAlgorithm)) {
+        if (KeyAlgorithmChecker.isESAlgorithm(signatureAlgorithm)) {
             return getEcJwkPrivateKey(privateKey, signatureAlgorithm);
         } else {
             return getRsaJwkPrivateKey(privateKey, signatureAlgorithm);

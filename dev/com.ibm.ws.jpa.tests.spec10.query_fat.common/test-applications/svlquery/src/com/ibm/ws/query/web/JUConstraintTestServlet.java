@@ -23,11 +23,11 @@ import com.ibm.ws.query.testlogic.enums.TestEntityTypeEnum;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/JUConstraintTestServlet")
-public class JUConstraintTestServlet extends JPATestServlet {
+public class JUConstraintTestServlet extends JPADBTestServlet {
     // Container Managed Transaction Scope
     @PersistenceContext(unitName = "QUERY_JTA")
     private EntityManager cmtsEm;

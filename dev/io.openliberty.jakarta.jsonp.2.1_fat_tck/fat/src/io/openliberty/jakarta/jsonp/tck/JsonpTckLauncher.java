@@ -10,13 +10,9 @@
  *******************************************************************************/
 package io.openliberty.jakarta.jsonp.tck;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -27,7 +23,8 @@ import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKRunner;
 
 /**
  * This is a test class that runs the whole Jakarta JSON-P TCK. The TCK results
@@ -40,15 +37,18 @@ import componenttest.topology.utils.MvnUtils;
 @MinimumJavaLevel(javaLevel = 11)
 public class JsonpTckLauncher {
 
-    final static Map<String, String> additionalProps = new HashMap<>();
-    final static Map<String, String> additionalPluggabilityProps = new HashMap<>();
-
     //This is a standalone test no server needed
     @Server
     public static LibertyServer DONOTSTART;
 
-    @BeforeClass
-    public static void setUp() throws Exception {
+    /**
+     * Run the TCK (controlled by autoFVT/publish/tckRunner/tck/*)
+     */
+    @Test
+    @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
+    public void launchJsonp21TCK() throws Exception {
+        Map<String, String> additionalProps = new HashMap<>();
+
         // Skip signature testing on Windows and Semeru JDK.
         // So far as I can tell the signature test plugin is not supported on this configuration
         //Opened an issue against jsonb tck https://github.com/eclipse-ee4j/jsonb-api/issues/327
@@ -56,10 +56,15 @@ public class JsonpTckLauncher {
         // and the test fails because you can't then set a different provider
         // Opened an issue against the jsonp tck https://github.com/eclipse-ee4j/jsonp/issues/376
         if (System.getProperty("os.name").contains("Windows")) {
-            Log.info(JsonpTckLauncher.class, "setUp", "Skipping JSONP Signature Test on Windows and Semeru JDK");
+            Log.info(JsonpTckLauncher.class, "launchJsonp21TCK", "Skipping JSONP Signature Test on Windows and Semeru JDK");
             additionalProps.put("exclude.tests", "ee.jakarta.tck.jsonp.signaturetest.jsonp.JSONPSigTest.java");
         }
 
+        String bucketName = "io.openliberty.jakarta.jsonp.2.1_fat_tck";
+        String testName = this.getClass() + ":launchJsonp21TCK";
+        Type type = Type.JAKARTA;
+        String specName = "JSON Processing";
+        TCKRunner.runTCK(DONOTSTART, bucketName, testName, type, specName, additionalProps);
     }
 
     /**
@@ -67,39 +72,7 @@ public class JsonpTckLauncher {
      */
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
-    public void launchJsonpTCK() throws Exception {
-
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(DONOTSTART);
-
-        /**
-         * The runTCKMvnCmd will set the following properties for use by arquillian
-         * [ wlp, tck_server, tck_port, tck_failSafeUndeployment, tck_appDeployTimeout, tck_appUndeployTimeout ]
-         * and then run the mvn test command.
-         */
-        int result = MvnUtils.runTCKMvnCmd(
-                                           DONOTSTART, //server to run on
-                                           "io.openliberty.jakarta.jsonp.2.1_fat_tck", //bucket name
-                                           this.getClass() + ":launchJsonpTCK", //launching method
-                                           null, //suite file to run
-                                           additionalProps, //additional props
-                                           Collections.emptySet() //additional jars
-        );
-
-        resultInfo.put("results_type", "Jakarta");
-        resultInfo.put("feature_name", "jsonp");
-        resultInfo.put("feature_version", "2.1");
-        MvnUtils.preparePublicationFile(resultInfo);
-        assertEquals(0, result);
-    }
-
-    /**
-     * Run the TCK (controlled by autoFVT/publish/tckRunner/tck/*)
-     */
-    @Test
-    @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
-    public void launchJsonpPluggabilityTCK() throws Exception {
-
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(DONOTSTART);
+    public void launchJsonp21PluggabilityTCK() throws Exception {
 
         /**
          * The runTCKMvnCmd will set the following properties for use by arquillian
@@ -109,21 +82,13 @@ public class JsonpTckLauncher {
         // Including jakarta.json-tck-tests and jakarta.json-tck-tests-pluggability together causes
         // exceptions due to collisions, so created 2 separate profiles which are then
         // run individually
+        Map<String, String> additionalPluggabilityProps = new HashMap<>();
         additionalPluggabilityProps.put("run-tck-tests-pluggability", "true");
-        int result2 = MvnUtils.runTCKMvnCmd(
-                                            DONOTSTART, //server to run on
-                                            "io.openliberty.jakarta.jsonp.2.1_fat_tck", //bucket name
-                                            this.getClass() + ":launchJsonpPluggabilityTCK", //launching method
-                                            null, //suite file to run
-                                            additionalPluggabilityProps, //additional props
-                                            Collections.emptySet() //additional jars
-        );
 
-        resultInfo.put("results_type", "Jakarta");
-        resultInfo.put("feature_name", "jsonp-pluggability");
-        resultInfo.put("feature_version", "2.1");
-        MvnUtils.preparePublicationFile(resultInfo);
-        assertEquals(0, result2);
-
+        String bucketName = "io.openliberty.jakarta.jsonp.2.1_fat_tck";
+        String testName = this.getClass() + ":launchJsonp21PluggabilityTCK";
+        Type type = Type.JAKARTA;
+        String specName = "JSON Processing";
+        TCKRunner.runTCK(DONOTSTART, bucketName, testName, type, specName, additionalPluggabilityProps);
     }
 }

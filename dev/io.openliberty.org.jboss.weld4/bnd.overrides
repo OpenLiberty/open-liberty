@@ -1,5 +1,7 @@
 bVersion=1.0
 
+Multi-Release: true
+
 Bundle-SymbolicName: io.openliberty.org.jboss.weld4; singleton:=true
 
 -include= -../generated.build.id, -liberty-release.props

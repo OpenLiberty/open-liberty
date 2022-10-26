@@ -1410,7 +1410,7 @@ criuRestore()
     trap "exit" INT TERM
     trap "killIfRunning $TAIL_PID" EXIT
 
-    criu restore --cpu-cap=none --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
+    criu restore --skip-file-rwx-check --cpu-cap=none --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
       --shell-job --verbosity=${CRIU_LOG_LEVEL} --log-file ${X_LOG_DIR}/checkpoint/restore.log ${CRIU_EXTRA_ARGS}
     rc=$?
 

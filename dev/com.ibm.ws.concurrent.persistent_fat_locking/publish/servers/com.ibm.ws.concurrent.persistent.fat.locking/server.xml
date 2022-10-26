@@ -24,7 +24,7 @@
   <dataSource id="LockTestDB" fat.modify="true">
     <jdbcDriver libraryRef="JDBCLib"/>
     <!-- properties modified by fat-suite during database rotation -->
-   	<properties.derby.embedded createDatabase="create" databaseName="memory:lockdb"/>
+   	<properties.derby.embedded createDatabase="create" databaseName="memory:lockdb" user="dbuser1" password="{xor}Oz0vKDtu"/>
   </dataSource>
   
   <library id="JDBCLib">

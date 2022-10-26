@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.authentication;
 
+import java.util.regex.Pattern;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -110,8 +112,12 @@ public class JakartaOidcAuthenticationResponseValidator extends AuthenticationRe
         String requestUrl = request.getRequestURL().toString();
         if (oidcClientConfig.isRedirectToOriginalResource()) {
             String originalReqUrl = storage.get(OidcStorageUtils.getOriginalReqUrlStorageKey(state));
-            if (originalReqUrl == null || !originalReqUrl.equals(requestUrl)) {
+            if (originalReqUrl == null) {
                 throwExceptionForRedirectUriDoesNotMatch(requestUrl, originalReqUrl);
+            }
+            String originalReqUrlWithoutQueryParams = originalReqUrl.split(Pattern.quote("?"))[0];
+            if (!originalReqUrlWithoutQueryParams.equals(requestUrl)) {
+                throwExceptionForRedirectUriDoesNotMatch(requestUrl, originalReqUrlWithoutQueryParams);
             }
         } else {
             String configuredRedirectUri = oidcClientConfig.getRedirectURI();

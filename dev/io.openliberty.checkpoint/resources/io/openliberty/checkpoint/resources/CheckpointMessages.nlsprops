@@ -56,3 +56,5 @@ RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E.useraction=Inspect the server logs d
 CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E=CWWKC0459E: A checkpoint cannot be taken because the Java version used does not support checkpoint.
 CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.explanation=The server checkpoint action can only be used with a Java version that supports checkpoint.  
 CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.useraction=Use a Java version that supports checkpoint. Check the documentation for details on the required Java version that supports checkpoint.
+
+# CWWKC0460E - is a beta only message that gets removed for GA

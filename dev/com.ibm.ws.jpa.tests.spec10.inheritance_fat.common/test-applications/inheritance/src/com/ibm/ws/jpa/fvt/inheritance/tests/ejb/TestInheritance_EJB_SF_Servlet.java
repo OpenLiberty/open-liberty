@@ -64,11 +64,11 @@ import com.ibm.ws.jpa.fvt.inheritance.testlogic.InheritanceTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestInheritance_EJB_SF_Servlet")
-public class TestInheritance_EJB_SF_Servlet extends EJBTestVehicleServlet {
+public class TestInheritance_EJB_SF_Servlet extends EJBDBTestVehicleServlet {
 
     @PostConstruct
     private void initFAT() {

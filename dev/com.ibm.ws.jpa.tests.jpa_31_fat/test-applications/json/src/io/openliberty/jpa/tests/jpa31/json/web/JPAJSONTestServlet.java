@@ -9,7 +9,7 @@ import static org.junit.Assert.assertNotSame;
 
 import org.junit.Test;
 
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 import io.openliberty.jpa.tests.jpa31.json.models.JSONEntity;
 import jakarta.annotation.Resource;
@@ -23,7 +23,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.UserTransaction;
 
 @WebServlet(urlPatterns = "/JPAJSONTestServlet")
-public class JPAJSONTestServlet extends JPATestServlet {
+public class JPAJSONTestServlet extends JPADBTestServlet {
     private final static String PUNAME = "JPAJSON";
 
     @PersistenceUnit(unitName = PUNAME + "_JTA")

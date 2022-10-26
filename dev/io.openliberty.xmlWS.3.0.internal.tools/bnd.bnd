@@ -11,6 +11,8 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+Multi-Release: true
+
 Bundle-Name: io.openliberty.xmlWS.3.0.internal.tools
 Bundle-Description: XML Web Services Tools, version ${bVersion}
 Bundle-SymbolicName: io.openliberty.xmlWS.3.0.internal.tools
@@ -34,8 +36,8 @@ Private-Package:\
  com.sun.tools.ws.wscompile;-split-package:=merge-last;version="3.0.0"
 
 -includeresource:\
- @${repo;com.sun.xml.ws:jaxws-rt;3.0.0;EXACT}!/!META-INF/maven/*, \
- @${repo;com.sun.xml.ws:jaxws-tools;3.0.0;EXACT}!/!META-INF/maven/*, \
+ @${repo;com.sun.xml.ws:jaxws-rt;3.0.0;EXACT}!/!(META-INF/maven/*|module-info.class), \
+ @${repo;com.sun.xml.ws:jaxws-tools;3.0.0;EXACT}!/!(META-INF/maven/*|module-info.class), \
  @${repo;com.sun.org.apache.xml.internal:resolver;20050927;EXACT}!/!META-INF/maven/*, \
  @${repo;org.jvnet.staxex:stax-ex;1.7.7;EXACT}!/!META-INF/maven/*, \
  @${repo;com.sun.xml.stream.buffer:streambuffer;1.5.3;EXACT}!/!META-INF/maven/*, \

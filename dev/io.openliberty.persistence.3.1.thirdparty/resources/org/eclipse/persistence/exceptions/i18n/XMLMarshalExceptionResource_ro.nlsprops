@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -65,7 +65,7 @@
 
 25020=Metoda "getResult()" nu trebuie apelat\u0103 \u00eenainte ca evenimentul "endDocument()" s\u0103 fie apelat.
 
-25021=Clasa {0} invalid\u0103 pentru SwaRef. Trebuie s\u0103 fie javax.activation.DataHandler.
+25021=Clasa {0} invalid\u0103 pentru SwaRef. Trebuie s\u0103 fie jakarta.activation.DataHandler.
 
 25022=Nu se poate realiza marshal pentru Imagine. Nu este disponibil niciun codor pentru mimeType {0}.
 

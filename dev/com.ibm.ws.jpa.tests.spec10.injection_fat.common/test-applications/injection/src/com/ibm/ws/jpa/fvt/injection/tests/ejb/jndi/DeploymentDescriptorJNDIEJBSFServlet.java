@@ -21,9 +21,9 @@ import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
-public class DeploymentDescriptorJNDIEJBSFServlet extends EJBTestVehicleServlet {
+public class DeploymentDescriptorJNDIEJBSFServlet extends EJBDBTestVehicleServlet {
     private static final long serialVersionUID = -7642267902342523971L;
 
     private final String testLogicClassName = "com.ibm.ws.jpa.fvt.injection.testlogic.JPAInjectionTestLogic";

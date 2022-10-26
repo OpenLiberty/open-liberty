@@ -70,6 +70,18 @@ public interface WebSphereCDIDeployment extends CDI11Deployment {
 
     /**
      * <p>
+     * The same as <code>CDI11Deployment.getBeanDeploymentArchive(Class<?> beanClass)</code> except that this method returns
+     * a {@link WebSphereBeanDeploymentArchive}
+     * </p>
+     *
+     * @param clazz the class
+     * @return the {@link WebSphereBeanDeploymentArchive} containing the bean class or null if no such {@link WebSphereBeanDeploymentArchive} exists
+     */
+    @Override
+    public WebSphereBeanDeploymentArchive getBeanDeploymentArchive(Class<?> beanClass);
+
+    /**
+     * <p>
      * Similar to <code>getBeanDeploymentArchive(Class<?> beanClass)</code>, this method returns
      * the {@link WebSphereBeanDeploymentArchive} containing the given class.
      * The difference is that the getBeanDeploymentArchive method will only return the BDA if

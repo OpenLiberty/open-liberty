@@ -25,6 +25,9 @@
         <AD id="allowHashtableLoginWithIdOnly" name="%allowHashtableLoginWithIdOnly" description="%allowHashtableLoginWithIdOnly.desc"
             required="false" type="Boolean"
             default="false" />
+        <AD id="useDisplayNameForSecurityName" name="%useDisplayNameForSecurityName" description="%useDisplayNameForSecurityName.desc"
+            required="false" type="Boolean"
+            default="false" />
         <AD id="fillInGroupInformationForHashtableLogin" name="internal" description="internal use only"
             required="false" type="Boolean"
             default="false" />

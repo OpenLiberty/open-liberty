@@ -16,6 +16,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
+import componenttest.containers.TestContainerSuite;
+
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.test.tests.FailoverTest1;
@@ -28,7 +30,7 @@ import componenttest.topology.database.container.DatabaseContainerType;
 
 @RunWith(Suite.class)
 @SuiteClasses({ FailoverTest1.class })
-public class FATSuite {
+public class FATSuite extends TestContainerSuite {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
@@ -40,8 +42,6 @@ public class FATSuite {
     public static JdbcDatabaseContainer<?> testContainer;
 
     public static void beforeSuite() throws Exception {
-        //Allows local tests to switch between using a local docker client, to using a remote docker client.
-        ExternalTestServiceDockerClientStrategy.setupTestcontainers();
         testContainer = DatabaseContainerFactory.createType(type);
         Log.info(FATSuite.class, "beforeSuite", "starting test container of type: " + type);
         testContainer.withStartupTimeout(FATUtils.TESTCONTAINER_STARTUP_TIMEOUT).start();

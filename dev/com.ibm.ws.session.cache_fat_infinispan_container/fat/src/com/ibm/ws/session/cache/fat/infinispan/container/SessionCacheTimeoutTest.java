@@ -81,8 +81,7 @@ public class SessionCacheTimeoutTest extends FATServletClient {
         }
 
         server.addEnvVar("INF_SERVERLIST", infinispan.getHost() + ":" + infinispan.getMappedPort(11222));
-        server.setJvmOptions(Arrays.asList("-Dsession.cache.config.file=" + sessionCacheConfigFile,
-                                           "-Dcom.ibm.ws.beta.edition=true")); // TODO Remove when JCache is GA'd
+        server.setJvmOptions(Arrays.asList("-Dsession.cache.config.file=" + sessionCacheConfigFile));
         server.startServer();
 
         // Access a session before the main test logic to ensure that delays caused by lazy initialization

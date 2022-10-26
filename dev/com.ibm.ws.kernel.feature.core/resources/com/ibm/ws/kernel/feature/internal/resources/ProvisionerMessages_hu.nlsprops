@@ -228,11 +228,6 @@ UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: A
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 a jelzett programoz\u00e1si modellek szolg\u00e1ltat\u00e1sainak nem kompatibilis kombin\u00e1ci\u00f3j\u00e1t tartalmazza. Ez a konfliktus el\u0151fordulhat, ha a k\u00e9t inkompatibilis szolg\u00e1ltat\u00e1s k\u00f6zvetlen\u00fcl a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban ker\u00fcl be\u00e1ll\u00edt\u00e1sra, vagy ha a konfigur\u00e1lt szolg\u00e1ltat\u00e1sok egy nem kompatibilis szolg\u00e1ltat\u00e1s k\u00fcl\u00f6nb\u00f6z\u0151 v\u00e1ltozatait tartalmazz\u00e1k.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=Pr\u00f3b\u00e1lja meg az \u00fctk\u00f6z\u00e9st okoz\u00f3 konfigur\u00e1lt szolg\u00e1ltat\u00e1soknak egy kompatibilis v\u00e1ltozat\u00e1t megadni a server.xml f\u00e1jlban. Ha nem \u00e9rhet\u0151 el m\u00e1sik v\u00e1ltozat, akkor a konfigur\u00e1lt szolg\u00e1ltat\u00e1sok nem kompatibilisek egym\u00e1ssal, \u00e9s nem \u00e1ll\u00edthat\u00f3k be egyidej\u0171leg.
 
-#CWWKF0048E
-CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING=CWWKF0048E: A kiszolg\u00e1l\u00f3 parancs megadta az ellen\u0151rz\u00e9si pont m\u0171veletet. Nem hozhat\u00f3 l\u00e9tre ellen\u0151rz\u00e9si pont, mert a checkpoint-1.0 szolg\u00e1ltat\u00e1s nincs be\u00e1ll\u00edtva a server.xml f\u00e1jlban.
-CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING.explanation=A kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont m\u0171velet\u00e9hez be kell \u00e1ll\u00edtani a checkpoint-1.0 szolg\u00e1ltat\u00e1st.  
-CHECKPOINT_REQUESTED_CHECKPOINT_FEATURE_MISSING.useraction=A checkpoint-1.0 szolg\u00e1ltat\u00e1st be kell \u00e1ll\u00edtani kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont m\u0171velet haszn\u00e1lat\u00e1ra.
-
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: A(z) {0} szolg\u00e1ltat\u00e1s m\u00e1r l\u00e9tezik. Ez nem ker\u00fclnek ism\u00e9t telep\u00edt\u00e9sre. Egy megl\u00e9v\u0151 szolg\u00e1ltat\u00e1s m\u00f3dos\u00edt\u00e1s\u00e1hoz el\u0151sz\u00f6r k\u00e9zileg el kell t\u00e1vol\u00edtania.

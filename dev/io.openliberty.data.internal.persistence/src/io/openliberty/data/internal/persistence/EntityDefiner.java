@@ -11,6 +11,7 @@
 package io.openliberty.data.internal.persistence;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -214,6 +215,7 @@ class EntityDefiner implements Runnable {
                 entityType.getName();//TODO
                 LinkedHashMap<String, String> attributeNames = new LinkedHashMap<>();
                 Set<String> collectionAttributeNames = new HashSet<String>();
+                HashMap<String, Member> attributeAccessors = new HashMap<>();
                 for (Attribute<?, ?> attr : entityType.getAttributes()) {
                     String attributeName = attr.getName();
                     PersistentAttributeType attributeType = attr.getPersistentAttributeType();
@@ -225,9 +227,11 @@ class EntityDefiner implements Runnable {
                             String embeddableAttributeName = embAttr.getName();
                             String fullAttributeName = attributeName + '.' + embeddableAttributeName;
                             attributeNames.put(embeddableAttributeName.toUpperCase(), fullAttributeName);
+                            attributeAccessors.put(fullAttributeName, attr.getJavaMember());
                         }
                     } else {
                         attributeNames.put(attributeName.toUpperCase(), attributeName);
+                        attributeAccessors.put(attributeName, attr.getJavaMember());
                         if (PersistentAttributeType.ELEMENT_COLLECTION.equals(attributeType))
                             collectionAttributeNames.add(attributeName);
                     }
@@ -243,15 +247,25 @@ class EntityDefiner implements Runnable {
                 //            break;
                 //        }
 
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "attribute names", attributeNames);
-
                 Class<?> entityClass = entityType.getJavaType();
+
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "attribute names for " + entityClass, attributeNames);
+
+                String keyAttributeName = keyAttributeNames.get(entityClass);
+                Attribute<?, ?> keyAttribute = entityType.getAttribute(keyAttributeNames.get(entityType.getJavaType()));
+                Member keyAccessor = keyAttribute.getJavaMember();
+
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "accessor for id " + keyAttribute, keyAccessor);
+
                 EntityInfo entityInfo = new EntityInfo(entityType.getName(), //
                                 entityClass, //
+                                attributeAccessors, //
                                 attributeNames, //
                                 collectionAttributeNames, //
                                 keyAttributeNames.get(entityClass), //
+                                keyAccessor, //
                                 punit);
 
                 provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).complete(entityInfo);
@@ -259,13 +273,23 @@ class EntityDefiner implements Runnable {
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "run: define entities");
         } catch (RuntimeException x) {
+            for (Class<?> entityClass : entities)
+                provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "run: define entities", x);
             throw x;
         } catch (Exception x) {
+            for (Class<?> entityClass : entities)
+                provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "run: define entities", x);
             throw new RuntimeException(x);
+        } catch (Error x) {
+            for (Class<?> entityClass : entities)
+                provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).completeExceptionally(x);
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "run: define entities", x);
+            throw x;
         } finally {
             if (em != null)
                 em.close();

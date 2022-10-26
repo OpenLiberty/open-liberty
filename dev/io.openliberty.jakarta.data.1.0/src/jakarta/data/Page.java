@@ -11,21 +11,25 @@
 package jakarta.data;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import jakarta.data.repository.Pageable;
 
 /**
- * Copied from jakarta.nosql.mapping.Page to investigate how well the
- * JNoSQL repository-related annotations work for relational database access.
+ * Method signatures copied from proposals in the Jakarta Data git repo.
  */
 public interface Page<T> extends Supplier<Stream<T>> {
-    Pageable getPagination();
-
-    Page<T> next();
-
-    Stream<T> getContent(); // Why do we have this when Stream<T> get() is inherited from Supplier?
+    List<T> getContent();
 
     <C extends Collection<T>> C getContent(Supplier<C> collectionFactory);
+
+    long getPage();
+
+    Pageable getPageable();
+
+    Pageable next();
+
+    long size();
 }

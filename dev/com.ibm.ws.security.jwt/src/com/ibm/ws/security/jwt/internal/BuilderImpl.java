@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -71,7 +71,8 @@ import com.ibm.wsspi.ssl.SSLSupport;
 @Component(service = Builder.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM", name = "builder")
 public class BuilderImpl implements Builder {
 
-    private static final TraceComponent tc = Tr.register(BuilderImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
+    private static final TraceComponent tc = Tr.register(BuilderImpl.class, TraceConstants.TRACE_GROUP,
+            TraceConstants.MESSAGE_BUNDLE);
 
     private Claims claims;
     private static boolean active = false;
@@ -85,8 +86,6 @@ public class BuilderImpl implements Builder {
     private Key keyManagementKey;
     private String contentEncryptionAlg;
 
-    private final KeyAlgorithmChecker keyAlgChecker = new KeyAlgorithmChecker();
-
     private final static String DEFAULT_ID = "defaultJWT";
     private final static String KEY_JWT_SERVICE = "jwtConfig";
     private static final String CFG_KEY_ID = "id";
@@ -97,15 +96,19 @@ public class BuilderImpl implements Builder {
     private final Object initlock = new Object() {
     };
 
-    private static ConcurrentServiceReferenceMap<String, JwtConfig> jwtServiceMapRef = new ConcurrentServiceReferenceMap<String, JwtConfig>(KEY_JWT_SERVICE);
+    private static ConcurrentServiceReferenceMap<String, JwtConfig> jwtServiceMapRef = new ConcurrentServiceReferenceMap<String, JwtConfig>(
+            KEY_JWT_SERVICE);
 
     private final String KEY_VMM_SERVICE = "vmmService";
 
-    private final AtomicServiceReference<VMMService> vmmServiceRef = new AtomicServiceReference<VMMService>(KEY_VMM_SERVICE);
+    private final AtomicServiceReference<VMMService> vmmServiceRef = new AtomicServiceReference<VMMService>(
+            KEY_VMM_SERVICE);
     public static final String KEY_SSL_SUPPORT = "sslSupport";
-    private final AtomicServiceReference<SSLSupport> sslSupportRef = new AtomicServiceReference<SSLSupport>(KEY_SSL_SUPPORT);
+    private final AtomicServiceReference<SSLSupport> sslSupportRef = new AtomicServiceReference<SSLSupport>(
+            KEY_SSL_SUPPORT);
     public static final String KEY_KEYSTORE_SERVICE = "keyStoreService";
-    private final AtomicServiceReference<KeyStoreService> keyStoreServiceRef = new AtomicServiceReference<KeyStoreService>(KEY_KEYSTORE_SERVICE);
+    private final AtomicServiceReference<KeyStoreService> keyStoreServiceRef = new AtomicServiceReference<KeyStoreService>(
+            KEY_KEYSTORE_SERVICE);
 
     public BuilderImpl() {
     }
@@ -222,12 +225,14 @@ public class BuilderImpl implements Builder {
     @Reference(service = KeyStoreService.class, name = KEY_KEYSTORE_SERVICE, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY)
     protected void setKeyStoreService(ServiceReference<KeyStoreService> ref) {
         keyStoreServiceRef.setReference(ref);
-        //keyStoreServiceMapRef.putReference((String) ref.getProperty(ID), ref);
+        // keyStoreServiceMapRef.putReference((String) ref.getProperty(ID),
+        // ref);
     }
 
     protected void unsetKeyStoreService(ServiceReference<KeyStoreService> ref) {
         keyStoreServiceRef.unsetReference(ref);
-        //keyStoreServiceMapRef.removeReference((String) ref.getProperty(ID), ref);
+        // keyStoreServiceMapRef.removeReference((String) ref.getProperty(ID),
+        // ref);
     }
 
     @Reference(service = SSLSupport.class, name = KEY_SSL_SUPPORT, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY)
@@ -337,13 +342,15 @@ public class BuilderImpl implements Builder {
                 }
             }
             if (audiences.isEmpty()) {
-                String err = Tr.formatMessage(tc, "JWT_INVALID_CLAIM_VALUE_ERR", new Object[] { Claims.AUDIENCE, newaudiences });
+                String err = Tr.formatMessage(tc, "JWT_INVALID_CLAIM_VALUE_ERR",
+                        new Object[] { Claims.AUDIENCE, newaudiences });
                 throw new InvalidClaimException(err);
             }
             // this.audiences = new ArrayList<String>(audiences);
             claims.put(Claims.AUDIENCE, audiences);
         } else {
-            String err = Tr.formatMessage(tc, "JWT_INVALID_CLAIM_VALUE_ERR", new Object[] { Claims.AUDIENCE, newaudiences });
+            String err = Tr.formatMessage(tc, "JWT_INVALID_CLAIM_VALUE_ERR",
+                    new Object[] { Claims.AUDIENCE, newaudiences });
             throw new InvalidClaimException(err);
         }
         return this;
@@ -364,7 +371,8 @@ public class BuilderImpl implements Builder {
             claims.put(Claims.EXPIRATION, Long.valueOf(exp));
         } else {
             // Expiration must be greater than the current time
-            String err = Tr.formatMessage(tc, "JWT_INVALID_EXP_CLAIM_ERR", new Object[] { Claims.EXPIRATION, exp, JwtUtils.getDate(exp * 1000), JwtUtils.getDate(currTime * 1000) });
+            String err = Tr.formatMessage(tc, "JWT_INVALID_EXP_CLAIM_ERR", new Object[] { Claims.EXPIRATION, exp,
+                    JwtUtils.getDate(exp * 1000), JwtUtils.getDate(currTime * 1000) });
             throw new InvalidClaimException(err);
         }
         return this;
@@ -441,12 +449,14 @@ public class BuilderImpl implements Builder {
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.ws.security.jwt.internal.Builder#signWith(java.lang.String, java.security.Key)
+     * @see com.ibm.ws.security.jwt.internal.Builder#signWith(java.lang.String,
+     * java.security.Key)
      */
     @Override
     public Builder signWith(String algorithm, Key key) throws KeyException {
         if (!isValidAlgorithmForJavaSecurityKey(algorithm)) {
-            String err = Tr.formatMessage(tc, "JWT_INVALID_ALGORITHM_ERR", new Object[] { algorithm, getValidAlgorithmListForJavaSecurityKey() });
+            String err = Tr.formatMessage(tc, "JWT_INVALID_ALGORITHM_ERR",
+                    new Object[] { algorithm, getValidAlgorithmListForJavaSecurityKey() });
             throw new KeyException(err);
         }
         if (!isValidKeyType(key, algorithm)) {
@@ -459,35 +469,34 @@ public class BuilderImpl implements Builder {
     }
 
     boolean isValidAlgorithmForJavaSecurityKey(String algorithm) {
-        return (keyAlgChecker.isRSAlgorithm(algorithm) || keyAlgChecker.isESAlgorithm(algorithm));
+        return (KeyAlgorithmChecker.isRSAlgorithm(algorithm) || KeyAlgorithmChecker.isESAlgorithm(algorithm));
     }
 
     String getValidAlgorithmListForJavaSecurityKey() {
-        return Constants.SIGNATURE_ALG_RS256 + ", " +
-                Constants.SIGNATURE_ALG_RS384 + ", " +
-                Constants.SIGNATURE_ALG_RS512 + ", " +
-                Constants.SIGNATURE_ALG_ES256 + ", " +
-                Constants.SIGNATURE_ALG_ES384 + ", " +
-                Constants.SIGNATURE_ALG_ES512;
+        return Constants.SIGNATURE_ALG_RS256 + ", " + Constants.SIGNATURE_ALG_RS384 + ", "
+                + Constants.SIGNATURE_ALG_RS512 + ", " + Constants.SIGNATURE_ALG_ES256 + ", "
+                + Constants.SIGNATURE_ALG_ES384 + ", " + Constants.SIGNATURE_ALG_ES512;
     }
 
     boolean isValidKeyType(Key key, String algorithm) {
         if (key == null) {
             return false;
         }
-        return keyAlgChecker.isPrivateKeyValidType(key, algorithm);
+        return KeyAlgorithmChecker.isPrivateKeyValidType(key, algorithm);
     }
 
     // shared key for signing
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.ws.security.jwt.internal.Builder#signWith(java.lang.String, java.lang.String)
+     * @see com.ibm.ws.security.jwt.internal.Builder#signWith(java.lang.String,
+     * java.lang.String)
      */
     @Override
     public Builder signWith(String algorithm, String key) throws KeyException {
         if (!isValidAlgorithmForStringKey(algorithm)) {
-            String err = Tr.formatMessage(tc, "JWT_INVALID_ALGORITHM_ERR", new Object[] { algorithm, getValidAlgorithmListForStringKey() });
+            String err = Tr.formatMessage(tc, "JWT_INVALID_ALGORITHM_ERR",
+                    new Object[] { algorithm, getValidAlgorithmListForStringKey() });
             throw new KeyException(err);
         }
         if (key == null || key.isEmpty()) {
@@ -500,22 +509,23 @@ public class BuilderImpl implements Builder {
     }
 
     boolean isValidAlgorithmForStringKey(String algorithm) {
-        return keyAlgChecker.isHSAlgorithm(algorithm);
+        return KeyAlgorithmChecker.isHSAlgorithm(algorithm);
     }
 
     String getValidAlgorithmListForStringKey() {
-        return Constants.SIGNATURE_ALG_HS256 + ", " +
-                Constants.SIGNATURE_ALG_HS384 + ", " +
-                Constants.SIGNATURE_ALG_HS512;
+        return Constants.SIGNATURE_ALG_HS256 + ", " + Constants.SIGNATURE_ALG_HS384 + ", "
+                + Constants.SIGNATURE_ALG_HS512;
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.websphere.security.jwt.Builder#encryptWith(java.lang.String, java.security.Key, java.lang.String)
+     * @see com.ibm.websphere.security.jwt.Builder#encryptWith(java.lang.String,
+     * java.security.Key, java.lang.String)
      */
     @Override
-    public Builder encryptWith(String keyManagementAlg, Key keyManagementKey, String contentEncryptionAlg) throws KeyException {
+    public Builder encryptWith(String keyManagementAlg, Key keyManagementKey, String contentEncryptionAlg)
+            throws KeyException {
         if (keyManagementKey == null) {
             String err = Tr.formatMessage(tc, "KEY_MANAGEMENT_KEY_MISSING", new Object[] { configId });
             throw new KeyException(err);
@@ -529,7 +539,8 @@ public class BuilderImpl implements Builder {
         if (contentEncryptionAlg == null || contentEncryptionAlg.isEmpty()) {
             contentEncryptionAlg = DEFAULT_CONTENT_ENCRYPTION_ALGORITHM;
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Null or empty content encryption algorithm provided; defaulting to " + contentEncryptionAlg);
+                Tr.debug(tc,
+                        "Null or empty content encryption algorithm provided; defaulting to " + contentEncryptionAlg);
             }
         }
         this.keyManagementAlg = keyManagementAlg;
@@ -542,7 +553,8 @@ public class BuilderImpl implements Builder {
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.ws.security.jwt.internal.Builder#claim(java.lang.String, java.lang.Object)
+     * @see com.ibm.ws.security.jwt.internal.Builder#claim(java.lang.String,
+     * java.lang.Object)
      */
     @Override
     public Builder claim(String name, Object value) throws InvalidClaimException {
@@ -571,7 +583,8 @@ public class BuilderImpl implements Builder {
                 } else if (value instanceof Integer) {
                     this.expirationTime(((Integer) value).longValue());
                 } else {
-                    String msg = Tr.formatMessage(tc, "JWT_INVALID_CLAIM_VALUE_TYPE", new Object[] { Claims.EXPIRATION });
+                    String msg = Tr.formatMessage(tc, "JWT_INVALID_CLAIM_VALUE_TYPE",
+                            new Object[] { Claims.EXPIRATION });
                     throw new InvalidClaimException(msg);
                 }
             } else if (name.equals(Claims.ISSUED_AT)) {
@@ -580,7 +593,8 @@ public class BuilderImpl implements Builder {
                 } else if (value instanceof Integer) {
                     this.expirationTime(((Integer) value).longValue());
                 } else {
-                    String msg = Tr.formatMessage(tc, "JWT_INVALID_CLAIM_VALUE_TYPE", new Object[] { Claims.ISSUED_AT });
+                    String msg = Tr.formatMessage(tc, "JWT_INVALID_CLAIM_VALUE_TYPE",
+                            new Object[] { Claims.ISSUED_AT });
                     throw new InvalidClaimException(msg);
                 }
             } else if (name.equals(Claims.NOT_BEFORE)) {
@@ -589,7 +603,8 @@ public class BuilderImpl implements Builder {
                 } else if (value instanceof Integer) {
                     this.expirationTime(((Integer) value).longValue());
                 } else {
-                    String msg = Tr.formatMessage(tc, "JWT_INVALID_CLAIM_VALUE_TYPE", new Object[] { Claims.NOT_BEFORE });
+                    String msg = Tr.formatMessage(tc, "JWT_INVALID_CLAIM_VALUE_TYPE",
+                            new Object[] { Claims.NOT_BEFORE });
                     throw new InvalidClaimException(msg);
                 }
             } else if (name.equals(Claims.ISSUER) || name.equals(Claims.SUBJECT)) {
@@ -681,7 +696,8 @@ public class BuilderImpl implements Builder {
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.ws.security.jwt.internal.Builder#claimFrom(java.lang.String, java.lang.String)
+     * @see com.ibm.ws.security.jwt.internal.Builder#claimFrom(java.lang.String,
+     * java.lang.String)
      */
     @Override
     public Builder claimFrom(String jsonOrJwt, String claim) throws InvalidClaimException, InvalidTokenException {
@@ -778,7 +794,9 @@ public class BuilderImpl implements Builder {
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.ws.security.jwt.internal.Builder#claimFrom(com.ibm.websphere.security.jwt.JwtToken, java.lang.String)
+     * @see
+     * com.ibm.ws.security.jwt.internal.Builder#claimFrom(com.ibm.websphere.
+     * security.jwt.JwtToken, java.lang.String)
      */
     @Override
     public Builder claimFrom(JwtToken jwt, String claimName) throws InvalidClaimException, InvalidTokenException {
@@ -802,7 +820,9 @@ public class BuilderImpl implements Builder {
     /*
      * (non-Javadoc)
      *
-     * @see com.ibm.ws.security.jwt.internal.Builder#claimFrom(com.ibm.websphere.security.jwt.JwtToken)
+     * @see
+     * com.ibm.ws.security.jwt.internal.Builder#claimFrom(com.ibm.websphere.
+     * security.jwt.JwtToken)
      */
     @Override
     public Builder claimFrom(JwtToken jwt) throws InvalidTokenException {

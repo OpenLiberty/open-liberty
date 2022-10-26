@@ -42,7 +42,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.serialization.SerializationService;
 
 import io.openliberty.jcache.CacheManagerService;
@@ -72,9 +71,6 @@ public class CacheServiceImpl implements CacheService {
     private Object syncObject = new Object();
     private String id;
 
-    /** Flag tells us if the message for a call to a beta method has been issued */
-    private static boolean issuedBetaMessage = false;
-
     /** Collection of classes that have had error messages emitted for NotSerializableExceptions. */
     private static final Set<String> NOTSERIALIZABLE_CLASSES_LOGGED = new HashSet<String>();
 
@@ -83,11 +79,6 @@ public class CacheServiceImpl implements CacheService {
 
     @Activate
     public void activate(Map<String, Object> configProps) {
-        /*
-         * Don't run if not in beta.
-         */
-        betaFenceCheck();
-
         /*
          * Retrieve the id and cache name from the configuration properties.
          */
@@ -131,30 +122,6 @@ public class CacheServiceImpl implements CacheService {
         getCacheFuture = null;
         closeSyncObject = null;
         NOTSERIALIZABLE_CLASSES_LOGGED.clear();
-    }
-
-    /**
-     * Prevent beta functionality from being used when not running the beta edition.
-     *
-     * @throws UnsupportedOperationException if we are not running the beta edition.
-     */
-    private void betaFenceCheck() throws UnsupportedOperationException {
-        /*
-         * Not running beta edition, throw exception
-         */
-        if (!ProductInfo.getBetaEdition()) {
-            throw new UnsupportedOperationException("The cache feature is beta and is not available.");
-        } else {
-            /*
-             * Running beta exception, issue message if we haven't already issued one for
-             * this class.
-             */
-            if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName()
-                            + " for the first time.");
-                issuedBetaMessage = !issuedBetaMessage;
-            }
-        }
     }
 
     @Override
@@ -227,6 +194,20 @@ public class CacheServiceImpl implements CacheService {
                         long loadTimeMs = 0l;
                         try {
                             cacheManager = cacheManagerService.getCacheManager();
+
+                            /*
+                             * Configuration updates can occur while this task is either queued to run or while running.
+                             * If this occurs, the CachingProviderService could have been unregistered from the
+                             * CacheManagerService causing the CacheManager to be null here. Make sure it is still
+                             * registered, if not, no-op this task.
+                             */
+                            if (cacheManager == null) {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "It appears that the CacheManagerService was unable to get a CacheManager instance." +
+                                                 " Perhaps a configuration change was processed?");
+                                }
+                                return null;
+                            }
 
                             /*
                              * The JCache specification says that any cache created outside of the JCache

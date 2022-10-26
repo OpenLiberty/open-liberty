@@ -10,32 +10,50 @@
  *******************************************************************************/
 package componenttest.topology.utils.tck;
 
+import componenttest.topology.impl.JavaInfo;
+
 /**
  * Metadata about a set of TCK Results
  */
 public class TCKResultsInfo {
 
-    private String javaMajorVersion;// = resultInfo.get("java_major_version");
-    private String javaVersion;// = resultInfo.get("java_info");
-    private String openLibertyVersion;// = resultInfo.get("product_version");
-    private String type;// = resultInfo.get("results_type");
-    private String osVersion;// = resultInfo.get("os_name");
-    private String specName;// = resultInfo.get("feature_name");
-    private String specVersion;// = resultInfo.get("feature_version");
-    private String rcVersion;
+    public static enum Type {
+        MICROPROFILE, //A MicroProfile TCK
+        JAKARTA //A Jakarta EE TCK
+    }
+
+    static class TCKJarInfo {
+        String group; //the maven group ID
+        String artifact; //the maven artifact ID
+        String version; //the maven version
+        String jarPath; //the local path on disk to the TCK jar
+        String sha; //a sha256 hash of the TCK jar
+    }
+
+    private final String javaMajorVersion;// = resultInfo.get("java_major_version");
+    private final String javaVersion;// = resultInfo.get("java_info");
+    private final String openLibertyVersion;// = resultInfo.get("product_version");
+    private final Type type;// = resultInfo.get("results_type");
+    private final String osVersion;// = resultInfo.get("os_name");
+    private final String specName;// = resultInfo.get("feature_name");
+    private TCKJarInfo tckJarInfo;
+
+    public TCKResultsInfo(Type type, String specName, String openLibertyVersion, TCKJarInfo tckJarInfo) {
+        this.type = type;
+        this.specName = specName;
+        this.openLibertyVersion = openLibertyVersion;
+        this.javaVersion = System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") + ')';
+        JavaInfo javaInfo = JavaInfo.forCurrentVM();
+        this.javaMajorVersion = String.valueOf(javaInfo.majorVersion());
+        this.osVersion = System.getProperty("os.name");
+        this.tckJarInfo = tckJarInfo;
+    }
 
     /**
      * @return the javaMajorVersion
      */
     public String getJavaMajorVersion() {
         return javaMajorVersion;
-    }
-
-    /**
-     * @param javaMajorVersion the javaMajorVersion to set
-     */
-    public void setJavaMajorVersion(String javaMajorVersion) {
-        this.javaMajorVersion = javaMajorVersion;
     }
 
     /**
@@ -46,13 +64,6 @@ public class TCKResultsInfo {
     }
 
     /**
-     * @param javaVersion the javaVersion to set
-     */
-    public void setJavaVersion(String javaVersion) {
-        this.javaVersion = javaVersion;
-    }
-
-    /**
      * @return the openLibertyVersion
      */
     public String getOpenLibertyVersion() {
@@ -60,24 +71,10 @@ public class TCKResultsInfo {
     }
 
     /**
-     * @param openLibertyVersion the openLibertyVersion to set
-     */
-    public void setOpenLibertyVersion(String openLibertyVersion) {
-        this.openLibertyVersion = openLibertyVersion;
-    }
-
-    /**
      * @return the type
      */
-    public String getType() {
+    public Type getType() {
         return type;
-    }
-
-    /**
-     * @param type the type to set
-     */
-    public void setType(String type) {
-        this.type = type;
     }
 
     /**
@@ -88,13 +85,6 @@ public class TCKResultsInfo {
     }
 
     /**
-     * @param osVersion the osVersion to set
-     */
-    public void setOsVersion(String osVersion) {
-        this.osVersion = osVersion;
-    }
-
-    /**
      * @return the specName
      */
     public String getSpecName() {
@@ -102,38 +92,26 @@ public class TCKResultsInfo {
     }
 
     /**
-     * @param specName the specName to set
-     */
-    public void setSpecName(String specName) {
-        this.specName = specName;
-    }
-
-    /**
      * @return the specVersion
      */
     public String getSpecVersion() {
-        return specVersion;
+        if (this.tckJarInfo != null) {
+            return this.tckJarInfo.version;
+        } else {
+            return "UNKNOWN";
+        }
     }
 
     /**
-     * @param specVersion the specVersion to set
+     * @return
      */
-    public void setSpecVersion(String specVersion) {
-        this.specVersion = specVersion;
-    }
+    public String getSHA() {
+        if (this.tckJarInfo != null) {
+            return this.tckJarInfo.sha;
+        } else {
+            return "UNKNOWN";
+        }
 
-    /**
-     * @return the rcVersion
-     */
-    public String getRcVersion() {
-        return rcVersion;
-    }
-
-    /**
-     * @param rcVersion the rcVersion to set
-     */
-    public void setRcVersion(String rcVersion) {
-        this.rcVersion = rcVersion;
     }
 
 }

@@ -10,15 +10,25 @@
  *******************************************************************************/
 package com.ibm.ws.testcontainers.example;
 
+import static componenttest.annotation.SkipIfSysProp.DB_Not_Default;
+import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.OnlyIfSysProp;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerFactory;
@@ -38,7 +48,7 @@ import web.dbrotation.DbRotationServlet;
 @RunWith(FATRunner.class)
 public class DatabaseRotationTest {
 
-    public static final String APP_NAME = "containerApp";
+    public static final String APP_NAME = "app";
 
     @Server("build.example.testcontainers.dbrotation")
     @TestServlet(servlet = DbRotationServlet.class, contextRoot = APP_NAME)
@@ -86,6 +96,58 @@ public class DatabaseRotationTest {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer();
+    }
+
+    /**
+     * <pre>
+     * If a test is not valid for a certain Database driver, then
+     * you can skip this test for that database by using the
+     * &#64;SkipIfSysProp annotation.
+     * </pre>
+     */
+    @Test
+    @SkipIfSysProp(DB_Postgres)
+    public void testSkipForPostgreSQL() throws Exception {
+        assertTrue(System.getProperty("fat.bucket.db.type") != "Postgres");
+    }
+
+    /**
+     * <pre>
+     * Exclude test from DB rotation.
+     * This test won't run when a different database is configured.
+     * Use: &#64;SkipIfSysProp(DB_Default)
+     * </pre>
+     */
+    @Test
+    @SkipIfSysProp(DB_Not_Default)
+    public void testExcludeFromRotation() throws Exception {
+        assertNull(System.getProperty("fat.bucket.db.type"));
+    }
+
+    /**
+     * <pre>
+     * If a test is only valid for a certain Database driver, then
+     * you can skip all other databases for for this test by using the
+     * &#64;OnlyIfSysProp annotation.
+     * </pre>
+     */
+    @Test
+    @OnlyIfSysProp(DB_Postgres)
+    public void testSkipUnlessPostgreSQL() throws Exception {
+        assertEquals("Postgres", System.getProperty("fat.bucket.db.type"));
+    }
+
+    /**
+     * <pre>
+     * Run test only on enterprise databases.
+     * This test won't run unless a different database is configured.
+     * Use: &#64;OnlyIfSysProp(DB_Not_Default)
+     * </pre>
+     */
+    @Test
+    @OnlyIfSysProp(DB_Not_Default)
+    public void testOnlyOnRotation() throws Exception {
+        assertNotNull(System.getProperty("fat.bucket.db.type"));
     }
 
 }

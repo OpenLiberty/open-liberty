@@ -11,11 +11,7 @@
 package com.ibm.ws.microprofile.health.tck;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -28,8 +24,8 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.JavaInfo;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKRunner;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -53,7 +49,7 @@ public class HealthTCKLauncher {
 
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
-    public void launchHealthTck() throws Exception {
+    public void launchHealth10Tck() throws Exception {
         String protocol = "http";
         String host = server.getHostname();
         String port = Integer.toString(server.getPort(PortType.WC_defaulthost));
@@ -61,12 +57,11 @@ public class HealthTCKLauncher {
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("test.url", protocol + "://" + host + ":" + port);
 
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.health.1.0_fat_tck", this.getClass() + ":launchHealthTck", additionalProps);
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "Health");
-        resultInfo.put("feature_version", "1.0");
-        MvnUtils.preparePublicationFile(resultInfo);
+        String bucketName = "com.ibm.ws.microprofile.health.1.0_fat_tck";
+        String testName = this.getClass() + ":launchHealth10Tck";
+        Type type = Type.MICROPROFILE;
+        String specName = "Health";
+        TCKRunner.runTCK(server, bucketName, testName, type, specName, additionalProps);
     }
 
 }

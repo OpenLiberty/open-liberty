@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
+
+    <servlet>
+        <servlet-name>CacheIdTestServlet1</servlet-name>
+        <servlet-class>test.server.config.cacheid.CacheIdTestServlet1</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>CacheIdTestServlet1</servlet-name>
+        <url-pattern>/cacheid1</url-pattern>
+    </servlet-mapping>
+    
+</web-app>

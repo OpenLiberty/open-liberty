@@ -6,11 +6,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package oidc.client.maximumAnnotation.servlets;
-
-import java.io.IOException;
 
 import io.openliberty.security.jakartasec.fat.utils.Constants;
 import jakarta.annotation.security.DeclareRoles;
@@ -19,19 +17,17 @@ import jakarta.security.enterprise.authentication.mechanism.http.openid.ClaimsDe
 import jakarta.security.enterprise.authentication.mechanism.http.openid.DisplayType;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.LogoutDefinition;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdProviderMetadata;
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebServlet;
-import oidc.client.base.servlets.SimpleServlet;
+import oidc.client.base.servlets.BaseServlet;
 
 // TODO - Make sure all possible attrs using EL values
 @WebServlet("/MaximumAnnotationServlet")
-@OpenIdAuthenticationMechanismDefinition(
-                                         providerURI = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1",
+@OpenIdAuthenticationMechanismDefinition(providerURI = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1",
                                          clientId = "client_1",
                                          clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger",
-                                         claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub", callerGroupsClaim = "groups"),
+                                         claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub", callerGroupsClaim = "groupIds"),
                                          logout = @LogoutDefinition(),
                                          redirectURI = "${providerBean.clientSecureRoot}/MaximumAnnotation/Callback",
                                          redirectToOriginalResource = false,
@@ -39,8 +35,7 @@ import oidc.client.base.servlets.SimpleServlet;
                                          scope = { Constants.OPENID_SCOPE, Constants.EMAIL_SCOPE, Constants.PROFILE_SCOPE },
                                          scopeExpression = "",
                                          responseType = Constants.CODE_FLOW,
-                                         responseMode = "",
-                                         prompt = {},
+                                         responseMode = "", prompt = {},
                                          promptExpression = "",
                                          display = DisplayType.PAGE,
                                          displayExpression = "",
@@ -56,20 +51,11 @@ import oidc.client.base.servlets.SimpleServlet;
                                          tokenAutoRefreshExpression = "",
                                          tokenMinValidity = Constants.TOKEN_MIN_VALIDITY,
                                          tokenMinValidityExpression = "",
-                                         providerMetadata = @OpenIdProviderMetadata(
-                                                                                    authorizationEndpoint = "https://localhost:8920/oidc/endpoint/OP1/authorize",
-                                                                                    tokenEndpoint = "https://localhost:8920/oidc/endpoint/OP1/token"))
+                                         providerMetadata = @OpenIdProviderMetadata(authorizationEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/authorize",
+                                                                                    tokenEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/token"))
 @DeclareRoles("all")
 @ServletSecurity(@HttpConstraint(rolesAllowed = "all"))
-public class MaximumAnnotationServlet extends SimpleServlet {
+public class MaximumAnnotationServlet extends BaseServlet {
     private static final long serialVersionUID = 1L;
 
-    @Override
-    protected void recordHelloWorld(ServletOutputStream output) throws IOException {
-
-        super.recordHelloWorld(output);
-        System.out.println("Hello world from MaximumAnnotationServlet");
-        output.println("Hello world from MaximumAnnotationServlet!");
-
-    }
 }

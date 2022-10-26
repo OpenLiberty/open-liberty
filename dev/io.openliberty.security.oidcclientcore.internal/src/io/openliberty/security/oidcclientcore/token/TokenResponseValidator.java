@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
-import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.consumer.JwtContext;
 import org.jose4j.jwx.JsonWebStructure;
 import org.osgi.service.component.annotations.Component;
@@ -31,12 +30,15 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.wsspi.ssl.SSLSupport;
 
+import io.openliberty.security.common.jwt.JwtParsingUtils;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestParameters;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
+import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
+import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
+import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.http.EndpointRequest;
-import io.openliberty.security.oidcclientcore.storage.CookieBasedStorage;
-import io.openliberty.security.oidcclientcore.storage.SessionBasedStorage;
 import io.openliberty.security.oidcclientcore.storage.Storage;
+import io.openliberty.security.oidcclientcore.storage.StorageFactory;
 import io.openliberty.security.oidcclientcore.utils.CommonJose4jUtils;
 import io.openliberty.security.oidcclientcore.utils.CommonJose4jUtils.TokenSignatureValidationBuilder;
 
@@ -71,19 +73,7 @@ public class TokenResponseValidator {
     public TokenResponseValidator(OidcClientConfig oidcClientConfig) {
         this.clientConfig = oidcClientConfig;
     }
-
-    /**
-     * @param oidcClientConfig
-     */
-    private void instantiateStorage(OidcClientConfig oidcClientConfig) {
-        if (oidcClientConfig.isUseSession()) {
-            this.storage = new SessionBasedStorage(this.request);
-        } else {
-            this.storage = new CookieBasedStorage(this.request, this.response);
-        }
-
-    }
-
+    
     @Reference(name = KEY_SSL_SUPPORT, policy = ReferencePolicy.DYNAMIC)
     protected void setSslSupport(SSLSupport sslSupportSvc) {
         sslSupport = sslSupportSvc;
@@ -115,7 +105,7 @@ public class TokenResponseValidator {
 
         JwtContext jwtcontext = null;
         try {
-            jwtcontext = CommonJose4jUtils.parseJwtWithoutValidation(idtoken);
+            jwtcontext = JwtParsingUtils.parseJwtWithoutValidation(idtoken);
 
         } catch (Exception e) {
             String error = e.getMessage() != null ? e.getMessage() : "not a valid id token";
@@ -147,23 +137,23 @@ public class TokenResponseValidator {
                     ((IdTokenValidator) tokenValidator).nonce(((String) jwtClaims.getClaimValue("nonce")));
                     ((IdTokenValidator) tokenValidator).state(getStateParameter());
                     ((IdTokenValidator) tokenValidator).secret(clientSecret);
-                    instantiateStorage(clientConfig);
+                    storage = StorageFactory.instantiateStorage(request, response, clientConfig.isUseSession());
                     ((IdTokenValidator) tokenValidator).storage(storage);
                     
                     ((IdTokenValidator) tokenValidator).validateNonce();
                 } 
-            } catch (MalformedClaimException e) {
+            } catch (Exception e) {
                 throw new TokenValidationException(this.clientConfig.getClientId(), e.getMessage());
             }
 
             try {
-                JsonWebStructure jsonStruct = jose4jutil.getJsonWebStructureFromJwtContext(jwtcontext);
+                JsonWebStructure jsonStruct = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtcontext);
                 if (jsonStruct == null || !(jsonStruct instanceof JsonWebSignature)) {
                     throw new TokenValidationException(this.clientConfig.getClientId(), "jsonwebsignature error");
                 }
                 TokenSignatureValidationBuilder tokenSignatureValidationBuilder = jose4jutil.signaturevalidationbuilder();
-                String jwkuri = getJwkUri();
-                tokenSignatureValidationBuilder.signature(jsonStruct).sslsupport(sslSupport).issuer(issuerconfigured).jwkuri(jwkuri).clientid(clientConfig.getClientId());
+                String jwksUri = getJwksUri();
+                tokenSignatureValidationBuilder.signature(jsonStruct).sslsupport(sslSupport).issuer(issuerconfigured).jwkuri(jwksUri).clientid(clientConfig.getClientId());
 
                 tokenSignatureValidationBuilder.clientsecret(clientSecret);
                 tokenSignatureValidationBuilder.jwkset(jwkset);
@@ -181,12 +171,39 @@ public class TokenResponseValidator {
     /**
      * @param clientConfig
      * @return
+     * @throws OidcDiscoveryException
      */
-    private String getIssuer() {
+    private String getIssuer() throws OidcDiscoveryException {
+        String issuer = getIssuerFromProviderMetadata();
+        if (issuer != null) {
+            return issuer;
+        }
+        return getIssuerFromDiscoveryMetadata();
+    }
+
+    private String getIssuerFromProviderMetadata() {
+        OidcProviderMetadata providerMetadata = clientConfig.getProviderMetadata();
+        if (providerMetadata != null) {
+            String issuer = providerMetadata.getIssuer();
+            if (issuer != null && !issuer.isEmpty()) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Issuer found in the provider metadata: [" + issuer + "]");
+                }
+                return issuer;
+            }
+        }
+        return null;
+    }
+
+    private String getIssuerFromDiscoveryMetadata() throws OidcDiscoveryException {
         String issuer = null;
-        issuer = clientConfig.getProviderMetadata().getIssuer();
-        if ((issuer == null || issuer.isEmpty()) && getProviderDiscoveryMetadadata() != null) {
-            return ((String) this.discoveredProviderMetadata.get("issuer"));
+        JSONObject providerDiscoveryMetadata = getProviderDiscoveryMetadadata();
+        if (providerDiscoveryMetadata != null) {
+            issuer = (String) providerDiscoveryMetadata.get(OidcDiscoveryConstants.METADATA_KEY_ISSUER);
+        }
+        if (issuer == null || issuer.isEmpty()) {
+            String nlsMessage = Tr.formatMessage(tc, "DISCOVERY_METADATA_MISSING_VALUE", OidcDiscoveryConstants.METADATA_KEY_ISSUER);
+            throw new OidcDiscoveryException(clientConfig.getClientId(), clientConfig.getProviderURI(), nlsMessage);
         }
         return issuer;
     }
@@ -203,14 +220,41 @@ public class TokenResponseValidator {
 
     /**
      * @return
+     * @throws OidcDiscoveryException
      */
-    private String getJwkUri() {
-        String jwkuri = null;
-        jwkuri = clientConfig.getProviderMetadata().getJwksURI();
-        if ((jwkuri == null || jwkuri.isEmpty()) && getProviderDiscoveryMetadadata() != null) {
-            jwkuri = (String) (this.discoveredProviderMetadata.get("jwks_uri"));
+    private String getJwksUri() throws OidcDiscoveryException {
+        String jwksUri = getJwksUriFromProviderMetadata();
+        if (jwksUri != null && !jwksUri.isEmpty()) {
+            return jwksUri;
         }
-        return jwkuri;
+        return getJwksUriFromDiscoveryMetadata();
+    }
+
+    private String getJwksUriFromProviderMetadata() {
+        OidcProviderMetadata providerMetadata = clientConfig.getProviderMetadata();
+        if (providerMetadata != null) {
+            String jwksUri = providerMetadata.getJwksURI();
+            if (jwksUri != null && !jwksUri.isEmpty()) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "JWK Set Uri found in the provider metadata: [" + jwksUri + "]");
+                }
+                return jwksUri;
+            }
+        }
+        return null;
+    }
+
+    private String getJwksUriFromDiscoveryMetadata() throws OidcDiscoveryException {
+        String jwksUri = null;
+        JSONObject providerDiscoveryMetadata = getProviderDiscoveryMetadadata();
+        if (providerDiscoveryMetadata != null) {
+            jwksUri = (String) providerDiscoveryMetadata.get(OidcDiscoveryConstants.METADATA_KEY_JWKS_URI);
+        }
+        if (jwksUri == null || jwksUri.isEmpty()) {
+            String nlsMessage = Tr.formatMessage(tc, "DISCOVERY_METADATA_MISSING_VALUE", OidcDiscoveryConstants.METADATA_KEY_JWKS_URI);
+            throw new OidcDiscoveryException(clientConfig.getClientId(), clientConfig.getProviderURI(), nlsMessage);
+        }
+        return jwksUri;
     }
 
     public String getStateParameter() {

@@ -35,4 +35,5 @@ globalize: false
 instrument.ffdc: true
 
 -buildpath: \
-  org.apache.cxf:cxf-rt-security-saml;strategy=exact;version=${cxfVersion}
+  org.apache.cxf:cxf-rt-security-saml;strategy=exact;version=${cxfVersion}, \
+  com.ibm.ws.org.joda.time.2.9.9;version=latest

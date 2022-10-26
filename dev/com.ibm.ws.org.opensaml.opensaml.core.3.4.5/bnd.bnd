@@ -15,6 +15,7 @@
 
 -buildpath: \
     org.opensaml:opensaml-core;version=3.4.5,\
-    net.shibboleth.utilities:java-support;version=7.5.1
+    net.shibboleth.utilities:java-support;version=7.5.1,\
+    com.ibm.ws.org.joda.time.2.9.9;version=latest
 
 instrument.ffdc: true

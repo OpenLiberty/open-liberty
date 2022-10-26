@@ -10,6 +10,6 @@
  -->
 <server>
 			
-	<javaPermission className="java.util.PropertyPermission" name="*" actions="read,write"/>
-	
+	<include location="${shared.config.dir}/RPJava2Permissions.xml" />
+
 </server>

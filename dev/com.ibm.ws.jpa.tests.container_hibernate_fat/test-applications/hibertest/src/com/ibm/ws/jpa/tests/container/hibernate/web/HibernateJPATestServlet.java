@@ -38,11 +38,11 @@ import javax.validation.ConstraintViolationException;
 import org.junit.Test;
 
 import com.ibm.ws.jpa.tests.container.hibernate.entity.AvgSnowfall;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/JPAContainerTestServlet")
-public class HibernateJPATestServlet extends JPATestServlet {
+public class HibernateJPATestServlet extends JPADBTestServlet {
 
     @Resource
     private UserTransaction tx;

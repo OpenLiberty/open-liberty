@@ -18,11 +18,11 @@ import com.ibm.ws.jpa.olgh9018.testlogic.JPATestOLGH9018Logic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestOLGH9018_EJB_SFEx_Servlet")
-public class TestOLGH9018_EJB_SFEx_Servlet extends EJBTestVehicleServlet {
+public class TestOLGH9018_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet {
 
     @PostConstruct
     private void initFAT() {

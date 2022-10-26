@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -535,7 +535,7 @@
 
 7306=F\u00fcr das annotierte Element [{0}] der Klasse [{1}] ist ein falscher expliziter Zugriffstyp angegeben. Der Zugriffstyp [{2}] muss angegeben werden.
 
-7307=F\u00fcr den Kontext [{0}] fehlt eine Protokollkontextzeichenfolge. Dies ist eine interne Ausnahme, die beim Abrufen einer Protokollnachricht f\u00fcr die Verarbeitung von JPA-Metadaten eingetreten ist. Melden Sie einen Programmfehler.
+7307=F\u00fcr den Kontext [{0}] fehlt eine Protokollkontextzeichenfolge. Dies ist eine interne Ausnahme, die beim Abrufen einer Protokollnachricht f\u00fcr die Verarbeitung von Jakarta Persistence-Metadaten eingetreten ist. Melden Sie einen Programmfehler.
 
 7308=Der angegebene Wert [{0}] f\u00fcr die Persistenzeigenschaft [{1}] ist ung\u00fcltig: [{2}].
 
@@ -593,7 +593,7 @@
 
 7336=Es wurden mehrere Kontexteigenschaften ([{2}] und [{3}]) f\u00fcr dasselbe Tenantdiskriminatorfeld [{1}] f\u00fcr die Klasse [{0}] angegeben.
 
-7337=Die zugeordnete Tenantdiskriminatorspalte [{1}] f\u00fcr die Klasse [{0}] muss als schreibgesch\u00fctzt markiert sein. In JPA wird dies durch Festlegen von insertable=false und updatable=false f\u00fcr die Spalte erreicht, z. B. @Column(name="TENANT_ID", insertable=false, updatable=false).
+7337=Die zugeordnete Tenantdiskriminatorspalte [{1}] f\u00fcr die Klasse [{0}] muss als schreibgesch\u00fctzt markiert sein. In Jakarta Persistence API wird dies durch Festlegen von insertable=false und updatable=false f\u00fcr die Spalte erreicht, z. B. @Column(name="TENANT_ID", insertable=false, updatable=false).
 
 7338=Sie k\u00f6nnen einem SessionBroker keine Sequenzen hinzuf\u00fcgen.
 
@@ -621,7 +621,7 @@
 
 7351=Die Converterklasse [{2}], die im Zuordnungsattribut [{1}] der Klasse [{0}] angegeben ist, wurde nicht gefunden. Vergewissern Sie sich, dass der Name der Converterklasse richtig und in der Persistenzeinheitendefinition vorhanden ist.
 
-7352=Die Converterklasse [{0}] muss die JPA-Schnittstelle javax.persistence.AttributeConverter<X, Y> implementieren, damit sie eine g\u00fcltige Converterklasse ist.
+7352=Die Converterklasse [{0}] muss die Jakarta Persistence-Schnittstelle jakarta.persistence.AttributeConverter<X, Y> implementieren, damit sie eine g\u00fcltige Converterklasse ist.
 
 7353=Das Zuordnungsattribut [{1}] der Klasse [{0}] ist kein g\u00fcltiger Zuordnungstyp f\u00fcr eine Konvertierungsspezifikation.
 

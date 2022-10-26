@@ -27,10 +27,10 @@ import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 @WebServlet(urlPatterns = "/TestManyXManyCompoundPKServlet")
-public class TestManyXManyCompoundPKServlet extends JPATestServlet {
+public class TestManyXManyCompoundPKServlet extends JPADBTestServlet {
     private static final long serialVersionUID = -6684407686587457314L;
 
     // Container Managed Transaction Scope

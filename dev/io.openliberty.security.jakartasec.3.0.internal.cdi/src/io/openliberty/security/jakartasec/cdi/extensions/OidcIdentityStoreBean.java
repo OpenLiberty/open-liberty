@@ -93,7 +93,7 @@ public class OidcIdentityStoreBean implements Bean<IdentityStore>, PassivationCa
 
     @Override
     public Class<?> getBeanClass() {
-        return IdentityStore.class;
+        return OidcIdentityStoreBean.class;
     }
 
     @Override

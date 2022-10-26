@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,13 +19,14 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.genericbnf.internal.GenericUtils;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.values.CookieData;
+import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.http.HttpCookie;
 
 /**
  * <code>CookieHeaderByteParser</code> serves as a centralized location for
  * parsing HTTP Cookies.
- * 
+ *
  */
 public class CookieHeaderByteParser {
 
@@ -41,6 +42,9 @@ public class CookieHeaderByteParser {
     /** The parsed value of a cookie name/value pair */
     private byte[] value;
 
+    //Servlet 6.0
+    private boolean useEE10Cookies;
+
     /**
      * Constructor for this class.
      */
@@ -51,14 +55,14 @@ public class CookieHeaderByteParser {
     /**
      * Parses the specified cookie header value byte array into
      * <code>Cookie</code> objects.
-     * 
+     *
      * @param headerValue
-     *            The byte array to be parsed into cookies.
+     *                         The byte array to be parsed into cookies.
      * @param cookieHeader
-     *            the header this cookie represents.
+     *                         the header this cookie represents.
      * @return a list of <code>Cookie</code> objects parsed from the headerValue.
      * @throws IllegalArgumentException
-     *             if headerValue is NULL.
+     *                                      if headerValue is NULL.
      */
     public List<HttpCookie> parse(byte[] headerValue, HeaderKeys cookieHeader) throws IllegalArgumentException {
         if (null == headerValue) {
@@ -69,6 +73,7 @@ public class CookieHeaderByteParser {
         this.name = null;
         this.value = null;
         this.bytePosition = 0;
+        this.useEE10Cookies = HttpDispatcher.useEE10Cookies();
 
         // initialize the local variables
         CookieData token = null;
@@ -141,14 +146,17 @@ public class CookieHeaderByteParser {
      * This method matches the cookie attribute header with the pre-established
      * Cookie header types. If a match is established the appropriate Cookie
      * header data type is returned.
-     * 
+     *
      * @param data
-     *            The header-value byte array passed down by parse
+     *                 The header-value byte array passed down by parse
      * @param hdr
      * @return The appropriate CookieData type if a match is found for the
      *         header, otherwise it returns null
      */
     private CookieData matchAndParse(byte[] data, HeaderKeys hdr) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "matchAndParse " + " Entry");
+        }
 
         int pos = this.bytePosition;
         int start = -1;
@@ -214,18 +222,65 @@ public class CookieHeaderByteParser {
         }
         CookieData token = CookieData.match(data, start, len);
         if (null != token && null != hdr) {
-            // test whether what we believe to be a token is a valid attribute
-            // for this header instance. If not, then treat it as a new cookie
-            // name
-            if (!token.validForHeader(hdr, foundDollar)) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Token not valid for header, " + hdr + " " + token);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "matchAndParse", " token name [" + token.getName() + "] , foundDollar [" + foundDollar + "]");
+            }
+
+            /*
+             * Since Servlet 6.0 (EE10):
+             * Follows RFC 6265.
+             * Attributes are no longer accepted from the request Cookie header (section 4.2.2 of RFC)
+             * $ is used only for $Versions in the request Cookie;
+             * $ prefix any other will be treated as new cookie ($ is part of a cookie name)
+             */
+            if (this.useEE10Cookies) {
+                if (foundDollar) {
+                    String cName = token.getName();
+                    if (cName.equalsIgnoreCase("version")) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "matchAndParse", " dollar version ");
+                        }
+                        if (!token.validForHeader(hdr, foundDollar)) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Token not valid for header, " + hdr + " " + token);
+                            }
+                            token = null;
+                        }
+                    } else { // $ANY is a new cookie
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "matchAndParse", " dollar " + cName + " , token [" + token + "]");
+                        }
+                        token = null;
+                    }
+                } else { // not foundDollar
+                         // test whether what we believe to be a token is a valid attribute
+                         // for this header instance. If not, then treat it as a new cookie
+                         // name
+                    if (!token.validForHeader(hdr, foundDollar)) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Token not valid for header, " + hdr + " " + token);
+                        }
+                        token = null;
+                    }
                 }
-                token = null;
+            } else { // prior to Servlet 6.0 path
+                // test whether what we believe to be a token is a valid attribute
+                // for this header instance. If not, then treat it as a new cookie
+                // name
+                if (!token.validForHeader(hdr, foundDollar)) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Token not valid for header, " + hdr + " " + token);
+                    }
+                    token = null;
+                }
             }
         }
         if (null == token) {
             // New cookie name found
+            if (foundDollar && this.useEE10Cookies) { //Servlet 6.0 : $ is part of the name, so put it back and adjust the len
+                start--;
+                len++;
+            }
             this.name = new byte[len];
             System.arraycopy(data, start, this.name, 0, len);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -238,11 +293,11 @@ public class CookieHeaderByteParser {
 
     /**
      * This method parses the cookie attribute value.
-     * 
+     *
      * @param data
-     *            The value byte array passed down by parse method
+     *                  The value byte array passed down by parse method
      * @param token
-     *            The type of the CookieData attribute
+     *                  The type of the CookieData attribute
      */
     private void parseValue(byte[] data, CookieData token) {
 

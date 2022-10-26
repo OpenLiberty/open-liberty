@@ -10,12 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.mpjwt11.tck;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -26,8 +22,8 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.JavaInfo;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKRunner;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -56,18 +52,17 @@ public class Mpjwt11TCKLauncher_aud_noenv {
 
     @Test
     @AllowedFFDC("org.jose4j.jwt.consumer.InvalidJwtSignatureException")
-    public void launchMpjwt11TCKLauncher_aud_noenv() throws Exception {
+    public void launchMpjwt11TCK_aud_noenv() throws Exception {
         String port = String.valueOf(server.getBvtPort());
-        String bucketAndTestName = this.getClass().getCanonicalName();
         Map<String, String> additionalProps = new HashMap<>();
         // need to pass the correct url for PublicKeyAsPEMLocationURLTest
         additionalProps.put("mp.jwt.tck.jwks.baseURL", "http://localhost:" + port + "/PublicKeyAsPEMLocationURLTest/");
-        MvnUtils.runTCKMvnCmd(server, bucketAndTestName, bucketAndTestName, "tck_suite_aud_noenv.xml", additionalProps, Collections.emptySet());
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "JWT Auth");
-        resultInfo.put("feature_version", "1.1");
-        MvnUtils.preparePublicationFile(resultInfo);
 
+        String suiteName = "tck_suite_aud_noenv.xml";
+        String bucketName = "com.ibm.ws.microprofile.mpjwt.1.1_fat_tck";
+        String testName = this.getClass() + ":launchMpjwt11TCK_aud_noenv";
+        Type type = Type.MICROPROFILE;
+        String specName = "JWT Auth";
+        TCKRunner.runTCK(server, bucketName, testName, type, specName, suiteName, additionalProps);
     }
 }

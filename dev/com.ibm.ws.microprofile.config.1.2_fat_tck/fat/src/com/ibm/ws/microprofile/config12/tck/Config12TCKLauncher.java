@@ -15,20 +15,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.JavaInfo;
-import componenttest.topology.utils.MvnUtils;
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+import componenttest.topology.utils.tck.TCKRunner;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -54,12 +48,11 @@ public class Config12TCKLauncher {
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchConfig12Tck() throws Exception {
-        MvnUtils.runTCKMvnCmd(server, "com.ibm.ws.microprofile.config.1.2_fat_tck", this.getClass() + ":launchConfig12Tck");
-        Map<String, String> resultInfo = MvnUtils.getResultInfo(server);
-        resultInfo.put("results_type", "MicroProfile");
-        resultInfo.put("feature_name", "Config");
-        resultInfo.put("feature_version", "1.2");
-        MvnUtils.preparePublicationFile(resultInfo);
+        String bucketName = "com.ibm.ws.microprofile.config.1.2_fat_tck";
+        String testName = this.getClass() + ":launchConfig12Tck";
+        Type type = Type.MICROPROFILE;
+        String specName = "Config";
+        TCKRunner.runTCK(server, bucketName, testName, type, specName);
     }
 
 }

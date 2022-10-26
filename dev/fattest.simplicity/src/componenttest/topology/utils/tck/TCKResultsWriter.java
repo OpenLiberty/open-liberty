@@ -22,6 +22,8 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
+import componenttest.topology.utils.tck.TCKResultsInfo.Type;
+
 public class TCKResultsWriter {
 
     private static final String NEW_LINE = "\n";
@@ -36,11 +38,10 @@ public class TCKResultsWriter {
         String javaMajorVersion = resultInfo.getJavaMajorVersion();
         String javaVersion = resultInfo.getJavaVersion();
         String openLibertyVersion = resultInfo.getOpenLibertyVersion();
-        String type = resultInfo.getType();
+        Type type = resultInfo.getType();
         String osVersion = resultInfo.getOsVersion();
         String specName = resultInfo.getSpecName();
         String specVersion = resultInfo.getSpecVersion();
-        String rcVersion = resultInfo.getRcVersion();
 
         String filename = openLibertyVersion + "-" + specName.replace(" ", "-") + "-" + specVersion + "-Java" + javaMajorVersion + "-TCKResults.adoc";
         Path outputPath = Paths.get("results", filename);
@@ -58,19 +59,26 @@ public class TCKResultsWriter {
 
         String MPSpecLower = (specName.toLowerCase()).replace(" ", "-");
 
-        String fullSpecName = type + " " + specName + " " + specVersion + rcVersion;
+        String fullSpecName;
         String specURL = null;
         String tckURL = null;
-        String tckSHA = null;
-        if (type.equals("MicroProfile")) {
-            specURL = "https://download.eclipse.org/microprofile/microprofile-" + MPSpecLower + "-" + specVersion + rcVersion + "/microprofile-" + MPSpecLower + "-spec-"
-                      + specVersion + rcVersion + ".html"; //format of this URL is very inconsistent, may need to be manually updated
+        String tckSHA = resultInfo.getSHA();
+        String tckSHAURL = null;
+        if (type.equals(Type.MICROPROFILE)) {
+            fullSpecName = "MicroProfile " + specName + " " + specVersion;
+            specURL = "https://download.eclipse.org/microprofile/microprofile-" + MPSpecLower + "-" + specVersion + "/microprofile-" + MPSpecLower + "-spec-"
+                      + specVersion + ".html"; //format of this URL is very inconsistent, may need to be manually updated
+            tckURL = "https://download.eclipse.org/microprofile/microprofile-" + MPSpecLower + "-" + specVersion + "/microprofile-" + MPSpecLower + "-tck-"
+                     + specVersion + ".jar"; //format of this URL is very inconsistent, may need to be manually updated
+            tckSHAURL = "https://download.eclipse.org/microprofile/microprofile-" + MPSpecLower + "-" + specVersion + "/microprofile-" + MPSpecLower + "-tck-"
+                        + specVersion + ".jar.sha256"; //just a placeholder, needs to be manually updated
         } else {
+            fullSpecName = "Jakarta " + specName + " " + specVersion;
             specURL = "https://jakarta.ee/specifications/" + specName + "/" + specVersion;
-            tckURL = "https://download.eclipse.org/ee4j/"; //just a placeholder, needs to be manually updated
-            tckSHA = "https://download.eclipse.org/ee4j/"; //just a placeholder, needs to be manually updated
+            tckURL = "https://download.eclipse.org/ee4j/" + specName + "/jakartaee10/promoted/eftl/" + specName + "-tck-" + specVersion + ".zip"; //just a placeholder, needs to be manually updated
+            tckSHAURL = "https://download.eclipse.org/ee4j/" + specName + "/jakartaee10/promoted/eftl/" + specName + "-tck-" + specVersion + ".info"; //just a placeholder, needs to be manually updated
         }
-        String adocContent = getADocHeader(filename, fullSpecName, specURL, openLibertyVersion, javaMajorVersion, javaVersion, osVersion, tckURL, tckSHA);
+        String adocContent = getADocHeader(filename, fullSpecName, specURL, openLibertyVersion, javaMajorVersion, javaVersion, osVersion, tckURL, tckSHA, tckSHAURL);
 
         try (FileWriter output = new FileWriter(outputFile)) {
             Path junitPath = Paths.get("results", "junit");
@@ -99,7 +107,7 @@ public class TCKResultsWriter {
     }
 
     private static String getADocHeader(String filename, String fullSpecName, String specURL, String openLibertyVersion, String javaMajorVersion, String javaVersion,
-                                        String osVersion, String tckURL, String tckSHA) {
+                                        String osVersion, String tckURL, String tckSHA, String tckSHA_URL) {
         StringBuilder builder = new StringBuilder();
 
         builder.append(":page-layout: certification ").append(NEW_LINE);
@@ -127,26 +135,19 @@ public class TCKResultsWriter {
         builder.append("[").append(fullSpecName).append("]").append(NEW_LINE);
         builder.append(NEW_LINE);
 
-        if (tckURL != null) {
-            builder.append("* TCK Version, digital SHA-256 fingerprint and download URL:").append(NEW_LINE);
-            builder.append("+").append(NEW_LINE);
-            builder.append(tckURL);
-            builder.append("[").append(fullSpecName).append("]");
-
-            if (tckSHA != null) {
-                builder.append(SPACE);
-                builder.append(tckSHA);
-                builder.append("[SHA-256]");;
-            }
-
-            builder.append(NEW_LINE);
-            builder.append(NEW_LINE);
-        }
+        builder.append("* TCK Version, digital SHA-256 fingerprint and download URL:").append(NEW_LINE);
+        builder.append("+").append(NEW_LINE);
+        builder.append(tckURL);
+        builder.append("[").append(fullSpecName).append("]").append(NEW_LINE);
+        builder.append("+").append(NEW_LINE);
+        builder.append(tckSHA_URL);
+        builder.append("[").append(tckSHA).append("] (SHA-256)").append(NEW_LINE);
+        builder.append(NEW_LINE);
 
         builder.append("* Public URL of TCK Results Summary:").append(NEW_LINE);
         builder.append("+").append(NEW_LINE);
         builder.append("xref:").append(filename);
-        builder.append("[TCK results summary]").append(NEW_LINE);
+        builder.append("[TCK results summary]").append(NEW_LINE).append(NEW_LINE);
         builder.append(NEW_LINE);
 
         builder.append("* Java runtime used to run the implementation:").append(NEW_LINE);

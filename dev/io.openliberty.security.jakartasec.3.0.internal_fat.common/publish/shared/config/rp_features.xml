@@ -4,6 +4,7 @@
         <feature>servlet-6.0</feature>
         <feature>appSecurity-5.0</feature>
         <feature>ssl-1.0</feature>
+        <feature>jsonp-2.1</feature>
     </featureManager>
 
 </server>

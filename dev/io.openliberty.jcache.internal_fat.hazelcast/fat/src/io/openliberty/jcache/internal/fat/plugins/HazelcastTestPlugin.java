@@ -49,8 +49,7 @@ public class HazelcastTestPlugin implements TestPlugin {
                                            "-Dhazelcast.authcache.entry.ttl=" + authCacheTtlSecs,
                                            "-Dhazelcast.config.file=" + hazecastConfigFile,
                                            "-Dhazelcast.jcache.provider.type=server", // Start as a member
-                                           "-Dhazelcast.phone.home.enabled=false", // Don't phone home
-                                           "-Dcom.ibm.ws.beta.edition=true")); // TODO Remove when GA'd
+                                           "-Dhazelcast.phone.home.enabled=false")); // Don't phone home
     }
 
     @Override
@@ -63,8 +62,7 @@ public class HazelcastTestPlugin implements TestPlugin {
         server.setJvmOptions(Arrays.asList("-Dhazelcast.cluster.name=" + hazelcastClusterName,
                                            "-Dhazelcast.config.file=" + hazecastConfigFile,
                                            "-Dhazelcast.jcache.provider.type=client", // Start as a client
-                                           "-Dhazelcast.phone.home.enabled=false", // Don't phone home
-                                           "-Dcom.ibm.ws.beta.edition=true")); // TODO Remove when GA'd
+                                           "-Dhazelcast.phone.home.enabled=false")); // Don't phone home
     }
 
     @Override

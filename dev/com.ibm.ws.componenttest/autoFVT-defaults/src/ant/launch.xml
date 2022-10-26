@@ -367,7 +367,15 @@
 				</junit>
 			</sequential>
 			<finally>
-				<!-- If the tests timeout, attempt to copy logs from zombie servers -->
+				<!-- If the tests timeout, wait 30 seconds for leaked servers to finish starting/stopping -->
+				<fileset dir="${basedir}/output" includes="*.mrk" id="markfiles" />
+				<foreach param="serverFile" in="markfiles">
+					<echo>Waiting 30 seconds in case the server has not finished starting or stopping : ${serverFile}</echo>
+					<sleep seconds="30"/>
+				</foreach>
+				
+				<!-- If the tests timeout, attempt to stop and copy logs from zombie/leaked servers -->
+				<!-- Obtain the set of mark files again, in case any servers stopped during above wait -->
 				<fileset dir="${basedir}/output" includes="*.mrk" id="markfiles" />
 				<foreach param="serverFile" in="markfiles">
 					<echo>Failure running ${test.bucket.name}, attempting to stop servers that did not stop properly : ${serverFile}</echo>
@@ -380,8 +388,6 @@
 						<istrue value="${is.windows.platform}" />
 					</condition>
 
-					<echo>Waiting 30 seconds in case the server has not finished starting...</echo>
-					<sleep seconds="30"/>
 					<echo>Executing ${libertyInstallPath}/bin/${script.exec} ${script.cmd} stop ${serverDir}</echo>
 					<exec failonerror="false" executable="${script.exec}" dir="${libertyInstallPath}/bin" timeout="300000">
 						<arg line="${script.cmd}" />

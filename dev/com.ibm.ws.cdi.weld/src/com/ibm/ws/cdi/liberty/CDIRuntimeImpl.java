@@ -57,6 +57,7 @@ import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveProvider;
 import com.ibm.ws.cdi.internal.interfaces.TransactionService;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
+import com.ibm.ws.cdi.internal.interfaces.WeldDevelopmentMode;
 import com.ibm.ws.cdi.proxy.ProxyServicesImpl;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.metadata.MetaDataSlotService;
@@ -122,6 +123,9 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
 
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     private volatile CDIContainerEventManager cdiContainerEventManager;
+
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    private volatile WeldDevelopmentMode weldDevelopmentMode;
 
     @Reference
     private CDIConfiguration cdiContainerConfig;
@@ -697,6 +701,20 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     @Override
     public BuildCompatibleExtensionFinder getBuildCompatibleExtensionFinder() {
         return bceFinder;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public WeldDevelopmentMode getWeldDevelopmentMode() {
+        //Given that this.weldDevelopmentMode is volatile and could change value while this code is running,
+        //copy it to a local variable before checking for null and enablement.
+        WeldDevelopmentMode devMode = this.weldDevelopmentMode;
+        if (devMode != null) {
+            if (!devMode.enabled()) {
+                devMode = null; // if it wasn't enabled then we'll return null
+            }
+        }
+        return devMode;
     }
 
 }

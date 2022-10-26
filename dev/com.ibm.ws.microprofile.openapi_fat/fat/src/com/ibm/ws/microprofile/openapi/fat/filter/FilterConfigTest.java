@@ -33,7 +33,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.HttpUtils;
 
 /**
  * Checks that a filter can be defined and called and can use values from MP
@@ -60,7 +59,6 @@ public class FilterConfigTest {
 
     @BeforeClass
     public static void setUpTest() throws Exception {
-        HttpUtils.trustAllCertificates();
         OpenAPITestUtil.changeServerPorts(server, server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
 
         server.addEnvVar("filter_title", TITLE_VALUE);
