@@ -78,12 +78,12 @@ public class HttpSessionContextImpl extends SessionContext implements IHttpSessi
               // if session exits, start locking procedures
               if (sess != null) {
                   Object lock = new Object(); //create a new lock object for this request; 
-                  LinkedList ll = ((SessionData)sess).getLockList(); //gets the linked lists of lock objects for this session;
+                  LinkedList ll = ((AbstractSessionData)sess).getLockList(); //gets the linked lists of lock objects for this session;
                   int llsize;
                   
                   // PK09786 BEGIN -- Always synchronize on linklist before lock to avoid deadlock 
                   synchronized (ll) {
-                     ((SessionData)sess).setSessionLock(Thread.currentThread(), lock); //adds thread to WsSession locks hashtable so we know who to notify in PostInvoke
+                     ((AbstractSessionData)sess).setSessionLock(Thread.currentThread(), lock); //adds thread to WsSession locks hashtable so we know who to notify in PostInvoke
                      ll.addLast(lock);
                      llsize = ll.size();
                   }       //PK19389 when another thread is in sessionPostInvoke, trying to lock linkedlist in order to notify the thread in lock.wait()
@@ -241,7 +241,6 @@ public class HttpSessionContextImpl extends SessionContext implements IHttpSessi
       LoggingUtil.SESSION_LOGGER_CORE.entering(methodClassName, methodNames[IS_VALID]);
     }
 
-//    ISession isess = ((SessionData) sess).getISession();
     ISession isess = ((AbstractSessionData) sess).getISession();
     boolean valid = isess.isValid();
     if (valid)
@@ -542,7 +541,6 @@ public class HttpSessionContextImpl extends SessionContext implements IHttpSessi
 
     AbstractSessionData sd = (AbstractSessionData) session;
 
-
     if (sd != null) {
         // security integration stuff
         if (_smc.getIntegrateSecurity()) {
@@ -692,8 +690,7 @@ private String getUser() {
             session = (HttpSession) _coreHttpSessionManager.getSession(request, response, sac, false); // don't create here
         }
         if( session != null ){
-            SessionData sd = (SessionData) session;
-            return sd.getUserName();            
+            return ((AbstractSessionData) session).getUserName();       //Issue 23111
         } else{
             return null;
         }
