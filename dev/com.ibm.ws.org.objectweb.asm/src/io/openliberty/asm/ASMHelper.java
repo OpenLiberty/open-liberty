@@ -27,4 +27,5 @@ public class ASMHelper {
     public final static int getCurrentASM() {
         return CURRENT_ASM;
     }
+
 }
