@@ -47,6 +47,6 @@ public class Package {
 
     @Override
     public String toString() {
-        return "Package type=" + id + "; L=" + length + "; W=" + width + " H=" + height + " " + description;
+        return "Package id=" + id + "; L=" + length + "; W=" + width + "; H=" + height + " " + description;
     }
 }

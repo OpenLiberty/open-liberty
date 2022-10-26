@@ -20,6 +20,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -217,18 +218,24 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             boolean needsKeysetQueries = KeysetAwarePage.class.equals(queryInfo.method.getReturnType())
                                          || KeysetAwarePage.class.equals(queryInfo.returnTypeParam);
             StringBuilder o = needsKeysetQueries ? new StringBuilder(100) : q;
+            StringBuilder r = needsKeysetQueries ? new StringBuilder(100) : null; // reverse order
             List<Sort> keyset = needsKeysetQueries ? new ArrayList<>(orderBy.length) : null;
 
             for (int i = 0; i < orderBy.length; i++) {
                 o.append(i == 0 ? " ORDER BY o." : ", o.").append(orderBy[i].value());
                 if (orderBy[i].descending())
                     o.append(" DESC");
-                if (needsKeysetQueries)
+                if (needsKeysetQueries) {
+                    r.append(i == 0 ? " ORDER BY o." : ", o.").append(orderBy[i].value());
+                    if (!orderBy[i].descending())
+                        r.append(" DESC");
+
                     keyset.add(orderBy[i].descending() ? Sort.desc(orderBy[i].value()) : Sort.asc(orderBy[i].value()));
+                }
             }
 
             if (needsKeysetQueries) {
-                generateKeysetQueries(queryInfo, keyset, null, q, o);
+                generateKeysetQueries(queryInfo, keyset, q, o, r);
                 q.append(o);
             }
         }
@@ -247,18 +254,14 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      *
      * @param queryInfo query information
      * @param keyset    key names and direction
-     * @param direction keyset cursor direction if known from the repository method args. Otherwise null and JPQL is generated for both directions.
      * @param q         query up to the WHERE clause, if present
-     * @param o         ORDER BY clause
+     * @param o         ORDER BY clause in forward direction. Null if forward direction is not needed.
+     * @param r         ORDER BY clause in reverse direction. Null if reverse direction is not needed.
      */
-    private void generateKeysetQueries(QueryInfo queryInfo, List<Sort> keyset, KeysetPageable.Mode direction, StringBuilder q, StringBuilder o) {
+    private void generateKeysetQueries(QueryInfo queryInfo, List<Sort> keyset, StringBuilder q, StringBuilder o, StringBuilder r) {
         int numKeys = keyset.size();
-        StringBuilder a = direction == null || direction == KeysetPageable.Mode.NEXT //
-                        ? new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (") //
-                        : null;
-        StringBuilder b = direction == null || direction == KeysetPageable.Mode.PREVIOUS //
-                        ? new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (") //
-                        : null;
+        StringBuilder a = o == null ? null : new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (");
+        StringBuilder b = r == null ? null : new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (");
         for (int i = 0; i < numKeys; i++) {
             if (a != null)
                 a.append(i == 0 ? "(" : " OR (");
@@ -287,7 +290,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         if (a != null)
             queryInfo.jpqlAfterKeyset = new StringBuilder(q).append(a).append(')').append(o).toString();
         if (b != null)
-            queryInfo.jpqlBeforeKeyset = new StringBuilder(q).append(b).append(')').append(o).toString();
+            queryInfo.jpqlBeforeKeyset = new StringBuilder(q).append(b).append(')').append(r).toString();
         queryInfo.keyset = keyset;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -504,7 +507,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         String methodName = queryInfo.method.getName();
         boolean needsKeysetQueries = KeysetAwarePage.class.equals(queryInfo.method.getReturnType())
                                      || KeysetAwarePage.class.equals(queryInfo.returnTypeParam);
-        StringBuilder o = needsKeysetQueries ? new StringBuilder(100) : q;
+        StringBuilder o = needsKeysetQueries ? new StringBuilder(100) : q; // forward order
+        StringBuilder r = needsKeysetQueries ? new StringBuilder(100).append(" ORDER BY ") : null; // reverse order
         List<Sort> keyset = needsKeysetQueries ? new ArrayList<>() : null;
 
         o.append(" ORDER BY ");
@@ -520,20 +524,27 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             String name = queryInfo.entityInfo.getAttributeName(attribute);
             o.append("o.").append(name);
 
-            if (needsKeysetQueries)
+            if (needsKeysetQueries) {
+                r.append("o.").append(name);
                 keyset.add(iNext > 0 && iNext == desc ? Sort.desc(name) : Sort.asc(name));
+            }
 
             if (iNext > 0) {
                 if (iNext == desc)
                     o.append(" DESC");
+                else if (needsKeysetQueries)
+                    r.append(" DESC");
                 iNext += (iNext == desc ? 4 : 3);
-                if (iNext < length)
+                if (iNext < length) {
                     o.append(", ");
+                    if (needsKeysetQueries)
+                        r.append(", ");
+                }
             }
         }
 
         if (needsKeysetQueries) {
-            generateKeysetQueries(queryInfo, keyset, null, q, o);
+            generateKeysetQueries(queryInfo, keyset, q, o, r);
             q.append(o);
         }
     }
@@ -754,13 +765,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     case SELECT: {
                         Collector<Object, Object, Object> collector = null;
                         Consumer<Object> consumer = null;
-                        List<Sort> keyset = null;
                         Limit limit = null;
                         Pageable pagination = null;
-                        StringBuilder o = null; // for ORDER BY clause generated from Sorts
-
-                        boolean needsKeysetQueries = KeysetAwarePage.class.equals(returnType) ||
-                                                     KeysetAwarePage.class.equals(queryInfo.returnTypeParam);
+                        List<Sort> sortList = null;
 
                         // Jakarta Data allows the method parameter positions after those used as query parameters
                         // to be used for purposes such as pagination and sorting.
@@ -775,34 +782,29 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                 limit = (Limit) param;
                             else if (param instanceof Pageable)
                                 pagination = (Pageable) param;
-                            else if (param instanceof Sort) {
-                                Sort sort = (Sort) param;
-                                o = o == null ? new StringBuilder(100).append(" ORDER BY o.") : o.append(", o.");
-                                o.append(sort.getProperty());
-                                if (sort.isDescending())
-                                    o.append(" DESC");
-                                if (needsKeysetQueries)
-                                    (keyset == null ? (keyset = new ArrayList<>()) : keyset).add(sort);
-                            } else if (param instanceof Sort[]) {
-                                Sort[] sorts = (Sort[]) param;;
-                                for (int s = 0; s < sorts.length; s++)
-                                    if (sorts[s] == null)
-                                        throw new NullPointerException("Sort: null");
-                                    else {
-                                        o = o == null ? new StringBuilder(100).append(" ORDER BY o.") : o.append(", o.");
-                                        o.append(sorts[s].getProperty());
-                                        if (sorts[s].isDescending())
-                                            o.append(" DESC");
-                                        if (needsKeysetQueries)
-                                            (keyset == null ? (keyset = new ArrayList<>()) : keyset).add(sorts[s]);
-                                    }
-                            }
+                            else if (param instanceof Sort)
+                                (sortList == null ? (sortList = new ArrayList<>()) : sortList).add((Sort) param);
+                            else if (param instanceof Sort[])
+                                Collections.addAll(sortList == null ? (sortList = new ArrayList<>()) : sortList, (Sort[]) param);
                         }
 
-                        if (o != null) {
+                        if (sortList != null) {
+                            boolean forward = !(pagination instanceof KeysetPageable)
+                                              || ((KeysetPageable) pagination).getMode() == KeysetPageable.Mode.NEXT;
                             StringBuilder q = new StringBuilder(queryInfo.jpql);
-                            if (needsKeysetQueries && pagination instanceof KeysetPageable)
-                                generateKeysetQueries(queryInfo = queryInfo.withJPQL(null), keyset, ((KeysetPageable) pagination).getMode(), q, o);
+                            StringBuilder o = null; // ORDER BY clause based on Sorts
+                            for (Sort sort : sortList)
+                                if (sort == null)
+                                    throw new NullPointerException("Sort: null");
+                                else {
+                                    o = o == null ? new StringBuilder(100).append(" ORDER BY o.") : o.append(", o.");
+                                    o.append(sort.getProperty());
+                                    if (forward ? sort.isDescending() : sort.isAscending())
+                                        o.append(" DESC");
+                                }
+
+                            if (pagination instanceof KeysetPageable)
+                                generateKeysetQueries(queryInfo = queryInfo.withJPQL(null), sortList, q, forward ? o : null, forward ? null : o);
                             else
                                 queryInfo = queryInfo.withJPQL(q.append(o).toString());
                         }
@@ -815,120 +817,125 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             return runAndCollect(queryInfo, pagination, collector, args);
                         else if (asyncCompatibleResultForPagination && consumer != null)
                             return runWithConsumer(queryInfo, pagination, consumer, args);
-                        else if (pagination != null && Iterator.class.equals(returnType))
-                            return new PaginatedIterator<E>(queryInfo, pagination, args);
-                        else if (KeysetAwarePage.class.equals(returnType))
-                            return new KeysetAwarePageImpl<E>(queryInfo, pagination, args);
+
+                        if (pagination != null && Iterator.class.equals(returnType))
+                            returnValue = new PaginatedIterator<E>(queryInfo, pagination, args); // TODO keyset pagination
+                        else if (pagination instanceof KeysetPageable || KeysetAwarePage.class.equals(returnType))
+                            returnValue = new KeysetAwarePageImpl<E>(queryInfo, pagination, args);
                         else if (Page.class.equals(returnType))
-                            return new PageImpl<E>(queryInfo, pagination, args); // TODO Limit with Page as return type
+                            returnValue = new PageImpl<E>(queryInfo, pagination, args); // TODO Limit with Page as return type
                         else if (Publisher.class.equals(returnType))
-                            return new PublisherImpl<E>(queryInfo, provider.executor, limit, pagination, args);
+                            returnValue = new PublisherImpl<E>(queryInfo, provider.executor, limit, pagination, args);
+                        else {
+                            em = queryInfo.entityInfo.persister.createEntityManager();
 
-                        em = queryInfo.entityInfo.persister.createEntityManager();
+                            TypedQuery<?> query = em.createQuery(queryInfo.jpql, queryInfo.entityInfo.type);
+                            queryInfo.setParameters(query, args);
 
-                        TypedQuery<?> query = em.createQuery(queryInfo.jpql, queryInfo.entityInfo.type);
-                        queryInfo.setParameters(query, args);
+                            long maxResults = limit != null ? limit.maxResults() //
+                                            : pagination != null ? pagination.getSize() //
+                                                            : queryInfo.maxResults;
 
-                        long maxResults = limit != null ? limit.maxResults() //
-                                        : pagination != null ? pagination.getSize() //
-                                                        : queryInfo.maxResults;
+                            long startAt = limit != null ? limit.startAt() - 1 //
+                                            : pagination == null || pagination instanceof KeysetPageable ? 0 //
+                                                            : (pagination.getPage() - 1) * maxResults;
+                            // TODO KeysetPageable
+                            // TODO possible overflow with both of these.
+                            if (maxResults > 0)
+                                query.setMaxResults((int) maxResults);
+                            if (startAt > 0)
+                                query.setFirstResult((int) startAt);
 
-                        long startAt = limit != null ? limit.startAt() - 1 //
-                                        : pagination == null || pagination instanceof KeysetPageable ? 0 //
-                                                        : (pagination.getPage() - 1) * maxResults;
-                        // TODO KeysetPageable
-                        // TODO possible overflow with both of these.
-                        if (maxResults > 0)
-                            query.setMaxResults((int) maxResults);
-                        if (startAt > 0)
-                            query.setFirstResult((int) startAt);
+                            List<?> results = query.getResultList();
+                            Class<?> type = queryInfo.returnTypeParam != null && (Optional.class.equals(returnType)
+                                                                                  || CompletableFuture.class.equals(returnType)
+                                                                                  || CompletionStage.class.equals(returnType)) //
+                                                                                                  ? queryInfo.returnTypeParam //
+                                                                                                  : returnType;
+                            if (trace && tc.isDebugEnabled())
+                                Tr.debug(this, tc, results.size() + " results to be returned as " + type.getName());
 
-                        List<?> results = query.getResultList();
-                        Class<?> type = queryInfo.returnTypeParam != null && (Optional.class.equals(returnType)
-                                                                              || CompletableFuture.class.equals(returnType)
-                                                                              || CompletionStage.class.equals(returnType)) //
-                                                                                              ? queryInfo.returnTypeParam //
-                                                                                              : returnType;
-                        if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, results.size() + " results to be returned as " + type.getName());
-
-                        if (collector != null) {
-                            // Collector is more useful on the other path, when combined with pagination
-                            Object r = collector.supplier().get();
-                            BiConsumer<Object, Object> accumulator = collector.accumulator();
-                            for (Object item : results)
-                                accumulator.accept(r, item);
-                            returnValue = collector.finisher().apply(r);
-                        } else if (consumer != null) {
-                            for (Object result : results)
-                                consumer.accept(result);
-                            returnValue = null;
-                        } else if (queryInfo.entityInfo.type.equals(type)) {
-                            returnValue = results.isEmpty() ? null : results.get(0);
-                        } else if (type.isInstance(results)) {
-                            returnValue = results;
-                        } else if (queryInfo.returnArrayType != null) {
-                            Object r = Array.newInstance(queryInfo.returnArrayType, results.size());
-                            int i = 0;
-                            for (Object result : results)
-                                Array.set(r, i++, result);
-                            returnValue = r;
-                        } else if (Collection.class.isAssignableFrom(type)) {
-                            try {
-                                @SuppressWarnings("unchecked")
-                                Constructor<? extends Collection<Object>> c = (Constructor<? extends Collection<Object>>) type.getConstructor();
-                                Collection<Object> list = c.newInstance();
-                                list.addAll(results);
-                                returnValue = list;
-                            } catch (NoSuchMethodException x) {
-                                throw new UnsupportedOperationException(type + " lacks public zero parameter constructor.");
+                            if (collector != null) {
+                                // Collector is more useful on the other path, when combined with pagination
+                                Object r = collector.supplier().get();
+                                BiConsumer<Object, Object> accumulator = collector.accumulator();
+                                for (Object item : results)
+                                    accumulator.accept(r, item);
+                                returnValue = collector.finisher().apply(r);
+                            } else if (consumer != null) {
+                                for (Object result : results)
+                                    consumer.accept(result);
+                                returnValue = null;
+                            } else if (queryInfo.entityInfo.type.equals(type)) {
+                                returnValue = results.isEmpty() ? null : results.get(0);
+                            } else if (type.isInstance(results)) {
+                                returnValue = results;
+                            } else if (queryInfo.returnArrayType != null) {
+                                Object r = Array.newInstance(queryInfo.returnArrayType, results.size());
+                                int i = 0;
+                                for (Object result : results)
+                                    Array.set(r, i++, result);
+                                returnValue = r;
+                            } else if (Collection.class.isAssignableFrom(type)) {
+                                try {
+                                    @SuppressWarnings("unchecked")
+                                    Constructor<? extends Collection<Object>> c = (Constructor<? extends Collection<Object>>) type.getConstructor();
+                                    Collection<Object> list = c.newInstance();
+                                    list.addAll(results);
+                                    returnValue = list;
+                                } catch (NoSuchMethodException x) {
+                                    throw new UnsupportedOperationException(type + " lacks public zero parameter constructor.");
+                                }
+                            } else if (Stream.class.equals(type)) {
+                                Stream.Builder<Object> builder = Stream.builder();
+                                for (Object result : results)
+                                    builder.accept(result);
+                                returnValue = builder.build();
+                            } else if (IntStream.class.equals(type)) {
+                                IntStream.Builder builder = IntStream.builder();
+                                for (Object result : results)
+                                    builder.accept((Integer) result);
+                                returnValue = builder.build();
+                            } else if (LongStream.class.equals(type)) {
+                                LongStream.Builder builder = LongStream.builder();
+                                for (Object result : results)
+                                    builder.accept((Long) result);
+                                returnValue = builder.build();
+                            } else if (DoubleStream.class.equals(type)) {
+                                DoubleStream.Builder builder = DoubleStream.builder();
+                                for (Object result : results)
+                                    builder.accept((Double) result);
+                                returnValue = builder.build();
+                            } else if (results.isEmpty()) {
+                                returnValue = null;
+                            } else if (results.size() == 1) {
+                                // single result
+                                returnValue = results.get(0);
+                                if (returnValue != null && !type.isAssignableFrom(returnValue.getClass())) {
+                                    // TODO these conversions are not all safe
+                                    if (double.class.equals(type) || Double.class.equals(type))
+                                        returnValue = ((Number) returnValue).doubleValue();
+                                    else if (float.class.equals(type) || Float.class.equals(type))
+                                        returnValue = ((Number) returnValue).floatValue();
+                                    else if (long.class.equals(type) || Long.class.equals(type))
+                                        returnValue = ((Number) returnValue).longValue();
+                                    else if (int.class.equals(type) || Integer.class.equals(type))
+                                        returnValue = ((Number) returnValue).intValue();
+                                    else if (short.class.equals(type) || Short.class.equals(type))
+                                        returnValue = ((Number) returnValue).shortValue();
+                                    else if (byte.class.equals(type) || Byte.class.equals(type))
+                                        returnValue = ((Number) returnValue).byteValue();
+                                }
+                            } else { // TODO convert other return types?
+                                returnValue = results;
                             }
-                        } else if (Stream.class.equals(type)) {
-                            Stream.Builder<Object> builder = Stream.builder();
-                            for (Object result : results)
-                                builder.accept(result);
-                            returnValue = builder.build();
-                        } else if (IntStream.class.equals(type)) {
-                            IntStream.Builder builder = IntStream.builder();
-                            for (Object result : results)
-                                builder.accept((Integer) result);
-                            returnValue = builder.build();
-                        } else if (LongStream.class.equals(type)) {
-                            LongStream.Builder builder = LongStream.builder();
-                            for (Object result : results)
-                                builder.accept((Long) result);
-                            returnValue = builder.build();
-                        } else if (DoubleStream.class.equals(type)) {
-                            DoubleStream.Builder builder = DoubleStream.builder();
-                            for (Object result : results)
-                                builder.accept((Double) result);
-                            returnValue = builder.build();
-                        } else if (results.isEmpty()) {
-                            returnValue = null;
-                        } else if (results.size() == 1) {
-                            // single result
-                            returnValue = results.get(0);
-                            if (returnValue != null && !type.isAssignableFrom(returnValue.getClass())) {
-                                // TODO these conversions are not all safe
-                                if (double.class.equals(type) || Double.class.equals(type))
-                                    returnValue = ((Number) returnValue).doubleValue();
-                                else if (float.class.equals(type) || Float.class.equals(type))
-                                    returnValue = ((Number) returnValue).floatValue();
-                                else if (long.class.equals(type) || Long.class.equals(type))
-                                    returnValue = ((Number) returnValue).longValue();
-                                else if (int.class.equals(type) || Integer.class.equals(type))
-                                    returnValue = ((Number) returnValue).intValue();
-                                else if (short.class.equals(type) || Short.class.equals(type))
-                                    returnValue = ((Number) returnValue).shortValue();
-                                else if (byte.class.equals(type) || Byte.class.equals(type))
-                                    returnValue = ((Number) returnValue).byteValue();
-                            }
-                        } else { // TODO convert other return types?
-                            returnValue = results;
                         }
 
                         if (Optional.class.equals(returnType)) {
-                            returnValue = results.isEmpty() ? Optional.empty() : Optional.of(returnValue);
+                            returnValue = returnValue == null
+                                          || returnValue instanceof Collection && ((Collection<?>) returnValue).isEmpty()
+                                          || returnValue instanceof Page && ((Page<?>) returnValue).size() == 0 // TODO !Slice.hasContent()
+                                                          ? Optional.empty() : Optional.of(returnValue);
                         } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
                             returnValue = CompletableFuture.completedFuture(returnValue);
                         }
