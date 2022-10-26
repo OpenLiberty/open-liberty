@@ -49,11 +49,11 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEE10Action;
 
 /**
  * General JSF 2.3 test cases the also require CDI.
  */
-@SkipForRepeat(SkipForRepeat.EE10_FEATURES)
 @RunWith(FATRunner.class)
 @UseImplementation(JSFImplementation.MYFACES)
 public class JSF23CDIGeneralTests extends FATServletClient {
@@ -69,10 +69,16 @@ public class JSF23CDIGeneralTests extends FATServletClient {
     @Server("jsf.container.2.3_fat.cdi")
     public static LibertyServer jsf23CDIServer;
 
+    private static boolean isEE9;
+    private static boolean isEE10;
+
     @BeforeClass
     public static void setup() throws Exception {
         // Start the server and use the class name so we can find logs easily.
         jsf23CDIServer.startServer(JSF23CDIGeneralTests.class.getSimpleName() + ".log");
+
+        isEE9 = JakartaEE9Action.isActive();
+        isEE10 = JakartaEE10Action.isActive();
     }
 
     @Before
@@ -178,13 +184,13 @@ public class JSF23CDIGeneralTests extends FATServletClient {
      *
      * @throws Exception
      */
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     @WebArchiveInfo(name = "CDIManagedProperty", pkgs = { "com.ibm.ws.jsf23.fat.cdi.managedproperty" })
     public void testCDIManagedProperty() throws Exception {
         String contextRoot = "CDIManagedProperty";
         try (WebClient webClient = new WebClient()) {
             webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+            webClient.getOptions().setThrowExceptionOnScriptError(false);
 
             String initalValue = "numberManagedProperty = 0 textManagedProperty = zero "
                                  + "listManagedProperty = zero stringArrayManagedProperty = "
@@ -281,14 +287,14 @@ public class JSF23CDIGeneralTests extends FATServletClient {
             assertTrue(resultPage.asText().contains("URI from RequestMap: /ELImplicitObjectsViaCDI/index.xhtml"));
             assertTrue(resultPage.asText()
                             .contains("Flow map object is null: Exception: WELD-001303: No active contexts "
-                                      + "for scope type "+(JakartaEE9Action.isActive() ? "jakarta." : "javax.")+"faces.flow.FlowScoped")); // Expected exception
+                                      + "for scope type "+(isEE9 || isEE10 ? "jakarta." : "javax.")+"faces.flow.FlowScoped")); // Expected exception
             assertTrue(resultPage.asText().contains("Message from HeaderMap: This is a test"));
-            assertTrue(resultPage.asText().contains("Cookie object from CookieMap: "+(JakartaEE9Action.isActive() ? "jakarta." : "javax.")+"servlet.http.Cookie"));
+            assertTrue(resultPage.asText().contains("Cookie object from CookieMap: "+(isEE9 || isEE10 ? "jakarta." : "javax.")+"servlet.http.Cookie"));
             assertTrue(resultPage.asText().contains("WELD_CONTEXT_ID_KEY from InitParameterMap: ELImplicitObjectsViaCDI"));
             assertTrue(resultPage.asText().contains("Message from RequestParameterMap: Hello World"));
             assertTrue(resultPage.asText().contains("Message from RequestParameterValuesMap: [Hello World]"));
             assertTrue(resultPage.asText().contains("Message from HeaderValuesMap: [This is a test]"));
-            assertTrue(resultPage.asText().contains("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: "+(JakartaEE9Action.isActive() ? "jakarta." : "javax.")+"faces"));
+            assertTrue(resultPage.asText().contains("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: "+(isEE9 || isEE10 ? "jakarta." : "javax.")+"faces"));
         }
     }
 

@@ -22,11 +22,11 @@ import com.ibm.ws.jsf.container.fat.FATSuite;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 
-@SkipForRepeat(SkipForRepeat.EE10_FEATURES)
 @RunWith(FATRunner.class)
 public class JSFContainerTest extends FATServletClient {
 
@@ -36,15 +36,26 @@ public class JSFContainerTest extends FATServletClient {
     @Server("jsf.container.2.3_fat")
     public static LibertyServer server;
 
+    private static boolean isEE10;
+
     @BeforeClass
     public static void setUp() throws Exception {
+
+        isEE10 = JakartaEE10Action.isActive();
+
         WebArchive mojarraApp = ShrinkHelper.buildDefaultApp(MOJARRA_APP, "jsf.container.bean");
         mojarraApp = FATSuite.addMojarra(mojarraApp);
+        if(!isEE10){
+          mojarraApp.addPackage("jsf.container.bean.jsf23");
+        }
         mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "publish/files/permissions");
         ShrinkHelper.exportToServer(server, "dropins", mojarraApp);
 
         WebArchive myfacesApp = ShrinkHelper.buildDefaultApp(MYFACES_APP, "jsf.container.bean");
         ShrinkHelper.addDirectory(myfacesApp, "test-applications/" + MOJARRA_APP + "/resources");
+        if(!isEE10){
+          myfacesApp.addPackage("jsf.container.bean.jsf23");
+        }
         myfacesApp = FATSuite.addMyFaces(myfacesApp);
         myfacesApp = (WebArchive) ShrinkHelper.addDirectory(myfacesApp, "publish/files/permissions");
         ShrinkHelper.exportToServer(server, "dropins", myfacesApp);
@@ -67,6 +78,7 @@ public class JSFContainerTest extends FATServletClient {
                                        ":CDIBean::PostConstructCalled::EJB-injected::Resource-injected:");
     }
 
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void testJSFBean_Mojarra() throws Exception {
         // Note that Mojarra does not support injecting @EJB into a JSF @ManagedBean
@@ -82,6 +94,7 @@ public class JSFContainerTest extends FATServletClient {
                                        ":CDIBean::PostConstructCalled::EJB-injected::Resource-injected:");
     }
 
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void testJSFBean_MyFaces() throws Exception {
         HttpUtils.findStringInReadyUrl(server, '/' + MYFACES_APP + "/TestBean.jsf",

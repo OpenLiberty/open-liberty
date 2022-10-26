@@ -38,15 +38,15 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                JSF22FlowsTests.class,
-                CDIFlowsTests.class,
-                JSFContainerTest.class,
-                JSF22StatelessViewTests.class,
-                JSF22BeanValidationTests.class,
-                ErrorPathsTest.class,
-                ClassloadingTest.class,
+                JSF22FlowsTests.class, 
+                CDIFlowsTests.class, 
+                JSFContainerTest.class, 
+                JSF22StatelessViewTests.class, 
+                JSF22BeanValidationTests.class, 
+                ErrorPathsTest.class, 
+                ClassloadingTest.class, 
                 JSF23CDIGeneralTests.class,
-                JSF23WebSocketTests.class
+                JSF23WebSocketTests.class 
 })
 
 public class FATSuite {
@@ -71,8 +71,10 @@ public class FATSuite {
     public static final String MOJARRA_API_IMP = "publish/files/mojarra/javax.faces-2.3.9.jar";
     public static final String MYFACES_API = "publish/files/myfaces/myfaces-api-2.3.9.jar";
     public static final String MYFACES_IMP = "publish/files/myfaces/myfaces-impl-2.3.9.jar";
-    // For ErrorPathsTest#testBadImplVersion_MyFaces Test
+    public static final String MYFACES_IMP_40 = "publish/files/myfaces40//myfaces-impl-4.0.0-RC2.jar";
+    // For ErrorPathsTest#testBadImplVersion_MyFaces Test (apps need the correct api since the tests checks for a bad implementation)
     public static final String MYFACES_API_30 = "publish/files/myfaces30/myfaces-api-3.0.1.jar";
+    public static final String MYFACES_API_40 = "publish/files/myfaces40/myfaces-api-4.0.0-RC2.jar";
 
     public static WebArchive addMojarra(WebArchive app) throws Exception {
         if (JakartaEE9Action.isActive()) {
