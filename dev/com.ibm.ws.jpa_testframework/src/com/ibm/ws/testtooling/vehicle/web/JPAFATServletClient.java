@@ -153,7 +153,7 @@ public class JPAFATServletClient extends FATServletClient {
             jdbcURL = dbProps.getProperty("jdbc_url", "UNKNOWN");
             jdbcUsername = dbProps.getProperty("jdbc_username", "UNKNOWN");
 
-            dbVendor = DatabaseVendor.resolveDBProduct(dbProductName);
+            dbVendor = DatabaseVendor.resolveDBProduct(dbProductName, dbProductVersion);
         } else {
             System.out.println("Failed to acquire Database Metadata: " + rc);
         }

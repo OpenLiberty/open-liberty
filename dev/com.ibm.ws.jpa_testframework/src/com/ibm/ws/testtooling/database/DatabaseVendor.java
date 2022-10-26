@@ -41,41 +41,45 @@ public enum DatabaseVendor {
      * Given a database name, returns the matching DatabaseVendor enumeration value.
      * Uses the JDBC string name for matching.
      */
-    public static DatabaseVendor resolveDBProduct(String dbProductName) {
-        if (dbProductName == null || "".equals(dbProductName.trim())) {
-            System.err.println("Cannot resolve database product " + dbProductName);
+    public static DatabaseVendor resolveDBProduct(String dbProductName, String dbProductVersion) {
+        if (dbProductName == null || "".equals(dbProductName.trim()) || dbProductVersion == null || "".equals(dbProductVersion.trim())) {
+            System.err.println("Cannot resolve database product " + dbProductName + " / " + dbProductVersion);
             return UNKNOWN;
         }
 
-        final String toLower = dbProductName.toLowerCase();
-        if (toLower.contains("derby")) {
+        final String lowerName = dbProductName.toLowerCase();
+        final String lowerVers = dbProductVersion.toLowerCase();
+        if (lowerName.contains("derby")) {
             return DERBY;
         }
-        if (toLower.contains("db2")) {
+        if (lowerName.contains("db2")) {
+            if (lowerVers.contains("dsn")) {
+                return DB2ZOS;
+            }
             return DB2;
         }
-        if (toLower.contains("informix")) {
+        if (lowerName.contains("informix")) {
             return INFORMIX;
         }
-        if (toLower.contains("hdb")) {
+        if (lowerName.contains("hdb")) {
             return HANA;
         }
-        if (toLower.contains("hsql")) {
+        if (lowerName.contains("hsql")) {
             return HSQL;
         }
-        if (toLower.contains("mysql")) {
+        if (lowerName.contains("mysql")) {
             return MYSQL;
         }
-        if (toLower.contains("oracle")) {
+        if (lowerName.contains("oracle")) {
             return ORACLE;
         }
-        if (toLower.contains("postgres")) {
+        if (lowerName.contains("postgres")) {
             return POSTGRES;
         }
-        if (toLower.contains("sqlserver") || toLower.contains("microsoft sql server")) {
+        if (lowerName.contains("sqlserver") || lowerName.contains("microsoft sql server")) {
             return SQLSERVER;
         }
-        if (toLower.contains("sybase")) {
+        if (lowerName.contains("sybase")) {
             return SYBASE;
         }
 
@@ -86,42 +90,50 @@ public enum DatabaseVendor {
      * Checks if the given database product name matches on the given DatabaseVendors
      */
     public static boolean checkDBProductName(String dbProductName, DatabaseVendor vendor) {
+        return checkDBProductName(dbProductName, "UNKNOWN", vendor);
+    }
+
+    /**
+     * Checks if the given database product name & version matches on the given DatabaseVendors
+     */
+    public static boolean checkDBProductName(String dbProductName, String dbProductVersion, DatabaseVendor vendor) {
         if (dbProductName == null || "".equals(dbProductName.trim())) {
             return false;
         }
 
-        final String toLower = dbProductName.toLowerCase();
+        final String lowerName = dbProductName.toLowerCase();
+        final String lowerVers = dbProductVersion.toLowerCase();
         switch (vendor) {
             // Basing determination off product version using
             // info from https://www.ibm.com/support/knowledgecenter/en/SSEPEK_11.0.0/java/src/tpc/imjcc_c0053013.html
             case DB2:
-                return toLower.contains("db2");
+                return lowerName.contains("db2");
             case DB2I:
-                return toLower.contains("qsq");
+                return lowerName.contains("qsq");
             case DB2LUW:
-                return toLower.contains("sql");
+                return lowerName.contains("sql");
             case DB2VMVSE:
-                return toLower.contains("ari");
+                return lowerName.contains("ari");
             case DB2ZOS:
-                return toLower.contains("dsn");
+                return lowerName.contains("db2") && lowerVers.contains("dsn");
             case DERBY:
-                return toLower.contains("derby");
+                return lowerName.contains("derby");
             case INFORMIX:
-                return toLower.contains("informix");
+                return lowerName.contains("informix");
             case HANA:
-                return toLower.contains("hdb");
+                return lowerName.contains("hdb");
             case HSQL:
-                return toLower.contains("hsql");
+                return lowerName.contains("hsql");
             case MYSQL:
-                return toLower.contains("mysql");
+                return lowerName.contains("mysql");
             case ORACLE:
-                return toLower.contains("oracle");
+                return lowerName.contains("oracle");
             case POSTGRES:
-                return toLower.contains("postgres");
+                return lowerName.contains("postgres");
             case SQLSERVER:
-                return toLower.contains("sqlserver") || toLower.contains("microsoft sql server");
+                return lowerName.contains("sqlserver") || lowerName.contains("microsoft sql server");
             case SYBASE:
-                return toLower.contains("sybase");
+                return lowerName.contains("sybase");
             case UNKNOWN:
                 return false;
         }
