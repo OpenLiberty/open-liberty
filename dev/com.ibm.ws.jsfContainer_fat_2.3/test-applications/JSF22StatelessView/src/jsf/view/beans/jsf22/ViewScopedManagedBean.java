@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jsf.view.beans;
+package jsf.view.beans.jsf22;
 
 import java.io.Serializable;
 import java.sql.Timestamp;

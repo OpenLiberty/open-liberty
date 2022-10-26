@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,15 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jsf.flow.beans;
+package jsf.flow.beans.faces40;
 
 import java.util.Map;
+import java.io.Serializable;
 
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
+
 import javax.faces.context.FacesContext;
 
-@ManagedBean
-public class InitializerBean {
+@Named("initializerBean")
+@RequestScoped
+public class InitializerBean implements Serializable {
 
     public InitializerBean() {}
 
