@@ -20,7 +20,7 @@ import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
-import io.opentelemetry.extension.annotations.SpanAttribute;
+import io.opentelemetry.instrumentation.annotations.SpanAttribute;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import io.opentelemetry.instrumentation.api.annotation.support.MethodSpanAttributesExtractor;
 import io.opentelemetry.instrumentation.api.annotation.support.ParameterAttributeNamesExtractor;

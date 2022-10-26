@@ -58,42 +58,42 @@
         <dependency>
             <groupId>org.eclipse.microprofile.telemetry.tracing</groupId>
             <artifactId>microprofile-telemetry-tracing-tck</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0-RC6</version>
         </dependency>
         <dependency>
             <groupId>io.opentelemetry</groupId>
             <artifactId>opentelemetry-api</artifactId>
-            <version>1.18.0</version>
+            <version>1.19.0</version>
         </dependency>
         <dependency>
             <groupId>io.opentelemetry</groupId>
             <artifactId>opentelemetry-sdk</artifactId>
-            <version>1.18.0</version>
+            <version>1.19.0</version>
         </dependency>
         <dependency>
             <groupId>io.opentelemetry</groupId>
             <artifactId>opentelemetry-sdk-extension-autoconfigure</artifactId>
-            <version>1.18.0-alpha</version>
+            <version>1.19.0-alpha</version>
         </dependency>
         <dependency>
             <groupId>io.opentelemetry</groupId>
             <artifactId>opentelemetry-sdk-trace</artifactId>
-            <version>1.18.0</version>
+            <version>1.19.0</version>
         </dependency>
         <dependency>
-            <groupId>io.opentelemetry</groupId>
-            <artifactId>opentelemetry-extension-annotations</artifactId>
-            <version>1.18.0</version>
+            <groupId>io.opentelemetry.instrumentation</groupId>
+            <artifactId>opentelemetry-instrumentation-annotations</artifactId>
+            <version>1.19.0-alpha</version>
         </dependency>
         <dependency>
             <groupId>io.opentelemetry.instrumentation</groupId>
             <artifactId>opentelemetry-instrumentation-api</artifactId>
-            <version>1.18.0</version>
+            <version>1.19.0</version>
         </dependency>
         <dependency>
             <groupId>io.opentelemetry.instrumentation</groupId>
             <artifactId>opentelemetry-instrumentation-annotations-support</artifactId>
-            <version>1.18.0-alpha</version>
+            <version>1.19.0-alpha</version>
         </dependency>
 
         <dependency>
