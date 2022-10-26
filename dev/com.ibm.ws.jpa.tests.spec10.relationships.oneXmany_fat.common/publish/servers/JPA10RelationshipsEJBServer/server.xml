@@ -23,15 +23,15 @@
 
     <dataSource id="jdbc/JPA_JTA_DS" jndiName="jdbc/JPA_JTA_DS" fat.modify="true">
         <jdbcDriver libraryRef="AnonymousJDBCLib"/>
-        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" />
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
 
     <dataSource id="jdbc/JPA_NJTA_DS" jndiName="jdbc/JPA_NJTA_DS" fat.modify="true" transactional="false">
         <jdbcDriver libraryRef="AnonymousJDBCLib"/>
-        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" />
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
 
-    <library id="AnonymousJDBCLib" fat.modify="true">
+    <library id="AnonymousJDBCLib" >
         <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
     </library>
 
