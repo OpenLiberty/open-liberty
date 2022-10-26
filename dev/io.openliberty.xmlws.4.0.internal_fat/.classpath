@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/providerLookup/src"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/berksanates/.m2/repository/jakarta/servlet/jakarta.servlet-api/6.0.0/jakarta.servlet-api-6.0.0.jar" sourcepath="/Users/berksanates/.m2/repository/jakarta/servlet/jakarta.servlet-api/6.0.0/jakarta.servlet-api-6.0.0-sources.jar">
+		<attributes>
+			<attribute name="bsn" value="jakarta.servlet:jakarta.servlet-api"/>
+			<attribute name="type" value="REPO"/>
+			<attribute name="project" value="io.openliberty.jakarta.servlet.6.0"/>
+			<attribute name="version" value="6.0.0"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="jakarta/servlet/*"/>
+			<accessrule kind="accessible" pattern="jakarta/servlet/annotation/*"/>
+			<accessrule kind="accessible" pattern="jakarta/servlet/descriptor/*"/>
+			<accessrule kind="accessible" pattern="jakarta/servlet/http/*"/>
+			<accessrule kind="accessible" pattern="jakarta/servlet/resources/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="src" path="/com.ibm.ws.jaxws.2.3.common"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
