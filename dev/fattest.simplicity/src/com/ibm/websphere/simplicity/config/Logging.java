@@ -35,6 +35,7 @@ public class Logging extends ConfigElement {
     private String jsonAccessLogFields;
     private String rolloverStartTime;
     private String rolloverInterval;
+    private String maxFfdcAge;
 
     /**
      * @return the configured log directory
@@ -253,7 +254,7 @@ public class Logging extends ConfigElement {
         return this.rolloverStartTime;
     }
 
-        /**
+    /**
      * default="default"; options="logFormat"
      *
      * @param rolloverInterval the value of rolloverInterval configuration to set
@@ -268,6 +269,23 @@ public class Logging extends ConfigElement {
      */
     public String getRolloverInterval() {
         return this.rolloverInterval;
+    }
+
+    /**
+     * default="default"; options="logFormat"
+     *
+     * @param maxFfdcAge the value of maxFfdcAge configuration to set
+     */
+    @XmlAttribute(name = "maxFfdcAge")
+    public void setMaxFfdcAge(String maxFfdcAge) {
+        this.maxFfdcAge = ConfigElement.getValue(maxFfdcAge);
+    }
+
+    /**
+     * @return the value of the rolloverInterval configuration attribute
+     */
+    public String getMaxFfdcAge() {
+        return this.maxFfdcAge;
     }
 
     @Override
