@@ -10,7 +10,6 @@
  */
 package com.ibm.ws.jsf22.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -27,13 +26,14 @@ import org.junit.runner.RunWith;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -42,7 +42,6 @@ import junit.framework.Assert;
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE10_FEATURES)
 public class JSF22LocalizationTesterTests {
     @Rule
     public TestName name = new TestName();
@@ -56,8 +55,11 @@ public class JSF22LocalizationTesterTests {
 
     @BeforeClass
     public static void setup() throws Exception {
+        boolean isEE10 = JakartaEE10Action.isActive();
 
-        WebArchive JSF22LocalizationTesterWar = ShrinkHelper.buildDefaultApp("JSF22LocalizationTester.war", "com.ibm.ws.jsf22.fat.localbean.*");
+        WebArchive JSF22LocalizationTesterWar = ShrinkHelper.buildDefaultApp("JSF22LocalizationTester.war",
+                                                                             isEE10 ? "com.ibm.ws.jsf22.fat.localbean.faces40" : "com.ibm.ws.jsf22.fat.localbean.jsf22",
+                                                                             "com.ibm.ws.jsf22.fat.localprops");
 
         JSF22LocalizationTesterWar.addAsResource(new File("test-applications/JSF22LocalizationTester.war/src/com/ibm/ws/jsf22/fat/localprops/messages.properties"),
                                                  "com/ibm/ws/jsf22/fat/localprops/messages.properties");
@@ -69,6 +71,13 @@ public class JSF22LocalizationTesterTests {
                                                  "com/ibm/ws/jsf22/fat/localprops/resources.properties");
 
         ShrinkHelper.exportDropinAppToServer(jsfTestServer2, JSF22LocalizationTesterWar);
+
+        if (isEE10) {
+            // For Faces 4.0, CDI @Named is used since @ManagedBean is no longer available.
+            ServerConfiguration config = jsfTestServer2.getServerConfiguration();
+            config.getFeatureManager().getFeatures().add("cdi-4.0");
+            jsfTestServer2.updateServerConfiguration(config);
+        }
 
         jsfTestServer2.startServer(JSF22LocalizationTesterTests.class.getSimpleName() + ".log");
 

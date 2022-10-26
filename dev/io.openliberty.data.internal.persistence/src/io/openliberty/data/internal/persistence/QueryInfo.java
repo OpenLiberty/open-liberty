@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import jakarta.data.repository.Sort;
 import jakarta.persistence.Query;
 
 /**
@@ -35,9 +36,30 @@ class QueryInfo {
     EntityInfo entityInfo;
 
     /**
-     * Generated JPQL for the query. Null if a save operation.
+     * Indicates if the query has a WHERE clause.
+     * This is accurate only for generated or partially provided queries.
+     */
+    boolean hasWhere;
+
+    /**
+     * JPQL for the query. Null if a save operation.
      */
     String jpql;
+
+    /**
+     * JPQL for a find query after a keyset. Otherwise null.
+     */
+    String jpqlAfterKeyset;
+
+    /**
+     * JPQL for a find query before a keyset. Otherwise null.
+     */
+    String jpqlBeforeKeyset;
+
+    /**
+     * Keyset consisting of key names and sort direction.
+     */
+    List<Sort> keyset;
 
     /**
      * Value from findFirst#By, or 1 for findFirstBy, otherwise 0.
@@ -174,14 +196,18 @@ class QueryInfo {
      */
     QueryInfo withJPQL(String jpql) {
         QueryInfo q = new QueryInfo(method, returnArrayType, returnTypeParam);
+        q.entityInfo = entityInfo;
+        q.hasWhere = hasWhere;
         q.jpql = jpql;
-        q.entityInfo = this.entityInfo;
-        q.maxResults = this.maxResults;
-        q.paramCount = this.paramCount;
-        q.paramNames = this.paramNames;
-        q.paramsNeedConversionToId = this.paramsNeedConversionToId;
-        q.saveParamType = this.saveParamType;
-        q.type = this.type;
+        q.jpqlAfterKeyset = jpqlAfterKeyset;
+        q.jpqlBeforeKeyset = jpqlBeforeKeyset;
+        q.keyset = keyset;
+        q.maxResults = maxResults;
+        q.paramCount = paramCount;
+        q.paramNames = paramNames;
+        q.paramsNeedConversionToId = paramsNeedConversionToId;
+        q.saveParamType = saveParamType;
+        q.type = type;
         return q;
     }
 }

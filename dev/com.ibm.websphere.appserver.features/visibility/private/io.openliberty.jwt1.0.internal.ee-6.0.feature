@@ -7,6 +7,7 @@ visibility = private
   io.openliberty.servlet.internal-3.0; ibm.tolerates:="3.1, 4.0"
 -bundles=\
   com.ibm.ws.security.jwt, \
-  com.ibm.ws.security.common
+  com.ibm.ws.security.common, \
+  io.openliberty.security.common.jwt
 kind=ga
 edition=core

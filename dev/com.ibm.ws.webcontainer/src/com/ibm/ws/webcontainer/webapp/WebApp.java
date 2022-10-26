@@ -325,7 +325,8 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
     protected String lastProgAddListenerInitialized; // PI41941
     private ClassLoader webInfLibClassloader;
     protected Map<String, URL> metaInfCache;
-    
+    private final boolean hasSlashStarMapping;
+
     protected final static boolean useMetaInfCache = (WCCustomProperties.META_INF_RESOURCES_CACHE_SIZE > 0);
 
     //The following two JSF listener classes are used to make sure that the JSF ServletContextListener 
@@ -385,10 +386,29 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
   }
   
   public static final boolean DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR = WCCustomProperties.DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR;  //PI26908
-  
+
     // PK37698 End
     public WebApp(WebAppConfiguration webAppConfig, Container parent) {
         super(webAppConfig.getId(), parent);
+         
+        boolean _hasSlashStarMapping = false;
+        Map<String,List<String>> mappings = webAppConfig.getServletMappings();
+        if (mappings != null) {
+          for (List<String> list : mappings.values()) {
+              for (String urlPattern : list) {
+                if (urlPattern != null && ("/*").equals(urlPattern)) {
+                  _hasSlashStarMapping = true;
+                  break;
+                }
+              }
+              if(_hasSlashStarMapping) {
+                  break;
+              }                     
+           }                                                                                               
+        }
+        
+        this.hasSlashStarMapping = _hasSlashStarMapping;
+        
         this.config = webAppConfig;
         // PK63920 Start
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
@@ -6813,5 +6833,12 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
      * does anything useful in the WebApp31.
      */
     protected abstract void checkForSessionIdListenerAndAdd(Object listener);
+
+    /**
+     * @return the hasSlashStarMapping
+     */
+    public boolean hasSlashStarMapping() {
+        return hasSlashStarMapping;
+    }
     
 }

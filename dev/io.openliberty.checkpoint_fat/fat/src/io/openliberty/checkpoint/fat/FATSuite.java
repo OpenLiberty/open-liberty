@@ -56,7 +56,8 @@ import componenttest.topology.impl.LibertyServer;
                 WebSocketTest.class,
                 FacesTest.class,
                 OpenAPITest.class,
-                MPJWTTest.class
+                MPJWTTest.class,
+                MPMetricsTest.class
 })
 public class FATSuite {
     public static void copyAppsAppToDropins(LibertyServer server, String appName) throws Exception {

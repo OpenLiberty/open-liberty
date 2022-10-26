@@ -60,6 +60,7 @@ import com.ibm.ws.container.service.app.deploy.ContainerInfo.Type;
 import com.ibm.ws.container.service.app.deploy.EARApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
+import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.ModuleStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
@@ -81,6 +82,8 @@ import com.ibm.ws.jpa.management.JPAPuScope;
 import com.ibm.ws.jpa.management.JPARuntime;
 import com.ibm.ws.kernel.LibertyProcess;
 import com.ibm.ws.kernel.service.util.SecureAction;
+import com.ibm.ws.runtime.metadata.ApplicationMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
@@ -306,9 +309,18 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
         // -> a jar file in the EAR library directory
         // ------------------------------------------------------------------------
 
+        boolean setContext = false;
         try {
             JPAIntrospection.beginJPAIntrospection();
             JPAIntrospection.beginApplicationVisit(applName, applInfo);
+
+            if (appInfo instanceof ExtendedApplicationInfo) {
+                ApplicationMetaData applicationMetaData = ((ExtendedApplicationInfo) appInfo).getMetaData();
+                ApplicationComponentMetaData cmd = new ApplicationComponentMetaData(applicationMetaData);
+
+                ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().beginContext(cmd);
+                setContext = true;
+            }
 
             // Process any persistence.xml in EAR/lib/*.jar
             // Note: if there is no application classloader (standalone module),
@@ -379,6 +391,10 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
                 FFDCFilter.processException(e, this.getClass().getName(), "457");
             }
         } finally {
+            if (setContext) {
+                ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().endContext();
+            }
+
             JPAIntrospection.endApplicationVisit();
             JPAIntrospection.executeTraceAnalysis();
             JPAIntrospection.endJPAIntrospection();

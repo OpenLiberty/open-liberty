@@ -33,10 +33,14 @@ public class ExecuteCRIU_OpenJ9 implements ExecuteCRIU {
     }
 
     @Override
-    @FFDCIgnore({ JVMCheckpointException.class, SystemCheckpointException.class, RestoreException.class, JVMCRIUException.class, RuntimeException.class })
+    @FFDCIgnore({ JVMCheckpointException.class, SystemCheckpointException.class, RestoreException.class, JVMCRIUException.class, RuntimeException.class, NoSuchMethodError.class })
     public void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps, boolean unprivileged) throws CheckpointFailedException {
         CRIUSupport criuSupport = new CRIUSupport(imageDir.toPath());
-        criuSupport.registerPreSnapshotHook(prepare);
+        try {
+            criuSupport.registerPreCheckpointHook(prepare);
+        } catch (NoSuchMethodError e) {
+            criuSupport.registerPreSnapshotHook(prepare);
+        }
         criuSupport.registerPostRestoreHook(restore);
         criuSupport.setShellJob(true);
         criuSupport.setFileLocks(true);

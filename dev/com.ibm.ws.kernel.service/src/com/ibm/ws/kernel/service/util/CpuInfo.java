@@ -62,7 +62,13 @@ public class CpuInfo {
     });
     private final static CpuInfo INSTANCE = new CpuInfo();
 
-    private final AtomicInteger AVAILABLE_PROCESSORS = new AtomicInteger(-1);
+    // the integer form of AvailableProcessors is returned by getAvailableProcessors()
+    private final AtomicInteger AVAILABLE_PROCESSORS_INTEGER = new AtomicInteger(-1);
+    // The float form of AvailableProcessors is used to calculate JavaCpuUsage
+    // because some environments (e.g. containers) support fractional cpu allocation.
+    // Since there is no AtomicFloat, we simulate one by multiplying by 100 before 'set'
+    // and dividing by 100.0 after 'get'
+    private final AtomicInteger AVAILABLE_PROCESSORS_FLOAT = new AtomicInteger(-1);
     private final CPUCount cpuCount;
     // For CPU usage calculation
     // Initialized lazily to avoid CPU usage during startup.
@@ -85,12 +91,14 @@ public class CpuInfo {
             phase.addMultiThreadedHook(activeTask);
         }
         int runtimeAvailableProcessors = Runtime.getRuntime().availableProcessors();
-        int fileSystemAvailableProcessors = getAvailableProcessorsFromFilesystem();
+        float fileSystemAvailableProcessors = getAvailableProcessorsFromFilesystemFloat();
 
         if (fileSystemAvailableProcessors <= 0 || fileSystemAvailableProcessors > runtimeAvailableProcessors) {
-            AVAILABLE_PROCESSORS.set(runtimeAvailableProcessors);
+            AVAILABLE_PROCESSORS_INTEGER.set(runtimeAvailableProcessors);
+            AVAILABLE_PROCESSORS_FLOAT.set(runtimeAvailableProcessors * 100);
         } else {
-            AVAILABLE_PROCESSORS.set(fileSystemAvailableProcessors);
+            AVAILABLE_PROCESSORS_INTEGER.set(roundUpToNextInt(fileSystemAvailableProcessors));
+            AVAILABLE_PROCESSORS_FLOAT.set((int) (fileSystemAvailableProcessors * 100));
         }
 
         int nsFactor = 1;
@@ -166,28 +174,29 @@ public class CpuInfo {
             long d1 = (currentTimeMs - lastSystemTimeMillis) * 1000000;
             long d2 = processCpuTime - lastProcessCPUTime;
             cpuUsage = (double) d2 / d1;
-            cpuUsage = (cpuUsage / AVAILABLE_PROCESSORS.get()) * cpuNSFactor * 100;
+            cpuUsage = (cpuUsage / (AVAILABLE_PROCESSORS_FLOAT.floatValue() / 100.0)) * cpuNSFactor * 100;
 
             lastSystemTimeMillis = currentTimeMs;
             lastProcessCPUTime = processCpuTime;
         }
 
         if (cpuUsage > 100) {
+            // This may not be an error - some virtualized systems allow process cpu to exceed
+            // 100% in some cases. So we will return the cpuUsage as reported to us, and provide
+            // the trace event so this can be observed for diagnosis if the need arises.
             if (tc.isEventEnabled()) {
-                Tr.event(tc, "getProcessCPU error", ("process CPU out-of-range: " + cpuUsage));
+                Tr.event(tc, "getProcessCPU anomaly", ("process CPU out-of-range: " + cpuUsage));
             }
-            cpuUsage = -1;
         }
         lastProcessCpuUsage = cpuUsage;
         return cpuUsage;
     }
 
     // utility below parses cpu limits info from Docker files
-    private static int getAvailableProcessorsFromFilesystem() {
+    private static float getAvailableProcessorsFromFilesystemFloat() {
         boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
-        Double availableProcessorsDouble = null;
-        int availableProcessorsInt = -1;
+        float availableProcessorsFloat = -1;
 
         //Check for docker files
         String periodFileLocation = File.separator + "sys" + File.separator + "fs" + File.separator + "cgroup" + File.separator + "cpu" + File.separator + "cpu.cfs_period_us";
@@ -198,26 +207,26 @@ public class CpuInfo {
             //Read quota
             try {
                 String quotaContents = readFile(cfsQuota);
-                double quotaFloat = new Double(quotaContents);
+                float quotaFloat = Float.parseFloat(quotaContents);
                 if (isTraceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "quotaFloat = " + quotaFloat);
                 if (quotaFloat >= 0) {
                     //Read period
                     String periodContents = readFile(cfsPeriod);
-                    double periodFloat = new Double(periodContents);
+                    float periodFloat = Float.parseFloat(periodContents);
                     if (isTraceOn && tc.isDebugEnabled())
                         Tr.debug(tc, "periodFloat = " + periodFloat);
                     if (periodFloat != 0) {
-                        availableProcessorsDouble = quotaFloat / periodFloat;
-                        availableProcessorsDouble = roundToTwoDecimalPlaces(availableProcessorsDouble);
+                        availableProcessorsFloat = quotaFloat / periodFloat;
+                        availableProcessorsFloat = roundToTwoDecimalPlaces(availableProcessorsFloat);
                         if (isTraceOn && tc.isDebugEnabled())
-                            Tr.debug(tc, "Calculated availableProcessors: " + availableProcessorsDouble + ". period=" + periodFloat + ", quota=" + quotaFloat);
+                            Tr.debug(tc, "Calculated availableProcessors: " + availableProcessorsFloat + ". period=" + periodFloat + ", quota=" + quotaFloat);
                     }
                 }
             } catch (Throwable e) {
                 if (isTraceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "Caught exception: " + e.getMessage() + ". Using number of processors reported by java");
-                availableProcessorsDouble = null;
+                availableProcessorsFloat = -1;
             }
         } else {
             if (isTraceOn && tc.isDebugEnabled()) {
@@ -226,13 +235,7 @@ public class CpuInfo {
             }
         }
 
-        availableProcessorsInt = (availableProcessorsDouble == null) ? -1 : availableProcessorsDouble.intValue();
-
-        // make sure any z.xy cpu quota was not rounded down (especially to 0 ...) during int conversion
-        if (availableProcessorsDouble != null && availableProcessorsDouble > availableProcessorsInt)
-            availableProcessorsInt++;
-
-        return availableProcessorsInt;
+        return availableProcessorsFloat;
     }
 
     private static String readFile(File file) throws IOException {
@@ -250,10 +253,16 @@ public class CpuInfo {
         return sb.toString();
     }
 
-    private static Double roundToTwoDecimalPlaces(Double d) {
-        BigDecimal bd = new BigDecimal(d);
+    private static float roundToTwoDecimalPlaces(float f) {
+        BigDecimal bd = new BigDecimal(f);
         bd = bd.setScale(2, RoundingMode.DOWN);
-        return bd.doubleValue();
+        return bd.floatValue();
+    }
+
+    private static int roundUpToNextInt(float f) {
+        BigDecimal bd = new BigDecimal(f);
+        bd = bd.setScale(0, RoundingMode.UP);
+        return bd.intValue();
     }
 
     /**
@@ -443,23 +452,33 @@ public class CpuInfo {
                 lastChecked = current;
                 return;
             }
+
             // find available processors
             int runtimeAvailableProcessors = Runtime.getRuntime().availableProcessors();
-            int fileSystemAvailableProcessors = getAvailableProcessorsFromFilesystem();
+            float fileSystemAvailableProcessors = getAvailableProcessorsFromFilesystemFloat();
 
-            int newAvailableProcessors;
+            int newAvailableProcessorsInt;
+            int newAvailableProcessorsFloat;
             if (fileSystemAvailableProcessors <= 0 || fileSystemAvailableProcessors > runtimeAvailableProcessors) {
-                newAvailableProcessors = runtimeAvailableProcessors;
+                newAvailableProcessorsInt = runtimeAvailableProcessors;
+                newAvailableProcessorsFloat = runtimeAvailableProcessors * 100;
             } else {
-                newAvailableProcessors = fileSystemAvailableProcessors;
+                newAvailableProcessorsInt = roundUpToNextInt(fileSystemAvailableProcessors);
+                newAvailableProcessorsFloat = (int) (fileSystemAvailableProcessors * 100);
             }
 
-            int currentNumberOfProcessors = AVAILABLE_PROCESSORS.get();
-            if (currentNumberOfProcessors != newAvailableProcessors) {
-                if (AVAILABLE_PROCESSORS.compareAndSet(currentNumberOfProcessors, newAvailableProcessors)) {
-                    notifyListeners(newAvailableProcessors);
+            int currentNumberOfProcessorsInt = AVAILABLE_PROCESSORS_INTEGER.get();
+            int currentNumberOfProcessorsFloat = AVAILABLE_PROCESSORS_FLOAT.get();
+
+            if (currentNumberOfProcessorsFloat != newAvailableProcessorsFloat) {
+                AVAILABLE_PROCESSORS_FLOAT.set(newAvailableProcessorsFloat);
+            }
+            if (currentNumberOfProcessorsInt != newAvailableProcessorsInt) {
+                if (AVAILABLE_PROCESSORS_INTEGER.compareAndSet(currentNumberOfProcessorsInt, newAvailableProcessorsInt)) {
+                    notifyListeners(newAvailableProcessorsInt);
                 }
             }
+
             lastChecked = System.currentTimeMillis();
         }
 
@@ -484,12 +503,12 @@ public class CpuInfo {
     @Trivial
     public class CPUCount {
         public int get() {
-            return AVAILABLE_PROCESSORS.get();
+            return AVAILABLE_PROCESSORS_INTEGER.get();
         }
 
         @Override
         public String toString() {
-            return Integer.toString(AVAILABLE_PROCESSORS.get());
+            return Integer.toString(AVAILABLE_PROCESSORS_INTEGER.get());
         }
     }
 }

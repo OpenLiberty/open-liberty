@@ -215,6 +215,7 @@ class EntityDefiner implements Runnable {
                 entityType.getName();//TODO
                 LinkedHashMap<String, String> attributeNames = new LinkedHashMap<>();
                 Set<String> collectionAttributeNames = new HashSet<String>();
+                HashMap<String, Member> attributeAccessors = new HashMap<>();
                 for (Attribute<?, ?> attr : entityType.getAttributes()) {
                     String attributeName = attr.getName();
                     PersistentAttributeType attributeType = attr.getPersistentAttributeType();
@@ -226,9 +227,11 @@ class EntityDefiner implements Runnable {
                             String embeddableAttributeName = embAttr.getName();
                             String fullAttributeName = attributeName + '.' + embeddableAttributeName;
                             attributeNames.put(embeddableAttributeName.toUpperCase(), fullAttributeName);
+                            attributeAccessors.put(fullAttributeName, attr.getJavaMember());
                         }
                     } else {
                         attributeNames.put(attributeName.toUpperCase(), attributeName);
+                        attributeAccessors.put(attributeName, attr.getJavaMember());
                         if (PersistentAttributeType.ELEMENT_COLLECTION.equals(attributeType))
                             collectionAttributeNames.add(attributeName);
                     }
@@ -258,6 +261,7 @@ class EntityDefiner implements Runnable {
 
                 EntityInfo entityInfo = new EntityInfo(entityType.getName(), //
                                 entityClass, //
+                                attributeAccessors, //
                                 attributeNames, //
                                 collectionAttributeNames, //
                                 keyAttributeNames.get(entityClass), //

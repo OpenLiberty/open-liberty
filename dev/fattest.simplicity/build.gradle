@@ -49,7 +49,7 @@ configurations {
 
 dependencies {
     arquillianFeature 'io.openliberty.arquillian:arquillian-liberty-support:1.0.5:feature@zip'
-    arquillianJakartaFeature21 'io.openliberty.arquillian:arquillian-liberty-support-jakarta:2.1.0:feature@zip'
+    arquillianJakartaFeature21 'io.openliberty.arquillian:arquillian-liberty-support-jakarta:2.1.1:feature@zip'
 }
 
 task extractArquillianSupportFeature(type:Sync) {

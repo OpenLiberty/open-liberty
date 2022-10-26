@@ -51,7 +51,6 @@ import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.common.claims.UserClaims;
 import com.ibm.ws.security.common.claims.UserClaimsRetrieverService;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
-import com.ibm.ws.security.common.random.RandomUtils;
 import com.ibm.ws.security.common.token.propagation.TokenPropagationHelper;
 import com.ibm.ws.security.oauth20.ProvidersService;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
@@ -61,7 +60,6 @@ import com.ibm.ws.security.oauth20.plugins.jose4j.JwtCreator;
 import com.ibm.ws.security.oauth20.plugins.jose4j.OidcUserClaims;
 import com.ibm.ws.security.oauth20.util.ConfigUtils;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
-import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.security.openidconnect.server.internal.HashUtils;
 import com.ibm.ws.security.openidconnect.token.IDToken;
@@ -71,6 +69,8 @@ import com.ibm.ws.security.openidconnect.token.Payload;
 import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 import com.ibm.wsspi.security.openidconnect.IDTokenMediator;
+
+import io.openliberty.security.common.jwt.JwtParsingUtils;
 
 /*
  * This is a singleton instance.
@@ -417,7 +417,7 @@ public class IDTokenHandler implements OAuth20TokenTypeHandler {
         try {
             Set<String> allowedThirdPartyIDTokenClaims = oidcServerConfig.getThirdPartyIDTokenClaims();
             if (!allowedThirdPartyIDTokenClaims.isEmpty() && isRunningBetaMode()) {
-                JwtContext jwtContext = Jose4jUtil.parseJwtWithoutValidation(thirdPartyIDToken);
+                JwtContext jwtContext = JwtParsingUtils.parseJwtWithoutValidation(thirdPartyIDToken);
                 JwtClaims jwtClaims = jwtContext.getJwtClaims();
                 Map<String, Object> jwtClaimsMap = jwtClaims.getClaimsMap();
 

@@ -196,6 +196,20 @@ public class CacheServiceImpl implements CacheService {
                             cacheManager = cacheManagerService.getCacheManager();
 
                             /*
+                             * Configuration updates can occur while this task is either queued to run or while running.
+                             * If this occurs, the CachingProviderService could have been unregistered from the
+                             * CacheManagerService causing the CacheManager to be null here. Make sure it is still
+                             * registered, if not, no-op this task.
+                             */
+                            if (cacheManager == null) {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "It appears that the CacheManagerService was unable to get a CacheManager instance." +
+                                                 " Perhaps a configuration change was processed?");
+                                }
+                                return null;
+                            }
+
+                            /*
                              * The JCache specification says that any cache created outside of the JCache
                              * APIs should have no types for the key or value. Some providers seem to respect
                              * that and others don't. If we provide the types in the getCache call, we can

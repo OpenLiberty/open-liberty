@@ -60,7 +60,7 @@ public interface Reservations extends CrudRepository<Reservation, Long> {
 
     ArrayList<Reservation> findByStartBetweenAndLocationIn(OffsetDateTime minStart, OffsetDateTime maxStart, List<String> locations);
 
-    CopyOnWriteArrayList<Reservation> findByStartGreaterThanOrderByStartDescOrderByStopDesc(OffsetDateTime startAfter, Limit maxResults);
+    CopyOnWriteArrayList<Reservation> findByStartGreaterThanOrderByStartDescStopDesc(OffsetDateTime startAfter, Limit maxResults);
 
     Reservation[] findByStartLessThanOrStartGreaterThanOrderByMeetingIDDesc(OffsetDateTime startBefore, OffsetDateTime startAfter);
 
@@ -68,13 +68,13 @@ public interface Reservations extends CrudRepository<Reservation, Long> {
 
     LinkedList<Reservation> findByStopGreaterThanEqual(OffsetDateTime minEndTime);
 
-    Stack<Reservation> findByStopGreaterThanOrderByLocationDescOrderByHostOrderByStopAsc(OffsetDateTime endAfter);
+    Stack<Reservation> findByStopGreaterThanOrderByLocationDescHostAscStopAsc(OffsetDateTime endAfter);
 
     UserDefinedCollection<Reservation> findByStopLessThan(OffsetDateTime maxEndTime, Sort... sortBy);
 
     AbstractCollection<Reservation> findByStopLessThanEqual(OffsetDateTime maxEndTime);
 
-    AbstractList<Reservation> findByStopLessThanOrderByHostAscOrderByLocationDescOrderByStart(OffsetDateTime endBefore);
+    AbstractList<Reservation> findByStopLessThanOrderByHostAscLocationDescStart(OffsetDateTime endBefore);
 
     Stream<Reservation> findByStopOrStart(OffsetDateTime stop, OffsetDateTime start);
 
