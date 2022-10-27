@@ -163,7 +163,14 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
     }
 
     private boolean isProgrammaticAuthenticationWithoutBeingAuthenticated(HttpMessageContext httpMessageContext, boolean alreadyAuthenticated) {
-        return httpMessageContext.isAuthenticationRequest() && !alreadyAuthenticated;
+        return (isNewAuthentication(httpMessageContext.getAuthParameters())) && !alreadyAuthenticated;
+    }
+
+    private boolean isNewAuthentication(AuthenticationParameters authParameters) {
+        if (authParameters != null) {
+            return authParameters.isNewAuthentication();
+        }
+        return false;
     }
 
     private boolean containsStoredState(HttpServletRequest request, HttpServletResponse response, Client client) {
@@ -351,6 +358,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
             rspStatus = HttpServletResponse.SC_OK;
         } else {
             rspStatus = HttpServletResponse.SC_UNAUTHORIZED;
+            status = AuthenticationStatus.SEND_CONTINUE;
         }
 
         httpMessageContext.getResponse().setStatus(rspStatus);

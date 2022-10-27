@@ -20,7 +20,7 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.tck.TCKUtils;
+import componenttest.topology.utils.tck.TCKRunner;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 
 /**
@@ -52,8 +52,7 @@ public class RestClientTckPackageTest {
         String testName = this.getClass() + ":testRestClient10Tck";
         Type type = Type.MICROPROFILE;
         String specName = "Rest Client";
-        String specVersion = "1.0";
-        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion);
+        TCKRunner.runTCK(server, bucketName, testName, type, specName);
     }
 
 }

@@ -22,13 +22,13 @@ import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
 import componenttest.annotation.ExpectedFFDC;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestOneXManyUnidirectional_EJB_SF_Servlet")
-public class TestOneXManyUnidirectional_EJB_SF_Servlet extends EJBTestVehicleServlet {
+public class TestOneXManyUnidirectional_EJB_SF_Servlet extends EJBDBTestVehicleServlet {
     private final String testLogicClassName = "com.ibm.ws.jpa.fvt.relationships.oneXmany.testlogic.OneXManyUnidirectionalTestLogic";
 
     private final HashMap<String, JPAPersistenceContext> jpaPctxMap = new HashMap<String, JPAPersistenceContext>();

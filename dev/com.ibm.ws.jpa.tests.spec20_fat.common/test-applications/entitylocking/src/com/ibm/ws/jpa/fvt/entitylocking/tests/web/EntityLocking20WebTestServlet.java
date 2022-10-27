@@ -23,11 +23,11 @@ import com.ibm.ws.jpa.fvt.entitylocking.testlogic.EntityLocking20TestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/EntityLocking20WebTestServlet")
-public class EntityLocking20WebTestServlet extends JPATestServlet {
+public class EntityLocking20WebTestServlet extends JPADBTestServlet {
     @PostConstruct
     private void initFAT() {
         testClassName = EntityLocking20TestLogic.class.getName();

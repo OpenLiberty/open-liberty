@@ -14,8 +14,10 @@
         <packages>
             <package name="org.eclipse.microprofile.telemetry.tracing.tck.*"></package>
         </packages>
+        <!--
         <classes>
-            <class name="org.eclipse.microprofile.telemetry.tracing.tck.cdi.TracerTest"></class>
+            <class name="org.eclipse.microprofile.telemetry.tracing.tck.rest.BaggageTest"></class>
         </classes>
+        -->
     </test>
 </suite>

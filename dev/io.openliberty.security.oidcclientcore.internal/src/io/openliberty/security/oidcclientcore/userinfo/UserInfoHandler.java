@@ -35,7 +35,7 @@ public class UserInfoHandler extends EndpointRequest {
             }
             return null;
         }
-        UserInfoRequestor userInfoRequester = createUserInfoRequestor(userInfoEndpoint, accessToken);
+        UserInfoRequestor userInfoRequester = createUserInfoRequestor(userInfoEndpoint, oidcClientConfig, accessToken);
         UserInfoResponse userInfoResponse = userInfoRequester.requestUserInfo();
         if (userInfoResponse != null) {
             return userInfoResponse.asMap();
@@ -75,8 +75,9 @@ public class UserInfoHandler extends EndpointRequest {
         return userInfoEndpoint;
     }
 
-    UserInfoRequestor createUserInfoRequestor(String userInfoEndpoint, String accessToken) {
-        Builder builder = new UserInfoRequestor.Builder(userInfoEndpoint, accessToken, getSSLSocketFactory());
+    UserInfoRequestor createUserInfoRequestor(String userInfoEndpoint, OidcClientConfig oidcClientConfig, String accessToken) {
+        Builder builder = new UserInfoRequestor.Builder(oidcClientConfig.getClientId(), userInfoEndpoint, accessToken, getSSLSocketFactory());
+        // TODO - set JWT response signature algorithm and signing key
         return builder.build();
     }
 

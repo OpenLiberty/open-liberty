@@ -19,7 +19,7 @@ import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
 import componenttest.annotation.ExpectedFFDC;
 
@@ -140,7 +140,7 @@ import componenttest.annotation.ExpectedFFDC;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TxSynchronizationDDCMTCMEXSpecificEJBSLTestServlet")
-public class TxSynchronizationDDCMTCMEXSpecificEJBSLTestServlet extends EJBTestVehicleServlet {
+public class TxSynchronizationDDCMTCMEXSpecificEJBSLTestServlet extends EJBDBTestVehicleServlet {
     @PostConstruct
     private void initFAT() {
         testClassName = "com.ibm.ws.jpa.fvt.txsync.testlogic.cm.CMEXAndCMTSpecificTxSynchronizationTestLogic";

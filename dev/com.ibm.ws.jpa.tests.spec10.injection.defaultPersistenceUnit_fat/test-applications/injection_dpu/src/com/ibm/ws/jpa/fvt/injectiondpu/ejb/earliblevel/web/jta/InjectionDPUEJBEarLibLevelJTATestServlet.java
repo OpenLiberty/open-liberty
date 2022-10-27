@@ -19,12 +19,12 @@ import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
 /**
  *
  */
-public class InjectionDPUEJBEarLibLevelJTATestServlet extends EJBTestVehicleServlet {
+public class InjectionDPUEJBEarLibLevelJTATestServlet extends EJBDBTestVehicleServlet {
     private final String testLogicClassName = "com.ibm.ws.jpa.fvt.injectiondpu.testlogic.InjectionDPUTestLogic";
 
     @Test

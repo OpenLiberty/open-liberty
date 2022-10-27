@@ -22,11 +22,11 @@ import com.ibm.ws.jpa.fvt.entity.testlogic.DatatypeSupportTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/DatatypeSupport_EJB_SF_TestServlet")
-public class DatatypeSupport_EJB_SF_TestServlet extends EJBTestVehicleServlet {
+public class DatatypeSupport_EJB_SF_TestServlet extends EJBDBTestVehicleServlet {
     @PostConstruct
     private void initFAT() {
         testClassName = DatatypeSupportTestLogic.class.getName();

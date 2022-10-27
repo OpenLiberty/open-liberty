@@ -14,13 +14,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -75,11 +72,7 @@ public class IBMMultipartProvider implements MessageBodyReader<Object>, MessageB
 
     private boolean isSupported(Class<?> type, Annotation[] anns, MediaType mt) {
         return mediaTypeSupported(mt)
-            && (MULTIPART_CLASSES.contains(type)
-                || Collection.class.isAssignableFrom(type)
-                /*|| Map.class.isAssignableFrom(type) && type != MultivaluedMap.class
-                || AnnotationUtils.getAnnotation(anns, Multipart.class) != null
-                || PropertyUtils.isTrue(mc.getContextualProperty(SUPPORT_TYPE_AS_MULTIPART))*/);
+            && (MULTIPART_CLASSES.contains(type));
     }
 
     private boolean mediaTypeSupported(MediaType mt) {
@@ -89,37 +82,11 @@ public class IBMMultipartProvider implements MessageBodyReader<Object>, MessageB
     @Override
     public Object readFrom(Class<Object> clazz, Type genericType, Annotation[] anns, MediaType mt, MultivaluedMap<String, String> headers,
                            InputStream entityStream) throws IOException, WebApplicationException {
-        /*if (clazz.equals(IMultipartBody.class)) {
-            Class<MultipartInput> specClazz = (Class<MultipartInput>) clazz.asSubclass(MultipartInput.class);
-            MessageBodyReader<MultipartInput> reader = new MultipartReader();
-            reader.workers = providers;
-            MultipartInput multiInput = reader.readFrom(MultipartInput.class,  genericType, anns, mt, headers, entityStream);
-            return new IMultipartBodyImpl((MultipartInputImpl)multiInput);
-        }*/
-
         MultipartReader reader = new MultipartReader();
         reader.workers = providers;
         MultipartInput multiInput = reader.readFrom(MultipartInput.class,  genericType, anns, mt, headers, entityStream);
         if (clazz.equals(IMultipartBody.class)) {
             return new IMultipartBodyImpl((MultipartInputImpl)multiInput);
-        }
-        if (Collection.class.isAssignableFrom(clazz)) {
-            if (genericType instanceof ParameterizedType
-                            && ((ParameterizedType)genericType).getActualTypeArguments()[0].getTypeName().equals(IAttachment.class.getName())) {
-                List<IAttachment> attachments = new ArrayList<>();
-                for (InputPart inputPart : multiInput.getParts()) {
-                    attachments.add(new IAttachmentImpl(inputPart));
-                }
-                return attachments;
-            }
-            if (genericType instanceof ParameterizedType
-                            && ((ParameterizedType)genericType).getActualTypeArguments()[0].getTypeName().equals(String.class.getName())) {
-                List<String> parts = new ArrayList<>();
-                for (InputPart inputPart : multiInput.getParts()) {
-                    parts.add(inputPart.getBodyAsString());
-                }
-                return parts;
-            }
         }
         String genericTypeStr = genericType == null ? "null" : genericType.getTypeName();
         throw new InternalServerErrorException("Unexpected multipart type: " + clazz.getName() + " / " + genericTypeStr);
@@ -133,8 +100,6 @@ public class IBMMultipartProvider implements MessageBodyReader<Object>, MessageB
         List<IAttachment> attachments;
         if (entity instanceof IMultipartBody) {
             attachments = ((IMultipartBody)entity).getAllAttachments();
-        } else if (entity instanceof List) {
-            attachments = (List<IAttachment>) entity;
         } else {
             throw new WebApplicationException("Unexpected output type");
         }

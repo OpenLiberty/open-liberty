@@ -9,7 +9,7 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion=2.12.7
+bVersion=2.13.4
 
 Bundle-Name: FasterXML Jackson JaxRS Providers
 Bundle-SymbolicName: io.openliberty.com.fasterxml.jackson.jaxrs
@@ -19,9 +19,9 @@ publish.wlp.jar.disabled: true
 test.project: true
 
 -includeresource: \
-  @${repo;com.fasterxml.jackson.jaxrs:jackson-jaxrs-base;2.12.7;EXACT},\
-  @${repo;com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider;2.12.7;EXACT},\
-  @${repo;com.fasterxml.jackson.module:jackson-module-jaxb-annotations;2.12.7;EXACT}
+  @${repo;com.fasterxml.jackson.jaxrs:jackson-jaxrs-base;2.13.4;EXACT},\
+  @${repo;com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider;2.13.4;EXACT},\
+  @${repo;com.fasterxml.jackson.module:jackson-module-jaxb-annotations;2.13.4;EXACT}
   
 Export-Package: \
-  com.fasterxml.jackson.*;version=2.12.7
+  com.fasterxml.jackson.*;version=2.13.4

@@ -53,6 +53,8 @@ import jakarta.data.DataException;
 import jakarta.data.Entities;
 import jakarta.data.Page;
 import jakarta.data.Template;
+import jakarta.data.repository.KeysetAwarePage;
+import jakarta.data.repository.KeysetPageable;
 import jakarta.data.repository.Limit;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Sort;
@@ -592,7 +594,7 @@ public class DataTestServlet extends FATServlet {
                                           .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.zipCode)));
 
         assertIterableEquals(List.of("200 1st Ave SW", "151 4th St SE", "201 4th St SE"),
-                             Stream.of(shippingAddresses.findByHouseNumberBetweenOrderByStreetNameOrderByHouseNumber(150, 250))
+                             Stream.of(shippingAddresses.findByHouseNumberBetweenOrderByStreetNameAscHouseNumber(150, 250))
                                              .map(a -> a.houseNumber + " " + a.streetName)
                                              .collect(Collectors.toList()));
 
@@ -859,13 +861,502 @@ public class DataTestServlet extends FATServlet {
                                           .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.streetAddress.houseNumber))
                                           .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.zipCode)));
 
-        StreetAddress[] streetAddresses = shippingAddresses.findByHouseNumberBetweenOrderByStreetNameOrderByHouseNumber(1000, 3000);
+        StreetAddress[] streetAddresses = shippingAddresses.findByHouseNumberBetweenOrderByStreetNameAscHouseNumber(1000, 3000);
 
         assertArrayEquals(new StreetAddress[] { work.streetAddress, home.streetAddress }, streetAddresses,
                           Comparator.<StreetAddress, Integer> comparing(o -> o.houseNumber)
                                           .thenComparing(Comparator.<StreetAddress, String> comparing(o -> o.streetName)));
 
         shippingAddresses.removeAll();
+    }
+
+    /**
+     * Access pages in a forward direction while entities are being added and removed,
+     * using a keyset to avoid duplicates.
+     */
+    @Test
+    public void testKeysetForwardPagination() {
+        packages.deleteAll();
+
+        packages.saveAll(List.of(new Package(114, 14.0f, 90.0f, 15.0f, "package#114"), // page1
+                                 new Package(116, 16.0f, 88.0f, 36.0f, "package#116"),
+                                 new Package(118, 18.0f, 95.0f, 22.0f, "package#118"),
+                                 // will add 117: 17.0f, ... between page requests     // not on any page because it is added after
+                                 // will add 120: 20.0f, ... between page requests     // page2
+                                 new Package(122, 22.0f, 90.0f, 60.0f, "package#122"),
+                                 new Package(124, 22.0f, 80.0f, 62.0f, "package#124"),
+                                 // will add 130: 22.0f, 70.0f, ... between page requests // page 3
+                                 new Package(132, 22.0f, 60.0f, 66.0f, "package#132"),
+                                 new Package(133, 33.0f, 56.0f, 65.0f, "package#133"),
+                                 new Package(140, 33.0f, 56.0f, 64.0f, "package#140"), // page 4
+                                 new Package(144, 33.0f, 56.0f, 63.0f, "package#144"),
+                                 new Package(148, 48.0f, 45.0f, 50.0f, "package#148"),
+                                 new Package(150, 48.0f, 45.0f, 50.0f, "package#150"), // page 5
+                                 new Package(151, 48.0f, 45.0f, 41.0f, "package#151")));
+
+        KeysetAwarePage<Package> page;
+
+        // Page 1
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, Pageable.size(3));
+
+        assertIterableEquals(List.of(114, 116, 118),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        // should not appear on next page because we already read up to length 18.0:
+        packages.save(new Package(117, 17.0f, 23.0f, 12.0f, "package#117"));
+
+        // should appear on next page because length 20.0 is beyond the keyset value of 18.0:
+        packages.save(new Package(120, 20.0f, 23.0f, 12.0f, "package#120"));
+
+        // Page 2
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, page.next());
+
+        assertIterableEquals(List.of(120, 122, 124),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        // remove some entries that we already read:
+        packages.deleteAllById(List.of(116, 118, 120, 122, 124));
+
+        // should appear on next page because length 22.0 matches the keyset value and width 70.0 is beyond the keyset value:
+        packages.save(new Package(130, 22.0f, 70.0f, 67.0f, "package#130"));
+
+        // Page 3
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, page.next());
+
+        assertIterableEquals(List.of(130, 132, 133),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        packages.deleteById(130);
+
+        // Page 4
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, page.next());
+
+        assertIterableEquals(List.of(140, 144, 148),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        packages.deleteAllById(List.of(132, 140));
+
+        // Page 5
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, page.next());
+
+        assertIterableEquals(List.of(150, 151),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        // No more pages
+        assertEquals(null, page.next());
+
+        // At this point, the following should remain (sorted by width descending, height ascending, id descending):
+        // 114: 14.0f, 90.0f, 15.0f
+        // 144: 33.0f, 56.0f, 63.0f
+        // 133: 33.0f, 56.0f, 65.0f
+        // 151: 48.0f, 45.0f, 41.0f
+        // 150: 48.0f, 45.0f, 50.0f
+        // 148: 48.0f, 45.0f, 50.0f
+        // 117: 17.0f, 23.0f, 12.0f
+
+        // Dynamically request forward sorting where the criteria is the reverse of the above,
+        // starting after (but not including) the first position
+
+        page = packages.whereHeightNotWithin(20.0f, 40.0f,
+                                             Pageable.size(5).afterKeyset(23.0f, 12.0f, 117),
+                                             Sort.asc("width"), Sort.desc("height"), Sort.asc("id"));
+
+        assertIterableEquals(List.of(148, 150, 151, 133, 144),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        // Switch to pages of size 4.
+
+        // Page 1
+        page = packages.findByHeightGreaterThan(10.0f, Pageable.size(4));
+
+        assertEquals(1L, page.getPage());
+
+        assertIterableEquals(List.of(114, 144, 133, 151),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        packages.saveAll(List.of(new Package(128, 28.0f, 45.0f, 53.0f, "package#128"), // comes after the keyset values, should be included in next page
+                                 new Package(153, 53.0f, 45.0f, 28.0f, "package#153") // comes before the keyset values, should not be on next page
+        ));
+
+        // Page 2
+        page = packages.findByHeightGreaterThan(10.0f, page.next());
+
+        assertEquals(2L, page.getPage());
+
+        assertIterableEquals(List.of(150, 148, 128, 117),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        // No more pages
+        assertEquals(null, page.next());
+
+        KeysetPageable previous = page.previous();
+        assertNotNull(previous);
+        assertEquals(1L, previous.getPage());
+
+        // At this point, the following should remain (sorted by width descending, length ascending, id ascending):
+        // 114: 14.0f, 90.0f, 15.0f
+        // 133: 33.0f, 56.0f, 65.0f
+        // 144: 33.0f, 56.0f, 63.0f
+        // 128: 28.0f, 45.0f, 53.0f
+        // 148: 48.0f, 45.0f, 50.0f
+        // 150: 48.0f, 45.0f, 50.0f
+        // 151: 48.0f, 45.0f, 41.0f
+        // 153: 53.0f, 45.0f, 28.0f
+        // 117: 17.0f, 23.0f, 12.0f (will not match query condition)
+
+        // Page 1
+        page = packages.whereVolumeWithin(5000.0f, 123456.0f, Pageable.size(6));
+
+        assertIterableEquals(List.of(114, 133, 144, 128, 148, 150),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        packages.deleteAllById(List.of(144, 148, 150));
+
+        packages.save(new Package(152, 48.0f, 45.0f, 52.0f, "package#152"));
+
+        // Page 2
+        page = packages.whereVolumeWithin(5000.0f, 123456.0f, page.next());
+
+        assertIterableEquals(List.of(151, 152, 153),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        // No more pages
+        assertEquals(null, page.next());
+
+        // Previous page
+        previous = page.previous();
+        assertNotNull(previous);
+        assertEquals(1L, previous.getPage());
+
+        page = packages.whereVolumeWithin(5000.0f, 123456.0f, previous);
+
+        assertEquals(1L, page.getPage());
+
+        assertIterableEquals(List.of(114, 133, 128),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+    }
+
+    /**
+     * Access pages in a forward direction, but delete the remaining entries before accessing the next page.
+     * Expect the next page to be empty, and next/previous KeysetPageable from the empty page to be null.
+     */
+    @Test
+    public void testKeysetForwardPaginationNextPageEmptyAfterDeletion() {
+        packages.deleteAll();
+
+        packages.saveAll(List.of(new Package(440, 40.0f, 44.0f, 40.0f, "package#440"), // page1
+                                 new Package(441, 41.0f, 41.0f, 41.0f, "package#441"))); // will be deleted
+
+        KeysetAwarePage<Package> page;
+
+        // Page 1
+        page = packages.findByHeightGreaterThan(4.0f, Pageable.size(1));
+
+        assertIterableEquals(List.of(440),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        KeysetPageable next = page.next();
+        assertNotNull(next);
+        assertEquals(2L, next.getPage());
+
+        // Delete what would be the contents of page 2
+        packages.deleteById(441);
+
+        // Page 2 (should be empty)
+        page = packages.findByHeightGreaterThan(4.0f, next);
+
+        assertIterableEquals(Collections.EMPTY_LIST,
+                             page.getContent());
+
+        // An empty page lacks keyset values from which to request next/previous pages
+        assertEquals(null, page.next());
+        assertEquals(null, page.previous());
+    }
+
+    /**
+     * Access pages in reverse direction using a keyset.
+     */
+    @Test
+    public void testKeysetReversePagination() {
+        packages.deleteAll();
+
+        packages.saveAll(List.of(new Package(210, 10.0f, 50.0f, 55.0f, "package#210"), // page 1
+                                 new Package(215, 15.0f, 50.0f, 55.0f, "package#215"), // page 1
+                                 new Package(219, 19.0f, 39.0f, 19.0f, "package#219"), // non-matching
+                                 new Package(220, 20.0f, 22.0f, 38.0f, "package#220"), // page 2
+                                 new Package(224, 24.0f, 32.0f, 39.0f, "package#224"), // page 2
+                                 new Package(228, 28.0f, 62.0f, 87.0f, "package#228"), // page 2
+                                 new Package(230, 30.0f, 81.0f, 88.0f, "package#230"), // page 3
+                                 new Package(233, 33.0f, 32.0f, 43.0f, "package#233"), // page 3
+                                 new Package(236, 36.0f, 50.0f, 93.0f, "package#236"), // page 3
+                                 new Package(240, 40.0f, 21.0f, 42.0f, "package#240")));
+
+        KeysetAwarePage<Package> page;
+
+        // Page 3
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(20.0f, Pageable.of(3, 3).beforeKeyset(40.0f, 94.0f, 42.0f, 240));
+
+        assertEquals(3L, page.getPage());
+
+        assertIterableEquals(List.of(230, 233, 236),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        // Page 2
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(20.0f, page.previous());
+
+        assertEquals(2L, page.getPage());
+
+        assertIterableEquals(List.of(220, 224, 228),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        // Page 1
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(20.0f, page.previous());
+
+        assertEquals(1L, page.getPage());
+
+        assertIterableEquals(List.of(210, 215),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        assertEquals(null, page.previous());
+
+        // using @OrderBy width descending, height ascending, id descending:
+        // id   length width  height
+        // 230, 30.0f, 81.0f, 88.0f // second page 1
+        // 228, 28.0f, 62.0f, 87.0f // second page 1
+        // 215, 15.0f, 50.0f, 55.0f // page 1
+        // 210, 10.0f, 50.0f, 55.0f // page 1
+        // 236, 36.0f, 50.0f, 93.0f // page 2
+        // 219, 19.0f, 39.0f, 19.0f // non-matching
+        // 224, 24.0f, 32.0f, 39.0f // page 2
+        // 233, 33.0f, 32.0f, 43.0f // page 3
+        // 220, 20.0f, 22.0f, 38.0f // page 3
+        // 240, 40.0f, 21.0f, 42.0f
+
+        page = packages.findByHeightGreaterThan(20.0f, Pageable.of(3, 2).beforeKeyset(21.0f, 42.0f, 240));
+
+        assertEquals(3L, page.getPage());
+
+        assertIterableEquals(List.of(233, 220),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        page = packages.findByHeightGreaterThan(20.0f, page.previous());
+
+        assertEquals(2L, page.getPage());
+
+        assertIterableEquals(List.of(236, 224),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        page = packages.findByHeightGreaterThan(20.0f, page.previous());
+
+        assertEquals(1L, page.getPage());
+
+        assertIterableEquals(List.of(215, 210),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        page = packages.findByHeightGreaterThan(20.0f, page.previous());
+
+        assertEquals(1L, page.getPage()); // page numbers cannot go to 0 or negative
+
+        assertIterableEquals(List.of(230, 228),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        assertEquals(null, page.previous());
+
+        // Switch directions and expect a page 2 next
+
+        page = packages.findByHeightGreaterThan(20.0f, page.next());
+
+        assertEquals(2L, page.getPage());
+
+        assertIterableEquals(List.of(215, 210),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        packages.save(new Package(216, 15.0f, 50.0f, 61.0f, "package#216"));
+
+        // With dynamically specified Sorts: width ascending, length descending, id ascending
+
+        // id   length width  height
+        // 240, 40.0f, 21.0f, 42.0f // page 3
+        // 220, 20.0f, 22.0f, 38.0f // non-matching
+        // 233, 33.0f, 32.0f, 43.0f // page 4
+        // 224, 24.0f, 32.0f, 39.0f // page 4
+        // 219, 19.0f, 39.0f, 19.0f // page 4
+        // 236, 36.0f, 50.0f, 93.0f // page 4
+        // 215, 15.0f, 50.0f, 55.0f // page 5
+        // 216, 15.0f, 50.0f, 61.0f // page 5
+        // 210, 10.0f, 50.0f, 55.0f // page 5
+        // 228, 28.0f, 62.0f, 87.0f // page 5
+        // 230, 30.0f, 81.0f, 88.0f // starting point for beforeKeyset
+
+        Package p230 = packages.findById(230).orElseThrow();
+
+        KeysetPageable pagination = Pageable.of(5, 4).beforeKeyset(p230.width, p230.length, p230.id);
+        page = packages.whereHeightNotWithin(20.0f, 38.5f, pagination, Sort.asc("width"), Sort.desc("length"), Sort.asc("id"));
+
+        assertEquals(5L, page.getPage());
+
+        assertIterableEquals(List.of(215, 216, 210, 228),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        page = packages.whereHeightNotWithin(20.0f, 38.5f, page.previous(), Sort.asc("width"), Sort.desc("length"), Sort.asc("id"));
+
+        assertEquals(4L, page.getPage());
+
+        assertIterableEquals(List.of(233, 224, 219, 236),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        page = packages.whereHeightNotWithin(20.0f, 38.5f, page.previous(), Sort.asc("width"), Sort.desc("length"), Sort.asc("id"));
+
+        assertEquals(3L, page.getPage());
+
+        assertIterableEquals(List.of(240),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        assertEquals(null, page.previous());
+        KeysetPageable next = page.next();
+        assertNotNull(next);
+        assertEquals(4L, next.getPage());
+
+        page = packages.whereHeightNotWithin(20.0f, 38.5f, next, Sort.asc("width"), Sort.desc("length"), Sort.asc("id"));
+
+        assertEquals(4L, page.getPage());
+
+        assertIterableEquals(List.of(233, 224, 219, 236),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+    }
+
+    /**
+     * Access pages in reverse direction while entities are being added and removed,
+     * using a keyset to avoid duplicates.
+     */
+    @Test
+    public void testKeysetReversePaginationWithUpdates() {
+        packages.deleteAll();
+
+        // using @OrderBy width descending, height ascending, id descending:
+
+        packages.saveAll(List.of(new Package(379, 44.0f, 70.0f, 31.0f, "package#379"), // page 1
+                                 new Package(376, 33.0f, 70.0f, 36.0f, "package#376"), // page 1
+                                 new Package(373, 22.0f, 70.0f, 37.0f, "package#373"), // page 1
+                                 new Package(370, 88.0f, 70.0f, 37.0f, "package#370"), // page 2
+                                 new Package(350, 55.0f, 50.0f, 30.0f, "package#350"), // page 2, then deleted after page 2 read
+                                 // will add 351, 22.0f, 50.0f, 31.0f, "package#351"   // page 2
+                                 new Package(355, 44.0f, 50.0f, 35.0f, "package#355"), // page 3
+                                 // will add 336, 66.0f, 33.0f, 30.0f, "package#336"
+                                 new Package(333, 36.0f, 33.0f, 30.0f, "package#333"), // page 3, then deleted after page 2 read
+                                 new Package(330, 33.0f, 33.0f, 30.0f, "package#330"), // page 3
+                                 // will add 315, 66.0f, 31.0f, 37.0f, "package#315"
+                                 new Package(310, 55.0f, 10.0f, 31.0f, "package#310")));
+
+        KeysetAwarePage<Package> page;
+
+        // Page 3
+        page = packages.findByHeightGreaterThan(20.0f, Pageable.of(3, 3).beforeKeyset(10.0f, 31.0f, 310));
+
+        assertEquals(3L, page.getPage());
+
+        assertIterableEquals(List.of(355, 333, 330),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        packages.saveAll(List.of(new Package(351, 22.0f, 50.0f, 31.f, "package#351"),
+                                 new Package(336, 66.0f, 33.0f, 30.f, "package#336"),
+                                 new Package(315, 66.0f, 31.0f, 37.f, "package#315")));
+
+        // Page 2
+        page = packages.findByHeightGreaterThan(20.0f, page.previous());
+
+        assertEquals(2L, page.getPage());
+
+        assertIterableEquals(List.of(370, 350, 351),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        packages.deleteAllById(List.of(350, 333));
+
+        // Page 1
+        page = packages.findByHeightGreaterThan(20.0f, page.previous());
+
+        assertEquals(1L, page.getPage());
+
+        assertIterableEquals(List.of(379, 376, 373),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        assertEquals(null, page.previous());
+
+        // With dynamically specified Sorts: height ascending, length descending, id ascending
+
+        // id   length width  height
+        // 336, 66.0f, 33.0f, 30.0f // will be deleted
+        // 330, 33.0f, 33.0f, 30.0f // page 2
+        // 310, 55.0f, 10.0f, 31.0f // page 2
+        // 379, 44.0f, 70.0f, 31.0f // page 3
+        // 331, 33.0f, 41.0f, 31.0f // will be added (page 3)
+        // 351, 22.0f, 50.0f, 31.0f // page 4
+        // 355, 44.0f, 50.0f, 35.0f // non-matching
+        // 376, 33.0f, 70.0f, 36.0f // will be deleted
+        // 370, 88.0f, 70.0f, 37.0f // page 4
+        // 315, 66.0f, 31.0f, 37.0f // page 5, then deleted
+        // 373, 22.0f, 70.0f, 37.0f // page 5, then deleted
+
+        // Page 5
+        page = packages.whereHeightNotWithin(32.0f, 35.5f,
+                                             Pageable.of(5, 2).beforeKeyset(40.0f, 0.0f, 0),
+                                             Sort.asc("height"), Sort.desc("length"), Sort.asc("id"));
+
+        assertEquals(5L, page.getPage());
+
+        assertIterableEquals(List.of(315, 373),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        packages.deleteAllById(List.of(373, 315, 376));
+
+        page = packages.whereHeightNotWithin(32.0f, 35.5f,
+                                             page.previous(),
+                                             Sort.asc("height"), Sort.desc("length"), Sort.asc("id"));
+
+        assertEquals(4L, page.getPage());
+
+        assertIterableEquals(List.of(351, 370),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        packages.save(new Package(331, 33.0f, 41.0f, 31.0f, "package#351"));
+
+        page = packages.whereHeightNotWithin(32.0f, 35.5f,
+                                             page.previous(),
+                                             Sort.asc("height"), Sort.desc("length"), Sort.asc("id"));
+
+        assertEquals(3L, page.getPage());
+
+        assertIterableEquals(List.of(379, 331),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        page = packages.whereHeightNotWithin(32.0f, 35.5f,
+                                             page.previous(),
+                                             Sort.asc("height"), Sort.desc("length"), Sort.asc("id"));
+
+        assertEquals(2L, page.getPage());
+
+        assertIterableEquals(List.of(330, 310),
+                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+
+        KeysetPageable previous = page.previous();
+        assertNotNull(previous);
+
+        // delete the only previous entry and visit the empty previous page
+
+        packages.deleteById(336);
+
+        page = packages.whereHeightNotWithin(32.0f, 35.5f,
+                                             page.previous(),
+                                             Sort.asc("height"), Sort.desc("length"), Sort.asc("id"));
+
+        assertEquals(1L, page.getPage());
+
+        assertIterableEquals(Collections.EMPTY_LIST, page.getContent());
+
+        // attempt next after an empty page
+        assertEquals(null, page.next());
+        assertEquals(null, page.previous());
     }
 
     /**
@@ -1331,15 +1822,15 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(10030009L, 10030007L, 10030008L, 10030006L),
-                             reservations.findByStartGreaterThanOrderByStartDescOrderByStopDesc(OffsetDateTime.of(2022, 5, 25, 0, 0, 0, 0, CDT),
-                                                                                                Limit.of(4))
+                             reservations.findByStartGreaterThanOrderByStartDescStopDesc(OffsetDateTime.of(2022, 5, 25, 0, 0, 0, 0, CDT),
+                                                                                         Limit.of(4))
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(10030007L, 10030008L, 10030006L),
-                             reservations.findByStartGreaterThanOrderByStartDescOrderByStopDesc(OffsetDateTime.of(2022, 5, 25, 0, 0, 0, 0, CDT),
-                                                                                                Limit.range(2, 4))
+                             reservations.findByStartGreaterThanOrderByStartDescStopDesc(OffsetDateTime.of(2022, 5, 25, 0, 0, 0, 0, CDT),
+                                                                                         Limit.range(2, 4))
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
@@ -1370,13 +1861,13 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(10030003L, 10030001L, 10030004L, 10030006L, 10030009L, 10030005L, 10030007L, 10030002L, 10030008L),
-                             reservations.findByStopGreaterThanOrderByLocationDescOrderByHostOrderByStopAsc(OffsetDateTime.of(2022, 5, 25, 8, 0, 0, 0, CDT))
+                             reservations.findByStopGreaterThanOrderByLocationDescHostAscStopAsc(OffsetDateTime.of(2022, 5, 25, 8, 0, 0, 0, CDT))
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of(10030001L, 10030005L, 10030007L, 10030002L, 10030003L, 10030006L, 10030009L, 10030004L, 10030008L),
-                             reservations.findByStopLessThanOrderByHostAscOrderByLocationDescOrderByStart(OffsetDateTime.of(2022, 5, 26, 0, 0, 0, 0, CDT))
+                             reservations.findByStopLessThanOrderByHostAscLocationDescStart(OffsetDateTime.of(2022, 5, 26, 0, 0, 0, 0, CDT))
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
@@ -1655,6 +2146,8 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testRepositoryUpdateMethodsMultiplyAndDivide() {
+        packages.deleteAll();
+
         Package p1 = new Package();
         p1.description = "Cereal Box";
         p1.length = 7.0f;

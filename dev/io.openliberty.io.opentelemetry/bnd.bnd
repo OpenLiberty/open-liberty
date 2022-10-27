@@ -18,17 +18,17 @@ javac.source: 11
 javac.target: 11
 
 Export-Package: \
-  io.opentelemetry.api.trace; version="1.14.0",\
-  io.opentelemetry.api; version="1.14.0",\
-  io.opentelemetry.api.baggage; version="1.14.0",\
-  io.opentelemetry.context; version="1.14.0"
+  io.opentelemetry.api.trace; version="1.19.0",\
+  io.opentelemetry.api; version="1.19.0",\
+  io.opentelemetry.api.baggage; version="1.19.0",\
+  io.opentelemetry.context; version="1.19.0",\
 
 Import-Package: \
   *
   
 -buildpath: \
-  io.opentelemetry:opentelemetry-api;version=1.14.0,\
-  io.opentelemetry:opentelemetry-context;version=1.14.0
+  io.opentelemetry:opentelemetry-api;version=1.19.0,\
+  io.opentelemetry:opentelemetry-context;version=1.19.0
   
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 

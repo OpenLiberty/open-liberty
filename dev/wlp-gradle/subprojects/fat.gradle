@@ -152,8 +152,15 @@ task autoFVT {
       include 'asm-all-5.2.jar'
       include 'org.apache.aries.util-*.jar'
       include 'osgi.core*.jar'
-      include 'jackson*.jar'
       include 'jsch-*.jar'
+    }
+    
+    // Copy the jackson jar, use the liberty project rather than mavenlibs
+    // to ensure versions match
+    copy {
+      from project(':io.openliberty.com.fasterxml.jackson').buildDir
+      include 'io.openliberty.com.fasterxml.jackson.jar'
+      into new File(autoFvtDir, 'build/lib')
     }
 
     // Copy the com.ibm.ws.junit.extensions jar

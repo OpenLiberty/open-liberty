@@ -32,6 +32,8 @@ import com.ibm.ws.security.openidconnect.common.Constants;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import com.ibm.wsspi.ssl.SSLSupport;
 
+import io.openliberty.security.common.jwt.JwtParsingUtils;
+
 /**
  * Utility methods to retrieve UserInfo data, validate it, and update the Subject with it.
  */
@@ -240,7 +242,7 @@ public class UserInfoHelper {
     }
 
     String extractClaimsFromJwsResponse(String responseString, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) throws Exception {
-        JwtContext jwtContext = Jose4jUtil.parseJwtWithoutValidation(responseString);
+        JwtContext jwtContext = JwtParsingUtils.parseJwtWithoutValidation(responseString);
         if (jwtContext != null) {
             // Validate the JWS signature only; extract the claims so they can be verified elsewhere
             JwtClaims claims = jose4jUtil.validateJwsSignature(jwtContext, clientConfig, oidcClientRequest);

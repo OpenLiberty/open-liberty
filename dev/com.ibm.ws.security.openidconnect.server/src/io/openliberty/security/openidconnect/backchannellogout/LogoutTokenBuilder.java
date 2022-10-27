@@ -43,8 +43,9 @@ import com.ibm.ws.security.oauth20.plugins.jose4j.JwsSigner;
 import com.ibm.ws.security.oauth20.util.CacheUtil;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 import com.ibm.ws.security.openidconnect.backchannellogout.BackchannelLogoutException;
-import com.ibm.ws.security.openidconnect.client.jose4j.util.Jose4jUtil;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
+
+import io.openliberty.security.common.jwt.JwtParsingUtils;
 
 public class LogoutTokenBuilder {
 
@@ -86,7 +87,7 @@ public class LogoutTokenBuilder {
     @FFDCIgnore(Exception.class)
     JwtClaims getClaimsFromIdTokenString(String idTokenString) throws LogoutTokenBuilderException {
         try {
-            JwtContext jwtContext = Jose4jUtil.parseJwtWithoutValidation(idTokenString);
+            JwtContext jwtContext = JwtParsingUtils.parseJwtWithoutValidation(idTokenString);
             JwtClaims claims = jwtContext.getJwtClaims();
             verifyIdTokenContainsRequiredClaims(claims);
             verifyIssuer(claims);

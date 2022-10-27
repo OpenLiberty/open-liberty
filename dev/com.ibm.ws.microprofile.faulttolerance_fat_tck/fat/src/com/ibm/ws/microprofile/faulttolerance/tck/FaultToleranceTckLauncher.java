@@ -25,7 +25,7 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
-import componenttest.topology.utils.tck.TCKUtils;
+import componenttest.topology.utils.tck.TCKRunner;
 
 /**
  * This is a test class that runs the whole Fault Tolerance TCK. The TCK results
@@ -106,8 +106,7 @@ public class FaultToleranceTckLauncher {
         String testName = this.getClass() + ":launchFaultTolerance10TCK";
         Type type = Type.MICROPROFILE;
         String specName = "Fault Tolerance";
-        String specVersion = "1.0";
-        TCKUtils.runTCKMvnCmd(server, bucketName, testName, type, specName, specVersion, suiteFileName);
+        TCKRunner.runTCK(server, bucketName, testName, type, specName, suiteFileName);
     }
 
 }

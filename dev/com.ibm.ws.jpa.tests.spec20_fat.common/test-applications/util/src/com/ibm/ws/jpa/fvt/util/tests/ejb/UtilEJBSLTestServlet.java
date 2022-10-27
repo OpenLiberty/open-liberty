@@ -20,10 +20,10 @@ import com.ibm.ws.jpa.fvt.util.testlogic.UtilTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
 @WebServlet(urlPatterns = "/UtilEJBSLTestServlet")
-public class UtilEJBSLTestServlet extends EJBTestVehicleServlet {
+public class UtilEJBSLTestServlet extends EJBDBTestVehicleServlet {
     @PostConstruct
     private void initFAT() {
         testClassName = UtilTestLogic.class.getName();

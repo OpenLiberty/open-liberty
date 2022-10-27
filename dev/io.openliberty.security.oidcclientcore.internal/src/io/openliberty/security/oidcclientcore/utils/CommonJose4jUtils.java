@@ -49,29 +49,6 @@ public class CommonJose4jUtils {
 
     }
 
-    //Just parse without validation for now
-    public static JwtContext parseJwtWithoutValidation(String jwtString) throws Exception {
-        JwtConsumer firstPassJwtConsumer = new JwtConsumerBuilder().setSkipAllValidators().setDisableRequireSignature().setSkipSignatureVerification().build();
-
-        return firstPassJwtConsumer.process(jwtString);
-    }
-
-    public JsonWebStructure getJsonWebStructureFromJwtContext(JwtContext jwtContext) throws Exception {
-        List<JsonWebStructure> jsonStructures = jwtContext.getJoseObjects();
-        if (jsonStructures == null || jsonStructures.isEmpty()) {
-            throw new Exception("Invalid JsonWebStructure");
-        }
-        JsonWebStructure jsonStruct = jsonStructures.get(0);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "JsonWebStructure class: " + jsonStruct.getClass().getName() + " data:" + jsonStruct);
-            if (jsonStruct instanceof JsonWebSignature) {
-                JsonWebSignature signature = (JsonWebSignature) jsonStruct;
-                Tr.debug(tc, "JsonWebSignature alg: " + signature.getAlgorithmHeaderValue() + " 3rd:'" + signature.getEncodedSignature() + "'");
-            }
-        }
-        return jsonStruct;
-    }
-
     public TokenSignatureValidationBuilder signaturevalidationbuilder() {
         return this.tokenSignatureValidationBuilder;
     }

@@ -57,6 +57,8 @@ import com.ibm.ws.webcontainer.security.openidconnect.OidcClient;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.ssl.SSLSupport;
 
+import io.openliberty.security.common.jwt.JwtParsingUtils;
+
 public class AccessTokenAuthenticator {
     private static final TraceComponent tc = Tr.register(AccessTokenAuthenticator.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
     private static final String Authorization_Header = "Authorization";
@@ -422,7 +424,7 @@ public class AccessTokenAuthenticator {
     }
 
     JSONObject extractClaimsFromJwsResponse(String responseString, OidcClientConfig clientConfig, OidcClientRequest oidcClientRequest) throws Exception {
-        JwtContext jwtContext = Jose4jUtil.parseJwtWithoutValidation(responseString);
+        JwtContext jwtContext = JwtParsingUtils.parseJwtWithoutValidation(responseString);
         if (jwtContext != null) {
             // Validate the JWS signature only; extract the claims so they can be verified elsewhere
             JwtClaims claims = jose4jUtil.validateJwsSignature(jwtContext, clientConfig, oidcClientRequest);

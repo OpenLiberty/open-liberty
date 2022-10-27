@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2021 IBM Corporation and others.
+# Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -14,7 +14,8 @@ bVersion=1.0
 
 src: \
     fat/src,\
-    test-applications/jpaContainerApp/src
+    test-applications/jpaContainerApp/src,\
+    test-applications/jpaDataSourceApp/src
 
 fat.project: true
 #tested.features: el-3.0, persistence-3.0, servlet-5.0, cdi-3.0, beanValidation-3.0, enterprisebeanslite-4.0
@@ -27,4 +28,7 @@ fat.project: true
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
     com.ibm.websphere.javaee.persistence.2.1;version=latest,\
     com.ibm.websphere.javaee.transaction.1.2;version=latest,\
-    com.ibm.websphere.appserver.thirdparty.eclipselink;version=latest
+    com.ibm.websphere.appserver.thirdparty.eclipselink;version=latest,\
+    io.openliberty.org.testcontainers;version=latest,\
+    org.jboss.shrinkwrap:shrinkwrap-impl-base;version=latest,\
+    org.jboss.shrinkwrap:shrinkwrap-spi;version=latest

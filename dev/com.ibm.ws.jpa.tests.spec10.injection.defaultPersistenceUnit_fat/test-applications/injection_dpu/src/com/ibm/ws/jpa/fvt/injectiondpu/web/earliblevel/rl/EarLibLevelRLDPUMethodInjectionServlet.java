@@ -24,10 +24,10 @@ import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 @SuppressWarnings("serial")
-public class EarLibLevelRLDPUMethodInjectionServlet extends JPATestServlet {
+public class EarLibLevelRLDPUMethodInjectionServlet extends JPADBTestServlet {
     private EntityManagerFactory amrlEMF;
 
     public EntityManagerFactory getAmrlEMF() {

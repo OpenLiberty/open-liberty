@@ -13,7 +13,7 @@ package io.openliberty.jpa.tests.jpa31.web;
 
 import org.junit.Test;
 
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 import io.openliberty.jpa.tests.jpa31.models.QueryEntity;
 import jakarta.annotation.PostConstruct;
@@ -31,7 +31,7 @@ import jakarta.transaction.UserTransaction;
 import junit.framework.Assert;
 
 @WebServlet(urlPatterns = "/TestNewQueryMathFunctionsServlet")
-public class TestNewQueryMathFunctionsServlet extends JPATestServlet {
+public class TestNewQueryMathFunctionsServlet extends JPADBTestServlet {
     private static final long serialVersionUID = 3866874746696149833L;
 
     private final static String PUNAME = "QueryFeatures";

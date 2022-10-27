@@ -15,7 +15,7 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.ibm.ws.testtooling.vehicle.web.JPATestServlet;
+import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 import io.openliberty.jpa.tests.jpa31.models.EmbeddableUUID_ID;
 import io.openliberty.jpa.tests.jpa31.models.UUIDAutoGenEntity;
@@ -39,7 +39,7 @@ import jakarta.transaction.UserTransaction;
 import junit.framework.Assert;
 
 @WebServlet(urlPatterns = "/TestUUIDEntityIDServlet")
-public class TestUUIDEntityIDServlet extends JPATestServlet {
+public class TestUUIDEntityIDServlet extends JPADBTestServlet {
     private static final long serialVersionUID = 1L;
 
     private final static String PUNAME = "UUID";

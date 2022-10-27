@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -120,6 +120,7 @@ public class EJBInWarServiceTest {
     protected void runTest(String responseString) throws ProtocolException, MalformedURLException, IOException {
         // Strip the Test Rerun id's out of the method name
         String testMethod = testName.getMethodName().replace("_EE9_FEATURES", "");
+        testMethod = testMethod.replace("_EE10_FEATURES", "");
 
         StringBuilder sBuilder = new StringBuilder("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append(SERVLET_PATH).append("?testMethod=").append(testMethod).append("&hostName=").append(server.getHostname());
         String urlStr = sBuilder.toString();

@@ -23,11 +23,11 @@ import com.ibm.ws.jpa.fvt.entity.testlogic.VersioningTestLogic;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceContextType;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/Versioning_EJB_SFEX_TestServlet")
-public class Versioning_EJB_SFEX_TestServlet extends EJBTestVehicleServlet {
+public class Versioning_EJB_SFEX_TestServlet extends EJBDBTestVehicleServlet {
     @PostConstruct
     private void initFAT() {
         testClassName = VersioningTestLogic.class.getName();

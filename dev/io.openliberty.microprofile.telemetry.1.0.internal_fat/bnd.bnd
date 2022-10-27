@@ -30,6 +30,6 @@ tested.features:\
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
 	io.openliberty.microprofile.telemetry.1.0.internal;version=latest,\
 	io.openliberty.io.opentelemetry;version=latest,\
-        io.openliberty.jakarta.restfulWS.3.1;version=latest,\
+	io.openliberty.jakarta.restfulWS.3.1;version=latest,\
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
-	com.ibm.ws.componenttest.2.0
+	com.ibm.ws.componenttest.2.0;version=latest

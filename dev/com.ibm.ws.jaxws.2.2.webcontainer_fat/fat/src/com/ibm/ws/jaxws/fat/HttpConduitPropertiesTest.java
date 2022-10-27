@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ import com.ibm.ws.jaxws.fat.util.TestUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -76,6 +77,8 @@ public class HttpConduitPropertiesTest {
         File explodedFile = app.as(ExplodedExporter.class).exportExploded(outputFile, "httpConduitProperties2.war");
         if (JakartaEE9Action.isActive()) {
             JakartaEE9Action.transformApp(explodedFile.toPath());
+        } else if (JakartaEE10Action.isActive()) {
+            JakartaEE10Action.transformApp(explodedFile.toPath());
         }
         ExplodedShrinkHelper.copyFileToDirectory(server, outputFile, "dropins");
 
@@ -84,6 +87,8 @@ public class HttpConduitPropertiesTest {
         server.copyFileToLibertyInstallRoot("lib/features", "HttpConduitPropertiesTest/jaxwsTest-2.3.mf");
 
         server.copyFileToLibertyInstallRoot("lib/features", "HttpConduitPropertiesTest/xmlwsTest-3.0.mf");
+
+        server.copyFileToLibertyInstallRoot("lib/features", "HttpConduitPropertiesTest/xmlwsTest-4.0.mf");
 
         defaultSimpleEchoServiceEndpointAddr = new StringBuilder().append("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append("/httpConduitProperties/SimpleEchoService").toString();
 
@@ -107,6 +112,8 @@ public class HttpConduitPropertiesTest {
         server.deleteFileFromLibertyInstallRoot("lib/features/jaxwsTest-2.3.mf");
 
         server.deleteFileFromLibertyInstallRoot("lib/features/xmlwsTest-3.0.mf");
+
+        server.deleteFileFromLibertyInstallRoot("lib/features/xmlwsTest-4.0.mf");
     }
 
     @After

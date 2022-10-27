@@ -76,7 +76,7 @@ public class UserInfoHandlerTest extends CommonTestClass {
             }
 
             @Override
-            UserInfoRequestor createUserInfoRequestor(String userInfoEndpoint, String accessToken) {
+            UserInfoRequestor createUserInfoRequestor(String userInfoEndpoint, OidcClientConfig oidcClientConfig, String accessToken) {
                 return userInfoRequestor;
             }
         };

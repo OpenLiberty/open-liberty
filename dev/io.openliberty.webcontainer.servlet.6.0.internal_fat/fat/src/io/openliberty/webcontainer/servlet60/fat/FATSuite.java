@@ -15,6 +15,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60CookieSetAttributeTest;
+import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60GetMappingAsyncDispatchTest;
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60GetRealPathTest;
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60RequestConnectionTest;
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60RequestCookieHeaderTest;
@@ -26,6 +27,7 @@ import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60XPoweredByHeader
 @RunWith(Suite.class)
 @SuiteClasses({
                 Servlet60XPoweredByHeaderTest.class,
+                Servlet60GetMappingAsyncDispatchTest.class,
                 Servlet60GetRealPathTest.class,
                 Servlet60CookieSetAttributeTest.class,
                 Servlet60RequestConnectionTest.class,

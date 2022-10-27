@@ -1,5 +1,5 @@
 Subsystem-ManifestVersion: 1
-IBM-ShortName: jaxwsTest-2.2
+IBM-ShortName: xmlWSTest-3.0
 Subsystem-SymbolicName: io.openliberty.xmlWSTest-3.0; visibility:=public
 Subsystem-Version: 1.0.0
 Subsystem-Content: io.openliberty.xmlWS-3.0; type="osgi.subsystem.feature"

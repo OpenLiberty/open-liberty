@@ -96,7 +96,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
      * instance.
      *
      * @param oidcMechanismDefinition The {@link OpenIdAuthenticationMechanismDefinition} to wrap.
-     * @param baseURL The baseURL is an optional variable for the redirectURL and is constructed using information the incoming HTTP request.
+     * @param baseURL                 The baseURL is an optional variable for the redirectURL and is constructed using information the incoming HTTP request.
      */
     @Sensitive
     public OpenIdAuthenticationMechanismDefinitionWrapper(OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition, String baseURL) {
@@ -180,7 +180,14 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
     private String evaluateRedirectURI(boolean immediateOnly) {
         try {
             elHelper.addValue(JakartaSec30Constants.BASE_URL_VARIABLE, constructedBaseURL, false);
-            return evaluateStringAttribute("redirectURI", oidcMechanismDefinition.redirectURI(), JakartaSec30Constants.BASE_URL_DEFAULT, immediateOnly);
+            String redirectUri = evaluateStringAttribute("redirectURI", oidcMechanismDefinition.redirectURI(), JakartaSec30Constants.BASE_URL_DEFAULT, immediateOnly);
+
+            // re-process the result of redirectUri in-case it returns another el expression containing ${baseURL}
+            // we don't normally do this, but this is a special case found in jakarta security 3.0 tck requirements
+            if (redirectUri != null && redirectUri.contains(JakartaSec30Constants.BASE_URL_VARIABLE)) {
+                redirectUri = evaluateStringAttribute("redirectURI", redirectUri, JakartaSec30Constants.BASE_URL_DEFAULT, immediateOnly);
+            }
+            return redirectUri;
         } finally {
             elHelper.removeValue(JakartaSec30Constants.BASE_URL_VARIABLE);
         }

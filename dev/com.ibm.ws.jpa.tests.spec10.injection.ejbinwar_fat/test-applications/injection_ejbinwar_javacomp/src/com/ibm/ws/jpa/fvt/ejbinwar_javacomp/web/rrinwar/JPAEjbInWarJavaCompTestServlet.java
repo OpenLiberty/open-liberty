@@ -20,12 +20,12 @@ import org.junit.Test;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext;
 import com.ibm.ws.testtooling.testinfo.JPAPersistenceContext.PersistenceInjectionType;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
-import com.ibm.ws.testtooling.vehicle.web.EJBTestVehicleServlet;
+import com.ibm.ws.testtooling.vehicle.web.EJBDBTestVehicleServlet;
 
 /**
  *
  */
-public class JPAEjbInWarJavaCompTestServlet extends EJBTestVehicleServlet {
+public class JPAEjbInWarJavaCompTestServlet extends EJBDBTestVehicleServlet {
     private final String testLogicClassName = "com.ibm.ws.jpa.fvt.ejbinwar_javacomp.testlogic.JPAEjbInWarJavaCompTestLogic";
     private final PersistenceInjectionType piType = PersistenceInjectionType.FIELD;
 

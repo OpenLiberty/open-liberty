@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import javax.xml.ws.BindingProvider;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -227,6 +228,8 @@ public class TestUtils {
     public static void installUserFeature(LibertyServer server, String featureManifestFile) throws Exception {
         if (JakartaEE9Action.isActive()) {
             server.installUserFeature("ee9/" + featureManifestFile);
+        } else if (JakartaEE10Action.isActive()) {
+            server.installUserFeature("ee10/" + featureManifestFile);
         } else {
             server.installUserFeature(featureManifestFile);
         }
@@ -235,7 +238,9 @@ public class TestUtils {
     public static void setServerConfigurationFile(LibertyServer server, String newConfigFile) throws Exception {
         if (JakartaEE9Action.isActive()) {
             server.setServerConfigurationFile(newConfigFile + ".ee9");
-        } else {
+        } else if (JakartaEE10Action.isActive()) {
+            server.setServerConfigurationFile(newConfigFile + ".ee10");
+        }  else {
             server.setServerConfigurationFile(newConfigFile);
         }
     }

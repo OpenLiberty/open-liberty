@@ -56,7 +56,7 @@ public class TracingNotEnabledTest extends MicroProfileTelemetryTestBase {
         server.addEnvVar(ENV_OTEL_SERVICE_NAME, OTEL_SERVICE_NAME_SYSTEM);
         server.addEnvVar(ENV_OTEL_TRACES_EXPORTER, OTEL_TRACES_EXPORTER_JAEGER);
         server.addEnvVar(ENV_OTEL_EXPORTER_JAEGER_ENDPOINT, "http://" + jaegerHost + ":" + jaegerGrpcPort);
-        //server.addEnvVar(ENV_OTEL_SDK_ENABLED, OTEL_SDK_ENABLED); tracing not enabled
+        //server.addEnvVar(ENV_OTEL_SDK_DISABLED, OTEL_SDK_DISABLED); tracing not enabled
         // Construct the test application
         WebArchive system = ShrinkWrap.create(WebArchive.class, "system.war");
         system.addPackages(true, "io.openliberty.guides.system");
@@ -98,6 +98,7 @@ public class TracingNotEnabledTest extends MicroProfileTelemetryTestBase {
     protected LibertyServer getServer() {
         return server;
     }
+
     @Test
     public void notEnabledTest() throws JSONException, InterruptedException {
         int count = NUM_OF_CALLS;
