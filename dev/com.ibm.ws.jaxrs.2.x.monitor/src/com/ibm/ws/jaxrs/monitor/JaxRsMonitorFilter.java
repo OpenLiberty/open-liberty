@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -165,6 +165,10 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
 			//Check for MP Metrics 30 header;
 			if (metricsHeader == null)
 				metricsHeader = respCtx.getHeaderString("io.openliberty.microprofile.metrics.internal.monitor.MetricsJaxRsEMCallbackImpl.Exception");
+
+			//Check for MP Metrics 31 header;
+			if (metricsHeader == null)
+				metricsHeader = respCtx.getHeaderString("io.openliberty.restfulws.mpmetrics.MetricsRestfulWsEMCallbackImpl.Exception");
 
 			// Save key in appMetricInfos for cleanup on application stop.
 			addKeyToMetricInfo(appName, key);
