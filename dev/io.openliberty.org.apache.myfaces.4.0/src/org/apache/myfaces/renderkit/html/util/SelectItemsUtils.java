@@ -177,7 +177,14 @@ public class SelectItemsUtils
                 //check if isEscape() = true first.
                 if (escape || selectItem.isEscape())
                 {
-                    writer.writeText(selectItem.getLabel(), null);
+                    String label = selectItem.getLabel();
+
+                    if(label == null)
+                    {
+                        label = "";
+                    }
+
+                    writer.writeText(label, null);
                 }
                 else
                 {

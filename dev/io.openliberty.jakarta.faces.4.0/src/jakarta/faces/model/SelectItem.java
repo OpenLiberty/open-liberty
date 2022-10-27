@@ -19,7 +19,6 @@
 package jakarta.faces.model;
 
 import java.io.Serializable;
-import org.apache.myfaces.core.api.shared.lang.Assert;
 
 /**
  * see Javadoc of <a href="http://java.sun.com/javaee/javaserverfaces/1.2/docs/api/index.html">JSF Specification</a>
@@ -142,7 +141,6 @@ public class SelectItem implements Serializable
 
     public void setLabel(String label)
     {
-        Assert.notNull(label, "label");
         _label = label;
     }
 
