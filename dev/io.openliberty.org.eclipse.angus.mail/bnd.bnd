@@ -16,10 +16,11 @@ javac.target: 11
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
-Bundle-SymbolicName: io.openliberty.org.eclipse.angus.mail.2.1
+Bundle-SymbolicName: io.openliberty.org.eclipse.angus.mail
 
 Implementation-Version: 1.0.0
 Export-Version: 2.1.0
+Import-Version: 2.1.0
 
 Export-Package: \
   com.sun.mail.auth; version=${Export-Version}; thread-context=true, \
@@ -34,11 +35,11 @@ Export-Package: \
 
 Import-Package: \
   com.ibm.wsspi.classloading, \
-  jakarta.mail;version="2.1.0", \
-  jakarta.mail.event;version="2.1.0", \
-  jakarta.mail.internet;version="2.1.0", \
-  jakarta.mail.search;version="2.1.0", \
-  jakarta.mail.util;version="2.1.0", \
+  jakarta.mail;version=${Import-Version}, \
+  jakarta.mail.event;version=${Import-Version}, \
+  jakarta.mail.internet;version=${Import-Version}, \
+  jakarta.mail.search;version=${Import-Version}, \
+  jakarta.mail.util;version=${Import-Version}, \
   *
 
 app-resources= \
@@ -50,7 +51,7 @@ app-resources= \
   META-INF/mailcap
 
 Service-Component: \
-  io.openliberty.org.eclipse.angus.mail_2_1_${replace;${bVersion};\\.;_}.ResourceProvider; \
+  io.openliberty.org.eclipse.angus.mail_${replace;${bVersion};\\.;_}.ResourceProvider; \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
     configuration-policy:=ignore; \

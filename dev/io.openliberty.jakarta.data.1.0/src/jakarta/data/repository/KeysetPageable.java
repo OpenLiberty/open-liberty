@@ -45,6 +45,8 @@ public class KeysetPageable extends Pageable {
         super(copyFrom.getPage(), copyFrom.getSize());
         this.cursor = new Cursor(keyset);
         this.mode = mode;
+        if (keyset == null || keyset.length < 1)
+            throw new IllegalArgumentException();
     }
 
     public Cursor getCursor() {

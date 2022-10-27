@@ -32,7 +32,7 @@ import componenttest.topology.utils.tck.TCKRunner;
  * There is a detailed output on specific
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.EXPERIMENTAL) // Currently should pass RC5, but that's not available on maven central
+@Mode(TestMode.LITE)
 public class Telemetry10TCKLauncher {
 
     private static final String SERVER_NAME = "Telemetry10TCKServer";

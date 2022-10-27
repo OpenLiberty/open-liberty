@@ -98,6 +98,8 @@ public class WebAppConfiguratorHelper60 extends WebAppConfiguratorHelper40 {
                     }
                 }
             }
+        } else {
+            super.configureSessionConfig(sessionConfig);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
