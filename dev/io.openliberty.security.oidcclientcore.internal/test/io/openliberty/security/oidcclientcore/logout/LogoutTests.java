@@ -12,6 +12,9 @@ package io.openliberty.security.oidcclientcore.logout;
 
 import static org.junit.Assert.assertTrue;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.jmock.Expectations;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -33,6 +36,7 @@ public class LogoutTests extends CommonTestClass {
     private static final String idToken = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaGFybW9uaWM6ODAxMS9vYXV0aDIvZW5kcG9pbnQvT0F1dGhDb25maWdTYW1wbGUvdG9rZW4iLCJpYXQiOjEzODczODM5NTMsInN1YiI6InRlc3R1c2VyIiwiZXhwIjoxMzg3Mzg3NTUzLCJhdWQiOiJjbGllbnQwMSJ9.ottD3eYa6qrnItRpL_Q9UaKumAyo14LnlvwnyF3Kojk";
 
     private final OidcClientConfig oidcClientConfigMock = null; // mockery.mock(OidcClientConfig.class);
+    private final HttpServletRequest request = mockery.mock(HttpServletRequest.class);
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -52,7 +56,14 @@ public class LogoutTests extends CommonTestClass {
 
     @Test
     public void test_RPInitiatedLogoutStrategy() throws Exception {
-        RPInitiatedLogoutStrategy rpInitiatedLogoutStrategy = new RPInitiatedLogoutStrategy(oidcClientConfigMock, endSessionEndpoint, idToken);
+        mockery.checking(new Expectations() {
+            {
+                allowing(request).setAttribute("id_token_hint", idToken);
+                allowing(request).setAttribute("post_logout_redirect_uri", null);
+                allowing(request).setAttribute("post_logout_redirect_uri", null);
+            }
+        });
+        RPInitiatedLogoutStrategy rpInitiatedLogoutStrategy = new RPInitiatedLogoutStrategy(request, oidcClientConfigMock, endSessionEndpoint, idToken);
         ProviderAuthenticationResult result = rpInitiatedLogoutStrategy.logout();
 
         assertTrue(result.getStatus().equals(AuthResult.REDIRECT_TO_PROVIDER));
