@@ -31,6 +31,6 @@ WS-TraceGroup: METRICS
 publish.wlp.jar.suffix: lib
 
 -buildpath: \
-    io.smallrye:smallrye-metrics;version=5.0.0.M4
+    io.smallrye:smallrye-metrics;version=5.0.0.M5
 	
 instrument.disabled: true
