@@ -28,26 +28,37 @@ Import-Package: \
   zipkin2.internal,\
   zipkin2.reporter,\
   zipkin2.reporter.okhttp3,\
-  io.opentelemetry.api.trace,\
-  io.opentelemetry.api,\
-  io.opentelemetry.api.baggage,\
-  io.opentelemetry.context
+  io.opentelemetry.api; version=${openTelemetryVersion},\
+  io.opentelemetry.api.baggage; version=${openTelemetryVersion},\
+  io.opentelemetry.api.common; version=${openTelemetryVersion},\
+  io.opentelemetry.api.trace; version=${openTelemetryVersion},\
+  io.opentelemetry.context; version=${openTelemetryVersion},\
+  io.opentelemetry.sdk.trace.export;version=${openTelemetryVersion},\
+  io.opentelemetry.sdk.trace.data;version=${openTelemetryVersion},\
+  io.opentelemetry.sdk.common;version=${openTelemetryVersion},\
+  io.opentelemetry.sdk.autoconfigure.spi.traces;version=${openTelemetryVersion},\
+  io.opentelemetry.sdk.autoconfigure.spi;version=${openTelemetryVersion},\
+  io.opentelemetry.sdk.resources;version=${openTelemetryVersion},\
+  io.opentelemetry.semconv.trace.attributes;version=${openTelemetryVersion},\
+  io.opentelemetry.semconv.resource.attributes;version=${openTelemetryVersion},\
+  io.opentelemetry.instrumentation.annotations;version=${openTelemetryVersion}
 
 Export-Package: \
-  io.opentelemetry.api.baggage.propagation; version=${openTelemetryVersion},\
-  io.opentelemetry.api.common; version=${openTelemetryVersion},\
-  io.opentelemetry.api.internal; version=${openTelemetryVersion},\
-  io.opentelemetry.api.logs; version=${openTelemetryVersion},\
-  io.opentelemetry.api.metrics; version=${openTelemetryVersion},\
-  io.opentelemetry.api.trace.propagation; version=${openTelemetryVersion},\
-  io.opentelemetry.context.*; version=${openTelemetryVersion},\
-  io.opentelemetry.extension.*;version=${openTelemetryVersion},\
-  io.opentelemetry.exporter.*; version=${openTelemetryVersion},\
-  io.opentelemetry.instrumentation.*; version=${openTelemetryVersion},\
-  io.opentelemetry.sdk.*; version=${openTelemetryVersion},\
-  io.opentelemetry.semconv.*; version=${openTelemetryVersion},\
-  io.opentelemetry.internal.*; version=${openTelemetryVersion},\
-  io.opentelemetry.proto.*; version=${openTelemetryVersion}
+  !io.opentelemetry.api; version=${openTelemetryVersion},\
+  !io.opentelemetry.api.baggage; version=${openTelemetryVersion},\
+  !io.opentelemetry.api.common; version=${openTelemetryVersion},\
+  !io.opentelemetry.api.trace; version=${openTelemetryVersion},\
+  !io.opentelemetry.context; version=${openTelemetryVersion},\
+  !io.opentelemetry.sdk.trace.export;version=${openTelemetryVersion},\
+  !io.opentelemetry.sdk.trace.data;version=${openTelemetryVersion},\
+  !io.opentelemetry.sdk.common;version=${openTelemetryVersion},\
+  !io.opentelemetry.sdk.autoconfigure.spi.traces;version=${openTelemetryVersion},\
+  !io.opentelemetry.sdk.autoconfigure.spi;version=${openTelemetryVersion},\
+  !io.opentelemetry.sdk.resources;version=${openTelemetryVersion},\
+  !io.opentelemetry.semconv.trace.attributes;version=${openTelemetryVersion},\
+  !io.opentelemetry.semconv.resource.attributes;version=${openTelemetryVersion},\
+  !io.opentelemetry.instrumentation.annotations;version=${openTelemetryVersion},\
+  io.opentelemetry.*;version=${openTelemetryVersion}
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
