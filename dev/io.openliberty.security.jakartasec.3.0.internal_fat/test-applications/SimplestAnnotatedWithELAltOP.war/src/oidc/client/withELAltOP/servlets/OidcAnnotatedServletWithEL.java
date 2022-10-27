@@ -8,7 +8,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package oidc.client.withEL.servlets;
+package oidc.client.withELAltOP.servlets;
 
 import jakarta.annotation.security.DeclareRoles;
 import jakarta.security.enterprise.authentication.mechanism.http.OpenIdAuthenticationMechanismDefinition;
@@ -20,14 +20,14 @@ import jakarta.servlet.annotation.WebServlet;
 import oidc.client.base.servlets.BaseServlet;
 
 @WebServlet("/OidcAnnotatedServletWithEL")
-@OpenIdAuthenticationMechanismDefinition(providerURI = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1", clientId = "${openIdConfig.clientId}",
+@OpenIdAuthenticationMechanismDefinition(providerURI = "${providerBean.providerSecureRoot}/oidc/endpoint/OP2", clientId = "${openIdConfig.clientId}",
                                          clientSecret = "${openIdConfig.clientSecret}",
+                                         redirectURI = "${baseURL}/Callback",
                                          redirectToOriginalResourceExpression = "${openIdConfig.redirectToOriginalResourceExpression}",
-                                         redirectURI = "${openIdConfig.redirectURI}",
                                          claimsDefinition = @ClaimsDefinition(callerNameClaim = "${openIdConfig.callerNameClaim}",
                                                                               callerGroupsClaim = "${openIdConfig.callerGroupsClaim}"),
-                                         providerMetadata = @OpenIdProviderMetadata(authorizationEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/authorize",
-                                                                                    tokenEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/token"))
+                                         providerMetadata = @OpenIdProviderMetadata(authorizationEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP2/authorize",
+                                                                                    tokenEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP2/token"))
 @DeclareRoles("all")
 @ServletSecurity(@HttpConstraint(rolesAllowed = "all"))
 public class OidcAnnotatedServletWithEL extends BaseServlet {

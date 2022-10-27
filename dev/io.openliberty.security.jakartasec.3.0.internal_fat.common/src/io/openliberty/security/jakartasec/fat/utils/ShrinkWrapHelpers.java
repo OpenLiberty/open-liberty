@@ -105,13 +105,19 @@ public class ShrinkWrapHelpers {
      */
     public void deployConfigurableTestApps(LibertyServer server, String newWar, String sourceWar, Map<String, Object> configSettings, String... packages) throws Exception {
 
+        deployConfigurableTestApps(server, newWar, sourceWar, null, configSettings, packages);
+    }
+
+    public void deployConfigurableTestApps(LibertyServer server, String newWar, String sourceWar, Map<String, Object> providerSettings, Map<String, Object> configSettings,
+                                           String... packages) throws Exception {
+
         WebArchive war = ShrinkHelper.buildDefaultAppFromPath(newWar, sourceWar, packages);
         if (configSettings != null && !configSettings.isEmpty()) {
             war.add(new StringAsset(buildConfigFileContent(configSettings)), Constants.OPEN_ID_CONFIG_PROPERTIES);
         }
 
+        addProviderConfigToApp(war, providerSettings);
         addUtilClassesToApp(war);
-        addProviderConfigToApp(war);
 //        addResourcesToApp(war);
         ShrinkHelper.exportDropinAppToServer(server, war);
     }
@@ -142,11 +148,34 @@ public class ShrinkWrapHelpers {
      * @return the updated war
      * @throws Exception
      */
-    public WebArchive addProviderConfigToApp(WebArchive war) throws Exception {
+    public WebArchive addProviderConfigToApp(WebArchive war, Map<String, Object> providerSettings) throws Exception {
 
+        if (providerSettings != null && !providerSettings.isEmpty()) {
+            int len = providerSettings.size();
+            String[] optionalProps = new String[len];
+            int i = 0;
+            for (Map.Entry<String, Object> entry : providerSettings.entrySet()) {
+                optionalProps[i] = entry.getKey() + "=" + entry.getValue();
+                i++;
+            }
+            addProviderConfigToApp(war, optionalProps);
+        } else {
+            addProviderConfigToApp(war);
+        }
+        return war;
+    }
+
+    public WebArchive addProviderConfigToApp(WebArchive war, String... optionalProps) throws Exception {
+
+        String updatedProviderFileContent = providerFileContent;
+        if (optionalProps != null) {
+            for (String additionalProp : optionalProps) {
+                updatedProviderFileContent = updatedProviderFileContent + System.lineSeparator() + additionalProp;
+            }
+        }
         // create the property file
-        Log.info(thisClass, "addProviderConfigToApp", providerFileContent);
-        war.add(new StringAsset(providerFileContent), Constants.PROVIDER_CONFIG_PROPERTIES);
+        Log.info(thisClass, "addProviderConfigToApp", updatedProviderFileContent);
+        war.add(new StringAsset(updatedProviderFileContent), Constants.PROVIDER_CONFIG_PROPERTIES);
 
         return war;
     }

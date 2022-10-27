@@ -37,6 +37,17 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         return value;
     }
 
+    public boolean getRedirectToOriginalResourceExpression() {
+
+        boolean value = false;
+        if (config.containsKey(Constants.RECIRECT_TO_ORIGINAL_RESOURCE_EXPRESSION)) {
+            value = getBooleanValue(Constants.RECIRECT_TO_ORIGINAL_RESOURCE_EXPRESSION);
+        }
+
+        System.out.println(Constants.RECIRECT_TO_ORIGINAL_RESOURCE_EXPRESSION + Boolean.toString(value));
+        return value;
+    }
+
     public String getClientId() {
 
         String value = "client_1";
@@ -59,12 +70,6 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
 
     public boolean getUseSessionExpression() {
 
-        //        String value = String.valueOf(true);
-        //        if (config.containsKey(Constants.USE_SESSION_EXPRESSION)) {
-        //            value = getStringValue(Constants.USE_SESSION_EXPRESSION);
-        //        }
-        //
-        //        return value;
         boolean value = true;
         if (config.containsKey(Constants.USE_SESSION_EXPRESSION)) {
             value = getBooleanValue(Constants.USE_SESSION_EXPRESSION);
@@ -72,16 +77,6 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
 
         return value;
     }
-
-    //    public boolean getRedirectToOriginalResource() {
-    //
-    //        if (config.containsKey(Constants.CLIENT_SECRET)) { //fix
-    //            return true; //convert real value
-    //        }
-    //
-    //        return false;
-    //
-    //    }
 
     public String getCallerNameClaim() {
 

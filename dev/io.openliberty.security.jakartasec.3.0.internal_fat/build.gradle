@@ -73,19 +73,23 @@ autoFVT.doLast {
 
   } 
   
-   def rpCopyServers = [
-	'jakartasec-3.0_fat.jwt.rp',
-	'jakartasec-3.0_fat.opaque.rp',
-	'jakartasec-3.0_fat.injectionScope.jwt.rp',
-	'jakartasec-3.0_fat.injectionScope.opaque.rp'
-  ]
-
 /** The RP's used in this FAT install multiple applications using shrinkwrapper **/
 /** If each test class uses the same server we end up accumulating test apps    **/
 /** The last rp server ends up with all of its own apps plus the apps of the    **/
 /** servers that started before it.  This code will copy the original server    **/
 /** so that each server can have its own instance, but, we won't need multiple  **/
 /** copies of the same source for each server                                   **/
+   def rpCopyServers = [
+	'jakartasec-3.0_fat.jwt.rp',
+	'jakartasec-3.0_fat.opaque.rp',
+	'jakartasec-3.0_fat.useCallbacks.jwt.rp',
+	'jakartasec-3.0_fat.useCallbacks.opaque.rp',
+	'jakartasec-3.0_fat.useRedirectToOriginalResource.jwt.rp',
+    'jakartasec-3.0_fat.useRedirectToOriginalResource.opaque.rp',
+	'jakartasec-3.0_fat.withOidcClientConfig.jwt.rp',
+    'jakartasec-3.0_fat.withOidcClientConfig.opaque.rp'
+  ]
+
   rpCopyServers.each { rpServer ->
 
     copy { 

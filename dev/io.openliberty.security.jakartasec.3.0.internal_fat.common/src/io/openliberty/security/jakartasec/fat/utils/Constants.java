@@ -17,6 +17,8 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String PROVIDER_CONFIG_PROPERTIES = "/providerConfig.properties";
 
     public static final String REDIRECT_URI = "redirectURI";
+    public static final String RECIRECT_TO_ORIGINAL_RESOURCE = "redirectToOriginalResource";
+    public static final String RECIRECT_TO_ORIGINAL_RESOURCE_EXPRESSION = "redirectToOriginalResourceExpression";
     public static final String CLIENT_ID = "clientId";
     public static final String CLIENT_SECRET = "clientSecret";
     public static final String PROVIDER_BASE = "providerBase";
@@ -25,6 +27,8 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String CLIENT_SECURE_BASE = "clientSecureBase";
     public static final String USE_SESSION = "useSession";
     public static final String USE_SESSION_EXPRESSION = "useSessionExpression";
+    public static final String PROVIDER = "provider";
+    public static final String Logout = "logout";
 
     public static final String CALLER_NAME_CLAIM = "callerNameClaim";
     public static final String CALLER_GROUPS_CLAIM = "callerGroupsClaim";

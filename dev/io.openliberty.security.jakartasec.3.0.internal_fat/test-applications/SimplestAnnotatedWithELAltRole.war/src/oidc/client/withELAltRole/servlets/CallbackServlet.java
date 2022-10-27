@@ -8,14 +8,14 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package oidc.client.withEL.servlets;
+package oidc.client.withELAltRole.servlets;
 
-import jakarta.enterprise.context.Dependent;
-import jakarta.inject.Named;
-import oidc.client.base.servlets.BaseOpenIdConfig;
+import jakarta.servlet.annotation.WebServlet;
+import oidc.client.base.servlets.BaseCallbackServlet;
 
-@Named
-@Dependent
-public class OpenIdConfig extends BaseOpenIdConfig {
+@WebServlet("/Callback")
+public class CallbackServlet extends BaseCallbackServlet {
+
+    private static final long serialVersionUID = -417476984908088827L;
 
 }
