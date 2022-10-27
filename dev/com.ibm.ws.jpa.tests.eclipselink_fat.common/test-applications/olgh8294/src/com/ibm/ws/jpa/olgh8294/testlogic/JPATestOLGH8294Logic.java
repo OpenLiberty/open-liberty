@@ -190,10 +190,12 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
         final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
         final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
+        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
+                                 || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
 
         // Execute Test Case
         try {
@@ -253,7 +255,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby || isDB2) {
+                if (isDerby || isDB2 || isDB2ZOS) {
                     String expected = "SELECT 2, COUNT(ABS(-3)) FROM SIMPLEENTITYOLGH8294 WHERE (ITEM_INTEGER1 = ABS(-3))";
 
                     // EclipseLink 4.0 (JPA 3.1) changed the default behavior to bind literals now that DB2/Derby know what is valid
@@ -301,10 +303,12 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
         final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
         final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
+        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
+                                 || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
 
         // Execute Test Case
         try {
@@ -674,10 +678,12 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
         final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
         final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
+        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
+                                 || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
 
         // Execute Test Case
         try {
