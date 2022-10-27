@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package io.openliberty.microprofile.telemetry.internal_fat.apps.hotadd;
+package io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

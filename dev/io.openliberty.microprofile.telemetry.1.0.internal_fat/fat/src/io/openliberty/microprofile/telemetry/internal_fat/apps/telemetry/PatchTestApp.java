@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry.internal_fat.apps.hotadd;
+package io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry;
 
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.GET;
