@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.cdi.beans;
 
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
 
@@ -26,6 +25,7 @@ import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticatio
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import javax.security.enterprise.credential.BasicAuthenticationCredential;
 import javax.security.enterprise.credential.Credential;
+import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,8 +36,6 @@ import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
-import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
-import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 @Default
@@ -143,7 +141,8 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
 
             if (isAuthorizationHeaderValid(basicAuthHeader)) { // BasicAuthenticationCredential.isValid does not work
                 BasicAuthenticationCredential basicAuthCredential = new BasicAuthenticationCredential(encodedHeader);
-                status = utils.validateUserAndPassword(getCDI(), realmName, clientSubject, basicAuthCredential, httpMessageContext);
+                UsernamePasswordCredential userPassCredential = new UsernamePasswordCredential(basicAuthCredential.getCaller(), basicAuthCredential.getPasswordAsString());
+                status = utils.validateUserAndPassword(getCDI(), realmName, clientSubject, userPassCredential, httpMessageContext);
                 if (status == AuthenticationStatus.SUCCESS) {
                     Map messageInfoMap = httpMessageContext.getMessageInfo().getMap();
                     messageInfoMap.put("javax.servlet.http.authType", "BASIC");
