@@ -17,6 +17,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
 <body>
-JSP version: <%out.write(getVersionInformation());%>
+JSP version via getVersionInformation: <%out.write(getVersionInformation());%>
+JSP version via getSpecificationVersion: <%out.write(JspFactory.getDefaultFactory().getEngineInfo().getSpecificationVersion());%>
 </body>
 </html>

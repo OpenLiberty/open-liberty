@@ -98,8 +98,8 @@ public class JSP23JSP22ServerTest {
         WebResponse response = wc.getResponse(request);
         LOG.info("Response from a 2.3 compilation: " + response.getText());
 
-        assertTrue("The response did not contain: JSP version: 2.3", response.getText().contains("JSP version: 2.3"));
-
+        assertTrue("The response did not contain: JSP version via getVersionInformation: 2.3", response.getText().contains("JSP version via getVersionInformation: 2.3"));
+        assertTrue("The response did not contain: JSP version via getSpecificationVersion: 2.3", response.getText().contains("JSP version via getSpecificationVersion: 2.3"));
         List<String> jsp22Feature = new ArrayList<String>();
         jsp22Feature.add("jsp-2.2");
         server.changeFeatures(jsp22Feature);
@@ -111,7 +111,8 @@ public class JSP23JSP22ServerTest {
 
         LOG.info("Response from a 2.2 compilation: " + response.getText());
 
-        assertTrue("The response did not contain: JSP version: 2.2", response.getText().contains("JSP version: 2.2"));
+        assertTrue("The response did not contain: JSP version via getVersionInformation: 2.2", response.getText().contains("JSP version via getVersionInformation: 2.2"));
+        assertTrue("The response did not contain: JSP version via getSpecificationVersion: 2.2", response.getText().contains("JSP version via getSpecificationVersion: 2.2"));
 
     }
 
@@ -138,7 +139,8 @@ public class JSP23JSP22ServerTest {
         WebResponse response = wc.getResponse(request);
         LOG.info("Response from a 3.0 compilation: " + response.getText());
 
-        assertTrue("The response did not contain: JSP version: 3.0", response.getText().contains("JSP version: 3.0"));
+        assertTrue("The response did not contain: JSP version via getVersionInformation: 3.0", response.getText().contains("JSP version via getVersionInformation: 3.0"));
+        assertTrue("The response did not contain: JSP version via getSpecificationVersion: 3.0", response.getText().contains("JSP version via getSpecificationVersion: 3.0"));
 
         List<String> jsp23Feature = new ArrayList<String>();
         jsp23Feature.add("jsp-2.3");
@@ -151,7 +153,8 @@ public class JSP23JSP22ServerTest {
 
         LOG.info("Response from a 2.3 compilation: " + response.getText());
 
-        assertTrue("The response did not contain: JSP version: 2.3", response.getText().contains("JSP version: 2.3"));
+        assertTrue("The response did not contain: JSP version via getVersionInformation: 2.3", response.getText().contains("JSP version via getVersionInformation: 2.3"));
+        assertTrue("The response did not contain: JSP version via getSpecificationVersion: 2.3", response.getText().contains("JSP version via getSpecificationVersion: 2.3"));
 
     }
 
@@ -178,7 +181,8 @@ public class JSP23JSP22ServerTest {
         WebResponse response = wc.getResponse(request);
         LOG.info("Response from a 3.1 compilation: " + response.getText());
 
-        assertTrue("The response did not contain: JSP version: 3.1", response.getText().contains("JSP version: 3.1"));
+        assertTrue("The response did not contain: JSP version via getVersionInformation: 3.1", response.getText().contains("JSP version via getVersionInformation: 3.1"));
+        assertTrue("The response did not contain: JSP version via getSpecificationVersion: 3.1", response.getText().contains("JSP version via getSpecificationVersion: 3.1"));
 
         List<String> jsp23Feature = new ArrayList<String>();
         jsp23Feature.add("jsp-2.3");
@@ -191,7 +195,8 @@ public class JSP23JSP22ServerTest {
 
         LOG.info("Response from a 2.3 compilation: " + response.getText());
 
-        assertTrue("The response did not contain: JSP version: 2.3", response.getText().contains("JSP version: 2.3"));
+        assertTrue("The response did not contain: JSP version via getVersionInformation: 2.3", response.getText().contains("JSP version via getVersionInformation: 2.3"));
+        assertTrue("The response did not contain: JSP version via getSpecificationVersion: 2.3", response.getText().contains("JSP version via getSpecificationVersion: 2.3"));
 
     }
 }
