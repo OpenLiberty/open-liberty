@@ -109,6 +109,112 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
         assertEquals(EVALUATED_EL_EXPRESSION_STRING_RESULT, wrapper.getProviderURI());
     }
 
+    /**
+     * Test a composite and mixed EL: EL + non-EL + EL
+     */
+    @Test
+    public void testGetProviderURI_EL_composite1() {
+        overrides.put(PROVIDER_URI, STRING_EL_EXPRESSION + "/compositeEL/" + STRING_EL_EXPRESSION);
+
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertEquals(EVALUATED_EL_EXPRESSION_STRING_RESULT + "/compositeEL/" + EVALUATED_EL_EXPRESSION_STRING_RESULT, wrapper.getProviderURI());
+    }
+
+    /**
+     * Test a composite and mixed EL: non-EL + EL + non-EL + EL
+     */
+    @Test
+    public void testGetProviderURI_EL_composite2() {
+        createWrapperWithSimpleELExpressionForAttribute(PROVIDER_URI);
+        overrides.put(PROVIDER_URI, "startWithRegString/" + STRING_EL_EXPRESSION + "/compositeEL/" + STRING_EL_EXPRESSION);
+
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertEquals("startWithRegString/" + EVALUATED_EL_EXPRESSION_STRING_RESULT + "/compositeEL/" + EVALUATED_EL_EXPRESSION_STRING_RESULT, wrapper.getProviderURI());
+    }
+
+    /**
+     * Test a composite and mixed EL: EL + non-EL + EL + non-EL + EL
+     */
+    @Test
+    public void testGetProviderURI_EL_composite3() {
+        createWrapperWithSimpleELExpressionForAttribute(PROVIDER_URI);
+        overrides.put(PROVIDER_URI, STRING_EL_EXPRESSION + "startWithRegString/" + STRING_EL_EXPRESSION + "/compositeEL/" + STRING_EL_EXPRESSION);
+
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertEquals(EVALUATED_EL_EXPRESSION_STRING_RESULT + "startWithRegString/" + EVALUATED_EL_EXPRESSION_STRING_RESULT + "/compositeEL/"
+                     + EVALUATED_EL_EXPRESSION_STRING_RESULT,
+                     wrapper.getProviderURI());
+    }
+
+    /**
+     * Test a composite and mixed EL: EL + EL + EL
+     */
+    @Test
+    public void testGetProviderURI_EL_composite4() {
+        createWrapperWithSimpleELExpressionForAttribute(PROVIDER_URI);
+        overrides.put(PROVIDER_URI, STRING_EL_EXPRESSION + STRING_EL_EXPRESSION + STRING_EL_EXPRESSION);
+
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertEquals(EVALUATED_EL_EXPRESSION_STRING_RESULT + EVALUATED_EL_EXPRESSION_STRING_RESULT + EVALUATED_EL_EXPRESSION_STRING_RESULT, wrapper.getProviderURI());
+    }
+
+    /**
+     * Test a composite and mixed EL: EL + non-EL + EL + non-EL
+     */
+    @Test
+    public void testGetProviderURI_EL_composite5() {
+        createWrapperWithSimpleELExpressionForAttribute(PROVIDER_URI);
+        overrides.put(PROVIDER_URI, STRING_EL_EXPRESSION + "startWithRegString/" + STRING_EL_EXPRESSION + "/compositeEL/");
+
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertEquals(EVALUATED_EL_EXPRESSION_STRING_RESULT + "startWithRegString/" + EVALUATED_EL_EXPRESSION_STRING_RESULT + "/compositeEL/", wrapper.getProviderURI());
+    }
+
+    /**
+     * Test a composite and mixed EL: non-EL + EL + EL + non-EL
+     */
+    @Test
+    public void testGetProviderURI_EL_composite6() {
+        createWrapperWithSimpleELExpressionForAttribute(PROVIDER_URI);
+        overrides.put(PROVIDER_URI, "startWithRegString/" + STRING_EL_EXPRESSION + STRING_EL_EXPRESSION + "/compositeEL/");
+
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertEquals("startWithRegString/" + EVALUATED_EL_EXPRESSION_STRING_RESULT + EVALUATED_EL_EXPRESSION_STRING_RESULT + "/compositeEL/", wrapper.getProviderURI());
+    }
+
+    /**
+     * Test a composite and mixed EL with mismatched brackets: EL + non-EL + mismatched-EL
+     */
+    @Test
+    public void testGetProviderURI_EL_composite7() {
+        createWrapperWithSimpleELExpressionForAttribute(PROVIDER_URI);
+        overrides.put(PROVIDER_URI, STRING_EL_EXPRESSION + "/compositeEL/" + "#{'blah'.concat('blah')");
+
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertEquals(EVALUATED_EL_EXPRESSION_STRING_RESULT + "/compositeEL/" + "#{'blah'.concat('blah')", wrapper.getProviderURI());
+    }
+
     // TODO: Unit test getProviderMetadata
 
     @Test
