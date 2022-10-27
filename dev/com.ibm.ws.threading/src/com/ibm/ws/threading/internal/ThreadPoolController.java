@@ -1247,7 +1247,7 @@ public final class ThreadPoolController {
 
         if (poolAdjustment != 0) {
             // don't shrink too far
-            if (poolAdjustment < 0 && newPoolSize >= Math.max(activeThreads, currentMinimumPoolSize)) {
+            if (poolAdjustment < 0 && newPoolSize >= currentMinimumPoolSize) {
                 lastAction = LastAction.SHRINK;
                 setPoolSize(newPoolSize);
             } else if (poolAdjustment > 0 && newPoolSize <= maxThreads) {
