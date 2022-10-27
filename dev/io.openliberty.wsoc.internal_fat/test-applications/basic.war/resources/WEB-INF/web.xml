@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2013, 2015 IBM Corporation and others.
+    Copyright (c) 2013, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -66,6 +66,17 @@
         <filter-name>UpgradeFilter</filter-name>
         <url-pattern>/pathUpgradeFilter/*</url-pattern>
     </filter-mapping>
+
+    <servlet>
+        <servlet-name>AddEndpointServlet</servlet-name>
+        <servlet-class>basic.war.servlet.AddEndpointServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>AddEndpointServlet</servlet-name>
+        <url-pattern>/addEndpoint</url-pattern>
+    </servlet-mapping>
     
     
     <absolute-ordering /> 

@@ -32,6 +32,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.wsoc.AnnotatedEndpoint;
 import com.ibm.ws.wsoc.EndpointHelper;
 import com.ibm.ws.wsoc.EndpointManager;
+import com.ibm.ws.wsoc.WebSocketVersionServiceManager;
 import com.ibm.ws.wsoc.external.WebSocketContainerExt;
 import com.ibm.ws.wsoc.external.WsocHandlerImpl;
 
@@ -165,8 +166,9 @@ public abstract class ServerContainerExt extends WebSocketContainerExt {
     }
 
     public void setNoMoreAddEndpointsAllowed() {
-        noMoreAdds = true;
-
+        // This restriction to add endpoints after initialization/deployment is removed in 2.1 https://github.com/jakartaee/websocket/issues/211
+        if(!WebSocketVersionServiceManager.isWsoc21OrHigher())
+            noMoreAdds = true;
     }
 
     @FFDCIgnore({ IllegalStateException.class })
