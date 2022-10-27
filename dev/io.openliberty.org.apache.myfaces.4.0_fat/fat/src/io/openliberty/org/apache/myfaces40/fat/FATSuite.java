@@ -21,6 +21,7 @@ import io.openliberty.org.apache.myfaces40.fat.tests.FacesContextGetLifecycleTes
 import io.openliberty.org.apache.myfaces40.fat.tests.InputTextTypeTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.SelectItemTests;
 import io.openliberty.org.apache.myfaces40.fat.tests.SimpleTest;
+import io.openliberty.org.apache.myfaces40.fat.tests.UIViewRootGetDoctypeTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -30,7 +31,8 @@ import io.openliberty.org.apache.myfaces40.fat.tests.SimpleTest;
                 InputTextTypeTest.class,
                 ExtensionlessMappingTest.class,
                 SelectItemTests.class,
-                FacesContextGetLifecycleTest.class
+                FacesContextGetLifecycleTest.class,
+                UIViewRootGetDoctypeTest.class
 })
 public class FATSuite {
 
