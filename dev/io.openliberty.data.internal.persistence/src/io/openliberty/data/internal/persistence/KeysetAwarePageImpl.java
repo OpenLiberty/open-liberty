@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -101,11 +100,6 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     }
 
     @Override
-    public Stream<T> get() {
-        return getContent().stream(); // TODO Is there a more efficient way to do this?
-    }
-
-    @Override
     public List<T> getContent() {
         int size = results.size();
         long max = pagination.getSize();
@@ -129,8 +123,15 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     }
 
     @Override
-    public long getPage() {
+    public long getNumber() {
         return pagination.getPage();
+    }
+
+    @Override
+    public int getNumberOfElements() {
+        int size = results.size();
+        int max = (int) pagination.getSize(); // TODO correct spec interface
+        return size > max ? max : size;
     }
 
     @Override
@@ -139,7 +140,22 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     }
 
     @Override
-    public KeysetPageable next() {
+    public long getTotalElements() {
+        throw new UnsupportedOperationException(); // TODO
+    }
+
+    @Override
+    public long getTotalPages() {
+        throw new UnsupportedOperationException(); // TODO
+    }
+
+    @Override
+    public boolean hasContent() {
+        return !results.isEmpty();
+    }
+
+    @Override
+    public KeysetPageable nextPageable() {
         // The extra position is only available for identifying a next page if the current page was obtained in the forward direction
         int minToHaveNextPage = isForward ? ((int) pagination.getSize() + 1) : 1;
         if (results.size() < minToHaveNextPage)
@@ -163,7 +179,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     }
 
     @Override
-    public KeysetPageable previous() {
+    public KeysetPageable previousPageable() {
         // The extra position is only available for identifying a previous page if the current page was obtained in the reverse direction
         int minToHavePreviousPage = isForward ? 1 : ((int) pagination.getSize() + 1);
         if (results.size() < minToHavePreviousPage)
@@ -186,13 +202,6 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
         // Decrement page number by 1 unless it would go below 1.
         Pageable p = pagination.getPage() == 1 ? pagination : Pageable.of(pagination.getPage() - 1, pagination.getSize());
         return p.beforeKeyset(keyValues.toArray());
-    }
-
-    @Override
-    public long size() {
-        long size = results.size();
-        long max = pagination.getSize();
-        return size > max ? max : size;
     }
 
     /**

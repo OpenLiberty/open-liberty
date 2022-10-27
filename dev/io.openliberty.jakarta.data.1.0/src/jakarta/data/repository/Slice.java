@@ -8,28 +8,23 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data;
+package jakarta.data.repository;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-
-import jakarta.data.repository.Pageable;
 
 /**
- * Method signatures copied from proposals in the Jakarta Data git repo.
+ * Method signatures copied from the Jakarta Data git repo.
  */
-public interface Page<T> extends Supplier<Stream<T>> {
+public interface Slice<T> {
     List<T> getContent();
 
-    <C extends Collection<T>> C getContent(Supplier<C> collectionFactory);
+    long getNumber(); // from Spring Data and Micronaut. Not currently in Jakarta Data.
 
-    long getPage();
+    int getNumberOfElements();
 
     Pageable getPageable();
 
-    Pageable next();
+    boolean hasContent();
 
-    long size();
+    Pageable nextPageable();
 }

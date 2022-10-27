@@ -28,11 +28,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import jakarta.data.Page;
 import jakarta.data.Result;
 import jakarta.data.Select;
 import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.Limit;
+import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Sort;
