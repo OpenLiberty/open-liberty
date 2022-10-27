@@ -54,9 +54,6 @@ public class WASMyFacesAnnotationProvider extends AnnotationProvider {
         annotations.add(jakarta.faces.event.NamedEvent.class);
         annotations.add(jakarta.faces.render.FacesBehaviorRenderer.class);
 
-        // New annotation for JSF 2.2
-        annotations.add(jakarta.faces.view.facelets.FaceletsResourceResolver.class);
-
         annotationClasses = Collections.unmodifiableSet(annotations);
     }
 
