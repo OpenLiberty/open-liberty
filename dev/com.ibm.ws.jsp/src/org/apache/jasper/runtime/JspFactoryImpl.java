@@ -96,7 +96,7 @@ public class JspFactoryImpl extends JspFactory {
 	}       
 
 
-    private static final String SPEC_VERSION = "2.1";
+    private static final String SPEC_VERSION = com.ibm.ws.jsp.PagesVersionHandler.LOADED_SPEC_LEVEL;
 
     private static WSThreadLocal _threadLocal = new WSThreadLocal();
     
