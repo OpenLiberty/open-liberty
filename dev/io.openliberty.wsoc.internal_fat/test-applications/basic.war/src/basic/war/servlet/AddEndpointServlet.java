@@ -39,7 +39,9 @@ import basic.war.EchoServerEP;
  * be relaxed in a future version."
  * 
  * Before 2.1, endpoints can only registered during the deployment of the web application. Once a websocket request enters the webcontainer,
- * no more endpoints could be added with the API as stated in the spec "are only operational during the application deployment phase of an application. Specifically, as soon as any of the server endpoints within the application have accepted an opening handshake request, the apis may not longer be used. This restriction may be relaxed in a future version.". This restriction was removed in EE10 WebSocket 2.1
+ * no more endpoints could be added with the API as stated in the spec "are only operational during the application deployment phase of an application. 
+ * Specifically, as soon as any of the server endpoints within the application have accepted an opening handshake request, the apis may not
+ * longer be used. This restriction may be relaxed in a future version.". This restriction was removed in EE10 WebSocket 2.1
  */
 public class AddEndpointServlet extends HttpServlet {
 

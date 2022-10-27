@@ -37,7 +37,6 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
@@ -241,7 +240,7 @@ public class BasicTest {
         // This test causes SRVE0777E: Exception thrown by application class ServerContainerExt.addEndpoint which is expected
         // Also cause SRVE0315E An exception occurred: java.lang.Throwable: java.lang.IllegalStateException: endpoint.addsclosed also expected
         // and SRVE8094W WARNING: Cannot set header. Response already committed to show up
-        if(RepeatTestFilter.isRepeatActionActive(JakartaEE10Action.ID)){
+        if(JakartaEE10Action.isActive()){
             assertNotNull("Endpoint should have been added!", LS.waitForStringInLog("CWWKH0046I: Adding a WebSocket ServerEndpoint with the following URI: /newEchoEndpointAdded"));
         }else{
             assertNull("Endpoint should NOT have been added!", LS.waitForStringInLog("CWWKH0046I: Adding a WebSocket ServerEndpoint with the following URI: /newEchoEndpointAdded"));
