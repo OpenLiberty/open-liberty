@@ -136,7 +136,6 @@ public class UserInfoRequestor {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     public JSONObject extractClaimsFromJwtResponse(String responseString) throws Exception {
         JwtContext jwtContext = JwtParsingUtils.parseJwtWithoutValidation(responseString);
         if (jwtContext != null) {
@@ -144,9 +143,7 @@ public class UserInfoRequestor {
             JwsSignatureVerifier signatureVerifier = createSignatureVerifier(jwtContext);
             JwtClaims claims = signatureVerifier.validateJwsSignature(jwtContext);
             if (claims != null) {
-                JSONObject jsonClaims = new JSONObject();
-                jsonClaims.putAll(claims.getClaimsMap());
-                return jsonClaims;
+                return JSONObject.parse(claims.toJson());
             }
         }
         return null;
