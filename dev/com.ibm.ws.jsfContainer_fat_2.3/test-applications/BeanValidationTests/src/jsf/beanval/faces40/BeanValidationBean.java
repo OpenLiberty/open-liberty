@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,20 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jsf.beanval;
+package jsf.beanval.faces40;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import java.io.Serializable;
+
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 import javax.faces.validator.LengthValidator;
 
 /**
- * A Managed Bean that is being used with the
+ * A CDI Bean that is being used with the
  * BeanValidationTests application to test
- * beanValidation capability with JSF 2.2
+ * beanValidation capability with Faces 4.0
  */
-@ManagedBean(name = "beanValidation")
+@Named("beanValidation")
 @SessionScoped
-public class BeanValidationBean {
+public class BeanValidationBean implements Serializable {
 
     // used for binding test
     private String bindingValue;

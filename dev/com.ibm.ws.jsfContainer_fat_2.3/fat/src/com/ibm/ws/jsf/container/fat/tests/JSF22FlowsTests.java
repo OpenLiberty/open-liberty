@@ -31,6 +31,7 @@ import com.ibm.ws.jsf.container.fat.FATSuite;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
@@ -56,10 +57,15 @@ public class JSF22FlowsTests extends FATServletClient {
     private static final String MOJARRA_APP = "JSF22FacesFlows";
     private static final String MYFACES_APP = "JSF22FacesFlows_MyFaces";
 
+    private static boolean isEE10;
+
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("jsf.container.2.3_fat");
 
     @BeforeClass
     public static void setup() throws Exception {
+
+        isEE10 = JakartaEE10Action.isActive();
+
         server.removeAllInstalledAppsForValidation();
 
         JavaArchive facesFlowJar = ShrinkWrap.create(JavaArchive.class, "JSF22FacesFlows.jar");
@@ -67,7 +73,7 @@ public class JSF22FlowsTests extends FATServletClient {
 
         WebArchive mojarraApp = ShrinkWrap.create(WebArchive.class, MOJARRA_APP + ".war")
                         .addAsLibrary(facesFlowJar)
-                        .addPackage("jsf.flow.beans");
+                        .addPackage(isEE10 ? "jsf.flow.beans.faces40" : "jsf.flow.beans.jsf22");
         mojarraApp = FATSuite.addMojarra(mojarraApp);
         mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "publish/files/permissions");
         mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "test-applications/JSF22FacesFlows/resources/war");
@@ -76,7 +82,7 @@ public class JSF22FlowsTests extends FATServletClient {
 
         WebArchive myfacesApp = ShrinkWrap.create(WebArchive.class, MYFACES_APP + ".war")
                         .addAsLibrary(facesFlowJar)
-                        .addPackage("jsf.flow.beans");
+                        .addPackage(isEE10 ? "jsf.flow.beans.faces40" : "jsf.flow.beans.jsf22");
         myfacesApp = FATSuite.addMyFaces(myfacesApp);
         myfacesApp = (WebArchive) ShrinkHelper.addDirectory(myfacesApp, "publish/files/permissions");
         myfacesApp = (WebArchive) ShrinkHelper.addDirectory(myfacesApp, "test-applications/JSF22FacesFlows/resources/war");
@@ -191,7 +197,7 @@ public class JSF22FlowsTests extends FATServletClient {
         JSF22Flows_TestDeclarativeNavigation(MOJARRA_APP);
     }
 
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) // Fails due to "jakarta.el.PropertyNotFoundException: Target Unreachable, identifier [flowScope] resolved to null"
     @Test
     public void JSF22Flows_TestDeclarativeNavigation_MyFaces() throws Exception {
         JSF22Flows_TestDeclarativeNavigation(MYFACES_APP);
@@ -318,14 +324,12 @@ public class JSF22FlowsTests extends FATServletClient {
      * explicitly-defined inbound parameters. This test is related to this issue --->
      * https://issues.apache.org/jira/browse/MYFACES-3969 (Also see Defect 169488)
      */
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22Flows_TestDeclarativeNestedFlows_Mojarra() throws Exception {
         // Navigate to the index
         testNestedFlows("declarativeNested1", "declarativeNested2", "declarativeNested", MOJARRA_APP);
     }
 
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22Flows_TestDeclarativeNestedFlows_MyFaces() throws Exception {
         // Navigate to the index

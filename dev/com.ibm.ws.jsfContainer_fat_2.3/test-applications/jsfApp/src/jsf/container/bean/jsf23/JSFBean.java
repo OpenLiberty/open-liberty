@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jsf.container.bean;
+package jsf.container.bean.jsf23;
 
 import java.io.Serializable;
 
@@ -17,6 +17,8 @@ import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.bean.ManagedBean;
+
+import jsf.container.bean.TestEJB;
 
 @ManagedBean(name = "jsfBean")
 @SessionScoped

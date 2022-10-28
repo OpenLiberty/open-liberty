@@ -35,8 +35,8 @@ import com.ibm.ws.jsf.container.fat.utils.UseImplementation;
 import com.ibm.ws.jsf.container.fat.utils.WebArchiveInfo;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -44,7 +44,6 @@ import componenttest.topology.utils.FATServletClient;
  * This test class is to be used for the tests that test feature specified
  * in JSF 2.3 specification under the Section 10.4.1.7 “<f:websocket>”.
  */
-@SkipForRepeat(SkipForRepeat.EE10_FEATURES)
 @RunWith(FATRunner.class)
 @WebArchiveInfo(name = "WebSocket", pkgs = { "com.ibm.ws.jsf23.fat.websocket" })
 @UseImplementation(JSFImplementation.MYFACES)
@@ -95,7 +94,13 @@ public class JSF23WebSocketTests extends FATServletClient {
 
             // Construct the URL for the test
             String contextRoot = "WebSocket";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIWSOCServer, contextRoot, "PushWebSocketTest.jsf");
+
+            URL url;
+            if (JakartaEE10Action.isActive()) {
+                url = JSFUtils.createHttpUrl(jsf23CDIWSOCServer, contextRoot, "faces40/PushWebSocketTest.jsf");
+            } else {
+                url = JSFUtils.createHttpUrl(jsf23CDIWSOCServer, contextRoot, "jsf23/PushWebSocketTest.jsf");
+            }
 
             HtmlPage testPushWebSocketPage = (HtmlPage) webClient.getPage(url);
 
@@ -151,7 +156,13 @@ public class JSF23WebSocketTests extends FATServletClient {
 
             // Construct the URL for the test
             String contextRoot = "WebSocket";
-            URL url = JSFUtils.createHttpUrl(jsf23CDIWSOCServer, contextRoot, "OpenCloseWebSocketTest.jsf");
+
+            URL url;
+            if (JakartaEE10Action.isActive()) {
+                url = JSFUtils.createHttpUrl(jsf23CDIWSOCServer, contextRoot, "faces40/OpenCloseWebSocketTest.jsf");
+            } else {
+                url = JSFUtils.createHttpUrl(jsf23CDIWSOCServer, contextRoot, "jsf23/OpenCloseWebSocketTest.jsf");
+            }
 
             HtmlPage testOpenCloseWebSocketPage = (HtmlPage) webClient.getPage(url);
 
