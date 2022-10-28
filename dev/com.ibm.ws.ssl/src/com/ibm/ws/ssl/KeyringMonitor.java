@@ -37,6 +37,11 @@ public interface KeyringMonitor {
     String KEYSTORE_LOCATION = "keystore.location";
 
     /**
+     * Constants for all prefix
+     */
+    String SAF_ALL_PREFIX = "safkeyring";
+
+    /**
      * Constant that is used for prefix
      */
     String SAF_PREFIX = "safkeyring://";

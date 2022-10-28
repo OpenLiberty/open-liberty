@@ -1892,7 +1892,7 @@ public class WSKeyStore extends Properties {
         return original;
     }
 
-    protected String processKeyringURL(String safKeyringURL) {
+    public static String processKeyringURL(String safKeyringURL) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "processKeyringURL: " + safKeyringURL);
         String processedUrl = safKeyringURL;
