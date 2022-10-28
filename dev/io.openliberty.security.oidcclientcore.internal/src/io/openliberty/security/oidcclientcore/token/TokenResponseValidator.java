@@ -17,10 +17,6 @@ import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtContext;
 import org.jose4j.jwx.JsonWebStructure;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.ProtectedString;
@@ -28,29 +24,21 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
-import com.ibm.wsspi.ssl.SSLSupport;
 
 import io.openliberty.security.common.jwt.JwtParsingUtils;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestParameters;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.config.MetadataUtils;
-import io.openliberty.security.oidcclientcore.http.EndpointRequest;
+import io.openliberty.security.oidcclientcore.config.OidcMetadataService;
 import io.openliberty.security.oidcclientcore.storage.Storage;
 import io.openliberty.security.oidcclientcore.storage.StorageFactory;
 import io.openliberty.security.oidcclientcore.utils.CommonJose4jUtils;
 import io.openliberty.security.oidcclientcore.utils.CommonJose4jUtils.TokenSignatureValidationBuilder;
 
-/**
- *
- */
-@Component(service = TokenResponseValidator.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class TokenResponseValidator {
 
     public static final TraceComponent tc = Tr.register(TokenResponseValidator.class);
-    private static final String KEY_EP_REQUEST = "endpointRequest";
-    public static volatile EndpointRequest eprequest;
-    private static final String KEY_SSL_SUPPORT = "sslSupport";
-    public static volatile SSLSupport sslSupport;
+
     static boolean initialized = false;
 
     OidcClientConfig clientConfig;
@@ -61,33 +49,8 @@ public class TokenResponseValidator {
     JSONObject discoveredProviderMetadata = null;
     private Storage storage;
 
-    public TokenResponseValidator() {
-
-    }
-
-    /**
-     * @param oidcClientConfig
-     */
     public TokenResponseValidator(OidcClientConfig oidcClientConfig) {
         this.clientConfig = oidcClientConfig;
-    }
-
-    @Reference(name = KEY_SSL_SUPPORT, policy = ReferencePolicy.DYNAMIC)
-    protected void setSslSupport(SSLSupport sslSupportSvc) {
-        sslSupport = sslSupportSvc;
-    }
-
-    protected void unsetSslSupport(SSLSupport sslSupportSvc) {
-        sslSupport = null;
-    }
-
-    @Reference(name = KEY_EP_REQUEST, policy = ReferencePolicy.DYNAMIC)
-    protected void setEndpointRequest(EndpointRequest eprequestService) {
-        eprequest = eprequestService;
-    }
-
-    protected void unsetEndpointRequest(EndpointRequest eprequestService) {
-        eprequest = null;
     }
 
     @FFDCIgnore(Exception.class)
@@ -148,7 +111,7 @@ public class TokenResponseValidator {
                 }
                 TokenSignatureValidationBuilder tokenSignatureValidationBuilder = jose4jutil.signaturevalidationbuilder();
                 String jwksUri = MetadataUtils.getJwksUri(clientConfig);
-                tokenSignatureValidationBuilder.signature(jsonStruct).sslsupport(sslSupport).jwkuri(jwksUri).issuer(issuerconfigured).clientid(clientConfig.getClientId());
+                tokenSignatureValidationBuilder.signature(jsonStruct).sslsupport(OidcMetadataService.getSSLSupport()).jwkuri(jwksUri).issuer(issuerconfigured).clientid(clientConfig.getClientId());
 
                 tokenSignatureValidationBuilder.clientsecret(clientSecret);
                 tokenSignatureValidationBuilder.jwkset(jwkset);

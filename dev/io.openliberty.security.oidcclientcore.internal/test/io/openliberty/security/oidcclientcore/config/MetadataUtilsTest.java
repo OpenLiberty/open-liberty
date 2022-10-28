@@ -27,7 +27,6 @@ import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
 import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
-import io.openliberty.security.oidcclientcore.http.EndpointRequest;
 import test.common.SharedOutputManager;
 
 public class MetadataUtilsTest extends CommonTestClass {
@@ -38,7 +37,7 @@ public class MetadataUtilsTest extends CommonTestClass {
     public static final String CWWKS2405E_DISCOVERY_METADATA_MISSING_VALUE = "CWWKS2405E";
 
     private final OidcClientConfig oidcClientConfig = mockery.mock(OidcClientConfig.class);
-    private final EndpointRequest endpointRequestClass = mockery.mock(EndpointRequest.class);
+    private final OidcMetadataService oidcMetadataService = mockery.mock(OidcMetadataService.class);
     private final OidcProviderMetadata providerMetadata = mockery.mock(OidcProviderMetadata.class);
 
     private final String clientId = "myClientId";
@@ -62,13 +61,13 @@ public class MetadataUtilsTest extends CommonTestClass {
             }
         });
         MetadataUtils utils = new MetadataUtils();
-        utils.setEndpointRequest(endpointRequestClass);
+        utils.setOidcMetadataService(oidcMetadataService);
     }
 
     @After
     public void tearDown() {
         MetadataUtils utils = new MetadataUtils();
-        utils.unsetEndpointRequest(endpointRequestClass);
+        utils.unsetOidcMetadataService(oidcMetadataService);
         outputMgr.resetStreams();
         mockery.assertIsSatisfied();
     }
@@ -105,7 +104,7 @@ public class MetadataUtilsTest extends CommonTestClass {
                 will(returnValue(providerMetadata));
                 one(providerMetadata).getIssuer();
                 will(returnValue(""));
-                one(endpointRequestClass).getProviderDiscoveryMetadata(oidcClientConfig);
+                one(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
                 will(returnValue(discoveryData));
             }
         });
@@ -122,7 +121,7 @@ public class MetadataUtilsTest extends CommonTestClass {
             {
                 one(oidcClientConfig).getProviderMetadata();
                 will(returnValue(null));
-                one(endpointRequestClass).getProviderDiscoveryMetadata(oidcClientConfig);
+                one(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
                 will(returnValue(discoveryData));
             }
         });

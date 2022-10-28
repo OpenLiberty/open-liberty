@@ -37,9 +37,8 @@ Export-Package: \
 	io.openliberty.security.oidcclientcore.utils
 
 -dsannotations: \
-	io.openliberty.security.oidcclientcore.http.EndpointRequest,\
-	io.openliberty.security.oidcclientcore.token.TokenResponseValidator,\
-	io.openliberty.security.oidcclientcore.config.MetadataUtils
+	io.openliberty.security.oidcclientcore.config.MetadataUtils,\
+	io.openliberty.security.oidcclientcore.config.OidcMetadataService
 
 -buildpath: \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
