@@ -16,7 +16,8 @@ src: \
     test-applications/ExternalContextAddResponseCookie.war/src,\
     test-applications/FacesContextGetLifecycle.war/src,\
     test-applications/SelectItemTests.war/src,\
-    test-applications/UIViewRootGetDoctypeTest.war/src
+    test-applications/UIViewRootGetDoctypeTest.war/src,\
+    test-applications/Faces40ThirdPartyApi.war/src
 
 fat.project: true
 
@@ -26,6 +27,8 @@ javac.target: 11
 -buildpath: \
     io.openliberty.jakarta.faces.4.0;version=latest,\
     io.openliberty.jakarta.cdi.4.0;version=latest,\
+    io.openliberty.org.apache.myfaces.4.0;version=latest,\
+    io.openliberty.faces.4.0.thirdparty;version=latest,\
     net.sourceforge.htmlunit:htmlunit;version=2.44.0,\
     io.openliberty.org.apache.commons.codec;version=latest,\
     io.openliberty.org.apache.xercesImpl;version=latest,\
