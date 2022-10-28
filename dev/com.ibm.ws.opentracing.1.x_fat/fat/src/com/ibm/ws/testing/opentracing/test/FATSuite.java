@@ -48,9 +48,9 @@ public class FATSuite implements FATOpentracingConstants {
     
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new FeatureReplacementAction(openTracing11, openTracing12)
+                    .andWith(new FeatureReplacementAction(openTracing11, openTracing12).withID("OT12")
                              .forceAddFeatures(false))
-                    .andWith(new FeatureReplacementAction(openTracing12, openTracing13)
+                    .andWith(new FeatureReplacementAction(openTracing12, openTracing13).withID("OT13")
                              .forceAddFeatures(false));
     
     private static final Class<? extends FATSuite> CLASS = FATSuite.class;
