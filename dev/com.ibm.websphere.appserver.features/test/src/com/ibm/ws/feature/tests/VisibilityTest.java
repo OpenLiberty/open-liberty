@@ -388,11 +388,9 @@ public class VisibilityTest {
         Set<String> expectedFailures = new HashSet<>();
         // The following features are marked no ship, but are not ready for beta yet.
         // If they get marked beta, they should be removed from this list.
-        expectedFailures.add("io.openliberty.jakarta.faces-4.0");
         expectedFailures.add("io.openliberty.persistentExecutor.internal.ee-10.0"); // the persistentExecutor feature is no ship
         expectedFailures.add("io.openliberty.adminCenter1.0.internal.ee-10.0");
         expectedFailures.add("io.openliberty.webCache1.0.internal.ee-10.0");
-        expectedFailures.add("io.openliberty.facesContainer-4.0");
 
         StringBuilder errorMessage = new StringBuilder();
         for (Entry<String, FeatureInfo> entry : features.entrySet()) {
