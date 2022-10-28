@@ -8,21 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.wsoc.outbound;
+package com.ibm.ws.wsoc;
 
-import java.net.URI;
+import javax.websocket.ClientEndpointConfig;
 
-import com.ibm.wsspi.http.channel.outbound.HttpAddress;
+public interface ClientEndpointConfigCopyFactory {
 
-public interface WsocAddress extends HttpAddress {
+    ClientEndpointConfig getClientEndpointConfig(ClientEndpointConfig cec);
     
-    String getChainKey();
-
-    void validateURI();
-        
-    boolean isSecure();
-        
-    URI getURI();
-        
-    String getPath();
 }

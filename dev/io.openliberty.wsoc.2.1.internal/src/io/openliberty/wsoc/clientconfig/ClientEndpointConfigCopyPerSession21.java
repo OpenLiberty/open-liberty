@@ -8,12 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.wsoc;
+package  io.openliberty.wsoc.clientconfig;
 
-import javax.websocket.ClientEndpointConfig;
-import javax.websocket.Decoder;
-import javax.websocket.Encoder;
-import javax.websocket.Extension;
+import javax.net.ssl.SSLContext;
+import jakarta.websocket.ClientEndpointConfig;
+import jakarta.websocket.Decoder;
+import jakarta.websocket.Encoder;
+import jakarta.websocket.Extension;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,12 +25,12 @@ import java.util.Map;
  * 
  * Wraps the ClientEndpointConfig object and produces an indivdualized copy of the user properties.
  */
-public class ClientEndpointConfigCopyPerSession implements ClientEndpointConfig {
+public class ClientEndpointConfigCopyPerSession21 implements ClientEndpointConfig {
     
     ClientEndpointConfig epc = null;
     Map<String, Object> copy = new HashMap<String, Object>();
 
-    public ClientEndpointConfigCopyPerSession (ClientEndpointConfig epc){
+    public ClientEndpointConfigCopyPerSession21 (ClientEndpointConfig epc){
         this.epc = epc;
         if(this.epc.getUserProperties() != null){
             for (Map.Entry<String,Object> entry : this.epc.getUserProperties().entrySet()){
@@ -61,6 +62,10 @@ public class ClientEndpointConfigCopyPerSession implements ClientEndpointConfig 
 
     public ClientEndpointConfig.Configurator getConfigurator() { 
         return this.epc.getConfigurator();
+    }
+
+    public SSLContext getSSLContext(){
+        return this.epc.getSSLContext();
     }
 
 }

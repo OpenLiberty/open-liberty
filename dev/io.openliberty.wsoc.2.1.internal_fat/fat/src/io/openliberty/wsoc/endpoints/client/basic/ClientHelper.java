@@ -33,6 +33,9 @@ import jakarta.websocket.PongMessage;
 import jakarta.websocket.SendHandler;
 import jakarta.websocket.SendResult;
 import jakarta.websocket.Session;
+import jakarta.websocket.Endpoint;
+import jakarta.websocket.EndpointConfig;
+import jakarta.websocket.MessageHandler;
 
 import io.openliberty.wsoc.util.wsoc.TestHelper;
 import io.openliberty.wsoc.util.wsoc.WsocTestContext;
@@ -43,12 +46,12 @@ import io.openliberty.wsoc.common.Utils;
 /**
  * Creates variosu Client Endpoints used within this FAT
  */
-public class ClientHelper implements TestHelper {
+public abstract class ClientHelper extends Endpoint implements TestHelper {
 
     public WsocTestContext _wtr = null;
     private static final Logger LOG = Logger.getLogger(ClientHelper.class.getName());
 
-    @ClientEndpoint
+
     public static class BasicClientEP extends ClientHelper {
 
         public String[] _data = {};
@@ -57,27 +60,25 @@ public class ClientHelper implements TestHelper {
             _data = data;
         }
 
-        @OnOpen
-        public void onOpen(Session sess) {
+        @Override
+        public void onOpen(Session session,  EndpointConfig config) {
+            session.addMessageHandler(String.class, new MessageHandler.Whole<String>() {
+                public void onMessage(String text) {
+                               _wtr.addMessage(text);
+                                 _wtr.terminateClient();
+                }
+
+            });
+        
             try {
-                sess.getBasicRemote().sendText(_data[0]);
+                session.getBasicRemote().sendText(_data[0]);
             } catch (Exception e) {
                 //TODO: handle exception
             }
         }
 
-        @OnMessage
-        public String onMessage(String data) {
-    
-            _wtr.addMessage(data);
-    
-            _wtr.terminateClient();
-    
-            return null;
-        }
     }
 
-    @OnError
     public void onError(Session session, java.lang.Throwable throwable) {
         LOG.warning(throwable.toString());
          _wtr.addExceptionAndTerminate("Error during wsoc session", throwable);

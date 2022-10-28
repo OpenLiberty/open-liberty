@@ -10,19 +10,34 @@
  *******************************************************************************/
 package com.ibm.ws.wsoc.outbound;
 
+import java.net.InetSocketAddress;
 import java.net.URI;
 
+import javax.net.ssl.SSLContext;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.http.channel.outbound.HttpAddress;
 
-public interface WsocAddress extends HttpAddress {
-    
-    String getChainKey();
+import io.openliberty.wsoc.ssl.SSLContextEnabledAddress;
 
-    void validateURI();
-        
-    boolean isSecure();
-        
-    URI getURI();
-        
-    String getPath();
+/**
+ *
+ */
+public class Wsoc21Address extends Wsoc10Address implements SSLContextEnabledAddress {
+
+    private SSLContext context = null;
+
+    public Wsoc21Address(URI path){
+        super(path);
+    }
+
+    public void setSSLContext(SSLContext context){
+        this.context = context;
+    }
+
+    public SSLContext getSSLContext(){
+        return context;
+    }
+
 }

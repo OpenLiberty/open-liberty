@@ -8,21 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.wsoc.outbound;
+package io.openliberty.wsoc.ssl;
 
-import java.net.URI;
+import javax.net.ssl.SSLContext;
 
-import com.ibm.wsspi.http.channel.outbound.HttpAddress;
+public interface SSLContextEnabledAddress {
 
-public interface WsocAddress extends HttpAddress {
-    
-    String getChainKey();
+    SSLContext getSSLContext();
 
-    void validateURI();
-        
-    boolean isSecure();
-        
-    URI getURI();
-        
-    String getPath();
 }

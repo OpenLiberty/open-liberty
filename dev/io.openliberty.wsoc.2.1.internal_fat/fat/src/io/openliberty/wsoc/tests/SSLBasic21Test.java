@@ -52,9 +52,9 @@ import io.openliberty.wsoc.tests.all.SSLTest;
  *  WebSocket 2.1 Tests
  */
 @RunWith(FATRunner.class)
-public class Basic21Test {
+public class SSLBasic21Test {
 
-    @Server("basic21TestServer")
+    @Server("basic21SSLTestServer")
     public static LibertyServer LS;
 
     private static WebServerSetup bwst = null;
@@ -62,12 +62,7 @@ public class Basic21Test {
     @Rule
     public final TestRule notOnZRule = new OnlyRunNotOnZRule();
 
-    private static WsocTest wt = null;
     private static WsocTest wt_secure = null;
-    private static TimeOutTest timeout = null;
-    private static UserPropertiesTest userprop = null;
-    private static UpgradeTest upgrade = null;
-    private static MiscTest misc = null;
     private static SSLTest ssl = null;
 
     private static final Logger LOG = Logger.getLogger(Basic21Test.class.getName());
@@ -87,20 +82,19 @@ public class Basic21Test {
                                                            "io.openliberty.wsoc.endpoints.client.basic");
 
         BasicApp = (WebArchive) ShrinkHelper.addDirectory(BasicApp, "test-applications/" + BASIC_WAR_NAME + ".war/resources");
-        // BasicApp = BasicApp.addAsLibraries(BasicJar);
+
         ShrinkHelper.exportDropinAppToServer(LS, BasicApp);
 
         LS.startServer();
         LS.waitForStringInLog("CWWKZ0001I.* " + BASIC_WAR_NAME);
         bwst = new WebServerSetup(LS);
-        wt = new WsocTest(LS, false);
-        timeout = new TimeOutTest(wt);
-        userprop = new UserPropertiesTest(wt);
-        upgrade = new UpgradeTest(wt);
-        misc = new MiscTest(wt);
         wt_secure = new WsocTest(LS, true);
         ssl = new SSLTest(wt_secure);
         bwst.setUp();
+
+        LS.waitForStringInLog("CWWKS4105I:.*configuration is ready.*");
+        // tests cannot work until ssl is up
+        LS.waitForStringInLog("CWWKO0219I:.*ssl.*");
     }
 
     @AfterClass
@@ -123,6 +117,7 @@ public class Basic21Test {
         int securePort = 0, port = 0;
         String host = "";
         LibertyServer server = LS;
+        String isSecure = "true"; // Crucial for Secure Tests as they should be run over wss
         if (WebServerControl.isWebserverInFront()) {
             try {
                 host = WebServerControl.getHostname();
@@ -141,7 +136,7 @@ public class Basic21Test {
                                         "SuccessfulTest"
         };
         return verifyResponse(browser,
-                              "/basic21/SingleRequest?classname=" + className + "&testname=" + testName + "&targethost=" + host + "&targetport=" + port
+                              "/basic21/SingleRequest?secure="+ isSecure +"&classname=" + className + "&testname=" + testName + "&targethost=" + host + "&targetport=" + port
                                        + "&secureport=" + securePort,
                               expectedInResponse);
     }
@@ -167,92 +162,12 @@ public class Basic21Test {
         return response;
     }
 
-    /*
-     * The four tests below are used to test negative and zero timeouts
-     * by confirming the "No timeout enabled" string is found in the logs.
-     * Spec clarification as part of 2.1
-     * https://github.com/jakartaee/websocket/issues/382
-     * SKIPPED DUE TO Defect 291298
-     * @Mode(TestMode.LITE)
-     * @Test
-     * public void testZeroTimeOut() throws Exception {
-     *  timeout.testZeroTimeOut();
-     *   String result  = LS.waitForStringInTraceUsingMark("Session timeout 0 is less than 1. No timeout enabled");
-     *  assertNotNull("Timeout message not found!", result);
-     * }
-     */
-
-     /*
-      * ALSO SKIPPED DUE TO Defect 291298
-      * @Mode(TestMode.LITE)
-      * @Test
-      * public void testNegativeoTimeOut() throws Exception {
-      *  timeout.testNegativeoTimeOut();
-      *  String result  = LS.waitForStringInTraceUsingMark("Session timeout -12 is less than 1. No timeout enabled");
-      *  assertNotNull("Timeout message not found!", result);
-      * }
-      */
-
-
-    /*
-     * testSSC means liberty wsoc impl is the client and server
-     * tests above use Jetty as the client
-     */
-    @Mode(TestMode.FULL)
-    @Test
-    public void testSSCZeroTimeOut() throws Exception {
-        this.runAsLSAndVerifyResponse("TimeOutTest", "testZeroTimeOut");
-        String result  = LS.waitForStringInTraceUsingMark("Session timeout 0 is less than 1. No timeout enabled");
-        assertNotNull("Timeout message not found!", result);
-    }
-
-    @Mode(TestMode.FULL)
-    @Test
-    public void testSSCNegativeoTimeOut() throws Exception {
-        this.runAsLSAndVerifyResponse("TimeOutTest", "testNegativeoTimeOut");
-        String result  = LS.waitForStringInTraceUsingMark("Session timeout -12 is less than 1. No timeout enabled");
-        assertNotNull("Timeout message not found!", result);
-    }
-
     @Mode(TestMode.LITE)
     @Test
-    public void testUserPropertiesOnServer() throws Exception {
-        userprop.testUserPropertiesOnServer();
+    public void testPassedInSSLContext() throws Exception {
+        this.runAsLSAndVerifyResponse("SSLTest", "testPassedInSSLContext");
     }
 
-    @Mode(TestMode.LITE)
-    @Test
-    public void testSSCUserPropertiesOnServer() throws Exception {
-        this.runAsLSAndVerifyResponse("UserPropertiesTest", "testUserPropertiesOnServer");
-    }
 
-    @Mode(TestMode.LITE)
-    @Test
-    public void testSSCUserPropertiesOnClient() throws Exception {
-        this.runAsLSAndVerifyResponse("UserPropertiesTest", "testUserPropertiesOnClient");
-    }
 
-    @Mode(TestMode.LITE)
-    @Test
-    public void testUpgradeViaServletToWS() throws Exception {
-        upgrade.testUpgradeViaServletToWS();
-    }
-
-    @Mode(TestMode.LITE)
-    @Test
-    public void testSSCUpgrade() throws Exception {
-        this.runAsLSAndVerifyResponse("UpgradeTest", "testUpgradeViaServletToWS");
-    }
-
-    @Mode(TestMode.LITE)
-    @Test
-    public void testFullURIReturned() throws Exception {
-        misc.testGetRequestURIReturnsFullURI();
-    }
-
-    @Mode(TestMode.FULL)
-    @Test
-    public void testSSCFullURIReturned() throws Exception {
-        this.runAsLSAndVerifyResponse("MiscTest", "testGetRequestURIReturnsFullURI");
-    }
 }

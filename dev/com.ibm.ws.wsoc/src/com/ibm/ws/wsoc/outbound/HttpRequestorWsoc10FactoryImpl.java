@@ -10,23 +10,17 @@
  *******************************************************************************/
 package com.ibm.ws.wsoc.outbound;
 
-import java.io.IOException;
+import com.ibm.ws.wsoc.outbound.HttpRequestorFactory;
 
-import com.ibm.wsspi.bytebuffer.WsByteBuffer;
+import com.ibm.ws.wsoc.outbound.HttpRequestor;
+
+import com.ibm.ws.wsoc.outbound.WsocAddress;
+import javax.websocket.ClientEndpointConfig;
 import com.ibm.ws.wsoc.ParametersOfInterest;
-import com.ibm.wsspi.genericbnf.exception.MessageSentException;
 
-public interface HttpRequestor {
-
-    ClientTransportAccess getClientTransportAccess();
-
-    void connect() throws Exception;
-
-    void sendRequest() throws IOException, MessageSentException ;
-
-    void sendRequest(ParametersOfInterest poi) throws IOException, MessageSentException;
-
-    WsByteBuffer completeResponse() throws IOException;
-
-    void closeConnection(IOException ioe);
+public class HttpRequestorWsoc10FactoryImpl implements HttpRequestorFactory {
+    
+    public HttpRequestor getHttpRequestor(WsocAddress endpointAddress, ClientEndpointConfig config, ParametersOfInterest things){
+        return new HttpRequestorWsoc10(endpointAddress, config, things);
+    }
 }

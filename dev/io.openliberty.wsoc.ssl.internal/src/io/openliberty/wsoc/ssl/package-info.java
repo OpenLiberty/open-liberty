@@ -8,21 +8,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.wsoc.outbound;
+@org.osgi.annotation.versioning.Version("1.0.0")
+package io.openliberty.wsoc.ssl;
 
-import java.net.URI;
-
-import com.ibm.wsspi.http.channel.outbound.HttpAddress;
-
-public interface WsocAddress extends HttpAddress {
-    
-    String getChainKey();
-
-    void validateURI();
-        
-    boolean isSecure();
-        
-    URI getURI();
-        
-    String getPath();
-}

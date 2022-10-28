@@ -8,21 +8,15 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.wsoc.outbound;
+package io.openliberty.wsoc.clientconfig;
 
-import java.net.URI;
+import com.ibm.ws.wsoc.ClientEndpointConfigCopyFactory;
 
-import com.ibm.wsspi.http.channel.outbound.HttpAddress;
+import jakarta.websocket.ClientEndpointConfig;
 
-public interface WsocAddress extends HttpAddress {
+public class ClientEndpointConfigCopyWsoc21FactoryImpl implements ClientEndpointConfigCopyFactory {
     
-    String getChainKey();
-
-    void validateURI();
-        
-    boolean isSecure();
-        
-    URI getURI();
-        
-    String getPath();
+    public ClientEndpointConfig getClientEndpointConfig(ClientEndpointConfig cec){
+        return new ClientEndpointConfigCopyPerSession21(cec);
+    }
 }

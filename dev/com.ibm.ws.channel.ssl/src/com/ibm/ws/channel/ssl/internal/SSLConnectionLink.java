@@ -49,6 +49,8 @@ import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
 import com.ibm.wsspi.tcpchannel.TCPRequestContext;
 import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 
+import io.openliberty.wsoc.ssl.SSLContextEnabledAddress;
+
 /**
  * Main Connection Link and TCPConnectionContext interface.
  */
@@ -1020,14 +1022,25 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
 
         // First check if the sslContext and sslEngine have already been set (discrimination case)
         if (sslContext == null || getSSLEngine() == null) {
-            // Create a new SSL context based on the current properties in the ssl config.
-            this.sslContext = getChannel().getSSLContextForOutboundLink(this, getVirtualConnection(), address);
+
             // Discrimination has not happened yet. Create new SSL engine.
             // PK46069 - use engine that allows session id re-use
-            this.sslEngine = SSLUtils.getOutboundSSLEngine(sslContext, getLinkConfig(),
-                                                           targetAddress.getRemoteAddress().getHostName(),
-                                                           targetAddress.getRemoteAddress().getPort(),
-                                                           this);
+
+            // For WebSocket-2.1's SSLContext
+            if(address instanceof SSLContextEnabledAddress && ((SSLContextEnabledAddress) address).getSSLContext() != null ){
+
+                initalizeSSLforWebsocket21(((SSLContextEnabledAddress) address).getSSLContext());
+;
+            } else {
+                // Create a new SSL context based on the current properties in the ssl config.
+                this.sslContext = getChannel().getSSLContextForOutboundLink(this, getVirtualConnection(), address);
+
+                this.sslEngine = SSLUtils.getOutboundSSLEngine(sslContext, getLinkConfig(),
+                targetAddress.getRemoteAddress().getHostName(),
+                targetAddress.getRemoteAddress().getPort(),
+                this);
+            }
+
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "SSL engine hc=" + getSSLEngine().hashCode() + " associated with vc=" + getVCHash());
@@ -1037,6 +1050,21 @@ public class SSLConnectionLink extends OutboundProtocolLink implements Connectio
         readyOutbound(getVirtualConnection(), false);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "connect");
+        }
+    }
+
+    private void initalizeSSLforWebsocket21(SSLContext sslContext) throws SSLException{
+
+        this.sslContext = sslContext;
+        this.sslEngine = sslContext.createSSLEngine(this.targetAddress.getRemoteAddress().getHostName(), this.targetAddress.getRemoteAddress().getPort());
+        
+        // custom SSLContext can only be passed in via a websocket client, hence true
+        sslEngine.setUseClientMode(true);
+
+        this.sslEngine.beginHandshake();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "initalizeSSLforWebsocket21: Using passed in sslContext: " + this.sslContext);
         }
     }
 
