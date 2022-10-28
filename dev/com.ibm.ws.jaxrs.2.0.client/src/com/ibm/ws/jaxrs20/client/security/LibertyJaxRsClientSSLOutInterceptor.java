@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@ import java.net.URI;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.net.ssl.SSLSocketFactory;
 
@@ -81,28 +83,29 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
         // getSocketFactory will return null if either the ssl feature is not enabled
         // or if it is enabled but there is no SSL configuration defined.  A null here
         // means to use the JDK's SSL implementation.
-        SSLSocketFactory socketFactory = getSocketFactory(sslRef, message);
+        SSLSocketFactory socketFactory = getSSLSocketFactory(sslRef, message);
         if (socketFactory != null) {
             Object disableCNCheckObj = message.get(JAXRSClientConstants.DISABLE_CN_CHECK);
             Conduit cd = message.getExchange().getConduit(message);
-            configClientSSL(cd, sslRef, PropertyUtils.isTrue(disableCNCheckObj), socketFactory);
+            configClientSSL(cd, sslRef, PropertyUtils.isTrue(disableCNCheckObj), socketFactory, message);
         }
     }
 
-    private void configClientSSL(Conduit conduit, String sslRef, boolean disableCNCheck, SSLSocketFactory socketFactory) {
+    private void configClientSSL(Conduit conduit, String sslRef, boolean disableCNCheck, SSLSocketFactory socketFactory, Message message) {
 
         //for HTTPS protocol
         if (conduit instanceof HTTPConduit) {
             HTTPConduit httpConduit = (HTTPConduit) conduit;
 
-            TLSClientParameters tlsClientParams = retriveHTTPTLSClientParametersUsingSSLRef(httpConduit, sslRef, disableCNCheck, socketFactory);
+            TLSClientParameters tlsClientParams = retriveHTTPTLSClientParametersUsingSSLRef(httpConduit, sslRef, disableCNCheck, socketFactory, message);
             if (null != tlsClientParams) {
                 httpConduit.setTlsClientParameters(tlsClientParams);
             }
         }
     }
 
-    private TLSClientParameters retriveHTTPTLSClientParametersUsingSSLRef(HTTPConduit httpConduit, String sslRef, boolean disableCNCheck, SSLSocketFactory sslSocketFactory) {
+    private TLSClientParameters retriveHTTPTLSClientParametersUsingSSLRef(HTTPConduit httpConduit, String sslRef, boolean disableCNCheck, SSLSocketFactory sslSocketFactory,
+                                                                          Message message) {
         TLSClientParameters tlsClientParams = null;
         if (this.secConfig == null) {
             tlsClientParams = httpConduit.getTlsClientParameters();
@@ -127,9 +130,17 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
             //let's use liberty SSL configuration
             tlsClientParams.setSSLSocketFactory(sslSocketFactory);
             tlsClientParams.setDisableCNCheck(disableCNCheck);
+            tlsClientParams.setCipherSuites(getSSLCipherSuites(sslRef, message));
+            // TODO: this is something we may want to do in the future, however, CXF currently
+            // only allows us to set 1 protocol
+            // tlsClientParams.setSecureSocketProtocol(getSSLProtocols(sslRef, message));
         } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "May not enable feature ssl-1.0 or appSecurity-2.0.");
         }
+
+        // Get the ciphers
+
+        // Get the protocols
 
         return tlsClientParams;
     }
@@ -138,15 +149,34 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
         this.secConfig = secConfig;
     }
 
-    private SSLSocketFactory getSocketFactory(String sslRef, Message message) {
-        try {
-            final Class<?> jaxrsSslMgrClass = Class.forName("com.ibm.ws.jaxrs20.appsecurity.security.JaxRsSSLManager");
-            if (jaxrsSslMgrClass == null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "getSocketFactory could not find JaxRsSSLManager class");
-                }
-                return null;
+    private Class<?> getJaxRsSSLManagerClass() throws ClassNotFoundException {
+        final Class<?> jaxrsSslMgrClass = Class.forName("com.ibm.ws.jaxrs20.appsecurity.security.JaxRsSSLManager");
+        if (jaxrsSslMgrClass == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getSocketFactory could not find JaxRsSSLManager class");
             }
+        }
+        return jaxrsSslMgrClass;
+    }
+
+    private Object[] getJaxRsSSLManagerParams(String sslRef, Message message) {
+        String uriString = (String) message.get(Message.REQUEST_URI);
+        URI uri = URI.create(uriString);
+        int port = uri.getPort();
+
+        // if the port wasn't specified, use the default SSL port (443)
+        if (port == -1 && !uriString.contains(":-1")) {
+            Tr.debug(tc, "port was not specified, using the default SSL port (443)");
+            port = 443;
+        }
+
+        Object[] parameters = { sslRef, uri.getHost(), Integer.toString(port) };
+        return parameters;
+    }
+
+    private SSLSocketFactory getSSLSocketFactory(String sslRef, Message message) {
+        try {
+            final Class<?> jaxrsSslMgrClass = getJaxRsSSLManagerClass();
             Object classObject = jaxrsSslMgrClass.newInstance();
             Method m = AccessController.doPrivileged(new PrivilegedExceptionAction<Method>() {
 
@@ -156,21 +186,55 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
                 }
             });
 
-            String uriString = (String) message.get(Message.REQUEST_URI);
-            URI uri = URI.create(uriString);
-            int port = uri.getPort();
-
-            // if the port wasn't specified, use the default SSL port (443)
-            if (port == -1 && !uriString.contains(":-1")) {
-                port = 443;
-            }
-
-            Object[] parameters = { sslRef, uri.getHost(), Integer.toString(port) };
-            SSLSocketFactory ssLSocketFactory = (SSLSocketFactory) m.invoke(classObject, parameters);
+            SSLSocketFactory ssLSocketFactory = (SSLSocketFactory) m.invoke(classObject, getJaxRsSSLManagerParams(sslRef, message));
             return ssLSocketFactory;
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "getSocketFactory reflection failed with exception " + e.toString());
+                Tr.debug(tc, "getSSLSocketFactoryBySSLRef reflection failed with exception " + e.toString());
+            }
+            return null;
+        }
+    }
+
+    private List<String> getSSLCipherSuites(String sslRef, Message message) {
+        try {
+            final Class<?> jaxrsSslMgrClass = getJaxRsSSLManagerClass();
+            Object classObject = jaxrsSslMgrClass.newInstance();
+            Method m = AccessController.doPrivileged(new PrivilegedExceptionAction<Method>() {
+
+                @Override
+                public Method run() throws NoSuchMethodException, SecurityException {
+                    return jaxrsSslMgrClass.getDeclaredMethod("getSSLCipherSuitesBySSLRef", String.class, String.class, String.class);
+                }
+            });
+
+            String[] cipherSuites = (String[]) m.invoke(classObject, getJaxRsSSLManagerParams(sslRef, message));
+            return Arrays.asList(cipherSuites);
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getSSLCipherSuitesBySSLRef reflection failed with exception " + e.toString());
+            }
+            return null;
+        }
+    }
+
+    private List<String> getSSLProtocols(String sslRef, Message message) {
+        try {
+            final Class<?> jaxrsSslMgrClass = getJaxRsSSLManagerClass();
+            Object classObject = jaxrsSslMgrClass.newInstance();
+            Method m = AccessController.doPrivileged(new PrivilegedExceptionAction<Method>() {
+
+                @Override
+                public Method run() throws NoSuchMethodException, SecurityException {
+                    return jaxrsSslMgrClass.getDeclaredMethod("getSSLProtocolsBySSLRef", String.class, String.class, String.class);
+                }
+            });
+
+            String[] protocols = (String[]) m.invoke(classObject, getJaxRsSSLManagerParams(sslRef, message));
+            return Arrays.asList(protocols);
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getSSLProtocolsBySSLRef reflection failed with exception " + e.toString());
             }
             return null;
         }
