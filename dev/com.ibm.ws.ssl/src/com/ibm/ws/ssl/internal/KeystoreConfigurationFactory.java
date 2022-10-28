@@ -40,6 +40,7 @@ import com.ibm.ws.security.filemonitor.FileBasedActionable;
 import com.ibm.ws.security.filemonitor.SecurityFileMonitor;
 import com.ibm.ws.ssl.KeyringMonitor;
 import com.ibm.ws.ssl.config.KeyStoreManager;
+import com.ibm.ws.ssl.config.WSKeyStore;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -118,7 +119,7 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
                 if (!(trigger.equalsIgnoreCase("disabled"))) {
                     if (fileBased.booleanValue()) {
                         createFileMonitor(svc.getKeyStore().getName(), svc.getKeyStore().getLocation(), trigger, svc.getKeyStore().getPollingRate());
-                    } else if (svc.getKeyStore().getLocation().contains(KeyringMonitor.SAF_PREFIX)) {
+                    } else if (svc.getKeyStore().getLocation().startsWith(KeyringMonitor.SAF_ALL_PREFIX)) {
                         createKeyringMonitor(svc.getKeyStore().getName(), trigger, svc.getKeyStore().getLocation());
                     }
                 }
@@ -185,8 +186,7 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
      * Remove the reference to the location manager:
      * required service, do nothing.
      */
-    protected void unsetLocMgr(ServiceReference<WsLocationAdmin> ref) {
-    }
+    protected void unsetLocMgr(ServiceReference<WsLocationAdmin> ref) {}
 
     /**
      * The specified files have been modified and we need to clear the SSLContext caches and
@@ -225,9 +225,10 @@ public class KeystoreConfigurationFactory implements ManagedServiceFactory, File
 
         for (String modifiedKeyStore : modifiedKeyStores) {
             try {
-                com.ibm.ws.ssl.config.KeyStoreManager.getInstance().findKeyStoreInMapAndClear(modifiedKeyStore);
-                com.ibm.ws.ssl.provider.AbstractJSSEProvider.removeEntryFromSSLContextMap(modifiedKeyStore);
-                com.ibm.ws.ssl.config.SSLConfigManager.getInstance().resetDefaultSSLContextIfNeeded(modifiedKeyStore);
+                String modifiedKeyStoreName = WSKeyStore.processKeyringURL(modifiedKeyStore);
+                com.ibm.ws.ssl.config.KeyStoreManager.getInstance().findKeyStoreInMapAndClear(modifiedKeyStoreName);
+                com.ibm.ws.ssl.provider.AbstractJSSEProvider.removeEntryFromSSLContextMap(modifiedKeyStoreName);
+                com.ibm.ws.ssl.config.SSLConfigManager.getInstance().resetDefaultSSLContextIfNeeded(modifiedKeyStoreName);
                 Tr.audit(tc, "ssl.keystore.modified.CWPKI0811I", modifiedKeyStores.toArray());
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

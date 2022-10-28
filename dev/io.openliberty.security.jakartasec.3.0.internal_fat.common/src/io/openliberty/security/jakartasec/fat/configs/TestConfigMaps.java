@@ -69,6 +69,27 @@ public class TestConfigMaps {
         return updatedMap;
     }
 
+    public static Map<String, Object> getRedirectToOriginalResourceExpressionTrue() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.RECIRECT_TO_ORIGINAL_RESOURCE_EXPRESSION, String.valueOf(true));
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getRedirectToOriginalResourceExpressionFalse() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.RECIRECT_TO_ORIGINAL_RESOURCE_EXPRESSION, String.valueOf(false));
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getOP2() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.PROVIDER, "OP2");
+        return updatedMap;
+    }
+
     /****************** ClaimDefinitions ********************/
     public static Map<String, Object> getBadCallerNameClaim() throws Exception {
 

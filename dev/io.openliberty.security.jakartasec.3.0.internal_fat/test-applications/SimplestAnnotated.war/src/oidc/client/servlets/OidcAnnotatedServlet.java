@@ -20,12 +20,14 @@ import jakarta.servlet.annotation.WebServlet;
 import oidc.client.base.servlets.BaseServlet;
 
 @WebServlet("/OidcAnnotatedServlet")
-@OpenIdAuthenticationMechanismDefinition(providerURI = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1", clientId = "client_1",
+@OpenIdAuthenticationMechanismDefinition(providerURI = "https://localhost:8920/oidc/endpoint/OP1",
+                                         clientId = "client_1",
                                          clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger",
-                                         claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub", callerGroupsClaim = "groupIds"), useSession = false,
-                                         redirectURI = "${baseURL}/Callback",
-                                         providerMetadata = @OpenIdProviderMetadata(authorizationEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/authorize",
-                                                                                    tokenEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/token"))
+                                         claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub", callerGroupsClaim = "groupIds"),
+                                         useSession = false,
+                                         redirectURI = "https://localhost:8940/SimplestAnnotated/Callback",
+                                         providerMetadata = @OpenIdProviderMetadata(authorizationEndpoint = "https://localhost:8920/oidc/endpoint/OP1/authorize",
+                                                                                    tokenEndpoint = "https://localhost:8920/oidc/endpoint/OP1/token"))
 @DeclareRoles("all")
 @ServletSecurity(@HttpConstraint(rolesAllowed = "all"))
 public class OidcAnnotatedServlet extends BaseServlet {

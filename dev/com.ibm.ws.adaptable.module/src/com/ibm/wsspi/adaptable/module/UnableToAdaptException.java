@@ -10,11 +10,8 @@
  *******************************************************************************/
 package com.ibm.wsspi.adaptable.module;
 
-/**
- *
- */
 public class UnableToAdaptException extends Exception {
-    /**  */
+
     private static final long serialVersionUID = -3503884495911783173L;
 
     public UnableToAdaptException(String message) {

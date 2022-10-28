@@ -18,6 +18,7 @@ import io.openliberty.security.jakartasec.fat.utils.ServletMessageConstants;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonValue;
+import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
 import jakarta.security.enterprise.identitystore.openid.AccessToken;
 import jakarta.security.enterprise.identitystore.openid.IdentityToken;
 import jakarta.security.enterprise.identitystore.openid.OpenIdClaims;
@@ -161,7 +162,8 @@ public class OpenIdContextLogger {
     protected void logRefreshTokenClaims(ServletOutputStream ps) throws IOException {
 
         Optional<RefreshToken> refreshToken = context.getRefreshToken();
-        if (refreshToken != null) {
+        if (refreshToken != null && refreshToken.isPresent()) {
+//            if (refreshToken != null && refreshToken.get() != null) {
             RefreshToken tokenContent = refreshToken.get();
             ServletLogger.printLine(ps, caller, ServletMessageConstants.REFRESH_TOKEN + ServletMessageConstants.RAW + tokenContent.toString());
             ServletLogger.printLine(ps, caller, ServletMessageConstants.REFRESH_TOKEN + tokenContent.getToken());
@@ -213,10 +215,12 @@ public class OpenIdContextLogger {
 
     protected void logStoredValues(ServletOutputStream ps) throws IOException {
 
-        //        logStoredValue(ps, OpenIdConstant.ORIGINAL_REQUEST);
-        //        logStoredValue(ps, OpenIdConstant.SUBJECT_IDENTIFIER);
-        //        logStoredValue(ps, OpenIdConstant.CLIENT_ID);
-        //        logStoredValue(ps, OpenIdConstant.CLIENT_SECRET);
+        logStoredValue(ps, OpenIdConstant.ORIGINAL_REQUEST);
+//        logStoredValue(ps, OpenIdConstant.SUBJECT_IDENTIFIER);
+//        logStoredValue(ps, OpenIdConstant.CLIENT_ID);
+//        logStoredValue(ps, OpenIdConstant.CLIENT_SECRET);
+        // additional values
+        // TODO try to use some unknown value to show that we fail gracefully.
 
     }
 
@@ -239,18 +243,5 @@ public class OpenIdContextLogger {
         JsonValue boo = pmdArray.get(0);
 
     }
-
-    //    protected void printLine(ServletOutputStream ps, String caller, String msg) throws IOException {
-    //
-    //        ServletLogger.printLine(ps, caller + ": " + msg);
-    //
-    //    }
-    //
-    //    public void printLine(ServletOutputStream ps, String msg) throws IOException {
-    //
-    //        System.out.println(msg);
-    //        ps.println(msg);
-    //
-    //    }
 
 }

@@ -80,16 +80,13 @@ public class CpuInfo {
     private final IntervalTask activeTask;
 
     private static final long INTERVAL = 10; // in minutes
+    private static final int CHECKPOINT_CPUS = 4;
     private static Collection<AvailableProcessorsListener> listeners = Collections.synchronizedCollection(new HashSet<AvailableProcessorsListener>());
 
     private CpuInfo() {
         activeTask = new IntervalTask();
         executor.scheduleAtFixedRate(activeTask, INTERVAL, INTERVAL, TimeUnit.MINUTES);
         cpuCount = new CPUCount();
-        CheckpointPhase phase = CheckpointPhase.getPhase();
-        if (phase != CheckpointPhase.INACTIVE) {
-            phase.addMultiThreadedHook(activeTask);
-        }
         int runtimeAvailableProcessors = Runtime.getRuntime().availableProcessors();
         float fileSystemAvailableProcessors = getAvailableProcessorsFromFilesystemFloat();
 
@@ -101,6 +98,15 @@ public class CpuInfo {
             AVAILABLE_PROCESSORS_FLOAT.set((int) (fileSystemAvailableProcessors * 100));
         }
 
+        CheckpointPhase phase = CheckpointPhase.getPhase();
+        if (phase != CheckpointPhase.INACTIVE) {
+            phase.addMultiThreadedHook(activeTask);
+            if (AVAILABLE_PROCESSORS_INTEGER.get() > CHECKPOINT_CPUS) {
+                // set processors to a low number if we're doing a checkpoint to reduce restore times due to potential high number of minimum threads
+                AVAILABLE_PROCESSORS_INTEGER.set(CHECKPOINT_CPUS);
+                AVAILABLE_PROCESSORS_FLOAT.set(CHECKPOINT_CPUS * 100);
+            }
+        }
         int nsFactor = 1;
         // Adjust for J9 cpuUsage units change from hundred-nanoseconds to nanoseconds in IBM Java8sr5
         //

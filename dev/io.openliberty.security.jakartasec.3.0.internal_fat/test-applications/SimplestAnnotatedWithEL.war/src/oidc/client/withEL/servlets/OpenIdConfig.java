@@ -18,15 +18,4 @@ import oidc.client.base.servlets.BaseOpenIdConfig;
 @Dependent
 public class OpenIdConfig extends BaseOpenIdConfig {
 
-    // override and/or create new get methods
-
-    //    @Override
-    //    public String getRedirectURI() {
-    //        if (config.containsKey(Constants.REDIRECT_URI)) {
-    //            return config.getProperty(Constants.REDIRECT_URI);
-    //        }
-    //        return "SimplestAnnotatedWithEL/Callback";
-    ////        return "${baseURL}/Callback";
-    //    }
-
 }

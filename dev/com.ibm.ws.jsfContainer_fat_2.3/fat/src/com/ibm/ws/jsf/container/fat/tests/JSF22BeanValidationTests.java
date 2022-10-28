@@ -27,10 +27,10 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf.container.fat.FATSuite;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jsf.beanval.BeanValTestServlet;
@@ -41,6 +41,8 @@ public class JSF22BeanValidationTests extends FATServletClient {
     private static final String MOJARRA_APP = "BeanValidationTests";
     private static final String MYFACES_APP = "BeanValidationTests_MyFaces";
 
+    private static boolean isEE10;
+
     @Server("jsf.container.2.3_fat.beanval")
     @TestServlets({
                     @TestServlet(servlet = BeanValTestServlet.class, path = MOJARRA_APP + "/BeanValTestServlet"),
@@ -50,8 +52,12 @@ public class JSF22BeanValidationTests extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
+
+        isEE10 = JakartaEE10Action.isActive();
+
         WebArchive mojarraApp = ShrinkWrap.create(WebArchive.class, MOJARRA_APP + ".war")
-                        .addPackage("jsf.beanval");
+                        .addPackage("jsf.beanval")
+                        .addPackage(isEE10 ? "jsf.beanval.faces40" : "jsf.beanval.jsf22");
         mojarraApp = FATSuite.addMojarra(mojarraApp);
         mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "publish/files/permissions");
         mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "test-applications/" + MOJARRA_APP + "/resources");
@@ -59,7 +65,8 @@ public class JSF22BeanValidationTests extends FATServletClient {
         server.addInstalledAppForValidation(MOJARRA_APP);
 
         WebArchive myfacesApp = ShrinkWrap.create(WebArchive.class, MYFACES_APP + ".war")
-                        .addPackage("jsf.beanval");
+                        .addPackage("jsf.beanval")
+                        .addPackage(isEE10 ? "jsf.beanval.faces40" : "jsf.beanval.jsf22");
         myfacesApp = FATSuite.addMyFaces(myfacesApp);
         myfacesApp = (WebArchive) ShrinkHelper.addDirectory(myfacesApp, "publish/files/permissions");
         myfacesApp = (WebArchive) ShrinkHelper.addDirectory(myfacesApp, "test-applications/" + MOJARRA_APP + "/resources");
@@ -85,13 +92,11 @@ public class JSF22BeanValidationTests extends FATServletClient {
         server.waitForStringInLogUsingMark("MyFaces Bean Validation support enabled");
     }
 
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void testValidationBeanTagBinding_Mojarra() throws Exception {
         testValidationBeanTagBinding(MOJARRA_APP);
     }
 
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void testValidationBeanTagBinding_MyFaces() throws Exception {
         testValidationBeanTagBinding(MYFACES_APP);

@@ -36,7 +36,6 @@ import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurit
 import io.openliberty.security.jakartasec.fat.configs.TestConfigMaps;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
 import io.openliberty.security.jakartasec.fat.utils.MessageConstants;
-import io.openliberty.security.jakartasec.fat.utils.ResponseValues;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 
 /**
@@ -60,7 +59,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
     protected static ShrinkWrapHelpers swh = null;
 
     @ClassRule
-    public static RepeatTests repeat = createTokenTypeRepeats();
+    public static RepeatTests repeat = createRandomTokenTypeRepeats();
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -75,19 +74,16 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         List<String> waitForMsgs = null;
         opServer.startServerUsingExpandedConfiguration("server_orig.xml", waitForMsgs);
         SecurityFatHttpUtils.saveServerPorts(opServer, Constants.BVT_SERVER_1_PORT_NAME_ROOT);
-        opHttpBase = "https://localhost:" + opServer.getBvtPort();
+        opHttpBase = "http://localhost:" + opServer.getBvtPort();
         opHttpsBase = "https://localhost:" + opServer.getBvtSecurePort();
 
         rpServer.startServerUsingExpandedConfiguration("server_orig.xml", waitForMsgs);
         SecurityFatHttpUtils.saveServerPorts(rpServer, Constants.BVT_SERVER_2_PORT_NAME_ROOT);
 
-        rpHttpBase = "https://localhost:" + rpServer.getBvtPort();
+        rpHttpBase = "http://localhost:" + rpServer.getBvtPort();
         rpHttpsBase = "https://localhost:" + rpServer.getBvtSecurePort();
 
         deployMyApps(); // run this after starting the RP so we have the rp port to update the openIdConfig.properties file within the apps
-
-        rspValues = new ResponseValues();
-        rspValues.setIssuer(opHttpsBase + "/oidc/endpoint/OP1");
 
     }
 
@@ -296,7 +292,6 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
                                                                                           + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
         expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, MessageConstants.CWOAU0033E_REQ_RUNTIME_PARAM_MISSING, "Did not receive an error message stating that the required client_id was missing"));
-        //        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2500W_MISSING_CLIENTID_EL, "Did not receive an error message stating that the specified Expression Langauge value for clientId was missing"));
 
         validationUtils.validateResult(response, expectations);
 
@@ -321,10 +316,8 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
 
         Expectations expectations = new Expectations();
         expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
-        // TODO  - beef up checking
-        //        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_DOES_NOT_CONTAIN, "got here", "Landed on the callback and should not have."));
-        //        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
-        //                                                                                          + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
+        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorize message."));
+
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1406E_INVALID_CLIENT_CREDENTIAL, "Did not receive an error message stating that the client credential was invalid."));
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2416E_FAILED_TO_REACH_ENDPOINT, "Did not receive an error message stating that we couldn't react the token endpoint."));
         expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWOAU0038E_CLIENT_COULD_NOT_BE_VERIFIED, "Did not receive an error message stating that the client could not be verified."));
@@ -352,11 +345,8 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
 
         Expectations expectations = new Expectations();
         expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
-        // TODO  - beef up checking
-        //        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
-        //                                                                                          + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
-        //        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1406E_INVALID_CLIENT_CREDENTIAL, "Did not receive an error message stating that the client credential was invalid."));
-        //        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2416E_FAILED_TO_REACH_ENDPOINT, "Did not receive an error message stating that we couldn't react the token endpoint."));
+        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorize message."));
+
         expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWOAU0038E_CLIENT_COULD_NOT_BE_VERIFIED, "Did not receive an error message stating that the client could not be verified."));
 
         validationUtils.validateResult(response, expectations);

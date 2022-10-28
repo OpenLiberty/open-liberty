@@ -8,5 +8,5 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-@org.osgi.annotation.versioning.Version("1.0")
+@org.osgi.annotation.versioning.Version("1.0.0")
 package io.openliberty.wsoc.speclevel;

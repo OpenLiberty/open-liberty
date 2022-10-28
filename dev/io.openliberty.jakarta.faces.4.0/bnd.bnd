@@ -30,25 +30,23 @@ DynamicImport-Package: \
   org.apache.myfaces.cdi.util, \
   org.apache.myfaces.spi
 
-# Use this format once we have an offical release and not an RC1
+# Use this format once we have an offical release and not an RC2
 # @${repo;org.apache.myfaces.core.api;${Implementation-Version};EXACT}!/jakarta/faces, \
 # @${repo;org.apache.myfaces.core.api;${Implementation-Version};EXACT}!/META-INF/**
 # Determine if we need the jakarta/faces entry here.
 # Determine if org.apache.myfaces.core:myfaces-api should be used instead.
 Include-Resource: \
-	@${repo;org.apache.myfaces.core.api;4.0.0.RC1;EXACT}!/jakarta/faces, \
-	@${repo;org.apache.myfaces.core.api;4.0.0.RC1;EXACT}!/META-INF/**
+	@${repo;org.apache.myfaces.core.api;4.0.0.RC2;EXACT}!/jakarta/faces, \
+	@${repo;org.apache.myfaces.core.api;4.0.0.RC2;EXACT}!/META-INF/**
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
-# Use this once we have a non RC1 release
+# Use this once we have a non RC2 release
 # org.apache.myfaces.core:myfaces-api;strategy=exact;version=${Implementation-Version},\
 -buildpath: \
-    io.openliberty.jakarta.cdi.4.0;version=latest, \
+    org.apache.myfaces.core:myfaces-api;strategy=exact;version=4.0.0.RC2, \
     io.openliberty.jakarta.expressionLanguage.5.0;version=latest, \
-    io.openliberty.jakarta.websocket.client.2.1;version=latest, \
-    org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9, \
-    org.apache.myfaces.core:myfaces-api;strategy=exact;version=4.0.0.RC1
+    io.openliberty.jakarta.servlet.6.0;version=latest
 

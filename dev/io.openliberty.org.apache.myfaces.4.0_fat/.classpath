@@ -4,6 +4,8 @@
     <classpathentry kind="src" path="test-applications/ExternalContextAddResponseCookie.war/src"/>
     <classpathentry kind="src" path="test-applications/FacesContextGetLifecycle.war/src"/>
     <classpathentry kind="src" path="test-applications/SelectItemTests.war/src"/>
+    <classpathentry kind="src" path="test-applications/UIViewRootGetDoctypeTest.war/src"/>
+    <classpathentry kind="src" path="test-applications/Faces40ThirdPartyApi.war/src"/>
     <classpathentry kind="con" path="aQute.bnd.classpath.container"/>
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
     <classpathentry kind="output" path="bin"/>

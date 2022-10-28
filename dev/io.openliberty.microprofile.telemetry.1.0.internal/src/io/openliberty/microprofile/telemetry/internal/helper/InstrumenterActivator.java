@@ -13,6 +13,7 @@ package io.openliberty.microprofile.telemetry.internal.helper;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+import io.opentelemetry.context.Context;
 import io.opentelemetry.instrumentation.api.instrumenter.Instrumenter;
 import io.opentelemetry.instrumentation.api.instrumenter.InstrumenterBuilder;
 
@@ -22,6 +23,8 @@ public class InstrumenterActivator implements BundleActivator {
     public void start(BundleContext ctx) throws Exception {
         Class.forName(Instrumenter.class.getName());
         Class.forName(InstrumenterBuilder.class.getName());
+        // Eagerly initialize context classes to avoid J2S exceptions
+        Context.root();
     }
 
     @Override

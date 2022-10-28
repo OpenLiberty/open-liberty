@@ -55,11 +55,9 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.common.config.DiscoveryConfigUtils;
 import com.ibm.ws.security.common.crypto.HashUtils;
-import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.common.http.SocialLoginWrapperException;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.security.common.ssl.NoSSLSocketFactoryException;
@@ -297,14 +295,11 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private final ConfigUtils oidcConfigUtils = new ConfigUtils(configAdminRef);
     private final DiscoveryConfigUtils discoveryUtils = new DiscoveryConfigUtils();
     private ConsumerUtils consumerUtils = null;
-    private final HttpUtils httpUtils = new HttpUtils();
 
     private SingleTableCache cache = null;
 
     private boolean useSystemPropertiesForHttpClientConnections = false;
     private boolean tokenReuse = false;
-
-    private static boolean issuedBetaMessage = false;
 
     private final OidcSessionCache oidcSessionCache = new InMemoryOidcSessionCache();
 
@@ -895,7 +890,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         return true;
     }
 
-    @FFDCIgnore({ SSLException.class, SocialLoginWrapperException.class })
+    @FFDCIgnore({ IOException.class, SocialLoginWrapperException.class })
     public boolean handleDiscoveryEndpoint(String discoveryUrl) {
 
         String jsonString = null;
@@ -909,23 +904,21 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         try {
             setNextDiscoveryTime();
             SSLSocketFactory sslSocketFactory = getSSLSocketFactory(discoveryUrl, sslConfigurationName, sslSupportRef.getService());
-            if (isRunningBetaMode()) {
-                DiscoveryHandler discoveryHandler = new DiscoveryHandler(sslSocketFactory);
-                jsonString = discoveryHandler.fetchDiscoveryDataString(discoveryUrl, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
-            } else {
-                jsonString = fetchDiscoveryData(discoveryUrl, sslSocketFactory);
-            }
+            DiscoveryHandler discoveryHandler = new DiscoveryHandler(sslSocketFactory);
+            jsonString = discoveryHandler.fetchDiscoveryDataString(discoveryUrl, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
             if (jsonString != null) {
                 parseJsonResponse(jsonString);
                 if (this.discoveryjson != null) {
                     valid = discoverEndpointUrls(this.discoveryjson);
                 }
             }
-        } catch (SSLException e) {
+        } catch (IOException e) {
+            logErrorMessage(discoveryUrl, 0, "IOException: " + e.getMessage() + " " + e.getCause());
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Fail to get successful discovery response : ", e.getCause());
             }
         } catch (SocialLoginWrapperException e) {
+            logErrorMessage(e.getUrl(), e.getStatusCode(), e.getNlsMessage());
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Fail to get successful discovery response : ", e.getCause());
             }
@@ -940,33 +933,6 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             Tr.error(tc, "OIDC_CLIENT_DISCOVERY_SSL_ERROR", getId(), discoveryUrl);
         }
         return valid;
-    }
-
-    @Deprecated
-    @FFDCIgnore({ IOException.class, SocialLoginWrapperException.class })
-    String fetchDiscoveryData(String discoveryUrl, SSLSocketFactory sslSocketFactory) throws Exception {
-        try {
-            return httpUtils.getHttpJsonRequest(sslSocketFactory, discoveryUrl, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
-        } catch (IOException ioex) {
-            logErrorMessage(discoveryUrl, 0, "IOException: " + ioex.getMessage() + " " + ioex.getCause());
-            throw ioex;
-        } catch (SocialLoginWrapperException e) {
-            logErrorMessage(e.getUrl(), e.getStatusCode(), e.getNlsMessage());
-            throw e;
-        }
-    }
-
-    boolean isRunningBetaMode() {
-        if (!ProductInfo.getBetaEdition()) {
-            return false;
-        } else {
-            // Running beta exception, issue message if we haven't already issued one for this class
-            if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
-                issuedBetaMessage = !issuedBetaMessage;
-            }
-            return true;
-        }
     }
 
     /**

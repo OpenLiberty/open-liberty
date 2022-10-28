@@ -61,13 +61,13 @@ public class UsernameTokenValidator implements Validator {
     /**
      * Validate the credential argument. It must contain a non-null UsernameToken. A
      * CallbackHandler implementation is also required to be set.
-     * 
+     *
      * If the password type is either digest or plaintext, it extracts a password from the
      * CallbackHandler and then compares the passwords appropriately.
-     * 
+     *
      * If the password is null it queries a hook to allow the user to validate UsernameTokens
      * of this type.
-     * 
+     *
      * @param credential the Credential to be validated
      * @param data the RequestData associated with the request
      * @throws WSSecurityException on a failed validation
@@ -96,7 +96,7 @@ public class UsernameTokenValidator implements Validator {
             handleCustomPasswordTypes = data.isHandleCustomPasswordTypes();//wssConfig.getHandleCustomPasswordTypes();
             //passwordsAreEncoded = wssConfig.getPasswordsAreEncoded();
             passwordsAreEncoded = data.isEncodePasswords();
-            //requiredPasswordType = wssConfig.getRequiredPasswordType();        
+            //requiredPasswordType = wssConfig.getRequiredPasswordType();
             requiredPasswordType = data.getRequiredPasswordType();
         }
 
@@ -146,7 +146,7 @@ public class UsernameTokenValidator implements Validator {
      * This method currently uses the same logic as the verifyPlaintextPassword case, but it in
      * a separate protected method to allow users to override the validation of the custom
      * password type specific case.
-     * 
+     *
      * @param usernameToken The UsernameToken instance to verify
      * @throws WSSecurityException on a failed authentication.
      */
@@ -162,7 +162,7 @@ public class UsernameTokenValidator implements Validator {
      * This method currently uses the same logic as the verifyDigestPassword case, but it in
      * a separate protected method to allow users to override the validation of the plaintext
      * password specific case.
-     * 
+     *
      * @param usernameToken The UsernameToken instance to verify
      * @throws WSSecurityException on a failed authentication.
      */
@@ -238,7 +238,7 @@ public class UsernameTokenValidator implements Validator {
             throw new WSSecurityException(WSSecurityException.ErrorCode.FAILED_AUTHENTICATION, e);
         }
 
-        // Let's validate the user and 
+        // Let's validate the user and
         if (authnPrincipal == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "User " + user + " could not be validated.");
@@ -281,7 +281,7 @@ public class UsernameTokenValidator implements Validator {
      * Verify a UsernameToken containing a password digest. It does this by querying a
      * CallbackHandler instance to obtain a password for the given username, and then comparing
      * it against the received password.
-     * 
+     *
      * @param usernameToken The UsernameToken instance to verify
      * @throws WSSecurityException on a failed authentication.
      */
@@ -305,7 +305,7 @@ public class UsernameTokenValidator implements Validator {
                 Tr.debug(tc, e.getMessage());
             }
             //new Exception(e,WSSecurityException.FAILED_AUTHENTICATION_ERR)
-            WSSecurityException wsse = new WSSecurityException(WSSecurityException.ErrorCode.FAILED_AUTHENTICATION/*, e*/);
+            WSSecurityException wsse = new WSSecurityException(WSSecurityException.ErrorCode.FAILED_AUTHENTICATION/* , e */);
         } catch (UnsupportedCallbackException e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, e.getMessage());
@@ -342,7 +342,7 @@ public class UsernameTokenValidator implements Validator {
     /**
      * Verify a UsernameToken containing no password. This does nothing - but is in a separate
      * method to allow the end-user to override validation easily.
-     * 
+     *
      * @param usernameToken The UsernameToken instance to verify
      * @throws WSSecurityException on a failed authentication.
      */
@@ -395,7 +395,7 @@ public class UsernameTokenValidator implements Validator {
 
         // in the older cxf/wss4j versions we did not have ws-security.usernametoken.timeToLive option
         // so we depended on ws-security.timestamp.timeToLive for both timestamp and unt
-        // int timeStampTTL = 300; 
+        // int timeStampTTL = 300;
         // int futureTimeToLive = 300;
         int utTTL = 300;
         int utFutureTTL = 300;
@@ -408,8 +408,7 @@ public class UsernameTokenValidator implements Validator {
 
         boolean isValid = verifyCreated(created, utTTL, utFutureTTL);
         if (!isValid) {
-            throw new WSSecurityException(
-                            WSSecurityException.ErrorCode.MESSAGE_EXPIRED);
+            throw new WSSecurityException(WSSecurityException.ErrorCode.MESSAGE_EXPIRED);
             //"error.policy.invalidcreated",
             //new Object[] { "The security semantics of the message have expired" });
         }
@@ -448,12 +447,19 @@ public class UsernameTokenValidator implements Validator {
     }
 
     public static Date convertDate(String strTimeStamp) throws WSSecurityException {
+
         Date date;
         try {
-            //System.out.println("Original string: " + strTimeStamp);
 
-            // "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+            //System.out.println("Original string: " + strTimeStamp);
+            String datePattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"; // default pattern
+
+            // Use correct date pattern if milliseconds is missing in timestamp
+            if (strTimeStamp.length() <= 20) { // 2020-06-08T12:40:10Z
+                datePattern = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+            }
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat(datePattern, Locale.US);
             dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             date = dateFormat.parse(strTimeStamp);
 
@@ -466,7 +472,7 @@ public class UsernameTokenValidator implements Validator {
                 Tr.debug(tc, "Caught exception while parse a timestamp as '" + strTimeStamp + "' : " + pe);
             }
             throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, pe);
-        }
+            }
         return date;
     }
 

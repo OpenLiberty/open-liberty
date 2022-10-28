@@ -326,7 +326,7 @@ public class ProviderRegistry extends AuthConfigFactory {
 
                 @Override
                 public String run() {
-                    return AuthConfigFactory.getFactory().registerConfigProvider(
+                    return AuthConfigFactoryWrapper.getFactory().registerConfigProvider(
                                                                                  new com.ibm.ws.security.jaspi.DefaultAuthConfigProvider(serverAuthModule),
                                                                                  "HttpServlet",
                                                                                  f_appContextId,
@@ -366,7 +366,7 @@ public class ProviderRegistry extends AuthConfigFactory {
 
                     @Override
                     public Boolean run() {
-                        return AuthConfigFactory.getFactory().removeRegistration(registrationId);
+                        return AuthConfigFactoryWrapper.getFactory().removeRegistration(registrationId);
                     }
                 });
                 if (!unregistered) {

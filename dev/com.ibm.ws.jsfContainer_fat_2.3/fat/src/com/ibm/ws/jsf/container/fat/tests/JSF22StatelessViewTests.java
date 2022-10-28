@@ -30,6 +30,7 @@ import com.ibm.ws.jsf.container.fat.FATSuite;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import junit.framework.Assert;
@@ -43,13 +44,18 @@ public class JSF22StatelessViewTests extends FATServletClient {
     private static final String MOJARRA_APP = "JSF22StatelessView";
     private static final String MYFACES_APP = "JSF22StatelessView_MyFaces";
 
+    private static boolean isEE10;
+
     @Server("jsf.container.2.3_fat")
     public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
+
+        isEE10 = JakartaEE10Action.isActive();
+
         WebArchive mojarraApp = ShrinkWrap.create(WebArchive.class, MOJARRA_APP + ".war")
-                        .addPackage("jsf.view.beans");
+                        .addPackage(isEE10 ? "jsf.view.beans.faces40" : "jsf.view.beans.jsf22");
         mojarraApp = FATSuite.addMojarra(mojarraApp);
         mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "publish/files/permissions");
         mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "test-applications/" + MOJARRA_APP + "/resources");
@@ -59,25 +65,30 @@ public class JSF22StatelessViewTests extends FATServletClient {
         ShrinkHelper.exportToServer(server, "dropins", mojarraApp);
         server.addInstalledAppForValidation(MOJARRA_APP);
 
-        if(!JakartaEE10Action.isActive()){
-            WebArchive myfacesApp = ShrinkWrap.create(WebArchive.class, MYFACES_APP + ".war")
-                            .addPackage("jsf.view.beans");
-            myfacesApp = FATSuite.addMyFaces(myfacesApp);
-            myfacesApp = (WebArchive) ShrinkHelper.addDirectory(myfacesApp, "publish/files/permissions");
-            myfacesApp = (WebArchive) ShrinkHelper.addDirectory(myfacesApp, "test-applications/" + MOJARRA_APP + "/resources");
-            ShrinkHelper.exportToServer(server, "dropins", myfacesApp);
-            server.addInstalledAppForValidation(MYFACES_APP);
-        }
+        WebArchive myfacesApp = ShrinkWrap.create(WebArchive.class, MYFACES_APP + ".war")
+                        .addPackage(isEE10 ? "jsf.view.beans.faces40" : "jsf.view.beans.jsf22");
+        myfacesApp = FATSuite.addMyFaces(myfacesApp);
+        myfacesApp = (WebArchive) ShrinkHelper.addDirectory(myfacesApp, "publish/files/permissions");
+        myfacesApp = (WebArchive) ShrinkHelper.addDirectory(myfacesApp, "test-applications/" + MOJARRA_APP + "/resources");
+        // myfacesApp.addAsWebInfResource(new File("lib/LibertyFATTestFiles/beans.xml"));
+        ShrinkHelper.exportToServer(server, "dropins", myfacesApp);
+        server.addInstalledAppForValidation(MYFACES_APP);
 
         server.startServer();
     }
 
     @AfterClass
     public static void testCleanup() throws Exception {
-      // Stop the server
-      if (server != null && server.isStarted()) {
-            server.stopServer();
-      }
+        // Stop the server
+        if (server != null && server.isStarted()) {
+            if (JakartaEE10Action.isActive()) {
+                // Unsure why these errors occur, tests pass otherwise. 
+                // "The response is already committed to the client. The session cookie cannot be set."
+                server.stopServer("SESN0066E", "SRVE8114W");
+            } else {
+                server.stopServer();
+            }
+        }
     }
 
     @Test
@@ -100,7 +111,6 @@ public class JSF22StatelessViewTests extends FATServletClient {
         JSF22StatelessView_TestSimpleStatelessView(MOJARRA_APP);
     }
 
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22StatelessView_TestSimpleStatelessView_MyFaces() throws Exception {
         JSF22StatelessView_TestSimpleStatelessView(MYFACES_APP);
@@ -128,13 +138,11 @@ public class JSF22StatelessViewTests extends FATServletClient {
         }
     }
 
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22StatelessView_TestIsTransientTrue_Mojarra() throws Exception {
         JSF22StatelessView_TestIsTransientTrue(MOJARRA_APP);
     }
 
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22StatelessView_TestIsTransientTrue_MyFaces() throws Exception {
         JSF22StatelessView_TestIsTransientTrue(MYFACES_APP);
@@ -176,13 +184,11 @@ public class JSF22StatelessViewTests extends FATServletClient {
         }
     }
 
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22StatelessView_TestIsTransientFalse_Mojarra() throws Exception {
         JSF22StatelessView_TestIsTransientFalse(MOJARRA_APP);
     }
 
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22StatelessView_TestIsTransientFalse_MyFaces() throws Exception {
         JSF22StatelessView_TestIsTransientFalse(MYFACES_APP);
@@ -224,13 +230,11 @@ public class JSF22StatelessViewTests extends FATServletClient {
         }
     }
 
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22StatelessView_TestIsTransientDefault_Mojarra() throws Exception {
         JSF22StatelessView_TestIsTransientDefault(MOJARRA_APP);
     }
 
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22StatelessView_TestIsTransientDefault_MyFaces() throws Exception {
         JSF22StatelessView_TestIsTransientDefault(MYFACES_APP);
@@ -276,13 +280,12 @@ public class JSF22StatelessViewTests extends FATServletClient {
      * Checks the behavior of a ViewScoped ManagedBean, when embedded in a stateless view.
      * Since the view here is stateless, the ViewScoped bean should be re-initialized on every submit.
      */
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) // Bug in Mojarra?
     @Test
     public void JSF22StatelessView_TestViewScopeManagedBeanTransient_Mojarra() throws Exception {
         testViewScopeManagedBeanTransient(MOJARRA_APP, "/JSF22StatelessView_ViewScope_Transient.xhtml");
     }
 
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22StatelessView_TestViewScopeManagedBeanTransient_MyFaces() throws Exception {
         testViewScopeManagedBeanTransient(MYFACES_APP, "/JSF22StatelessView_ViewScope_Transient.xhtml");
@@ -292,13 +295,11 @@ public class JSF22StatelessViewTests extends FATServletClient {
      * Checks the behavior of a ViewScoped ManagedBean, when embedded in a stateless view.
      * Since the view here is NOT stateless, the ViewScoped bean should persist through a submit.
      */
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22StatelessView_TestViewScopeManagedBeanNotTransient_Mojarra() throws Exception {
         testViewScopeManagedBeanNotTransient(MOJARRA_APP, "/JSF22StatelessView_ViewScope_NotTransient.xhtml");
     }
 
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22StatelessView_TestViewScopeManagedBeanNotTransient_MyFaces() throws Exception {
         testViewScopeManagedBeanNotTransient(MYFACES_APP, "/JSF22StatelessView_ViewScope_NotTransient.xhtml");
@@ -308,13 +309,12 @@ public class JSF22StatelessViewTests extends FATServletClient {
      * Checks the behavior of a ViewScoped CDI bean, when embedded in a stateless view.
      * Since the view here is stateless, the ViewScoped bean should be re-initialized on every submit.
      */
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) // Bug in Mojarra?
     @Test
     public void JSF22StatelessView_TestViewScopeCDIBeanTransient_Mojarra() throws Exception {
         testViewScopeManagedBeanTransient(MOJARRA_APP, "/JSF22StatelessView_ViewScope_CDI_Transient.xhtml");
     }
 
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22StatelessView_TestViewScopeCDIBeanTransient_MyFaces() throws Exception {
         testViewScopeManagedBeanTransient(MYFACES_APP, "/JSF22StatelessView_ViewScope_CDI_Transient.xhtml");
@@ -329,7 +329,6 @@ public class JSF22StatelessViewTests extends FATServletClient {
         testViewScopeManagedBeanNotTransient(MOJARRA_APP, "/JSF22StatelessView_ViewScope_CDI_NotTransient.xhtml");
     }
 
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22StatelessView_TestViewScopeCDIBeanNotTransient_MyFaces() throws Exception {
         testViewScopeManagedBeanNotTransient(MYFACES_APP, "/JSF22StatelessView_ViewScope_CDI_NotTransient.xhtml");

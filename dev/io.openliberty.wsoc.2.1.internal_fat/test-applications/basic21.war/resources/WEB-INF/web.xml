@@ -36,5 +36,14 @@
         <url-pattern>/upgradeEcho</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>ClientSSLTestServlet</servlet-name>
+ 	    <servlet-class>basic.war.ClientSSLTestServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ClientSSLTestServlet</servlet-name>
+        <url-pattern>/ClientSSLTestServlet</url-pattern>
+    </servlet-mapping>
 
 </web-app>

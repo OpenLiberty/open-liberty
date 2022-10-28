@@ -46,16 +46,15 @@ import io.openliberty.wsoc.util.OnlyRunNotOnZRule;
 import io.openliberty.wsoc.util.WebServerControl;
 import io.openliberty.wsoc.util.WebServerSetup;
 import io.openliberty.wsoc.util.wsoc.WsocTest;
-
+import io.openliberty.wsoc.tests.all.SSLTest;
 
 /**
  *  WebSocket 2.1 Tests
  */
 @RunWith(FATRunner.class)
 public class Basic21Test {
-    public static final String SERVER_NAME = "basic21TestServer";
 
-    @Server(SERVER_NAME)
+    @Server("basic21TestServer")
     public static LibertyServer LS;
 
     private static WebServerSetup bwst = null;
@@ -64,10 +63,12 @@ public class Basic21Test {
     public final TestRule notOnZRule = new OnlyRunNotOnZRule();
 
     private static WsocTest wt = null;
+    private static WsocTest wt_secure = null;
     private static TimeOutTest timeout = null;
     private static UserPropertiesTest userprop = null;
     private static UpgradeTest upgrade = null;
     private static MiscTest misc = null;
+    private static SSLTest ssl = null;
 
     private static final Logger LOG = Logger.getLogger(Basic21Test.class.getName());
 
@@ -97,6 +98,8 @@ public class Basic21Test {
         userprop = new UserPropertiesTest(wt);
         upgrade = new UpgradeTest(wt);
         misc = new MiscTest(wt);
+        wt_secure = new WsocTest(LS, true);
+        ssl = new SSLTest(wt_secure);
         bwst.setUp();
     }
 

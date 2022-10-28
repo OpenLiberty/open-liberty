@@ -16,11 +16,13 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import io.openliberty.org.apache.myfaces40.fat.tests.ExtensionlessMappingTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.ExternalContextAddResponseCookieTest;
+import io.openliberty.org.apache.myfaces40.fat.tests.Faces40ThirdPartyApiTests;
 import io.openliberty.org.apache.myfaces40.fat.tests.FacesConfigTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.FacesContextGetLifecycleTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.InputTextTypeTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.SelectItemTests;
 import io.openliberty.org.apache.myfaces40.fat.tests.SimpleTest;
+import io.openliberty.org.apache.myfaces40.fat.tests.UIViewRootGetDoctypeTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -30,7 +32,9 @@ import io.openliberty.org.apache.myfaces40.fat.tests.SimpleTest;
                 InputTextTypeTest.class,
                 ExtensionlessMappingTest.class,
                 SelectItemTests.class,
-                FacesContextGetLifecycleTest.class
+                FacesContextGetLifecycleTest.class,
+                UIViewRootGetDoctypeTest.class,
+                Faces40ThirdPartyApiTests.class
 })
 public class FATSuite {
 

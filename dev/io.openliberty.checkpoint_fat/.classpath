@@ -18,6 +18,9 @@
 	<classpathentry kind="src" path="test-applications/webSocketTest/src"/>
 	<classpathentry kind="src" path="test-applications/openAPItest/src"/>
 	<classpathentry kind="src" path="test-applications/mpjwt/src"/>
+	<classpathentry kind="src" path="test-applications/EJBearApp/src"/>
+	<classpathentry kind="src" path="test-applications/ServletEARapp/src"/>
+	<classpathentry kind="src" path="test-applications/webEARapp/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>

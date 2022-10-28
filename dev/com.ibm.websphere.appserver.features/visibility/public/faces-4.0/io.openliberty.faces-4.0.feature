@@ -26,11 +26,13 @@ IBM-API-Package: jakarta.faces; type="spec", \
  jakarta.faces.view; type="spec", \
  jakarta.faces.view.facelets; type="spec", \
  jakarta.faces.webapp; type="spec", \
+ org.apache.myfaces.core.api.shared; type="spec", \
+ org.apache.myfaces.core.api.shared.lang; type="spec", \
  org.apache.myfaces.renderkit.html; type="third-party", \
- org.apache.myfaces.shared.config; type="third-party", \
- org.apache.myfaces.shared.renderkit; type="third-party", \
- org.apache.myfaces.shared.renderkit.html; type="third-party", \
- org.apache.myfaces.shared.renderkit.html.util; type="third-party"
+ org.apache.myfaces.config.webparameters; type="third-party", \
+ org.apache.myfaces.renderkit; type="third-party", \
+ org.apache.myfaces.renderkit.html.base; type="third-party", \
+ org.apache.myfaces.renderkit.html.util; type="third-party"
 IBM-ShortName: faces-4.0
 WLP-AlsoKnownAs: jsf-4.0
 Subsystem-Name: Jakarta Server Faces 4.0
@@ -49,6 +51,6 @@ Subsystem-Name: Jakarta Server Faces 4.0
  com.ibm.ws.cdi.interfaces.jakarta, \
  io.openliberty.jakarta.tags.3.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0", \
  io.openliberty.faces.4.0.thirdparty; location:="dev/api/third-party/"
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

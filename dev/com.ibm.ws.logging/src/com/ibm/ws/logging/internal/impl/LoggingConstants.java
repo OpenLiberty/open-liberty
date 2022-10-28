@@ -67,6 +67,8 @@ public interface LoggingConstants {
     String ENV_WLP_LOGGING_ROLLOVER_START_TIME = "WLP_LOGGING_ROLLOVER_START_TIME";
     String ENV_WLP_LOGGING_ROLLOVER_INTERVAL = "WLP_LOGGING_ROLLOVER_INTERVAL";
 
+    String ENV_WLP_LOGGING_MAX_FFDC_AGE = "WLP_LOGGING_MAX_FFDC_AGE";
+
     String DEFAULT_JSON_ACCESS_LOG_FIELDS = "default";
 
     // Stack Joiner feature configurations

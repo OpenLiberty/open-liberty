@@ -11,5 +11,8 @@
 /**
  * @version 1.0
  */
+@TraceOptions(traceGroup = "TELEMETRY")
 @org.osgi.annotation.versioning.Version("1.0")
 package io.openliberty.microprofile.telemetry.internal.rest;
+
+import com.ibm.websphere.ras.annotation.TraceOptions;

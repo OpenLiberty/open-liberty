@@ -11,8 +11,9 @@
 
 package com.ibm.ws.security.social.fat.LibertyOP;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.BeforeClass;
@@ -24,7 +25,6 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonValidationTools;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
-import com.ibm.ws.security.oauth_oidc.fat.commonTest.RSCommonTestTools;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 import com.ibm.ws.security.social.fat.utils.SocialCommonTest;
 import com.ibm.ws.security.social.fat.utils.SocialConstants;
@@ -46,7 +46,14 @@ public class LibertyOP_CookieVerificationTests extends SocialCommonTest {
 
     public static Class<?> thisClass = LibertyOP_CookieVerificationTests.class;
 
-    public static RSCommonTestTools rsTools = new RSCommonTestTools();
+    protected static final String GLOBAL_JVM_ARGS = AccessController
+            .doPrivileged(new PrivilegedAction<String>() {
+                @Override
+                public String run() {
+                    String prop = System.getProperty("global.jvm.args");
+                    return prop == null ? "" : prop.trim();
+                }
+            });
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification();
@@ -96,8 +103,17 @@ public class LibertyOP_CookieVerificationTests extends SocialCommonTest {
 
         genericSocial(_testName, webClient, inovke_social_login_actions, socialSettings, expectations);
 
+        List<String> allowedCookies = new ArrayList<>();
+        allowedCookies.add("JSESSIONID");
+        allowedCookies.add("LtpaToken2");
+        allowedCookies.add("WAS_[np][0-9]+");
+        Log.info(thisClass, _testName, "Global args: " + GLOBAL_JVM_ARGS);
+        if (GLOBAL_JVM_ARGS.contains("-Dcom.ibm.ws.beta.edition=true")) {
+            allowedCookies.add("WASOidcSession");
+        }
+
         // Verify all cookies that should have been deleted do not appear in the web client anymore
-        validationTools.verifyOnlyAllowedCookiesStillPresent(webClient, Arrays.asList("JSESSIONID", "LtpaToken2", "WAS_[np][0-9]+"));
+        validationTools.verifyOnlyAllowedCookiesStillPresent(webClient, allowedCookies);
     }
 
 }

@@ -24,7 +24,7 @@ import jakarta.inject.Named;
 public class ProviderBean implements java.io.Serializable {
 
     private static final long serialVersionUID = 1L;
-    private Properties config = new Properties();
+    private final Properties config = new Properties();
 
     @PostConstruct
     public void init() {
@@ -94,6 +94,20 @@ public class ProviderBean implements java.io.Serializable {
         String value = "https://localhost:" + System.getProperty("bvt.prop.security_2_HTTP_default.secure");
         if (config.containsKey(Constants.CLIENT_SECURE_BASE)) {
             value = config.getProperty(Constants.CLIENT_SECURE_BASE);
+        } else {
+            // not a standard value, so this value will only matter if the config is trying to use the value
+            System.out.println("Must be set in " + Constants.PROVIDER_CONFIG_PROPERTIES + " before it can be used using default value of: " + value);
+        }
+
+        return value;
+    }
+
+    public String getProvider() {
+
+        System.out.println("In getProvider");
+        String value = "OP1";
+        if (config.containsKey(Constants.PROVIDER)) {
+            value = config.getProperty(Constants.PROVIDER);
         } else {
             // not a standard value, so this value will only matter if the config is trying to use the value
             System.out.println("Must be set in " + Constants.PROVIDER_CONFIG_PROPERTIES + " before it can be used using default value of: " + value);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -64,39 +64,39 @@ public class AddressTest {
     public void testURIs() throws Exception {
 
         URI theUri = new URI("ws://localhost");
-        WsocAddress addr = new WsocAddress(theUri);
+        WsocAddress addr = new Wsoc10Address(theUri);
         Assert.assertEquals(80, addr.getRemoteAddress().getPort());
         Assert.assertEquals(false, addr.isSecure());
         Assert.assertEquals("/", addr.getPath());
         addr.validateURI();
 
         theUri = new URI("wss://localhost");
-        addr = new WsocAddress(theUri);
+        addr = new Wsoc10Address(theUri);
         Assert.assertEquals(443, addr.getRemoteAddress().getPort());
         Assert.assertEquals(true, addr.isSecure());
         Assert.assertEquals("/", addr.getPath());
         addr.validateURI();
 
         theUri = new URI("wss://localhost:444");
-        addr = new WsocAddress(theUri);
+        addr = new Wsoc10Address(theUri);
         Assert.assertEquals(true, addr.isSecure());
         Assert.assertEquals("/", addr.getPath());
         Assert.assertEquals(444, addr.getRemoteAddress().getPort());
         addr.validateURI();
 
         theUri = new URI("wss://localhost/blahblah");
-        addr = new WsocAddress(theUri);
+        addr = new Wsoc10Address(theUri);
         Assert.assertEquals("/blahblah", addr.getPath());
         addr.validateURI();
 
         theUri = new URI("WS://localhost/");
-        addr = new WsocAddress(theUri);
+        addr = new Wsoc10Address(theUri);
         Assert.assertEquals("/", addr.getPath());
         Assert.assertEquals(false, addr.isSecure());
         addr.validateURI();
 
         theUri = new URI("WsS://localhost/qqq");
-        addr = new WsocAddress(theUri);
+        addr = new Wsoc10Address(theUri);
         Assert.assertEquals(true, addr.isSecure());
         Assert.assertEquals("/qqq", addr.getPath());
         addr.validateURI();
@@ -105,7 +105,7 @@ public class AddressTest {
          * strange log message, not going to run this one.. it passes though.
          * try {
          * theUri = new URI("http://localhost/");
-         * addr = new WsocAddress(theUri);
+         * addr = new Wsoc10Address(theUri);
          * addr.validateURI();
          * throw new Exception("http should of been recognized as invalid scheme");
          * } catch (IllegalArgumentException e) {

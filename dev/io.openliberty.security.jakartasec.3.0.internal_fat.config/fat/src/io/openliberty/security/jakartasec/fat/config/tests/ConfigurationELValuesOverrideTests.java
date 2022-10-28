@@ -26,7 +26,6 @@ import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurityTests;
 import io.openliberty.security.jakartasec.fat.configs.TestConfigMaps;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
-import io.openliberty.security.jakartasec.fat.utils.ResponseValues;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 
 /**
@@ -37,6 +36,7 @@ import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 /**
  * Tests appSecurity-5.0
  */
+@SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
 public class ConfigurationELValuesOverrideTests extends CommonAnnotatedSecurityTests {
 
@@ -50,7 +50,7 @@ public class ConfigurationELValuesOverrideTests extends CommonAnnotatedSecurityT
     protected static ShrinkWrapHelpers swh = null;
 
     @ClassRule
-    public static RepeatTests repeat = createTokenTypeRepeats();
+    public static RepeatTests repeat = createRandomTokenTypeRepeats();
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -65,19 +65,16 @@ public class ConfigurationELValuesOverrideTests extends CommonAnnotatedSecurityT
         List<String> waitForMsgs = null;
         opServer.startServerUsingExpandedConfiguration("server_orig.xml", waitForMsgs);
         SecurityFatHttpUtils.saveServerPorts(opServer, Constants.BVT_SERVER_1_PORT_NAME_ROOT);
-        opHttpBase = "https://localhost:" + opServer.getBvtPort();
+        opHttpBase = "http://localhost:" + opServer.getBvtPort();
         opHttpsBase = "https://localhost:" + opServer.getBvtSecurePort();
 
         rpServer.startServerUsingExpandedConfiguration("server_orig.xml", waitForMsgs);
         SecurityFatHttpUtils.saveServerPorts(rpServer, Constants.BVT_SERVER_2_PORT_NAME_ROOT);
 
-        rpHttpBase = "https://localhost:" + rpServer.getBvtPort();
+        rpHttpBase = "http://localhost:" + rpServer.getBvtPort();
         rpHttpsBase = "https://localhost:" + rpServer.getBvtSecurePort();
 
         deployMyApps(); // run this after starting the RP so we have the rp port to update the openIdConfig.properties file within the apps
-
-        rspValues = new ResponseValues();
-        rspValues.setIssuer(opHttpsBase + "/oidc/endpoint/OP1");
 
     }
 

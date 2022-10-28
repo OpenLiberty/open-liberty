@@ -218,6 +218,8 @@ public class JSF23CDIGeneralTests {
         String contextRoot = "CDIManagedProperty";
         try (WebClient webClient = new WebClient()) {
             webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+            // Avoid error: message=[missing ; after for-loop condition]
+            webClient.getOptions().setThrowExceptionOnScriptError(false);
 
             String initalValue = "numberManagedProperty = 0 textManagedProperty = zero "
                                  + "listManagedProperty = zero stringArrayManagedProperty = "

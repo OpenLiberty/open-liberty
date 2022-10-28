@@ -9,22 +9,25 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion=2.12.7
+bVersion=2.13.4
 
 Bundle-Name: FasterXML Jackson Processor
 Bundle-SymbolicName: io.openliberty.com.fasterxml.jackson
 Bundle-Description: Provides Jackson Processor as a bundle
 
+# Note: Exclude /META-INF/versions because it only contains module-info.class
+# When updating, must check each jar to see if the module-info.class has moved
+# or if there are other classess in /META-INF/versions
 -includeresource: \
-  @${repo;com.fasterxml.jackson.core:jackson-core;2.12.7;EXACT}!/!module-info.class,\
-  @${repo;com.fasterxml.jackson.core:jackson-annotations;2.12.7;EXACT}!/!module-info.class,\
-  @${repo;com.fasterxml.jackson.core:jackson-databind;2.12.7;EXACT}!/!module-info.class,\
-  @${repo;com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;2.12.7;EXACT}!/!module-info.class,\
-  @${repo;com.fasterxml.jackson.datatype:jackson-datatype-jdk8;2.12.7;EXACT}!/!module-info.class,\
-  @${repo;com.fasterxml.jackson.datatype:jackson-datatype-jsr310;2.12.7;EXACT}!/!module-info.class,\
-  @${repo;com.fasterxml.jackson.module:jackson-module-parameter-names;2.12.7;EXACT}!/!module-info.class,\
+  @${repo;com.fasterxml.jackson.core:jackson-core;2.13.4;EXACT}!/!META-INF/versions*,\
+  @${repo;com.fasterxml.jackson.core:jackson-annotations;2.13.4;EXACT}!/!module-info.class,\
+  @${repo;com.fasterxml.jackson.core:jackson-databind;2.13.4;EXACT}!/!META-INF/versions*,\
+  @${repo;com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;2.13.4;EXACT}!/!META-INF/versions*,\
+  @${repo;com.fasterxml.jackson.datatype:jackson-datatype-jdk8;2.13.4;EXACT}!/!META-INF/versions*,\
+  @${repo;com.fasterxml.jackson.datatype:jackson-datatype-jsr310;2.13.4;EXACT}!/!META-INF/versions*,\
+  @${repo;com.fasterxml.jackson.module:jackson-module-parameter-names;2.13.4;EXACT}!/!META-INF/versions*,\
   @${repo;org.yaml:snakeyaml;1.32;EXACT}
   
 Export-Package: \
-  com.fasterxml.jackson.*;version=2.12.7,\
+  com.fasterxml.jackson.*;version=2.13.4,\
   org.yaml.snakeyaml.*;version=1.32

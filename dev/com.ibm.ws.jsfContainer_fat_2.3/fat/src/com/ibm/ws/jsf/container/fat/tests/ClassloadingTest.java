@@ -25,14 +25,13 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jsf.container.fat.FATSuite;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEE10Action;
 
-@SkipForRepeat(SkipForRepeat.EE10_FEATURES)
 @RunWith(FATRunner.class)
 public class ClassloadingTest extends FATServletClient {
 
@@ -43,10 +42,22 @@ public class ClassloadingTest extends FATServletClient {
     @Server("jsf.container.2.3_fat.config")
     public static LibertyServer server;
 
+    private static boolean isEE10;
+    private static boolean isEE9;
+
     @BeforeClass
     public static void setUp() throws Exception {
+
+        isEE10 = JakartaEE10Action.isActive();
+        isEE9 = JakartaEE9Action.isActive();
         // Build test app with JSF (Mojarra) and a test servlet
         WebArchive jsfApp = ShrinkHelper.buildDefaultApp(JSF_APP, "jsf.container.bean", "jsf.container.nojsf.web");
+
+        // Don't add the managed bean package for EE10
+        if(!isEE10)
+        {
+          jsfApp.addPackage("jsf.container.bean.jsf23");
+        }      
         jsfApp = (WebArchive) ShrinkHelper.addDirectory(jsfApp, "publish/files/permissions");
         FATSuite.addMojarra(jsfApp);
         ShrinkHelper.exportAppToServer(server, jsfApp);
@@ -55,17 +66,30 @@ public class ClassloadingTest extends FATServletClient {
         // Build test app with just a test servlet (i.e. no JSF usage)
         ShrinkHelper.defaultApp(server, NO_JSF_APP, "jsf.container.nojsf.web");
 
-        // Location of Mojarra jars
-        String mojarraLibraryLocation  = "publish/files/mojarra/";
+        
+        String mojarraLibraryLocation;
+        WebArchive mojarraAppWar;
 
-        if(JakartaEE9Action.isActive()){
-          mojarraLibraryLocation  = "publish/files/mojarra30/";
+        // Multiple checks due to the managed bean refactoring for faces 4.0
+        if (isEE10) {
+          mojarraLibraryLocation = "publish/files/mojarra40/";
+          mojarraAppWar = ShrinkHelper.buildDefaultApp(JSF_EAR_APP, "jsf.container.bean", "jsf.container.nojsf.web")
+                  .addAsWebResource(new File("test-applications/jsfApp/resources/TestBean.xhtml"))
+                  .addAsLibraries(new File(mojarraLibraryLocation).listFiles());
+        } else if (isEE9) {
+          mojarraLibraryLocation = "publish/files/mojarra30/";
+          mojarraAppWar = ShrinkHelper.buildDefaultApp(JSF_EAR_APP, "jsf.container.bean", "jsf.container.bean.jsf23", "jsf.container.nojsf.web")
+                  .addAsWebResource(new File("test-applications/jsfApp/resources/TestBean.xhtml"))
+                  .addAsLibraries(new File(mojarraLibraryLocation).listFiles());
+        } else {
+          mojarraLibraryLocation = "publish/files/mojarra/";
+          mojarraAppWar = ShrinkHelper.buildDefaultApp(JSF_EAR_APP, "jsf.container.bean", "jsf.container.bean.jsf23", "jsf.container.nojsf.web")
+                  .addAsWebResource(new File("test-applications/jsfApp/resources/TestBean.xhtml"))
+                  .addAsLibraries(new File(mojarraLibraryLocation).listFiles());
         }
         // Build test WAR in EAR application with JSF API+impl in WAR
         EnterpriseArchive jsfEarApp = ShrinkWrap.create(EnterpriseArchive.class, JSF_EAR_APP + ".ear")
-                        .addAsModule(ShrinkHelper.buildDefaultApp(JSF_EAR_APP, "jsf.container.bean", "jsf.container.nojsf.web")
-                                        .addAsWebResource(new File("test-applications/jsfApp/resources/TestBean.xhtml"))
-                                        .addAsLibraries(new File(mojarraLibraryLocation).listFiles()));
+                        .addAsModule(mojarraAppWar);
 
         jsfEarApp = (EnterpriseArchive) ShrinkHelper.addDirectory(jsfEarApp, "publish/files/permissions");
         ShrinkHelper.exportAppToServer(server, jsfEarApp);
@@ -100,9 +124,11 @@ public class ClassloadingTest extends FATServletClient {
     }
 
     private void runTest() throws Exception {
-        if(JakartaEE9Action.isActive()){
-          server.setServerConfigurationFile("server_" + testName.getMethodName().replace("_EE9_FEATURES","") + ".xml");
-        } else {
+        if(isEE9 ){
+            server.setServerConfigurationFile("server_" + testName.getMethodName().replace("_EE9_FEATURES","") + ".xml");
+        } else if(isEE10){
+            server.setServerConfigurationFile("server_" + testName.getMethodName().replace("_EE10_FEATURES","") + ".xml");
+        }else {
             server.setServerConfigurationFile("server_" + testName.getMethodName() + ".xml");
         }
 
@@ -112,17 +138,21 @@ public class ClassloadingTest extends FATServletClient {
         HttpUtils.findStringInReadyUrl(server, '/' + JSF_APP + "/TestBean.jsf",
                                        "CDI Bean value:",
                                        ":CDIBean::PostConstructCalled:");
+      if(!isEE10){
         HttpUtils.findStringInReadyUrl(server, '/' + JSF_APP + "/TestBean.jsf",
                                        "JSF Bean value:",
                                        ":JSFBean::PostConstructCalled:");
+      }
 
         // Verify that basic JSF works in an EAR
         HttpUtils.findStringInReadyUrl(server, '/' + JSF_EAR_APP + "/TestBean.jsf",
                                        "CDI Bean value:",
                                        ":CDIBean::PostConstructCalled:");
-        HttpUtils.findStringInReadyUrl(server, '/' + JSF_EAR_APP + "/TestBean.jsf",
-                                       "JSF Bean value:",
-                                       ":JSFBean::PostConstructCalled:");
+        if(!isEE10){
+          HttpUtils.findStringInReadyUrl(server, '/' + JSF_EAR_APP + "/TestBean.jsf",
+                                        "JSF Bean value:",
+                                        ":JSFBean::PostConstructCalled:");
+        }                             
 
         // Verify non-JSF functionality works in JSF-enabled WAR app
         FATServletClient.runTest(server, JSF_APP + "/TestServlet", "testServletWorking");
