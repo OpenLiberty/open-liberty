@@ -359,11 +359,13 @@ public class HtmlInputSecret extends jakarta.faces.component.UIInput
     }
     // Property: alt
 
+    @Deprecated(since = "4.0", forRemoval = true)
     public String getAlt()
     {
         return (String) getStateHelper().eval(PropertyKeys.alt);
     }
 
+    @Deprecated(since = "4.0", forRemoval = true)
     public void setAlt(String alt)
     {
         getStateHelper().put(PropertyKeys.alt, alt );
@@ -484,7 +486,7 @@ public class HtmlInputSecret extends jakarta.faces.component.UIInput
         , readonly
         , role
         , label
-        , alt
+        , @Deprecated(since = "4.0", forRemoval = true) alt
         , dir
         , lang
         , title

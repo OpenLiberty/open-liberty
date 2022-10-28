@@ -178,11 +178,13 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput
 
     // Property: maxlength
 
+    @Deprecated(since = "4.0", forRemoval = true)
     public int getMaxlength()
     {
         return (Integer) getStateHelper().eval(PropertyKeys.maxlength, Integer.MIN_VALUE);
     }
 
+    @Deprecated(since = "4.0", forRemoval = true)
     public void setMaxlength(int maxlength)
     {
         getStateHelper().put(PropertyKeys.maxlength, maxlength );
@@ -190,11 +192,13 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput
     }
     // Property: size
 
+    @Deprecated(since = "4.0", forRemoval = true)
     public int getSize()
     {
         return (Integer) getStateHelper().eval(PropertyKeys.size, Integer.MIN_VALUE);
     }
 
+    @Deprecated(since = "4.0", forRemoval = true)
     public void setSize(int size)
     {
         getStateHelper().put(PropertyKeys.size, size );
@@ -202,11 +206,13 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput
     }
     // Property: autocomplete
 
+    @Deprecated(since = "4.0", forRemoval = true)
     public String getAutocomplete()
     {
         return (String) getStateHelper().eval(PropertyKeys.autocomplete);
     }
 
+    @Deprecated(since = "4.0", forRemoval = true)
     public void setAutocomplete(String autocomplete)
     {
         getStateHelper().put(PropertyKeys.autocomplete, autocomplete );
@@ -271,11 +277,13 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput
     }
     // Property: readonly
 
+    @Deprecated(since = "4.0", forRemoval = true)
     public boolean isReadonly()
     {
         return (Boolean) getStateHelper().eval(PropertyKeys.readonly, false);
     }
 
+    @Deprecated(since = "4.0", forRemoval = true)
     public void setReadonly(boolean readonly)
     {
         getStateHelper().put(PropertyKeys.readonly, readonly );
@@ -451,11 +459,13 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput
     }
     // Property: alt
 
+    @Deprecated(since = "4.0", forRemoval = true)
     public String getAlt()
     {
         return (String) getStateHelper().eval(PropertyKeys.alt);
     }
 
+    @Deprecated(since = "4.0", forRemoval = true)
     public void setAlt(String alt)
     {
         getStateHelper().put(PropertyKeys.alt, alt );
@@ -554,15 +564,15 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput
 
     protected enum PropertyKeys
     {
-         maxlength
-        , size
-        , autocomplete
+         @Deprecated(since = "4.0", forRemoval = true) maxlength
+        , @Deprecated(since = "4.0", forRemoval = true) size
+        , @Deprecated(since = "4.0", forRemoval = true) autocomplete
         , accept
         , multiple
         , accesskey
         , onselect
         , disabled
-        , readonly
+        , @Deprecated(since = "4.0", forRemoval = true) readonly
         , onclick
         , ondblclick
         , onkeydown
@@ -577,7 +587,7 @@ public class HtmlInputFile extends jakarta.faces.component.UIInput
         , styleClass
         , role
         , label
-        , alt
+        , @Deprecated(since = "4.0", forRemoval = true) alt
         , dir
         , lang
         , title
