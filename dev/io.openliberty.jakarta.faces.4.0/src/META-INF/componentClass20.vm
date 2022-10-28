@@ -158,8 +158,22 @@ $innersource
 #end
 
 #set ($propertyList = ${component.propertyComponentList})
+#set ($deprecatedInFaces40 = '@Deprecated(since = "4.0", forRemoval = true)')
 
 #foreach( $property in $propertyList )
+#set ($htmlInputFileDeprecated = "false")
+#set ($htmlInputSecretDeprecated = "false")
+#if ($component.className.equals("jakarta.faces.component.html.HtmlInputFile") &&
+        ($property.name == "alt" ||
+         $property.name == "autocomplete" ||
+         $property.name == "maxlength" ||
+         $property.name == "readonly" ||
+         $property.name == "size"))
+    #set ($htmlInputFileDeprecated = "true")
+#elseif ($component.className.equals("jakarta.faces.component.html.HtmlInputSecret") &&
+        ($property.name == "alt"))
+    #set ($htmlInputSecretDeprecated = "true")
+#end
 #set ($field = $property.fieldName)
 #set ($type = $utils.getClassFromFullClass($property.className))
 #if($utils.getDefaultValueField($property))
@@ -270,6 +284,9 @@ $innersource
 #set ($field = $property.name)
 #end
 
+#if ("true" == $htmlInputFileDeprecated || "true" == $htmlInputSecretDeprecated)
+    $deprecatedInFaces40
+#end
     public $type $utils.getMethodReaderFromProperty($property.name, $type)()
     {
 #if ($property.isLiteralOnly())
@@ -292,6 +309,9 @@ $innersource
 #end
     }
 
+#if ("true" == $htmlInputFileDeprecated || "true" == $htmlInputSecretDeprecated)
+    $deprecatedInFaces40
+#end
     public void $utils.getPrefixedPropertyName("set", $property.name)($type $utils.getVariableFromName($property.name))
     {
         getStateHelper().put(PropertyKeys.$field, $utils.getVariableFromName($property.name) );
@@ -379,6 +399,19 @@ $innersource
 #set ($comma = "")
 #set ($addc = "false")
 #foreach( $property in $propertyList )
+#set ($htmlInputFileDeprecated = "false")
+#set ($htmlInputSecretDeprecated = "false")
+#if ($component.className.equals("jakarta.faces.component.html.HtmlInputFile") &&
+        ($property.name == "alt" ||
+         $property.name == "autocomplete" ||
+         $property.name == "maxlength" ||
+         $property.name == "readonly" ||
+         $property.name == "size"))
+    #set ($htmlInputFileDeprecated = "true")
+#elseif ($component.className.equals("jakarta.faces.component.html.HtmlInputSecret") &&
+        ($property.name == "alt"))
+    #set ($htmlInputSecretDeprecated = "true")
+#end
 #if ($property.name == "for")
 #set ($addc = "true")
 ## To keep compatibility with RI, we should call it forVal
@@ -404,7 +437,11 @@ $innersource
 #if ($property.isPartialStateHolder())
         $comma ${field}Set
 #else
+#if ("true" == $htmlInputFileDeprecated || "true" == $htmlInputSecretDeprecated)
+        $comma $deprecatedInFaces40 $field
+#else
         $comma $field
+#end
 #end
 #end
 #set($comma = ",")
