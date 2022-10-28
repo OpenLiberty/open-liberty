@@ -22,7 +22,6 @@ import java.util.StringJoiner;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -31,8 +30,7 @@ import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
-import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
-import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
+import io.openliberty.security.oidcclientcore.config.MetadataUtils;
 import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.storage.CookieStorageProperties;
@@ -50,20 +48,18 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
     private enum StorageType {
         COOKIE, SESSION
     }
-    private OidcClientConfig config = null;
-    private OidcProviderMetadata providerMetadata = null;
-    private StorageType storageType;
 
+    private OidcClientConfig config = null;
+    private StorageType storageType;
 
     protected AuthorizationRequestUtils requestUtils = new AuthorizationRequestUtils();
 
     public JakartaOidcAuthorizationRequest(HttpServletRequest request, HttpServletResponse response, OidcClientConfig config) {
         super(request, response, config.getClientId());
         this.config = config;
-        this.providerMetadata = (config == null) ? null : config.getProviderMetadata();
         instantiateStorage(config);
     }
-    
+
     private void instantiateStorage(OidcClientConfig config) {
         boolean useSession = config.isUseSession();
         this.storage = StorageFactory.instantiateStorage(request, response, useSession);
@@ -83,38 +79,7 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
 
     @Override
     protected String getAuthorizationEndpoint() throws OidcClientConfigurationException, OidcDiscoveryException {
-        String authzEndpoint = getAuthorizationEndpointFromProviderMetadata();
-        if (authzEndpoint != null) {
-            return authzEndpoint;
-        }
-        return getAuthorizationEndpointFromDiscoveryMetadata();
-    }
-
-    String getAuthorizationEndpointFromProviderMetadata() {
-        if (providerMetadata != null) {
-            // Provider metadata overrides properties discovered via providerUri
-            String authzEndpoint = providerMetadata.getAuthorizationEndpoint();
-            if (authzEndpoint != null && !authzEndpoint.isEmpty()) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Authorization endpoint found in the provider metadata: [" + authzEndpoint + "]");
-                }
-                return authzEndpoint;
-            }
-        }
-        return null;
-    }
-
-    String getAuthorizationEndpointFromDiscoveryMetadata() throws OidcDiscoveryException {
-        String authzEndpoint = null;
-        JSONObject discoveryData = getProviderDiscoveryMetadata(config);
-        if (discoveryData != null) {
-            authzEndpoint = (String) discoveryData.get(OidcDiscoveryConstants.METADATA_KEY_AUTHORIZATION_ENDPOINT);
-        }
-        if (authzEndpoint == null) {
-            String nlsMessage = Tr.formatMessage(tc, "DISCOVERY_METADATA_MISSING_VALUE", OidcDiscoveryConstants.METADATA_KEY_AUTHORIZATION_ENDPOINT);
-            throw new OidcDiscoveryException(clientId, config.getProviderURI(), nlsMessage);
-        }
-        return authzEndpoint;
+        return MetadataUtils.getAuthorizationEndpoint(config);
     }
 
     @Override
@@ -210,7 +175,7 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
     }
 
     String buildAuthorizationUrlWithQuery(String state, String redirectUrl) throws OidcClientConfigurationException, OidcDiscoveryException {
-        String authorizationEndpoint = getAuthorizationEndpoint();
+        String authorizationEndpoint = MetadataUtils.getAuthorizationEndpoint(config);
         String scopes = getScopeString();
         String responseType = config.getResponseType();
 

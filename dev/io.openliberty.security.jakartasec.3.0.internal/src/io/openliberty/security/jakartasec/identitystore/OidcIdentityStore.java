@@ -184,14 +184,17 @@ public class OidcIdentityStore implements IdentityStore {
         return new IdentityTokenImpl(tokenResponse.getIdTokenString(), idTokenClaims.getClaimsMap(), tokenMinValidityInMillis);
     }
 
+    @FFDCIgnore(Exception.class)
     private OpenIdClaims createOpenIdClaimsFromUserInfoResponse(OidcClientConfig oidcClientConfig, AccessToken accessToken) {
         UserInfoHandler userInfoHandler = getUserInfoHandler();
         Map<String, Object> userInfoClaims = null;
         try {
             userInfoClaims = userInfoHandler.getUserInfoClaims(oidcClientConfig, accessToken.getToken());
         } catch (Exception e) {
-            Tr.warning(tc, e.toString());
-            return null;
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "The {0} OpenID Connect client cannot create claims from the UserInfo data that was returned from the OpenID Connect provider. {1}",
+                         oidcClientConfig.getClientId(), e.toString());
+            }
         }
         if (userInfoClaims == null) {
             return null;
@@ -228,13 +231,6 @@ public class OidcIdentityStore implements IdentityStore {
         return null;
     }
 
-    /**
-     * @param clientConfig
-     * @param accessToken
-     * @param idTokenClaims
-     * @return
-     * @throws MalformedClaimException
-     */
     String getIssuer(OidcClientConfig clientConfig, AccessToken accessToken, JwtClaims idTokenClaims, OpenIdClaims userInfoClaims) throws MalformedClaimException {
         String issuer = getClaimValueFromTokens(OpenIdConstant.ISSUER_IDENTIFIER, accessToken, idTokenClaims, userInfoClaims, String.class);
         if (issuer == null || issuer.isEmpty()) {
@@ -243,10 +239,6 @@ public class OidcIdentityStore implements IdentityStore {
         return issuer;
     }
 
-    /**
-     * @param clientConfig
-     * @return
-     */
     private String issuerFromProviderMetadata(OidcClientConfig clientConfig) {
         return clientConfig.getProviderMetadata().getIssuer(); //TODO: use discovery data
     }

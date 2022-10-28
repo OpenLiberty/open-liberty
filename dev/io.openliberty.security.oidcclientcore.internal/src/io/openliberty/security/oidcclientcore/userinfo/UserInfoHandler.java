@@ -17,6 +17,7 @@ import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.config.MetadataUtils;
+import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseException;
 import io.openliberty.security.oidcclientcore.http.EndpointRequest;
@@ -26,8 +27,9 @@ public class UserInfoHandler extends EndpointRequest {
 
     public static final TraceComponent tc = Tr.register(UserInfoHandler.class);
 
-    public Map<String, Object> getUserInfoClaims(OidcClientConfig oidcClientConfig, String accessToken) throws UserInfoResponseException, OidcDiscoveryException {
-        String userInfoEndpoint = MetadataUtils.getUserInfoEndpoint(this, oidcClientConfig);
+    public Map<String, Object> getUserInfoClaims(OidcClientConfig oidcClientConfig,
+                                                 String accessToken) throws UserInfoResponseException, OidcDiscoveryException, OidcClientConfigurationException {
+        String userInfoEndpoint = MetadataUtils.getUserInfoEndpoint(oidcClientConfig);
         UserInfoRequestor userInfoRequester = createUserInfoRequestor(userInfoEndpoint, oidcClientConfig, accessToken);
         UserInfoResponse userInfoResponse = userInfoRequester.requestUserInfo();
         if (userInfoResponse != null) {

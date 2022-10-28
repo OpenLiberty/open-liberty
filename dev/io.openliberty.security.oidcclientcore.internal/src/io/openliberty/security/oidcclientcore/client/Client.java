@@ -23,6 +23,7 @@ import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 import io.openliberty.security.oidcclientcore.authentication.AbstractFlow;
 import io.openliberty.security.oidcclientcore.authentication.Flow;
 import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException;
+import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
 import io.openliberty.security.oidcclientcore.logout.LogoutHandler;
@@ -106,7 +107,7 @@ public class Client {
         LogoutHandler logoutHandler = new LogoutHandler(request, response, oidcClientConfig, logoutConfig, idTokenString);
         try {
             return logoutHandler.logout();
-        } catch (ServletException | OidcDiscoveryException e) {
+        } catch (ServletException | OidcDiscoveryException | OidcClientConfigurationException e) {
             // TODO Auto-generated catch block
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
             //TODO add debug?

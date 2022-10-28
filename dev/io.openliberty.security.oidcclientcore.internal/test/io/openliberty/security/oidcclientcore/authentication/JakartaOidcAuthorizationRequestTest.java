@@ -38,9 +38,10 @@ import com.ibm.ws.security.test.common.CommonTestClass;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
-import io.openliberty.security.oidcclientcore.discovery.DiscoveryHandler;
+import io.openliberty.security.oidcclientcore.config.MetadataUtils;
 import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
+import io.openliberty.security.oidcclientcore.http.EndpointRequest;
 import io.openliberty.security.oidcclientcore.storage.SessionBasedStorage;
 import io.openliberty.security.oidcclientcore.utils.Utils;
 import test.common.SharedOutputManager;
@@ -53,9 +54,9 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
     private final HttpServletResponse response = mockery.mock(HttpServletResponse.class);
     private final OidcClientConfig config = mockery.mock(OidcClientConfig.class);
     private final OidcProviderMetadata providerMetadata = mockery.mock(OidcProviderMetadata.class);
-    private final DiscoveryHandler discoveryHandler = mockery.mock(DiscoveryHandler.class);
     private final AuthorizationRequestParameters authzParameters = mockery.mock(AuthorizationRequestParameters.class);
     private final SessionBasedStorage sessionBasedStorage = mockery.mock(SessionBasedStorage.class);
+    private final EndpointRequest endpointRequest = mockery.mock(EndpointRequest.class);
 
     private final String CWWKS2403E_DISCOVERY_EXCEPTION = "CWWKS2403E";
     private final String CWWKS2405E_DISCOVERY_METADATA_MISSING_VALUE = "CWWKS2405E";
@@ -75,14 +76,21 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
 
     @Before
     public void setUp() {
-        authzRequest = createJakartaOidcAuthorizationRequest(providerMetadata);
+        authzRequest = createJakartaOidcAuthorizationRequest();
         // Ensure provider URLs are unique for each test to avoid cache contamination between tests
         providerUrl = providerUrlBase + testName.getMethodName();
+
+        MetadataUtils utils = new MetadataUtils();
+        utils.setEndpointRequest(endpointRequest);
     }
 
     @After
     public void tearDown() {
+        MetadataUtils utils = new MetadataUtils();
+        utils.unsetEndpointRequest(endpointRequest);
+
         outputMgr.resetStreams();
+        mockery.assertIsSatisfied();
     }
 
     @AfterClass
@@ -91,13 +99,11 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
         outputMgr.restoreStreams();
     }
 
-    private JakartaOidcAuthorizationRequest createJakartaOidcAuthorizationRequest(OidcProviderMetadata providerMetadata) {
+    private JakartaOidcAuthorizationRequest createJakartaOidcAuthorizationRequest() {
         mockery.checking(new Expectations() {
             {
-                allowing(config).getClientId();
+                one(config).getClientId();
                 will(returnValue(clientId));
-                one(config).getProviderMetadata();
-                will(returnValue(providerMetadata));
                 one(config).isUseSession();
                 will(returnValue(true));
             }
@@ -107,11 +113,6 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
             {
                 this.storage = sessionBasedStorage;
             }
-
-            @Override
-            public DiscoveryHandler getDiscoveryHandler() {
-                return discoveryHandler;
-            }
         };
     }
 
@@ -120,6 +121,8 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
         try {
             mockery.checking(new Expectations() {
                 {
+                    one(config).getProviderMetadata();
+                    will(returnValue(providerMetadata));
                     one(providerMetadata).getAuthorizationEndpoint();
                     will(returnValue(authorizationEndpointUrl));
                 }
@@ -133,17 +136,20 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
 
     @Test
     public void test_getAuthorizationEndpoint_noProviderMetadata_discoveryMetadataMissingAuthzEndpoint() {
-        authzRequest = createJakartaOidcAuthorizationRequest(null);
+        authzRequest = createJakartaOidcAuthorizationRequest();
 
-        final String expectedDiscoveryUrl = providerUrl + "/" + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
         final JSONObject discoveryData = new JSONObject();
         try {
             mockery.checking(new Expectations() {
                 {
-                    allowing(config).getProviderURI();
-                    will(returnValue(providerUrl));
-                    one(discoveryHandler).fetchDiscoveryDataJson(expectedDiscoveryUrl, clientId);
+                    one(config).getProviderMetadata();
+                    will(returnValue(null));
+                    one(endpointRequest).getProviderDiscoveryMetadata(config);
                     will(returnValue(discoveryData));
+                    one(config).getClientId();
+                    will(returnValue(clientId));
+                    one(config).getProviderURI();
+                    will(returnValue(providerUrl));
                 }
             });
             String result = authzRequest.getAuthorizationEndpoint();
@@ -158,17 +164,16 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
 
     @Test
     public void test_getAuthorizationEndpoint_noProviderMetadata_discoveryMetadataContainsAuthzEndpoint() {
-        authzRequest = createJakartaOidcAuthorizationRequest(null);
+        authzRequest = createJakartaOidcAuthorizationRequest();
 
-        final String expectedDiscoveryUrl = providerUrl + "/" + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
         final JSONObject discoveryData = new JSONObject();
         discoveryData.put(OidcDiscoveryConstants.METADATA_KEY_AUTHORIZATION_ENDPOINT, authorizationEndpointUrl);
         try {
             mockery.checking(new Expectations() {
                 {
-                    one(config).getProviderURI();
-                    will(returnValue(providerUrl));
-                    one(discoveryHandler).fetchDiscoveryDataJson(expectedDiscoveryUrl, clientId);
+                    one(config).getProviderMetadata();
+                    will(returnValue(null));
+                    one(endpointRequest).getProviderDiscoveryMetadata(config);
                     will(returnValue(discoveryData));
                 }
             });

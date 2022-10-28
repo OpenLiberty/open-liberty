@@ -37,6 +37,7 @@ import io.openliberty.security.common.jwt.jws.JwsSignatureVerifier;
 import io.openliberty.security.common.jwt.jws.JwsVerificationKeyHelper;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.config.MetadataUtils;
+import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoEndpointNotHttpsException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseException;
@@ -167,13 +168,13 @@ public class UserInfoRequestor {
         return signatureVerifier;
     }
 
-    @FFDCIgnore(OidcDiscoveryException.class)
+    @FFDCIgnore(OidcClientConfigurationException.class)
     RemoteJwkData initializeRemoteJwkData(OidcClientConfig oidcClientConfig) {
         RemoteJwkData jwkData = new RemoteJwkData();
         String jwksUri = null;
         try {
-            jwksUri = MetadataUtils.getJwksUri(endpointRequestClass, oidcClientConfig);
-        } catch (OidcDiscoveryException e) {
+            jwksUri = MetadataUtils.getJwksUri(oidcClientConfig);
+        } catch (OidcDiscoveryException | OidcClientConfigurationException e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Failed to find a JWKS URI to use for verifying the signature of the JWT UserInfo data: " + e);
             }

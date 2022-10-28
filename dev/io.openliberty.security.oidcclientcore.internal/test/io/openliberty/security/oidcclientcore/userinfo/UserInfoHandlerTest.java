@@ -27,10 +27,12 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.ws.security.test.common.CommonTestClass;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
+import io.openliberty.security.oidcclientcore.config.MetadataUtils;
 import io.openliberty.security.oidcclientcore.discovery.DiscoveryHandler;
 import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseException;
+import io.openliberty.security.oidcclientcore.http.EndpointRequest;
 import test.common.SharedOutputManager;
 
 public class UserInfoHandlerTest extends CommonTestClass {
@@ -45,6 +47,7 @@ public class UserInfoHandlerTest extends CommonTestClass {
     private final DiscoveryHandler discoveryHandler = mockery.mock(DiscoveryHandler.class);
     private final UserInfoRequestor userInfoRequestor = mockery.mock(UserInfoRequestor.class);
     private final UserInfoResponse userInfoResponse = mockery.mock(UserInfoResponse.class);
+    private final EndpointRequest endpointRequest = mockery.mock(EndpointRequest.class);
 
     private final String clientId = "myClientId";
     private final String discoveryUrl = "https://localhost/OP/" + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
@@ -79,10 +82,14 @@ public class UserInfoHandlerTest extends CommonTestClass {
                 return userInfoRequestor;
             }
         };
+        MetadataUtils utils = new MetadataUtils();
+        utils.setEndpointRequest(endpointRequest);
     }
 
     @After
     public void tearDown() {
+        MetadataUtils utils = new MetadataUtils();
+        utils.unsetEndpointRequest(endpointRequest);
         outputMgr.resetStreams();
         mockery.assertIsSatisfied();
     }
@@ -99,7 +106,7 @@ public class UserInfoHandlerTest extends CommonTestClass {
             {
                 one(oidcClientConfig).getProviderMetadata();
                 will(returnValue(null));
-                one(discoveryHandler).fetchDiscoveryDataJson(discoveryUrl, clientId);
+                one(endpointRequest).getProviderDiscoveryMetadata(oidcClientConfig);
                 will(returnValue(new JSONObject()));
             }
         });
@@ -119,7 +126,7 @@ public class UserInfoHandlerTest extends CommonTestClass {
             {
                 one(oidcClientConfig).getProviderMetadata();
                 will(returnValue(null));
-                one(discoveryHandler).fetchDiscoveryDataJson(discoveryUrl, clientId);
+                one(endpointRequest).getProviderDiscoveryMetadata(oidcClientConfig);
                 will(returnValue(discoveryData));
                 one(userInfoRequestor).requestUserInfo();
                 will(throwException(new UserInfoResponseException(userInfoEndpoint, new Exception(defaultExceptionMsg))));
@@ -141,7 +148,7 @@ public class UserInfoHandlerTest extends CommonTestClass {
             {
                 one(oidcClientConfig).getProviderMetadata();
                 will(returnValue(null));
-                one(discoveryHandler).fetchDiscoveryDataJson(discoveryUrl, clientId);
+                one(endpointRequest).getProviderDiscoveryMetadata(oidcClientConfig);
                 will(returnValue(discoveryData));
                 one(userInfoRequestor).requestUserInfo();
                 will(returnValue(userInfoResponse));

@@ -25,7 +25,6 @@ import com.ibm.ws.security.test.common.CommonTestClass;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
-import io.openliberty.security.oidcclientcore.discovery.DiscoveryHandler;
 import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.http.EndpointRequest;
@@ -41,7 +40,6 @@ public class MetadataUtilsTest extends CommonTestClass {
     private final OidcClientConfig oidcClientConfig = mockery.mock(OidcClientConfig.class);
     private final EndpointRequest endpointRequestClass = mockery.mock(EndpointRequest.class);
     private final OidcProviderMetadata providerMetadata = mockery.mock(OidcProviderMetadata.class);
-    private final DiscoveryHandler discoveryHandler = mockery.mock(DiscoveryHandler.class);
 
     private final String clientId = "myClientId";
     private final String discoveryUrl = "https://localhost/OP/" + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
@@ -63,10 +61,14 @@ public class MetadataUtilsTest extends CommonTestClass {
                 will(returnValue(clientId));
             }
         });
+        MetadataUtils utils = new MetadataUtils();
+        utils.setEndpointRequest(endpointRequestClass);
     }
 
     @After
     public void tearDown() {
+        MetadataUtils utils = new MetadataUtils();
+        utils.unsetEndpointRequest(endpointRequestClass);
         outputMgr.resetStreams();
         mockery.assertIsSatisfied();
     }
@@ -78,7 +80,7 @@ public class MetadataUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void test_getValueFromProviderOrDiscoveryMetadata_providerMetadataHasValue() throws OidcDiscoveryException {
+    public void test_getValueFromProviderOrDiscoveryMetadata_providerMetadataHasValue() throws Exception {
         mockery.checking(new Expectations() {
             {
                 one(oidcClientConfig).getProviderMetadata();
@@ -87,15 +89,14 @@ public class MetadataUtilsTest extends CommonTestClass {
                 will(returnValue(userInfoEndpoint));
             }
         });
-        String result = MetadataUtils.getValueFromProviderOrDiscoveryMetadata(endpointRequestClass,
-                                                                              oidcClientConfig,
+        String result = MetadataUtils.getValueFromProviderOrDiscoveryMetadata(oidcClientConfig,
                                                                               metadata -> metadata.getUserinfoEndpoint(),
                                                                               OidcDiscoveryConstants.METADATA_KEY_USERINFO_ENDPOINT);
         assertEquals(userInfoEndpoint, result);
     }
 
     @Test
-    public void test_getValueFromProviderOrDiscoveryMetadata_providerMetadataHasEmptyValue() throws OidcDiscoveryException {
+    public void test_getValueFromProviderOrDiscoveryMetadata_providerMetadataHasEmptyValue() throws Exception {
         JSONObject discoveryData = new JSONObject();
         discoveryData.put(OidcDiscoveryConstants.METADATA_KEY_ISSUER, sampleStringValue);
         mockery.checking(new Expectations() {
@@ -108,15 +109,14 @@ public class MetadataUtilsTest extends CommonTestClass {
                 will(returnValue(discoveryData));
             }
         });
-        String result = MetadataUtils.getValueFromProviderOrDiscoveryMetadata(endpointRequestClass,
-                                                                              oidcClientConfig,
+        String result = MetadataUtils.getValueFromProviderOrDiscoveryMetadata(oidcClientConfig,
                                                                               metadata -> metadata.getIssuer(),
                                                                               OidcDiscoveryConstants.METADATA_KEY_ISSUER);
         assertEquals(sampleStringValue, result);
     }
 
     @Test
-    public void test_getValueFromProviderOrDiscoveryMetadata_noProviderMetadata_discoveryMissingEntry() {
+    public void test_getValueFromProviderOrDiscoveryMetadata_noProviderMetadata_discoveryMissingEntry() throws Exception {
         JSONObject discoveryData = new JSONObject();
         mockery.checking(new Expectations() {
             {
@@ -127,8 +127,7 @@ public class MetadataUtilsTest extends CommonTestClass {
             }
         });
         try {
-            String result = MetadataUtils.getValueFromProviderOrDiscoveryMetadata(endpointRequestClass,
-                                                                                  oidcClientConfig,
+            String result = MetadataUtils.getValueFromProviderOrDiscoveryMetadata(oidcClientConfig,
                                                                                   metadata -> metadata.getTokenEndpoint(),
                                                                                   OidcDiscoveryConstants.METADATA_KEY_TOKEN_ENDPOINT);
             fail("Should have thrown an exception but got: [" + result + "].");

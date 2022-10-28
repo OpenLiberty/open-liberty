@@ -61,20 +61,16 @@ public class EndpointRequest {
         return new DiscoveryHandler(sslSocketFactory);
     }
 
-    public JSONObject getProviderDiscoveryMetadata(OidcClientConfig oidcClientConfig) {
+    public JSONObject getProviderDiscoveryMetadata(OidcClientConfig oidcClientConfig) throws OidcClientConfigurationException, OidcDiscoveryException {
         JSONObject discoveryData = null;
-        try {
-            String discoveryUri = oidcClientConfig.getProviderURI();
-            if (discoveryUri == null || discoveryUri.isEmpty()) {
-                String clientId = oidcClientConfig.getClientId();
-                String nlsMessage = Tr.formatMessage(tc, "OIDC_CLIENT_MISSING_PROVIDER_URI", clientId);
-                throw new OidcClientConfigurationException(clientId, nlsMessage);
-            }
-            discoveryUri = addWellKnownSuffixIfNeeded(discoveryUri);
-            discoveryData = fetchProviderMetadataFromDiscoveryUrl(discoveryUri, oidcClientConfig.getClientId());
-        } catch (OidcClientConfigurationException | OidcDiscoveryException e) {
-            Tr.error(tc, e.getMessage());
+        String discoveryUri = oidcClientConfig.getProviderURI();
+        if (discoveryUri == null || discoveryUri.isEmpty()) {
+            String clientId = oidcClientConfig.getClientId();
+            String nlsMessage = Tr.formatMessage(tc, "OIDC_CLIENT_MISSING_PROVIDER_URI", clientId);
+            throw new OidcClientConfigurationException(clientId, nlsMessage);
         }
+        discoveryUri = addWellKnownSuffixIfNeeded(discoveryUri);
+        discoveryData = fetchProviderMetadataFromDiscoveryUrl(discoveryUri, oidcClientConfig.getClientId());
         return discoveryData;
     }
 

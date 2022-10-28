@@ -33,9 +33,9 @@ DISCOVERY_EXCEPTION=CWWKS2403E: The {0} OpenID Connect client encountered the fo
 DISCOVERY_EXCEPTION.explanation=The OpenID Connect client configuration might be missing information, or the client encountered an error while communicating with the OpenID Connect provider.
 DISCOVERY_EXCEPTION.useraction=See the error in the message for more information.
 
-OIDC_CLIENT_MISSING_PROVIDER_URI=CWWKS2404E: The providerURI attribute for the {0} OpenID Connect client is null or empty, and there is no metadata available for the OpenID Connect provider.
-OIDC_CLIENT_MISSING_PROVIDER_URI.explanation=The OpenID Connect client must discover metadata for the OpenID Connect provider, but the client does not have a providerURI attribute or provider metadata configured.
-OIDC_CLIENT_MISSING_PROVIDER_URI.useraction=Specify a value for the providerURI attribute in the OpenID Connect client configuration, or specify OpenID Connect provider metadata in the client configuration.
+OIDC_CLIENT_MISSING_PROVIDER_URI=CWWKS2404E: The OpenID Connect client cannot perform discovery because the providerURI attribute for the {0} OpenID Connect client is null or empty.
+OIDC_CLIENT_MISSING_PROVIDER_URI.explanation=The OpenID Connect client must discover metadata for the OpenID Connect provider, but the client does not have a providerURI attribute configured.
+OIDC_CLIENT_MISSING_PROVIDER_URI.useraction=Specify a value for the providerURI attribute in the OpenID Connect client configuration, or ensure the OpenID Connect provider metadata in the client configuration contains all of the data that is required by the OpenID Connect client.
 
 DISCOVERY_METADATA_MISSING_VALUE=CWWKS2405E: The OpenID Connect provider metadata is missing the required [{0}] property.
 DISCOVERY_METADATA_MISSING_VALUE.explanation=The property that is specified in the message must be present in the OpenID Connect provider metadata, but it is missing.
@@ -86,10 +86,9 @@ TOKEN_REQUEST_ERROR=CWWKS2416E: The {0} OpenID Connect client encountered the fo
 TOKEN_REQUEST_ERROR.explanation=The OpenID Connect client might be missing information, the request to the token endpoint failed, or another error occurred while processing the token endpoint response.
 TOKEN_REQUEST_ERROR.useraction=See the error in the message for more information. Verify that the OpenID Connect provider returned a code in the authentication response.
 
-# Do not translate "token_endpoint"
-TOKEN_ENDPOINT_MISSING=CWWKS2417E: The {0} OpenID Connect client cannot find a value for the token endpoint for the OpenID Connect provider.
-TOKEN_ENDPOINT_MISSING.explanation=The token endpoint URL is missing from the OpenID Connect provider metadata and the OpenID Connect client configuration.
-TOKEN_ENDPOINT_MISSING.useraction=Verify that the OpenID Connect provider metadata contains a token_endpoint value. A token endpoint can also be specified in the OpenID Connect client configuration.
+#
+# CWWKS2417E removed and available
+#
 
 USERINFO_RESPONSE_ERROR=CWWKS2418W: The OpenID Connect client encountered the following error when it sent a request to the [{0}] User Info URL of the OpenID Connect provider: {1}
 USERINFO_RESPONSE_ERROR.explanation=The User Info response from the OpenID Connect provider might be malformed or missing information, or the OpenID Connect provider encountered an error when it handled the request.

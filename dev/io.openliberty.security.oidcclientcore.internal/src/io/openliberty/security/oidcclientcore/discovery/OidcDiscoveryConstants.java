@@ -16,6 +16,7 @@ public class OidcDiscoveryConstants {
     public static final String METADATA_KEY_TOKEN_ENDPOINT = "token_endpoint";
     public static final String METADATA_KEY_USERINFO_ENDPOINT = "userinfo_endpoint";
     public static final String METADATA_KEY_JWKS_URI = "jwks_uri";
+    public static final String METADATA_KEY_ENDSESSION_ENDPOINT = "end_session_endpoint";
     public static final String METADATA_KEY_ISSUER = "issuer";
 
     public static final String WELL_KNOWN_SUFFIX = ".well-known/openid-configuration";

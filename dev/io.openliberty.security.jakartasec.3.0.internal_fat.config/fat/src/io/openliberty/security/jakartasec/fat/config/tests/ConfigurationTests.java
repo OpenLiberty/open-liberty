@@ -214,7 +214,6 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException" }) // TODO remove this once 22634 is resolved
     @Test
     public void ConfigurationTests_noProviderURI_withProviderMetadata() throws Exception {
 
@@ -327,7 +326,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         //        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
         //                                                                                          + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1406E_INVALID_CLIENT_CREDENTIAL, "Did not receive an error message stating that the client credential was invalid."));
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2416E_FAILED_TO_REACH_ENdPOINT, "Did not receive an error message stating that we couldn't react the token endpoint."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2416E_FAILED_TO_REACH_ENDPOINT, "Did not receive an error message stating that we couldn't react the token endpoint."));
         expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWOAU0038E_CLIENT_COULD_NOT_BE_VERIFIED, "Did not receive an error message stating that the client could not be verified."));
 
         validationUtils.validateResult(response, expectations);
@@ -357,7 +356,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         //        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
         //                                                                                          + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
         //        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1406E_INVALID_CLIENT_CREDENTIAL, "Did not receive an error message stating that the client credential was invalid."));
-        //        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2416E_FAILED_TO_REACH_ENdPOINT, "Did not receive an error message stating that we couldn't react the token endpoint."));
+        //        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2416E_FAILED_TO_REACH_ENDPOINT, "Did not receive an error message stating that we couldn't react the token endpoint."));
         expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWOAU0038E_CLIENT_COULD_NOT_BE_VERIFIED, "Did not receive an error message stating that the client could not be verified."));
 
         validationUtils.validateResult(response, expectations);
