@@ -36,12 +36,12 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.genericbnf.PasswordNullifier;
 import com.ibm.ws.security.javaeesec.CDIHelper;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesUtils;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
 import com.ibm.ws.webcontainer.security.CookieHelper;
@@ -129,7 +129,7 @@ public class LoginToContinueInterceptor {
                             // redirect to the original url.
                             postLoginProcess(req, res);
                         } else if (AuthenticationStatus.SEND_FAILURE.equals(result)) {
-                            rediectErrorPage(mpp.getAuthMechProperties(getClass(ic)), req, res);
+                            redirectErrorPage(mpp.getAuthMechProperties(getClass(ic)), req, res);
                         }
                         return result;
                     } else if (hmc.getRequest().getUserPrincipal() != null) {
@@ -141,7 +141,7 @@ public class LoginToContinueInterceptor {
                         } else if (!isCustomHAM) {
                             // if the container provided HAM is used, return with success.
                             return AuthenticationStatus.SUCCESS;
-                        } 
+                        }
                     }
                     if (isInitialProtectedUrl(hmc)) {
                         // need to redirect.
@@ -184,8 +184,6 @@ public class LoginToContinueInterceptor {
         return false;
     }
 
-
-
     private boolean existsCookie(HttpServletRequest req, String cookieName) {
         Cookie[] cookies = req.getCookies();
         if (cookies != null) {
@@ -194,7 +192,7 @@ public class LoginToContinueInterceptor {
             }
         }
         return false;
-   }
+    }
 
     protected AuthenticationStatus gotoLoginPage(Properties props, HttpServletRequest req, HttpServletResponse res, HttpMessageContext httpMessageContext) throws IOException {
         String loginPage = resolveString((String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE), _loginPage);
@@ -224,7 +222,8 @@ public class LoginToContinueInterceptor {
                 if (ctx != null) {
                     rd = ctx.getRequestDispatcher(loginPage);
                 } else {
-                    throw new IllegalArgumentException("The context root " + _formLoginContextRoot + " is not valid. Please make sure that the attribute contextRootForFormAuthenticationMechanism is set properly, and the form login page which is specified by the attribute loginFormURL is valid.");
+                    throw new IllegalArgumentException("The context root " + _formLoginContextRoot
+                                                       + " is not valid. Please make sure that the attribute contextRootForFormAuthenticationMechanism is set properly, and the form login page which is specified by the attribute loginFormURL is valid.");
                 }
             } else {
                 rd = req.getRequestDispatcher(loginPage);
@@ -353,9 +352,9 @@ public class LoginToContinueInterceptor {
         req.setAttribute(ATTR_DONE_LOGIN_PROCESS, Boolean.TRUE);
     }
 
-    protected void rediectErrorPage(Properties props, HttpServletRequest req, HttpServletResponse res) throws IOException {
+    protected void redirectErrorPage(Properties props, HttpServletRequest req, HttpServletResponse res) throws IOException {
         String errorPage = resolveString((String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE), _errorPage);
-        if (errorPage != null) {
+        if (errorPage != null && !errorPage.isEmpty()) {
             res.sendRedirect(res.encodeURL(getUrl(req, errorPage, _useGlobalLogin)));
         }
         req.setAttribute(ATTR_DONE_LOGIN_PROCESS, Boolean.TRUE);
