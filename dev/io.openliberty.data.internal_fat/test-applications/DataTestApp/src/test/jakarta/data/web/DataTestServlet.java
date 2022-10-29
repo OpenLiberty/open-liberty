@@ -1137,7 +1137,26 @@ public class DataTestServlet extends FATServlet {
         // 220, 20.0f, 22.0f, 38.0f // page 3
         // 240, 40.0f, 21.0f, 42.0f
 
-        page = packages.findByHeightGreaterThan(20.0f, Pageable.of(3, 2).beforeKeyset(21.0f, 42.0f, 240));
+        KeysetPageable.Cursor cursor = new KeysetPageable.Cursor() {
+            private final List<Object> keysetValues = List.of(21.0f, 42.0f, 240);
+
+            @Override
+            public Object getKeysetElement(int index) {
+                return keysetValues.get(index);
+            }
+
+            @Override
+            public int size() {
+                return keysetValues.size();
+            }
+
+            @Override
+            public String toString() {
+                return "Custom cursor of " + keysetValues;
+            }
+        };
+
+        page = packages.findByHeightGreaterThan(20.0f, Pageable.of(3, 2).beforeKeysetCursor(cursor));
 
         assertEquals(3L, page.getNumber());
 
