@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -109,6 +109,8 @@ public class SessionCacheConfigTestServlet extends FATServlet {
 
         byte[] bytes;
         Cache<String, byte[]> cache = Caching.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
+        if (cache == null) // cache can be null if test case disables the sessionCache-1.0 feature
+            return;
         try {
             bytes = cache.get(key);
         } finally {
@@ -183,6 +185,8 @@ public class SessionCacheConfigTestServlet extends FATServlet {
 
         byte[] bytes;
         Cache<String, byte[]> cache = Caching.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
+        if (cache == null) // cache can be null if test case disables the sessionCache-1.0 feature
+            return;
         try {
             bytes = cache.get(key);
         } finally {
@@ -402,6 +406,8 @@ public class SessionCacheConfigTestServlet extends FATServlet {
         boolean found = false;
         byte[] bytes = null;
         Cache<String, byte[]> cache = Caching.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
+        if (cache == null) // cache can be null if test case disables the sessionCache-1.0 feature
+            return;
         try {
             for (long start = System.nanoTime(); !found && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(500)) {
                 bytes = cache.get(key);
