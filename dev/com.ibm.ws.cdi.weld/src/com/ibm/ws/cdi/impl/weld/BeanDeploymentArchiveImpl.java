@@ -289,6 +289,15 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
             }
         }
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            String debugClassesString = this.beanClasses.entrySet()
+            .stream()
+            .filter(Objects::nonNull)
+            .map(entry -> entry.getKey()  + " = " + entry.getValue().toString())
+            .collect(Collectors.joining(", "));
+            Tr.debug(tc, "scan [ " + getHumanReadableName() + " ] AFTER SCAN. Bean classes: { " + debugClassesString + "}" );
+        }
+
         this.hasBeans = this.beanClasses.size() > 0;
 
         if (archive.getType() != ArchiveType.RUNTIME_EXTENSION) {
@@ -622,6 +631,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
 
     @Override
     public boolean containsBeanClass(Class<?> beanClass) {
+        Tr.entry(tc, "containsBeanClass. BDA=" + getHumanReadableName() + " beanClass=" + beanClass.getCanonicalName());
         //check to see whether it contains this class
         boolean containsBeanClass = false;
         Class<?> localBeanClass = this.beanClasses.get(beanClass.getName());
@@ -629,6 +639,9 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
             containsBeanClass = true;
         }
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "containsBeanClass " + containsBeanClass);
+        }
         return containsBeanClass;
 
     }
