@@ -51,11 +51,11 @@ import java.util.stream.Stream;
 import jakarta.annotation.Resource;
 import jakarta.data.DataException;
 import jakarta.data.Entities;
-import jakarta.data.Page;
 import jakarta.data.Template;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetPageable;
 import jakarta.data.repository.Limit;
+import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Sort;
 import jakarta.inject.Inject;
@@ -900,7 +900,7 @@ public class DataTestServlet extends FATServlet {
         page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, Pageable.size(3));
 
         assertIterableEquals(List.of(114, 116, 118),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
         // should not appear on next page because we already read up to length 18.0:
         packages.save(new Package(117, 17.0f, 23.0f, 12.0f, "package#117"));
@@ -909,10 +909,10 @@ public class DataTestServlet extends FATServlet {
         packages.save(new Package(120, 20.0f, 23.0f, 12.0f, "package#120"));
 
         // Page 2
-        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, page.next());
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, page.nextPageable());
 
         assertIterableEquals(List.of(120, 122, 124),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
         // remove some entries that we already read:
         packages.deleteAllById(List.of(116, 118, 120, 122, 124));
@@ -921,29 +921,29 @@ public class DataTestServlet extends FATServlet {
         packages.save(new Package(130, 22.0f, 70.0f, 67.0f, "package#130"));
 
         // Page 3
-        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, page.next());
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, page.nextPageable());
 
         assertIterableEquals(List.of(130, 132, 133),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
         packages.deleteById(130);
 
         // Page 4
-        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, page.next());
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, page.nextPageable());
 
         assertIterableEquals(List.of(140, 144, 148),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
         packages.deleteAllById(List.of(132, 140));
 
         // Page 5
-        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, page.next());
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, page.nextPageable());
 
         assertIterableEquals(List.of(150, 151),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
         // No more pages
-        assertEquals(null, page.next());
+        assertEquals(null, page.nextPageable());
 
         // At this point, the following should remain (sorted by width descending, height ascending, id descending):
         // 114: 14.0f, 90.0f, 15.0f
@@ -962,34 +962,34 @@ public class DataTestServlet extends FATServlet {
                                              Sort.asc("width"), Sort.desc("height"), Sort.asc("id"));
 
         assertIterableEquals(List.of(148, 150, 151, 133, 144),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
         // Switch to pages of size 4.
 
         // Page 1
         page = packages.findByHeightGreaterThan(10.0f, Pageable.size(4));
 
-        assertEquals(1L, page.getPage());
+        assertEquals(1L, page.getNumber());
 
         assertIterableEquals(List.of(114, 144, 133, 151),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
         packages.saveAll(List.of(new Package(128, 28.0f, 45.0f, 53.0f, "package#128"), // comes after the keyset values, should be included in next page
                                  new Package(153, 53.0f, 45.0f, 28.0f, "package#153") // comes before the keyset values, should not be on next page
         ));
 
         // Page 2
-        page = packages.findByHeightGreaterThan(10.0f, page.next());
+        page = packages.findByHeightGreaterThan(10.0f, page.nextPageable());
 
-        assertEquals(2L, page.getPage());
+        assertEquals(2L, page.getNumber());
 
         assertIterableEquals(List.of(150, 148, 128, 117),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
         // No more pages
-        assertEquals(null, page.next());
+        assertEquals(null, page.nextPageable());
 
-        KeysetPageable previous = page.previous();
+        KeysetPageable previous = page.previousPageable();
         assertNotNull(previous);
         assertEquals(1L, previous.getPage());
 
@@ -1008,32 +1008,32 @@ public class DataTestServlet extends FATServlet {
         page = packages.whereVolumeWithin(5000.0f, 123456.0f, Pageable.size(6));
 
         assertIterableEquals(List.of(114, 133, 144, 128, 148, 150),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
         packages.deleteAllById(List.of(144, 148, 150));
 
         packages.save(new Package(152, 48.0f, 45.0f, 52.0f, "package#152"));
 
         // Page 2
-        page = packages.whereVolumeWithin(5000.0f, 123456.0f, page.next());
+        page = packages.whereVolumeWithin(5000.0f, 123456.0f, page.nextPageable());
 
         assertIterableEquals(List.of(151, 152, 153),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
         // No more pages
-        assertEquals(null, page.next());
+        assertEquals(null, page.nextPageable());
 
         // Previous page
-        previous = page.previous();
+        previous = page.previousPageable();
         assertNotNull(previous);
         assertEquals(1L, previous.getPage());
 
         page = packages.whereVolumeWithin(5000.0f, 123456.0f, previous);
 
-        assertEquals(1L, page.getPage());
+        assertEquals(1L, page.getNumber());
 
         assertIterableEquals(List.of(114, 133, 128),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
     }
 
     /**
@@ -1053,9 +1053,11 @@ public class DataTestServlet extends FATServlet {
         page = packages.findByHeightGreaterThan(4.0f, Pageable.size(1));
 
         assertIterableEquals(List.of(440),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
-        KeysetPageable next = page.next();
+        assertEquals(true, page.hasContent());
+
+        KeysetPageable next = page.nextPageable();
         assertNotNull(next);
         assertEquals(2L, next.getPage());
 
@@ -1068,9 +1070,12 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(Collections.EMPTY_LIST,
                              page.getContent());
 
+        assertEquals(0, page.getNumberOfElements());
+        assertEquals(false, page.hasContent());
+
         // An empty page lacks keyset values from which to request next/previous pages
-        assertEquals(null, page.next());
-        assertEquals(null, page.previous());
+        assertEquals(null, page.nextPageable());
+        assertEquals(null, page.previousPageable());
     }
 
     /**
@@ -1096,28 +1101,28 @@ public class DataTestServlet extends FATServlet {
         // Page 3
         page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(20.0f, Pageable.of(3, 3).beforeKeyset(40.0f, 94.0f, 42.0f, 240));
 
-        assertEquals(3L, page.getPage());
+        assertEquals(3L, page.getNumber());
 
         assertIterableEquals(List.of(230, 233, 236),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
         // Page 2
-        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(20.0f, page.previous());
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(20.0f, page.previousPageable());
 
-        assertEquals(2L, page.getPage());
+        assertEquals(2L, page.getNumber());
 
         assertIterableEquals(List.of(220, 224, 228),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
         // Page 1
-        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(20.0f, page.previous());
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(20.0f, page.previousPageable());
 
-        assertEquals(1L, page.getPage());
+        assertEquals(1L, page.getNumber());
 
         assertIterableEquals(List.of(210, 215),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
-        assertEquals(null, page.previous());
+        assertEquals(null, page.previousPageable());
 
         // using @OrderBy width descending, height ascending, id descending:
         // id   length width  height
@@ -1132,44 +1137,63 @@ public class DataTestServlet extends FATServlet {
         // 220, 20.0f, 22.0f, 38.0f // page 3
         // 240, 40.0f, 21.0f, 42.0f
 
-        page = packages.findByHeightGreaterThan(20.0f, Pageable.of(3, 2).beforeKeyset(21.0f, 42.0f, 240));
+        KeysetPageable.Cursor cursor = new KeysetPageable.Cursor() {
+            private final List<Object> keysetValues = List.of(21.0f, 42.0f, 240);
 
-        assertEquals(3L, page.getPage());
+            @Override
+            public Object getKeysetElement(int index) {
+                return keysetValues.get(index);
+            }
+
+            @Override
+            public int size() {
+                return keysetValues.size();
+            }
+
+            @Override
+            public String toString() {
+                return "Custom cursor of " + keysetValues;
+            }
+        };
+
+        page = packages.findByHeightGreaterThan(20.0f, Pageable.of(3, 2).beforeKeysetCursor(cursor));
+
+        assertEquals(3L, page.getNumber());
 
         assertIterableEquals(List.of(233, 220),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
-        page = packages.findByHeightGreaterThan(20.0f, page.previous());
+        page = packages.findByHeightGreaterThan(20.0f, page.previousPageable());
 
-        assertEquals(2L, page.getPage());
+        assertEquals(2L, page.getNumber());
 
         assertIterableEquals(List.of(236, 224),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
-        page = packages.findByHeightGreaterThan(20.0f, page.previous());
+        page = packages.findByHeightGreaterThan(20.0f, page.previousPageable());
 
-        assertEquals(1L, page.getPage());
+        assertEquals(1L, page.getNumber());
 
         assertIterableEquals(List.of(215, 210),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
-        page = packages.findByHeightGreaterThan(20.0f, page.previous());
+        page = packages.findByHeightGreaterThan(20.0f, page.previousPageable());
 
-        assertEquals(1L, page.getPage()); // page numbers cannot go to 0 or negative
+        assertEquals(1L, page.getNumber()); // page numbers cannot go to 0 or negative
 
         assertIterableEquals(List.of(230, 228),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
-        assertEquals(null, page.previous());
+        assertEquals(null, page.previousPageable());
 
         // Switch directions and expect a page 2 next
 
-        page = packages.findByHeightGreaterThan(20.0f, page.next());
+        page = packages.findByHeightGreaterThan(20.0f, page.nextPageable());
 
-        assertEquals(2L, page.getPage());
+        assertEquals(2L, page.getNumber());
 
         assertIterableEquals(List.of(215, 210),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
         packages.save(new Package(216, 15.0f, 50.0f, 61.0f, "package#216"));
 
@@ -1193,36 +1217,42 @@ public class DataTestServlet extends FATServlet {
         KeysetPageable pagination = Pageable.of(5, 4).beforeKeyset(p230.width, p230.length, p230.id);
         page = packages.whereHeightNotWithin(20.0f, 38.5f, pagination, Sort.asc("width"), Sort.desc("length"), Sort.asc("id"));
 
-        assertEquals(5L, page.getPage());
+        assertEquals(5L, page.getNumber());
 
         assertIterableEquals(List.of(215, 216, 210, 228),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
-        page = packages.whereHeightNotWithin(20.0f, 38.5f, page.previous(), Sort.asc("width"), Sort.desc("length"), Sort.asc("id"));
+        assertEquals(4, page.getNumberOfElements());
 
-        assertEquals(4L, page.getPage());
+        page = packages.whereHeightNotWithin(20.0f, 38.5f, page.previousPageable(), Sort.asc("width"), Sort.desc("length"), Sort.asc("id"));
+
+        assertEquals(4L, page.getNumber());
 
         assertIterableEquals(List.of(233, 224, 219, 236),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
-        page = packages.whereHeightNotWithin(20.0f, 38.5f, page.previous(), Sort.asc("width"), Sort.desc("length"), Sort.asc("id"));
+        assertEquals(4, page.getNumberOfElements());
 
-        assertEquals(3L, page.getPage());
+        page = packages.whereHeightNotWithin(20.0f, 38.5f, page.previousPageable(), Sort.asc("width"), Sort.desc("length"), Sort.asc("id"));
+
+        assertEquals(3L, page.getNumber());
 
         assertIterableEquals(List.of(240),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
-        assertEquals(null, page.previous());
-        KeysetPageable next = page.next();
+        assertEquals(1, page.getNumberOfElements());
+
+        assertEquals(null, page.previousPageable());
+        KeysetPageable next = page.nextPageable();
         assertNotNull(next);
         assertEquals(4L, next.getPage());
 
         page = packages.whereHeightNotWithin(20.0f, 38.5f, next, Sort.asc("width"), Sort.desc("length"), Sort.asc("id"));
 
-        assertEquals(4L, page.getPage());
+        assertEquals(4L, page.getNumber());
 
         assertIterableEquals(List.of(233, 224, 219, 236),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
     }
 
@@ -1254,34 +1284,34 @@ public class DataTestServlet extends FATServlet {
         // Page 3
         page = packages.findByHeightGreaterThan(20.0f, Pageable.of(3, 3).beforeKeyset(10.0f, 31.0f, 310));
 
-        assertEquals(3L, page.getPage());
+        assertEquals(3L, page.getNumber());
 
         assertIterableEquals(List.of(355, 333, 330),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
         packages.saveAll(List.of(new Package(351, 22.0f, 50.0f, 31.f, "package#351"),
                                  new Package(336, 66.0f, 33.0f, 30.f, "package#336"),
                                  new Package(315, 66.0f, 31.0f, 37.f, "package#315")));
 
         // Page 2
-        page = packages.findByHeightGreaterThan(20.0f, page.previous());
+        page = packages.findByHeightGreaterThan(20.0f, page.previousPageable());
 
-        assertEquals(2L, page.getPage());
+        assertEquals(2L, page.getNumber());
 
         assertIterableEquals(List.of(370, 350, 351),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
         packages.deleteAllById(List.of(350, 333));
 
         // Page 1
-        page = packages.findByHeightGreaterThan(20.0f, page.previous());
+        page = packages.findByHeightGreaterThan(20.0f, page.previousPageable());
 
-        assertEquals(1L, page.getPage());
+        assertEquals(1L, page.getNumber());
 
         assertIterableEquals(List.of(379, 376, 373),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
-        assertEquals(null, page.previous());
+        assertEquals(null, page.previousPageable());
 
         // With dynamically specified Sorts: height ascending, length descending, id ascending
 
@@ -1303,43 +1333,43 @@ public class DataTestServlet extends FATServlet {
                                              Pageable.of(5, 2).beforeKeyset(40.0f, 0.0f, 0),
                                              Sort.asc("height"), Sort.desc("length"), Sort.asc("id"));
 
-        assertEquals(5L, page.getPage());
+        assertEquals(5L, page.getNumber());
 
         assertIterableEquals(List.of(315, 373),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
         packages.deleteAllById(List.of(373, 315, 376));
 
         page = packages.whereHeightNotWithin(32.0f, 35.5f,
-                                             page.previous(),
+                                             page.previousPageable(),
                                              Sort.asc("height"), Sort.desc("length"), Sort.asc("id"));
 
-        assertEquals(4L, page.getPage());
+        assertEquals(4L, page.getNumber());
 
         assertIterableEquals(List.of(351, 370),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
         packages.save(new Package(331, 33.0f, 41.0f, 31.0f, "package#351"));
 
         page = packages.whereHeightNotWithin(32.0f, 35.5f,
-                                             page.previous(),
+                                             page.previousPageable(),
                                              Sort.asc("height"), Sort.desc("length"), Sort.asc("id"));
 
-        assertEquals(3L, page.getPage());
+        assertEquals(3L, page.getNumber());
 
         assertIterableEquals(List.of(379, 331),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
         page = packages.whereHeightNotWithin(32.0f, 35.5f,
-                                             page.previous(),
+                                             page.previousPageable(),
                                              Sort.asc("height"), Sort.desc("length"), Sort.asc("id"));
 
-        assertEquals(2L, page.getPage());
+        assertEquals(2L, page.getNumber());
 
         assertIterableEquals(List.of(330, 310),
-                             page.get().map(pkg -> pkg.id).collect(Collectors.toList()));
+                             page.getContent().stream().map(pkg -> pkg.id).collect(Collectors.toList()));
 
-        KeysetPageable previous = page.previous();
+        KeysetPageable previous = page.previousPageable();
         assertNotNull(previous);
 
         // delete the only previous entry and visit the empty previous page
@@ -1347,16 +1377,16 @@ public class DataTestServlet extends FATServlet {
         packages.deleteById(336);
 
         page = packages.whereHeightNotWithin(32.0f, 35.5f,
-                                             page.previous(),
+                                             page.previousPageable(),
                                              Sort.asc("height"), Sort.desc("length"), Sort.asc("id"));
 
-        assertEquals(1L, page.getPage());
+        assertEquals(1L, page.getNumber());
 
         assertIterableEquals(Collections.EMPTY_LIST, page.getContent());
 
         // attempt next after an empty page
-        assertEquals(null, page.next());
-        assertEquals(null, page.previous());
+        assertEquals(null, page.nextPageable());
+        assertEquals(null, page.previousPageable());
     }
 
     /**
@@ -1966,7 +1996,7 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals("Some results are missing", Collections.EMPTY_SET, expected);
 
-        // Paging where the final page includes less than the maximum page size,
+        // Pagination where the final page includes less than the maximum page size,
         Page<Reservation> page1 = reservations.findByHostStartsWith("testRepositoryCustom-host",
                                                                     Pageable.of(1, 4),
                                                                     Sort.desc("meetingID"));
@@ -1976,16 +2006,21 @@ public class DataTestServlet extends FATServlet {
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
+        assertEquals(true, page1.hasContent());
+        assertEquals(4, page1.getNumberOfElements());
+
         Page<Reservation> page2 = reservations.findByHostStartsWith("testRepositoryCustom-host",
-                                                                    page1.next(),
+                                                                    page1.nextPageable(),
                                                                     Sort.desc("meetingID"));
         assertIterableEquals(List.of(10030005L, 10030004L, 10030003L, 10030002L),
                              page2
-                                             .get()
+                                             .getContent()
+                                             .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
+
         Page<Reservation> page3 = reservations.findByHostStartsWith("testRepositoryCustom-host",
-                                                                    page2.next(),
+                                                                    page2.nextPageable(),
                                                                     Sort.desc("meetingID"));
         assertIterableEquals(List.of(10030001L),
                              page3
@@ -1993,7 +2028,9 @@ public class DataTestServlet extends FATServlet {
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
-        assertEquals(null, page3.next());
+        assertEquals(null, page3.nextPageable());
+        assertEquals(true, page3.hasContent());
+        assertEquals(1, page3.getNumberOfElements());
 
         // Paging that comes out even:
         page2 = reservations.findByHostStartsWith("testRepositoryCustom-host",
@@ -2006,7 +2043,7 @@ public class DataTestServlet extends FATServlet {
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
         page3 = reservations.findByHostStartsWith("testRepositoryCustom-host",
-                                                  page2.next(),
+                                                  page2.nextPageable(),
                                                   Sort.desc("meetingID"));
         assertIterableEquals(List.of(10030003L, 10030002L, 10030001L),
                              page3
@@ -2014,7 +2051,14 @@ public class DataTestServlet extends FATServlet {
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .collect(Collectors.toList()));
-        assertEquals(null, page3.next());
+        assertEquals(null, page3.nextPageable());
+
+        // Page of nothing
+        page1 = reservations.findByHostStartsWith("Not Found", Pageable.size(100), Sort.asc("meetingID"));
+        assertEquals(1L, page1.getNumber());
+        assertEquals(false, page1.hasContent());
+        assertEquals(0, page1.getNumberOfElements());
+        assertEquals(null, page1.nextPageable());
 
         // find by member of a collection
         assertIterableEquals(List.of(10030002L, 10030007L),

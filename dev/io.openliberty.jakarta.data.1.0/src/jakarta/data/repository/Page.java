@@ -10,7 +10,16 @@
  *******************************************************************************/
 package jakarta.data.repository;
 
+import java.util.Collection;
+import java.util.function.Supplier;
+
 /**
+ * Method signatures copied from proposals in the Jakarta Data git repo.
  */
-public interface KeysetAwarePage<T> extends KeysetAwareSlice<T>, Page<T> {
+public interface Page<T> extends Slice<T> {
+    <C extends Collection<T>> C getContent(Supplier<C> collectionFactory); // TODO this is from Jakarta NoSQL only
+
+    long getTotalElements();
+
+    long getTotalPages();
 }

@@ -48,7 +48,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import jakarta.data.DataException;
 import jakarta.data.Delete;
 import jakarta.data.Inheritance;
-import jakarta.data.Page;
 import jakarta.data.Result;
 import jakarta.data.Select;
 import jakarta.data.Select.Aggregate;
@@ -58,9 +57,11 @@ import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetPageable;
 import jakarta.data.repository.Limit;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
+import jakarta.data.repository.Slice;
 import jakarta.data.repository.Sort;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -822,7 +823,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             returnValue = new PaginatedIterator<E>(queryInfo, pagination, args); // TODO keyset pagination
                         else if (pagination instanceof KeysetPageable || KeysetAwarePage.class.equals(returnType))
                             returnValue = new KeysetAwarePageImpl<E>(queryInfo, pagination, args);
-                        else if (Page.class.equals(returnType))
+                        else if (Slice.class.equals(returnType) || Page.class.equals(returnType))
                             returnValue = new PageImpl<E>(queryInfo, pagination, args); // TODO Limit with Page as return type
                         else if (Publisher.class.equals(returnType))
                             returnValue = new PublisherImpl<E>(queryInfo, provider.executor, limit, pagination, args);
@@ -934,7 +935,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         if (Optional.class.equals(returnType)) {
                             returnValue = returnValue == null
                                           || returnValue instanceof Collection && ((Collection<?>) returnValue).isEmpty()
-                                          || returnValue instanceof Page && ((Page<?>) returnValue).size() == 0 // TODO !Slice.hasContent()
+                                          || returnValue instanceof Slice && !((Slice<?>) returnValue).hasContent() //
                                                           ? Optional.empty() : Optional.of(returnValue);
                         } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
                             returnValue = CompletableFuture.completedFuture(returnValue);

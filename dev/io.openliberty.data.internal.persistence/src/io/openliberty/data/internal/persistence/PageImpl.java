@@ -14,12 +14,11 @@ import java.util.AbstractList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import jakarta.data.DataException;
-import jakarta.data.Page;
+import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -53,11 +52,6 @@ public class PageImpl<T> implements Page<T> {
     }
 
     @Override
-    public Stream<T> get() {
-        return getContent().stream(); // TODO Is there a more efficient way to do this?
-    }
-
-    @Override
     public List<T> getContent() {
         int size = results.size();
         long max = pagination.getSize();
@@ -76,8 +70,15 @@ public class PageImpl<T> implements Page<T> {
     }
 
     @Override
-    public long getPage() {
+    public long getNumber() {
         return pagination.getPage();
+    }
+
+    @Override
+    public int getNumberOfElements() {
+        int size = results.size();
+        int max = (int) pagination.getSize(); // TODO fix data type to int in spec
+        return size > max ? max : size;
     }
 
     @Override
@@ -86,18 +87,26 @@ public class PageImpl<T> implements Page<T> {
     }
 
     @Override
-    public Pageable next() {
+    public long getTotalElements() {
+        throw new UnsupportedOperationException(); // TODO
+    }
+
+    @Override
+    public long getTotalPages() {
+        throw new UnsupportedOperationException(); // TODO
+    }
+
+    @Override
+    public boolean hasContent() {
+        return !results.isEmpty();
+    }
+
+    @Override
+    public Pageable nextPageable() {
         if (results.size() <= pagination.getSize())
             return null;
 
         return pagination.next();
-    }
-
-    @Override
-    public long size() {
-        long size = results.size();
-        long max = pagination.getSize();
-        return size > max ? max : size;
     }
 
     /**

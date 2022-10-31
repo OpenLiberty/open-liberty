@@ -10,22 +10,42 @@
  *******************************************************************************/
 package jakarta.data.repository;
 
+import java.util.Arrays;
+
 public class KeysetPageable extends Pageable {
     public static enum Mode {
         NEXT, PREVIOUS
     }
 
-    public static class Cursor {
+    public interface Cursor {
+        public Object getKeysetElement(int index);
+
+        public int size();
+    }
+
+    static class CursorImpl implements Cursor {
         private final Object[] keyset;
 
-        private Cursor(Object[] keyset) {
+        CursorImpl(Object... keyset) {
             this.keyset = keyset;
         }
 
+        @Override
+        public boolean equals(Object o) {
+            return o == this || o != null && o.getClass().equals(getClass()) && Arrays.equals(((CursorImpl) o).keyset, keyset);
+        }
+
+        @Override
         public Object getKeysetElement(int index) {
             return keyset[index];
         }
 
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(keyset);
+        }
+
+        @Override
         public int size() {
             return keyset.length;
         }
@@ -41,11 +61,11 @@ public class KeysetPageable extends Pageable {
     private final Cursor cursor;
     private final Mode mode;
 
-    KeysetPageable(Pageable copyFrom, Mode mode, Object... keyset) {
+    KeysetPageable(Pageable copyFrom, Mode mode, Cursor cursor) {
         super(copyFrom.getPage(), copyFrom.getSize());
-        this.cursor = new Cursor(keyset);
+        this.cursor = cursor;
         this.mode = mode;
-        if (keyset == null || keyset.length < 1)
+        if (cursor == null || cursor.size() == 0)
             throw new IllegalArgumentException();
     }
 

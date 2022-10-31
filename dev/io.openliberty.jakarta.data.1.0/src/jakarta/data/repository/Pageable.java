@@ -24,11 +24,19 @@ public class Pageable {
     }
 
     public KeysetPageable afterKeyset(Object... keyset) {
-        return new KeysetPageable(this, KeysetPageable.Mode.NEXT, keyset);
+        return new KeysetPageable(this, KeysetPageable.Mode.NEXT, new KeysetPageable.CursorImpl(keyset));
+    }
+
+    public KeysetPageable afterKeysetCursosr(KeysetPageable.Cursor cursor) {
+        return new KeysetPageable(this, KeysetPageable.Mode.NEXT, cursor);
     }
 
     public KeysetPageable beforeKeyset(Object... keyset) {
-        return new KeysetPageable(this, KeysetPageable.Mode.PREVIOUS, keyset);
+        return new KeysetPageable(this, KeysetPageable.Mode.PREVIOUS, new KeysetPageable.CursorImpl(keyset));
+    }
+
+    public KeysetPageable beforeKeysetCursor(KeysetPageable.Cursor cursor) {
+        return new KeysetPageable(this, KeysetPageable.Mode.PREVIOUS, cursor);
     }
 
     public long getPage() {
