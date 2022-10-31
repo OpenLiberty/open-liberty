@@ -192,7 +192,9 @@ public class Simple2PCCloudTest extends FATServletClient {
         // Now start server2
         server2.setHttpDefaultPort(cloud2ServerPort);
         ProgramOutput po = server2.startServerAndValidate(false, true, true);
-        if (po.getReturnCode() != 0) {
+        final int status = po.getReturnCode();
+        // This test has shown that 22 is success sometimes
+        if (status != 0 && status != 22) {
             Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
             Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
             Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
