@@ -48,7 +48,6 @@ public class Telemetry10 extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addAsManifestResource(Telemetry10Servlet.class.getResource("permissions.xml"), "permissions.xml")
                         .addAsResource(Telemetry10Servlet.class.getResource("microprofile-config.properties"), "META-INF/microprofile-config.properties")
                         .addClasses(Telemetry10Servlet.class,
                                     PatchTestApp.class,
