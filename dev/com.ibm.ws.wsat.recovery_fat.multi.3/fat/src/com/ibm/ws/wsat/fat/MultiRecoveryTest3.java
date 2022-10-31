@@ -21,18 +21,17 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
-@AllowedFFDC(value = { "javax.transaction.SystemException", "javax.transaction.xa.XAException", "java.io.IOException", "java.io.EOFException", "java.net.SocketException" })
+@AllowedFFDC(value = { "javax.transaction.SystemException", "javax.transaction.xa.XAException", "java.io.IOException", "java.io.EOFException", "java.net.SocketException", "com.ibm.tx.jta.ut.util.AlreadyDumpedException" })
 @RunWith(FATRunner.class)
 public class MultiRecoveryTest3 extends MultiRecoveryTest {
 
 	@Test
-	@AllowedFFDC(value = {"javax.transaction.xa.XAException", "javax.xml.ws.WebServiceException"})
+	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException"})
 	public void WSTXMPR009AFVT() throws Exception {
 		recoveryTest(server1, server2, "901","server1");
 	}
 	
 	@Test
-	@AllowedFFDC(value = {"javax.transaction.SystemException", "javax.transaction.xa.XAException"})
 	// XAException should be expected here but halt is no longer halting the JVM so extra protocol
 	// messages can get through after the dumpState.
 	public void WSTXMPR009BFVT() throws Exception {
@@ -49,13 +48,13 @@ public class MultiRecoveryTest3 extends MultiRecoveryTest {
 	}
 	
 	@Test
-	@AllowedFFDC(value = {"javax.transaction.xa.XAException", "javax.xml.ws.WebServiceException"})
+	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException"})
 	public void WSTXMPR010AFVT() throws Exception {
 		recoveryTest(server1, server2, "1001","server1");
 	}
 	
 	@Test
-	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "javax.transaction.SystemException","javax.transaction.xa.XAException"})
+	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException"})
 	// XAException should be expected here but halt is no longer halting the JVM so extra protocol
 	// messages can get through after the dumpState.
 	public void WSTXMPR010BFVT() throws Exception {
@@ -102,7 +101,6 @@ public class MultiRecoveryTest3 extends MultiRecoveryTest {
 	
 	@Test
 	@ExpectedFFDC(value = {"javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
-	@AllowedFFDC(value = {"javax.transaction.SystemException" })
 	public void WSTXMPR012BFVT() throws Exception {
 		recoveryTest(server1, server2, "1202","server2");
 	}
