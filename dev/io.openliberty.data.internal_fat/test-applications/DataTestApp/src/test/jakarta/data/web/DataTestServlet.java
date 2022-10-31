@@ -322,7 +322,15 @@ public class DataTestServlet extends FATServlet {
         assertEquals(p4.firstName, p.firstName);
         assertEquals(p4.lastName, p.lastName);
 
-        // Async find with Collector
+        // Async find with Collector, without pagination
+
+        // Have a collector reduce the results to a count of names.
+        // The database could have done this instead, but it makes a nice, simple example.
+        CompletableFuture<Long> nameCount = personnel.findByFirstNameStartsWith("A", Collectors.counting());
+
+        assertEquals(Long.valueOf(6), nameCount.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+
+        // Async find with Collector, with pagination
 
         // Have a collector reduce the results to a count of names.
         // The database could have done this instead, but it makes a nice, simple example.
