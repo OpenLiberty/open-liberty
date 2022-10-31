@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -100,7 +100,7 @@ public class HandleDelegateImpl implements HandleDelegate {
             logger.exiting(CLASS_NAME, "writeObject");
     }
 
-    private Object readObject(Class klass, ObjectInputStream in) throws IOException, ClassNotFoundException {
+    private Object readObject(Class<?> klass, ObjectInputStream in) throws IOException, ClassNotFoundException {
         final boolean isTraceOn = logger.isLoggable(Level.FINER);
         if (isTraceOn)
             logger.entering(CLASS_NAME, "readObject", klass);
@@ -108,20 +108,29 @@ public class HandleDelegateImpl implements HandleDelegate {
         Object object = in.readObject();
 
         if (object != null) {
+            ORB orb = getORB();
             if (object instanceof String) {
                 if (isTraceOn && logger.isLoggable(Level.FINEST))
                     logger.logp(Level.FINEST, CLASS_NAME, "readObject", "read string: " + object);
-                object = getORB().string_to_object((String) object);
+                object = orb.string_to_object((String) object);
             } else {
                 Stub stub = (Stub) object;
+                ORB connected_orb = null;
                 try {
-                    ORB orb = stub._orb();
+                    connected_orb = stub._orb();
                     if (isTraceOn && logger.isLoggable(Level.FINEST))
-                        logger.logp(Level.FINEST, CLASS_NAME, "readObject", "read connected stub: " + orb);
+                        logger.logp(Level.FINEST, CLASS_NAME, "readObject", "read connected stub: " + connected_orb);
                 } catch (Throwable t) {
                     if (isTraceOn && logger.isLoggable(Level.FINEST))
                         logger.logp(Level.FINEST, CLASS_NAME, "readObject", "read disconnected stub: " + t);
-                    stub.connect(getORB());
+                }
+
+                // Depending on the classloader used for deserialization, the Stub may be connected to a
+                // generic ORB and not the Liberty configured ORB. Connect to the Liberty ORB if needed.
+                if (connected_orb == null || connected_orb != orb) {
+                    stub.connect(orb);
+                    if (isTraceOn && logger.isLoggable(Level.FINEST))
+                        logger.logp(Level.FINEST, CLASS_NAME, "readObject", "connected stub: " + stub._orb());
                 }
             }
 
@@ -133,18 +142,22 @@ public class HandleDelegateImpl implements HandleDelegate {
         return object;
     }
 
+    @Override
     public void writeEJBObject(EJBObject object, ObjectOutputStream out) throws IOException {
         writeObject(object, out);
     }
 
+    @Override
     public EJBObject readEJBObject(ObjectInputStream in) throws ClassNotFoundException, IOException {
         return (EJBObject) readObject(EJBObject.class, in);
     }
 
+    @Override
     public void writeEJBHome(EJBHome home, ObjectOutputStream out) throws IOException {
         writeObject(home, out);
     }
 
+    @Override
     public EJBHome readEJBHome(ObjectInputStream in) throws ClassNotFoundException, IOException {
         return (EJBHome) readObject(EJBHome.class, in);
     }
