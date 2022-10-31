@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jsf22.fat.componentrenderer.jsf479;
+package com.ibm.ws.jsf22.fat.componentrenderer.jsf479.bean.jsf22;
 
 import java.io.Serializable;
 import java.util.ArrayList;
