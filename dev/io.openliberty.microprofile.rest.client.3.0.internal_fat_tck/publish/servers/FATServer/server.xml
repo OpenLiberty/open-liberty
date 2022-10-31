@@ -17,6 +17,7 @@
         <feature>mpRestClient-3.0</feature>
         <feature>arquillian-support-jakarta-2.1</feature>
         <feature>ssl-1.0</feature>
+        <!-- Servlet required due to https://github.com/OpenLiberty/open-liberty/issues/22280 -->
         <feature>servlet-5.0</feature>
     </featureManager>
 
