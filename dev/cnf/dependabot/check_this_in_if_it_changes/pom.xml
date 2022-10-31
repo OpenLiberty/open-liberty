@@ -2624,7 +2624,7 @@
     <dependency>
       <groupId>org.eclipse</groupId>
       <artifactId>yasson</artifactId>
-      <version>2.0.1</version>
+      <version>2.0.4</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse</groupId>
