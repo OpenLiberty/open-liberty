@@ -30,7 +30,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS2400E_AUTHORIZATION_REQ_FAILED = "CWWKS2400E";
     public static final String CWWKS2401E_INVALID_CLIENT_CONFIG = "CWWKS2401E";
     public static final String CWWKS2403E_ERROR_DURING_DISCOVERY = "CWWKS2403E";
-    public static final String CWWKS2404E_PROVIDERURI_MISSING_NO_PROVIDERMETADATA = "CWWKS2404E";
+    public static final String CWWKS2404W_PROVIDERURI_MISSING = "CWWKS2404W";
     public static final String CWWKS2405E_PROVIDERMETADATA_MISSING_AUTHENDPOINT = "CWWKS2405E";
     public static final String CWWKS2407E_ERROR_VERIFYING_RESPONSE = "CWWKS2407E";
     public static final String CWWKS2410E_CANNOT_FIND_STATE = "CWWKS2410E";

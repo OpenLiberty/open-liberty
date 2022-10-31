@@ -14,6 +14,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
@@ -43,12 +45,21 @@ public class LogoutHandler extends EndpointRequest {
         this.idTokenString = idTokenString;
     }
 
-    public ProviderAuthenticationResult logout() throws ServletException, OidcDiscoveryException, OidcClientConfigurationException {
+    @FFDCIgnore(OidcClientConfigurationException.class)
+    public ProviderAuthenticationResult logout() throws ServletException {
 
         LocalLogoutStrategy localLogout = new LocalLogoutStrategy(req);
         localLogout.logout();
 
-        String endSessionEndPoint = MetadataUtils.getEndSessionEndpoint(oidcClientConfig);
+        String endSessionEndPoint = null;
+        try {
+            endSessionEndPoint = MetadataUtils.getEndSessionEndpoint(oidcClientConfig);
+        } catch (OidcDiscoveryException | OidcClientConfigurationException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "The {0} OpenID Connect client failed to find a configured end session endpoint. {1}", oidcClientConfig.getClientId(), e.toString());
+            }
+        }
+
         String redirectUrl = logoutConfig.getRedirectURI();
 
         if (logoutConfig.isNotifyProvider() && endSessionEndPoint != null) {

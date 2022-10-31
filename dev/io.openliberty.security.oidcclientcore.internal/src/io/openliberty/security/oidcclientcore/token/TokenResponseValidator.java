@@ -34,6 +34,8 @@ import io.openliberty.security.common.jwt.JwtParsingUtils;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestParameters;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.config.MetadataUtils;
+import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
+import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.http.EndpointRequest;
 import io.openliberty.security.oidcclientcore.storage.Storage;
 import io.openliberty.security.oidcclientcore.storage.StorageFactory;
@@ -90,9 +92,6 @@ public class TokenResponseValidator {
         eprequest = null;
     }
 
-    /**
-     * @param tokenResponse
-     */
     @FFDCIgnore(Exception.class)
     public JwtClaims validate(TokenResponse tokenResponse) throws TokenValidationException {
         String idtoken = null;
@@ -150,8 +149,8 @@ public class TokenResponseValidator {
                     throw new TokenValidationException(this.clientConfig.getClientId(), "jsonwebsignature error");
                 }
                 TokenSignatureValidationBuilder tokenSignatureValidationBuilder = jose4jutil.signaturevalidationbuilder();
-                String jwksUri = MetadataUtils.getJwksUri(clientConfig);
-                tokenSignatureValidationBuilder.signature(jsonStruct).sslsupport(sslSupport).issuer(issuerconfigured).jwkuri(jwksUri).clientid(clientConfig.getClientId());
+                setJwksUri(tokenSignatureValidationBuilder);
+                tokenSignatureValidationBuilder.signature(jsonStruct).sslsupport(sslSupport).issuer(issuerconfigured).clientid(clientConfig.getClientId());
 
                 tokenSignatureValidationBuilder.clientsecret(clientSecret);
                 tokenSignatureValidationBuilder.jwkset(jwkset);
@@ -164,6 +163,19 @@ public class TokenResponseValidator {
             }
         }
         throw new TokenValidationException(this.clientConfig.getClientId(), "not a valid token to continue the flow");
+    }
+
+    @FFDCIgnore(OidcClientConfigurationException.class)
+    void setJwksUri(TokenSignatureValidationBuilder tokenSignatureValidationBuilder) {
+        String jwksUri = null;
+        try {
+            jwksUri = MetadataUtils.getJwksUri(clientConfig);
+            tokenSignatureValidationBuilder.jwkuri(jwksUri);
+        } catch (OidcDiscoveryException | OidcClientConfigurationException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to find a JWKS URI to use for verifying the signature of the ID token: " + e);
+            }
+        }
     }
 
     public String getStateParameter() {

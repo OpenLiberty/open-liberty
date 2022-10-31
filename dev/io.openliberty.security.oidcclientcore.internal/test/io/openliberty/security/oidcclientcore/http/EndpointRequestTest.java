@@ -43,7 +43,7 @@ public class EndpointRequestTest extends CommonTestClass {
 
     private final String CWWKS2401E_OIDC_CLIENT_CONFIGURATION_ERROR = "CWWKS2401E";
     private final String CWWKS2403E_DISCOVERY_EXCEPTION = "CWWKS2403E";
-    private final String CWWKS2404E_OIDC_CLIENT_MISSING_PROVIDER_URI = "CWWKS2404E";
+    private final String CWWKS2404W_OIDC_CLIENT_MISSING_PROVIDER_URI = "CWWKS2404W";
 
     private final String clientId = "myOidcClientId";
     private final String authorizationEndpointUrl = "https://localhost:8020/oidc/op/authorize";
@@ -111,7 +111,7 @@ public class EndpointRequestTest extends CommonTestClass {
             JSONObject result = endpointRequest.getProviderDiscoveryMetadata(config);
             fail("Should have thrown an exception but got " + result);
         } catch (OidcClientConfigurationException e) {
-            verifyException(e, CWWKS2401E_OIDC_CLIENT_CONFIGURATION_ERROR + ".+" + CWWKS2404E_OIDC_CLIENT_MISSING_PROVIDER_URI);
+            verifyException(e, CWWKS2401E_OIDC_CLIENT_CONFIGURATION_ERROR + ".+" + CWWKS2404W_OIDC_CLIENT_MISSING_PROVIDER_URI);
         }
     }
 
