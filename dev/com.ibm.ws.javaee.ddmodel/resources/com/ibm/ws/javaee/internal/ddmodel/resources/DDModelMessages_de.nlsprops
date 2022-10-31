@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011,2021 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -109,7 +109,7 @@ invalid.href.prefix.useraction=Korrigieren Sie den HREF-Wert.
 #    {3} is an HREF value which is not valid.
 # -----------------------------------------------------------------------
 invalid.href=CWWKC2284E: Nicht g\u00fcltiger HREF-Wert {3} des Elements {2} im Bereitstellungsdeskriptor {0} in Zeile {1}.
-invalid.href.explanation=Der Elementwert ist kein g\u00fcltiger HREF-Wert: Der Wert muss das Zeichen '#' aufweisen und das Zeichen '#' darf nicht das erste oder letzte Zeichen des Werts sein.
+invalid.href.explanation=Der Elementwert ist kein g\u00fcltiger HREF-Wert: Der Wert muss ein Zeichen "#" enthalten und das Zeichen "#" darf nicht das erste oder letzte Zeichen des Werts sein.
 invalid.href.useraction=Korrigieren Sie den HREF-Wert.
 
 # ADDED:
@@ -148,7 +148,7 @@ unresolved.href.useraction=Korrigieren Sie entweder die HREF-ID im referenzieren
 #    {2} is the name of the element which is being processed.
 # -----------------------------------------------------------------------
 missing.href=CWWKC2287E: In Element {2} im Bereitstellungsdeskriptor ist kein HREF-Attribut {0} in Zeile {1} vorhanden.
-missing.href.explanation=Das Element ist erforderlich, damit ein HREF-Attribut bereitgestellt wird. Ein HREF-Attribut weist den Namen 'href' auf.
+missing.href.explanation=Das Element ist erforderlich, damit ein HREF-Attribut bereitgestellt wird. Ein HREF-Attribut hat den Namen "href".
 missing.href.useraction=F\u00fcgen Sie ein HREF-Attribut zum Element hinzu.
 
 ######
@@ -303,8 +303,8 @@ invalid.long.value.useraction=Korrigieren Sie den Implementierungsdeskriptor und
 #    {1} The type of element which is being processed.  For example, 'ejb-bnd', 'ejb-ext', 'web-bnd', 'web-ext'.
 # -----------------------------------------------------------------------
 module.name.not.specified=CWWKC2276E: Das Attribut ''moduleName'' fehlt in mindestens einer Bindung des Typs ''{1}'' und Erweiterungskonfigurationselementen der Anwendung {0}.
-module.name.not.specified.explanation=Bindungen und Erweiterungskonfigurationselemente m\u00fcssen das Attribut 'moduleName' aufweisen.
-module.name.not.specified.useraction=Stellen Sie sicher, dass das Attribut 'moduleName' in allen Bindungen und Erweiterungskonfigurationselementen vorhanden ist.
+module.name.not.specified.explanation=Bindungen und Erweiterungskonfigurationselemente m\u00fcssen ein Attribut "moduleName" haben.
+module.name.not.specified.useraction=Stellen Sie sicher, dass ein Attribut "moduleName" in allen Bindungen und Erweiterungskonfigurationselementen vorhanden ist.
 
 # REMOVED:
 # module.name.invalid=CWWKC2277E: One or more module names on the {1} element are invalid. The invalid module name or names are {0}.
@@ -320,8 +320,8 @@ module.name.not.specified.useraction=Stellen Sie sicher, dass das Attribut 'modu
 #    {3} Module names found in the application.
 # -----------------------------------------------------------------------
 module.name.not.found=CWWKC2277E: Die {2} Attribute des Typs ''moduleName'', die in den ''{1}'' Bindungen und den Erweiterungskonfigurationselementen von Anwendung {0} angegeben sind, wurden nicht gefunden.  Die Namen der Anwendungsmodule sind {3}.
-module.name.not.found.explanation=Die Attribute 'moduleName' der Bindungen und Erweiterungskonfigurationselemente m\u00fcssen mit den Namen der Anwendungsmodule \u00fcbereinstimmen.
-module.name.not.found.useraction=Stellen Sie sicher, dass alle Attribute des Typs 'moduleName' der Bindungen und Erweiterungskonfigurationselementen mit den Namen der Anwendungsmodule \u00fcbereinstimmen. 
+module.name.not.found.explanation=Die "moduleName"-Attribute von Bindungs- und Erweiterungskonfigurationselementen m\u00fcssen mit Anwendungsmodulnamen \u00fcbereinstimmen.
+module.name.not.found.useraction=Stellen Sie sicher, dass alle "moduleName"-Attribute von Bindungen und Erweiterungskonfigurationselementen mit Anwendungsmodulnamen \u00fcbereinstimmen. 
 
 # ADDED
 # -----------------------------------------------------------------------
@@ -331,8 +331,8 @@ module.name.not.found.useraction=Stellen Sie sicher, dass alle Attribute des Typ
 #    {2} Duplicated module names used in configuration elements.
 # -----------------------------------------------------------------------
 module.name.duplicated=CWWKC2278E: Die {2} Attribute des Typs ''moduleName'', die in den ''{1}'' Bindungen und den Erweiterungskonfigurationselementen von Anwendung {0} angegeben sind, sind doppelt vorhanden.
-module.name.duplicated.explanation=Die Attribute 'moduleName' von Bindungen und Erweiterungskonfigurationselementen d\u00fcrfen nicht doppelt vorhanden sein.
-module.name.duplicated.useraction=Stellen Sie sicher, dass alle Attribute des Typs 'moduleName' der Bindungen und Erweiterungskonfigurationselementen eindeutig sind. 
+module.name.duplicated.explanation=Die "moduleName"-Attribute von Bindungen und Erweiterungskonfigurationselementen d\u00fcrfen nicht dupliziert werden.
+module.name.duplicated.useraction=Stellen Sie sicher, dass alle "moduleName"-Attribute von Bindungen und Erweiterungskonfigurationselementen eindeutig sind. 
 
 # ADDED:
 # -----------------------------------------------------------------------
@@ -380,4 +380,28 @@ incorrect.descriptor.namespace.useraction=\u00c4ndern Sie den Namensbereich im B
 incorrect.descriptor.namespace.for.version=CWWCK27781W: Vom Bereitstellungsdeskriptor {0} werden in Zeile {1} Version {2} und Namensbereich {3} angegeben, erforderlich ist f\u00fcr diese Version jedoch Namensbereich {4}.
 incorrect.descriptor.namespace.for.version.explanation=Im Bereitstellungsdeskriptor f\u00fcr die angegebene Version wird ein bestimmter Namensbereich erwartet. Der falsche Namensbereich wurde ignoriert.
 incorrect.descriptor.namespace.for.version.useraction=\u00c4ndern Sie den Namensbereich im Bereitstellungsdeskriptor in den erwarteten Wert.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the value of a 'name' attribute within a session configuration 'attribute' element
+#    {3} is the value of the 'value' attribute of a session configuration 'attribute' element
+#    {4} is the value of the 'value' attribute of a session configuration 'attribute' element
+# -----------------------------------------------------------------------
+duplicate.session.config.attribute.name=CWWCK27790W: Der Implementierungsdeskriptor {0} in Zeile {1} dupliziert das Attributelement "{2}" "name" einer Sitzungskonfiguration.  "{3}" "value" ist dem Namen anstelle des vorherigen "{4}" "value" zugeordnet.
+duplicate.session.config.attribute.name.explanation=Der Implementierungsdeskriptor hat mehrere Attributelemente mit demselben Namen, die sich in demselben Sitzungskonfigurationselement befinden. Der Deskriptorparser ignoriert alle bis auf das letzte dieser Elemente.
+duplicate.session.config.attribute.name.useraction=Wenn das letzte Attributelement nicht das Element ist, das verwendet werden soll, aktualisieren Sie den Implementierungsdeskriptor, um zus\u00e4tzliche Attributelemente mit demselben Namen zu entfernen.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the value of the 'value' attribute of a session configuration 'attribute' element
+# -----------------------------------------------------------------------
+missing.session.config.attribute.name=CWWCK27791W: Der Implementierungsdeskriptor {0} in Zeile {1} hat ein Sitzungskonfigurationsattribut ohne Namen.  Dieses Attribut mit "{2}" "value" wurde ignoriert.
+missing.session.config.attribute.name.explanation=Ein Sitzungskonfigurationsattribut muss ein Namenselement haben. 
+missing.session.config.attribute.name.useraction=Aktualisieren Sie den Implementierungsdeskriptor, um das Attribut zu entfernen, das kein Namenselement hat, oder f\u00fcgen Sie allen Attributelementen Namenselemente hinzu.
+
+
 

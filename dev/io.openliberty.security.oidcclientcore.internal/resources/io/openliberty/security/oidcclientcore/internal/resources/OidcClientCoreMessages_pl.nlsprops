@@ -91,3 +91,24 @@ TOKEN_ENDPOINT_MISSING=CWWKS2417E: Klient OpenID Connect o nazwie {0} nie mo\u01
 TOKEN_ENDPOINT_MISSING.explanation=Brak adresu URL punktu ko\u0144cowego tokenu z metadanych dostawcy OpenID Connect i konfiguracji klienta OpenID Connect.
 TOKEN_ENDPOINT_MISSING.useraction=Sprawd\u017a, czy metadane dostawcy OpenID Connect zawieraj\u0105 warto\u015b\u0107 token_endpoint. Punkt ko\u0144cowy tokenu mo\u017ce by\u0107 r\u00f3wnie\u017c okre\u015blony w konfiguracji klienta OpenID Connect.
 
+USERINFO_RESPONSE_ERROR=CWWKS2418W: Klient OpenID Connect napotka\u0142 nast\u0119puj\u0105cy b\u0142\u0105d podczas wysy\u0142ania \u017c\u0105dania do adresu URL informacji o u\u017cytkowniku [{0}] dla dostawcy OpenID Connect: {1}
+USERINFO_RESPONSE_ERROR.explanation=Odpowied\u017a Informacje o u\u017cytkowniku od dostawcy OpenID Connect mo\u017ce by\u0107 zniekszta\u0142cona lub brakuje w niej informacji, albo dostawca OpenID Connect napotka\u0142 b\u0142\u0105d podczas obs\u0142ugi \u017c\u0105dania.
+USERINFO_RESPONSE_ERROR.useraction=Wi\u0119cej informacji na ten temat zawiera opis b\u0142\u0119du w komunikacie. Upewnij si\u0119, \u017ce adres URL informacji o u\u017cytkowniku dla dostawcy OpenID Connect jest poprawny.
+
+USERINFO_RESPONSE_NOT_200=CWWKS2419W: \u017b\u0105danie wys\u0142ane do adresu URL informacji o u\u017cytkowniku [{0}] dostawcy OpenID Connect zwr\u00f3ci\u0142o kod statusu HTTP {1}. Dostawca OpenID Connect zwr\u00f3ci\u0142 nast\u0119puj\u0105c\u0105 odpowied\u017a: {2}
+USERINFO_RESPONSE_NOT_200.explanation=Klient OpenID Connect nie otrzyma\u0142 pomy\u015blnej odpowiedzi od dostawcy OpenID Connect.
+USERINFO_RESPONSE_NOT_200.useraction=Wi\u0119cej informacji na ten temat zawiera kod statusu i odpowied\u017a na b\u0142\u0105d w komunikacie.
+
+VERIFICATION_KEY_ERROR=CWWKS2420E: Klient OpenID Connect {0} napotka\u0142 nast\u0119puj\u0105cy b\u0142\u0105d podczas pobierania klucza w celu zweryfikowania tokenu to\u017csamo\u015bci z dostawcy OpenID Connect: {1}
+VERIFICATION_KEY_ERROR.explanation=Mo\u017ce brakowa\u0107 klucza weryfikacji, poniewa\u017c klient OpenID Connect napotka\u0142 b\u0142\u0105d podczas pobierania klucza z dostawcy OpenID Connect lub wyst\u0105pi\u0142 inny b\u0142\u0105d.
+VERIFICATION_KEY_ERROR.useraction=Wi\u0119cej informacji na ten temat zawiera opis b\u0142\u0119du w komunikacie.
+
+# Do not translate "jwksConnectTimeout"
+JWK_CONNECTION_TIMED_OUT=CWWKS2421E: Klient OpenID Connect nie m\u00f3g\u0142 po\u0142\u0105czy\u0107 si\u0119 z identyfikatorem URI [{0}] JWK dostawcy OpenID Connect w ci\u0105gu {1} milisekund. Rozwa\u017c zaktualizowanie w\u0142a\u015bciwo\u015bci jwksConnectTimeout w konfiguracji klienta OpenID Connect.
+JWK_CONNECTION_TIMED_OUT.explanation=Klient OpenID Connect nie mo\u017ce nawi\u0105za\u0107 po\u0142\u0105czenia z u\u017cyciem identyfikatora URI JWK w skonfigurowanym przedziale czasu.
+JWK_CONNECTION_TIMED_OUT.useraction=Zaktualizuj w\u0142a\u015bciwo\u015b\u0107 jwksConnectTimeout w konfiguracji klienta OpenID Connect. Sprawd\u017a, czy dostawca OpenID Connect jest osi\u0105galny.
+
+# Do not translate "jwksReadTimeout"
+JWK_READ_TIMED_OUT=CWWKS2422E: Klient OpenID Connect nie m\u00f3g\u0142 odczyta\u0107 danych z identyfikatora URI JWK [{0}] dostawcy OpenID Connect w ci\u0105gu {1} milisekund. Rozwa\u017c aktualizacj\u0119 w\u0142a\u015bciwo\u015bci jwksReadTimeout w konfiguracji klienta OpenID Connect.
+JWK_READ_TIMED_OUT.explanation=Klient OpenID Connect nie mo\u017ce odczyta\u0107 danych JWK z identyfikatora URI JWK w skonfigurowanym przedziale czasu.
+JWK_READ_TIMED_OUT.useraction=Zaktualizuj w\u0142a\u015bciwo\u015b\u0107 jwksReadTimeout w konfiguracji klienta OpenID Connect. Sprawd\u017a, czy dostawca OpenID Connect jest osi\u0105galny.

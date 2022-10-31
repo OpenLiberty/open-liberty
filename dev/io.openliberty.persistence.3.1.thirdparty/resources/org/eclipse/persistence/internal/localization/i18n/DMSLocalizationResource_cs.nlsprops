@@ -95,7 +95,7 @@ session_name=N\u00e1zev relace
 
 sql_generation=\u010cas str\u00e1ven\u00fd generov\u00e1n\u00edm SQL. V p\u0159\u00edpad\u011b v\u00fdraz\u016f TopLink to je \u010das str\u00e1ven\u00fd p\u0159evodem v\u00fdrazu na SQL.
 
-sql_prepare=\u010cas str\u00e1ven\u00fd v JDBC p\u0159\u00edpravou p\u0159\u00edkazu. Zahrnuje tak\u00e9 \u010das str\u00e1ven\u00fd v EIS vytv\u00e1\u0159en\u00edm interakce p\u0159idru\u017een\u00e9 k p\u0159ipojen\u00ed a vytv\u00e1\u0159en\u00edm vstupn\u00edho a v\u00fdstupn\u00edho objektu typu Z\u00e1znam.
+sql_prepare=\u010cas str\u00e1ven\u00fd v JDBC p\u0159ipravuj\u00edc\u00ed p\u0159\u00edkaz. Zahrnuje tak\u00e9 \u010das str\u00e1ven\u00fd v EIS vytv\u00e1\u0159en\u00edm interakce p\u0159idru\u017een\u00e9 k p\u0159ipojen\u00ed a vytv\u00e1\u0159en\u00ed vstupn\u00edch a v\u00fdstupn\u00edch z\u00e1znamov\u00fdch objekt\u016f
 
 unitofwork_commit=M\u011b\u0159\u00ed proces potvrzen\u00ed objekt\u016f UnitOfWork
 

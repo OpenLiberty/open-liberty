@@ -65,3 +65,15 @@
 
 17025=Toto mapov\u00e1n\u00ed vy\u017eaduje prvek seskupen\u00ed ciz\u00edch kl\u00ed\u010d\u016f, proto\u017ee existuje v\u00edce ciz\u00edch kl\u00ed\u010d\u016f.
 
+17026=Vlastnost operace mus\u00ed b\u00fdt nastavena na interakci dotazu.
+
+17027=N\u00e1zev c\u00edlov\u00e9 tabulky nen\u00ed nastaven. Mus\u00ed b\u00fdt nastaven na interakci dotazu.
+
+17028=Neplatn\u00e1 hodnota vlastnosti konzistence: {0}
+
+17029=Neplatn\u00e1 hodnota vlastnosti trvalosti: {0}
+
+17030=Polo\u017eka XMLInteraction je platn\u00e1 pouze pro dotazy na objekt, pou\u017eijte vlastnost MappedInteraction pro nativn\u00ed dotazy: {0}
+
+17031=Dotaz je p\u0159\u00edli\u0161 slo\u017eit\u00fd pro p\u0159eklad Oracle NoSQL, pouze vybran\u00e9 dotazy jsou podporov\u00e1ny v dotazu: {0}
+

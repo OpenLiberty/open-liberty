@@ -91,3 +91,24 @@ TOKEN_ENDPOINT_MISSING=CWWKS2417E: Clientul OpenID Connect {0} nu poate g\u0103s
 TOKEN_ENDPOINT_MISSING.explanation=URL-ul punctului final de jeton lipse\u0219te din metadatele furnizorului OpenID Connect \u0219i din configura\u021bia clientului OpenID Connect.
 TOKEN_ENDPOINT_MISSING.useraction=Verifica\u021bi dac\u0103 metadatele furnizorului OpenID Connect con\u021bin o valoare token_endpoint. Un punct final de jeton poate fi specificat \u0219i \u00een configura\u021bia clientului OpenID Connect.
 
+USERINFO_RESPONSE_ERROR=CWWKS2418W: Clientul OpenID Connect a primit urm\u0103toarea eroare atunci c\u00e2nd a trimis o cerere c\u0103tre URL-ul de informa\u021bii de utilizator [{0}] al furnizorului OpenID Connect: {1}
+USERINFO_RESPONSE_ERROR.explanation=R\u0103spunsul cu informa\u021bii de utilizator de la furnizorul OpenID Connect ar putea avea un format gre\u0219it sau informa\u021bii lips\u0103 sau furnizorul OpenID Connect a primit o eroare c\u00e2nd a tratat cererea.
+USERINFO_RESPONSE_ERROR.useraction=Pentru mai multe informa\u021bii, vede\u021bi eroarea din mesaj. Verifica\u021bi dac\u0103 URL-ul de informa\u021bii de utilizator pentru furnizorul OpenID Connect este corect.
+
+USERINFO_RESPONSE_NOT_200=CWWKS2419W: Cererea c\u0103tre URL-ul de informa\u021bii de utilizator [{0}] al furnizorului OpenID Connect a returnat un cod de stare HTTP {1}. Furnizorul OpenID Connect a returnat urm\u0103torul r\u0103spuns: {2}
+USERINFO_RESPONSE_NOT_200.explanation=Clientul OpenID Connect nu a primit un r\u0103spuns de succes de la furnizorul OpenID Connect.
+USERINFO_RESPONSE_NOT_200.useraction=Pentru mai multe informa\u021bii, consulta\u021bi codul de stare \u0219i r\u0103spunsul de eroare din mesaj.
+
+VERIFICATION_KEY_ERROR=CWWKS2420E: Clientul OpenID Connect {0} a primit urm\u0103toarea eroare la ob\u021binerea cheii pentru verificarea jetonului de identitate de la furnizorul OpenID Connect: {1}
+VERIFICATION_KEY_ERROR.explanation=Este posibil s\u0103 lipseasc\u0103 cheia de verificare, clientul OpenID Connect s\u0103 fi primit o eroare la aducerea cheii de la furnizorul OpenID Connect sau s\u0103 fi ap\u0103rut alt\u0103 eroare.
+VERIFICATION_KEY_ERROR.useraction=Pentru mai multe informa\u021bii, vede\u021bi eroarea din mesaj.
+
+# Do not translate "jwksConnectTimeout"
+JWK_CONNECTION_TIMED_OUT=CWWKS2421E: Clientul OpenID Connect nu a reu\u0219it s\u0103 se conecteze la URI-ul JWK [{0}] al furnizorului OpenID Connect \u00een {1} milisecunde. Lua\u021bi \u00een considerare actualizarea propriet\u0103\u021bii jwksConnectTimeout \u00een configura\u021bia de client OpenID Connect.
+JWK_CONNECTION_TIMED_OUT.explanation=Clientul OpenID Connect nu poate stabili o conexiune cu URI-ul JWK \u00een cadrul de timp configurat.
+JWK_CONNECTION_TIMED_OUT.useraction=Actualiza\u021bi proprietatea jwksConnectTimeout \u00een configura\u021bia de client OpenID Connect. Verifica\u021bi dac\u0103 furnizorul OpenID Connect este accesibil.
+
+# Do not translate "jwksReadTimeout"
+JWK_READ_TIMED_OUT=CWWKS2422E: Clientul OpenID Connect nu a reu\u0219it s\u0103 citeasc\u0103 date din URI-ul JWK [{0}] al furnizorului OpenID Connect \u00een {1} milisecunde. Lua\u021bi \u00een considerare actualizarea propriet\u0103\u021bii jwksReadTimeout \u00een configura\u021bia de client OpenID Connect.
+JWK_READ_TIMED_OUT.explanation=Clientul OpenID Connect nu poate citi datele JWK din URI-ul JWK \u00een cadrul de timp configurat.
+JWK_READ_TIMED_OUT.useraction=Actualiza\u021bi proprietatea jwksReadTimeout \u00een configura\u021bia de client OpenID Connect. Verifica\u021bi dac\u0103 furnizorul OpenID Connect este accesibil.

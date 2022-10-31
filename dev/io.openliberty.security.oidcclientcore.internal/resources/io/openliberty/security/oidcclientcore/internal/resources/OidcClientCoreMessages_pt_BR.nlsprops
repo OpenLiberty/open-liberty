@@ -91,3 +91,24 @@ TOKEN_ENDPOINT_MISSING=CWWKS2417E: O cliente OpenID Connect {0} n\u00e3o pode en
 TOKEN_ENDPOINT_MISSING.explanation=A URL do terminal do token est\u00e1 ausente nos metadados do provedor OpenID Connect e na configura\u00e7\u00e3o do cliente OpenID Connect.
 TOKEN_ENDPOINT_MISSING.useraction=Verifique se os metadados do provedor OpenID Connect cont\u00eam um valor token_endpoint. Um terminal de token tamb\u00e9m pode ser especificado na configura\u00e7\u00e3o do cliente OpenID Connect.
 
+USERINFO_RESPONSE_ERROR=CWWKS2418W: O cliente de conex\u00e3o OpenID encontrou o erro a seguir quando enviou uma solicita\u00e7\u00e3o para a URL de informa\u00e7\u00f5es do usu\u00e1rio [{0}] do provedor de conex\u00e3o OpenID: {1}
+USERINFO_RESPONSE_ERROR.explanation=A resposta de informa\u00e7\u00f5es do usu\u00e1rio a partir do provedor de conex\u00e3o OpenID pode ter informa\u00e7\u00f5es malformadas ou ausentes, ou o provedor de conex\u00e3o OpenID encontrou um erro quando manipulou a solicita\u00e7\u00e3o.
+USERINFO_RESPONSE_ERROR.useraction=Para obter mais informa\u00e7\u00f5es, veja o erro na mensagem. Verifique se a URL de informa\u00e7\u00f5es do usu\u00e1rio para o provedor de conex\u00e3o OpenID est\u00e1 correta.
+
+USERINFO_RESPONSE_NOT_200=CWWKS2419W: A solicita\u00e7\u00e3o para a URL de informa\u00e7\u00f5es do usu\u00e1rio [{0}] do provedor de conex\u00e3o OpenID retornou um c\u00f3digo de status HTTP {1}. O provedor de conex\u00e3o OpenID retornou a resposta a seguir: {2}
+USERINFO_RESPONSE_NOT_200.explanation=O cliente de conex\u00e3o OpenID n\u00e3o recebeu uma resposta bem-sucedida do provedor de conex\u00e3o OpenID.
+USERINFO_RESPONSE_NOT_200.useraction=Para obter mais informa\u00e7\u00f5es, consulte o c\u00f3digo de status e resposta de erro na mensagem.
+
+VERIFICATION_KEY_ERROR=CWWKS2420E: O cliente de conex\u00e3o OpenID {0} encontrou o erro a seguir ao obter a chave para verificar o token de identidade a partir do provedor de conex\u00e3o OpenID: {1}
+VERIFICATION_KEY_ERROR.explanation=A chave de verifica\u00e7\u00e3o pode estar ausente, o cliente de conex\u00e3o OpenID encontrou um erro ao buscar a chave a partir do provedor de conex\u00e3o OpenID, ou ocorreu outro erro.
+VERIFICATION_KEY_ERROR.useraction=Para obter mais informa\u00e7\u00f5es, veja o erro na mensagem.
+
+# Do not translate "jwksConnectTimeout"
+JWK_CONNECTION_TIMED_OUT=CWWKS2421E: O cliente de conex\u00e3o OpenID falhou ao se conectar com o URI do JWK [{0}] do provedor de conex\u00e3o OpenID dentro de {1} milissegundos. Considere atualizar a propriedade jwksConnectTimeout na configura\u00e7\u00e3o do cliente de conex\u00e3o OpenID.
+JWK_CONNECTION_TIMED_OUT.explanation=O cliente de conex\u00e3o OpenID n\u00e3o pode estabelecer uma conex\u00e3o com o URI do JWK dentro do prazo configurado.
+JWK_CONNECTION_TIMED_OUT.useraction=Atualize a propriedade jwksConnectTimeout na configura\u00e7\u00e3o do cliente de conex\u00e3o OpenID. Verifique se o provedor de conex\u00e3o OpenID est\u00e1 acess\u00edvel.
+
+# Do not translate "jwksReadTimeout"
+JWK_READ_TIMED_OUT=CWWKS2422E: O cliente de conex\u00e3o OpenID falhou ao ler dados do URI do JWK [{0}] do provedor de conex\u00e3o OpenID dentro de {1} milissegundos. Considere atualizar a propriedade jwksReadTimeout na configura\u00e7\u00e3o do cliente de conex\u00e3o OpenID.
+JWK_READ_TIMED_OUT.explanation=O cliente de conex\u00e3o OpenID n\u00e3o pode ler os dados do JWK a partir do URI do JWK dentro do prazo configurado.
+JWK_READ_TIMED_OUT.useraction=Atualize a propriedade jwksReadTimeout na configura\u00e7\u00e3o do cliente OpenID Connect. Verifique se o provedor de conex\u00e3o OpenID est\u00e1 acess\u00edvel.

@@ -135,7 +135,7 @@
 
 45207=Se ha producido un error al intentar resolver un esquema utilizando el SchemaResolver proporcionado.
 
-45208=No se puede correlacionar la propiedad {0} del tipo {1}. Se necesitan los paquetes de jakarta.activation y jakarta.mail para correlacionar las propiedades de tipo DataHandler. Aseg\u00farese de que ambos est\u00e9n disponibles en la classpath.
+45208=No se puede correlacionar la propiedad {0} del tipo {1}. Los paquetes jakarta.activation y jakarta.mail son necesarios para correlacionar propiedades de tipo DataHandler. Aseg\u00farese de que ambos est\u00e9n disponibles en la classpath.
 
 45209=Se ha intentado restablecer la instancia ApplicationResolver en SDOHelperContext.  S\u00f3lo se permite un establecimiento.
 

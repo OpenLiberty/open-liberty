@@ -33,9 +33,9 @@
 
 6003=El n\u00famero de argumentos proporcionados a la consulta para la ejecuci\u00f3n no coincide con el n\u00famero de argumentos en la definici\u00f3n de consulta.
 
-6004=El objeto [{0}], de la clase [{1}], con el c\u00f3digo hash de identidad (System.identityHashCode()) [{2}], {3}no es de este espacio de objeto UnitOfWork,  sino de la sesi\u00f3n padre.  El objeto no se ha registrado nunca en esta UnitOfWork, {3}pero se ha le\u00eddo en la sesi\u00f3n padre y se ha relacionado con un objeto registrado en la UnitOfWork.  Aseg\u00farese de que est\u00e1 registrando {3}correctamente los objetos.  Si sigue teniendo problemas, puede utilizar el m\u00e9todo UnitOfWork.validateObjectSpace() para {3}ayudar a depurar donde se ha producido el error.  Para obtener m\u00e1s informaci\u00f3n, consulte el manual o las preguntas frecuentes.
+6004=El objeto [{0}] de la clase [{1}] con el c\u00f3digo hash de identidad (System.identityHashCode()) [{2}] {3} no es de este espacio de objetos UnitOfWork, sino de la sesi\u00f3n padre. El objeto nunca se ha registrado en esta UnitOfWork {3}, pero se ha le\u00eddo en la sesi\u00f3n padre y est\u00e1 relacionado con un objeto registrado en la UnitOfWork. Aseg\u00farese de que est\u00e1 registrando {3}correctamente los objetos. Si todav\u00eda tiene problemas, puede utilizar el m\u00e9todo UnitOfWork.validateObjectSpace() para {3}ayudar a depurar d\u00f3nde se ha producido el error. Para obtener m\u00e1s informaci\u00f3n, consulte el manual o las preguntas frecuentes.
 
-6005=El objeto [{0}], de la clase [{1}], con el c\u00f3digo hash de identidad (System.identityHashCode()) [{2}], {3}es el original de un nuevo objeto registrado.  Los clones de UnitOfWork han registrado nuevos objetos, por lo que debe asegurarse de que se {3}registre un objeto antes de que se haga referencia a \u00e9l en otro objeto.  Si no desea que se clone el nuevo objeto, utilice la API {3}UnitOfWork.registerNewObject(Object).  Si sigue teniendo problemas, puede utilizar el m\u00e9todo UnitOfWork.validateObjectSpace() para {3}ayudar a depurar donde se ha producido el error.  Para obtener m\u00e1s informaci\u00f3n, consulte el manual o las preguntas frecuentes.
+6005=El objeto [{0}] de la clase [{1}] con el c\u00f3digo hash de identidad (System.identityHashCode()) [{2}] {3} es el original de un objeto nuevo registrado. Los clones de UnitOfWork han registrado nuevos objetos, por lo que debe asegurarse de que un objeto {3} est\u00e9 registrado antes de que otro objeto haga referencia a \u00e9l. Si no desea clonar el nuevo objeto, utilice la API {3}UnitOfWork.registerNewObject(Object). Si sigue teniendo problemas, puede utilizar el m\u00e9todo UnitOfWork.validateObjectSpace() {3} para ayudar a depurar d\u00f3nde se ha producido el error. Para obtener m\u00e1s informaci\u00f3n, consulte el manual o las preguntas frecuentes.
 
 6006=La correlaci\u00f3n [{0}] no da soporte a la lectura por lotes.
 
@@ -193,7 +193,7 @@
 
 6100=Se han detectado varios valores para una consulta de lectura de un solo objeto.
 
-6101=La ejecuci\u00f3n de esta consulta puede violar la integridad de la cach\u00e9 de sesi\u00f3n global que debe contener s\u00f3lo las \u00faltimas versiones de los objetos.  Para poder ejecutar una consulta que devuelva objetos a partir de una hora en el pasado, pruebe lo siguiente: utilice una HistoricalSession (acquireSessionAsOf); todas las lecturas de objetos se almacenar\u00e1n en la cach\u00e9 y se leer\u00e1n autom\u00e1ticamente a partir de la misma hora.  Esto se aplicar\u00e1 incluso para desencadenar relaciones de objetos.  Establezca shouldMaintainCache en false.  Puede crear una expresi\u00f3n de objeto cualquiera a partir de una hora en el pasado, siempre que ninguno de sus campos se representen en el conjunto de resultados (es decir, se utilice s\u00f3lo en la cl\u00e1usula where).
+6101=La ejecuci\u00f3n de esta consulta puede violar la integridad de la cach\u00e9 de sesi\u00f3n global que debe contener s\u00f3lo las \u00faltimas versiones de los objetos. Para poder ejecutar una consulta que devuelva objetos a partir de una hora en el pasado, pruebe lo siguiente: utilice una HistoricalSession (acquireSessionAsOf); todas las lecturas de objetos se almacenar\u00e1n en la cach\u00e9 y se leer\u00e1n autom\u00e1ticamente a partir de la misma hora.  Esto se aplicar\u00e1 incluso para desencadenar relaciones de objetos. Establezca shouldMaintainCache en false.  Puede crear cualquier expresi\u00f3n de objeto como de un tiempo pasado, siempre que ninguno de sus campos est\u00e9 representado en el conjunto de resultados (es decir, que solo se utilice en la cl\u00e1usula where).
 
 6102=Actualmente, las consultas hist\u00f3ricas s\u00f3lo funcionan con las bases de datos Oracle 9R2 o posteriores, ya que se utiliza la caracter\u00edstica Flashback de Oracle.
 
@@ -261,7 +261,7 @@
 
 6134=El nombre de atributo o la expresi\u00f3n que se pasado como primer par\u00e1metro al m\u00e9todo addupdate no define un campo. {1}Nombre de atributo o expresi\u00f3n: [{2}]{1}Descriptor: [{0}]
 
-6135=El nombre de atributo o la expresi\u00f3n que se ha pasado como primer par\u00e1metro al m\u00e9todo addupdate define un campo de una tabla que no est\u00e1 correlacionada con el descriptor de consulta. {1}Nombre de atributo o expresi\u00f3n: [{2}]{1}Campo incorrecto: [{3}]{1}Descriptor: [{0}]
+6135=El nombre de atributo o expresi\u00f3n pasados como primer par\u00e1metro al m\u00e9todo addUpdate definen un campo de una tabla sin correlaci\u00f3n con un descriptor de consulta. {1}Nombre de atributo o expresi\u00f3n: [{2}]{1}Campo incorrecto: [{3}]{1}Descriptor: [{0}]
 
 6136=Las clases correlacionadas con la herencia de multitabla no pueden ser elementos de ReportQuery. Elemento: {0}, Expresi\u00f3n: {1}.
 
@@ -293,9 +293,9 @@
 
 6150=No puede utilizarse un valor nulo como clave en un contenedor de tipo [{1}]. Aseg\u00farese de los valores de clave para los objetos de tipo [{0}] no sean nulos.
 
-6151=Se ha producido una excepci\u00f3n al intentar establecer un redireccionador {0} pasado a trav\u00e9s de una sugerencia de consulta JPA {1}.  Verifique que el redireccionador proporcionado implemente org.eclipse.persistence.queries.QueryRedirector.
+6151=Se ha producido una excepci\u00f3n al intentar establecer un redireccionador {0} pasado a trav\u00e9s de una sugerencia de consulta de Jakarta Persistence {1}.  Verifique que el redireccionador proporcionado implemente org.eclipse.persistence.queries.QueryRedirector.
 
-6152=Se ha producido una excepci\u00f3n al intentar crear una instancia de la clase {0} pasada a trav\u00e9s de una sugerencia de consulta JPA {1}.  Verifique que la clase tenga un constructor predeterminado.
+6152=Se ha producido una excepci\u00f3n al intentar crear una instancia de la clase {0} pasada a trav\u00e9s de una sugerencia de consulta de Jakarta Persistence {1}.  Verifique que la clase tenga un constructor predeterminado.
 
 6153=CompatibleType debe establecerse en el tipo complejo: {0}.
 

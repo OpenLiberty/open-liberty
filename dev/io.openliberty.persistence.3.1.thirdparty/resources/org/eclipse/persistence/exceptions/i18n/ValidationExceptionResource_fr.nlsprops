@@ -535,7 +535,7 @@
 
 7306=L''\u00e9l\u00e9ment annot\u00e9 [{0}] de la classe [{1}] indique un type d''acc\u00e8s explicite incorrect. Il doit indiquer un type d''acc\u00e8s [{2}].
 
-7307=Cha\u00eene de contexte de consignation manquante pour le contexte [{0}]. Il s''agit d''une exception interne qui s''est produite lors de l''extraction d''un message de journal pour le traitement des m\u00e9tadonn\u00e9es Jakarta Persistence. Signalez-le comme bogue.
+7307=Cha\u00eene de contexte de consignation manquante pour le contexte [{0}]. Il s''agit d''une exception interne qui s''est produite lors de l''extraction d''un message de journal pour le traitement des m\u00e9tadonn\u00e9es Jakarta Persistence. Veuillez signaler un bogue.
 
 7308=La valeur sp\u00e9cifi\u00e9e [{0}] pour la propri\u00e9t\u00e9 de persistance [{1}] n''est pas valide - [{2}].
 
@@ -593,7 +593,7 @@
 
 7336=Plusieurs propri\u00e9t\u00e9s de contexte [{2}] et [{3}] sp\u00e9cifi\u00e9es pour la m\u00eame zone de discriminateur de titulaire [{1}] pour la classe [{0}]
 
-7337=La colonne de discriminateur de titulaire mapp\u00e9e [{1}] sur la classe [{0}] doit \u00eatre marqu\u00e9e en lecture seule. Dans Jakarta Persistence API, cela s''effectue en d\u00e9finissant setting insertable=false et updatable=false sur la colonne, par exemple, @Column(name="TENANT_ID", insertable=false, updatable=false).
+7337=La colonne de discriminateur de titulaire mapp\u00e9e [{1}] sur la classe [{0}] doit \u00eatre marqu\u00e9e en lecture seule. Dans l''API Jakarta Persistence, cela se fait en d\u00e9finissant insertable=false et updatable=false sur la colonne, par exemple @Column(name ="TENANT_ID", insertable=false, updatable=false).
 
 7338=Vous ne pouvez pas ajouter des s\u00e9quences \u00e0 un \u00e9l\u00e9ment SessionBroker.
 
@@ -605,7 +605,7 @@
 
 7342=La valeur bool\u00e9enne sp\u00e9cifi\u00e9e [{0}] pour la d\u00e9finition de SQL natif autoris\u00e9 n''est pas valide, elle doit \u00eatre "true" ou "false".
 
-7343=Plusieurs identificateurs VPD (propri\u00e9t\u00e9 du contexte de discrimination des locataires) ont \u00e9t\u00e9 sp\u00e9cifi\u00e9s. L''entit\u00e9 [{1}] utilise [{0}] et l''entit\u00e9 [{3}] utilise [{2}]. Lorsqu''on utilise une strat\u00e9gie VPD multilocataire, il ne peut y avoir qu''une seule colonne de discrimination des locataires par entit\u00e9 et sa propri\u00e9t\u00e9 de contexte doit \u00eatre coh\u00e9rente dans toutes les entit\u00e9s VPD multilocataires.
+7343=Plusieurs identificateurs VPD (propri\u00e9t\u00e9 du contexte de discrimination des locataires) ont \u00e9t\u00e9 sp\u00e9cifi\u00e9s. L''entit\u00e9 [{1}] utilise [{0}] et l''entit\u00e9 [{3}] utilise [{2}]. La strat\u00e9gie VPD multi-titulaire n''autorise qu''une seule colonne de discriminateur de titulaire pour chaque entit\u00e9 et sa propri\u00e9t\u00e9 de contexte doit \u00eatre coh\u00e9rente dans toutes les entit\u00e9s VPD multi-titulaires.
 
 7344=VPD (connexions et g\u00e9n\u00e9ration DDL) n''est pas pris en charge pour la plateforme : [{0}].
 
@@ -621,7 +621,7 @@
 
 7351=La classe de convertisseur [{2}] sp\u00e9cifi\u00e9e sur l''attribut de mappage [{1}] de la classe [{0}] est introuvable. Assurez-vous que le nom de la classe de convertisseur est correct et qu''il existe avec la d\u00e9finition d''unit\u00e9 de persistance.
 
-7352=La classe de convertisseur [{0}] doit impl\u00e9menter l''interface Jakarta Persistence jakarta.persistence.AttributeConverter<X, Y> afin qu''elle soit une classe de convertisseur valide.
+7352=La classe de convertisseur [{0}] doit impl\u00e9menter l''interface Jakarta Persistence jakarta.persistence.AttributeConverter<X, Y> pour \u00eatre une classe de convertisseur valide.
 
 7353=L''attribut de mappage [{1}] de la classe [{0}] n''est pas un type de mappage valide pour une sp\u00e9cification de conversion.
 
@@ -630,4 +630,6 @@
 7355=L''attribut de mappage [{1}] de la classe [{0}] n''est pas un type de mappage valide pour une conversion utilisant une sp\u00e9cification de nom d''attribut. Un nom d''attribut doit uniquement \u00eatre sp\u00e9cifi\u00e9 pour traverser un type de mappage imbriqu\u00e9.
 
 7356=La proc\u00e9dure : [{1}] ne peut pas \u00eatre ex\u00e9cut\u00e9e car {0} ne prend actuellement pas en charge plusieurs param\u00e8tres de sortie
+
+7357=L''URL "[{0}]" de la ressource "[{1}]" n''appartient pas \u00e0 une racine de persistance valide (selon la sp\u00e9cification Jakarta Persistence)
 

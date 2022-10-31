@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2021 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -86,4 +86,20 @@ JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.useraction=Aucune action n'est requise.
 
 JCACHE_AUTH_CACHE_SERIALIZATION_FAILED=CWWKS1126W: L''insertion de l''entr\u00e9e pour la cl\u00e9 {0} dans le cache d''authentification JCache {1} a \u00e9chou\u00e9 en raison d''une erreur de s\u00e9rialisation. L''entr\u00e9e sera ins\u00e9r\u00e9e dans le cache d''authentification en m\u00e9moire \u00e0 la place. L''exception est : {2}
 JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.explanation=Le contenu de l'entr\u00e9e n'a pas \u00e9t\u00e9 s\u00e9rialis\u00e9 et n'a donc pas \u00e9t\u00e9 stock\u00e9 dans le cache d'authentification JCache.
-JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.useraction=Examinez l'exception incluse dans le message et corrigez la cause de l'erreur.  
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.useraction=Examinez l'exception incluse dans le message et corrigez la cause de l'erreur.
+
+JCACHE_AUTH_CACHE_GET_FAILED=CWWKS1127E: L''extraction de l''entr\u00e9e de la cl\u00e9 {0} du cache d''authentification JCache {1} a \u00e9chou\u00e9 en raison d''une erreur. L''exception est : {2}
+JCACHE_AUTH_CACHE_GET_FAILED.explanation=L'entr\u00e9e n'a pas pu \u00eatre extraite du cache d'authentification JCache.
+JCACHE_AUTH_CACHE_GET_FAILED.useraction=Examinez l'exception incluse dans le message et corrigez la cause de l'erreur.
+
+JCACHE_AUTH_CACHE_INSERT_FAILED=CWWKS1128E: L''insertion de l''entr\u00e9e de la cl\u00e9 {0} dans le cache d''authentification JCache {1} a \u00e9chou\u00e9 en raison d''une erreur. L''exception est : {2}
+JCACHE_AUTH_CACHE_INSERT_FAILED.explanation=L'entr\u00e9e n'a pas \u00e9t\u00e9 plac\u00e9e dans le cache d'authentification JCache.
+JCACHE_AUTH_CACHE_INSERT_FAILED.useraction=Examinez l'exception incluse dans le message et corrigez la cause de l'erreur.
+
+JCACHE_AUTH_CACHE_REMOVE_FAILED=CWWKS1129E: La suppression de l''entr\u00e9e de la cl\u00e9 {0} du cache d''authentification JCache {1} a \u00e9chou\u00e9 en raison d''une erreur. L''exception est : {2}
+JCACHE_AUTH_CACHE_REMOVE_FAILED.explanation=L'entr\u00e9e n'a pas \u00e9t\u00e9 supprim\u00e9e du cache d'authentification JCache.
+JCACHE_AUTH_CACHE_REMOVE_FAILED.useraction=Examinez l'exception incluse dans le message et corrigez la cause de l'erreur.
+
+JCACHE_AUTH_CACHE_CLEAR_FAILED=CWWKS1130E: L''effacement du cache d''authentification JCache {0} a \u00e9chou\u00e9 en raison d''une erreur. L''exception est : {1}
+JCACHE_AUTH_CACHE_CLEAR_FAILED.explanation=Les entr\u00e9es n'ont pas \u00e9t\u00e9 effac\u00e9es du cache d'authentification JCache.
+JCACHE_AUTH_CACHE_CLEAR_FAILED.useraction=Examinez l'exception incluse dans le message et corrigez la cause de l'erreur.

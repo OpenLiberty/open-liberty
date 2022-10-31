@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -34,9 +34,22 @@ required.attribute.missing=CWWKC2251E: Al elemento {2} le falta el atributo nece
 required.attribute.missing.explanation=Falta un atributo necesario en el elemento especificado.
 required.attribute.missing.useraction=Corrija el descriptor de despliegue a\u00f1adiendo el atributo que falta.
 
-invalid.root.element=CWWKC2252E: Nombre local ra\u00edz no v\u00e1lido {2} en el descriptor de despliegue {0} en la l\u00ednea {1}.
-invalid.root.element.explanation=El elemento ra\u00edz es incorrecto.
-invalid.root.element.useraction=Valide el archivo xml para asegurarse de que el elemento ra\u00edz es correcto.
+# REMOVED:
+# invalid.root.element=CWWKC2252E: Invalid root local name {2} in the {0} deployment descriptor on line {1}.
+# invalid.root.element.explanation=The root element is incorrect.
+# invalid.root.element.useraction=Validate the xml file to make sure the root element is correct.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the configuration file
+#    {2} is the actual root element name
+#    {3} is the expected root element name
+# -----------------------------------------------------------------------
+unexpected.root.element=CWWKC2252E: El descriptor de despliegue {0} de la l\u00ednea {1} tiene el elemento ra\u00edz {2} pero requiere el elemento ra\u00edz {3}. 
+unexpected.root.element.explanation=El elemento ra\u00edz del descriptor de despliegue es incorrecto.
+unexpected.root.element.useraction=Corrija el elemento ra\u00edz del descriptor de despliegue.
 
 root.element.not.found=CWWKC2253E: No se puede ubicar el elemento ra\u00edz del descriptor de despliegue {0} en la l\u00ednea {1}.
 root.element.not.found.explanation=Falta el elemento ra\u00edz en el descriptor de despliegue.
@@ -66,25 +79,157 @@ unexpected.child.element=CWWKC2259E: Se ha encontrado un elemento hijo inesperad
 unexpected.child.element.explanation=Se ha encontrado un elemento que no est\u00e1 definido para estar en el descriptor de despliegue.
 unexpected.child.element.useraction=Corrija el descriptor de despliegue.
 
-invalid.href.prefix=CWWKC2260E: El valor del atributo href del elemento {2} no empieza por {3} en el descriptor de despliegue {0} en la l\u00ednea {1}.
-invalid.href.prefix.explanation=Un atributo href debe empezar con la v\u00eda de acceso correcta del descriptor al que se hace referencia.
-invalid.href.prefix.useraction=Corrija el descriptor de despliegue.
+######
 
-unknown.deployment.descriptor.version=CWWKC2261E: Se ha producido un error al intentar determinar la versi\u00f3n del descriptor de despliegue {0}.
-unknown.deployment.descriptor.version.explanation=La versi\u00f3n o el espacio de nombres no eran v\u00e1lidos o no se han especificado en el elemento ra\u00edz del descriptor de despliegue.
-unknown.deployment.descriptor.version.useraction=Verifique y corrija la versi\u00f3n o el espacio de nombres en el elemento ra\u00edz del descriptor de despliegue.
+# REMOVED:
+# invalid.href.prefix=CWWKC2260E: The href attribute value of the {2} element does not start with {3} in the {0} deployment descriptor on line {1}.
+# invalid.href.prefix.explanation=An href attribute must start with the correct path to the descriptor being referenced.
+# invalid.href.prefix.useraction=Correct the deployment descriptor.
 
-invalid.deployment.descriptor.namespace=CWWKC2262E: El servidor no puede procesar la versi\u00f3n {3} y el espacio de nombres {2} en el descriptor de despliegue {0} en la l\u00ednea {1}.
-invalid.deployment.descriptor.namespace.explanation=Es posible que la versi\u00f3n y el espacio de nombres o sean v\u00e1lidos o que la configuraci\u00f3n del servidor no tenga una caracter\u00edstica que pueda procesar la versi\u00f3n y el espacio de nombres.
-invalid.deployment.descriptor.namespace.useraction=Verifique y corrija la versi\u00f3n o el espacio de nombres en el elemento ra\u00edz del descriptor de despliegue o verifique y corrija las caracter\u00edsticas en la configuraci\u00f3n del servidor.
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which is not valid.
+#    {4} is the actual prefix of the HREF value.
+#    {5} is the expected prefix of the HREF value.
+# -----------------------------------------------------------------------
+invalid.href.prefix=CWWKC2260E: El prefijo HREF {4} no coincide con el prefijo esperado {5} en el valor HREF {3} del elemento {2} en el descriptor de despliegue {0} de la l\u00ednea {1}.
+invalid.href.prefix.explanation=El prefijo del valor HREF especifica una v\u00eda de acceso a un descriptor de despliegue referenciado. El prefijo no coincide con la v\u00eda de acceso de dicho descriptor de despliegue referenciado.
+invalid.href.prefix.useraction=Corrija el valor de HREF.
 
-invalid.deployment.descriptor.version=CWWKC2263E: El atributo de versi\u00f3n {2} especificado en el descriptor de despliegue {0} en la l\u00ednea {1} no es v\u00e1lido.
-invalid.deployment.descriptor.version.explanation=Se ha especificado una versi\u00f3n no v\u00e1lida en el elemento ra\u00edz del descriptor de despliegue.
-invalid.deployment.descriptor.version.useraction=Verifique y corrija el n\u00famero de versi\u00f3n en el elemento ra\u00edz del descriptor de despliegue.
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is an HREF value which is not valid.
+# -----------------------------------------------------------------------
+invalid.href=CWWKC2284E: Valor HREF no v\u00e1lido {3} del elemento {2} en el descriptor de despliegue {0} de la l\u00ednea {1}.
+invalid.href.explanation=El valor del elemento no es un valor HREF v\u00e1lido: el valor debe tener un car\u00e1cter ''#',' y el car\u00e1cter ''#'' no puede ser el primer o \u00faltimo car\u00e1cter del valor.
+invalid.href.useraction=Corrija el valor de HREF.
 
-missing.deployment.descriptor.namespace=CWWKC2264E: Se ha producido un error al intentar determinar el espacio de nombres del descriptor de despliegue {0} en la l\u00ednea {1}.
-missing.deployment.descriptor.namespace.explanation=Se ha especificado un espacio de nombres no v\u00e1lido en el elemento ra\u00edz del descriptor de despliegue.
-missing.deployment.descriptor.namespace.useraction=Verifique y corrija el espacio de nombres en el elemento ra\u00edz del descriptor de despliegue.
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which is not valid.
+#    {4} the expected type of the element referenced by the HREF.
+#    {5} the type of actual referenced element.
+# -----------------------------------------------------------------------
+incorrect.href.type=CWWKC2285E: Un HREF hace referencia a un objeto de tipo {5} pero requiere un objeto de tipo {4}. El error se produce en el valor de HREF {3} del elemento {2} en el descriptor de despliegue {0} de la l\u00ednea {1}.
+incorrect.href.type.explanation=El tipo del objeto al que hace referencia el valor de HREF es incorrecto.
+incorrect.href.type.useraction=Corrija el valor de HREF.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a referencing deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the referencing deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which cannot be resolved.
+#    {4} is the ID of the HREF value.
+#    {5} is the path of a referenced deployment descriptor.
+# -----------------------------------------------------------------------
+unresolved.href=CWWKC2286E: No se ha podido resolver el ID de HREF {4} en el descriptor de despliegue {5} referenciado, del valor de HREF {3} del elemento {2} en el descriptor de despliegue de referencia {0} de la l\u00ednea {1}.
+unresolved.href.explanation=El ID de HREF no se resuelve en ning\u00fan elemento disponible del descriptor de despliegue referenciado. El ID de HREF debe coincidir con el ID de un elemento del descriptor de despliegue referenciado.
+unresolved.href.useraction=Corrija el ID de HREF en el descriptor de despliegue de referencia o el valor de ID en el descriptor de despliegue referenciado.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+# -----------------------------------------------------------------------
+missing.href=CWWKC2287E: No hay ning\u00fan atributo HREF presente en el elemento {2} en el descriptor de despliegue {0} en la l\u00ednea {1}.
+missing.href.explanation=El elemento es necesario para proporcionar un atributo HREF. Un atributo HREF tiene el nombre ''href''.
+missing.href.useraction=A\u00f1ada un atributo HREF al elemento.
+
+######
+
+# REMOVED:
+# unknown.deployment.descriptor.version=CWWKC2261E: An error occurred while trying to determine the version of the {0} deployment descriptor.
+# unknown.deployment.descriptor.version.explanation=The version or the namespace were not valid or were not specified in the root element of the deployment descriptor.
+# unknown.deployment.descriptor.version.useraction=Verify and correct the version or namespace in the root element of the deployment descriptor.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a version attribute value within the deployment descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.version=CWWKC2261E: El descriptor de despliegue {0} de la l\u00ednea {1} especifica la versi\u00f3n no soportada {2}.
+unsupported.descriptor.version.explanation=La versi\u00f3n que se ha especificado en el descriptor de despliegue no es v\u00e1lida para ese tipo de descriptor de despliegue.
+unsupported.descriptor.version.useraction=Corrija la versi\u00f3n especificada en el descriptor de despliegue.
+
+# REMOVED:
+# invalid.deployment.descriptor.namespace=CWWKC2262E: The server is unable to process the {3} version and the {2} namespace in the {0} deployment descriptor on line {1}.
+# invalid.deployment.descriptor.namespace.explanation=Either the specified version and namespace are not valid, or the server configuration does not have a feature that can process the version and namespace.
+# invalid.deployment.descriptor.namespace.useraction=Verify and correct the version or namespace in the root element of the deployment descriptor, or verify and correct the features in the server configuration.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a namespace value within the deployment descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.namespace=CWWKC2262E: El descriptor de despliegue {0} de la l\u00ednea {1} especifica el espacio de nombres no soportado {2}.
+unsupported.descriptor.namespace.explanation=El espacio de nombres que se ha especificado en el descriptor de despliegue no es v\u00e1lido para ese tipo de descriptor de despliegue.
+unsupported.descriptor.namespace.useraction=Corrija el espacio de nombres especificado en el descriptor de despliegue.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a version value within the deployment descriptor
+#    {3} is a namespace value within the deployment descriptor
+#    {4} is the correct namespace value which should be present in the deployment descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.namespace.for.version=CWWCK27781W: El descriptor de despliegue {0} de la l\u00ednea {1} especifica la versi\u00f3n {2} y el espacio de nombres {3} pero debe tener el espacio de nombres {4}.
+unsupported.descriptor.namespace.for.version.explanation=El descriptor de despliegue tiene un espacio de nombres incorrecto especificado para la versi\u00f3n que se ha especificado. El espacio de nombres se ha pasado por alto.
+unsupported.descriptor.namespace.for.version.useraction=Corrija el espacio de nombres con el valor que sea v\u00e1lido para la versi\u00f3n especificada.
+
+# REMOVED:
+# invalid.deployment.descriptor.version=CWWKC2263E: The version {2} attribute specified in the {0} deployment descriptor on line {1} is not valid.
+# invalid.deployment.descriptor.version.explanation=An non-valid version was specified in the root element of the deployment descriptor.
+# invalid.deployment.descriptor.version.useraction=Verify and correct the version number in the root element of the deployment descriptor.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a version attribute value within the deployment descriptor
+#    {3} is the highest version version attribute value which is supported by the features currently provisioned by the server configuration
+# -----------------------------------------------------------------------
+unprovisioned.descriptor.version=CWWKC2263E: El descriptor de despliegue {0} de la l\u00ednea {1} especifica la versi\u00f3n {2}, que es superior a la versi\u00f3n {3} suministrada actualmente.
+unprovisioned.descriptor.version.explanation=La versi\u00f3n que se ha especificado para el descriptor de despliegue no est\u00e1 soportada por las caracter\u00edsticas suministradas por la configuraci\u00f3n del servidor.
+unprovisioned.descriptor.version.useraction=Actualice la configuraci\u00f3n del servidor para suministrar caracter\u00edsticas que admitan la versi\u00f3n.
+
+# REMOVED:
+# missing.deployment.descriptor.namespace=CWWKC2264E: An error occurred while trying to determine the namespace of the {0} deployment descriptor on line {1}.
+# missing.deployment.descriptor.namespace.explanation=An non-valid namespace was specified in the root element of the deployment descriptor.
+# missing.deployment.descriptor.namespace.useraction=Verify and correct the namespace in the root element of the deployment descriptor.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a namespace value which is required to be present in the deployment descriptor
+# -----------------------------------------------------------------------
+missing.descriptor.namespace=CWWKC2264E: El descriptor de despliegue {0} de la l\u00ednea {1} no tiene el espacio de nombres necesario {2}.
+missing.descriptor.namespace.explanation=Es necesario que el descriptor de despliegue tenga el espacio de nombres especificado.
+missing.descriptor.namespace.useraction=A\u00f1ada el espacio de nombres necesario al descriptor de despliegue.
 
 missing.deployment.descriptor.version=CWWKC2265E: Se ha producido un error al intentar determinar la versi\u00f3n del descriptor de despliegue {0} en la l\u00ednea {1}.
 missing.deployment.descriptor.version.explanation=La versi\u00f3n no se ha especificado en el elemento ra\u00edz del descriptor de despliegue.
@@ -110,13 +255,23 @@ found.duplicate.attribute.value=CWWKC2270E: El atributo {2} para todos los eleme
 found.duplicate.attribute.value.explanation=El valor del atributo especificado debe ser exclusivo en todos los elementos del mismo tipo. 
 found.duplicate.attribute.value.useraction=Corrija el descriptor de despliegue cambiando los nombres de los valores de atributo duplicados.
 
+# REMOVED:
+# BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: A validation.xml file was found for the {0} module. However, that validation.xml file is not configured for validation; therefore this XML file is ignored.
+# BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=The BeanValidationService cannot create a ValidatorFactory because of an error parsing the validation.xml file with the validation-configuration-1.0.xsd schema file. This error may indicate that the validation.xml file is not intended for use by the Bean Validation runtime; therefore, this XML file is ignored.
+# BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=If the validation.xml file is not for creating a ValidatorFactory instance, then ignore the message. However if the validation.xml file is intended to create a ValidatorFactory instance, then a problem exists. Enable Bean Validation runtime trace in the application server, stop the application, restart the application, and examine the trace output file for a trace event such as: Unexpected exception when trying to unmarshall the validation.xml file. Examine the exception stack trace for debugging assistance.
+
+# REPLACED BY:
 # -----------------------------------------------------------------------
 # PARAMETERS:
-#    {0} is the path name for the module
+#    {0} is the path to a validation configuration file, including paths to parent archives
+#    {1} is the module name
+#    {2} is the number of a line within the configuration file
+#    {3} is the actual root element name
+#    {4} is the expected root element name
 # -----------------------------------------------------------------------
-BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: Se ha encontrado un archivo validation.xml para el m\u00f3dulo {0}. No obstante, dicho archivo validation.xml no se ha configurado para la validaci\u00f3n y, por tanto, se ignora.
-BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=El servicio BeanValidationService no puede crear una clase ValidatorFactory porque se ha producido un error al analizar el archivo validation.xml con el archivo de esquema validation-configuration-1.0.xsd. Este error puede indicar que el archivo validation.xml no est\u00e1 pensado para su uso en un tiempo de ejecuci\u00f3n de validaci\u00f3n de beans y, por tanto, se ignora.
-BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=Si el archivo validation.xml no se ha dise\u00f1ado para crear una instancia ValidatorFactory, ignore el mensaje. No obstante, si el archivo validation.xml s\u00ed se ha dise\u00f1ado para crear una instancia ValidatorFactory, significa que hay un problema.  Habilite el rastreo de tiempo de ejecuci\u00f3n de validaci\u00f3n de beans en el servidor de aplicaciones, detenga y reinicie la aplicaci\u00f3n, y busque en el archivo de salida de rastreo un suceso de rastreo parecido al siguiente: Excepci\u00f3n inesperada al tratar de desclasificar el archivo validation.xml. Examine el rastreo de la pila de excepciones para obtener ayuda sobre la depuraci\u00f3n.
+unexpected.root.element.bval=CWWKC2271W: El archivo de configuraci\u00f3n de validaci\u00f3n de beans {0} del m\u00f3dulo {1} se pasa por alto. En el n\u00famero de l\u00ednea {2}, sustituya el elemento ra\u00edz {3} por {4}.
+unexpected.root.element.bval.explanation=El archivo de configuraci\u00f3n de validaci\u00f3n no coincide con los esquemas de configuraci\u00f3n de validaci\u00f3n (validation-configuration-1.0.xsd y validation-configuration-1.1.xsd). El archivo de configuraci\u00f3n no estaba destinado a utilizarse para la validaci\u00f3n de beans, o bien el archivo de configuraci\u00f3n est\u00e1 mal formado. El archivo de configuraci\u00f3n se pasa por alto. BeanValidationService no crear\u00e1 ValidatorFactory.
+unexpected.root.element.bval.useraction=Si el archivo de configuraci\u00f3n de validaci\u00f3n no est\u00e1 destinado a la validaci\u00f3n de beans, se puede pasar por alto el mensaje de aviso. Si el archivo de configuraci\u00f3n de validaci\u00f3n est\u00e1 pensado destinado a la validaci\u00f3n de beans, no pase por alto el mensaje de aviso. El servicio de validaci\u00f3n de beans no se est\u00e1 ejecutando del modo previsto. Para diagnosticar el problema, habilite el rastreo en tiempo de ejecuci\u00f3n de validaci\u00f3n de beans, detenga y reinicie el servidor y examine la salida de rastreo para ver si hay excepciones inesperadas relacionadas con la validaci\u00f3n de beans. Por ejemplo, "Excepci\u00f3n inesperada al intentar deserializar el archivo validation.xml". Examine el rastreo de la pila de excepciones para obtener ayuda para la depuraci\u00f3n.
 
 xml.error=CWWKC2272E: Se ha producido un error al analizar el descriptor de despliegue {0} en la l\u00ednea {1}. El mensaje de error es: {2}
 xml.error.explanation=Se ha producido un error al analizar el descriptor de despliegue XML. Consulte el mensaje de error para obtener una descripci\u00f3n detallada.
@@ -134,10 +289,119 @@ invalid.long.value=CWWKC2275E: El valor {2} del descriptor de despliegue {0} en 
 invalid.long.value.explanation=El descriptor de despliegue especifica un valor que no es un n\u00famero dentro del rango de -9223372036854775808 a 9223372036854775807.
 invalid.long.value.useraction=Corrija el descriptor de despliegue para que utilice un n\u00famero largo v\u00e1lido.
 
-module.name.not.specified=CWWKC2276E: El elemento {0} debe especificar un atributo de nombre de m\u00f3dulo.
-module.name.not.specified.explanation=La configuraci\u00f3n de enlace y extensi\u00f3n para EJB y m\u00f3dulos web debe contener un atributo moduleName que especifica el m\u00f3dulo al que se aplica la configuraci\u00f3n. 
-module.name.not.specified.useraction=A\u00f1ada un atributo moduleName al elemento web-bnd, web-ext, ejb-bnd o ejb-ext. 
+# ---
 
-module.name.invalid=CWWKC2277E: Uno o varios nombres de m\u00f3dulo en el elemento {1} no son v\u00e1lidos. El nombre o nombres de m\u00f3dulo no v\u00e1lidos son {0}.
-module.name.invalid.explanation=La configuraci\u00f3n de enlace y extensi\u00f3n para m\u00f3dulos web debe especificar un atributo moduleName v\u00e1lido. Al menos, una configuraci\u00f3n ha especificado un nombre de m\u00f3dulo no v\u00e1lido. El nombre de m\u00f3dulo debe ser el nombre del archivo de archivado que contiene la aplicaci\u00f3n web o EJB.
-module.name.invalid.useraction=Corrija el atributo moduleName en la configuraci\u00f3n de enlace o extensi\u00f3n. 
+# REMOVED:
+# module.name.not.specified=CWWKC2276E: The {0} element must specify a module name attribute.
+# module.name.not.specified.explanation=The binding and extension configuration for EJB and web modules must contain a ''moduleName'' attribute that specifies the module to which the configuration applies. 
+# module.name.not.specified.useraction=Add a ''moduleName'' attribute to the ''web-bnd'', ''web-ext'', ''ejb-bnd'', or ''ejb-ext'' element. 
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.  For example, 'ejb-bnd', 'ejb-ext', 'web-bnd', 'web-ext'.
+# -----------------------------------------------------------------------
+module.name.not.specified=CWWKC2276E: Falta el atributo "moduleName" de uno o m\u00e1s enlaces "{1}" y elementos de configuraci\u00f3n de extensi\u00f3n de la aplicaci\u00f3n {0}.
+module.name.not.specified.explanation=Los enlaces y los elementos de configuraci\u00f3n de extensi\u00f3n deben tener un atributo ''moduleName''.
+module.name.not.specified.useraction=Aseg\u00farese de que haya un atributo "moduleName" en todos los enlaces y elementos de configuraci\u00f3n.
+
+# REMOVED:
+# module.name.invalid=CWWKC2277E: One or more module names on the {1} element are invalid. The invalid module name or names are {0}.
+# module.name.invalid.explanation=The binding and extension configuration must specify a valid ''moduleName'' attribute. At least one configuration has specified an non-valid module name. The module name must be the name of the archive file that contains the web or EJB application.
+# module.name.invalid.useraction=Correct the ''moduleName'' attribute in the binding or extension configuration. 
+
+#REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.
+#    {2} Module names used in configuration elements and not found in the application.
+#    {3} Module names found in the application.
+# -----------------------------------------------------------------------
+module.name.not.found=CWWKC2277E: No se encuentran los atributos "moduleName" de {2} especificados en los enlaces "{1}" y los elementos de configuraci\u00f3n de extensi\u00f3n de la aplicaci\u00f3n {0}.  Los nombres de m\u00f3dulo de aplicaci\u00f3n son {3}.
+module.name.not.found.explanation=Los atributos "moduleName" de los enlaces y los elementos de configuraci\u00f3n de extensi\u00f3n deben coincidir con los nombres de m\u00f3dulo de aplicaci\u00f3n.
+module.name.not.found.useraction=Aseg\u00farese de que todos los atributos "moduleName" de los enlaces y los elementos de configuraci\u00f3n de extensi\u00f3n coincidan con los nombres de m\u00f3dulo de aplicaci\u00f3n. 
+
+# ADDED
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.
+#    {2} Duplicated module names used in configuration elements.
+# -----------------------------------------------------------------------
+module.name.duplicated=CWWKC2278E: Se han especificado {2} atributos "moduleName" duplicados en los enlaces "{1}" y en los elementos de configuraci\u00f3n de extensi\u00f3n de la aplicaci\u00f3n {0}.
+module.name.duplicated.explanation=Los atributos "moduleName" de los enlaces y los elementos de configuraci\u00f3n de extensi\u00f3n no pueden duplicarse.
+module.name.duplicated.useraction=Aseg\u00farese de que todos los atributos "moduleName" de los enlaces y los elementos de configuraci\u00f3n de extensi\u00f3n sean exclusivos. 
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a DTD public ID value which is present in the descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.public.id=CWWCK27782E: El descriptor de despliegue {0} {0} de la l\u00ednea {1} especifica un ID p\u00fablico no soportado {2}.
+unsupported.descriptor.public.id.explanation=El valor de ID p\u00fablico no es v\u00e1lido para el descriptor de despliegue.
+unsupported.descriptor.public.id.useraction=Corrija el valor de ID p\u00fablico del descriptor de despliegue.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+# -----------------------------------------------------------------------
+missing.descriptor.version=CWWCK27783E: El descriptor de despliegue {0} no tiene una versi\u00f3n, un ID p\u00fablico o un espacio de nombres.
+missing.descriptor.version.explanation=Un descriptor de despliegue debe tener una versi\u00f3n, un ID p\u00fablico o un espacio de nombres.
+missing.descriptor.version.useraction=A\u00f1ada una versi\u00f3n, un ID p\u00fablico o un espacio de nombres al descriptor de despliegue. La versi\u00f3n, el ID p\u00fablico o el espacio de nombres a\u00f1adidos deben coincidir con el contenido del descriptor de despliegue.
+
+# ADDED:
+# "incorrect.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace, expectedNamespace
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the namespace which was specified in the deployment descriptor
+#    {3} is the expected namespace
+# -----------------------------------------------------------------------
+incorrect.descriptor.namespace=CWWCK27788W: El descriptor de despliegue {0} de la l\u00ednea {1} especifica el espacio de nombres {2} pero debe tener el espacio de nombres {3}.
+incorrect.descriptor.namespace.explanation=Se espera un espacio de nombres espec\u00edfico dentro del descriptor de despliegue. El espacio de nombres incorrecto se ha pasado por alto.
+incorrect.descriptor.namespace.useraction=Cambie el espacio de nombres dentro del descriptor de despliegue por el valor esperado.
+
+# ADDED:
+# "incorrect.descriptor.namespace.for.version", describeEntry(), getLineNumber(), ddVersion, ddNamespace, expectedNamespace
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the version which was specified in the deployment descriptor
+#    {3} is the namespace which was specified in the deployment descriptor
+#    {4} is the expected namespace
+# -----------------------------------------------------------------------
+incorrect.descriptor.namespace.for.version=CWWCK27789W: El descriptor de despliegue {0} de la l\u00ednea {1} especifica la versi\u00f3n {2} y el espacio de nombres {3} pero para esa versi\u00f3n debe tener el espacio de nombres {4}.
+incorrect.descriptor.namespace.for.version.explanation=Se espera un espacio de nombres espec\u00edfico dentro del descriptor de despliegue para la versi\u00f3n especificada. El espacio de nombres incorrecto se ha pasado por alto.
+incorrect.descriptor.namespace.for.version.useraction=Cambie el espacio de nombres dentro del descriptor de despliegue por el valor esperado.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the value of a 'name' attribute within a session configuration 'attribute' element
+#    {3} is the value of the 'value' attribute of a session configuration 'attribute' element
+#    {4} is the value of the 'value' attribute of a session configuration 'attribute' element
+# -----------------------------------------------------------------------
+duplicate.session.config.attribute.name=CWWCK27790W: El descriptor de despliegue {0} en la l\u00ednea {1} duplica el ''{2}'' ''name'' de un elemento de atributo de configuraci\u00f3n de sesi\u00f3n.  El ''{3}'' ''value'' est\u00e1 asociado con el nombre, en lugar del ''{4}'' ''value'' anterior.
+duplicate.session.config.attribute.name.explanation=El descriptor de despliegue incluye varios elementos de atributo que tienen el mismo nombre y que est\u00e1n dentro del mismo elemento de configuraci\u00f3n de sesi\u00f3n. El analizador de descriptor ignora todos los elementos, excepto el \u00faltimo.
+duplicate.session.config.attribute.name.useraction=Si el \u00faltimo elemento de atributo no es el elemento que se va a utilizar, actualice el descriptor de despliegue para eliminar elementos de atributo adicionales que tengan el mismo nombre.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the value of the 'value' attribute of a session configuration 'attribute' element
+# -----------------------------------------------------------------------
+missing.session.config.attribute.name=CWWCK27791W: El descriptor de despliegue {0} en la l\u00ednea {1} tiene un atributo de configuraci\u00f3n de sesi\u00f3n que no tiene ning\u00fan nombre.  Ese atributo, con ''{2}'' ''value'', se ha ignorado.
+missing.session.config.attribute.name.explanation=Se necesita que un atributo de configuraci\u00f3n de sesi\u00f3n tenga un elemento de nombre. 
+missing.session.config.attribute.name.useraction=Actualice el descriptor de despliegue para eliminar el atributo que no tiene un elemento de nombre o a\u00f1ada elementos de nombre a todos los elementos del atributo.
+
+
+

@@ -119,9 +119,9 @@ ejb30-wrong-query-hint-value=Consulta {0}, dica de consulta {1} possui valor ile
 
 ejb30-wrong-type-for-query-hint=Consulta {0}, dica de consulta {1} n\u00e3o \u00e9 v\u00e1lido para este tipo de consulta.
 
-entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=Conflito de propriedades EntityManager: javax.persistence.driver e/ou javax.persistence.url requer DefaultConnector, mas a unidade de persist\u00eancia usa o controlador de transa\u00e7\u00e3o externa; portanto, o JNDIConnector \u00e9 necess\u00e1rio.
+entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=Conflito de propriedades do EntityManager: jakarta.persistence.driver e/ou jakarta.persistence.url requerem DefaultConnector, mas a unidade de persist\u00eancia usa um controlador de transa\u00e7\u00e3o externo, portanto, JNDIConnector \u00e9 necess\u00e1rio.
 
-entity_manager_properties_conflict_default_connector_vs_jndi_connector=Conflito de propriedades EntityManager: javax.persistence.driver e/ou javax.persistence.url requerem DefaultConnector, mas javax.persistence.jtaDataSource e/ou javax.persistence.nonjtaDataSource requer JNDIConnector.
+entity_manager_properties_conflict_default_connector_vs_jndi_connector=Conflito de propriedades do EntityManager: jakarta.persistence.driver e/ou jakarta.persistence.url requerem o DefaultConnector, mas jakarta.persistence.jtaDataSource e/ou jakarta.persistence.nonjtaDataSource requerem o JNDIConnector.
 
 entity_no_longer_exists_in_db=A entidade n\u00e3o existe mais no banco de dados: {0}.
 
@@ -183,6 +183,8 @@ invalid_pk_class=Voc\u00ea forneceu uma inst\u00e2ncia de uma classe PK incorret
 
 jar_not_exist=O arquivo jar {0} n\u00e3o existe.
 
+jaxb_context_factory_property_invalid=O valor {0} da propriedade eclipselink.moxy.factory \u00e9 inv\u00e1lido
+
 jaxb_helper_invalid_binder=O Componente de liga\u00e7\u00e3o fornecido [{0}] n\u00e3o \u00e9 uma JAXBBinder EclipseLink, e, portanto, n\u00e3o p\u00f4de ser convertido.
 
 jaxb_helper_invalid_jaxbcontext=O JAXBContext fornecido [{0}] n\u00e3o \u00e9 um EclipseLink JAXBContext, e, portanto, n\u00e3o p\u00f4de ser convertido.
@@ -203,9 +205,9 @@ jmx_enabled_platform_mbean_runtime_exception=Ocorreu uma exce\u00e7\u00e3o ao ch
 
 join_trans_called_on_entity_trans=joinTransaction foi chamado em um EntityManager de recursos locais que n\u00e3o consegue se registrar para uma transa\u00e7\u00e3o de JTA.
 
-jpa21-ddl-create-script-target-not-specified=Ao gerar DDL para scripts, um destino de script de cria\u00e7\u00e3o deve ser especificado usando a propriedade [javax.persistence.schema-generation.scripts.create-target].
+jpa21-ddl-create-script-target-not-specified=Ao gerar DDL para scripts, um destino de script de cria\u00e7\u00e3o deve ser especificado usando a propriedade [jakarta.persistence.schema-generation.scripts.create-target].
 
-jpa21-ddl-drop-script-target-not-specified=Ao gerar DDL para scripts, um destino de script de queda deve ser especificado usando a propriedade [javax.persistence.schema-generation.scripts.drop-target].
+jpa21-ddl-drop-script-target-not-specified=Ao gerar DDL para scripts, um destino de script de descarte deve ser especificado usando a propriedade [jakarta.persistence.schema-generation.scripts.drop-target].
 
 jpa21-ddl-invalid-source-script-type=O script de origem fornecido {0} \u00e9 de um tipo inv\u00e1lido {0}. Os tipos de script de origem v\u00e1lidos s\u00e3o: java.io.Reader ou uma sequ\u00eancia que designa uma URL de arquivo.
 
@@ -239,9 +241,9 @@ jpa_criteriaapi_no_corresponding_element_in_result=Os elementos {0} n\u00e3o cor
 
 jpa_criteriaapi_null_literal_value=Valor nulo transmitido para CriteriaBuilder.literal().  Em vez disso, use nullLiteral(Class<T> resultClass).
 
-jpa_helper_invalid_entity_manager_factory=O EntityManagerFactory Jakarta Persistence {0} n\u00e3o \u00e9 um EntityManagerFactory EclipseLink; portanto, n\u00e3o p\u00f4de ser convertido.
+jpa_helper_invalid_entity_manager_factory=O EntityManagerFactory {0} do Jakarta Persistence n\u00e3o \u00e9 um EntityManagerFactory EclipseLink e, portanto, n\u00e3o p\u00f4de ser convertido.
 
-jpa_helper_invalid_entity_manager_factory_for_refresh=O EntityManagerFactory Jakarta Persistence {0} n\u00e3o \u00e9 um EntityManagerFactory EclipseLink; portanto, n\u00e3o p\u00f4de ter seus metadados atualizados.
+jpa_helper_invalid_entity_manager_factory_for_refresh=O EntityManagerFactory {0} do Jakarta Persistence n\u00e3o \u00e9 um EntityManagerFactory EclipseLink e, portanto, n\u00e3o p\u00f4de ter seus metadados atualizados.
 
 jpa_helper_invalid_query=A consulta do tipo {0} n\u00e3o \u00e9 uma consulta EclipseLink e, portanto, n\u00e3o p\u00f4de ser convertida.
 
@@ -250,6 +252,18 @@ jpa_helper_invalid_read_all_query=A consulta do tipo {0} n\u00e3o \u00e9 uma con
 jpa_helper_invalid_report_query=A consulta do tipo {0} n\u00e3o \u00e9 uma consulta de relat\u00f3rio EclipseLink e, portanto, n\u00e3o p\u00f4de ser convertida.
 
 jpa_persistence_util_non_persistent_class=PersistenceUtil.getIdentifier(de entidade) foi chamado com objeto [{0}] que n\u00e3o \u00e9 um objeto persistente.
+
+json_ora21c_jsonvalue_to_oraclevalue=N\u00e3o foi poss\u00edvel converter JsonValue para OracleJsonValue.
+
+json_ora21c_resultset_to_jsonvalue=N\u00e3o foi poss\u00edvel converter o tipo ResultSet JDBC para JsonValue.
+
+json_pgsql_jsonvalue_to_database_type=O valor JSON para convers\u00e3o de tipo de banco de dados falhou.
+
+json_pgsql_missing_class_on_classpath=Falta {0} no caminho de classe.
+
+json_pgsql_pgobject_conversion=A convers\u00e3o de PGobject de banco de dados falhou.
+
+json_pgsql_unknown_type=Tipo JSON desconhecido retornado do banco de dados.
 
 lock_called_without_version_locking=Chamadas para entityManager.lock(entidade de Objeto, LockModeType lockMode) requerem que a Vers\u00e3o de Bloqueio seja ativada.
 
@@ -265,7 +279,7 @@ metamodel_class_null_type_instance_for_null_key=N\u00e3o [{0}] foi localizado pa
 
 metamodel_identifiable_id_attribute_is_incorrect_idclass=O atributo @Id \u00fanico esperado para o tipo identific\u00e1vel [{0}] faz parte de um @IdClass inesperado.
 
-metamodel_identifiable_id_attribute_type_incorrect=Tipo de atributo id esperado [{2}] no atributo id existente [{0}] no tipo identific\u00e1vel [{1}], mas localizou o tipo de atributo [{3}].
+metamodel_identifiable_id_attribute_type_incorrect=Tipo de atributo id esperado [{2}] nos atributos de id existentes [{0}] sobre o tipo identific\u00e1vel [{1}] mas foram localizados tipos de atributo [{3}].
 
 metamodel_identifiable_no_id_attribute_present=Nenhum atributo @Id existe no tipo identific\u00e1vel [{0}].
 

@@ -37,7 +37,7 @@
 
 2005=Errore di attesa durante la sequenza del gestore connessione per DatabaseSession.
 
-2006=Tentativo di acquisire valori di sequenza attraverso una singola connessione ({0}) simultaneamente in pi\u00f9 thread.
+2006=Tentativo di acquisire valori di sequenziamento tramite una singola Connessione ({0}) contemporaneamente in pi\u00f9 thread.
 
 2007=Superato numero massimo di tentativi di blocco dell''oggetto: {0}.  Impossibile clonare l''oggetto.
 

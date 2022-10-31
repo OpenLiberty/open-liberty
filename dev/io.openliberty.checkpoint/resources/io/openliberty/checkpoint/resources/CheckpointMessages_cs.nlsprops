@@ -56,3 +56,5 @@ RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E.useraction=Zkontrolujte, zda v adres
 CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E=CWWKC0459E: Kontroln\u00ed bod nelze vytvo\u0159it, proto\u017ee pou\u017eit\u00e1 verze jazyka Java nepodporuje kontroln\u00ed bod.
 CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.explanation=Akci kontroln\u00edho bodu serveru lze pou\u017e\u00edt pouze s verz\u00ed jazyka Java, kter\u00e1 podporuje kontroln\u00ed bod.  
 CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.useraction=Pou\u017eijte verzi jazyka Java, kter\u00e1 podporuje kontroln\u00ed bod. Podrobnosti o po\u017eadovan\u00e9 verzi jazyka Java, kter\u00e1 podporuje kontroln\u00ed body, naleznete v dokumentaci.
+
+# CWWKC0460E - is a beta only message that gets removed for GA

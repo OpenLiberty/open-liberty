@@ -535,7 +535,7 @@
 
 7306=A(z) [{1}] oszt\u00e1lyb\u00f3l sz\u00e1rmaz\u00f3 [{0}] annot\u00e1ci\u00f3val ell\u00e1tott elem egy helytelen explicit hozz\u00e1f\u00e9r\u00e9si t\u00edpust ad meg. [{2}] hozz\u00e1f\u00e9r\u00e9si t\u00edpust kellene megadnia.
 
-7307=Hi\u00e1nyzik egy napl\u00f3z\u00e1si kontextus karaktersorozat a(z) [{0}] kontextus eset\u00e9n. Ez egy bels\u0151 kiv\u00e9tel, amely egy Jakarta Persistence metaadat feldolgoz\u00e1ssal kapcsolatos napl\u00f3\u00fczenet lek\u00e9r\u00e9sekor t\u00f6rt\u00e9nt, k\u00fcldj\u00f6n egy hibajelent\u00e9st.
+7307=Hi\u00e1nyzik egy napl\u00f3z\u00e1si kontextus karaktersorozat a(z) [{0}] kontextus eset\u00e9n. Ez egy bels\u0151 kiv\u00e9tel, amely a Jakarta Persistence metaadat-feldolgoz\u00e1s napl\u00f3\u00fczenet\u00e9nek lek\u00e9r\u00e9sekor t\u00f6rt\u00e9nt. Jelentse a hib\u00e1t.
 
 7308=A(z) [{1}] perzisztencia tulajdons\u00e1ghoz megadott [{0}] \u00e9rt\u00e9k \u00e9rv\u00e9nytelen - [{2}].
 
@@ -593,7 +593,7 @@
 
 7336=T\u00f6bb [{2}] \u00e9s [{3}] kontextus tulajdons\u00e1g van megadva egyazon [{1}] b\u00e9rl\u0151 megk\u00fcl\u00f6nb\u00f6ztet\u0151 mez\u0151h\u00f6z a(z) [{0}] oszt\u00e1ly eset\u00e9n
 
-7337=A(z) [{1}] lek\u00e9pezett b\u00e9rl\u0151 megk\u00fcl\u00f6nb\u00f6ztet\u0151 oszlopot a(z) [{0}] oszt\u00e1lyhoz \u00edr\u00e1sv\u00e9dettk\u00e9nt kell megjel\u00f6lni. A Jakarta Persistence API-ban ez az oszlopokhoz az insertable=false \u00e9s updatable=false tulajdons\u00e1gok be\u00e1ll\u00edt\u00e1s\u00e1val v\u00e9gezhet\u0151 el, p\u00e9ld\u00e1ul @Column(name="TENANT_ID", insertable=false, updatable=false).
+7337=A(z) [{1}] lek\u00e9pezett b\u00e9rl\u0151 megk\u00fcl\u00f6nb\u00f6ztet\u0151 oszlopot a(z) [{0}] oszt\u00e1lyhoz \u00edr\u00e1sv\u00e9dettk\u00e9nt kell megjel\u00f6lni. A Jakarta Persistance API eset\u00e9n ez az insertable=false \u00e9s updatable=false be\u00e1ll\u00edt\u00e1ssal t\u00f6rt\u00e9nik az oszlopban, p\u00e9ld\u00e1ul a @Column(name="TENANT_ID", insertable=false, updatable=false) oszlopban.
 
 7338=Nem adhat hozz\u00e1 sorozatokat egy SessionBroker eset\u00e9n.
 
@@ -621,7 +621,7 @@
 
 7351=A(z) [{0}] oszt\u00e1lyb\u00f3l sz\u00e1rmaz\u00f3 [{1}] lek\u00e9pez\u00e9si attrib\u00fatumhoz megadott [{2}] \u00e1talak\u00edt\u00f3 oszt\u00e1ly nem tal\u00e1lhat\u00f3. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00e1talak\u00edt\u00f3 oszt\u00e1ly neve helyes, \u00e9s az oszt\u00e1ly l\u00e9tezik a perzisztencia egys\u00e9g meghat\u00e1roz\u00e1sban.
 
-7352=A(z) [{0}] \u00e1talak\u00edt\u00f3 oszt\u00e1lynak meg kell val\u00f3s\u00edtania a Jakarta Persistence jakarta.persistence.AttributeConverter<X, Y> fel\u00fcletet, hogy \u00e9rv\u00e9nyes \u00e1talak\u00edt\u00f3 oszt\u00e1ly legyen.
+7352=A(z) [{0}] \u00e1talak\u00edt\u00f3 oszt\u00e1lynak a Jakarta Persistence jakarta.persistence.AttributeConverter<X, Y> fel\u00fcletet kell megval\u00f3s\u00edtania, hogy \u00e9rv\u00e9nyes \u00e1talak\u00edt\u00f3 oszt\u00e1ly legyen.
 
 7353=A(z) [{0}] oszt\u00e1lyb\u00f3l sz\u00e1rmaz\u00f3 [{1}] lek\u00e9pez\u00e9si attrib\u00fatum nem egy \u00e9rv\u00e9nyes lek\u00e9pez\u00e9st\u00edpus egy \u00e1talak\u00edt\u00e1si specifik\u00e1ci\u00f3hoz.
 
@@ -630,4 +630,6 @@
 7355=A(z) [{0}] oszt\u00e1lyb\u00f3l sz\u00e1rmaz\u00f3 [{1}] lek\u00e9pez\u00e9si attrib\u00fatum nem egy \u00e9rv\u00e9nyes lek\u00e9pez\u00e9st\u00edpus egy attrib\u00fatumnevet haszn\u00e1l\u00f3 \u00e1talak\u00edt\u00e1si specifik\u00e1ci\u00f3hoz. Attrib\u00fatumnevet csak egy be\u00e1gyazott (Embedded) lek\u00e9pez\u00e9st\u00edpus bej\u00e1r\u00e1s\u00e1hoz kell megadni.
 
 7356=A(z) [{1}] elj\u00e1r\u00e1s nem hajthat\u00f3 v\u00e9gre, mert a(z) {0} jelenleg nem t\u00e1mogat t\u00f6bb kimeneti param\u00e9tert
+
+7357=A(z) "[{1}]" er\u0151forr\u00e1s "[{0}]" URL-c\u00edme nem tartozik \u00e9rv\u00e9nyes perzisztencia gy\u00f6k\u00e9rhez (a Jakarta Persistence specifik\u00e1ci\u00f3 szerint)
 

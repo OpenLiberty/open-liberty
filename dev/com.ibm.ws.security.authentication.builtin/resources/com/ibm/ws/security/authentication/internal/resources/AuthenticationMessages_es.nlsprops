@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2021 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -86,4 +86,20 @@ JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.useraction=No se requiere ninguna acci\u00
 
 JCACHE_AUTH_CACHE_SERIALIZATION_FAILED=CWWKS1126W: La inserci\u00f3n de la entrada para la clave {0} en la cach\u00e9 de autenticaci\u00f3n JCache {1} ha fallado debido a un error de serializaci\u00f3n. En vez de ello, se insertar\u00e1 la entrada en la cach\u00e9 de autenticaci\u00f3n residente en memoria. La excepci\u00f3n es: {2}
 JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.explanation=El contenido de la entrada no se ha serializado, por lo que no se ha almacenado en la cach\u00e9 de autenticaci\u00f3n JCache.
-JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.useraction=Investigue la excepci\u00f3n incluida en el mensaje y subsane la causa del error.  
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.useraction=Investigue la excepci\u00f3n incluida en el mensaje y subsane la causa del error.
+
+JCACHE_AUTH_CACHE_GET_FAILED=CWWKS1127E: La recuperaci\u00f3n de la entrada para la clave {0} de la memoria cach\u00e9 de autenticaci\u00f3n JCache {1} ha fallado debido a un error. La excepci\u00f3n es: {2}
+JCACHE_AUTH_CACHE_GET_FAILED.explanation=No se ha podido recuperar la entrada de la memoria cach\u00e9 de autenticaci\u00f3n JCache.
+JCACHE_AUTH_CACHE_GET_FAILED.useraction=Investigue la excepci\u00f3n incluida en el mensaje y subsane la causa del error.
+
+JCACHE_AUTH_CACHE_INSERT_FAILED=CWWKS1128E: La inserci\u00f3n de la entrada para la clave {0} en la memoria cach\u00e9 de autenticaci\u00f3n JCache {1} ha fallado debido a un error. La excepci\u00f3n es: {2}
+JCACHE_AUTH_CACHE_INSERT_FAILED.explanation=La entrada no se ha almacenado en la memoria cach\u00e9 de autenticaci\u00f3n JCache.
+JCACHE_AUTH_CACHE_INSERT_FAILED.useraction=Investigue la excepci\u00f3n incluida en el mensaje y subsane la causa del error.
+
+JCACHE_AUTH_CACHE_REMOVE_FAILED=CWWKS1129E: La eliminaci\u00f3n de la entrada para la clave {0} en la memoria cach\u00e9 de autenticaci\u00f3n JCache {1} ha fallado debido a un error. La excepci\u00f3n es: {2}
+JCACHE_AUTH_CACHE_REMOVE_FAILED.explanation=La entrada no se ha eliminado de la memoria cach\u00e9 de autenticaci\u00f3n JCache.
+JCACHE_AUTH_CACHE_REMOVE_FAILED.useraction=Investigue la excepci\u00f3n incluida en el mensaje y subsane la causa del error.
+
+JCACHE_AUTH_CACHE_CLEAR_FAILED=CWWKS1130E: El borrado de la memoria cach\u00e9 de autenticaci\u00f3n JCache {0} ha fallado debido a un error. La excepci\u00f3n es: {1}
+JCACHE_AUTH_CACHE_CLEAR_FAILED.explanation=Las entradas no se han borrado de la memoria cach\u00e9 de autenticaci\u00f3n JCache.
+JCACHE_AUTH_CACHE_CLEAR_FAILED.useraction=Investigue la excepci\u00f3n incluida en el mensaje y subsane la causa del error.

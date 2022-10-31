@@ -56,3 +56,5 @@ RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E.useraction=Hogy meg\u00e1llap\u00edt
 CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E=CWWKC0459E: Nem hozhat\u00f3 l\u00e9tre ellen\u0151rz\u00e9si pont, mert a haszn\u00e1lt Java v\u00e1ltozat nem t\u00e1mogatja az ellen\u0151rz\u00e9si pontot.
 CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.explanation=A kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont m\u0171veletek csak az ellen\u0151rz\u00e9si pontot t\u00e1mogat\u00f3 Java v\u00e1ltozattal haszn\u00e1lhat\u00f3k.  
 CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.useraction=Haszn\u00e1ljon olyan Java v\u00e1ltozatot, amely t\u00e1mogatja az ellen\u0151rz\u00e9si pontot. Az ellen\u0151rz\u00e9si pont t\u00e1mogat\u00e1s\u00e1hoz sz\u00fcks\u00e9ges Java v\u00e1ltozattal kapcsolatos r\u00e9szletek\u00e9rt tekintse meg a dokument\u00e1ci\u00f3t.
+
+# CWWKC0460E - is a beta only message that gets removed for GA

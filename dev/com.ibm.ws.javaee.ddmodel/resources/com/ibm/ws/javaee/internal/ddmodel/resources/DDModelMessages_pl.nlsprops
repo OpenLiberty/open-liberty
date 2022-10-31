@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -34,9 +34,22 @@ required.attribute.missing=CWWKC2251E: Element {2} nie zawiera wymaganego atrybu
 required.attribute.missing.explanation=Brak wymaganego atrybutu w podanym elemencie.
 required.attribute.missing.useraction=Popraw deskryptor wdra\u017cania, dodaj\u0105c brakuj\u0105cy atrybut.
 
-invalid.root.element=CWWKC2252E: Niepoprawna nazwa lokalna elementu g\u0142\u00f3wnego {2} w deskryptorze wdra\u017cania {0} w wierszu {1}.
-invalid.root.element.explanation=Element g\u0142\u00f3wny jest niepoprawny.
-invalid.root.element.useraction=Sprawd\u017a poprawno\u015b\u0107 pliku XML, aby upewni\u0107 si\u0119, \u017ce element g\u0142\u00f3wny jest poprawny.
+# REMOVED:
+# invalid.root.element=CWWKC2252E: Invalid root local name {2} in the {0} deployment descriptor on line {1}.
+# invalid.root.element.explanation=The root element is incorrect.
+# invalid.root.element.useraction=Validate the xml file to make sure the root element is correct.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the configuration file
+#    {2} is the actual root element name
+#    {3} is the expected root element name
+# -----------------------------------------------------------------------
+unexpected.root.element=CWWKC2252E: Deskryptor wdra\u017cania {0} w wierszu {1} zawiera element g\u0142\u00f3wny {2}, ale wymaga elementu g\u0142\u00f3wnego {3}. 
+unexpected.root.element.explanation=Element g\u0142\u00f3wny deskryptora wdra\u017cania jest niepoprawny.
+unexpected.root.element.useraction=Popraw element g\u0142\u00f3wny deskryptora wdra\u017cania.
 
 root.element.not.found=CWWKC2253E: Nie mo\u017cna znale\u017a\u0107 elementu g\u0142\u00f3wnego deskryptora wdra\u017cania {0} w wierszu {1}.
 root.element.not.found.explanation=Brak elementu g\u0142\u00f3wnego w deskryptorze wdra\u017cania.
@@ -58,7 +71,7 @@ unexpected.content=CWWKC2257E: Napotkano nieoczekiwan\u0105 tre\u015b\u0107 w el
 unexpected.content.explanation=Napotkano tre\u015b\u0107 tekstow\u0105, dla kt\u00f3rej nie zdefiniowano wyst\u0105pienia w deskryptorze wdra\u017cania.
 unexpected.content.useraction=Popraw deskryptor wdra\u017cania.
 
-incorrect.child.element.namespace=CWWKC2258E:  Przestrzeni\u0105 nazw elementu potomnego {3} elementu nadrz\u0119dnego {2} w deskryptorze wdra\u017cania {0} w wierszu {1} by\u0142a przestrze\u0144 nazw {4}, a nie {5}.
+incorrect.child.element.namespace=CWWKC2258E: Przestrzeni\u0105 nazw elementu potomnego {3} elementu nadrz\u0119dnego {2} w deskryptorze wdra\u017cania {0} w wierszu {1} by\u0142a przestrze\u0144 nazw {4}, a nie {5}.
 incorrect.child.element.namespace.explanation=Przestrzenie nazw element\u00f3w i atrybut\u00f3w w deskryptorze wdra\u017cania nie by\u0142y sp\u00f3jne.
 incorrect.child.element.namespace.useraction=Popraw deskryptor wdra\u017cania.
 
@@ -66,27 +79,159 @@ unexpected.child.element=CWWKC2259E: Napotkano nieoczekiwany element potomny {3}
 unexpected.child.element.explanation=Napotkano element, dla kt\u00f3rego nie zdefiniowano wyst\u0105pienia w deskryptorze wdra\u017cania.
 unexpected.child.element.useraction=Popraw deskryptor wdra\u017cania.
 
-invalid.href.prefix=CWWKC2260E: Warto\u015b\u0107 atrybutu href elementu {2} w deskryptorze wdra\u017cania {0} w wierszu {1} nie rozpoczyna si\u0119 od \u015bcie\u017cki {3}.
-invalid.href.prefix.explanation=Atrybut href musi rozpoczyna\u0107 si\u0119 od poprawnej \u015bcie\u017cki do przywo\u0142ywanego deskryptora.
-invalid.href.prefix.useraction=Popraw deskryptor wdra\u017cania.
+######
 
-unknown.deployment.descriptor.version=CWWKC2261E: Podczas pr\u00f3by okre\u015blenia wersji deskryptora wdra\u017cania {0} wyst\u0105pi\u0142 b\u0142\u0105d.
-unknown.deployment.descriptor.version.explanation=Wersja lub przestrze\u0144 nazw by\u0142a niepoprawna lub nie zosta\u0142a okre\u015blona w elemencie g\u0142\u00f3wnym deskryptora wdra\u017cania.
-unknown.deployment.descriptor.version.useraction=Sprawd\u017a i popraw wersj\u0119 lub przestrze\u0144 nazw w elemencie g\u0142\u00f3wnym deskryptora wdra\u017cania.
+# REMOVED:
+# invalid.href.prefix=CWWKC2260E: The href attribute value of the {2} element does not start with {3} in the {0} deployment descriptor on line {1}.
+# invalid.href.prefix.explanation=An href attribute must start with the correct path to the descriptor being referenced.
+# invalid.href.prefix.useraction=Correct the deployment descriptor.
 
-invalid.deployment.descriptor.namespace=CWWKC2262E:  Serwer nie mo\u017ce przetworzy\u0107 wersji {3} i przestrzeni nazw {2} w deskryptorze wdra\u017cania {0} w wierszu {1}.
-invalid.deployment.descriptor.namespace.explanation= Podana wersja i przestrze\u0144 nazw s\u0105 niepoprawne albo konfiguracja serwera nie zawiera sk\u0142adnika, kt\u00f3ry mo\u017ce przetworzy\u0107 wersj\u0119 i przestrze\u0144 nazw.
-invalid.deployment.descriptor.namespace.useraction=Sprawd\u017a i popraw wersj\u0119 lub przestrze\u0144 nazw w elemencie g\u0142\u00f3wnym deskryptora wdra\u017cania albo sprawd\u017a i popraw sk\u0142adniki w konfiguracji serwera.
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which is not valid.
+#    {4} is the actual prefix of the HREF value.
+#    {5} is the expected prefix of the HREF value.
+# -----------------------------------------------------------------------
+invalid.href.prefix=CWWKC2260E: Przedrostek HREF {4} nie jest zgodny z oczekiwanym przedrostkiem {5} w warto\u015bci HREF {3} elementu {2} w deskryptorze wdra\u017cania {0} w wierszu {1}.
+invalid.href.prefix.explanation=Przedrostek warto\u015bci HREF okre\u015bla \u015bcie\u017ck\u0119 przywo\u0142ywanego deskryptora wdra\u017cania. Przedrostek nie jest zgodny ze \u015bcie\u017ck\u0105 przywo\u0142ywanego deskryptora wdra\u017cania.
+invalid.href.prefix.useraction=Popraw warto\u015b\u0107 HREF.
 
-invalid.deployment.descriptor.version=CWWKC2263E:  Atrybut {2} wersji podany w deskryptorze wdra\u017cania {0} w wierszu {1} nie jest poprawny.
-invalid.deployment.descriptor.version.explanation=W elemencie g\u0142\u00f3wnym deskryptora wdra\u017cania okre\u015blono niepoprawn\u0105 wersj\u0119.
-invalid.deployment.descriptor.version.useraction=Sprawd\u017a i popraw numer wersji w elemencie g\u0142\u00f3wnym deskryptora wdra\u017cania.
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is an HREF value which is not valid.
+# -----------------------------------------------------------------------
+invalid.href=CWWKC2284E: Niepoprawna warto\u015b\u0107 HREF {3} elementu {2} w deskryptorze wdra\u017cania {0} w wierszu {1}.
+invalid.href.explanation=Warto\u015b\u0107 elementu nie jest poprawn\u0105 warto\u015bci\u0105 HREF. Warto\u015bci\u0105 musi by\u0107 znak ''#'', a znak "#'' nie mo\u017ce by\u0107 pierwszym ani ostatnim znakiem warto\u015bci.
+invalid.href.useraction=Popraw warto\u015b\u0107 HREF.
 
-missing.deployment.descriptor.namespace=CWWKC2264E:  Podczas pr\u00f3by okre\u015blenia przestrzeni nazw deskryptora wdra\u017cania {0} w wierszu {1} wyst\u0105pi\u0142 b\u0142\u0105d.
-missing.deployment.descriptor.namespace.explanation=Okre\u015blono niepoprawn\u0105 przestrze\u0144 nazw w elemencie g\u0142\u00f3wnym deskryptora wdra\u017cania.
-missing.deployment.descriptor.namespace.useraction=Sprawd\u017a i popraw przestrze\u0144 nazw w elemencie g\u0142\u00f3wnym deskryptora wdra\u017cania.
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which is not valid.
+#    {4} the expected type of the element referenced by the HREF.
+#    {5} the type of actual referenced element.
+# -----------------------------------------------------------------------
+incorrect.href.type=CWWKC2285E: Element HREF odwo\u0142uje si\u0119 do obiektu typu {5}, ale wymaga obiektu typu {4}. W deskryptorze wdra\u017cania {0} w wierszu {1} wyst\u0105pi\u0142 b\u0142\u0105d w warto\u015bci HREF {3} elementu {2}.
+incorrect.href.type.explanation=Typ obiektu, do kt\u00f3rego odwo\u0142uje si\u0119 warto\u015b\u0107 HREF, jest niepoprawny.
+incorrect.href.type.useraction=Popraw warto\u015b\u0107 HREF.
 
-missing.deployment.descriptor.version=CWWKC2265E:  Podczas pr\u00f3by okre\u015blenia wersji deskryptora wdra\u017cania {0} w wierszu {1} wyst\u0105pi\u0142 b\u0142\u0105d.
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a referencing deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the referencing deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which cannot be resolved.
+#    {4} is the ID of the HREF value.
+#    {5} is the path of a referenced deployment descriptor.
+# -----------------------------------------------------------------------
+unresolved.href=CWWKC2286E: Nie powiod\u0142o si\u0119 rozstrzygni\u0119cie identyfikatora HREF {4} w przywo\u0142ywanym deskryptorze wdra\u017cania {5} w odwo\u0142aniu do warto\u015bci HREF {3} elementu {2} w deskryptorze wdra\u017cania odwo\u0142ania {0} w wierszu {1}.
+unresolved.href.explanation=Identyfikator HREF nie jest t\u0142umaczony na dowolny dost\u0119pny element przywo\u0142ywanego deskryptora wdra\u017cania. Identyfikator HREF musi by\u0107 zgodny z identyfikatorem elementu przywo\u0142ywanego deskryptora wdra\u017cania.
+unresolved.href.useraction=Popraw identyfikator HREF w przywo\u0142ywanym deskryptorze wdra\u017cania albo popraw warto\u015b\u0107 identyfikatora w przywo\u0142ywanym deskryptorze wdra\u017cania.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+# -----------------------------------------------------------------------
+missing.href=CWWKC2287E: W deskryptorze wdra\u017cania {0} w wierszu {1} nie ma atrybutu HREF w elemencie {2}.
+missing.href.explanation=Ten element jest wymagany do udost\u0119pnienia atrybutu HREF. Atrybut HREF ma nazw\u0119 "href".
+missing.href.useraction=Dodaj atrybut HREF do elementu.
+
+######
+
+# REMOVED:
+# unknown.deployment.descriptor.version=CWWKC2261E: An error occurred while trying to determine the version of the {0} deployment descriptor.
+# unknown.deployment.descriptor.version.explanation=The version or the namespace were not valid or were not specified in the root element of the deployment descriptor.
+# unknown.deployment.descriptor.version.useraction=Verify and correct the version or namespace in the root element of the deployment descriptor.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a version attribute value within the deployment descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.version=CWWKC2261E: Deskryptor wdra\u017cania {0} w wierszu {1} okre\u015bla nieobs\u0142ugiwan\u0105 wersj\u0119 {2}.
+unsupported.descriptor.version.explanation=Wersja okre\u015blona w deskryptorze wdra\u017cania nie jest poprawna dla tego typu deskryptora wdra\u017cania.
+unsupported.descriptor.version.useraction=Popraw wersj\u0119 okre\u015blon\u0105 w deskryptorze wdra\u017cania.
+
+# REMOVED:
+# invalid.deployment.descriptor.namespace=CWWKC2262E: The server is unable to process the {3} version and the {2} namespace in the {0} deployment descriptor on line {1}.
+# invalid.deployment.descriptor.namespace.explanation=Either the specified version and namespace are not valid, or the server configuration does not have a feature that can process the version and namespace.
+# invalid.deployment.descriptor.namespace.useraction=Verify and correct the version or namespace in the root element of the deployment descriptor, or verify and correct the features in the server configuration.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a namespace value within the deployment descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.namespace=CWWKC2262E: Deskryptor wdra\u017cania {0} w wierszu {1} okre\u015bla nieobs\u0142ugiwan\u0105 przestrze\u0144 nazw {2}.
+unsupported.descriptor.namespace.explanation=Przestrze\u0144 nazw, kt\u00f3ra zosta\u0142a okre\u015blona w deskryptorze wdra\u017cania, jest niepoprawna dla tego typu deskryptora wdra\u017cania.
+unsupported.descriptor.namespace.useraction=Popraw przestrze\u0144 nazw okre\u015blon\u0105 w deskryptorze wdra\u017cania.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a version value within the deployment descriptor
+#    {3} is a namespace value within the deployment descriptor
+#    {4} is the correct namespace value which should be present in the deployment descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.namespace.for.version=CWWCK27781W: Deskryptor wdra\u017cania {0} w wierszu {1} okre\u015bla wersj\u0119 {2} i przestrze\u0144 nazw {3}, ale powinien okre\u015bla\u0107 przestrze\u0144 nazw {4}.
+unsupported.descriptor.namespace.for.version.explanation=W deskryptorze wdra\u017cania okre\u015blono niepoprawn\u0105 przestrze\u0144 nazw dla podanej wersji. Przestrze\u0144 nazw zosta\u0142a zignorowana.
+unsupported.descriptor.namespace.for.version.useraction=Popraw przestrze\u0144 nazw, podaj\u0105c warto\u015b\u0107, kt\u00f3ra jest poprawna dla okre\u015blonej wersji.
+
+# REMOVED:
+# invalid.deployment.descriptor.version=CWWKC2263E: The version {2} attribute specified in the {0} deployment descriptor on line {1} is not valid.
+# invalid.deployment.descriptor.version.explanation=An non-valid version was specified in the root element of the deployment descriptor.
+# invalid.deployment.descriptor.version.useraction=Verify and correct the version number in the root element of the deployment descriptor.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a version attribute value within the deployment descriptor
+#    {3} is the highest version version attribute value which is supported by the features currently provisioned by the server configuration
+# -----------------------------------------------------------------------
+unprovisioned.descriptor.version=CWWKC2263E: Deskryptor wdra\u017cania {0} w wierszu {1} okre\u015bla wersj\u0119 {2}, kt\u00f3ra jest wy\u017csza od bie\u017c\u0105cej udost\u0119pnionej wersji {3}.
+unprovisioned.descriptor.version.explanation=Wersja okre\u015blona dla deskryptora wdra\u017cania nie jest obs\u0142ugiwana przez sk\u0142adniki udost\u0119pniane w konfiguracji serwera.
+unprovisioned.descriptor.version.useraction=Zaktualizuj konfiguracj\u0119 serwera w taki spos\u00f3b, aby udost\u0119pni\u0107 sk\u0142adniki obs\u0142uguj\u0105ce t\u0119 wersj\u0119.
+
+# REMOVED:
+# missing.deployment.descriptor.namespace=CWWKC2264E: An error occurred while trying to determine the namespace of the {0} deployment descriptor on line {1}.
+# missing.deployment.descriptor.namespace.explanation=An non-valid namespace was specified in the root element of the deployment descriptor.
+# missing.deployment.descriptor.namespace.useraction=Verify and correct the namespace in the root element of the deployment descriptor.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a namespace value which is required to be present in the deployment descriptor
+# -----------------------------------------------------------------------
+missing.descriptor.namespace=CWWKC2264E: Deskryptor wdra\u017cania {0} w wierszu {1} nie ma wymaganej przestrzeni nazw {2}.
+missing.descriptor.namespace.explanation=Deskryptor wdra\u017cania musi mie\u0107 okre\u015blon\u0105 przestrze\u0144 nazw.
+missing.descriptor.namespace.useraction=Dodaj wymagan\u0105 przestrze\u0144 nazw do deskryptora wdra\u017cania.
+
+missing.deployment.descriptor.version=CWWKC2265E: Podczas pr\u00f3by okre\u015blenia wersji deskryptora wdra\u017cania {0} w wierszu {1} wyst\u0105pi\u0142 b\u0142\u0105d.
 missing.deployment.descriptor.version.explanation=Wersja nie zosta\u0142a okre\u015blona w elemencie g\u0142\u00f3wnym deskryptora wdra\u017cania.
 missing.deployment.descriptor.version.useraction=Sprawd\u017a i popraw wersj\u0119 w elemencie g\u0142\u00f3wnym deskryptora wdra\u017cania.
 
@@ -95,7 +240,7 @@ at.most.one.occurrence.explanation=Dla niekt\u00f3rych element\u00f3w dozwolone 
 at.most.one.occurrence.useraction=Popraw deskryptor wdra\u017cania.
 
 required.method.element.missing=CWWKC2267E: Element {2} musi zawiera\u0107 co najmniej jeden element potomny {3} zdefiniowany w deskryptorze wdra\u017cania {0} w wierszu {1}.
-required.method.element.missing.explanation=Brak wymaganego elementu potomnego w okre\u015blonym elemencie nadrz\u0119dnym.
+required.method.element.missing.explanation=Brak wymaganego elementu potomnego w okre\u015blonym elemencie nadrz\u0119dnym. 
 required.method.element.missing.useraction=Popraw deskryptor wdra\u017cania przez dodanie wymaganego elementu potomnego.
 
 runasmode.missing.specifiedID.element=CWWKC2268E: Je\u015bli atrybut mode elementu <run-as-mode> jest ustawiony na warto\u015b\u0107 SPECIFIED_IDENTITY w deskryptorze wdra\u017cania {0} w wierszu {1}, element potomny <specified-identity> musi by\u0107 zdefiniowany.
@@ -107,16 +252,27 @@ found.duplicate.ejbname.explanation=Wszystkie nazwy komponent\u00f3w bean sterow
 found.duplicate.ejbname.useraction=Popraw deskryptor wdra\u017cania, zmieniaj\u0105c nazwy wszystkich zduplikowanych komponent\u00f3w EJB.
 
 found.duplicate.attribute.value=CWWKC2270E: Atrybut {2} dla wszystkich element\u00f3w {1} musi by\u0107 unikalny. Znaleziono zduplikowan\u0105 nazw\u0119 {3} w deskryptorze wdra\u017cania {0}.
-found.duplicate.attribute.value.explanation=Warto\u015b\u0107 podanego atrybutu musi by\u0107 unikalna we wszystkich elementach tego samego typu.
+found.duplicate.attribute.value.explanation=Warto\u015b\u0107 podanego atrybutu musi by\u0107 unikalna we wszystkich elementach tego samego typu. 
 found.duplicate.attribute.value.useraction=Popraw deskryptor wdra\u017cania, zmieniaj\u0105c nazwy wszystkich zduplikowanych warto\u015bci atrybut\u00f3w.
 
+# REMOVED:
+# BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: A validation.xml file was found for the {0} module. However, that validation.xml file is not configured for validation; therefore this XML file is ignored.
+# BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=The BeanValidationService cannot create a ValidatorFactory because of an error parsing the validation.xml file with the validation-configuration-1.0.xsd schema file. This error may indicate that the validation.xml file is not intended for use by the Bean Validation runtime; therefore, this XML file is ignored.
+# BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=If the validation.xml file is not for creating a ValidatorFactory instance, then ignore the message. However if the validation.xml file is intended to create a ValidatorFactory instance, then a problem exists. Enable Bean Validation runtime trace in the application server, stop the application, restart the application, and examine the trace output file for a trace event such as: Unexpected exception when trying to unmarshall the validation.xml file. Examine the exception stack trace for debugging assistance.
+
+# REPLACED BY:
 # -----------------------------------------------------------------------
 # PARAMETERS:
-#    {0} is the path name for the module
+#    {0} is the path to a validation configuration file, including paths to parent archives
+#    {1} is the module name
+#    {2} is the number of a line within the configuration file
+#    {3} is the actual root element name
+#    {4} is the expected root element name
 # -----------------------------------------------------------------------
-BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: Dla modu\u0142u {0} znaleziono plik validation.xml. Jednak plik validation.xml nie zosta\u0142 skonfigurowany pod k\u0105tem sprawdzania poprawno\u015bci, dlatego ten plik XML zostanie zignorowany.
-BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=Us\u0142uga BeanValidationService nie mo\u017ce utworzy\u0107 klasy ValidatorFactory, poniewa\u017c wyst\u0105pi\u0142 b\u0142\u0105d podczas analizowania pliku validation.xml przy u\u017cyciu pliku schematu validation-configuration-1.0.xsd. B\u0142\u0105d ten mo\u017ce wskazywa\u0107, \u017ce plik validation.xml nie jest przeznaczony do u\u017cytku w \u015brodowisku wykonawczym sprawdzania poprawno\u015bci komponent\u00f3w, dlatego ten plik XML zostanie zignorowany.
-BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=Je\u015bli plik validation.xml nie s\u0142u\u017cy do tworzenia instancji klasy ValidatorFactory, to zignoruj ten komunikat. Je\u015bli jednak plik validation.xml s\u0142u\u017cy do tworzenia instancji klasy ValidatorFactory, to istnieje problem.  W\u0142\u0105cz na serwerze aplikacji \u015bledzenie \u015brodowiska sprawdzania poprawno\u015bci komponent\u00f3w bean, zatrzymaj aplikacj\u0119, zrestartuj j\u0105 i poszukaj w pliku wyj\u015bciowym \u015bledzenia zdarze\u0144 takich jak: Nieoczekiwany wyj\u0105tek podczas pr\u00f3by to rozdzielenia element\u00f3w z pliku validation.xml. Sprawd\u017a stos wywo\u0142a\u0144 wyj\u0105tku w celu uzyskania asysty podczas debugowania.
+unexpected.root.element.bval=CWWKC2271W: Ignorowanie pliku konfiguracyjnego sprawdzania poprawno\u015bci komponentu bean {0} modu\u0142u {1}. W wierszu o numerze {2} zast\u0105p element g\u0142\u00f3wny {3} elementem {4}.
+unexpected.root.element.bval.explanation=Plik konfiguracyjny sprawdzania poprawno\u015bci nie jest zgodny ze schematami konfiguracji sprawdzania poprawno\u015bci (validation-configuration-1.0.xsd i validation-configuration-1.1.xsd). Plik konfiguracyjny nie by\u0142 przeznaczony do sprawdzenia poprawno\u015bci komponentu bean lub plik konfiguracyjny zosta\u0142 zniekszta\u0142cony. Plik konfiguracyjny jest ignorowany. Us\u0142uga BeanValidationService nie utworzy ValidatorFactory.
+unexpected.root.element.bval.useraction=Je\u015bli plik konfiguracyjny sprawdzania poprawno\u015bci nie jest przeznaczony do sprawdzania poprawno\u015bci komponentu bean, to komunikat ostrzegawczy mo\u017ce zosta\u0107 zignorowany. Je\u015bli plik konfiguracyjny sprawdzania poprawno\u015bci jest przeznaczony do sprawdzania poprawno\u015bci komponentu bean, nie nale\u017cy ignorowa\u0107 tego ostrze\u017cenia. Us\u0142uga sprawdzania poprawno\u015bci komponentu bean nie dzia\u0142a tak, jak zamierzono. Aby zdiagnozowa\u0107 ten problem, w\u0142\u0105cz \u015bledzenie \u015brodowiska wykonawczego sprawdzania poprawno\u015bci komponent\u00f3w bean, zatrzymaj i ponownie uruchom serwer, nast\u0119pnie sprawd\u017a dane wyj\u015bciowe \u015bledzenia pod k\u0105tem nieoczekiwanych wyj\u0105tk\u00f3w dotycz\u0105cych sprawdzania poprawno\u015bci komponentu bean. Na przyk\u0142ad: "Nieoczekiwany wyj\u0105tek podczas pr\u00f3by demarszalingu pliku validation.xml". Sprawd\u017a dane \u015bledzen\
+    ia stosu wyj\u0105tk\u00f3w w celu uzyskania asysty przy debugowaniu.
 
 xml.error=CWWKC2272E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas analizowania deskryptora wdra\u017cania {0} w wierszu {1}. Komunikat o b\u0142\u0119dzie: {2}
 xml.error.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas analizowania deskryptora wdra\u017cania XML. Wi\u0119cej wyja\u015bnie\u0144 zawiera komunikat o b\u0142\u0119dzie.
@@ -134,10 +290,119 @@ invalid.long.value=CWWKC2275E: Warto\u015b\u0107 {2} w deskryptorze wdra\u017can
 invalid.long.value.explanation=W deskryptorze wdra\u017cania podano warto\u015b\u0107, kt\u00f3ra nie jest liczb\u0105 z zakresu od -9223372036854775808 do 9223372036854775807.
 invalid.long.value.useraction=Popraw deskryptor wdra\u017cania tak, aby by\u0142a u\u017cywana poprawna liczba typu long.
 
-module.name.not.specified=CWWKC2276E: Element {0} musi okre\u015bla\u0107 atrybut nazwy modu\u0142u.
-module.name.not.specified.explanation=Konfiguracja powi\u0105zania i rozszerzenia dla komponent\u00f3w EJB i modu\u0142\u00f3w WWW musi zawiera\u0107 atrybut moduleName okre\u015blaj\u0105cy modu\u0142, do kt\u00f3rego konfiguracja ma zastosowanie. 
-module.name.not.specified.useraction=Dodaj atrybut moduleName do elementu web-bnd, web-ext, ejb-bnd lub ejb-ext. 
+# ---
 
-module.name.invalid=CWWKC2277E: Przynajmniej jedna nazwa modu\u0142u w elemencie {1} jest niepoprawna. Niepoprawne nazwy modu\u0142\u00f3w: {0}.
-module.name.invalid.explanation=Konfiguracja powi\u0105zania i rozszerzenia dla modu\u0142\u00f3w WWW musi okre\u015bla\u0107 poprawny atrybut moduleName. W co najmniej jednej konfiguracji okre\u015blono niepoprawn\u0105 nazw\u0119 modu\u0142u. Nazwa modu\u0142u musi by\u0107 nazw\u0105 pliku archiwum, kt\u00f3ry zawiera aplikacj\u0119 WWW lub EJB.
-module.name.invalid.useraction=Popraw atrybut moduleName w konfiguracji powi\u0105zania lub rozszerzenia. 
+# REMOVED:
+# module.name.not.specified=CWWKC2276E: The {0} element must specify a module name attribute.
+# module.name.not.specified.explanation=The binding and extension configuration for EJB and web modules must contain a ''moduleName'' attribute that specifies the module to which the configuration applies. 
+# module.name.not.specified.useraction=Add a ''moduleName'' attribute to the ''web-bnd'', ''web-ext'', ''ejb-bnd'', or ''ejb-ext'' element. 
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.  For example, 'ejb-bnd', 'ejb-ext', 'web-bnd', 'web-ext'.
+# -----------------------------------------------------------------------
+module.name.not.specified=CWWKC2276E: Brak atrybutu ''moduleName'' w jednym lub kilku powi\u0105zaniach ''{1}'' i elementach konfiguracji rozszerzenia aplikacji {0}.
+module.name.not.specified.explanation=Powi\u0105zania i elementy konfiguracji rozszerze\u0144 musz\u0105 mie\u0107 atrybut "moduleName'".
+module.name.not.specified.useraction=Upewnij si\u0119, \u017ce atrybut "moduleName" jest obecny we wszystkich powi\u0105zaniach i elementach konfiguracji rozszerzenia.
+
+# REMOVED:
+# module.name.invalid=CWWKC2277E: One or more module names on the {1} element are invalid. The invalid module name or names are {0}.
+# module.name.invalid.explanation=The binding and extension configuration must specify a valid ''moduleName'' attribute. At least one configuration has specified an non-valid module name. The module name must be the name of the archive file that contains the web or EJB application.
+# module.name.invalid.useraction=Correct the ''moduleName'' attribute in the binding or extension configuration. 
+
+#REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.
+#    {2} Module names used in configuration elements and not found in the application.
+#    {3} Module names found in the application.
+# -----------------------------------------------------------------------
+module.name.not.found=CWWKC2277E: Nie mo\u017cna znale\u017a\u0107 atrybut\u00f3w ''moduleName'' {2} okre\u015blonych w powi\u0105zaniach ''{1}'' i elementach konfiguracji rozszerze\u0144 aplikacji {0}.  Nazwy modu\u0142\u00f3w aplikacji: {3}.
+module.name.not.found.explanation=Atrybuty "moduleName" powi\u0105za\u0144 i element\u00f3w konfiguracji rozszerze\u0144 musz\u0105 by\u0107 zgodne z nazwami modu\u0142\u00f3w aplikacji.
+module.name.not.found.useraction=Upewnij si\u0119, \u017ce wszystkie atrybuty elementu "moduleName' dla powi\u0105za\u0144 i element\u00f3w konfiguracji rozszerze\u0144 s\u0105 zgodne z nazwami modu\u0142\u00f3w aplikacji. 
+
+# ADDED
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.
+#    {2} Duplicated module names used in configuration elements.
+# -----------------------------------------------------------------------
+module.name.duplicated=CWWKC2278E: W powi\u0105zaniach ''{1}'' i elementach konfiguracji rozszerze\u0144 aplikacji {0} okre\u015blono zduplikowane atrybuty {2} ''moduleName''.
+module.name.duplicated.explanation=Atrybuty "moduleName' powi\u0105za\u0144 i element\u00f3w konfiguracji rozszerzenia nie mog\u0105 zosta\u0107 zduplikowane.
+module.name.duplicated.useraction=Upewnij si\u0119, \u017ce wszystkie atrybuty typu "moduleName' powi\u0105za\u0144 i element\u00f3w konfiguracji rozszerzenia s\u0105 unikalne. 
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a DTD public ID value which is present in the descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.public.id=CWWCK27782E: Deskryptor wdra\u017cania {0} {0} w wierszu {1} okre\u015bla nieobs\u0142ugiwany identyfikator publiczny {2}.
+unsupported.descriptor.public.id.explanation=Warto\u015b\u0107 identyfikatora publicznego nie jest poprawna dla deskryptora wdra\u017cania.
+unsupported.descriptor.public.id.useraction=Popraw warto\u015b\u0107 identyfikatora publicznego deskryptora wdra\u017cania.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+# -----------------------------------------------------------------------
+missing.descriptor.version=CWWCK27783E: Deskryptor wdra\u017cania {0} nie ma wersji, identyfikatora publicznego lub przestrzeni nazw.
+missing.descriptor.version.explanation=Deskryptor wdra\u017cania musi mie\u0107 wersj\u0119, identyfikator publiczny lub przestrze\u0144 nazw.
+missing.descriptor.version.useraction=Dodaj do deskryptora wdra\u017cania wersj\u0119, identyfikator publiczny lub przestrze\u0144 nazw. Dodana wersja, identyfikator publiczny lub przestrze\u0144 nazw musz\u0105 by\u0107 zgodne z tre\u015bci\u0105 deskryptora wdra\u017cania.
+
+# ADDED:
+# "incorrect.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace, expectedNamespace
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the namespace which was specified in the deployment descriptor
+#    {3} is the expected namespace
+# -----------------------------------------------------------------------
+incorrect.descriptor.namespace=CWWCK27788W: Deskryptor wdra\u017cania {0} w wierszu {1} okre\u015bla przestrze\u0144 nazw {2}, ale powinien okre\u015bla\u0107 przestrze\u0144 nazw {3}.
+incorrect.descriptor.namespace.explanation=W deskryptorze wdra\u017cania oczekiwana jest konkretna przestrze\u0144 nazw. Niepoprawna przestrze\u0144 nazw zosta\u0142a zignorowana.
+incorrect.descriptor.namespace.useraction=Zmie\u0144 przestrze\u0144 nazw w deskryptorze wdra\u017cania na oczekiwan\u0105 warto\u015b\u0107.
+
+# ADDED:
+# "incorrect.descriptor.namespace.for.version", describeEntry(), getLineNumber(), ddVersion, ddNamespace, expectedNamespace
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the version which was specified in the deployment descriptor
+#    {3} is the namespace which was specified in the deployment descriptor
+#    {4} is the expected namespace
+# -----------------------------------------------------------------------
+incorrect.descriptor.namespace.for.version=CWWCK27789W: Deskryptor wdra\u017cania {0} w wierszu {1} okre\u015bla wersj\u0119 {2} i przestrze\u0144 nazw {3}, ale dla tej wersji powinien okre\u015bla\u0107 przestrze\u0144 nazw {4}.
+incorrect.descriptor.namespace.for.version.explanation=W deskryptorze wdra\u017cania dla okre\u015blonej wersji oczekiwana jest konkretna przestrze\u0144 nazw. Niepoprawna przestrze\u0144 nazw zosta\u0142a zignorowana.
+incorrect.descriptor.namespace.for.version.useraction=Zmie\u0144 przestrze\u0144 nazw w deskryptorze wdra\u017cania na oczekiwan\u0105 warto\u015b\u0107.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the value of a 'name' attribute within a session configuration 'attribute' element
+#    {3} is the value of the 'value' attribute of a session configuration 'attribute' element
+#    {4} is the value of the 'value' attribute of a session configuration 'attribute' element
+# -----------------------------------------------------------------------
+duplicate.session.config.attribute.name=CWWCK27790W: Deskryptor wdra\u017cania {0} w wierszu {1} jest duplikatem nast\u0119puj\u0105cej nazwy elementu atrybutu konfiguracji sesji: "{2}".  Warto\u015b\u0107 elementu ''{3}'' jest powi\u0105zana z nazw\u0105 zamiast z poprzedni\u0105 warto\u015bci\u0105 ''{4}''.
+duplicate.session.config.attribute.name.explanation=Deskryptor wdra\u017cania zawiera wiele element\u00f3w atrybut\u00f3w o tej samej nazwie i znajduj\u0105cych si\u0119 w tym samym elemencie konfiguracji sesji. Analizator sk\u0142adni deskryptora zignoruje wszystkie te elementy poza ostatnim z nich.
+duplicate.session.config.attribute.name.useraction=Je\u015bli ostatnim elementem atrybutu nie jest element, kt\u00f3ry ma by\u0107 u\u017cywany, zaktualizuj deskryptor wdra\u017cania, aby usun\u0105\u0107 dodatkowe elementy atrybut\u00f3w o takiej samej nazwie.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the value of the 'value' attribute of a session configuration 'attribute' element
+# -----------------------------------------------------------------------
+missing.session.config.attribute.name=CWWCK27791W: W deskryptorze wdra\u017cania {0} w wierszu {1} znajduje si\u0119 atrybut konfiguracji sesji, kt\u00f3ry nie ma nazwy.  Ten atrybut o warto\u015bci ''{2}'' zosta\u0142 zignorowany.
+missing.session.config.attribute.name.explanation=Element nazwy wymaga atrybutu konfiguracji sesji. 
+missing.session.config.attribute.name.useraction=Zaktualizuj deskryptor wdra\u017cania, aby usun\u0105\u0107 atrybut, kt\u00f3ry nie ma elementu nazwy, lub dodaj elementy nazwy do wszystkich element\u00f3w atrybut\u00f3w.
+
+
+

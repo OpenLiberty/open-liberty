@@ -336,6 +336,16 @@ SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003=J2CA1003E: No se ha podido elim
 SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.explanation=Se ha producido un error al intentar eliminar un MCWrapper, lo que puede provocar problemas en la agrupaci\u00f3n compartida.
 SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.useraction=CMSG0002
 
+# --------------------------------
+RA_FREE_CONNECTION_ERROR_J2CA1004=J2CA1004I: El gestor de conexiones ha recibido un error de conexi\u00f3n muy grave del adaptador de recursos para el recurso {1}. El estado de las conexiones es: {2}. La excepci\u00f3n es: {0}
+RA_FREE_CONNECTION_ERROR_J2CA1004.explanation=El adaptador de recursos ha notificado al gestor de conexiones que se ha producido un error en la conexi\u00f3n. Este mensaje se registra para que el usuario pueda ver la excepci\u00f3n que se ha devuelto.
+RA_FREE_CONNECTION_ERROR_J2CA1004.useraction=El gestor de conexiones marca la conexi\u00f3n como inutilizable. La conexi\u00f3n se elimina durante el siguiente intervalo de mantenimiento de conexi\u00f3n. La pol\u00edtica de depuraci\u00f3n no se aplica a esta conexi\u00f3n. Este comportamiento es normal. Si este error se produce de forma imprevista, analice la excepci\u00f3n para determinar el origen posible del problema.
+
+# ---------------------------------
+NO_RA_FREE_EXCEPTION_J2CA1005=J2CA1005I: El gestor de conexiones ha recibido un error de conexi\u00f3n muy grave del adaptador de recursos para el recurso {0}. El estado de las conexiones es: {1}. La informaci\u00f3n puede estar disponible en mensajes o excepciones anteriores.
+NO_RA_FREE_EXCEPTION_J2CA1005.explanation=El adaptador de recursos ha notificado al gestor de conexiones que se ha producido un error en la conexi\u00f3n. Este mensaje se registra para que el usuario pueda ver la excepci\u00f3n que se ha devuelto. 
+NO_RA_FREE_EXCEPTION_J2CA1005.useraction=El gestor de conexiones marca la conexi\u00f3n como inutilizable. La conexi\u00f3n se elimina durante el siguiente intervalo de mantenimiento de conexi\u00f3n. La pol\u00edtica de depuraci\u00f3n no se aplica a esta conexi\u00f3n. Este comportamiento es normal. Si este error se produce de forma imprevista, analice la excepci\u00f3n para determinar el origen posible del problema.
+
 # ---------------------------------
 # End of File
 #

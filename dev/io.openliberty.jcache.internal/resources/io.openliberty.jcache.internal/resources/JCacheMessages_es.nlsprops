@@ -28,17 +28,17 @@ SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: Configuraci\u00f3n de Infinispan gener
 SESN0310_GEN_INFINISPAN_CONFIG.explanation=Las memorias cach\u00e9 Infinispan que se utilizan para la persistencia de sesi\u00f3n HTTP requieren configuraci\u00f3n adicional para persistir sesiones entre servidores. Liberty genera esta configuraci\u00f3n cuando se la proporciona el usuario.
 SESN0310_GEN_INFINISPAN_CONFIG.useraction=No se precisa ninguna acci\u00f3n si est\u00e1 satisfecho con la configuraci\u00f3n generada. De lo contrario, la configuraci\u00f3n generada se puede utilizar como punto inicial.
 
-CWLJC0001_CACHE_CREATED=CWLJC0001I: {0} JCache se ha creado en {1} ms.
+CWLJC0001_CACHE_CREATED=CWLJC0001I: La JCache {0} se ha creado en {1} ms y est\u00e1 utilizando el proveedor de almacenamiento en memoria cach\u00e9 {2}.
 CWLJC0001_CACHE_CREATED.explanation=La JCache nombrada se ha creado porque no se encontraba.
 CWLJC0001_CACHE_CREATED.useraction=No se requiere ninguna acci\u00f3n de usuario.
 
-CWLJC0002_CACHE_FOUND=CWLJC0002I: La {0} JCache existente se ha encontrado en {1} ms.
+CWLJC0002_CACHE_FOUND=CWLJC0002I: La JCache {0} existente se ha encontrado en {1} ms y est\u00e1 utilizando el proveedor de almacenamiento en memoria cach\u00e9 {2}.
 CWLJC0002_CACHE_FOUND.explanation=Se ha encontrado la JCache nombrada, por lo que no se ha creado.
 CWLJC0002_CACHE_FOUND.useraction=No se requiere ninguna acci\u00f3n de usuario.
 
-CWLJC0003_USING_PROVIDER=CWLJC0003I: La {0} JCache est\u00e1 utilizando el proveedor de almacenamiento en memoria cach\u00e9 {1}.
-CWLJC0003_USING_PROVIDER.explanation=La JCache nombrada est\u00e1 utilizando el proveedor especificado.
-CWLJC0003_USING_PROVIDER.useraction=No se requiere ninguna acci\u00f3n de usuario. 
+#
+# CWLJC0003 is available for use.
+# 
 
 CWLJC0004_GET_PROVIDER_FAILED=CWLJC0004E: El proveedor de memoria cach\u00e9 de {0} no se ha podido cargar. {1}
 CWLJC0004_GET_PROVIDER_FAILED.explanation=La configuraci\u00f3n de cachingProvider no se ha podido cargar.

@@ -95,7 +95,7 @@ session_name=El nombre de la sesi\u00f3n
 
 sql_generation=Tiempo invertido en generar SQL. En el caso de expresiones TopLink, tiempo invertido en convertir expresi\u00f3n a SQL
 
-sql_prepare=Tiempo invertido en JDBC preparando la sentencia. Tambi\u00e9n incluye el tiempo invertido en EIS creando una interacci\u00f3n asociada a una conexi\u00f3n y creando objetos de registro de entrada y salida.
+sql_prepare=Tiempo dedicado en JDBC a la preparaci\u00f3n de la sentencia. Tambi\u00e9n incluye el tiempo dedicado en EIS a crear una interacci\u00f3n asociada con una conexi\u00f3n y a crear objetos de registro de entrada y salida
 
 unitofwork_commit=Mide el proceso de confirmaci\u00f3n de la UnitOfWork
 

@@ -28,17 +28,17 @@ SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: configura\u00e7\u00e3o do Infinispan g
 SESN0310_GEN_INFINISPAN_CONFIG.explanation=Os caches Infinispan que s\u00e3o usados para a persist\u00eancia de sess\u00e3o HTTP requerem configura\u00e7\u00e3o adicional para persistir sess\u00f5es entre servidores. O Liberty gera essa configura\u00e7\u00e3o quando ela n\u00e3o \u00e9 fornecida pelo usu\u00e1rio.
 SESN0310_GEN_INFINISPAN_CONFIG.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria caso se esteja satisfeito com a configura\u00e7\u00e3o gerada. Caso contr\u00e1rio, \u00e9 poss\u00edvel usar a configura\u00e7\u00e3o gerada como ponto de in\u00edcio.
 
-CWLJC0001_CACHE_CREATED=CWLJC0001I: O JCache {0} foi criado em {1} ms.
+CWLJC0001_CACHE_CREATED=CWLJC0001I: O JCache {0} foi criado em {1} ms e est\u00e1 usando o provedor de armazenamento em cache {2}.
 CWLJC0001_CACHE_CREATED.explanation=O JCache nomeado foi criado porque ele n\u00e3o foi localizado.
 CWLJC0001_CACHE_CREATED.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 necess\u00e1ria.
 
-CWLJC0002_CACHE_FOUND=CWLJC0002I: O JCache {0} existente foi localizado em {1} ms.
+CWLJC0002_CACHE_FOUND=CWLJC0002I: O JCache {0} existente foi localizado em {1} ms e est\u00e1 usando o provedor de armazenamento em cache {2}.
 CWLJC0002_CACHE_FOUND.explanation=O JCache nomeado foi localizado, portanto, n\u00e3o foi criado.
 CWLJC0002_CACHE_FOUND.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 necess\u00e1ria.
 
-CWLJC0003_USING_PROVIDER=CWLJC0003I: O JCache {0} est\u00e1 usando o provedor de armazenamento em cache {1}.
-CWLJC0003_USING_PROVIDER.explanation=O JCache nomeado est\u00e1 usando o provedor especificado.
-CWLJC0003_USING_PROVIDER.useraction=Nenhuma a\u00e7\u00e3o do usu\u00e1rio \u00e9 necess\u00e1ria. 
+#
+# CWLJC0003 is available for use.
+# 
 
 CWLJC0004_GET_PROVIDER_FAILED=CWLJC0004E: O provedor de armazenamento em cache {0} falhou ao carregar. {1}
 CWLJC0004_GET_PROVIDER_FAILED.explanation=A configura\u00e7\u00e3o do cachingProvider falhou ao carregar.

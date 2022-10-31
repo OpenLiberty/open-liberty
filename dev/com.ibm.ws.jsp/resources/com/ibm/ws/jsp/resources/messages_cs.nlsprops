@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1259,9 +1259,9 @@ system.java.compiler.not.found=JSPG0304W: Atribut JSP useJDKCompiler je nastaven
 system.java.compiler.not.found.explanation=Kontejneru JSP se nezda\u0159ilo naj\u00edt syst\u00e9mov\u00fd kompil\u00e1tor, co\u017e obvykle ozna\u010duje, \u017ee v cest\u011b ke t\u0159\u00edd\u011b nebyl nalezen soubor JAR sady Java SDK (tools.jar).
 system.java.compiler.not.found.useraction=Zkontrolujte, zda se soubor JAR sady Java SDK (tools.jar) nach\u00e1z\u00ed v cest\u011b ke t\u0159\u00edd\u011b, a ov\u011b\u0159te, zda sada Java SDK podporuje rozhran\u00ed API kompil\u00e1toru jazyka Java. Dal\u0161\u00ed informace viz po\u017eadavek specifikace Java 199.
 
-jsp.feature.not.loaded.correctly=CWWJS0001E: Funkce JSP [Pages] se nena\u010detla s p\u0159ijatelnou verz\u00ed.
-jsp.feature.not.loaded.correctly.explanation=Funkce JSP [Pages] se na\u010detla s verz\u00ed, kter\u00e1 odpov\u00edd\u00e1 specifikaci Java [Jakarta] EE dan\u00e9 funkce JSP [Pages]. Funkce byla na\u010dtena bez definovan\u00e9 verze.
-jsp.feature.not.loaded.correctly.useraction=Zkontrolujte soubor server.xml, zda v n\u011bm existuje v\u00edce funkc\u00ed JSP [Pages]. Soubor nesm\u00ed obsahovat v\u00edce ne\u017e jednu funkci Pages.
+jsp.feature.not.loaded.correctly=CWWJS0001E: Funkce str\u00e1nek (d\u0159\u00edve JSP) se nena\u010detla s p\u0159ijatelnou verz\u00ed.
+jsp.feature.not.loaded.correctly.explanation=Funkce byla na\u010dtena bez p\u0159ijateln\u00e9 verze. Aplikace se m\u016f\u017ee chovat jinak, ne\u017e se o\u010dek\u00e1valo.
+jsp.feature.not.loaded.correctly.useraction=Zkontrolujte soubor server.xml, zda neobsahuje funkce v\u00edce str\u00e1nek (JSP). Soubor nesm\u00ed obsahovat v\u00edce ne\u017e jednu funkci str\u00e1nek (JSP).
 
 jsp.error.page.invalid.erroronelnotfound=CWWJS0002E: Neplatn\u00e1 hodnota atributu errorOnELNotFound
 jsp.error.page.invalid.erroronelnotfound.explanation=

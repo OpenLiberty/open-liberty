@@ -95,7 +95,7 @@ session_name=O nome da sess\u00e3o
 
 sql_generation=Tempo gasto gerando SQL. No caso de express\u00f5es TopLink, o tempo gasto para converter a Express\u00e3o para SQL
 
-sql_prepare=Tempo gasto no JDBC preparando a Instru\u00e7\u00e3o. Tamb\u00e9m inclui o tempo gasto no EIS criando uma Intera\u00e7\u00e3o associada a uma conex\u00e3o, e a cria\u00e7\u00e3o de objetos de Registro de entrada e sa\u00edda
+sql_prepare=Tempo gasto no JDBC preparando a instru\u00e7\u00e3o. Inclui tamb\u00e9m o tempo gasto no EIS criando uma intera\u00e7\u00e3o associada a uma conex\u00e3o e criando objetos de registro de entrada e sa\u00edda
 
 unitofwork_commit=Mede o processo de confirma\u00e7\u00e3o do UnitOfWork
 

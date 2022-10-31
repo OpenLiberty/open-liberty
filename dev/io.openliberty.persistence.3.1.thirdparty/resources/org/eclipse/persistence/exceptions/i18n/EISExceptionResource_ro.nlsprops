@@ -63,5 +63,17 @@
 
 17024=Nu s-a putut \u015fterge fi\u015fierul: {0}
 
-17025=Aceast\u0103 mapare necesit\u0103 un element de grupare cheie extern\u0103, deoarece exist\u0103 mai multe chei externe.
+17025=Aceast\u0103 mapare necesit\u0103 un element de grupare a cheilor externe, deoarece exist\u0103 mai multe chei externe.
+
+17026=Trebuie s\u0103 fie setat\u0103 proprietatea de opera\u021bie pentru interac\u021biunea interog\u0103rii.
+
+17027=Numele tabelului \u021bint\u0103 nu este setat. Acesta trebuie s\u0103 fie setat pe interac\u021biunea interog\u0103rii.
+
+17028=Valoare de proprietate de consisten\u021b\u0103 invalid\u0103: {0}
+
+17029=Valoare de proprietate de durabilitate invalid\u0103: {0}
+
+17030=XMLInteraction este valabil doar pentru interog\u0103ri Object Query, utiliza\u021bi MappedInteraction pentru interog\u0103ri native: {0}
+
+17031=Interogarea este prea complex\u0103 pentru traducerea NoSQL Oracle, sunt acceptate numai interog\u0103ri selecte \u00een interogare: {0}
 

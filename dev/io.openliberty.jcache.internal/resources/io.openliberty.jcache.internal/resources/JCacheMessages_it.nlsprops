@@ -28,17 +28,17 @@ SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: Configurazione Infinispan generata per
 SESN0310_GEN_INFINISPAN_CONFIG.explanation=Le cache Infinispan che vengono utilizzate per la persistenza della sessione HTTP richiedono una configurazione aggiuntiva per rendere persistenti le sessioni tra i server. Liberty genera questa configurazione quando non viene fornita dall'utente.
 SESN0310_GEN_INFINISPAN_CONFIG.useraction=Non \u00e8 richiesta alcuna azione se si \u00e8 soddisfatti della configurazione generata. In caso contrario, la configurazione generata pu\u00f2 essere utilizzata come punto di partenza.
 
-CWLJC0001_CACHE_CREATED=CWLJC0001I: La JCache {0} \u00e8 stata creata in {1} ms.
+CWLJC0001_CACHE_CREATED=CWLJC0001I: La JCache {0} \u00e8 stata creata in {1} ms e utilizza il provider di memorizzazione nella cache {2}.
 CWLJC0001_CACHE_CREATED.explanation=La JCache indicata \u00e8 stata creata in quanto non \u00e8 stata trovata.
 CWLJC0001_CACHE_CREATED.useraction=Non \u00e8 richiesta alcuna azione da parte dell'utente.
 
-CWLJC0002_CACHE_FOUND=CWLJC0002I: La JCache {0} esistente \u00e8 stata trovata in {1} ms.
+CWLJC0002_CACHE_FOUND=CWLJC0002I: La JCache {0} esistente \u00e8 stata trovata in {1} ms e utilizza il provider di memorizzazione nella cache {2}.
 CWLJC0002_CACHE_FOUND.explanation=La JCache indicata \u00e8 stata trovata, pertanto non \u00e8 stata creata.
 CWLJC0002_CACHE_FOUND.useraction=Non \u00e8 richiesta alcuna azione da parte dell'utente.
 
-CWLJC0003_USING_PROVIDER=CWLJC0003I: La JCache {0} sta utilizzando il provider di memorizzazione nella cache {1}.
-CWLJC0003_USING_PROVIDER.explanation=La JCache indicata sta utilizzando il provider specificato.
-CWLJC0003_USING_PROVIDER.useraction=Non \u00e8 richiesta alcuna azione da parte dell'utente. 
+#
+# CWLJC0003 is available for use.
+# 
 
 CWLJC0004_GET_PROVIDER_FAILED=CWLJC0004E: Il caricamento del provider di memorizzazione nella cache {0} non \u00e8 riuscito. {1}
 CWLJC0004_GET_PROVIDER_FAILED.explanation=Il caricamento della configurazione del cachingProvider non \u00e8 riuscito.

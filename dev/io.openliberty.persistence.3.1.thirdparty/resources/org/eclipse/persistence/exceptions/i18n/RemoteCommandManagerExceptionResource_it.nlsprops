@@ -51,8 +51,6 @@
 
 22112=Impossibile creare la connessione JMS locale con l''argomento {0} e il factory di argomenti {1}. Controllare inoltre che le propriet\u00e0 di contesto siano impostate correttamente.
 
-22113=Impossibile creare l''ID servizio Oc4jJGroupsRemoteConnection {0}, argomento {1}, utilizzando il factory {2}. Controllare inoltre che le propriet\u00e0 di contesto siano impostate correttamente.
-
 22114={0}: impossibile deserializzare il messaggio richiamato {1}.
 
 22115={0}: impossibile elaborare il comando remoto richiamato dal messaggio {1}, da {2}, tipo di comando {3}
@@ -62,4 +60,6 @@
 22117=Il RemoteCommandManager della sessione \u00e8 chiuso oppure non \u00e8 stato inizializzato durante l''elaborazione dei messaggi in entrata
 
 22118=Impossibile creare la connessione JGroups utilizzando il file di configurazione: {0}
+
+22119=Errore di inizializzazione {0}, aggiungere org.eclipse.persistence.corba.jar al proprio classpath.
 

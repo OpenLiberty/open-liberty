@@ -135,7 +135,7 @@
 
 45207=Beim Versuch, ein Schema mit dem bereitgestellten SchemaResolver aufzul\u00f6sen, ist ein Fehler aufgetreten.
 
-45208=Die Eigenschaft {0} vom Typ {1} kann nicht zugeordnet werden. Die Pakete jakarta.activation und jakarta.mail sind f\u00fcr die Zuordnung von Eigenschaften vom Typ DataHandler erforderlich. Vergewissern Sie sich, dass beide Pakete im Klassenpfad verf\u00fcgbar sind.
+45208=Die Eigenschaft {0} vom Typ {1} kann nicht zugeordnet werden. Die Pakete "jakarta.activation" und "jakarta.mail" sind erforderlich, damit eine Zuordnung von Eigenschaften vom Typ "DataHandler" vorgenommen werden kann. Vergewissern Sie sich, dass beide Pakete im Klassenpfad verf\u00fcgbar sind.
 
 45209=Es wurde versucht, die ApplicationResolver-Instanz f\u00fcr SDOHelperContext zur\u00fcckzusetzen. Es ist nur ein einziger Satz zul\u00e4ssig.
 

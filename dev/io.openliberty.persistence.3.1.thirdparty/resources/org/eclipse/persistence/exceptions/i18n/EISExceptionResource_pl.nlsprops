@@ -65,3 +65,15 @@
 
 17025=To odwzorowanie wymaga elementu grupowania klucza obcego, poniewa\u017c istnieje wiele kluczy obcych.
 
+17026=W\u0142a\u015bciwo\u015b\u0107 operacji musi by\u0107 ustawiona w interakcji zapytania.
+
+17027=Nie ustawiono nazwy tabeli docelowej. Musi by\u0107 ona ustawiona w interakcji zapytania.
+
+17028=Niepoprawna warto\u015b\u0107 w\u0142a\u015bciwo\u015bci sp\u00f3jno\u015bci: {0}
+
+17029=Niepoprawna warto\u015b\u0107 w\u0142a\u015bciwo\u015bci trwa\u0142o\u015bci: {0}
+
+17030=Funkcja XMLInteraction jest poprawna tylko dla zapyta\u0144 obiektowych, nale\u017cy u\u017cy\u0107 funkcji MappedInteraction dla zapyta\u0144 rodzimych: {0}
+
+17031=Zapytanie jest zbyt z\u0142o\u017cone dla translacji Oracle NoSQL, w zapytaniu obs\u0142ugiwane s\u0105 tylko instrukcje select: {0}
+

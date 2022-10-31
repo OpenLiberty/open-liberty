@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011,2021 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -109,7 +109,7 @@ invalid.href.prefix.useraction=Correggere il valore HREF.
 #    {3} is an HREF value which is not valid.
 # -----------------------------------------------------------------------
 invalid.href=CWWKC2284E: Valore HREF non valido {3} dell''elemento {2} nel descrittore di distribuzione {0} alla riga {1}.
-invalid.href.explanation=Il valore dell'elemento non \u00e8 un valore HREF valido: il valore deve contenere un carattere '#' e il carattere '#' non deve essere il primo o l'ultimo carattere del valore.
+invalid.href.explanation=Il valore dell'elemento non \u00e8 un valore HREF valido: il valore deve avere un carattere '' # '' e il carattere '' # '' non pu\u00f2 essere il primo o l'ultimo carattere del valore.
 invalid.href.useraction=Correggere il valore HREF.
 
 # ADDED:
@@ -148,7 +148,7 @@ unresolved.href.useraction=Correggere l'ID HREF nel descrittore di distribuzione
 #    {2} is the name of the element which is being processed.
 # -----------------------------------------------------------------------
 missing.href=CWWKC2287E: Non \u00e8 presente alcun attributo HREF nell''elemento {2} nel descrittore di distribuzione {0} alla riga {1}.
-missing.href.explanation=All'elemento \u00e8 richiesto di fornire un attributo HREF. Un attributo HREF ha il nome 'href'.
+missing.href.explanation=All'elemento \u00e8 richiesto di fornire un attributo HREF. Un attributo HREF ha il nome '' href ''.
 missing.href.useraction=Aggiungere un attributo HREF all'elemento.
 
 ######
@@ -303,8 +303,8 @@ invalid.long.value.useraction=Correggere il descrittore di distribuzione in modo
 #    {1} The type of element which is being processed.  For example, 'ejb-bnd', 'ejb-ext', 'web-bnd', 'web-ext'.
 # -----------------------------------------------------------------------
 module.name.not.specified=CWWKC2276E: L''attributo ''moduleName'' \u00e8 mancante da uno o pi\u00f9 bind ''{1}'' e dagli elementi di configurazione dell''estensione dell''applicazione {0}.
-module.name.not.specified.explanation=I bind e gli elementi di configurazione dell'estensione devono contenere un attributo 'moduleName'.
-module.name.not.specified.useraction=Assicurarsi che un attributo 'moduleName' sia presente in tutti i bind e gli elementi di configurazione dell'estensione.
+module.name.not.specified.explanation=I bind e gli elementi di configurazione dell'estensione devono avere un attributo '' moduleName ''.
+module.name.not.specified.useraction=Verificare che un attributo '' moduleName '' sia presente in tutti i bind e gli elementi di configurazione dell'estensione.
 
 # REMOVED:
 # module.name.invalid=CWWKC2277E: One or more module names on the {1} element are invalid. The invalid module name or names are {0}.
@@ -320,8 +320,8 @@ module.name.not.specified.useraction=Assicurarsi che un attributo 'moduleName' s
 #    {3} Module names found in the application.
 # -----------------------------------------------------------------------
 module.name.not.found=CWWKC2277E: Impossibile trovare gli attributi ''moduleName'' {2} specificati nei bind e negli elementi di configurazione dell''estensione ''{1}'' dell''applicazione {0}.  I nomi del modulo dell''applicazione sono {3}.
-module.name.not.found.explanation=Gli attributi 'moduleName' dei bind e degli elementi di configurazione dell'estensione devono corrispondere ai nomi del modulo dell'applicazione.
-module.name.not.found.useraction=Assicurarsi che tutti gli attributi 'moduleName' dei bind e degli elementi di configurazione dell'estensione corrispondano ai nomi del modulo dell'applicazione. 
+module.name.not.found.explanation=Gli attributi '' moduleName ' dei bind e degli elementi di configurazione dell'estensione devono corrispondere ai nomi del modulo dell'applicazione.
+module.name.not.found.useraction=Verificare che tutti gli attributi '' moduleName '' dei bind e degli elementi di configurazione dell'estensione corrispondano a nomi di modulo di applicazione. 
 
 # ADDED
 # -----------------------------------------------------------------------
@@ -331,8 +331,8 @@ module.name.not.found.useraction=Assicurarsi che tutti gli attributi 'moduleName
 #    {2} Duplicated module names used in configuration elements.
 # -----------------------------------------------------------------------
 module.name.duplicated=CWWKC2278E: Sono specificati attributi ''moduleName'' {2} duplicati nei bind e negli elementi di configurazione dell''estensione ''{1}'' dell''applicazione {0}.
-module.name.duplicated.explanation=Gli attributi 'moduleName' dei bind e degli elementi di configurazione dell'estensione non possono essere duplicati.
-module.name.duplicated.useraction=Assicurarsi che tutti gli attributi 'moduleName' dei bind e degli elementi di configurazione dell'estensione siano univoci. 
+module.name.duplicated.explanation=Gli attributi '' moduleName '' dei bind e degli elementi di configurazione dell'estensione non possono essere duplicati.
+module.name.duplicated.useraction=Verificare che tutti gli attributi '' moduleName '' dei bind e gli elementi di configurazione dell'estensione siano univoci. 
 
 # ADDED:
 # -----------------------------------------------------------------------
@@ -380,4 +380,28 @@ incorrect.descriptor.namespace.useraction=Modificare lo spazio dei nomi all'inte
 incorrect.descriptor.namespace.for.version=CWWCK27789W: Il descrittore di distribuzione {0} alla riga {1} specifica la versione {2} e lo spazio dei nomi {3} ma, per tale versione, deve contenere lo spazio dei nomi {4}.
 incorrect.descriptor.namespace.for.version.explanation=\u00c8 previsto uno spazio dei nomi specifico all'interno del descrittore di distribuzione per la versione specificata. Lo spazio dei nomi non corretto \u00e8 stato ignorato.
 incorrect.descriptor.namespace.for.version.useraction=Modificare lo spazio dei nomi all'interno del descrittore di distribuzione sul valore previsto.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the value of a 'name' attribute within a session configuration 'attribute' element
+#    {3} is the value of the 'value' attribute of a session configuration 'attribute' element
+#    {4} is the value of the 'value' attribute of a session configuration 'attribute' element
+# -----------------------------------------------------------------------
+duplicate.session.config.attribute.name=CWWCK27790W: Il descrittore di distribuzione {0} alla riga {1} duplica il ''{2}'' ''nome '''' di un elemento attributo di configurazione sessione.  Il ''{3}'' ''valore'' \u00e8 associato al nome invece del precedente ''{4}'' ''valore''.
+duplicate.session.config.attribute.name.explanation=Il descrittore di distribuzione ha pi\u00f9 elementi attributo che hanno lo stesso nome e che si trovano all'interno dello stesso elemento di configurazione della sessione. Il programma di analisi del descrittore ignora tutti questi elementi tranne l'ultimo.
+duplicate.session.config.attribute.name.useraction=Se l'ultimo elemento attributo non \u00e8 l'elemento da utilizzare, aggiornare il descrittore di distribuzione per rimuovere gli elementi attributo supplementari che hanno lo stesso nome.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the value of the 'value' attribute of a session configuration 'attribute' element
+# -----------------------------------------------------------------------
+missing.session.config.attribute.name=CWWCK27791W: Il descrittore di distribuzione {0} alla riga {1} ha un attributo di configurazione della sessione che non ha nome.  Tale attributo, con ''{2}'' ''valore '', \u00e8 stato ignorato.
+missing.session.config.attribute.name.explanation=Un attributo di configurazione della sessione \u00e8 richiesto per avere un elemento nome. 
+missing.session.config.attribute.name.useraction=Aggiornare il descrittore di distribuzione per rimuovere l'attributo che non dispone di un elemento nome o aggiungere elementi nome a tutti gli elementi attributo.
+
+
 

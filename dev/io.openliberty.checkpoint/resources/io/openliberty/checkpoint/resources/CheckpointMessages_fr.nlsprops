@@ -56,3 +56,5 @@ RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E.useraction=Examinez le r\u00e9pertoi
 CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E=CWWKC0459E: Un point de contr\u00f4le ne peut pas \u00eatre pris, car la version Java utilis\u00e9e ne prend pas en charge le point de contr\u00f4le.
 CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.explanation=L'action de point de contr\u00f4le du serveur ne peut \u00eatre utilis\u00e9e qu'avec une version Java prenant en charge le point de contr\u00f4le.  
 CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.useraction=Utilisez une version Java prenant en charge le point de contr\u00f4le. Consultez la documentation pour plus de d\u00e9tails sur la version Java requise prenant en charge le point de contr\u00f4le.
+
+# CWWKC0460E - is a beta only message that gets removed for GA

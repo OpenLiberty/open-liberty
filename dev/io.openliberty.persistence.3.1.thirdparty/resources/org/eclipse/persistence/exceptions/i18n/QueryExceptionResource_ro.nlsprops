@@ -33,9 +33,9 @@
 
 6003=Num\u0103rul de argumente furnizate la interogare pentru execu\u0163ie, nu se potrivesc cu num\u0103rul de argumente din defini\u0163ia interog\u0103rii.
 
-6004=Obiectul [{0}], de clas\u0103 [{1}], cu hashcode de identitate (System.identityHashCode()) [{2}], {3}nu este din spa\u0163iul acestui obiect UnitOfWork, ci din sesiunea p\u0103rinte.  Obiectul nu a fost niciodat\u0103 \u00eenregistrat \u00een acest UnitOfWork, {3}dar cite\u015fte din sesiunea p\u0103rinte \u015fi este \u00eenrudit cu un obiect \u00eenregistrat \u00een UnitOfWork.  Asigura\u0163i-v\u0103 c\u0103 v\u0103 \u00eenregistra\u0163i {3} corect obiectele dumneavoastr\u0103.  Dac\u0103 ave\u0163i probleme \u00een continuare, pute\u0163i utiliza metoda UnitOfWork.validateObjectSpace() pentru a ajuta {3} la depanare acolo unde a survenit eroarea.  Pentru informa\u0163ii suplimentare, vede\u0163i manualul sau FAQ.
+6004=Obiectul [{0}], din clasa [{1}], cu hashcode-ul de identitate (System.identityHashCode()) [{2}], {3} nu este din spa\u021biul de obiecte al acestei UnitOfWork, ci din sesiunea p\u0103rinte. Obiectul nu a fost niciodat\u0103 \u00eenregistrat \u00een aceast\u0103 UnitOfWork, {3} ci a fost citit din sesiunea p\u0103rinte \u0219i corelat cu un obiect \u00eenregistrat \u00een UnitOfWork. Asigura\u021bi-v\u0103 c\u0103 v\u0103 \u00eenregistra\u021bi {3} corect obiectele. Dac\u0103 ave\u021bi \u00een continuare probleme, pute\u021bi utiliza metoda UnitOfWork.validateObjectSpace() pentru {3} ajutor la depanare acolo unde s-a produs eroarea. Pentru informa\u0163ii suplimentare, vede\u0163i manualul sau FAQ.
 
-6005=Obiectul [{0}], de clas\u0103 [{1}], cu hashcode de identitate (System.identityHashCode()) [{2}], {3}este originalul pentru un obiect nou \u00eenregistrat.  UnitOfWork cloneaz\u0103 obiecte noi \u00eenregistrate, astfel \u00eenc\u00e2t trebuie s\u0103 v\u0103 asigura\u0163i c\u0103 un obiect {3}este \u00eenregistrat \u00eenainte de a fi referen\u0163iat de un alt obiect.  Dac\u0103 nu dori\u0163i ca noul obiect s\u0103 fie clonat, utiliza\u0163i the{3}UnitOfWork.registerNewObject(Object) API.  Dac\u0103 ave\u0163i probleme \u00een continuare, pute\u0163i utiliza metoda UnitOfWork.validateObjectSpace() {3}pentru a v\u0103 ajuta la depanare acolo unde a survenit eroarea.  Pentru informa\u0163ii suplimentare, vede\u0163i manualul sau FAQ.
+6005=Obiectul [{0}], din clasa [{1}], cu hashcode-ul de identitate (System.identityHashCode()) [{2}], {3} este originalul unui obiect nou \u00eenregistrat. Clonele UnitOfWork au \u00eenregistrat obiecte noi, a\u0219a c\u0103 trebuie s\u0103 v\u0103 asigura\u021bi c\u0103 un obiect {3} este \u00eenregistrat \u00eenainte de a fi referit de alt obiect. Dac\u0103 nu vre\u021bi ca noul obiect s\u0103 fie clonat, utiliza\u021bi {3} API-ul UnitOfWork.registerNewObject(Object). Dac\u0103 ave\u021bi \u00een continuare probleme, pute\u021bi utiliza metoda UnitOfWork.validateObjectSpace() {3} pentru ajutor la depanare acolo unde s-a produs eroarea. Pentru informa\u0163ii suplimentare, vede\u0163i manualul sau FAQ.
 
 6006=Maparea [{0}] nu suport\u0103 citirea batch.
 
@@ -193,7 +193,7 @@
 
 6100=Au fost detectate mai multe valori pentru o interogare de citire a unui singur obiect.
 
-6101=Executarea acestei interog\u0103ri ar putea viola integritatea cache-ului sesiunii globale ce trebuie s\u0103 con\u0163in\u0103 numai cele mai recente versiuni ale obiectelor.  Pentru a executa o interogare ce returneaz\u0103 obiecte ca la un timp trecut, \u00eencerca\u0163i una dintre urm\u0103toarele: Utiliza\u0163i o HistoricalSession (acquireSessionAsOf), toate obiectele citite vor fi memorate \u00een cache \u015fi citite automat ca fiind din acela\u015fi timp.  Aceasta se va aplica chiar \u015fi pentru rela\u0163iile declan\u015fatoare de obiecte.  Seta\u0163i shouldMaintainCache pe false.  Pute\u0163i face orice expresie obiect ca fiind dintr-un timp trecut, dac\u0103 nici unul dintre c\u00e2mpurile sale nu sunt reprezentate \u00een setul de rezultate (i.e. utilizate numai \u00een clauza unde).
+6101=Executarea acestei interog\u0103ri ar putea viola integritatea cache-ului sesiunii globale ce trebuie s\u0103 con\u0163in\u0103 numai cele mai recente versiuni ale obiectelor. Pentru a executa o interogare ce returneaz\u0103 obiecte ca la un timp trecut, \u00eencerca\u0163i una dintre urm\u0103toarele: Utiliza\u0163i o HistoricalSession (acquireSessionAsOf), toate obiectele citite vor fi memorate \u00een cache \u015fi citite automat ca fiind din acela\u015fi timp.  Aceasta se va aplica chiar \u015fi pentru rela\u0163iile declan\u015fatoare de obiecte. Seta\u0163i shouldMaintainCache pe false.  Pute\u021bi face orice expresie de obiect ca fiind dintr-un timp trecut, cu condi\u021bia ca niciunul dintre c\u00e2mpurile sale s\u0103 nu fie reprezentat \u00een setul de rezultate (cu alte cuvinte, utilizate numai \u00een clauza where).
 
 6102=\u00cen prezent, interog\u0103rile istorice lucreaz\u0103 numai cu Oracle 9R2 sau baze de date ulterioare, deoarece utilizeaz\u0103 caracteristica Oracle Flashback.
 
@@ -261,7 +261,7 @@
 
 6134=Numele atributului sau expresia transmis\u0103 ca prim parametru pentru metoda addUpdate nu define\u015fte un c\u00e2mp. {1}Numele de atribut sau Expresia: [{2}]{1}Descriptor: [{0}]
 
-6135=Numele atributului sau expresia transmis\u0103 ca prim parametru pentru metoda addUpdate nu define\u015fte un c\u00e2mp dintr-un tabel ce nu este mapat la un descriptor de interogare. {1}Numele de atribut sau Expresia: [{2}]{1}C\u00e2mp gre\u015fit: [{3}]{1}Descriptor: [{0}]
+6135=Numele de atribut sau expresia transmis\u0103 ca primul parametru metodei addUpdate define\u0219te un c\u00e2mp dintr-un tabel care nu este mapat la descriptorul interog\u0103rii. {1}Nume atribut sau expresie: [{2}]{1}C\u00e2mp gre\u0219it: [{3}]{1}Descriptor: [{0}]
 
 6136=Clasele mapate cu mo\u015ftenire din mai multe tabele nu pot fi articole ReportQuery. Articol: {0}, Expresie: {1}.
 
@@ -293,9 +293,9 @@
 
 6150=O valoare nul\u0103 nu poate fi utilizat ca \u015fi cheie \u00eentr-un container de tip [{1}]. Asigura\u0163i-v\u0103 c\u0103 valorile cheilor dumneavoastr\u0103 pentru obiectele de tip [{0}] nu pot fi nule.
 
-6151=A survenit o excep\u0163ie la \u00eencercarea de setare a Redirectorului {0} transmis printr-un Indiciu de interogare JPA {1}.  V\u0103 rug\u0103m s\u0103 verifica\u0163i dac\u0103 Redirectorul furnizat implementeaz\u0103 org.eclipse.persistence.queries.QueryRedirector.
+6151=A ap\u0103rut o excep\u021bie la \u00eencercarea de a seta un Redirector {0} transmis printr-o sugestie de interogare Jakarta Persistence {1}.  V\u0103 rug\u0103m s\u0103 verifica\u0163i dac\u0103 Redirectorul furnizat implementeaz\u0103 org.eclipse.persistence.queries.QueryRedirector.
 
-6152=A survenit o excep\u0163ie la \u00eencercarea de instan\u0163iere a clasei {0} transmis\u0103 printr-un Indiciu de interogare JPA {1}.  V\u0103 rug\u0103m s\u0103 verifica\u0163i dac\u0103 clasa are un constructor implicit.
+6152=A ap\u0103rut o excep\u021bie la \u00eencercarea de a instan\u021bia clasa {0} transmis\u0103 printr-o sugestie de interogare Jakarta Persistence {1}.  V\u0103 rug\u0103m s\u0103 verifica\u0163i dac\u0103 clasa are un constructor implicit.
 
 6153=CompatibleType trebuie setat \u00eentr-un tip complex: {0}.
 

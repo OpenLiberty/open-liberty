@@ -37,7 +37,7 @@
 
 2005=V\u00e1rakoz\u00e1si hiba a DatabaseSession sorrendi kapcsolatkezel\u0151j\u00e9n\u00e9l.
 
-2006=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt a sorrendi \u00e9rt\u00e9kek beszerz\u00e9s\u00e9re egy \u00f6n\u00e1ll\u00f3 Connection({0}) met\u00f3duson kereszt\u00fcl egyidej\u0171leg t\u00f6bb sz\u00e1lban.
+2006=Pr\u00f3b\u00e1lja meg lek\u00e9rni a sorrend\u00e9rt\u00e9keket egyszerre t\u00f6bb sz\u00e1lon egyetlen kapcsolati ({0}) seg\u00edts\u00e9g\u00e9vel.
 
 2007=A(z) {0} objektum z\u00e1rol\u00e1s\u00e1ra tett k\u00eds\u00e9rletek maxim\u00e1lis sz\u00e1m\u00e1nak t\u00fall\u00e9p\u00e9se.  Az objektum kl\u00f3noz\u00e1sa meghi\u00fasult.
 

@@ -141,11 +141,11 @@ staticweave_commandline_help_message_15of19= La g\u00e9n\u00e9ration sera effect
 
 staticweave_commandline_help_message_16of19= Exemple :
 
-staticweave_commandline_help_message_17of19= Pour g\u00e9n\u00e9rer tous les entit\u00e9s contenues dans C:\foo-source.jar avec le fichier persistence.xml contenu dans C:\foo-containing-persistence-xml.jar,
+staticweave_commandline_help_message_17of19= Pour tisser toutes les entit\u00e9s contenues dans C:\foo-source.jar avec son fichier persistence.xml contenu dans C:\foo-containing-persistence-xml.jar,
 
-staticweave_commandline_help_message_18of19= et la sortie dans C:\foo-target.jar:
+staticweave_commandline_help_message_18of19= et sortie dans C:\foo-target.jar:
 
-staticweave_commandline_help_message_19of19= StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:\classpath1;C:\classpath2 C:\foo-source.jar C:\foo-target.jar
+staticweave_commandline_help_message_19of19= StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:classpath1;C:classpath2 C:\foo-source.jar C:\foo-target.jar
 
 staticweave_commandline_help_message_1of19= Syntaxe : StaticWeave [options] source target
 

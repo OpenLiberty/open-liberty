@@ -27,7 +27,7 @@
 #   (single quote must be coded as one single quote '). 
 #
 # -------------------------------------------------------------------------------------------------
-28001=Una ValidationException \u00e8 stata generata durante il tentativo di creazione della sessione: [{0}] . Le cause pi\u00f9 probabili di questo problema sono che il file [{1}] non \u00e8 disponibile sul percorso classe oppure non contiene una sessione denominata: [{0}].
+28001=\u00c8 stata generata una ValidationException durante il tentativo di creare la sessione: [{0}]. Le cause pi\u00f9 probabili di questo problema sono che il file [{1}] non \u00e8 disponibile sul percorso classe oppure non contiene una sessione denominata: [{0}].
 
 28002=EclipseLink sta provando a caricare una ServerSession denominata [{0}] da [{1}] e non sta ottenendo una ServerSession.
 

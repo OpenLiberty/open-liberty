@@ -24,13 +24,13 @@
 
 ### SSL channel is using CHFW bundle ids, values 0800-0899
 
-invalid.security.properties=CWWKO0800E: Impossible de d\u00e9marrer le canal SSL en raison des param\u00e8tres incorrects suivants : \n \ {0}
+invalid.security.properties=CWWKO0800E: Impossible de d\u00e9marrer le canal SSL en raison des param\u00e8tres incorrects suivants : \n  {0}
 invalid.security.properties.explanation=Un ou plusieurs param\u00e8tres de s\u00e9curit\u00e9 du canal SSL ne sont pas valides.
 invalid.security.properties.useraction=Affectez aux param\u00e8tres de s\u00e9curit\u00e9 du canal SSL les valeurs qui conviennent.
 
-handshake.failure=CWWKO0801E: Impossible d''initialiser la connexion SSL. L''acc\u00e8s a \u00e9t\u00e9 refus\u00e9 ou les param\u00e8tres de s\u00e9curit\u00e9 ont expir\u00e9. Exception : {0}.
-handshake.failure.explanation=Une nouvelle tentative de connexion n'a pas r\u00e9ussi \u00e0 ex\u00e9cuter l'\u00e9change de protocoles.
-handshake.failure.useraction=V\u00e9rifiez les param\u00e8tres de s\u00e9curit\u00e9.  Le certificat est peut-\u00eatre arriv\u00e9 \u00e0 expiration ou manquant. Il est \u00e9galement possible qu'une tentative de connexion d'un client non autoris\u00e9 ait \u00e9t\u00e9 rejet\u00e9e.  Pour d\u00e9sactiver ces messages, associez le param\u00e8tre suppressHandshakeErrors de la configuration sslOptions \u00e0 la valeur true.
+handshake.failure=CWWKO0801E: La connexion SSL ne peut pas \u00eatre initialis\u00e9e de l''h\u00f4te {1} et du port {2} sur le client distant \u00e0 l''h\u00f4te {3} et au port {4} sur le serveur local. Exception : {0}
+handshake.failure.explanation=Une nouvelle tentative de connexion n'a pas r\u00e9ussi \u00e0 ex\u00e9cuter l'\u00e9change de protocoles. La raison la plus courante est que le client a envoy\u00e9 un message non chiffr\u00e9 \u00e0 un port s\u00e9curis\u00e9. Une autre raison courante est qu'un certificat SSL a expir\u00e9.
+handshake.failure.useraction=Si le client a envoy\u00e9 un message non chiffr\u00e9 \u00e0 un port s\u00e9curis\u00e9, configurez-le pour qu'il utilise SSL ou qu'il se connecte \u00e0 un port du serveur d'applications qui ne requiert pas SSL. Vous pouvez \u00e9galement v\u00e9rifier si un certificat SSL a expir\u00e9. Si c'est le cas, remplacez le certificat SSL arriv\u00e9 \u00e0 expiration par un qui ne le soit pas.
 
 init.failure=CWWKO0802E: Impossible d''initialiser le module SSL. Exception : {0}.
 init.failure.explanation=Une erreur s'est produite lors de l'initialisation du module SSL. Cet \u00e9chec est probablement li\u00e9 \u00e0 une d\u00e9faillance d'une d\u00e9pendance.

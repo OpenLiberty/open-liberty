@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011,2021 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -109,7 +109,7 @@ invalid.href.prefix.useraction=Corecta\u021bi valoarea HREF.
 #    {3} is an HREF value which is not valid.
 # -----------------------------------------------------------------------
 invalid.href=CWWKC2284E: Valoare HREF non-valid\u0103 {3} de element {2} \u00een descriptorul de implementare {0} la linia {1}.
-invalid.href.explanation=Valoarea elementului nu este o valoare HREF valid\u0103: Valoarea trebuie s\u0103 aib\u0103 un caracter '#' \u0219i caracterul '#' nu trebuie s\u0103 fie primul sau ultimul caracter al valorii.
+invalid.href.explanation=Valoarea elementului nu este o valoare HREF valid\u0103: Valoarea trebuie s\u0103 aib\u0103 un caracter "#", iar caracterul "#" nu trebuie s\u0103 fie primul sau ultimul caracter al valorii.
 invalid.href.useraction=Corecta\u021bi valoarea HREF.
 
 # ADDED:
@@ -148,7 +148,7 @@ unresolved.href.useraction=Corecta\u021bi fie ID-ul HREF \u00een descriptorul de
 #    {2} is the name of the element which is being processed.
 # -----------------------------------------------------------------------
 missing.href=CWWKC2287E: Niciun atribut HREF nu este prezent \u00een elementul {2} \u00een descriptorul de implementare {0} la linia {1}.
-missing.href.explanation=Elementul este necesar pentru a furniza un atribut HREF. Un atribut HREF are numele \u201ehref\u201d.
+missing.href.explanation=Elementul este necesar pentru a furniza un atribut HREF. Un atribut HREF are numele "href".
 missing.href.useraction=Ad\u0103uga\u021bi un atribut HREF elementului.
 
 ######
@@ -303,8 +303,8 @@ invalid.long.value.useraction=Corecta\u0163i descriptorul de implementare pentru
 #    {1} The type of element which is being processed.  For example, 'ejb-bnd', 'ejb-ext', 'web-bnd', 'web-ext'.
 # -----------------------------------------------------------------------
 module.name.not.specified=CWWKC2276E: Atributul ''moduleName'' lipse\u0219te din una sau mai multe leg\u0103ri ''{1}'' \u0219i elemente de configurare extensie ale aplica\u021biei {0}.
-module.name.not.specified.explanation=Leg\u0103rile \u0219i elementele de configurare extensie trebuie s\u0103 aib\u0103 un atribut  'moduleName'.
-module.name.not.specified.useraction=Asigura\u021bi-v\u0103 c\u0103 un atribut 'moduleName' este prezent \u00een toate leg\u0103rile \u0219i elementele de configurare extensie.
+module.name.not.specified.explanation=Leg\u0103rile \u0219i elementele de configurare a extensiei trebuie s\u0103 aib\u0103 un atribut "moduleName".
+module.name.not.specified.useraction=Asigura\u021bi-v\u0103 c\u0103 este prezent un atribut "moduleName" \u00een toate leg\u0103rile \u0219i elementele de configurare a extensiei.
 
 # REMOVED:
 # module.name.invalid=CWWKC2277E: One or more module names on the {1} element are invalid. The invalid module name or names are {0}.
@@ -320,8 +320,8 @@ module.name.not.specified.useraction=Asigura\u021bi-v\u0103 c\u0103 un atribut '
 #    {3} Module names found in the application.
 # -----------------------------------------------------------------------
 module.name.not.found=CWWKC2277E: Nu se pot g\u0103si atributele {2} ''moduleName'' specificate \u00een leg\u0103rile ''{1}'' \u0219i elementele de configurare extensie ale aplica\u021biei {0}.  Numele modulelor de aplica\u021bie sunt {3}.
-module.name.not.found.explanation=Atributele 'moduleName' ale leg\u0103rilor \u0219i elementelor de configurare extensie trebuie s\u0103 se potriveasc\u0103 cu numele modulelor de aplica\u021bie.
-module.name.not.found.useraction=Asigura\u021bi-v\u0103 c\u0103 toate atributele 'moduleName' ale leg\u0103rilor \u0219i elementelor de configurare extensie se potrivesc cu numele modulelor de aplica\u021bie. 
+module.name.not.found.explanation=Atributele "moduleName" ale leg\u0103rilor \u0219i elementelor de configurare a extensiei trebuie s\u0103 se potriveasc\u0103 cu numelor modulelor de aplica\u021bie.
+module.name.not.found.useraction=Asigura\u021bi-v\u0103 c\u0103 toate atributele "moduleName" ale leg\u0103rilor \u0219i elementelor de configurare a extensiei se potrivesc cu numele modulelor de aplica\u021bie. 
 
 # ADDED
 # -----------------------------------------------------------------------
@@ -331,8 +331,8 @@ module.name.not.found.useraction=Asigura\u021bi-v\u0103 c\u0103 toate atributele
 #    {2} Duplicated module names used in configuration elements.
 # -----------------------------------------------------------------------
 module.name.duplicated=CWWKC2278E: Atributele duplicat {2} ''moduleName'' sunt specificate \u00een leg\u0103rile ''{1}'' \u0219i elementele de configurare extensie ale aplica\u021biei {0}.
-module.name.duplicated.explanation=Este posibil ca atributele 'moduleName' ale leg\u0103rilor \u0219i elementelor de configurare extensie s\u0103 nu fie duplicate.
-module.name.duplicated.useraction=Asigura\u021bi-v\u0103 c\u0103 toate atributele 'moduleName' ale leg\u0103rilor \u0219i elementelor de configurare extensie sunt unice. 
+module.name.duplicated.explanation=Atributele "moduleName" ale leg\u0103rilor \u0219i elementelor de configurare a extensiei nu pot s\u0103 fie duplicate.
+module.name.duplicated.useraction=Asigura\u021bi-v\u0103 c\u0103 toate atributele "moduleName" ale leg\u0103rilor \u0219i elementelor de configurare a extensiei sunt unice. 
 
 # ADDED:
 # -----------------------------------------------------------------------
@@ -380,4 +380,28 @@ incorrect.descriptor.namespace.useraction=Modifica\u021bi spa\u021biul de nume \
 incorrect.descriptor.namespace.for.version=CWWCK27789W: Descriptorul de implementare {0} de la linia {1} specific\u0103 versiunea {2} \u0219i spa\u021biul de nume {3} dar pentru acea versiune ar trebui s\u0103 aib\u0103 spa\u021biul de nume {4}.
 incorrect.descriptor.namespace.for.version.explanation=Un anumit spa\u021biu de nume este a\u0219teptat \u00een cadrul descriptorului de implementare pentru versiunea specificat\u0103. Spa\u021biul de nume incorect a fost ignorat.
 incorrect.descriptor.namespace.for.version.useraction=Modifica\u021bi spa\u021biul de nume \u00een cadrul descriptorului de implementare la valoarea a\u0219teptat\u0103.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the value of a 'name' attribute within a session configuration 'attribute' element
+#    {3} is the value of the 'value' attribute of a session configuration 'attribute' element
+#    {4} is the value of the 'value' attribute of a session configuration 'attribute' element
+# -----------------------------------------------------------------------
+duplicate.session.config.attribute.name=CWWCK27790W: Descriptorul de implementare {0} de pe linia {1} duplic\u0103 numele (''name'') ''{2}'' al elementului atributului de configurare a sesiunii.  Valoarea (''value'') ''{3}'' este asociat\u0103 cu numele \u00een locul valorii (''value'') anterioare ''{4}''.
+duplicate.session.config.attribute.name.explanation=Descriptorul de implementare are mai multe elemente de atribut care au acela\u0219i nume \u0219i care sunt \u00een acela\u0219i element de configurare a sesiunii. Parserul descriptorului le ignor\u0103 pe toate, cu excep\u021bia ultimelor dintre aceste elemente.
+duplicate.session.config.attribute.name.useraction=Dac\u0103 ultimul element de atribut nu este elementul care trebuie s\u0103 fie utilizat, actualiza\u021bi descriptorul de implementare pentru a elimina elementele de atribut suplimentare care au acela\u0219i nume.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the value of the 'value' attribute of a session configuration 'attribute' element
+# -----------------------------------------------------------------------
+missing.session.config.attribute.name=CWWCK27791W: Descriptorul de implementare {0} de pe linia {1} are un atribut de configurare a sesiunii care nu are nume.  Acest atribut, cu valoarea ''value'' ''{2}'', a fost ignorat.
+missing.session.config.attribute.name.explanation=Este necesar ca un atribut de configurare a sesiunii s\u0103 aib\u0103 un element de nume. 
+missing.session.config.attribute.name.useraction=Actualiza\u021bi descriptorul de implementare pentru a elimina atributul care nu are un element de nume sau ad\u0103uga\u021bi elemente de nume la toate elementele de atribut.
+
+
 

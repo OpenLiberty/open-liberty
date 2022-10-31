@@ -63,5 +63,17 @@
 
 17024=N\u00e3o foi poss\u00edvel excluir arquivo: {0}
 
-17025=Este mapeamento requer um elemento de agrupamento de chave estrangeira, porque existem v\u00e1rias chaves estrangeiras.
+17025=Este mapeamento requer um elemento de agrupamento de chaves estrangeiras, uma vez que v\u00e1rias chaves estrangeiras existem.
+
+17026=A propriedade da opera\u00e7\u00e3o deve ser configurada na intera\u00e7\u00e3o da consulta.
+
+17027=O nome da tabela de destino n\u00e3o est\u00e1 configurado. Ele deve ser configurado na intera\u00e7\u00e3o da consulta.
+
+17028=Valor da propriedade de consist\u00eancia inv\u00e1lido: {0}
+
+17029=Valor da propriedade de durabilidade inv\u00e1lido: {0}
+
+17030=O XMLInteraction \u00e9 v\u00e1lido apenas para consultas de objetos, use MappedInteraction para consultas nativas: {0}
+
+17031=Consulta muito complexa para a convers\u00e3o do Oracle NoSQL, selecione apenas consultas que sejam suportadas na consulta: {0}
 

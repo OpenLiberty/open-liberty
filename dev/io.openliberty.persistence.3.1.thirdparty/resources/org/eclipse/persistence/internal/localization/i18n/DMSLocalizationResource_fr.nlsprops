@@ -95,7 +95,7 @@ session_name=Nom de la session
 
 sql_generation=Temps pass\u00e9 \u00e0 g\u00e9n\u00e9rer des requ\u00eates SQL. Dans le cas d''expressions TopLink, temps pass\u00e9 \u00e0 convertir l''expression en instruction SQL
 
-sql_prepare=Temps pass\u00e9 dans JDBC \u00e0 pr\u00e9parer l''instruction. Inclut \u00e9galement le temps pass\u00e9 dans EIS \u00e0 cr\u00e9er une interaction associ\u00e9e \u00e0 une connexion, et \u00e0 cr\u00e9er des objets d''enregistrement en entr\u00e9e et en sortie
+sql_prepare=Temps pass\u00e9 dans JDBC \u00e0 pr\u00e9parer l''instruction. Inclut \u00e9galement le temps pass\u00e9 dans le syst\u00e8me EIS \u00e0 cr\u00e9er une interaction associ\u00e9e \u00e0 une connexion et \u00e0 cr\u00e9er des objets d''enregistrement d''entr\u00e9e et de sortie
 
 unitofwork_commit=Mesure le processus de validation de l''unit\u00e9 d''oeuvre
 

@@ -56,3 +56,5 @@ RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E.useraction=Inspeccione el directorio
 CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E=CWWKC0459E: No se puede tomar un punto de comprobaci\u00f3n porque la versi\u00f3n de Java utilizada no da soporte al punto de comprobaci\u00f3n.
 CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.explanation=La acci\u00f3n de punto de comprobaci\u00f3n del servidor s\u00f3lo se puede utilizar con una versi\u00f3n de Java que d\u00e9 soporte al punto de comprobaci\u00f3n.  
 CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.useraction=Utilice una versi\u00f3n de Java que d\u00e9 soporte al punto de comprobaci\u00f3n. Consulte la documentaci\u00f3n para obtener detalles sobre la versi\u00f3n de Java necesaria que da soporte al punto de comprobaci\u00f3n.
+
+# CWWKC0460E - is a beta only message that gets removed for GA

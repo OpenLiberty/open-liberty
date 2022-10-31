@@ -141,11 +141,11 @@ staticweave_commandline_help_message_15of19= El entrelazado se realizar\u00e1n e
 
 staticweave_commandline_help_message_16of19= Ejemplo:
 
-staticweave_commandline_help_message_17of19= Para entrelazar todas las entidades incidas en C:\foo-source.jar con su persistence.xml incluido en C:\foo-containing-persistence-xml.jar,
+staticweave_commandline_help_message_17of19= Para entrelazar todas las entidades contenidas en C:\foo-source.jar con el persistence.xml contenido en C:\foo-contains-persistence-xml.jar,
 
-staticweave_commandline_help_message_18of19= y salida en C:\foo-target.jar:
+staticweave_commandline_help_message_18of19= y generar la salida en C:\foo-target.jar:
 
-staticweave_commandline_help_message_19of19= StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:\classpath1;C:\classpath2 C:\foo-source.jar C:\foo-target.jar
+staticweave_commandline_help_message_19of19= StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:classpath1;C:classpath2 C:\foo-source.jar C:\foo-target.jar
 
 staticweave_commandline_help_message_1of19= Uso: StaticWeave [opciones] source target
 

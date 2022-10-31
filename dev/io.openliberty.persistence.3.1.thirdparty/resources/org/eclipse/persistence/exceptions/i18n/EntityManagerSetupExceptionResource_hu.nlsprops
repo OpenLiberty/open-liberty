@@ -27,7 +27,7 @@
 #   (single quote must be coded as one single quote '). 
 #
 # -------------------------------------------------------------------------------------------------
-28001=A program ValidationException kiv\u00e9telt dobott a munkamenet l\u00e9trehoz\u00e1s\u00e1ra tett k\u00eds\u00e9rlet k\u00f6zben: [{0}] . A probl\u00e9ma legval\u00f3sz\u00edn\u0171bb oka az, hogy a(z) [{1}] f\u00e1jl nem \u00e9rhet\u0151 el az oszt\u00e1ly\u00fatvonalon, vagy nem tartalmazza a k\u00f6vetkez\u0151 nev\u0171 munkamenetet: [{0}].
+28001=ValidationException kiv\u00e9tel t\u00f6rt\u00e9nt a munkamenet l\u00e9trehoz\u00e1sa sor\u00e1n: [{0}]. A probl\u00e9ma legval\u00f3sz\u00edn\u0171bb oka az, hogy a(z) [{1}] f\u00e1jl nem \u00e9rhet\u0151 el az oszt\u00e1ly\u00fatvonalon, vagy nem tartalmazza a k\u00f6vetkez\u0151 nev\u0171 munkamenetet: [{0}].
 
 28002=Az EclipseLink megk\u00eds\u00e9rel bet\u00f6lteni egy [{0}] nev\u0171 ServerSession objektumot a k\u00f6vetkez\u0151b\u0151l: [{1}], \u00e9s nem kap ServerSession objektumot.
 

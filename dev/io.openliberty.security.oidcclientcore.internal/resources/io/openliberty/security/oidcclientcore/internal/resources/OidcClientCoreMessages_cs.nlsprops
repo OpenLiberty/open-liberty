@@ -91,3 +91,24 @@ TOKEN_ENDPOINT_MISSING=CWWKS2417E: Klient OpenID Connect {0} nem\u016f\u017ee na
 TOKEN_ENDPOINT_MISSING.explanation=Adresa URL koncov\u00e9ho bodu tokenu chyb\u00ed v metadatech poskytovatele OpenID Connect a v konfiguraci klienta OpenID Connect.
 TOKEN_ENDPOINT_MISSING.useraction=Ov\u011b\u0159te, \u017ee metadata poskytovatele OpenID Connect obsahuj\u00ed hodnotu token_endpoint. Koncov\u00fd bod tokenu lze tak\u00e9 uv\u00e9st v konfiguraci klienta OpenID Connect.
 
+USERINFO_RESPONSE_ERROR=CWWKS2418W: Klient OpenID Connect zjistil n\u00e1sleduj\u00edc\u00ed chybu p\u0159i odesl\u00e1n\u00ed po\u017eadavku na adresu URL informac\u00ed o u\u017eivateli [{0}] poskytovatele OpenID Connect: {1}
+USERINFO_RESPONSE_ERROR.explanation=Odezva na informace o u\u017eivateli z poskytovatele OpenID Connect m\u016f\u017ee m\u00edt nespr\u00e1vn\u00fd form\u00e1t nebo mohou chyb\u011bt informace nebo poskytovatel OpenID Connect narazil p\u0159i zpracov\u00e1n\u00ed po\u017eadavku na chybu.
+USERINFO_RESPONSE_ERROR.useraction=Dal\u0161\u00ed informace viz chyba v t\u00e9to zpr\u00e1v\u011b. Ov\u011b\u0159te, \u017ee adresa URL informac\u00ed o u\u017eivateli pro poskytovatele OpenID Connect je spr\u00e1vn\u00e1.
+
+USERINFO_RESPONSE_NOT_200=CWWKS2419W: Po\u017eadavek na adresu URL informac\u00ed o u\u017eivateli [{0}] poskytovatele OpenID Connect vr\u00e1til stavov\u00fd k\u00f3d {1} HTTP. Poskytovatel OpenID Connect vr\u00e1til n\u00e1sleduj\u00edc\u00ed odezvu: {2}
+USERINFO_RESPONSE_NOT_200.explanation=Klient OpenID Connect nep\u0159ijal od poskytovatele OpenID Connect \u00fasp\u011b\u0161nou odpov\u011b\u010f.
+USERINFO_RESPONSE_NOT_200.useraction=Dal\u0161\u00ed informace naleznete ve stavov\u00e9m k\u00f3du a chybov\u00e9 odpov\u011bdi ve zpr\u00e1v\u011b.
+
+VERIFICATION_KEY_ERROR=CWWKS2420E: Klient {0} OpenID Connect rozpoznal n\u00e1sleduj\u00edc\u00ed chybu p\u0159i z\u00edsk\u00e1v\u00e1n\u00ed kl\u00ed\u010de pro ov\u011b\u0159en\u00ed tokenu identity od poskytovatele OpenID Connect: {1}
+VERIFICATION_KEY_ERROR.explanation=M\u016f\u017ee chyb\u011bt ov\u011b\u0159ovac\u00ed kl\u00ed\u010d, klient OpenID Connect zjistil chybu p\u0159i na\u010d\u00edt\u00e1n\u00ed kl\u00ed\u010de od poskytovatele OpenID Connect nebo do\u0161lo k jin\u00e9 chyb\u011b.
+VERIFICATION_KEY_ERROR.useraction=Dal\u0161\u00ed informace viz chyba v t\u00e9to zpr\u00e1v\u011b.
+
+# Do not translate "jwksConnectTimeout"
+JWK_CONNECTION_TIMED_OUT=CWWKS2421E: Klient OpenID Connect se nemohl p\u0159ipojit k [{0}] JWK URI poskytovatele OpenID Connect b\u011bhem {1} milisekund. Zva\u017ete aktualizaci vlastnosti jwksConnectTimeout v konfiguraci klienta OpenID Connect.
+JWK_CONNECTION_TIMED_OUT.explanation=Klient OpenID Connect nem\u016f\u017ee nav\u00e1zat p\u0159ipojen\u00ed s identifik\u00e1torem JWK URI v r\u00e1mci konfigurovan\u00e9ho \u010dasov\u00e9ho r\u00e1mce.
+JWK_CONNECTION_TIMED_OUT.useraction=Aktualizujte vlastnost jwksConnectTimeout v konfiguraci klienta OpenID Connect. Ov\u011b\u0159te, zda je poskytovatel OpenID Connect dostupn\u00fd.
+
+# Do not translate "jwksReadTimeout"
+JWK_READ_TIMED_OUT=CWWKS2422E: Klient OpenID Connect nemohl p\u0159e\u010d\u00edst data z [{0}] JWK URI poskytovatele OpenID Connect b\u011bhem {1} milisekund. Zva\u017ete aktualizaci vlastnosti jwksReadTimeout v konfiguraci klienta OpenID Connect.
+JWK_READ_TIMED_OUT.explanation=Klient OpenID Connect nem\u016f\u017ee \u010d\u00edst data JWK z identifik\u00e1toru JWK URI v r\u00e1mci konfigurovan\u00e9ho \u010dasov\u00e9ho r\u00e1mce.
+JWK_READ_TIMED_OUT.useraction=Aktualizujte vlastnost jwksReadTimeout v konfiguraci klienta OpenID Connect. Ov\u011b\u0159te, zda je poskytovatel OpenID Connect dostupn\u00fd.

@@ -91,3 +91,24 @@ TOKEN_ENDPOINT_MISSING=CWWKS2417E: A(z) {0} OpenID Connect \u00fcgyf\u00e9l nem 
 TOKEN_ENDPOINT_MISSING.explanation=Az OpenID Connect szolg\u00e1ltat\u00f3 metaadataib\u00f3l \u00e9s az OpenID Connect \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3j\u00e1b\u00f3l hi\u00e1nyzik a tokenv\u00e9gpont URL.
 TOKEN_ENDPOINT_MISSING.useraction=Ellen\u0151rizze, hogy az OpenID Connect szolg\u00e1ltat\u00f3 metaadatai tartalmaznak-e token_endpoint \u00e9rt\u00e9ket. Tokenv\u00e9gpont az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3ban is megadhat\u00f3.
 
+USERINFO_RESPONSE_ERROR=CWWKS2418W: Az OpenID Connect \u00fcgyf\u00e9l a k\u00f6vetkez\u0151 hib\u00e1ba \u00fctk\u00f6z\u00f6tt, amikor k\u00e9r\u00e9st k\u00fcld\u00f6tt az OpenID Connect szolg\u00e1ltat\u00f3 [{0}] User Info URL c\u00edm\u00e9re: {1}
+USERINFO_RESPONSE_ERROR.explanation=Lehet, hogy az OpenID Connect szolg\u00e1ltat\u00f3t\u00f3l \u00e9rkez\u0151 felhaszn\u00e1l\u00f3i inform\u00e1ci\u00f3k hib\u00e1sak vagy hi\u00e1nyoznak, illetve az OpenID Connect szolg\u00e1ltat\u00f3 hib\u00e1ba \u00fctk\u00f6z\u00f6tt a k\u00e9r\u00e9s kezel\u00e9se sor\u00e1n.
+USERINFO_RESPONSE_ERROR.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben szerepl\u0151 hib\u00e1t. Ellen\u0151rizze, hogy az OpenID Connect szolg\u00e1ltat\u00f3 User Info URL-c\u00edme helyes-e.
+
+USERINFO_RESPONSE_NOT_200=CWWKS2419W: Az OpenID Connect szolg\u00e1ltat\u00f3 [{0}] User Info URL-c\u00edme {1} HTTP \u00e1llapotk\u00f3dot adott vissza. Az OpenID Connect szolg\u00e1ltat\u00f3 a k\u00f6vetkez\u0151 v\u00e1laszt adta vissza: {2}
+USERINFO_RESPONSE_NOT_200.explanation=Az OpenID Connect \u00fcgyf\u00e9l nem kapott sikeres v\u00e1laszt az OpenID Connect szolg\u00e1ltat\u00f3t\u00f3l.
+USERINFO_RESPONSE_NOT_200.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00e1llapotk\u00f3dot \u00e9s a hibav\u00e1laszt az \u00fczenetben.
+
+VERIFICATION_KEY_ERROR=CWWKS2420E: A(z) {0} OpenID Connect \u00fcgyf\u00e9l a k\u00f6vetkez\u0151 hib\u00e1ba \u00fctk\u00f6z\u00f6tt, amikor az azonos\u00edt\u00f3 token ellen\u0151rz\u00e9se \u00e9rdek\u00e9ben megpr\u00f3b\u00e1lta lek\u00e9rni a kulcsot az OpenID Connect szolg\u00e1ltat\u00f3t\u00f3l: {1}
+VERIFICATION_KEY_ERROR.explanation=Lehet, hogy hi\u00e1nyzik az ellen\u0151rz\u0151 kulcs, az OpenID Connect \u00fcgyf\u00e9l hib\u00e1ba \u00fctk\u00f6z\u00f6tt a kulcs lek\u00e9r\u00e9sekor az OpenID Connect szolg\u00e1ltat\u00f3t\u00f3l, illetve m\u00e1s hiba t\u00f6rt\u00e9nt.
+VERIFICATION_KEY_ERROR.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben szerepl\u0151 hib\u00e1t.
+
+# Do not translate "jwksConnectTimeout"
+JWK_CONNECTION_TIMED_OUT=CWWKS2421E: Az OpenID Connect \u00fcgyf\u00e9l nem tudott csatlakozni az OpenID Connect szolg\u00e1ltat\u00f3 [{0}] JWK URI-azonos\u00edt\u00f3j\u00e1hoz {1} ezredm\u00e1sodpercen bel\u00fcl. Fontolja meg a jwksConnectTimeout tulajdons\u00e1g friss\u00edt\u00e9s\u00e9t az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3ban.
+JWK_CONNECTION_TIMED_OUT.explanation=Az OpenID Connect \u00fcgyf\u00e9l nem tud kapcsolatot l\u00e9tes\u00edteni a JWK URI-azonos\u00edt\u00f3val a be\u00e1ll\u00edtott id\u0151kereten bel\u00fcl.
+JWK_CONNECTION_TIMED_OUT.useraction=Friss\u00edtse a jwksConnectTimeout tulajdons\u00e1got az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3ban. Ellen\u0151rizze, hogy az OpenID Connect szolg\u00e1ltat\u00f3 el\u00e9rhet\u0151-e.
+
+# Do not translate "jwksReadTimeout"
+JWK_READ_TIMED_OUT=CWWKS2422E: Az OpenID Connect \u00fcgyf\u00e9l nem tudta kiolvasni az adatokat az OpenID Connect szolg\u00e1ltat\u00f3 [{0}] JWK URI-azonos\u00edt\u00f3j\u00e1b\u00f3l {1} ezredm\u00e1sodpercen bel\u00fcl. Fontolja meg a jwksReadTimeout tulajdons\u00e1g friss\u00edt\u00e9s\u00e9t az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3ban.
+JWK_READ_TIMED_OUT.explanation=Az OpenID Connect \u00fcgyf\u00e9l nem tudja beolvasni a JWK adatokat a JWK URI-azonos\u00edt\u00f3b\u00f3l a be\u00e1ll\u00edtott id\u0151kereten bel\u00fcl.
+JWK_READ_TIMED_OUT.useraction=Friss\u00edtse a jwksReadTimeout tulajdons\u00e1got az OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3ban. Ellen\u0151rizze, hogy az OpenID Connect szolg\u00e1ltat\u00f3 el\u00e9rhet\u0151-e.

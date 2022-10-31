@@ -28,9 +28,9 @@ invalid.security.properties=CWWKO0800E: Impossibile avviare il canale SSL a caus
 invalid.security.properties.explanation=Una o pi\u00f9 impostazioni per la sicurezza nel canale SSL non sono valide.
 invalid.security.properties.useraction=Impostare le opzioni di sicurezza del canale SSL sui valori corretti.
 
-handshake.failure=CWWKO0801E: Impossibile inizializzare la connessione SSL. L''accesso non autorizzato non \u00e8 stato consentito o le impostazioni di sicurezza sono scadute. L''eccezione \u00e8 {0}.
-handshake.failure.explanation=Una nuova connessione non \u00e8 riuscita a completare un handshake sicuro.
-handshake.failure.useraction=Verificare le impostazioni di sicurezza.  Il certificato potrebbe essere scaduto o mancante. In alternativa, una connessione client non autorizzata potrebbe essere stata negata.  Per disabilitare questi messaggi, impostare il parametro suppressHandshakeErrors della configurazione sslOptions su true.
+handshake.failure=CWWKO0801E: Impossibile avviare la connessione SSL dall''host {1} e dalla porta {2} sul client remoto all''host {3} e alla porta {4} sul server locale. Eccezione: {0}
+handshake.failure.explanation=Una nuova connessione non \u00e8 riuscita a completare un handshake sicuro. Il motivo pi\u00f9 comune \u00e8 che il client ha inviato un messaggio non crittografato a una porta sicura. Un altro motivo comune \u00e8 che un certificato SSL \u00e8 scaduto.
+handshake.failure.useraction=Se il client ha inviato un messaggio non crittografato a una porta protetta, configurare il client per utilizzare SSL o per connettersi a una porta sul server delle applicazioni che non richiede SSL. In alternativa, verificare se un certificato SSL \u00e8 scaduto. In caso affermativo, sostituire il certificato SSL scaduto con uno non scaduto.
 
 init.failure=CWWKO0802E: Impossibile inizializzare il bundle SSL. L''eccezione \u00e8 {0}.
 init.failure.explanation=\u00c8 stato rilevato un errore durante il tentativo di inizializzare il bundle SSL. Probabilmente, questo problema \u00e8 causato da un errore di dipendenza.

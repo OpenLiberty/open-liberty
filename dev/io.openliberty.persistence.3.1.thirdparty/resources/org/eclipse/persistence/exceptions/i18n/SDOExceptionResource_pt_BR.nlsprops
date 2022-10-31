@@ -135,7 +135,7 @@
 
 45207=Ocorreu um erro ao tentar resolver um esquema utilizando o SchemaResolver fornecido.
 
-45208=N\u00e3o \u00e9 poss\u00edvel mapear a propriedade {0} do tipo {1}. Os pacotes jakarta.activation e jakarta.mail s\u00e3o requeridas para mapear propriedades do tipo DataHandler. Assegure-se de que ambos estejam dispon\u00edveis no caminho de classe.
+45208=N\u00e3o \u00e9 poss\u00edvel mapear a propriedade {0} do tipo {1}. Os pacotes jakarta.activation e jakarta.mail s\u00e3o necess\u00e1rios para mapear propriedades do tipo DataHandler. Assegure-se de que ambos estejam dispon\u00edveis no caminho de classe.
 
 45209=Foi feita uma tentativa de reconfigurar a inst\u00e2ncia ApplicationResolver no SDOHelperContext.  Somente um conjunto \u00e9 permitido.
 

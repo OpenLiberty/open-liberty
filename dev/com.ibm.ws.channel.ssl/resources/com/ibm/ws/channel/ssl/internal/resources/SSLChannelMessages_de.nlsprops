@@ -28,9 +28,9 @@ invalid.security.properties=CWWKO0800E: Der SSL-Kanal kann wegen der folgenden u
 invalid.security.properties.explanation=Mindestens eine Einstellung im SSL-Kanal ist nicht g\u00fcltig.
 invalid.security.properties.useraction=Die Sicherheitseinstellungen des SSL-Kanals m\u00fcssen in die korrekten Werte ge\u00e4ndert werden.
 
-handshake.failure=CWWKO0801E: Die SSL-Verbindung kann nicht initialisiert werden. Der unbefugte Zugriff wurde verweigert, oder die Sicherheitseinstellungen sind abgelaufen. Ausnahme: {0}
-handshake.failure.explanation=Eine neue Verbindung konnte keinen sicheren Handshake durchf\u00fchren.
-handshake.failure.useraction=\u00dcberpr\u00fcfen Sie die Sicherheitseinstellungen. Das Zertifikat ist m\u00f6glicherweise abgelaufen oder nicht vorhanden. Es ist auch m\u00f6glich, dass die nicht befugte Clientverbindung verweigert wurde. Zum Inaktivieren dieser Nachrichten setzen Sie den Parameter suppressHandshakeErrors der sslOptions-Konfiguration auf true.
+handshake.failure=CWWKO0801E: Die SSL-Verbindung kann nicht \u00fcber den Host {1} und den Port {2} auf dem fernen Client f\u00fcr den Host {3} und {4} auf dem lokalen Server initialisiert werden. Ausnahme: {0}
+handshake.failure.explanation=Eine neue Verbindung konnte keinen sicheren Handshake durchf\u00fchren. Die h\u00e4ufigste Ursache ist, dass der Client eine unverschl\u00fcsselte Nachricht an einen sicheren Port gesendet hat. Ein weiterer allgemeiner Grund ist, dass ein SSL-Zertifikat abgelaufen ist.
+handshake.failure.useraction=Wenn der Client eine unverschl\u00fcsselte Nachricht an einen sicheren Port gesendet hat, konfigurieren Sie den Client f\u00fcr die Verwendung von SSL oder f\u00fcr die Verbindung zu einem Port auf dem Anwendungsserver, der SSL nicht erfordert. Pr\u00fcfen Sie alternativ, ob ein SSL-Zertifikat abgelaufen ist. Ist dies der Fall, ersetzen Sie das abgelaufene SSL-Zertifikat durch ein nicht abgelaufenes.
 
 init.failure=CWWKO0802E: Das SSL-Bundle kann nicht initialisiert werden. Ausnahme: {0}
 init.failure.explanation=Beim Initialisieren des SSL-Bundles ist ein Fehler aufgetreten. Dies ist wahrscheinlich auf einen Abh\u00e4ngigkeitsfehler zur\u00fcckzuf\u00fchren.

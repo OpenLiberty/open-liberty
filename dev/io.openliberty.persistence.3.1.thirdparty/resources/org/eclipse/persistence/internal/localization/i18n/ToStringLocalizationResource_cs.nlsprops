@@ -145,7 +145,7 @@ staticweave_commandline_help_message_17of19= Chcete-li zakomponovat v\u0161echny
 
 staticweave_commandline_help_message_18of19= a zapsat v\u00fdstup do C:\foo-target.jar, zadejte:
 
-staticweave_commandline_help_message_19of19= StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:\classpath1;C:\classpath2 C:\foo-source.jar C:\foo-target.jar
+staticweave_commandline_help_message_19of19= StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:classpath1;C:classpath2 C:\foo-source.jar C:\foo-target.jar
 
 staticweave_commandline_help_message_1of19= Pou\u017eit\u00ed: StaticWeave [volby] zdroj c\u00edl
 

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1259,9 +1259,9 @@ system.java.compiler.not.found=JSPG0304W: L''attribut JSP, useJDKCompiler, est d
 system.java.compiler.not.found.explanation=Le conteneur JSP n'a pas pu trouver le compilateur syst\u00e8me, ce qui indique g\u00e9n\u00e9ralement que le fichier jar SDK Java, tools.jar, est introuvable dans le chemin de classe.
 system.java.compiler.not.found.useraction=Assurez-vous que le fichier jar SDK Java, tools.jar, se trouve dans le chemin de classe et v\u00e9rifiez que SDK Java prend en charge l'API Java Compiler. Pour plus de d\u00e9tails, consultez la Java Specification Request 199.
 
-jsp.feature.not.loaded.correctly=CWWJS0001E: La fonction JSP [Pages] n'a pas \u00e9t\u00e9 charg\u00e9e avec une version acceptable.
-jsp.feature.not.loaded.correctly.explanation=La fonction JSP [Pages] est charg\u00e9e avec une version qui correspond \u00e0 la sp\u00e9cification Java [Jakarta] EE de cette fonction JSP [Pages]. La fonction a \u00e9t\u00e9 charg\u00e9e sans version d\u00e9finie.
-jsp.feature.not.loaded.correctly.useraction=Recherchez dans le fichier server.xml l'existence de plusieurs fonctions JSP [Pages]. Le fichier ne doit pas sp\u00e9cifier plus d'une fonction Pages.
+jsp.feature.not.loaded.correctly=CWWJS0001E: La fonction Pages (anciennement JSP) n'a pas \u00e9t\u00e9 charg\u00e9e avec une version acceptable.
+jsp.feature.not.loaded.correctly.explanation=Fonction charg\u00e9e sans une version acceptable. Le comportement de l'application peut \u00eatre diff\u00e9rent de celui attendu.
+jsp.feature.not.loaded.correctly.useraction=Regardez dans le fichier server.xml s'il n'y a pas plusieurs fonctions Pages (JSP). Le fichier ne doit pas sp\u00e9cifier plus d'une fonction Pages (JSP).
 
 jsp.error.page.invalid.erroronelnotfound=CWWJS0002E: Valeur non valide pour l'attribut errorOnELNotFound
 jsp.error.page.invalid.erroronelnotfound.explanation=

@@ -145,7 +145,7 @@ staticweave_commandline_help_message_17of19= C:\foo-containing-persistence-xml.j
 
 staticweave_commandline_help_message_18of19= C:\foo-target.jar\uc5d0 \ucd9c\ub825:
 
-staticweave_commandline_help_message_19of19= StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:\classpath1;C:\classpath2 C:\foo-source.jar C:\foo-target.jar
+staticweave_commandline_help_message_19of19= StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:classpath1;C:classpath2 C:\foo-source.jar C:\foo-target.jar
 
 staticweave_commandline_help_message_1of19= \uc0ac\uc6a9\ubc95: StaticWeave [\uc635\uc158] \uc18c\uc2a4 \ub300\uc0c1
 

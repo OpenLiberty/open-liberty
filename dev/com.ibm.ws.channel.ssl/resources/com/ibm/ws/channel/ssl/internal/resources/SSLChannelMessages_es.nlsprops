@@ -28,9 +28,10 @@ invalid.security.properties=CWWKO0800E: El canal SSL no se puede iniciar debido 
 invalid.security.properties.explanation=Uno o m\u00e1s valores de seguridad del canal SSL no son v\u00e1lidos.
 invalid.security.properties.useraction=Los valores de seguridad del canal SSL deben modificarse por los valores correctos.
 
-handshake.failure=CWWKO0801E: No se ha podido inicializar la conexi\u00f3n SSL. Se ha denegado el acceso no autorizado o los valores de seguridad han caducado. La excepci\u00f3n es {0}.
-handshake.failure.explanation=Una nueva conexi\u00f3n no ha podido completar un reconocimiento seguro correcto.
-handshake.failure.useraction=Compruebe los valores de seguridad.  El certificado puede haber caducado o estar ausente. Tambi\u00e9n es posible que se haya denegado una conexi\u00f3n de cliente no autorizado. Para inhabilitar estos mensajes, establezca el par\u00e1metro suppressHandshakeErrors de la configuraci\u00f3n de sslOptions en true. 
+handshake.failure=CWWKO0801E: La conexi\u00f3n SSL no se puede inicializar desde el host {1} y el puerto {2} en el cliente remoto hasta el host {3} y el puerto {4} en el servidor local. Excepci\u00f3n: {0}
+handshake.failure.explanation=Una nueva conexi\u00f3n no ha podido completar un reconocimiento seguro correcto. La raz\u00f3n m\u00e1s com\u00fan es que el cliente ha enviado un mensaje no cifrado a un puerto seguro. Otra raz\u00f3n com\u00fan es que un certificado SSL ha caducado.
+handshake.failure.useraction=Si el cliente ha enviado un mensaje no cifrado a un puerto seguro, configure el cliente para utilizar SSL o para conectarse a un puerto en el servidor de aplicaciones que no requiera SSL. De forma alternativa, compruebe si un certificado SSL ha caducado. Si ha caducado, sustit\u00fayalo por un certificado SSL no caducado.
+
 init.failure=CWWKO0802E: No se ha podido inicializar el paquete SSL. La excepci\u00f3n es {0}.
 init.failure.explanation=Se ha encontrado un error al intentar inicializar el paquete SSL. Es probable que la causa sea un error de dependencia.
 init.failure.useraction=Revise los registros de proceso para obtener informaci\u00f3n sobre lo que no se ha podido iniciar.

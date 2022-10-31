@@ -141,11 +141,11 @@ staticweave_commandline_help_message_15of19= Weaving in place wird ausgef\u00fch
 
 staticweave_commandline_help_message_16of19= Beispiel:
 
-staticweave_commandline_help_message_17of19= Gehen Sie wie folgt vor, um das Weaving f\u00fcr alle in C:\foo-source.jar enthaltenen Entit\u00e4ten mit der zugeh\u00f6rigen Datei persistence.xml in C:\foo-containing-persistence-xml.jar auszuf\u00fchren
+staticweave_commandline_help_message_17of19= Gehen Sie wie folgt vor, um das Weaving f\u00fcr alle in C:\foo-source.jar enthaltenen Entit\u00e4ten mit der zugeh\u00f6rigen Datei persistence.xml in C:\foo-containing-persistence-xml.jar
 
-staticweave_commandline_help_message_18of19= und die Ausgabe in C:\foo-target.jar zu schreiben:
+staticweave_commandline_help_message_18of19= und Ausgabe in C:\foo-target.jar auszuf\u00fchren:
 
-staticweave_commandline_help_message_19of19= StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:\classpath1;C:\classpath2 C:\foo-source.jar C:\foo-target.jar
+staticweave_commandline_help_message_19of19= StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:classpath1;C:classpath2 C:\foo-source.jar C:\foo-target.jar
 
 staticweave_commandline_help_message_1of19= Syntax: StaticWeave [Optionen] Quelle Ziel
 

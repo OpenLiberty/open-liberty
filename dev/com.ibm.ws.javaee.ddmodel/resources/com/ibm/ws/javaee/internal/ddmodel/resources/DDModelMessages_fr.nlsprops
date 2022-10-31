@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011,2021 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -109,7 +109,7 @@ invalid.href.prefix.useraction=Corrigez la valeur HREF.
 #    {3} is an HREF value which is not valid.
 # -----------------------------------------------------------------------
 invalid.href=CWWKC2284E: Valeur HREF {3} de l''\u00e9l\u00e9ment {2} dans le descripteur de d\u00e9ploiement {0} sur la ligne {1} non valide.
-invalid.href.explanation=La valeur de l'\u00e9l\u00e9ment n'est pas une valeur HREF valide : la valeur doit comporter un caract\u00e8re '#' et celui-ci ne doit pas \u00eatre plac\u00e9 en premi\u00e8re ou derni\u00e8re position.
+invalid.href.explanation=La valeur de l'\u00e9l\u00e9ment n'est pas une valeur HREF valide : elle doit comporter un caract\u00e8re ''#'' et celui-ci ne doit pas \u00eatre le premier ou le dernier caract\u00e8re.
 invalid.href.useraction=Corrigez la valeur HREF.
 
 # ADDED:
@@ -148,7 +148,7 @@ unresolved.href.useraction=Corrigez l'ID HREF dans le descripteur de d\u00e9ploi
 #    {2} is the name of the element which is being processed.
 # -----------------------------------------------------------------------
 missing.href=CWWKC2287E: Aucun attribut HREF n''est pr\u00e9sent dans l''\u00e9l\u00e9ment {2} dans le descripteur de d\u00e9ploiement {0} sur la ligne {1}.
-missing.href.explanation=L'\u00e9l\u00e9ment doit fournir un attribut HREF. Le nom d'un attribut HREF est 'href'.
+missing.href.explanation=L'\u00e9l\u00e9ment doit fournir un attribut HREF. Un attribut HREF a le nom ''href''.
 missing.href.useraction=Ajoutez un attribut HREF \u00e0 l'\u00e9l\u00e9ment.
 
 ######
@@ -303,8 +303,8 @@ invalid.long.value.useraction=Corrigez le descripteur de d\u00e9ploiement afin d
 #    {1} The type of element which is being processed.  For example, 'ejb-bnd', 'ejb-ext', 'web-bnd', 'web-ext'.
 # -----------------------------------------------------------------------
 module.name.not.specified=CWWKC2276E: L''attribut ''moduleName'' manque dans un ou plusieurs \u00e9l\u00e9ments de configuration d''extension ou dans une ou plusieurs liaisons ''{1}'' de l''application {0}.
-module.name.not.specified.explanation=Les liaisons et les \u00e9l\u00e9ments de configuration d'extension doivent comporter un attribut 'moduleName'.
-module.name.not.specified.useraction=Assurez-vous qu'un module 'moduleName' se trouve dans toutes les liaisons et dans tous les \u00e9l\u00e9ments de configuration d'extension.
+module.name.not.specified.explanation=Les liaisons et les \u00e9l\u00e9ments de configuration d'extension doivent avoir un attribut ''moduleName''.
+module.name.not.specified.useraction=Assurez-vous qu'un attribut ''moduleName' 'soit pr\u00e9sent dans toutes les liaisons et tous les \u00e9l\u00e9ments de configuration d'extension.
 
 # REMOVED:
 # module.name.invalid=CWWKC2277E: One or more module names on the {1} element are invalid. The invalid module name or names are {0}.
@@ -320,8 +320,8 @@ module.name.not.specified.useraction=Assurez-vous qu'un module 'moduleName' se t
 #    {3} Module names found in the application.
 # -----------------------------------------------------------------------
 module.name.not.found=CWWKC2277E: Les attributs ''moduleName'' {2} sp\u00e9cifi\u00e9s dans les liaisons et les \u00e9l\u00e9ments de configuration d''extension ''{1}'' de l''application {0} sont introuvables. Les noms de module d''application sont les suivants : {3}.
-module.name.not.found.explanation=Les attributs 'moduleName' des liaisons et des \u00e9l\u00e9ments de configuration d'extension doivent correspondre aux noms de module d'application.
-module.name.not.found.useraction=Assurez-vous que tous les attributs 'moduleName' des liaisons et des \u00e9l\u00e9ments de configuration d'extension correspondent \u00e0 des noms de module d'application. 
+module.name.not.found.explanation=Les attributs ''moduleName' des liaisons et des \u00e9l\u00e9ments de configuration d'extension doivent correspondre aux noms des modules d'application.
+module.name.not.found.useraction=Assurez-vous que tous les attributs ''moduleName' des liaisons et des \u00e9l\u00e9ments de configuration d'extension correspondent aux noms des modules d'application. 
 
 # ADDED
 # -----------------------------------------------------------------------
@@ -331,8 +331,8 @@ module.name.not.found.useraction=Assurez-vous que tous les attributs 'moduleName
 #    {2} Duplicated module names used in configuration elements.
 # -----------------------------------------------------------------------
 module.name.duplicated=CWWKC2278E: Des attributs ''moduleName'' {2} en double sont sp\u00e9cifi\u00e9s dans les liaisons et les \u00e9l\u00e9ments de configuration d''extension ''{1}'' de l''application {0}.
-module.name.duplicated.explanation=Les attributs 'moduleName' des liaisons et des \u00e9l\u00e9ments de configuration d'extension ne peuvent pas \u00eatre dupliqu\u00e9s.
-module.name.duplicated.useraction=Assurez-vous que tous les attributs 'moduleName' des liaisons et des \u00e9l\u00e9ments de configuration d'extension sont uniques. 
+module.name.duplicated.explanation=Les attributs ''moduleName' des liaisons et des \u00e9l\u00e9ments de configuration d'extension ne peuvent pas \u00eatre en double.
+module.name.duplicated.useraction=Assurez-vous que tous les attributs ''moduleName' des liaisons et des \u00e9l\u00e9ments de configuration d'extension soient uniques. 
 
 # ADDED:
 # -----------------------------------------------------------------------
@@ -380,4 +380,28 @@ incorrect.descriptor.namespace.useraction=Remplacez l'espace de nom dans le desc
 incorrect.descriptor.namespace.for.version=CWWCK27789W: Le descripteur de d\u00e9ploiement {0} sur la ligne {1} sp\u00e9cifie la version {2} et l''espace de nom {3} alors que pour cette version, l''espace de nom {4} devrait \u00eatre sp\u00e9cifi\u00e9.
 incorrect.descriptor.namespace.for.version.explanation=Un espace de nom sp\u00e9cifique est attendu dans le descripteur de d\u00e9ploiement pour la version sp\u00e9cifi\u00e9e. L'espace de nom incorrect a \u00e9t\u00e9 ignor\u00e9.
 incorrect.descriptor.namespace.for.version.useraction=Remplacez l'espace de nom dans le descripteur de d\u00e9ploiement par la valeur attendue.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the value of a 'name' attribute within a session configuration 'attribute' element
+#    {3} is the value of the 'value' attribute of a session configuration 'attribute' element
+#    {4} is the value of the 'value' attribute of a session configuration 'attribute' element
+# -----------------------------------------------------------------------
+duplicate.session.config.attribute.name=CWWCK27790W : Le descripteur de d\u00e9ploiement {0} \u00e0 la ligne {1} duplique le nom ''{2}'' d''un \u00e9l\u00e9ment d''attribut de configuration de session.  C''est la valeur ''{3}'' qui est associ\u00e9e au nom au lieu de la valeur pr\u00e9c\u00e9dente ''{4}''.
+duplicate.session.config.attribute.name.explanation=Le descripteur de d\u00e9ploiement comporte plusieurs \u00e9l\u00e9ments d'attribut qui ont le m\u00eame nom et qui se trouvent dans le m\u00eame \u00e9l\u00e9ment de configuration de session. L'analyseur de descripteur ignore tous ces \u00e9l\u00e9ments sauf le dernier.
+duplicate.session.config.attribute.name.useraction=Si le dernier \u00e9l\u00e9ment d'attribut n'est pas celui qui doit \u00eatre utilis\u00e9, supprimez du descripteur de d\u00e9ploiement les \u00e9l\u00e9ments d'attribut en plus qui portent le m\u00eame nom.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the value of the 'value' attribute of a session configuration 'attribute' element
+# -----------------------------------------------------------------------
+missing.session.config.attribute.name=CWWCK27791W : Le descripteur de d\u00e9ploiement {0} \u00e0 la ligne {1} comporte un attribut de configuration de session qui n''a pas de nom.  Cet attribut, de valeur ''{2}'', a \u00e9t\u00e9 ignor\u00e9.
+missing.session.config.attribute.name.explanation=Un attribut de configuration de session est requis pour avoir un \u00e9l\u00e9ment de nom. 
+missing.session.config.attribute.name.useraction=Supprimez du descripteur de d\u00e9ploiement l'attribut qui n'a pas d'\u00e9l\u00e9ment de nom ou ajoutez des \u00e9l\u00e9ments de nom \u00e0 tous les \u00e9l\u00e9ments d'attribut.
+
+
 

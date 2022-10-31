@@ -141,11 +141,11 @@ staticweave_commandline_help_message_15of19= A bef\u0171z\u00e9s helyben ker\u00
 
 staticweave_commandline_help_message_16of19= P\u00e9lda:
 
-staticweave_commandline_help_message_17of19= A C:\foo-source.jar \u00e1ltal tartalmazott \u00f6sszes entit\u00e1s \u00f6sszef\u0171z\u00e9se a C:\foo-containing-persistence-xml.jar \u00e1ltal tartalmazott persistence.xml f\u00e1jllal,
+staticweave_commandline_help_message_17of19= A C:\foo-source.jar f\u00e1jlban tal\u00e1lhat\u00f3 \u00f6sszes entit\u00e1s manipul\u00e1l\u00e1sa a C:\foo-containing-persistence-xml.jar f\u00e1jlban tal\u00e1lhat\u00f3 persistence.xml f\u00e1jllal egy\u00fctt
 
-staticweave_commandline_help_message_18of19= \u00e9s kimenet a C:\foo-target.jar f\u00e1jlba:
+staticweave_commandline_help_message_18of19= \u00e9s k\u00fcld\u00e9s a C:\foo-target.jar f\u00e1jlba:
 
-staticweave_commandline_help_message_19of19= StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:\classpath1;C:\classpath2 C:\foo-source.jar C:\foo-target.jar
+staticweave_commandline_help_message_19of19= StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:classpath1;C:classpath2 C:\foo-source.jar C:\foo-target.jar
 
 staticweave_commandline_help_message_1of19= Haszn\u00e1lat: StaticWeave [param\u00e9terek] source target
 

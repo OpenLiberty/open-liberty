@@ -95,7 +95,7 @@ session_name=Nazwa sesji
 
 sql_generation=Czas tworzenia kodu SQL. W przypadku wyra\u017ce\u0144 TopLink jest to czas przekszta\u0142cania wyra\u017cenia w kod SQL
 
-sql_prepare=Czas przygotowywania instrukcji JDBC. Obejmuje on r\u00f3wnie\u017c czas sp\u0119dzony w systemie EIS na tworzeniu interakcji powi\u0105zanej z po\u0142\u0105czeniem i tworzeniu obiekt\u00f3w rekord\u00f3w wej\u015bciowych i wyj\u015bciowych
+sql_prepare=Czas sp\u0119dzony w JDBC przygotowuj\u0105cym instrukcj\u0119. Obejmuje r\u00f3wnie\u017c czas sp\u0119dzony w systemie EIS tworz\u0105cy interakcj\u0119 powi\u0105zan\u0105 z po\u0142\u0105czeniem oraz tworzenie obiekt\u00f3w rekordu wej\u015bciowego i wyj\u015bciowego.
 
 unitofwork_commit=Mierzy proces zatwierdzania obiektu UnitOfWork
 

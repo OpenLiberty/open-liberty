@@ -28,17 +28,17 @@ SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: Generierte Konfiguration Infinispan f\
 SESN0310_GEN_INFINISPAN_CONFIG.explanation=F\u00fcr die Infinispan-Caches, die f\u00fcr die HTTP-Sitzungspersistenz verwendet werden, ist eine zus\u00e4tzliche Konfiguration erforderlich, um Sitzungen auf allen Servern persistent zu speichern. Liberty generiert diese Konfiguration, wenn sie nicht vom Benutzer bereitgestellt wird.
 SESN0310_GEN_INFINISPAN_CONFIG.useraction=Es ist keine Aktion erforderlich, wenn Sie mit der generierten Konfiguration zufrieden sind. Andernfalls kann die generierte Konfiguration als Ausgangspunkt verwendet werden.
 
-CWLJC0001_CACHE_CREATED=CWLJC0001I: JCache {0} wurde in {1} ms erstellt.
+CWLJC0001_CACHE_CREATED=CWLJC0001I: Der JCache {0} wurde in {1} ms erstellt und verwendet den Caching-Provider {2}.
 CWLJC0001_CACHE_CREATED.explanation=Der benannte JCache wurde erstellt, da er nicht gefunden wurde.
 CWLJC0001_CACHE_CREATED.useraction=Keine Benutzeraktion erforderlich.
 
-CWLJC0002_CACHE_FOUND=CWLJC0002I: Der vorhandene JCache {0} wurde in {1} ms gefunden.
+CWLJC0002_CACHE_FOUND=CWLJC0002I: Der vorhandene JCache {0} wurde in {1} ms gefunden und verwendet den Caching-Provider {2}.
 CWLJC0002_CACHE_FOUND.explanation=Der benannte JCache wurde gefunden und deshalb nicht erstellt.
 CWLJC0002_CACHE_FOUND.useraction=Keine Benutzeraktion erforderlich.
 
-CWLJC0003_USING_PROVIDER=CWLJC0003I: JCache {0} verwendet den Caching-Provider {1} .
-CWLJC0003_USING_PROVIDER.explanation=Der benannte JCache verwendet den angegebenen Provider.
-CWLJC0003_USING_PROVIDER.useraction=Keine Benutzeraktion erforderlich. 
+#
+# CWLJC0003 is available for use.
+# 
 
 CWLJC0004_GET_PROVIDER_FAILED=CWLJC0004E: Der Caching-Provider {0} konnte nicht geladen werden. {1}
 CWLJC0004_GET_PROVIDER_FAILED.explanation=Die Konfiguration des Caching-Providers konnte nicht geladen werden.

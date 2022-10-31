@@ -119,9 +119,9 @@ ejb30-wrong-query-hint-value=A(z) {0} lek\u00e9rdez\u00e9sben a(z) {1} lek\u00e9
 
 ejb30-wrong-type-for-query-hint=A(z) {0} lek\u00e9rdez\u00e9s eset\u00e9n a(z) {1} lek\u00e9rdez\u00e9s-tipp \u00e9rv\u00e9nytelen ehhez a lek\u00e9rdez\u00e9s-t\u00edpushoz.
 
-entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=EntityManager tulajdons\u00e1gok \u00fctk\u00f6z\u00e9se: a javax.persistence.driver \u00e9s/vagy a javax.persistence.url DefaultConnector alap\u00e9rtelmezett csatol\u00f3t ig\u00e9nyel, de a megmarad\u00e1s egys\u00e9g k\u00fcls\u0151 tranzakci\u00f3vez\u00e9rl\u0151t haszn\u00e1l, ez\u00e9rt JNDIConnector k\u00f6telez\u0151.
+entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=EntityManager tulajdons\u00e1g\u00fctk\u00f6z\u00e9s: a jakarta.persistence.driver \u00e9s/vagy a jakarta.persistence.url a DefaultConnector haszn\u00e1lat\u00e1t ig\u00e9nyli, de a perzisztenciaegys\u00e9g k\u00fcls\u0151 tranzakci\u00f3vez\u00e9rl\u0151t haszn\u00e1l, ez\u00e9rt JNDIConnector sz\u00fcks\u00e9ges.
 
-entity_manager_properties_conflict_default_connector_vs_jndi_connector=EntityManager tulajdons\u00e1gok \u00fctk\u00f6z\u00e9se: a javax.persistence.driver \u00e9s/vagy a javax.persistence.url DefaultConnector alap\u00e9rtelmezett csatol\u00f3t ig\u00e9nyel, de a javax.persistence.jtaDataSource \u00e9s/vagy a javax.persistence.nonjtaDataSource JNDIConnector csatol\u00f3t ig\u00e9nyel.
+entity_manager_properties_conflict_default_connector_vs_jndi_connector=EntityManager tulajdons\u00e1g\u00fctk\u00f6z\u00e9s: a jakarta.persistence.driver \u00e9s/vagy a jakarta.persistence.url a DefaultConnector haszn\u00e1lat\u00e1t ig\u00e9nyli, mik\u00f6zben a jakarta.persistence.jtaDataSource \u00e9s/vagy a jakarta.persistence.nonjtaDataSource JNDIConnector haszn\u00e1lat\u00e1t ig\u00e9nyli.
 
 entity_no_longer_exists_in_db=Az entit\u00e1s m\u00e1r nem l\u00e9tezik az adatb\u00e1zisban: {0}.
 
@@ -183,6 +183,8 @@ invalid_pk_class=Helytelen PK oszt\u00e1ly p\u00e9ld\u00e1nyt adott meg ehhez a 
 
 jar_not_exist=A(z) {0} jar f\u00e1jl nem l\u00e9tezik.
 
+jaxb_context_factory_property_invalid=A(z) {0} eclipselink.moxy.factory tulajdons\u00e1g\u00e9rt\u00e9k \u00e9rv\u00e9nytelen
+
 jaxb_helper_invalid_binder=A megadott [{0}] Binder nem EclipseLink JAXBBinder, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
 
 jaxb_helper_invalid_jaxbcontext=A megadott [{0}] JAXBContext nem EclipseLink JAXBContext, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
@@ -203,9 +205,9 @@ jmx_enabled_platform_mbean_runtime_exception=Kiv\u00e9tel t\u00f6rt\u00e9nt egy 
 
 join_trans_called_on_entity_trans=joinTransaction ker\u00fclt megh\u00edv\u00e1sra egy resource-local EntityManager eset\u00e9n, amely nem tud regisztr\u00e1lni JTA tranzakci\u00f3hoz.
 
-jpa21-ddl-create-script-target-not-specified=Parancsf\u00e1jlokhoz DDL el\u0151\u00e1ll\u00edt\u00e1sa sor\u00e1n egy parancsf\u00e1jl l\u00e9trehoz\u00e1si c\u00e9lt kell megadni a [javax.persistence.schema-generation.scripts.create-target] tulajdons\u00e1g haszn\u00e1lat\u00e1val.
+jpa21-ddl-create-script-target-not-specified=A parancsf\u00e1jlok DDL-jeinek el\u0151\u00e1ll\u00edt\u00e1sakor meg kell adni egy l\u00e9trehoz\u00e1si c\u00e9l parancsf\u00e1jlt a [jakarta.persistence.schema-generation.scripts.create-target] tulajdons\u00e1g haszn\u00e1lat\u00e1val.
 
-jpa21-ddl-drop-script-target-not-specified=Parancsf\u00e1jlokhoz DDL el\u0151\u00e1ll\u00edt\u00e1sa sor\u00e1n egy parancsf\u00e1jl megsz\u00fcntet\u00e9si c\u00e9lt kell megadni a [javax.persistence.schema-generation.scripts.drop-target] tulajdons\u00e1g haszn\u00e1lat\u00e1val.
+jpa21-ddl-drop-script-target-not-specified=A parancsf\u00e1jlok DDL-jeinek el\u0151\u00e1ll\u00edt\u00e1sakor meg kell adni egy megsz\u00fcntet\u00e9si c\u00e9l parancsf\u00e1jlt a [jakarta.persistence.schema-generation.scripts.drop-target] tulajdons\u00e1g haszn\u00e1lat\u00e1val.
 
 jpa21-ddl-invalid-source-script-type=A megadott {0} forr\u00e1s parancsf\u00e1jl \u00e9rv\u00e9nytelen t\u00edpus\u00fa: {0}. Az \u00e9rv\u00e9nyes forr\u00e1s parancsf\u00e1jl-t\u00edpusok: java.io.Reader vagy egy f\u00e1jl URL c\u00edmet kijel\u00f6l\u0151 karaktersorozat.
 
@@ -239,9 +241,9 @@ jpa_criteriaapi_no_corresponding_element_in_result=A(z) {0} elem nem felel meg a
 
 jpa_criteriaapi_null_literal_value=Null\u00e9rt\u00e9k ker\u00fclt \u00e1tad\u00e1sra a CriteriaBuilder.literal() sz\u00e1m\u00e1ra.  Haszn\u00e1lja helyette a k\u00f6vetkez\u0151t: nullLiteral(Class<T> resultClass).
 
-jpa_helper_invalid_entity_manager_factory=A(z) {0} Jakarta Persistence EntityManagerFactory nem egy EclipseLink EntityManagerFactory, \u00e9s ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
+jpa_helper_invalid_entity_manager_factory=A(z) {0} Jakarta Persistence EntityManagerFactory nem EclipseLink EntityManagerFactory, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
 
-jpa_helper_invalid_entity_manager_factory_for_refresh=A(z) {0} Jakarta Persistence EntityManagerFactory nem egy EclipseLink EntityManagerFactory, \u00e9s ez\u00e9rt a metaadatai nem friss\u00edthet\u0151k.
+jpa_helper_invalid_entity_manager_factory_for_refresh=A(z) {0} Jakarta Persistence EntityManagerFactory nem EclipseLink EntityManagerFactory, ez\u00e9rt a metaadatai nem friss\u00edthet\u0151k.
 
 jpa_helper_invalid_query=A(z) {0} t\u00edpus\u00fa lek\u00e9rdez\u00e9s nem EclipseLink lek\u00e9rdez\u00e9s, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
 
@@ -250,6 +252,18 @@ jpa_helper_invalid_read_all_query=A(z) {0} t\u00edpus\u00fa lek\u00e9rdez\u00e9s
 jpa_helper_invalid_report_query=A(z) {0} t\u00edpus\u00fa lek\u00e9rdez\u00e9s nem EclipseLink jelent\u00e9s (report) lek\u00e9rdez\u00e9s, ez\u00e9rt nem alak\u00edthat\u00f3 \u00e1t.
 
 jpa_persistence_util_non_persistent_class=PersistenceUtil.getIdentifier(entity) ker\u00fclt megh\u00edv\u00e1sra a(z) [{0}] objektummal, ami nem megmarad\u00f3 objektum.
+
+json_ora21c_jsonvalue_to_oraclevalue=A JsonValue nem alak\u00edthat\u00f3 \u00e1t OracleJsonValue \u00e9rt\u00e9kre.
+
+json_ora21c_resultset_to_jsonvalue=A JDBC ResultSet t\u00edpus nem alak\u00edthat\u00f3 \u00e1t JsonValue \u00e9rt\u00e9kre.
+
+json_pgsql_jsonvalue_to_database_type=A JSON \u00e9rt\u00e9k \u00e1talak\u00edt\u00e1sa adatb\u00e1zis t\u00edpus\u00fara meghi\u00fasult.
+
+json_pgsql_missing_class_on_classpath=Hi\u00e1nyz\u00f3 {0} az oszt\u00e1ly\u00fatvonalon.
+
+json_pgsql_pgobject_conversion=Az adatb\u00e1zis PGobjektum \u00e1talak\u00edt\u00e1sa meghi\u00fasult.
+
+json_pgsql_unknown_type=Ismeretlen JSON t\u00edpus t\u00e9rt vissza az adatb\u00e1zisb\u00f3l.
 
 lock_called_without_version_locking=Az entityManager.lock(Object entity, LockModeType lockMode) h\u00edv\u00e1sok enged\u00e9lyezett verzi\u00f3z\u00e1rol\u00e1st ig\u00e9nyelnek.
 
@@ -265,7 +279,7 @@ metamodel_class_null_type_instance_for_null_key=Nem tal\u00e1lhat\u00f3 [{0}] a 
 
 metamodel_identifiable_id_attribute_is_incorrect_idclass=A(z) [{0}] azonos\u00edthat\u00f3 t\u00edpus elv\u00e1rt egyetlen @Id attrib\u00fatuma egy nem v\u00e1rt @IdClass r\u00e9sze.
 
-metamodel_identifiable_id_attribute_type_incorrect=A megl\u00e9v\u0151 [{0}] id attrib\u00fatumon, a(z) [{1}] azonos\u00edthat\u00f3 t\u00edpuson az elv\u00e1rt id attrib\u00fatumt\u00edpus: [{2}], de a megtal\u00e1lhat\u00f3 attrib\u00fatumt\u00edpus: [{3}].
+metamodel_identifiable_id_attribute_type_incorrect=[{2}] v\u00e1rt azonos\u00edt\u00f3 attrib\u00fatumt\u00edpus a megl\u00e9v\u0151 [{0}] azonos\u00edt\u00f3 attrib\u00fatumokban az azonos\u00edthat\u00f3 [{1}] t\u00edpuson, de [{3}] attrib\u00fatumt\u00edpusok tal\u00e1lhat\u00f3k.
 
 metamodel_identifiable_no_id_attribute_present=Nem l\u00e9tezik @Id attrib\u00fatum a(z) [{0}] azonos\u00edthat\u00f3 t\u00edpuson.
 

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011,2021 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -109,7 +109,7 @@ invalid.href.prefix.useraction=Jav\u00edtsa a HREF \u00e9rt\u00e9k\u00e9t.
 #    {3} is an HREF value which is not valid.
 # -----------------------------------------------------------------------
 invalid.href=CWWKC2284E: A(z) {2} elem {3} HREF \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen a(z) {0} telep\u00edt\u00e9sle\u00edr\u00f3 {1} sor\u00e1ban.
-invalid.href.explanation=Az elem \u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes HREF \u00e9rt\u00e9k: Az \u00e9rt\u00e9knek egy '#' karaktert kell tartalmaznia, \u00e9s a '#' karakter nem lehet az \u00e9rt\u00e9k els\u0151 vagy utols\u00f3 karaktere.
+invalid.href.explanation=Az elem \u00e9rt\u00e9ke nem \u00e9rv\u00e9nyes HREF \u00e9rt\u00e9k: Az \u00e9rt\u00e9knek egy "#" karaktert kell tartalmaznia, \u00e9s a "#" karakter nem lehet az \u00e9rt\u00e9k els\u0151 vagy utols\u00f3 karaktere.
 invalid.href.useraction=Jav\u00edtsa a HREF \u00e9rt\u00e9k\u00e9t.
 
 # ADDED:
@@ -148,7 +148,7 @@ unresolved.href.useraction=Jav\u00edtsa ki vagy a HREF azonos\u00edt\u00f3t a hi
 #    {2} is the name of the element which is being processed.
 # -----------------------------------------------------------------------
 missing.href=CWWKC2287E: A(z) {0} telep\u00edt\u00e9sle\u00edr\u00f3 {1} sor\u00e1ban a(z) {2} elemben nem tal\u00e1lhat\u00f3 HREF attrib\u00fatum.
-missing.href.explanation=Az elem egy HREF attrib\u00fatumhoz sz\u00fcks\u00e9ges. A HREF attrib\u00fatum neve 'href'.
+missing.href.explanation=Az elem egy HREF attrib\u00fatumhoz sz\u00fcks\u00e9ges. A HREF attrib\u00fatum neve "href".
 missing.href.useraction=Adjon hozz\u00e1 egy HREF attrib\u00fatumot az elemhez.
 
 ######
@@ -271,7 +271,8 @@ found.duplicate.attribute.value.useraction=Jav\u00edtsa a telep\u00edt\u00e9si l
 # -----------------------------------------------------------------------
 unexpected.root.element.bval=CWWKC2271W: A {1} modul {0} komponens\u00e9rv\u00e9nyes\u00edt\u00e9si konfigur\u00e1ci\u00f3s f\u00e1jlja figyelmen k\u00edv\u00fcl marad. A(z) {2} sorban \u00edrja fel\u00fcl a(z) {3} gy\u00f6k\u00e9relemet a(z) {4} elemmel.
 unexpected.root.element.bval.explanation=Az \u00e9rv\u00e9nyes\u00edt\u00e9skonfigur\u00e1ci\u00f3s f\u00e1jl nem felel meg az \u00e9rv\u00e9nyes\u00edt\u00e9skonfigur\u00e1ci\u00f3s s\u00e9m\u00e1knak (validation-configuration-1.0.xsd \u00e9s validation-configuration-1.1.xsd). A konfigur\u00e1ci\u00f3s f\u00e1jlt vagy nem komponens\u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9re sz\u00e1nt\u00e1k, vagy a konfigur\u00e1ci\u00f3s f\u00e1jl nem megfelel\u0151 form\u00e1tum\u00fa. A konfigur\u00e1ci\u00f3s f\u00e1jl figyelmen k\u00edv\u00fcl marad. A BeanValidationService nem hoz l\u00e9tre ValidatorFactory p\u00e9ld\u00e1nyt.
-unexpected.root.element.bval.useraction=Ha az \u00e9rv\u00e9nyes\u00edt\u00e9skonfigur\u00e1ci\u00f3s f\u00e1jlt nem komponens\u00e9rv\u00e9nyes\u00edt\u00e9sre sz\u00e1nt\u00e1k, akkor a figyelmeztet\u0151 \u00fczenet figyelmen k\u00edv\u00fcl hagyhat\u00f3. Ha az \u00e9rv\u00e9nyes\u00edt\u00e9skonfigur\u00e1ci\u00f3s f\u00e1jlt komponens\u00e9rv\u00e9nyes\u00edt\u00e9sre tervezt\u00e9k, akkor ne hagyja figyelmen k\u00edv\u00fcl a figyelmeztet\u0151 \u00fczenetet. A komponens\u00e9rv\u00e9nyes\u00edt\u00e9si szolg\u00e1ltat\u00e1s nem a sz\u00e1nd\u00e9kolt m\u00f3don fut. A probl\u00e9ma diagnosztiz\u00e1l\u00e1s\u00e1hoz enged\u00e9lyezze a komponens\u00e9rv\u00e9nyes\u00edt\u00e9s fut\u00e1sidej\u0171 nyomk\u00f6vet\u00e9s\u00e9t, \u00e1ll\u00edtsa le \u00e9s ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t, majd vizsg\u00e1lja meg a komponens\u00e9rv\u00e9nyes\u00edt\u00e9shez kapcsol\u00f3d\u00f3 v\u00e1ratlan kiv\u00e9telek nyomk\u00f6vet\u00e9si kimenet\u00e9t. P\u00e9ld\u00e1ul "V\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt a validation.xml f\u00e1jl \u00e9rv\u00e9nytelen\u00edt\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n."  A hibakeres\u00e9st el\u0151seg\u00edtend\u0151, vizsg\u00e1lja meg a kiv\u00e9tel veremnyomk\u00f6vet\u00e9st.
+unexpected.root.element.bval.useraction=Ha az \u00e9rv\u00e9nyes\u00edt\u00e9skonfigur\u00e1ci\u00f3s f\u00e1jlt nem komponens\u00e9rv\u00e9nyes\u00edt\u00e9sre sz\u00e1nt\u00e1k, akkor a figyelmeztet\u0151 \u00fczenet figyelmen k\u00edv\u00fcl hagyhat\u00f3. Ha az \u00e9rv\u00e9nyes\u00edt\u00e9skonfigur\u00e1ci\u00f3s f\u00e1jlt komponens\u00e9rv\u00e9nyes\u00edt\u00e9sre tervezt\u00e9k, akkor ne hagyja figyelmen k\u00edv\u00fcl a figyelmeztet\u0151 \u00fczenetet. A komponens\u00e9rv\u00e9nyes\u00edt\u00e9si szolg\u00e1ltat\u00e1s nem a sz\u00e1nd\u00e9kolt m\u00f3don fut. A probl\u00e9ma diagnosztiz\u00e1l\u00e1s\u00e1hoz enged\u00e9lyezze a komponens\u00e9rv\u00e9nyes\u00edt\u00e9s fut\u00e1sidej\u0171 nyomk\u00f6vet\u00e9s\u00e9t, \u00e1ll\u00edtsa le \u00e9s ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t, majd vizsg\u00e1lja meg a komponens\u00e9rv\u00e9nyes\u00edt\u00e9shez kapcsol\u00f3d\u00f3 v\u00e1ratlan kiv\u00e9telek nyomk\u00f6vet\u00e9si kimenet\u00e9t. P\u00e9ld\u00e1u\
+    l "V\u00e1ratlan kiv\u00e9tel t\u00f6rt\u00e9nt a validation.xml f\u00e1jl \u00e9rv\u00e9nytelen\u00edt\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n."  A hibakeres\u00e9st el\u0151seg\u00edtend\u0151, vizsg\u00e1lja meg a kiv\u00e9tel veremnyomk\u00f6vet\u00e9st.
 
 xml.error=CWWKC2272E: Hiba t\u00f6rt\u00e9nt a(z) {1}. sorban a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3 \u00e9rtelmez\u00e9se sor\u00e1n . A hiba\u00fczenet: {2}
 xml.error.explanation=Hiba t\u00f6rt\u00e9nt az XML telep\u00edt\u00e9sle\u00edr\u00f3 \u00e9rtelmez\u00e9se sor\u00e1n. Tov\u00e1bbi magyar\u00e1zat\u00e9rt tekintse meg a hiba\u00fczenetet.
@@ -303,8 +304,8 @@ invalid.long.value.useraction=Jav\u00edtsa ki a telep\u00edt\u00e9sle\u00edr\u00
 #    {1} The type of element which is being processed.  For example, 'ejb-bnd', 'ejb-ext', 'web-bnd', 'web-ext'.
 # -----------------------------------------------------------------------
 module.name.not.specified=CWWKC2276E: A ''moduleName'' attrib\u00fatum hi\u00e1nyzik legal\u00e1bb egy ''{1}'' k\u00f6t\u00e9sb\u0151l \u00e9s a(z) {0} alkalmaz\u00e1s kiterjeszt\u00e9skonfigur\u00e1ci\u00f3s elemeib\u0151l.
-module.name.not.specified.explanation=A k\u00f6t\u00e9sek \u00e9s kiterjeszt\u00e9skonfigur\u00e1ci\u00f3s elemeknek rendelkezni\u00fck kell 'moduleName' attrib\u00fatummal.
-module.name.not.specified.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a 'moduleName' attrib\u00fatum jelen van minden k\u00f6t\u00e9sben \u00e9s kiterjeszt\u00e9skonfigur\u00e1ci\u00f3s elemben.
+module.name.not.specified.explanation=A k\u00f6t\u00e9seknek \u00e9s a kiterjeszt\u00e9s konfigur\u00e1ci\u00f3s elemeinek rendelkezni\u00fck kell egy ''moduleName" attrib\u00fatummal.
+module.name.not.specified.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a "moduleName" attrib\u00fatum jelen van minden k\u00f6t\u00e9sben \u00e9s kiterjeszt\u00e9skonfigur\u00e1ci\u00f3s elemben.
 
 # REMOVED:
 # module.name.invalid=CWWKC2277E: One or more module names on the {1} element are invalid. The invalid module name or names are {0}.
@@ -320,8 +321,8 @@ module.name.not.specified.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hog
 #    {3} Module names found in the application.
 # -----------------------------------------------------------------------
 module.name.not.found=CWWKC2277E: A(z) ''{1}'' k\u00f6t\u00e9sekben \u00e9s a(z) {0} alkalmaz\u00e1skiterjeszt\u00e9s konfigur\u00e1ci\u00f3s elemeiben megadott {2} ''moduleName'' attrib\u00fatumok nem tal\u00e1lhat\u00f3k.  Az alkalmaz\u00e1smodul-nevek: {3}.
-module.name.not.found.explanation=A k\u00f6t\u00e9sek \u00e9s kiterjeszt\u00e9skonfigur\u00e1ci\u00f3s elemek 'moduleName' attrib\u00fatumainak meg kell egyezni\u00fck az alkalmaz\u00e1smodul-nevekkel.
-module.name.not.found.useraction=Gondoskodj\u00e9k arr\u00f3l, hogy a k\u00f6t\u00e9sek \u00e9s kiterjeszt\u00e9skonfigur\u00e1ci\u00f3s elemek 'moduleName' attrib\u00fatumai megegyezzenek az alkalmaz\u00e1smodul-nevekkel. 
+module.name.not.found.explanation=A k\u00f6t\u00e9sek \u00e9s kiterjeszt\u00e9skonfigur\u00e1ci\u00f3s elemek "moduleName" attrib\u00fatumainak meg kell egyezni\u00fck az alkalmaz\u00e1smodul-nevekkel.
+module.name.not.found.useraction=Gondoskodj\u00e9k arr\u00f3l, hogy a k\u00f6t\u00e9sek \u00e9s kiterjeszt\u00e9skonfigur\u00e1ci\u00f3s elemek "moduleName" attrib\u00fatumai megegyezzenek az alkalmaz\u00e1smodul-nevekkel. 
 
 # ADDED
 # -----------------------------------------------------------------------
@@ -331,8 +332,8 @@ module.name.not.found.useraction=Gondoskodj\u00e9k arr\u00f3l, hogy a k\u00f6t\u
 #    {2} Duplicated module names used in configuration elements.
 # -----------------------------------------------------------------------
 module.name.duplicated=CWWKC2278E: A(z) ''{1}'' k\u00f6t\u00e9sekben \u00e9s a(z) {0} alkalmaz\u00e1skiterjeszt\u00e9s konfigur\u00e1ci\u00f3s elemeiben megadott {2} ''moduleName'' attrib\u00fatumok t\u00f6bbsz\u00f6r\u00f6sen megtal\u00e1lhat\u00f3k.
-module.name.duplicated.explanation=A k\u00f6t\u00e9sek \u00e9s kiterjeszt\u00e9skonfigur\u00e1ci\u00f3s elemek 'moduleName' attrib\u00fatumai nem fordulhatnak el\u0151 t\u00f6bbsz\u00f6r\u00f6sen.
-module.name.duplicated.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a k\u00f6t\u00e9sek \u00e9s kiterjeszt\u00e9skonfigur\u00e1ci\u00f3s elemek \u00f6sszes 'moduleName'  attrib\u00fatuma egyedi legyen. 
+module.name.duplicated.explanation=A k\u00f6t\u00e9sek \u00e9s kiterjeszt\u00e9skonfigur\u00e1ci\u00f3s elemek "moduleName" attrib\u00fatumai nem fordulhatnak el\u0151 t\u00f6bbsz\u00f6r\u00f6sen.
+module.name.duplicated.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a k\u00f6t\u00e9sek \u00e9s kiterjeszt\u00e9skonfigur\u00e1ci\u00f3s elemek \u00f6sszes "moduleName" attrib\u00fatuma egyedi legyen. 
 
 # ADDED:
 # -----------------------------------------------------------------------
@@ -380,4 +381,28 @@ incorrect.descriptor.namespace.useraction=M\u00f3dos\u00edtsa a n\u00e9vteret a 
 incorrect.descriptor.namespace.for.version=CWWCK27789W: A (z) {0} telep\u00edt\u00e9sle\u00edr\u00f3 {1} sora {2} v\u00e1ltozatot \u00e9s {3} n\u00e9vteret hat\u00e1roz meg, de az adott v\u00e1ltozat eset\u00e9ben {4} n\u00e9vt\u00e9rrel kell rendelkeznie.
 incorrect.descriptor.namespace.for.version.explanation=A megadott v\u00e1ltozat telep\u00edt\u00e9sle\u00edr\u00f3j\u00e1ban egy adott elv\u00e1rt n\u00e9vt\u00e9rnek kell szerepelnie. A helytelen n\u00e9vt\u00e9r figyelmen k\u00edv\u00fcl maradt.
 incorrect.descriptor.namespace.for.version.useraction=M\u00f3dos\u00edtsa a n\u00e9vteret a telep\u00edt\u00e9sle\u00edr\u00f3ban az elv\u00e1rt \u00e9rt\u00e9kre.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the value of a 'name' attribute within a session configuration 'attribute' element
+#    {3} is the value of the 'value' attribute of a session configuration 'attribute' element
+#    {4} is the value of the 'value' attribute of a session configuration 'attribute' element
+# -----------------------------------------------------------------------
+duplicate.session.config.attribute.name=CWWCK27790W: A(z) {0} telep\u00edt\u00e9sle\u00edr\u00f3 a(z) {1} soron megkett\u0151zi a(z) ''{2}'' ''nevet''  egy munkamenetkonfigur\u00e1ci\u00f3s attrib\u00fatumelemben.  A n\u00e9vhez a(z) ''{3}'' ''\u00e9rt\u00e9k'' van rendelve a kor\u00e1bbi ''{4}'' ''\u00e9rt\u00e9k'' helyett.
+duplicate.session.config.attribute.name.explanation=A telep\u00edt\u00e9sle\u00edr\u00f3ban t\u00f6bb olyan azonos nev\u0171 attrib\u00fatumelem van, amely ugyanabban a munkamenetkonfigur\u00e1ci\u00f3s elemben tal\u00e1lhat\u00f3. A le\u00edr\u00f3\u00e9rtelmez\u0151 az utols\u00f3 kiv\u00e9tel\u00e9vel figyelmen k\u00edv\u00fcl hagyja ezeket az elemeket.
+duplicate.session.config.attribute.name.useraction=Ha az utols\u00f3 attrib\u00fatumelem nem a haszn\u00e1lni k\u00edv\u00e1nt elem, akkor m\u00f3dos\u00edtsa a telep\u00edt\u00e9sle\u00edr\u00f3t az azonos nev\u0171 t\u00f6bblet attrib\u00fatumelemek elt\u00e1vol\u00edt\u00e1s\u00e1val.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the value of the 'value' attribute of a session configuration 'attribute' element
+# -----------------------------------------------------------------------
+missing.session.config.attribute.name=CWWCK27791W: A(z) {0} telep\u00edt\u00e9sle\u00edr\u00f3 a(z) {1} soron rendelkezik egy n\u00e9vtelen munkamenetkonfigur\u00e1ci\u00f3s attrib\u00fatummal.  A(z) ''{2}'' ''\u00e9rt\u00e9kkel'' rendelkez\u0151 attrib\u00fatum figyelmen k\u00edv\u00fcl maradt.
+missing.session.config.attribute.name.explanation=A munkamenetkonfigur\u00e1ci\u00f3s attrib\u00fatumnak rendelkeznie kell n\u00e9v elemmel. 
+missing.session.config.attribute.name.useraction=M\u00f3dos\u00edtsa a telep\u00edt\u00e9sle\u00edr\u00f3t a n\u00e9vtelen attrib\u00fatum elt\u00e1vol\u00edt\u00e1s\u00e1val, vagy adjon hozz\u00e1 n\u00e9velemeket az \u00f6sszes attrib\u00fatumelemhez.
+
+
 

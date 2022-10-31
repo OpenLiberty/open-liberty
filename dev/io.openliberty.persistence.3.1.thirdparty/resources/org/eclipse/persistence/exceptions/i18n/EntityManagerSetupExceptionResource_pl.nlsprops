@@ -27,7 +27,7 @@
 #   (single quote must be coded as one single quote '). 
 #
 # -------------------------------------------------------------------------------------------------
-28001=Zg\u0142oszono wyj\u0105tek ValidationException podczas pr\u00f3by utworzenia sesji: [{0}]. Najbardziej prawdopodobn\u0105 przyczyn\u0105 tego problemu jest to, \u017ce plik [{1}] nie jest dost\u0119pny w \u015bcie\u017cce klasy lub nie zawiera on sesji o nazwie: [{0}].
+28001=Zg\u0142oszono wyj\u0105tek ValidationException podczas pr\u00f3by utworzenia sesji: [{0}]. Najbardziej prawdopodobn\u0105 przyczyn\u0105 tego\nproblemu jest to, \u017ce plik [{1}] nie jest dost\u0119pny w \u015bcie\u017cce klasy lub nie\nzawiera on sesji o nazwie: [{0}].
 
 28002=Oprogramowanie EclipseLink podejmuje pr\u00f3b\u0119 za\u0142adowania sesji ServerSession o nazwie [{0}] z [{1}] i nie uzyska\u0142o sesji ServerSession.
 

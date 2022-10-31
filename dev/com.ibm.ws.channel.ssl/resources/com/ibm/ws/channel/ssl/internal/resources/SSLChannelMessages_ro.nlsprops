@@ -28,9 +28,9 @@ invalid.security.properties=CWWKO0800E: Canalul SSL nu poate fi pornit din cauza
 invalid.security.properties.explanation=Una sau mai multe set\u0103ri pentru securitatea \u00een canalul SSL nu au fost valide.
 invalid.security.properties.useraction=Set\u0103rile de securitate ale canalului SSL ar trebui modificate la valorile corecte.
 
-handshake.failure=CWWKO0801E: Nu se poate ini\u0163ializa conexiunea SSL. Accesul neautorizat a fost refuzat sau set\u0103rile de securitate au expirat. Excep\u0163ia este {0}.
-handshake.failure.explanation=O nou\u0103 conexiune a e\u015fuat finalizarea unui dialog de confirmare securizat cu succes.
-handshake.failure.useraction=Verifica\u0163i set\u0103rile de securitate.  Certificatul se poate s\u0103 fi expira sau lipse\u015fte.  Alternativ, s-ar putea ca o conexiune de client neautorizat s\u0103 fi fost refuzat\u0103.  Pentru a dezactiva aceste mesaje, seta\u0163i parametrul suppressHandshakeErrors al configura\u0163iei sslOptions la adev\u0103r.
+handshake.failure=CWWKO0801E: Conexiunea SSL nu poate fi ini\u021bializat\u0103 de la gazda {1} \u0219i portul {2} pe clientul la distan\u021b\u0103, la gazda {3} \u0219i portul {4} pe serverul local. Excep\u0163ia: {0}
+handshake.failure.explanation=O nou\u0103 conexiune a e\u015fuat finalizarea unui dialog de confirmare securizat cu succes. Cel mai obi\u0219nuit motiv este trimiterea de c\u0103tre client a unui mesaj necriptat la un port securizat. Un alt motiv comun este faptul c\u0103 un certificat SSL a expirat.
+handshake.failure.useraction=\u00cen cazul \u00een care clientul a trimis un mesaj necriptat la un port securizat, configura\u021bi clientul s\u0103 utilizeze SSL sau s\u0103 se conecteze la un port de pe serverul de aplica\u021bii care nu necesit\u0103 SSL. Sau verifica\u021bi dac\u0103 un certificat SSL a expirat. Dac\u0103 este a\u0219a, \u00eenlocui\u021bi certificatul SSL expirat cu unul neexpirat.
 
 init.failure=CWWKO0802E: Nu se poate ini\u0163ializa bundle-ul SSL. Excep\u0163ia este {0}.
 init.failure.explanation=A ap\u0103rut o eroare \u00een timp ce se \u00eencerca ini\u0163ializarea bundle-ului SSL. Asta e probabil din cauza unei defect\u0103ri de dependen\u0163\u0103.

@@ -33,9 +33,9 @@
 
 6003=Il numero di argomenti forniti alla query per l''esecuzione non corrisponde al numero di argomenti nella definizione della query.
 
-6004=L''oggetto [{0}], della classe [{1}], con hashcode identit\u00e0 (System.identityHashCode()) [{2}], {3}non viene da questo spazio oggetti unit\u00e0 di lavoro, ma della sessione parent.  L''oggetto non \u00e8 mai stato registrato in questa unit\u00e0 di lavoro, {3}ma letto dalla sessione parent e correlato ad un oggetto registrato nell''unit\u00e0 di lavoro.  Verificare che si stiano registrando{3}correttamente gli oggetti.  Se i problemi persistono, \u00e8 possibile utilizzare il metodo UnitOfWork.validateObjectSpace() come {3}aiuto nel debug dove si \u00e8 verificato l''errore.  Per ulteriori informazioni, consultare il manuale o le FAQ.
+6004=L''oggetto [{0}], della classe [{1}], con hashcode identit\u00e0 (System.identityHashCode ()) [{2}], {3} non proviene da questo spazio oggetto UnitOfWork, ma dalla sessione parent. L''oggetto non \u00e8 mai stato registrato in questa UnitOfWork, {3}, ma \u00e8 stato letto dalla sessione parent e correlato a un oggetto registrato nell''unit\u00e0 di lavoro. Verificare di registrare correttamente {3} gli oggetti. Se si riscontrano ancora dei problemi, \u00e8 possibile utilizzare il metodo UnitOfWork.validateObjectSpace () per eseguire il debug della guida {3} dove si \u00e8 verificato l''errore. Per ulteriori informazioni, consultare il manuale o le FAQ.
 
-6005=L''oggetto [{0}], della classe [{1}], con hashcode identit\u00e0 (System.identityHashCode()) [{2}], {3}\u00e8 l''originale di un nuovo oggetto registrato.  L''unit\u00e0 di lavoro clona i nuovi oggetti registrati, quindi \u00e8 necessario assicurarsi che un oggetto {3}sia registrato prima che gli venga fatto riferimento da un altro oggetto.  Se non si desidera che il nuovo oggetto sia clonato, utilizzare l''API{3}UnitOfWork.registerNewObject(Object).  Se i problemi persistono, \u00e8 possibile utilizzare il metodo UnitOfWork.validateObjectSpace() come {3}aiuto nel debug dove si \u00e8 verificato l''errore.  Per ulteriori informazioni, consultare il manuale o le FAQ.
+6005=L''oggetto [{0}], della classe [{1}], con hashcode identit\u00e0 (System.identityHashCode ()) [{2}], {3} \u00e8 l''originale di un nuovo oggetto registrato. UnitOfWork clona i nuovi oggetti registrati, per cui \u00e8 necessario assicurarsi che un oggetto {3} sia registrato prima che un altro oggetto faccia riferimento ad esso. Se non si desidera che il nuovo oggetto venga clonato, utilizzare {3}UnitOfWork.registerNewObject (Object) API. Se si riscontrano ancora dei problemi, \u00e8 possibile utilizzare il metodo UnitOfWork.validateObjectSpace () {3} per eseguire il debug dove si \u00e8 verificato l''errore. Per ulteriori informazioni, consultare il manuale o le FAQ.
 
 6006=L''associazione [{0}] non supporta la lettura batch.
 
@@ -193,7 +193,7 @@
 
 6100=Pi\u00f9 lavori rilevati per query lettura oggetto singolo.
 
-6101=L''esecuzione di questa query potrebbe violare l''integrit\u00e0 della cache di sessione globale che deve contenere solo le ultime versioni degli oggetti.  Per eseguire una query che restituisca oggetti a partire da un''ora nel passato, eseguire una delle seguenti operazioni: utilizzare una HistoricalSession (acquireSessionAsOf), tutti gli oggetti letti verranno memorizzati nella cache e letti automaticamente a partire dalla stessa ora.  Ci\u00f2 si applica anche all''attivazione di relazioni dell''oggetto.  Impostare shouldMaintainCache su false.  \u00c8 possibile rendere qualsiasi espressione oggetto ''a partire da un''ora nel passato'', purch\u00e9 nessuno dei suoi campi sia rappresentato nell''insieme di risultati (cio\u00e8 utilizzato solo nella clausola where).
+6101=L''esecuzione di questa query potrebbe violare l''integrit\u00e0 della cache di sessione globale che deve contenere solo le ultime versioni degli oggetti. Per eseguire una query che restituisca oggetti a partire da un''ora nel passato, eseguire una delle seguenti operazioni: utilizzare una HistoricalSession (acquireSessionAsOf), tutti gli oggetti letti verranno memorizzati nella cache e letti automaticamente a partire dalla stessa ora.  Ci\u00f2 si applica anche all''attivazione di relazioni dell''oggetto. Impostare shouldMaintainCache su false.  \u00c8 possibile creare qualsiasi espressione oggetto a partire da un tempo passato, a condizione che nessuno dei suoi campi sia rappresentato nella serie di risultati (cio\u00e8 utilizzati solo nella clausola where).
 
 6102=Al momento le query cronologiche funzionano solo con Oracle 9R2 o database successivi, in quanto utilizzano la funzione flashback di Oracle.
 
@@ -261,7 +261,7 @@
 
 6134=Il nome dell''attributo o l''espressione passati come primo parametro al metodo addUpdate non definiscono un campo. {1}Nome attributo o espressione: [{2}]{1}Descrittore: [{0}]
 
-6135=Il nome dell''attributo o l''espressione passati come primo parametro al metodo addUpdate definiscono un campo da una tabella che non \u00e8 associata al descrittore query. {1}Nome attributo o espressione: [{2}]{1}Campo errato: [{3}]{1}Descrittore: [{0}]
+6135=Il nome attributo o l''espressione passata come primo parametro al metodo addUpdate definisce un campo da una tabella non mappato al descrittore della query. {1}Nome attributo o espressione: [{2}]{1}Campo errato: [{3}]{1}Descrittore: [{0}]
 
 6136=Le classi associate con pi\u00f9 eredit\u00e0 di tabella non possono essere elementi ReportQuery. Elemento: {0}, Espressione: {1}.
 
@@ -293,9 +293,9 @@
 
 6150=Un valore null non pu\u00f2 essere utilizzato come una chiave in un contenitore di tipo [{1}]. Assicurarsi che i valori chiave per gli oggetti di tipo [{0}] non siano null.
 
-6151=Si \u00e8 verificata un''eccezione durante il tentativo di impostare un reindirizzatore {0} passato tramite un suggerimento query JPA {1}.  Verificare che il reindirizzatore fornito implementi org.eclipse.persistence.queries.QueryRedirector.
+6151=Si \u00e8 verificata un''eccezione durante il tentativo di impostare un Redirector {0} passato attraverso un suggerimento query di persistenza Giacarta {1}.  Verificare che il reindirizzatore fornito implementi org.eclipse.persistence.queries.QueryRedirector.
 
-6152=Si \u00e8 verificata un''eccezione durante il tentativo di creare un''istanza della classe {0} passata tramite un suggerimento query JPA {1}.  Verificare che la classe disponga di un costruttore predefinito.
+6152=Si \u00e8 verificata un''eccezione durante il tentativo di creare un''istanza della classe {0} passata attraverso un suggerimento query persistenza Giacarta {1}.  Verificare che la classe disponga di un costruttore predefinito.
 
 6153=CompatibleType deve essere impostato sul tipo complesso: {0}.
 
