@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -283,9 +283,11 @@ public class DatabaseIdentityStoreDefinitionWrapper {
         } else {
             if (rawArray != null && rawArray.length > 0) {
                 for (int idx = 0; idx < rawArray.length; idx++) {
-                    String value = elHelper.processString("hashAlgorithmParameters[" + idx + "]", rawArray[idx], false);
-                    if (value != null && !value.isEmpty()) {
-                        parameters.add(value);
+                    List<String> value = elHelper.processStringOrStringArray("hashAlgorithmParameters[" + idx + "]", rawArray[idx], false, false);
+                    if (value != null) {
+                        for (String innerValue : value) {
+                            parameters.add(innerValue);
+                        }
                     }
                 }
             }

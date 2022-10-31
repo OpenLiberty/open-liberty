@@ -12,10 +12,12 @@ package com.ibm.ws.security.javaeesec.identitystore;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -436,6 +438,86 @@ public class ELHelper {
         }
 
         String finalResult = (immediateOnly && !immediate) ? null : result;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, methodName, (finalResult == null) ? null : mask ? OBFUSCATED_STRING : finalResult);
+        }
+
+        return finalResult;
+    }
+
+    /**
+     * This method will process a configuration value for any configuration setting in
+     * {@link LdapIdentityStoreDefinition} or {@link DatabaseIdentityStoreDefinition} that
+     * can contain a string or an array of strings and whose name is NOT a "*Expression". It will first check to see if it
+     * is a EL expression. If it is, it will return the evaluated expression/s; otherwise, it
+     * will return the literal String/s
+     *
+     * @param name          The name of the property. Used for error messages.
+     * @param expression    The value returned from from the identity store definition, which can
+     *                          either be a literal String or an EL expression.
+     * @param immediateOnly Return null if the value is a deferred EL expression.
+     * @param mask          Set whether to mask the expression and result. Useful for when passwords might
+     *                          be contained in either the expression or the result.
+     * @return The array of String values.
+     */
+    @FFDCIgnore(ELException.class)
+    @Trivial
+    public List<String> processStringOrStringArray(String name, String expression, boolean immediateOnly, boolean mask) {
+
+        final String methodName = "processStringOrStringArray";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, methodName, new Object[] { name, (expression == null) ? null : mask ? OBFUSCATED_STRING : expression, immediateOnly, mask });
+        }
+
+        List<String> result = new ArrayList<String>(1);
+        boolean immediate = false;
+
+        try {
+            Object obj = evaluateElExpression(expression, mask);
+            if (obj == null) {
+                throw new IllegalArgumentException("EL expression '" + (mask ? OBFUSCATED_STRING : expression) + "' for '" + name + "' evaluated to null.");
+            } else if (obj instanceof String) {
+                result.add((String) obj);
+                immediate = isImmediateExpression(expression, mask);
+            } else if (obj instanceof String[]) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, methodName, "The expression '" + (mask ? OBFUSCATED_STRING : expression) + "' evaluated to String array.");
+                }
+                String[] elInnerArray = (String[]) obj;
+                for (String innerString : elInnerArray) {
+                    try {
+                        Object innerEvaluatedObj = evaluateElExpression(innerString, mask);
+                        if (innerEvaluatedObj == null) {
+                            throw new IllegalArgumentException("Inner EL expression '" + (mask ? OBFUSCATED_STRING : innerString) + "' for '" + name + "' evaluated to null.");
+                        } else if (innerEvaluatedObj instanceof String) {
+                            result.add((String) innerEvaluatedObj);
+                            immediate = isImmediateExpression(expression, mask);
+                        } else {
+                            boolean warningAboutNested = false;
+                            if (innerEvaluatedObj instanceof String[]) {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, methodName, "Currently not recursively evaluating String arrays more than 1 level.");
+                                }
+                                warningAboutNested = true;
+                            }
+                            throw new IllegalArgumentException("Expected '" + name + "' to evaluate to a String value."
+                                                               + (warningAboutNested ? " Nested String arrays detected." : ""));
+                        }
+                    } catch (ELException ee) {
+                        result.add(innerString);
+                        immediate = true;
+                    }
+
+                }
+            } else {
+                throw new IllegalArgumentException("Expected '" + name + "' to evaluate to a String or String array value.");
+            }
+        } catch (ELException e) {
+            result.add(expression);
+            immediate = true;
+        }
+
+        List<String> finalResult = (immediateOnly && !immediate) ? null : result;
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, methodName, (finalResult == null) ? null : mask ? OBFUSCATED_STRING : finalResult);
         }
