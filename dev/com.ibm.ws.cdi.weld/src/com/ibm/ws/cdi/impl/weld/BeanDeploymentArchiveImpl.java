@@ -635,8 +635,12 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
         //check to see whether it contains this class
         boolean containsBeanClass = false;
         Class<?> localBeanClass = this.beanClasses.get(beanClass.getName());
-        if (localBeanClass != null && beanClass.equals(localBeanClass)) {
-            containsBeanClass = true;
+        if (localBeanClass != null) {
+            if (beanClass.equals(localBeanClass)) {
+                containsBeanClass = true;
+            } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "containsBeanClass. The class names matched but the classes were not equal");
+            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
