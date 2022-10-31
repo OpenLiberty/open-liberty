@@ -65,15 +65,19 @@ public class LogoutHandler extends EndpointRequest {
         String redirectUrl = logoutConfig.getRedirectURI();
 
         if (logoutConfig.isNotifyProvider() && endSessionEndPoint != null) {
-            RPInitiatedLogoutStrategy rpInitiatedLogoutStrategy = new RPInitiatedLogoutStrategy(oidcClientConfig, endSessionEndPoint, idTokenString);
+            RPInitiatedLogoutStrategy rpInitiatedLogoutStrategy = new RPInitiatedLogoutStrategy(req, oidcClientConfig, endSessionEndPoint, idTokenString);
             return rpInitiatedLogoutStrategy.logout();
-        } else if (!logoutConfig.isNotifyProvider() && redirectUrl != null) {
+        } else if (!logoutConfig.isNotifyProvider() && redirectUrl != null && !redirectUrl.isEmpty()) {
             CustomLogoutStrategy customLogoutStrategy = new CustomLogoutStrategy(redirectUrl);
             return customLogoutStrategy.logout();
         } else {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Redirect to the OpenID Connect Provider Authentication endpoint for re-authentication");
+            }
             JakartaOidcAuthorizationRequest oidcAuthorizationRequest = new JakartaOidcAuthorizationRequest(req, resp, oidcClientConfig);
             return oidcAuthorizationRequest.sendRequest();
         }
+
     }
 
     String getEndSessionEndpoint() throws OidcDiscoveryException {
