@@ -40,7 +40,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 CustomAccessLogFieldsTest.class,
                 TraceInjectionTest.class,
                 TimeBasedLogRolloverTest.class,
-                TestSuppressSensitiveTraceBootstrap.class
+                TestSuppressSensitiveTraceBootstrap.class,
+                FfdcCleanupTest.class
 })
 
 public class FATSuite {
