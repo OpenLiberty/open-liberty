@@ -21,6 +21,10 @@ import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientBasicTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientConsentTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientCookieVerificationTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientDiscoveryBasicTests;
+import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientDiscoveryErrorBadOpTrustStoreTests;
+import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientDiscoveryErrorBadRpTrustStoreTests;
+import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientDiscoveryErrorNoOpTrustStoreTests;
+import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientDiscoveryErrorNoRpTrustStoreTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientDiscoveryErrorTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientDiscoveryJVMPropsTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientDiscoveryJWTBasicTests;
@@ -38,10 +42,14 @@ import componenttest.rules.repeater.RepeatTests;
         OidcClientConsentTests.class,
         OidcClientDiscoveryBasicTests.class,
         OidcClientDiscoveryErrorTests.class,
+        OidcClientDiscoveryErrorBadOpTrustStoreTests.class,
+        OidcClientDiscoveryErrorBadRpTrustStoreTests.class,
+        OidcClientDiscoveryErrorNoOpTrustStoreTests.class,
+        OidcClientDiscoveryErrorNoRpTrustStoreTests.class,
         OidcClientDiscoveryJVMPropsTests.class,
         OidcClientDiscoveryJWTBasicTests.class,
         OidcClientCookieVerificationTests.class,
-        // OidcCertificationRPBasicProfileTests.class,
+// OidcCertificationRPBasicProfileTests.class,
 
 })
 /**
