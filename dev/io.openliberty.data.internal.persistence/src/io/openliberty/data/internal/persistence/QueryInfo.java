@@ -57,6 +57,12 @@ class QueryInfo {
     String jpqlBeforeKeyset;
 
     /**
+     * For counting the total number of results across all pages.
+     * Null if pagination is not used or only slices are used.
+     */
+    String jpqlCount;
+
+    /**
      * Keyset consisting of key names and sort direction.
      */
     List<Sort> keyset;
@@ -201,6 +207,7 @@ class QueryInfo {
         q.jpql = jpql;
         q.jpqlAfterKeyset = jpqlAfterKeyset;
         q.jpqlBeforeKeyset = jpqlBeforeKeyset;
+        q.jpqlCount = jpqlCount;
         q.keyset = keyset;
         q.maxResults = maxResults;
         q.paramCount = paramCount;

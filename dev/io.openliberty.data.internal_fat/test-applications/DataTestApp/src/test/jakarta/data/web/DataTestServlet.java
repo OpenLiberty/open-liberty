@@ -2016,6 +2016,8 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
         assertEquals(true, page1.hasContent());
         assertEquals(4, page1.getNumberOfElements());
+        assertEquals(9L, page1.getTotalElements());
+        assertEquals(3L, page1.getTotalPages());
 
         Page<Reservation> page2 = reservations.findByHostStartsWith("testRepositoryCustom-host",
                                                                     page1.nextPageable(),
@@ -2067,6 +2069,8 @@ public class DataTestServlet extends FATServlet {
         assertEquals(false, page1.hasContent());
         assertEquals(0, page1.getNumberOfElements());
         assertEquals(null, page1.nextPageable());
+        assertEquals(0L, page1.getTotalElements());
+        assertEquals(0L, page1.getTotalPages());
 
         // find by member of a collection
         assertIterableEquals(List.of(10030002L, 10030007L),
@@ -2383,6 +2387,127 @@ public class DataTestServlet extends FATServlet {
         Order o = ofound.get();
         assertEquals(order1.id, o.id);
         assertEquals("testTemplateUsesRepositoryEntities Buyer", o.purchasedBy);
+    }
+
+    /**
+     * Obtain total counts of number of elements and pages.
+     */
+    @Test
+    public void testTotalCounts() {
+        Page<Prime> page1 = primes.findByNumberLessThanEqualOrderByNumberDesc(43L, Pageable.size(6));
+
+        assertEquals(3L, page1.getTotalPages());
+        assertEquals(14L, page1.getTotalElements());
+
+        assertIterableEquals(List.of(43L, 41L, 37L, 31L, 29L, 23L),
+                             page1.getContent().stream().map(p -> p.number).collect(Collectors.toList()));
+
+        Page<Prime> page2 = primes.findByNumberLessThanEqualOrderByNumberDesc(43L, page1.nextPageable());
+
+        assertEquals(14L, page2.getTotalElements());
+        assertEquals(3L, page2.getTotalPages());
+
+        assertIterableEquals(List.of(19L, 17L, 13L, 11L, 7L, 5L),
+                             page2.getContent().stream().map(p -> p.number).collect(Collectors.toList()));
+
+        Page<Prime> page3 = primes.findByNumberLessThanEqualOrderByNumberDesc(43L, page2.nextPageable());
+
+        assertEquals(3L, page3.getTotalPages());
+        assertEquals(14L, page3.getTotalElements());
+
+        assertIterableEquals(List.of(3L, 2L),
+                             page3.getContent().stream().map(p -> p.number).collect(Collectors.toList()));
+    }
+
+    /**
+     * Obtain total counts of number of elements and pages when JPQL is supplied via the Query annotation
+     * and a special count query is also provided by the Query annotation.
+     */
+    @Test
+    public void testTotalCountsForCountQuery() {
+        Page<Map.Entry<Long, String>> page1 = primes.namesByNumber(47L, Pageable.size(5));
+
+        // TODO enable once @Query allows a separate count query to be specified
+//        assertEquals(15L, page1.getTotalElements());
+//        assertEquals(3L, page1.getTotalPages());
+
+        assertIterableEquals(List.of("eleven", "five", "forty-one", "forty-seven", "forty-three"),
+                             page1.getContent().stream().map(e -> e.getValue()).collect(Collectors.toList()));
+
+        Page<Map.Entry<Long, String>> page2 = primes.namesByNumber(47L, page1.nextPageable());
+
+//        assertEquals(3L, page2.getTotalPages());
+//        assertEquals(15L, page2.getTotalElements());
+
+        assertIterableEquals(List.of("nineteen", "seven", "seventeen", "thirteen", "thirty-one"),
+                             page2.getContent().stream().map(e -> e.getValue()).collect(Collectors.toList()));
+
+        Page<Map.Entry<Long, String>> page3 = primes.namesByNumber(47L, page2.nextPageable());
+
+//        assertEquals(3L, page2.getTotalPages());
+//        assertEquals(15L, page2.getTotalElements());
+
+        assertIterableEquals(List.of("thirty-seven", "three", "twenty-nine", "twenty-three", "two"),
+                             page3.getContent().stream().map(e -> e.getValue()).collect(Collectors.toList()));
+
+        assertEquals(null, page3.nextPageable());
+    }
+
+    /**
+     * Obtain total counts of number of elements and pages when JPQL is supplied via the Query annotation
+     * where a count query is inferred from the Query annotation value, which has an ORDER BY clause.
+     */
+    @Test
+    public void testTotalCountsForQueryWithOrderBy() {
+        Page<Integer> page1 = primes.romanNumeralLengths(41L, Pageable.size(4));
+
+        assertEquals(6L, page1.getTotalElements());
+        assertEquals(2L, page1.getTotalPages());
+
+        assertIterableEquals(List.of(6, 5, 4, 3), page1.getContent());
+
+        Page<Integer> page2 = primes.romanNumeralLengths(41L, page1.nextPageable());
+
+        assertEquals(2L, page2.getTotalPages());
+        assertEquals(6L, page2.getTotalElements());
+
+        assertIterableEquals(List.of(2, 1), page2.getContent());
+
+        assertEquals(null, page2.nextPageable());
+    }
+
+    /**
+     * Obtain total counts of number of elements and pages when JPQL is supplied via the Query annotation
+     * where a count query is inferred from the Query annotation value, which lacks an ORDER BY clause
+     * because the OrderBy annotation is used.
+     */
+    @Test
+    public void testTotalCountsForQueryWithSeparateOrderBy() {
+        Page<Object[]> page1 = primes.namesWithHex(40L, Pageable.size(4));
+
+        assertEquals(12L, page1.getTotalElements());
+        assertEquals(3L, page1.getTotalPages());
+
+        assertIterableEquals(List.of("two", "three", "five", "seven"),
+                             page1.getContent().stream().map(o -> (String) o[0]).collect(Collectors.toList()));
+
+        Page<Object[]> page2 = primes.namesWithHex(40L, page1.nextPageable());
+
+        assertEquals(3L, page2.getTotalPages());
+        assertEquals(12L, page2.getTotalElements());
+
+        assertIterableEquals(List.of("eleven", "thirteen", "seventeen", "nineteen"),
+                             page2.getContent().stream().map(o -> (String) o[0]).collect(Collectors.toList()));
+
+        Page<Object[]> page3 = primes.namesWithHex(40L, page2.nextPageable());
+
+        assertEquals(3L, page3.getTotalPages());
+        assertEquals(12L, page3.getTotalElements());
+
+        assertIterableEquals(List.of("twenty-three", "twenty-nine", "thirty-one", "thirty-seven"),
+                             page3.getContent().stream().map(o -> (String) o[0]).collect(Collectors.toList()));
+
+        assertEquals(null, page3.nextPageable());
     }
 
     /**
