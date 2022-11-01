@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  2015  IBM Corporation and others.
+ * Copyright (c) 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,8 @@ public class PersonCompositeComponent extends UIComponentBase {
     @Override
     public void encodeBegin(FacesContext context) throws IOException {
         java.util.Map<java.lang.String, java.lang.Object> attributes = new java.util.HashMap<java.lang.String, java.lang.Object>();
-        UIComponent composite = context.getApplication().getViewHandler()
+        UIComponent composite = context.getApplication()
+                        .getViewHandler()
                         .getViewDeclarationLanguage(context, context.getViewRoot().getViewId())
                         .createComponent(context, "http://xmlns.jcp.org/jsf/composite/test", "person", attributes);
         composite.setId("personId");

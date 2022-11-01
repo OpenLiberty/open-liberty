@@ -10,18 +10,18 @@
  *     IBM Corporation - initial API and implementation
  -->
 <facelet-taglib version="2.2" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibary_2_2.xsd">
- 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibary_2_2.xsd">
+
     <namespace>test</namespace>
- 
+
     <tag>
         <tag-name>capitalize</tag-name>
 	<component>
             <component-type>capitalize</component-type>
         </component>
     </tag>
-    
+
     <tag>
       <tag-name>multiListenersForComponent</tag-name>
         <component>
@@ -39,11 +39,11 @@
         <component>
             <component-type>personCompositeComponent</component-type>
         </component>
-    </tag>    
+    </tag>
     <tag>
         <tag-name>placeComposite</tag-name>
         <component>
             <component-type>placeCompositeComponent</component-type>
         </component>
-    </tag>    
+    </tag>
 </facelet-taglib>

@@ -19,18 +19,18 @@ import javax.faces.context.ResponseWriter;
 
 @FacesComponent
 public class Capitalize extends UIComponentBase {
- 
+
     @Override
-    public String getFamily() {        
+    public String getFamily() {
         return "test.component.capitalize";
     }
- 
+
     @Override
     public void encodeBegin(FacesContext context) throws IOException {
- 
+
         String value = (String) getAttributes().get("value");
- 
-        if (value != null) {        
+
+        if (value != null) {
             ResponseWriter writer = context.getResponseWriter();
             writer.write(value.toUpperCase());
         }
