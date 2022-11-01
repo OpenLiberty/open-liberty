@@ -12,6 +12,7 @@ package io.openliberty.security.jakartasec;
 
 import static io.openliberty.security.jakartasec.JakartaSec30Constants.EMPTY_DEFAULT;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -230,8 +231,10 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
     @FFDCIgnore(IllegalArgumentException.class)
     private PromptType[] evaluatePrompt(boolean immediateOnly) {
         String promptExpression = oidcMechanismDefinition.promptExpression();
+        PromptType[] promptArray = oidcMechanismDefinition.prompt();
+
         try {
-            return elHelper.processGeneric("promptExpression", promptExpression, oidcMechanismDefinition.prompt(), immediateOnly);
+            return processPrompt(promptExpression, promptArray, immediateOnly);
         } catch (IllegalArgumentException e) {
             if (immediateOnly && elHelper.isDeferredExpression(promptExpression)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -252,7 +255,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
     private DisplayType evaluateDisplay(boolean immediateOnly) {
         String displayExpression = oidcMechanismDefinition.displayExpression();
         try {
-            return elHelper.processGeneric("displayExpression", displayExpression, oidcMechanismDefinition.display(), immediateOnly);
+            return processDisplay(displayExpression, oidcMechanismDefinition.display(), immediateOnly);
         } catch (IllegalArgumentException e) {
             if (immediateOnly && elHelper.isDeferredExpression(displayExpression)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -262,7 +265,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
                 return null;
             }
 
-            issueWarningMessage("displayExpression", displayExpression, EMPTY_DEFAULT);
+            issueWarningMessage("displayExpression", displayExpression, DisplayType.PAGE.toString());
 
             return DisplayType.PAGE; /* Default value from spec. */
         }
@@ -458,9 +461,9 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
         StringBuffer sb = new StringBuffer();
         for (PromptType promptType : promptTypes) {
             if (sb.length() != 0) {
-                sb.append(" ").append(promptType);
+                sb.append(" ").append(promptType.toString().toLowerCase());
             } else {
-                sb.append(promptType);
+                sb.append(promptType.toString().toLowerCase());
             }
         }
 
@@ -512,4 +515,133 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
         return (tokenMinValidity != null) ? tokenMinValidity : evaluateTokenMinValidity(false);
     }
 
+    /**
+     * Validate and return the {@link PromptType}s from either
+     * the EL expression or the direct prompt setting.
+     *
+     * Similar helper classes are in ElHelper class directly, but did not want to import PromptType into
+     * the ElHelper's project.
+     *
+     * @param promptExpression The EL expression .
+     * @param prompt           The non-EL value.
+     * @param immediateOnly    Return null if the value is a deferred EL expression.
+     *
+     * @return The validated useFor types.
+     */
+    protected PromptType[] processPrompt(String promptExpression, PromptType[] prompt, boolean immediateOnly) {
+        PromptType[] result = null;
+        boolean immediate = false;
+
+        /*
+         * The expression language value takes precedence over the direct setting.
+         */
+        if (promptExpression == null || promptExpression.isEmpty()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "promptExpression not provided, return promptType");
+            }
+            result = prompt;
+            immediate = true; // no expression
+        } else {
+            /*
+             * Evaluate the EL expression to get the value.
+             */
+            Object obj = elHelper.evaluateElExpression(promptExpression);
+            if (obj instanceof PromptType[]) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "processPrompt (promptType): " + obj);
+                }
+                result = (PromptType[]) obj;
+                immediate = elHelper.isImmediateExpression(promptExpression);
+            } else if (obj instanceof String) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "processPrompt", "promptExpression evaluated to a String, attempt to split and compare to PromptType enum options: " + obj);
+                }
+                String[] splitReturn = ((String) obj).split(" ");
+                Set<PromptType> types = new HashSet<PromptType>(splitReturn.length);
+                for (String split : splitReturn) {
+                    switch (PromptType.fromString(split)) {
+                        case CONSENT:
+                            types.add(PromptType.CONSENT);
+                            break;
+                        case LOGIN:
+                            types.add(PromptType.LOGIN);
+                            break;
+                        case SELECT_ACCOUNT:
+                            types.add(PromptType.SELECT_ACCOUNT);
+                            break;
+                        case NONE:
+                            types.add(PromptType.NONE);
+                            break;
+                        default:
+                            throw new IllegalArgumentException("Invalid value provided in the promptExpression: " + split);
+                    }
+                }
+                result = types.toArray(new PromptType[types.size()]);
+                immediate = elHelper.isImmediateExpression(promptExpression);
+            } else {
+                throw new IllegalArgumentException("Expected 'promptExpression' to evaluate to an array of PromptType enum values: " + promptExpression);
+            }
+        }
+
+        return (immediateOnly && !immediate) ? null : result;
+    }
+
+    /**
+     * Validate and return the {@link DisplayType} from either
+     * the EL expression or the direct prompt setting.
+     *
+     * Similar helper classes are in ElHelper class directly, but did not want to import DisplayType into
+     * the ElHelper's project.
+     *
+     * @param displayExpression The EL expression.
+     * @param display           The non-EL value.
+     * @param immediateOnly     Return null if the value is a deferred EL expression.
+     *
+     * @return The validated useFor types.
+     */
+    protected DisplayType processDisplay(String displayExpression, DisplayType display, boolean immediateOnly) {
+        DisplayType result = null;
+        boolean immediate = false;
+
+        /*
+         * The expression language value takes precedence over the direct setting.
+         */
+        if (displayExpression == null || displayExpression.isEmpty()) {
+            result = display;
+            immediate = true; // no expression
+        } else {
+            /*
+             * Evaluate the EL expression to get the value.
+             */
+            Object obj = elHelper.evaluateElExpression(displayExpression);
+            if (obj instanceof String) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "processDisplay", "displayExpression evaluated to a String, compare to DisplayType enum options: " + obj);
+                }
+                String displayReturn = (String) obj;
+                switch (DisplayType.fromString(displayReturn)) {
+                    case PAGE:
+                        result = DisplayType.PAGE;
+                        break;
+                    case POPUP:
+                        result = DisplayType.POPUP;
+                        break;
+                    case TOUCH:
+                        result = DisplayType.TOUCH;
+                        break;
+                    case WAP:
+                        result = DisplayType.WAP;
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Invalid value provided in the displayExpression: " + displayReturn);
+                }
+
+                immediate = elHelper.isImmediateExpression(displayExpression);
+            } else {
+                throw new IllegalArgumentException("Expected 'displayExpression' to evaluate to a DisplayType enum value: " + displayExpression);
+            }
+        }
+
+        return (immediateOnly && !immediate) ? null : result;
+    }
 }
