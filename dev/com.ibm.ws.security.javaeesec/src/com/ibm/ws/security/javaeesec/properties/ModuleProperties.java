@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,9 +14,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 
 public class ModuleProperties {
     private Map<Class<?>, Properties> authMechMap;
@@ -45,6 +42,7 @@ public class ModuleProperties {
     public Map<Class<?>, Properties> getAuthMechMap() {
         return authMechMap;
     }
+
     public Properties getFromAuthMechMap(Class<?> className) {
         return authMechMap.get(className);
     }
@@ -55,5 +53,9 @@ public class ModuleProperties {
 
     public Properties putToAuthMechMap(Class<?> className, Properties props) {
         return authMechMap.put(className, props);
+    }
+
+    public Properties removeFromAuthMechMap(Class<?> className) {
+        return authMechMap.remove(className);
     }
 }
