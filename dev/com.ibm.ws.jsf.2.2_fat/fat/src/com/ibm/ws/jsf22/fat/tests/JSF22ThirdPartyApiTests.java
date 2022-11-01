@@ -40,6 +40,8 @@ import componenttest.topology.impl.LibertyServer;
  */
 @Mode(TestMode.LITE)
 @RunWith(FATRunner.class)
+// This test is skipped and the io.openliberty.org.apache.myfaces.4.0_fat test bucket contains the following
+// Faces 4.0 specific tests: Faces40ThirdPartyApiTests.java.
 @SkipForRepeat(EE10_FEATURES)
 public class JSF22ThirdPartyApiTests {
 
