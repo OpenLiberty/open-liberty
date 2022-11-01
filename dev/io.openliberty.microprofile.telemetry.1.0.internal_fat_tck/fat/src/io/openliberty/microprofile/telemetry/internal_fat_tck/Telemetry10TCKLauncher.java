@@ -51,7 +51,7 @@ public class Telemetry10TCKLauncher {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWWKZ0002E", "CWOWB1018W");
+        server.stopServer();
     }
 
     @Test

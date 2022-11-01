@@ -10,8 +10,13 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.cdi;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.microprofile.config.Config;
 
@@ -19,9 +24,15 @@ import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk;
+import io.opentelemetry.sdk.common.CompletableResultCode;
+import io.opentelemetry.sdk.logs.SdkLoggerProvider;
+import io.opentelemetry.sdk.metrics.SdkMeterProvider;
+import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 
@@ -42,12 +53,15 @@ public class OpenTelemetryProducer {
         //Builds tracer provider if user has enabled tracing aspects with config properties
         if (!checkDisabled(telemetryProperties)) {
 
-            OpenTelemetry openTelemetry = AutoConfiguredOpenTelemetrySdk.builder()
-                            .addPropertiesSupplier(() -> telemetryProperties)
-                            .setServiceClassLoader(Thread.currentThread().getContextClassLoader())
-                            .setResultAsGlobal(false)
-                            .build()
-                            .getOpenTelemetrySdk();
+            OpenTelemetry openTelemetry = AccessController.doPrivileged((PrivilegedAction<OpenTelemetry>) () -> {
+                return AutoConfiguredOpenTelemetrySdk.builder()
+                                .addPropertiesSupplier(() -> telemetryProperties)
+                                .setServiceClassLoader(Thread.currentThread().getContextClassLoader())
+                                .setResultAsGlobal(false)
+                                .registerShutdownHook(false)
+                                .build()
+                                .getOpenTelemetrySdk();
+            });
 
             if (openTelemetry == null) {
                 openTelemetry = OpenTelemetry.noop();
@@ -60,6 +74,30 @@ public class OpenTelemetryProducer {
         //Operations on a Tracer, or on Spans have no side effects and do nothing
         return OpenTelemetry.noop();
 
+    }
+
+    public void disposeOpenTelemetry(@Disposes OpenTelemetry openTelemetry) {
+        if (openTelemetry instanceof OpenTelemetrySdk) {
+            OpenTelemetrySdk sdk = (OpenTelemetrySdk) openTelemetry;
+            List<CompletableResultCode> results = new ArrayList<>();
+
+            SdkTracerProvider tracerProvider = sdk.getSdkTracerProvider();
+            if (tracerProvider != null) {
+                results.add(tracerProvider.shutdown());
+            }
+
+            SdkMeterProvider meterProvider = sdk.getSdkMeterProvider();
+            if (meterProvider != null) {
+                results.add(meterProvider.shutdown());
+            }
+
+            SdkLoggerProvider loggerProvider = sdk.getSdkLoggerProvider();
+            if (loggerProvider != null) {
+                results.add(loggerProvider.shutdown());
+            }
+
+            CompletableResultCode.ofAll(results).join(10, TimeUnit.SECONDS);
+        }
     }
 
     private boolean checkDisabled(Map<String, String> oTelConfigs) {
