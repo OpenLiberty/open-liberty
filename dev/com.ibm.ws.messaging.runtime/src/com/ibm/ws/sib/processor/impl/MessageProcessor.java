@@ -2170,7 +2170,7 @@ public final class MessageProcessor implements JsEngineComponent,
                             .findFirstMatchingItemStream(new ClassEqualsFilter(
                                             DestinationManager.class));
 
-            // Sanity - A PersistentStore should not be in the MessageStore
+            // Consistency check - A PersistentStore should not be in the MessageStore
             // without
             // a DestinationManager!
             if (null == _destinationManager) {
@@ -2241,7 +2241,7 @@ public final class MessageProcessor implements JsEngineComponent,
              * .findFirstMatchingItemStream(new ClassEqualsFilter(
              * MultiMEProxyHandler.class));
              *
-             * // Sanity - A PersistentStore should not be in the MessageStore
+             * // Consistency check - A PersistentStore should not be in the MessageStore
              * // without
              * // a multiMEProxyHandler!
              * if (null == _multiMEProxyHandler) {
