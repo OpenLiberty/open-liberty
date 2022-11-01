@@ -389,8 +389,6 @@ public class VisibilityTest {
         // The following features are marked no ship, but are not ready for beta yet.
         // If they get marked beta, they should be removed from this list.
         expectedFailures.add("io.openliberty.persistentExecutor.internal.ee-10.0"); // the persistentExecutor feature is no ship
-        expectedFailures.add("io.openliberty.adminCenter1.0.internal.ee-10.0");
-        expectedFailures.add("io.openliberty.webCache1.0.internal.ee-10.0");
 
         StringBuilder errorMessage = new StringBuilder();
         for (Entry<String, FeatureInfo> entry : features.entrySet()) {
@@ -430,7 +428,8 @@ public class VisibilityTest {
         }
         if (errorMessage.length() != 0) {
             Assert.fail("Found features that are marked noship, but contain only beta/ga features without a noship feature dependency: " + '\n' +
-                        "If you recently marked a feature beta, you may need to add or remove from the expected failures list or have something to fix.\n" +
+                        "If you recently marked a feature beta, you may need to update the feature to depend on noShip-1.0 feature, add or remove from the expected failures list in this test, or have something to fix.\n"
+                        +
                         errorMessage.toString());
         }
     }
