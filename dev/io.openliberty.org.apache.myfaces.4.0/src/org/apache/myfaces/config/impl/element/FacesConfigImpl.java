@@ -52,7 +52,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
     private List<Application> applications;
     private List<Factory> factories;
     private List<Component> components;
-    private Map<String, ComponentTagDeclaration> componentTagDeclarations;
+    private List<ComponentTagDeclaration> componentTagDeclarations;
     private List<Converter> converters;
     private List<NavigationRule> navigationRules;
     private List<RenderKit> renderKits;
@@ -69,7 +69,7 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
     private transient List<Application> unmodifiableApplications;
     private transient List<Factory> unmodifiableFactories;
     private transient List<Component> unmodifiableComponents;
-    private transient Map<String, ComponentTagDeclaration> unmodifiableComponentTagDeclarations;
+    private transient List<ComponentTagDeclaration> unmodifiableComponentTagDeclarations;
     private transient List<Converter> unmodifiableConverters;
     private transient List<NavigationRule> unmodifiableNavigationRules;
     private transient List<RenderKit> unmodifiableRenderKits;
@@ -119,13 +119,13 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
         components.add(component);
     }
     
-    public void addComponentTagDeclaration(String componentType, ComponentTagDeclaration tagDeclaration)
+    public void addComponentTagDeclaration(ComponentTagDeclaration tagDeclaration)
     {
         if (componentTagDeclarations == null)
         {
-            componentTagDeclarations = new HashMap<>();
+            componentTagDeclarations = new ArrayList<>();
         }
-        componentTagDeclarations.put(componentType, tagDeclaration);
+        componentTagDeclarations.add(tagDeclaration);
     }
 
     public void addConverter(Converter converter)
@@ -289,15 +289,15 @@ public class FacesConfigImpl extends org.apache.myfaces.config.element.FacesConf
     }
     
     @Override
-    public Map<String, ComponentTagDeclaration> getComponentTagDeclarations()
+    public List<ComponentTagDeclaration> getComponentTagDeclarations()
     {
         if (componentTagDeclarations == null)
         {
-            return Collections.emptyMap();
+            return Collections.emptyList();
         }
         if (unmodifiableComponentTagDeclarations == null)
         {
-            unmodifiableComponentTagDeclarations = Collections.unmodifiableMap(componentTagDeclarations);
+            unmodifiableComponentTagDeclarations = Collections.unmodifiableList(componentTagDeclarations);
         }
         return unmodifiableComponentTagDeclarations;
     }

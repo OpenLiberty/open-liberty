@@ -323,7 +323,7 @@ public class FacesConfigDispenserImpl extends FacesConfigDispenser
             }
         }
 
-        componentTagDeclarations.addAll(config.getComponentTagDeclarations().values());
+        componentTagDeclarations.addAll(config.getComponentTagDeclarations());
 
         faceletTagLibraries.addAll(config.getFaceletTagLibraryList());
 

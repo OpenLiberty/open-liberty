@@ -68,6 +68,9 @@ public class AnnotationConfigurator
 {
     private static final Logger log = Logger.getLogger(AnnotationConfigurator.class.getName());
 
+    /* Added under MYFACES-4493 for Namespace Backward Compatibility */
+    private final static String JCP_NAMESPACE_FACES_COMPONENT = "http://xmlns.jcp.org/jsf/component";
+    
     public AnnotationConfigurator()
     {
     }
@@ -125,8 +128,10 @@ public class AnnotationConfigurator
                             tagName = Character.toLowerCase(tagName.charAt(0)) + tagName.substring(1);
                         }
 
-                        facesConfig.addComponentTagDeclaration(value, 
-                                new ComponentTagDeclarationImpl(value, comp.namespace(), tagName));
+                        facesConfig.addComponentTagDeclaration(
+                            new ComponentTagDeclarationImpl(value, comp.namespace(), tagName));
+                        facesConfig.addComponentTagDeclaration(
+                            new ComponentTagDeclarationImpl(value, JCP_NAMESPACE_FACES_COMPONENT, tagName));
                     }
                 }
             }

@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface FacesComponent
 {
-    public static final String NAMESPACE = "http://xmlns.jcp.org/jsf/component";
+    public static final String NAMESPACE = "jakarta.faces.component";
         
     public String value() default "";
     
