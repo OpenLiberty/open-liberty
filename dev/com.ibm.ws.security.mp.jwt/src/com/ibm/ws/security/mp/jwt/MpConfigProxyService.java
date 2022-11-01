@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -31,6 +32,8 @@ public interface MpConfigProxyService {
      * @return
      */
     public <T> T getConfigValue(ClassLoader cl, String propertyName, Class<T> propertyType) throws IllegalArgumentException, NoSuchElementException;
+
+    public <T> List<T> getConfigValues(ClassLoader cl, Set<String> propertyNames, Class<T> propertyType) throws IllegalArgumentException;
 
     public Set<String> getSupportedConfigPropertyNames();
 

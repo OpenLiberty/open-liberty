@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.config;
 
-import java.util.NoSuchElementException;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +22,6 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.jwt.config.MpConfigProperties;
 import com.ibm.ws.security.mp.jwt.MpConfigProxyService;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
@@ -47,33 +46,30 @@ public class MpConfigUtil {
     }
 
     public MpConfigProperties getMpConfig(HttpServletRequest req) {
-        MpConfigProperties map = new MpConfigProperties();
         if (mpConfigProxyService != null) {
-            return getMpConfigMap(mpConfigProxyService, getApplicationClassloader(req), map);
+            return getMpConfigMap(mpConfigProxyService, getApplicationClassloader(req));
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "MP JWT feature is not enabled.");
             }
         }
-        return map;
+        return new MpConfigProperties();
     }
 
     protected ClassLoader getApplicationClassloader(HttpServletRequest req) {
         return req != null ? req.getServletContext().getClassLoader() : null;
     }
 
-    // no null check. make sure that the caller sets non null objects.
-    protected MpConfigProperties getMpConfigMap(MpConfigProxyService service, ClassLoader cl, MpConfigProperties map) {
-        Set<String> supportedMpConfigPropNames = service.getSupportedConfigPropertyNames();
-        supportedMpConfigPropNames.forEach(s -> getMpConfig(service, cl, s, map));
-        return map;
-    }
-
     // no null check other than cl. make sure that the caller sets non null objects.
-    @FFDCIgnore({ NoSuchElementException.class })
-    protected MpConfigProperties getMpConfig(MpConfigProxyService service, ClassLoader cl, String propertyName, MpConfigProperties map) {
-        try {
-            String value = service.getConfigValue(cl, propertyName, String.class);
+    protected MpConfigProperties getMpConfigMap(MpConfigProxyService service, ClassLoader cl) {
+
+        Set<String> supportedMpConfigPropNames = service.getSupportedConfigPropertyNames();
+        List<String> values = service.getConfigValues(cl, supportedMpConfigPropNames, String.class);
+
+        MpConfigProperties map = new MpConfigProperties();
+        int i = 0;
+        for (String propertyName : supportedMpConfigPropNames) {
+            String value = values.get(i);
             if (value != null) {
                 value = value.trim();
             }
@@ -84,10 +80,7 @@ public class MpConfigUtil {
                     Tr.debug(tc, propertyName + " is empty or null. Ignore it.");
                 }
             }
-        } catch (NoSuchElementException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, propertyName + " is not in mpConfig.");
-            }
+            i++;
         }
         return map;
     }

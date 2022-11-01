@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.security.mp.jwt.v21.config.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -74,6 +76,19 @@ public class MpConfigProxyServiceImpl implements MpConfigProxyService {
         return null;
     }
 
+    /** return */
+    @Sensitive
+    @Override
+    public <T> List<T> getConfigValues(ClassLoader cl, Set<String> propertyNames, Class<T> propertyType) throws IllegalArgumentException {
+        Config config = getConfig(cl);
+        List<T> list = new ArrayList<T>();
+
+        for (String propertyName : propertyNames) {
+            list.add(getValue(config, propertyName, propertyType));
+        }
+        return list;
+    }
+
     @Override
     public Set<String> getSupportedConfigPropertyNames() {
         return MpConfigProperties.acceptableMpConfigPropNames21;
@@ -86,4 +101,20 @@ public class MpConfigProxyServiceImpl implements MpConfigProxyService {
             return ConfigProvider.getConfig();
         }
     }
+
+    /**
+     * @return
+     */
+    @Sensitive
+    private <T> T getValue(Config config, String propertyName, Class<T> propertyType) {
+        if (isAcceptableMpConfigProperty(propertyName)) {
+            Optional<T> value = config.getOptionalValue(propertyName, propertyType);
+            if (value != null && value.isPresent()) {
+                return value.get();
+            }
+            return null;
+        }
+        return null;
+    }
+
 }

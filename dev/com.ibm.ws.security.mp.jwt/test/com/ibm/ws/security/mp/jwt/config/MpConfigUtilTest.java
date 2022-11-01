@@ -13,10 +13,11 @@ package com.ibm.ws.security.mp.jwt.config;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -123,12 +124,8 @@ public class MpConfigUtilTest {
                 will(returnValue(null));
                 one(mpConfigProxyService).getSupportedConfigPropertyNames();
                 will(returnValue(getSupportedMpConfigProps()));
-                one(mpConfigProxyService).getConfigValue(null, MpConfigProperties.ISSUER, String.class);
-                will(returnValue("value_" + MpConfigProperties.ISSUER));
-                one(mpConfigProxyService).getConfigValue(null, MpConfigProperties.PUBLIC_KEY, String.class);
-                will(returnValue("value_" + MpConfigProperties.PUBLIC_KEY));
-                one(mpConfigProxyService).getConfigValue(null, MpConfigProperties.KEY_LOCATION, String.class);
-                will(returnValue("value_" + MpConfigProperties.KEY_LOCATION));
+                one(mpConfigProxyService).getConfigValues(null, getSupportedMpConfigProps(), String.class);
+                will(returnValue(getConfigValues("value_" + MpConfigProperties.ISSUER, "value_" + MpConfigProperties.PUBLIC_KEY, "value_" + MpConfigProperties.KEY_LOCATION)));
             }
         });
         Map<String, String> map = mpConfigUtil.getMpConfig(req);
@@ -155,12 +152,8 @@ public class MpConfigUtilTest {
                 will(returnValue(cl));
                 one(mpConfigProxyService).getSupportedConfigPropertyNames();
                 will(returnValue(getSupportedMpConfigProps()));
-                one(mpConfigProxyService).getConfigValue(cl, MpConfigProperties.ISSUER, String.class);
-                will(returnValue("value_" + MpConfigProperties.ISSUER));
-                one(mpConfigProxyService).getConfigValue(cl, MpConfigProperties.PUBLIC_KEY, String.class);
-                will(returnValue("value_" + MpConfigProperties.PUBLIC_KEY));
-                one(mpConfigProxyService).getConfigValue(cl, MpConfigProperties.KEY_LOCATION, String.class);
-                will(returnValue("value_" + MpConfigProperties.KEY_LOCATION));
+                one(mpConfigProxyService).getConfigValues(cl, getSupportedMpConfigProps(), String.class);
+                will(returnValue(getConfigValues("value_" + MpConfigProperties.ISSUER, "value_" + MpConfigProperties.PUBLIC_KEY, "value_" + MpConfigProperties.KEY_LOCATION)));
             }
         });
         Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
@@ -187,12 +180,8 @@ public class MpConfigUtilTest {
                 will(returnValue(cl));
                 one(mpConfigProxyService).getSupportedConfigPropertyNames();
                 will(returnValue(getSupportedMpConfigProps()));
-                one(mpConfigProxyService).getConfigValue(cl, MpConfigProperties.ISSUER, String.class);
-                will(throwException(new NoSuchElementException()));
-                one(mpConfigProxyService).getConfigValue(cl, MpConfigProperties.PUBLIC_KEY, String.class);
-                will(returnValue("value_" + MpConfigProperties.PUBLIC_KEY));
-                one(mpConfigProxyService).getConfigValue(cl, MpConfigProperties.KEY_LOCATION, String.class);
-                will(returnValue("value_" + MpConfigProperties.KEY_LOCATION));
+                one(mpConfigProxyService).getConfigValues(cl, getSupportedMpConfigProps(), String.class);
+                will(returnValue(getConfigValues(null, "value_" + MpConfigProperties.PUBLIC_KEY, "value_" + MpConfigProperties.KEY_LOCATION)));
             }
         });
         Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
@@ -217,12 +206,8 @@ public class MpConfigUtilTest {
                 will(returnValue(cl));
                 one(mpConfigProxyService).getSupportedConfigPropertyNames();
                 will(returnValue(getSupportedMpConfigProps()));
-                one(mpConfigProxyService).getConfigValue(cl, MpConfigProperties.ISSUER, String.class);
-                will(returnValue("value_" + MpConfigProperties.ISSUER));
-                one(mpConfigProxyService).getConfigValue(cl, MpConfigProperties.PUBLIC_KEY, String.class);
-                will(throwException(new NoSuchElementException()));
-                one(mpConfigProxyService).getConfigValue(cl, MpConfigProperties.KEY_LOCATION, String.class);
-                will(returnValue("value_" + MpConfigProperties.KEY_LOCATION));
+                one(mpConfigProxyService).getConfigValues(cl, getSupportedMpConfigProps(), String.class);
+                will(returnValue(getConfigValues("value_" + MpConfigProperties.ISSUER, null, "value_" + MpConfigProperties.KEY_LOCATION)));
             }
         });
         Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
@@ -247,12 +232,8 @@ public class MpConfigUtilTest {
                 will(returnValue(cl));
                 one(mpConfigProxyService).getSupportedConfigPropertyNames();
                 will(returnValue(getSupportedMpConfigProps()));
-                one(mpConfigProxyService).getConfigValue(cl, MpConfigProperties.ISSUER, String.class);
-                will(returnValue("value_" + MpConfigProperties.ISSUER));
-                one(mpConfigProxyService).getConfigValue(cl, MpConfigProperties.PUBLIC_KEY, String.class);
-                will(returnValue("value_" + MpConfigProperties.PUBLIC_KEY));
-                one(mpConfigProxyService).getConfigValue(cl, MpConfigProperties.KEY_LOCATION, String.class);
-                will(throwException(new NoSuchElementException()));
+                one(mpConfigProxyService).getConfigValues(cl, getSupportedMpConfigProps(), String.class);
+                will(returnValue(getConfigValues("value_" + MpConfigProperties.ISSUER, "value_" + MpConfigProperties.PUBLIC_KEY, null)));
             }
         });
         Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
@@ -277,12 +258,8 @@ public class MpConfigUtilTest {
                 will(returnValue(cl));
                 one(mpConfigProxyService).getSupportedConfigPropertyNames();
                 will(returnValue(getSupportedMpConfigProps()));
-                one(mpConfigProxyService).getConfigValue(cl, MpConfigProperties.ISSUER, String.class);
-                will(throwException(new NoSuchElementException()));
-                one(mpConfigProxyService).getConfigValue(cl, MpConfigProperties.PUBLIC_KEY, String.class);
-                will(throwException(new NoSuchElementException()));
-                one(mpConfigProxyService).getConfigValue(cl, MpConfigProperties.KEY_LOCATION, String.class);
-                will(throwException(new NoSuchElementException()));
+                one(mpConfigProxyService).getConfigValues(cl, getSupportedMpConfigProps(), String.class);
+                will(returnValue(getConfigValues(null, null, null)));
             }
         });
         Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
@@ -303,12 +280,8 @@ public class MpConfigUtilTest {
                 will(returnValue(cl));
                 one(mpConfigProxyService).getSupportedConfigPropertyNames();
                 will(returnValue(getSupportedMpConfigProps()));
-                one(mpConfigProxyService).getConfigValue(cl, MpConfigProperties.ISSUER, String.class);
-                will(returnValue("\t\t\t\n"));
-                one(mpConfigProxyService).getConfigValue(cl, MpConfigProperties.PUBLIC_KEY, String.class);
-                will(returnValue("               "));
-                one(mpConfigProxyService).getConfigValue(cl, MpConfigProperties.KEY_LOCATION, String.class);
-                will(returnValue("     value_" + MpConfigProperties.KEY_LOCATION + "          "));
+                one(mpConfigProxyService).getConfigValues(cl, getSupportedMpConfigProps(), String.class);
+                will(returnValue(getConfigValues("\t\t\t\n", "               ", "     value_" + MpConfigProperties.KEY_LOCATION + "          ")));
             }
         });
         Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
@@ -317,11 +290,22 @@ public class MpConfigUtilTest {
     }
 
     private Set<String> getSupportedMpConfigProps() {
-        Set<String> supportedMpConfigProps = new HashSet<String>();
+        Set<String> supportedMpConfigProps = new TreeSet<String>();
         supportedMpConfigProps.add(MpConfigProperties.ISSUER);
         supportedMpConfigProps.add(MpConfigProperties.PUBLIC_KEY);
         supportedMpConfigProps.add(MpConfigProperties.KEY_LOCATION);
         return supportedMpConfigProps;
+    }
+
+    /**
+     * @return
+     */
+    private List<String> getConfigValues(String issuer, String publicKey, String keyLocation) {
+        List<String> list = new ArrayList<String>();
+        list.add(issuer);
+        list.add(publicKey);
+        list.add(keyLocation);
+        return list;
     }
 
 }
