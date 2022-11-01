@@ -184,7 +184,7 @@ public final class JSListCoder implements JSCoder {
     if (length < 0 || offset + 4 + length > frame.length) {
       JMFMessageCorruptionException jmce =  new JMFMessageCorruptionException(
           "Bad length: " + HexUtil.toString(new int[] { length }) + " at offset " + offset);
-      FFDCFilter.processException(jmce, "com.ibm.ws.sib.mfp.jmf.impl.JSListCoder.sanityCheck", "160", Integer.valueOf(length),
+      FFDCFilter.processException(jmce, "com.ibm.ws.sib.mfp.jmf.impl.JSListCoder.consistencyCheck", "160", Integer.valueOf(length),
           new Object[] { MfpConstants.DM_BUFFER, frame, Integer.valueOf(0), Integer.valueOf(frame.length) });
       throw jmce;
     }
