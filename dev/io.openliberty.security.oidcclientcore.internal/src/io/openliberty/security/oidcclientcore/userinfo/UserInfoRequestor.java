@@ -29,7 +29,6 @@ import org.jose4j.jwx.JsonWebStructure;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.security.common.jwt.JwtParsingUtils;
 import io.openliberty.security.common.jwt.jwk.RemoteJwkData;
@@ -168,21 +167,11 @@ public class UserInfoRequestor {
         return signatureVerifier;
     }
 
-    @FFDCIgnore(OidcClientConfigurationException.class)
-    RemoteJwkData initializeRemoteJwkData(OidcClientConfig oidcClientConfig) {
+    RemoteJwkData initializeRemoteJwkData(OidcClientConfig oidcClientConfig) throws OidcDiscoveryException, OidcClientConfigurationException {
         RemoteJwkData jwkData = new RemoteJwkData();
-        String jwksUri = null;
-        try {
-            jwksUri = MetadataUtils.getJwksUri(oidcClientConfig);
-        } catch (OidcDiscoveryException | OidcClientConfigurationException e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Failed to find a JWKS URI to use for verifying the signature of the JWT UserInfo data: " + e);
-            }
-        }
-        if (jwksUri != null) {
-            jwkData.setJwksUri(jwksUri);
-            jwkData.setSslSupport(endpointRequestClass.getSSLSupport());
-        }
+        String jwksUri = MetadataUtils.getJwksUri(oidcClientConfig);
+        jwkData.setJwksUri(jwksUri);
+        jwkData.setSslSupport(endpointRequestClass.getSSLSupport());
         return jwkData;
     }
 
