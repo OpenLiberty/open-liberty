@@ -15,9 +15,9 @@
   <licenses>
     <license>
       <name>IBM International License Agreement for Non-Warranted Programs</name>
-      <url>http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/maven/licenses/L-JTHS-8SZMHX/HTML/</url>
+      <url>https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/maven/licenses/L-JTHS-8SZMHX/HTML/</url>
       <distribution>repo</distribution>
-      <comments>Additional notices http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/maven/licenses/L-JTHS-8SZMHX/HTML/notices.html</comments>
+      <comments>Additional notices https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/maven/licenses/L-JTHS-8SZMHX/HTML/notices.html</comments>
     </license>
   </licenses>
 
