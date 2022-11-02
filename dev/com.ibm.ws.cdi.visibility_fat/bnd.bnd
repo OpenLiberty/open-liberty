@@ -37,7 +37,9 @@ tested.features:\
 	cdi-4.0,\
 	connectors-2.1,\
 	jakartaee-10.0,\
-	servlet-6.0
+	servlet-6.0,\
+	mpConfig-3.0,\
+	mpFaultTolerance-4.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
