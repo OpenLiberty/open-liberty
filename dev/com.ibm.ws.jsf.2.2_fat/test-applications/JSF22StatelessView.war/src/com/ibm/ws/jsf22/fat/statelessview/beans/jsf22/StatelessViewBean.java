@@ -15,7 +15,7 @@
  * @author Bill Lucy
  *
  */
-package com.ibm.ws.jsf22.fat.statelessview.beans;
+package com.ibm.ws.jsf22.fat.statelessview.beans.jsf22;
 
 import java.io.Serializable;
 

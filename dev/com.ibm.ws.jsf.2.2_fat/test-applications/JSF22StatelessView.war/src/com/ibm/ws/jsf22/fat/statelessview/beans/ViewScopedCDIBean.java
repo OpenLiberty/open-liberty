@@ -11,7 +11,7 @@
 /**
  * A simple managed bean that will be used to test
  * a view scoped managed bean.
- * 
+ *
  * @author Bill Lucy
  *
  */
