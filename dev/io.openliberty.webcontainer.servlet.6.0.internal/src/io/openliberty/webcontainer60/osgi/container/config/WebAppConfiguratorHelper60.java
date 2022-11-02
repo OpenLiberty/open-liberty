@@ -106,4 +106,14 @@ public class WebAppConfiguratorHelper60 extends WebAppConfiguratorHelper40 {
             Tr.exit(tc, "configureSessionConfig");
         }
     }
+
+    @Override
+    public void finish() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, " finish");
+        }
+
+        super.finish();
+        webAppConfiguration.setSkipEncodedCharVerification();
+    }
 }

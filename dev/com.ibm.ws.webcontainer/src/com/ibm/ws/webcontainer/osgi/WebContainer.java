@@ -1615,6 +1615,13 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
         return WebContainer.loadedContainerSpecLevel;
     }
     
+    public static boolean isServletLevel60orAbove() {
+        if(WebContainer.getServletContainerSpecLevel() >= WebContainer.SPEC_LEVEL_60) {
+            return true;
+        }
+        
+        return false;
+    }
     
     protected static class CompletedFuture implements Future {
 

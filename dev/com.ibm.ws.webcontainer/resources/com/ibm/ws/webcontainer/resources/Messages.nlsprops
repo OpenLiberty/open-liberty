@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2020 IBM Corporation and others.
+# Copyright (c) 1997, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -1614,3 +1614,8 @@ duplicate.samesite.attribute.for.cookie.name.useraction=Check the deployment des
 duplicate.reported.for.samesite.attribute.cookie.name=CWWWC0004W: A {0} cookie name that is configured for the {1} SameSite attribute value was previously identified as a duplicate. No SameSite attribute is added for this cookie.
 duplicate.reported.for.samesite.attribute.cookie.name.explanation=A cookie name cannot be configured for multiple SameSite attribute values. This cookie name has already been identified as a duplicate.
 duplicate.reported.for.samesite.attribute.cookie.name.useraction=Check the deployment descriptor configuration to make sure the cookie name is configured for only one of the following SameSite attribute values: 'SameSiteCookies_Lax', 'SameSiteCookies_None', or 'SameSiteCookies_Strict'. 
+
+bad.request.uri\:.{0}=CWWWC0005I: The request URI has invalid or improperly encoded characters: [{0}]
+bad.request.uri\:.{0}.explanation=The request URI has invalid path parameters, invalid dot segments, or improperly encoded characters.
+bad.request.uri\:.{0}.useraction=Verify that the request URI does not contain an invalid dot or path parameter combination or any improperly encoded characters.
+

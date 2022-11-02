@@ -202,6 +202,9 @@ public abstract class WebAppConfiguration extends BaseConfiguration implements W
     private String responseEncoding = null;
     private static final String NULLSERVLETNAME = "com.ibm.ws.webcontainer.NullServletName"; //PI93226
     
+    //since Servlet 6.0
+    private boolean skipEncodedCharVerification = false;
+    
     /**
      * Constructor.
      * 
@@ -2166,5 +2169,39 @@ public abstract class WebAppConfiguration extends BaseConfiguration implements W
             logger.logp(Level.FINE, CLASS_NAME, "setModuleResponseEncoding", " response encoding [" + encoding +"]");
         }
         this.responseEncoding = encoding;
+    }
+    
+    /**
+     * Since Servlet 6.0 - opt-out verifying the encoded char in URI.
+     * 
+     * true - skip checking for %23 , %2e , %2f , %5c in URI
+     */
+    public void setSkipEncodedCharVerification() {
+        if (this.contextParams != null){
+            String value = (String) this.contextParams.get("SKIP_ENCODED_CHAR_VERIFICATION");
+            if (value != null){
+                if(value.equalsIgnoreCase("true")){
+                    if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
+                        logger.logp(Level.FINE, CLASS_NAME,"setSkipEncodedCharVerification", "SKIP verifying encoded character in URI for application -> "+ applicationName);
+                    this.skipEncodedCharVerification = true;
+                }
+                else{ // false for either invalid/false
+                    if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
+                        logger.logp(Level.FINE, CLASS_NAME,"setSkipEncodedCharVerification", "VERIFY encoded character in URI for application -> "+ applicationName);
+                }
+
+                return;
+            }
+        }
+
+        if (WCCustomProperties.SKIP_ENCODED_CHAR_VERIFICATION){
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
+                logger.logp(Level.FINE, CLASS_NAME,"setSkipEncodedCharVerification", "via server property. SKIP verifying encoded character in URI for application -> "+ applicationName);
+            this.skipEncodedCharVerification = true;
+        }
+    }
+
+    public boolean skipVerifyEncodedCharInURI() {
+        return this.skipEncodedCharVerification;
     }
 }
