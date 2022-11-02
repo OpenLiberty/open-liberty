@@ -22,6 +22,8 @@ import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60RequestCookieHea
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60ResponseNullCharacterEncodingTest;
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60SessionCookieConfigSCITest;
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60SessionCookieConfigXMLTest;
+import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60URIPathCanonicalizationBadRequestTest;
+import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60URIPathCanonicalizationTest;
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60XPoweredByHeaderTest;
 
 @RunWith(Suite.class)
@@ -34,7 +36,9 @@ import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60XPoweredByHeader
                 Servlet60SessionCookieConfigXMLTest.class,
                 Servlet60SessionCookieConfigSCITest.class,
                 Servlet60RequestCookieHeaderTest.class,
-                Servlet60ResponseNullCharacterEncodingTest.class
+                Servlet60ResponseNullCharacterEncodingTest.class,
+                Servlet60URIPathCanonicalizationTest.class,
+                Servlet60URIPathCanonicalizationBadRequestTest.class
 })
 public class FATSuite {
 
