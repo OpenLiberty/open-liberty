@@ -33,6 +33,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -41,7 +42,6 @@ import junit.framework.Assert;
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE10_FEATURES)
 public class JSF22StatelessViewTests {
     @Rule
     public TestName name = new TestName();
@@ -55,7 +55,11 @@ public class JSF22StatelessViewTests {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(jsf22StatelessViewServer, "JSF22StatelessView.war", "com.ibm.ws.jsf22.fat.statelessview.beans");
+        boolean isEE10 = JakartaEE10Action.isActive();
+
+        ShrinkHelper.defaultDropinApp(jsf22StatelessViewServer, "JSF22StatelessView.war",
+                                      "com.ibm.ws.jsf22.fat.statelessview.beans",
+                                      isEE10 ? "com.ibm.ws.jsf22.fat.statelessview.beans.faces40" : "com.ibm.ws.jsf22.fat.statelessview.beans.jsf22");
 
         jsf22StatelessViewServer.startServer(JSF22StatelessViewTests.class.getSimpleName() + ".log");
     }
@@ -229,6 +233,8 @@ public class JSF22StatelessViewTests {
      * @throws Exception
      */
     @Test
+    // Faces 4.0 doesn't support ManagedBeans and there is already a CDI test.
+    @SkipForRepeat(EE10_FEATURES)
     public void JSF22StatelessView_TestViewScopeManagedBeanTransient() throws Exception {
         testViewScopeManagedBeanTransient("JSF22StatelessView_ViewScope_Transient.xhtml");
     }
@@ -240,6 +246,8 @@ public class JSF22StatelessViewTests {
      * @throws Exception
      */
     @Test
+    // Faces 4.0 doesn't support ManagedBeans and there is already a CDI test.
+    @SkipForRepeat(EE10_FEATURES)
     public void JSF22StatelessView_TestViewScopeManagedBeanNotTransient() throws Exception {
         testViewScopeManagedBeanNotTransient("JSF22StatelessView_ViewScope_NotTransient.xhtml");
     }

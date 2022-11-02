@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
 /**
  * A simple managed bean that will be used to test
  * a view scoped managed bean.
- * 
+ *
  * @author Bill Lucy
  *
  */
@@ -19,11 +19,13 @@ package com.ibm.ws.jsf22.fat.statelessview.beans.faces40;
 
 import java.io.Serializable;
 
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
+@RequestScoped
 public class StatelessViewBean implements Serializable {
 
     /**  */
