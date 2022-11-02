@@ -303,14 +303,14 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "java.io.IOException", "io.openliberty.security.oidcclientcore.exceptions.TokenRequestException" })
+    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.http.BadPostRequestException", "io.openliberty.security.oidcclientcore.exceptions.TokenRequestException" })
     @Test
     public void ConfigurationTests_badClientSecret() throws Exception {
 
         WebClient webClient = getAndSaveWebClient();
 
         String app = "GenericOIDCAuthMechanism";
-        String url = rpHttpsBase + "/omittedClientSecret/" + app;
+        String url = rpHttpsBase + "/badClientSecret/" + app;
 
         Page response = invokeAppReturnLoginPage(webClient, url);
         response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
@@ -332,7 +332,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "java.io.IOException", "io.openliberty.security.oidcclientcore.exceptions.TokenRequestException" })
+    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.http.BadPostRequestException", "io.openliberty.security.oidcclientcore.exceptions.TokenRequestException" })
     @Test
     public void ConfigurationTests_omittedClientSecret() throws Exception {
 

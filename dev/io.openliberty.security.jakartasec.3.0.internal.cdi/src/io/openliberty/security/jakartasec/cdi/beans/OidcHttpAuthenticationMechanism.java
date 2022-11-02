@@ -23,6 +23,8 @@ import java.util.regex.Pattern;
 
 import javax.security.auth.Subject;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.context.SubjectManager;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
@@ -69,6 +71,8 @@ import jakarta.servlet.http.HttpServletResponse;
 @Default
 @ApplicationScoped
 public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechanism {
+
+    private static final TraceComponent tc = Tr.register(OidcHttpAuthenticationMechanism.class);
 
     @Inject
     IdentityStoreHandler identityStoreHandler;
@@ -237,6 +241,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
             ProviderAuthenticationResult providerAuthenticationResult = client.continueFlow(request, response);
             status = processContinueFlowResult(providerAuthenticationResult, httpMessageContext, request, response, client);
         } catch (AuthenticationResponseException | TokenRequestException e) {
+            Tr.error(tc, e.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
         if (status == AuthenticationStatus.SUCCESS && originalResourceRequest.isPresent()) {
