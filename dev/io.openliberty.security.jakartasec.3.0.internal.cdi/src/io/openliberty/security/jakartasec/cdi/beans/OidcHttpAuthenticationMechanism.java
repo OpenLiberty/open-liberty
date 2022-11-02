@@ -136,7 +136,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         } else if (isCallbackRequest(request)) {
             status = processCallback(client, request, response, httpMessageContext);
         } else if (alreadyAuthenticated) {
-            status = processExpiredTokenResult(processExpiredToken(client, request, response), httpMessageContext);
+            status = processExpiredTokenResult(processExpiredToken(client, request, response), client, request, response, httpMessageContext);
         }
 
         return status;
@@ -319,8 +319,12 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
 
     private AuthenticationStatus handleOidcLogin(ProviderAuthenticationResult providerAuthenticationResult, HttpMessageContext httpMessageContext,
                                                  HttpServletRequest request, HttpServletResponse response, Client client) throws AuthenticationException {
-        OidcTokensCredential credential = createOidcTokensCredential(providerAuthenticationResult, request, response, client);
+        return createAndValidateOidcTokensCredential(providerAuthenticationResult, client, request, response, httpMessageContext);
+    }
 
+    AuthenticationStatus createAndValidateOidcTokensCredential(ProviderAuthenticationResult providerAuthenticationResult, Client client, HttpServletRequest request,
+                                                               HttpServletResponse response, HttpMessageContext httpMessageContext) throws AuthenticationException {
+        OidcTokensCredential credential = createOidcTokensCredential(providerAuthenticationResult, request, response, client);
         return validateCredentials(credential, httpMessageContext);
     }
 
@@ -379,7 +383,8 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         }
     }
 
-    private AuthenticationStatus processExpiredTokenResult(ProviderAuthenticationResult providerAuthenticationResult, HttpMessageContext httpMessageContext) {
+    private AuthenticationStatus processExpiredTokenResult(ProviderAuthenticationResult providerAuthenticationResult, Client client, HttpServletRequest request,
+                                                           HttpServletResponse response, HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
 
         if (providerAuthenticationResult != null) {
@@ -388,11 +393,16 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
             if (AuthResult.REDIRECT_TO_PROVIDER.equals(authResult)) {
                 status = httpMessageContext.redirect(providerAuthenticationResult.getRedirectUrl());
             } else if (AuthResult.SUCCESS.equals(authResult)) {
-                status = AuthenticationStatus.SUCCESS;
+                status = updateOpenIdContextWithRefreshedTokens(providerAuthenticationResult, client, request, response, httpMessageContext);
             }
         }
 
         return status;
+    }
+
+    private AuthenticationStatus updateOpenIdContextWithRefreshedTokens(ProviderAuthenticationResult providerAuthenticationResult, Client client, HttpServletRequest request,
+                                                                        HttpServletResponse response, HttpMessageContext httpMessageContext) throws AuthenticationException {
+        return createAndValidateOidcTokensCredential(providerAuthenticationResult, client, request, response, httpMessageContext);
     }
 
     private ProviderAuthenticationResult processExpiredToken(Client client, HttpServletRequest request, HttpServletResponse response) {
@@ -408,7 +418,6 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         String idTokenString = idToken.getToken();
         String refreshTokenString = getRefreshToken(openIdContext);
         return client.processExpiredToken(request, response, isAccessTokenExpired, isIdTokenExpired, idTokenString, refreshTokenString);
-
     }
 
     private OpenIdContext getOpenIdContextFromSubject() {
