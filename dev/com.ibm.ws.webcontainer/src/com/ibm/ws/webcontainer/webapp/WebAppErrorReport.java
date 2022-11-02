@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2006 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package com.ibm.ws.webcontainer.webapp;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.EmptyStackException;
@@ -175,6 +176,11 @@ public class WebAppErrorReport extends ServletErrorReport     // 96236
             } else {
                 r.setErrorCode(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
             }
+        }
+        else if (rootCause instanceof IOException
+                        && th.getMessage() != null
+                        && th.getMessage().contains("CWWWC0005I")) {     //Servlet 6.0 added
+            r.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
         }
         else {
             r.setErrorCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

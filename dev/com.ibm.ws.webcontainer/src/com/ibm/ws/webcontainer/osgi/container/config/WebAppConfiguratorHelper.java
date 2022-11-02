@@ -553,6 +553,11 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
 
             config.setSessionCookieConfig(scc);
         }
+        
+        //Servlet 6.0 - skip checking for %23 , %2e , %2f , %5c in URI
+        public void setSkipEncodedCharVerification() {
+            config.setSkipEncodedCharVerification();
+        }
 
         public void cacheResults(ServletConfigurator configurator) {
             configurator.addToModuleCache(WebAppConfig.class, config);
