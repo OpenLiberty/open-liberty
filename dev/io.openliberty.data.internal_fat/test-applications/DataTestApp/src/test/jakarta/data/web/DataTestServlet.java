@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -118,21 +119,21 @@ public class DataTestServlet extends FATServlet {
     public void init(ServletConfig config) throws ServletException {
         // Do not add or remove from this data in tests.
         // Tests must be able to rely on this data always being present.
-        primes.save(new Prime(2, "2", "10", "II", "two"),
-                    new Prime(3, "3", "11", "III", "three"),
-                    new Prime(5, "5", "101", "V", "five"),
-                    new Prime(7, "7", "111", "VII", "seven"),
-                    new Prime(11, "B", "1011", "XI", "eleven"),
-                    new Prime(13, "D", "1101", "XIII", "thirteen"),
-                    new Prime(17, "11", "10001", "XVII", "seventeen"),
-                    new Prime(19, "13", "10011", "XIX", "nineteen"),
-                    new Prime(23, "17", "10111", "XXIII", "twenty-three"),
-                    new Prime(29, "1D", "11101", "XXIX", "twenty-nine"),
-                    new Prime(31, "1F", "11111", "XXXI", "thirty-one"),
-                    new Prime(37, "25", "100101", "XXXVII", "thirty-seven"),
-                    new Prime(41, "29", "101001", "XLI", "forty-one"),
-                    new Prime(43, "2B", "101011", "XLIII", "forty-three"),
-                    new Prime(47, "2F", "101111", "XLVII", "forty-seven"));
+        primes.save(new Prime(2, "2", "10", 1, "II", "two"),
+                    new Prime(3, "3", "11", 2, "III", "three"),
+                    new Prime(5, "5", "101", 2, "V", "five"),
+                    new Prime(7, "7", "111", 3, "VII", "seven"),
+                    new Prime(11, "B", "1011", 3, "XI", "eleven"),
+                    new Prime(13, "D", "1101", 3, "XIII", "thirteen"),
+                    new Prime(17, "11", "10001", 2, "XVII", "seventeen"),
+                    new Prime(19, "13", "10011", 3, "XIX", "nineteen"),
+                    new Prime(23, "17", "10111", 4, "XXIII", "twenty-three"),
+                    new Prime(29, "1D", "11101", 4, "XXIX", "twenty-nine"),
+                    new Prime(31, "1F", "11111", 5, "XXXI", "thirty-one"),
+                    new Prime(37, "25", "100101", 3, "XXXVII", "thirty-seven"),
+                    new Prime(41, "29", "101001", 3, "XLI", "forty-one"),
+                    new Prime(43, "2B", "101011", 4, "XLIII", "forty-three"),
+                    new Prime(47, "2F", "101111", 5, "XLVII", "forty-seven"));
     }
 
     /**
@@ -1084,6 +1085,66 @@ public class DataTestServlet extends FATServlet {
         // An empty page lacks keyset values from which to request next/previous pages
         assertEquals(null, page.nextPageable());
         assertEquals(null, page.previousPageable());
+    }
+
+    /**
+     * Obtain keyset cursors from a page of results and use them to obtain pages in forward
+     * and reverse directions.
+     */
+    @Test
+    public void testKeysetPaginationWithCursor() {
+        // Expected order for OrderByEvenDescSumOfBitsDescNumberAsc:
+        // num binary sum even?
+        // 2,  10,     1, true
+        // 31, 11111,  5, false
+        // 23, 10111,  4, false
+        // 29, 11101,  4, false
+        // 43, 101011, 4, false
+        // 7,  111,    3, false
+        // 11, 1011,   3, false
+        // 13, 1101,   3, false
+        // 19, 10011,  3, false
+        // 37, 100101, 3, false
+        // 41, 101001, 3, false
+        // 3,  11,     2, false
+        // 5,  101,    2, false
+        // 17, 10001,  2, false
+
+        KeysetPageable initialPagination = Pageable.of(2, 8).afterKeyset(false, 4, 23L);
+        KeysetAwarePage<Prime> page2 = primes.findByNumberBetweenOrderByEvenDescSumOfBitsDescNumberAsc(0L, 45L, initialPagination);
+
+        assertIterableEquals(List.of(29L, 43L, 7L, 11L, 13L, 19L, 37L, 41L),
+                             page2.getContent().stream().map(p -> p.number).collect(Collectors.toList()));
+
+        KeysetPageable.Cursor cursor7 = page2.getKeysetCursor(2);
+        KeysetPageable paginationBefore7 = Pageable.size(8).beforeKeysetCursor(cursor7);
+
+        KeysetAwarePage<Prime> page1 = primes.findByNumberBetweenOrderByEvenDescSumOfBitsDescNumberAsc(0L, 45L, paginationBefore7);
+
+        assertIterableEquals(List.of(2L, 31L, 23L, 29L, 43L),
+                             page1.getContent().stream().map(p -> p.number).collect(Collectors.toList()));
+
+        KeysetPageable.Cursor cursor13 = page2.getKeysetCursor(4);
+        KeysetPageable paginationAfter13 = Pageable.page(3).afterKeysetCursor(cursor13);
+
+        KeysetAwarePage<Prime> page3 = primes.findByNumberBetweenOrderByEvenDescSumOfBitsDescNumberAsc(0L, 45, paginationAfter13);
+
+        assertIterableEquals(List.of(19L, 37L, 41L, 3L, 5L, 17L),
+                             page3.getContent().stream().map(p -> p.number).collect(Collectors.toList()));
+
+        // test .equals method
+        assertEquals(cursor13, cursor13);
+        assertEquals(cursor13, page2.getKeysetCursor(4));
+        assertEquals(false, cursor13.equals(cursor7));
+
+        // test .hashCode method
+        Map<KeysetPageable.Cursor, Integer> map = new HashMap<>();
+        map.put(cursor13, 13);
+        map.put(cursor7, 7);
+        assertEquals(Integer.valueOf(7), map.get(cursor7));
+        assertEquals(Integer.valueOf(13), map.get(cursor13));
+
+        assertEquals(false, cursor7.toString().equals(cursor13.toString()));
     }
 
     /**

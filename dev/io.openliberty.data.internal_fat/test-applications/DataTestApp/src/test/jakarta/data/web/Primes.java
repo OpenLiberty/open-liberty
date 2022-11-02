@@ -36,6 +36,8 @@ public interface Primes {
     @OrderBy("number")
     KeysetAwarePage<Prime> findByNumberBetween(long min, long max, Pageable pagination);
 
+    KeysetAwarePage<Prime> findByNumberBetweenOrderByEvenDescSumOfBitsDescNumberAsc(long min, long max, Pageable pagination);
+
     Page<Prime> findByNumberLessThanEqualOrderByNumberDesc(long max, Pageable pagination);
 
     @OrderBy(value = "name", descending = true)

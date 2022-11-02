@@ -16,6 +16,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +29,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import jakarta.data.DataException;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetPageable;
-import jakarta.data.repository.KeysetPageable.Cursor;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Sort;
 import jakarta.persistence.EntityManager;
@@ -143,7 +143,25 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
 
     @Override
     public Cursor getKeysetCursor(int index) {
-        throw new UnsupportedOperationException(); // TODO
+        if (index < 0 || index >= pagination.getSize())
+            throw new IllegalArgumentException("index: " + index);
+
+        T entity = results.get(index);
+
+        final Object[] keyValues = new Object[queryInfo.keyset.size()];
+        int k = 0;
+        for (Sort keyInfo : queryInfo.keyset)
+            try {
+                Member accessor = queryInfo.entityInfo.attributeAccessors.get(keyInfo.getProperty());
+                if (accessor instanceof Method)
+                    keyValues[k++] = ((Method) accessor).invoke(entity);
+                else
+                    keyValues[k++] = ((Field) accessor).get(entity);
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException x) {
+                throw new DataException(x.getCause());
+            }
+
+        return new Cursor(keyValues);
     }
 
     @Override
@@ -231,6 +249,49 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
         Pageable p = pagination.getPage() == 1 ? pagination : Pageable.of(pagination.getPage() - 1, pagination.getSize());
         return p.beforeKeyset(keyValues.toArray());
     }
+
+    /**
+     * Keyset cursor
+     */
+    @Trivial
+    private static class Cursor implements KeysetPageable.Cursor {
+        private final Object[] keyValues;
+
+        private Cursor(Object[] keyValues) {
+            this.keyValues = keyValues;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public boolean equals(Object o) {
+            return this == o || o != null
+                                && getClass() == o.getClass()
+                                && Arrays.equals(keyValues, ((Cursor) o).keyValues);
+        }
+
+        @Override
+        public Object getKeysetElement(int index) {
+            return keyValues[index];
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(keyValues);
+        }
+
+        @Override
+        public int size() {
+            return keyValues.length;
+        }
+
+        @Override
+        public String toString() {
+            return new StringBuilder(47) //
+                            .append("KeysetAwarePageImpl.Cursor@").append(Integer.toHexString(hashCode())) //
+                            .append(" with ").append(keyValues.length).append(" keys") //
+                            .toString();
+        }
+    };
 
     /**
      * Restricts the number of results to the specified amount.

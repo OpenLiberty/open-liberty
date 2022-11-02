@@ -27,7 +27,7 @@ public class Pageable {
         return new KeysetPageable(this, KeysetPageable.Mode.NEXT, new KeysetPageable.CursorImpl(keyset));
     }
 
-    public KeysetPageable afterKeysetCursosr(KeysetPageable.Cursor cursor) {
+    public KeysetPageable afterKeysetCursor(KeysetPageable.Cursor cursor) {
         return new KeysetPageable(this, KeysetPageable.Mode.NEXT, cursor);
     }
 
