@@ -2511,6 +2511,49 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Obtain total counts of number of elements and pages when keyset pagination is used.
+     */
+    @Test
+    public void testTotalCountsWithKeysetPagination() {
+        KeysetAwarePage<Prime> page3 = primes.findByNumberBetween(3L, 50L, Pageable.of(3, 5).beforeKeyset(47L));
+        assertEquals(14L, page3.getTotalElements());
+        assertEquals(3L, page3.getTotalPages());
+
+        assertIterableEquals(List.of(29L, 31L, 37L, 41L, 43L),
+                             page3.getContent().stream().map(p -> p.number).collect(Collectors.toList()));
+
+        KeysetAwarePage<Prime> page2 = primes.findByNumberBetween(3L, 50L, page3.previousPageable());
+        assertEquals(3L, page2.getTotalPages());
+        assertEquals(14L, page2.getTotalElements());
+
+        assertIterableEquals(List.of(11L, 13L, 17L, 19L, 23L),
+                             page2.getContent().stream().map(p -> p.number).collect(Collectors.toList()));
+
+        KeysetAwarePage<Prime> page1 = primes.findByNumberBetween(3L, 50L, page2.previousPageable());
+        assertEquals(3L, page1.getTotalPages());
+        assertEquals(14L, page1.getTotalElements());
+
+        assertIterableEquals(List.of(3L, 5L, 7L),
+                             page1.getContent().stream().map(p -> p.number).collect(Collectors.toList()));
+
+        assertEquals(null, page1.previousPageable());
+
+        KeysetAwarePage<Prime> page4 = primes.findByNumberBetween(3L, 50L, page3.nextPageable());
+        // In this case, the 14 elements are across 4 pages, not 3,
+        // because the first and last pages ended up being partial.
+        // But that doesn't become known until the first or last page is read.
+        // This is one of many reasons why keyset pagination documents that
+        // page counts are inaccurate and cannot be relied upon.
+        assertEquals(3L, page4.getTotalPages());
+        assertEquals(14L, page4.getTotalElements());
+
+        assertIterableEquals(List.of(47L),
+                             page4.getContent().stream().map(p -> p.number).collect(Collectors.toList()));
+
+        assertEquals(null, page4.nextPageable());
+    }
+
+    /**
      * Update multiple entries.
      */
     @Test

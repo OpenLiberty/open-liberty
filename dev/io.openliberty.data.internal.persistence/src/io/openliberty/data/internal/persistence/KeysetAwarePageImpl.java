@@ -39,10 +39,12 @@ import jakarta.persistence.TypedQuery;
 public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     private static final TraceComponent tc = Tr.register(KeysetAwarePageImpl.class);
 
+    private final Object[] args;
     private final boolean isForward;
     private final Pageable pagination;
     private final QueryInfo queryInfo;
     private final List<T> results;
+    private long totalElements = -1;
 
     KeysetAwarePageImpl(QueryInfo queryInfo, Pageable pagination, Object[] args) {
         KeysetPageable.Cursor keysetCursor = null;
@@ -62,6 +64,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
             firstResult = (int) ((pagination.getPage() - 1) * maxPageSize);
         }
 
+        this.args = args;
         this.queryInfo = queryInfo;
 
         EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
@@ -92,6 +95,27 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
             if (!isForward)
                 for (int size = results.size(), i = 0, j = size - (size > maxPageSize ? 2 : 1); i < j; i++, j--)
                     Collections.swap(results, i, j);
+        } catch (Exception x) {
+            throw new DataException(x);
+        } finally {
+            em.close();
+        }
+    }
+
+    /**
+     * Query for count of total elements across all pages.
+     *
+     * @param jpql count query.
+     */
+    private long countTotalElements() {
+        EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
+        try {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "query for count: " + queryInfo.jpqlCount);
+            TypedQuery<Long> query = em.createQuery(queryInfo.jpqlCount, Long.class);
+            queryInfo.setParameters(query, args);
+
+            return query.getSingleResult();
         } catch (Exception x) {
             throw new DataException(x);
         } finally {
@@ -141,12 +165,16 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
 
     @Override
     public long getTotalElements() {
-        throw new UnsupportedOperationException(); // TODO
+        if (totalElements == -1)
+            totalElements = countTotalElements();
+        return totalElements;
     }
 
     @Override
     public long getTotalPages() {
-        throw new UnsupportedOperationException(); // TODO
+        if (totalElements == -1)
+            totalElements = countTotalElements();
+        return totalElements / pagination.getSize() + (totalElements % pagination.getSize() > 0 ? 1 : 0);
     }
 
     @Override

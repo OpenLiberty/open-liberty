@@ -13,6 +13,7 @@ package test.jakarta.data.web;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
@@ -31,6 +32,9 @@ public interface Primes {
     CompletableFuture<Short> countByNumberBetweenAndEvenNot(long first, long last, boolean isOdd);
 
     Integer countNumberBetween(long first, long last);
+
+    @OrderBy("number")
+    KeysetAwarePage<Prime> findByNumberBetween(long min, long max, Pageable pagination);
 
     Page<Prime> findByNumberLessThanEqualOrderByNumberDesc(long max, Pageable pagination);
 
