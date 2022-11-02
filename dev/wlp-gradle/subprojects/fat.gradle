@@ -289,6 +289,57 @@ task autoFVT {
       exclude 'files'
       into publishDir
     }
+    
+    //get the defaults system property
+    def defaults = System.getProperty('fat.config.dropins.defaults')
+    if(defaults == null){
+      defaults = true // default it to true
+    }
+    //get the defaults bnd property. if not set, use the system property
+    defaults = bnd.get('fat.config.dropins.defaults', defaults).toBoolean()
+    
+    //get the overrides system property
+    def overrides = System.getProperty('fat.config.dropins.overrides')
+    if(overrides == null){
+      overrides = true
+    }
+    //get the overrides bnd property. if not set, use the system property
+    overrides = bnd.get('fat.config.dropins.overrides', overrides).toBoolean()
+    
+    //if either defaults or overrides was true
+    if(defaults || overrides){
+      File srcConfigDropins = new File(autoFvtDir, 'configDropins')
+      File srcDefaults = new File(srcConfigDropins, 'defaults')
+      File srcOverrides = new File(srcConfigDropins, 'overrides')
+      File serversDir = new File(publishDir, 'servers')
+      if(serversDir.exists()) {
+        //for each server dir...
+        serversDir.eachDir { subDir ->
+          File configDropinsDir = new File(subDir, 'configDropins')
+          //if the configDropins dir already exists then don't copy over the top
+          if(!configDropinsDir.exists()){
+            //copy in the configDropins/defaults dir
+            if(defaults){
+              File defaultsDir = new File(configDropinsDir, 'defaults')
+              copy{
+                from srcDefaults
+                include '**/*'
+                into defaultsDir
+              }
+            }
+            //copy in the configDropins/overrides dir
+            if(overrides){
+              File overridesDir = new File(configDropinsDir, 'overrides')
+              copy{
+                from srcOverrides
+                include '**/*'
+                into overridesDir
+              }
+            }
+          }
+        }
+      }
+    }
 
     // Copy the logging libraries over for use while running FATs
     copy {
