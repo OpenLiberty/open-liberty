@@ -186,8 +186,8 @@ public class Basic21Test {
       * ALSO SKIPPED DUE TO Defect 291298
       * @Mode(TestMode.LITE)
       * @Test
-      * public void testNegativeoTimeOut() throws Exception {
-      *  timeout.testNegativeoTimeOut();
+      * public void testNegativeTimeOut() throws Exception {
+      *  timeout.testNegativeTimeOut();
       *  String result  = LS.waitForStringInTraceUsingMark("Session timeout -12 is less than 1. No timeout enabled");
       *  assertNotNull("Timeout message not found!", result);
       * }
@@ -208,22 +208,22 @@ public class Basic21Test {
 
     @Mode(TestMode.FULL)
     @Test
-    public void testSSCNegativeoTimeOut() throws Exception {
-        this.runAsLSAndVerifyResponse("TimeOutTest", "testNegativeoTimeOut");
+    public void testSSCNegativeTimeOut() throws Exception {
+        this.runAsLSAndVerifyResponse("TimeOutTest", "testNegativeTimeOut");
         String result  = LS.waitForStringInTraceUsingMark("Session timeout -12 is less than 1. No timeout enabled");
         assertNotNull("Timeout message not found!", result);
     }
 
     @Mode(TestMode.LITE)
     @Test
-    public void testUserPropertiesOnServer() throws Exception {
-        userprop.testUserPropertiesOnServer();
+    public void testSSCUserPropertiesOnServer() throws Exception {
+        this.runAsLSAndVerifyResponse("UserPropertiesTest", "testUserPropertiesOnServer");
     }
 
     @Mode(TestMode.LITE)
     @Test
-    public void testSSCUserPropertiesOnServer() throws Exception {
-        this.runAsLSAndVerifyResponse("UserPropertiesTest", "testUserPropertiesOnServer");
+    public void testUserPropertiesOnServer() throws Exception {
+        userprop.testUserPropertiesOnServer();
     }
 
     @Mode(TestMode.LITE)

@@ -44,7 +44,7 @@ public class TimeOutTest {
         wsocTest.runEchoTest(new ClientHelper.BasicClientEP(input1), uri, output1);
     }
     
-    public void testNegativeoTimeOut() throws Exception {
+    public void testNegativeTimeOut() throws Exception {
         String[] input1 = { "Text1" };
         String[] output1 = { "-12" };  // timeout value 
 
