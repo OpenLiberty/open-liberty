@@ -9,8 +9,18 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+def grpcVersion='1.43.2'
+
 dependencies {
   requiredLibs 'org.json:json:20080701'
+  requiredLibs 'io.grpc:grpc-api:' + grpcVersion
+  requiredLibs 'io.grpc:grpc-core:' + grpcVersion
+  requiredLibs 'io.grpc:grpc-stub:' + grpcVersion
+  requiredLibs 'io.grpc:grpc-protobuf:' + grpcVersion
+  requiredLibs 'io.grpc:grpc-netty:' + grpcVersion
+  requiredLibs 'com.google.protobuf:protobuf-java:3.19.2'
+  requiredLibs 'com.google.protobuf:protobuf-java-util:3.19.2'
+  requiredLibs 'io.opentelemetry:opentelemetry-semconv:1.19.0-alpha'
 } 
 
 addRequiredLibraries.dependsOn copyTestContainers

@@ -44,7 +44,7 @@ public abstract class MicroProfileTelemetryTestBase {
 
     public static final String PATH_TO_AUTOFVT_TESTFILES = "lib/LibertyFATTestFiles/";
     public static final int DEFAULT_TIMEOUT = 40 * 1000; // 40 seconds
-    public static final String JAEGER_IMAGE = "jaegertracing/all-in-one:1.37";
+    public static final String JAEGER_IMAGE = "jaegertracing/all-in-one:1.39";
     public static final int JAEGER_UI_PORT = 16686;
     public static final int JAEGER_GRPC_PORT = 14250;
     public static final Duration CONTAINER_STARTUP_TIMEOUT = Duration.ofSeconds(240);

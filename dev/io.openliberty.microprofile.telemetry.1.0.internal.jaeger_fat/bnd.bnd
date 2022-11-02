@@ -25,10 +25,26 @@ fat.project: true
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true
 
-fat.test.container.images: jaegertracing/all-in-one:1.37
+fat.test.container.images: jaegertracing/all-in-one:1.39
+
+grpcVersion=1.43.2
 
 -buildpath: \
-    io.openliberty.jakarta.restfulWS.3.1;version=latest,\
-    io.openliberty.jakarta.cdi.4.0;version=latest,\
-    org.json:json;version=20080701,\
-    io.openliberty.org.testcontainers;version=latest
+	io.openliberty.jakarta.restfulWS.3.1;version=latest,\
+	io.openliberty.jakarta.cdi.4.0;version=latest,\
+	io.openliberty.io.opentelemetry.internal;version=latest,\
+	io.openliberty.org.eclipse.microprofile.rest.client.3.0;version=latest,\
+	org.json:json;version=20080701,\
+	io.openliberty.org.testcontainers;version=latest,\
+	com.ibm.ws.com.google.guava;version=latest,\
+	com.google.protobuf:protobuf-java;version='3.19.2',\
+	com.google.protobuf:protobuf-java-util;version='3.19.2',\
+	io.grpc:grpc-api;version='${grpcVersion}',\
+	io.grpc:grpc-core;version='${grpcVersion}',\
+	io.grpc:grpc-context;version='${grpcVersion}',\
+	io.grpc:grpc-protobuf;version='${grpcVersion}',\
+	io.grpc:grpc-protobuf-lite;version='${grpcVersion}',\
+	io.grpc:grpc-stub;version='${grpcVersion}',\
+	com.ibm.websphere.javaee.annotation.1.3
+    
+    
