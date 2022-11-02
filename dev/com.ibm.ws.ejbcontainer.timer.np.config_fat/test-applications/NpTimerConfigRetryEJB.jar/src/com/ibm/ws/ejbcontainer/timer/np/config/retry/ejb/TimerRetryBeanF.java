@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2021 IBM Corporation and others.
+ * Copyright (c) 2009, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.ws.ejbcontainer.timer.np.config.retry.ejb;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -41,6 +42,7 @@ public class TimerRetryBeanF {
     private static CountDownLatch timerLatch;
     public static String timerInfo;
     public static boolean timerExists;
+    public static Date previousNextTimeout;
 
     @Resource
     private TimerService ivTS;
@@ -50,6 +52,7 @@ public class TimerRetryBeanF {
 
         timerExists = false;
         timerInfo = testName;
+        previousNextTimeout = null;
         timerLatch = new CountDownLatch(numOfTimeouts);
         TimerConfig timerConfig = new TimerConfig();
         timerConfig.setInfo("Timeout for test: **" + timerInfo + "**");
@@ -67,12 +70,19 @@ public class TimerRetryBeanF {
     public void doTimeoutStuff(Timer timer) {
         svLogger.info("Entering TimerRetryBeanF.doTimeoutStuff(), with pre-execution count of **" + count + "**");
 
-        count++;
-        timestamps.add(Long.valueOf(System.currentTimeMillis()));
+        // Throw an exception to force retries until both max retries and the latch count have been reached
+        Date nextTimeout = timer.getNextTimeout();
+        if (previousNextTimeout == null || previousNextTimeout.equals(nextTimeout) || timerLatch.getCount() > 0) {
+            previousNextTimeout = nextTimeout;
+            count++;
+            timestamps.add(Long.valueOf(System.currentTimeMillis()));
 
-        svLogger.info("Intentionally throwing error from TimerRetryBeanF.doTimeoutStuff()...currenty retry count is **" + count + "**");
-        timerLatch.countDown();
-        throw new TransactionRolledbackLocalException("Intentional timer exception to force retry, with post-execution count of **" + count + "**");
+            svLogger.info("Intentionally throwing error from TimerRetryBeanF.doTimeoutStuff()...currenty retry count is **" + count + "**");
+            timerLatch.countDown();
+            throw new TransactionRolledbackLocalException("Intentional timer exception to force retry, with post-execution count of **" + count + "**");
+        } else {
+            previousNextTimeout = nextTimeout;
+        }
     }
 
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
