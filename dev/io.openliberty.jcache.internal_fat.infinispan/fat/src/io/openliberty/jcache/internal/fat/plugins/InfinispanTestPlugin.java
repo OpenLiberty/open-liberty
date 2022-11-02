@@ -12,8 +12,10 @@ package io.openliberty.jcache.internal.fat.plugins;
 
 import java.util.Arrays;
 
+import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.topology.impl.LibertyServer;
-import io.openliberty.jcache.internal.fat.FATSuite;
+import io.openliberty.jcache.internal.fat.docker.InfinispanContainer;
 
 /**
  * See Infinispan hotrod properties here:
@@ -24,12 +26,16 @@ public class InfinispanTestPlugin implements TestPlugin {
 
     private final String hotrodFile;
 
+    public static InfinispanContainer infinispan = new InfinispanContainer();
+
     public InfinispanTestPlugin(String hotrodFile) {
         this.hotrodFile = hotrodFile;
     }
 
     @Override
     public void setupServer1(LibertyServer server, String clusterName, Integer authCacheMaxSize, Integer authCacheTtlSecs) throws Exception {
+        Log.info(InfinispanTestPlugin.class, "setupServer1", "Configuring server1");
+
         /*
          * Default the cache size and TTL to the default values for authCache->maxSize and authCache->timeout
          * from server.xml.
@@ -47,17 +53,19 @@ public class InfinispanTestPlugin implements TestPlugin {
         server.setJvmOptions(Arrays.asList("-Dinfinispan.cluster.name=" + clusterName,
                                            "-Dauthcache.max.size=" + authCacheMaxSize,
                                            "-Dauthcache.entry.ttl=" + (1000 * authCacheTtlSecs),
-                                           "-Dinfinispan.client.hotrod.uri=" + FATSuite.infinispan.getHotRodUri(),
+                                           "-Dinfinispan.client.hotrod.uri=" + infinispan.getHotRodUri(),
                                            "-Dinfinispan.hotrod.file=" + hotrodFile));
     }
 
     @Override
     public void setupServer2(LibertyServer server, String clusterName) throws Exception {
+        Log.info(InfinispanTestPlugin.class, "setupServer2", "Configuring server2");
+
         /*
          * Set JVM options.
          */
         server.setJvmOptions(Arrays.asList("-Dinfinispan.cluster.name=" + clusterName,
-                                           "-Dinfinispan.client.hotrod.uri=" + FATSuite.infinispan.getHotRodUri(),
+                                           "-Dinfinispan.client.hotrod.uri=" + infinispan.getHotRodUri(),
                                            "-Dinfinispan.hotrod.file=" + hotrodFile));
     }
 
@@ -68,12 +76,28 @@ public class InfinispanTestPlugin implements TestPlugin {
 
     @Override
     public void beforeTest() throws Exception {
-        FATSuite.infinispan.deleteAllCaches();
+        /*
+         * Start the Infinispan docker container before each tests. There were issues with
+         * when we deleted Infinispan caches, where the REST and Java APIs said the caches
+         * didn't exist, but Liberty was able to find them when it started up. Then sometime
+         * during Libery's runtime execution, the cache would disappear and Liberty would
+         * encounter errors. So instead of keeping the Infinispan docker container up during
+         * the entire suite, we will bring it up before each test so there there should never
+         * be any existing caches.
+         */
+        Log.info(InfinispanTestPlugin.class, "beforeTest", "Starting Infinispan Docker container...");
+        infinispan.start();
+        Log.info(InfinispanTestPlugin.class, "beforeTest", "Finished starting Infinispan Docker container.");
     }
 
     @Override
     public void afterTest() throws Exception {
-        // Nothing to do.
+        /*
+         * Stop the Infinispan server.
+         */
+        Log.info(InfinispanTestPlugin.class, "afterTest", "Stopping Infinispan Docker container.");
+        infinispan.stop();
+        Log.info(InfinispanTestPlugin.class, "afterTest", "Finished stopping Infinispan Docker container.");
     }
 
     @Override

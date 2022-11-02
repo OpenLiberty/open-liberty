@@ -28,7 +28,6 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
-import io.openliberty.jcache.internal.fat.docker.InfinispanContainer;
 import io.openliberty.jcache.internal.fat.plugins.InfinispanTestPlugin;
 import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
 
@@ -61,8 +60,6 @@ public class FATSuite extends TestContainerSuite {
     public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
                     .andWith(new JakartaEE9Action());
 
-    @ClassRule
-    public static InfinispanContainer infinispan = new InfinispanContainer();
 
     private static String hotrodFile;
     private static final String HOTROD_FILE = "infinispan_hotrod.props";
