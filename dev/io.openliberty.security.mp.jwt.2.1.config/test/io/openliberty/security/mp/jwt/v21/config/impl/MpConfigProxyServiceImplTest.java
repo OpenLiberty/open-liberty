@@ -14,7 +14,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.microprofile.config.Config;
 import org.jmock.Expectations;
@@ -165,6 +168,75 @@ public class MpConfigProxyServiceImplTest {
 
         String output = (String) mpConfigProxyServiceImpl.getConfigValue(cl, NAME, CLAZZ);
         assertEquals("the expected value should be returned", VALUE, output);
+    }
+
+    @Test
+    public void testGetConfigValuesNoClassLoader() {
+        MpConfigProxyServiceImpl mpConfigProxyServiceImpl = new MpConfigProxyServiceImplDouble();
+        Set<String> properties = new TreeSet<>();
+        properties.add(MpConfigProperties.PUBLIC_KEY);
+        properties.add(MpConfigProperties.ISSUER);
+        Class CLAZZ = String.class;
+        String VALUE = "value";
+
+        mockery.checking(new Expectations() {
+            {
+                one(configNoClassLoader).getOptionalValue(MpConfigProperties.PUBLIC_KEY, CLAZZ);
+                will(returnValue(Optional.of(VALUE)));
+                one(configNoClassLoader).getOptionalValue(MpConfigProperties.ISSUER, CLAZZ);
+                will(returnValue(Optional.of(VALUE)));
+            }
+        });
+
+        List<String> output = mpConfigProxyServiceImpl.getConfigValues(null, properties, CLAZZ);
+        assertEquals("the list should be 2 items.", 2, output.size());
+    }
+
+    @Test
+    public void testGetConfigValuesClassLoader() {
+        MpConfigProxyServiceImpl mpConfigProxyServiceImpl = new MpConfigProxyServiceImplDouble();
+        Set<String> properties = new TreeSet<>();
+        properties.add(MpConfigProperties.PUBLIC_KEY);
+        properties.add(MpConfigProperties.ISSUER);
+        Class CLAZZ = String.class;
+        String VALUE = "value";
+
+        mockery.checking(new Expectations() {
+            {
+                one(configClassLoader).getOptionalValue(MpConfigProperties.PUBLIC_KEY, CLAZZ);
+                will(returnValue(Optional.of(VALUE)));
+                one(configClassLoader).getOptionalValue(MpConfigProperties.ISSUER, CLAZZ);
+                will(returnValue(Optional.of(VALUE)));
+            }
+        });
+
+        List<String> output = mpConfigProxyServiceImpl.getConfigValues(cl, properties, CLAZZ);
+        assertEquals("the list should be 2 items.", 2, output.size());
+    }
+
+    @Test
+    public void testGetConfigValuesClassLoader_unknownMpJwtConfigProperty() {
+        MpConfigProxyServiceImpl mpConfigProxyServiceImpl = new MpConfigProxyServiceImplDouble();
+        Set<String> properties = new TreeSet<>();
+        properties.add(MpConfigProperties.PUBLIC_KEY);
+        properties.add(MpConfigProperties.ISSUER);
+        properties.add("Unknown");
+
+        Class CLAZZ = String.class;
+        String VALUE = "value";
+
+        mockery.checking(new Expectations() {
+            {
+                one(configClassLoader).getOptionalValue(MpConfigProperties.PUBLIC_KEY, CLAZZ);
+                will(returnValue(Optional.of(VALUE)));
+                one(configClassLoader).getOptionalValue(MpConfigProperties.ISSUER, CLAZZ);
+                will(returnValue(Optional.of(VALUE)));
+                never(configClassLoader).getOptionalValue("Unknown", CLAZZ);
+            }
+        });
+
+        List<String> output = mpConfigProxyServiceImpl.getConfigValues(cl, properties, CLAZZ);
+        assertEquals("the list should be 3 items.", 3, output.size());
     }
 
     class MpConfigProxyServiceImplDouble extends MpConfigProxyServiceImpl {
