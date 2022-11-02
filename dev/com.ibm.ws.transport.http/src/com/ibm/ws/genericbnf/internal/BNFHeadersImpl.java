@@ -1698,21 +1698,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             Tr.entry(tc, "clearAllHeaders()");
         }
 
-        HeaderElement elem = this.hdrSequence;
-        while (null != elem) {
-            final HeaderElement next = elem.nextSequence;
-            final HeaderKeys key = elem.getKey();
-            final int ord = key.getOrdinal();
-            if (storage.containsKey(ord)) {
-                // first instance being removed
-                if (key.useFilters()) {
-                    filterRemove(key, null);
-                }
-                storage.remove(ord);
-            }
-            elem.destroy();
-            elem = next;
-        }
+        storage = new HashMap<Integer, HeaderElement>();
         this.hdrSequence = null;
         this.lastHdrInSequence = null;
         this.numberOfHeaders = 0;
