@@ -65,3 +65,15 @@
 
 17025=Esta correlaci\u00f3n requiere un elemento de agrupaci\u00f3n de claves for\u00e1neas, ya que existen varias claves for\u00e1neas.
 
+17026=La propiedad de operaci\u00f3n debe establecerse en la interacci\u00f3n de la consulta.
+
+17027=El nombre de tabla de destino no est\u00e1 establecido. Debe establecerse en la interacci\u00f3n de la consulta.
+
+17028=Valor de propiedad de coherencia no v\u00e1lido: {0}
+
+17029=Valor de propiedad de durabilidad no v\u00e1lido: {0}
+
+17030=XMLInteraction solo es v\u00e1lido para consultas de objeto; utilice MappedInteraction para las consultas nativas: {0}
+
+17031=Consulta demasiado compleja para la conversi\u00f3n de NoSQL de Oracle; solo se da soporte a consultas de selecci\u00f3n en la consulta: {0}
+

@@ -28,17 +28,17 @@ SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: El\u0151\u00e1ll\u00edtott Infinispan 
 SESN0310_GEN_INFINISPAN_CONFIG.explanation=A HTTP munkamenet perzisztenci\u00e1hoz haszn\u00e1lt Infinispan gyors\u00edt\u00f3t\u00e1rak tov\u00e1bbi konfigur\u00e1ci\u00f3t ig\u00e9nyelnek a munkamenetek t\u00e1rol\u00e1s\u00e1hoz kiszolg\u00e1l\u00f3k k\u00f6z\u00f6tt. A Liberty el\u0151\u00e1ll\u00edtja ezt a konfigur\u00e1ci\u00f3t, ha a felhaszn\u00e1l\u00f3 nem biztos\u00edtja.
 SESN0310_GEN_INFINISPAN_CONFIG.useraction=Ha el\u00e9gedett az el\u0151\u00e1ll\u00edtott konfigur\u00e1ci\u00f3val, akkor nincs teend\u0151je. M\u00e1sk\u00fcl\u00f6nben az el\u0151\u00e1ll\u00edtott konfigur\u00e1ci\u00f3 kiindul\u00e1si pontk\u00e9nt haszn\u00e1lhat\u00f3.
 
-CWLJC0001_CACHE_CREATED=CWLJC0001I: A(z) {0} JCache {1} ezredm\u00e1sodpercen bel\u00fcl l\u00e9trej\u00f6tt.
+CWLJC0001_CACHE_CREATED=CWLJC0001I: A(z) {0} JCache {1} ezredm\u00e1sodpercen bel\u00fcl l\u00e9trej\u00f6tt, \u00e9s a(z) {2} gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3t haszn\u00e1lja.
 CWLJC0001_CACHE_CREATED.explanation=A megnevezett JCache l\u00e9trehoz\u00e1sra ker\u00fclt, mert nem volt megtal\u00e1lhat\u00f3.
 CWLJC0001_CACHE_CREATED.useraction=Semmit sem kell tennie.
 
-CWLJC0002_CACHE_FOUND=CWLJC0002I: A megl\u00e9v\u0151 {0} JCache {1} ezredm\u00e1sodpercen bel\u00fcl megtal\u00e1lhat\u00f3 volt.
+CWLJC0002_CACHE_FOUND=CWLJC0002I: A rendszer a megl\u00e9v\u0151 {0} JCache gyors\u00edt\u00f3t\u00e1rat {1} ezredm\u00e1sodpercen bel\u00fcl megtal\u00e1lta, \u00e9s a(z) {2} gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3t haszn\u00e1lja.
 CWLJC0002_CACHE_FOUND.explanation=A megnevezett JCache megtal\u00e1lhat\u00f3, \u00edgy nem ker\u00fclt l\u00e9trehoz\u00e1sra.
 CWLJC0002_CACHE_FOUND.useraction=Semmit sem kell tennie.
 
-CWLJC0003_USING_PROVIDER=CWLJC0003I: A(z) {0} JCache a(z) {1} gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3t haszn\u00e1lja.
-CWLJC0003_USING_PROVIDER.explanation=A megnevezett JCache a megadott szolg\u00e1ltat\u00f3t haszn\u00e1lja.
-CWLJC0003_USING_PROVIDER.useraction=Semmit sem kell tennie. 
+#
+# CWLJC0003 is available for use.
+# 
 
 CWLJC0004_GET_PROVIDER_FAILED=CWLJC0004E: A(z) {0} gyors\u00edt\u00f3t\u00e1r-szolg\u00e1ltat\u00f3 bet\u00f6lt\u00e9se meghi\u00fasult. {1}
 CWLJC0004_GET_PROVIDER_FAILED.explanation=A cachingProvider konfigur\u00e1ci\u00f3 bet\u00f6lt\u00e9se meghi\u00fasult.

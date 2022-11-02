@@ -27,7 +27,7 @@
 #   (single quote must be coded as one single quote '). 
 #
 # -------------------------------------------------------------------------------------------------
-28001=Beim Versuch, die Sitzung [{0}] zu erstellen, wurde eine ValidationException ausgel\u00f6st. Die wahrscheinlichsten Ursachen dieses Problems sind, dass Ihre Datei [{1}] nicht im Klassenpfad verf\u00fcgbar ist oder dass sie keine Sitzung mit dem Namen [{0}] enth\u00e4lt.
+28001=Bei dem Versuch, die Sitzung [{0}] zu erstellen, wurde eine ValidationException ausgel\u00f6st. Die wahrscheinlichsten Ursachen dieses Problems sind, dass Ihre Datei [{1}] nicht im Klassenpfad verf\u00fcgbar ist oder dass sie keine Sitzung mit dem Namen [{0}] enth\u00e4lt.
 
 28002=EclipseLink versucht, eine ServerSession mit dem  Namen [{0}] aus [{1}] zu laden, ruft aber keine ServerSession ab.
 

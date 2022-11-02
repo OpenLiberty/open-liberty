@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2021 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -86,4 +86,20 @@ JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.useraction=Nu este necesar\u0103 nicio ac\
 
 JCACHE_AUTH_CACHE_SERIALIZATION_FAILED=CWWKS1126W: Inserarea intr\u0103rii pentru cheia {0} \u00een cache-ul de autentificare JCache {1} a e\u0219uat din cauza unei erori de serializare. \u00cen schimb, intrarea va fi introdus\u0103 \u00een cache-ul de autentificare \u00een memorie. Excep\u021bia este: {2}
 JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.explanation=Con\u021binutul intr\u0103rii nu a fost serializat, prin urmare acesta nu a fost stocat \u00een cache-ul de autentificare JCache.
-JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.useraction=Investiga\u021bi excep\u021bia inclus\u0103 \u00een mesaj \u0219i remedia\u021bi cauza erorii.  
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.useraction=Investiga\u021bi excep\u021bia inclus\u0103 \u00een mesaj \u0219i remedia\u021bi cauza erorii.
+
+JCACHE_AUTH_CACHE_GET_FAILED=CWWKS1127E: Extragerea intr\u0103rii pentru cheia {0} din cache-ul de autentificare JCache {1} a e\u0219uat din cauza unei erori. Excep\u021bia este: {2}
+JCACHE_AUTH_CACHE_GET_FAILED.explanation=Intrarea nu a putut fi extras\u0103 din cache-ul de autentificare JCache.
+JCACHE_AUTH_CACHE_GET_FAILED.useraction=Investiga\u021bi excep\u021bia inclus\u0103 \u00een mesaj \u0219i remedia\u021bi cauza erorii.
+
+JCACHE_AUTH_CACHE_INSERT_FAILED=CWWKS1128E: Inserarea intr\u0103rii pentru cheia {0} \u00een cache-ul de autentificare JCache {1} a e\u0219uat din cauza unei erori. Excep\u021bia este: {2}
+JCACHE_AUTH_CACHE_INSERT_FAILED.explanation=Intrarea nu a fost stocat\u0103 \u00een cache-ul de autentificare JCache.
+JCACHE_AUTH_CACHE_INSERT_FAILED.useraction=Investiga\u021bi excep\u021bia inclus\u0103 \u00een mesaj \u0219i remedia\u021bi cauza erorii.
+
+JCACHE_AUTH_CACHE_REMOVE_FAILED=CWWKS1129E: Eliminarea intr\u0103rii pentru cheia {0} \u00een cache-ul de autentificare JCache {1} a e\u0219uat din cauza unei erori. Excep\u021bia este: {2}
+JCACHE_AUTH_CACHE_REMOVE_FAILED.explanation=Intrarea nu a fost eliminat\u0103 din cache-ul de autentificare JCache.
+JCACHE_AUTH_CACHE_REMOVE_FAILED.useraction=Investiga\u021bi excep\u021bia inclus\u0103 \u00een mesaj \u0219i remedia\u021bi cauza erorii.
+
+JCACHE_AUTH_CACHE_CLEAR_FAILED=CWWKS1130E: Cur\u0103\u021barea cache-ului de autentificare JCache {0} a e\u0219uat din cauza unei erori. Excep\u0163ia este: {1}
+JCACHE_AUTH_CACHE_CLEAR_FAILED.explanation=Intr\u0103rile nu au fost \u0219terse din cache-ul de autentificare JCache.
+JCACHE_AUTH_CACHE_CLEAR_FAILED.useraction=Investiga\u021bi excep\u021bia inclus\u0103 \u00een mesaj \u0219i remedia\u021bi cauza erorii.

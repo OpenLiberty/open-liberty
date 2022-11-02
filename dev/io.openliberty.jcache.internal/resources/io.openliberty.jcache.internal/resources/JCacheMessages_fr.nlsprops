@@ -28,17 +28,17 @@ SESN0310_GEN_INFINISPAN_CONFIG=SESN0310I: Configuration Infinispan g\u00e9n\u00e
 SESN0310_GEN_INFINISPAN_CONFIG.explanation=Les caches Infinispan qui sont utilis\u00e9s pour la persistance de session HTTP requi\u00e8rent une configuration suppl\u00e9mentaire pour que les sessions puissent \u00eatre conserv\u00e9es entre les serveurs. Liberty g\u00e9n\u00e8re cette configuration lorsqu'elle n'est pas fournie par l'utilisateur.
 SESN0310_GEN_INFINISPAN_CONFIG.useraction=Aucune action n'est requise si la configuration g\u00e9n\u00e9r\u00e9e vous convient. Sinon, celle-ci peut servir de point de d\u00e9part.
 
-CWLJC0001_CACHE_CREATED=CWLJC0001I: L''\u00e9l\u00e9ment JCache {0} a \u00e9t\u00e9 cr\u00e9\u00e9 en {1} ms.
+CWLJC0001_CACHE_CREATED=CWLJC0001I: Le JCache {0} a \u00e9t\u00e9 cr\u00e9\u00e9 en {1} ms et utilise le fournisseur de mise en cache {2}.
 CWLJC0001_CACHE_CREATED.explanation=L'\u00e9l\u00e9ment JCache nomm\u00e9 a \u00e9t\u00e9 cr\u00e9\u00e9 car il est introuvable.
 CWLJC0001_CACHE_CREATED.useraction=Aucune action utilisateur n'est requise.
 
-CWLJC0002_CACHE_FOUND=CWLJC0002I: L''\u00e9l\u00e9ment JCache {0} existant a \u00e9t\u00e9 trouv\u00e9 en {1} ms.
+CWLJC0002_CACHE_FOUND=CWLJC0002I: Le JCache {0} existant a \u00e9t\u00e9 trouv\u00e9 en {1} ms et utilise le fournisseur de mise en cache {2}.
 CWLJC0002_CACHE_FOUND.explanation=L'\u00e9l\u00e9ment JCache nomm\u00e9 a \u00e9t\u00e9 trouv\u00e9, de sorte qu'il n'a pas \u00e9t\u00e9 cr\u00e9\u00e9.
 CWLJC0002_CACHE_FOUND.useraction=Aucune action utilisateur n'est requise.
 
-CWLJC0003_USING_PROVIDER=CWLJC0003I: L''\u00e9l\u00e9ment JCache {0} utilise le fournisseur de mise en cache {1}.
-CWLJC0003_USING_PROVIDER.explanation=L'\u00e9l\u00e9ment JCache nomm\u00e9 utilise le fournisseur sp\u00e9cifi\u00e9.
-CWLJC0003_USING_PROVIDER.useraction=Aucune action utilisateur n'est requise. 
+#
+# CWLJC0003 is available for use.
+# 
 
 CWLJC0004_GET_PROVIDER_FAILED=CWLJC0004E: Le chargement du fournisseur de mise en cache {0} a \u00e9chou\u00e9. {1}
 CWLJC0004_GET_PROVIDER_FAILED.explanation=Le chargement de la configuration de cachingProvider a \u00e9chou\u00e9.

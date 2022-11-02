@@ -535,7 +535,7 @@
 
 7306=O elemento anotado [{0}] da classe [{1}] tem um tipo de acesso expl\u00edcito incorreto especificado. Ele deve especificar um tipo de acesso de [{2}].
 
-7307=Est\u00e1 faltando uma sequ\u00eancia de contexto de cria\u00e7\u00e3o de log para o contexto [{0}]. Essa \u00e9 uma exce\u00e7\u00e3o interna que ocorreu ao recuperar uma mensagem de log para processamento de metadados Jakarta Persistence; relate um erro.
+7307=Est\u00e1 faltando uma sequ\u00eancia de contexto de cria\u00e7\u00e3o de log para o contexto [{0}]. Esta \u00e9 uma exce\u00e7\u00e3o interna que ocorreu ao recuperar uma mensagem de log para o processamento de metadados do Jakarta Persistence; relate um erro.
 
 7308=O valor especificado [{0}] para a propriedade de persist\u00eancia [{1}] \u00e9 inv\u00e1lido - [{2}].
 
@@ -593,7 +593,7 @@
 
 7336=Diversas propriedades de contexto [{2}] e [{3}] especificadas para o mesmo campo de discriminador de locat\u00e1rio [{1}] para a classe [{0}]
 
-7337=A coluna do discriminador de locat\u00e1rio mapeada [{1}] na classe [{0}] deve ser marcada como somente leitura. Em Jakarta Persistence API, isso \u00e9 feito configurando insertable=false e updatable=false na coluna, por exemplo, @Column(name="TENANT_ID", insertable=false, updatable=false).
+7337=A coluna do discriminador de locat\u00e1rio mapeada [{1}] na classe [{0}] deve ser marcada como somente leitura. Na API Jakarta Persistence, isto \u00e9 feito configurando insertable=false e updatable=false na coluna; por exemplo, @Column(name="TENANT_ID", insertable=false, updatable=false).
 
 7338=N\u00e3o \u00e9 poss\u00edvel incluir sequ\u00eancias em um SessionBroker.
 
@@ -605,7 +605,7 @@
 
 7342=O valor booleano especificado [{0}] para a configura\u00e7\u00e3o permitir consultas SQL nativo \u00e9 inv\u00e1lido, o valor deve ser "true" ou "false".
 
-7343=V\u00e1rios identificadores de VPD (propriedade de contexto de discriminador de locat\u00e1rio) foram especificados. Entidade [{1}] usa [{0}] e Entidade [{3}] usa [{2}]. Ao usar uma estrat\u00e9gia de VPD com diversos locat\u00e1rios, s\u00f3 pode haver uma coluna de discriminador de locat\u00e1rio por entidade e sua propriedade de contexto deve ser consistente entre todas as entidades de VPD com diversos locat\u00e1rios.
+7343=V\u00e1rios identificadores de VPD (propriedade de contexto de discriminador de locat\u00e1rio) foram especificados. Entidade [{1}] usa [{0}] e Entidade [{3}] usa [{2}]. A estrat\u00e9gia do VPD de multilocat\u00e1rio permite que apenas uma coluna discriminadora de locat\u00e1rio para cada entidade e sua propriedade de contexto esteja consistente em todas as entidades do VPD de multilocat\u00e1rio.
 
 7344=VPD (conex\u00f5es e gera\u00e7\u00e3o de DDL) n\u00e3o \u00e9 suportado para a plataforma: [{0}].
 
@@ -621,7 +621,7 @@
 
 7351=A classe de conversor [{2}] especificada no atributo de mapeamento [{1}] da classe [{0}] n\u00e3o foi localizada. Assegure-se de que o nome da classe de conversor esteja correto e exista com a defini\u00e7\u00e3o de unidade de persist\u00eancia.
 
-7352=A classe de conversor [{0}] deve implementar a interface Jakarta Persistence jakarta.persistence.AttributeConverter<X, Y> para ser uma classe de conversor v\u00e1lida.
+7352=A classe de conversor [{0}] deve implementar a interface jakarta.persistence.AttributeConverter<X, Y> do Jakarta Persistence para que seja uma classe de conversor v\u00e1lida.
 
 7353=O atributo de mapeamento [{1}] da classe [{0}] n\u00e3o \u00e9 um tipo de mapeamento v\u00e1lido para uma especifica\u00e7\u00e3o de convers\u00e3o.
 
@@ -630,4 +630,6 @@
 7355=O atributo de mapeamento [{1}] da classe [{0}] n\u00e3o \u00e9 um tipo de mapeamento v\u00e1lido para uma convers\u00e3o que usa uma especifica\u00e7\u00e3o de nome de atributo. Um nome de atributo s\u00f3 deve ser especificado para atravessar um tipo de mapeamento integrado.
 
 7356=Procedimento: [{1}] n\u00e3o pode ser executado porque {0} n\u00e3o suporta atualmente v\u00e1rios par\u00e2metros de sa\u00edda
+
+7357=A URL "[{0}]" para o recurso "[{1}]" n\u00e3o pertence a uma raiz de persist\u00eancia v\u00e1lida (conforme a especifica\u00e7\u00e3o do Jakarta Persistence)
 

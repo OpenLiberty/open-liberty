@@ -119,9 +119,9 @@ ejb30-wrong-query-hint-value=Dotaz {0}, pokyn k dotazu {1} m\u00e1 neplatnou hod
 
 ejb30-wrong-type-for-query-hint=Dotaz {0}, pokyn k dotazu {1} je pro tento typ dotazu neplatn\u00fd.
 
-entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=Konflikt vlastnost\u00ed spr\u00e1vce EntityManager: javax.persistence.driver anebo javax.persistence.url vy\u017eaduj\u00ed konektor DefaultConnector, ale jednotka perzistence pou\u017e\u00edv\u00e1 extern\u00ed transak\u010dn\u00ed \u0159adi\u010d, a proto vy\u017eaduje konektor JNDIConnector.
+entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=Konflikt vlastnost\u00ed spr\u00e1vce EntityManager: jakarta.persistence.driver anebo jakarta.persistence.url vy\u017eaduj\u00ed konektor DefaultConnector, ale jednotka perzistence pou\u017e\u00edv\u00e1 extern\u00ed \u0159adi\u010d transakc\u00ed, a proto vy\u017eaduje konektor JNDIConnector.
 
-entity_manager_properties_conflict_default_connector_vs_jndi_connector=Konflikt vlastnost\u00ed spr\u00e1vce EntityManager: javax.persistence.driver anebo javax.persistence.url vy\u017eaduje konektor DefaultConnector, ale javax.persistence.jtaDataSource anebo javax.persistence.nonjtaDataSource vy\u017eaduje konektor JNDIConnector.
+entity_manager_properties_conflict_default_connector_vs_jndi_connector=Konflikt vlastnost\u00ed spr\u00e1vce EntityManager: jakarta.persistence.driver anebo jakarta.persistence.url vy\u017eaduje konektor DefaultConnector, ale jakarta.persistence.jtaDataSource anebo jakarta.persistence.nonjtaDataSource vy\u017eaduje konektor JNDIConnector.
 
 entity_no_longer_exists_in_db=Entita ji\u017e v datab\u00e1zi neexistuje: {0}.
 
@@ -183,6 +183,8 @@ invalid_pk_class=Pro tuto operaci vyhled\u00e1v\u00e1n\u00ed jste poskytli insta
 
 jar_not_exist=Soubor JAR {0} neexistuje.
 
+jaxb_context_factory_property_invalid=Hodnota pro vlastnost eclipselink.moxy.factory {0} je neplatn\u00e1
+
 jaxb_helper_invalid_binder=Poskytnut\u00fd v\u00e1zac\u00ed program [{0}] nen\u00ed programem EclipseLink JAXBBinder, a proto ho nelze p\u0159ev\u00e9st.
 
 jaxb_helper_invalid_jaxbcontext=Poskytnut\u00fd kontext JAXBContext [{0}] nen\u00ed kontextem EclipseLink JAXBContext, a proto ho nelze p\u0159ev\u00e9st.
@@ -203,9 +205,9 @@ jmx_enabled_platform_mbean_runtime_exception=V\u00fdjimka p\u0159i vol\u00e1n\u0
 
 join_trans_called_on_entity_trans=Byla vol\u00e1na funkce joinTransaction u spr\u00e1vce entit s lok\u00e1ln\u00edmi prost\u0159edky, kter\u00e9ho nebylo mo\u017en\u00e9 zaregistrovat pro transakci JTA.
 
-jpa21-ddl-create-script-target-not-specified=P\u0159i generov\u00e1n\u00ed DDL do skript\u016f mus\u00edte zadat c\u00edl vytv\u00e1\u0159en\u00ed skriptu pomoc\u00ed vlastnosti [javax.persistence.schema-generation.scripts.create-target].
+jpa21-ddl-create-script-target-not-specified=P\u0159i generov\u00e1n\u00ed DDL do skript\u016f mus\u00edte uv\u00e9st c\u00edl vytvo\u0159en\u00ed skriptu pomoc\u00ed vlastnosti [jakarta.persistence.schema-generation.scripts.create-target].
 
-jpa21-ddl-drop-script-target-not-specified=P\u0159i generov\u00e1n\u00ed DDL do skript\u016f mus\u00edte zadat c\u00edl ru\u0161en\u00ed skriptu pomoc\u00ed vlastnosti [javax.persistence.schema-generation.scripts.drop-target].
+jpa21-ddl-drop-script-target-not-specified=P\u0159i generov\u00e1n\u00ed DDL do skript\u016f mus\u00edte uv\u00e9st c\u00edl zru\u0161en\u00ed skriptu pomoc\u00ed vlastnosti [javax.persistence.schema-generation.scripts.drop-target].
 
 jpa21-ddl-invalid-source-script-type=Poskytnut\u00fd zdrojov\u00fd skript {0} m\u00e1 neplatn\u00fd typ {0}. Platn\u00e9 typy zdrojov\u00fdch skript\u016f jsou: java.io.Reader nebo \u0159et\u011bzec ozna\u010duj\u00edc\u00ed adresu URL souboru.
 
@@ -241,7 +243,7 @@ jpa_criteriaapi_null_literal_value=Do funkce CriteriaBuilder.literal() byla p\u0
 
 jpa_helper_invalid_entity_manager_factory=Tov\u00e1rna Jakarta Persistence EntityManagerFactory {0} nen\u00ed tov\u00e1rnou EclipseLink EntityManagerFactory, a proto ji nelze p\u0159ev\u00e9st.
 
-jpa_helper_invalid_entity_manager_factory_for_refresh=Tov\u00e1rna Jakarta Persistence EntityManagerFactory {0} nen\u00ed tov\u00e1rnou EclipseLink EntityManagerFactory, a proto nelze aktualizovat jej\u00ed metadata.
+jpa_helper_invalid_entity_manager_factory_for_refresh=Tov\u00e1rna Jakarta Persistence EntityManagerFactory {0} nen\u00ed tov\u00e1rnou EclipseLink EntityManagerFactory, a proto nemohla b\u00fdt aktualizov\u00e1na jej\u00ed metadata.
 
 jpa_helper_invalid_query=Dotaz typu {0} nen\u00ed dotazem EclipseLink, a proto ho nelze p\u0159ev\u00e9st.
 
@@ -250,6 +252,18 @@ jpa_helper_invalid_read_all_query=Dotaz typu {0} nen\u00ed dotazem typu \u010d\u
 jpa_helper_invalid_report_query=Dotaz typu {0} nen\u00ed dotazem typu sestava EclipseLink, a proto ho nelze p\u0159ev\u00e9st.
 
 jpa_persistence_util_non_persistent_class=Funkce PersistenceUtil.getIdentifier(entity) byla vol\u00e1na s objektem [{0}], kter\u00fd ale nen\u00ed trval\u00fdm objektem.
+
+json_ora21c_jsonvalue_to_oraclevalue=Hodnotu JsonValue se nepoda\u0159ilo p\u0159ev\u00e9st na hodnotu OracleJsonValue.
+
+json_ora21c_resultset_to_jsonvalue=Typ ResultSet JDBC nelze p\u0159ev\u00e9st na hodnotu JsonValue.
+
+json_pgsql_jsonvalue_to_database_type=P\u0159evod hodnoty JSON na typ datab\u00e1ze se nezda\u0159il.
+
+json_pgsql_missing_class_on_classpath=Chyb\u00ed {0} na cest\u011b ke t\u0159\u00edd\u011b.
+
+json_pgsql_pgobject_conversion=P\u0159evod datab\u00e1ze PGobject se nezda\u0159il.
+
+json_pgsql_unknown_type=Z datab\u00e1ze byl vr\u00e1cen nezn\u00e1m\u00fd typ JSON.
 
 lock_called_without_version_locking=Vol\u00e1n\u00ed funkce entityManager.lock(Object entity, LockModeType lockMode) vy\u017eaduje, aby bylo povoleno zamyk\u00e1n\u00ed verz\u00ed.
 
@@ -265,7 +279,7 @@ metamodel_class_null_type_instance_for_null_key=V metamodelu nebyl nalezen \u017
 
 metamodel_identifiable_id_attribute_is_incorrect_idclass=O\u010dek\u00e1van\u00fd jednotliv\u00fd atribut @Id identifikovateln\u00e9ho typu [{0}] je sou\u010d\u00e1st\u00ed neo\u010dek\u00e1van\u00e9 t\u0159\u00eddy @IdClass.
 
-metamodel_identifiable_id_attribute_type_incorrect=O\u010dek\u00e1v\u00e1n atribut ID typu [{2}] u existuj\u00edc\u00edho atributu ID [{0}] identifikovateln\u00e9ho typu [{1}], ale nalezen atribut typu [{3}].
+metamodel_identifiable_id_attribute_type_incorrect=O\u010dek\u00e1van\u00fd atribut ID typu [{2}] u existuj\u00edc\u00edch atribut\u016f ID [{0}] u identifikovateln\u00e9ho typu [{1}], ale nalezeny typy atribut\u016f [{3}].
 
 metamodel_identifiable_no_id_attribute_present=U identifikovateln\u00e9ho typu [{0}] neexistuje \u017e\u00e1dn\u00fd atribut @Id.
 

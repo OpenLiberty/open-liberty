@@ -95,7 +95,7 @@ session_name=Der Name der Sitzung
 
 sql_generation=F\u00fcr die Generierung des SQL aufgebrachte Zeit. Bei TopLink-Ausdr\u00fccken die f\u00fcr die Konvertierung des Ausdrucks in SQL aufgebrachte Zeit.
 
-sql_prepare=In JDBC f\u00fcr die Vorbereitung der Anweisung aufgebrachte Zeit. Dies schlie\u00dft auch die in EIS aufgebrachte Zeit f\u00fcr die Erstellung einer Interaction, die einer Verbindung zugeordnet ist, und die Zeit f\u00fcr die Erstellung von Record-Objekten f\u00fcr die Ein- bzw. Ausgabe ein.
+sql_prepare=Zeit, die in JDBC f\u00fcr die Vorbereitung der Anweisung aufgewendet wurde. Enth\u00e4lt au\u00dferdem die Zeit, die im EIS f\u00fcr die Erstellung einer Interaktion, die einer Verbindung zugeordnet ist, und f\u00fcr die Erstellung von Eingabe- und Ausgabedatensatzobjekten aufgewendet wurde.
 
 unitofwork_commit=Misst den Festschreibungsprozess der UnitOfWork
 

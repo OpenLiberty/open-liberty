@@ -34,5 +34,5 @@
 7510=Restricciones violadas en el bean convertido {0}:
 {1}{2}
 
-7525=No se puede analizar la propiedad {0}, porque se ha anotado con @NotNull y tiene el atributo "xs:nillable=true".
+7525=No se puede analizar la propiedad "{0}", porque est\u00e1 anotada con @NotNull y tiene el atributo "xs: nillable = true".
 

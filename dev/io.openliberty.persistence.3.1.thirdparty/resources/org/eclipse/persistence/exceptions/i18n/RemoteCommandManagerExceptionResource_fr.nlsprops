@@ -51,8 +51,6 @@
 
 22112=Impossible de cr\u00e9er une connexion JMS locale avec la rubrique {0} et la fabrique de rubriques {1}. V\u00e9rifiez aussi que vos propri\u00e9t\u00e9s de contexte sont correctement d\u00e9finies.
 
-22113=Impossible de cr\u00e9er Oc4jJGroupsRemoteConnection ID service {0}, rubrique {1}, avec la fabrique {2}. V\u00e9rifiez aussi que vos propri\u00e9t\u00e9s de contexte sont correctement d\u00e9finies.
-
 22114={0} : \u00e9chec de la d\u00e9s\u00e9rialisation du message extrait {1}.
 
 22115={0} : \u00e9chec du traitement de la commande distante extraite du message {1}, de {2}, type de commande {3}
@@ -62,4 +60,6 @@
 22117=L''\u00e9l\u00e9ment RemoteCommandManager de la session est ferm\u00e9 ou il n''a pas \u00e9t\u00e9 initialis\u00e9 lors du traitement des messages entrants
 
 22118=Echec de la cr\u00e9ation de la connexion JGroups \u00e0 l''aide du fichier de configuration : {0}
+
+22119=Erreur lors de l''initialisation de {0}, ajoutez org.eclipse.persistence.corba.jar \u00e0 votre chemin d''acc\u00e8s aux classes.
 

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2021 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -86,4 +86,20 @@ JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.useraction=Nie jest wymagana \u017cadna cz
 
 JCACHE_AUTH_CACHE_SERIALIZATION_FAILED=CWWKS1126W: Wstawienie wpisu dla klucza {0} do pami\u0119ci podr\u0119cznej uwierzytelniania JCache {1} nie powiod\u0142o si\u0119 z powodu b\u0142\u0119du przekszta\u0142cania do postaci szeregowej. Zamiast tego wpis zostanie wstawiony do pami\u0119ci podr\u0119cznej uwierzytelniania w pami\u0119ci. Wyj\u0105tek: {2}
 JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.explanation=Tre\u015b\u0107 wpisu nie zosta\u0142a przekszta\u0142cona do postaci szeregowej, dlatego nie zosta\u0142a ona zapisana w pami\u0119ci podr\u0119cznej uwierzytelniania JCache.
-JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.useraction=Zbadaj wyj\u0105tek zawarty w komunikacie i usu\u0144 przyczyn\u0119 b\u0142\u0119du.  
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.useraction=Zbadaj wyj\u0105tek zawarty w komunikacie i usu\u0144 przyczyn\u0119 b\u0142\u0119du.
+
+JCACHE_AUTH_CACHE_GET_FAILED=CWWKS1127E: Nie powiod\u0142a si\u0119 pr\u00f3ba pobrania pozycji dla klucza {0} z pami\u0119ci podr\u0119cznej uwierzytelniania JCache {1} z powodu b\u0142\u0119du. Wyj\u0105tek: {2}
+JCACHE_AUTH_CACHE_GET_FAILED.explanation=Nie mo\u017cna pobra\u0107 pozycji z pami\u0119ci podr\u0119cznej uwierzytelniania JCache.
+JCACHE_AUTH_CACHE_GET_FAILED.useraction=Zbadaj wyj\u0105tek zawarty w komunikacie i usu\u0144 przyczyn\u0119 b\u0142\u0119du.
+
+JCACHE_AUTH_CACHE_INSERT_FAILED=CWWKS1128E: Wstawienie wpisu dla klucza {0} do pami\u0119ci podr\u0119cznej uwierzytelniania JCache {1} nie powiod\u0142o si\u0119 z powodu b\u0142\u0119du. Wyj\u0105tek: {2}
+JCACHE_AUTH_CACHE_INSERT_FAILED.explanation=Pozycja nie zosta\u0142a zapisana w pami\u0119ci podr\u0119cznej uwierzytelniania JCache.
+JCACHE_AUTH_CACHE_INSERT_FAILED.useraction=Zbadaj wyj\u0105tek zawarty w komunikacie i usu\u0144 przyczyn\u0119 b\u0142\u0119du.
+
+JCACHE_AUTH_CACHE_REMOVE_FAILED=CWWKS1129E: Usuni\u0119cie wpisu dla klucza {0} z pami\u0119ci podr\u0119cznej uwierzytelniania JCache {1} nie powiod\u0142o si\u0119 z powodu b\u0142\u0119du. Wyj\u0105tek: {2}
+JCACHE_AUTH_CACHE_REMOVE_FAILED.explanation=Pozycja nie zosta\u0142a usuni\u0119ta z pami\u0119ci podr\u0119cznej uwierzytelniania JCache.
+JCACHE_AUTH_CACHE_REMOVE_FAILED.useraction=Zbadaj wyj\u0105tek zawarty w komunikacie i usu\u0144 przyczyn\u0119 b\u0142\u0119du.
+
+JCACHE_AUTH_CACHE_CLEAR_FAILED=CWWKS1130E: Skasowanie pami\u0119ci podr\u0119cznej uwierzytelniania JCache {0} nie powiod\u0142o si\u0119 z powodu b\u0142\u0119du. Wyj\u0105tek: {1}
+JCACHE_AUTH_CACHE_CLEAR_FAILED.explanation=Pozycje nie zosta\u0142y wyczyszczone z pami\u0119ci podr\u0119cznej uwierzytelniania JCache.
+JCACHE_AUTH_CACHE_CLEAR_FAILED.useraction=Zbadaj wyj\u0105tek zawarty w komunikacie i usu\u0144 przyczyn\u0119 b\u0142\u0119du.

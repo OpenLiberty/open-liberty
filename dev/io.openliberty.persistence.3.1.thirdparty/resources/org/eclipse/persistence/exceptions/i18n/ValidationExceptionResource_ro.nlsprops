@@ -535,7 +535,7 @@
 
 7306=Elementul adnotat [{0}] din clasa [{1}] are specificat un tip de acces explicit incorect. Ar trebui s\u0103 specifice un tip de acces de [{2}].
 
-7307=Lipse\u015fte un \u015fir contextual de logare pentru contextul [{0}]. Aceasta este o excep\u0163ie intern\u0103 ce a survenit la extragerea unui mesaj din istoric pentru procesarea metadatelor Jakarta Persistence, v\u0103 rug\u0103m s\u0103 raporta\u0163i un defect ascuns.
+7307=Lipse\u015fte un \u015fir contextual de logare pentru contextul [{0}]. Aceasta este o excep\u021bie intern\u0103, care a ap\u0103rut la extragerea unui mesaj din istoric pentru procesarea metadatelor Jakarta Persistence, v\u0103 rug\u0103m s\u0103 raporta\u021bi un defect.
 
 7308=Valoarea specificat\u0103 [{0}] pentru proprietatea de persisten\u0163\u0103 [{1}] este invalid\u0103 - [{2}].
 
@@ -593,7 +593,7 @@
 
 7336=Mai multe propriet\u0103\u0163i contextuale [{2}] \u015fi [{3}] specificate pentru acela\u015fi c\u00e2mp discriminator chiria\u015f [{1}] pentru clasa [{0}]
 
-7337=Coloana discriminator chiria\u015f mapat\u0103 [{1}] \u00een clasa [{0}] trebuie marcat\u0103 ca \u015fi numai citire. \u00cen Jakarta Persistence API, acest lucru este f\u0103cut prin setarea insertable=false \u015fi updatable=false pe coloana e.g. @Column(name="TENANT_ID", insertable=false, updatable=false).
+7337=Coloana discriminator chiria\u015f mapat\u0103 [{1}] \u00een clasa [{0}] trebuie marcat\u0103 ca \u015fi numai citire. \u00cen API-ul Jakarta Persistence, aceasta se realizeaz\u0103 set\u00e2nd insertable=false \u0219i updatable=false pentru coloan\u0103, de ex. @Column(name="TENANT_ID", insertable=false, updatable=false).
 
 7338=Nu pute\u0163i ad\u0103uga secven\u0163a \u00eentr-un SessionBroker.
 
@@ -605,7 +605,7 @@
 
 7342=Valoarea boolean\u0103 specificat\u0103 [{0}] pentru setarea permite interog\u0103ri sql native, este invalid\u0103, valoarea trebuie s\u0103 fie ori "true" ori "false".
 
-7343=Au fost specifica\u021bi mai mul\u021bi identificatori VPD (proprietatea contextului discriminator de chiria\u0219). Entitatea [{1}] utilizeaz\u0103 [{0}] \u0219i Entitatea [{3}] utilizeaz\u0103 [{2}]. C\u00e2nd se utilizeaz\u0103 o strategie VPD multi-chiria\u0219, poate exista o singur\u0103 coloan\u0103 de discriminator de chiria\u0219 per entitate \u0219i proprietatea sa de context trebuie s\u0103 fie consecvent\u0103 pentru toate entit\u0103\u021bile VPD multi-chiria\u0219.
+7343=Au fost specifica\u021bi mai mul\u021bi identificatori VPD (proprietatea contextului discriminator de chiria\u0219). Entitatea [{1}] utilizeaz\u0103 [{0}] \u0219i Entitatea [{3}] utilizeaz\u0103 [{2}]. Strategia VPD multi-chiria\u0219 permite o singur\u0103 coloan\u0103 de discriminator de chiria\u0219i pentru fiecare entitate \u0219i proprietatea sa de context s\u0103u trebuie s\u0103 fie consecvent\u0103 \u00een toate entit\u0103\u021bile VPD multi-chiria\u0219.
 
 7344=VPD (conexiuni \u015fi generare DDL) nu este suportat pentru platforma: [{0}].
 
@@ -621,7 +621,7 @@
 
 7351=Convertorul de clas\u0103 [{2}] specificat\u0103 \u00een atributul de mapare [{1}] din clasa [{0}] nu a fost g\u0103sit. V\u0103 rug\u0103m s\u0103 v\u0103 asigura\u0163i c\u0103 numele clasei convertor este corect \u015fi exist\u0103 \u00een defini\u0163ia unit\u0103\u0163ii de persisten\u0163\u0103.
 
-7352=Clasa convertor [{0}] trebuie s\u0103 implementeze interfa\u0163a Jakarta Persistence jakarta.persistence.AttributeConverter<X, Y> pentru a fi o clas\u0103 convertor valid\u0103.
+7352=Clasa de convertor [{0}] trebuie s\u0103 implementeze interfa\u021ba Jakarta Persistence jakarta.persistence.AttributeConverter<X, Y> pentru a fi o clas\u0103 de convertor valid\u0103.
 
 7353=Atributul de mapare [{1}] din clasa [{0}] nu este un tip de mapare valid pentru o specifica\u0163ie de conversie.
 
@@ -630,4 +630,6 @@
 7355=Atributul de mapare [{1}] din clasa [{0}] nu este un tip de mapare valid pentru o conversie ce utilizeaz\u0103 o specifica\u0163ie de nume atribut. Un nume de atribut ar trebui specificat numai pentru trecerea unui tip de mapare \u00cenglobat.
 
 7356=Procedur\u0103: [{1}] nu poate fi executat deoarece {0} nu suport\u0103 momentan parametrii de ie\u015fire multiplii
+
+7357=URL-ul "[{0}]" pentru resursa "[{1}]" nu apar\u021bine unei r\u0103d\u0103cini de persisten\u021b\u0103 valide (\u00een conformitate cu specifica\u021bia Jakarta Persistence)
 

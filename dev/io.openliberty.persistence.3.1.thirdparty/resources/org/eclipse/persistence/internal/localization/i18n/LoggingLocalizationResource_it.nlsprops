@@ -57,8 +57,6 @@ application_server_name_and_version=Server: {0}
 
 archive_not_found_in_input=Il file di archivio ({0}) non esiste nella directory di input ({1}).
 
-associate_using_third_table_not_migrated=Funzione CMP nativa Oc4j -DassociateUsingThirdTable=true per associare 1:m tramite tabella di relazione non migrata. \u00c8 necessario riassociare il campo cmr ({1}) dell''entit\u00e0 ({0}) come associazione di tipo uno a molti tramite il workbench di associazione dopo il processo di migrazione.
-
 attempted_to_open_entry_in_url_as_jar={2} \u00e8 stato generato al tentativo di aprire {0} come jar e di accedere alla voce: {1}.
 
 attempted_to_open_file_url_as_directory={2} \u00e8 stato generato al tentativo di aprire {0} come directory e di accedere alla voce: {1}.
@@ -84,8 +82,6 @@ broadcast_listening_sleep_on_error=Avvertenza: {0}: \u00e8 stata generata l''ecc
 broadcast_remote_command_is_null=Avvertenza: {0}: ricevuto messaggio {1} contenente null invece di RemoteCommand.
 
 broadcast_remote_command_wrong_type=Avvertenza: {0}: ricevuto messaggio {1} contenente un oggetto di tipo {2} invece del tipo previsto di RemoteCommand.
-
-call_timeout_not_migrated=Il timeout chiamata valore={1} \u00e8 definito nell''entit\u00e0 {0} nel file orion-ejb-jar.xml ma non sono definite associazioni persistenti nel file del descrittore, quindi non si verifica la migrazione.  Se si utilizza l''associazione predefinita EclipseLink successivamente per generare il descrittore di associazione EclipseLink, tenere presente che l''impostazione del timeout di chiamata andr\u00e0 persa poich\u00e9 l''associazione predefinita EclipseLink non ha accesso al file descrittore nativo.  Sar\u00e0 necessario reimpostare il timeout di chiamata manualmente o tramite il workbench di associazione di EclipseLink dopo la generazione dell''associazione predefinita.
 
 cannot_get_nested_collection_type=Impossibile ottenere il tipo di raccolta nidificata.
 
@@ -145,8 +141,6 @@ delay_database_insert_until_ejb_create_not_supported=L''impostazione CMP nativa 
 
 delay_database_insert_until_ejb_post_create_not_supported=L''impostazione CMP nativa  WLS "delay-database-insert-until-ejbPostCreate" sull''entit\u00e0 ({0}) non \u00e8 direttamente supportata in CMP  EclipseLink. Per i dettagli consultare il documento sulla migrazione.
 
-delay_updates_until_commit_not_supported=La funzione CMP nativa Oc4j "delay-updates-until-commit" sull''entit\u00e0\u00a0({0}) non \u00e8 direttamente supportata in CMP  EclipseLink. Per i dettagli consultare il documento sulla migrazione.
-
 deleted_objects=Oggetti eliminati:
 
 deleting_object=L''operazione di rimozione \u00e8 stata eseguita su: {0}
@@ -157,9 +151,9 @@ descriptor_named_query_cannot_be_added=Impossibile aggiungere una query descritt
 
 dir_cleaned_for_mw_files=I file e le sottodirectory nella directory {0} sono stati eliminati in modo da creare una directory pulita per i nuovi file del progetto workbench di associazione EclipseLink.
 
-do_select_before_insert_not_supported=La funzione CMP nativa Oc4j "do-select-before-insert" sull''entit\u00e0\u00a0({0}) non \u00e8 direttamente supportata in CMP  EclipseLink. Per i dettagli consultare il documento sulla migrazione.
-
 drop_connection_on_error=Avvertenza: viene rilasciata la connessione comando remoto a {0} all''errore {1}
+
+eclipselink_version_error=File: {0} non esiste o \u00e8 danneggiato.
 
 ejbSelect2=EjbSelect: {0}
 
@@ -219,8 +213,6 @@ field_group_not_supported=L''impostazione CMP nativa  WLS "field-group" sull''en
 
 field_type_set_to_java_lang_string=Il generatore di tabella predefinito non \u00e8 stato in grado di individuare o convertire un tipo java ({1}) in un tipo di database per il campo database ({0}). Il generatore utilizza "java.lang.String" come tipo java predefinito per il campo.
 
-force_update_not_supported=La funzione CMP nativa Oc4j "force-update" sull''entit\u00e0\u00a0({0}) non \u00e8 direttamente supportata in CMP  EclipseLink. Per i dettagli consultare il documento sulla migrazione.
-
 identitymap_for={0}{1} per: {2}
 
 includes=(include: 
@@ -235,15 +227,11 @@ input_minimum_arguments=Gli argomenti di input della riga comandi devono include
 
 input_not_both_archive_and_xml=Utilizzare o -e per specificare il nome file di archivio o -x per segnalare che i file descrittore sotto la directory di input verranno migrati, ma non entrambi.
 
-input_orione_ejb_jar_augmented=Il file orion-ejb-jar.xml di input \u00e8 implementato per specificare EclipseLink come gestore persistente di OC4J
-
 invalid_command_line_argument=L''argomento della riga comandi ({0}) non \u00e8 valido
 
 invalid_datasource_property_value={1} non \u00e8 un oggetto valido da inoltrare per la propriet\u00e0\u00a0 {0}.  I valori validi sono String o istanze di javax.sql.DataSource.
 
 invalid_property_value={1} non \u00e8 un oggetto valido da inoltrare per la propriet\u00e0\u00a0 {0}.
-
-isolation_level_not_supported=L''impostazione CMP nativa Oc4j "isolation-level" sull''entit\u00e0 ({0}) non \u00e8 direttamente supportata in CMP  EclipseLink. Per i dettagli consultare il documento sulla migrazione.
 
 jar_entry_has_been_migrated=Il file descrittore cmp nativo nella voce jar ({0}) dal file EAR di input ({1}) \u00e8 stato migrato.
 
@@ -317,13 +305,15 @@ jpars_could_not_find_session_bean=Viene effettuata una chiamata a un bean di ses
 
 jta_cannot_be_disabled_in_cmp=Quando si utilizza CMP (Container Managed Persistence), JTA non pu\u00f2 essere disabilitato. EclipseLink agir\u00e0 come se JTA fosse abilitato.
 
+jta_duplicate_ctrl_property=Classe controller di transazione JTA definita in entrambe le propriet\u00e0 "eclipselink.target-server" e "eclipselink.jta.controller". Utilizzo del valore da "eclipselink.target-server".
+
+jta_tsr_lookup_failure=Impossibile cercare l''istanza TransactionSynchronizationRegistry: {0}
+
 key_identity_hash_code_object={0} Chiave: {1}{2} Codice hash identit\u00e0: {3}{2} Oggetto: {4}
 
 key_object_null={0} Chiave: {1}{2} Oggetto: null
 
 key_version_identity_hash_code_object={0} Chiave: {1}{2} Versione {5}{2} Codice hash identit\u00e0: {3}{2} Oggetto: {4}
-
-locking_mode_not_valid=La modalit\u00e0 di blocco ({1}) sull''entit\u00e0\u00a0({0} in orion-ejb-jar.xml non \u00e8 correttamente definita pertanto la migrazione non avviene.
 
 locking_required_for_database_change_notification=L''entit\u00e0 {0} non sta utilizzando il blocco della versione, ma ha pi\u00f9 tabelle o relazioni, e sta utilizzando la notifica di modifica del database Oracle, \u00e8 possibile che le modifiche alle relazioni o alle tabelle secondarie non invalidino la cache.
 
@@ -332,10 +322,6 @@ log_file_under_output_dir=Esiste un file di log denominato ({0}) nella directory
 mapping_not_supported_by_mw=L''associazione EclipseLink {0} non \u00e8 supportata dal workbench di associazione
 
 marshal_warning_null_document_root_element={0}: l''elemento root del documento non definito di un oggetto di riferimento [{1}] viene ignorato durante il marshalling con un''associazione di tipo qualsiasi raccolta|oggetto.
-
-max_instance_not_supported=L''impostazione CMP nativa Oc4j "max-instance" sull''entit\u00e0 ({0}) non \u00e8 direttamente supportata in CMP  EclipseLink. Per i dettagli consultare il documento sulla migrazione.
-
-max_tx_retries_not_supported=L''impostazione CMP nativa Oc4j "max-tx-retries" sull''entit\u00e0 ({0}) non \u00e8 direttamente supportata in CMP  EclipseLink. Per i dettagli consultare il documento sulla migrazione.
 
 metadata_access_type=Il tipo di accesso per la classe persistente [{1}] \u00e8 impostato su [{0}].
 
@@ -457,7 +443,7 @@ metadata_warning_ignore_cacheable_false=Ignorata l''impostazione esplicita cache
 
 metadata_warning_ignore_cacheable_true=Ignorata l''impostazione esplicita cacheable=true per la classe dell''entit\u00e0 [{0}] poich\u00e9 \u00e8 stato specificato il tipo di memorizzazione in cache NONE nel file persistence.xml.
 
-metadata_warning_ignore_converts=Ignorata la specifica di conversione JPA sull''elemento [{1}] nella classe entit\u00e0 [{0}] poich\u00e9 \u00e8 specificata la conversione metadati EclipseLink.
+metadata_warning_ignore_converts=Viene ignorata la specifica di conversione della persistenza di Giacarta sull''elemento [{1}] all''interno della classe entit\u00e0 [{0}] poich\u00e9 sono specificati i metadati di conversione EclipseLink.
 
 metadata_warning_ignore_enumerated=Ignorata la specifica enumerata sull''elemento [{1}] nella classe entit\u00e0 [{0}] poich\u00e9 \u00e8 specificata la conversione metadati EclipseLink.
 
@@ -517,7 +503,7 @@ metadata_warning_ignore_mapped_superclass_primary_key=Ignorata l''impostazione c
 
 metadata_warning_ignore_mapped_superclass_read_only=Ignorata l''impostazione sola lettura sulla superclasse associata [{1}] per la classe entit\u00e0 [{0}] poich\u00e9 metadati sola lettura sono stati precedentemente rilevati per tale entit\u00e0 (sull''entit\u00e0 stessa oppure un''altra superclasse associata).
 
-metadata_warning_ignore_mapping_metadata=Ignorati i metadati jakarta.persistence applicati all''attributo [{0}] dalla classe [{1}]. I metadati jakarta.persistence vengono ignorati in campi o propriet\u00e0 transitori, statici o astratti.
+metadata_warning_ignore_mapping_metadata=I metadati jakarta.persistence applicati all''attributo [{0}] dalla classe [{1}] vengono ignorati. I metadati jakarta.persistence vengono ignorati su campi o propriet\u00e0 che sono transitori, statici o astratti.
 
 metadata_warning_ignore_serialized=Ignorata la serializzazione predefinita sull''elemento [{1}] nella classe entit\u00e0 [{0}] poich\u00e9 \u00e8 specificata la conversione metadati EclipseLink.
 
@@ -559,11 +545,7 @@ migration_output_dir_not_valid=La directory di output ({0}) definita non \u00e8 
 
 migration_successful=Migrazione riuscita.
 
-min_instance_not_supported=L''impostazione CMP nativa Oc4j "min-instance" sull''entit\u00e0 ({0}) non \u00e8 direttamente supportata in CMP  EclipseLink. Per i dettagli consultare il documento sulla migrazione.
-
 missing_converter=Avvertenza: impossibile convertire il comando {0} a causa di CommandConverter mancante, comando ignorato
-
-multiple_ds_not_supported=CMP EclipseLink non supporta pi\u00f9 origini dati e utilizzer\u00e0 solo una di esse, denominata ({0}), che \u00e8 specificata nel file orion-ejb-jar.xml e viene associata a un bean entit\u00e0 definito per ultimo nel file ejb-jar.xml corrispondente.
 
 must_define_migration_output_dir=\u00c8 necessario definire una directory di output per lo strumento di migrazione
 
@@ -575,25 +557,15 @@ nested_entity_manager_flush_not_executed_pre_query_changes_may_be_pending=La cla
 
 new_objects=Nuovi oggetti:
 
-no_exclusive_write_access_not_supported=La funzione CMP nativa Oc4j "no-exclusive-write-access" sull''entit\u00e0\u00a0({0}) non \u00e8 direttamente supportata in CMP  EclipseLink. Per i dettagli consultare il documento sulla migrazione.
-
 no_jar_entry_migratable_in_ear=Nessuna delle voci jar nel file EAR di input ({0}) \u00e8 migrabile.
 
 no_session_found=Impossibile trovare la sessione con il nome [{0}] nel file session.xml [{1}]
 
-non_jpa_allowed_type_used_for_collection_using_lazy_access=L''elemento [{1}] nella classe entit\u00e0 [{0}] utilizza un tipo di raccolta [{2}] quando la specifica Jakarta Persistence supporta solo java.util.Collection, java.util.Set, java.util.List o java.util.Map.  Questo tipo \u00e8 supportato con il caricamento eager; l''utilizzo del caricamento lazy con questo tipo di raccolta richiede una configurazione aggiuntiva e un''implementazione IndirectContainer che estende [{2}] o l''impostazione dell''associazione sull''utilizzo della via indiretta di base e il tipo deve essere ValueholderInterface.
+non_jpa_allowed_type_used_for_collection_using_lazy_access=L''elemento [{1}] all''interno della classe entit\u00e0 [{0}] utilizza un tipo di raccolta [{2}] quando la specifica di persistenza Jakarta supporta solo java.util.Collection, java.util.Set, java.util.List o java.util.Map.  Questo tipo \u00e8 supportato con il caricamento eager; l''utilizzo del caricamento lazy con questo tipo di raccolta richiede una configurazione aggiuntiva e un''implementazione IndirectContainer che estende [{2}] o l''impostazione dell''associazione sull''utilizzo della via indiretta di base e il tipo deve essere ValueholderInterface.
 
 objectchangepolicy_turned_off=Traccia della modifica disattivata per: {0}
 
-oc4j_native_migration_start=Avvio migrazione da CMP nativo OC4J a CMP EclipseLink OC4J......
-
-old_pessimistic_locking_not_supported=L''impostazione CMP nativa Oc4j "old-pessimistic-locking" sull''entit\u00e0 ({0}) non \u00e8 direttamente supportata in CMP  EclipseLink. Per i dettagli consultare il documento sulla migrazione.
-
 one_to_one_join_outer_migrated=L''unione esterna uno-a-uno definita per il campo cmr ({0}) del bean di entit\u00e0 ({1}) non \u00e8 direttamente supportata in CMP EclipseLink. Per i dettagli consultare il documento sulla migrazione.
-
-optimistic_locking_not_supported=L''impostazione CMP nativa Oc4j locking-mode="optimistic" sull''entit\u00e0 ({0}) non \u00e8 direttamente supportata in CMP  EclipseLink. Per i dettagli consultare il documento sulla migrazione.
-
-orion_ejb_jar_xml_not_found_in_input=orion-ejb-jar.xml non esiste nella directory di input ({0}) specificata.
 
 osgi_initializer=Utilizzo inizializzatore OSGi: [{0}].
 
@@ -626,6 +598,12 @@ persistence_unit_processor_npe_temp_classloader=Il programma di caricamento clas
 persistence_unit_processor_null_temp_classloader=Il programma di caricamento classe per PersistenceLoadProcessor [{0}] \u00e8 null. Il weaving \u00e8 stato disabilitato per questa sessione. EclipseLink potrebbe non essere in grado di ottenere un programma di caricamento classe temporaneo obbligatorio specifico dal server, come soluzione momentanea \u00e8 possibile utilizzare il weaving statico. 
 
 persistence_unit_processor_sap_temp_classloader_bypassed=Il programma di caricamento classe temporaneo per PersistenceLoadProcessor [{0}] non \u00e8 disponibile.  Scambio programma di caricamento classe con [{1}].  Il weaving \u00e8 stato disabilitato per questa sessione. EclipseLink potrebbe non essere in grado di ottenere un programma di caricamento classe temporaneo obbligatorio specifico dal server, come soluzione momentanea \u00e8 possibile utilizzare il weaving statico. 
+
+pgsql10_platform_with_json_extension=PostgreSQL10Platform con il modulo org.eclipse.persistence.pgsql. L''estensione JSON \u00e8 abilitata.
+
+pgsql10_platform_without_json_extension=PostgreSQL10Platform senza modulo org.eclipse.persistence.pgsql. L''estensione JSON \u00e8 disabilitata.
+
+platform_specific_connection_property_exists=Impossibile aggiungere la propriet\u00e0 di connessione specifica della piattaforma {0}={1}. La chiave propriet\u00e0 {0} \u00e8 gi\u00e0 stata aggiunta alle propriet\u00e0 di connessione.
 
 problem_adding_connection=Impossibile aggiungere la connessione remota da {0} a causa dell''errore: {1}
 
@@ -697,17 +675,11 @@ sop_object_wrong_pk=Rimozione di sopObject serializzato dalla riga perch\u00e9 h
 
 sop_object_wrong_version=Rimozione di sopObject serializzato dalla riga perch\u00e9 ha una versione errata [{0}] in [{1}] in [{2}]
 
-src_pm_name_first_argument=\u00c8 necessario specificare il nome PM di origine al primo argomento di input come: -sOc4j-nativo o -sWeblogic.
-
-table_existed_during_creation=Creazione tabella non riuscita. Se gi\u00e0 esiste, deve essere prima eliminata. Ci\u00f2 pu\u00f2 essere eseguito manualmente o impostando l''attributo db-table-gen in orion-ejb-jar.xml.
-
-template_orion_ejb_jar_created=\u00c8 stato creato un file orion-ejb-jar.xml con template
-
 topLink_version=EclipseLink, versione: {0}
 
 toplink=[EL]: 
 
-toplink_cmp_bean_name_xml_deprecated=Il supporto per toplink-cmp-bean_name.xml \u00e8 obsoleto. Fare riferimento alla documentazione per l''utilizzo di toplink-ejb-jar.xml
+toplink_cmp_bean_name_xml_deprecated=Il supporto per toplink-cmp-bean_name.xml \u00e8 obsoleto. Fare riferimento alla documentazione per l''utilizzo di toplink-ejb - jar.xml
 
 toplink_config=[Config EL]: 
 
@@ -727,17 +699,16 @@ toplink_severe=[EL Grave]:
 
 toplink_warning=[EL Avvertenza]: 
 
-unitofwork_identity_hashcode={0}Codice hash identit\u00e0 UnitOfWork: {1}
+unit_of_work_thread_info=L''unit\u00e0 di lavoro corrente nella sessione ({0}) \u00e8 stata creata da un altro thread (id: {1} nome: {2}), rispetto al thread corrente (id: {3} nome: {4})
 
-update_all_fields_not_supported=La funzione CMP nativa Oc4j "update-all-fields" sull''entit\u00e0\u00a0({0}) non \u00e8 direttamente supportata in CMP  EclipseLink. Per i dettagli consultare il documento sulla migrazione.
+unit_of_work_thread_info_thread_dump=Thread di creazione (id: {0} nome: {1}) traccia stack: {2}Thread corrente (id: {3} nome: {4}) traccia stack:{5}\n
+unitofwork_identity_hashcode={0}Codice hash identit\u00e0 UnitOfWork: {1}
 
 update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery non pu\u00f2 utilizzare il bind su questa piattaforma database. Modificate le impostazioni di query per esecuzione senza bind.
 
 validate_db_schema_with_not_supported=L''impostazione CMP nativa  WLS "validate-db-schema-with" non \u00e8 direttamente supportata in CMP EclipseLink. Per i dettagli consultare il documento sulla migrazione.
 
 validate_ejb_jar=Avvio convalida ejb-jar.xml, pu\u00f2 richiedere del tempo...
-
-validity_timeout_not_supported=L''impostazione CMP nativa Oc4j "validity-timeout" sull''entit\u00e0 ({0}) non \u00e8 direttamente supportata in CMP  EclipseLink. Per i dettagli consultare il documento sulla migrazione.
 
 verifiy_columns_read_locking_not_supported=L''impostazione ottimistica "Read" su "verify-columns" nell''entit\u00e0\u00a0({0}) non \u00e8 direttamente supportata in CMP EclipseLink. Per i dettagli consultare il documento sulla migrazione.
 
@@ -754,8 +725,6 @@ weaver_not_overwriting=Il weaver non sovrascrive la classe {0} perch\u00e9 non \
 weaver_null_project=Il progetto della sessione weaver non pu\u00f2 essere null
 
 weblogic_ejb_jar_xml_not_found_in_input=weblogic-ejb-jar.xml non esiste nella directory di input ({0}) specificata.
-
-weblogic_native_migration_start=Avvio migrazione da CMP nativo WebLogic a CMP EclipseLink OC4J......
 
 weblogic_ql_not_supported=WebLogic-QL({0}) del metodo ({1} dell''entit\u00e0 ({2}) non viene migrato perch\u00e9 EclipseLink non supporta il linguaggio QL WebLogic.
 

@@ -51,8 +51,6 @@
 
 22112=Nem hozhat\u00f3 l\u00e9tre helyi JMS kapcsolat {0} t\u00e9mak\u00f6rrel \u00e9s {1} t\u00e9mak\u00f6rgy\u00e1rt\u00f3val. Tov\u00e1bb\u00e1 ellen\u0151rizze, hogy a kontextus tulajdons\u00e1gok helyesen vannak-e be\u00e1ll\u00edtva.
 
-22113=Nem hozhat\u00f3 l\u00e9tre a(z) {0} Oc4jJGroupsRemoteConnection szolg\u00e1ltat\u00e1sazonos\u00edt\u00f3, {1} t\u00e9mak\u00f6r a(z) {2} gy\u00e1rt\u00f3 haszn\u00e1lat\u00e1val. Tov\u00e1bb\u00e1 ellen\u0151rizze, hogy a kontextus tulajdons\u00e1gok helyesen vannak-e be\u00e1ll\u00edtva.
-
 22114={0}: nem siker\u00fclt visszaalak\u00edtani a lek\u00e9rt {1} \u00fczenetet.
 
 22115={0}: nem siker\u00fclt feldolgozni a(z) {1} \u00fczenetb\u0151l elk\u00e9rt t\u00e1voli parancsot a k\u00f6vetkez\u0151t\u0151l: {2}, parancs t\u00edpusa: {3}
@@ -62,4 +60,6 @@
 22117=A munkamenet RemoteCommandManager le van z\u00e1rva, vagy nem lett inicializ\u00e1lva a bej\u00f6v\u0151 \u00fczenetek feldolgoz\u00e1sakor
 
 22118=JGroups kapcsolat l\u00e9trehoz\u00e1sa meghi\u00fasult a konfigur\u00e1ci\u00f3s f\u00e1jl haszn\u00e1lat\u00e1val: {0}
+
+22119=Hiba t\u00f6rt\u00e9nt a(z) {0} inicializ\u00e1l\u00e1sakor, adja hozz\u00e1 az org.eclipse.persistence.corba.jar f\u00e1jlt az oszt\u00e1ly\u00fatvonalhoz.
 

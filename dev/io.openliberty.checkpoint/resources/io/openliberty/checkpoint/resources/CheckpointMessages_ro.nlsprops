@@ -56,3 +56,5 @@ RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E.useraction=Inspecta\u021bi directoru
 CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E=CWWKC0459E: Un punct de control nu poate fi luat deoarece versiunea Java utilizat\u0103 nu are suport pentru punct de control.
 CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.explanation=Ac\u021biunea de punct de control al serverului poate fi utilizat\u0103 numai cu o versiune Java care suport\u0103 punctul de control.  
 CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.useraction=Utiliza\u021bi o versiune Java care suport\u0103 punctul de control. Verifica\u021bi documenta\u021bia pentru detalii cu privire la versiunea Java necesar\u0103 care suport\u0103 punctul de control.
+
+# CWWKC0460E - is a beta only message that gets removed for GA

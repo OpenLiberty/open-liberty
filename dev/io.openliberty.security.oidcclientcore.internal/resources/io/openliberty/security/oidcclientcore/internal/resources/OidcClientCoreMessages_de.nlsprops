@@ -91,3 +91,24 @@ TOKEN_ENDPOINT_MISSING=CWWKS2417E: Der OpenID Connect-Client {0} kann keinen Wer
 TOKEN_ENDPOINT_MISSING.explanation=In den Metadaten des OpenID Connect-Providers und in der Konfiguration des OpenID Connect-Clients fehlt die URL f\u00fcr den Tokenendpunkt.
 TOKEN_ENDPOINT_MISSING.useraction=Stellen Sie sicher, dass die Metadaten des OpenID Connect-Providers einen Wert f\u00fcr den Tokenend (token_endpoint) enthalten. Ein Tokenendpunkt kann auch in der Konfiguration des OpenID Connect-Clients angegeben werden.
 
+USERINFO_RESPONSE_ERROR=CWWKS2418W: Der OpenID Connect-Client hat den folgenden Fehler festgestellt, als er eine Anforderung an die Benutzerinfo-URL [{0}] des OpenID Connect-Providers gesendet hat: {1}.
+USERINFO_RESPONSE_ERROR.explanation=Die Benutzerinformationsantwort vom OpenID Connect-Provider enth\u00e4lt m\u00f6glicherweise fehlerhafte oder fehlende Informationen oder der OpenID Connect-Provider hat bei der Verarbeitung der Anforderung einen Fehler festgestellt.
+USERINFO_RESPONSE_ERROR.useraction=Weitere Informationen k\u00f6nnen Sie dem Fehler in der Nachricht entnehmen. Stellen Sie sicher, dass die URL f\u00fcr Benutzerinformationen f\u00fcr den OpenID Connect-Provider korrekt ist.
+
+USERINFO_RESPONSE_NOT_200=CWWKS2419W: Die Anforderung an die Benutzerinfo-URL [{0}] des OpenID Connect-Providers hat einen HTTP-Statuscode {1} zur\u00fcckgegeben. Der OpenID Connect-Provider hat die folgende Antwort zur\u00fcckgegeben: {2}
+USERINFO_RESPONSE_NOT_200.explanation=Der OpenID Connect-Client hat keine erfolgreiche Antwort vom OpenID Connect-Provider empfangen.
+USERINFO_RESPONSE_NOT_200.useraction=Weitere Informationen finden Sie im Statuscode und in der Fehlerantwort in der Nachricht.
+
+VERIFICATION_KEY_ERROR=CWWKS2420E: Der OpenID Connect-Client {0} hat beim Abrufen des Schl\u00fcssels zum Verifizieren des Identit\u00e4tstokens vom OpenID Connect-Provider den folgenden Fehler festgestellt: {1}
+VERIFICATION_KEY_ERROR.explanation=M\u00f6glicherweise fehlt der Pr\u00fcfschl\u00fcssel, der OpenID Connect-Client hat beim Abrufen des Schl\u00fcssels vom OpenID Connect-Anbieter einen Fehler festgestellt oder es ist ein anderer Fehler aufgetreten.
+VERIFICATION_KEY_ERROR.useraction=Weitere Informationen k\u00f6nnen Sie dem Fehler in der Nachricht entnehmen.
+
+# Do not translate "jwksConnectTimeout"
+JWK_CONNECTION_TIMED_OUT=CWWKS2421E: Der OpenID Connect-Client konnte innerhalb von {1} Millisekunden keine Verbindung zum JWK-URI des OpenID Connect-Providers [{0}] herstellen. Sie k\u00f6nnen die Eigenschaft "jwksConnectTimeout" in der OpenID Connect-Clientkonfiguration aktualisieren.
+JWK_CONNECTION_TIMED_OUT.explanation=Der OpenID Connect-Client kann innerhalb des konfigurierten Zeitrahmens keine Verbindung mit dem JWK-URI herstellen.
+JWK_CONNECTION_TIMED_OUT.useraction=Aktualisieren Sie die Eigenschaft jwksConnectTimeout in der OpenID Connect-Clientkonfiguration. \u00dcberpr\u00fcfen Sie, ob der OpenID Connect-Provider erreichbar ist.
+
+# Do not translate "jwksReadTimeout"
+JWK_READ_TIMED_OUT=CWWKS2422E: Der OpenID Connect-Client konnte innerhalb von {1} Millisekunden keine Daten aus dem JWK-URI [{0}] des OpenID Connect-Providers lesen. Sie k\u00f6nnen die Eigenschaft "jwksReadTimeout" in der OpenID Connect-Clientkonfiguration aktualisieren.
+JWK_READ_TIMED_OUT.explanation=Der OpenID Connect-Client kann die JWK-Daten nicht innerhalb des konfigurierten Zeitrahmens aus dem JWK-URI lesen.
+JWK_READ_TIMED_OUT.useraction=Aktualisieren Sie die Eigenschaft "jwksReadTimeout" in der OpenID Connect-Clientkonfiguration. \u00dcberpr\u00fcfen Sie, ob der OpenID Connect-Provider erreichbar ist.

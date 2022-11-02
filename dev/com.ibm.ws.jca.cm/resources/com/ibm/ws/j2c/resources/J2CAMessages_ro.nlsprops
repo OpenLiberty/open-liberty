@@ -336,6 +336,16 @@ SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003=J2CA1003E: A e\u015fuat \u00een
 SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.explanation=\u00cencercarea de a \u00eenl\u0103tura un MCWrapper a e\u015fuat, cauz\u00e2nd o poten\u0163ial\u0103 problem\u0103 \u00een pool-ul partajat.
 SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.useraction=-CMSG0002
 
+# --------------------------------
+RA_FREE_CONNECTION_ERROR_J2CA1004=J2CA1004I: Managerul de conexiuni a primit o eroare de conexiune fatal\u0103 de la adaptorul de resurse pentru resursa {1}. Starea conexiunilor este: {2}. Excep\u021bia este: {0}
+RA_FREE_CONNECTION_ERROR_J2CA1004.explanation=Managerul de conexiuni a fost notificat de c\u0103tre adaptorul de resurse c\u0103 a ap\u0103rut o eroare pentru conexiune. Acest mesaj este jurnalizat, astfel c\u0103 utilizatorul poate vedea excep\u021bia care a fost returnat\u0103.
+RA_FREE_CONNECTION_ERROR_J2CA1004.useraction=Managerul de conexiuni marcheaz\u0103 conexiunea ca fiind inutilizabil\u0103. Conexiunea este \u00eenl\u0103turat\u0103 \u00een timpul urm\u0103torului interval de \u00eentre\u021binere a conexiunilor. Politica de epurare nu se aplic\u0103 acestei conexiuni. Acest comportament este normal. Dac\u0103 aceast\u0103 eroare apare nea\u015fteptat, investiga\u0163i excep\u0163ia pentru a determina sursa posibil\u0103 a problemei.
+
+# ---------------------------------
+NO_RA_FREE_EXCEPTION_J2CA1005=J2CA1005I: Managerul de conexiuni a primit o eroare de conexiune fatal\u0103 de la adaptorul de resurse pentru resursa {0}. Starea conexiunilor este: {1}. Este posibil s\u0103 fie disponibile informa\u021bii \u00een mesajele sau excep\u021biile anterioare.
+NO_RA_FREE_EXCEPTION_J2CA1005.explanation=Managerul de conexiuni a fost notificat de c\u0103tre adaptorul de resurse c\u0103 a ap\u0103rut o eroare pentru conexiune. Acest mesaj este jurnalizat, astfel c\u0103 utilizatorul poate vedea excep\u021bia care a fost returnat\u0103. 
+NO_RA_FREE_EXCEPTION_J2CA1005.useraction=Managerul de conexiuni marcheaz\u0103 conexiunea ca fiind inutilizabil\u0103. Conexiunea este \u00eenl\u0103turat\u0103 \u00een timpul urm\u0103torului interval de \u00eentre\u021binere a conexiunilor. Politica de epurare nu se aplic\u0103 acestei conexiuni. Acest comportament este normal. Dac\u0103 aceast\u0103 eroare apare nea\u015fteptat, investiga\u0163i excep\u0163ia pentru a determina sursa posibil\u0103 a problemei.
+
 # ---------------------------------
 # End of File
 #

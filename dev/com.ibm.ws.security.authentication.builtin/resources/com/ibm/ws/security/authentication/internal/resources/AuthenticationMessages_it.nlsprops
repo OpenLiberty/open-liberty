@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2021 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -86,4 +86,20 @@ JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.useraction=Non \u00e8 richiesta alcuna azi
 
 JCACHE_AUTH_CACHE_SERIALIZATION_FAILED=CWWKS1126W: L''inserimento della voce per la chiave {0} nella cache di autenticazione JCache {1} non \u00e8 riuscito a causa di un errore di serializzazione. La voce verr\u00e0 inserita invece nella cache di autenticazione in memoria. L''eccezione \u00e8: {2}
 JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.explanation=I contenuti della voce non sono stati serializzati quindi non sono stati memorizzati nella cache di autenticazione JCache.
-JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.useraction=Indagare sull'eccezione inclusa nel messaggio e correggere la causa dell'errore.  
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.useraction=Indagare sull'eccezione inclusa nel messaggio e correggere la causa dell'errore.
+
+JCACHE_AUTH_CACHE_GET_FAILED=CWWKS1127E: Il richiamo della voce per la chiave {0} dalla cache di autenticazione JCache {1} non \u00e8 riuscito a causa di un errore. L''eccezione \u00e8: {2}
+JCACHE_AUTH_CACHE_GET_FAILED.explanation=Non \u00e8 possibile richiamare la voce dalla cache di autenticazione JCache.
+JCACHE_AUTH_CACHE_GET_FAILED.useraction=Indagare sull'eccezione inclusa nel messaggio e correggere la causa dell'errore.
+
+JCACHE_AUTH_CACHE_INSERT_FAILED=CWWKS1128E: L''inserimento della voce per la chiave {0} nella cache di autenticazione JCache {1} non \u00e8 riuscito a causa di un errore. L''eccezione \u00e8: {2}
+JCACHE_AUTH_CACHE_INSERT_FAILED.explanation=La voce non \u00e8 stata memorizzata nella cache di autenticazione JCache.
+JCACHE_AUTH_CACHE_INSERT_FAILED.useraction=Indagare sull'eccezione inclusa nel messaggio e correggere la causa dell'errore.
+
+JCACHE_AUTH_CACHE_REMOVE_FAILED=CWWKS1129E: La rimozione della voce per la chiave {0} nella cache di autenticazione JCache {1} non \u00e8 riuscita a causa di un errore. L''eccezione \u00e8: {2}
+JCACHE_AUTH_CACHE_REMOVE_FAILED.explanation=La voce non \u00e8 stata eliminata dalla cache di autenticazione JCache.
+JCACHE_AUTH_CACHE_REMOVE_FAILED.useraction=Indagare sull'eccezione inclusa nel messaggio e correggere la causa dell'errore.
+
+JCACHE_AUTH_CACHE_CLEAR_FAILED=CWWKS1130E: L''eliminazione della cache di autenticazione JCache {0} non \u00e8 riuscita a causa di un errore. L''eccezione \u00e8: {1}
+JCACHE_AUTH_CACHE_CLEAR_FAILED.explanation=Le voci non sono state eliminate dalla cache di autenticazione JCache.
+JCACHE_AUTH_CACHE_CLEAR_FAILED.useraction=Indagare sull'eccezione inclusa nel messaggio e correggere la causa dell'errore.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2021 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -86,4 +86,20 @@ JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.useraction=Nincs teend\u0151.
 
 JCACHE_AUTH_CACHE_SERIALIZATION_FAILED=CWWKS1126W: A(z) {0} kulcsbejegyz\u00e9s besz\u00far\u00e1sa a(z) {1} JCache hiteles\u00edt\u00e9si gyors\u00edt\u00f3t\u00e1rba egy soros\u00edt\u00e1si hiba miatt meghi\u00fasult. A bejegyz\u00e9s ehelyett a mem\u00f3ri\u00e1n bel\u00fcli hiteles\u00edt\u00e9si gyors\u00edt\u00f3t\u00e1rba ker\u00fcl beilleszt\u00e9sre. A kiv\u00e9tel: {2}
 JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.explanation=A bejegyz\u00e9startalmak nem soros\u00edtottak, \u00edgy azok t\u00e1rol\u00e1sa nem a JCache hiteles\u00edt\u00e9si gyors\u00edt\u00f3t\u00e1rban t\u00f6rt\u00e9nt.
-JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.useraction=Vizsg\u00e1lja meg az \u00fczenetben szerepl\u0151 kiv\u00e9telt, \u00e9s jav\u00edtsa ki a hiba ok\u00e1t.  
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.useraction=Vizsg\u00e1lja meg az \u00fczenetben szerepl\u0151 kiv\u00e9telt, \u00e9s jav\u00edtsa ki a hiba ok\u00e1t.
+
+JCACHE_AUTH_CACHE_GET_FAILED=CWWKS1127E: A(z) {0} kulcs bejegyz\u00e9s\u00e9nek lek\u00e9r\u00e9se a(z) {1} JCache hiteles\u00edt\u00e9si gyors\u00edt\u00f3t\u00e1rb\u00f3l hiba miatt meghi\u00fasult. A kiv\u00e9tel: {2}
+JCACHE_AUTH_CACHE_GET_FAILED.explanation=A bejegyz\u00e9s nem k\u00e9rhet\u0151 le a JCache hiteles\u00edt\u00e9si gyors\u00edt\u00f3t\u00e1rb\u00f3l.
+JCACHE_AUTH_CACHE_GET_FAILED.useraction=Vizsg\u00e1lja meg az \u00fczenetben szerepl\u0151 kiv\u00e9telt, \u00e9s jav\u00edtsa ki a hiba ok\u00e1t.
+
+JCACHE_AUTH_CACHE_INSERT_FAILED=CWWKS1128E: A(z) {0} kulcs bejegyz\u00e9s\u00e9nek beilleszt\u00e9se a(z) {1} JCache hiteles\u00edt\u00e9si gyors\u00edt\u00f3t\u00e1rba hiba miatt meghi\u00fasult. A kiv\u00e9tel: {2}
+JCACHE_AUTH_CACHE_INSERT_FAILED.explanation=A bejegyz\u00e9s nem ker\u00fclt t\u00e1rol\u00e1sra a JCache hiteles\u00edt\u00e9si gyors\u00edt\u00f3t\u00e1rban.
+JCACHE_AUTH_CACHE_INSERT_FAILED.useraction=Vizsg\u00e1lja meg az \u00fczenetben szerepl\u0151 kiv\u00e9telt, \u00e9s jav\u00edtsa ki a hiba ok\u00e1t.
+
+JCACHE_AUTH_CACHE_REMOVE_FAILED=CWWKS1129E: A(z) {0} kulcs bejegyz\u00e9s\u00e9nek elt\u00e1vol\u00edt\u00e1sa a(z) {1} JCache hiteles\u00edt\u00e9si gyors\u00edt\u00f3t\u00e1rb\u00f3l hiba miatt meghi\u00fasult. A kiv\u00e9tel: {2}
+JCACHE_AUTH_CACHE_REMOVE_FAILED.explanation=A bejegyz\u00e9s nem ker\u00fclt elt\u00e1vol\u00edt\u00e1sra a JCache hiteles\u00edt\u00e9si gyors\u00edt\u00f3t\u00e1rb\u00f3l.
+JCACHE_AUTH_CACHE_REMOVE_FAILED.useraction=Vizsg\u00e1lja meg az \u00fczenetben szerepl\u0151 kiv\u00e9telt, \u00e9s jav\u00edtsa ki a hiba ok\u00e1t.
+
+JCACHE_AUTH_CACHE_CLEAR_FAILED=CWWKS1130E: A(z) {0} JCache hiteles\u00edt\u00e9si gyors\u00edt\u00f3t\u00e1r t\u00f6rl\u00e9se hiba miatt meghi\u00fasult. A kiv\u00e9tel: {1}
+JCACHE_AUTH_CACHE_CLEAR_FAILED.explanation=A bejegyz\u00e9sek nem ker\u00fcltek t\u00f6rl\u00e9sre a JCache hiteles\u00edt\u00e9si gyors\u00edt\u00f3t\u00e1rb\u00f3l.
+JCACHE_AUTH_CACHE_CLEAR_FAILED.useraction=Vizsg\u00e1lja meg az \u00fczenetben szerepl\u0151 kiv\u00e9telt, \u00e9s jav\u00edtsa ki a hiba ok\u00e1t.

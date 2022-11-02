@@ -56,3 +56,5 @@ RESTORE_FAILED_RESTORE_EXCEPTION_CWWKC0458E.useraction=Esaminare la directory de
 CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E=CWWKC0459E: Non \u00e8 possibile eseguire un punto di controllo perch\u00e9 la versione Java utilizzata non supporta il punto di controllo.
 CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.explanation=L'azione del punto di controllo del server pu\u00f2 essere utilizzata solo con una versione Java che supporta il punto di controllo.  
 CHECKPOINT_FAILED_UNSUPPORTED_JVM_CWWKC0459E.useraction=Utilizzare una versione Java che supporta il punto di controllo. Consultare la documentazione per i dettagli sulla versione Java richiesta che supporta il punto di controllo.
+
+# CWWKC0460E - is a beta only message that gets removed for GA

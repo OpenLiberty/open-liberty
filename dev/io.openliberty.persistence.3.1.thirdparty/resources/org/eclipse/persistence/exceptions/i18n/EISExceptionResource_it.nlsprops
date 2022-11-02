@@ -63,5 +63,17 @@
 
 17024=Impossibile eliminare il file: {0}
 
-17025=Questa associazione richiede un elemento di raggruppamento di chiavi esterne poich\u00e9 esistono pi\u00f9 chiavi esterne.
+17025=Questa associazione richiede un elemento di raggruppamento di chiavi esterne, poich\u00e9 esistono pi\u00f9 chiavi esterne.
+
+17026=La propriet\u00e0 dell''operazione deve essere impostata sull''interazione della query.
+
+17027=Il nome della tabella di destinazione non \u00e8 impostato. Deve essere impostato sull''interazione della query.
+
+17028=Valore della propriet\u00e0 di coerenza non valido: {0}
+
+17029=Valore propriet\u00e0 di durata non valido: {0}
+
+17030=XMLInteraction \u00e8 valida solo per query di oggetti, utilizzare MappedInteraction per query native: {0}
+
+17031=Query troppo complessa per Oracle NoSQL translation, solo le query select sono supportate nella query: {0}
 

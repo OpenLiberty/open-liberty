@@ -63,5 +63,17 @@
 
 17024=Die Datei {0} konnte nicht gel\u00f6scht werden.
 
-17025=Diese Zuordnung erfordert aufgrund mehrerer vorhandener Fremdschl\u00fcssel ein Element zur Gruppierung von Fremdschl\u00fcsseln.
+17025=Diese Zuordnung erfordert ein Gruppierungselement f\u00fcr Fremdschl\u00fcssel, da mehrere Fremdschl\u00fcssel vorhanden sind.
+
+17026=Die Operationseigenschaft muss f\u00fcr die Interaktion der Abfrage festgelegt werden.
+
+17027=Der Name der Zieltabelle ist nicht festgelegt. Sie muss f\u00fcr die Interaktion der Abfrage festgelegt werden.
+
+17028=Ung\u00fcltiger Wert f\u00fcr Konsistenzeigenschaft: {0}
+
+17029=Ung\u00fcltiger Wert f\u00fcr Dauerhaftigkeitseigenschaft: {0}
+
+17030=XMLInteraction ist nur f\u00fcr Objektabfragen g\u00fcltig. Verwenden Sie MappedInteraction f\u00fcr native Abfragen: {0}
+
+17031=Abfrage zu komplex f\u00fcr Oracle NoSQL-Umsetzung. Nur Auswahlabfragen werden in Abfrage unterst\u00fctzt: {0}
 

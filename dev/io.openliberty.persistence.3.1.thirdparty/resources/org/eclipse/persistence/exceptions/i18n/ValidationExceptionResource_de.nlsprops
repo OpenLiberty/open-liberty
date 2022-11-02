@@ -535,7 +535,7 @@
 
 7306=F\u00fcr das annotierte Element [{0}] der Klasse [{1}] ist ein falscher expliziter Zugriffstyp angegeben. Der Zugriffstyp [{2}] muss angegeben werden.
 
-7307=F\u00fcr den Kontext [{0}] fehlt eine Protokollkontextzeichenfolge. Dies ist eine interne Ausnahme, die beim Abrufen einer Protokollnachricht f\u00fcr die Verarbeitung von Jakarta Persistence-Metadaten eingetreten ist. Melden Sie einen Programmfehler.
+7307=F\u00fcr den Kontext [{0}] fehlt eine Protokollkontextzeichenfolge. Dies ist eine interne Ausnahme, die beim Abrufen einer Protokollnachricht f\u00fcr die Verarbeitung von Jakarta Persistence-Metadaten aufgetreten ist. Melden Sie einen Fehler.
 
 7308=Der angegebene Wert [{0}] f\u00fcr die Persistenzeigenschaft [{1}] ist ung\u00fcltig: [{2}].
 
@@ -593,7 +593,7 @@
 
 7336=Es wurden mehrere Kontexteigenschaften ([{2}] und [{3}]) f\u00fcr dasselbe Tenantdiskriminatorfeld [{1}] f\u00fcr die Klasse [{0}] angegeben.
 
-7337=Die zugeordnete Tenantdiskriminatorspalte [{1}] f\u00fcr die Klasse [{0}] muss als schreibgesch\u00fctzt markiert sein. In Jakarta Persistence API wird dies durch Festlegen von insertable=false und updatable=false f\u00fcr die Spalte erreicht, z. B. @Column(name="TENANT_ID", insertable=false, updatable=false).
+7337=Die zugeordnete Tenantdiskriminatorspalte [{1}] f\u00fcr die Klasse [{0}] muss als schreibgesch\u00fctzt markiert sein. In der Jakarta Persistence-API wird dies durch die Einstellung "insertable=false" und "updatable=false" f\u00fcr die Spalte erreicht, z. B. @Column(name="TENANT_ID", insertable=false, updatable=false).
 
 7338=Sie k\u00f6nnen einem SessionBroker keine Sequenzen hinzuf\u00fcgen.
 
@@ -605,7 +605,7 @@
 
 7342=Der angegebene boolesche Wert [{0}] zum Festlegen, dass native SQL-Abfragen zul\u00e4ssig sind, ist ung\u00fcltig. Der Wert muss "true" oder "false" sein.
 
-7343=Es wurden mehrere VPD-IDs (Kontexteigenschaft f\u00fcr den Tenantdiskriminator) angegeben. Die Entit\u00e4t [{1}] verwendet [{0}] und die Entit\u00e4t verwendet [{3]} [{2}]. Bei der Verwendung einer VPD-Multitenantstrategie darf pro Entit\u00e4t nur eine einzige Tenantdiskriminatorspalte vorhanden sein und die zugeh\u00f6rige Kontexteigenschaft muss f\u00fcr alle VPD-Multitenantentit\u00e4ten konsistent sein.
+7343=Es wurden mehrere VPD-IDs (Kontexteigenschaft f\u00fcr den Tenantdiskriminator) angegeben. Die Entit\u00e4t [{1}] verwendet [{0}] und die Entit\u00e4t verwendet [{3}] [{2}]. Die Multitenant-VPD-Strategie l\u00e4sst nur eine Tenantdiskriminatorspalte f\u00fcr jede Entit\u00e4t zu und ihre Kontexteigenschaft muss in allen Multitenant-VPD-Entit\u00e4ten konsistent sein.
 
 7344=VPD (Verbindungen und DDL-Generierung) wird nicht f\u00fcr die Plattform [{0}] unterst\u00fctzt.
 
@@ -621,7 +621,7 @@
 
 7351=Die Converterklasse [{2}], die im Zuordnungsattribut [{1}] der Klasse [{0}] angegeben ist, wurde nicht gefunden. Vergewissern Sie sich, dass der Name der Converterklasse richtig und in der Persistenzeinheitendefinition vorhanden ist.
 
-7352=Die Converterklasse [{0}] muss die Jakarta Persistence-Schnittstelle jakarta.persistence.AttributeConverter<X, Y> implementieren, damit sie eine g\u00fcltige Converterklasse ist.
+7352=Die Converterklasse [{0}] muss die Jakarta Persistence-Schnittstelle "jakarta.persistence.AttributeConverter" <X, Y> implementieren, um eine g\u00fcltige Converterklasse zu sein.
 
 7353=Das Zuordnungsattribut [{1}] der Klasse [{0}] ist kein g\u00fcltiger Zuordnungstyp f\u00fcr eine Konvertierungsspezifikation.
 
@@ -630,4 +630,6 @@
 7355=Das Zuordnungsattribut [{1}] der Klasse [{0}] ist kein g\u00fcltiger Zuordnungstyp f\u00fcr eine Konvertierung mit einer Attributnamensspezifikation. Ein Attributname sollte nur angegeben werden, um den Zuordnungstyp Embedded zu traversieren.
 
 7356=Vorgehensweise: [{1}] kann nicht ausgef\u00fchrt werden, weil {0} derzeit nicht mehrere OUT-Parameter unterst\u00fctzt.
+
+7357=Die URL "[{0}]" f\u00fcr die Ressource "[{1}]" geh\u00f6rt nicht zu einem g\u00fcltigen Persistenzstammverzeichnis (gem\u00e4\u00df Jakarta Persistence Specification)
 

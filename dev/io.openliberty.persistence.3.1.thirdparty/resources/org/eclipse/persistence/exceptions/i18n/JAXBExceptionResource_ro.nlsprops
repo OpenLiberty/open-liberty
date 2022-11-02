@@ -153,7 +153,7 @@
 
 50063=A survenit p excep\u0163ie la \u00eencercarea  de instan\u0163iere XmlAdapterClass [{0}]. O cauz\u0103 posibil\u0103 este aceea c\u0103 clasa adaptor nu are un constructor de argument zero.
 
-50064=XmlAdapterClass [{0}] nu extinde "jakarta.xml.bind.annotation.adapters.XmlAdapter" a\u015fa cum era a\u015fteptat.  Este necesar ca clasa adaptor a extins "jakarta.xml.bind.annotation.adapters.XmlAdapter" \u015fi a declarat metodele "public abstract BoundType unmarshal(ValueType v)" \u015fi "public abstract ValueType marshal(BoundType v)".
+50064=XmlAdapterClass [{0}] nu extinde "jakarta.xml.bind.annotation.adapters.XmlAdapter" a\u0219a cum era a\u0219teptat.  Clasa de adaptor trebuie s\u0103 extind\u0103 "jakarta.xml.bind.annotation.adapters.XmlAdapter" \u0219i s\u0103 declare metode "public abstract BoundType unmarshal (ValueType v)" \u0219i "public abstract ValueType marshal (BoundType v)".
 
 50065=Un XmlJavaTypeAdapter invalid [{0}] a fost specificat pentru pachetul [{1}]. Cauzele posibile sunt un nume de clas\u0103 adaptor incorect sau a fost setat \u00eenc\u0103rc\u0103torul gre\u015fit.
 

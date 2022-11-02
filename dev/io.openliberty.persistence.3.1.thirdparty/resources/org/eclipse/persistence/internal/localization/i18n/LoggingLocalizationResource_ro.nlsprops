@@ -57,8 +57,6 @@ application_server_name_and_version=Server: {0}
 
 archive_not_found_in_input=Fi\u015fierul arhiv\u0103 ({0}) nu exist\u0103 \u00een directorul de intrare ({1}).
 
-associate_using_third_table_not_migrated=Caracteristica Oc4j native CMP -DassociateUsingThirdTable=true pentru a mapa 1:m folosind tabelul de rela\u0163ii nu este migrat\u0103. Trebuie s\u0103 mapa\u0163i din nou c\u00e2mpul cmr ({1}) al entit\u0103\u0163ii ({0}) ca mapare unu-la-mai-mul\u0163i prin Bancul de lucru de mapare dup\u0103 procesul de migrare.
-
 attempted_to_open_entry_in_url_as_jar={2} s-a aruncat la \u00eencercarea de a deschide {0} ca jar \u015fi de a accesa intrarea: {1}.
 
 attempted_to_open_file_url_as_directory={2} s-a aruncat la \u00eencercarea de a deschide {0} ca director \u015fi de a accesa intrarea: {1}.
@@ -84,8 +82,6 @@ broadcast_listening_sleep_on_error=Avertisment: {0}: Excep\u0163ia {1} a fost ar
 broadcast_remote_command_is_null=Avertisment: {0}: S-a primit mesajul {1} ce con\u0163ine null \u00een loc de RemoteCommand.
 
 broadcast_remote_command_wrong_type=Avertisment: {0}: mesajul primit {1} ce con\u0163ine un obiect de tip {2} \u00een locul RemoteCommand de tipul a\u015fteptat.
-
-call_timeout_not_migrated=call-timeout value={1} este definit \u00een entitatea {0} \u00een orion-ejb-jar.xml dar nu este definit\u0103 nicio mapare persistent\u0103 \u00een fi\u015fierul descriptor, prin urmare nu va avea loc nicio migrare.  Dac\u0103 folosi\u0163i maparea implicit\u0103 EclipseLink mai t\u00e2rziu pentru a genera descriptorul de mapare EclipseLink, re\u0163ine\u0163i c\u0103 setarea call-timeout va fi pierdut\u0103, \u00eentruc\u00e2t maparea implicit\u0103 EclipseLink nu are acces la fi\u015fierul descriptor nativ.  Apoi, trebuie s\u0103 reseta\u0163i timeout-ul apelului manual sau prin Bancul de lucru de mapare EclipseLink dup\u0103 generarea map\u0103rii implicite.
 
 cannot_get_nested_collection_type=Nu a putut fi ob\u0163inut tipul colec\u0163iei imbricate.
 
@@ -145,8 +141,6 @@ delay_database_insert_until_ejb_create_not_supported=Setarea WLS native CMP "del
 
 delay_database_insert_until_ejb_post_create_not_supported=Setarea WLS native CMP "delay-database-insert-until-ejbPostCreate" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
 
-delay_updates_until_commit_not_supported=Caracteristica Oc4j native CMP "delay-updates-until-commit" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
-
 deleted_objects=Obiecte \u015fterse:
 
 deleting_object=Opera\u0163ia de \u00eenl\u0103turare a fost realizat\u0103 pe: {0}
@@ -157,9 +151,9 @@ descriptor_named_query_cannot_be_added=Nu se poate ad\u0103uga o interogare numi
 
 dir_cleaned_for_mw_files=Fi\u015fierele \u015fi subdirectoarele de sub directorul {0} au fost \u015fterse pentru a crea un director curat pentru fi\u015fierele de proiect nou generate Banc de lucru mapare EclipseLink
 
-do_select_before_insert_not_supported=Caracteristica Oc4j native CMP "do-select-before-insert" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
-
 drop_connection_on_error=Avertisment: Se abandoneaz\u0103 conexiunea comenzii la distan\u0163\u0103 la {0} la eroarea {1}
+
+eclipselink_version_error=Fi\u0219ierul: {0} nu exist\u0103 sau este corupt.
 
 ejbSelect2=EjbSelect: {0}
 
@@ -219,8 +213,6 @@ field_group_not_supported=Setarea WLS native CMP "field-group" pe entitatea ({0}
 
 field_type_set_to_java_lang_string=Generatorul de tabel implicit nu a putut localiza sau converti un tip java ({1}) \u00eentr-un tip de baz\u0103 de date pentru c\u00e2mpul de baz\u0103 de date ({0}). Generatorul folose\u015fte "java.lang.String" ca tip java implicit pentru c\u00e2mp.
 
-force_update_not_supported=Caracteristica Oc4j nativ\u0103 CMP "for\u0163are-actualizare" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
-
 identitymap_for={0}{1} pentru: {2}
 
 includes=(include: 
@@ -235,15 +227,11 @@ input_minimum_arguments=Argumentele de intrare ale liniei de comand\u0103 trebui
 
 input_not_both_archive_and_xml=Folosi\u0163i -e pentru a specifica numelede fi\u015fier arhiv\u0103 sau -x pentru a semnala c\u0103 fi\u015fierele descriptor din directorul de intrare vor fi migrate, dar nu ambele.
 
-input_orione_ejb_jar_augmented=Fi\u015fierul de intrare orion-ejb-jar.xml a fost crescut pentru a specifica EclipseLink ca Managerul de persisten\u0163\u0103 al OC4J
-
 invalid_command_line_argument=Argumentul liniei de comand\u0103 ({0}) este invalid
 
 invalid_datasource_property_value={1} nu este un obiect valid de transmis pentru proprietatea {0}.  Valorile valide sunt String sau instan\u0163e de javax.sql.DataSource.
 
 invalid_property_value={1} nu este un obiect valid de transmis pentru proprietatea {0}.
-
-isolation_level_not_supported=Setarea Oc4j native CMP "isolation-level" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
 
 jar_entry_has_been_migrated=Fi\u015fierul descriptor native cmp din intrarea jar ({0}) din fi\u015fierul de intrare EAR ({1}) a fost migrat.
 
@@ -317,13 +305,15 @@ jpars_could_not_find_session_bean=Se face un apel la un bean de sesiune cu numel
 
 jta_cannot_be_disabled_in_cmp=C\u00e2nd se folose\u015fte Container Managed Persistence (CMP), JTA nu poate fi dezactivat. EclipseLink se va comporta ca \u015fi cum JTA este activat.
 
+jta_duplicate_ctrl_property=Clasa de controler de tranzac\u021bii JTA este definit\u0103 \u00een ambele propriet\u0103\u021bi "eclipselink.target-server" \u0219i "eclipselink.jta.controller". Se utilizeaz\u0103 valoarea de la "eclipselink.target-server".
+
+jta_tsr_lookup_failure=Nu se poate c\u0103uta instan\u021ba TransactionSynchronizationRegistry: {0}
+
 key_identity_hash_code_object={0}Cheie: {1}{2}Cod hash identitate: {3}{2}Obiect: {4}
 
 key_object_null={0}Cheie: {1}{2}Obiect: null
 
 key_version_identity_hash_code_object={0}Cheie: {1}{2}Versiune: {5}{2}Cod hash identitate: {3}{2}Obiect: {4}
-
-locking_mode_not_valid=Modul de blocare({1}) pe entitatea ({0} \u00een orion-ejb-jar.xml nu este bine definit \u015fi, prin urmare, nu e migrat.
 
 locking_required_for_database_change_notification=Entitatea {0} nu folose\u015fte blocarea versiunii, dar are mai multe tabele sau rela\u0163ii \u015fi folose\u015fte notificarea modific\u0103rilor bazei de date Oracle, modific\u0103rile asupra rela\u0163iilor sau tabelelor secundare nu ar putea invalida cache-ul.
 
@@ -332,10 +322,6 @@ log_file_under_output_dir=Exist\u0103 un fi\u015fier istoric numit ({0}) \u00een
 mapping_not_supported_by_mw=Maparea EclipseLink {0} nu este suportat\u0103 de bancul de lucru de mapare
 
 marshal_warning_null_document_root_element={0}: Elementul r\u0103d\u0103cin\u0103 de document nedefinit al unui obiect referit [{1}] este ignorat \u00een timpul trierii cu orice mapare colec\u0163ie|obiect.
-
-max_instance_not_supported=Setarea Oc4j native CMP "max-instance" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
-
-max_tx_retries_not_supported=Setarea Oc4j native CMP "max-tx-retries" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
 
 metadata_access_type=Tipul de acces pentru clasa persistent\u0103 [{1}] este setat la [{0}].
 
@@ -457,7 +443,7 @@ metadata_warning_ignore_cacheable_false=Se ignor\u0103 cacheable=false explicit 
 
 metadata_warning_ignore_cacheable_true=Se ignor\u0103 cacheable=true explicit setat pentru clasa de entitate [{0}] \u00eentruc\u00e2t un tip de punere \u00een cache NONE a fost specificat \u00een fi\u015fierul persistence.xml.
 
-metadata_warning_ignore_converts=Se ignor\u0103 specifica\u0163ia de conversie pe elementul [{1}] \u00een clasa de entitate [{0}] \u00eentruc\u00e2t sunt specificate metadate de conversie EclipseLink.
+metadata_warning_ignore_converts=Se ignor\u0103 specifica\u021bia de convertire Jakarta Persistence pentru elementul [{1}] \u00een clasa de entitate [{0}], deoarece s-a specificat convertirea de metadate EclipseLink.
 
 metadata_warning_ignore_enumerated=Se ignor\u0103 specifica\u0163ia enumerat\u0103 pe elementul [{1}] \u00een clasa de entitate [{0}] \u00eentruc\u00e2t sunt specificate metadate de conversie EclipseLink.
 
@@ -517,7 +503,7 @@ metadata_warning_ignore_mapped_superclass_primary_key=Se ignor\u0103 setarea de 
 
 metadata_warning_ignore_mapped_superclass_read_only=Se ignor\u0103 setarea numai-citire de pe superclasa mapat\u0103 [{1}] pentru clasa de entitate [{0}] \u00eentruc\u00e2t s-au descoperit anterior metadate numai-citire pentru acea entitate (fie pe entitatea \u00een sine, fie pe alt\u0103 superclas\u0103 mapat\u0103).
 
-metadata_warning_ignore_mapping_metadata=Se ignor\u0103 metadatele jakarta.persistence aplicate atributului [{0}] din clasa [{1}]. Metadatele jakarta.persistence sunt ignorate pe c\u00e2mpuri sau propriet\u0103\u0163i care sunt ocazionale, statice sau abstracte.
+metadata_warning_ignore_mapping_metadata=Se ignor\u0103 metadatele jakarta.persistence aplicate atributului [{0}] din clasa [{1}]. Metadatele jakarta.persistence sunt ignorate pe c\u00e2mpurile sau propriet\u0103\u021bile care sunt tranzitorii, statice sau abstracte.
 
 metadata_warning_ignore_serialized=Se ignor\u0103 serializarea implicit\u0103 pe elementul [{1}] \u00een clasa de entitate [{0}] \u00eentruc\u00e2t sunt specificate metadate de conversie EclipseLink.
 
@@ -559,11 +545,7 @@ migration_output_dir_not_valid=Directorul de ie\u015fire ({0}) pe care l-a\u0163
 
 migration_successful=Migrarea a avut succes!
 
-min_instance_not_supported=Setarea Oc4j native CMP "min-instance" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
-
 missing_converter=Avertisment: Nu se poate converti comanda {0} din cauza lipsei CommandConverter - se ignor\u0103 comanda
-
-multiple_ds_not_supported=EclipseLink CMP nu suport\u0103 mai multe surse de date \u015fi va folosi numai una din ele numit\u0103 ({0}), care este specificat\u0103 \u00een orion-ejb-jar.xml \u015fi este asociat\u0103 cu un bean de entitate definit ultimul \u00een ejb-jar.xml corespunz\u0103tor.
 
 must_define_migration_output_dir=Trebuie s\u0103 defini\u0163i un director de ie\u015fire pentru unealta de migrare
 
@@ -575,25 +557,15 @@ nested_entity_manager_flush_not_executed_pre_query_changes_may_be_pending=Clasa 
 
 new_objects=Obiecte noi:
 
-no_exclusive_write_access_not_supported=Caracteristica Oc4j native CMP "no-exclusive-write-access" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
-
 no_jar_entry_migratable_in_ear=Niciuna din intr\u0103rile jar din fi\u015fierul de intrare EAR ({0}) nu poate fi migrat\u0103.
 
 no_session_found=Nu s-a putut g\u0103si sesiunea cu numele [{0}] \u00een fi\u015fierul session.xml [{1}]
 
-non_jpa_allowed_type_used_for_collection_using_lazy_access=Elementul [{1}] din clasa de entitate [{0}] folose\u015fte un tip de colec\u0163ie [{2}] c\u00e2nd specifica\u0163ia Jakarta Persistence suport\u0103 numai java.util.Collection, java.util.Set, java.util.List sau java.util.Map.  Acest tip este suportat cu \u00eenc\u0103rcare rapid\u0103; folosind \u00eenc\u0103rcarea lent\u0103 cu acest tip de colec\u0163ie necesit\u0103 configurare suplimentar\u0103 \u015fi o implementare IndirectContainer care extinde [{2}] sau setarea map\u0103rii s\u0103 foloseasc\u0103 ocolire de baz\u0103 \u015fi tipul s\u0103 fie ValueholderInterface.
+non_jpa_allowed_type_used_for_collection_using_lazy_access=Elementul [{1}] din clasa de entitate [{0}] utilizeaz\u0103 un tip de colec\u021bie [{2}] atunci c\u00e2nd specifica\u021bia Jakarta Persistence accept\u0103 numai java.util.Collection, java.util.Set, java.util.List sau java.util.Map.  Acest tip este\nsuportat cu \u00eenc\u0103rcare rapid\u0103; folosind \u00eenc\u0103rcarea lent\u0103 cu acest tip\nde colec\u0163ie necesit\u0103 configurare suplimentar\u0103 \u015fi o implementare\nIndirectContainer care extinde [{2}] sau setarea map\u0103rii s\u0103\nfoloseasc\u0103 ocolire de baz\u0103 \u015fi tipul s\u0103 fie ValueholderInterface.
 
 objectchangepolicy_turned_off=Urm\u0103rirea modific\u0103rilor dezactivat\u0103 pentru: {0}
 
-oc4j_native_migration_start=OC4J-Native CMP -> OC4J EclipseLink CMP Migration STARTS......
-
-old_pessimistic_locking_not_supported=Setarea Oc4j native CMP "old-pessimistic-locking" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
-
 one_to_one_join_outer_migrated=Unirea exterioar\u0103 unu-la-unu definit\u0103 pentru c\u00e2mpul cmr ({0}) al bean-ului de entitate ({1}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
-
-optimistic_locking_not_supported=Setarea Oc4j native CMP locking-mode="optimistic" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
-
-orion_ejb_jar_xml_not_found_in_input=orion-ejb-jar.xml nu exist\u0103 \u00een directorul de intrare ({0}) pe care l-a\u0163i specificat.
 
 osgi_initializer=Se folose\u015fte ini\u0163ializatorul OSGi: [{0}].
 
@@ -626,6 +598,12 @@ persistence_unit_processor_npe_temp_classloader=classLoader [{0}] pentru Persist
 persistence_unit_processor_null_temp_classloader=classLoader pentru PersistenceLoadProcessor [{0}] este null. \u0162eserea a fost dezactivat\u0103 pentru aceast\u0103 sesiune. EclipseLink s-ar putea s\u0103 nu poat\u0103 ob\u0163ine un \u00eenc\u0103rc\u0103tor de clas\u0103 temporar mandatat spec de la server, a\u0163i putea utiliza \u0163eserea static\u0103 ca paliativ op\u0163ional. 
 
 persistence_unit_processor_sap_temp_classloader_bypassed=classLoader temporar pentru PersistenceLoadProcessor [{0}] nu este disponibil.  Se comut\u0103 classLoader la [{1}].  \u0162eserea a fost dezactivat\u0103 pentru aceast\u0103 sesiune. EclipseLink s-ar putea s\u0103 nu poat\u0103 ob\u0163ine un \u00eenc\u0103rc\u0103tor de clas\u0103 temporar mandatat spec de la server, a\u0163i putea utiliza \u0163eserea static\u0103 ca paliativ op\u0163ional. 
+
+pgsql10_platform_with_json_extension=PostgreSQL10Platform cu modulul org.eclipse.persistence.pgsql. Extensia JSON este activat\u0103.
+
+pgsql10_platform_without_json_extension=PostgreSQL10Platform f\u0103r\u0103 modulul org.eclipse.persistence.pgsql. Extensia JSON este dezactivat\u0103.
+
+platform_specific_connection_property_exists=Nu se poate ad\u0103uga proprietatea de conexiune specific\u0103 platformei {0}={1}. Cheia de proprietate {0} a fost deja ad\u0103ugat\u0103 la propriet\u0103\u021bile de conexiune.
 
 problem_adding_connection=Nu s-a putut ad\u0103uga conexiunea de la distan\u0163\u0103 de la {0} din cauza erorii: {1}
 
@@ -697,17 +675,11 @@ sop_object_wrong_pk=Se \u00eenl\u0103tur\u0103 sopObject-ul serializat de pe lin
 
 sop_object_wrong_version=Se \u00eenl\u0103tur\u0103 sopObject-ul serializat de pe linie pentru c\u0103 are o versiune gre\u015fit\u0103 [{0}] \u00een [{1}] \u00een [{2}]
 
-src_pm_name_first_argument=Trebuie s\u0103 specifica\u0163i numele PM surs\u0103 la primul argument de intrare ca: -sOc4j-native sau -sWeblogic.
-
-table_existed_during_creation=A e\u015fuat crearea tabelului. Dac\u0103 exist\u0103 deja, trebuie abandonat mai \u00eent\u00e2i. Aceasta se poate face manual sau set\u00e2nd atributul db-table-gen \u00een orion-ejb-jar.xml.
-
-template_orion_ejb_jar_created=S-a creat un fi\u015fier orion-ejb-jar.xml \u015fablonat
-
 topLink_version=EclipseLink, versiunea: {0}
 
 toplink=[EL]: 
 
-toplink_cmp_bean_name_xml_deprecated=Suportul pentru toplink-cmp-bean_name.xml este perimat. V\u0103 rug\u0103m s\u0103 consulta\u0163i documenta\u0163ia pentru utilizarea toplink-ejb-jar.xml
+toplink_cmp_bean_name_xml_deprecated=Suportul pentru toplink-cmp-bean_name.xml este perimat. V\u0103 rug\u0103m s\u0103 consulta\u021bi documenta\u021bia pentru utilizarea toplink-ejb-jar.xml
 
 toplink_config=[EL Config]: 
 
@@ -727,17 +699,16 @@ toplink_severe=[EL Severe]:
 
 toplink_warning=[EL Warning]: 
 
-unitofwork_identity_hashcode={0}Cod hash identitate UnitOfWork: {1}
+unit_of_work_thread_info=Unitatea curent\u0103 de lucru din sesiunea ({0}) a fost creat\u0103 de un fir (id: {1} nume: {2}), diferit de firul curent (id: {3} nume: {4})
 
-update_all_fields_not_supported=Caracteristica Oc4j native CMP "update-all-fields" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
+unit_of_work_thread_info_thread_dump=Creare fir (id: {0} nume: {1}): urm\u0103rire stiv\u0103 {2}Fir curent (id: {3} nume: {4}): urm\u0103rire stiv\u0103 {5}\n
+unitofwork_identity_hashcode={0}Cod hash identitate UnitOfWork: {1}
 
 update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery nu poate folosi legarea pe aceast\u0103 platform\u0103 de baz\u0103 de date. S-a modificat setarea interog\u0103rii pentru execu\u0163ie f\u0103r\u0103 legare.
 
 validate_db_schema_with_not_supported=Setarea WLS native CMP "validate-db-schema-with" nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
 
 validate_ejb_jar=Validarea ejb-jar.xml porne\u015fte, ar putea dura c\u00e2tva timp...
-
-validity_timeout_not_supported=Setarea Oc4j native CMP "validity-timeout" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
 
 verifiy_columns_read_locking_not_supported=Setarea optimist\u0103 "Citire" din "verificare-coloane" \u00een entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
 
@@ -754,8 +725,6 @@ weaver_not_overwriting=\u0162es\u0103torul nu suprascrie clasa {0} pentru c\u010
 weaver_null_project=Proiectul sesiunii \u0163es\u0103torului nu poate fi nul
 
 weblogic_ejb_jar_xml_not_found_in_input=weblogic-ejb-jar.xml nu exist\u0103 \u00een directorul de intrare ({0}) pe care l-a\u0163i specificat.
-
-weblogic_native_migration_start=WebLogic-Native CMP -> OC4J EclipseLink CMP Migration STARTS......
 
 weblogic_ql_not_supported=WebLogic-QL({0}) al metodei ({1} a entit\u0103\u0163ii ({2}) nu este migrat\u0103 \u00eentruc\u00e2t EclipseLink nu suport\u0103 limbajul WebLogic QL.
 

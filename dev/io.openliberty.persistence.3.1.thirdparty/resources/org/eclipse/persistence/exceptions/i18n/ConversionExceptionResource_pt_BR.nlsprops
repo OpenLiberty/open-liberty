@@ -27,7 +27,7 @@
 #   (single quote must be coded as one single quote '). 
 #
 # -------------------------------------------------------------------------------------------------
-3001=O objeto [{0}] da classe [{1}] n\u00e3o pode ser convertido em [{2}].
+3001=O objeto [{0}], da classe [{1}], n\u00e3o p\u00f4de ser convertido para [{2}].
 
 3002=O objeto [{0}], da classe [{1}], do mapeamento [{2}] com o descritor [{3}], n\u00e3o p\u00f4de ser convertido para [{4}].
 
@@ -39,7 +39,7 @@
 
 3006=[{0}] deve ser do mesmo comprimento para ser convertido em uma matriz de bytes.
 
-3007=O objeto [{0}] da classe [{1}] n\u00e3o pode ser convertido em [{2}].  Certifique-se de que a classe [{2}] esteja no CLASSPATH.  Pode ser necess\u00e1rio usar a API alternativa transmitindo o carregador de classes apropriado conforme necess\u00e1rio, ou configurando-o no ConversionManager padr\u00e3o.
+3007=O objeto [{0}], da classe [{1}], n\u00e3o p\u00f4de ser convertido para [{2}].  Assegure-se de que a classe [{2}] esteja no CLASSPATH.  Pode ser necess\u00e1rio usar passagem de API alternativa no carregador de classes apropriado conforme necess\u00e1rio, ou configur\u00e1-lo no ConversionManager padr\u00e3o
 
 3008=Formato de data/hora incorreto: [{0}] (esperado [AAAA-MM-DD''T''HH:MM:SS])
 

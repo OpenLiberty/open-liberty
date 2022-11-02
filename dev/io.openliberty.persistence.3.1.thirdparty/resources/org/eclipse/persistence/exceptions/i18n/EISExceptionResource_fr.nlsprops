@@ -63,5 +63,17 @@
 
 17024=Impossible de supprimer le fichier : {0}
 
-17025=ce mappage requiert un \u00e9l\u00e9ment de regroupement de cl\u00e9 externe, car il existe plusieurs cl\u00e9s externes.
+17025=Ce mappage requiert un \u00e9l\u00e9ment de regroupement de cl\u00e9s externes, car il y a plusieurs cl\u00e9s externes.
+
+17026=La propri\u00e9t\u00e9 d''op\u00e9ration doit \u00eatre d\u00e9finie sur l''interaction de la requ\u00eate.
+
+17027=Le nom de la table cible n''est pas d\u00e9fini. Il doit \u00eatre d\u00e9fini sur l''interaction de la requ\u00eate.
+
+17028=Valeur de la propri\u00e9t\u00e9 de coh\u00e9rence non valide : {0}
+
+17029=Valeur de la propri\u00e9t\u00e9 de durabilit\u00e9 non valide : {0}
+
+17030=XMLInteraction n''est valide que pour les requ\u00eates d''objet. Utilisez MappedInteraction pour les requ\u00eates natives : {0}
+
+17031=Requ\u00eate trop complexe pour la conversion NoSQL Oracle ; seules certaines requ\u00eates sont prises en charge dans la requ\u00eate : {0}
 

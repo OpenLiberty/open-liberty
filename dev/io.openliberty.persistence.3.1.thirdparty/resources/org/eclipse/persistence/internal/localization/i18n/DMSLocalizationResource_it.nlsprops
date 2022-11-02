@@ -95,7 +95,7 @@ session_name=Il nome della sessione
 
 sql_generation=Il tempo impiegato nella generazione dell''SQL. Nel caso di espressioni TopLink, il tempo impiegato nella conversione dell''espressione in SQL
 
-sql_prepare=Il tempo impiegato in JDBC per la preparazione dell''istruzione. Include anche il tempo impiegato in EIS per la creazione di un''interazione associata ad una connessione e per la creazione di oggetti Record di input e di output
+sql_prepare=Il tempo impiegato in JDBC per preparare l''istruzione. Include anche il tempo impiegato in EIS per la creazione di un''interazione associata a una connessione e la creazione di oggetti Record di input e output
 
 unitofwork_commit=Misura il processo di commit della UnitOfWork
 

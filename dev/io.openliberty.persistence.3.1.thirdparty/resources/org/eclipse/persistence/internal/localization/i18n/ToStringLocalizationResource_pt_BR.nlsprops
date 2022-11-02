@@ -141,11 +141,11 @@ staticweave_commandline_help_message_15of19= O weaving ser\u00e1 executado no lu
 
 staticweave_commandline_help_message_16of19= Exemplo:
 
-staticweave_commandline_help_message_17of19= Para entrela\u00e7ar todas as entidades contidas em C:\foo-source.jar com seu persistence.xml contido em C:\foo-containing-persistence-xml.jar,
+staticweave_commandline_help_message_17of19= Para entrela\u00e7ar todas as entidades contidas no C:\foo-source.jar com seu persistence.xml contido dentro do C:\foo-containing-persistence-xml.jar,
 
 staticweave_commandline_help_message_18of19= e sa\u00edda para C:\foo-target.jar:
 
-staticweave_commandline_help_message_19of19= StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:\classpath1;C:\classpath2 C:\foo-source.jar C:\foo-target.jar
+staticweave_commandline_help_message_19of19= StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:classpath1;C:classpath2 C:\foo-source.jar C:\foo-target.jar
 
 staticweave_commandline_help_message_1of19= Uso: StaticWeave [op\u00e7\u00f5es] a origem de destino
 

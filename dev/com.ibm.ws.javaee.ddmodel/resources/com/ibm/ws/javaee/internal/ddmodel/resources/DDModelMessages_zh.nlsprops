@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011,2021 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -50,6 +50,7 @@ required.attribute.missing.useraction=\u8bf7\u901a\u8fc7\u6dfb\u52a0\u7f3a\u5c11
 unexpected.root.element=CWWKC2252E: \u7b2c {1} \u884c\u4e0a\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u5177\u6709\u6839\u5143\u7d20 {2}\uff0c\u4f46\u9700\u8981\u6839\u5143\u7d20 {3}\u3002
 unexpected.root.element.explanation=\u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u6839\u5143\u7d20\u4e0d\u6b63\u786e\u3002
 unexpected.root.element.useraction=\u66f4\u6b63\u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u6839\u5143\u7d20\u3002
+
 root.element.not.found=CWWKC2253E: \u5728\u7b2c {1} \u884c\u4e0a\u627e\u4e0d\u5230 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u6839\u5143\u7d20\u3002
 root.element.not.found.explanation=\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u7f3a\u5c11\u6839\u5143\u7d20\u3002
 root.element.not.found.useraction=\u8bf7\u66f4\u6b63\u90e8\u7f72\u63cf\u8ff0\u7b26\u3002
@@ -98,6 +99,7 @@ unexpected.child.element.useraction=\u8bf7\u66f4\u6b63\u90e8\u7f72\u63cf\u8ff0\u
 invalid.href.prefix=CWWKC2260E: HREF \u524d\u7f00 {4} \u4e0e\u7b2c {1} \u884c\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u5143\u7d20 {2} \u7684 HREF \u503c {3} \u4e2d\u7684\u9884\u671f\u524d\u7f00 {5} \u4e0d\u5339\u914d\u3002
 invalid.href.prefix.explanation=HREF \u503c\u7684\u524d\u7f00\u6307\u5b9a\u5f15\u7528\u7684\u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u8def\u5f84\u3002\u8be5\u524d\u7f00\u4e0e\u5f15\u7528\u7684\u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u8def\u5f84\u4e0d\u5339\u914d\u3002
 invalid.href.prefix.useraction=\u66f4\u6b63 HREF \u503c\u3002
+
 # ADDED:
 # -----------------------------------------------------------------------
 # PARAMETERS:
@@ -107,8 +109,9 @@ invalid.href.prefix.useraction=\u66f4\u6b63 HREF \u503c\u3002
 #    {3} is an HREF value which is not valid.
 # -----------------------------------------------------------------------
 invalid.href=CWWKC2284E: \u7b2c {1} \u884c\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u5143\u7d20 {2} \u7684 HREF \u503c {3} \u65e0\u6548\u3002
-invalid.href.explanation=\u8be5\u5143\u7d20\u503c\u662f\u65e0\u6548 HREF \u503c\uff1a\u8be5\u503c\u5fc5\u987b\u6709\u4e00\u4e2a\u201c#\u201d\u5b57\u7b26\uff0c\u5e76\u4e14\u201c#\u201d\u5b57\u7b26\u4e0d\u80fd\u662f\u8be5\u503c\u7684\u7b2c\u4e00\u4e2a\u6216\u6700\u540e\u4e00\u4e2a\u5b57\u7b26\u3002
+invalid.href.explanation=\u5143\u7d20\u503c\u4e0d\u662f\u6709\u6548\u7684 HREF \u503c\uff1a\u503c\u5fc5\u987b\u5177\u6709\u201c#\u201d\u5b57\u7b26\uff0c\u4f46\u201c#\u201d\u5b57\u7b26\u4e0d\u80fd\u662f\u503c\u7684\u7b2c\u4e00\u4e2a\u6216\u6700\u540e\u4e00\u4e2a\u5b57\u7b26\u3002
 invalid.href.useraction=\u66f4\u6b63 HREF \u503c\u3002
+
 # ADDED:
 # -----------------------------------------------------------------------
 # PARAMETERS:
@@ -122,6 +125,7 @@ invalid.href.useraction=\u66f4\u6b63 HREF \u503c\u3002
 incorrect.href.type=CWWKC2285E: HREF \u5f15\u7528\u7c7b\u578b\u4e3a {5} \u7684\u5bf9\u8c61\uff0c\u4f46\u9700\u8981\u7c7b\u578b\u4e3a {4} \u7684\u5bf9\u8c61\u3002\u8be5\u9519\u8bef\u53d1\u751f\u5728\u7b2c {1} \u884c\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u5143\u7d20 {2} \u7684 HREF \u503c {3} \u4e2d\u3002
 incorrect.href.type.explanation=HREF \u503c\u5f15\u7528\u7684\u5bf9\u8c61\u7c7b\u578b\u4e0d\u6b63\u786e\u3002
 incorrect.href.type.useraction=\u66f4\u6b63 HREF \u503c\u3002
+
 # ADDED:
 # -----------------------------------------------------------------------
 # PARAMETERS:
@@ -144,7 +148,7 @@ unresolved.href.useraction=\u66f4\u6b63\u5f15\u7528\u90e8\u7f72\u63cf\u8ff0\u7b2
 #    {2} is the name of the element which is being processed.
 # -----------------------------------------------------------------------
 missing.href=CWWKC2287E: \u7b2c {1} \u884c\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u5143\u7d20 {2} \u4e2d\u4e0d\u5b58\u5728 HREF \u5c5e\u6027\u3002
-missing.href.explanation=\u63d0\u4f9b HREF \u5c5e\u6027\u65f6\u9700\u8981\u8be5\u5143\u7d20\u3002HREF \u5c5e\u6027\u5177\u6709\u540d\u79f0\u201chref\u201d\u3002
+missing.href.explanation=\u63d0\u4f9b HREF \u5c5e\u6027\u9700\u8981\u8be5\u5143\u7d20\u3002 HREF \u5c5e\u6027\u5177\u6709\u540d\u79f0\u201chref\u201d\u3002
 missing.href.useraction=\u5411\u8be5\u5143\u7d20\u6dfb\u52a0 HREF \u5c5e\u6027\u3002
 
 ######
@@ -164,6 +168,7 @@ missing.href.useraction=\u5411\u8be5\u5143\u7d20\u6dfb\u52a0 HREF \u5c5e\u6027\u
 unsupported.descriptor.version=CWWKC2261E: \u7b2c {1} \u884c\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u6307\u5b9a\u4e86\u4e0d\u53d7\u652f\u6301\u7684\u7248\u672c {2}\u3002
 unsupported.descriptor.version.explanation=\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u6307\u5b9a\u7684\u7248\u672c\u5bf9\u8be5\u7c7b\u578b\u7684\u90e8\u7f72\u63cf\u8ff0\u7b26\u65e0\u6548\u3002
 unsupported.descriptor.version.useraction=\u66f4\u6b63\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u6307\u5b9a\u7684\u7248\u672c\u3002
+
 # REMOVED:
 # invalid.deployment.descriptor.namespace=CWWKC2262E: The server is unable to process the {3} version and the {2} namespace in the {0} deployment descriptor on line {1}.
 # invalid.deployment.descriptor.namespace.explanation=Either the specified version and namespace are not valid, or the server configuration does not have a feature that can process the version and namespace.
@@ -179,6 +184,7 @@ unsupported.descriptor.version.useraction=\u66f4\u6b63\u90e8\u7f72\u63cf\u8ff0\u
 unsupported.descriptor.namespace=CWWKC2262E: \u7b2c {1} \u884c\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u6307\u5b9a\u4e86\u4e0d\u53d7\u652f\u6301\u7684\u540d\u79f0\u7a7a\u95f4 {2}\u3002
 unsupported.descriptor.namespace.explanation=\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u6307\u5b9a\u7684\u540d\u79f0\u7a7a\u95f4\u5bf9\u4e8e\u8be5\u7c7b\u578b\u7684\u90e8\u7f72\u63cf\u8ff0\u7b26\u65e0\u6548\u3002
 unsupported.descriptor.namespace.useraction=\u66f4\u6b63\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u6307\u5b9a\u7684\u540d\u79f0\u7a7a\u95f4\u3002
+
 # ADDED:
 # -----------------------------------------------------------------------
 # PARAMETERS:
@@ -191,6 +197,7 @@ unsupported.descriptor.namespace.useraction=\u66f4\u6b63\u90e8\u7f72\u63cf\u8ff0
 unsupported.descriptor.namespace.for.version=CWWCK27781W: \u7b2c {1} \u884c\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u6307\u5b9a\u7248\u672c {2} \u548c\u540d\u79f0\u7a7a\u95f4 {3}\uff0c\u4f46\u5e94\u8be5\u5177\u6709\u540d\u79f0\u7a7a\u95f4 {4}\u3002
 unsupported.descriptor.namespace.for.version.explanation=\u90e8\u7f72\u63cf\u8ff0\u7b26\u5bf9\u6307\u5b9a\u7684\u7248\u672c\u6307\u5b9a\u4e86\u4e0d\u6b63\u786e\u7684\u540d\u79f0\u7a7a\u95f4\u3002\u8be5\u540d\u79f0\u7a7a\u95f4\u88ab\u5ffd\u7565\u3002
 unsupported.descriptor.namespace.for.version.useraction=\u8bf7\u5c06\u540d\u79f0\u7a7a\u95f4\u66f4\u6b63\u4e3a\u5bf9\u6307\u5b9a\u7248\u672c\u6709\u6548\u7684\u503c\u3002
+
 # REMOVED:
 # invalid.deployment.descriptor.version=CWWKC2263E: The version {2} attribute specified in the {0} deployment descriptor on line {1} is not valid.
 # invalid.deployment.descriptor.version.explanation=An non-valid version was specified in the root element of the deployment descriptor.
@@ -313,8 +320,8 @@ module.name.not.specified.useraction=\u786e\u4fdd\u6240\u6709\u7ed1\u5b9a\u548c\
 #    {3} Module names found in the application.
 # -----------------------------------------------------------------------
 module.name.not.found=CWWKC2277E: \u627e\u4e0d\u5230\u5728 {0} \u5e94\u7528\u7a0b\u5e8f\u7684\u201c{1}\u201d\u7ed1\u5b9a\u548c\u6269\u5c55\u914d\u7f6e\u5143\u7d20\u4e2d\u6307\u5b9a\u7684 {2}\u201cmoduleName\u201d\u5c5e\u6027\u3002\u5e94\u7528\u7a0b\u5e8f\u6a21\u5757\u540d\u79f0\u4e3a {3}\u3002
-module.name.not.found.explanation=\u7ed1\u5b9a\u548c\u6269\u5c55\u914d\u7f6e\u5143\u7d20\u7684\u201cmoduleName\u201d\u5c5e\u6027\u5fc5\u987b\u4e0e\u5e94\u7528\u7a0b\u5e8f\u6a21\u5757\u540d\u79f0\u5339\u914d\u3002
-module.name.not.found.useraction=\u786e\u4fdd\u7ed1\u5b9a\u548c\u6269\u5c55\u914d\u7f6e\u5143\u7d20\u7684\u6240\u6709\u201cmoduleName\u201d\u5c5e\u6027\u4e0e\u5e94\u7528\u7a0b\u5e8f\u6a21\u5757\u540d\u79f0\u5339\u914d\u3002
+module.name.not.found.explanation=\u7ed1\u5b9a\u548c\u6269\u5c55\u914d\u7f6e\u5143\u7d20\u7684\u201cmoduleName\u201d\u5c5e\u6027\u5fc5\u987b\u4e0e\u5e94\u7528\u7a0b\u5e8f\u6a21\u5757\u540d\u79f0\u76f8\u5339\u914d\u3002
+module.name.not.found.useraction=\u786e\u4fdd\u7ed1\u5b9a\u548c\u6269\u5c55\u914d\u7f6e\u5143\u7d20\u7684\u6240\u6709\u201cmoduleName\u201d\u5c5e\u6027\u4e0e\u5e94\u7528\u7a0b\u5e8f\u6a21\u5757\u540d\u79f0\u76f8\u5339\u914d\u3002 
 
 # ADDED
 # -----------------------------------------------------------------------
@@ -325,7 +332,7 @@ module.name.not.found.useraction=\u786e\u4fdd\u7ed1\u5b9a\u548c\u6269\u5c55\u914
 # -----------------------------------------------------------------------
 module.name.duplicated=CWWKC2278E: \u5728 {0} \u5e94\u7528\u7a0b\u5e8f\u7684\u201c{1}\u201d\u7ed1\u5b9a\u548c\u6269\u5c55\u914d\u7f6e\u5143\u7d20\u4e2d\u6307\u5b9a\u4e86\u91cd\u590d\u7684 {2}\u201cmoduleName\u201d\u5c5e\u6027\u3002
 module.name.duplicated.explanation=\u7ed1\u5b9a\u548c\u6269\u5c55\u914d\u7f6e\u5143\u7d20\u7684\u201cmoduleName\u201d\u5c5e\u6027\u4e0d\u80fd\u91cd\u590d\u3002
-module.name.duplicated.useraction=\u786e\u4fdd\u7ed1\u5b9a\u548c\u6269\u5c55\u914d\u7f6e\u5143\u7d20\u7684\u6240\u6709\u201cmoduleName\u201d\u5c5e\u6027\u90fd\u662f\u552f\u4e00\u7684\u3002
+module.name.duplicated.useraction=\u786e\u4fdd\u7ed1\u5b9a\u548c\u6269\u5c55\u914d\u7f6e\u5143\u7d20\u7684\u6240\u6709\u201cmoduleName\u201d\u5c5e\u6027\u90fd\u552f\u4e00\u3002 
 
 # ADDED:
 # -----------------------------------------------------------------------
@@ -337,6 +344,7 @@ module.name.duplicated.useraction=\u786e\u4fdd\u7ed1\u5b9a\u548c\u6269\u5c55\u91
 unsupported.descriptor.public.id=CWWCK27782E: {1} \u884c\u4e0a\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26 {0} \u6307\u5b9a\u4e86\u4e0d\u53d7\u652f\u6301\u7684\u516c\u5171\u6807\u8bc6 {2}\u3002
 unsupported.descriptor.public.id.explanation=\u6b64\u516c\u5171\u6807\u8bc6\u503c\u5bf9\u90e8\u7f72\u63cf\u8ff0\u7b26\u65e0\u6548\u3002
 unsupported.descriptor.public.id.useraction=\u66f4\u6b63\u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u516c\u5171\u6807\u8bc6\u503c\u3002
+
 # ADDED:
 # -----------------------------------------------------------------------
 # PARAMETERS:
@@ -345,6 +353,7 @@ unsupported.descriptor.public.id.useraction=\u66f4\u6b63\u90e8\u7f72\u63cf\u8ff0
 missing.descriptor.version=CWWCK27783E: {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u6ca1\u6709\u7248\u672c\u3001\u516c\u5171\u6807\u8bc6\u6216\u540d\u79f0\u7a7a\u95f4\u3002
 missing.descriptor.version.explanation=\u90e8\u7f72\u63cf\u8ff0\u7b26\u5fc5\u987b\u5177\u6709\u7248\u672c\u3001\u516c\u5171\u6807\u8bc6\u6216\u540d\u79f0\u7a7a\u95f4\u3002
 missing.descriptor.version.useraction=\u5c06\u7248\u672c\u3001\u516c\u7528\u6807\u8bc6\u6216\u540d\u79f0\u7a7a\u95f4\u6dfb\u52a0\u5230\u90e8\u7f72\u63cf\u8ff0\u7b26\u3002\u6240\u6dfb\u52a0\u7684\u7248\u672c\u3001\u516c\u5171\u6807\u8bc6\u6216\u540d\u79f0\u7a7a\u95f4\u5fc5\u987b\u4e0e\u90e8\u7f72\u63cf\u8ff0\u7b26\u7684\u5185\u5bb9\u5339\u914d\u3002
+
 # ADDED:
 # "incorrect.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace, expectedNamespace
 # -----------------------------------------------------------------------
@@ -357,6 +366,7 @@ missing.descriptor.version.useraction=\u5c06\u7248\u672c\u3001\u516c\u7528\u6807
 incorrect.descriptor.namespace=CWWCK27788W: \u7b2c {1} \u884c\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u6307\u5b9a\u540d\u79f0\u7a7a\u95f4 {2}\uff0c\u4f46\u5e94\u5177\u6709\u540d\u79f0\u7a7a\u95f4 {3}\u3002
 incorrect.descriptor.namespace.explanation=\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u9700\u8981\u7279\u5b9a\u7684\u540d\u79f0\u7a7a\u95f4\u3002\u4e0d\u6b63\u786e\u7684\u540d\u79f0\u7a7a\u95f4\u88ab\u5ffd\u7565\u3002
 incorrect.descriptor.namespace.useraction=\u5c06\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u7684\u540d\u79f0\u7a7a\u95f4\u66f4\u6539\u4e3a\u671f\u671b\u7684\u503c\u3002
+
 # ADDED:
 # "incorrect.descriptor.namespace.for.version", describeEntry(), getLineNumber(), ddVersion, ddNamespace, expectedNamespace
 # -----------------------------------------------------------------------
@@ -370,4 +380,28 @@ incorrect.descriptor.namespace.useraction=\u5c06\u90e8\u7f72\u63cf\u8ff0\u7b26\u
 incorrect.descriptor.namespace.for.version=CWWCK27789W: \u7b2c {1} \u884c\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u6307\u5b9a\u7248\u672c {2} \u548c\u540d\u79f0\u7a7a\u95f4 {3}\uff0c\u4f46\u5bf9\u4e8e\u8be5\u7248\u672c\u5e94\u8be5\u5177\u6709\u540d\u79f0\u7a7a\u95f4 {4}\u3002
 incorrect.descriptor.namespace.for.version.explanation=\u6307\u5b9a\u7248\u672c\u7684\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u9700\u8981\u7279\u5b9a\u7684\u540d\u79f0\u7a7a\u95f4\u3002\u4e0d\u6b63\u786e\u7684\u540d\u79f0\u7a7a\u95f4\u88ab\u5ffd\u7565\u3002
 incorrect.descriptor.namespace.for.version.useraction=\u5c06\u90e8\u7f72\u63cf\u8ff0\u7b26\u4e2d\u7684\u540d\u79f0\u7a7a\u95f4\u66f4\u6539\u4e3a\u671f\u671b\u7684\u503c\u3002
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the value of a 'name' attribute within a session configuration 'attribute' element
+#    {3} is the value of the 'value' attribute of a session configuration 'attribute' element
+#    {4} is the value of the 'value' attribute of a session configuration 'attribute' element
+# -----------------------------------------------------------------------
+duplicate.session.config.attribute.name=CWWCK27790W: \u7b2c {1} \u884c\u4e0a\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u4e0e\u4f1a\u8bdd\u914d\u7f6e\u5c5e\u6027\u5143\u7d20\u7684\u201c{2}\u201d''name'' \u91cd\u590d\u3002  \u201c{3}\u201d''value'' \u4e0e\u540d\u79f0\u76f8\u5173\u8054\uff0c\u800c\u4e0d\u662f\u4e0e\u5148\u524d\u7684\u201c{4}\u201d''value'' \u76f8\u5173\u8054\u3002
+duplicate.session.config.attribute.name.explanation=\u90e8\u7f72\u63cf\u8ff0\u7b26\u5177\u6709\u591a\u4e2a\u540c\u540d\u5c5e\u6027\u5143\u7d20\uff0c\u4e14\u8fd9\u4e9b\u5143\u7d20\u4f4d\u4e8e\u540c\u4e00\u4f1a\u8bdd\u914d\u7f6e\u5143\u7d20\u4e2d\u3002 \u63cf\u8ff0\u7b26\u89e3\u6790\u5668\u5c06\u5ffd\u7565\u9664\u6700\u540e\u4e00\u4e2a\u5143\u7d20\u4ee5\u5916\u7684\u5176\u4ed6\u6240\u6709\u5143\u7d20\u3002
+duplicate.session.config.attribute.name.useraction=\u5982\u679c\u6700\u540e\u4e00\u4e2a\u5c5e\u6027\u5143\u7d20\u4e0d\u662f\u8981\u4f7f\u7528\u7684\u5143\u7d20\uff0c\u8bf7\u66f4\u65b0\u90e8\u7f72\u63cf\u8ff0\u7b26\u4ee5\u9664\u53bb\u540c\u540d\u7684\u591a\u4f59\u5c5e\u6027\u5143\u7d20\u3002
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the value of the 'value' attribute of a session configuration 'attribute' element
+# -----------------------------------------------------------------------
+missing.session.config.attribute.name=CWWCK27791W: \u7b2c {1} \u884c\u4e0a\u7684 {0} \u90e8\u7f72\u63cf\u8ff0\u7b26\u5177\u6709\u65e0\u540d\u79f0\u7684\u4f1a\u8bdd\u914d\u7f6e\u5c5e\u6027\u3002  \u5177\u6709\u201c{2}\u201d''value'' \u7684\u5c5e\u6027\u88ab\u5ffd\u7565\u3002
+missing.session.config.attribute.name.explanation=\u4f1a\u8bdd\u914d\u7f6e\u5c5e\u6027\u9700\u8981\u5177\u6709\u540d\u79f0\u5143\u7d20\u3002 
+missing.session.config.attribute.name.useraction=\u66f4\u65b0\u90e8\u7f72\u63cf\u8ff0\u7b26\u4ee5\u9664\u53bb\u6ca1\u6709\u540d\u79f0\u5143\u7d20\u7684\u5c5e\u6027\uff0c\u6216\u8005\u5c06\u540d\u79f0\u5143\u7d20\u6dfb\u52a0\u5230\u6240\u6709\u5c5e\u6027\u5143\u7d20\u3002
+
+
 

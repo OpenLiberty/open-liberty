@@ -27,7 +27,7 @@
 #   (single quote must be coded as one single quote '). 
 #
 # -------------------------------------------------------------------------------------------------
-28001=A fost aruncat\u0103 o ValidationException \u00een timp ce se \u00eencerca crearea unei sesiuni: [{0}] . Cele mai probabile cauze ale acestei probleme sunt c\u0103 fi\u015fierul dumneavoastr\u0103 [{1}] nu este disponibil \u00een calea de clase sau nu con\u0163ine o sesiune numit\u0103: [{0}].
+28001=A fost aruncat\u0103 o ValidationException la \u00eencercarea de a crea sesiunea: [{0}]. Cele mai probabile cauze ale acestei probleme sunt c\u0103 fi\u015fierul dumneavoastr\u0103 [{1}] nu este disponibil \u00een calea de clase sau nu con\u0163ine o sesiune numit\u0103: [{0}].
 
 28002=EclipseLink \u00eencearc\u0103 s\u0103 \u00eencarce o ServerSession numit\u0103 [{0}] din [{1}], \u015fi nu ob\u0163ine o ServerSession.
 

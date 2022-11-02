@@ -119,9 +119,9 @@ ejb30-wrong-query-hint-value=La requ\u00eate {0}, indice de requ\u00eate {1} com
 
 ejb30-wrong-type-for-query-hint=La requ\u00eate {0}, indice de requ\u00eate {1} n''est pas valide pour ce type de requ\u00eate.
 
-entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=Conflit de propri\u00e9t\u00e9s EntityManager : javax.persistence.driver et/ou javax.persistence.url requi\u00e8rent DefaultConnector, mais l''unit\u00e9 de persistance utilise un contr\u00f4leur de transaction externe, par cons\u00e9quent JNDIConnector est requis.
+entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=Conflit de propri\u00e9t\u00e9s EntityManager : jakarta.persistence.driver et/ou jakarta.persistence.url requi\u00e8rent DefaultConnector, mais l''unit\u00e9 de persistance utilise un contr\u00f4leur de transaction externe, JNDIConnector est donc requis.
 
-entity_manager_properties_conflict_default_connector_vs_jndi_connector=Conflit de propri\u00e9t\u00e9s EntityManager : javax.persistence.driver et/ou javax.persistence.url requi\u00e8rent DefaultConnector, mais javax.persistence.jtaDataSource et/ou javax.persistence.nonjtaDataSource requi\u00e8rent JNDIConnector.
+entity_manager_properties_conflict_default_connector_vs_jndi_connector=Conflit de propri\u00e9t\u00e9s EntityManager : jakarta.persistence.driver et/ou jakarta.persistence.url requi\u00e8rent DefaultConnector, mais jakarta.persistence.jtaDataSource et/ou jakarta.persistence.nonjtaDataSource requi\u00e8rent JNDIConnector.
 
 entity_no_longer_exists_in_db=L''entit\u00e9 n''existe plus dans la base de donn\u00e9es : {0}.
 
@@ -183,6 +183,8 @@ invalid_pk_class=Vous avez fourni une instance d''une classe PK incorrecte pour 
 
 jar_not_exist=Le fichier Jar {0} n''existe pas.
 
+jaxb_context_factory_property_invalid=La valeur de la propri\u00e9t\u00e9 eclipselink.moxy.factory {0} n''est pas valide
+
 jaxb_helper_invalid_binder=Le classeur fourni [{0}] n''est pas un \u00e9l\u00e9ment EclipseLink JAXBBinder, par cons\u00e9quent il n''a pas pu \u00eatre converti.
 
 jaxb_helper_invalid_jaxbcontext=L''\u00e9l\u00e9ment JAXBContext fourni [{0}] n''est pas un \u00e9l\u00e9ment EclipseLink JAXBContext, par cons\u00e9quent il n''a pas pu \u00eatre converti.
@@ -203,9 +205,9 @@ jmx_enabled_platform_mbean_runtime_exception=Une exception s''est produite lors 
 
 join_trans_called_on_entity_trans=joinTransaction a \u00e9t\u00e9 appel\u00e9 sur un \u00e9l\u00e9ment EntityManager ressource-local qui ne peut pas s''inscrire pour une transaction JTA.
 
-jpa21-ddl-create-script-target-not-specified=Lors de la g\u00e9n\u00e9ration d''un langage DDL pour des scripts, une cible de script de cr\u00e9ation doit \u00eatre sp\u00e9cifi\u00e9e \u00e0 l''aide de la propri\u00e9t\u00e9 [javax.persistence.schema-generation.scripts.create-target].
+jpa21-ddl-create-script-target-not-specified=Lors de la g\u00e9n\u00e9ration de DDL dans des scripts, une cible de cr\u00e9ation de script doit \u00eatre sp\u00e9cifi\u00e9e \u00e0 l''aide de la propri\u00e9t\u00e9 [jakarta.persistence.schema-generation.scripts.create-target].
 
-jpa21-ddl-drop-script-target-not-specified=Lors de la g\u00e9n\u00e9ration d''un langage DDL pour les scripts, une cible de script d''annulation doit \u00eatre sp\u00e9cifi\u00e9e \u00e0 l''aide de la propri\u00e9t\u00e9 [javax.persistence.schema-generation.scripts.drop-target].
+jpa21-ddl-drop-script-target-not-specified=Lors de la g\u00e9n\u00e9ration de DDL dans des scripts, une cible de suppression de script doit \u00eatre sp\u00e9cifi\u00e9e \u00e0 l''aide de la propri\u00e9t\u00e9 [jakarta.persistence.schema-generation.scripts.drop-target].
 
 jpa21-ddl-invalid-source-script-type=Le script source fourni {0} est d''un type non valide {0}. Les types de script source valides sont : java.io.Reader ou une cha\u00eene d\u00e9signant une URL de fichier.
 
@@ -239,9 +241,9 @@ jpa_criteriaapi_no_corresponding_element_in_result=L''\u00e9l\u00e9ment {0} ne c
 
 jpa_criteriaapi_null_literal_value=Valeur nulle transmise dans CriteriaBuilder.literal().  Utilisez plut\u00f4t nullLiteral(Class<T> resultClass).
 
-jpa_helper_invalid_entity_manager_factory=l''\u00e9l\u00e9ment Jakarta Persistence EntityManagerFactory {0} n''est pas un \u00e9l\u00e9ment EclipseLink EntityManagerFactory ; par cons\u00e9quent, il n''a pas pu \u00eatre converti.
+jpa_helper_invalid_entity_manager_factory=L''\u00e9l\u00e9ment Jakarta Persistence EntityManagerFactory {0} n''est pas un \u00e9l\u00e9ment EclipseLink EntityManagerFactory et n''a donc pas pu \u00eatre converti.
 
-jpa_helper_invalid_entity_manager_factory_for_refresh=l''\u00e9l\u00e9ment Jakarta Persistence EntityManagerFactory {0} n''est pas un \u00e9l\u00e9ment EclipseLink EntityManagerFactory ; par cons\u00e9quent, ses m\u00e9tadonn\u00e9es n''ont pas pu \u00eatre actualis\u00e9es.
+jpa_helper_invalid_entity_manager_factory_for_refresh=L''\u00e9l\u00e9ment Jakarta Persistence EntityManagerFactory {0} n''est pas un \u00e9l\u00e9ment EclipseLink EntityManagerFactory et ses m\u00e9tadonn\u00e9es n''ont donc pas pu \u00eatre actualis\u00e9es.
 
 jpa_helper_invalid_query=La requ\u00eate de type {0} n''est pas une requ\u00eate EclipseLink ; par cons\u00e9quent, elle n''a pas pu \u00eatre convertie.
 
@@ -250,6 +252,18 @@ jpa_helper_invalid_read_all_query=La requ\u00eate de type {0} n''est pas une req
 jpa_helper_invalid_report_query=La requ\u00eate de type {0} n''est pas une requ\u00eate de rapport EclipseLink ; par cons\u00e9quent, elle n''a pas pu \u00eatre convertie.
 
 jpa_persistence_util_non_persistent_class=PersistenceUtil.getIdentifier(entity) a \u00e9t\u00e9 appel\u00e9 avec l''objet [{0}] qui n''est pas un objet persistant.
+
+json_ora21c_jsonvalue_to_oraclevalue=Impossible de convertir une JsonValue en OracleJsonValue.
+
+json_ora21c_resultset_to_jsonvalue=Impossible de convertir le type ResultSet JDBC en JsonValue.
+
+json_pgsql_jsonvalue_to_database_type=La conversion de la valeur JSON en type de base de donn\u00e9es a \u00e9chou\u00e9.
+
+json_pgsql_missing_class_on_classpath={0} manquant dans le chemin d''acc\u00e8s aux classes.
+
+json_pgsql_pgobject_conversion=La conversion de l''objet PGObject de base de donn\u00e9es a \u00e9chou\u00e9.
+
+json_pgsql_unknown_type=Type JSON inconnu renvoy\u00e9 par la base de donn\u00e9es.
 
 lock_called_without_version_locking=Pour les appels de entityManager.lock(Object entity, LockModeType lockMode), le verrouillage de version doit \u00eatre activ\u00e9.
 
@@ -265,7 +279,7 @@ metamodel_class_null_type_instance_for_null_key=Aucun \u00e9l\u00e9ment [{0}] n'
 
 metamodel_identifiable_id_attribute_is_incorrect_idclass=L''attribut @Id unique attendu pour le type identifiable [{0}] fait partie d''un attribut @IdClass attendu.
 
-metamodel_identifiable_id_attribute_type_incorrect=Type d''attribut d''ID attendu [{2}] sur l''attribut d''ID existant [{0}] du type identifiable [{1}] mais type d''attribut [{3}] d\u00e9tect\u00e9.
+metamodel_identifiable_id_attribute_type_incorrect=Type d''attribut d''ID attendu [{2}] dans les attributs d''ID existants [{0}] sur le type identifiable [{1}], mais les types d''attribut suivants ont \u00e9t\u00e9 trouv\u00e9s [{3}].
 
 metamodel_identifiable_no_id_attribute_present=Aucun attribut @Id n''existe sur le type identifiable [{0}].
 

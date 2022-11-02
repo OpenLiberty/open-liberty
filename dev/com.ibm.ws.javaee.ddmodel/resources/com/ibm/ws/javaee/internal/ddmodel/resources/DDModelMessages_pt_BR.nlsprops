@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -34,9 +34,22 @@ required.attribute.missing=CWWKC2251E: O elemento {2} n\u00e3o possui o atributo
 required.attribute.missing.explanation=Um atributo necess\u00e1rio est\u00e1 ausente do elemento especificado.
 required.attribute.missing.useraction=Corrija o descritor de implementa\u00e7\u00e3o incluindo o atributo ausente.
 
-invalid.root.element=CWWKC2252E: Nome local da raiz inv\u00e1lido {2} no descritor de implementa\u00e7\u00e3o {0} na linha {1}.
-invalid.root.element.explanation=O elemento-raiz est\u00e1 incorreto.
-invalid.root.element.useraction=Valide o arquivo XML para certificar-se de que o elemento-raiz esteja correto.
+# REMOVED:
+# invalid.root.element=CWWKC2252E: Invalid root local name {2} in the {0} deployment descriptor on line {1}.
+# invalid.root.element.explanation=The root element is incorrect.
+# invalid.root.element.useraction=Validate the xml file to make sure the root element is correct.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the configuration file
+#    {2} is the actual root element name
+#    {3} is the expected root element name
+# -----------------------------------------------------------------------
+unexpected.root.element=CWWKC2252E: O descritor de implementa\u00e7\u00e3o {0} na linha {1} tem o elemento-raiz {2}, mas ele requer o elemento-raiz {3}. 
+unexpected.root.element.explanation=O elemento-raiz do descritor de implementa\u00e7\u00e3o est\u00e1 incorreto.
+unexpected.root.element.useraction=Corrija o elemento-raiz do descritor de implementa\u00e7\u00e3o.
 
 root.element.not.found=CWWKC2253E: N\u00e3o \u00e9 poss\u00edvel localizar o elemento raiz do descritor de implementa\u00e7\u00e3o {0} na linha {1}.
 root.element.not.found.explanation=O elemento raiz estava ausente no descritor de implementa\u00e7\u00e3o.
@@ -58,7 +71,7 @@ unexpected.content=CWWKC2257E: Conte\u00fado inesperado encontrado no elemento {
 unexpected.content.explanation=Foi encontrado um conte\u00fado de texto n\u00e3o definido para estar no descritor de implementa\u00e7\u00e3o.
 unexpected.content.useraction=Corrija o descritor de implementa\u00e7\u00e3o.
 
-incorrect.child.element.namespace=CWWKC2258E:  O namespace do elemento filho {3} do elemento pai {2} {4} n\u00e3o {5} estava no descritor de implementa\u00e7\u00e3o {0} na linha {1}.
+incorrect.child.element.namespace=CWWKC2258E: O namespace do elemento filho {3} do elemento pai {2} {4} n\u00e3o {5} estava no descritor de implementa\u00e7\u00e3o {0} na linha {1}.
 incorrect.child.element.namespace.explanation=O namespace dos elementos e atributos no descritor de implementa\u00e7\u00e3o n\u00e3o estava consistente.
 incorrect.child.element.namespace.useraction=Corrija o descritor de implementa\u00e7\u00e3o.
 
@@ -66,27 +79,159 @@ unexpected.child.element=CWWKC2259E: Elemento filho inesperado {3} do elemento-p
 unexpected.child.element.explanation=Foi encontrado um elemento n\u00e3o definido para estar no descritor de implementa\u00e7\u00e3o.
 unexpected.child.element.useraction=Corrija o descritor de implementa\u00e7\u00e3o.
 
-invalid.href.prefix=CWWKC2260E: O valor do atributo href do elemento {2} n\u00e3o inicia com {3} no descritor de implementa\u00e7\u00e3o {0} na linha {1}.
-invalid.href.prefix.explanation=Um atributo href deve iniciar com o caminho correto para o descritor que est\u00e1 sendo referenciado.
-invalid.href.prefix.useraction=Corrija o descritor de implementa\u00e7\u00e3o.
+######
 
-unknown.deployment.descriptor.version=CWWKC2261E: Ocorreu um erro ao tentar determinar a vers\u00e3o do descritor de implementa\u00e7\u00e3o {0}.
-unknown.deployment.descriptor.version.explanation=A vers\u00e3o ou o namespace eram inv\u00e1lidos ou n\u00e3o estavam especificados no elemento raiz do descritor de implementa\u00e7\u00e3o.
-unknown.deployment.descriptor.version.useraction=Verifique e corrija a vers\u00e3o ou o namespace no elemento raiz do descritor de implementa\u00e7\u00e3o.
+# REMOVED:
+# invalid.href.prefix=CWWKC2260E: The href attribute value of the {2} element does not start with {3} in the {0} deployment descriptor on line {1}.
+# invalid.href.prefix.explanation=An href attribute must start with the correct path to the descriptor being referenced.
+# invalid.href.prefix.useraction=Correct the deployment descriptor.
 
-invalid.deployment.descriptor.namespace=CWWKC2262E:  O servidor n\u00e3o consegue processar a vers\u00e3o {3} e o namespace {2} no descritor de implementa\u00e7\u00e3o {0} na linha {1}.
-invalid.deployment.descriptor.namespace.explanation= A vers\u00e3o especificada e o namespace n\u00e3o s\u00e3o v\u00e1lidos, ou a configura\u00e7\u00e3o do servidor n\u00e3o possui um recurso que pode processar a vers\u00e3o e o namespace.
-invalid.deployment.descriptor.namespace.useraction= Verifique e corrija a vers\u00e3o ou o namespace no elemento raiz do descritor de implementa\u00e7\u00e3o, ou verifique e corrija os recursos na configura\u00e7\u00e3o do servidor.
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which is not valid.
+#    {4} is the actual prefix of the HREF value.
+#    {5} is the expected prefix of the HREF value.
+# -----------------------------------------------------------------------
+invalid.href.prefix=CWWKC2260E: O prefixo HREF {4} n\u00e3o corresponde ao prefixo esperado {5} no valor HREF {3} do elemento {2} no descritor de implementa\u00e7\u00e3o {0} na linha {1}.
+invalid.href.prefix.explanation=O prefixo do valor HREF especifica um caminho para um descritor de implementa\u00e7\u00e3o referenciado. O prefixo n\u00e3o corresponde ao caminho desse descritor de implementa\u00e7\u00e3o referenciado.
+invalid.href.prefix.useraction=Corrija o valor do HREF.
 
-invalid.deployment.descriptor.version=CWWKC2263E:  O atributo de vers\u00e3o {2} especificado no descritor de implementa\u00e7\u00e3o {0} na linha {1} n\u00e3o \u00e9 v\u00e1lido.
-invalid.deployment.descriptor.version.explanation=Uma vers\u00e3o inv\u00e1lida foi especificada no elemento raiz do descritor de implementa\u00e7\u00e3o.
-invalid.deployment.descriptor.version.useraction=Verifique e corrija o n\u00famero da vers\u00e3o no elemento raiz do descritor de implementa\u00e7\u00e3o.
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is an HREF value which is not valid.
+# -----------------------------------------------------------------------
+invalid.href=CWWKC2284E: Valor HREF n\u00e3o v\u00e1lido {3} do elemento {2} no descritor de implementa\u00e7\u00e3o {0} na linha {1}.
+invalid.href.explanation=O valor do elemento n\u00e3o \u00e9 um valor HREF v\u00e1lido: o valor deve ter um caractere ''#'', que n\u00e3o deve ser o primeiro ou \u00faltimo caractere do valor.
+invalid.href.useraction=Corrija o valor do HREF.
 
-missing.deployment.descriptor.namespace=CWWKC2264E:  Ocorreu um erro ao tentar determinar o namespace do descritor de implementa\u00e7\u00e3o {0} na linha {1}.
-missing.deployment.descriptor.namespace.explanation=Um namespace inv\u00e1lido foi especificado no elemento raiz do descritor de implementa\u00e7\u00e3o.
-missing.deployment.descriptor.namespace.useraction=Verifique e corrija o namespace no elemento raiz do descritor de implementa\u00e7\u00e3o.
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which is not valid.
+#    {4} the expected type of the element referenced by the HREF.
+#    {5} the type of actual referenced element.
+# -----------------------------------------------------------------------
+incorrect.href.type=CWWKC2285E: Um HREF faz refer\u00eancia a um objeto do tipo {5}, mas requer um objeto do tipo {4}. O erro ocorre no valor HREF {3} do elemento {2} no descritor de implementa\u00e7\u00e3o {0} na linha {1}.
+incorrect.href.type.explanation=O tipo do objeto que \u00e9 referenciado pelo valor HREF est\u00e1 incorreto.
+incorrect.href.type.useraction=Corrija o valor do HREF.
 
-missing.deployment.descriptor.version=CWWKC2265E:  Ocorreu um erro ao tentar determinar a vers\u00e3o do descritor de implementa\u00e7\u00e3o {0} na linha {1}.
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a referencing deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the referencing deployment descriptor.
+#    {2} is the name of the element which is being processed.
+#    {3} is the HREF value which cannot be resolved.
+#    {4} is the ID of the HREF value.
+#    {5} is the path of a referenced deployment descriptor.
+# -----------------------------------------------------------------------
+unresolved.href=CWWKC2286E: Falha ao resolver o ID do HREF {4} dentro do descritor de implementa\u00e7\u00e3o {5} referenciado, do valor HREF {3} do elemento {2} no descritor de implementa\u00e7\u00e3o {0} de refer\u00eancia na linha {1}.
+unresolved.href.explanation=O ID do HREF n\u00e3o resolve para nenhum elemento dispon\u00edvel do descritor de implementa\u00e7\u00e3o referenciado. O ID do HREF deve corresponder ao ID de um elemento do descritor de implementa\u00e7\u00e3o referenciado.
+unresolved.href.useraction=Corrija o ID do HREF no descritor de implementa\u00e7\u00e3o de refer\u00eancia ou o valor de ID no descritor de implementa\u00e7\u00e3o referenciado.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives.
+#    {1} is the number of a line within the deployment descriptor.
+#    {2} is the name of the element which is being processed.
+# -----------------------------------------------------------------------
+missing.href=CWWKC2287E: Nenhum atributo HREF est\u00e1 presente no elemento {2} no descritor de implementa\u00e7\u00e3o {0} na linha {1}.
+missing.href.explanation=O elemento \u00e9 necess\u00e1rio para fornecer um atributo HREF. Um atributo HREF tem o nome ''href''.
+missing.href.useraction=Inclua um atributo HREF no elemento.
+
+######
+
+# REMOVED:
+# unknown.deployment.descriptor.version=CWWKC2261E: An error occurred while trying to determine the version of the {0} deployment descriptor.
+# unknown.deployment.descriptor.version.explanation=The version or the namespace were not valid or were not specified in the root element of the deployment descriptor.
+# unknown.deployment.descriptor.version.useraction=Verify and correct the version or namespace in the root element of the deployment descriptor.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a version attribute value within the deployment descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.version=CWWKC2261E: O descritor de implementa\u00e7\u00e3o {0} na linha {1} especifica a vers\u00e3o n\u00e3o suportada {2}.
+unsupported.descriptor.version.explanation=A vers\u00e3o que foi especificada no descritor de implementa\u00e7\u00e3o n\u00e3o \u00e9 v\u00e1lida para esse tipo de descritor de implementa\u00e7\u00e3o.
+unsupported.descriptor.version.useraction=Corrija a vers\u00e3o especificada no descritor de implementa\u00e7\u00e3o.
+
+# REMOVED:
+# invalid.deployment.descriptor.namespace=CWWKC2262E: The server is unable to process the {3} version and the {2} namespace in the {0} deployment descriptor on line {1}.
+# invalid.deployment.descriptor.namespace.explanation=Either the specified version and namespace are not valid, or the server configuration does not have a feature that can process the version and namespace.
+# invalid.deployment.descriptor.namespace.useraction=Verify and correct the version or namespace in the root element of the deployment descriptor, or verify and correct the features in the server configuration.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a namespace value within the deployment descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.namespace=CWWKC2262E: O descritor de implementa\u00e7\u00e3o {0} na linha {1} especifica o namespace n\u00e3o suportado {2}.
+unsupported.descriptor.namespace.explanation=O namespace que foi especificado no descritor de implementa\u00e7\u00e3o n\u00e3o \u00e9 v\u00e1lido para esse tipo de descritor de implementa\u00e7\u00e3o.
+unsupported.descriptor.namespace.useraction=Corrija o namespace especificado no descritor de implementa\u00e7\u00e3o.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a version value within the deployment descriptor
+#    {3} is a namespace value within the deployment descriptor
+#    {4} is the correct namespace value which should be present in the deployment descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.namespace.for.version=CWWCK27781W: o descritor de implementa\u00e7\u00e3o {0} na linha {1} especifica a vers\u00e3o {2} e o namespace {3}, mas deve ter o namespace {4}.
+unsupported.descriptor.namespace.for.version.explanation=O descritor de implementa\u00e7\u00e3o possui um namespace incorreto especificado para a vers\u00e3o que \u00e9 especificada. O namespace foi ignorado.
+unsupported.descriptor.namespace.for.version.useraction=Corrija o namespace para o valor que \u00e9 v\u00e1lido para a vers\u00e3o especificada.
+
+# REMOVED:
+# invalid.deployment.descriptor.version=CWWKC2263E: The version {2} attribute specified in the {0} deployment descriptor on line {1} is not valid.
+# invalid.deployment.descriptor.version.explanation=An non-valid version was specified in the root element of the deployment descriptor.
+# invalid.deployment.descriptor.version.useraction=Verify and correct the version number in the root element of the deployment descriptor.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a version attribute value within the deployment descriptor
+#    {3} is the highest version version attribute value which is supported by the features currently provisioned by the server configuration
+# -----------------------------------------------------------------------
+unprovisioned.descriptor.version=CWWKC2263E: O descritor de implementa\u00e7\u00e3o {0} na linha {1} especifica a vers\u00e3o {2}, que \u00e9 maior do que a vers\u00e3o provisionada atual {3}.
+unprovisioned.descriptor.version.explanation=A vers\u00e3o que foi especificada para o descritor de implementa\u00e7\u00e3o n\u00e3o \u00e9 suportada pelos recursos provisionados pela configura\u00e7\u00e3o do servidor.
+unprovisioned.descriptor.version.useraction=Atualize a configura\u00e7\u00e3o do servidor para fornecer recursos que suportam a vers\u00e3o.
+
+# REMOVED:
+# missing.deployment.descriptor.namespace=CWWKC2264E: An error occurred while trying to determine the namespace of the {0} deployment descriptor on line {1}.
+# missing.deployment.descriptor.namespace.explanation=An non-valid namespace was specified in the root element of the deployment descriptor.
+# missing.deployment.descriptor.namespace.useraction=Verify and correct the namespace in the root element of the deployment descriptor.
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a namespace value which is required to be present in the deployment descriptor
+# -----------------------------------------------------------------------
+missing.descriptor.namespace=CWWKC2264E: O descritor de implementa\u00e7\u00e3o {0} na linha {1} n\u00e3o tem o namespace necess\u00e1rio {2}.
+missing.descriptor.namespace.explanation=O descritor de implementa\u00e7\u00e3o \u00e9 necess\u00e1rio para ter o namespace especificado.
+missing.descriptor.namespace.useraction=Inclua o namespace necess\u00e1rio no descritor de implementa\u00e7\u00e3o.
+
+missing.deployment.descriptor.version=CWWKC2265E: Ocorreu um erro ao tentar determinar a vers\u00e3o do descritor de implementa\u00e7\u00e3o {0} na linha {1}.
 missing.deployment.descriptor.version.explanation=A vers\u00e3o n\u00e3o estava especificada no elemento raiz do descritor de implementa\u00e7\u00e3o.
 missing.deployment.descriptor.version.useraction=Verifique e corrija a vers\u00e3o no elemento raiz do descritor de implementa\u00e7\u00e3o.
 
@@ -98,7 +243,7 @@ required.method.element.missing=CWWKC2267E: O elemento {2} deve ter pelo menos u
 required.method.element.missing.explanation=Um elemento filho necess\u00e1rio est\u00e1 ausente no elemento pai especificado. 
 required.method.element.missing.useraction=Corrija o descritor de implementa\u00e7\u00e3o incluindo o elemento filho necess\u00e1rio.
 
-runasmode.missing.specifiedID.element=CWWKC2268E:  Quando um atributo de modo do elemento <run-as-mode> for configurado como SPECIFIED_IDENTITY no descritor de implementa\u00e7\u00e3o {0} na linha {1}, o elemento filho <specified-identity> dever\u00e1 ser definido.
+runasmode.missing.specifiedID.element=CWWKC2268E: Quando um atributo de modo do elemento <run-as-mode> for configurado como SPECIFIED_IDENTITY no descritor de implementa\u00e7\u00e3o {0} na linha {1}, o elemento filho <specified-identity> dever\u00e1 ser definido.
 runasmode.missing.specifiedID.element.explanation=O elemento filho <specified-identity> est\u00e1 ausente no elemento <run-as-mode> que possui o modo configurado como SPECIFIED_IDENTITY.
 runasmode.missing.specifiedID.element.useraction=Corrija o descritor de implementa\u00e7\u00e3o incluindo o elemento filho necess\u00e1rio ou altere o modo.
 
@@ -110,17 +255,27 @@ found.duplicate.attribute.value=CWWKC2270E: O atributo {2} para todos os element
 found.duplicate.attribute.value.explanation=O valor do atributo especificado deve ser exclusivo em todos os elementos do mesmo tipo. 
 found.duplicate.attribute.value.useraction=Corrija o descritor de implementa\u00e7\u00e3o renomeando qualquer valor de atributo duplicado.
 
+# REMOVED:
+# BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: A validation.xml file was found for the {0} module. However, that validation.xml file is not configured for validation; therefore this XML file is ignored.
+# BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=The BeanValidationService cannot create a ValidatorFactory because of an error parsing the validation.xml file with the validation-configuration-1.0.xsd schema file. This error may indicate that the validation.xml file is not intended for use by the Bean Validation runtime; therefore, this XML file is ignored.
+# BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=If the validation.xml file is not for creating a ValidatorFactory instance, then ignore the message. However if the validation.xml file is intended to create a ValidatorFactory instance, then a problem exists. Enable Bean Validation runtime trace in the application server, stop the application, restart the application, and examine the trace output file for a trace event such as: Unexpected exception when trying to unmarshall the validation.xml file. Examine the exception stack trace for debugging assistance.
+
+# REPLACED BY:
 # -----------------------------------------------------------------------
 # PARAMETERS:
-#    {0} is the path name for the module
+#    {0} is the path to a validation configuration file, including paths to parent archives
+#    {1} is the module name
+#    {2} is the number of a line within the configuration file
+#    {3} is the actual root element name
+#    {4} is the expected root element name
 # -----------------------------------------------------------------------
-BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: Um arquivo validation.xml foi encontrado para o m\u00f3dulo {0}. Entretanto, esse arquivo validation.xml n\u00e3o est\u00e1 configurado para valida\u00e7\u00e3o; portanto, esse arquivo XML ser\u00e1 ignorado.
-BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=O BeanValidationService n\u00e3o pode criar um ValidatorFactory devido a um erro ao analisar o arquivo validation.xml com o arquivo de esquema validation-configuration-1.0.xsd. Esse erro pode indicar que o arquivo validation.xml n\u00e3o se destina ao uso pelo tempo de execu\u00e7\u00e3o da Valida\u00e7\u00e3o de Bean; portanto, esse arquivo XML ser\u00e1 ignorado.
-BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=Se o arquivo validation.xml n\u00e3o for para criar uma inst\u00e2ncia ValidatorFactory, ent\u00e3o ignore a mensagem. No entanto, se o arquivo validation.xml for destinado a criar uma inst\u00e2ncia ValidatorFactory, ent\u00e3o haver\u00e1 um problema.  Ative o rastreio de tempo de execu\u00e7\u00e3o da Valida\u00e7\u00e3o de Bean no servidor de aplicativos, pare o aplicativo, reinicie o aplicativo e examine o arquivo de sa\u00edda de rastreio para obter um evento de rastreio, tal como: Exce\u00e7\u00e3o inesperada ao tentar desserializar o arquivo validation.xml. Examine o rastreio de pilha de exce\u00e7\u00f5es para obter assist\u00eancia para depura\u00e7\u00e3o.
+unexpected.root.element.bval=CWWKC2271W: Ignorando o arquivo de configura\u00e7\u00e3o de valida\u00e7\u00e3o de bean {0} do m\u00f3dulo {1}. No n\u00famero da linha {2}, substitua o elemento-raiz {3} por {4}.
+unexpected.root.element.bval.explanation=O arquivo de configura\u00e7\u00e3o de valida\u00e7\u00e3o n\u00e3o corresponde aos esquemas de configura\u00e7\u00e3o de valida\u00e7\u00e3o (validation-configuration-1.0.xsd e validation-configuration-1.1.xsd). O arquivo de configura\u00e7\u00e3o n\u00e3o foi destinado para uso para valida\u00e7\u00e3o de bean ou o arquivo de configura\u00e7\u00e3o est\u00e1 malformado. O arquivo de configura\u00e7\u00e3o est\u00e1 sendo ignorado. O BeanValidationService n\u00e3o criar\u00e1 um ValidatorFactory.
+unexpected.root.element.bval.useraction=Se o arquivo de configura\u00e7\u00e3o de valida\u00e7\u00e3o n\u00e3o for destinado para valida\u00e7\u00e3o de bean, a mensagem de aviso poder\u00e1 ser ignorada. Se o arquivo de configura\u00e7\u00e3o de valida\u00e7\u00e3o for destinado \u00e0 valida\u00e7\u00e3o de bean, n\u00e3o ignore a mensagem de aviso. O servi\u00e7o de valida\u00e7\u00e3o de bean n\u00e3o est\u00e1 em execu\u00e7\u00e3o conforme desejado. Para diagnosticar o problema, ative o rastreio de tempo de execu\u00e7\u00e3o de valida\u00e7\u00e3o de bean, pare e reinicie o servidor e examine a sa\u00edda de rastreio para exce\u00e7\u00f5es inesperadas relacionadas \u00e0 valida\u00e7\u00e3o de bean. Por exemplo, "Exce\u00e7\u00e3o inesperada ao tentar desserializar o arquivo validation.xml". Examine o rastreio de pilha de exce\u00e7\u00f5es para assist\u00eancia de depura\u00e7\u00e3o.
 
 xml.error=CWWKC2272E: Ocorreu um erro ao fazer a an\u00e1lise sint\u00e1tica do descritor de implementa\u00e7\u00e3o {0} na linha {1}. A mensagem de erro era: {2}
 xml.error.explanation=Ocorreu um erro ao fazer a an\u00e1lise sint\u00e1tica do descritor de implementa\u00e7\u00e3o XML. Consulte a mensagem de erro para obter explica\u00e7\u00e3o adicional.
-xml.error.useraction=Corrija o descritor de implementa\u00e7\u00e3o para remover o erro. 
+xml.error.useraction=Corrija o descritor de implementa\u00e7\u00e3o para remover o erro.
 
 invalid.enum.value=CWWKC2273E: O valor {2} no descritor de implementa\u00e7\u00e3o {0} na linha {1} n\u00e3o \u00e9 v\u00e1lido. Os valores v\u00e1lidos s\u00e3o: {3}
 invalid.enum.value.explanation=O descritor de implementa\u00e7\u00e3o especifica um valor que n\u00e3o \u00e9 v\u00e1lido.
@@ -134,10 +289,119 @@ invalid.long.value=CWWKC2275E: O valor {2} no descritor de implementa\u00e7\u00e
 invalid.long.value.explanation=O descritor de implementa\u00e7\u00e3o especifica um valor que n\u00e3o \u00e9 um n\u00famero no intervalo de -9223372036854775808 a 9223372036854775807.
 invalid.long.value.useraction=Corrija o descritor de implementa\u00e7\u00e3o para usar um n\u00famero longo v\u00e1lido.
 
-module.name.not.specified=CWWKC2276E: O elemento {0} deve especificar um atributo de nome de m\u00f3dulo.
-module.name.not.specified.explanation=A configura\u00e7\u00e3o de liga\u00e7\u00e3o e extens\u00e3o para m\u00f3dulos EJB e da web devem conter um atributo moduleName que especifique o m\u00f3dulo ao qual a configura\u00e7\u00e3o se aplica. 
-module.name.not.specified.useraction=Inclua um atributo moduleName no elemento web-bnd, web-ext, ejb-bnd ou ejb-ext. 
+# ---
 
-module.name.invalid=CWWKC2277E: Um ou mais nomes de m\u00f3dulo no elemento {1} s\u00e3o inv\u00e1lidos. O nome ou os nomes de m\u00f3dulo inv\u00e1lidos s\u00e3o {0}.
-module.name.invalid.explanation=A configura\u00e7\u00e3o de liga\u00e7\u00e3o e extens\u00e3o para m\u00f3dulos da web devem especificar um atributo moduleName v\u00e1lido. Pelo menos uma configura\u00e7\u00e3o especificou um nome de m\u00f3dulo inv\u00e1lido. O nome do m\u00f3dulo deve ser o nome do archive que cont\u00e9m o aplicativo da web ou EJB.
-module.name.invalid.useraction=Corrija o atributo moduleName na configura\u00e7\u00e3o de liga\u00e7\u00e3o ou extens\u00e3o. 
+# REMOVED:
+# module.name.not.specified=CWWKC2276E: The {0} element must specify a module name attribute.
+# module.name.not.specified.explanation=The binding and extension configuration for EJB and web modules must contain a ''moduleName'' attribute that specifies the module to which the configuration applies. 
+# module.name.not.specified.useraction=Add a ''moduleName'' attribute to the ''web-bnd'', ''web-ext'', ''ejb-bnd'', or ''ejb-ext'' element. 
+
+# REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.  For example, 'ejb-bnd', 'ejb-ext', 'web-bnd', 'web-ext'.
+# -----------------------------------------------------------------------
+module.name.not.specified=CWWKC2276E: O atributo ''moduleName'' requer uma ou mais liga\u00e7\u00f5es e elementos de configura\u00e7\u00e3o de extens\u00e3o ''{1}'' do aplicativo {0}.
+module.name.not.specified.explanation=Os elementos de liga\u00e7\u00f5es e de configura\u00e7\u00e3o de extens\u00e3o devem ter um atributo ''moduleName''.
+module.name.not.specified.useraction=Assegure-se de que um atributo ''moduleName'' esteja presente em todos os elementos de liga\u00e7\u00f5es e de configura\u00e7\u00e3o de extens\u00e3o.
+
+# REMOVED:
+# module.name.invalid=CWWKC2277E: One or more module names on the {1} element are invalid. The invalid module name or names are {0}.
+# module.name.invalid.explanation=The binding and extension configuration must specify a valid ''moduleName'' attribute. At least one configuration has specified an non-valid module name. The module name must be the name of the archive file that contains the web or EJB application.
+# module.name.invalid.useraction=Correct the ''moduleName'' attribute in the binding or extension configuration. 
+
+#REPLACED BY:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.
+#    {2} Module names used in configuration elements and not found in the application.
+#    {3} Module names found in the application.
+# -----------------------------------------------------------------------
+module.name.not.found=CWWKC2277E: N\u00e3o \u00e9 poss\u00edvel localizar os atributos ''moduleName'' {2} especificados nas liga\u00e7\u00f5es e nos elementos de configura\u00e7\u00e3o de extens\u00e3o ''{1}'' do aplicativo {0}.  Os nomes do m\u00f3dulo de aplicativo s\u00e3o {3}.
+module.name.not.found.explanation=Os atributos ''moduleName' de elementos de liga\u00e7\u00f5es e de configura\u00e7\u00e3o de extens\u00e3o devem corresponder aos nomes de m\u00f3dulo aplicativo.
+module.name.not.found.useraction=Assegure-se de que todos os atributos ''moduleName' de elementos de liga\u00e7\u00f5es e de configura\u00e7\u00e3o de extens\u00e3o correspondam aos nomes de m\u00f3dulo aplicativo. 
+
+# ADDED
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} The simple name of an application.
+#    {1} The type of element which is being processed.
+#    {2} Duplicated module names used in configuration elements.
+# -----------------------------------------------------------------------
+module.name.duplicated=CWWKC2278E: Os atributos ''moduleName'' {2} duplicados foram especificados nas liga\u00e7\u00f5es e nos elementos de configura\u00e7\u00e3o de extens\u00e3o ''{1}'' do aplicativo {0}.
+module.name.duplicated.explanation=Os atributos ''moduleName' de elementos de liga\u00e7\u00f5es e de configura\u00e7\u00e3o de extens\u00e3o n\u00e3o podem ser duplicados.
+module.name.duplicated.useraction=Assegure-se de que todos os atributos ''moduleName' de elementos de liga\u00e7\u00f5es e de configura\u00e7\u00e3o de extens\u00e3o sejam exclusivos. 
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is a DTD public ID value which is present in the descriptor
+# -----------------------------------------------------------------------
+unsupported.descriptor.public.id=CWWCK27782E: o descritor de implementa\u00e7\u00e3o {0} {0} na linha {1} especifica o ID p\u00fablico n\u00e3o suportado {2}.
+unsupported.descriptor.public.id.explanation=O valor de ID p\u00fablico n\u00e3o \u00e9 v\u00e1lido para o descritor de implementa\u00e7\u00e3o.
+unsupported.descriptor.public.id.useraction=Corrija o valor de ID p\u00fablico do descritor de implementa\u00e7\u00e3o.
+
+# ADDED:
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+# -----------------------------------------------------------------------
+missing.descriptor.version=CWWCK27783E: o descritor de implementa\u00e7\u00e3o {0} n\u00e3o tem uma vers\u00e3o, um ID PUBLIC ou um namespace.
+missing.descriptor.version.explanation=Um descritor de implementa\u00e7\u00e3o deve ter uma vers\u00e3o, um ID p\u00fablico ou um namespace.
+missing.descriptor.version.useraction=Inclua uma vers\u00e3o, um ID p\u00fablico ou um namespace no descritor de implementa\u00e7\u00e3o. A vers\u00e3o, o ID p\u00fablico ou o namespace inclu\u00eddos devem corresponder ao conte\u00fado do descritor de implementa\u00e7\u00e3o.
+
+# ADDED:
+# "incorrect.descriptor.namespace", describeEntry(), getLineNumber(), ddNamespace, expectedNamespace
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the namespace which was specified in the deployment descriptor
+#    {3} is the expected namespace
+# -----------------------------------------------------------------------
+incorrect.descriptor.namespace=CWWCK27788W: o descritor de implementa\u00e7\u00e3o {0} na linha {1} especifica o namespace {2}, mas deve ter o namespace {3}.
+incorrect.descriptor.namespace.explanation=Um namespace espec\u00edfico \u00e9 esperado dentro do descritor de implementa\u00e7\u00e3o. O namespace incorreto foi ignorado.
+incorrect.descriptor.namespace.useraction=Mude o namespace dentro do descritor de implementa\u00e7\u00e3o para o valor esperado.
+
+# ADDED:
+# "incorrect.descriptor.namespace.for.version", describeEntry(), getLineNumber(), ddVersion, ddNamespace, expectedNamespace
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the version which was specified in the deployment descriptor
+#    {3} is the namespace which was specified in the deployment descriptor
+#    {4} is the expected namespace
+# -----------------------------------------------------------------------
+incorrect.descriptor.namespace.for.version=CWWCK27789W: o descritor de implementa\u00e7\u00e3o {0} na linha {1} especifica a vers\u00e3o {2} e o namespace {3}, mas para essa vers\u00e3o deve ter o namespace {4}.
+incorrect.descriptor.namespace.for.version.explanation=Um namespace espec\u00edfico \u00e9 esperado dentro do descritor de implementa\u00e7\u00e3o para a vers\u00e3o especificada. O namespace incorreto foi ignorado.
+incorrect.descriptor.namespace.for.version.useraction=Mude o namespace dentro do descritor de implementa\u00e7\u00e3o para o valor esperado.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the value of a 'name' attribute within a session configuration 'attribute' element
+#    {3} is the value of the 'value' attribute of a session configuration 'attribute' element
+#    {4} is the value of the 'value' attribute of a session configuration 'attribute' element
+# -----------------------------------------------------------------------
+duplicate.session.config.attribute.name=CWWCK27790W: o descritor de implementa\u00e7\u00e3o {0} na linha {1} duplica o ''name'' ''{2}'' de um elemento de atributo de configura\u00e7\u00e3o da sess\u00e3o.  O ''value'' ''{3}'' est\u00e1 associado ao nome em vez do ''value'' ''{4}'' anterior.
+duplicate.session.config.attribute.name.explanation=O descritor de implementa\u00e7\u00e3o possui m\u00faltiplos elementos de atributo que possuem o mesmo nome e que est\u00e3o dentro do mesmo elemento de configura\u00e7\u00e3o de sess\u00e3o. O analisador do descritor ignora todos, menos o \u00faltimo desses elementos.
+duplicate.session.config.attribute.name.useraction=Se o \u00faltimo elemento de atributo n\u00e3o for o elemento que se pretende utilizar, atualize o descritor de implementa\u00e7\u00e3o para remover elementos de atributo extras que tenham o mesmo nome.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path to a deployment descriptor, including paths to parent archives
+#    {1} is the number of a line within the deployment descriptor
+#    {2} is the value of the 'value' attribute of a session configuration 'attribute' element
+# -----------------------------------------------------------------------
+missing.session.config.attribute.name=CWWCK27791W: o descritor de implementa\u00e7\u00e3o {0} na linha {1} tem um atributo de configura\u00e7\u00e3o de sess\u00e3o que n\u00e3o tem nome.  Esse atributo, com o ''value'' ''{2}'', foi ignorado.
+missing.session.config.attribute.name.explanation=Um atributo de configura\u00e7\u00e3o de sess\u00e3o \u00e9 necess\u00e1rio para ter um elemento de nome. 
+missing.session.config.attribute.name.useraction=Atualize o descritor de implementa\u00e7\u00e3o para remover o atributo que n\u00e3o tem um elemento de nome, ou inclua elementos de nome em todos os elementos de atributo.
+
+
+

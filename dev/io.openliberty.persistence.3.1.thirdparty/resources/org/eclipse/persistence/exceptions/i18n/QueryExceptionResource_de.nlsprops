@@ -33,9 +33,9 @@
 
 6003=Die Anzahl der in der Abfrage zur Ausf\u00fchrung angegebenen Argumente entspricht nicht der Anzahl der Argumente in der Abfragedefinition.
 
-6004=Das Objekt [{0}] der Klasse [{1}] mit dem Identit\u00e4ts-Hash-Code (System.identityHashCode()) [{2}] {3}stammt nicht aus diesem UnitOfWork-Objektbereich, sondern aus dem der \u00fcbergeordneten Sitzung. Das Objekt wurde nicht in dieser UnitOfWork registriert, {3}wurde aber aus der \u00fcbergeordneten Sitzung gelesen und zu einem in der UnitOfWork registrierten Objekt in Beziehung gesetzt. Vergewissern Sie sich, dass Ihre Objekte{3}ordnungsgem\u00e4\u00df registriert werden. Wenn weiterhin Probleme bestehen, k\u00f6nnen Sie die Methode UnitOfWork.validateObjectSpace() verwenden, um {3}dort, wo der Fehler aufgetreten ist, das Debugging durchzuf\u00fchren. Weitere Informationen finden Sie im Handbuch oder in den h\u00e4ufig gestellten Fragen.
+6004=Das Objekt [{0}] der Klasse [{1}] mit dem Identit\u00e4ts-Hashcode (System.identityHashCode ()) [{2}], {3} stammt nicht aus diesem UnitOfWork-Objektbereich, sondern aus dem der \u00fcbergeordneten Sitzung. Das Objekt wurde nie in dieser UnitOfWork {3} registriert, sondern aus der \u00fcbergeordneten Sitzung gelesen und mit einem Objekt verkn\u00fcpft, das in der UnitOfWork registriert ist. Stellen Sie sicher, dass Sie Ihre Objekte ordnungsgem\u00e4\u00df {3} registrieren. Wenn weiterhin Probleme auftreten, k\u00f6nnen Sie die Methode UnitOfWork.validateObjectSpace() verwenden, um {3} zu debuggen, wo der Fehler aufgetreten ist. Weitere Informationen finden Sie im Handbuch oder in den h\u00e4ufig gestellten Fragen.
 
-6005=Das Objekt [{0}] der Klasse [{1}] mit dem Identit\u00e4ts-Hash-Code (System.identityHashCode()) [{2}] {3}ist das urspr\u00fcngliche Objekt eines registrierten neuen Objekts. Die UnitOfWork klont registrierte neue Objekte, deshalb m\u00fcssen Sie sicherstellen, dass ein Objekt {3}registriert ist, bevor es von einem anderen Objekt referenziert wird. Wenn Sie nicht m\u00f6chten, dass das neue Objekt geklont wird, verwenden Sie die {3}API UnitOfWork.registerNewObject(Object). Wenn weiterhin Probleme bestehen, k\u00f6nnen Sie die Methode UnitOfWork.validateObjectSpace() {3}verwenden, um dort, wo der Fehler aufgetreten ist, das Debugging durchzuf\u00fchren. Weitere Informationen finden Sie im Handbuch oder in den h\u00e4ufig gestellten Fragen.
+6005=Das Objekt [{0}] der Klasse [{1}] mit dem Identit\u00e4ts-Hashcode (System.identityHashCode()) [{2}], {3} ist das Original eines registrierten neuen Objekts. Die UnitOfWork-Klone haben neue Objekte registriert, sodass Sie sicherstellen m\u00fcssen, dass ein Objekt {3} registriert wird, bevor es von einem anderen Objekt referenziert wird. Wenn Sie nicht m\u00f6chten, dass das neue Objekt geklont wird, verwenden Sie {3}UnitOfWork.registerNewObject(Object) API. Wenn weiterhin Probleme auftreten, k\u00f6nnen Sie die Methode "UnitOfWork.validateObjectSpace() {3}" verwenden, um die Fehlerursache zu beheben. Weitere Informationen finden Sie im Handbuch oder in den h\u00e4ufig gestellten Fragen.
 
 6006=Die Zuordnung [{0}] unterst\u00fctzt das Lesen von Stapeln nicht
 
@@ -193,7 +193,7 @@
 
 6100=F\u00fcr eine Leseabfrage eines einzelnen Objekts wurden mehrere Werte gefunden.
 
-6101=Die Ausf\u00fchrung dieser Abfrage k\u00f6nnte die Integrit\u00e4t des globalen Sitzungscache beeintr\u00e4chtigen, der nur die neuesten Versionen von Objekten enthalten darf. Um eine Abfrage ausf\u00fchren zu k\u00f6nnen, die Objekte in einem fr\u00fcheren Zustand zur\u00fcckgibt, gehen Sie wie folgt vor: Verwenden Sie eine HistoricalSession (acquireSessionAsOf). Alle gelesenen Objekte werden zwischengespeichert und gleichzeitig automatisch gelesen. Dies gilt selbst beim Ausl\u00f6sen von Objektbeziehungen. Setzen Sie shouldMaintainCache auf false. Sie k\u00f6nnen einen Objektausdruck in einem fr\u00fcheren Zustand erstellen, vorausgesetzt, keines der zugeh\u00f6rigen Felder ist im Ergebnissatz enthalten (d. h. alleinige Verwendung in der WHERE-Klausel).
+6101=Die Ausf\u00fchrung dieser Abfrage k\u00f6nnte die Integrit\u00e4t des globalen Sitzungscache beeintr\u00e4chtigen, der nur die neuesten Versionen von Objekten enthalten darf. Um eine Abfrage ausf\u00fchren zu k\u00f6nnen, die Objekte in einem fr\u00fcheren Zustand zur\u00fcckgibt, gehen Sie wie folgt vor: Verwenden Sie eine HistoricalSession (acquireSessionAsOf). Alle gelesenen Objekte werden zwischengespeichert und gleichzeitig automatisch gelesen.  Dies gilt selbst beim Ausl\u00f6sen von Objektbeziehungen. Setzen Sie shouldMaintainCache auf false.  Sie k\u00f6nnen einen Objektausdruck in einem fr\u00fcheren Zustand erstellen, vorausgesetzt, keines der zugeh\u00f6rigen Felder ist im Ergebnissatz enthalten (d. h. alleinige Verwendung in der WHERE-Klausel).
 
 6102=Zeitbezogene Abfragen funktionieren derzeit nur mit Datenbanken von Oracle 9R2 oder h\u00f6her, da dabei das Flashback-Feature von Oracle verwendet wird.
 
@@ -261,7 +261,7 @@
 
 6134=Der Attributname oder der Ausdruck, der als erster Parameter an die Methode addUpdate \u00fcbergeben wurde, definiert kein Feld. {1}Attributname oder Ausdruck: [{2}]{1}Deskriptor: [{0}]
 
-6135=Der Attributname oder der Ausdruck, der als erster Parameter an die Methode addUpdate \u00fcbergeben wurde, definiert ein Feld aus einer Tabelle, die keinem Abfragedeskriptor zugeordnet ist. {1}Attributname oder Ausdruck: [{2}]{1}Falsches Feld: [{3}]{1}Deskriptor: [{0}]
+6135=Der Attributname oder Ausdruck, der als erster Parameter an die Methode addUpdate \u00fcbergeben wird, definiert ein Feld aus einer Tabelle, die nicht dem Abfragedeskriptor zugeordnet ist. {1}Attributname oder Ausdruck: [{2}]{1}Falsches Feld: [{3}]{1}Deskriptor: [{0}]
 
 6136=Einer Vererbung mit mehreren Tabellen zugeordnete Klassen k\u00f6nnen keine ReportQuery-Elemente sein. Element: {0}, Ausdruck: {1}.
 
@@ -293,9 +293,9 @@
 
 6150=In einem Container vom Typ [{1}] darf kein Nullwert als Schl\u00fcssel verwendet werden. Vergewissern Sie sich, dass Ihre Schl\u00fcsselwerte f\u00fcr die Objekte vom Typ [{0}] nicht null sein k\u00f6nnen.
 
-6151=Beim Versuch, einen Redirector {0} zu definieren, der \u00fcber einen JPA-Abfragehinweis ({1}) \u00fcbergeben wurde, ist eine Ausnahme eingetreten. Vergewissern Sie sich, dass der angegebene Redirector org.eclipse.persistence.queries.QueryRedirector implementiert.
+6151=Bei dem Versuch, einen Redirector {0} festzulegen, der einen Jakarta Persistence Query Hint {1} durchl\u00e4uft, ist eine Ausnahme aufgetreten.  Vergewissern Sie sich, dass der angegebene Redirector org.eclipse.persistence.queries.QueryRedirector implementiert.
 
-6152=Beim Versuch, die Klasse {0} zu instanziieren, die \u00fcber einen JPA-Abfragehinweis ({1}) \u00fcbergeben wurde, ist eine Ausnahme eingetreten. Vergewissern Sie sich, dass die Klasse einen Standardkonstruktor hat.
+6152=Beim Instanziieren der Klasse {0}, die \u00fcber einen Jakarta Persistence Query Hint {1} \u00fcbergeben wurde, ist eine Ausnahme aufgetreten.  Vergewissern Sie sich, dass die Klasse einen Standardkonstruktor hat.
 
 6153=CompatibleType muss f\u00fcr den komplexen Typ {0} definiert sein.
 

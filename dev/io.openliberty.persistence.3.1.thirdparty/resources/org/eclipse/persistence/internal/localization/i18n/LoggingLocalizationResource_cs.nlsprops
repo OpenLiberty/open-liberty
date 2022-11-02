@@ -57,8 +57,6 @@ application_server_name_and_version=Server: {0}
 
 archive_not_found_in_input=Archivn\u00ed soubor ({0}) ve vstupn\u00edm adres\u00e1\u0159i ({1}) neexistoval.
 
-associate_using_third_table_not_migrated=Nativn\u00ed funkce Oc4j CMP -DassociateUsingThirdTable=true pro namapov\u00e1n\u00ed 1:m pomoc\u00ed tabulky vztah\u016f nebyla migrov\u00e1na. Po dokon\u010den\u00ed migrace mus\u00edte znovu namapovat pole CMR ({1}) entity ({0}) ve tvaru mapov\u00e1n\u00ed jedna ku n prost\u0159ednictv\u00edm n\u00e1stroje Mapping Workbench.
-
 attempted_to_open_entry_in_url_as_jar={2} byla vyd\u00e1na p\u0159i pokusu otev\u0159\u00edt {0} jako soubor JAR a p\u0159istoupit k polo\u017ece: {1}.
 
 attempted_to_open_file_url_as_directory={2} byla vyd\u00e1na p\u0159i pokusu otev\u0159\u00edt {0} jako adres\u00e1\u0159 a p\u0159istoupit k polo\u017ece: {1}.
@@ -84,8 +82,6 @@ broadcast_listening_sleep_on_error=Varov\u00e1n\u00ed: {0}: byla vyd\u00e1na v\u
 broadcast_remote_command_is_null=Varov\u00e1n\u00ed: {0}: p\u0159ijata zpr\u00e1va {1} obsahuj\u00edc\u00ed hodnotu null m\u00edsto p\u0159\u00edkazu RemoteCommand.
 
 broadcast_remote_command_wrong_type=Varov\u00e1n\u00ed: {0}: p\u0159ijata zpr\u00e1va {1} obsahuj\u00edc\u00ed objekt typu {2} m\u00edsto o\u010dek\u00e1van\u00e9ho typu RemoteCommand.
-
-call_timeout_not_migrated=Pro entitu {0} v souboru orion-ejb-jar.xml je definov\u00e1n parametr call-timeout value={1}, ale v souboru deskriptoru jsou definov\u00e1na do\u010dasn\u00e1 mapov\u00e1n\u00ed, proto nedojde k \u017e\u00e1dn\u00e9 migraci. Pokud pozd\u011bji pou\u017eijete v\u00fdchoz\u00ed mapov\u00e1n\u00ed EclipseLink k vygenerov\u00e1n\u00ed deskriptoru mapov\u00e1n\u00ed EclipseLink, nezapome\u0148te, \u017ee nastaven\u00ed \u010dasov\u00e9ho limitu vol\u00e1n\u00ed bude ztraceno, proto\u017ee v\u00fdchoz\u00ed mapov\u00e1n\u00ed EclipseLink nep\u0159istupuje k nativn\u00edmu souboru deskriptoru. Mus\u00edte pak po vygenerov\u00e1n\u00ed v\u00fdchoz\u00edho mapov\u00e1n\u00ed znovu nastavit \u010dasov\u00fd limit vol\u00e1n\u00ed ru\u010dn\u011b nebo prost\u0159ednictv\u00edm n\u00e1stroje EclipseLink Mapping Workbench.
 
 cannot_get_nested_collection_type=Vno\u0159en\u00fd typ kolekce nelze z\u00edskat.
 
@@ -145,8 +141,6 @@ delay_database_insert_until_ejb_create_not_supported=Nativn\u00ed nastaven\u00ed
 
 delay_database_insert_until_ejb_post_create_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "delay-database-insert-until-ejbPostCreate" u entity ({0}) nen\u00ed v Eclipse CMP p\u0159\u00edmo podporov\u00e1no. Podrobnosti viz dokumentace k migraci.
 
-delay_updates_until_commit_not_supported=Nativn\u00ed funkce Oc4j CMP "delay-updates-until-commit" u entity ({0}) nen\u00ed v EclipseLink CMP p\u0159\u00edmo podporov\u00e1na. Podrobnosti viz dokumentace k migraci.
-
 deleted_objects=Odstran\u011bn\u00e9 objekty:
 
 deleting_object=Operace odebr\u00e1n\u00ed byla provedena pro: {0}
@@ -157,9 +151,9 @@ descriptor_named_query_cannot_be_added=Nelze p\u0159idat pojmenovan\u00fd dotaz 
 
 dir_cleaned_for_mw_files=Soubory a d\u00edl\u010d\u00ed adres\u00e1\u0159e pod adres\u00e1\u0159em {0} byly odstran\u011bny, aby bylo mo\u017en\u00e9 vytvo\u0159it pr\u00e1zdn\u00fd adres\u00e1\u0159 pro nov\u011b vygenerovan\u00e9 soubory projektu EclipseLink Mapping Workbench
 
-do_select_before_insert_not_supported=Nativn\u00ed funkce Oc4j CMP "do-select-before-insert" nen\u00ed u entity ({0}) p\u0159\u00edmo podporov\u00e1na v EclipseLink CMP. Podrobnosti viz dokumentace k migraci.
-
 drop_connection_on_error=Varov\u00e1n\u00ed: Zru\u0161en\u00ed p\u0159ipojen\u00ed vzd\u00e1len\u00e9ho p\u0159\u00edkazu k {0} m\u00e1 chybu {1}
+
+eclipselink_version_error=Soubor: {0} neexistuje nebo je po\u0161kozen.
 
 ejbSelect2=EjbSelect: {0}
 
@@ -219,8 +213,6 @@ field_group_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "field-group" u en
 
 field_type_set_to_java_lang_string=V\u00fdchoz\u00ed gener\u00e1tor tabulek nem\u016f\u017ee vyhledat nebo p\u0159ev\u00e9st typ Java ({1}) na datab\u00e1zov\u00fd typ pro pole datab\u00e1ze ({0}). Gener\u00e1tor pou\u017e\u00edv\u00e1 "java.lang.String" jako v\u00fdchoz\u00ed typ Java pro dan\u00e9 pole.
 
-force_update_not_supported=Nativn\u00ed funkce Oc4j CMP "force-update" nen\u00ed u entity ({0}) p\u0159\u00edmo podporov\u00e1na v EclipseLink CMP. Podrobnosti viz dokumentace k migraci.
-
 identitymap_for={0}{1} pro: {2}
 
 includes=(zahrnuje: 
@@ -235,15 +227,11 @@ input_minimum_arguments=Vstupn\u00ed argumenty p\u0159\u00edkazov\u00e9ho \u0159
 
 input_not_both_archive_and_xml=Bu\u010f pomoc\u00ed -e zadejte n\u00e1zev archivn\u00edho souboru, nebo pomoc\u00ed -x signalizujte, \u017ee se budou migrovat soubory deskriptoru pod vstupn\u00edm adres\u00e1\u0159em, ale nepou\u017e\u00edvejte ob\u011b volby.
 
-input_orione_ejb_jar_augmented=Vstupn\u00ed soubor orion-ejb-jar.xml byl roz\u0161\u00ed\u0159en, aby uv\u00e1d\u011bl EclipseLink jako spr\u00e1vce perzistence OC4J
-
 invalid_command_line_argument=Argument p\u0159\u00edkazov\u00e9ho \u0159\u00e1dku ({0}) je neplatn\u00fd
 
 invalid_datasource_property_value={1} nen\u00ed platn\u00fdm objektem, kter\u00fd lze pro vlastnost {0} p\u0159edat. Platn\u00e9 hodnoty jsou \u0159et\u011bzce nebo instance javax.sql.DataSource.
 
 invalid_property_value={1} nen\u00ed platn\u00fdm objektem, kter\u00fd lze pro vlastnost {0} p\u0159edat.
-
-isolation_level_not_supported=Nativn\u00ed nastaven\u00ed Oc4j CMP "isolation-level" u entity ({0}) Eclipse CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
 
 jar_entry_has_been_migrated=Nativn\u00ed soubor deskriptoru cmp v polo\u017ece JAR ({0}) ze vstupn\u00edho souboru EAR ({1}) byl migrov\u00e1n.
 
@@ -317,13 +305,15 @@ jpars_could_not_find_session_bean=Bylo provedeno vol\u00e1n\u00ed na objekt typu
 
 jta_cannot_be_disabled_in_cmp=P\u0159i pou\u017eit\u00ed perzistence Container Managed Persistence (CMP) nelze zak\u00e1zat JTA. EclipseLink bude pracovat, jako kdyby bylo JTA povoleno.
 
+jta_duplicate_ctrl_property=T\u0159\u00edda \u0159adi\u010de transakc\u00ed JTA je definovan\u00e1 ve vlastnostech "eclipselink.target-server" a "eclipselink.jta.controller". Pou\u017eije se hodnota z vlastnosti "eclipselink.target-server".
+
+jta_tsr_lookup_failure=Nelze vyhledat instanci TransactionSynchronizationRegistry: {0}
+
 key_identity_hash_code_object={0}Kl\u00ed\u010d: {1}{2}Ha\u0161ovac\u00ed k\u00f3d identity: {3}{2}Objekt: {4}
 
 key_object_null={0}Kl\u00ed\u010d: {1}{2}Objekt: null
 
 key_version_identity_hash_code_object={0}Kl\u00ed\u010d: {1}{2}Verze: {5}{2}Ha\u0161ovac\u00ed k\u00f3d identity: {3}{2}Objekt: {4}
-
-locking_mode_not_valid=Re\u017eim uzamyk\u00e1n\u00ed({1}) u entity({0} v souboru orion-ejb-jar.xml nen\u00ed dob\u0159e definovan\u00fd, a proto se nebude migrovat.
 
 locking_required_for_database_change_notification=Entita {0} nepou\u017e\u00edv\u00e1 zamyk\u00e1n\u00ed verze, ale m\u00e1 v\u00edce tabulek nebo vztah\u016f a pou\u017e\u00edv\u00e1 oznamov\u00e1n\u00ed zm\u011bn datab\u00e1ze Oracle. Zm\u011bny ve vztaz\u00edch nebo sekund\u00e1rn\u00ed tabulky pravd\u011bpodobn\u011b nezru\u0161\u00ed platnost mezipam\u011bti.
 
@@ -332,10 +322,6 @@ log_file_under_output_dir=Existuje soubor protokolu s n\u00e1zvem ({0}), kter\u0
 mapping_not_supported_by_mw=Mapov\u00e1n\u00ed EclipseLink {0} pracovn\u00ed plocha mapov\u00e1n\u00ed nepodporuje.
 
 marshal_warning_null_document_root_element={0}: Nedefinovan\u00fd ko\u0159enov\u00fd prvek dokumentu odkazovan\u00e9ho objektu [{1}] se bude ignorovat p\u0159i za\u0159azov\u00e1n\u00ed do jak\u00e9hokoliv mapov\u00e1n\u00ed kolekce|objektu.
-
-max_instance_not_supported=Nativn\u00ed nastaven\u00ed Oc4j CMP "max-instance" u entity ({0}) Eclipse CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
-
-max_tx_retries_not_supported=Nativn\u00ed nastaven\u00ed Oc4j CMP "max-tx-retries" u entity ({0}) Eclipse CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
 
 metadata_access_type=Typ p\u0159\u00edstupu t\u0159\u00eddy perzistence [{1}] je nastaven na [{0}].
 
@@ -457,7 +443,7 @@ metadata_warning_ignore_cacheable_false=Ignoruje se explicitn\u00ed nastaven\u00
 
 metadata_warning_ignore_cacheable_true=Ignoruje se explicitn\u00ed nastaven\u00ed cacheable=true pro t\u0159\u00eddu entit [{0}], nebo\u0165 v souboru persistence.xml bylo uvedeno ukl\u00e1d\u00e1n\u00ed do mezipam\u011bti typu NONE.
 
-metadata_warning_ignore_converts=Ignoruje se specifikace p\u0159evodu JPA u prvku [{1}] v r\u00e1mci t\u0159\u00eddy entit [{0}], nebo\u0165 jsou uvedena metadata p\u0159evodu EclipseLink.
+metadata_warning_ignore_converts=Ignoruje se specifikace p\u0159evodu Jakarta Persistence u prvku [{1}] v r\u00e1mci t\u0159\u00eddy entit [{0}], proto\u017ee jsou ur\u010dena metadata p\u0159evodu EclipseLink.
 
 metadata_warning_ignore_enumerated=Ignoruje se specifikace vy\u010d\u00edslen\u00ed u prvku [{1}] v r\u00e1mci t\u0159\u00eddy entit [{0}], nebo\u0165 jsou uvedena metadata p\u0159evodu EclipseLink.
 
@@ -517,7 +503,7 @@ metadata_warning_ignore_mapped_superclass_primary_key=Ignoruj\u00ed se nastaven\
 
 metadata_warning_ignore_mapped_superclass_read_only=Ignoruj\u00ed se nastaven\u00ed pouze pro \u010dten\u00ed u mapovan\u00e9 supert\u0159\u00eddy [{1}] pro t\u0159\u00eddu entit [{0}], nebo\u0165 metadata pouze pro \u010dten\u00ed byla ji\u017e d\u0159\u00edve pro tuto entitu zji\u0161t\u011bna (bu\u010f u vlastn\u00ed entity, nebo u jin\u00e9 mapovan\u00e9 supert\u0159\u00eddy).
 
-metadata_warning_ignore_mapping_metadata=Ignoruj\u00ed se metadata jakarta.persistence pou\u017eit\u00e1 u atributu [{0}] ze t\u0159\u00eddy [{1}]. Metadata jakarta.persistence se ignoruj\u00ed u pol\u00ed a vlastnost\u00ed, kter\u00e9 jsou do\u010dasn\u00e9, statick\u00e9 nebo abstraktn\u00ed.
+metadata_warning_ignore_mapping_metadata=Ignoruj\u00ed se metadata jacarta.persistence pou\u017eit\u00e1 na atribut [{0}] ze t\u0159\u00eddy [{1}]. Metadata jakarta.persistence se ignoruj\u00ed u pol\u00ed nebo vlastnost\u00ed, kter\u00e9 jsou do\u010dasn\u00e9, statick\u00e9 nebo abstraktn\u00ed.
 
 metadata_warning_ignore_serialized=Ignoruje se v\u00fdchoz\u00ed serializace u prvku [{1}] v r\u00e1mci t\u0159\u00eddy entit [{0}], nebo\u0165 jsou uvedena metadata p\u0159evodu EclipseLink.
 
@@ -559,11 +545,7 @@ migration_output_dir_not_valid=V\u00e1mi definovan\u00fd v\u00fdstupn\u00ed adre
 
 migration_successful=Migrace byla \u00fasp\u011b\u0161n\u00e1!
 
-min_instance_not_supported=Nativn\u00ed nastaven\u00ed Oc4j CMP "min-instance" u entity ({0}) Eclipse CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
-
 missing_converter=Varov\u00e1n\u00ed: Nelze p\u0159ev\u00e9st p\u0159\u00edkaz {0}, nebo\u0165 chyb\u00ed CommandConverter - p\u0159\u00edkaz se ignoruje
-
-multiple_ds_not_supported=EclipseLink CMP nepodporuje v\u00edce zdroj\u016f dat a bude pou\u017e\u00edvat pouze jeden ze jmenovan\u00fdch ({0}), uveden\u00fd v souboru orion-ejb-jar.xml a p\u0159idru\u017een\u00fd k objektu typu bean entity definovan\u00e9mu jako posledn\u00ed v p\u0159\u00edslu\u0161n\u00e9m souboru ejb-jar.xml.
 
 must_define_migration_output_dir=Mus\u00edte nadefinovat v\u00fdstupn\u00ed adres\u00e1\u0159 pro n\u00e1stroj migrace.
 
@@ -575,25 +557,15 @@ nested_entity_manager_flush_not_executed_pre_query_changes_may_be_pending=T\u015
 
 new_objects=Nov\u00e9 objekty:
 
-no_exclusive_write_access_not_supported=Nativn\u00ed funkce Oc4j CMP "no-exclusive-write-access" nen\u00ed u entity ({0}) p\u0159\u00edmo podporov\u00e1na v EclipseLink CMP. Podrobnosti viz dokumentace k migraci.
-
 no_jar_entry_migratable_in_ear=\u017d\u00e1dn\u00e1 z polo\u017eek JAR ve vstupn\u00edm souboru EAR ({0}) nen\u00ed migrovateln\u00e1.
 
 no_session_found=Nelze naj\u00edt relaci s n\u00e1zvem [{0}] v souboru session.xml [{1}]
 
-non_jpa_allowed_type_used_for_collection_using_lazy_access=Prvek [{1}] v r\u00e1mci t\u0159\u00eddy entit [{0}] pou\u017e\u00edv\u00e1 typ kolekce [{2}], zat\u00edmco specifikace Jakarta Persistence nepodporuje pouze java.util.Collection, java.util.Set, java.util.List nebo java.util.Map. Tento typ podporuje urychlen\u00e9 zav\u00e1d\u011bn\u00ed. Pou\u017eit\u00ed pomal\u00e9ho zav\u00e1d\u011bn\u00ed u tohoto typu kolekce vy\u017eaduje dal\u0161\u00ed konfiguraci a implementaci IndirectContainer, kter\u00e1 roz\u0161i\u0159uje [{2}], nebo nastaven\u00ed mapov\u00e1n\u00ed na pou\u017eit\u00ed z\u00e1kladn\u00edho sm\u011brov\u00e1n\u00ed a typu na ValueholderInterface.
+non_jpa_allowed_type_used_for_collection_using_lazy_access=Prvek [{1}] v r\u00e1mci t\u0159\u00eddy entit [{0}] pou\u017e\u00edv\u00e1 typ kolekce [{2}], kdy\u017e specifikace Jakarta Persistence podporuje pouze java.util.Collection, java.util.Set, java.util.List nebo java.util.Map.  Tento typ podporuje urychlen\u00e9 zav\u00e1d\u011bn\u00ed. Pou\u017eit\u00ed pomal\u00e9ho zav\u00e1d\u011bn\u00ed u tohoto typu kolekce vy\u017eaduje dal\u0161\u00ed konfiguraci a implementaci IndirectContainer, kter\u00e1 roz\u0161i\u0159uje [{2}], nebo nastaven\u00ed mapov\u00e1n\u00ed na pou\u017eit\u00ed z\u00e1kladn\u00edho sm\u011brov\u00e1n\u00ed a typu na ValueholderInterface.
 
 objectchangepolicy_turned_off=Sledov\u00e1n\u00ed zm\u011bn vypnuto pro: {0}
 
-oc4j_native_migration_start=Migrace OC4J-Native CMP -> OC4J EclipseLink CMP ZA\u010cALA......
-
-old_pessimistic_locking_not_supported=Nativn\u00ed nastaven\u00ed Oc4j CMP "old-pessimistic-locking" u entity ({0}) Eclipse CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
-
 one_to_one_join_outer_migrated=Vn\u011bj\u0161\u00ed spojen\u00ed jedna ku jedn\u00e9 definovan\u00e9 pro pole cmr ({0}) objektu typu bean entity ({1}) nen\u00ed p\u0159\u00edmo podporovan\u00e9 v EclipseLink CMP. Podrobnosti viz dokumentace k migraci.
-
-optimistic_locking_not_supported=Nativn\u00ed nastaven\u00ed Oc4j CMP locking-mode="optimistic" u entity ({0}) Eclipse CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
-
-orion_ejb_jar_xml_not_found_in_input=orion-ejb-jar.xml ve v\u00e1mi uveden\u00e9m vstupn\u00edm adres\u00e1\u0159i ({0}) neexistuje.
 
 osgi_initializer=Pou\u017eit\u00ed inicializ\u00e1toru OSGi: [{0}].
 
@@ -626,6 +598,12 @@ persistence_unit_processor_npe_temp_classloader=Zavad\u011b\u010d classLoader [{
 persistence_unit_processor_null_temp_classloader=Zavad\u011b\u010d classLoader pro procesor PersistenceLoadProcessor [{0}] m\u00e1 hodnotu null. Zakomponov\u00e1n\u00ed bylo pro tuto relaci vypnuto. EclipseLink pravd\u011bpodobn\u011b nez\u00edskal zavad\u011b\u010d speci\u00e1ln\u00ed povinn\u00e9 do\u010dasn\u00e9 t\u0159\u00eddy od server. Jako do\u010dasn\u00e9 \u0159e\u0161en\u00ed byste mohli pou\u017e\u00edt statick\u00e9 propl\u00e9t\u00e1n\u00ed. 
 
 persistence_unit_processor_sap_temp_classloader_bypassed=Do\u010dasn\u00fd zavad\u011b\u010d classLoader nen\u00ed pro procesor PersistenceLoadProcessor [{0}] k dispozici. P\u0159epnut\u00ed zavad\u011b\u010de classLoader na [{1}]. Zakomponov\u00e1n\u00ed bylo pro tuto relaci vypnuto. EclipseLink pravd\u011bpodobn\u011b nez\u00edskal zavad\u011b\u010d speci\u00e1ln\u00ed povinn\u00e9 do\u010dasn\u00e9 t\u0159\u00eddy od server. Jako do\u010dasn\u00e9 \u0159e\u0161en\u00ed byste mohli pou\u017e\u00edt statick\u00e9 propl\u00e9t\u00e1n\u00ed. 
+
+pgsql10_platform_with_json_extension=PostgreSQL10Platform s modulem org.eclipse.persistence.pgsql. Roz\u0161\u00ed\u0159en\u00ed JSON je povoleno.
+
+pgsql10_platform_without_json_extension=PostgreSQL10Platform bez modulu org.eclipse.persistence.pgsql. Roz\u0161\u00ed\u0159en\u00ed JSON je zak\u00e1z\u00e1no.
+
+platform_specific_connection_property_exists=Nelze p\u0159idat vlastnost p\u0159ipojen\u00ed specifickou pro platformu {0}={1}. Kl\u00ed\u010d vlastnosti {0} byl ji\u017e p\u0159id\u00e1n do vlastnost\u00ed p\u0159ipojen\u00ed.
 
 problem_adding_connection=Nelze p\u0159idat vzd\u00e1len\u00e9 p\u0159ipojen\u00ed z {0} kv\u016fli chyb\u011b: {1}
 
@@ -697,17 +675,11 @@ sop_object_wrong_pk=Odebr\u00e1n\u00ed serializovan\u00e9ho objektu sopObject z 
 
 sop_object_wrong_version=Odebr\u00e1n\u00ed serializovan\u00e9ho objektu sopObject z \u0159\u00e1dku, proto\u017ee m\u00e1 \u0161patnou verzi [{0}] v [{1}] v [{2}]
 
-src_pm_name_first_argument=Mus\u00edte zadat n\u00e1zev zdrojov\u00e9ho PM jako prvn\u00ed vstupn\u00ed argument. Bu\u010f jako: -sOc4j-native, nebo jako -sWeblogic.
-
-table_existed_during_creation=Vytvo\u0159en\u00ed tabulky se nezda\u0159ilo. Pokud ji\u017e existuje, mus\u00edte ji nejprve zru\u0161it. To provedete ru\u010dn\u011b nebo nastaven\u00edm atributu db-table-gen v souboru orion-ejb-jar.xml.
-
-template_orion_ejb_jar_created=Byl vytvo\u0159en \u0161ablonovit\u00fd soubor orion-ejb-jar.xml.
-
 topLink_version=EclipseLink, verze: {0}
 
 toplink=[EL]: 
 
-toplink_cmp_bean_name_xml_deprecated=Podpora toplink-cmp-bean_name.xml je zastaral\u00e1. Prohl\u00e9dn\u011bte si dokumentaci a vyhledejte informace o pou\u017eit\u00ed toplink-ejb-jar.xml
+toplink_cmp_bean_name_xml_deprecated=Podpora pro toplink-cmp-bean_name.xml je zam\u00edtnut\u00e1. Informace o pou\u017eit\u00ed souboru toplink-ejb-jar.xml naleznete v dokumentaci
 
 toplink_config=[Konfigurace EL]: 
 
@@ -727,17 +699,16 @@ toplink_severe=[EL z\u00e1va\u017en\u00fd]:
 
 toplink_warning=[EL varov\u00e1n\u00ed]: 
 
-unitofwork_identity_hashcode={0}Ha\u0161ovac\u00ed k\u00f3d identity UnitOfWork: {1}
+unit_of_work_thread_info=Aktu\u00e1ln\u00ed jednotka pr\u00e1ce v relaci ({0}) byla vytvo\u0159ena jin\u00fdm podprocesem (ID: {1} n\u00e1zev: {2}), ne\u017e je aktu\u00e1ln\u00ed podproces (ID: {3} n\u00e1zev: {4})
 
-update_all_fields_not_supported=Nativn\u00ed funkce Oc4j CMP "update-all-fields" nen\u00ed u entity ({0}) p\u0159\u00edmo podporov\u00e1na v EclipseLink CMP. Podrobnosti viz dokumentace k migraci.
+unit_of_work_thread_info_thread_dump=Trasov\u00e1n\u00ed z\u00e1sobn\u00edku podprocesu vytvo\u0159en\u00ed (ID: {0} n\u00e1zev: {1}): {2} Trasov\u00e1n\u00ed z\u00e1sobn\u00edku aktu\u00e1ln\u00edho podprocesu (ID: {3} n\u00e1zev: {4}): {5}\n
+unitofwork_identity_hashcode={0}Ha\u0161ovac\u00ed k\u00f3d identity UnitOfWork: {1}
 
 update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery nem\u016f\u017ee pou\u017e\u00edvat vazbu na t\u00e9to datab\u00e1zov\u00e9 platform\u011b. Zm\u011bn\u011bno nastaven\u00ed dotazu, aby ho bylo mo\u017en\u00e9 prov\u00e9st bez vazby.
 
 validate_db_schema_with_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "validate-db-schema-with" EclipseLink CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
 
 validate_ejb_jar=Ov\u011b\u0159ov\u00e1n\u00ed ejb-jar.xml za\u010dalo, m\u016f\u017ee to trvat ur\u010ditou dobu...
-
-validity_timeout_not_supported=Nativn\u00ed nastaven\u00ed Oc4j CMP "validity-timeout" u entity ({0}) Eclipse CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
 
 verifiy_columns_read_locking_not_supported=Optimistick\u00e9 nastaven\u00ed "Read" parametru "verify-columns" v entit\u011b ({0}) EclipseLink CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
 
@@ -754,8 +725,6 @@ weaver_not_overwriting=Modul weaver nep\u0159ep\u00ed\u0161e t\u0159\u00eddu {0}
 weaver_null_project=Projekt relace modulu weaver nem\u016f\u017ee m\u00edt hodnotu null.
 
 weblogic_ejb_jar_xml_not_found_in_input=weblogic-ejb-jar.xml neexistuje ve v\u00e1mi zadan\u00e9m vstupn\u00edm adres\u00e1\u0159i ({0}).
-
-weblogic_native_migration_start=Migrace WebLogic-Native CMP -> OC4J EclipseLink CMP ZA\u010cALA......
 
 weblogic_ql_not_supported=WebLogic-QL({0}) metody ({1} entity ({2}) se nemigroval, nebo\u0165 EclipseLink nepodporuje jazyk WebLogic QL.
 

@@ -336,6 +336,16 @@ SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003=J2CA1003E: Nie powiod\u0142a si
 SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.explanation=Pr\u00f3ba usuni\u0119cia obiektu MCWrapper nie powiod\u0142a si\u0119, co spowodowa\u0142o potencjalny problem we wsp\u00f3\u0142u\u017cytkowanej puli.
 SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.useraction=CMSG0002
 
+# --------------------------------
+RA_FREE_CONNECTION_ERROR_J2CA1004=J2CA1004I: Mened\u017cer po\u0142\u0105cze\u0144 odebra\u0142 b\u0142\u0105d krytyczny po\u0142\u0105czenia z adaptera zasob\u00f3w dla zasobu {1}. Stan po\u0142\u0105cze\u0144 to: {2}. Wyj\u0105tek: {0}
+RA_FREE_CONNECTION_ERROR_J2CA1004.explanation=Mened\u017cer po\u0142\u0105cze\u0144 zosta\u0142 powiadomiony przez adapter zasob\u00f3w o wyst\u0105pieniu b\u0142\u0119du dla po\u0142\u0105czenia. Ten komunikat zosta\u0142 zarejestrowany, aby u\u017cytkownik m\u00f3g\u0142 zobaczy\u0107 zwr\u00f3cony wyj\u0105tek.
+RA_FREE_CONNECTION_ERROR_J2CA1004.useraction=Mened\u017cer po\u0142\u0105cze\u0144 zaznaczy\u0142, \u017ce po\u0142\u0105czenie jest niemo\u017cliwe do u\u017cycia. Po\u0142\u0105czenie zostanie usuni\u0119te podczas nast\u0119pnego okresu konserwacji po\u0142\u0105czenia. Strategia czyszczenia nie ma zastosowania do tego po\u0142\u0105czenia. To zachowanie jest normalne. Je\u015bli ten b\u0142\u0105d wyst\u0119puje nieoczekiwanie, dokonaj analizy wyj\u0105tku, aby okre\u015bli\u0107 mo\u017cliwe \u017ar\u00f3d\u0142o problemu.
+
+# ---------------------------------
+NO_RA_FREE_EXCEPTION_J2CA1005=J2CA1005I: Mened\u017cer po\u0142\u0105cze\u0144 odebra\u0142 b\u0142\u0105d krytyczny po\u0142\u0105czenia z adapterem zasob\u00f3w dla zasobu {0}. Stan po\u0142\u0105cze\u0144 to: {1}. Informacje mog\u0105 by\u0107 dost\u0119pne w poprzednich komunikatach lub wyj\u0105tkach.
+NO_RA_FREE_EXCEPTION_J2CA1005.explanation=Mened\u017cer po\u0142\u0105cze\u0144 zosta\u0142 powiadomiony przez adapter zasob\u00f3w o wyst\u0105pieniu b\u0142\u0119du dla po\u0142\u0105czenia. Ten komunikat zosta\u0142 zarejestrowany, aby u\u017cytkownik m\u00f3g\u0142 zobaczy\u0107 zwr\u00f3cony wyj\u0105tek. 
+NO_RA_FREE_EXCEPTION_J2CA1005.useraction=Mened\u017cer po\u0142\u0105cze\u0144 zaznaczy\u0142, \u017ce po\u0142\u0105czenie jest niemo\u017cliwe do u\u017cycia. Po\u0142\u0105czenie zostanie usuni\u0119te podczas nast\u0119pnego okresu konserwacji po\u0142\u0105czenia. Strategia czyszczenia nie ma zastosowania do tego po\u0142\u0105czenia. To zachowanie jest normalne. Je\u015bli ten b\u0142\u0105d wyst\u0119puje nieoczekiwanie, dokonaj analizy wyj\u0105tku, aby okre\u015bli\u0107 mo\u017cliwe \u017ar\u00f3d\u0142o problemu.
+
 # ---------------------------------
 # End of File
 #

@@ -535,7 +535,7 @@
 
 7306=El elemento anotado [{0}] de la clase [{1}] tiene especificado un tipo de acceso expl\u00edcito incorrecto. Debe especificar un tipo de acceso [{2}].
 
-7307=Falta una serie de contexto de registro para el contexto [{0}]. Es una excepci\u00f3n interna que se ha producido al recuperar un mensaje de registro para el proceso de metadatos Jakarta Persistence; informe de un error.
+7307=Falta una serie de contexto de registro para el contexto [{0}]. Esta es una excepci\u00f3n interna que se ha producido al recuperar un mensaje de registro para el proceso de metadatos de Jakarta Persistence; informe de un error.
 
 7308=El valor especificado [{0}] para la propiedad de persistencia [{1}] no es v\u00e1lido: [{2}].
 
@@ -593,7 +593,7 @@
 
 7336=Se han especificado varias propiedades de contexto [{2}] y [{3}] para el mismo campo de discriminador de inquilino [{1}] para la clase [{0}]
 
-7337=La columna de discriminador de inquilino correlacionada [{1}] en la clase [{0}] debe marcarse como de s\u00f3lo lectura. En Jakarta Persistence API, esto se realiza estableciendo insertable=false y updatable=false en la columna, por ej. @Column(name="TENANT_ID", insertable=false, updatable=false).
+7337=La columna de discriminador de inquilino correlacionada [{1}] en la clase [{0}] debe marcarse como de s\u00f3lo lectura. En la API de Jakarta Persistence, esto se hace estableciendo insertable=false y updatable=false en la columna, por ejemplo, @Column(name="TENANT_ID", insertable=false, updatable=false).
 
 7338=No puede a\u00f1adir secuencias a un SessionBroker.
 
@@ -605,7 +605,7 @@
 
 7342=El valor booleano especificado [{0}] para establecer las consultas SQL nativas de permiso no es v\u00e1lido; el valor debe ser "true" o "false".
 
-7343=Se han especificado varios identificadores de VPD (propiedad de contexto de discriminador de arrendatario). La entidad [{1}] utiliza [{0}] y la entidad [{3}] utiliza [{2}]. Cuando se utiliza una estrategia VPD de varios arrendatarios, solo puede haber una columna de discriminador de arrendatario por entidad y su propiedad de contexto debe ser coherente en todas las entidades de VPD de Multiarrendatario.
+7343=Se han especificado varios identificadores de VPD (propiedad de contexto de discriminador de arrendatario). La entidad [{1}] utiliza [{0}] y la entidad [{3}] utiliza [{2}]. La estrategia de VPD multiarrendatario solo permite una columna de discriminador de arrendatario para cada entidad, y su propiedad de contexto debe ser coherente en todas las entidades de VPD multiarrendatario.
 
 7344=VPD (conexiones y generaci\u00f3n DDL) no est\u00e1 soportado para la plataforma: [{0}].
 
@@ -621,7 +621,7 @@
 
 7351=No se ha encontrado la clase de conversor [{2}] especificada en el atributo de correlaci\u00f3n [{1}] de la clase [{0}]. Aseg\u00farese de que el nombre de clase de conversor sea correcto y exista con la definici\u00f3n de unidad de persistencia.
 
-7352=La clase de conversor [{0}] debe implementar la interfaz jakarta.persistence.AttributeConverter<X, Y> Jakarta Persistence para ser una clase de conversor v\u00e1lida.
+7352=La clase de conversor [{0}] debe implementar la interfaz de Jakarta Persistence jakarta.persistence.AttributeConverter<X, Y> para que sea una clase de conversor v\u00e1lida.
 
 7353=El atributo de correlaci\u00f3n [{1}] de la clase [{0}] no es un tipo de correlaci\u00f3n v\u00e1lido para una especificaci\u00f3n de conversi\u00f3n.
 
@@ -630,4 +630,6 @@
 7355=El atributo de correlaci\u00f3n [{1}] de la clase [{0}] no es un tipo de correlaci\u00f3n v\u00e1lido para una conversi\u00f3n utilizando una especificaci\u00f3n de nombre de atributo. El nombre de atributo s\u00f3lo debe especificarse para atravesar un tipo de correlaci\u00f3n incorporada.
 
 7356=El procedimiento: [{1}] no puede ejecutarse porque {0} no da soporte actualmente a varios par\u00e1metros de salida
+
+7357=El URL "[{0}]" para el recurso "[{1}]" no pertenece a una ra\u00edz de persistencia v\u00e1lida (seg\u00fan la especificaci\u00f3n de Jakarta Persistence)
 

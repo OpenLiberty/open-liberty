@@ -325,6 +325,7 @@ POOL_MANAGER_NOT_FOUND_J2CA0695.useraction=CMSG0002
 SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W=J2CA0695W: Une demande de connexion pour la ressource XA {0} a \u00e9t\u00e9 \u00e9mise en utilisant l''authentification SPNEGO, mais aucun alias de donn\u00e9es d''authentification pour la r\u00e9cup\u00e9ration n''a \u00e9t\u00e9 configur\u00e9. La ressource XA ne peut pas participer \u00e0 la r\u00e9cup\u00e9ration XA automatis\u00e9e tant qu''un alias de donn\u00e9es d''authentification n''est pas configur\u00e9.
 SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W.explanation=La r\u00e9cup\u00e9ration XA est un processus d'arri\u00e8re-plan automatis\u00e9, mais l'authentification SPNEGO requiert une entr\u00e9e manuelle de la part de l'utilisateur. Par cons\u00e9quent, l'authentification SPNEGO ne peut pas \u00eatre utilis\u00e9e pour la r\u00e9cup\u00e9ration XA automatique.
 SPNEGO_XA_RECOVERY_NOT_SUPPORTED_J2CA0695W.useraction=Configurez un alias de donn\u00e9es d'authentification de r\u00e9cup\u00e9ration sur la ressource XA.
+
 # ---------------------------------
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002=J2CA1002E: El\u00e9ment MCWrapper non valide {0}  provenant du pool disponible pour la ressource {1}.
 FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.explanation=La tentative de r\u00e9servation d'un \u00e9l\u00e9ment MCWrapper a \u00e9chou\u00e9.
@@ -334,6 +335,16 @@ FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.useraction=CMSG0002
 SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003=J2CA1003E: La tentative de suppression de l''\u00e9l\u00e9ment MCWrapper {0} du pool partag\u00e9 n''a pas abouti.
 SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.explanation=La tentative de suppression d'un \u00e9l\u00e9ment MCWrapper n'a pas abouti, provoquant une erreur potentielle dans le pool partag\u00e9.
 SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.useraction=CMSG0002
+
+# --------------------------------
+RA_FREE_CONNECTION_ERROR_J2CA1004=J2CA1004I : Le gestionnaire de connexions a re\u00e7u une erreur de connexion fatale de l''adaptateur de ressources pour la ressource {1}. L''\u00e9tat des connexions est : {2}. L''exception est : {0}
+RA_FREE_CONNECTION_ERROR_J2CA1004.explanation=Le gestionnaire de connexions a \u00e9t\u00e9 inform\u00e9 par l'adaptateur de ressources qu'une erreur s'est produite sur la connexion. Ce message est consign\u00e9 afin que l'utilisateur puisse voir l'exception qui a \u00e9t\u00e9 renvoy\u00e9e.
+RA_FREE_CONNECTION_ERROR_J2CA1004.useraction=Le gestionnaire de connexions marque la connexion comme inutilisable. La connexion sera supprim\u00e9e lors du prochain intervalle de maintenance de connexion. La r\u00e8gle de purge ne s'applique pas \u00e0 cette connexion. Ce comportement est normal. Si cette erreur para\u00eet inattendue, examinez l'exception pour d\u00e9terminer la source possible du probl\u00e8me.
+
+# ---------------------------------
+NO_RA_FREE_EXCEPTION_J2CA1005=J2CA1005I : Le gestionnaire de connexions a re\u00e7u une erreur de connexion fatale de l''adaptateur de ressources pour la ressource {0}. L''\u00e9tat des connexions est : {1}. Des informations peuvent \u00eatre disponibles dans les messages ou exceptions pr\u00e9c\u00e9dents.
+NO_RA_FREE_EXCEPTION_J2CA1005.explanation=Le gestionnaire de connexions a \u00e9t\u00e9 inform\u00e9 par l'adaptateur de ressources qu'une erreur s'est produite sur la connexion. Ce message est consign\u00e9 afin que l'utilisateur puisse voir l'exception qui a \u00e9t\u00e9 renvoy\u00e9e. 
+NO_RA_FREE_EXCEPTION_J2CA1005.useraction=Le gestionnaire de connexions marque la connexion comme inutilisable. La connexion sera supprim\u00e9e lors du prochain intervalle de maintenance de connexion. La r\u00e8gle de purge ne s'applique pas \u00e0 cette connexion. Ce comportement est normal. Si cette erreur para\u00eet inattendue, examinez l'exception pour d\u00e9terminer la source possible du probl\u00e8me.
 
 # ---------------------------------
 # End of File

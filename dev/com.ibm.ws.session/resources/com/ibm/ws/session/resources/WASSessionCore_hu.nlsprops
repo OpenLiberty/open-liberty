@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -137,3 +137,8 @@ CommonMessage.miscData=Vegyes adatok: {0}
 SessionContext.invalidCloneSeparator=SESN0800W: A CloneSeparator tulajdons\u00e1gnak pontosan egy karakterb\u0151l kell \u00e1llnia, \u00e9s az nem lehet sz\u00f3k\u00f6z. A CloneSeparator jelenleg megadott \u00e9rt\u00e9ke: "{0}"
 SessionContext.invalidCloneSeparator.explanation=A CloneSeparator tulajdons\u00e1gnak pontosan egy karakterb\u0151l kell \u00e1llnia, \u00e9s az nem lehet sz\u00f3k\u00f6z.
 SessionContext.invalidCloneSeparator.useraction=M\u00f3dos\u00edtsa a CloneSeparator egy\u00e9ni tulajdons\u00e1g\u00e1t.
+
+
+# -------------------------------------------------------------------------------------------------
+# Range 8600 - 8699 is reserved for Servlet 6.0
+# -------------------------------------------------------------------------------------------------

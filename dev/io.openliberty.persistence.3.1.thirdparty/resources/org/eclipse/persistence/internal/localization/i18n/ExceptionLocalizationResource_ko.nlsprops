@@ -119,9 +119,9 @@ ejb30-wrong-query-hint-value={0} \uc870\ud68c, {1} \uc870\ud68c \ud78c\ud2b8\uc7
 
 ejb30-wrong-type-for-query-hint={0} \uc870\ud68c, {1} \uc870\ud68c \ud78c\ud2b8\uac00 \uc774 \uc870\ud68c \uc720\ud615\uc5d0 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 
-entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=EntityManager \ud2b9\uc131 \ucda9\ub3cc: javax.persistence.driver \ubc0f/\ub610\ub294 javax.persistence.url\uc774 DefaultConnector\ub97c \uc694\uad6c\ud558\uc9c0\ub9cc, \uc9c0\uc18d\uc131 \ub2e8\uc704\uac00 \uc678\ubd80 \ud2b8\ub79c\uc7ad\uc158 \uc81c\uc5b4\uae30\ub97c \uc0ac\uc6a9\ud558\ubbc0\ub85c JNDIConnector\uac00 \ud544\uc694\ud569\ub2c8\ub2e4.
+entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=EntityManager \ud2b9\uc131 \ucda9\ub3cc: jakarta.persistence.driver \ubc0f/\ub610\ub294 jakarta.persistence.url\uc5d0 DefaultConnector\uac00 \ud544\uc694\ud558\uc9c0\ub9cc \uc9c0\uc18d\uc131 \ub2e8\uc704\uac00 \uc678\ubd80 \ud2b8\ub79c\uc7ad\uc158 \uc81c\uc5b4\uae30\ub97c \uc0ac\uc6a9\ud558\ubbc0\ub85c JNDIConnector\uac00 \ud544\uc694\ud569\ub2c8\ub2e4.
 
-entity_manager_properties_conflict_default_connector_vs_jndi_connector=EntityManager \ud2b9\uc131 \ucda9\ub3cc: javax.persistence.driver \ubc0f/\ub610\ub294 javax.persistence.url\uc774 DefaultConnector\ub97c \uc694\uad6c\ud558\uc9c0\ub9cc javax.persistence.jtaDataSource \ubc0f/\ub610\ub294 javax.persistence.nonjtaDataSource\ub294 JNDIConnector\ub97c \uc694\uad6c\ud569\ub2c8\ub2e4.
+entity_manager_properties_conflict_default_connector_vs_jndi_connector=EntityManager \ud2b9\uc131 \ucda9\ub3cc: jakarta.persistence.driver \ubc0f/\ub610\ub294 jakarta.persistence.url\uc5d0\ub294 DefaultConnector\uac00 \ud544\uc694\ud558\uc9c0\ub9cc jakarta.persistence.jtaDataSource \ubc0f/\ub610\ub294 jakarta.persistence.nonjtaDataSource\uc5d0\ub294 JNDIConnector\uac00 \ud544\uc694\ud569\ub2c8\ub2e4.
 
 entity_no_longer_exists_in_db=\uc5d4\ud2f0\ud2f0\uac00 \ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0 \uc774\uc81c \uc5c6\uc2b5\ub2c8\ub2e4. {0}
 
@@ -183,6 +183,8 @@ invalid_pk_class=\uc774 \ucc3e\uae30 \uc870\uc791\uc5d0 \ub300\ud574 \uc798\ubab
 
 jar_not_exist=Jar \ud30c\uc77c {0}\uc774(\uac00) \uc5c6\uc2b5\ub2c8\ub2e4.
 
+jaxb_context_factory_property_invalid=\ud2b9\uc131 eclipselink.moxy.factory {0} \uac12\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
 jaxb_helper_invalid_binder=\uc81c\uacf5\ub41c \ubc14\uc778\ub354 [{0}]\uc774(\uac00) EclipseLink JAXBBinder\uac00 \uc544\ub2c8\ubbc0\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 
 jaxb_helper_invalid_jaxbcontext=\uc81c\uacf5\ub41c JAXBContext [{0}]\uc774(\uac00) EclipseLink JAXBContext\uac00 \uc544\ub2c8\ubbc0\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
@@ -203,9 +205,9 @@ jmx_enabled_platform_mbean_runtime_exception=EclipseLink \uc138\uc158 \uc815\ubc
 
 join_trans_called_on_entity_trans=joinTransaction\uc774 JTA \ud2b8\ub79c\uc7ad\uc158\uc5d0 \ub300\ud574 \ub4f1\ub85d\ud560 \uc218 \uc5c6\ub294 \uc790\uc6d0-\ub85c\uceec EntityManager\uc5d0\uc11c \ud638\ucd9c\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 
-jpa21-ddl-create-script-target-not-specified=DDL\uc744 \uc2a4\ud06c\ub9bd\ud2b8\uc5d0 \uc0dd\uc131 \uc2dc, \uc2a4\ud06c\ub9bd\ud2b8 \uc791\uc131 \ub300\uc0c1\uc774 [javax.persistence.schema-generation.scripts.create-target] \ud2b9\uc131\uc744 \ud1b5\ud574 \uc9c0\uc815\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+jpa21-ddl-create-script-target-not-specified=\uc2a4\ud06c\ub9bd\ud2b8\uc5d0 DDL\uc744 \uc0dd\uc131\ud560 \ub54c [jakarta.persistence.schema-generation.scripts.create-target] \ud2b9\uc131\uc744 \uc0ac\uc6a9\ud558\uc5ec \uc2a4\ud06c\ub9bd\ud2b8 \uc791\uc131 \ub300\uc0c1\uc774 \uc9c0\uc815\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
 
-jpa21-ddl-drop-script-target-not-specified=DDL\uc744 \uc2a4\ud06c\ub9bd\ud2b8\uc5d0 \uc0dd\uc131 \uc2dc, \uc2a4\ud06c\ub9bd\ud2b8 \uc0ad\uc81c \ub300\uc0c1\uc774 [javax.persistence.schema-generation.scripts.drop-target] \ud2b9\uc131\uc744 \ud1b5\ud574 \uc9c0\uc815\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+jpa21-ddl-drop-script-target-not-specified=\uc2a4\ud06c\ub9bd\ud2b8\uc5d0 DDL\uc744 \uc0dd\uc131\ud560 \ub54c [jakarta.persistence.schema-generation.scripts.drop-target] \ud2b9\uc131\uc744 \uc0ac\uc6a9\ud558\uc5ec \uc2a4\ud06c\ub9bd\ud2b8 \uc0ad\uc81c \ub300\uc0c1\uc774 \uc9c0\uc815\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
 
 jpa21-ddl-invalid-source-script-type=\uc18c\uc2a4 \uc2a4\ud06c\ub9bd\ud2b8 \uc81c\uacf5 {0}\uc758 {0} \uc720\ud615\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc720\ud6a8\ud55c \uc18c\uc2a4 \uc2a4\ud06c\ub9bd\ud2b8 \uc720\ud615\uc740 java.io.Reader \ub610\ub294 \ud30c\uc77c URL\uc744 \uc9c0\uc815\ud558\ub294 \ubb38\uc790\uc5f4\uc785\ub2c8\ub2e4.
 
@@ -239,9 +241,9 @@ jpa_criteriaapi_no_corresponding_element_in_result={0} \uc694\uc18c\uac00 \uc870
 
 jpa_criteriaapi_null_literal_value=\ub110\uac12\uc774 CriteriaBuilder.literal()\uc5d0 \uc804\ub2ec\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \ub300\uc2e0 nullLiteral(Class<T> resultClass)\uc744 \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.
 
-jpa_helper_invalid_entity_manager_factory=Jakarta Persistence EntityManagerFactory {0}\uc774(\uac00) EclipseLink EntityManagerFactory\uac00 \uc544\ub2c8\ubbc0\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+jpa_helper_invalid_entity_manager_factory=Jakarta Persistence EntityManagerFactory {0} \ud56d\ubaa9\uc740 EclipseLink EntityManagerFactory\uac00 \uc544\ub2c8\ubbc0\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 
-jpa_helper_invalid_entity_manager_factory_for_refresh=Jakarta Persistence EntityManagerFactory {0}\uc774(\uac00) EclipseLink EntityManagerFactory\uac00 \uc544\ub2c8\ubbc0\ub85c \uba54\ud0c0\ub370\uc774\ud130\ub97c \uc0c8\ub85c \uace0\uce60 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+jpa_helper_invalid_entity_manager_factory_for_refresh=Jakarta Persistence EntityManagerFactory {0} \ud56d\ubaa9\uc740 EclipseLink EntityManagerFactory\uac00 \uc544\ub2c8\ubbc0\ub85c \uba54\ud0c0\ub370\uc774\ud130\ub97c \uc0c8\ub85c \uace0\uce60 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 
 jpa_helper_invalid_query={0} \uc720\ud615\uc758 \uc870\ud68c\uac00 EclipseLink \uc870\ud68c\uac00 \uc544\ub2c8\ubbc0\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 
@@ -250,6 +252,18 @@ jpa_helper_invalid_read_all_query={0} \uc720\ud615\uc758 \uc870\ud68c\uac00 Ecli
 jpa_helper_invalid_report_query={0} \uc720\ud615\uc758 \uc870\ud68c\uac00 EclipseLink report \uc870\ud68c\uac00 \uc544\ub2c8\ubbc0\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 
 jpa_persistence_util_non_persistent_class=PersistenceUtil.getIdentifier(\uc5d4\ud2f0\ud2f0)\uac00 \uc9c0\uc18d\uc801 \uc624\ube0c\uc81d\ud2b8\uac00 \uc544\ub2cc [{0}] \uc624\ube0c\uc81d\ud2b8\ub85c \ud638\ucd9c\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+
+json_ora21c_jsonvalue_to_oraclevalue=JsonValue\ub97c OracleJsonValue\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+
+json_ora21c_resultset_to_jsonvalue=JDBC ResultSet \uc720\ud615\uc744 JsonValue\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+
+json_pgsql_jsonvalue_to_database_type=\ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc720\ud615 \ubcc0\ud658\uc5d0 \ub300\ud55c JSON \uac12\uc774 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+
+json_pgsql_missing_class_on_classpath=\ud074\ub798\uc2a4 \uacbd\ub85c\uc5d0\uc11c {0} \ud56d\ubaa9\uc774 \ub204\ub77d\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+
+json_pgsql_pgobject_conversion=\ub370\uc774\ud130\ubca0\uc774\uc2a4 PGobject \ubcc0\ud658\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+
+json_pgsql_unknown_type=\ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0\uc11c \uc54c \uc218 \uc5c6\ub294 JSON \uc720\ud615\uc774 \ub9ac\ud134\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 
 lock_called_without_version_locking=entityManager.lock(\uc624\ube0c\uc81d\ud2b8 \uc5d4\ud2f0\ud2f0, LockModeType lockMode)\uc5d0 \ub300\ud55c \ud638\ucd9c\uc5d0\uc11c \ubc84\uc804 \uc7a0\uae08\uc774 \uc0ac\uc6a9\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
 
@@ -265,7 +279,7 @@ metamodel_class_null_type_instance_for_null_key=\uba54\ud0c0 \ubaa8\ub378\uc5d0\
 
 metamodel_identifiable_id_attribute_is_incorrect_idclass=\uc2dd\ubcc4 \uac00\ub2a5\ud55c \uc720\ud615 [{0}]\uc5d0 \ub300\ud574 \uc608\uc0c1\ub418\ub294 \ub2e8\uc77c @Id \uc18d\uc131\uc774 \uc608\uc0c1\uce58 \ubabb\ud55c @IdClass\uc758 \ud30c\ud2b8\uc785\ub2c8\ub2e4.
 
-metamodel_identifiable_id_attribute_type_incorrect=\uc2dd\ubcc4 \uac00\ub2a5\ud55c \uc720\ud615 [{1}]\uc758 \uae30\uc874 ID \uc18d\uc131 [{0}]\uc5d0\uc11c \uc608\uc0c1\ub418\ub294 ID \uc18d\uc131 \uc720\ud615 [{2}]\uc774\uc9c0\ub9cc \uc18d\uc131 \uc720\ud615 [{3}]\uc744(\ub97c) \ucc3e\uc558\uc2b5\ub2c8\ub2e4.
+metamodel_identifiable_id_attribute_type_incorrect=\uc2dd\ubcc4 \uac00\ub2a5\ud55c \uc720\ud615 [{1}]\uc758 \uae30\uc874 ID \uc18d\uc131 [{0}]\uc5d0\uc11c ID \uc18d\uc131 \uc720\ud615 [{2}]\uc744(\ub97c) \uc608\uc0c1\ud588\uc9c0\ub9cc \uc18d\uc131 \uc720\ud615 [{3}]\uc744(\ub97c) \ucc3e\uc558\uc2b5\ub2c8\ub2e4.
 
 metamodel_identifiable_no_id_attribute_present=@Id \uc18d\uc131\uc774 \uc2dd\ubcc4 \uac00\ub2a5\ud55c \uc720\ud615 [{0}]\uc5d0 \uc5c6\uc2b5\ub2c8\ub2e4.
 

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -137,3 +137,8 @@ CommonMessage.miscData=\u6742\u9879\u6570\u636e\uff1a{0}
 SessionContext.invalidCloneSeparator=SESN0800W: \u5c5e\u6027 CloneSeparator \u5e94\u8be5\u521a\u597d\u4e3a\u4e00\u4e2a\u5b57\u7b26\uff0c\u5e76\u4e14\u8be5\u5b57\u7b26\u4e0d\u80fd\u662f\u7a7a\u683c\u3002\u6240\u6307\u5b9a CloneSeparator \u7684\u5f53\u524d\u503c\u4e3a\u201c{0}\u201d
 SessionContext.invalidCloneSeparator.explanation=\u5c5e\u6027 CloneSeparator \u5e94\u8be5\u521a\u597d\u4e3a\u4e00\u4e2a\u5b57\u7b26\uff0c\u5e76\u4e14\u8be5\u5b57\u7b26\u4e0d\u80fd\u662f\u7a7a\u683c\u3002
 SessionContext.invalidCloneSeparator.useraction=\u8bf7\u4fee\u6539 CloneSeparator \u5b9a\u5236\u5c5e\u6027\u3002
+
+
+# -------------------------------------------------------------------------------------------------
+# Range 8600 - 8699 is reserved for Servlet 6.0
+# -------------------------------------------------------------------------------------------------

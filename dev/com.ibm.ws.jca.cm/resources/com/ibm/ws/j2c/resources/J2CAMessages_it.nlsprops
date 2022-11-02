@@ -336,6 +336,16 @@ SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003=J2CA1003E: Impossibile rimuover
 SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.explanation=Il tentativo di rimuovere un MCWrapper non \u00e8 riuscito, causando un potenziale problema nel pool condiviso.
 SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.useraction=CMSG0002
 
+# --------------------------------
+RA_FREE_CONNECTION_ERROR_J2CA1004=J2CA1004I: Il Gestore connessoni ha ricevuto un errore di connessione irreversibile dall''adattatore risorse per la risorsa {1}. Lo stato delle connessioni \u00e8 {2}. L''eccezione \u00e8: {0}
+RA_FREE_CONNECTION_ERROR_J2CA1004.explanation=L'adattatore di risorse ha notificato al gestore connessioni che si \u00e8 verificato un errore sulla connessione. Questo messaggio viene registrato in modo che l'utente possa visualizzare l'eccezione restituita.
+RA_FREE_CONNECTION_ERROR_J2CA1004.useraction=Il gestore connessioni contrassegna la connessione come inutilizzabile. La connessione viene rimossa durante il successivo intervallo di manutenzione della connessione. La politica di eliminazione non si applica a questa connessione. Questo comportamento \u00e8 normale. Se questo \u00e8 un errore imprevisto, esaminare l'eccezione per stabilire l'origine possibile del problema.
+
+# ---------------------------------
+NO_RA_FREE_EXCEPTION_J2CA1005=J2CA1005I: Il Gestore connessioni ha ricevuto un errore di connessione irreversibile dall''adattatore risorse per la risorsa {0}. Lo stato delle connessioni \u00e8 {1}. Le informazioni potrebbero essere disponibili nei messaggi o nelle eccezioni precedenti.
+NO_RA_FREE_EXCEPTION_J2CA1005.explanation=L'adattatore di risorse ha notificato al gestore connessioni che si \u00e8 verificato un errore sulla connessione. Questo messaggio viene registrato in modo che l'utente possa visualizzare l'eccezione restituita. 
+NO_RA_FREE_EXCEPTION_J2CA1005.useraction=Il gestore connessioni contrassegna la connessione come inutilizzabile. La connessione viene rimossa durante il successivo intervallo di manutenzione della connessione. La politica di eliminazione non si applica a questa connessione. Questo comportamento \u00e8 normale. Se questo \u00e8 un errore imprevisto, esaminare l'eccezione per stabilire l'origine possibile del problema.
+
 # ---------------------------------
 # End of File
 #

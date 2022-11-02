@@ -336,6 +336,16 @@ SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003=J2CA1003E: A(z) {0} MCWrappert 
 SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.explanation=Az MCWrapper elt\u00e1vol\u00edt\u00e1sa meghi\u00fasult, amely lehets\u00e9ges probl\u00e9m\u00e1t okoz a megosztott t\u00e1rol\u00f3ban.
 SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.useraction=CMSG0002
 
+# --------------------------------
+RA_FREE_CONNECTION_ERROR_J2CA1004=J2CA1004I: A(z) {1} er\u0151forr\u00e1s er\u0151forr\u00e1s-illeszt\u0151je s\u00falyos csatlakoz\u00e1si hib\u00e1t jelzett a kapcsolatkezel\u0151nek. A kapcsolatok \u00e1llapota: {2}. A kiv\u00e9tel: {0}
+RA_FREE_CONNECTION_ERROR_J2CA1004.explanation=A kapcsolatkezel\u0151t az er\u0151forr\u00e1s-illeszt\u0151 \u00e9rtes\u00edtette, hogy hiba t\u00f6rt\u00e9nt a kapcsolaton. Ez az \u00fczenet napl\u00f3z\u00e1sra ker\u00fcl, hogy a felhaszn\u00e1l\u00f3 megn\u00e9zhesse a visszaadott kiv\u00e9telt.
+RA_FREE_CONNECTION_ERROR_J2CA1004.useraction=A kapcsolatkezel\u0151 nem haszn\u00e1lhat\u00f3nak jel\u00f6li meg a kapcsolatot. A rendszer elt\u00e1vol\u00edtja a kapcsolatot a k\u00f6vetkez\u0151 kapcsolatkarbantart\u00e1s sor\u00e1n. Erre a kapcsolatra a t\u00f6rl\u00e9si ir\u00e1nyelv nem alkalmazhat\u00f3. Ez a norm\u00e1l m\u0171k\u00f6d\u00e9s. Ha ez a hiba v\u00e1ratlanul jelenik meg, akkor vizsg\u00e1lja meg a kiv\u00e9telt a probl\u00e9ma lehets\u00e9ges forr\u00e1s\u00e1nak meg\u00e1llap\u00edt\u00e1sa \u00e9rdek\u00e9ben.
+
+# ---------------------------------
+NO_RA_FREE_EXCEPTION_J2CA1005=J2CA1005I: A(z) {0} er\u0151forr\u00e1s er\u0151forr\u00e1s-illeszt\u0151je s\u00falyos csatlakoz\u00e1si hib\u00e1t jelzett a kapcsolatkezel\u0151nek. A kapcsolatok \u00e1llapota: {1}. A kor\u00e1bbi \u00fczenetekben vagy kiv\u00e9telekben el\u00e9rhet\u0151k lehetnek inform\u00e1ci\u00f3k.
+NO_RA_FREE_EXCEPTION_J2CA1005.explanation=A kapcsolatkezel\u0151t az er\u0151forr\u00e1s-illeszt\u0151 \u00e9rtes\u00edtette, hogy hiba t\u00f6rt\u00e9nt a kapcsolaton. Ez az \u00fczenet napl\u00f3z\u00e1sra ker\u00fcl, hogy a felhaszn\u00e1l\u00f3 megn\u00e9zhesse a visszaadott kiv\u00e9telt. 
+NO_RA_FREE_EXCEPTION_J2CA1005.useraction=A kapcsolatkezel\u0151 nem haszn\u00e1lhat\u00f3nak jel\u00f6li meg a kapcsolatot. A rendszer elt\u00e1vol\u00edtja a kapcsolatot a k\u00f6vetkez\u0151 kapcsolatkarbantart\u00e1s sor\u00e1n. Erre a kapcsolatra a t\u00f6rl\u00e9si ir\u00e1nyelv nem alkalmazhat\u00f3. Ez a norm\u00e1l m\u0171k\u00f6d\u00e9s. Ha ez a hiba v\u00e1ratlanul jelenik meg, akkor vizsg\u00e1lja meg a kiv\u00e9telt a probl\u00e9ma lehets\u00e9ges forr\u00e1s\u00e1nak meg\u00e1llap\u00edt\u00e1sa \u00e9rdek\u00e9ben.
+
 # ---------------------------------
 # End of File
 #

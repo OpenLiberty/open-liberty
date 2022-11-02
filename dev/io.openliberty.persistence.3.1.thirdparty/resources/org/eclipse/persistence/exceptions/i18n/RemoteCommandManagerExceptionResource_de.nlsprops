@@ -51,8 +51,6 @@
 
 22112=Es konnte keine lokale JMS-Verbindung mit dem Topic {0} und der Topic-Factory {1} erstellt werden. Vergewissern Sie sich, dass die Kontexteigenschaften ordnungsgem\u00e4\u00df definiert sind.
 
-22113=Erstellen der Oc4jJGroupsRemoteConnection-Service-ID {0}, Topic {1} mit der Factory {2} war nicht m\u00f6glich. Vergewissern Sie sich, dass die Kontexteigenschaften ordnungsgem\u00e4\u00df definiert sind.
-
 22114={0}: Die abgerufene Nachricht {1} konnte nicht entserialisiert werden.
 
 22115={0}: Fehler bei der Verarbeitung des fernen Befehls, abgerufen aus der Nachricht {1}, aus {2}, Befehlstyp {3}
@@ -62,4 +60,6 @@
 22117=Der RemoteCommandManager der Sitzung wurde geschlossen oder er wurde bei der Verarbeitung der eingehenden Nachrichten noch nicht initialisiert.
 
 22118=Fehler beim Erstellen der JGroups-Verbindung mit der Konfigurationsdatei {0}
+
+22119=Fehler bei der Initialisierung von {0}. F\u00fcgen Sie "org.eclipse.persistence.corba.jar" zu Ihrem Klassenpfad hinzu.
 

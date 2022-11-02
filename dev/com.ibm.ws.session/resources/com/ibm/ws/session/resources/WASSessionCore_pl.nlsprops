@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -137,3 +137,8 @@ CommonMessage.miscData=Inne dane: {0}
 SessionContext.invalidCloneSeparator=SESN0800W: Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci CloneSeparator musi zawiera\u0107 dok\u0142adnie jeden znak i nie mo\u017ce to by\u0107 spacja. Aktualnie okre\u015blon\u0105 warto\u015bci\u0105 w\u0142a\u015bciwo\u015bci CloneSeparator jest {0}
 SessionContext.invalidCloneSeparator.explanation=Warto\u015b\u0107 w\u0142a\u015bciwo\u015bci CloneSeparator musi zawiera\u0107 dok\u0142adnie jeden znak i nie mo\u017ce to by\u0107 spacja.
 SessionContext.invalidCloneSeparator.useraction=Zmodyfikuj w\u0142a\u015bciwo\u015b\u0107 niestandardow\u0105 CloneSeparator.
+
+
+# -------------------------------------------------------------------------------------------------
+# Range 8600 - 8699 is reserved for Servlet 6.0
+# -------------------------------------------------------------------------------------------------

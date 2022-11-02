@@ -27,7 +27,7 @@
 #   (single quote must be coded as one single quote '). 
 #
 # -------------------------------------------------------------------------------------------------
-28001=Do\u0161lo k v\u00fdjimce ValidationException p\u0159i pokusu o vytvo\u0159en\u00ed relace: [{0}]. Nejpravd\u011bpodobn\u011bj\u0161\u00ed p\u0159\u00ed\u010dinou tohoto probl\u00e9mu je to, \u017ee v\u00e1\u0161 soubor [{1}] nen\u00ed dostupn\u00fd na cest\u011b ke t\u0159\u00edd\u011b nebo neobsahuje relaci s n\u00e1zvem: [{0}].
+28001=Byla vyvol\u00e1na v\u00fdjimka ValidationException p\u0159i pokusu o vytvo\u0159en\u00ed relace: [{0}]. Nejpravd\u011bpodobn\u011bj\u0161\u00ed p\u0159\u00ed\u010dinou tohoto probl\u00e9mu je to, \u017ee v\u00e1\u0161 soubor [{1}] nen\u00ed dostupn\u00fd na cest\u011b ke t\u0159\u00edd\u011b nebo neobsahuje relaci s n\u00e1zvem: [{0}].
 
 28002=EclipseLink se pokou\u0161\u00ed na\u010d\u00edst z [{1}] t\u0159\u00eddu ServerSession s n\u00e1zvem [{0}] a nez\u00edsk\u00e1v\u00e1 t\u0159\u00eddu ServerSession.
 

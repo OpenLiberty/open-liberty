@@ -33,9 +33,9 @@
 
 6003=O n\u00famero de argumentos fornecidos para a consulta para execu\u00e7\u00e3o n\u00e3o corresponde ao n\u00famero de argumentos na defini\u00e7\u00e3o de consulta.
 
-6004=O objeto [{0}], da classe [{1}], com c\u00f3digo hash de identidade (System.identityHashCode()) [{2}], {3}n\u00e3o \u00e9 deste espa\u00e7o de objeto UnitOfWork, mas da sess\u00e3o pai.  O objeto nunca foi registrado nesse UnitOfWork, {3}mas lido da sess\u00e3o pai e relacionado a um objeto registrado no UnitOfWork.  Assegure-se de que voc\u00ea esteja registrando{3}corretamente seus objetos.  Se voc\u00ea ainda estiver tendo problemas, poder\u00e1 usar o m\u00e9todo UnitOfWork.validateObjectSpace() para {3}ajudar a depurar o erro ocorrido.  Para obter mais informa\u00e7\u00f5es, consulte o manual ou FAQ.
+6004=O objeto [{0}], de classe [{1}], com c\u00f3digo hash de identidade (System.identityHashCode()) [{2}], {3} n\u00e3o \u00e9 deste espa\u00e7o de objeto UnitOfWork, mas sim da sess\u00e3o pai. O objeto nunca foi registrado nesta UnitOfWork, {3}, mas lido da sess\u00e3o pai e relacionado a um objeto registrado na UnitOfWork. Assegure-se de que voc\u00ea esteja registrando {3} corretamente seus objetos. Se voc\u00ea ainda estiver tendo problemas, poder\u00e1 usar o m\u00e9todo UnitOfWork.validateObjectSpace() {3} para ajudar a depurar onde o erro ocorreu. Para obter mais informa\u00e7\u00f5es, consulte o manual ou FAQ.
 
-6005=O objeto [{0}], de classe [{1}], com c\u00f3digo hash de identidade (System.identityHashCode()) [{2}], {3}\u00e9 o original para um novo objeto registrado.  Os clones UnitOfWork registraram novos objetos; por isso, \u00e9 necess\u00e1rio assegurar que um objeto {3}seja registrado antes de ser referenciado por outro objeto.  Se voc\u00ea n\u00e3o deseja que o novo objeto seja clonado, use a API {3}UnitOfWork.registerNewObject(Object).  Se voc\u00ea ainda estiver tendo problemas, poder\u00e1 usar o m\u00e9todo UnitOfWork.validateObjectSpace() {3}para ajudar a depurar onde o erro ocorreu.  Para obter mais informa\u00e7\u00f5es, consulte o manual ou FAQ.
+6005=O objeto [{0}], de classe [{1}], com c\u00f3digo hash de identidade (System.identityHashCode()) [{2}], {3} \u00e9 o original para um novo objeto registrado. Os clones UnitOfWork registraram novos objetos; por isso, \u00e9 necess\u00e1rio assegurar que um objeto {3} seja registrado antes de ser referenciado por outro objeto. Se voc\u00ea n\u00e3o deseja que o novo objeto seja clonado, use a API {3}UnitOfWork.registerNewObject(Object). Se voc\u00ea ainda estiver tendo problemas, poder\u00e1 usar o m\u00e9todo UnitOfWork.validateObjectSpace() {3} para ajudar a depurar onde o erro ocorreu. Para obter mais informa\u00e7\u00f5es, consulte o manual ou FAQ.
 
 6006=O mapeamento [{0}] n\u00e3o suporta leitura em lote.
 
@@ -193,7 +193,7 @@
 
 6100=Diversos valores detectados para consulta de leitura de objeto \u00fanico.
 
-6101=A execu\u00e7\u00e3o dessa consulta pode violar a integridade do cache da sess\u00e3o global que deve conter somente as vers\u00f5es mais recentes de objetos.  Para executar uma consulta que retorna objetos como de um tempo passado, tente um dos seguintes: use um HistoricalSession (acquireSessionAsOf), todos os objetos lidos ser\u00e3o armazenados em cache e lidos automaticamente na mesma hora.  Isso se aplicar\u00e1 at\u00e9 mesmo ao acionamento de relacionamentos de objetos.  Configure shouldMaintainCache como false.  Voc\u00ea pode tornar qualquer express\u00e3o de objeto como de um tempo passado, desde que nenhum de seus campos sejam representados no conjunto de resultados (isto \u00e9, usados somente na cl\u00e1usula where).
+6101=A execu\u00e7\u00e3o dessa consulta pode violar a integridade do cache da sess\u00e3o global que deve conter somente as vers\u00f5es mais recentes de objetos. Para executar uma consulta que retorna objetos como de um tempo passado, tente um dos seguintes: use um HistoricalSession (acquireSessionAsOf), todos os objetos lidos ser\u00e3o armazenados em cache e lidos automaticamente na mesma hora.  Isso se aplicar\u00e1 at\u00e9 mesmo ao acionamento de relacionamentos de objetos. Configure shouldMaintainCache como false.  \u00c9 poss\u00edvel fazer qualquer express\u00e3o de objeto como de um tempo passado, desde que nenhum de seus campos esteja representado no conjunto de resultados (ou seja, usado apenas na cl\u00e1usula where).
 
 6102=As consultas hist\u00f3ricas do presente funcionam somente com bancos de dados Oracle 9R2 ou mais recente, j\u00e1 que ele usa o recurso de Flashback do Oracle.
 
@@ -261,7 +261,7 @@
 
 6134=O nome do atributo ou a express\u00e3o transmitida como primeiro par\u00e2metro para o m\u00e9todo addUpdate n\u00e3o define um campo. {1}Nome do atributo ou express\u00e3o: [{2}]{1}Descritor: [{0}]
 
-6135=O nome do atributo ou a express\u00e3o transmitida como primeiro par\u00e2metro para o m\u00e9todo addUpdate define um campo de uma tabela que n\u00e3o est\u00e1 mapeada para o descritor de consulta. {1}Nome do atributo ou express\u00e3o: [{2}]{1}Campo errado: [{3}]{1}Descritor: [{0}]
+6135=O nome de atributo ou express\u00e3o passada como um primeiro par\u00e2metro para o m\u00e9todo addUpdate define um campo a partir de uma tabela que n\u00e3o \u00e9 mapeada para o descritor de consulta. {1}Nome do atributo ou Express\u00e3o: [{2}]{1}Campo Errado: [{3}]{1}Descritor: [{0}]
 
 6136=Classes mapeadas com heran\u00e7a de diversas tabelas n\u00e3o pode ser itens ReportQuery. Item: {0}, Express\u00e3o: {1}.
 
@@ -293,9 +293,9 @@
 
 6150=Um valor nulo n\u00e3o pode ser usado como uma chave em um cont\u00eainer do tipo [{1}]. Assegure-se de que os valores de chave para os objetos do tipo [{0}] n\u00e3o possam ser nulos.
 
-6151=Ocorreu uma exce\u00e7\u00e3o ao tentar configurar um Redirecionador {0} transmitido por meio de uma Dica de consulta JPA {1}.  Verifique se o Redirecionador fornecido implementa org.eclipse.persistence.queries.QueryRedirector.
+6151=Ocorreu uma exce\u00e7\u00e3o ao tentar configurar um Redirecionador {0} transmitido por meio de uma dica de consulta do Jakarta Persistence {1}.  Verifique se o Redirecionador fornecido implementa org.eclipse.persistence.queries.QueryRedirector.
 
-6152=Ocorreu uma exce\u00e7\u00e3o ao tentar instanciar a classe {0} transmitida por meio de uma Dica de consulta JPA {1}.  Verifique se a classe possua um construtor padr\u00e3o.
+6152=Ocorreu uma exce\u00e7\u00e3o ao tentar instanciar a classe {0} transmitida por meio de uma dica de consulta do Jakarta Persistence {1}.  Verifique se a classe possua um construtor padr\u00e3o.
 
 6153=CompatibleType deve ser configurado no tipo complexo: {0}.
 

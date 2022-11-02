@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -137,3 +137,8 @@ CommonMessage.miscData=R\u016fzn\u00e1 data: {0}
 SessionContext.invalidCloneSeparator=SESN0800W: Vlastnost CloneSeparator by m\u011bla obsahovat pr\u00e1v\u011b jeden znak jin\u00fd ne\u017e mezera. Aktu\u00e1ln\u011b zadan\u00e1 hodnota CloneSeparator je {0}.
 SessionContext.invalidCloneSeparator.explanation=Vlastnost CloneSeparator by m\u011bla obsahovat pr\u00e1v\u011b jeden znak jin\u00fd ne\u017e mezera.
 SessionContext.invalidCloneSeparator.useraction=Upravte p\u0159izp\u016fsobenou vlastnost CloneSeparator.
+
+
+# -------------------------------------------------------------------------------------------------
+# Range 8600 - 8699 is reserved for Servlet 6.0
+# -------------------------------------------------------------------------------------------------

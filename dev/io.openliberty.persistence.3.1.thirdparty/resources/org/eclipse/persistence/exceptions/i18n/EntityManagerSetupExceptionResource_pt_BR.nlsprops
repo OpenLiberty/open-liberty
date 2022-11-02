@@ -27,7 +27,7 @@
 #   (single quote must be coded as one single quote '). 
 #
 # -------------------------------------------------------------------------------------------------
-28001=Um ValidationException foi lan\u00e7ado ao tentar criar a sess\u00e3o: [{0}]. As causas mais prov\u00e1veis desse problema s\u00e3o que o arquivo [{1}] n\u00e3o est\u00e1 dispon\u00edvel no caminho de classe ou ele n\u00e3o cont\u00e9m uma sess\u00e3o chamada: [{0}].
+28001=Uma ValidationException foi lan\u00e7ada ao tentar criar a sess\u00e3o: [{0}]. As causas mais prov\u00e1veis desse problema s\u00e3o que o arquivo [{1}] n\u00e3o est\u00e1 dispon\u00edvel no caminho de classe ou ele n\u00e3o cont\u00e9m uma sess\u00e3o chamada: [{0}].
 
 28002=O EclipseLink est\u00e1 tentando carregar um ServerSession denominado [{0}] de [{1}] e n\u00e3o est\u00e1 obtendo um ServerSession.
 

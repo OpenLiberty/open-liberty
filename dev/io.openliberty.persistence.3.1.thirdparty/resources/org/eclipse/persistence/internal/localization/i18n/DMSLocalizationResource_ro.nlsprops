@@ -95,7 +95,7 @@ session_name=Numele sesiunii
 
 sql_generation=Timpul petrecut gener\u00e2nd SQL. \u00cen cazul expresiilor TopLink, timpul petrecut convertind Expresii \u00een SQL
 
-sql_prepare=Timpul petrecut la preg\u0103tirea JDBC a Instruc\u0163iunii. Include \u015fi timpul petrecut \u00een EIS cre\u00e2nd o Interac\u0163iune asociat\u0103 cu o conexiune \u015fi cre\u00e2nd obiecte Record (\u00cenregistrare) de intrare \u015fi ie\u015fire
+sql_prepare=Timpul consumat \u00een JDBC la preg\u0103tirea instruc\u021biunii. De asemenea, include timpul consumat \u00een EIS la crearea unei Interac\u021biuni asociate cu o conexiune \u0219i la crearea obiectelor de \u00eenregistrare de intrare \u0219i de ie\u0219ire
 
 unitofwork_commit=M\u0103soar\u0103 procesul de comitere al UnitOfWork
 

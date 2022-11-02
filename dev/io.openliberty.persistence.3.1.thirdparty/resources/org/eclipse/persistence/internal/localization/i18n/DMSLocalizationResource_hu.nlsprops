@@ -95,7 +95,7 @@ session_name=A munkamenet neve
 
 sql_generation=Az SQL el\u0151\u00e1ll\u00edt\u00e1s\u00e1ra ford\u00edtott id\u0151. TopLink kifejez\u00e9sek eset\u00e9n a kifejez\u00e9sek SQL \u00e1talak\u00edt\u00e1s\u00e1ra fordtott id\u0151
 
-sql_prepare=A JDBC-ben az utas\u00edt\u00e1s el\u0151k\u00e9sz\u00edt\u00e9s\u00e9re ford\u00edtott id\u0151. Az EIS-ben egy csatlakoz\u00e1shoz tartoz\u00f3 interakci\u00f3 l\u00e9trehoz\u00e1s\u00e1ra, valamint bemeneti \u00e9s kimeneti Record objektumok l\u00e9trehoz\u00e1s\u00e1ra ford\u00edtott id\u0151t is tartalmazza
+sql_prepare=A JDBC-ben az utas\u00edt\u00e1s elk\u00e9sz\u00edt\u00e9s\u00e9re ford\u00edtott id\u0151. Ebbe beletartozik a v\u00e1llalati inform\u00e1ci\u00f3s rendszerben (EIS) a kapcsolathoz t\u00e1rs\u00edtott interakci\u00f3 l\u00e9trehoz\u00e1s\u00e1ra ford\u00edtott id\u0151 \u00e9s a bemeneti \u00e9s kimeneti rekordobjektumok l\u00e9trehoz\u00e1si ideje is.
 
 unitofwork_commit=A UnitOfWork v\u00e9gleges\u00edt\u00e9si folyamat\u00e1t m\u00e9ri
 

@@ -33,9 +33,9 @@
 
 6003=Le nombre d''arguments fournis \u00e0 la requ\u00eate pour l''ex\u00e9cution ne correspond pas au nombre d''arguments dans la d\u00e9finition de requ\u00eate.
 
-6004=L''objet [{0}], de classe [{1}], avec le code hach\u00e9 d''identit\u00e9 (System.identityHashCode()) [{2}], {3}ne provient pas de cet espace d''objet d''unit\u00e9 d''oeuvre, mais de celui de la session parent.  L''objet n''a jamais \u00e9t\u00e9 enregistr\u00e9 dans cette unit\u00e9 d''oeuvre, {3}mais il a \u00e9t\u00e9 lu depuis la session parent et li\u00e9 \u00e0 un objet enregistr\u00e9 dans l''unit\u00e9 d''oeuvre.  Assurez-vous d''enregistrer correctement{3}vos objets.  Si vous rencontrez encore des probl\u00e8mes, vous pouvez utiliser la m\u00e9thode UnitOfWork.validateObjectSpace() pour {3}d\u00e9boguer l''emplacement de l''erreur.  Pour plus d''informations, consultez le manuel ou la Foire aux questions.
+6004=L''objet [{0}], de classe [{1}], avec le code hach\u00e9 d''identit\u00e9 (System.identityHashCode()) [{2}], {3} ne provient pas de cet espace d''objets UnitOfWork, mais de celui de la session parent. L''objet n''a jamais \u00e9t\u00e9 enregistr\u00e9 dans cette UnitOfWork, {3}, mais lu dans la session parent et associ\u00e9 \u00e0 un objet enregistr\u00e9 dans l''UnitOfWork. Assurez-vous que vous {3} enregistrez correctement vos objets. Si vous rencontrez toujours des probl\u00e8mes, vous pouvez utiliser la m\u00e9thode UnitOfWork.validateObjectSpace() pour {3} faciliter le d\u00e9bogage de l''endroit o\u00f9 l''erreur s''est produite. Pour plus d''informations, consultez le manuel ou la Foire aux questions.
 
-6005=L''objet [{0}], de la classe [{1}], avec le code hach\u00e9 d''identit\u00e9 (System.identityHashCode()) [{2}], {3}est l''objet d''origine dans un nouvel objet enregistr\u00e9.  L''unit\u00e9 d''oeuvre clone les nouveaux objets enregistr\u00e9s, vous devez donc vous assurer qu''un objet {3}est enregistr\u00e9 avant qu''il soit r\u00e9f\u00e9renc\u00e9 par un autre objet.  Si vous ne voulez pas que le nouvel objet sit clon\u00e9, utilisez l''API {3}UnitOfWork.registerNewObject(Object).  Si vous rencontrez encore des probl\u00e8mes, vous pouvez utiliser la m\u00e9thode UnitOfWork.validateObjectSpace() {3} pour d\u00e9boguer l''emplacement de l''erreur.  Pour plus d''informations, consultez le manuel ou la Foire aux questions.
+6005=L''objet [{0}], de classe [{1}], avec le code hach\u00e9 d''identit\u00e9 (System.identityHashCode()) [{2}], {3} est l''original d''un nouvel objet enregistr\u00e9. L''UnitOfWork clone les nouveaux objets enregistr\u00e9s. Vous devez donc vous assurer qu''un objet {3} soit enregistr\u00e9 avant d''\u00eatre r\u00e9f\u00e9renc\u00e9 par un autre objet. Si vous ne souhaitez pas que le nouvel objet soit clon\u00e9, utilisez l''API UnitOfWork.registerNewObject(Object) {3}. Si vous rencontrez toujours des probl\u00e8mes, vous pouvez utiliser la m\u00e9thode {3} UnitOfWork.validateObjectSpace() pour vous aider \u00e0 d\u00e9boguer l''endroit o\u00f9 l''erreur s''est produite. Pour plus d''informations, consultez le manuel ou la Foire aux questions.
 
 6006=Le mappage [{0}] ne prend pas en charge la lecture par lots.
 
@@ -193,7 +193,7 @@
 
 6100=Plusieurs valeurs d\u00e9tect\u00e9es pour une requ\u00eate de lecture d''objet unique.
 
-6101=L''ex\u00e9cution de cette requ\u00eate peut entra\u00eener une violation de l''int\u00e9grit\u00e9 du cache de session global qui doit contenir uniquement les versions les plus r\u00e9centes des objets.  Pour ex\u00e9cuter une requ\u00eate qui renvoie des objets du pass\u00e9, essayez l''une des actions suivantes : utilisez un \u00e9l\u00e9ment HistoricalSession (acquireSessionAsOf), tous les objets lus seront mis en cache et automatiquement lus en m\u00eame temps.  Cela s''appliquera m\u00eame au d\u00e9clenchement des relations d''objet.  D\u00e9finissez shouldMaintainCache sur false.  Vous pouvez cr\u00e9er une expression d''objet dans le pass\u00e9, si aucune de ses zones n''est repr\u00e9sent\u00e9e dans l''ensemble de r\u00e9sultats (i.e. utilis\u00e9e uniquement dans la clause where).
+6101=L''ex\u00e9cution de cette requ\u00eate peut entra\u00eener une violation de l''int\u00e9grit\u00e9 du cache de session global qui doit contenir uniquement les versions les plus r\u00e9centes des objets. Pour ex\u00e9cuter une requ\u00eate qui renvoie des objets du pass\u00e9, essayez l''une des actions suivantes : utilisez un \u00e9l\u00e9ment HistoricalSession (acquireSessionAsOf), tous les objets lus seront mis en cache et automatiquement lus en m\u00eame temps.  Cela s''appliquera m\u00eame au d\u00e9clenchement des relations d''objet. D\u00e9finissez shouldMaintainCache sur false.  Vous pouvez appliquer une heure pass\u00e9e \u00e0 une expression d''objet, \u00e0 conditions qu''aucune zone ne figure dans l''ensemble de r\u00e9sultats (\u00e0 savoir que l''utilisation est limit\u00e9e \u00e0 la clause where).
 
 6102=A pr\u00e9sent, les requ\u00eates historiques fonctionnent uniquement avec des bases de donn\u00e9es Oracle 9R2 ou versions suivantes, car elles utilisent la fonction Flashback d''Oracle.
 
@@ -261,7 +261,7 @@
 
 6134=Le nom d''attribut ou l''expression transmis comme premier param\u00e8tre \u00e0 la m\u00e9thode addUpdate ne d\u00e9finit pas de zone. {1}Nom d''attribut ou expression : [{2}]{1}Descripteur : [{0}]
 
-6135=Le nom d''attribut ou l''expression transmis comme premier param\u00e8tre \u00e0 la m\u00e9thode addUpdate d\u00e9finit une zone d''une table qui n''est pas mapp\u00e9e au descripteur de requ\u00eate. {1}Nom d''attribut ou expression : [{2}]{1}Zone erron\u00e9e : [{3}]{1}Descripteur : [{0}]
+6135=Le nom d''attribut ou l''expression transmis en tant que premier param\u00e8tre \u00e0 la m\u00e9thode addUpdate d\u00e9finit une zone d''une table qui n''est pas mapp\u00e9e au descripteur de requ\u00eate. {1}Nom d''attribut ou expression : [{2}]{1}Zone incorrecte : [{3}]{1}Descripteur : [{0}]
 
 6136=Les classes mapp\u00e9es \u00e0 un h\u00e9ritage  plusieurs tables ne peuvent pas \u00eatre des \u00e9l\u00e9ments ReportQuery. El\u00e9ment : {0}, Expression : {1}.
 
@@ -293,9 +293,9 @@
 
 6150=Une valeur nulle ne peut pas \u00eatre utilis\u00e9e en tant que cl\u00e9 dans un conteneur de type [{1}]. V\u00e9rifiez que vos valeurs de cl\u00e9 pour les objets de type [{0}] ne peuvent pas \u00eatre nulles.
 
-6151=Une exception s''est produite lors de la tentative de d\u00e9finition d''un agent de r\u00e9acheminement {0} transmis via un indice de requ\u00eate JPA {1}.  V\u00e9rifiez que l''agent de r\u00e9acheminement fourni impl\u00e9mente org.eclipse.persistence.queries.QueryRedirector.
+6151=Une exception s''est produite lors de la tentative de d\u00e9finition d''un Agent de r\u00e9acheminement {0} transmis via un indice de requ\u00eate Jakarta Persistence {1}.  V\u00e9rifiez que l''agent de r\u00e9acheminement fourni impl\u00e9mente org.eclipse.persistence.queries.QueryRedirector.
 
-6152=Une exception s''est produite lors de la tentative d''instanciation de la classe {0} transmise via un indice de requ\u00eate JPA {1}.  V\u00e9rifiez que cette classe a un constructeur par d\u00e9faut.
+6152=Une exception s''est produite lors de la tentative d''instanciation de la classe {0} transmise via un indice de requ\u00eate Jakarta Persistence {1}.  V\u00e9rifiez que cette classe a un constructeur par d\u00e9faut.
 
 6153=L''\u00e9l\u00e9ment CompatibleType doit \u00eatre d\u00e9fini sur un type complexe : {0}.
 

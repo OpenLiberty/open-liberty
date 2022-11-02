@@ -153,7 +153,7 @@
 
 50063=Si \u00e8 verificata un''eccezione durante il tentativo di creare un''istanza di  XmlAdapterClass [{0}]. Una causa possibile \u00e8 che la classe dell''adattatore non ha un costruttore di argomento zero.
 
-50064=XmlAdapterClass [{0}] non estende "jakarta.xml.bind.annotation.adapters.XmlAdapter" come previsto.  \u00c8 necessario che la classe dell''adattatore estenda "jakarta.xml.bind.annotation.adapters.XmlAdapter" e dichiari i metodi "public abstract BoundType unmarshal(v ValueType)" e "public abstract ValueType marshal(BoundType v)".
+50064=XmlAdapterClass [{0}] non estende "jakarta.xml.bind.annotation.adapters.XmlAdapter " come previsto.  \u00c8 necessario che la classe dell''adattatore estenda "jakarta.xml.bind.annotation.adapters.XmlAdapter", e dichiari i metodi "public abstract BoundType unmarshal(ValueType v)" e "public abstract ValueType marshal(BoundType v)".
 
 50065=\u00c8 stato specificato un XmlJavaTypeAdapter non valido [{0}] per il package [{1}]. Le possibili cause sono un nome classe dell''adattatore non corretto o l''impostazione di un programma di caricamento classe non corretto.
 

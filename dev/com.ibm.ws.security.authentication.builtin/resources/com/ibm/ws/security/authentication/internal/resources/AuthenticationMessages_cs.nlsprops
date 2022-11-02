@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2021 IBM Corporation and others.
+# Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -86,4 +86,20 @@ JCACHE_AUTH_CACHE_CLEARED_ALL_ENTRIES.useraction=Nen\u00ed pot\u0159eba \u017e\u
 
 JCACHE_AUTH_CACHE_SERIALIZATION_FAILED=CWWKS1126W: Vlo\u017een\u00ed polo\u017eky pro kl\u00ed\u010d {0} do mezipam\u011bti ov\u011b\u0159en\u00ed JCache {1} se nezda\u0159ilo kv\u016fli chyb\u011b serializace. Polo\u017eka bude m\u00edsto toho vlo\u017eena do mezipam\u011bti ov\u011b\u0159en\u00ed v pam\u011bti. V\u00fdjimka: {2}
 JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.explanation=Obsah polo\u017eky nebyl serializov\u00e1n, tak\u017ee nebyl ulo\u017een do mezipam\u011bti ov\u011b\u0159en\u00ed JCache.
-JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.useraction=Prozkoumejte v\u00fdjimku obsa\u017eenou ve zpr\u00e1v\u011b a opravte p\u0159\u00ed\u010dinu chyby.  
+JCACHE_AUTH_CACHE_SERIALIZATION_FAILED.useraction=Prozkoumejte v\u00fdjimku obsa\u017eenou ve zpr\u00e1v\u011b a opravte p\u0159\u00ed\u010dinu chyby.
+
+JCACHE_AUTH_CACHE_GET_FAILED=CWWKS1127E: Na\u010dten\u00ed polo\u017eky pro kl\u00ed\u010d {0} z mezipam\u011bti ov\u011b\u0159en\u00ed JCache {1} se nezda\u0159ilo kv\u016fli chyb\u011b. V\u00fdjimka: {2}
+JCACHE_AUTH_CACHE_GET_FAILED.explanation=Polo\u017eka nemohla b\u00fdt na\u010dtena z mezipam\u011bti ov\u011b\u0159en\u00ed JCache.
+JCACHE_AUTH_CACHE_GET_FAILED.useraction=Prozkoumejte v\u00fdjimku obsa\u017eenou ve zpr\u00e1v\u011b a opravte p\u0159\u00ed\u010dinu chyby.
+
+JCACHE_AUTH_CACHE_INSERT_FAILED=CWWKS1128E: Vlo\u017een\u00ed polo\u017eky pro kl\u00ed\u010d {0} do mezipam\u011bti ov\u011b\u0159en\u00ed JCache {1} se nezda\u0159ilo kv\u016fli chyb\u011b. V\u00fdjimka: {2}
+JCACHE_AUTH_CACHE_INSERT_FAILED.explanation=Polo\u017eka nebyla ulo\u017eena do mezipam\u011bti ov\u011b\u0159en\u00ed JCache.
+JCACHE_AUTH_CACHE_INSERT_FAILED.useraction=Prozkoumejte v\u00fdjimku obsa\u017eenou ve zpr\u00e1v\u011b a opravte p\u0159\u00ed\u010dinu chyby.
+
+JCACHE_AUTH_CACHE_REMOVE_FAILED=CWWKS1129E: Odebr\u00e1n\u00ed polo\u017eky pro kl\u00ed\u010d {0} do mezipam\u011bti ov\u011b\u0159en\u00ed JCache {1} se nezda\u0159ilo kv\u016fli chyb\u011b. V\u00fdjimka: {2}
+JCACHE_AUTH_CACHE_REMOVE_FAILED.explanation=Polo\u017eka nebyla odebr\u00e1na z mezipam\u011bti ov\u011b\u0159en\u00ed JCache.
+JCACHE_AUTH_CACHE_REMOVE_FAILED.useraction=Prozkoumejte v\u00fdjimku obsa\u017eenou ve zpr\u00e1v\u011b a opravte p\u0159\u00ed\u010dinu chyby.
+
+JCACHE_AUTH_CACHE_CLEAR_FAILED=CWWKS1130E: Vymaz\u00e1n\u00ed mezipam\u011bti ov\u011b\u0159en\u00ed {0} se nezda\u0159ilo kv\u016fli chyb\u011b. V\u00fdjimka: {1}
+JCACHE_AUTH_CACHE_CLEAR_FAILED.explanation=Polo\u017eky nebyly vymaz\u00e1ny z mezipam\u011bti ov\u011b\u0159en\u00ed JCache.
+JCACHE_AUTH_CACHE_CLEAR_FAILED.useraction=Prozkoumejte v\u00fdjimku obsa\u017eenou ve zpr\u00e1v\u011b a opravte p\u0159\u00ed\u010dinu chyby.

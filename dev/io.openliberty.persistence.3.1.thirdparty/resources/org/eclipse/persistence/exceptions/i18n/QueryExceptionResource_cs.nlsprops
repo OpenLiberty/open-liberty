@@ -33,9 +33,9 @@
 
 6003=Po\u010det argument\u016f poskytnut\u00fdch dotazu k proveden\u00ed neodpov\u00edd\u00e1 po\u010dtu argument\u016f v definici dotazu.
 
-6004=Objekt [{0}] t\u0159\u00eddy [{1}] s ha\u0161ovac\u00edm k\u00f3dem identity (System.identityHashCode()) [{2}] {3}nen\u00ed z m\u00edsta objekt\u016f tohoto rozhran\u00ed UnitOfWork, ale z m\u00edsta objekt\u016f nad\u0159\u00edzen\u00e9 relace. Objekt nebyl v tomto rozhran\u00ed UnitOfWork nikdy registrov\u00e1n, {3}ale byl na\u010dten z nad\u0159\u00edzen\u00e9 relace a vzta\u017een k objektu registrovan\u00e9mu v rozhran\u00ed UnitOfWork. Zkontrolujte, zda spr\u00e1vn\u011b{3}registrujete objekty. Pokud probl\u00e9my p\u0159etrv\u00e1vaj\u00ed, m\u016f\u017eete pomoc\u00ed metody UnitOfWork.validateObjectSpace() {3}p\u0159i lad\u011bn\u00ed zjistit, kde k chyb\u011b do\u0161lo. Dal\u0161\u00ed informace naleznete v p\u0159\u00edru\u010dce nebo v \u010dasto kladen\u00fdch dotazech.
+6004=Objekt [{0}] t\u0159\u00eddy [{1}] s ha\u0161ovac\u00edm k\u00f3dem identity (System.identityHashCode()) [{2}] {3} nen\u00ed z m\u00edsta objekt\u016f tohoto rozhran\u00ed UnitOfWork, ale z m\u00edsta objekt\u016f nad\u0159\u00edzen\u00e9 relace. Objekt nebyl v tomto rozhran\u00ed UnitOfWork nikdy registrov\u00e1n, {3}, ale byl na\u010dten z nad\u0159\u00edzen\u00e9 relace a vzta\u017een k objektu registrovan\u00e9mu v rozhran\u00ed UnitOfWork. Ujist\u011bte se, zda spr\u00e1vn\u011b {3} registrujete objekty. Pokud probl\u00e9my p\u0159etrv\u00e1vaj\u00ed, m\u016f\u017eete pomoc\u00ed metody UnitOfWork.validateObjectSpace() na {3} p\u0159i lad\u011bn\u00ed zjistit, kde k chyb\u011b do\u0161lo. Dal\u0161\u00ed informace naleznete v p\u0159\u00edru\u010dce nebo v \u010dasto kladen\u00fdch dotazech.
 
-6005=Objekt [{0}] t\u0159\u00eddy [{1}] s ha\u0161ovac\u00edm k\u00f3dem identity (System.identityHashCode()) [{2}] {3}je origin\u00e1lem nov\u00e9ho registrovan\u00e9ho objektu. Klony rozhran\u00ed UnitOfWork zaregistrovaly nov\u00e9 objekty, proto je t\u0159eba zajistit, aby byl objekt {3}zaregistrov\u00e1n p\u0159ed t\u00edm, ne\u017e na n\u011bj bude odkazovat jin\u00fd objekt. Pokud nechcete nov\u00fd objekt klonovat, pou\u017eijte rozhran\u00ed API {3}UnitOfWork.registerNewObject(Object). Pokud probl\u00e9my p\u0159etrv\u00e1vaj\u00ed, m\u016f\u017eete pomoc\u00ed metody UnitOfWork.validateObjectSpace() {3}p\u0159i lad\u011bn\u00ed zjistit, kde k chyb\u011b do\u0161lo. Dal\u0161\u00ed informace naleznete v p\u0159\u00edru\u010dce nebo v \u010dasto kladen\u00fdch dotazech.
+6005=Objekt [{0}], t\u0159\u00eddy [{1}], s ha\u0161ovac\u00edm k\u00f3dem identity (System.identityHashCode()) [{2}], {3} je origin\u00e1lem nov\u00e9ho registran\u00e9ho objektu. Klony rozhran\u00ed UnitOfWork zaregistrovaly nov\u00e9 objekty, tak\u017ee mus\u00edte zajistit, aby objekt {3} byl registrov\u00e1n d\u0159\u00edve, ne\u017e na n\u011bj bude odkazovat jin\u00fd objekt. Pokud nechcete, aby byl nov\u00fd objekt naklonovan\u00fd, pou\u017eijte rozhran\u00ed {3} UnitOfWork.registerNewObject(Object) API. Pokud probl\u00e9my p\u0159etrv\u00e1vaj\u00ed, m\u016f\u017eete pomoc\u00ed metody UnitOfWork.validateObjectSpace() {3} p\u0159i lad\u011bn\u00ed zjistit, kde do\u0161lo k chyb\u011b. Dal\u0161\u00ed informace naleznete v p\u0159\u00edru\u010dce nebo v \u010dasto kladen\u00fdch dotazech.
 
 6006=Mapov\u00e1n\u00ed [{0}] nepodporuje \u010dten\u00ed d\u00e1vek.
 
@@ -193,8 +193,8 @@
 
 6100=Bylo zji\u0161t\u011bno v\u00edce hodnot pro dotaz na \u010dten\u00ed jednoho objektu.
 
-6101=Proveden\u00ed tohoto dotazu by mohlo naru\u0161it integritu mezipam\u011bti glob\u00e1ln\u00ed relace, kter\u00e1 mus\u00ed obsahovat pouze nejnov\u011bj\u0161\u00ed verze objekt\u016f. Chcete-li prov\u00e9st dotaz, kter\u00fd vr\u00e1t\u00ed objekty ve stavu k \u010dasov\u00e9mu okam\u017eiku v minulosti, zkuste jeden z n\u00e1sleduj\u00edc\u00edch postup\u016f: Pou\u017eijte metodu HistoricalSession (acquireSessionAsOf), v\u0161echny na\u010dten\u00e9 objekty budou ulo\u017eeny do mezipam\u011bti a automaticky na\u010dteny ve stavu ke stejn\u00e9mu \u010dasov\u00e9mu okam\u017eiku. To bude platit i pro spou\u0161t\u011bn\u00ed vztah\u016f objekt\u016f. Prom\u011bnnou shouldMaintainCache nastavte na hodnotu false. Ve stavu k \u010dasov\u00e9mu okam\u017eiku v minulosti m\u016f\u017eete vytvo\u0159it v\u00fdraz libovoln\u00e9ho objektu, pokud nen\u00ed \u017e\u00e1dn\u00e9 z jeho pol\u00ed reprezentov\u00e1no v sad\u011b v\u00fdsledk\u016f (tj. pou\u017e\u00edv\u00e1 se pouze v \
-    klauzuli Where).
+6101=Proveden\u00ed tohoto dotazu by mohlo naru\u0161it integritu mezipam\u011bti glob\u00e1ln\u00ed relace, kter\u00e1 mus\u00ed obsahovat pouze nejnov\u011bj\u0161\u00ed verze objekt\u016f. Chcete-li prov\u00e9st dotaz, kter\u00fd vr\u00e1t\u00ed objekty ve stavu k \u010dasov\u00e9mu okam\u017eiku v minulosti, zkuste jeden z n\u00e1sleduj\u00edc\u00edch postup\u016f: Pou\u017eijte metodu HistoricalSession (acquireSessionAsOf), v\u0161echny na\u010dten\u00e9 objekty budou ulo\u017eeny do mezipam\u011bti a automaticky na\u010dteny ve stavu ke stejn\u00e9mu \u010dasov\u00e9mu okam\u017eiku.  To bude platit i pro spou\u0161t\u011bn\u00ed vztah\u016f objekt\u016f. Prom\u011bnnou shouldMaintainCache nastavte na hodnotu false.  Ve stavu k \u010dasov\u00e9mu okam\u017eiku v minulosti m\u016f\u017eete vytvo\u0159it v\u00fdraz libovoln\u00e9ho objektu, pokud nen\u00ed \u017e\u00e1dn\u00e9 z jeho pol\u00ed reprezentov\u00e1no v sad\u011b v\u00fdsledk\u016f (tj. pou\u017e\u00edv\u00e1 se pouze \
+    v klauzuli Where).
 
 6102=V sou\u010dasn\u00e9 dob\u011b funguj\u00ed historick\u00e9 dotazy pouze s datab\u00e1zemi Oracle 9R2 nebo nov\u011bj\u0161\u00edmi, proto\u017ee pou\u017e\u00edvaj\u00ed funkci Flashback spole\u010dnosti Oracle.
 
@@ -262,7 +262,7 @@
 
 6134=N\u00e1zev atributu nebo v\u00fdraz p\u0159edan\u00fd jako prvn\u00ed parametr metod\u011b addUpdate nedefinuje pole. {1}N\u00e1zev atributu nebo v\u00fdraz: [{2}]{1} Deskriptor: [{0}]
 
-6135=N\u00e1zev atributu nebo v\u00fdraz p\u0159edan\u00fd jako prvn\u00ed parametr metod\u011b addUpdate definuje pole z tabulky, kter\u00e1 nen\u00ed mapov\u00e1na na deskriptor dotazu. {1}N\u00e1zev atributu nebo v\u00fdraz: [{2}]{1}Chybn\u00e9 pole: [{3}]{1} Deskriptor: [{0}]
+6135=N\u00e1zev atributu nebo v\u00fdraz p\u0159edan\u00fd jako prvn\u00ed parametr do metody addUpdate definuje pole z tabulky, kter\u00e9 nen\u00ed mapov\u00e1no na deskriptor dotazu. {1} N\u00e1zev atributu nebo v\u00fdraz: [{2}]{1} Chybn\u00e9 pole: [{3}]{1}Deskriptor: [{0}]
 
 6136=T\u0159\u00eddy mapovan\u00e9 s v\u00edcetabulkovou d\u011bdi\u010dnost\u00ed nemohou b\u00fdt polo\u017ekami ReportQuery. Polo\u017eka: {0}, v\u00fdraz: {1}.
 
@@ -294,9 +294,9 @@
 
 6150=V kontejneru typu [{1}] nelze pou\u017e\u00edt jako kl\u00ed\u010d hodnotu null. Ujist\u011bte se, \u017ee va\u0161e kl\u00ed\u010de pro objekty typu [{0}] nemohou m\u00edt hodnotu null.
 
-6151=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o nastaven\u00ed p\u0159esm\u011brova\u010de {0} p\u0159ed\u00e1van\u00e9ho prost\u0159ednictv\u00edm pokyn k dotazu JPA {1}. Ov\u011b\u0159te, \u017ee poskytnut\u00fd p\u0159esm\u011brova\u010d implementuje t\u0159\u00eddu org.eclipse.persistence.queries.QueryRedirector.
+6151=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o nastaven\u00ed p\u0159esm\u011brova\u010de {0} p\u0159ed\u00e1van\u00e9ho prost\u0159ednictv\u00edm pokynu k dotazu Jakarta Perzistence {1}.  Ov\u011b\u0159te, \u017ee poskytnut\u00fd p\u0159esm\u011brova\u010d implementuje t\u0159\u00eddu org.eclipse.persistence.queries.QueryRedirector.
 
-6152=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o vytvo\u0159en\u00ed instance t\u0159\u00eddy {0} p\u0159ed\u00e1van\u00e9 prost\u0159ednictv\u00edm pokynu k dotazu JPA {1}. Ov\u011b\u0159te, \u017ee m\u00e1 tato t\u0159\u00edda v\u00fdchoz\u00ed konstruktor.
+6152=Do\u0161lo k v\u00fdjimce p\u0159i pokusu o vytvo\u0159en\u00ed instance t\u0159\u00eddy {0} p\u0159ed\u00e1van\u00e9 prost\u0159ednictv\u00edm pokynu k dotazu Jakarta Persistence {1}.  Ov\u011b\u0159te, \u017ee m\u00e1 tato t\u0159\u00edda v\u00fdchoz\u00ed konstruktor.
 
 6153=Na komplexn\u00edm typu je t\u0159eba nastavit CompatibleType: {0}.
 

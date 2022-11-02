@@ -145,7 +145,7 @@ staticweave_commandline_help_message_17of19= Aby manipulowa\u0107 kodem bajtowym
 
 staticweave_commandline_help_message_18of19= a dane wyj\u015bciowe zapisa\u0107 w pliku C:\foo-target.jar:
 
-staticweave_commandline_help_message_19of19= StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:\classpath1;C:\classpath2 C:\foo-source.jar C:\foo-target.jar
+staticweave_commandline_help_message_19of19= StaticWeave -persistenceinfo C:\foo-containing-persistence-xml.jar -classpath C:classpath1;C:classpath2 C:\foo-source.jar C:\foo-target.jar
 
 staticweave_commandline_help_message_1of19= Sk\u0142adnia: StaticWeave [opcje] \u017ar\u00f3d\u0142o cel
 

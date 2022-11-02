@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2001 IBM Corporation and others.
+# Copyright (c) 1997, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
@@ -137,3 +137,8 @@ CommonMessage.miscData=Dati vari: {0}
 SessionContext.invalidCloneSeparator=SESN0800W: La propriet\u00e0 CloneSeparator deve essere esattamente un carattere e non pu\u00f2 essere uno spazio. Il valore corrente di CloneSeparator specificato \u00e8 "{0}"
 SessionContext.invalidCloneSeparator.explanation=La propriet\u00e0 CloneSeparator deve essere esattamente un carattere e non pu\u00f2 essere uno spazio.
 SessionContext.invalidCloneSeparator.useraction=Modificare la propriet\u00e0 personalizzata CloneSeparator.
+
+
+# -------------------------------------------------------------------------------------------------
+# Range 8600 - 8699 is reserved for Servlet 6.0
+# -------------------------------------------------------------------------------------------------

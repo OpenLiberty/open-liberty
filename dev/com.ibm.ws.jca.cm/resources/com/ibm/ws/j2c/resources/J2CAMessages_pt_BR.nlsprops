@@ -336,6 +336,16 @@ SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003=J2CA1003E: Falha ao remover o M
 SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.explanation=A tentativa de remover um MCWrapper falhou, causando um problema potencial no conjunto compartilhado.
 SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.useraction=CMSG0002
 
+# --------------------------------
+RA_FREE_CONNECTION_ERROR_J2CA1004=J2CA1004I: o gerenciador de conex\u00f5es recebeu um erro de conex\u00e3o fatal do adaptador de recursos para o recurso {1}. O estado das conex\u00f5es \u00e9: {2}. A exce\u00e7\u00e3o \u00e9: {0}
+RA_FREE_CONNECTION_ERROR_J2CA1004.explanation=O gerenciador de conex\u00f5es foi notificado pelo adaptador de recursos de que ocorreu um erro na conex\u00e3o. Esta mensagem \u00e9 registrada para que o usu\u00e1rio possa ver a exce\u00e7\u00e3o que foi retornada.
+RA_FREE_CONNECTION_ERROR_J2CA1004.useraction=O gerenciador de conex\u00f5es marca a conex\u00e3o como inutiliz\u00e1vel. A conex\u00e3o \u00e9 removida durante o pr\u00f3ximo intervalo de manuten\u00e7\u00e3o de conex\u00e3o. A pol\u00edtica de limpeza n\u00e3o se aplica a esta conex\u00e3o. Este comportamento \u00e9 normal. Se aparecer esse erro inesperado, investigue a exce\u00e7\u00e3o para determinar a poss\u00edvel origem do problema.
+
+# ---------------------------------
+NO_RA_FREE_EXCEPTION_J2CA1005=J2CA1005I: o gerenciador de conex\u00f5es recebeu um erro de conex\u00e3o fatal do adaptador de recursos para o recurso {0}. O estado das conex\u00f5es \u00e9: {1}. Informa\u00e7\u00f5es podem estar dispon\u00edveis em mensagens ou exce\u00e7\u00f5es anteriores.
+NO_RA_FREE_EXCEPTION_J2CA1005.explanation=O gerenciador de conex\u00f5es foi notificado pelo adaptador de recursos de que ocorreu um erro na conex\u00e3o. Esta mensagem \u00e9 registrada para que o usu\u00e1rio possa ver a exce\u00e7\u00e3o que foi retornada. 
+NO_RA_FREE_EXCEPTION_J2CA1005.useraction=O gerenciador de conex\u00f5es marca a conex\u00e3o como inutiliz\u00e1vel. A conex\u00e3o \u00e9 removida durante o pr\u00f3ximo intervalo de manuten\u00e7\u00e3o de conex\u00e3o. A pol\u00edtica de limpeza n\u00e3o se aplica a esta conex\u00e3o. Este comportamento \u00e9 normal. Se aparecer esse erro inesperado, investigue a exce\u00e7\u00e3o para determinar a poss\u00edvel origem do problema.
+
 # ---------------------------------
 # End of File
 #

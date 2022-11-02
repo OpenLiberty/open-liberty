@@ -63,5 +63,17 @@
 
 17024=A f\u00e1jl nem t\u00f6r\u00f6lhet\u0151: {0}
 
-17025=Ez a lek\u00e9pez\u00e9s egy idegen kulcs csoportos\u00edt\u00e1si elemet ig\u00e9nyel, mivel t\u00f6bb idegen kulcs l\u00e9tezik.
+17025=Ez a megfeleltet\u00e9s ig\u00e9nyel egy idegen kulcs csoportos\u00edt\u00f3elemet, mivel t\u00f6bb idegen kulcs l\u00e9tezik.
+
+17026=A m\u0171velettulajdons\u00e1got a lek\u00e9rdez\u00e9ssel val\u00f3 egy\u00fcttm\u0171k\u00f6d\u00e9s sor\u00e1n kell be\u00e1ll\u00edtani.
+
+17027=A c\u00e9l t\u00e1bla neve nincs be\u00e1ll\u00edtva. Akkor kell megadni, amikor a lek\u00e9rdez\u00e9s bek\u00e9ri.
+
+17028=\u00c9rv\u00e9nytelen konzisztenciatulajdons\u00e1g \u00e9rt\u00e9k: {0}
+
+17029=\u00c9rv\u00e9nytelen megmarad\u00e1si tulajdons\u00e1g\u00e9rt\u00e9k: {0}
+
+17030=Az XMLInteraction csak objektumlek\u00e9rdez\u00e9sekre \u00e9rv\u00e9nyes, nat\u00edv lek\u00e9rdez\u00e9sekhez haszn\u00e1lja a MappedInteraction oszt\u00e1lyt: {0}
+
+17031=A lek\u00e9rdez\u00e9s t\u00fal \u00f6sszetett Oracle NoSQL ford\u00edt\u00e1shoz, csak a select lek\u00e9rdez\u00e9sek t\u00e1mogatottak a lek\u00e9rdez\u00e9sben: {0}
 

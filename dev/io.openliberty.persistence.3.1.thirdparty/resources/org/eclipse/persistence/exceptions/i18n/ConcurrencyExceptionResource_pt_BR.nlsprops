@@ -37,7 +37,7 @@
 
 2005=Falha de espera no Manipulador de sequenciamento de conex\u00e3o para DatabaseSession.
 
-2006=Tentativa de adquirir valores de sequenciamento por meio de uma \u00fanica conex\u00e3o ({0}) simultaneamente em diversos encadeamentos.
+2006=Tentativa de adquirir valores de sequenciamento por meio de uma \u00fanica conex\u00e3o ({0}) simultaneamente em v\u00e1rios encadeamentos.
 
 2007=N\u00famero m\u00e1ximo de tentativas de bloquear o objeto: {0} excedido.  Falha ao clonar o objeto.
 
