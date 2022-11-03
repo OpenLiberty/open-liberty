@@ -35,7 +35,7 @@ DISCOVERY_EXCEPTION.useraction=See the error in the message for more information
 
 OIDC_CLIENT_MISSING_PROVIDER_URI=CWWKS2404W: The OpenID Connect client cannot perform discovery because the providerURI attribute for the {0} OpenID Connect client is null or empty.
 OIDC_CLIENT_MISSING_PROVIDER_URI.explanation=The OpenID Connect client must discover metadata for the OpenID Connect provider, but the client does not have a providerURI attribute configured.
-OIDC_CLIENT_MISSING_PROVIDER_URI.useraction=Specify a value for the providerURI attribute in the OpenID Connect client configuration, or ensure the OpenID Connect provider metadata in the client configuration contains all of the data that is required by the OpenID Connect client.
+OIDC_CLIENT_MISSING_PROVIDER_URI.useraction=Specify a value for the providerURI attribute in the OpenID Connect client configuration, or ensure that the OpenID Connect provider metadata in the client configuration contains all of the data that is required by the OpenID Connect client.
 
 DISCOVERY_METADATA_MISSING_VALUE=CWWKS2405E: The OpenID Connect provider metadata is missing the required [{0}] property.
 DISCOVERY_METADATA_MISSING_VALUE.explanation=The property that is specified in the message must be present in the OpenID Connect provider metadata, but it is missing.
