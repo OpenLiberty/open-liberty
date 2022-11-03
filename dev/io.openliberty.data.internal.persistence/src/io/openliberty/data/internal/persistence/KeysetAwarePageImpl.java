@@ -78,12 +78,20 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
             queryInfo.setParameters(query, args);
 
             if (keysetCursor != null)
-                for (int i = 0; i < keysetCursor.size(); i++) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "set keyset parameter ?" + (queryInfo.paramCount + i + 1));
-                    // TODO detect if user provides a wrong-sized keyset? Or let JPA error surface?
-                    query.setParameter(queryInfo.paramCount + i + 1, keysetCursor.getKeysetElement(i));
-                }
+                if (queryInfo.paramNames.isEmpty() || queryInfo.paramNames.get(0) == null) // positional parameters
+                    for (int i = 0; i < keysetCursor.size(); i++) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "set keyset parameter ?" + (queryInfo.paramCount + i + 1));
+                        // TODO detect if user provides a wrong-sized keyset? Or let JPA error surface?
+                        query.setParameter(queryInfo.paramCount + i + 1, keysetCursor.getKeysetElement(i));
+                    }
+                else // named parameters
+                    for (int i = 0; i < keysetCursor.size(); i++) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "set keyset parameter :keyset" + (i + 1));
+                        // TODO detect if user provides a wrong-sized keyset? Or let JPA error surface?
+                        query.setParameter("keyset" + (queryInfo.paramCount + i + 1), keysetCursor.getKeysetElement(i));
+                    }
 
             query.setFirstResult(firstResult);
             query.setMaxResults((int) maxPageSize + 1); // extra position is for knowing whether to expect another page
