@@ -41,16 +41,16 @@ public class OpenIdContextImpl implements OpenIdContext {
 
     private static final TraceComponent tc = Tr.register(OpenIdContextImpl.class);
 
-    private final String subjectIdentifier;
-    private final String tokenType;
-    private final AccessToken accessToken;
-    private final IdentityToken identityToken;
-    private final OpenIdClaims userinfoClaims;
+    private String subjectIdentifier;
+    private String tokenType;
+    private AccessToken accessToken;
+    private IdentityToken identityToken;
+    private OpenIdClaims userinfoClaims;
     private JsonObject userinfoClaimsAsJson = null;
-    private final JsonObject providerMetadata; // TODO: Store JSON String instead for serialization
-    private final String state; // TODO: Determine if storage values can be obtained without relying on state.
-    private final boolean useSession;
-    private final String clientId;
+    private JsonObject providerMetadata; // TODO: Store JSON String instead for serialization
+    private String state; // TODO: Determine if storage values can be obtained without relying on state.
+    private boolean useSession;
+    private String clientId;
 
     private RefreshToken refreshToken;
     private Long expiresIn;
@@ -72,17 +72,13 @@ public class OpenIdContextImpl implements OpenIdContext {
         this.clientId = clientId;
     }
 
-    public void setRefreshToken(RefreshToken refreshToken) {
-        this.refreshToken = refreshToken;
-    }
-
-    public void setExpiresIn(Long expiresIn) {
-        this.expiresIn = expiresIn;
-    }
-
     @Override
     public String getSubject() {
         return subjectIdentifier;
+    }
+
+    public void setSubject(String subjectIdentifier) {
+        this.subjectIdentifier = subjectIdentifier;
     }
 
     @Override
@@ -90,14 +86,26 @@ public class OpenIdContextImpl implements OpenIdContext {
         return tokenType;
     }
 
+    public void setTokenType(String tokenType) {
+        this.tokenType = tokenType;
+    }
+
     @Override
     public AccessToken getAccessToken() {
         return accessToken;
     }
 
+    public void setAccessToken(AccessToken accessToken) {
+        this.accessToken = accessToken;
+    }
+
     @Override
     public IdentityToken getIdentityToken() {
         return identityToken;
+    }
+
+    public void setIdentityToken(IdentityToken identityToken) {
+        this.identityToken = identityToken;
     }
 
     @Override
@@ -108,12 +116,20 @@ public class OpenIdContextImpl implements OpenIdContext {
         return Optional.empty();
     }
 
+    public void setRefreshToken(RefreshToken refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
     @Override
     public Optional<Long> getExpiresIn() {
         if (expiresIn != null) {
             return Optional.of(expiresIn);
         }
         return Optional.empty();
+    }
+
+    public void setExpiresIn(Long expiresIn) {
+        this.expiresIn = expiresIn;
     }
 
     @Override
@@ -216,10 +232,45 @@ public class OpenIdContextImpl implements OpenIdContext {
         return userinfoClaims;
     }
 
+    public void setClaims(OpenIdClaims userinfoClaims) {
+        this.userinfoClaims = userinfoClaims;
+    }
+
     @Override
     public JsonObject getProviderMetadata() {
+        if (providerMetadata == null) {
+            return null;
+        }
         // Clone providerMetadata before returning it to avoid modifications.
         return Json.createReader(new StringReader(providerMetadata.toString())).readObject();
+    }
+
+    public void setProviderMetadata(JsonObject providerMetadata) {
+        this.providerMetadata = providerMetadata;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public boolean isUseSession() {
+        return useSession;
+    }
+
+    public void setUseSession(boolean useSession) {
+        this.useSession = useSession;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 
     @SuppressWarnings("unchecked")
