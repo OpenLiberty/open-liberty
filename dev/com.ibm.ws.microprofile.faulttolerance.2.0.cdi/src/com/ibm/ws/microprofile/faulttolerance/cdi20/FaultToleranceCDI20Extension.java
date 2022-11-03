@@ -12,7 +12,9 @@ package com.ibm.ws.microprofile.faulttolerance.cdi20;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
+import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 
@@ -26,6 +28,11 @@ import com.ibm.ws.microprofile.faulttolerance.cdi.FaultToleranceInterceptor;
  */
 @Component(service = WebSphereCDIExtension.class, immediate = true)
 public class FaultToleranceCDI20Extension implements WebSphereCDIExtension, Extension {
+
+    public void addAsyncRequestContextController(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
+        AnnotatedType<AsyncRequestContextControllerImpl> annotatedType = bm.createAnnotatedType(AsyncRequestContextControllerImpl.class);
+        bbd.addAnnotatedType(annotatedType, AsyncRequestContextControllerImpl.class.getName());
+    }
 
     public void removeInterceptorType(@Observes ProcessAnnotatedType<FaultToleranceInterceptor> event) {
         // Veto the type, so that CDI doesn't discover that it's a bean

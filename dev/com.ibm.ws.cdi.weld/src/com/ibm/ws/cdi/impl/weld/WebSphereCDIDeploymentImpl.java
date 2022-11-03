@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.impl.weld;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -725,10 +727,30 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
             }
 
             URL parsedURL = beansXml.getUrl();
-            //if the URL is null then that means it was an empty beans.xml file
+            //if the URL is null then this may mean it was an empty beans.xml file
             //note that this may be an undocumented "feature" of the Weld SPI
             if (parsedURL == null) {
                 continue;
+            }
+            //check if the file is really empty ... just whitespace like a single space would cause Weld to complain anyway
+            InputStream is = null;
+            try {
+                is = parsedURL.openStream();
+                if (is.available() == 0) {
+                    //file is empty
+                    continue;
+                }
+            } catch (IOException e1) {
+                //could not read the file, assume it is empty
+                continue;
+            } finally {
+                if (is != null) {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        //FFDC and ignore
+                    }
+                }
             }
 
             //if the beans.xml was not an empty file then check if the version was set or not
