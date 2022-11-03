@@ -663,7 +663,7 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     @Override
     public void commit(Xid xid, boolean onePhase) throws XAException {
-    	if (dumped) throw new RuntimeException("Test resource state was already dumped");
+    	if (dumped) throw new AlreadyDumpedException("Test resource state was already dumped");
 
     	System.out.println("commit(" + _key + ", " + xid + ", " + onePhase
                            + ")");
@@ -778,7 +778,7 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     @Override
     public void end(Xid xid, int flags) throws XAException {
-    	if (dumped) throw new RuntimeException("Test resource state was already dumped");
+    	if (dumped) throw new AlreadyDumpedException("Test resource state was already dumped");
 
     	System.out.println("end(" + _key + ", " + xid + ", " + flags + ")");
 
@@ -803,7 +803,7 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     @Override
     public void forget(Xid xid) throws XAException {
-    	if (dumped) throw new RuntimeException("Test resource state was already dumped");
+    	if (dumped) throw new AlreadyDumpedException("Test resource state was already dumped");
 
     	System.out.println("forget(" + _key + ", " + xid + ")");
 
@@ -850,7 +850,7 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     @Override
     public int prepare(Xid xid) throws XAException {
-    	if (dumped) throw new RuntimeException("Test resource state was already dumped");
+    	if (dumped) throw new AlreadyDumpedException("Test resource state was already dumped");
 
     	System.out.println("prepare(" + _key + ", " + xid + ") = "
                            + actionFormatter(self().getPrepareAction()));
@@ -907,7 +907,7 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     @Override
     public Xid[] recover(int flag) throws XAException {
-    	if (dumped) throw new RuntimeException("Test resource state was already dumped");
+    	if (dumped) throw new AlreadyDumpedException("Test resource state was already dumped");
 
     	System.out.println("recover(" + _key + ", " + flag + ")");
 
@@ -957,7 +957,7 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     @Override
     public void rollback(Xid xid) throws XAException {
-    	if (dumped) throw new RuntimeException("Test resource state was already dumped");
+    	if (dumped) throw new AlreadyDumpedException("Test resource state was already dumped");
 
     	System.out.println("rollback(" + _key + ", " + xid + ")");
 
@@ -1037,7 +1037,7 @@ public class XAResourceImpl implements XAResource, Serializable {
 
     @Override
     public void start(Xid xid, int flags) throws XAException {
-    	if (dumped) throw new RuntimeException("Test resource state was already dumped");
+    	if (dumped) throw new AlreadyDumpedException("Test resource state was already dumped");
 
     	System.out.println("start(" + _key + ", " + xid + ", " + flags + ")");
         _XAEvents.add(new XAEvent(XAEventCode.START, _key));
