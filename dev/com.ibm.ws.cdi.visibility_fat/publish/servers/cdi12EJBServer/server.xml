@@ -10,6 +10,9 @@
         <feature>localConnector-1.0</feature>
         <feature>appClientSupport-1.0</feature>
         <feature>componentTest-1.0</feature>
+        <!-- Fault Tolerance included as a feature with CDI extension which can see application BDAs -->
+        <!-- which caused issues with masked classes -->
+        <feature>mpFaultTolerance-1.1</feature>
     </featureManager>
     
     <orb id="defaultOrb" orbSSLInitTimeout="60"/>

@@ -255,10 +255,14 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
             //mark as scanned up front to prevent loops
             this.scanned = true;
 
-            //scan the children
-            for (WebSphereBeanDeploymentArchive child : accessibleBDAs) {
-                if (!child.hasBeenScanned()) {
-                    child.scan();
+            // Scan any accessible BDAs first to ensure we scan more visible things (shared libs, ear libs) before less visible things (war classes, war libs)
+            // This helps to make sure that the later call to isAccessibleBean works
+            // Don't scan accessible BDAs of runtime extensions because they sit outside the hierarchy and some of them need to see everything
+            if (getType() != ArchiveType.RUNTIME_EXTENSION) {
+                for (WebSphereBeanDeploymentArchive child : accessibleBDAs) {
+                    if (!child.hasBeenScanned()) {
+                        child.scan();
+                    }
                 }
             }
 
