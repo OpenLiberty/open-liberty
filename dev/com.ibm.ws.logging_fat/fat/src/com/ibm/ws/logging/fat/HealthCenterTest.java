@@ -53,7 +53,7 @@ public class HealthCenterTest {
     @Test
     public void testHealthCenterInfo() throws Exception {
         Assert.assertFalse("Expected healthcenter INFO message",
-                           server.findStringsInLogs("^INFO:.*com\\.ibm\\.java\\.diagnostics\\.healthcenter\\.agent\\.iiop\\.port",
+                           server.findStringsInLogs("INFO:.*Health Center agent started on port",
                                                     server.getConsoleLogFile()).isEmpty());
     }
 
