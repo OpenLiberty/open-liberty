@@ -50,6 +50,10 @@ public class ELHelper {
         }
     };
 
+    private static final String DEFFERRED_EXP_START = "#{";
+
+    private static final String IMMEDIATE_EXP_START = "${";
+
     /**
      * Evaluate a possible EL expression.
      *
@@ -117,7 +121,15 @@ public class ELHelper {
             if (expressionStrings == null) {
                 return elProc.eval(removeBrackets(expression, mask));
             } else {
-                return elProc.eval(expressionStrings[0]) + expressionStrings[1];
+                StringBuffer stb = new StringBuffer();
+                for (String expr : expressionStrings) {
+                    if (isDeferredExpression(expr, mask) || isImmediateExpression(expr)) {
+                        stb.append(elProc.eval(removeBrackets(expr, mask)).toString());
+                    } else {
+                        stb.append(expr);
+                    }
+                }
+                return stb.toString();
             }
         }
 
@@ -151,7 +163,7 @@ public class ELHelper {
 
         boolean result = false;
         if (expression != null) {
-            result = expression.startsWith("#{") && expression.endsWith("}");
+            result = expression.startsWith(DEFFERRED_EXP_START) && expression.endsWith("}");
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -188,7 +200,7 @@ public class ELHelper {
 
         boolean result = false;
         if (expression != null) {
-            result = expression.startsWith("${") && expression.endsWith("}");
+            result = expression.startsWith(IMMEDIATE_EXP_START) && expression.endsWith("}");
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -705,7 +717,7 @@ public class ELHelper {
         }
 
         expression = expression.trim();
-        if ((expression.startsWith("${") || expression.startsWith("#{")) && expression.endsWith("}")) {
+        if ((expression.startsWith(IMMEDIATE_EXP_START) || expression.startsWith(DEFFERRED_EXP_START)) && expression.endsWith("}")) {
             expression = expression.substring(2, expression.length() - 1);
         }
 
@@ -717,7 +729,8 @@ public class ELHelper {
 
     /**
      * Check if the closing bracket is mid expression and return a split string if it is. If the expression is
-     * a single expression and can be evaluated as a whole, return null.
+     * a single expression and can be evaluated as a whole, return null. If it is a composite expression with more
+     * than one EL, split the strings apart for individual evaluation.
      *
      * @param expression
      * @param mask
@@ -730,19 +743,64 @@ public class ELHelper {
             Tr.entry(tc, methodName, new Object[] { (expression == null) ? null : mask ? OBFUSCATED_STRING : expression, mask });
         }
         String[] expressionStrings = null;
-        if ((expression.startsWith("${") || expression.startsWith("#{")) && !expression.endsWith("}")) {
-            String prep = expression.substring(2, expression.length());
-            expressionStrings = prep.split("}", 2);
 
-            if (expressionStrings.length != 2) {
-                expressionStrings = null;
+        int immExp = expression.indexOf(IMMEDIATE_EXP_START);
+        int defExp = expression.indexOf(DEFFERRED_EXP_START);
+        if (defExp == -1 && immExp == -1) {
+            // No expression markers, no splitting to do
+            return null;
+        }
 
+        String openBracketToUse = IMMEDIATE_EXP_START;
+        int starterIndex = immExp;
+        if (defExp >= 0) {
+            openBracketToUse = DEFFERRED_EXP_START;
+            starterIndex = defExp;
+        }
+
+        if (expression.startsWith(openBracketToUse) && expression.endsWith("}") && (starterIndex == expression.lastIndexOf(openBracketToUse))) {
+            // Single, complete expression, no splitting to do
+            return null;
+        } else {
+            List<String> tempArraySplitStrings = new ArrayList<String>(3);
+            String stringToSplit = expression;
+            String lastSplit = "";
+            while (!stringToSplit.isEmpty()) {
+                lastSplit = stringToSplit;
+                if (stringToSplit.startsWith(openBracketToUse)) {
+                    int exprEnd = stringToSplit.indexOf("}");
+                    if (exprEnd == -1) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, methodName, "Mismatched expression brackets, will use the rest of the string: " + (mask ? OBFUSCATED_STRING : stringToSplit));
+                        }
+                        // No closing bracket, use the whole string
+                        exprEnd = stringToSplit.length();
+                    } else {
+                        // include the closing bracket for the upcoming substring
+                        exprEnd++;
+                    }
+                    tempArraySplitStrings.add(stringToSplit.substring(0, exprEnd));
+                    stringToSplit = stringToSplit.substring(exprEnd);
+                } else {
+                    // not an expression, grab the string up to the next expression bracket #{ or ${
+                    int end = stringToSplit.contains(openBracketToUse) ? stringToSplit.indexOf(openBracketToUse) : stringToSplit.length();
+                    tempArraySplitStrings.add(stringToSplit.substring(0, end));
+                    stringToSplit = stringToSplit.substring(end);
+                }
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, methodName,
-                             "Unable to split expression as expected, revert to evaluating whole expression string. Expression: " + (mask ? OBFUSCATED_STRING : expression)
-                                             + ", attempted split: " + (mask ? OBFUSCATED_STRING : Arrays.toString(expressionStrings)));
+                             "String left to split: " + (mask ? OBFUSCATED_STRING : stringToSplit) + ", Array of splits:" + (mask ? OBFUSCATED_STRING : tempArraySplitStrings));
+                }
+
+                if (lastSplit.equals(stringToSplit)) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, methodName, "Splitting logic failed, ended loop with the same string as started with: " + (mask ? OBFUSCATED_STRING : stringToSplit));
+                    }
+                    tempArraySplitStrings.add(stringToSplit);
+                    break;
                 }
             }
+            expressionStrings = tempArraySplitStrings.toArray(new String[tempArraySplitStrings.size()]);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
