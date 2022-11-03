@@ -28,6 +28,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import io.openliberty.security.oidcclientcore.storage.Storage;
 import io.openliberty.security.oidcclientcore.storage.StorageFactory;
 import io.openliberty.security.oidcclientcore.utils.Utils;
@@ -135,6 +138,7 @@ public class OriginalResourceRequest extends HttpServletRequestWrapper {
         this.params = params;
     }
 
+    @Trivial
     private String getAndRemoveFromStorage(String key) {
         String value = storage.get(key);
         if (value != null) {
@@ -154,6 +158,7 @@ public class OriginalResourceRequest extends HttpServletRequestWrapper {
     }
 
     @Override
+    @Sensitive
     public String getHeader(String name) {
         List<String> headerValues = headers.get(name);
         if (headerValues == null || headerValues.size() == 0) {
@@ -168,6 +173,7 @@ public class OriginalResourceRequest extends HttpServletRequestWrapper {
     }
 
     @Override
+    @Sensitive
     public Enumeration<String> getHeaders(String name) {
         List<String> headerValues = headers.get(name);
         if (headerValues == null) {
@@ -177,6 +183,7 @@ public class OriginalResourceRequest extends HttpServletRequestWrapper {
     }
 
     @Override
+    @Sensitive
     public int getIntHeader(String name) {
         String header = getHeader(name);
         if (header == null) {
@@ -186,6 +193,7 @@ public class OriginalResourceRequest extends HttpServletRequestWrapper {
     }
 
     @Override
+    @Sensitive
     public String getParameter(String name) {
         String[] paramValues = params.get(name);
         if (paramValues == null || paramValues.length == 0) {
@@ -195,6 +203,7 @@ public class OriginalResourceRequest extends HttpServletRequestWrapper {
     }
 
     @Override
+    @Sensitive
     public Map<String, String[]> getParameterMap() {
         return new HashMap<String, String[]>(params);
     }
@@ -205,6 +214,7 @@ public class OriginalResourceRequest extends HttpServletRequestWrapper {
     }
 
     @Override
+    @Sensitive
     public String[] getParameterValues(String name) {
         return params.get(name);
     }

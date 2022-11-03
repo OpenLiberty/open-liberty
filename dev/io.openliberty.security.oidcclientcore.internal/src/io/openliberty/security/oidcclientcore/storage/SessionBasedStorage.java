@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 
 public class SessionBasedStorage implements Storage {
 
@@ -27,12 +28,12 @@ public class SessionBasedStorage implements Storage {
     }
 
     @Override
-    public void store(String name, String value) {
+    public void store(String name, @Sensitive String value) {
         store(name, value, null);
     }
 
     @Override
-    public void store(String name, String value, StorageProperties properties) {
+    public void store(String name, @Sensitive String value, StorageProperties properties) {
         // ignore storage properties, since http session attributes
         // can't set properties (e.g., expiration time) like cookies can
         HttpSession session = request.getSession();
@@ -40,6 +41,7 @@ public class SessionBasedStorage implements Storage {
     }
 
     @Override
+    @Sensitive
     public String get(String name) {
         HttpSession session = request.getSession();
         Object value = session.getAttribute(name);
