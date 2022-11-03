@@ -50,12 +50,12 @@ public class Constants {
 	public static final String LICENSE_NAME_EPL = "Eclipse Public License";
 	public static final String LICENSE_URL_EPL = "https://www.eclipse.org/legal/epl-v10.html";
 	public static final String LICENSE_NAME_FEATURE_TERMS = "Additional Features Terms & Conditions";
-	public static final String LICENSE_URL_FEATURE_TERMS_PREFIX = "http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/downloads/wlp/";
+	public static final String LICENSE_URL_FEATURE_TERMS_PREFIX = "https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/downloads/wlp/";
 	public static final String LICENSE_URL_FEATURE_TERMS_SUFFIX = "/lafiles/featureTerms/";
 	public static final String LICENSE_URL_FEATURE_TERMS_RESTRICTED_SUFFIX = "/lafiles/featureTerms-restricted/";
 	public static final String LICENSE_NAME_MAVEN = "IBM International License Agreement for Non-Warranted Programs";
-	public static final String LICENSE_URL_MAVEN = "http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/maven/licenses/L-JTHS-8SZMHX/HTML/";
-	public static final String LICENSE_COMMENTS_MAVEN = "Additional notices http://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/maven/licenses/L-JTHS-8SZMHX/HTML/notices.html";
+	public static final String LICENSE_URL_MAVEN = "https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/maven/licenses/L-JTHS-8SZMHX/HTML/";
+	public static final String LICENSE_COMMENTS_MAVEN = "Additional notices https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/maven/licenses/L-JTHS-8SZMHX/HTML/notices.html";
 
 	public static final String WEBSPHERE_LIBERTY_BOM = "WebSphere Liberty features bill of materials";
 	public static final String WEBSPHERE_LIBERTY_JSON = "WebSphere Liberty features JSON";

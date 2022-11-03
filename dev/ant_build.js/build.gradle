@@ -25,7 +25,7 @@ repositories {
         }
     } else {
         maven {
-            url ("http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/")
+            url ("https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/")
             metadataSources {
                 mavenPom()
                 artifact()

@@ -46,7 +46,7 @@ fetch.oss.ibm.source.repository: \
   aQute.bnd.repository.maven.provider.MavenBndRepository; \
     name              = RemoteIBMSource; \
     local             = ~/.ibmdhe/repository; \
-    releaseUrl        = http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/; \
+    releaseUrl        = https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/; \
     index             = ${build}/oss_ibm_source_dependencies.maven
 
 fetch.oss.repository: \
@@ -60,7 +60,7 @@ fetch.oss.ibm.repository: \
   aQute.bnd.repository.maven.provider.MavenBndRepository; \
     name              = RemoteIBM; \
     local             = ~/.ibmdhe/repository; \
-    releaseUrl        = http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/; \
+    releaseUrl        = https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/; \
     index             = ${build}/oss_ibm.maven
 
 fetch.ibm.java.repository:
