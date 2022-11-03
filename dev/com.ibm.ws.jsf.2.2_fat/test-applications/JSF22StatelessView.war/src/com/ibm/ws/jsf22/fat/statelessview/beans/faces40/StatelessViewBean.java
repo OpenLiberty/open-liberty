@@ -8,13 +8,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-/**
- * A simple managed bean that will be used to test
- * a view scoped managed bean.
- *
- * @author Bill Lucy
- *
- */
 package com.ibm.ws.jsf22.fat.statelessview.beans.faces40;
 
 import java.io.Serializable;
@@ -24,6 +17,18 @@ import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
+/**
+ * A simple CDI bean that will be used to test
+ * stateless views.
+ *
+ * When running in the EE10 repeat, ManagedBeans are no longer available as of Faces 4.0. As such
+ * this bean is a CDI bean. The bean has been explicitly put in the RequestScope as that is the default
+ * scope when this bean was a @ManagedBean and did not explicitly state a scope. The default scope for a CDI
+ * bean is @Dependent so using @RequestScoped ensures the test is testing the same functionality during the EE10 repeat.
+ *
+ * @author Bill Lucy
+ *
+ */
 @Named
 @RequestScoped
 public class StatelessViewBean implements Serializable {
