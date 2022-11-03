@@ -94,6 +94,7 @@ public class JCABVTTest extends FATServletClient {
 
     @Test
     public void testActivationSpec() throws Exception {
+        System.out.println("");
         runTest(server, "bvtapp", "testActivationSpec");
     }
 
