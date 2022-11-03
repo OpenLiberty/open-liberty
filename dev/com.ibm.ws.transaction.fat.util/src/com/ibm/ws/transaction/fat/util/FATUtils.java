@@ -269,15 +269,20 @@ public class FATUtils {
 		stopServers((String[])null, servers);
 	}
 
-	public static String runWithRetries(Repeatable r) throws Exception {
+		
+	public static <T> T runWithRetries(Repeatable<T> r) throws Exception {
+		return runWithRetries(RETRY_COUNT, RETRY_INTERVAL, r);
+	}
+
+	public static <T> T runWithRetries(int retryCount, int retryInterval, Repeatable<T> r) throws Exception {
         int attempt = 0;
         while (true) {
             try {
             	return r.execute();
             } catch (Exception e) {
                 Log.error(FATUtils.class, "runWithRetries", e);
-                if (++attempt < RETRY_COUNT) {
-                    Thread.sleep(RETRY_INTERVAL);
+                if (++attempt < retryCount) {
+                    Thread.sleep(retryInterval);
                 } else {
                     throw e;
                 }
@@ -286,7 +291,7 @@ public class FATUtils {
 	}
 	
 	@FunctionalInterface
-	public interface Repeatable {
-		String execute() throws Exception;
+	public interface Repeatable<T> {
+		T execute() throws Exception;
 	}
 }
