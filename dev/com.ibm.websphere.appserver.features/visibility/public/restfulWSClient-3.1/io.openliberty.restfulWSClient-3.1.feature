@@ -12,6 +12,7 @@ IBM-API-Package: jakarta.ws.rs; type="spec", \
  org.jboss.resteasy.annotations; type="internal", \
  org.jboss.resteasy.client.jaxrs; type="internal", \
  org.jboss.resteasy.client.jaxrs.internal; type="internal", \
+ org.jboss.resteasy.plugins.providers.multipart; type="internal", \
  org.jboss.resteasy.plugins.providers.sse.client; type="internal", \
  org.jboss.resteasy.plugins.providers.sse; type="internal", \
  org.jboss.resteasy.plugins.providers; type="internal", \

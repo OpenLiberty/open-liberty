@@ -16,7 +16,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    JavaSeBootstrapContainerTest.class
+    JavaSeBootstrapContainerTest.class,
+    MultipartTest.class
 })
 public class FATSuite {
 }

@@ -158,6 +158,7 @@ Private-Package: \
 
 instrument.ffdc: false
 instrument.classesExcludes: \
+  io/openliberty/restfulWS/utils/RestfulWSUtils.class, \
   org/jboss/resteasy/client/jaxrs/internal/ClientConfiguration.class, \
   org/jboss/resteasy/client/jaxrs/internal/ClientInvocationBuilder.class, \
   org/jboss/resteasy/client/jaxrs/internal/ClientWebTarget.class, \
@@ -168,6 +169,7 @@ instrument.classesExcludes: \
   org/jboss/resteasy/core/ResteasyContext.class, \
   org/jboss/resteasy/plugins/delegates/CookieHeaderDelegate.class, \
   org/jboss/resteasy/plugins/delegates/MediaTypeHeaderDelegate.class, \
+  org/jboss/resteasy/plugins/providers/multipart/IAttachmentImpl.class, \
   org/jboss/resteasy/specimpl/MultivaluedTreeMap.class, \
   org/jboss/resteasy/spi/EntityOutputStream.class, \
   org/jboss/resteasy/util/snapshot/SnapshotMap.class, \
