@@ -15,7 +15,14 @@
     <artifactId>tck.runner.tck</artifactId>
     <version>3.0</version>
     <name>MicroProfile Telemetry 1.0 TCK Runner TCK Module</name>
-
+    
+    <repositories>
+        <repository>
+            <id>eclipse-staging</id>
+            <url>https://oss.sonatype.org/content/repositories/orgeclipsemicroprofile-1626/</url>
+        </repository>
+    </repositories>
+    
     <properties>
         <microprofile.rest.client.version>3.0</microprofile.rest.client.version>
         <arquillian.version>1.7.0.Alpha13</arquillian.version>
@@ -58,7 +65,7 @@
         <dependency>
             <groupId>org.eclipse.microprofile.telemetry.tracing</groupId>
             <artifactId>microprofile-telemetry-tracing-tck</artifactId>
-            <version>1.0-RC7</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>io.opentelemetry</groupId>
