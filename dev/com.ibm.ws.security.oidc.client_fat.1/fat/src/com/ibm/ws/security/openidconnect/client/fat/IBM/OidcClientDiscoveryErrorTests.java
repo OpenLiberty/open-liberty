@@ -23,14 +23,12 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTestHelpers;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.DiscoveryUtils;
-import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 import com.ibm.ws.security.openidconnect.client.fat.CommonTests.GenericOidcClientTests;
 import com.meterware.httpunit.WebConversation;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -126,184 +124,6 @@ public class OidcClientDiscoveryErrorTests extends CommonTest {
         // try to wait for discovery to have populated the RP config
         // Don't stop if this fails (there is a chance it could be ready by the time the tests actually run
         DiscoveryUtils.waitForRPDiscoveryToBeReady(testSettings);
-
-    }
-
-    /**
-     * Test Purpose:
-     * <OL>
-     * <LI>With discovery enabled on the RP, attempt to access a test servlet specifying valid OP url
-     * <LI>The RP keystore and truststore is not configured.
-     * <LI>The login attempt should fail with appropriate error.
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>Client connection is refused as RP server is not listening on SSL port
-     * <LI>due to missing keystore and truststore with the following message logged:
-     * <LI>CWWKS1524E: The OpenID Connect client failed to obtain OpenID Connect Provider information through the discovery
-     * endpoint...
-     * </OL>
-     */
-    @Test
-    @AllowedFFDC({ "java.security.cert.CertPathBuilderException", "sun.security.validator.ValidatorException", "javax.net.ssl.SSLHandshakeException", "com.ibm.websphere.ssl.SSLException" })
-    public void OidcClientDiscoverySSLTest_NoRPTrustStore() throws Exception {
-
-        // have to keep the RP reconfig since we're altering the server wide SSL settings
-        // Reconfigure RP server with SSL settings
-        testRPServer.reconfigServer("rp_server_basic_ssl_no_truststore.xml", _testName, Constants.JUNIT_REPORTING, null);
-
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setScope("openid profile");
-
-        List<validationData> expectations = vData.addSuccessStatusCodes(null, Constants.GET_LOGIN_PAGE);
-
-        expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.EXCEPTION_MESSAGE, Constants.STRING_CONTAINS, "Should have received an exception for a connection refused exception", null, "java.net.ConnectException");
-
-        testRPServer.addIgnoredServerExceptions("CWWKG0058E");
-
-        WebConversation wc = new WebConversation();
-        genericRP(_testName, wc, updatedTestSettings, test_LOGIN_PAGE_ONLY, expectations);
-    }
-
-    /**
-     * Test Purpose:
-     * <OL>
-     * <LI>With discovery enabled on the RP, attempt to access a test servlet specifying valid OP url. The RP
-     * <LI>trust store does not contain proper trust for discovery of the OP endpoints. The oidcClient
-     * <LI>In this scenario, the consent form is disabled in OP by setting the oauthProvider attribute
-     * <LI>in server.xml as: autoAuthorize="true". The RP truststore is missing the certificate for OP.
-     * <LI>The login attempt should fail with appropriate error.
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The authentication request triggers the discovery process and discovery should fail and produce error messages.
-     * <LI>For serviceability, the following messages appear in the messages.log file:
-     * <LI>CWWKS1524E: The OpenID Connect client failed to obtain OpenID Connect Provider information through the discovery
-     * endpoint...
-     * </OL>
-     */
-    @Test
-    // TODO: (chc - enabling now that we have more ssl restart logic in the test framework - this may be ok now.)
-    // TODO: (maybe issue resolved) This test encounters an error when run with other tests as SSL update timing differs.
-    @ExpectedFFDC("javax.net.ssl.SSLHandshakeException")
-    @AllowedFFDC({ "java.security.cert.CertPathBuilderException", "sun.security.validator.ValidatorException", "com.ibm.security.cert.IBMCertPathBuilderException", "com.ibm.websphere.ssl.SSLException" })
-    public void OidcClientDiscoverySSLTest_BadRPTrustStore() throws Exception {
-
-        // have to keep the reconfig's since we're altering the server wide SSL settings
-        // Reconfigure RP server with SSL settings
-        testRPServer.reconfigServer("rp_server_basic_ssl_bad_truststore.xml", _testName, Constants.JUNIT_REPORTING, null);
-
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setScope("openid profile");
-
-        List<validationData> expectations = validationTools.add401Responses(Constants.GET_LOGIN_PAGE);
-        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.GET_LOGIN_PAGE, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "RP Server messages.log should contain msg indicating an SSL handshake error occurred.", "CWPKI0823E: SSL HANDSHAKE FAILURE.*");
-        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.GET_LOGIN_PAGE, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "RP Server messages.log did not contain CWWKS1525E message indicating a successful response was not returned from the discovery endpoint.", MessageConstants.CWWKS1525E_SUCCESSFUL_RESPONSE_NOT_RETURNED);
-        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.GET_LOGIN_PAGE, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "RP Server messages.log did not contain CWWKS1524E message saying we failed to obtain info from the OP.", MessageConstants.CWWKS1524E_DISCOVERY_FAILED_TO_RETURN_ENDPOINT);
-        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.GET_LOGIN_PAGE, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "RP Server messages.log did not contain CWWKS1534E message saying the authorization endpoint URL is missing.", MessageConstants.CWWKS1534E_MISSING_AUTH_ENDPOINT);
-
-        WebConversation wc = new WebConversation();
-
-        genericRP(_testName, wc, updatedTestSettings, test_LOGIN_PAGE_ONLY, expectations);
-
-    }
-
-    /**
-     * Test Purpose:
-     * <OL>
-     * <LI>With discovery configured at the RP, attempt to access a test servlet specifying valid OP url with bad OP trust store
-     * <LI>results in 401 error with messages logged.
-     * <LI>In this scenario, the consent form is disabled in OP by setting the oauthProvider attribute
-     * <LI>in server.xml as: autoAuthorize="true". The OP truststore is missing the certificate for RP.
-     * <LI>clientAuthentication is set to "true" for OP server.
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The discovery should be attempted and should fail with 401 when the RP tries process the first authentication request
-     * and the following messages should be logged
-     * <LI>CWWKS1525E: A successful response was not returned from the URL <discovery endpoint>
-     * <LI>CWWKS1524E: The OpenID Connect client failed to obtain OpenID Connect Provider information through the discovery
-     * endpoint...
-     * </OL>
-     */
-    // different versions of java issue different exceptions - allow appropriate exceptions from any of our supported java versions
-    @AllowedFFDC({ "java.net.SocketException", "javax.net.ssl.SSLHandshakeException", "javax.net.ssl.SSLException", "javax.net.ssl.SSLProtocolException" })
-    @Test
-    public void OidcClientDiscoverySSLTest_BadOPTrustStoreWithClientAuth() throws Exception {
-
-        // have to keep the reconfig since we're altering the server wide SSL settings
-        // Reconfigure OP server with SSL settings
-        testOPServer.reconfigServer("op_server_ssl_bad_truststore_clientAuth.xml", _testName, Constants.JUNIT_REPORTING, null);
-
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setScope("openid profile");
-        updatedTestSettings.setTestURL(updatedTestSettings.getTestURL().replace(Constants.DEFAULT_SERVLET, "simple/goodSSL"));
-
-        List<validationData> expectations = vData.addSuccessStatusCodes(null);
-
-        WebConversation wc = new WebConversation();
-
-        try {
-            genericRP(_testName, wc, updatedTestSettings, test_LOGIN_PAGE_ONLY, expectations);
-        } catch (Exception e) {
-            // there can be one of multiple exceptions thrown for this erroneous
-            // condition - the exceptions vary by JDK - validating the exception
-            // here allows the test to handle instances where we can get one of
-            // multiple possible error better than using an expectation.
-            msgUtils.assertTrueAndLog(_testName, "Expected one of the following in the exception: javax.net.ssl.SSLException, javax.net.ssl.SSLHandshakeException, java.net.SocketException actually received: " + e,
-                    validationTools.foundOneErrorInException(e, "javax.net.ssl.SSLException", "javax.net.ssl.SSLHandshakeException", "java.net.SocketException", "java.io.IOException"));
-
-        }
-
-    }
-
-    /**
-     * Test Purpose:
-     * <OL>
-     * <LI>When the RP is configured with discovery, attempt to access a test servlet specifying valid OP url
-     * <LI>In this scenario, the consent form is disabled in OP by setting the oauthProvider attribute
-     * <LI>in server.xml as: autoAuthorize="true". The OP keystore and truststore is not configured.
-     * <LI>SSL connection from RP to OP is refused and the discovery process cannot complete.
-     * </OL>
-     * <P>
-     * Expected Results:
-     * <OL>
-     * <LI>The login page cannot be displayed and returns 401
-     * <LI>Messages are logged to indicate that discovery did not complete:
-     * <LI>CWWKS1525E: A successful response was not returned from the URL
-     * [https://localhost:8947/oidc/endpoint/OidcConfigSample/.well-known/openid-configuration]. This is the [404] response status
-     * and the [CWOAU0073E: An error was encountered while authenticating a user.
-     * Please try authenticating again, or contact the site administrator if the problem persists.] error from the discovery
-     * request.
-     * <LI>CWWKS1524E: The OpenID Connect client [client01] failed to obtain Open ID Connect Provider endpoint information through
-     * the discovery endpoint URL [https://localhost:8947/oidc/endpoint/OidcConfigSample/.mal-formed/openid-configuration].
-     * Update the configuration for the OpenID Connect client with the correct HTTPS discovery endpoint URL.
-     * </OL>
-     */
-    @AllowedFFDC({ "org.apache.http.conn.HttpHostConnectException", "javax.net.ssl.SSLException", "java.net.SocketException" })
-    @Test
-    public void OidcClientDiscoverySSLTest_NoOPTrustStore() throws Exception {
-
-        // have to keep the reconfig's since we're altering the server wide SSL settings
-        // Reconfigure OP server with SSL settings
-        // NOTE:  The op reconfig will take longer since we're disabling ssl and there is a check in the reconfig logic that will wait for SSL to
-        testOPServer.reconfigServer("op_server_basic_ssl_no_truststore.xml", _testName, false, null);
-
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setScope("openid profile");
-        updatedTestSettings.setTestURL(updatedTestSettings.getTestURL().replace(Constants.DEFAULT_SERVLET, "simple/goodSSL"));
-
-        List<validationData> expectations = vData.addSuccessStatusCodes(null);
-
-        expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.EXCEPTION_MESSAGE, Constants.STRING_CONTAINS, "Should have received an exception for a connection refused exception", null, "java.net.ConnectException");
-        WebConversation wc = new WebConversation();
-
-        testOPServer.addIgnoredServerException("CWWKG0058E");
-
-        genericRP(_testName, wc, updatedTestSettings, test_LOGIN_PAGE_ONLY, expectations);
 
     }
 
