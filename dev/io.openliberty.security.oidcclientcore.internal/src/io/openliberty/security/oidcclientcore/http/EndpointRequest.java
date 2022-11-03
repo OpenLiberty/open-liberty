@@ -28,21 +28,25 @@ import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 
-
 @Component(service = EndpointRequest.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class EndpointRequest {
 
     public static final TraceComponent tc = Tr.register(EndpointRequest.class);
+
     private static final String KEY_SSL_SUPPORT = "sslSupport";
-    private static volatile SSLSupport sslSupport;
+    protected static volatile SSLSupport sslSupport;
 
     @Reference(name = KEY_SSL_SUPPORT, policy = ReferencePolicy.DYNAMIC)
-    protected void setSslSupport(SSLSupport sslSupportSvc) {
+    public void setSslSupport(SSLSupport sslSupportSvc) {
         sslSupport = sslSupportSvc;
     }
 
-    protected void unsetSslSupport(SSLSupport sslSupportSvc) {
+    public void unsetSslSupport(SSLSupport sslSupportSvc) {
         sslSupport = null;
+    }
+
+    public SSLSupport getSSLSupport() {
+        return sslSupport;
     }
 
     public SSLSocketFactory getSSLSocketFactory() {
@@ -57,20 +61,16 @@ public class EndpointRequest {
         return new DiscoveryHandler(sslSocketFactory);
     }
 
-    public JSONObject getProviderDiscoveryMetadata(OidcClientConfig oidcClientConfig) {
+    public JSONObject getProviderDiscoveryMetadata(OidcClientConfig oidcClientConfig) throws OidcClientConfigurationException, OidcDiscoveryException {
         JSONObject discoveryData = null;
-        try {
-            String discoveryUri = oidcClientConfig.getProviderURI();
-            if (discoveryUri == null || discoveryUri.isEmpty()) {
-                String clientId = oidcClientConfig.getClientId();
-                String nlsMessage = Tr.formatMessage(tc, "OIDC_CLIENT_MISSING_PROVIDER_URI", clientId);
-                throw new OidcClientConfigurationException(clientId, nlsMessage);
-            }
-            discoveryUri = addWellKnownSuffixIfNeeded(discoveryUri);
-            discoveryData = fetchProviderMetadataFromDiscoveryUrl(discoveryUri, oidcClientConfig.getClientId());
-        } catch (OidcClientConfigurationException | OidcDiscoveryException e) {
-            Tr.error(tc, e.getMessage());
+        String discoveryUri = oidcClientConfig.getProviderURI();
+        if (discoveryUri == null || discoveryUri.isEmpty()) {
+            String clientId = oidcClientConfig.getClientId();
+            String nlsMessage = Tr.formatMessage(tc, "OIDC_CLIENT_MISSING_PROVIDER_URI", clientId);
+            throw new OidcClientConfigurationException(clientId, nlsMessage);
         }
+        discoveryUri = addWellKnownSuffixIfNeeded(discoveryUri);
+        discoveryData = fetchProviderMetadataFromDiscoveryUrl(discoveryUri, oidcClientConfig.getClientId());
         return discoveryData;
     }
 

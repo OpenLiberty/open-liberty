@@ -35,10 +35,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.ws.security.test.common.CommonTestClass;
+import com.ibm.wsspi.ssl.SSLSupport;
 
+import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoEndpointNotHttpsException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseNot200Exception;
+import io.openliberty.security.oidcclientcore.http.EndpointRequest;
 import io.openliberty.security.oidcclientcore.http.HttpConstants;
 import io.openliberty.security.oidcclientcore.http.OidcClientHttpUtil;
 import test.common.SharedOutputManager;
@@ -57,7 +60,10 @@ public class UserInfoRequestorTest extends CommonTestClass {
 
     private static final String userInfoJSONResponseEntity = "{\"sub\":\"" + sub + "\",\"iss\":\"" + iss + "\",\"name\":\"" + name + "\"}";
 
+    private final OidcClientConfig oidcClientConfig = mockery.mock(OidcClientConfig.class);
+    private final EndpointRequest endpointRequestClass = mockery.mock(EndpointRequest.class);
     private final OidcClientHttpUtil oidcClientHttpUtil = mockery.mock(OidcClientHttpUtil.class);
+    private final SSLSupport sslSupport = mockery.mock(SSLSupport.class);
     private final SSLSocketFactory sslSocketFactory = mockery.mock(SSLSocketFactory.class);
     private final HttpResponse httpResponse = mockery.mock(HttpResponse.class);
     private final HttpGet httpGet = mockery.mock(HttpGet.class);
@@ -78,6 +84,13 @@ public class UserInfoRequestorTest extends CommonTestClass {
         userInfoResponseMap = new HashMap<String, Object>();
         userInfoResponseMap.put(HttpConstants.RESPONSEMAP_CODE, httpResponse);
         userInfoResponseMap.put(HttpConstants.RESPONSEMAP_METHOD, httpGet);
+
+        mockery.checking(new Expectations() {
+            {
+                allowing(endpointRequestClass).getSSLSocketFactory();
+                will(returnValue(sslSocketFactory));
+            }
+        });
     }
 
     @After
@@ -93,7 +106,7 @@ public class UserInfoRequestorTest extends CommonTestClass {
 
     @Test
     public void test_requestUserInfo() throws Exception {
-        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(clientId, userInfoEndpoint, accessToken, sslSocketFactory).build();
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(endpointRequestClass, oidcClientConfig, userInfoEndpoint, accessToken).build();
         userInfoRequestor.oidcClientHttpUtil = oidcClientHttpUtil;
 
         BasicHttpEntity httpEntity = createBasicHttpEntity(userInfoJSONResponseEntity, HttpConstants.APPLICATION_JSON);
@@ -116,7 +129,7 @@ public class UserInfoRequestorTest extends CommonTestClass {
     }
 
     public void test_requestUserInfo_withHostnameVerification() throws Exception {
-        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(clientId, userInfoEndpoint, accessToken, sslSocketFactory).hostnameVerification(true).build();
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(endpointRequestClass, oidcClientConfig, userInfoEndpoint, accessToken).hostnameVerification(true).build();
         userInfoRequestor.oidcClientHttpUtil = oidcClientHttpUtil;
 
         BasicHttpEntity httpEntity = createBasicHttpEntity(userInfoJSONResponseEntity, HttpConstants.APPLICATION_JSON);
@@ -139,7 +152,7 @@ public class UserInfoRequestorTest extends CommonTestClass {
     }
 
     public void test_requestUserInfo_useSystemPropertiesForHttpClientConnections() throws Exception {
-        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(clientId, userInfoEndpoint, accessToken, sslSocketFactory).useSystemPropertiesForHttpClientConnections(true).build();
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(endpointRequestClass, oidcClientConfig, userInfoEndpoint, accessToken).useSystemPropertiesForHttpClientConnections(true).build();
         userInfoRequestor.oidcClientHttpUtil = oidcClientHttpUtil;
 
         BasicHttpEntity httpEntity = createBasicHttpEntity(userInfoJSONResponseEntity, HttpConstants.APPLICATION_JSON);
@@ -162,7 +175,7 @@ public class UserInfoRequestorTest extends CommonTestClass {
     }
 
     public void test_requestUserInfo_withHostnameVerificationAndUseSystemPropertiesForHttpClientConnections() throws Exception {
-        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(clientId, userInfoEndpoint, accessToken, sslSocketFactory).hostnameVerification(true).useSystemPropertiesForHttpClientConnections(true).build();
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(endpointRequestClass, oidcClientConfig, userInfoEndpoint, accessToken).hostnameVerification(true).useSystemPropertiesForHttpClientConnections(true).build();
         userInfoRequestor.oidcClientHttpUtil = oidcClientHttpUtil;
 
         BasicHttpEntity httpEntity = createBasicHttpEntity(userInfoJSONResponseEntity, HttpConstants.APPLICATION_JSON);
@@ -186,14 +199,20 @@ public class UserInfoRequestorTest extends CommonTestClass {
 
     @Test(expected = UserInfoEndpointNotHttpsException.class)
     public void test_requestUserInfo_urlNotHTTPS() throws Exception {
-        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(clientId, "http://superfoo", accessToken, sslSocketFactory).build();
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(endpointRequestClass, oidcClientConfig, "http://superfoo", accessToken).build();
+        mockery.checking(new Expectations() {
+            {
+                one(oidcClientConfig).getClientId();
+                will(returnValue(clientId));
+            }
+        });
 
         userInfoRequestor.requestUserInfo();
     }
 
     @Test(expected = UserInfoResponseException.class)
     public void test_requestUserInfo_httpResponseIsNull() throws Exception {
-        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(clientId, userInfoEndpoint, accessToken, sslSocketFactory).build();
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(endpointRequestClass, oidcClientConfig, userInfoEndpoint, accessToken).build();
         userInfoRequestor.oidcClientHttpUtil = oidcClientHttpUtil;
 
         userInfoResponseMap.put(HttpConstants.RESPONSEMAP_CODE, null);
@@ -209,7 +228,7 @@ public class UserInfoRequestorTest extends CommonTestClass {
 
     @Test(expected = UserInfoResponseException.class)
     public void test_requestUserInfo_responseHasMalformedJSON() throws Exception {
-        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(clientId, userInfoEndpoint, accessToken, sslSocketFactory).build();
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(endpointRequestClass, oidcClientConfig, userInfoEndpoint, accessToken).build();
         userInfoRequestor.oidcClientHttpUtil = oidcClientHttpUtil;
 
         BasicHttpEntity httpEntity = createBasicHttpEntity("notJSON", HttpConstants.APPLICATION_JSON);
@@ -231,7 +250,7 @@ public class UserInfoRequestorTest extends CommonTestClass {
 
     @Test(expected = UserInfoResponseNot200Exception.class)
     public void test_requestUserInfo_responseStatusCodeNot200() throws Exception {
-        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(clientId, userInfoEndpoint, accessToken, sslSocketFactory).build();
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(endpointRequestClass, oidcClientConfig, userInfoEndpoint, accessToken).build();
         userInfoRequestor.oidcClientHttpUtil = oidcClientHttpUtil;
 
         BasicHttpEntity httpEntity = createBasicHttpEntity(userInfoJSONResponseEntity, HttpConstants.APPLICATION_JSON);
@@ -253,7 +272,7 @@ public class UserInfoRequestorTest extends CommonTestClass {
 
     @Test
     public void test_requestUserInfo_contentTypeUnknown() throws Exception {
-        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(clientId, userInfoEndpoint, accessToken, sslSocketFactory).build();
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(endpointRequestClass, oidcClientConfig, userInfoEndpoint, accessToken).build();
         userInfoRequestor.oidcClientHttpUtil = oidcClientHttpUtil;
 
         BasicHttpEntity httpEntity = createBasicHttpEntity(userInfoJSONResponseEntity, "unknownContentType");

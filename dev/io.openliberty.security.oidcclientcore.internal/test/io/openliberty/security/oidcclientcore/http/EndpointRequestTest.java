@@ -11,7 +11,7 @@
 package io.openliberty.security.oidcclientcore.http;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import javax.net.ssl.SSLSocketFactory;
 
@@ -29,6 +29,7 @@ import com.ibm.ws.security.test.common.CommonTestClass;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.discovery.DiscoveryHandler;
 import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
+import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import test.common.SharedOutputManager;
 
@@ -42,7 +43,7 @@ public class EndpointRequestTest extends CommonTestClass {
 
     private final String CWWKS2401E_OIDC_CLIENT_CONFIGURATION_ERROR = "CWWKS2401E";
     private final String CWWKS2403E_DISCOVERY_EXCEPTION = "CWWKS2403E";
-    private final String CWWKS2404E_OIDC_CLIENT_MISSING_PROVIDER_URI = "CWWKS2404E";
+    private final String CWWKS2404W_OIDC_CLIENT_MISSING_PROVIDER_URI = "CWWKS2404W";
 
     private final String clientId = "myOidcClientId";
     private final String authorizationEndpointUrl = "https://localhost:8020/oidc/op/authorize";
@@ -99,19 +100,18 @@ public class EndpointRequestTest extends CommonTestClass {
     }
 
     @Test
-    public void test_getProviderDiscoveryMetadata_missingProviderUri() {
+    public void test_getProviderDiscoveryMetadata_missingProviderUri() throws Exception {
+        mockery.checking(new Expectations() {
+            {
+                one(config).getProviderURI();
+                will(returnValue(null));
+            }
+        });
         try {
-            mockery.checking(new Expectations() {
-                {
-                    one(config).getProviderURI();
-                    will(returnValue(null));
-                }
-            });
             JSONObject result = endpointRequest.getProviderDiscoveryMetadata(config);
-            assertNull("Result should not have been null but got " + result, result);
-            verifyLogMessage(outputMgr, CWWKS2401E_OIDC_CLIENT_CONFIGURATION_ERROR + ".+" + CWWKS2404E_OIDC_CLIENT_MISSING_PROVIDER_URI);
-        } catch (Exception e) {
-            outputMgr.failWithThrowable(testName.getMethodName(), e);
+            fail("Should have thrown an exception but got " + result);
+        } catch (OidcClientConfigurationException e) {
+            verifyException(e, CWWKS2401E_OIDC_CLIENT_CONFIGURATION_ERROR + ".+" + CWWKS2404W_OIDC_CLIENT_MISSING_PROVIDER_URI);
         }
     }
 
@@ -136,22 +136,21 @@ public class EndpointRequestTest extends CommonTestClass {
     }
 
     @Test
-    public void test_getProviderDiscoveryMetadata_discoveryThrowsException() throws OidcDiscoveryException {
+    public void test_getProviderDiscoveryMetadata_discoveryThrowsException() throws Exception {
         providerUrl = providerUrl + "/" + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
+        mockery.checking(new Expectations() {
+            {
+                one(config).getProviderURI();
+                will(returnValue(providerUrl));
+                one(mockedHttpUtils).getHttpJsonRequest(sslSocketFactory, providerUrl, true, false);
+                will(returnValue("Not JSON"));
+            }
+        });
         try {
-            mockery.checking(new Expectations() {
-                {
-                    one(config).getProviderURI();
-                    will(returnValue(providerUrl));
-                    one(mockedHttpUtils).getHttpJsonRequest(sslSocketFactory, providerUrl, true, false);
-                    will(returnValue("Not JSON"));
-                }
-            });
             JSONObject result = endpointRequest.getProviderDiscoveryMetadata(config);
-            assertNull("Result should not have been null but got " + result, result);
-            verifyLogMessage(outputMgr, CWWKS2403E_DISCOVERY_EXCEPTION + ".+" + "Unexpected character");
-        } catch (Exception e) {
-            outputMgr.failWithThrowable(testName.getMethodName(), e);
+            fail("Should have thrown an exception but got " + result);
+        } catch (OidcDiscoveryException e) {
+            verifyException(e, CWWKS2403E_DISCOVERY_EXCEPTION + ".+" + "Unexpected character");
         }
     }
 

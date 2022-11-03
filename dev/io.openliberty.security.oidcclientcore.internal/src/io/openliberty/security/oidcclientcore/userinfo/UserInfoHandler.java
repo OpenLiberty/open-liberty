@@ -12,13 +12,13 @@ package io.openliberty.security.oidcclientcore.userinfo;
 
 import java.util.Map;
 
-import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
-import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
-import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
+import io.openliberty.security.oidcclientcore.config.MetadataUtils;
+import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
+import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseException;
 import io.openliberty.security.oidcclientcore.http.EndpointRequest;
 import io.openliberty.security.oidcclientcore.userinfo.UserInfoRequestor.Builder;
@@ -27,14 +27,9 @@ public class UserInfoHandler extends EndpointRequest {
 
     public static final TraceComponent tc = Tr.register(UserInfoHandler.class);
 
-    public Map<String, Object> getUserInfoClaims(OidcClientConfig oidcClientConfig, String accessToken) throws UserInfoResponseException {
-        String userInfoEndpoint = getUserInfoEndpoint(oidcClientConfig);
-        if (userInfoEndpoint == null || userInfoEndpoint.isEmpty()) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Failed to find a UserInfo endpoint in the client configuration or discovery data");
-            }
-            return null;
-        }
+    public Map<String, Object> getUserInfoClaims(OidcClientConfig oidcClientConfig,
+                                                 String accessToken) throws UserInfoResponseException, OidcDiscoveryException, OidcClientConfigurationException {
+        String userInfoEndpoint = MetadataUtils.getUserInfoEndpoint(oidcClientConfig);
         UserInfoRequestor userInfoRequester = createUserInfoRequestor(userInfoEndpoint, oidcClientConfig, accessToken);
         UserInfoResponse userInfoResponse = userInfoRequester.requestUserInfo();
         if (userInfoResponse != null) {
@@ -43,41 +38,8 @@ public class UserInfoHandler extends EndpointRequest {
         return null;
     }
 
-    String getUserInfoEndpoint(OidcClientConfig oidcClientConfig) {
-        String userInfoEndpoint = getUserInfoEndpointFromProviderMetadata(oidcClientConfig);
-        if (userInfoEndpoint == null) {
-            userInfoEndpoint = getUserInfoEndpointFromDiscoveryMetadata(oidcClientConfig);
-        }
-        return userInfoEndpoint;
-    }
-
-    String getUserInfoEndpointFromProviderMetadata(OidcClientConfig oidcClientConfig) {
-        OidcProviderMetadata providerMetadata = oidcClientConfig.getProviderMetadata();
-        if (providerMetadata != null) {
-            // Provider metadata overrides properties discovered via providerUri
-            String userInfoEndpoint = providerMetadata.getUserinfoEndpoint();
-            if (userInfoEndpoint != null && !userInfoEndpoint.isEmpty()) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "UserInfo endpoint found in the provider metadata: [" + userInfoEndpoint + "]");
-                }
-                return userInfoEndpoint;
-            }
-        }
-        return null;
-    }
-
-    String getUserInfoEndpointFromDiscoveryMetadata(OidcClientConfig oidcClientConfig) {
-        String userInfoEndpoint = null;
-        JSONObject discoveryData = getProviderDiscoveryMetadata(oidcClientConfig);
-        if (discoveryData != null) {
-            userInfoEndpoint = (String) discoveryData.get(OidcDiscoveryConstants.METADATA_KEY_USERINFO_ENDPOINT);
-        }
-        return userInfoEndpoint;
-    }
-
-    UserInfoRequestor createUserInfoRequestor(String userInfoEndpoint, OidcClientConfig oidcClientConfig, String accessToken) {
-        Builder builder = new UserInfoRequestor.Builder(oidcClientConfig.getClientId(), userInfoEndpoint, accessToken, getSSLSocketFactory());
-        // TODO - set JWT response signature algorithm and signing key
+    UserInfoRequestor createUserInfoRequestor(String userInfoEndpoint, OidcClientConfig oidcClientConfig, String accessToken) throws OidcDiscoveryException {
+        Builder builder = new UserInfoRequestor.Builder(this, oidcClientConfig, userInfoEndpoint, accessToken);
         return builder.build();
     }
 

@@ -178,7 +178,6 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException" })
     @Test
     public void ConfigurationTests_noProviderURI_withoutProviderMetadata() throws Exception {
 
@@ -194,10 +193,8 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, url, "Did not fail to land on " + url));
         expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorize message."));
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2401E_INVALID_CLIENT_CONFIG, "Did not receive an error message stating that the client config is invalid"));
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2404E_PROVIDERURI_MISSING_NO_PROVIDERMETADATA, "Did not receive an error message stating that the providerURI and provider metadata are missing."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2404W_PROVIDERURI_MISSING, "Did not receive an error message stating that the providerURI is missing."));
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2400E_AUTHORIZATION_REQ_FAILED, "Did not receive an error message stating that the authorization request failed."));
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2403E_ERROR_DURING_DISCOVERY, "Did not receive an error message stating that there was an error during discovery."));
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2405E_PROVIDERMETADATA_MISSING_AUTHENDPOINT, "Did not receive an error message stating that the authorization endpoint is missing"));
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1652A_AUTH_SEND_FAILURE, "Did not receive an error message stating that Authentication failed with a SEND_FAILURE."));
 
         validationUtils.validateResult(response, expectations);
@@ -210,7 +207,6 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException" }) // TODO remove this once 22634 is resolved
     @Test
     public void ConfigurationTests_noProviderURI_withProviderMetadata() throws Exception {
 
@@ -320,7 +316,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorize message."));
 
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1406E_INVALID_CLIENT_CREDENTIAL, "Did not receive an error message stating that the client credential was invalid."));
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2416E_FAILED_TO_REACH_ENdPOINT, "Did not receive an error message stating that we couldn't react the token endpoint."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2416E_FAILED_TO_REACH_ENDPOINT, "Did not receive an error message stating that we couldn't react the token endpoint."));
         expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWOAU0038E_CLIENT_COULD_NOT_BE_VERIFIED, "Did not receive an error message stating that the client could not be verified."));
 
         validationUtils.validateResult(response, expectations);

@@ -25,19 +25,21 @@ Import-Package: \
 
 Export-Package: \
 	io.openliberty.security.oidcclientcore.authentication, \
-	io.openliberty.security.oidcclientcore.discovery, \
 	io.openliberty.security.oidcclientcore.client, \
+	io.openliberty.security.oidcclientcore.config, \
+	io.openliberty.security.oidcclientcore.discovery, \
 	io.openliberty.security.oidcclientcore.exceptions, \
-	io.openliberty.security.oidcclientcore.storage, \
-	io.openliberty.security.oidcclientcore.utils, \
 	io.openliberty.security.oidcclientcore.http, \
+	io.openliberty.security.oidcclientcore.logout, \
+	io.openliberty.security.oidcclientcore.storage, \
 	io.openliberty.security.oidcclientcore.token, \
 	io.openliberty.security.oidcclientcore.userinfo, \
-	io.openliberty.security.oidcclientcore.logout
+	io.openliberty.security.oidcclientcore.utils
 
 -dsannotations: \
 	io.openliberty.security.oidcclientcore.http.EndpointRequest,\
-	io.openliberty.security.oidcclientcore.token.TokenResponseValidator
+	io.openliberty.security.oidcclientcore.token.TokenResponseValidator,\
+	io.openliberty.security.oidcclientcore.config.MetadataUtils
 
 -buildpath: \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\

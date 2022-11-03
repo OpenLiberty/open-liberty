@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.net.ssl.SSLSocketFactory;
-
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
@@ -26,49 +24,57 @@ import org.apache.http.NameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtContext;
+import org.jose4j.jwx.JsonWebStructure;
 
 import com.ibm.json.java.JSONObject;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.security.common.jwt.JwtParsingUtils;
+import io.openliberty.security.common.jwt.jwk.RemoteJwkData;
 import io.openliberty.security.common.jwt.jws.JwsSignatureVerifier;
+import io.openliberty.security.common.jwt.jws.JwsVerificationKeyHelper;
+import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
+import io.openliberty.security.oidcclientcore.config.MetadataUtils;
+import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
+import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoEndpointNotHttpsException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseNot200Exception;
+import io.openliberty.security.oidcclientcore.http.EndpointRequest;
 import io.openliberty.security.oidcclientcore.http.HttpConstants;
 import io.openliberty.security.oidcclientcore.http.OidcClientHttpUtil;
 
 public class UserInfoRequestor {
 
-    private final String clientId;
+    public static final TraceComponent tc = Tr.register(UserInfoRequestor.class);
+
+    private final EndpointRequest endpointRequestClass;
+    private final OidcClientConfig oidcClientConfig;
     private final String userInfoEndpoint;
     private final String accessToken;
-    private final SSLSocketFactory sslSocketFactory;
 
     private final List<NameValuePair> params;
     private final boolean hostnameVerification;
     private final boolean useSystemPropertiesForHttpClientConnections;
-    private final String jwtResponseSignatureAlgorithm;
-    private final Key jwtResponseSignatureKey;
 
     OidcClientHttpUtil oidcClientHttpUtil = OidcClientHttpUtil.getInstance();
 
     private UserInfoRequestor(Builder builder) {
-        this.clientId = builder.clientId;
+        this.endpointRequestClass = builder.endpointRequestClass;
+        this.oidcClientConfig = builder.oidcClientConfig;
         this.userInfoEndpoint = builder.userInfoEndpoint;
         this.accessToken = builder.accessToken;
-        this.sslSocketFactory = builder.sslSocketFactory;
 
         this.hostnameVerification = builder.hostnameVerification;
         this.useSystemPropertiesForHttpClientConnections = builder.useSystemPropertiesForHttpClientConnections;
-        this.jwtResponseSignatureAlgorithm = builder.jwtResponseSignatureAlgorithm;
-        this.jwtResponseSignatureKey = builder.jwtResponseSignatureKey;
 
         this.params = new ArrayList<NameValuePair>();
     }
 
     public UserInfoResponse requestUserInfo() throws UserInfoResponseException {
         if (!userInfoEndpoint.toLowerCase().startsWith(HttpConstants.HTTPS_SCHEME)) {
-            throw new UserInfoEndpointNotHttpsException(userInfoEndpoint, clientId);
+            throw new UserInfoEndpointNotHttpsException(userInfoEndpoint, oidcClientConfig.getClientId());
         }
 
         int statusCode = 0;
@@ -135,7 +141,7 @@ public class UserInfoRequestor {
         JwtContext jwtContext = JwtParsingUtils.parseJwtWithoutValidation(responseString);
         if (jwtContext != null) {
             // Validate the JWS signature only; extract the claims so they can be verified elsewhere
-            JwsSignatureVerifier signatureVerifier = createSignatureVerifier();
+            JwsSignatureVerifier signatureVerifier = createSignatureVerifier(jwtContext);
             JwtClaims claims = signatureVerifier.validateJwsSignature(jwtContext);
             if (claims != null) {
                 JSONObject jsonClaims = new JSONObject();
@@ -146,11 +152,27 @@ public class UserInfoRequestor {
         return null;
     }
 
-    JwsSignatureVerifier createSignatureVerifier() {
+    JwsSignatureVerifier createSignatureVerifier(JwtContext jwtContext) throws Exception {
+        JsonWebStructure jws = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
+
+        RemoteJwkData jwkData = initializeRemoteJwkData(oidcClientConfig);
+
+        JwsVerificationKeyHelper.Builder keyHelperBuilder = new JwsVerificationKeyHelper.Builder();
+        JwsVerificationKeyHelper keyHelper = keyHelperBuilder.clientId(oidcClientConfig.getClientId()).clientSecret(oidcClientConfig.getClientSecret()).remoteJwkData(jwkData).build();
+
+        Key jwtVerificationKey = keyHelper.getVerificationKey(jws);
+
         io.openliberty.security.common.jwt.jws.JwsSignatureVerifier.Builder verifierBuilder = new JwsSignatureVerifier.Builder();
-        // TODO - get the key and signature algorithm
-        JwsSignatureVerifier signatureVerifier = verifierBuilder.key(jwtResponseSignatureKey).signatureAlgorithm(jwtResponseSignatureAlgorithm).build();
+        JwsSignatureVerifier signatureVerifier = verifierBuilder.key(jwtVerificationKey).signatureAlgorithm(jws.getAlgorithmHeaderValue()).build();
         return signatureVerifier;
+    }
+
+    RemoteJwkData initializeRemoteJwkData(OidcClientConfig oidcClientConfig) throws OidcDiscoveryException, OidcClientConfigurationException {
+        RemoteJwkData jwkData = new RemoteJwkData();
+        String jwksUri = MetadataUtils.getJwksUri(oidcClientConfig);
+        jwkData.setJwksUri(jwksUri);
+        jwkData.setSslSupport(endpointRequestClass.getSSLSupport());
+        return jwkData;
     }
 
     private Map<String, Object> getFromUserInfoEndpoint() throws HttpException, IOException {
@@ -159,28 +181,26 @@ public class UserInfoRequestor {
                                                   null,
                                                   null,
                                                   accessToken,
-                                                  sslSocketFactory,
+                                                  endpointRequestClass.getSSLSocketFactory(),
                                                   hostnameVerification,
                                                   useSystemPropertiesForHttpClientConnections);
     }
 
     public static class Builder {
 
-        private final String clientId;
+        private final EndpointRequest endpointRequestClass;
+        private final OidcClientConfig oidcClientConfig;
         private final String userInfoEndpoint;
         private final String accessToken;
-        private final SSLSocketFactory sslSocketFactory;
 
         private boolean hostnameVerification = false;
         private boolean useSystemPropertiesForHttpClientConnections = false;
-        private String jwtResponseSignatureAlgorithm = null;
-        private Key jwtResponseSignatureKey = null;
 
-        public Builder(String clientId, String userInfoEndpoint, String accessToken, SSLSocketFactory sslSocketFactory) {
-            this.clientId = clientId;
+        public Builder(EndpointRequest endpointRequestClass, OidcClientConfig oidcClientConfig, String userInfoEndpoint, String accessToken) {
+            this.endpointRequestClass = endpointRequestClass;
+            this.oidcClientConfig = oidcClientConfig;
             this.userInfoEndpoint = userInfoEndpoint;
             this.accessToken = accessToken;
-            this.sslSocketFactory = sslSocketFactory;
         }
 
         public Builder hostnameVerification(boolean hostnameVerification) {
@@ -190,16 +210,6 @@ public class UserInfoRequestor {
 
         public Builder useSystemPropertiesForHttpClientConnections(boolean useSystemPropertiesForHttpClientConnections) {
             this.useSystemPropertiesForHttpClientConnections = useSystemPropertiesForHttpClientConnections;
-            return this;
-        }
-
-        public Builder jwtResponseSignatureAlgorithm(String jwtResponseSignatureAlgorithm) {
-            this.jwtResponseSignatureAlgorithm = jwtResponseSignatureAlgorithm;
-            return this;
-        }
-
-        public Builder jwtResponseSignatureKey(Key jwtResponseSignatureKey) {
-            this.jwtResponseSignatureKey = jwtResponseSignatureKey;
             return this;
         }
 

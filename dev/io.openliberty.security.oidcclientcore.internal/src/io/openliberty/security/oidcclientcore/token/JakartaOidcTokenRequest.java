@@ -16,7 +16,6 @@ import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -26,8 +25,8 @@ import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
-import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
-import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
+import io.openliberty.security.oidcclientcore.config.MetadataUtils;
+import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
 import io.openliberty.security.oidcclientcore.http.EndpointRequest;
@@ -40,12 +39,10 @@ public class JakartaOidcTokenRequest extends EndpointRequest {
     public static final String AUTH_RESULT_CUSTOM_PROP_TOKEN_RESPONSE = "TOKEN_RESPONSE";
 
     private final OidcClientConfig oidcClientConfig;
-    private final OidcProviderMetadata providerMetadata;
     private final HttpServletRequest request;
 
     public JakartaOidcTokenRequest(OidcClientConfig oidcClientConfig, HttpServletRequest request) {
         this.oidcClientConfig = oidcClientConfig;
-        this.providerMetadata = (oidcClientConfig == null) ? null : oidcClientConfig.getProviderMetadata();
         this.request = request;
     }
 
@@ -87,47 +84,13 @@ public class JakartaOidcTokenRequest extends EndpointRequest {
         }
     }
 
-    @FFDCIgnore(OidcDiscoveryException.class)
+    @FFDCIgnore(OidcClientConfigurationException.class)
     String getTokenEndpoint() throws TokenRequestException {
-        String tokenEndpoint = getTokenEndpointFromProviderMetadata();
-        if (tokenEndpoint == null) {
-            try {
-                tokenEndpoint = getTokenEndpointFromDiscoveryMetadata();
-            } catch (OidcDiscoveryException e) {
-                throw new TokenRequestException(oidcClientConfig.getClientId(), e.getMessage());
-            }
-        }
-        if (tokenEndpoint == null || tokenEndpoint.isEmpty()) {
-            String clientId = oidcClientConfig.getClientId();
-            String message = Tr.formatMessage(tc, "TOKEN_ENDPOINT_MISSING", clientId);
-            throw new TokenRequestException(clientId, message);
-        }
-        return tokenEndpoint;
-    }
-
-    String getTokenEndpointFromProviderMetadata() {
-        if (providerMetadata != null) {
-            // Provider metadata overrides properties discovered via providerUri
-            String tokenEndpoint = providerMetadata.getTokenEndpoint();
-            if (tokenEndpoint != null && !tokenEndpoint.isEmpty()) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Token endpoint found in the provider metadata: [" + tokenEndpoint + "]");
-                }
-                return tokenEndpoint;
-            }
-        }
-        return null;
-    }
-
-    String getTokenEndpointFromDiscoveryMetadata() throws OidcDiscoveryException {
         String tokenEndpoint = null;
-        JSONObject discoveryData = getProviderDiscoveryMetadata(oidcClientConfig);
-        if (discoveryData != null) {
-            tokenEndpoint = (String) discoveryData.get(OidcDiscoveryConstants.METADATA_KEY_TOKEN_ENDPOINT);
-        }
-        if (tokenEndpoint == null) {
-            String nlsMessage = Tr.formatMessage(tc, "DISCOVERY_METADATA_MISSING_VALUE", OidcDiscoveryConstants.METADATA_KEY_TOKEN_ENDPOINT);
-            throw new OidcDiscoveryException(oidcClientConfig.getClientId(), oidcClientConfig.getProviderURI(), nlsMessage);
+        try {
+            tokenEndpoint = MetadataUtils.getTokenEndpoint(oidcClientConfig);
+        } catch (OidcDiscoveryException | OidcClientConfigurationException e) {
+            throw new TokenRequestException(oidcClientConfig.getClientId(), e.getMessage());
         }
         return tokenEndpoint;
     }
