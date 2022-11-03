@@ -48,9 +48,9 @@ public class Scheduler {
      * Inject a ServiceReference for the required/dynamic ScheduledExecutorService. If the service is different than the
      * previous value, we need to queue established monitors to cancel their tasks with the old executor service, and
      * reschedule them with the new one.
-     * 
+     *
      * @param schedulerRef
-     *            ServiceReference for the required/dynamic ScheduledExcecutorService
+     *                         ServiceReference for the required/dynamic ScheduledExcecutorService
      */
 
     @Reference(service = ScheduledExecutorService.class, target = "(deferrable=false)")
@@ -68,9 +68,9 @@ public class Scheduler {
      * dynamic reference, meaning that should the instance of the bound location service go away _and_ there is a
      * replacement service already available/registered, DS will bind to the replacement first (via setLocation) before
      * calling unset to unbind the old one.
-     * 
+     *
      * @param scheduler
-     *            the service to remove.
+     *                      the service to remove.
      */
     protected void unsetScheduledExecutorService(ScheduledExecutorService schedulerRef) {
         scheduledExecutorService.compareAndSet(schedulerRef, null);
@@ -82,10 +82,10 @@ public class Scheduler {
 
     /**
      * Retrieve the scheduler
-     * 
+     *
      * @return bound ScheduledExecutorService
      * @throws IllegalStateException
-     *             if the ScheduledExecutorService is not found
+     *                                   if the ScheduledExecutorService is not found
      */
     public ScheduledExecutorService getScheduledExecutorService() {
         ScheduledExecutorService sRef = scheduledExecutorService.get();
@@ -105,7 +105,17 @@ public class Scheduler {
 
     public static void createNonDeferrable(long sleepInterval, final Object context, final Runnable run) {
         if (null != instance) {
-            instance.getScheduledExecutorService().schedule(new WrappedRunnable(run), sleepInterval, TimeUnit.MILLISECONDS);
+            try {
+                instance.getScheduledExecutorService().schedule(new WrappedRunnable(run), sleepInterval, TimeUnit.MILLISECONDS);
+            } catch (Exception ex) {
+                // if ex is an IllegalStateException the server is likely shutting down so we can just ignore it.
+                if (!(ex instanceof IllegalStateException)) {
+                    throw ex;
+                } else {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "IllegalStateException during createNonDeferrable, server likely shutting down");
+                }
+            }
         }
     }
 
@@ -113,7 +123,7 @@ public class Scheduler {
         if (null != instance) {
             return instance.getExecutorService().submit(new WrappedRunnable(task));
         }
-        
+
         return null;
     }
 
