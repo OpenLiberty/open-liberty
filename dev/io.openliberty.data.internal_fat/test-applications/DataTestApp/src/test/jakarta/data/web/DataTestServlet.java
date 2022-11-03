@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -118,21 +119,21 @@ public class DataTestServlet extends FATServlet {
     public void init(ServletConfig config) throws ServletException {
         // Do not add or remove from this data in tests.
         // Tests must be able to rely on this data always being present.
-        primes.save(new Prime(2, "2", "10", "II", "two"),
-                    new Prime(3, "3", "11", "III", "three"),
-                    new Prime(5, "5", "101", "V", "five"),
-                    new Prime(7, "7", "111", "VII", "seven"),
-                    new Prime(11, "B", "1011", "XI", "eleven"),
-                    new Prime(13, "D", "1101", "XIII", "thirteen"),
-                    new Prime(17, "11", "10001", "XVII", "seventeen"),
-                    new Prime(19, "13", "10011", "XIX", "nineteen"),
-                    new Prime(23, "17", "10111", "XXIII", "twenty-three"),
-                    new Prime(29, "1D", "11101", "XXIX", "twenty-nine"),
-                    new Prime(31, "1F", "11111", "XXXI", "thirty-one"),
-                    new Prime(37, "25", "100101", "XXXVII", "thirty-seven"),
-                    new Prime(41, "29", "101001", "XLI", "forty-one"),
-                    new Prime(43, "2B", "101011", "XLIII", "forty-three"),
-                    new Prime(47, "2F", "101111", "XLVII", "forty-seven"));
+        primes.save(new Prime(2, "2", "10", 1, "II", "two"),
+                    new Prime(3, "3", "11", 2, "III", "three"),
+                    new Prime(5, "5", "101", 2, "V", "five"),
+                    new Prime(7, "7", "111", 3, "VII", "seven"),
+                    new Prime(11, "B", "1011", 3, "XI", "eleven"),
+                    new Prime(13, "D", "1101", 3, "XIII", "thirteen"),
+                    new Prime(17, "11", "10001", 2, "XVII", "seventeen"),
+                    new Prime(19, "13", "10011", 3, "XIX", "nineteen"),
+                    new Prime(23, "17", "10111", 4, "XXIII", "twenty-three"),
+                    new Prime(29, "1D", "11101", 4, "XXIX", "twenty-nine"),
+                    new Prime(31, "1F", "11111", 5, "XXXI", "thirty-one"),
+                    new Prime(37, "25", "100101", 3, "XXXVII", "thirty-seven"),
+                    new Prime(41, "29", "101001", 3, "XLI", "forty-one"),
+                    new Prime(43, "2B", "101011", 4, "XLIII", "forty-three"),
+                    new Prime(47, "2F", "101111", 5, "XLVII", "forty-seven"));
     }
 
     /**
@@ -322,7 +323,15 @@ public class DataTestServlet extends FATServlet {
         assertEquals(p4.firstName, p.firstName);
         assertEquals(p4.lastName, p.lastName);
 
-        // Async find with Collector
+        // Async find with Collector, without pagination
+
+        // Have a collector reduce the results to a count of names.
+        // The database could have done this instead, but it makes a nice, simple example.
+        CompletableFuture<Long> nameCount = personnel.findByFirstNameStartsWith("A", Collectors.counting());
+
+        assertEquals(Long.valueOf(6), nameCount.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+
+        // Async find with Collector, with pagination
 
         // Have a collector reduce the results to a count of names.
         // The database could have done this instead, but it makes a nice, simple example.
@@ -1076,6 +1085,66 @@ public class DataTestServlet extends FATServlet {
         // An empty page lacks keyset values from which to request next/previous pages
         assertEquals(null, page.nextPageable());
         assertEquals(null, page.previousPageable());
+    }
+
+    /**
+     * Obtain keyset cursors from a page of results and use them to obtain pages in forward
+     * and reverse directions.
+     */
+    @Test
+    public void testKeysetPaginationWithCursor() {
+        // Expected order for OrderByEvenDescSumOfBitsDescNumberAsc:
+        // num binary sum even?
+        // 2,  10,     1, true
+        // 31, 11111,  5, false
+        // 23, 10111,  4, false
+        // 29, 11101,  4, false
+        // 43, 101011, 4, false
+        // 7,  111,    3, false
+        // 11, 1011,   3, false
+        // 13, 1101,   3, false
+        // 19, 10011,  3, false
+        // 37, 100101, 3, false
+        // 41, 101001, 3, false
+        // 3,  11,     2, false
+        // 5,  101,    2, false
+        // 17, 10001,  2, false
+
+        KeysetPageable initialPagination = Pageable.of(2, 8).afterKeyset(false, 4, 23L);
+        KeysetAwarePage<Prime> page2 = primes.findByNumberBetweenOrderByEvenDescSumOfBitsDescNumberAsc(0L, 45L, initialPagination);
+
+        assertIterableEquals(List.of(29L, 43L, 7L, 11L, 13L, 19L, 37L, 41L),
+                             page2.getContent().stream().map(p -> p.number).collect(Collectors.toList()));
+
+        KeysetPageable.Cursor cursor7 = page2.getKeysetCursor(2);
+        KeysetPageable paginationBefore7 = Pageable.size(8).beforeKeysetCursor(cursor7);
+
+        KeysetAwarePage<Prime> page1 = primes.findByNumberBetweenOrderByEvenDescSumOfBitsDescNumberAsc(0L, 45L, paginationBefore7);
+
+        assertIterableEquals(List.of(2L, 31L, 23L, 29L, 43L),
+                             page1.getContent().stream().map(p -> p.number).collect(Collectors.toList()));
+
+        KeysetPageable.Cursor cursor13 = page2.getKeysetCursor(4);
+        KeysetPageable paginationAfter13 = Pageable.page(3).afterKeysetCursor(cursor13);
+
+        KeysetAwarePage<Prime> page3 = primes.findByNumberBetweenOrderByEvenDescSumOfBitsDescNumberAsc(0L, 45, paginationAfter13);
+
+        assertIterableEquals(List.of(19L, 37L, 41L, 3L, 5L, 17L),
+                             page3.getContent().stream().map(p -> p.number).collect(Collectors.toList()));
+
+        // test .equals method
+        assertEquals(cursor13, cursor13);
+        assertEquals(cursor13, page2.getKeysetCursor(4));
+        assertEquals(false, cursor13.equals(cursor7));
+
+        // test .hashCode method
+        Map<KeysetPageable.Cursor, Integer> map = new HashMap<>();
+        map.put(cursor13, 13);
+        map.put(cursor7, 7);
+        assertEquals(Integer.valueOf(7), map.get(cursor7));
+        assertEquals(Integer.valueOf(13), map.get(cursor13));
+
+        assertEquals(false, cursor7.toString().equals(cursor13.toString()));
     }
 
     /**
@@ -2008,6 +2077,8 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
         assertEquals(true, page1.hasContent());
         assertEquals(4, page1.getNumberOfElements());
+        assertEquals(9L, page1.getTotalElements());
+        assertEquals(3L, page1.getTotalPages());
 
         Page<Reservation> page2 = reservations.findByHostStartsWith("testRepositoryCustom-host",
                                                                     page1.nextPageable(),
@@ -2059,6 +2130,8 @@ public class DataTestServlet extends FATServlet {
         assertEquals(false, page1.hasContent());
         assertEquals(0, page1.getNumberOfElements());
         assertEquals(null, page1.nextPageable());
+        assertEquals(0L, page1.getTotalElements());
+        assertEquals(0L, page1.getTotalPages());
 
         // find by member of a collection
         assertIterableEquals(List.of(10030002L, 10030007L),
@@ -2375,6 +2448,170 @@ public class DataTestServlet extends FATServlet {
         Order o = ofound.get();
         assertEquals(order1.id, o.id);
         assertEquals("testTemplateUsesRepositoryEntities Buyer", o.purchasedBy);
+    }
+
+    /**
+     * Obtain total counts of number of elements and pages.
+     */
+    @Test
+    public void testTotalCounts() {
+        Page<Prime> page1 = primes.findByNumberLessThanEqualOrderByNumberDesc(43L, Pageable.size(6));
+
+        assertEquals(3L, page1.getTotalPages());
+        assertEquals(14L, page1.getTotalElements());
+
+        assertIterableEquals(List.of(43L, 41L, 37L, 31L, 29L, 23L),
+                             page1.getContent().stream().map(p -> p.number).collect(Collectors.toList()));
+
+        Page<Prime> page2 = primes.findByNumberLessThanEqualOrderByNumberDesc(43L, page1.nextPageable());
+
+        assertEquals(14L, page2.getTotalElements());
+        assertEquals(3L, page2.getTotalPages());
+
+        assertIterableEquals(List.of(19L, 17L, 13L, 11L, 7L, 5L),
+                             page2.getContent().stream().map(p -> p.number).collect(Collectors.toList()));
+
+        Page<Prime> page3 = primes.findByNumberLessThanEqualOrderByNumberDesc(43L, page2.nextPageable());
+
+        assertEquals(3L, page3.getTotalPages());
+        assertEquals(14L, page3.getTotalElements());
+
+        assertIterableEquals(List.of(3L, 2L),
+                             page3.getContent().stream().map(p -> p.number).collect(Collectors.toList()));
+    }
+
+    /**
+     * Obtain total counts of number of elements and pages when JPQL is supplied via the Query annotation
+     * and a special count query is also provided by the Query annotation.
+     */
+    @Test
+    public void testTotalCountsForCountQuery() {
+        Page<Map.Entry<Long, String>> page1 = primes.namesByNumber(47L, Pageable.size(5));
+
+        // TODO enable once @Query allows a separate count query to be specified
+//        assertEquals(15L, page1.getTotalElements());
+//        assertEquals(3L, page1.getTotalPages());
+
+        assertIterableEquals(List.of("eleven", "five", "forty-one", "forty-seven", "forty-three"),
+                             page1.getContent().stream().map(e -> e.getValue()).collect(Collectors.toList()));
+
+        Page<Map.Entry<Long, String>> page2 = primes.namesByNumber(47L, page1.nextPageable());
+
+//        assertEquals(3L, page2.getTotalPages());
+//        assertEquals(15L, page2.getTotalElements());
+
+        assertIterableEquals(List.of("nineteen", "seven", "seventeen", "thirteen", "thirty-one"),
+                             page2.getContent().stream().map(e -> e.getValue()).collect(Collectors.toList()));
+
+        Page<Map.Entry<Long, String>> page3 = primes.namesByNumber(47L, page2.nextPageable());
+
+//        assertEquals(3L, page2.getTotalPages());
+//        assertEquals(15L, page2.getTotalElements());
+
+        assertIterableEquals(List.of("thirty-seven", "three", "twenty-nine", "twenty-three", "two"),
+                             page3.getContent().stream().map(e -> e.getValue()).collect(Collectors.toList()));
+
+        assertEquals(null, page3.nextPageable());
+    }
+
+    /**
+     * Obtain total counts of number of elements and pages when JPQL is supplied via the Query annotation
+     * where a count query is inferred from the Query annotation value, which has an ORDER BY clause.
+     */
+    @Test
+    public void testTotalCountsForQueryWithOrderBy() {
+        Page<Integer> page1 = primes.romanNumeralLengths(41L, Pageable.size(4));
+
+        assertEquals(6L, page1.getTotalElements());
+        assertEquals(2L, page1.getTotalPages());
+
+        assertIterableEquals(List.of(6, 5, 4, 3), page1.getContent());
+
+        Page<Integer> page2 = primes.romanNumeralLengths(41L, page1.nextPageable());
+
+        assertEquals(2L, page2.getTotalPages());
+        assertEquals(6L, page2.getTotalElements());
+
+        assertIterableEquals(List.of(2, 1), page2.getContent());
+
+        assertEquals(null, page2.nextPageable());
+    }
+
+    /**
+     * Obtain total counts of number of elements and pages when JPQL is supplied via the Query annotation
+     * where a count query is inferred from the Query annotation value, which lacks an ORDER BY clause
+     * because the OrderBy annotation is used.
+     */
+    @Test
+    public void testTotalCountsForQueryWithSeparateOrderBy() {
+        Page<Object[]> page1 = primes.namesWithHex(40L, Pageable.size(4));
+
+        assertEquals(12L, page1.getTotalElements());
+        assertEquals(3L, page1.getTotalPages());
+
+        assertIterableEquals(List.of("two", "three", "five", "seven"),
+                             page1.getContent().stream().map(o -> (String) o[0]).collect(Collectors.toList()));
+
+        Page<Object[]> page2 = primes.namesWithHex(40L, page1.nextPageable());
+
+        assertEquals(3L, page2.getTotalPages());
+        assertEquals(12L, page2.getTotalElements());
+
+        assertIterableEquals(List.of("eleven", "thirteen", "seventeen", "nineteen"),
+                             page2.getContent().stream().map(o -> (String) o[0]).collect(Collectors.toList()));
+
+        Page<Object[]> page3 = primes.namesWithHex(40L, page2.nextPageable());
+
+        assertEquals(3L, page3.getTotalPages());
+        assertEquals(12L, page3.getTotalElements());
+
+        assertIterableEquals(List.of("twenty-three", "twenty-nine", "thirty-one", "thirty-seven"),
+                             page3.getContent().stream().map(o -> (String) o[0]).collect(Collectors.toList()));
+
+        assertEquals(null, page3.nextPageable());
+    }
+
+    /**
+     * Obtain total counts of number of elements and pages when keyset pagination is used.
+     */
+    @Test
+    public void testTotalCountsWithKeysetPagination() {
+        KeysetAwarePage<Prime> page3 = primes.findByNumberBetween(3L, 50L, Pageable.of(3, 5).beforeKeyset(47L));
+        assertEquals(14L, page3.getTotalElements());
+        assertEquals(3L, page3.getTotalPages());
+
+        assertIterableEquals(List.of(29L, 31L, 37L, 41L, 43L),
+                             page3.getContent().stream().map(p -> p.number).collect(Collectors.toList()));
+
+        KeysetAwarePage<Prime> page2 = primes.findByNumberBetween(3L, 50L, page3.previousPageable());
+        assertEquals(3L, page2.getTotalPages());
+        assertEquals(14L, page2.getTotalElements());
+
+        assertIterableEquals(List.of(11L, 13L, 17L, 19L, 23L),
+                             page2.getContent().stream().map(p -> p.number).collect(Collectors.toList()));
+
+        KeysetAwarePage<Prime> page1 = primes.findByNumberBetween(3L, 50L, page2.previousPageable());
+        assertEquals(3L, page1.getTotalPages());
+        assertEquals(14L, page1.getTotalElements());
+
+        assertIterableEquals(List.of(3L, 5L, 7L),
+                             page1.getContent().stream().map(p -> p.number).collect(Collectors.toList()));
+
+        assertEquals(null, page1.previousPageable());
+
+        KeysetAwarePage<Prime> page4 = primes.findByNumberBetween(3L, 50L, page3.nextPageable());
+        // In this case, the 14 elements are across 4 pages, not 3,
+        // because the first and last pages ended up being partial.
+        // But that doesn't become known until the first or last page is read.
+        // This is one of many reasons why keyset pagination documents that
+        // page counts are inaccurate and cannot be relied upon.
+        assertEquals(3L, page4.getTotalPages());
+        assertEquals(14L, page4.getTotalElements());
+
+        assertIterableEquals(List.of(47L),
+                             page4.getContent().stream().map(p -> p.number).collect(Collectors.toList()));
+
+        assertEquals(null, page4.nextPageable());
     }
 
     /**

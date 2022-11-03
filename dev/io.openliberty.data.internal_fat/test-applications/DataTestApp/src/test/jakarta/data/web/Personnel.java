@@ -40,6 +40,10 @@ public interface Personnel {
     CompletionStage<Integer> changeSurnames(String oldSurname, String newSurname, List<Long> ssnList);
 
     @Asynchronous
+    CompletableFuture<Long> findByFirstNameStartsWith(String beginningOfFirstName,
+                                                      Collector<Person, ?, Long> collector);
+
+    @Asynchronous
     CompletionStage<List<Person>> findByLastNameOrderByFirstName(String lastName);
 
     @Asynchronous

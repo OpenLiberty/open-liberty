@@ -33,6 +33,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Flow.Publisher;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.BaseStream;
 import java.util.stream.Collector;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
@@ -128,15 +129,18 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     private QueryInfo completeQueryInfo(EntityInfo entityInfo, QueryInfo queryInfo) {
 
         queryInfo.entityInfo = entityInfo;
+        boolean needsKeysetQueries = KeysetAwarePage.class.equals(queryInfo.method.getReturnType())
+                                     || KeysetAwarePage.class.equals(queryInfo.returnTypeParam);
+        boolean countPages = needsKeysetQueries
+                             || Page.class.equals(queryInfo.method.getReturnType())
+                             || Page.class.equals(queryInfo.returnTypeParam);
         StringBuilder q = null;
 
         // TODO would it be more efficient to invoke method.getAnnotations() once?
 
         // @Query annotation
         Query query = queryInfo.method.getAnnotation(Query.class);
-        queryInfo.jpql = query == null ? null : query.value();
-
-        if (queryInfo.jpql == null) {
+        if (query == null) {
             // @Delete/@Update/@Where/@OrderBy annotations
             Update update = queryInfo.method.getAnnotation(Update.class);
             Where where = queryInfo.method.getAnnotation(Where.class);
@@ -145,6 +149,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     if (queryInfo.hasWhere = (where != null)) {
                         queryInfo.type = QueryInfo.Type.SELECT;
                         q = generateSelect(queryInfo).append(" WHERE (").append(where.value()).append(')');
+                        if (countPages)
+                            generateCount(queryInfo, " WHERE (", where.value(), ")");
                     }
                 } else {
                     queryInfo.type = QueryInfo.Type.DELETE;
@@ -168,7 +174,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     queryInfo.saveParamType = paramTypes[0];
                 } else {
                     // Repository method name pattern queries
-                    q = generateRepositoryQuery(queryInfo);//keyset queries before orderby
+                    q = generateRepositoryQuery(queryInfo, countPages);//keyset queries before orderby
 
                     // @Select annotation only
                     if (q == null) {
@@ -176,21 +182,45 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         if (select != null) {
                             queryInfo.type = QueryInfo.Type.SELECT;
                             q = generateSelect(queryInfo);
+                            if (countPages)
+                                generateCount(queryInfo);
                         }
                     }
                 }
         } else { // @Query annotation
-            String upper = queryInfo.jpql.toUpperCase();
-            if (upper.startsWith("SELECT"))
-                queryInfo.type = QueryInfo.Type.SELECT;
-            else if (upper.startsWith("UPDATE"))
-                queryInfo.type = QueryInfo.Type.UPDATE;
-            else if (upper.startsWith("DELETE"))
-                queryInfo.type = QueryInfo.Type.DELETE;
-            else
-                throw new UnsupportedOperationException(queryInfo.jpql);
+            queryInfo.jpql = query.value();
 
-            queryInfo.hasWhere = upper.contains("WHERE");
+            String upper = queryInfo.jpql.toUpperCase();
+            String upperTrimmed = upper.stripLeading();
+            if (upperTrimmed.startsWith("SELECT")) {
+                queryInfo.type = QueryInfo.Type.SELECT;
+
+                // TODO jpqlCount from @Query
+                if (countPages && queryInfo.jpqlCount == null) {
+                    // Attempt to infer from provided query
+                    int select = upper.indexOf("SELECT");
+                    int from = upper.indexOf("FROM", select);
+                    if (from > 0) {
+                        String s = queryInfo.jpql.substring(select + 6, from);
+                        int comma = s.indexOf(',');
+                        if (comma > 0)
+                            s = s.substring(0, comma);
+                        int orderBy = upper.lastIndexOf("ORDER BY");
+                        queryInfo.jpqlCount = new StringBuilder(queryInfo.jpql.length() + 7) //
+                                        .append("SELECT COUNT(").append(s.trim()).append(") ") //
+                                        .append(orderBy > from ? queryInfo.jpql.substring(from, orderBy) : queryInfo.jpql.substring(from)) //
+                                        .toString();
+                    }
+                }
+            } else if (upperTrimmed.startsWith("UPDATE")) {
+                queryInfo.type = QueryInfo.Type.UPDATE;
+            } else if (upperTrimmed.startsWith("DELETE")) {
+                queryInfo.type = QueryInfo.Type.DELETE;
+            } else {
+                throw new UnsupportedOperationException(queryInfo.jpql);
+            }
+
+            queryInfo.hasWhere = upperTrimmed.contains("WHERE");
         }
 
         // If we don't already know from generating the JPQL, find out how many
@@ -211,13 +241,14 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         if (orderBy.length > 0) {
             queryInfo.type = queryInfo.type == null ? QueryInfo.Type.SELECT : queryInfo.type;
             if (q == null)
-                if (queryInfo.jpql == null)
+                if (queryInfo.jpql == null) {
                     q = generateSelect(queryInfo);
-                else
+                    if (countPages)
+                        generateCount(queryInfo);
+                } else {
                     q = new StringBuilder(queryInfo.jpql);
+                }
 
-            boolean needsKeysetQueries = KeysetAwarePage.class.equals(queryInfo.method.getReturnType())
-                                         || KeysetAwarePage.class.equals(queryInfo.returnTypeParam);
             StringBuilder o = needsKeysetQueries ? new StringBuilder(100) : q;
             StringBuilder r = needsKeysetQueries ? new StringBuilder(100) : null; // reverse order
             List<Sort> keyset = needsKeysetQueries ? new ArrayList<>(orderBy.length) : null;
@@ -244,6 +275,29 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         queryInfo.jpql = q == null ? queryInfo.jpql : q.toString();
 
         return queryInfo;
+    }
+
+    /**
+     * Generates a query to select the COUNT of all entities matching the
+     * supplied WHERE condition(s), or all entities if no WHERE conditions.
+     * Populates the jpqlCount of the query information with the result.
+     *
+     * @param queryInfo query information.
+     * @param where     text to append together that makes up the WHERE clause
+     */
+    private void generateCount(QueryInfo queryInfo, String... where) {
+        int len = 50;
+        if (where != null)
+            for (String w : where)
+                len += w.length();
+
+        StringBuilder q = new StringBuilder(len).append("SELECT COUNT(o) FROM ").append(queryInfo.entityInfo.name).append(" o");
+
+        if (where != null)
+            for (String w : where)
+                q.append(w);
+
+        queryInfo.jpqlCount = q.toString();
     }
 
     /**
@@ -298,7 +352,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             Tr.debug(this, tc, "forward & reverse keyset queries", queryInfo.jpqlAfterKeyset, queryInfo.jpqlBeforeKeyset);
     }
 
-    private StringBuilder generateRepositoryQuery(QueryInfo queryInfo) {
+    private StringBuilder generateRepositoryQuery(QueryInfo queryInfo, boolean countPages) {
         String methodName = queryInfo.method.getName();
         StringBuilder q = null;
         if (methodName.startsWith("find")) {
@@ -313,8 +367,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             int orderBy = methodName.lastIndexOf("OrderBy");
             q = generateSelect(queryInfo);
             if (orderBy > c || orderBy == -1 && methodName.length() > c) {
+                int where = q.length();
                 String s = orderBy > 0 ? methodName.substring(c, orderBy) : methodName.substring(c);
                 generateRepositoryQueryConditions(queryInfo, s, q);
+                if (countPages)
+                    generateCount(queryInfo, q.substring(where));
             }
             if (orderBy >= c)
                 generateRepositoryQueryOrderBy(queryInfo, orderBy, q);
@@ -828,6 +885,14 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         else if (Publisher.class.equals(returnType))
                             returnValue = new PublisherImpl<E>(queryInfo, provider.executor, limit, pagination, args);
                         else {
+                            Class<?> type = queryInfo.returnTypeParam != null && (Optional.class.equals(returnType)
+                                                                                  || CompletableFuture.class.equals(returnType)
+                                                                                  || CompletionStage.class.equals(returnType)) //
+                                                                                                  ? queryInfo.returnTypeParam //
+                                                                                                  : returnType;
+                            if (trace && tc.isDebugEnabled())
+                                Tr.debug(this, tc, "results to be returned as " + type.getName());
+
                             em = queryInfo.entityInfo.persister.createEntityManager();
 
                             TypedQuery<?> query = em.createQuery(queryInfo.jpql, queryInfo.entityInfo.type);
@@ -847,88 +912,73 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             if (startAt > 0)
                                 query.setFirstResult((int) startAt);
 
-                            List<?> results = query.getResultList();
-                            Class<?> type = queryInfo.returnTypeParam != null && (Optional.class.equals(returnType)
-                                                                                  || CompletableFuture.class.equals(returnType)
-                                                                                  || CompletionStage.class.equals(returnType)) //
-                                                                                                  ? queryInfo.returnTypeParam //
-                                                                                                  : returnType;
-                            if (trace && tc.isDebugEnabled())
-                                Tr.debug(this, tc, results.size() + " results to be returned as " + type.getName());
+                            if (collector != null) { // Does not provide much value over directly returning Stream
+                                try (Stream<?> stream = query.getResultStream()) {
+                                    returnValue = stream.collect(collector);
+                                }
+                            } else if (consumer != null) { // Does not provide much value over directly returning Stream
+                                try (Stream<?> stream = query.getResultStream()) {
+                                    stream.forEach(consumer::accept);
+                                    returnValue = null;
+                                }
+                            } else if (BaseStream.class.isAssignableFrom(type)) {
+                                Stream<?> stream = query.getResultStream();
+                                if (Stream.class.equals(type))
+                                    returnValue = stream;
+                                else if (IntStream.class.equals(type))
+                                    returnValue = stream.mapToInt(RepositoryImpl::toInt);
+                                else if (LongStream.class.equals(type))
+                                    returnValue = stream.mapToLong(RepositoryImpl::toLong);
+                                else if (DoubleStream.class.equals(type))
+                                    returnValue = stream.mapToDouble(RepositoryImpl::toDouble);
+                                else
+                                    throw new UnsupportedOperationException("Stream type " + type.getName());
+                            } else {
+                                List<?> results = query.getResultList();
 
-                            if (collector != null) {
-                                // Collector is more useful on the other path, when combined with pagination
-                                Object r = collector.supplier().get();
-                                BiConsumer<Object, Object> accumulator = collector.accumulator();
-                                for (Object item : results)
-                                    accumulator.accept(r, item);
-                                returnValue = collector.finisher().apply(r);
-                            } else if (consumer != null) {
-                                for (Object result : results)
-                                    consumer.accept(result);
-                                returnValue = null;
-                            } else if (queryInfo.entityInfo.type.equals(type)) {
-                                returnValue = results.isEmpty() ? null : results.get(0);
-                            } else if (type.isInstance(results)) {
-                                returnValue = results;
-                            } else if (queryInfo.returnArrayType != null) {
-                                Object r = Array.newInstance(queryInfo.returnArrayType, results.size());
-                                int i = 0;
-                                for (Object result : results)
-                                    Array.set(r, i++, result);
-                                returnValue = r;
-                            } else if (Collection.class.isAssignableFrom(type)) {
-                                try {
-                                    @SuppressWarnings("unchecked")
-                                    Constructor<? extends Collection<Object>> c = (Constructor<? extends Collection<Object>>) type.getConstructor();
-                                    Collection<Object> list = c.newInstance();
-                                    list.addAll(results);
-                                    returnValue = list;
-                                } catch (NoSuchMethodException x) {
-                                    throw new UnsupportedOperationException(type + " lacks public zero parameter constructor.");
+                                if (queryInfo.entityInfo.type.equals(type)) {
+                                    returnValue = results.isEmpty() ? null : results.get(0);
+                                } else if (type.isInstance(results)) {
+                                    returnValue = results;
+                                } else if (queryInfo.returnArrayType != null) {
+                                    Object r = Array.newInstance(queryInfo.returnArrayType, results.size());
+                                    int i = 0;
+                                    for (Object result : results)
+                                        Array.set(r, i++, result);
+                                    returnValue = r;
+                                } else if (Collection.class.isAssignableFrom(type)) {
+                                    try {
+                                        @SuppressWarnings("unchecked")
+                                        Constructor<? extends Collection<Object>> c = (Constructor<? extends Collection<Object>>) type.getConstructor();
+                                        Collection<Object> list = c.newInstance();
+                                        list.addAll(results);
+                                        returnValue = list;
+                                    } catch (NoSuchMethodException x) {
+                                        throw new UnsupportedOperationException(type + " lacks public zero parameter constructor.");
+                                    }
+                                } else if (results.isEmpty()) {
+                                    returnValue = null;
+                                } else if (results.size() == 1) {
+                                    // single result
+                                    returnValue = results.get(0);
+                                    if (returnValue != null && !type.isAssignableFrom(returnValue.getClass())) {
+                                        // TODO these conversions are not all safe
+                                        if (double.class.equals(type) || Double.class.equals(type))
+                                            returnValue = ((Number) returnValue).doubleValue();
+                                        else if (float.class.equals(type) || Float.class.equals(type))
+                                            returnValue = ((Number) returnValue).floatValue();
+                                        else if (long.class.equals(type) || Long.class.equals(type))
+                                            returnValue = ((Number) returnValue).longValue();
+                                        else if (int.class.equals(type) || Integer.class.equals(type))
+                                            returnValue = ((Number) returnValue).intValue();
+                                        else if (short.class.equals(type) || Short.class.equals(type))
+                                            returnValue = ((Number) returnValue).shortValue();
+                                        else if (byte.class.equals(type) || Byte.class.equals(type))
+                                            returnValue = ((Number) returnValue).byteValue();
+                                    }
+                                } else { // TODO convert other return types?
+                                    returnValue = results;
                                 }
-                            } else if (Stream.class.equals(type)) {
-                                Stream.Builder<Object> builder = Stream.builder();
-                                for (Object result : results)
-                                    builder.accept(result);
-                                returnValue = builder.build();
-                            } else if (IntStream.class.equals(type)) {
-                                IntStream.Builder builder = IntStream.builder();
-                                for (Object result : results)
-                                    builder.accept((Integer) result);
-                                returnValue = builder.build();
-                            } else if (LongStream.class.equals(type)) {
-                                LongStream.Builder builder = LongStream.builder();
-                                for (Object result : results)
-                                    builder.accept((Long) result);
-                                returnValue = builder.build();
-                            } else if (DoubleStream.class.equals(type)) {
-                                DoubleStream.Builder builder = DoubleStream.builder();
-                                for (Object result : results)
-                                    builder.accept((Double) result);
-                                returnValue = builder.build();
-                            } else if (results.isEmpty()) {
-                                returnValue = null;
-                            } else if (results.size() == 1) {
-                                // single result
-                                returnValue = results.get(0);
-                                if (returnValue != null && !type.isAssignableFrom(returnValue.getClass())) {
-                                    // TODO these conversions are not all safe
-                                    if (double.class.equals(type) || Double.class.equals(type))
-                                        returnValue = ((Number) returnValue).doubleValue();
-                                    else if (float.class.equals(type) || Float.class.equals(type))
-                                        returnValue = ((Number) returnValue).floatValue();
-                                    else if (long.class.equals(type) || Long.class.equals(type))
-                                        returnValue = ((Number) returnValue).longValue();
-                                    else if (int.class.equals(type) || Integer.class.equals(type))
-                                        returnValue = ((Number) returnValue).intValue();
-                                    else if (short.class.equals(type) || Short.class.equals(type))
-                                        returnValue = ((Number) returnValue).shortValue();
-                                    else if (byte.class.equals(type) || Byte.class.equals(type))
-                                        returnValue = ((Number) returnValue).byteValue();
-                                }
-                            } else { // TODO convert other return types?
-                                returnValue = results;
                             }
                         }
 
@@ -1174,6 +1224,16 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     }
 
     @Trivial
+    private static final double toDouble(Object o) {
+        if (o instanceof Number)
+            return ((Number) o).doubleValue();
+        else if (o instanceof String)
+            return Double.parseDouble((String) o);
+        else
+            throw new IllegalArgumentException("Not representable as a double value: " + o.getClass().getName());
+    }
+
+    @Trivial
     private static final String toFunctionName(Aggregate function) {
         switch (function) {
             case UNSPECIFIED:
@@ -1187,6 +1247,26 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             default: // COUNT, SUM
                 return function.name();
         }
+    }
+
+    @Trivial
+    private static final int toInt(Object o) {
+        if (o instanceof Number)
+            return ((Number) o).intValue();
+        else if (o instanceof String)
+            return Integer.parseInt((String) o);
+        else
+            throw new IllegalArgumentException("Not representable as an int value: " + o.getClass().getName());
+    }
+
+    @Trivial
+    private static final long toLong(Object o) {
+        if (o instanceof Number)
+            return ((Number) o).longValue();
+        else if (o instanceof String)
+            return Long.parseLong((String) o);
+        else
+            throw new IllegalArgumentException("Not representable as a long value: " + o.getClass().getName());
     }
 
     private static final Object toReturnValue(int i, Class<?> returnType, QueryInfo queryInfo) {

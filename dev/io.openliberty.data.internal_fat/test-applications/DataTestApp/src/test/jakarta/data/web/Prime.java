@@ -31,16 +31,19 @@ public class Prime {
 
     public String romanNumeral;
 
+    public int sumOfBits;
+
     public Prime() {
     }
 
-    public Prime(long number, String hexadecimal, String binary, String romanNumeral, String name) {
+    public Prime(long number, String hexadecimal, String binary, int sumOfBits, String romanNumeral, String name) {
         this.binary = binary;
         this.even = number % 2 == 0;
         this.hex = hexadecimal;
         this.name = name;
         this.romanNumeral = romanNumeral;
         this.number = number;
+        this.sumOfBits = sumOfBits;
     }
 
     @Override
