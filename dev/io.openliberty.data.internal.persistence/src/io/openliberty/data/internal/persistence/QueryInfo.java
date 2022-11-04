@@ -83,8 +83,9 @@ class QueryInfo {
     int paramCount = Integer.MIN_VALUE; // initialize to undefined
 
     /**
-     * Names that specified by the <code>Param</code> annotation for each query parameter.
-     * Null for positions of parameters that lack the annotation. (These will use ?1, ?2, ...)
+     * Names that are specified by the <code>Param</code> annotation for each query parameter.
+     * If positional parameters (?1, ?2, ...) are used rather than named parameters,
+     * the list can be empty or have null as its first element.
      */
     List<String> paramNames = Collections.emptyList();
 
