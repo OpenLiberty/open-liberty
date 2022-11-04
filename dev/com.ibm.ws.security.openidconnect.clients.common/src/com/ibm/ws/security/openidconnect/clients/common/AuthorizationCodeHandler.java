@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -110,8 +110,8 @@ public class AuthorizationCodeHandler {
         try {
             oidcResult = sendTokenRequestAndValidateResult(oidcClientRequest, sslSocketFactory, authzCode, responseState, redirectUrl);
         } catch (BadPostRequestException e) {
-            Tr.error(tc, "OIDC_CLIENT_TOKEN_REQUEST_FAILURE", new Object[] { e.getErrorMessage(), clientId, clientConfig.getTokenEndpointUrl() });
-            sendErrorJSON(e.getStatusCode(), "invalid_request", e.getErrorMessage());
+            Tr.error(tc, "OIDC_CLIENT_TOKEN_REQUEST_FAILURE", new Object[] { e.getMessage(), clientId, clientConfig.getTokenEndpointUrl() });
+            sendErrorJSON(e.getStatusCode(), "invalid_request", e.getMessage());
             return new ProviderAuthenticationResult(AuthResult.FAILURE, e.getStatusCode());
         } catch (Exception e) {
             Tr.error(tc, "OIDC_CLIENT_TOKEN_REQUEST_FAILURE", new Object[] { e.getLocalizedMessage(), clientId, clientConfig.getTokenEndpointUrl() });
