@@ -12,6 +12,7 @@
 bVersion=1.0
 publish.wlp.jar.suffix: dev/api/third-party
 openTelemetryVersion=1.19.0
+alphaOpenTelemetryVersion=1.19.0.alpha
 
 Bundle-SymbolicName: io.openliberty.mpTelemetry.1.0.thirdparty; singleton:=true
 
@@ -32,9 +33,9 @@ Export-Package: \
   io.opentelemetry.sdk.autoconfigure.spi.traces;version=${openTelemetryVersion},\
   io.opentelemetry.sdk.autoconfigure.spi;version=${openTelemetryVersion},\
   io.opentelemetry.sdk.resources;version=${openTelemetryVersion},\
-  io.opentelemetry.semconv.trace.attributes;version=${openTelemetryVersion},\
-  io.opentelemetry.semconv.resource.attributes;version=${openTelemetryVersion},\
-  io.opentelemetry.instrumentation.annotations;version=${openTelemetryVersion}
+  io.opentelemetry.semconv.trace.attributes;version=${alphaOpenTelemetryVersion},\
+  io.opentelemetry.semconv.resource.attributes;version=${alphaOpenTelemetryVersion},\
+  io.opentelemetry.instrumentation.annotations;version=${alphaOpenTelemetryVersion}
 
 Import-Package: \
   io.opentelemetry.*;version="[${openTelemetryVersion},2)",\
@@ -42,14 +43,14 @@ Import-Package: \
   
 -buildpath: \
   io.openliberty.jakarta.interceptor.2.1;version=latest,\
-  io.opentelemetry:opentelemetry-api;version=1.19.0,\
-  io.opentelemetry:opentelemetry-context;version=1.19.0,\
-  io.opentelemetry:opentelemetry-sdk;version=1.19.0,\
-  io.opentelemetry:opentelemetry-sdk-common;version=1.19.0,\
-  io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi;version=1.19.0,\
-  io.opentelemetry:opentelemetry-semconv;version=1.19.0.alpha,\
-  io.opentelemetry:opentelemetry-sdk-trace;version=1.19.0,\
-  io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations;version=1.19.0.alpha
+  io.opentelemetry:opentelemetry-api;version=${openTelemetryVersion},\
+  io.opentelemetry:opentelemetry-context;version=${openTelemetryVersion},\
+  io.opentelemetry:opentelemetry-sdk;version=${openTelemetryVersion},\
+  io.opentelemetry:opentelemetry-sdk-common;version=${openTelemetryVersion},\
+  io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi;version=${openTelemetryVersion},\
+  io.opentelemetry:opentelemetry-semconv;version=${alphaOpenTelemetryVersion},\
+  io.opentelemetry:opentelemetry-sdk-trace;version=${openTelemetryVersion},\
+  io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations;version=${alphaOpenTelemetryVersion}
   
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
