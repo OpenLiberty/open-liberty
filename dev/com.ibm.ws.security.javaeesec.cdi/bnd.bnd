@@ -52,36 +52,36 @@ Include-Resource: \
     META-INF=resources/META-INF
 
 -buildpath: \
-    com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-    com.ibm.websphere.javaee.el.3.0;version=latest,\
-    com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
-    com.ibm.websphere.javaee.jaspic.1.1;version=latest,\
-    com.ibm.websphere.javaee.security.1.0;version=latest,\
-    com.ibm.websphere.security;version=latest,\
-    com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-    com.ibm.websphere.org.osgi.core,\
-    com.ibm.websphere.org.osgi.service.component,\
-    com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+	com.ibm.websphere.javaee.el.3.0;version=latest,\
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+	com.ibm.websphere.javaee.jaspic.1.1;version=latest,\
+	com.ibm.websphere.javaee.security.1.0;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.ws.adaptable.module;version=latest,\
-    com.ibm.ws.cdi.interfaces;version=latest,\
-    com.ibm.ws.container.service;version=latest,\
-    com.ibm.ws.container.service.compat;version=latest,\
-    com.ibm.ws.kernel.service;version=latest, \
-    com.ibm.ws.logging;version=latest,\
-    com.ibm.ws.security;version=latest,\
-    com.ibm.ws.security.authentication;version=latest,\
-    com.ibm.ws.security.authorization;version=latest,\
-    com.ibm.ws.security.credentials;version=latest,\
-    com.ibm.ws.security.jaspic.1.1;version=latest,\
-    com.ibm.ws.security.javaeesec.1.0;version=latest,\
-    com.ibm.ws.webcontainer.security;version=latest,\
-    com.ibm.websphere.appserver.spi.kernel.service,\
-    com.ibm.ws.security.token;version=latest,\
-    com.ibm.ws.webcontainer;version=latest, \
-    com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-    com.ibm.websphere.javaee.cdi.2.0;version=latest,\
-    com.ibm.ws.transport.http;version=latest, \
-    com.ibm.ws.security.mp.jwt.proxy;version=latest
+	com.ibm.ws.cdi.interfaces;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.container.service.compat;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.security;version=latest,\
+	com.ibm.ws.security.authentication;version=latest,\
+	com.ibm.ws.security.authorization;version=latest,\
+	com.ibm.ws.security.credentials;version=latest,\
+	com.ibm.ws.security.jaspic.1.1;version=latest,\
+	com.ibm.ws.security.javaeesec.1.0;version=latest,\
+	com.ibm.ws.webcontainer.security;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.ws.security.token;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+	com.ibm.ws.transport.http;version=latest,\
+	com.ibm.ws.security.mp.jwt.proxy;version=latest
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \

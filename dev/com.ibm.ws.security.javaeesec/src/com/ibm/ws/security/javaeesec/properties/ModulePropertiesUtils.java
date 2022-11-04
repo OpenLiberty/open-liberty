@@ -128,9 +128,17 @@ public class ModulePropertiesUtils {
                         if (mppi != null && !mppi.isUnsatisfied() && !mppi.isAmbiguous()) {
                             List<Class> implClassList = mppi.get().getAuthMechClassList();
                             if (implClassList != null) {
-                                if (implClassList.size() == 1) {
-                                    hamClass = implClassList.get(0);
-                                    Bean<HttpAuthenticationMechanism> bean = getBean(beanManager, hamClass);
+                                if (implClassList.size() == 0) {
+                                    Tr.error(tc, "JAVAEESEC_ERROR_NO_HAM", getJ2EEModuleName(), getJ2EEApplicationName());
+                                } else {
+                                    Bean<HttpAuthenticationMechanism> bean = null;
+                                    for (Class implClass : implClassList) {
+                                        hamClass = implClass;
+                                        bean = getBean(beanManager, implClass);
+                                        if (bean != null) {
+                                            break;
+                                        }
+                                    }
                                     if (bean != null) {
                                         ham = (HttpAuthenticationMechanism) beanManager.getReference(bean, hamClass, beanManager.createCreationalContext(bean));
                                         isCacheable = isCacheable(bean);
@@ -155,24 +163,15 @@ public class ModulePropertiesUtils {
                                     if (ham == null) {
                                         Tr.error(tc, "JAVAEESEC_ERROR_NO_HAM", getJ2EEModuleName(), getJ2EEApplicationName());
                                     }
-                                } else if (implClassList.size() == 0) {
-                                    if (tc.isDebugEnabled()) {
-                                        Tr.debug(tc, "No HAM implementation class. Module Name : " + getJ2EEModuleName() + ", Application Name : " + getJ2EEApplicationName());
-                                    }
-                                } else {
-                                    if (tc.isDebugEnabled()) {
-                                        Tr.debug(tc, "Number of HAM implementation class is more than one : " + implClassList.size() + ", Module Name : " + getJ2EEModuleName()
-                                                     + ", Application Name : " + getJ2EEApplicationName());
-                                    }
-                                }
-                            } else {
-                                if (tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "No HAM implementation class defined. Module Name : " + getJ2EEModuleName() + ", Application Name : " + getJ2EEApplicationName());
                                 }
                             }
-                        } else if (logError) {
-                            throw new RuntimeException("ModulePropertiesProvider object cannot be identified.");
+                        } else {
+                            if (tc.isDebugEnabled()) {
+                                Tr.debug(tc, "No HAM implementation class defined. Module Name : " + getJ2EEModuleName() + ", Application Name : " + getJ2EEApplicationName());
+                            }
                         }
+                    } else if (logError) {
+                        throw new RuntimeException("ModulePropertiesProvider object cannot be identified.");
                     }
                 }
                 if (!isCacheable) {
@@ -192,8 +191,10 @@ public class ModulePropertiesUtils {
                     }
                 }
             }
+
         }
         return ham;
+
     }
 
     public boolean isELExpression(String elExpression) {
@@ -227,15 +228,15 @@ public class ModulePropertiesUtils {
 
     @SuppressWarnings("unchecked")
     private Bean<HttpAuthenticationMechanism> getBean(BeanManager beanManager, Class<HttpAuthenticationMechanism> hamClass) {
+        Bean<HttpAuthenticationMechanism> bean = null;
         Set<Bean<?>> beans = beanManager.getBeans(hamClass);
         if (beans.size() == 1) {
-            return (Bean<HttpAuthenticationMechanism>) beans.iterator().next();
-        } else {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Number of HAMs : " + beans.size());
-            }
+            bean = (Bean<HttpAuthenticationMechanism>) beans.iterator().next();
         }
-        return null;
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "HAM : " + hamClass + " Number of HAM bean: " + beans.size() + " bean.toString(): " + (bean != null ? beans.iterator().next().toString() : "<NO bean>"));
+        }
+        return bean;
     }
 
     private boolean isCacheable(Bean<?> bean) {
