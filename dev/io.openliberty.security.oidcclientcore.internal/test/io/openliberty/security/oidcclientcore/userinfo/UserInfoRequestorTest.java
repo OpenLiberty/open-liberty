@@ -11,7 +11,10 @@
 package io.openliberty.security.oidcclientcore.userinfo;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -28,16 +31,22 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.BasicHttpEntity;
 import org.jmock.Expectations;
+import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.json.java.JSONArray;
+import com.ibm.json.java.JSONObject;
+import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.ws.security.test.common.CommonTestClass;
+import com.ibm.ws.security.test.common.jwt.utils.JwtUnitTestUtils;
 import com.ibm.wsspi.ssl.SSLSupport;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
+import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoEndpointNotHttpsException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseNot200Exception;
@@ -51,7 +60,10 @@ public class UserInfoRequestorTest extends CommonTestClass {
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
 
     private static final String clientId = "myOidcClientId";
-    private static final String userInfoEndpoint = "https://some-domain.com/path/userinfo";
+    private static final String clientSecretString = "secret";
+    private static final ProtectedString clientSecret = new ProtectedString(clientSecretString.toCharArray());
+    private static final String userInfoEndpoint = "https://localhost/path/userinfo";
+    private static final String jwksUri = "https://localhost/path/jwk";
     private static final String accessToken = "qOuZdH6Anmxclul5d71AXoDbFVmRG2dPnHn9moaw";
 
     private static final String sub = "testsub";
@@ -68,6 +80,7 @@ public class UserInfoRequestorTest extends CommonTestClass {
     private final HttpResponse httpResponse = mockery.mock(HttpResponse.class);
     private final HttpGet httpGet = mockery.mock(HttpGet.class);
     private final StatusLine statusLine = mockery.mock(StatusLine.class);
+    private final OidcProviderMetadata providerMetadata = mockery.mock(OidcProviderMetadata.class);
 
     private List<NameValuePair> params;
     private Map<String, Object> userInfoResponseMap;
@@ -95,6 +108,7 @@ public class UserInfoRequestorTest extends CommonTestClass {
 
     @After
     public void tearDown() {
+        mockery.assertIsSatisfied();
         outputMgr.resetStreams();
     }
 
@@ -238,10 +252,6 @@ public class UserInfoRequestorTest extends CommonTestClass {
                 will(returnValue(userInfoResponseMap));
                 one(httpResponse).getEntity();
                 will(returnValue(httpEntity));
-                one(httpResponse).getStatusLine();
-                will(returnValue(statusLine));
-                one(statusLine).getStatusCode();
-                will(returnValue(200));
             }
         });
 
@@ -292,6 +302,88 @@ public class UserInfoRequestorTest extends CommonTestClass {
         UserInfoResponse userInfoResponse = userInfoRequestor.requestUserInfo();
 
         assertNull("Expected UserInfoResponse map to be null since we don't know how to process the content type.", userInfoResponse.asMap());
+    }
+
+    @Test(expected = InvalidJwtException.class)
+    public void test_extractClaimsFromJwtResponse_responseIsEmptyString() throws Exception {
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(endpointRequestClass, oidcClientConfig, userInfoEndpoint, accessToken).build();
+
+        String jwtResponse = "";
+
+        JSONObject claims = userInfoRequestor.extractClaimsFromJwtResponse(jwtResponse);
+        fail("Should have thrown an exception but got: " + claims);
+    }
+
+    @Test(expected = InvalidJwtException.class)
+    public void test_extractClaimsFromJwtResponse_responseIsJson() throws Exception {
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(endpointRequestClass, oidcClientConfig, userInfoEndpoint, accessToken).build();
+
+        String jwtResponse = "{\"key\":\"value\"}";
+
+        JSONObject claims = userInfoRequestor.extractClaimsFromJwtResponse(jwtResponse);
+        fail("Should have thrown an exception but got: " + claims);
+    }
+
+    @Test
+    public void test_extractClaimsFromJwtResponse_emptyClaims() throws Exception {
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(endpointRequestClass, oidcClientConfig, userInfoEndpoint, accessToken).build();
+        mockery.checking(new Expectations() {
+            {
+                one(oidcClientConfig).getProviderMetadata();
+                will(returnValue(providerMetadata));
+                one(providerMetadata).getJwksURI();
+                will(returnValue(jwksUri));
+                one(endpointRequestClass).getSSLSupport();
+                will(returnValue(sslSupport));
+                one(oidcClientConfig).getClientId();
+                will(returnValue(clientId));
+                one(oidcClientConfig).getClientSecret();
+                will(returnValue(clientSecret));
+            }
+        });
+
+        JSONObject claims = new JSONObject();
+        String jwtResponse = JwtUnitTestUtils.getHS256Jws(claims, clientSecretString);
+
+        JSONObject extractedClaims = userInfoRequestor.extractClaimsFromJwtResponse(jwtResponse);
+        assertNotNull("Claims should not have been null but were.", extractedClaims);
+        assertTrue("Claims set should have been empty but was: " + extractedClaims, extractedClaims.isEmpty());
+    }
+
+    @Test
+    public void test_extractClaimsFromJwtResponse_withClaims() throws Exception {
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(endpointRequestClass, oidcClientConfig, userInfoEndpoint, accessToken).build();
+        mockery.checking(new Expectations() {
+            {
+                one(oidcClientConfig).getProviderMetadata();
+                will(returnValue(providerMetadata));
+                one(providerMetadata).getJwksURI();
+                will(returnValue(jwksUri));
+                one(endpointRequestClass).getSSLSupport();
+                will(returnValue(sslSupport));
+                one(oidcClientConfig).getClientId();
+                will(returnValue(clientId));
+                one(oidcClientConfig).getClientSecret();
+                will(returnValue(clientSecret));
+            }
+        });
+
+        JSONObject claims = new JSONObject();
+        claims.put("sub", "testuser");
+        claims.put("iss", "https://localhost/op");
+        claims.put("access_token", "xxx.yyy.zzz");
+        claims.put("iat", (System.currentTimeMillis() / 1000) - 10);
+        claims.put("exp", (System.currentTimeMillis() / 1000) + 10);
+        JSONArray groups = new JSONArray();
+        groups.add("group1");
+        groups.add("group2");
+        groups.add("group3");
+        claims.put("groupIds", groups);
+        String jwtResponse = JwtUnitTestUtils.getHS256Jws(claims.toString(), clientSecretString);
+
+        JSONObject extractedClaims = userInfoRequestor.extractClaimsFromJwtResponse(jwtResponse);
+        assertNotNull("Claims should not have been null but were.", extractedClaims);
+        assertEquals(claims, extractedClaims);
     }
 
     private BasicHttpEntity createBasicHttpEntity(String string, String contentType) {

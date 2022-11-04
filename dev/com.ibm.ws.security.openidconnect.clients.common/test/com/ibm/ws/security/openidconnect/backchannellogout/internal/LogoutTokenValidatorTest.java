@@ -15,15 +15,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-
 import org.jmock.Expectations;
-import org.jose4j.base64url.Base64;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
 import org.junit.After;
@@ -32,7 +27,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.google.gson.JsonObject;
+import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.ws.security.jwt.config.ConsumerUtils;
 import com.ibm.ws.security.openidconnect.backchannellogout.BackchannelLogoutException;
@@ -42,6 +37,7 @@ import com.ibm.ws.security.openidconnect.clients.common.OidcSessionInfo;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionsStore;
 import com.ibm.ws.security.openidconnect.token.IDTokenValidationFailedException;
 import com.ibm.ws.security.test.common.CommonTestClass;
+import com.ibm.ws.security.test.common.jwt.utils.JwtUnitTestUtils;
 
 import test.common.SharedOutputManager;
 
@@ -198,7 +194,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_validateToken_jwsUnsigned_configAlgHs256() throws Exception {
-        String logoutTokenString = encode(getJwsHeader("none")) + "." + encode("{}") + ".";
+        String logoutTokenString = JwtUnitTestUtils.encode(JwtUnitTestUtils.getJwsHeader("none")) + "." + JwtUnitTestUtils.encode("{}") + ".";
         try {
             setConfigExpectations("HS256", SHARED_SECRET, 300L, ISSUER);
 
@@ -211,7 +207,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_validateToken_jwsUnsigned_configAlgNone_emptyClaims() throws Exception {
-        String logoutTokenString = encode(getJwsHeader("none")) + "." + encode("{}") + ".";
+        String logoutTokenString = JwtUnitTestUtils.encode(JwtUnitTestUtils.getJwsHeader("none")) + "." + JwtUnitTestUtils.encode("{}") + ".";
         try {
             setConfigExpectations("none", null, 300L, ISSUER);
 
@@ -224,11 +220,11 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_validateToken_jwsUnsigned_minimumClaims() throws Exception {
-        JsonObject claims = getMinimumClaimsNoSid();
-        String logoutTokenString = encode(getJwsHeader("none")) + "." + encode(claims) + ".";
+        JSONObject claims = getMinimumClaimsNoSid();
+        String logoutTokenString = JwtUnitTestUtils.encode(JwtUnitTestUtils.getJwsHeader("none")) + "." + JwtUnitTestUtils.encode(claims) + ".";
         try {
             setConfigExpectations("none", null, 300L, ISSUER);
-            setSuccessfulOptionalTokenValidationExpectations(claims.get(Claims.SUBJECT).getAsString());
+            setSuccessfulOptionalTokenValidationExpectations((String) claims.get(Claims.SUBJECT));
 
             validator.validateToken(logoutTokenString);
         } catch (BackchannelLogoutException e) {
@@ -238,8 +234,8 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_validateToken_hs256_keyMismatch() throws Exception {
-        JsonObject claims = new JsonObject();
-        String logoutTokenString = getHS256Jws(claims, "secret2");
+        JSONObject claims = new JSONObject();
+        String logoutTokenString = JwtUnitTestUtils.getHS256Jws(claims, "secret2");
         try {
             setConfigExpectations("HS256", SHARED_SECRET, 300L, ISSUER);
 
@@ -252,8 +248,8 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_validateToken_hs256_emptyClaims() throws Exception {
-        JsonObject claims = new JsonObject();
-        String logoutTokenString = getHS256Jws(claims, SHARED_SECRET);
+        JSONObject claims = new JSONObject();
+        String logoutTokenString = JwtUnitTestUtils.getHS256Jws(claims, SHARED_SECRET);
         try {
             setConfigExpectations("HS256", SHARED_SECRET, 300L, ISSUER);
 
@@ -266,11 +262,11 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_validateToken_hs256_minimumClaims() throws Exception {
-        JsonObject claims = getMinimumClaimsNoSid();
-        String logoutTokenString = getHS256Jws(claims, SHARED_SECRET);
+        JSONObject claims = getMinimumClaimsNoSid();
+        String logoutTokenString = JwtUnitTestUtils.getHS256Jws(claims, SHARED_SECRET);
         try {
             setConfigExpectations("HS256", SHARED_SECRET, 300L, ISSUER);
-            setSuccessfulOptionalTokenValidationExpectations(claims.get(Claims.SUBJECT).getAsString());
+            setSuccessfulOptionalTokenValidationExpectations((String) claims.get(Claims.SUBJECT));
 
             validator.validateToken(logoutTokenString);
         } catch (BackchannelLogoutException e) {
@@ -280,7 +276,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifyAllRequiredClaimsArePresent_emptyClaims() throws Exception {
-        JsonObject jsonClaims = new JsonObject();
+        JSONObject jsonClaims = new JSONObject();
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
         try {
             validator.verifyAllRequiredClaimsArePresent(claims);
@@ -292,7 +288,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifyAllRequiredClaimsArePresent_missingIss() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
         String claimToRemove = Claims.ISSUER;
         jsonClaims.remove(claimToRemove);
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
@@ -306,7 +302,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifyAllRequiredClaimsArePresent_missingAud() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
         String claimToRemove = Claims.AUDIENCE;
         jsonClaims.remove(claimToRemove);
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
@@ -320,7 +316,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifyAllRequiredClaimsArePresent_missingIat() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
         String claimToRemove = Claims.ISSUED_AT;
         jsonClaims.remove(claimToRemove);
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
@@ -334,7 +330,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifyAllRequiredClaimsArePresent_missingJti() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
         String claimToRemove = Claims.ID;
         jsonClaims.remove(claimToRemove);
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
@@ -348,7 +344,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifyAllRequiredClaimsArePresent_missingEvents() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
         String claimToRemove = "events";
         jsonClaims.remove(claimToRemove);
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
@@ -362,7 +358,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifyAllRequiredClaimsArePresent_valid() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
         try {
             validator.verifyAllRequiredClaimsArePresent(claims);
@@ -373,8 +369,8 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifyIssAudIatExpClaims_badIss() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
-        jsonClaims.addProperty(Claims.ISSUER, "https://localhost/oidc/provider/NOPE");
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.put(Claims.ISSUER, "https://localhost/oidc/provider/NOPE");
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
         try {
             setConfigExpectations("HS256", null, 300L, ISSUER);
@@ -388,8 +384,8 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifyIssAudIatExpClaims_badAud() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
-        jsonClaims.addProperty(Claims.AUDIENCE, "client02");
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.put(Claims.AUDIENCE, "client02");
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
         try {
             setConfigExpectations("HS256", null, 300L, ISSUER);
@@ -403,7 +399,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifySubAndOrSidPresent_missingSubAndSid() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
         jsonClaims.remove(Claims.SUBJECT);
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
         try {
@@ -416,9 +412,9 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifySubAndOrSidPresent_hasSidMissingSub() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
         jsonClaims.remove(Claims.SUBJECT);
-        jsonClaims.addProperty("sid", SID);
+        jsonClaims.put("sid", SID);
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
         try {
             validator.verifySubAndOrSidPresent(claims);
@@ -429,7 +425,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifySubAndOrSidPresent_hasSubMissingSid() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
         try {
             validator.verifySubAndOrSidPresent(claims);
@@ -440,8 +436,8 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifyEventsClaim_wrongType() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
-        jsonClaims.addProperty("events", "string");
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.put("events", "string");
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
         try {
             validator.verifyEventsClaim(claims);
@@ -453,11 +449,11 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifyEventsClaim_missingRequiredMember() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
-        JsonObject eventsValue = new JsonObject();
-        eventsValue.addProperty("entry1", "value1");
-        eventsValue.addProperty("entry2", true);
-        jsonClaims.add("events", eventsValue);
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
+        JSONObject eventsValue = new JSONObject();
+        eventsValue.put("entry1", "value1");
+        eventsValue.put("entry2", true);
+        jsonClaims.put("events", eventsValue);
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
         try {
             validator.verifyEventsClaim(claims);
@@ -469,10 +465,10 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifyEventsClaim_memberValueWrongType() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
-        JsonObject eventsValue = new JsonObject();
-        eventsValue.addProperty(EVENTS_MEMBER_KEY, "string");
-        jsonClaims.add("events", eventsValue);
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
+        JSONObject eventsValue = new JSONObject();
+        eventsValue.put(EVENTS_MEMBER_KEY, "string");
+        jsonClaims.put("events", eventsValue);
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
         try {
             validator.verifyEventsClaim(claims);
@@ -484,7 +480,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifyEventsClaim_valid() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
         try {
             validator.verifyEventsClaim(claims);
@@ -495,8 +491,8 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifyNonceClaimNotPresent_noncePresent() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
-        jsonClaims.addProperty("nonce", "somevalue");
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.put("nonce", "somevalue");
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
         try {
             validator.verifyNonceClaimNotPresent(claims);
@@ -508,7 +504,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifyNonceClaimNotPresent_valid() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
         try {
             validator.verifyNonceClaimNotPresent(claims);
@@ -519,8 +515,8 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifyTokenWithSameJtiNotRecentlyReceived_malformedJti() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
-        jsonClaims.addProperty(Claims.ID, true);
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.put(Claims.ID, true);
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
 
         try {
@@ -533,7 +529,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifyTokenWithSameJtiNotRecentlyReceived_missingJti() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
         jsonClaims.remove(Claims.ID);
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
 
@@ -544,9 +540,9 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifyTokenWithSameJtiNotRecentlyReceived_differentJti() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
-        jsonClaims.addProperty(Claims.ID, testName.getMethodName() + "2");
+        jsonClaims.put(Claims.ID, testName.getMethodName() + "2");
         JwtClaims claims2 = JwtClaims.parse(jsonClaims.toString());
 
         long clockSkew = 10;
@@ -563,7 +559,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifyTokenWithSameJtiNotRecentlyReceived_reusedJti() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
 
         long clockSkew = 10;
@@ -585,7 +581,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifySubClaimMatchesRecentSession_subNotFoundInCache() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
 
         Map<String, OidcSessionsStore> subToSessionsMap = createSubMap("some other person", SID);
@@ -607,9 +603,9 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     @Test
     public void test_verifySubAndSidClaimsMatchRecentSession_issuerDoesNotMatch() throws Exception {
         String tokenIssuer = "http://otherissuer";
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
-        jsonClaims.addProperty("sid", SID);
-        jsonClaims.addProperty(Claims.ISSUER, tokenIssuer);
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.put("sid", SID);
+        jsonClaims.put(Claims.ISSUER, tokenIssuer);
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
 
         Map<String, OidcSessionsStore> subToSessionsMap = createSubMap(SUBJECT, SID);
@@ -630,8 +626,8 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifySubAndSidClaimsMatchRecentSession_issuerMatches() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
-        jsonClaims.addProperty("sid", SID);
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.put("sid", SID);
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
 
         Map<String, OidcSessionsStore> subToSessionsMap = createSubMap(SUBJECT, SID);
@@ -810,8 +806,8 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifySidClaimMatchesRecentSession_malformedSid() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
-        jsonClaims.addProperty("sid", 123);
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.put("sid", 123);
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
 
         try {
@@ -824,7 +820,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifySidClaimMatchesRecentSession_sidMissing() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
 
         // Token doesn't have to contain a sid claim
@@ -833,8 +829,8 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifySidClaimMatchesRecentSession_noCachedSessions() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
-        jsonClaims.addProperty("sid", SID);
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.put("sid", SID);
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
 
         Map<String, OidcSessionsStore> subToSessionsMap = createSubMap(null, null);
@@ -855,8 +851,8 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifySidClaimMatchesRecentSession_sidNotFoundInCache() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
-        jsonClaims.addProperty("sid", SID);
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.put("sid", SID);
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
 
         Map<String, OidcSessionsStore> subToSessionsMap = createSubMap(SUBJECT, "some other sid");
@@ -877,8 +873,8 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     @Test
     public void test_verifySidClaimMatchesRecentSession_sidFound() throws Exception {
-        JsonObject jsonClaims = getMinimumClaimsNoSid();
-        jsonClaims.addProperty("sid", SID);
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
+        jsonClaims.put("sid", SID);
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
 
         Map<String, OidcSessionsStore> subToSessionsMap = createSubMap(SUBJECT, SID);
@@ -893,51 +889,21 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
         validator.verifySidClaimMatchesRecentSession(claims, oidcSessionCache);
     }
 
-    private JsonObject getJwsHeader(String alg) {
-        JsonObject header = new JsonObject();
-        header.addProperty("typ", "JWT");
-        header.addProperty("alg", alg);
-        return header;
-    }
-
-    private JsonObject getHS256Header() {
-        return getJwsHeader("HS256");
-    }
-
-    private JsonObject getMinimumClaimsNoSid() {
-        JsonObject claims = new JsonObject();
-        claims.addProperty(Claims.ISSUER, ISSUER);
-        claims.addProperty(Claims.AUDIENCE, CLIENT_ID);
-        claims.addProperty(Claims.ISSUED_AT, System.currentTimeMillis() / 1000);
-        claims.addProperty(Claims.ID, testName.getMethodName());
-        claims.add("events", getValidEventsEntry());
-        claims.addProperty(Claims.SUBJECT, SUBJECT);
+    private JSONObject getMinimumClaimsNoSid() {
+        JSONObject claims = new JSONObject();
+        claims.put(Claims.ISSUER, ISSUER);
+        claims.put(Claims.AUDIENCE, CLIENT_ID);
+        claims.put(Claims.ISSUED_AT, System.currentTimeMillis() / 1000);
+        claims.put(Claims.ID, testName.getMethodName());
+        claims.put("events", getValidEventsEntry());
+        claims.put(Claims.SUBJECT, SUBJECT);
         return claims;
     }
 
-    private JsonObject getValidEventsEntry() {
-        JsonObject events = new JsonObject();
-        events.add(EVENTS_MEMBER_KEY, new JsonObject());
+    private JSONObject getValidEventsEntry() {
+        JSONObject events = new JSONObject();
+        events.put(EVENTS_MEMBER_KEY, new JSONObject());
         return events;
-    }
-
-    private String getHS256Jws(JsonObject claims, String secret) throws Exception {
-        String headerAndPayload = encode(getHS256Header()) + "." + encode(claims);
-        String signature = getHS256Signature(headerAndPayload, secret);
-        return headerAndPayload + "." + signature;
-    }
-
-    private String getHS256Signature(String input, String secret) throws Exception {
-        byte[] secretBytes = secret.getBytes("UTF-8");
-        Mac hs256Mac = Mac.getInstance("HmacSHA256");
-        SecretKeySpec keySpec = new SecretKeySpec(secretBytes, "HmacSHA256");
-        hs256Mac.init(keySpec);
-        byte[] hashBytes = hs256Mac.doFinal(input.getBytes("UTF-8"));
-        return Base64.encode(hashBytes);
-    }
-
-    private String encode(Object input) throws UnsupportedEncodingException {
-        return Base64.encode(input.toString().getBytes("UTF-8"));
     }
 
     private void setConfigExpectations(String signatureAlgorithm, String sharedKey, long clockSkew, String issuerIdentifier) {
