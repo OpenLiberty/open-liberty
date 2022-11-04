@@ -61,7 +61,7 @@ public class ELHelper {
      * @return The evaluated expression.
      */
     @Trivial
-    protected Object evaluateElExpression(String expression) {
+    public Object evaluateElExpression(String expression) {
         return evaluateElExpression(expression, false);
     }
 
@@ -179,7 +179,7 @@ public class ELHelper {
      * @return True if the expression is an immediate EL expression.
      */
     @Trivial
-    static boolean isImmediateExpression(String expression) {
+    public static boolean isImmediateExpression(String expression) {
         return isImmediateExpression(expression, false);
     }
 
