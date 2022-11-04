@@ -739,7 +739,7 @@ info.checkpoint.restore.failed.explanation=An error occurred restoring a checkpo
 info.checkpoint.restore.failed.useraction=Check the logs to determine why the checkpoint process was not restored.
 
 error.checkpoint.failed=CWWKE0958E: The server checkpoint request failed. The following output is from the CRIU {0} file that contains details on why the checkpoint failed.
-error.checkpoint.failed.explanation=A checkpoint request for the server has failed.  A valid checkpoint process image for the server has not been created.
+error.checkpoint.failed.explanation=A checkpoint request for the server has failed. No valid checkpoint process image for the server was created.
 error.checkpoint.failed.useraction=Inspect the checkpoint directory located in the server logs directory for additional log files to determine why the checkpoint failed.
 
 info.serverStarting=Starting server {0}.
