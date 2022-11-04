@@ -1,0 +1,1 @@
+If the publish/servers/XXXXX/configDropins folder exists in the FAT then it will not be overriden by the FAT framework.
