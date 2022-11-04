@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -132,7 +132,9 @@ public class Solicited {
         }
         String relayState = Constants.SP_INITAL + shortRelayState;
         RequestUtil.cacheRequestInfo(shortRelayState, ssoService, cachingRequestInfo); // cache with shorRelayState
-        irUtil.handleSerializingInitialRequest(req, resp, Constants.SP_INITAL, shortRelayState, cachingRequestInfo, ssoService);
+        if (!(ssoService.getConfig().isDisableInitialRequestCookie())) {
+            irUtil.handleSerializingInitialRequest(req, resp, Constants.SP_INITAL, shortRelayState, cachingRequestInfo, ssoService);
+        }       
         TAIResult result = postIdp(req, resp, strAuthnRequest, relayState, idpUrl, cachingRequestInfo); // send out with the long relayState
         return result;
     }
