@@ -43,7 +43,7 @@ public class LibertyCXFPositivePropertiesTest {
     public static LibertyServer server;
 
     private final static Class<?> c = LibertyCXFPositivePropertiesTest.class;
-    private static final int CONN_TIMEOUT = 300;
+    private static final int CONN_TIMEOUT = 500;
 
     @BeforeClass
     public static void setUp() throws Exception {
