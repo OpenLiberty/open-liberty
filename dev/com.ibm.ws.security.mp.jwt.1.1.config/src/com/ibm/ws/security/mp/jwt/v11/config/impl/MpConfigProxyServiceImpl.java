@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.v11.config.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -82,14 +80,31 @@ public class MpConfigProxyServiceImpl implements MpConfigProxyService {
     /** return */
     @Sensitive
     @Override
-    public <T> List<T> getConfigValues(ClassLoader cl, Set<String> propertyNames, Class<T> propertyType) throws IllegalArgumentException {
+    public MpConfigProperties getConfigProperties(ClassLoader cl) {
         Config config = getConfig(cl);
-        List<T> list = new ArrayList<T>();
+        Set<String> propertyNames = getSupportedConfigPropertyNames();
+        MpConfigProperties mpConfigProps = new MpConfigProperties();
 
         for (String propertyName : propertyNames) {
-            list.add(getValue(config, propertyName, propertyType));
+            Optional<String> value = config.getOptionalValue(propertyName, String.class);
+            if (value != null && value.isPresent()) {
+                String valueString = value.get().trim();
+                if (!valueString.isEmpty()) {
+                    mpConfigProps.put(propertyName, valueString);
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, propertyName + " is empty. Ignore it.");
+                    }
+
+                }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, propertyName + " is not in mpConfig.");
+                }
+            }
         }
-        return list;
+
+        return mpConfigProps;
     }
 
     @Override
@@ -103,20 +118,5 @@ public class MpConfigProxyServiceImpl implements MpConfigProxyService {
         } else {
             return ConfigProvider.getConfig();
         }
-    }
-
-    /**
-     * @return
-     */
-    @Sensitive
-    private <T> T getValue(Config config, String propertyName, Class<T> propertyType) {
-        if (isAcceptableMpConfigProperty(propertyName)) {
-            Optional<T> value = config.getOptionalValue(propertyName, propertyType);
-            if (value != null && value.isPresent()) {
-                return value.get();
-            }
-            return null;
-        }
-        return null;
     }
 }

@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.config;
 
-import java.util.List;
-import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
@@ -47,7 +44,7 @@ public class MpConfigUtil {
 
     public MpConfigProperties getMpConfig(HttpServletRequest req) {
         if (mpConfigProxyService != null) {
-            return getMpConfigMap(mpConfigProxyService, getApplicationClassloader(req));
+            return mpConfigProxyService.getConfigProperties(getApplicationClassloader(req));
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "MP JWT feature is not enabled.");
@@ -58,30 +55,5 @@ public class MpConfigUtil {
 
     protected ClassLoader getApplicationClassloader(HttpServletRequest req) {
         return req != null ? req.getServletContext().getClassLoader() : null;
-    }
-
-    // no null check other than cl. make sure that the caller sets non null objects.
-    protected MpConfigProperties getMpConfigMap(MpConfigProxyService service, ClassLoader cl) {
-
-        Set<String> supportedMpConfigPropNames = service.getSupportedConfigPropertyNames();
-        List<String> values = service.getConfigValues(cl, supportedMpConfigPropNames, String.class);
-
-        MpConfigProperties map = new MpConfigProperties();
-        int i = 0;
-        for (String propertyName : supportedMpConfigPropNames) {
-            String value = values.get(i);
-            if (value != null) {
-                value = value.trim();
-            }
-            if (value != null && !value.isEmpty()) {
-                map.put(propertyName, value);
-            } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, propertyName + " is empty or null. Ignore it.");
-                }
-            }
-            i++;
-        }
-        return map;
     }
 }

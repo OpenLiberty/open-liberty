@@ -13,11 +13,7 @@ package com.ibm.ws.security.mp.jwt.config;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -122,10 +118,8 @@ public class MpConfigUtilTest {
                 will(returnValue(servletCtx));
                 one(servletCtx).getClassLoader();
                 will(returnValue(null));
-                one(mpConfigProxyService).getSupportedConfigPropertyNames();
-                will(returnValue(getSupportedMpConfigProps()));
-                one(mpConfigProxyService).getConfigValues(null, getSupportedMpConfigProps(), String.class);
-                will(returnValue(getConfigValues("value_" + MpConfigProperties.ISSUER, "value_" + MpConfigProperties.PUBLIC_KEY, "value_" + MpConfigProperties.KEY_LOCATION)));
+                one(mpConfigProxyService).getConfigProperties(null);
+                will(returnValue(getConfigProperties()));
             }
         });
         Map<String, String> map = mpConfigUtil.getMpConfig(req);
@@ -150,10 +144,8 @@ public class MpConfigUtilTest {
                 will(returnValue(servletCtx));
                 one(servletCtx).getClassLoader();
                 will(returnValue(cl));
-                one(mpConfigProxyService).getSupportedConfigPropertyNames();
-                will(returnValue(getSupportedMpConfigProps()));
-                one(mpConfigProxyService).getConfigValues(cl, getSupportedMpConfigProps(), String.class);
-                will(returnValue(getConfigValues("value_" + MpConfigProperties.ISSUER, "value_" + MpConfigProperties.PUBLIC_KEY, "value_" + MpConfigProperties.KEY_LOCATION)));
+                one(mpConfigProxyService).getConfigProperties(cl);
+                will(returnValue(getConfigProperties()));
             }
         });
         Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
@@ -166,146 +158,13 @@ public class MpConfigUtilTest {
         assertTrue("the map should contain the value" + MpConfigProperties.KEY_LOCATION, map.get(MpConfigProperties.KEY_LOCATION).equals("value_" + MpConfigProperties.KEY_LOCATION));
     }
 
-    /**
-     * Tests getMpConfig method with the config proxy service is available.
-     * The MpConfigProperties.ISSUER does not exist.
-     */
-    @Test
-    public void getMpConfigWithConfigProxyServiceSrtReqNoIssuer() {
-        mockery.checking(new Expectations() {
-            {
-                one(srtReq).getServletContext();
-                will(returnValue(servletCtx));
-                one(servletCtx).getClassLoader();
-                will(returnValue(cl));
-                one(mpConfigProxyService).getSupportedConfigPropertyNames();
-                will(returnValue(getSupportedMpConfigProps()));
-                one(mpConfigProxyService).getConfigValues(cl, getSupportedMpConfigProps(), String.class);
-                will(returnValue(getConfigValues(null, "value_" + MpConfigProperties.PUBLIC_KEY, "value_" + MpConfigProperties.KEY_LOCATION)));
-            }
-        });
-        Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
-        assertEquals("the map should be 2 items.", 2, map.size());
-        assertTrue("the map should contain the key " + MpConfigProperties.PUBLIC_KEY, map.containsKey(MpConfigProperties.PUBLIC_KEY));
-        assertTrue("the map should contain the key " + MpConfigProperties.KEY_LOCATION, map.containsKey(MpConfigProperties.KEY_LOCATION));
-        assertTrue("the map should contain the value " + MpConfigProperties.PUBLIC_KEY, map.get(MpConfigProperties.PUBLIC_KEY).equals("value_" + MpConfigProperties.PUBLIC_KEY));
-        assertTrue("the map should contain the value" + MpConfigProperties.KEY_LOCATION, map.get(MpConfigProperties.KEY_LOCATION).equals("value_" + MpConfigProperties.KEY_LOCATION));
-    }
+    private MpConfigProperties getConfigProperties() {
 
-    /**
-     * Tests getMpConfig method with the config proxy service is available.
-     * The MpConfigProperties.PUBLIC_KEY does not exist.
-     */
-    @Test
-    public void getMpConfigWithConfigProxyServiceSrtReqNoPublicKey() {
-        mockery.checking(new Expectations() {
-            {
-                one(srtReq).getServletContext();
-                will(returnValue(servletCtx));
-                one(servletCtx).getClassLoader();
-                will(returnValue(cl));
-                one(mpConfigProxyService).getSupportedConfigPropertyNames();
-                will(returnValue(getSupportedMpConfigProps()));
-                one(mpConfigProxyService).getConfigValues(cl, getSupportedMpConfigProps(), String.class);
-                will(returnValue(getConfigValues("value_" + MpConfigProperties.ISSUER, null, "value_" + MpConfigProperties.KEY_LOCATION)));
-            }
-        });
-        Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
-        assertEquals("the map should be 2 items.", 2, map.size());
-        assertTrue("the map should contain the key " + MpConfigProperties.ISSUER, map.containsKey(MpConfigProperties.ISSUER));
-        assertTrue("the map should contain the key " + MpConfigProperties.KEY_LOCATION, map.containsKey(MpConfigProperties.KEY_LOCATION));
-        assertTrue("the map should contain the value " + MpConfigProperties.ISSUER, map.get(MpConfigProperties.ISSUER).equals("value_" + MpConfigProperties.ISSUER));
-        assertTrue("the map should contain the value" + MpConfigProperties.KEY_LOCATION, map.get(MpConfigProperties.KEY_LOCATION).equals("value_" + MpConfigProperties.KEY_LOCATION));
-    }
-
-    /**
-     * Tests getMpConfig method with the config proxy service is available.
-     * The MpConfigProperties.KEY_LOCATION does not exist.
-     */
-    @Test
-    public void getMpConfigWithConfigProxyServiceSrtReqNoKeyLocation() {
-        mockery.checking(new Expectations() {
-            {
-                one(srtReq).getServletContext();
-                will(returnValue(servletCtx));
-                one(servletCtx).getClassLoader();
-                will(returnValue(cl));
-                one(mpConfigProxyService).getSupportedConfigPropertyNames();
-                will(returnValue(getSupportedMpConfigProps()));
-                one(mpConfigProxyService).getConfigValues(cl, getSupportedMpConfigProps(), String.class);
-                will(returnValue(getConfigValues("value_" + MpConfigProperties.ISSUER, "value_" + MpConfigProperties.PUBLIC_KEY, null)));
-            }
-        });
-        Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
-        assertEquals("the map should be 2 items.", 2, map.size());
-        assertTrue("the map should contain the key " + MpConfigProperties.ISSUER, map.containsKey(MpConfigProperties.ISSUER));
-        assertTrue("the map should contain the key " + MpConfigProperties.PUBLIC_KEY, map.containsKey(MpConfigProperties.PUBLIC_KEY));
-        assertTrue("the map should contain the value " + MpConfigProperties.ISSUER, map.get(MpConfigProperties.ISSUER).equals("value_" + MpConfigProperties.ISSUER));
-        assertTrue("the map should contain the value " + MpConfigProperties.PUBLIC_KEY, map.get(MpConfigProperties.PUBLIC_KEY).equals("value_" + MpConfigProperties.PUBLIC_KEY));
-    }
-
-    /**
-     * Tests getMpConfig method with the config proxy service is available.
-     * No data exists.
-     */
-    @Test
-    public void getMpConfigWithConfigProxyServiceSrtReqNoProperties() {
-        mockery.checking(new Expectations() {
-            {
-                one(srtReq).getServletContext();
-                will(returnValue(servletCtx));
-                one(servletCtx).getClassLoader();
-                will(returnValue(cl));
-                one(mpConfigProxyService).getSupportedConfigPropertyNames();
-                will(returnValue(getSupportedMpConfigProps()));
-                one(mpConfigProxyService).getConfigValues(cl, getSupportedMpConfigProps(), String.class);
-                will(returnValue(getConfigValues(null, null, null)));
-            }
-        });
-        Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
-        assertTrue("the map should be empty when none of the properties is available.", map.isEmpty());
-    }
-
-    /**
-     * Tests getMpConfig method with the config proxy service is available.
-     * make sure that empty data (after trim) is not put.
-     */
-    @Test
-    public void getMpConfigWithConfigProxyServiceSrtReqTrim() {
-        mockery.checking(new Expectations() {
-            {
-                one(srtReq).getServletContext();
-                will(returnValue(servletCtx));
-                one(servletCtx).getClassLoader();
-                will(returnValue(cl));
-                one(mpConfigProxyService).getSupportedConfigPropertyNames();
-                will(returnValue(getSupportedMpConfigProps()));
-                one(mpConfigProxyService).getConfigValues(cl, getSupportedMpConfigProps(), String.class);
-                will(returnValue(getConfigValues("\t\t\t\n", "               ", "     value_" + MpConfigProperties.KEY_LOCATION + "          ")));
-            }
-        });
-        Map<String, String> map = mpConfigUtil.getMpConfig(srtReq);
-        assertEquals("the map should be 1 item.", 1, map.size());
-        assertTrue("the map should contain the value" + MpConfigProperties.KEY_LOCATION, map.get(MpConfigProperties.KEY_LOCATION).equals("value_" + MpConfigProperties.KEY_LOCATION));
-    }
-
-    private Set<String> getSupportedMpConfigProps() {
-        Set<String> supportedMpConfigProps = new TreeSet<String>();
-        supportedMpConfigProps.add(MpConfigProperties.ISSUER);
-        supportedMpConfigProps.add(MpConfigProperties.PUBLIC_KEY);
-        supportedMpConfigProps.add(MpConfigProperties.KEY_LOCATION);
-        return supportedMpConfigProps;
-    }
-
-    /**
-     * @return
-     */
-    private List<String> getConfigValues(String issuer, String publicKey, String keyLocation) {
-        List<String> list = new ArrayList<String>();
-        list.add(issuer);
-        list.add(publicKey);
-        list.add(keyLocation);
-        return list;
+        MpConfigProperties configProps = new MpConfigProperties();
+        configProps.put(MpConfigProperties.ISSUER, "value_" + MpConfigProperties.ISSUER);
+        configProps.put(MpConfigProperties.PUBLIC_KEY, "value_" + MpConfigProperties.PUBLIC_KEY);
+        configProps.put(MpConfigProperties.KEY_LOCATION, "value_" + MpConfigProperties.KEY_LOCATION);
+        return configProps;
     }
 
 }
