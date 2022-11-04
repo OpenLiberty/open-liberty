@@ -8,13 +8,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-/**
- * A simple managed bean that will be used to test
- * a view scoped managed bean.
- * 
- * @author Bill Lucy
- *
- */
 package com.ibm.ws.jsf22.fat.statelessview.beans;
 
 import java.io.Serializable;
@@ -24,6 +17,13 @@ import java.util.Date;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
+/**
+ * A simple CDI bean that will be used to test
+ * a view scoped CDI bean.
+ *
+ * @author Bill Lucy
+ *
+ */
 @Named
 @ViewScoped
 public class ViewScopedCDIBean implements Serializable {
