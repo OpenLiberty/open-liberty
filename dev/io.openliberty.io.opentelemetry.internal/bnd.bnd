@@ -63,6 +63,10 @@ Export-Package: \
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 -buildpath: \
+  io.openliberty.mpTelemetry.1.0.thirdparty;version=latest,\
+  io.openliberty.com.squareup.okhttp;version=latest,\
+  io.openliberty.com.squareup.okio-jvm;version=latest,\
+  io.openliberty.io.zipkin.zipkin2;version=latest,\
   io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations-support;version=1.19.0.alpha,\
   io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-semconv;version=1.19.0.alpha,\
   io.opentelemetry.instrumentation:opentelemetry-instrumentation-api;version=1.19.0,\
