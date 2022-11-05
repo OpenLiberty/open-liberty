@@ -28,6 +28,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
@@ -90,6 +91,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     private final Set<Bean> beansToAdd = new HashSet<Bean>();
     private boolean identityStoreHandlerRegistered = false;
     private boolean identityStoreRegistered = false;
+    private boolean isAlternativeHAMAdded = false;
     private final String applicationName;
     private final List<LdapIdentityStoreDefinition> ldapDefinitionList = new ArrayList<LdapIdentityStoreDefinition>();
     private final List<DatabaseIdentityStoreDefinition> databaseDefinitionList = new ArrayList<DatabaseIdentityStoreDefinition>();
@@ -155,7 +157,8 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
                 createModulePropertiesProviderBeanForGlobalLogin(beanManager, javaClass);
             } else {
                 Annotation ltc = annotatedType.getAnnotation(LoginToContinue.class);
-                createModulePropertiesProviderBeanForApplicationAuthMechToAdd(beanManager, ltc, javaClass);
+                Annotation alternative = annotatedType.getAnnotation(Alternative.class);
+                createModulePropertiesProviderBeanForApplicationAuthMechToAdd(beanManager, ltc, alternative, javaClass);
             }
         }
         //look at the class level annotations
@@ -322,7 +325,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
      * @param implClass   the implementation class
      */
     @SuppressWarnings("rawtypes")
-    private void createModulePropertiesProviderBeanForApplicationAuthMechToAdd(BeanManager beanManager, Annotation ltc, Class implClass) {
+    private void createModulePropertiesProviderBeanForApplicationAuthMechToAdd(BeanManager beanManager, Annotation ltc, Annotation alternative, Class implClass) {
         Properties props = null;
         if (ltc != null) {
             try {
@@ -333,7 +336,22 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
                 e.printStackTrace();
             }
         }
-        addAuthMech(applicationName, implClass, implClass, props);
+        boolean isAlternative = (alternative != null);
+        if (isAlternative) {
+            // Use the alternative instead of the existing authMech
+            Class<?> existingAuthMechClass = httpAuthenticationMechanismsTracker.getExistingAuthMechClass(applicationName);
+            boolean authMechAlreadyExists = (existingAuthMechClass != null);
+            if (authMechAlreadyExists) {
+                httpAuthenticationMechanismsTracker.removeAuthMech(applicationName, existingAuthMechClass);
+            }
+            addAuthMech(applicationName, implClass, props);
+            isAlternativeHAMAdded = true;
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "adding alternative HAM: " + implClass);
+            }
+        } else if (!isAlternativeHAMAdded) {
+            addAuthMech(applicationName, implClass, props);
+        }
     }
 
     /**
@@ -363,6 +381,10 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     @Override
     public void addAuthMech(String applicationName, Class<?> annotatedClass, Class<?> implClass, Properties props) {
         httpAuthenticationMechanismsTracker.addAuthMech(applicationName, annotatedClass, implClass, props);
+    }
+
+    public void addAuthMech(String applicationName, Class<?> implClass, Properties props) {
+        httpAuthenticationMechanismsTracker.addAuthMech(applicationName, implClass, implClass, props);
     }
 
     /**
