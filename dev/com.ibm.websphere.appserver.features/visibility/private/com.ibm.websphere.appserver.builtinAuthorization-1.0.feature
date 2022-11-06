@@ -7,3 +7,4 @@ WLP-DisableAllFeatures-OnConflict: false
  com.ibm.ws.security.authorization.builtin
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

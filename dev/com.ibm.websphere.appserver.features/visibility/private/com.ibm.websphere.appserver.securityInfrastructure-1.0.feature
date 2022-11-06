@@ -16,3 +16,4 @@ WLP-DisableAllFeatures-OnConflict: false
  com.ibm.ws.security.token.s4u2
 kind=ga
 edition=core
+WLP-Activation-Type: parallel

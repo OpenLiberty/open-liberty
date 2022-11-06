@@ -18,3 +18,4 @@ singleton=true
   com.ibm.ws.security.kerberos.auth
 kind=ga
 edition=core
+WLP-Activation-Type: parallel
