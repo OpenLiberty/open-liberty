@@ -10,5 +10,5 @@
  *******************************************************************************/
 
 dependencies {
-  requiredLibs project(':io.openliberty.io.opentelemetry')
+  requiredLibs project(':io.openliberty.mpTelemetry.1.0.thirdparty')
 } 

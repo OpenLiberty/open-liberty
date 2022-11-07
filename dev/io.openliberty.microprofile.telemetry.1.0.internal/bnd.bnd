@@ -55,8 +55,7 @@ Import-Package: \
 	*
 
 Export-Package: \
-  io.openliberty.microprofile.telemetry.internal.rest;version=1.0;thread-context=true,\
-  io.opentelemetry.instrumentation.annotations;version=${openTelemetryVersion}
+  io.openliberty.microprofile.telemetry.internal.rest;version=1.0;thread-context=true
 
 Private-Package: \
   io.openliberty.microprofile.telemetry.internal.cdi,\
@@ -72,6 +71,6 @@ Private-Package: \
     com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
     io.openliberty.io.opentelemetry.internal;version=latest, \
-    io.openliberty.io.opentelemetry;version=latest,\
+    io.openliberty.mpTelemetry.1.0.thirdparty;version=latest,\
     io.openliberty.org.eclipse.microprofile.config.3.0,\
     com.ibm.websphere.org.osgi.core
