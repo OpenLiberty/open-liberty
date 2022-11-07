@@ -130,7 +130,7 @@ error.kernelDefFile.useraction=Ensure that the kernel definition resource exists
 
 error.badOptionValue=CWWKE0024E: The ({0}) value for the ({1}) option  is not valid.
 error.badOptionValue.explanation=The specified value is not appropriate for the specified option.
-error.badOptionValue.useraction=Try using the command (server help) for a description of the options.  If the value is a number, ensure it is in the valid range.
+error.badOptionValue.useraction=Run the `server help` command for a description of the options.  If the value is a number, ensure it is in the valid range.
 
 error.specifiedLocation=CWWKE0025E: The value of {0} must refer to a directory. The specified value \
  references an existing file resource. Value: {1}
