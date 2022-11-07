@@ -146,7 +146,7 @@ warning.singleServer=CWWKE0027W: Only one server may be specified on the command
 warning.singleServer.explanation=You may specify only one server on the command line. The first server name has been processed; the remaining names have been ignored.
 warning.singleServer.useraction=No action is required. Specify only one server to avoid this warning.
 
-error.optionNotApplicableToAction=CWWKE0028E: The option ({0}) is not applicable for action ({1}).
+error.optionNotApplicableToAction=CWWKE0028E: The ({0}) option is not applicable for the ({1}) action.
 error.optionNotApplicableToAction.explanation=The specified option is not allowed for the specified action.
 # Translate the word action in the command.  Enclose in < >.  User is to substitute the appropriate action, like "start", "stop", etc...
 error.optionNotApplicableToAction.useraction=Run the `server <action> help` command  to get information about valid options for the action.
