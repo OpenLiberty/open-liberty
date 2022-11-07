@@ -49,7 +49,8 @@ public interface Primes {
 
     Boolean existsNumberBetween(Long first, Long last);
 
-    @Query("SELECT NEW java.util.AbstractMap.SimpleImmutableEntry(p.number, p.name) FROM Prime p WHERE p.number <= ?1 ORDER BY p.name")
+    @Query(value = "SELECT NEW java.util.AbstractMap.SimpleImmutableEntry(p.number, p.name) FROM Prime p WHERE p.number <= ?1 ORDER BY p.name",
+           count = "SELECT COUNT(p) FROM Prime p WHERE p.number <= ?1")
     Page<Map.Entry<Long, String>> namesByNumber(long maxNumber, Pageable pagination);
 
     @Query("SELECT o.name, o.hex FROM Prime o WHERE o.number <= ?1")

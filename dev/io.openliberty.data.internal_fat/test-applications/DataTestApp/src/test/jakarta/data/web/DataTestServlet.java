@@ -2488,25 +2488,24 @@ public class DataTestServlet extends FATServlet {
     public void testTotalCountsForCountQuery() {
         Page<Map.Entry<Long, String>> page1 = primes.namesByNumber(47L, Pageable.size(5));
 
-        // TODO enable once @Query allows a separate count query to be specified
-//        assertEquals(15L, page1.getTotalElements());
-//        assertEquals(3L, page1.getTotalPages());
+        assertEquals(15L, page1.getTotalElements());
+        assertEquals(3L, page1.getTotalPages());
 
         assertIterableEquals(List.of("eleven", "five", "forty-one", "forty-seven", "forty-three"),
                              page1.getContent().stream().map(e -> e.getValue()).collect(Collectors.toList()));
 
         Page<Map.Entry<Long, String>> page2 = primes.namesByNumber(47L, page1.nextPageable());
 
-//        assertEquals(3L, page2.getTotalPages());
-//        assertEquals(15L, page2.getTotalElements());
+        assertEquals(3L, page2.getTotalPages());
+        assertEquals(15L, page2.getTotalElements());
 
         assertIterableEquals(List.of("nineteen", "seven", "seventeen", "thirteen", "thirty-one"),
                              page2.getContent().stream().map(e -> e.getValue()).collect(Collectors.toList()));
 
         Page<Map.Entry<Long, String>> page3 = primes.namesByNumber(47L, page2.nextPageable());
 
-//        assertEquals(3L, page2.getTotalPages());
-//        assertEquals(15L, page2.getTotalElements());
+        assertEquals(3L, page2.getTotalPages());
+        assertEquals(15L, page2.getTotalElements());
 
         assertIterableEquals(List.of("thirty-seven", "three", "twenty-nine", "twenty-three", "two"),
                              page3.getContent().stream().map(e -> e.getValue()).collect(Collectors.toList()));
