@@ -133,10 +133,10 @@ public class OpenIdContextLogger {
         AccessToken accessToken = context.getAccessToken();
         if (accessToken != null) {
             Map<String, Object> atClaims = accessToken.getClaims();
-            ServletLogger.printLine(ps, caller, ServletMessageConstants.ACCESS_TOKEN + accessToken.toString());
+            ServletLogger.printLine(ps, caller, ServletMessageConstants.ACCESS_TOKEN + accessToken.getToken());
             for (Map.Entry<String, Object> entry : atClaims.entrySet()) {
                 ServletLogger.printLine(ps, caller, ServletMessageConstants.ACCESS_TOKEN + ServletMessageConstants.CLAIM + ServletMessageConstants.KEY + entry.getKey()
-                                                    + ServletMessageConstants.VALUE + entry.getValue());
+                                                    + " " + ServletMessageConstants.VALUE + entry.getValue());
             }
         } else {
             ServletLogger.printLine(ps, caller, ServletMessageConstants.ACCESS_TOKEN + ServletMessageConstants.NULL);
@@ -148,11 +148,11 @@ public class OpenIdContextLogger {
         IdentityToken idToken = context.getIdentityToken();
         if (idToken != null) {
             Map<String, Object> idClaims = idToken.getClaims();
-            ServletLogger.printLine(ps, caller, ServletMessageConstants.ID_TOKEN + idToken.toString());
+            ServletLogger.printLine(ps, caller, ServletMessageConstants.ID_TOKEN + idToken.getToken());
             for (Map.Entry<String, Object> entry : idClaims.entrySet()) {
-                ServletLogger.printLine(ps, caller, "Identity Token: Claim: Key: " + entry.getKey() + " Value: " + entry.getValue());
+                ServletLogger.printLine(ps, caller, "Identity Token: Claim: Key: " + entry.getKey() + " " + ServletMessageConstants.VALUE + entry.getValue());
                 ServletLogger.printLine(ps, caller, ServletMessageConstants.ID_TOKEN + ServletMessageConstants.CLAIM + ServletMessageConstants.KEY + entry.getKey()
-                                                    + ServletMessageConstants.VALUE + entry.getValue());
+                                                    + " " + ServletMessageConstants.VALUE + entry.getValue());
             }
         } else {
             ServletLogger.printLine(ps, caller, ServletMessageConstants.ID_TOKEN + ServletMessageConstants.NULL);
@@ -165,7 +165,7 @@ public class OpenIdContextLogger {
         if (refreshToken != null && refreshToken.isPresent()) {
 //            if (refreshToken != null && refreshToken.get() != null) {
             RefreshToken tokenContent = refreshToken.get();
-            ServletLogger.printLine(ps, caller, ServletMessageConstants.REFRESH_TOKEN + ServletMessageConstants.RAW + tokenContent.toString());
+//            ServletLogger.printLine(ps, caller, ServletMessageConstants.REFRESH_TOKEN + ServletMessageConstants.RAW + tokenContent.toString());
             ServletLogger.printLine(ps, caller, ServletMessageConstants.REFRESH_TOKEN + tokenContent.getToken());
         } else {
             ServletLogger.printLine(ps, caller, ServletMessageConstants.REFRESH_TOKEN + ServletMessageConstants.NULL);

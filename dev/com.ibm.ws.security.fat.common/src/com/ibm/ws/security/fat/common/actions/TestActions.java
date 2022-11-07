@@ -22,6 +22,7 @@ import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.Constants;
 import com.ibm.ws.security.fat.common.exceptions.TestActionException;
 import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
@@ -371,5 +372,11 @@ public class TestActions {
         WebRequest request = new WebRequest(reqUrl, HttpMethod.POST);
         request.setRequestBody(body);
         return request;
+    }
+
+    public void testLogAndSleep(int timeToSleep) throws Exception {
+
+        Log.info(this.getClass(), "testLogAndSleep", "Sleeping for " + Integer.toString(timeToSleep));
+        Thread.sleep(timeToSleep * 1000);
     }
 }

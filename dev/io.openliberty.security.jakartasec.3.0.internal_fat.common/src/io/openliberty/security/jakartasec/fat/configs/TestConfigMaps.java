@@ -12,18 +12,19 @@ package io.openliberty.security.jakartasec.fat.configs;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import io.openliberty.security.jakartasec.fat.utils.Constants;
+import jakarta.security.enterprise.authentication.mechanism.http.openid.PromptType;
 
 public class TestConfigMaps {
 
     /*************** OpenIdAuthenticationMechanismDefinition ************/
-    public static Map<String, Object> getTest1() throws Exception {
+    public static Map<String, Object> getProviderUri(String opBase, String provider) throws Exception {
 
-        Map<String, Object> test1 = new HashMap<String, Object>();
-        test1.put(Constants.CLIENT_SECRET, "myDogHasFleas");
-        test1.put(Constants.CLIENT_ID, Constants.EMPTY_VALUE);
-        return test1;
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.PROVIDER_URI, opBase + "/oidc/endpoint/" + provider);
+        return updatedMap;
     }
 
     public static Map<String, Object> getBadClientId() throws Exception {
@@ -90,6 +91,62 @@ public class TestConfigMaps {
         return updatedMap;
     }
 
+    public static Map<String, Object> getPromptExpressionLogin() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.PROMPT_EXPRESSION, PromptType.LOGIN);
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getPromptExpressionEmpty() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.PROMPT_EXPRESSION, Constants.EMPTY_VALUE);
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getPromptExpressionNone() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.PROMPT_EXPRESSION, PromptType.NONE);
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getPromptExpressionConsent() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.PROMPT_EXPRESSION, PromptType.CONSENT);
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getPromptExpressionSelectAccount() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.PROMPT_EXPRESSION, PromptType.SELECT_ACCOUNT);
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getTokenAutoRefreshExpressionTrue() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.TOKEN_AUTO_REFRESH_EXPRESSION, String.valueOf(true));
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getTokenAutoRefreshExpressionFalse() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.TOKEN_AUTO_REFRESH_EXPRESSION, String.valueOf(false));
+        return updatedMap;
+
+    }
+
     /****************** ClaimDefinitions ********************/
     public static Map<String, Object> getBadCallerNameClaim() throws Exception {
 
@@ -119,7 +176,105 @@ public class TestConfigMaps {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
         updatedMap.put(Constants.CALLER_GROUPS_CLAIM, Constants.EMPTY_VALUE);
-        //        updatedMap.put(Constants.CALLER_GROUPS_CLAIM, "groups");
+        return updatedMap;
+
+    }
+
+    /****************** LogoutDefinitions ********************/
+    public static Map<String, Object> getRedirectURIGood_Logout(String opBase, String provider) throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.LOGOUT_REDIRECT_URI, opBase + "/oidc/endpoint/" + provider + "/end_session");
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getRedirectURIBad_Logout(String opBase) throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.LOGOUT_REDIRECT_URI, opBase);
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getRedirectURIEmpty_Logout() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.LOGOUT_REDIRECT_URI, Constants.EMPTY_VALUE);
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getNotifyProviderExpressionTrue() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.NOTIFY_PROVIDER_EXPRESSION, String.valueOf(true));
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getNotifyProviderExpressionFalse() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.NOTIFY_PROVIDER_EXPRESSION, String.valueOf(false));
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getAccessTokenExpiryExpressionTrue() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.ACCESS_TOKEN_EXPIRY_EXPRESSION, String.valueOf(true));
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getAccessTokenExpiryExpressionFalse() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.ACCESS_TOKEN_EXPIRY_EXPRESSION, String.valueOf(false));
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getIdentityTokenExpiryExpressionTrue() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.IDENTITY_TOKEN_EXPIRY_EXPRESSION, String.valueOf(true));
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getIdentityTokenExpiryExpressionFalse() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.IDENTITY_TOKEN_EXPIRY_EXPRESSION, String.valueOf(false));
+        return updatedMap;
+
+    }
+
+//    public static Map<String, Object> mergeMaps(Map<String, Object>... indivMaps) throws Exception {
+//
+//        Map<String, Object> updatedMap = new HashMap<String, Object>();
+//        for (Map<String, Object> aMap : indivMaps) {
+//            for (Entry<String, Object> x : aMap.entrySet()) {
+//                updatedMap.put(x.getKey(), x.getValue());
+//            }
+//        }
+//        return updatedMap;
+//
+//    }
+
+    public static Map<String, Object> mergeMaps(Map<String, Object> updatedMap, Map<String, Object> newMap) throws Exception {
+
+        if (updatedMap == null) {
+            updatedMap = new HashMap<String, Object>();
+        }
+//        for (Map<String, Object> aMap : newMap.entrySet()) {
+        for (Entry<String, Object> x : newMap.entrySet()) {
+            updatedMap.put(x.getKey(), x.getValue());
+        }
+//        }
         return updatedMap;
 
     }

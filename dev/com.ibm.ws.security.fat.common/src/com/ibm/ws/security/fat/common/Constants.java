@@ -176,6 +176,7 @@ public class Constants {
     // Using ECDH-ES to encrypt the Content Encryption Key of a JWE not officially supported in jwtBuilder yet (issue 17485)
     public static final String[] ALL_TEST_ENCRYPTALGS = { SIGALG_RS256, SIGALG_RS384, SIGALG_RS512, SIGALG_ES256, SIGALG_ES384, SIGALG_ES512 };
 
+    public static final String LOGOUT_TITLE = "Logout";
     public static final String SUCCESSFUL_LOGOUT_MSG = "You have successfully logged out";
 
     public static final String SNOOP = "snoop";

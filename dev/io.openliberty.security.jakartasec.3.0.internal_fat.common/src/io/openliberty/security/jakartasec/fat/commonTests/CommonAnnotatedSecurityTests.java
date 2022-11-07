@@ -33,6 +33,7 @@ import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
+import com.ibm.ws.security.fat.common.expectations.ResponseTitleExpectation;
 import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
 import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
 import com.ibm.ws.security.fat.common.utils.AutomationTools;
@@ -89,6 +90,7 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
     public static RepeatTests createRandomTokenTypeRepeats() {
 
         String accessTokenType = Utils.getRandomSelection(Constants.JWT_TOKEN_FORMAT, Constants.OPAQUE_TOKEN_FORMAT);
+        accessTokenType = Constants.JWT_TOKEN_FORMAT;
 
         Log.info(thisClass, "createRepeats", "Will be running tests using a/an " + accessTokenType + " access_token");
 
@@ -203,17 +205,7 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
         }
     }
 
-    /**
-     * Invoke the reqeusted app - and ensure that we landed on the login page (login.jsp)
-     *
-     * @param webClient
-     *            the webClient to use to make the request
-     * @param url
-     *            the test requested url to attempt to access
-     * @return the login page (that the next step will use to actually login)
-     * @throws Exception
-     */
-    public Page invokeAppReturnLoginPage(WebClient webClient, String url) throws Exception {
+    public Page invokeApp(WebClient webClient, String url, Expectations expectations) throws Exception {
 
         Page response = null;
         rspValues.setOriginalRequest(url);
@@ -236,16 +228,82 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
 
         loggingUtils.printAllCookies(webClient);
 
-        Expectations firstExpectations = CommonExpectations.successfullyReachedOidcLoginPage();
-
-        validationUtils.validateResult(response, firstExpectations);
+        validationUtils.validateResult(response, expectations);
 
         return response;
+    }
+
+    /**
+     * Invoke the requested app - and ensure that we landed on the login page (login.jsp)
+     *
+     * @param webClient
+     *            the webClient to use to make the request
+     * @param url
+     *            the test requested url to attempt to access
+     * @return the login page (that the next step will use to actually login)
+     * @throws Exception
+     */
+    public Page invokeAppReturnLoginPage(WebClient webClient, String url) throws Exception {
+
+        return invokeApp(webClient, url, CommonExpectations.successfullyReachedOidcLoginPage());
 
     }
 
     /**
-     * Wrapper to invoke the app - used in cases where we don't want to do a full login flow - caller should validate the
+     * Invoke the requested app - and ensure that we landed on the logout page - we'll land on this page when we try to use expired tokens
+     *
+     * @param webClient
+     *            the webClient to use to make the request
+     * @param url
+     *            the test requested url to attempt to access
+     * @return the logout page
+     * @throws Exception
+     */
+    public Page invokeAppReturnLogoutPage(WebClient webClient, String url) throws Exception {
+
+        return invokeApp(webClient, url, CommonExpectations.successfullyReachedOidcLogoutPage());
+
+    }
+
+    /**
+     * Invoke the requested app - and ensure that we land on the app without having to login again - we'll land on the app when the tokens included in the request are still valid
+     *
+     * @param webClient
+     *            the webClient to use to make the request
+     * @param url
+     *            the test requested url to attempt to access
+     * @return the app output page
+     * @throws Exception
+     */
+    public Page invokeAppGetToApp(WebClient webClient, String url) throws Exception {
+
+        return invokeApp(webClient, url, getProcessLoginExpectations(""));
+
+    }
+
+    public Page invokeAppGetToAppWithRefreshedToken(WebClient webClient, String url) throws Exception {
+
+        return invokeApp(webClient, url, getProcessAppAccessWithRefreshtedTokenExpectations(""));
+
+    }
+
+    /**
+     * Invoke the requested app - and ensure that we land on the Open Liberty splash page - we use this page as a bad attribute setting in the annotation and should land on it at
+     * times
+     *
+     * @param webClient
+     *            the webClient to use to make the request
+     * @param url
+     *            the test requested url to attempt to access
+     * @return the Open Liberty splash page
+     * @throws Exception
+     */
+    public Page invokeAppGetToSplashPage(WebClient webClient, String url) throws Exception {
+        return invokeApp(webClient, url, getSplashPageExpectations());
+    }
+
+    /**
+     * Wrapper to invoke the requested app - used in cases where we don't want to do a full login flow - caller should validate the
      * response.
      * Use this instead of just actions.invokeUrl when you'll need the originalRequest set properly in rspValues
      *
@@ -276,7 +334,7 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
         return response;
     }
 
-    public Expectations getProcessLoginExpectations(String app) throws Exception {
+    public Expectations getGeneralAppExpecations(String app) throws Exception {
 
         Expectations processLoginexpectations = new Expectations();
         processLoginexpectations.addSuccessCodeForCurrentAction();
@@ -289,7 +347,13 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
         processLoginexpectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, ServletMessageConstants.HELLO_MSG
                                                                                                              + app, "Did not land on the test app."));
 
-//            // check for the correct values from the callback in the server log
+        return processLoginexpectations;
+    }
+
+    public Expectations getProcessLoginExpectations(String app) throws Exception {
+
+        Expectations processLoginexpectations = getGeneralAppExpecations(app);
+        //            // check for the correct values from the callback in the server log
 //            OpenIdContextExpectationHelpers.getOpenIdContextExpectations(null, processLoginexpectations, ServletMessageConstants.CALLBACK, rspValues);
 //            WsSubjectExpectationHelpers.getWsSubjectExpectations(null, processLoginexpectations, ServletMessageConstants.CALLBACK, rspValues);
         // check for the correct values from the servlet in the response
@@ -298,6 +362,29 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
         ServletRequestExpectationHelpers.getServletRequestExpectations(null, processLoginexpectations, ServletMessageConstants.SERVLET, rspValues);
 
         return processLoginexpectations;
+    }
+
+    public Expectations getProcessAppAccessWithRefreshtedTokenExpectations(String app) throws Exception {
+
+        Expectations processLoginexpectations = getGeneralAppExpecations(app);
+        //            // check for the correct values from the callback in the server log
+//            OpenIdContextExpectationHelpers.getOpenIdContextExpectations(null, processLoginexpectations, ServletMessageConstants.CALLBACK, rspValues);
+//            WsSubjectExpectationHelpers.getWsSubjectExpectations(null, processLoginexpectations, ServletMessageConstants.CALLBACK, rspValues);
+        // check for the correct values from the servlet in the response
+        OpenIdContextExpectationHelpers.getOpenIdContextFromRefreshedTokenExpectations(null, processLoginexpectations, ServletMessageConstants.SERVLET, rspValues);
+        WsSubjectExpectationHelpers.getWsSubjectExpectations(null, processLoginexpectations, ServletMessageConstants.SERVLET, rspValues);
+        ServletRequestExpectationHelpers.getServletRequestExpectations(null, processLoginexpectations, ServletMessageConstants.SERVLET, rspValues);
+
+        return processLoginexpectations;
+    }
+
+    public Expectations getSplashPageExpectations() throws Exception {
+
+        Expectations expectations = new Expectations();
+        expectations.addSuccessCodeForCurrentAction();
+        expectations.addExpectation(new ResponseTitleExpectation(null, Constants.STRING_CONTAINS, Constants.OPEN_LIBERTY, "Did not land on the Open Liberty page."));
+
+        return expectations;
     }
 
     /**
@@ -451,4 +538,100 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
 
         validationUtils.validateResult(response, expectations);
     }
+
+    /**
+     * Compare access_tokens, id_tokens and refresh_tokens between 2 reponses. Can be used to validate that we've invoked refresh properly, or have had to login again
+     *
+     * @param response1 - the output from the first request
+     * @param response2 - the output from teh second request
+     * @return - true if the responses are different, false if they're the same
+     * @throws Exception
+     */
+    public boolean tokensAreDifferent(Page response1, Page response2, boolean provderAllowsRefresh, boolean tokenWasRefreshed) throws Exception {
+
+        boolean differentToken = accessTokensAreDifferent(response1, response2);
+        if (tokenWasRefreshed) {
+            differentToken = differentToken && idTokensAreDifferent(response1, response2);
+        }
+        if (provderAllowsRefresh) {
+            differentToken = differentToken && refreshTokensAreDifferent(response1, response2);
+        }
+
+        return differentToken;
+//        if (provderAllowsRefresh) {
+//            return accessTokensAreDifferent(response1, response2) && idTokensAreDifferent(response1, response2) && refreshTokensAreDifferent(response1, response2);
+//        } else {
+//            return accessTokensAreDifferent(response1, response2) && idTokensAreDifferent(response1, response2);
+//        }
+    }
+
+    public boolean tokensAreTheSame(Page response1, Page response2, boolean provderAllowsRefresh) throws Exception {
+
+        if (provderAllowsRefresh) {
+            return !accessTokensAreDifferent(response1, response2) && !idTokensAreDifferent(response1, response2) && !refreshTokensAreDifferent(response1, response2);
+        } else {
+            return !accessTokensAreDifferent(response1, response2) && !idTokensAreDifferent(response1, response2);
+        }
+    }
+
+    public boolean accessTokensAreDifferent(Page response1, Page response2) throws Exception {
+
+        String first_access_token = AutomationTools.getTokenFromResponse(response1,
+                                                                         ServletMessageConstants.SERVLET + ServletMessageConstants.OPENID_CONTEXT
+                                                                                    + ServletMessageConstants.ACCESS_TOKEN);
+
+        String second_access_token = AutomationTools.getTokenFromResponse(response2,
+                                                                          ServletMessageConstants.SERVLET + ServletMessageConstants.OPENID_CONTEXT
+                                                                                     + ServletMessageConstants.ACCESS_TOKEN);
+
+        if (first_access_token.equals(second_access_token)) {
+            Log.info(thisClass, _testName, "Both access_tokens were the same");
+            return false;
+        } else {
+            Log.info(thisClass, _testName, "The access_tokens were different");
+            return true;
+        }
+
+    }
+
+    public boolean idTokensAreDifferent(Page response1, Page response2) throws Exception {
+
+        String first_id_token = AutomationTools.getTokenFromResponse(response1,
+                                                                     ServletMessageConstants.SERVLET + ServletMessageConstants.OPENID_CONTEXT
+                                                                                + ServletMessageConstants.ID_TOKEN);
+
+        String second_id_token = AutomationTools.getTokenFromResponse(response2,
+                                                                      ServletMessageConstants.SERVLET + ServletMessageConstants.OPENID_CONTEXT
+                                                                                 + ServletMessageConstants.ID_TOKEN);
+
+        if (first_id_token.equals(second_id_token)) {
+            Log.info(thisClass, _testName, "Both id_tokens were the same");
+            return false;
+        } else {
+            Log.info(thisClass, _testName, "The id_tokens were different");
+            return true;
+        }
+
+    }
+
+    public boolean refreshTokensAreDifferent(Page response1, Page response2) throws Exception {
+
+        String first_refresh_token = AutomationTools.getTokenFromResponse(response1,
+                                                                          ServletMessageConstants.SERVLET + ServletMessageConstants.OPENID_CONTEXT
+                                                                                     + ServletMessageConstants.REFRESH_TOKEN);
+
+        String second_refresh_token = AutomationTools.getTokenFromResponse(response2,
+                                                                           ServletMessageConstants.SERVLET + ServletMessageConstants.OPENID_CONTEXT
+                                                                                      + ServletMessageConstants.REFRESH_TOKEN);
+
+        if (first_refresh_token.equals(second_refresh_token)) {
+            Log.info(thisClass, _testName, "Both refresh_tokens were the same");
+            return false;
+        } else {
+            Log.info(thisClass, _testName, "The refresh_tokens were different");
+            return true;
+        }
+
+    }
+
 }

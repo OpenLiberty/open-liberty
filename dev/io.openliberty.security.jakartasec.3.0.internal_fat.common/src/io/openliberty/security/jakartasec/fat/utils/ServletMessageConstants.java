@@ -64,5 +64,5 @@ public class ServletMessageConstants {
     public static final String SUBS_MISMATCH_PART2 = " does not match contextSub: ";
     public static final String GETTING_COOKIES = "Getting cookies";
     public static final String HELLO_MSG = "Hello world from ";
-
+    public static final String EMPTY = "empty";
 }
