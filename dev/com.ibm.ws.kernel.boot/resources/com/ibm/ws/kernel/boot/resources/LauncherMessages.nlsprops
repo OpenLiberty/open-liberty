@@ -128,7 +128,7 @@ error.kernelDefFile=CWWKE0023E: The specified kernel definition ({0}) does not e
 error.kernelDefFile.explanation=The specified kernel definition could not be found.
 error.kernelDefFile.useraction=Ensure that the kernel definition resource exists and can be read by the current user.
 
-error.badOptionValue=CWWKE0024E: The value ({0}) for the option ({1}) is not valid.
+error.badOptionValue=CWWKE0024E: The ({0}) value for the ({1}) option  is not valid.
 error.badOptionValue.explanation=The specified value is not appropriate for the specified option.
 error.badOptionValue.useraction=Try using the command (server help) for a description of the options.  If the value is a number, ensure it is in the valid range.
 
