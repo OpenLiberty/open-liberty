@@ -956,10 +956,11 @@ public class TCKRunner {
 
     private static TCKJarInfo getTCKJarInfo(Type type, String[] dependencyOutput) {
         //org.eclipse.microprofile.config:microprofile-config-tck:jar:3.0.2:compile:/Users/tevans/.m2/repository/org/eclipse/microprofile/config/microprofile-config-tck/3.0.2/microprofile-config-tck-3.0.2.jar
-        Pattern tckPattern = Pattern.compile(type.toString().toLowerCase() + "(.*):(.*-tck):jar:(.*):.*:(/.*\\.jar)", Pattern.DOTALL);
+        //jakarta.json:jakarta.json-tck-tests:2.1.0:compile:/Users/tevans/.m2/repository/jakarta/json/jakarta.json-tck-tests/2.1.0/jakarta.json-tck-tests-2.1.0.jar
+        Pattern tckPattern = Pattern.compile(type.toString().toLowerCase() + "(.*):(.*-tck|.*-tck-tests):jar:(.*):.*:(.*\\.jar)", Pattern.DOTALL);
         TCKJarInfo tckJar = null;
         for (String sCurrentLine : dependencyOutput) {
-            if (sCurrentLine.contains("-tck:jar")) {
+            if (sCurrentLine.contains("-tck:jar") || sCurrentLine.contains("-tck-tests:jar")) {
                 Matcher nameMatcher = tckPattern.matcher(sCurrentLine);
                 if (nameMatcher.find()) {
                     tckJar = new TCKJarInfo();
