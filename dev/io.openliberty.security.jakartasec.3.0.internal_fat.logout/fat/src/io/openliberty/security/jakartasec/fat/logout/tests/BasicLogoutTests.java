@@ -69,7 +69,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     protected static final String emptyRedirectUri = "emptyRedirectUri";
 
     @ClassRule
-    public static RepeatTests repeat = createRandomTokenTypeRepeats();
+    public static RepeatTests repeat = createTokenTypeRepeat(Constants.OPAQUE_TOKEN_FORMAT);
 
     static Map<String, String> appMap = new HashMap<String, String>();
 

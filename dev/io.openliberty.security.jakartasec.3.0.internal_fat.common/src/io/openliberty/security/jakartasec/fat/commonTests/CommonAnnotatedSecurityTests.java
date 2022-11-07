@@ -90,7 +90,10 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
     public static RepeatTests createRandomTokenTypeRepeats() {
 
         String accessTokenType = Utils.getRandomSelection(Constants.JWT_TOKEN_FORMAT, Constants.OPAQUE_TOKEN_FORMAT);
-        accessTokenType = Constants.JWT_TOKEN_FORMAT;
+        return createTokenTypeRepeat(accessTokenType);
+    }
+
+    public static RepeatTests createTokenTypeRepeat(String accessTokenType) {
 
         Log.info(thisClass, "createRepeats", "Will be running tests using a/an " + accessTokenType + " access_token");
 
