@@ -10,21 +10,15 @@
  *******************************************************************************/
 package jakarta.data.repository;
 
-import java.util.List;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * Method signatures copied from the Jakarta Data git repo.
  */
-public interface Slice<T> extends Streamable<T> {
-    List<T> getContent();
-
-    long getNumber(); // from Spring Data and Micronaut. Not currently in Jakarta Data.
-
-    int getNumberOfElements();
-
-    Pageable getPageable();
-
-    boolean hasContent();
-
-    Pageable nextPageable();
+public interface Streamable<T> extends Iterable<T> {
+    public default Stream<T> stream() {
+        return StreamSupport.stream(this.spliterator(),
+                                    false /* not parallel */);
+    }
 }
