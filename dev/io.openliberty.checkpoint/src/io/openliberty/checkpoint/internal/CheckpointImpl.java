@@ -96,10 +96,17 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private static final Set<String> SUPPORTED_FEATURES;
     static {
         String[] supported = {
-                               // the checkpont feature must be supported
+                               // NOTE that these lists are only the public features.
+                               // Some sections may have duplicates from other sections.
+                               // This is for simplicity in listing the features for the supported profiles,
+                               // please do not remove the duplicates.
+
+                               // The checkpont feature must be supported
                                "checkpoint-1.0",
-                               // some utility features that are helpful
+
+                               // Some utility features that are helpful
                                "osgiConsole-1.0",
+
                                // webProfile-8.0 + microProfile-4.1
                                "appSecurity-2.0",
                                "appSecurity-3.0",
@@ -137,6 +144,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
                                "ssl-1.0",
                                "webProfile-8.0",
                                "websocket-1.1",
+
                                // webProfile-9.1 + microProfile-5.0
                                "appAuthentication-2.0",
                                "appSecurity-4.0",
@@ -174,7 +182,45 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
                                "transportSecurity-1.0",
                                "webProfile-9.1",
                                "websocket-2.0",
-                               "xmlBinding-3.0"
+                               "xmlBinding-3.0",
+
+                               // webProfile-10.0 + microProfile-6.0
+                               "appAuthentication-3.0",
+                               "appSecurity-5.0",
+                               "beanValidation-3.0",
+                               "cdi-4.0",
+                               "concurrent-3.0",
+                               "distributedMap-1.0",
+                               "enterpriseBeansLite-4.0",
+                               "expressionLanguage-5.0",
+                               "faces-4.0",
+                               "jdbc-4.2",
+                               "jndi-1.0",
+                               "json-1.0",
+                               "jsonb-3.0",
+                               "jsonp-2.1",
+                               "jwt-1.0",
+                               "managedBeans-2.0",
+                               "microProfile-6.0",
+                               "monitor-1.0",
+                               "mpConfig-3.0",
+                               "mpFaultTolerance-4.0",
+                               "mpHealth-4.0",
+                               "mpJwt-2.1",
+                               "mpMetrics-5.0",
+                               "mpOpenAPI-3.1",
+                               "mpRestClient-3.0",
+                               "mpTelemetry-1.0",
+                               "pages-3.1",
+                               "persistence-3.1",
+                               "persistenceContainer-3.1",
+                               "restfulWS-3.1",
+                               "restfulWSClient-3.1",
+                               "servlet-6.0",
+                               "ssl-1.0",
+                               "transportSecurity-1.0",
+                               "webProfile-10.0",
+                               "websocket-2.1"
         };
         Set<String> result = new HashSet<>();
         result.addAll(Arrays.asList(supported));
