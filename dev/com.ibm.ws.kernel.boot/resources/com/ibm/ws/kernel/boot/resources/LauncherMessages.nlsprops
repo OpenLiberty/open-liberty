@@ -148,7 +148,6 @@ warning.singleServer.useraction=No action is required. Specify only one server t
 
 error.optionNotApplicableToAction=CWWKE0028E: The ({0}) option is not applicable for the ({1}) action.
 error.optionNotApplicableToAction.explanation=The specified option is not allowed for the specified action.
-# Translate the word action in the command.  Enclose in < >.  User is to substitute the appropriate action, like "start", "stop", etc...
 error.optionNotApplicableToAction.useraction=Run the `server <action> help` command  to get information about valid options for the action.
   
 error.serverAlreadyRunning=CWWKE0029E: An instance of server {0} is already running.
