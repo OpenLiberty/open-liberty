@@ -15,7 +15,9 @@
 		scope="myScopeSample"
 		jwkEnabled="${oidcJWKEnabled}"
 		signatureAlgorithm="${oidcSignAlg}"
+		issuerIdentifier="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample"
 		oauthProviderRef="OAuthConfigSample" />
+	<!-- TODO: remove issuerIdentifier when back-channel logout beta is removed -->
 
 	<oauthProvider
 		id="OAuthConfigSample"
