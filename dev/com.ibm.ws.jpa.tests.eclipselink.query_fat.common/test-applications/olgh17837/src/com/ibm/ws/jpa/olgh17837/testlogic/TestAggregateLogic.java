@@ -1342,9 +1342,9 @@ public class TestAggregateLogic extends AbstractTestLogic {
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
             if (isUsingJPA31Feature()) {
-                if (isDB2Z || isDB2) {
+                if (isDB2) {
                     Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(DISTINCT(1)))", sql.remove(0));
-                } else if (isDerby) {
+                } else if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(DISTINCT(1)))", sql.remove(0));
                 } else {
                     Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(DISTINCT(?)))", sql.remove(0));
