@@ -45,15 +45,20 @@ public class RPInitiatedLogoutStrategy {
     public ProviderAuthenticationResult logout() {
         String clientId = null;
         String redirectURI = null;
-        if (oidcClientConfig != null)
+        if (oidcClientConfig != null) {
             clientId = oidcClientConfig.getClientId();
-        if (logoutConfig != null)
+        }
+        if (logoutConfig != null) {
             redirectURI = logoutConfig.getRedirectURI();
+        }
 
-        req.setAttribute(ID_TOKEN_HINT, idTokenString);
+        if (idTokenString != null) {
+            req.setAttribute(ID_TOKEN_HINT, idTokenString);
+        }
         req.setAttribute(CLIENT_ID, clientId);
-        if (redirectURI != null && !redirectURI.isEmpty())
+        if (redirectURI != null && !redirectURI.isEmpty()) {
             req.setAttribute(POST_LOGOUT_REDIRECT_URI, redirectURI);
+        }
 
         return new ProviderAuthenticationResult(AuthResult.REDIRECT_TO_PROVIDER, HttpServletResponse.SC_OK, null, null, null, endSessionEndPoint);
 
