@@ -19,8 +19,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -209,6 +212,13 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     }
 
     @Override
+    public Iterator<T> iterator() {
+        int size = results.size();
+        long max = pagination.getSize();
+        return size > max ? new ResultIterator((int) max) : results.iterator();
+    }
+
+    @Override
     public KeysetPageable nextPageable() {
         // The extra position is only available for identifying a next page if the current page was obtained in the forward direction
         int minToHaveNextPage = isForward ? ((int) pagination.getSize() + 1) : 1;
@@ -258,6 +268,11 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
         return p.beforeKeyset(keyValues.toArray());
     }
 
+    @Override
+    public Stream<T> stream() {
+        return getContent().stream();
+    }
+
     /**
      * Keyset cursor
      */
@@ -302,7 +317,36 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     };
 
     /**
-     * Restricts the number of results to the specified amount.
+     * Iterator that restricts the number of results to the specified amount.
+     */
+    @Trivial
+    private class ResultIterator implements Iterator<T> {
+        private int index;
+        private final Iterator<T> iterator;
+        private final int size;
+
+        private ResultIterator(int size) {
+            this.size = size;
+            this.iterator = results.iterator();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index < size && iterator.hasNext();
+        }
+
+        @Override
+        public T next() {
+            if (index >= size)
+                throw new NoSuchElementException("Element at index " + index);
+            T result = iterator.next();
+            index++;
+            return result;
+        }
+    }
+
+    /**
+     * List that restricts the number of results to the specified amount.
      */
     @Trivial
     private class ResultList extends AbstractList<T> {

@@ -195,7 +195,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             if (upperTrimmed.startsWith("SELECT")) {
                 queryInfo.type = QueryInfo.Type.SELECT;
 
-                // TODO jpqlCount from @Query
+                queryInfo.jpqlCount = query.count().length() > 0 ? query.count() : null;
                 if (countPages && queryInfo.jpqlCount == null) {
                     // Attempt to infer from provided query
                     int select = upper.indexOf("SELECT");

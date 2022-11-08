@@ -10,18 +10,15 @@
  *******************************************************************************/
 package jakarta.data.repository;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
- * Annotation methods/properties copied from Jakarta Data repository.
+ * Method signatures copied from the Jakarta Data git repo.
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface Query {
-    String count() default "";
-
-    String value();
+public interface Streamable<T> extends Iterable<T> {
+    public default Stream<T> stream() {
+        return StreamSupport.stream(this.spliterator(),
+                                    false /* not parallel */);
+    }
 }
