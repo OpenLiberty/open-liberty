@@ -82,30 +82,37 @@ public class MinimumBaseOpenIdConfig {
                 return Boolean.parseBoolean(value);
             }
         } catch (Exception e) {
-            System.out.println("getBooleanValue couldn't handle the value specified in the config properties - setting a defaul to false.");
+            System.out.println("getBooleanValue couldn't handle the value specified in the config properties - setting a default to false.");
+            System.out.println(e.getMessage());
             return false;
         }
     }
 
     public PromptType[] getPromptTypeValue(String key) {
         String value = config.getProperty(key);
+        System.out.println("Raw prompt value: " + value);
         PromptType[] returnValue = {};
         try {
-            if (value != null && !value.isEmpty()) {
+            if (value != null && !value.isEmpty() && !value.contains(Constants.EMPTY_VALUE)) {
                 String[] splitString = value.split(",");
                 int size = splitString.length;
-                returnValue = new PromptType[size + 1];
+                returnValue = new PromptType[size];
                 int i = 0;
                 for (String v : splitString) {
+                    System.out.println("Raw individual value: " + v);
                     returnValue[i] = PromptType.valueOf(v);
                     i++;
                 }
 
             }
+            System.out.println("Returning prompt value: " + returnValue.toString());
             return returnValue;
 
-        } catch (Exception e) {
-            System.out.println("getBooleanValue couldn't handle the value specified in the config properties - setting a defaul to false.");
+        } catch (
+
+        Exception e) {
+            System.out.println("getPromptTypeValue couldn't handle the value specified in the config properties - setting a default to {}.");
+            System.out.println(e.getMessage());
             return returnValue;
         }
 

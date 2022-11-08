@@ -385,7 +385,8 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
 
         Expectations expectations = new Expectations();
         expectations.addSuccessCodeForCurrentAction();
-        expectations.addExpectation(new ResponseTitleExpectation(null, Constants.STRING_CONTAINS, Constants.OPEN_LIBERTY, "Did not land on the Open Liberty page."));
+        //expectations.addExpectation(new ResponseTitleExpectation(null, Constants.STRING_CONTAINS, Constants.OPEN_LIBERTY, "Did not land on the Open Liberty page."));
+        expectations.addExpectation(new ResponseTitleExpectation(null, Constants.STRING_CONTAINS, "Liberty", "Did not land on the Open Liberty page."));
 
         return expectations;
     }
