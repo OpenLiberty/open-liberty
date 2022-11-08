@@ -416,8 +416,12 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         }
         IdentityToken idToken = openIdContext.getIdentityToken();
         boolean isAccessTokenExpired = openIdContext.getAccessToken().isExpired();
-        boolean isIdTokenExpired = idToken.isExpired();
-        String idTokenString = idToken.getToken();
+        boolean isIdTokenExpired = false;
+        String idTokenString = null;
+        if (idToken != null) {
+            isIdTokenExpired = idToken.isExpired();
+            idTokenString = idToken.getToken();
+        }
         String refreshTokenString = getRefreshToken(openIdContext);
         return client.processExpiredToken(request, response, isAccessTokenExpired, isIdTokenExpired, idTokenString, refreshTokenString);
     }

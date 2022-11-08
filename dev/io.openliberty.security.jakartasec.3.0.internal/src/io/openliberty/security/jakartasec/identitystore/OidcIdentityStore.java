@@ -200,7 +200,11 @@ public class OidcIdentityStore implements IdentityStore {
     }
 
     private IdentityToken createIdentityTokenFromTokenResponse(long tokenMinValidityInMillis, TokenResponse tokenResponse, JwtClaims idTokenClaims) {
-        return new IdentityTokenImpl(tokenResponse.getIdTokenString(), idTokenClaims.getClaimsMap(), tokenMinValidityInMillis);
+        String idTokenString = tokenResponse.getIdTokenString();
+        if (idTokenString == null) {
+            return null;
+        }
+        return new IdentityTokenImpl(idTokenString, idTokenClaims.getClaimsMap(), tokenMinValidityInMillis);
     }
 
     @FFDCIgnore(Exception.class)
