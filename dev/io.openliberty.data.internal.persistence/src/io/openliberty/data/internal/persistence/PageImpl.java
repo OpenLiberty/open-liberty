@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.RandomAccess;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -194,7 +195,7 @@ public class PageImpl<T> implements Page<T> {
      * List that restricts the number of results to the specified amount.
      */
     @Trivial
-    private class ResultList extends AbstractList<T> {
+    private class ResultList extends AbstractList<T> implements RandomAccess {
         private final int size;
 
         private ResultList(int size) {

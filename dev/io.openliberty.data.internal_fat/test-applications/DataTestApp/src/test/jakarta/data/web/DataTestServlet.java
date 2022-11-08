@@ -45,6 +45,7 @@ import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -60,6 +61,7 @@ import jakarta.data.repository.Limit;
 import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Sort;
+import jakarta.data.repository.Streamable;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -2449,6 +2451,55 @@ public class DataTestServlet extends FATServlet {
                           reserved,
                           Comparator.<ReservedTimeSlot, Instant> comparing(o -> o.start().toInstant())
                                           .thenComparing(Comparator.<ReservedTimeSlot, Instant> comparing(o -> o.stop().toInstant())));
+    }
+
+    /**
+     * Repository method that returns a stream and uses it as a parallel stream.
+     */
+    @Test
+    public void testStream() {
+        Stream<Prime> stream = primes.findByNumberLessThan(49L);
+        Long total = stream.parallel().reduce(0L, (sum, p) -> sum + p.number, (sum1, sum2) -> sum1 + sum2);
+        assertEquals(Long.valueOf(328), total);
+    }
+
+    /**
+     * Repository method that returns a streamable and obtains streams from it twice, and also obtains an iterable from it.
+     */
+    @Test
+    public void testStreamable() {
+        Streamable<Prime> streamable = primes.findByNumberLessThanEqualOrderByNumberDesc(49L, Limit.of(14));
+        Long total = streamable.stream().parallel().reduce(0L, (sum, p) -> sum + p.number, (sum1, sum2) -> sum1 + sum2);
+        assertEquals(Long.valueOf(326), total);
+
+        assertIterableEquals(List.of(47L, 43L, 41L, 37L, 31L, 29L, 23L, 19L, 17L, 13L, 11L, 7L, 5L, 3L),
+                             streamable.stream().map(p -> p.number).collect(Collectors.toList()));
+
+        AtomicLong sumRef = new AtomicLong();
+        streamable.iterator().forEachRemaining(p -> sumRef.addAndGet(p.number));
+        assertEquals(326L, sumRef.get());
+    }
+
+    /**
+     * Repository method that supplies pagination information and returns a streamable.
+     */
+    @Test
+    public void testStreamableWithPagination() {
+        Pageable p1 = Pageable.size(9);
+        Streamable<Prime> streamable1 = primes.findByNumberLessThanEqualOrderByNumberAsc(44L, p1);
+
+        assertIterableEquals(List.of(2L, 3L, 5L, 7L, 11L, 13L, 17L, 19L, 23L),
+                             streamable1.stream().map(p -> p.number).collect(Collectors.toList()));
+
+        Pageable p2 = p1.next();
+        Streamable<Prime> streamable2 = primes.findByNumberLessThanEqualOrderByNumberAsc(44L, p2);
+
+        assertIterableEquals(List.of(29L, 31L, 37L, 41L, 43L),
+                             streamable2.stream().map(p -> p.number).collect(Collectors.toList()));
+
+        AtomicLong sumRef = new AtomicLong();
+        streamable2.forEach(p -> sumRef.addAndGet(p.number));
+        assertEquals(181L, sumRef.get());
     }
 
     /**

@@ -12,13 +12,16 @@ package test.jakarta.data.web;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 import jakarta.data.repository.KeysetAwarePage;
+import jakarta.data.repository.Limit;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Streamable;
 import jakarta.enterprise.concurrent.Asynchronous;
 
 /**
@@ -37,6 +40,12 @@ public interface Primes {
     KeysetAwarePage<Prime> findByNumberBetween(long min, long max, Pageable pagination);
 
     KeysetAwarePage<Prime> findByNumberBetweenOrderByEvenDescSumOfBitsDescNumberAsc(long min, long max, Pageable pagination);
+
+    Stream<Prime> findByNumberLessThan(long max);
+
+    Streamable<Prime> findByNumberLessThanEqualOrderByNumberAsc(long max, Pageable pagination);
+
+    Streamable<Prime> findByNumberLessThanEqualOrderByNumberDesc(long max, Limit limit);
 
     Page<Prime> findByNumberLessThanEqualOrderByNumberDesc(long max, Pageable pagination);
 
