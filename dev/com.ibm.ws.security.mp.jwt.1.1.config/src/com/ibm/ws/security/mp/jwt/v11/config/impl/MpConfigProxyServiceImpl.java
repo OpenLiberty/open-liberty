@@ -77,6 +77,36 @@ public class MpConfigProxyServiceImpl implements MpConfigProxyService {
         return null;
     }
 
+    /** return */
+    @Sensitive
+    @Override
+    public MpConfigProperties getConfigProperties(ClassLoader cl) {
+        Config config = getConfig(cl);
+        Set<String> propertyNames = getSupportedConfigPropertyNames();
+        MpConfigProperties mpConfigProps = new MpConfigProperties();
+
+        for (String propertyName : propertyNames) {
+            Optional<String> value = config.getOptionalValue(propertyName, String.class);
+            if (value != null && value.isPresent()) {
+                String valueString = value.get().trim();
+                if (!valueString.isEmpty()) {
+                    mpConfigProps.put(propertyName, valueString);
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, propertyName + " is empty. Ignore it.");
+                    }
+
+                }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, propertyName + " is not in mpConfig.");
+                }
+            }
+        }
+
+        return mpConfigProps;
+    }
+
     @Override
     public Set<String> getSupportedConfigPropertyNames() {
         return MpConfigProperties.acceptableMpConfigPropNames11;
