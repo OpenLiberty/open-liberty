@@ -45,8 +45,10 @@ tested.features: \
 	mpOpenTracing-2.0,\
 	microProfile-4.1,\
 	microProfile-5.0,\
+	microProfile-6.0,\
 	webProfile-8.0,\
 	webProfile-9.1,\
+	webProfile-10.0,\
 	ejb-2.3,\
 	jsf-2.3
 
