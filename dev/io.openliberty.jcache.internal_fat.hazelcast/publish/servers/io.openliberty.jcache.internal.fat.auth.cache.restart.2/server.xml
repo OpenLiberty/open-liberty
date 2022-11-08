@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2021, 2022 IBM Corporation and others.
+    Copyright (c) 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@
 	<include
 		location="${shared.resource.dir}/configs/testingConfig.xml" />
 	<include
-		location="${shared.resource.dir}/configs/httpEndpoint1.xml" />
+		location="${shared.resource.dir}/configs/httpEndpoint2.xml" />
 	<include
 		location="${shared.resource.dir}/configs/basicRegistry.xml" />
 	<include
@@ -34,18 +34,24 @@
 	<include
 		location="${shared.resource.dir}/configs/appBasicAuth1.xml" />
 
-    <!-- 
-		Configure the JCache caching provider and cache manager instances.
-     -->
-	<cache id="AuthCache" name="AuthCache">
-		<cacheManager>
-			<properties
-				hazelcast.config.location="file:${shared.resource.dir}/hazelcast/${hazelcast.config.file}" />
+	<!--
+		Configure the JCache caching provider and cache manager instances. 
+	 -->
+	<cachingProvider id="CachingProvider"
+		jCacheLibraryRef="HazelcastLib" commonLibraryRef="CustomLoginLib" />
+	<cacheManager id="CacheManager"
+		cachingProviderRef="CachingProvider">
 
-			<cachingProvider
-				jCacheLibraryRef="HazelcastLib" commonLibraryRef="CustomLoginLib" />
-		</cacheManager>
-	</cache>
+		<properties
+			hazelcast.config.location="file:${shared.resource.dir}/hazelcast/${hazelcast.config.file}" />
+
+	</cacheManager>
+
+	<!--
+		Configure the JCache instances.
+	 -->
+	<cache id="AuthCache" name="AuthCache"
+		cacheManagerRef="CacheManager" />
 
     <!-- 
 		Configure the authentication cache to use the JCache. 

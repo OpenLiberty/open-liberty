@@ -11,12 +11,11 @@
 <server>
 
 	<featureManager>
-		<feature>appSecurity-3.0</feature>
+		<feature>appSecurity-2.0</feature>
 		<feature>jsp-2.3</feature>
 		<feature>servlet-4.0</feature>
 	</featureManager>
-
-	<!-- 
+	<!--
 		Include common configuration. 
 	 -->
 	<include
@@ -32,24 +31,37 @@
 	<include
 		location="${shared.resource.dir}/configs/ssl.xml" />
 	<include
-		location="${shared.resource.dir}/configs/appBasicAuth1.xml" />
+		location="${shared.resource.dir}/configs/appFormLogin.xml" />
 
     <!-- 
-		Configure the JCache caching provider and cache manager instances.
+        Configure the CachingProvider and CacheManager.
      -->
-	<cache id="AuthCache" name="AuthCache">
-		<cacheManager>
-			<properties
-				hazelcast.config.location="file:${shared.resource.dir}/hazelcast/${hazelcast.config.file}" />
+	<cacheManager id="CacheManager">
+		<properties
+			hazelcast.config.location="file:${shared.resource.dir}/hazelcast/${hazelcast.config.file}" />
 
-			<cachingProvider
-				jCacheLibraryRef="HazelcastLib" commonLibraryRef="CustomLoginLib" />
-		</cacheManager>
-	</cache>
+		<cachingProvider
+			jCacheLibraryRef="HazelcastLib" commonLibraryRef="CustomLoginLib" />
+	</cacheManager>
 
-    <!-- 
-		Configure the authentication cache to use the JCache. 
-     -->
+	<!--
+		Configure the JCache instances.
+	 -->
+	<cache id="AuthCache" name="AuthCache"
+		cacheManagerRef="CacheManager" />
+	<cache id="LoggedOutCookieCache" name="LoggedOutCookieCache"
+		cacheManagerRef="CacheManager" />
+
+	<!--
+		Configure the authentication cache and the logged out cookie cache to use
+		the JCache instances.
+		
+		Set trackLoggedOutSSOCookies to false to demonstrate that it is ignored
+        when the distributed logged out cookie cache is configured.
+	 -->
 	<authCache cacheRef="AuthCache" />
+	<webAppSecurity
+		loggedOutCookieCacheRef="LoggedOutCookieCache"
+		trackLoggedOutSSOCookies="false" />
 
 </server>
