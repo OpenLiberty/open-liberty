@@ -497,7 +497,9 @@ public class ApacheDSandKDC {
 
         Log.info(c, methodName, "Preferred port: " + preferredPort);
         ServerSocket s = null;
-        if (preferredPort > 0) {
+        if (FAT_TEST_LOCALRUN && System.getProperty("os.name").toLowerCase().startsWith("mac") && preferredPort < 100) {
+            Log.info(c, methodName, "Running on local Mac, get random port instead of requested " + preferredPort);
+        } else if (preferredPort > 0) {
             try {
                 s = new ServerSocket(preferredPort);
                 s.setReuseAddress(true);
