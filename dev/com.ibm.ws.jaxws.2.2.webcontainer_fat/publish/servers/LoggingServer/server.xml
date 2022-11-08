@@ -2,6 +2,8 @@
     <featureManager>
         <feature>jsp-2.2</feature>        
         <feature>jaxws-2.2</feature>
+        <feature>servlet-3.1</feature>
+        <feature>componenttest-1.0</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml"/>
@@ -21,6 +23,7 @@
 	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
   	<javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get" />
 	<javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*" />
+  	<javaPermission className="javax.security.auth.AuthPermission" name="*" actions="getSubject" />
 	
 	<!-- Trace logging and debug are turned on to enable feature logging -->
 	<logging traceSpecification="com.ibm.ws.jaxws.*=debug:org.apache.cxf.ext.logging.*=debug"/>

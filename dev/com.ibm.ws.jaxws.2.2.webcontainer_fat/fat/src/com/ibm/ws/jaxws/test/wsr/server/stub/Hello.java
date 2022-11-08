@@ -12,6 +12,8 @@ package com.ibm.ws.jaxws.test.wsr.server.stub;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -33,12 +35,14 @@ import javax.xml.bind.annotation.XmlType;
  *
  *
  */
+@XmlRootElement(name = "wsmain", namespace = "http://server.wsr.test.jaxws.ws.ibm.com")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "hello", propOrder = {
                                        "arg0"
 })
 public class Hello {
 
+    @XmlElement(name = "arg0", namespace = "")
     protected String arg0;
 
     /**
@@ -47,7 +51,7 @@ public class Hello {
      * @return
      *         possible object is
      *         {@link String }
-     * 
+     *
      */
     public String getArg0() {
         return arg0;
@@ -59,7 +63,7 @@ public class Hello {
      * @param value
      *                  allowed object is
      *                  {@link String }
-     * 
+     *
      */
     public void setArg0(String value) {
         this.arg0 = value;
