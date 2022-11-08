@@ -15,7 +15,6 @@ package com.ibm.ws.testtooling.database;
  * Simple Utility class for mapping JDBC MetaData product names for JPA FAT DDL
  */
 public enum DatabaseVendor {
-    DB2("DB2"),
     DB2I("DB2I"),
     DB2LUW("DB2LUW"),
     DB2VMVSE("DB2VMVSE"),
@@ -53,10 +52,17 @@ public enum DatabaseVendor {
             return DERBY;
         }
         if (lowerName.contains("db2")) {
-            if (lowerVers.contains("dsn")) {
+            if (lowerVers.contains("sql")) {
+                return DB2LUW;
+            } else if (lowerVers.contains("dsn")) {
                 return DB2ZOS;
+            } else if (lowerVers.contains("qsq")) {
+                return DB2I;
+            } else if (lowerVers.contains("ari")) {
+                return DB2VMVSE;
             }
-            return DB2;
+            // Fallback
+            return DB2LUW;
         }
         if (lowerName.contains("informix")) {
             return INFORMIX;
@@ -95,6 +101,22 @@ public enum DatabaseVendor {
 
     /**
      * Checks if the given database product name & version matches on the given DatabaseVendors
+     *
+     * https://www.ibm.com/docs/en/db2-for-zos/12?topic=work-product-identifier-prdid-values-in-db2-zos
+     *
+     * The format of 8-byte PRDID values is pppvvrrm, with the following parts:
+     * ppp
+     * A three-letter product code. For example:
+     * AQT - IBM Db2 Analytics Accelerator for z/OS
+     * ARI - DB2® Server for VSE & VM
+     * DSN - Db2 for z/OS
+     * HTP - Non-secure HTTP URL connections for Db2 native REST services
+     * HTS - secure HTTPS connections for Db2 native REST services
+     * JCC - IBM® Data Server Driver for JDBC and SQLJ
+     * LRT - Connections requesting log records from asynchronous log reader tasks
+     * QSQ - DB2 for i
+     * SQL - Db2 for Linux®, UNIX, and Windows
+     *
      */
     public static boolean checkDBProductName(String dbProductName, String dbProductVersion, DatabaseVendor vendor) {
         if (dbProductName == null || "".equals(dbProductName.trim())) {
@@ -106,16 +128,14 @@ public enum DatabaseVendor {
         switch (vendor) {
             // Basing determination off product version using
             // info from https://www.ibm.com/support/knowledgecenter/en/SSEPEK_11.0.0/java/src/tpc/imjcc_c0053013.html
-            case DB2:
-                return lowerName.contains("db2");
-            case DB2I:
-                return lowerName.contains("qsq");
             case DB2LUW:
-                return lowerName.contains("sql");
-            case DB2VMVSE:
-                return lowerName.contains("ari");
+                return lowerName.contains("db2") && lowerVers.contains("sql");
             case DB2ZOS:
                 return lowerName.contains("db2") && lowerVers.contains("dsn");
+            case DB2I:
+                return lowerName.contains("db2") && lowerVers.contains("qsq");
+            case DB2VMVSE:
+                return lowerName.contains("db2") && lowerVers.contains("ari");
             case DERBY:
                 return lowerName.contains("derby");
             case INFORMIX:

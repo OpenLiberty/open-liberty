@@ -59,11 +59,12 @@ public class JPATestOLGH21204Logic extends AbstractTestLogic {
         JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        final boolean isMySQL = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.MYSQL);
-        final boolean isSQLServer = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SQLSERVER);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        final boolean isMySQL = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.MYSQL);
+        final boolean isSQLServer = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.SQLSERVER);
 
         // Test is only valid for the following databases
         if (!(isDB2 || isDerby || isMySQL || isSQLServer)) {

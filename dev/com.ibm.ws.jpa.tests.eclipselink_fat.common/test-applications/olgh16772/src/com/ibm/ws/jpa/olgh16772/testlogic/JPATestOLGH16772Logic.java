@@ -63,18 +63,19 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isSQLServer = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SQLSERVER);
+        final boolean isSQLServer = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.SQLSERVER);
 
         //TODO: Disable test against SQLServer until EclipseLink 573467 is fixed/delivered
         if (isSQLServer) {
             return;
         }
 
-        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
-        final boolean isSybase = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SYBASE);
-        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
+        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.ORACLE);
+        final boolean isSybase = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.SYBASE);
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
 
         // Execute Test Case
         try {
@@ -164,19 +165,20 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isSQLServer = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SQLSERVER);
+        final boolean isSQLServer = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.SQLSERVER);
 
         //TODO: Disable test against SQLServer until EclipseLink 573467 is fixed/delivered
         if (isSQLServer) {
             return;
         }
 
-        final boolean isMySQL = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.MYSQL);
-        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
-        final boolean isSybase = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SYBASE);
-        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
+        final boolean isMySQL = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.MYSQL);
+        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.ORACLE);
+        final boolean isSybase = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.SYBASE);
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
 
         // Execute Test Case
         try {
@@ -266,19 +268,20 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isSQLServer = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SQLSERVER);
+        final boolean isSQLServer = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.SQLSERVER);
 
         //TODO: Disable test against SQLServer until EclipseLink 573467 is fixed/delivered
         if (isSQLServer) {
             return;
         }
 
-        final boolean isMySQL = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.MYSQL);
-        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
-        final boolean isSybase = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SYBASE);
-        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
+        final boolean isMySQL = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.MYSQL);
+        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.ORACLE);
+        final boolean isSybase = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.SYBASE);
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
 
         // Execute Test Case
         try {
@@ -370,19 +373,20 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isSQLServer = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SQLSERVER);
+        final boolean isSQLServer = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.SQLSERVER);
 
         //TODO: Disable test against SQLServer until EclipseLink 573467 is fixed/delivered
         if (isSQLServer) {
             return;
         }
 
-        final boolean isMySQL = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.MYSQL);
-        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
-        final boolean isSybase = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SYBASE);
-        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
+        final boolean isMySQL = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.MYSQL);
+        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.ORACLE);
+        final boolean isSybase = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.SYBASE);
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
 
         // Execute Test Case
         try {
@@ -472,19 +476,20 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isSQLServer = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SQLSERVER);
+        final boolean isSQLServer = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.SQLSERVER);
 
         //TODO: Disable test against SQLServer until EclipseLink 573467 is fixed/delivered
         if (isSQLServer) {
             return;
         }
 
-        final boolean isMySQL = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.MYSQL);
-        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
-        final boolean isSybase = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SYBASE);
-        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
+        final boolean isMySQL = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.MYSQL);
+        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.ORACLE);
+        final boolean isSybase = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.SYBASE);
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
 
         // Execute Test Case
         try {
@@ -574,19 +579,20 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isSQLServer = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SQLSERVER);
+        final boolean isSQLServer = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.SQLSERVER);
 
         //TODO: Disable test against SQLServer until EclipseLink 573467 is fixed/delivered
         if (isSQLServer) {
             return;
         }
 
-        final boolean isMySQL = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.MYSQL);
-        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
-        final boolean isSybase = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.SYBASE);
-        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
+        final boolean isMySQL = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.MYSQL);
+        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.ORACLE);
+        final boolean isSybase = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.SYBASE);
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
 
         // Execute Test Case
         try {
