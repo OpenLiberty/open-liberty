@@ -363,11 +363,33 @@ public class ReadHeadersInterceptor extends AbstractSoapInterceptor {
                 switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
                     read++;
-                    addEvent(eventFactory.createStartElement(new QName(reader.getNamespaceURI(), reader
-                                                            .getLocalName(), reader.getPrefix()), null, null));
+                    // Start Liberty Change: CXF is calling XMLEventFactory.createStartElement(new QName(namespace, localName, prefix)...)
+                    // but this method cannot be called null values. This means an error is thrown by XML Parser when the reader is parsing a 
+                    // SOAP Envelope that using the default namespace and has a null prefix
+                    // addEvent(eventFactory.createStartElement(new QName(reader.getNamespaceURI(), reader
+                    //                                                   .getLocalName(), reader.getPrefix()), null, null));
+                    if(reader.getPrefix() != null) {
+                        addEvent(eventFactory.createStartElement(new QName(reader.getNamespaceURI(), reader
+                                                                           .getLocalName(), reader.getPrefix()), null, null));
+                    } else {
+                        addEvent(eventFactory.createStartElement(reader.getPrefix(), reader.getNamespaceURI(), reader
+                                                                 .getLocalName(), null, null));
+                    }
+                    // End Liberty Change
                     for (int i = 0; i < reader.getNamespaceCount(); i++) {
-                        addEvent(eventFactory.createNamespace(reader.getNamespacePrefix(i),
+                        // Start Liberty Change: CXF is calling XMLEventFactory.createNamespace(prefix, namespaceURI) but if the
+                        // prefix is null because the message is using the default namespace, CXF thows a parsing error for passing a
+                        // null prefix.
+                        // addEvent(eventFactory.createNamespace(reader.getNamespacePrefix(i),
+                        //                                      reader.getNamespaceURI(i)));
+                        if(reader.getNamespaceURI(i) != null && reader.getNamespacePrefix(i) != null)  {
+                            addEvent(eventFactory.createNamespace(reader.getNamespacePrefix(i),
                                                          reader.getNamespaceURI(i)));
+                        } else if (reader.getNamespaceURI(i) != null && reader.getNamespacePrefix(i) == null) {
+                            addEvent(eventFactory.createNamespace(reader.getNamespaceURI(i)));
+                        }
+                           
+                            
                     }
                     for (int i = 0; i < reader.getAttributeCount(); i++) {
                         addEvent(eventFactory.createAttribute(reader.getAttributePrefix(i),
@@ -382,8 +404,20 @@ public class ReadHeadersInterceptor extends AbstractSoapInterceptor {
                     break;
                 case XMLStreamConstants.END_ELEMENT:
                     if (read > 0) {
-                        addEvent(eventFactory.createEndElement(new QName(reader.getNamespaceURI(), reader
-                                                              .getLocalName(), reader.getPrefix()), null));
+
+                        // Start Liberty Change: CXF is calling XMLEventFactory.createEndElement(new QName(namespace, localName, prefix)...)
+                        // but this method cannot be called null values. This means an error is thrown by XML Parser when the reader is parsing a 
+                        // SOAP Envelope that using the default namespace and has a null prefix
+                        // addEvent(eventFactory.createEndElement(new QName(reader.getNamespaceURI(), reader
+                        //                                                    .getLocalName(), reader.getPrefix()), null));
+                        
+                        if(reader.getPrefix() != null) {
+                            addEvent(eventFactory.createEndElement(new QName(reader.getNamespaceURI(), reader
+                                                                             .getLocalName(), reader.getPrefix()), null));
+                        } else {
+                            addEvent(eventFactory.createEndElement(reader.getPrefix(), reader.getNamespaceURI(), reader
+                                                                     .getLocalName(), null));
+                        }
                     }
                     read--;
                     break;
