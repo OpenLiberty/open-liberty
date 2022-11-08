@@ -64,15 +64,7 @@ public class JakartaOidcTokenRequest {
 
     TokenResponse sendTokenRequestForRefresh(String refreshToken) throws TokenRequestException {
         String tokenEndpoint = getTokenEndpoint();
-        String clientId = oidcClientConfig.getClientId();
-        String clientSecret = null;
-        ProtectedString clientSecretProtectedString = oidcClientConfig.getClientSecret();
-        if (clientSecretProtectedString != null) {
-            clientSecret = new String(clientSecretProtectedString.getChars());
-        }
-
-        Builder tokenRequestBuilder = createTokenRequestorBuilder(tokenEndpoint, clientId, clientSecret, null);
-        tokenRequestBuilder.sslSocketFactory(OidcMetadataService.getSSLSocketFactory());
+        Builder tokenRequestBuilder = createTokenRequestorBuilderForGeneralRequest(tokenEndpoint, null);
         tokenRequestBuilder.grantType(TokenConstants.REFRESH_TOKEN);
         tokenRequestBuilder.refreshToken(refreshToken);
         //TODO: check do we need to include scope parameter?
@@ -80,7 +72,7 @@ public class JakartaOidcTokenRequest {
         try {
             return tokenRequestor.requestTokens();
         } catch (Exception e) {
-            throw new TokenRequestException(clientId, e.toString(), e);
+            throw new TokenRequestException(oidcClientConfig.getClientId(), e.toString(), e);
         }
     }
 
@@ -96,6 +88,17 @@ public class JakartaOidcTokenRequest {
     }
 
     TokenResponse sendTokenRequestForCode(String tokenEndpoint, String authzCode) throws TokenRequestException {
+        Builder tokenRequestBuilder = createTokenRequestorBuilderForGeneralRequest(tokenEndpoint, authzCode);
+        tokenRequestBuilder.grantType(TokenConstants.AUTHORIZATION_CODE);
+        TokenRequestor tokenRequestor = tokenRequestBuilder.build();
+        try {
+            return tokenRequestor.requestTokens();
+        } catch (Exception e) {
+            throw new TokenRequestException(oidcClientConfig.getClientId(), e.toString(), e);
+        }
+    }
+
+    Builder createTokenRequestorBuilderForGeneralRequest(String tokenEndpoint, String authzCode) throws TokenRequestException {
         String clientId = oidcClientConfig.getClientId();
         String clientSecret = null;
         ProtectedString clientSecretProtectedString = oidcClientConfig.getClientSecret();
@@ -105,13 +108,7 @@ public class JakartaOidcTokenRequest {
 
         Builder tokenRequestBuilder = createTokenRequestorBuilder(tokenEndpoint, clientId, clientSecret, authzCode);
         tokenRequestBuilder.sslSocketFactory(OidcMetadataService.getSSLSocketFactory());
-        tokenRequestBuilder.grantType(TokenConstants.AUTHORIZATION_CODE);
-        TokenRequestor tokenRequestor = tokenRequestBuilder.build();
-        try {
-            return tokenRequestor.requestTokens();
-        } catch (Exception e) {
-            throw new TokenRequestException(clientId, e.toString(), e);
-        }
+        return tokenRequestBuilder;
     }
 
     Builder createTokenRequestorBuilder(String tokenEndpoint, String clientId, @Sensitive String clientSecret, String authzCode) {

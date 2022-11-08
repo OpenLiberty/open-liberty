@@ -323,6 +323,10 @@ public class UserInfoRequestorTest extends CommonTestClass {
                 will(returnValue(clientId));
                 one(oidcClientConfig).getClientSecret();
                 will(returnValue(clientSecret));
+                one(oidcClientConfig).getJwksConnectTimeout();
+                will(returnValue(500));
+                one(oidcClientConfig).getJwksReadTimeout();
+                will(returnValue(500));
             }
         });
 
@@ -347,6 +351,10 @@ public class UserInfoRequestorTest extends CommonTestClass {
                 will(returnValue(clientId));
                 one(oidcClientConfig).getClientSecret();
                 will(returnValue(clientSecret));
+                one(oidcClientConfig).getJwksConnectTimeout();
+                will(returnValue(500));
+                one(oidcClientConfig).getJwksReadTimeout();
+                will(returnValue(500));
             }
         });
 
