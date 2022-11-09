@@ -15,8 +15,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 import com.ibm.ws.transaction.test.dbrotationtests.DualServerDynamicDBRotationTest2;
-import com.ibm.ws.transaction.test.tests.FATSuiteBase;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -26,7 +26,7 @@ import componenttest.topology.database.container.DatabaseContainerType;
 @SuiteClasses({
                 DualServerDynamicDBRotationTest2.class,
 })
-public class FATSuite extends FATSuiteBase {
+public class FATSuite extends TxTestContainerSuite {
 
     static {
         databaseContainerType = DatabaseContainerType.SQLServer;
