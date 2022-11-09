@@ -26,23 +26,21 @@ import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
 import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
-import io.openliberty.security.oidcclientcore.http.EndpointRequest;
 
 @Component(service = MetadataUtils.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class MetadataUtils {
 
     public static final TraceComponent tc = Tr.register(MetadataUtils.class);
 
-    private static final String KEY_EP_REQUEST = "endpointRequest";
-    private static volatile EndpointRequest endpointRequest;
+    private static volatile OidcMetadataService oidcMetadataService;
 
-    @Reference(name = KEY_EP_REQUEST, policy = ReferencePolicy.DYNAMIC)
-    public void setEndpointRequest(EndpointRequest endpointRequestService) {
-        endpointRequest = endpointRequestService;
+    @Reference(name = OidcMetadataService.KEY_METADATA_SERVICE, policy = ReferencePolicy.DYNAMIC)
+    public void setOidcMetadataService(OidcMetadataService oidcMetadataServiceRef) {
+        oidcMetadataService = oidcMetadataServiceRef;
     }
 
-    public void unsetEndpointRequest(EndpointRequest endpointRequestService) {
-        endpointRequest = null;
+    public void unsetOidcMetadataService(OidcMetadataService oidcMetadataServiceRef) {
+        oidcMetadataService = null;
     }
 
     /**
@@ -76,7 +74,7 @@ public class MetadataUtils {
     @SuppressWarnings("unchecked")
     public static <T> T getValueFromDiscoveryMetadata(OidcClientConfig oidcClientConfig, String key) throws OidcDiscoveryException, OidcClientConfigurationException {
         T value = null;
-        JSONObject providerDiscoveryMetadata = endpointRequest.getProviderDiscoveryMetadata(oidcClientConfig);
+        JSONObject providerDiscoveryMetadata = oidcMetadataService.getProviderDiscoveryMetadata(oidcClientConfig);
         if (providerDiscoveryMetadata != null) {
             value = (T) providerDiscoveryMetadata.get(key);
         }

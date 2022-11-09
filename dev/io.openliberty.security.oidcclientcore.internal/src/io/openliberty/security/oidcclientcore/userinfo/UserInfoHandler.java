@@ -20,10 +20,9 @@ import io.openliberty.security.oidcclientcore.config.MetadataUtils;
 import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseException;
-import io.openliberty.security.oidcclientcore.http.EndpointRequest;
 import io.openliberty.security.oidcclientcore.userinfo.UserInfoRequestor.Builder;
 
-public class UserInfoHandler extends EndpointRequest {
+public class UserInfoHandler {
 
     public static final TraceComponent tc = Tr.register(UserInfoHandler.class);
 
@@ -39,7 +38,7 @@ public class UserInfoHandler extends EndpointRequest {
     }
 
     UserInfoRequestor createUserInfoRequestor(String userInfoEndpoint, OidcClientConfig oidcClientConfig, String accessToken) throws OidcDiscoveryException {
-        Builder builder = new UserInfoRequestor.Builder(this, oidcClientConfig, userInfoEndpoint, accessToken);
+        Builder builder = new UserInfoRequestor.Builder(oidcClientConfig, userInfoEndpoint, accessToken);
         return builder.build();
     }
 
