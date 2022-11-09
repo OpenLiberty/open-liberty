@@ -145,6 +145,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
                                                            HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         int rspStatus = HttpServletResponse.SC_UNAUTHORIZED;
+        HttpServletResponse rsp = httpMessageContext.getResponse();
         if (authorizationHeader.startsWith("Basic ")) {
             String encodedHeader = authorizationHeader.substring(6);
             String basicAuthHeader = decodeCookieString(encodedHeader);
@@ -161,10 +162,13 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
                 } else if (status == AuthenticationStatus.NOT_DONE) {
                     // set SC_OK, since if the target is not protected, it'll be processed.
                     rspStatus = HttpServletResponse.SC_OK;
+                } else if (status == AuthenticationStatus.SEND_FAILURE) {
+                    rsp.setHeader("WWW-Authenticate", "Basic realm=\"" + realmName + "\"");
+                    httpMessageContext.getMessageInfo().getMap().put(AttributeNameConstants.WSCREDENTIAL_REALM, realmName);
                 }
             }
         }
-        httpMessageContext.getResponse().setStatus(rspStatus);
+        rsp.setStatus(rspStatus);
         return status;
     }
 

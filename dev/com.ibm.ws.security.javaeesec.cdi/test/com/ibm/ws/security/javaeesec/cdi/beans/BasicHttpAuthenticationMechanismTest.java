@@ -11,9 +11,9 @@
 package com.ibm.ws.security.javaeesec.cdi.beans;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -201,6 +201,7 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestWithInvalidResult() throws Exception {
         preInvokePathForProtectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.INVALID_RESULT);
         setModulePropertiesProvider(realmName);
+        challengesAuthorizationHeader();
         withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
@@ -209,6 +210,7 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestWithInvalidResultAndUnprotectedResource() throws Exception {
         preInvokePathForUnprotectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.INVALID_RESULT);
         setModulePropertiesProvider(realmName);
+        challengesAuthorizationHeader();
         withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
@@ -217,6 +219,7 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestAuthenticatePathWithInvalidResult() throws Exception {
         authenticatePathForProtectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.INVALID_RESULT);
         setModulePropertiesProvider(realmName);
+        challengesAuthorizationHeader();
         withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
@@ -225,6 +228,7 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestAuthenticatePathWithInvalidResultAndUnprotectedResource() throws Exception {
         authenticatePathForUnprotectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.INVALID_RESULT);
         setModulePropertiesProvider(realmName);
+        challengesAuthorizationHeader();
         withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
@@ -353,6 +357,7 @@ public class BasicHttpAuthenticationMechanismTest {
         preInvokePathForProtectedResource(authzHeader).withIDSBeanInstance(null, false, true);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
+        challengesAuthorizationHeader();
         withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
@@ -362,6 +367,7 @@ public class BasicHttpAuthenticationMechanismTest {
         preInvokePathForProtectedResource(authzHeader).withIDSBeanInstance(null, false, true);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
+        challengesAuthorizationHeader();
         withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
@@ -389,6 +395,7 @@ public class BasicHttpAuthenticationMechanismTest {
         preInvokePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, true, false);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
+        challengesAuthorizationHeader();
         withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
@@ -398,6 +405,7 @@ public class BasicHttpAuthenticationMechanismTest {
         preInvokePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, false, true);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
+        challengesAuthorizationHeader();
         withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
@@ -425,6 +433,7 @@ public class BasicHttpAuthenticationMechanismTest {
         authenticatePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, true, false);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
+        challengesAuthorizationHeader();
         withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
@@ -434,6 +443,7 @@ public class BasicHttpAuthenticationMechanismTest {
         authenticatePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, false, true);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
+        challengesAuthorizationHeader();
         withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
@@ -461,6 +471,7 @@ public class BasicHttpAuthenticationMechanismTest {
         authenticatePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, true, false);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
+        challengesAuthorizationHeader();
         withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
@@ -470,6 +481,7 @@ public class BasicHttpAuthenticationMechanismTest {
         authenticatePathForUnprotectedResource(authzHeader).withIDSBeanInstance(null, false, true);
         withRegistryPathExpectations(false);
         setModulePropertiesProvider(realmName);
+        challengesAuthorizationHeader();
         withoutJaspicSessionPrincipal();
         assertValidateRequestFAILURE();
     }
@@ -844,7 +856,7 @@ public class BasicHttpAuthenticationMechanismTest {
     }
 
     private void assertMechanismChallenges() throws AuthenticationException {
-        challengesAuthorizationHeader().withResponseStatus(HttpServletResponse.SC_UNAUTHORIZED);;
+        challengesAuthorizationHeader();
         AuthenticationStatus status = mechanism.validateRequest(request, response, httpMessageContext);
         assertEquals("The AuthenticationStatus must be AuthenticationStatus.SEND_CONTINUE.", AuthenticationStatus.SEND_CONTINUE, status);
         assertEquals("The realm name must be set in the MessageInfo's map.", realmName,
@@ -852,11 +864,18 @@ public class BasicHttpAuthenticationMechanismTest {
     }
 
     private BasicHttpAuthenticationMechanismTest challengesAuthorizationHeader() {
-        mockery.checking(new Expectations() {
-            {
-                one(response).setHeader("WWW-Authenticate", "Basic realm=\"" + realmName + "\"");
-            }
-        });
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    one(response).setHeader("WWW-Authenticate", "Basic realm=\"" + realmName + "\"");
+                    allowing(response).sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                }
+            });
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+            e.printStackTrace();
+        }
         return this;
     }
 
