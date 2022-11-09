@@ -29,7 +29,8 @@ Import-Package: \
   zipkin2.codec,\
   zipkin2.internal,\
   zipkin2.reporter,\
-  zipkin2.reporter.okhttp3
+  zipkin2.reporter.okhttp3,\
+  jakarta.interceptor
 
 Export-Package: \
   io.opentelemetry.*;version=${openTelemetryVersion}
