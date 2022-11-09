@@ -15,6 +15,7 @@
 		<feature>jsp-2.3</feature>
 		<feature>servlet-4.0</feature>
 	</featureManager>
+	
 	<!-- 
 		Include common configuration. 
 	 -->

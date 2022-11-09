@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2022 IBM Corporation and others.
+    Copyright (c) 2021, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -11,12 +11,11 @@
 <server>
 
 	<featureManager>
-		<feature>appSecurity-3.0</feature>
+		<feature>appSecurity-2.0</feature>
 		<feature>jsp-2.3</feature>
 		<feature>servlet-4.0</feature>
 	</featureManager>
-	
-	<!-- 
+	<!--
 		Include common configuration. 
 	 -->
 	<include
@@ -26,17 +25,17 @@
 	<include
 		location="${shared.resource.dir}/configs/basicRegistry.xml" />
 	<include
-		location="${shared.resource.dir}/configs/nonSerializableLoginModule.xml" />
+		location="${shared.resource.dir}/configs/customLoginModule.xml" />
 	<include
 		location="${shared.resource.dir}/configs/libraries.xml" />
 	<include
 		location="${shared.resource.dir}/configs/ssl.xml" />
 	<include
-		location="${shared.resource.dir}/configs/appBasicAuth1.xml" />
+		location="${shared.resource.dir}/configs/appFormLogin.xml" />
 
-	<!--
-		Configure the JCache caching provider and cache manager instances. 
-	 -->
+    <!-- 
+        Configure the CachingProvider and CacheManager.
+     -->
 	<cachingProvider id="CachingProvider"
 		jCacheLibraryRef="HazelcastLib" commonLibraryRef="CustomLoginLib" />
 	<cacheManager id="CacheManager"
@@ -52,10 +51,17 @@
 	 -->
 	<cache id="AuthCache" name="AuthCache"
 		cacheManagerRef="CacheManager" />
+	<cache id="LoggedOutCookieCache" name="LoggedOutCookieCache"
+		cacheManagerRef="CacheManager" />
 
-    <!-- 
-		Configure the authentication cache to use the JCache. 
-     -->
+	<!--
+		Configure the authentication cache and the logged out cookie cache to use
+		the JCache instances.
+		
+		Set trackLoggedOutSSOCookies to false to demonstrate that it is ignored
+        when the distributed logged out cookie cache is configured.
+	 -->
 	<authCache cacheRef="AuthCache" />
+	<webAppSecurity	loggedOutCookieCacheRef="LoggedOutCookieCache" trackLoggedOutSSOCookies="false" />
 
 </server>
