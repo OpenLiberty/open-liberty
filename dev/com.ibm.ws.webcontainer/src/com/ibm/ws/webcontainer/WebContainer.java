@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -208,6 +209,8 @@ public abstract class WebContainer extends BaseContainer {
     private static boolean servletCachingInitNeeded = true; //TODO: make false and require dynacache to set to true
 
     public static boolean appInstallBegun = false;
+    
+    private static final Map<VHostCacheKey, String> vhostCache = new ConcurrentHashMap<VHostCacheKey, String>();
     
     // Servlet 4.0 : Must be static since referenced from static method
     protected static CacheServletWrapperFactory cacheServletWrapperFactory;
@@ -757,8 +760,17 @@ public abstract class WebContainer extends BaseContainer {
         StringBuilder cacheKey = null;
         WebContainerRequestState reqState = WebContainerRequestState.getInstance(false);
 
-        String vhostKey = getHostAliasKey(req.getServerName(), req.getServerPort());
-
+        String serverName = req.getServerName();
+        int serverPort = req.getServerPort();
+        String vhostKey;
+        
+        VHostCacheKey vhostCacheKey = new VHostCacheKey(serverName, serverPort);
+        vhostKey = vhostCache.get(vhostCacheKey);
+        if(vhostKey == null) {
+            vhostKey = getHostAliasKey(serverName, serverPort);
+            vhostCache.put(vhostCacheKey, vhostKey);
+        }
+         
         boolean ardRequest = false;
         if (reqState != null) {
             ardRequest = reqState.isArdRequest();
@@ -2004,4 +2016,31 @@ public abstract class WebContainer extends BaseContainer {
 
     }
     // ================== CLASS ==================
+    
+    private static class VHostCacheKey {
+        private final String serverName;
+        private final int serverPort;
+
+        VHostCacheKey (final String name, final int port) {
+            this.serverName = name;
+            this.serverPort = port;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if(this == o)
+                return true;
+            if(o == null)
+                return false;
+            if (o.getClass() != VHostCacheKey.class)
+                return false;
+            VHostCacheKey that = (VHostCacheKey) o;
+            return this.serverPort == that.serverPort && this.serverName.equals(that.serverName);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(this.serverName, this.serverPort);
+        }
+    }
 }
