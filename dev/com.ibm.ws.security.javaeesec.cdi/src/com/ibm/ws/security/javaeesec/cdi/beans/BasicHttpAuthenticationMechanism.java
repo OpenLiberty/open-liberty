@@ -37,6 +37,7 @@ import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
+import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 @Default
@@ -125,7 +126,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     private AuthenticationStatus setChallengeAuthorizationHeader(HttpMessageContext httpMessageContext) {
         HttpServletResponse rsp = (HttpServletResponse) httpMessageContext.getMessageInfo().getResponseMessage();
         rsp.setHeader("WWW-Authenticate", "Basic realm=\"" + realmName + "\"");
-        rsp.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
+        //rsp.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
         try {
             rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
         } catch (IOException e) {
@@ -134,6 +135,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
             e.printStackTrace();
         }
         httpMessageContext.getMessageInfo().getMap().put(AttributeNameConstants.WSCREDENTIAL_REALM, realmName);
+        httpMessageContext.getMessageInfo().getMap().put("JSR375_CHALLENGE", AuthResult.TAI_CHALLENGE);
 
         return AuthenticationStatus.SEND_CONTINUE;
     }
