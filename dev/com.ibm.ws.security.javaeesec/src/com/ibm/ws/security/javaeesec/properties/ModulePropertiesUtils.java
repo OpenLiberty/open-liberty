@@ -234,7 +234,7 @@ public class ModulePropertiesUtils {
             bean = (Bean<HttpAuthenticationMechanism>) beans.iterator().next();
         }
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "HAM : " + hamClass + " Number of HAM bean: " + beans.size() + " bean.toString(): " + (bean != null ? beans.iterator().next().toString() : "<NO bean>"));
+            Tr.debug(tc, "HAM : " + hamClass + " Number of HAM bean: " + beans.size() + " bean.toString(): " + (bean != null ? bean.toString() : "<NO bean>"));
         }
         return bean;
     }

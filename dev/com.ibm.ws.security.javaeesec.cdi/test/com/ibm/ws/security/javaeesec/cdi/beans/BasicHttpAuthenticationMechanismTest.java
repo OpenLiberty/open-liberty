@@ -11,9 +11,9 @@
 package com.ibm.ws.security.javaeesec.cdi.beans;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -667,10 +667,12 @@ public class BasicHttpAuthenticationMechanismTest {
                 one(identityStoreHandler).validate(with(new Matcher<Credential>() {
 
                     @Override
-                    public void describeTo(Description description) {}
+                    public void describeTo(Description description) {
+                    }
 
                     @Override
-                    public void _dont_implement_Matcher___instead_extend_BaseMatcher_() {}
+                    public void _dont_implement_Matcher___instead_extend_BaseMatcher_() {
+                    }
 
                     @Override
                     public boolean matches(Object obj) {
@@ -741,10 +743,12 @@ public class BasicHttpAuthenticationMechanismTest {
                 one(callbackHandler).handle(with(new Matcher<Callback[]>() {
 
                     @Override
-                    public void describeTo(Description description) {}
+                    public void describeTo(Description description) {
+                    }
 
                     @Override
-                    public void _dont_implement_Matcher___instead_extend_BaseMatcher_() {}
+                    public void _dont_implement_Matcher___instead_extend_BaseMatcher_() {
+                    }
 
                     @Override
                     public boolean matches(Object obj) {
@@ -774,6 +778,7 @@ public class BasicHttpAuthenticationMechanismTest {
                 never(response).setStatus(with(any(int.class)));
             }
         });
+
         return this;
     }
 
@@ -852,11 +857,17 @@ public class BasicHttpAuthenticationMechanismTest {
     }
 
     private BasicHttpAuthenticationMechanismTest challengesAuthorizationHeader() {
-        mockery.checking(new Expectations() {
-            {
-                one(response).setHeader("WWW-Authenticate", "Basic realm=\"" + realmName + "\"");
-            }
-        });
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    one(response).setHeader("WWW-Authenticate", "Basic realm=\"" + realmName + "\"");
+                    allowing(response).sendError(401);
+                }
+            });
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         return this;
     }
 

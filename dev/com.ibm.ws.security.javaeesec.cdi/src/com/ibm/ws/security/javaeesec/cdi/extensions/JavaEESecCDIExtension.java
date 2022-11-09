@@ -331,7 +331,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             String realmName = (String) realmNameMethod.invoke(annotation);
             Properties props = new Properties();
             props.put(JavaEESecConstants.REALM_NAME, realmName);
-            addDecoratorAlternativeProps(annotations, props);
+            addDecoratOrAlternativeProps(annotations, props);
             addAuthMech(applicationName, annotatedClass, BasicHttpAuthenticationMechanism.class, props);
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -344,34 +344,21 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
      * @param annotations
      * @param props
      */
-    private void addDecoratorAlternativeProps(Set<Annotation> annotations, Properties props) {
+    private void addDecoratOrAlternativeProps(Set<Annotation> annotations, Properties props) {
         //This is class level annotation
         for (Annotation annt : annotations) {
             Class<? extends Annotation> annType = annt.annotationType();
-            //Tr.debug(tc, "Decorated present: " + annType.isAnnotationPresent(Decorated.class));
             if (annType.getName().equals("jakarta.decorator.Decorator")) {
-                if (props == null) {
-                    props = new Properties();
-                }
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Add Decorator property");
+                    Tr.debug(tc, "Add Decorator=true");
                 props.put(decorator, true);
-                break;
+            } else if (annType.getName().equals("jakarta.enterprise.inject.Alternative")) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Add Alternative=true");
+                props.put(alternative, true);
+
             }
         }
-    }
-
-    private boolean isDecorator(Set<Annotation> annotations) {
-        for (Annotation annotation : annotations) {
-            Class<? extends Annotation> annotationType = annotation.annotationType();
-            if (annotationType.getName().equals("jakarta.decorator.Decorator")) {
-                return true;
-            } else if (annotationType.getName().equals("jakarta.enterprise.inject.Alternative")) { //TODO: UTLE - right annotation?
-                return true;
-            }
-
-        }
-        return false;
     }
 
     /**
@@ -391,13 +378,11 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
                 e.printStackTrace();
             }
         }
-        if (isDecorator(annotations)) {
-            if (props == null) {
-                props = new Properties();
-            }
-            props.setProperty(decorator, "true");
+        if (props == null) {
+            props = new Properties();
         }
-//        addDecoratorAlternativeProps(annotations, props);
+        addDecoratOrAlternativeProps(annotations, props);
+
         addAuthMech(applicationName, implClass, implClass, props);
     }
 
@@ -927,7 +912,8 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     private boolean isDecoratorOrAlternative(Map<Class<?>, Properties> authMechs) {
         for (Entry<Class<?>, Properties> authMech : authMechs.entrySet()) {
             Properties value = authMech.getValue();
-            if (value != null && (value.getProperty(decorator) != null || value.getProperty(alternative) != null)) {
+            //if (value != null && (value.contains(decorator) || value.contains(alternative))) {
+            if (value != null && (value.toString().contains(decorator) || value.toString().contains(alternative))) {
                 return true;
             }
         }
