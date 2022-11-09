@@ -846,7 +846,11 @@ public class InstallKernelMap implements Map {
                 repoList.add(directRepo);
             }
 
+            File websphereJson = null;
             for (File jsonRepo : singleJsonRepos) {
+                if (jsonRepo.getAbsolutePath().contains(WEBSPHERE_LIBERTY_GROUP_ID.replace(".", "/"))) {
+                    websphereJson = jsonRepo;
+                }
                 RepositoryConnection repo = new SingleFileRepositoryConnection(jsonRepo);
                 repoList.add(repo);
             }
@@ -904,22 +908,15 @@ public class InstallKernelMap implements Map {
             }
 
             boolean isFeatureUtility = (Boolean) this.get(InstallConstants.IS_FEATURE_UTILITY);
-            boolean isJsonProvided = (Boolean) this.get(InstallConstants.JSON_PROVIDED);
             data.put(InstallConstants.UPGRADE_COMPLETE, false);
-            if (isOpenLiberty && isFeatureUtility && isJsonProvided) {
-                if (upgradeRequired()) {
-                    upgradeOL();
-                    String fromRepo = getDownloadDir((String) data.get(InstallConstants.FROM_REPO));
-                    String jsonPath = fromRepo + "/" + WEBSPHERE_LIBERTY_GROUP_ID.replace(".", "/") + "/features/" + openLibertyVersion + "/features-" + openLibertyVersion
-                                      + ".json";
-                    File websphereJson = new File(jsonPath);
-                    RepositoryConnection repo = new SingleFileRepositoryConnection(websphereJson);
-                    repoList.add(repo);
-                    for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
-                        productDefinitions.add(new ProductInfoProductDefinition(productInfo));
-                    }
-                    data.put(InstallConstants.UPGRADE_COMPLETE, true);
+            if (isOpenLiberty && isFeatureUtility && websphereJson != null && upgradeRequired(websphereJson)) {
+                upgradeOL(websphereJson);
+                RepositoryConnection repo = new SingleFileRepositoryConnection(websphereJson);
+                repoList.add(repo);
+                for (ProductInfo productInfo : ProductInfo.getAllProductInfo().values()) {
+                    productDefinitions.add(new ProductInfoProductDefinition(productInfo));
                 }
+                data.put(InstallConstants.UPGRADE_COMPLETE, true);
             }
             resolver = new RepositoryResolver(productDefinitions, installedFeatures, Collections.<IFixInfo> emptySet(), repoList);
 
@@ -1010,11 +1007,8 @@ public class InstallKernelMap implements Map {
      * @return
      * @throws InstallException
      */
-    private boolean upgradeRequired() throws InstallException {
+    private boolean upgradeRequired(File websphereJson) throws InstallException {
         Collection<String> features = (Collection<String>) data.get(InstallConstants.FEATURES_TO_RESOLVE);
-        String fromRepo = getDownloadDir((String) data.get(InstallConstants.FROM_REPO));
-        String jsonPath = fromRepo + "/" + WEBSPHERE_LIBERTY_GROUP_ID.replace(".", "/") + "/features/" + openLibertyVersion + "/features-" + openLibertyVersion + ".json";
-        File websphereJson = new File(jsonPath);
         boolean upgradeRequired = false;
         try (JsonReader reader = Json.createReader(new FileInputStream(websphereJson))) {
             JsonArray assetList = reader.readArray();
@@ -1035,7 +1029,7 @@ public class InstallKernelMap implements Map {
                 i = i + 1;
             }
         } catch (FileNotFoundException e) {
-            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_FAILED_TO_FIND_WEBSPHERE_JSON", jsonPath));
+            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_FAILED_TO_FIND_WEBSPHERE_JSON", websphereJson.getAbsolutePath()));
         }
         return upgradeRequired;
     }
@@ -1964,13 +1958,12 @@ public class InstallKernelMap implements Map {
 
     }
 
-    private void upgradeOL() throws InstallException {
+    private void upgradeOL(File websphereJson) throws InstallException {
         //to get to here the kernel must be OL and we must be attempting to install non OL/usr features
         List<String> featureList = (List<String>) data.get(InstallConstants.FEATURES_TO_RESOLVE);
-
         String fromRepo = getDownloadDir((String) data.get(InstallConstants.FROM_REPO));
         File rootDir = new File(fromRepo);
-        String licenseCoord = getLicenseToUpgrade(fromRepo, featureList);
+        String licenseCoord = getLicenseToUpgrade(fromRepo, featureList, websphereJson);
         fine("licenseCoord to upgrade to: " + licenseCoord);
         //download that license zip if it isn't in the repo and unpack it to the license folder
         Collection<String> upgradeFileObjects = new ArrayList<String>();
@@ -2014,11 +2007,11 @@ public class InstallKernelMap implements Map {
      * @return
      * @throws InstallException
      */
-    private String getLicenseToUpgrade(String fromRepo, List<String> featureList) throws InstallException {
+    private String getLicenseToUpgrade(String fromRepo, List<String> featureList, File websphereJson) throws InstallException {
         String result = null;
         String baseLicenseCoord = WEBSPHERE_LIBERTY_GROUP_ID + ":wlp-base-license:" + openLibertyVersion;
         String NDLicenseCoord = WEBSPHERE_LIBERTY_GROUP_ID + ":wlp-nd-license:" + openLibertyVersion;
-        Set<String> minimalApplicableLicenses = getMinLicenses(fromRepo, featureList, baseLicenseCoord);
+        Set<String> minimalApplicableLicenses = getMinLicenses(fromRepo, featureList, baseLicenseCoord, websphereJson);
         fine("featurelist: " + featureList.toString());
         fine("minlicenses: " + minimalApplicableLicenses.toString());
         if (containsStr(NDLicenseCoord, minimalApplicableLicenses)) {
@@ -2035,13 +2028,11 @@ public class InstallKernelMap implements Map {
      * @return
      * @throws InstallException
      */
-    private Set<String> getMinLicenses(String fromRepo, List<String> featureList, String defaultLicense) throws InstallException {
+    private Set<String> getMinLicenses(String fromRepo, List<String> featureList, String defaultLicense, File websphereJson) throws InstallException {
         fine("parsing websphere json for minimal license coordinates");
         String baseLicenseCoord = WEBSPHERE_LIBERTY_GROUP_ID + ":wlp-base-license:" + openLibertyVersion;
         String NDLicenseCoord = WEBSPHERE_LIBERTY_GROUP_ID + ":wlp-nd-license:" + openLibertyVersion;
         boolean isND = false;
-        String jsonPath = fromRepo + "/" + WEBSPHERE_LIBERTY_GROUP_ID.replace(".", "/") + "/features/" + openLibertyVersion + "/features-" + openLibertyVersion + ".json";
-        File websphereJson = new File(jsonPath);
         Set<String> result = new HashSet<String>();
         List<String> causedUpgradeND = new ArrayList<String>();
         List<String> causedUpgradeBASE = new ArrayList<String>();
