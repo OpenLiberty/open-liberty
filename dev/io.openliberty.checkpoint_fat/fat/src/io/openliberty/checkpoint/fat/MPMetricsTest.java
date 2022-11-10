@@ -50,7 +50,8 @@ public class MPMetricsTest extends FATServletClient {
     public static RepeatTests repeatTest = MicroProfileActions.repeat("checkpointMPMetrics", TestMode.FULL, //
                                                                       MicroProfileActions.MP41, // first test in LITE mode
                                                                       // rest are FULL mode
-                                                                      MicroProfileActions.MP50, MicroProfileActions.MP60);
+                                                                      // TODO MP60 is currently broken see issue #23314
+                                                                      MicroProfileActions.MP50 /* , MicroProfileActions.MP60 */);
 
     @Before
     public void setUp() throws Exception {
