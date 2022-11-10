@@ -16,6 +16,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String OPEN_ID_CONFIG_PROPERTIES = "/openIdConfig.properties";
     public static final String PROVIDER_CONFIG_PROPERTIES = "/providerConfig.properties";
 
+    public static final String PROVIDER_URI = "providerURI";
     public static final String REDIRECT_URI = "redirectURI";
     public static final String RECIRECT_TO_ORIGINAL_RESOURCE = "redirectToOriginalResource";
     public static final String RECIRECT_TO_ORIGINAL_RESOURCE_EXPRESSION = "redirectToOriginalResourceExpression";
@@ -28,10 +29,22 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String USE_SESSION = "useSession";
     public static final String USE_SESSION_EXPRESSION = "useSessionExpression";
     public static final String PROVIDER = "provider";
-    public static final String Logout = "logout";
+    public static final String LOGOUT = "logout";
+    public static final String LOGOUT_REDIRECT_URI = "logoutRedirectURI";
+    public static final String PROMPT = "prompt";
+    public static final String PROMPT_EXPRESSION = "promptExpression";
 
     public static final String CALLER_NAME_CLAIM = "callerNameClaim";
     public static final String CALLER_GROUPS_CLAIM = "callerGroupsClaim";
+
+    public static final String NOTIFY_PROVIDER = "notifyProvider";
+    public static final String NOTIFY_PROVIDER_EXPRESSION = "notifyProviderExpression";
+    public static final String ACCESS_TOKEN_EXPIRY = "accessTokenExpiry";
+    public static final String ACCESS_TOKEN_EXPIRY_EXPRESSION = "accessTokenExpiryExpression";
+    public static final String IDENTITY_TOKEN_EXPIRY = "identityTokenExpiry";
+    public static final String IDENTITY_TOKEN_EXPIRY_EXPRESSION = "identityTokenExpiryExpression";
+    public static final String TOKEN_AUTO_REFRESH = "tokenAutoRefresh";
+    public static final String TOKEN_AUTO_REFRESH_EXPRESSION = "tokenAutoRefreshExpression";
 
     public static final String EMPTY_VALUE = "EmptyValue";
     public static final String NULL_VALUE = "NullValue";
@@ -50,4 +63,5 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final int DEFAULT_JWKS_CONN_TIMEOUT = 500;
     public static final int TOKEN_MIN_VALIDITY = 10 * 1000;
 
+    public static final String OPEN_LIBERTY = "Open Liberty";
 }

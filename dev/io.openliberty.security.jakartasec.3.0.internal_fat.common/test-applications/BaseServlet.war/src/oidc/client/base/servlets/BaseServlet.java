@@ -12,6 +12,7 @@ package oidc.client.base.servlets;
 
 import java.io.IOException;
 
+import io.openliberty.security.jakartasec.fat.utils.Constants;
 import io.openliberty.security.jakartasec.fat.utils.ServletMessageConstants;
 import jakarta.inject.Inject;
 import jakarta.security.enterprise.identitystore.openid.OpenIdContext;
@@ -41,6 +42,10 @@ public class BaseServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         ServletOutputStream outputStream = response.getOutputStream();
+
+        if (request.getParameter(Constants.LOGOUT) != null) {
+            request.logout();
+        }
 
         recordHelloWorld(outputStream);
 

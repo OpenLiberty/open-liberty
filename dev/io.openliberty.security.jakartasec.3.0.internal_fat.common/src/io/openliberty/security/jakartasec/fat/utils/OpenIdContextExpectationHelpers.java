@@ -24,28 +24,48 @@ public class OpenIdContextExpectationHelpers {
 
         // TODO
         String updatedRequester = requester + ServletMessageConstants.OPENID_CONTEXT;
-        getOpenIdContextSubjectExpectations(action, expectations, updatedRequester, rspValues);
+        getOpenIdContextSubjectExpectations(action, expectations, updatedRequester, rspValues, false);
         getOpenIdContextAccessTokenExpectations(action, expectations, updatedRequester, rspValues);
-        getOpenIdContextIdTokenExpectations(action, expectations, updatedRequester, rspValues);
+        getOpenIdContextIdTokenExpectations(action, expectations, updatedRequester, rspValues, false);
         getOpenIdContextIssuerExpectations(action, expectations, updatedRequester, rspValues);
         getOpenIdContextTokenTypeExpectations(action, expectations, updatedRequester, rspValues);
-        getOpenIdContextStoredValueExpectations(action, expectations, updatedRequester, rspValues);
+        getOpenIdContextStoredValueExpectations(action, expectations, updatedRequester, rspValues, false);
 
     }
 
-    public static void getOpenIdContextSubjectExpectations(String action, Expectations expectations, String requester, ResponseValues rspValues) throws Exception {
+    public static void getOpenIdContextFromRefreshedTokenExpectations(String action, Expectations expectations, String requester, ResponseValues rspValues) throws Exception {
+
+        // TODO
+        String updatedRequester = requester + ServletMessageConstants.OPENID_CONTEXT;
+        getOpenIdContextSubjectExpectations(action, expectations, updatedRequester, rspValues, true);
+        getOpenIdContextAccessTokenExpectations(action, expectations, updatedRequester, rspValues);
+        getOpenIdContextIdTokenExpectations(action, expectations, updatedRequester, rspValues, true);
+//        getOpenIdContextIssuerExpectations(action, expectations, updatedRequester, rspValues);
+        getOpenIdContextTokenTypeExpectations(action, expectations, updatedRequester, rspValues);
+        getOpenIdContextStoredValueExpectations(action, expectations, updatedRequester, rspValues, true);
+
+    }
+
+    public static void getOpenIdContextSubjectExpectations(String action, Expectations expectations, String requester, ResponseValues rspValues,
+                                                           boolean refreshedToken) throws Exception {
 
         expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, requester + ServletMessageConstants.CONTEXT_SUBJECT
                                                                                                    + rspValues.getSubject(), "Did not find the correct subject in the OpenIdContext."));
-        if (rspValues.getSubject() != null) {
+        if (rspValues.getSubject() != null && !refreshedToken) {
             expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, requester + ServletMessageConstants.ID_TOKEN + ServletMessageConstants.CLAIM
                                                                                                        + ServletMessageConstants.KEY + PayloadConstants.PAYLOAD_SUBJECT + " "
                                                                                                        + ServletMessageConstants.VALUE
                                                                                                        + rspValues.getSubject(), "Did not find the correct subject in the claim."));
         } else {
-            expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, requester + ServletMessageConstants.NULL_CLAIMS, "Claims were not null"));
+            if (rspValues.getSubject() == null) {
+                expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, requester
+                                                                                                           + ServletMessageConstants.NULL_CLAIMS, "Claims were not null"));
+            } else {
+                expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, requester
+                                                                                                           + ServletMessageConstants.CLAIMS_SUBJECT, rspValues.getSubject()));
+            }
         }
-        // TODO enable once claims are workingexpectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, requester  + ServletMessageConstants.SUBS_MATCH, "Did not find the correct subject in the OpenIdContext."));
+        // TODO enable once claims are workingexpectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, requester + ServletMessageConstants.SUBS_MATCH, "Did not find the correct subject in the OpenIdContext."));
 
     }
 
@@ -62,9 +82,10 @@ public class OpenIdContextExpectationHelpers {
 
     }
 
-    public static void getOpenIdContextIdTokenExpectations(String action, Expectations expectations, String requester, ResponseValues rspValues) throws Exception {
+    public static void getOpenIdContextIdTokenExpectations(String action, Expectations expectations, String requester, ResponseValues rspValues,
+                                                           boolean refreshedToken) throws Exception {
 
-        if (rspValues.getSubject() != null) {
+        if (rspValues.getSubject() != null && !refreshedToken) {
             expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_DOES_NOT_CONTAIN, requester + ServletMessageConstants.ID_TOKEN
                                                                                                                + ServletMessageConstants.NULL, "Did not find an id token in the OpenIdContext."));
             expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, requester + ServletMessageConstants.ID_TOKEN + ServletMessageConstants.CLAIM
@@ -94,7 +115,7 @@ public class OpenIdContextExpectationHelpers {
                                                                                                    + PayloadConstants.PAYLOAD_ISSUER, "Did not find an issuer claim in the id token in the OpenIdContext."));
         expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, requester + ServletMessageConstants.ID_TOKEN + ServletMessageConstants.CLAIM
                                                                                                    + ServletMessageConstants.KEY + PayloadConstants.PAYLOAD_ISSUER
-                                                                                                   + ServletMessageConstants.VALUE
+                                                                                                   + " " + ServletMessageConstants.VALUE
                                                                                                    + rspValues.getIssuer(), "Did not find the correct value for the issuer claim in the id token in the OpenIdContext."));
 
     }
@@ -111,24 +132,32 @@ public class OpenIdContextExpectationHelpers {
 
     }
 
-    public static void getOpenIdContextStoredValueExpectations(String action, Expectations expectations, String requester, ResponseValues rspValues) throws Exception {
+    public static void getOpenIdContextStoredValueExpectations(String action, Expectations expectations, String requester, ResponseValues rspValues,
+                                                               boolean refreshedToken) throws Exception {
 
         List<NameValuePair> parms = rspValues.getParms();
 
-        if (parms != null) {
-            for (NameValuePair parm : parms) {
+        if (!refreshedToken) {
+            if (parms != null) {
+                for (NameValuePair parm : parms) {
+                    expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_MATCHES, requester + ServletMessageConstants.STORED_VALUE
+                                                                                                              + OpenIdConstant.ORIGINAL_REQUEST
+                                                                                                              + ".*" + rspValues.getOriginalRequest()
+                                                                                                              + ".*" + parm.getName() + "="
+                                                                                                              + parm.getValue(), "Did not find the original request in the Stored Value in the OpenIdContext."));
+
+                }
+            } else {
                 expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_MATCHES, requester + ServletMessageConstants.STORED_VALUE
                                                                                                           + OpenIdConstant.ORIGINAL_REQUEST
-                                                                                                          + ".*" + rspValues.getOriginalRequest()
-                                                                                                          + ".*" + parm.getName() + "="
-                                                                                                          + parm.getValue(), "Did not find the original request in the Stored Value in the OpenIdContext."));
-
+                                                                                                          + ".*"
+                                                                                                          + rspValues.getOriginalRequest(), "Did not find the original request in the Stored Value in the OpenIdContext."));
             }
         } else {
             expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_MATCHES, requester + ServletMessageConstants.STORED_VALUE
                                                                                                       + OpenIdConstant.ORIGINAL_REQUEST
                                                                                                       + ".*"
-                                                                                                      + rspValues.getOriginalRequest(), "Did not find the original request in the Stored Value in the OpenIdContext."));
+                                                                                                      + ServletMessageConstants.EMPTY, "Did not find the original request in the Stored Value in the OpenIdContext."));
         }
 
     }

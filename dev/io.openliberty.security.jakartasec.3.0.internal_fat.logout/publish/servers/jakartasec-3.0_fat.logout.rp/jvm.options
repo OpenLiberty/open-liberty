@@ -8,13 +8,4 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 ###############################################################################
-bootstrap.include=../testports.properties
-
-com.ibm.ws.logging.trace.specification=*=info=enabled:\
-com.ibm.ws.security.*=all=enabled:\
-com.ibm.ws.webcontainer.security.*=all=enabled:\
-io.openliberty.security.*=all:\
-org.apache.http.client.*=all
-
-com.ibm.ws.logging.max.file.size=0
-ds.loglevel=debug
+-Dcom.ibm.ws.beta.edition=true

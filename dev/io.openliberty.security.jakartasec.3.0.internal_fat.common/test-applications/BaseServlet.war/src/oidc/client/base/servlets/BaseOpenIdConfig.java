@@ -13,6 +13,7 @@ package oidc.client.base.servlets;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Named;
+import jakarta.security.enterprise.authentication.mechanism.http.openid.PromptType;
 
 /**
  * Load the config values from the default config property file.
@@ -26,6 +27,16 @@ import jakarta.inject.Named;
 @Named
 @Dependent
 public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
+
+    public String getProviderURI() {
+        System.out.println("in BaseOpenIdConfig - getProviderURI");
+        String value = "providerURI_notSet";
+        if (config.containsKey(Constants.PROVIDER_URI)) {
+            System.out.println("in BaseOpenIdConfig - getProviderURI - found value in the config file");
+            value = getStringValue(Constants.PROVIDER_URI);
+        }
+        return value;
+    }
 
     public String getRedirectURI() {
         System.out.println("in BaseOpenIdConfig - getRedirectURI");
@@ -78,6 +89,32 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         return value;
     }
 
+    public boolean getTokenAutoRefreshExpression() {
+
+        boolean value = false;
+        if (config.containsKey(Constants.TOKEN_AUTO_REFRESH_EXPRESSION)) {
+            value = getBooleanValue(Constants.TOKEN_AUTO_REFRESH_EXPRESSION);
+        }
+
+        if (value) {
+            System.out.println("getTokenAutoRefreshExpression: true");
+        } else {
+            System.out.println("getTokenAutoRefreshExpression: false");
+
+        }
+        return value;
+    }
+
+    public PromptType[] getPromptExpression() {
+
+        PromptType[] value = {};
+        if (config.containsKey(Constants.PROMPT_EXPRESSION)) {
+            value = getPromptTypeValue(Constants.PROMPT_EXPRESSION);
+        }
+
+        return value;
+    }
+
     public String getCallerNameClaim() {
 
         System.out.println("in getCallerNameClaim");
@@ -101,8 +138,44 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
 
     }
 
-    public String getBobExperession() {
+    public boolean getNotifyProviderExpression() {
 
-        return Integer.toString(5);
+        boolean value = false;
+        if (config.containsKey(Constants.NOTIFY_PROVIDER_EXPRESSION)) {
+            value = getBooleanValue(Constants.NOTIFY_PROVIDER_EXPRESSION);
+        }
+
+        return value;
     }
+
+    public boolean getAccessTokenExpiryExpression() {
+
+        boolean value = false;
+        if (config.containsKey(Constants.ACCESS_TOKEN_EXPIRY_EXPRESSION)) {
+            value = getBooleanValue(Constants.ACCESS_TOKEN_EXPIRY_EXPRESSION);
+        }
+
+        return value;
+    }
+
+    public boolean getIdentityTokenExpiryExpression() {
+
+        boolean value = false;
+        if (config.containsKey(Constants.IDENTITY_TOKEN_EXPIRY_EXPRESSION)) {
+            value = getBooleanValue(Constants.IDENTITY_TOKEN_EXPIRY_EXPRESSION);
+        }
+
+        return value;
+    }
+
+    public String getLogoutRedirectURI() {
+        System.out.println("in BaseOpenIdConfig - getLogoutRedirectURI");
+        String value = "";
+        if (config.containsKey(Constants.LOGOUT_REDIRECT_URI)) {
+            System.out.println("in BaseOpenIdConfig - getLogoutRedirectURI - found value in the config file");
+            value = getStringValue(Constants.LOGOUT_REDIRECT_URI);
+        }
+        return value;
+    }
+
 }

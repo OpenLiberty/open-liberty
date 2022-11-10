@@ -25,6 +25,7 @@ import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationTests;
                 AlwaysPassesTest.class,
                 ConfigurationTests.class,
                 ConfigurationClaimsDefinitionTests.class,
+                // LogoutDefinition tests are handled in a separate FAT project as the test use sleeps to wait for tokens to expire and that causes the tests to take quite some time to run
                 ConfigurationELValuesOverrideTests.class,
                 ConfigurationELValuesOverrideWithoutHttpSessionTests.class
 })

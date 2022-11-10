@@ -54,7 +54,7 @@ public class WsSubjectExpectationHelpers {
         if (cookies != null) {
             for (Cookie c : cookies) {
                 expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, requester + ServletMessageConstants.COOKIE + c.getName()
-                                                                                                           + ServletMessageConstants.VALUE
+                                                                                                           + " " + ServletMessageConstants.VALUE
                                                                                                            + c.getValue(), "Did not find the " + c.getName()
                                                                                                                            + " cookie in the  WSSubject."));
             }
