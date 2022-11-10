@@ -1044,35 +1044,35 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
         // clear the request message if we're the "owner" otherwise clear
         // our reference to it
-        /*
-         * if (null != this.myRequest) {
-         * if (this.bIsRequestOwner) {
-         * this.myRequest.clear();
-         * } else {
-         * if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-         * Tr.debug(tc, "Request not mine, skipping clear()");
-         * }
-         * this.myRequest = null;
-         * }
-         * }
-         */
-        this.myRequest = null;
+
+        if (null != this.myRequest) {
+            if (this.bIsRequestOwner) {
+                this.myRequest.clear();
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Request not mine, skipping clear()");
+                }
+                this.myRequest = null;
+            }
+        }
+
+        //this.myRequest = null;
         this.bIsRequestOwner = true;
         // clear the response message if we're the "owner" otherwise clear
         // our reference to it
-        /*
-         * if (null != this.myResponse) {
-         * if (this.bIsResponseOwner) {
-         * this.myResponse.clear();
-         * } else {
-         * if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-         * Tr.debug(tc, "Response not mine, skipping clear()");
-         * }
-         * this.myResponse = null;
-         * }
-         * }
-         */
-        this.myResponse = null;
+
+        if (null != this.myResponse) {
+            if (this.bIsResponseOwner) {
+                this.myResponse.clear();
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Response not mine, skipping clear()");
+                }
+                this.myResponse = null;
+            }
+        }
+
+        //this.myResponse = null;
         this.bIsResponseOwner = true;
 
         this.msgSentState = STATE_NONE;
