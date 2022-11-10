@@ -13,6 +13,8 @@ package io.openliberty.microprofile.telemetry.internal.rest;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.List;
 
 import org.eclipse.microprofile.config.Config;
@@ -70,32 +72,44 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
 
     @Override
     public void filter(final ClientRequestContext request) {
-        Context parentContext = Context.current();
-        if (instrumenter.shouldStart(parentContext, request)) {
-            Context spanContext = instrumenter.start(parentContext, request);
-            Scope scope = spanContext.makeCurrent();
-            request.setProperty(configString + "context", spanContext);
-            request.setProperty(configString + "parentContext", parentContext);
-            request.setProperty(configString + "scope", scope);
-        }
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @Override
+            public Void run() {
+                Context parentContext = Context.current();
+                if (instrumenter.shouldStart(parentContext, request)) {
+                    Context spanContext = instrumenter.start(parentContext, request);
+                    Scope scope = spanContext.makeCurrent();
+                    request.setProperty(configString + "context", spanContext);
+                    request.setProperty(configString + "parentContext", parentContext);
+                    request.setProperty(configString + "scope", scope);
+                }
+                return null;
+            }
+        });
     }
 
     @Override
     public void filter(final ClientRequestContext request, final ClientResponseContext response) {
-        Scope scope = (Scope) request.getProperty(configString + "scope");
-        if (scope == null) {
-            return;
-        }
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            @Override
+            public Void run() {
+                Scope scope = (Scope) request.getProperty(configString + "scope");
+                if (scope == null) {
+                    return null;
+                }
 
-        Context spanContext = (Context) request.getProperty(configString + "context");
-        try {
-            instrumenter.end(spanContext, request, response, null);
-        } finally {
-            scope.close();
-            request.removeProperty(configString + "context");
-            request.removeProperty(configString + "parentContext");
-            request.removeProperty(configString + "scope");
-        }
+                Context spanContext = (Context) request.getProperty(configString + "context");
+                try {
+                    instrumenter.end(spanContext, request, response, null);
+                } finally {
+                    scope.close();
+                    request.removeProperty(configString + "context");
+                    request.removeProperty(configString + "parentContext");
+                    request.removeProperty(configString + "scope");
+                }
+                return null;
+            }
+        });
     }
 
     private static class ClientRequestContextTextMapSetter implements TextMapSetter<ClientRequestContext> {

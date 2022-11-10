@@ -126,6 +126,35 @@ public class HttpAuthenticationMechanismsTracker {
         }
     }
 
+    public Properties removeAuthMech(String applicationName, Class<?> implClass) {
+        return removeAuthMech(applicationName, implClass, implClass);
+    }
+
+    public Properties removeAuthMech(String applicationName, Class<?> annotatedClass, Class<?> implClass) {
+        Map<String, ModuleProperties> moduleMap = moduleMapsPerApplication.get(applicationName);
+        String moduleName = getModuleFromClass(annotatedClass, moduleMap);
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "moduleName: " + moduleName);
+        }
+
+        if (moduleMap.containsKey(moduleName)) {
+            return moduleMap.get(moduleName).removeFromAuthMechMap(implClass);
+        } else {
+            // if there is no match in the module name, it should be a shared jar file.
+            // so the authmech needs to be removed from all modules.
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Remove the AuthMech from all modules since the module is not found. Module: " + moduleName);
+            }
+
+            Properties props = null;
+            for (Map.Entry<String, ModuleProperties> entry : moduleMap.entrySet()) {
+                props = entry.getValue().removeFromAuthMechMap(implClass);
+            }
+            return props;
+        }
+    }
+
     /**
      * Identify the module name from the class. If the class exists in the jar file, return war file name
      * if it is located under the war file, otherwise returning jar file name.
@@ -165,19 +194,31 @@ public class HttpAuthenticationMechanismsTracker {
     }
 
     public boolean existAuthMech(String applicationName, Class<?> authMechToExist) {
+        return (null != getExistingAuthMechClass(applicationName, authMechToExist));
+    }
+
+    public Class<?> getExistingAuthMechClass(String applicationName) {
+        return getExistingAuthMechClass(applicationName, null);
+    }
+
+    public Class<?> getExistingAuthMechClass(String applicationName, Class<?> authMechToExist) {
         Map<Class<?>, Properties> authMechs = null;
         Map<String, ModuleProperties> moduleMap = moduleMapsPerApplication.get(applicationName);
         if (moduleMap != null) {
             for (Map.Entry<String, ModuleProperties> entry : moduleMap.entrySet()) {
                 authMechs = entry.getValue().getAuthMechMap();
                 for (Class<?> authMech : authMechs.keySet()) {
-                    if (authMech.equals(authMechToExist)) {
-                        return true;
+                    if (authMechToExist != null) {
+                        if (authMech.equals(authMechToExist)) {
+                            return authMech;
+                        }
+                    } else {
+                        return authMech;
                     }
                 }
             }
         }
-        return false;
+        return null;
     }
 
     public Map<Class<?>, Properties> getAuthMechs(String applicationName, String moduleName) {

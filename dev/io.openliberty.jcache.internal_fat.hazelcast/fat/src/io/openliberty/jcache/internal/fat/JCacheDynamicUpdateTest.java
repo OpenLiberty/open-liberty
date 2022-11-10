@@ -36,6 +36,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
 
 /**
  * Contains distributed JCache test dynamic server.xml changes
@@ -49,6 +50,7 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
 
     @Server("io.openliberty.jcache.internal.fat.dynamicupdate.1")
     public static LibertyServer server1;
+
     /**
      * Nearly empty server configuration. Does not contain any cache config.
      */
@@ -59,6 +61,7 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
         assumeShouldNotSkipTests();
 
         String groupName = UUID.randomUUID().toString();
+
         /*
          * Start server 1.
          */
@@ -72,7 +75,8 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
         /*
          * Stop the servers in the reverse order they were started.
          */
-        stopServer(server1, "CWWKG0033W", "CWLJC0004E", "CWWKE0701E", "CWLJC0011W", "CWWKG0058E", "CWLJC0006E", "CWLJC0012W", "CWLJC0013W");
+        stopServer(server1, "CWWKG0033W", "CWLJC0004E", "CWWKE0701E", "CWLJC0011W", "CWWKG0058E",
+                   "CWLJC0006E", "CWLJC0012W", "CWLJC0013W", "CWWKE1102W", "CWWKE1107W");
     }
 
     /**
@@ -88,9 +92,11 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
         AuthCache authCache = new AuthCache("AuthCache");
         CacheManager cacheManager = new CacheManager("CacheManager", cachingProviderRef, uri);
 
-        Properties properties = new Properties();
-        properties.setExtraAttribute("infinispan.client.hotrod.uri", "${infinispan.client.hotrod.uri}");
-        cacheManager.setProps(properties);
+        if (TestPluginHelper.isInfinispan()) {
+            Properties properties = new Properties();
+            properties.setExtraAttribute("infinispan.client.hotrod.uri", "${infinispan.client.hotrod.uri}");
+            cacheManager.setProps(properties);
+        }
 
         CachingProvider cachingProvider = new CachingProvider("CachingProvider", jCacheLibraryRef, commonLibraryRef, providerClass);
 
@@ -119,21 +125,34 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
      */
     @Test
     public void addAndRemoveCaches() throws Exception {
-        // Create a working cache configuration
-        updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProvider", "InfinispanLib", "CustomLoginLib",
-                            "file:///${shared.resource.dir}/infinispan/${infinispan.hotrod.file}");
+        /*
+         * Create a working cache configuration
+         */
+        if (TestPluginHelper.isInfinispan()) {
+            updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProvider", "InfinispanLib", "CustomLoginLib",
+                                "file:///${shared.resource.dir}/infinispan/${infinispan.hotrod.file}");
+        } else if (TestPluginHelper.isHazelcast()) {
+            updateLibertyServer("CacheManager", "CachingProvider", null, "HazelcastLib", "CustomLoginLib",
+                                "file:${shared.resource.dir}/hazelcast/${hazelcast.config.file}");
+        }
         ServerConfiguration current = server1.getServerConfiguration();
 
-        // Add second and third cache
+        /*
+         * Add second and third cache
+         */
         current.getCaches().add(new Cache("AuthCache2", "AuthCache2", "CacheManager2"));
         current.getCaches().add(new Cache("AuthCache3", "AuthCache3", "CacheManager3"));
         updateConfigDynamically(server1, current);
 
-        // Wait for caches to start
+        /*
+         * Wait for caches to start
+         */
         waitForCreatedOrExistingJCache(server1, "AuthCache2");
         waitForCreatedOrExistingJCache(server1, "AuthCache3");
 
-        // Remove the caches
+        /*
+         * Remove the caches
+         */
         current.getCaches().removeById("AuthCache2");
         current.getCaches().removeById("AuthCache3");
         updateConfigDynamically(server1, current);
@@ -182,8 +201,13 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
          *
          * ***********************************************************************
          */
-        updateLibertyServer("CacheManagerBad", "CachingProviderBad", "org.infinispan.jcache.remote.JCachingProviderBad", null, null,
-                            "file:///${shared.resource.dir}/infinispan/infinispan_hotrod_bad.props");
+        if (TestPluginHelper.isInfinispan()) {
+            updateLibertyServer("CacheManagerBad", "CachingProviderBad", "org.infinispan.jcache.remote.JCachingProviderBad", null, null,
+                                "file:///${shared.resource.dir}/infinispan/infinispan_hotrod_bad.props");
+        } else if (TestPluginHelper.isHazelcast()) {
+            updateLibertyServer("CacheManagerBad", "CachingProviderBad", "com.hazelcast.cache.HazelcastCachingProviderBad", null, null,
+                                "file:${shared.resource.dir}/hazelcast/${hazelcast.config.file}.bad");
+        }
 
         /*
          * Check for warning for invalid references for cachingProviderRef, cacheManagerRef. No values for commonLibraryRef and jCacheLibraryRef.
@@ -206,8 +230,13 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
          *
          * ***********************************************************************
          */
-        updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProviderBad", "InfinispanLibBad", "CustomLoginLibBad",
-                            "file:///${shared.resource.dir}/infinispan/infinispan_hotrod_bad.props");
+        if (TestPluginHelper.isInfinispan()) {
+            updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProviderBad", "InfinispanLibBad", "CustomLoginLibBad",
+                                "file:///${shared.resource.dir}/infinispan/infinispan_hotrod_bad.props");
+        } else if (TestPluginHelper.isHazelcast()) {
+            updateLibertyServer("CacheManager", "CachingProvider", "com.hazelcast.cache.HazelcastCachingProviderBad", "HazelcastLibBad", "CustomLoginLibBad",
+                                "file:${shared.resource.dir}/hazelcast/${hazelcast.config.file}.bad");
+        }
 
         /*
          * Check for warning for invalid references for commonLibraryRef and jCacheLibraryRef.
@@ -215,7 +244,11 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
         error = "CWWKG0033W: The value \\[CustomLoginLibBad\\] specified for the reference attribute \\[commonLibraryRef\\] was not found in the configuration.";
         assertTrue("Should find '" + error + "' in the logs", !server1.findStringsInLogsAndTraceUsingMark(error).isEmpty());
 
-        error = "CWWKG0033W: The value \\[InfinispanLibBad\\] specified for the reference attribute \\[jCacheLibraryRef\\] was not found in the configuration.";
+        if (TestPluginHelper.isInfinispan()) {
+            error = "CWWKG0033W: The value \\[InfinispanLibBad\\] specified for the reference attribute \\[jCacheLibraryRef\\] was not found in the configuration.";
+        } else if (TestPluginHelper.isHazelcast()) {
+            error = "CWWKG0033W: The value \\[HazelcastLibBad\\] specified for the reference attribute \\[jCacheLibraryRef\\] was not found in the configuration.";
+        }
         assertTrue("Should find '" + error + "' in the logs", !server1.findStringsInLogsAndTraceUsingMark(error).isEmpty());
 
         /*
@@ -227,13 +260,23 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
          *
          * ***********************************************************************
          */
-        updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProviderBad", "InfinispanLib", "CustomLoginLib,InfinispanLib",
-                            "file:///${shared.resource.dir}/infinispan/infinispan_hotrod_bad.props");
+        if (TestPluginHelper.isInfinispan()) {
+            updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProviderBad", "InfinispanLib", "CustomLoginLib,InfinispanLib",
+                                "file:///${shared.resource.dir}/infinispan/infinispan_hotrod_bad.props");
+        } else if (TestPluginHelper.isHazelcast()) {
+            updateLibertyServer("CacheManager", "CachingProvider", "com.hazelcast.cache.HazelcastCachingProviderBad", "HazelcastLib", "CustomLoginLib,HazelcastLib",
+                                "file:${shared.resource.dir}/hazelcast/${hazelcast.config.file}.bad");
+        }
 
         /*
          * Check for warning that a library is being shared between jCacheLibraryRef and commonLibraryRef.
          */
-        error = "CWLJC0006E: The CachingProvider caching provider referenced the InfinispanLib library from both jCacheLibaryRef and commonLibraryRef";
+        if (TestPluginHelper.isInfinispan()) {
+            error = "CWLJC0006E: The CachingProvider caching provider referenced the InfinispanLib library from both jCacheLibaryRef and commonLibraryRef";
+        } else if (TestPluginHelper.isHazelcast()) {
+            error = "CWLJC0006E: The CachingProvider caching provider referenced the HazelcastLib library from both jCacheLibaryRef and commonLibraryRef";
+        }
+
         assertTrue("Should find '" + error + "' in the logs", !server1.findStringsInLogsAndTraceUsingMark(error).isEmpty());
 
         /*
@@ -245,8 +288,13 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
          *
          * ***********************************************************************
          */
-        updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProviderBad", "InfinispanLib", "CustomLoginLib",
-                            "file:///${shared.resource.dir}/infinispan/infinispan_hotrod_bad.props");
+        if (TestPluginHelper.isInfinispan()) {
+            updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProviderBad", "InfinispanLib", "CustomLoginLib",
+                                "file:///${shared.resource.dir}/infinispan/infinispan_hotrod_bad.props");
+        } else if (TestPluginHelper.isHazelcast()) {
+            updateLibertyServer("CacheManager", "CachingProvider", "com.hazelcast.cache.HazelcastCachingProviderBad", "HazelcastLib", "CustomLoginLib",
+                                "file:${shared.resource.dir}/hazelcast/${hazelcast.config.file}.bad");
+        }
 
         /*
          * Next issue is bad cachingProvider->providerClass.
@@ -255,7 +303,11 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
          * javax.cache.CacheException: Failed to load the CachingProvider [org.infinispan.jcache.remote.JCachingProviderBad]
          * Caused by: java.lang.ClassNotFoundException
          */
-        error = "javax.cache.CacheException: Failed to load the CachingProvider \\[org.infinispan.jcache.remote.JCachingProviderBad\\]";
+        if (TestPluginHelper.isInfinispan()) {
+            error = "javax.cache.CacheException: Failed to load the CachingProvider \\[org.infinispan.jcache.remote.JCachingProviderBad\\]";
+        } else if (TestPluginHelper.isHazelcast()) {
+            error = "javax.cache.CacheException: Failed to load the CachingProvider \\[com.hazelcast.cache.HazelcastCachingProviderBad\\]";
+        }
         assertTrue("Should find '" + error + "' in the logs", !server1.findStringsInLogsAndTraceUsingMark(error).isEmpty());
 
         /*
@@ -267,8 +319,13 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
          *
          * ***********************************************************************
          */
-        updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProvider", "InfinispanLib", "CustomLoginLib",
-                            "file:///${shared.resource.dir}/infinispan/infinispan_hotrod_bad.props");
+        if (TestPluginHelper.isInfinispan()) {
+            updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProvider", "InfinispanLib", "CustomLoginLib",
+                                "file:///${shared.resource.dir}/infinispan/infinispan_hotrod_bad.props");
+        } else if (TestPluginHelper.isHazelcast()) {
+            updateLibertyServer("CacheManager", "CachingProvider", "com.hazelcast.cache.HazelcastCachingProvider", "HazelcastLib", "CustomLoginLib",
+                                "file:${shared.resource.dir}/hazelcast/${hazelcast.config.file}.bad");
+        }
 
         /*
          * The providerClass, jCacheLibraryRef, and commonLibraryRef are fixed. Look for bad uri error.
@@ -277,7 +334,11 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
          * Caused by: java.io.FileNotFoundException: /Users/eschr/libertyGit/open-liberty/dev/build.image/wlp/usr/shared/resources/infinispan/infinispan_hotrod_bad.props (No such
          * file or directory)
          */
-        error = "CWLJC0011W: Error encountered while retrieving the AuthCache JCache. Will attempt to create it instead. The error was: javax.cache.CacheException: Could not load configuration";
+        if (TestPluginHelper.isInfinispan()) {
+            error = "CWLJC0011W: Error encountered while retrieving the AuthCache JCache. Will attempt to create it instead. The error was: javax.cache.CacheException: Could not load configuration";
+        } else if (TestPluginHelper.isHazelcast()) {
+            error = "CWLJC0011W: Error encountered while retrieving the AuthCache JCache. Will attempt to create it instead. The error was: javax.cache.CacheException: Error opening URI";
+        }
         assertTrue("Should find '" + error + "' in the logs", !server1.findStringsInLogsAndTraceUsingMark(error).isEmpty());
 
         /*
@@ -287,8 +348,13 @@ public class JCacheDynamicUpdateTest extends BaseTestCase {
          *
          * ***********************************************************************
          */
-        updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProvider", "InfinispanLib", "CustomLoginLib",
-                            "file:///${shared.resource.dir}/infinispan/${infinispan.hotrod.file}");
+        if (TestPluginHelper.isInfinispan()) {
+            updateLibertyServer("CacheManager", "CachingProvider", "org.infinispan.jcache.remote.JCachingProvider", "InfinispanLib", "CustomLoginLib",
+                                "file:///${shared.resource.dir}/infinispan/${infinispan.hotrod.file}");
+        } else if (TestPluginHelper.isHazelcast()) {
+            updateLibertyServer("CacheManager", "CachingProvider", "com.hazelcast.cache.HazelcastCachingProvider", "HazelcastLib", "CustomLoginLib",
+                                "file:${shared.resource.dir}/hazelcast/${hazelcast.config.file}");
+        }
 
         /*
          * All issues have been fixed, so wait for the auth cache to start.

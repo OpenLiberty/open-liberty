@@ -28,11 +28,10 @@ import com.ibm.ws.security.test.common.CommonTestClass;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.config.MetadataUtils;
-import io.openliberty.security.oidcclientcore.discovery.DiscoveryHandler;
+import io.openliberty.security.oidcclientcore.config.OidcMetadataService;
 import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseException;
-import io.openliberty.security.oidcclientcore.http.EndpointRequest;
 import test.common.SharedOutputManager;
 
 public class UserInfoHandlerTest extends CommonTestClass {
@@ -44,10 +43,9 @@ public class UserInfoHandlerTest extends CommonTestClass {
     public static final String CWWKS2418W_USERINFO_RESPONSE_ERROR = "CWWKS2418W";
 
     private final OidcClientConfig oidcClientConfig = mockery.mock(OidcClientConfig.class);
-    private final DiscoveryHandler discoveryHandler = mockery.mock(DiscoveryHandler.class);
     private final UserInfoRequestor userInfoRequestor = mockery.mock(UserInfoRequestor.class);
     private final UserInfoResponse userInfoResponse = mockery.mock(UserInfoResponse.class);
-    private final EndpointRequest endpointRequest = mockery.mock(EndpointRequest.class);
+    private final OidcMetadataService oidcMetadataService = mockery.mock(OidcMetadataService.class);
 
     private final String clientId = "myClientId";
     private final String discoveryUrl = "https://localhost/OP/" + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
@@ -73,23 +71,18 @@ public class UserInfoHandlerTest extends CommonTestClass {
         });
         handler = new UserInfoHandler() {
             @Override
-            public DiscoveryHandler getDiscoveryHandler() {
-                return discoveryHandler;
-            }
-
-            @Override
             UserInfoRequestor createUserInfoRequestor(String userInfoEndpoint, OidcClientConfig oidcClientConfig, String accessToken) {
                 return userInfoRequestor;
             }
         };
         MetadataUtils utils = new MetadataUtils();
-        utils.setEndpointRequest(endpointRequest);
+        utils.setOidcMetadataService(oidcMetadataService);
     }
 
     @After
     public void tearDown() {
         MetadataUtils utils = new MetadataUtils();
-        utils.unsetEndpointRequest(endpointRequest);
+        utils.unsetOidcMetadataService(oidcMetadataService);
         outputMgr.resetStreams();
         mockery.assertIsSatisfied();
     }
@@ -106,7 +99,7 @@ public class UserInfoHandlerTest extends CommonTestClass {
             {
                 one(oidcClientConfig).getProviderMetadata();
                 will(returnValue(null));
-                one(endpointRequest).getProviderDiscoveryMetadata(oidcClientConfig);
+                one(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
                 will(returnValue(new JSONObject()));
             }
         });
@@ -126,7 +119,7 @@ public class UserInfoHandlerTest extends CommonTestClass {
             {
                 one(oidcClientConfig).getProviderMetadata();
                 will(returnValue(null));
-                one(endpointRequest).getProviderDiscoveryMetadata(oidcClientConfig);
+                one(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
                 will(returnValue(discoveryData));
                 one(userInfoRequestor).requestUserInfo();
                 will(throwException(new UserInfoResponseException(userInfoEndpoint, new Exception(defaultExceptionMsg))));
@@ -148,7 +141,7 @@ public class UserInfoHandlerTest extends CommonTestClass {
             {
                 one(oidcClientConfig).getProviderMetadata();
                 will(returnValue(null));
-                one(endpointRequest).getProviderDiscoveryMetadata(oidcClientConfig);
+                one(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
                 will(returnValue(discoveryData));
                 one(userInfoRequestor).requestUserInfo();
                 will(returnValue(userInfoResponse));

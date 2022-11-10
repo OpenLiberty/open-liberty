@@ -8,14 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-/**
- * A simple managed bean that will be used to test
- * a view scoped managed bean.
- * 
- * @author Bill Lucy
- *
- */
-package com.ibm.ws.jsf22.fat.statelessview.beans;
+package com.ibm.ws.jsf22.fat.statelessview.beans.jsf22;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -24,6 +17,13 @@ import java.util.Date;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
+/**
+ * A simple managed bean that will be used to test
+ * a view scoped managed bean.
+ *
+ * @author Bill Lucy
+ *
+ */
 @ManagedBean
 @ViewScoped
 public class ViewScopedManagedBean implements Serializable {

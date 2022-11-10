@@ -8,14 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-/**
- * A simple managed bean that will be used to test
- * a view scoped managed bean.
- * 
- * @author Bill Lucy
- *
- */
-package com.ibm.ws.jsf22.fat.statelessview.beans;
+package com.ibm.ws.jsf22.fat.statelessview.beans.jsf22;
 
 import java.io.Serializable;
 
@@ -23,6 +16,13 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
+/**
+ * A simple managed bean that will be used to test
+ * stateless views.
+ *
+ * @author Bill Lucy
+ *
+ */
 @ManagedBean
 public class StatelessViewBean implements Serializable {
 

@@ -98,8 +98,6 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
 
     private LogoutTokenBuilder builder;
 
-    private final JwtUnitTestUtils jwtUtils = new JwtUnitTestUtils();
-
     private class MockLogoutTokenBuilder extends LogoutTokenBuilder {
         public MockLogoutTokenBuilder(HttpServletRequest request, OidcServerConfig oidcServerConfig) {
             super(request, oidcServerConfig);
@@ -235,7 +233,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         // One cached ID token has a sid claim
         JSONObject cachedTokenClaims = getIdTokenClaims(subject, issuerIdentifier, client1Id);
         cachedTokenClaims.put("sid", sid);
-        String cachedIdTokenString = jwtUtils.getHS256Jws(cachedTokenClaims, client1Secret);
+        String cachedIdTokenString = JwtUnitTestUtils.getHS256Jws(cachedTokenClaims, client1Secret);
 
         setCustomIdTokenExpectations(idToken, client1Id, cachedIdTokenString);
         final String idTokenAccessTokenKey = "id token access token key";
@@ -283,7 +281,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
 
     @Test
     public void test_getClaimsFromIdTokenString_emptyClaims() throws Exception {
-        String idTokenString = jwtUtils.getHS256Jws(new JSONObject(), client1Secret);
+        String idTokenString = JwtUnitTestUtils.getHS256Jws(new JSONObject(), client1Secret);
         try {
             JwtClaims result = builder.getClaimsFromIdTokenString(idTokenString);
             fail("Should have thrown an exception but got: " + result);
@@ -300,7 +298,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         input.setExpirationTimeMinutesInTheFuture(60);
         input.setNotBeforeMinutesInThePast(10);
 
-        String idTokenString = jwtUtils.getHS256Jws(JSONObject.parse(input.toJson()), client1Secret);
+        String idTokenString = JwtUnitTestUtils.getHS256Jws(JSONObject.parse(input.toJson()), client1Secret);
 
         mockery.checking(new Expectations() {
             {
@@ -963,12 +961,12 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         JSONObject tmpIdToken1Claims = getIdTokenClaims(subject, issuerIdentifier, client1Id);
         String tmpIdToken1Sid = client1Id + "-sid for tmpIdToken1";
         tmpIdToken1Claims.put("sid", tmpIdToken1Sid);
-        final String tmpIdToken1String = jwtUtils.getHS256Jws(tmpIdToken1Claims, "some secret");
+        final String tmpIdToken1String = JwtUnitTestUtils.getHS256Jws(tmpIdToken1Claims, "some secret");
 
         JSONObject tmpIdToken3Claims = getIdTokenClaims(subject, issuerIdentifier, client3Id);
         String tmpIdToken3Sid = client3Id + "-sid for tmpIdToken3";
         tmpIdToken3Claims.put("sid", tmpIdToken3Sid);
-        final String tmpIdToken3String = jwtUtils.getHS256Jws(tmpIdToken3Claims, "some secret");
+        final String tmpIdToken3String = JwtUnitTestUtils.getHS256Jws(tmpIdToken3Claims, "some secret");
 
         setCustomIdTokenExpectations(tmpIdToken1, client1Id, tmpIdToken1String);
         setCustomIdTokenExpectations(tmpIdToken3, client3Id, tmpIdToken3String);
@@ -1024,11 +1022,11 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         JSONObject idTokenClaims1 = getIdTokenClaims(subject, issuerIdentifier, client1Id);
         String idTokenSid = "sid1";
         idTokenClaims1.put("sid", idTokenSid);
-        final String idTokenString1 = jwtUtils.getHS256Jws(idTokenClaims1, "some secret");
+        final String idTokenString1 = JwtUnitTestUtils.getHS256Jws(idTokenClaims1, "some secret");
 
         // One ID token with a different issuer value; should not have an associated logout token created
         JSONObject idTokenClaims2 = getIdTokenClaims(subject, "some other issuer", client1Id);
-        final String idTokenString2 = jwtUtils.getHS256Jws(idTokenClaims2, "some secret 2");
+        final String idTokenString2 = JwtUnitTestUtils.getHS256Jws(idTokenClaims2, "some secret 2");
 
         setCustomIdTokenExpectations(tmpIdToken1, client1Id, idTokenString1);
         setCustomIdTokenExpectations(tmpIdToken2, client1Id, idTokenString2);
@@ -1052,7 +1050,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     @Test
     public void test_createLogoutTokenForClientFromCachedIdToken_idTokenDifferentIssuer() throws Exception {
         JSONObject idTokenClaims = getIdTokenClaims(subject, "some other issuer", "some audience");
-        final String idTokenString = jwtUtils.getHS256Jws(idTokenClaims, "some secret");
+        final String idTokenString = JwtUnitTestUtils.getHS256Jws(idTokenClaims, "some secret");
         mockery.checking(new Expectations() {
             {
                 one(idToken).getTokenString();
@@ -1447,15 +1445,15 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     }
 
     private String getIdToken1String() throws Exception {
-        return jwtUtils.getHS256Jws(getIdTokenClaims(subject, issuerIdentifier, client1Id), client1Secret);
+        return JwtUnitTestUtils.getHS256Jws(getIdTokenClaims(subject, issuerIdentifier, client1Id), client1Secret);
     }
 
     private String getIdToken2String() throws Exception {
-        return jwtUtils.getHS256Jws(getIdTokenClaims(subject, issuerIdentifier, client2Id), client2Secret);
+        return JwtUnitTestUtils.getHS256Jws(getIdTokenClaims(subject, issuerIdentifier, client2Id), client2Secret);
     }
 
     private String getIdToken3String() throws Exception {
-        return jwtUtils.getHS256Jws(getIdTokenClaims(subject, issuerIdentifier, client3Id), client3Secret);
+        return JwtUnitTestUtils.getHS256Jws(getIdTokenClaims(subject, issuerIdentifier, client3Id), client3Secret);
     }
 
     private JwtClaims getClaims(String subject, String issuer, String... audiences) {

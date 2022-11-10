@@ -122,7 +122,26 @@ public class OidcIdentityStore implements IdentityStore {
             openIdContext.setRefreshToken(new RefreshTokenImpl(refreshTokenString));
         }
 
+        OpenIdContextImpl existingOpenIdContext = (OpenIdContextImpl) OpenIdContextUtils.getOpenIdContextFromSubject();
+        if (existingOpenIdContext != null) {
+            return updateExistingOpenIdContext(existingOpenIdContext, openIdContext);
+        }
         return openIdContext;
+    }
+
+    private OpenIdContext updateExistingOpenIdContext(OpenIdContextImpl existingOpenIdContext, OpenIdContextImpl newOpenIdContext) {
+        existingOpenIdContext.setSubject(newOpenIdContext.getSubject());
+        existingOpenIdContext.setTokenType(newOpenIdContext.getTokenType());
+        existingOpenIdContext.setAccessToken(newOpenIdContext.getAccessToken());
+        existingOpenIdContext.setRefreshToken(newOpenIdContext.getRefreshToken().orElse(null));
+        existingOpenIdContext.setIdentityToken(newOpenIdContext.getIdentityToken());
+        existingOpenIdContext.setExpiresIn(newOpenIdContext.getExpiresIn().orElse(0L));
+        existingOpenIdContext.setClaims(newOpenIdContext.getClaims());
+        existingOpenIdContext.setProviderMetadata(newOpenIdContext.getProviderMetadata());
+        existingOpenIdContext.setState(newOpenIdContext.getState());
+        existingOpenIdContext.setUseSession(newOpenIdContext.isUseSession());
+        existingOpenIdContext.setClientId(newOpenIdContext.getClientId());
+        return existingOpenIdContext;
     }
 
     @FFDCIgnore({ Exception.class })

@@ -11,6 +11,8 @@
 
 package com.ibm.ws.security.openidconnect.client.fat.IBM;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -42,6 +44,15 @@ public class OidcClientCookieVerificationTests extends CommonTest {
 
     public static final String OP_SSO_COOKIE_NAME = "WAS_OP_SSO_cookie";
     public static final String RP_SSO_COOKIE_NAME = "WAS_RP_SSO_cookie";
+
+    protected static final String GLOBAL_JVM_ARGS = AccessController
+            .doPrivileged(new PrivilegedAction<String>() {
+                @Override
+                public String run() {
+                    String prop = System.getProperty("global.jvm.args");
+                    return prop == null ? "" : prop.trim();
+                }
+            });
 
     @SuppressWarnings("serial")
     @BeforeClass
@@ -91,8 +102,10 @@ public class OidcClientCookieVerificationTests extends CommonTest {
 
         genericRP(_testName, webClient, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
 
+        List<String> allowedCookies = addSessionCookieToExpectedCookiesIfRunningBeta("JSESSIONID", "LtpaToken2", OP_SSO_COOKIE_NAME, RP_SSO_COOKIE_NAME);
+
         // Verify all cookies that should have been deleted do not appear in the web client anymore
-        validationTools.verifyOnlyAllowedCookiesStillPresent(webClient, Arrays.asList("JSESSIONID", "LtpaToken2", OP_SSO_COOKIE_NAME, RP_SSO_COOKIE_NAME));
+        validationTools.verifyOnlyAllowedCookiesStillPresent(webClient, allowedCookies);
     }
 
     /**
@@ -176,8 +189,10 @@ public class OidcClientCookieVerificationTests extends CommonTest {
 
         logInAndLogOut(webClient, updatedTestSettings, expectations);
 
+        List<String> allowedCookies = addSessionCookieToExpectedCookiesIfRunningBeta("JSESSIONID", RP_SSO_COOKIE_NAME);
+
         // Only the OP's SSO cookie should have been removed; the RP's should still be present
-        validationTools.verifyOnlyAllowedCookiesStillPresent(webClient, Arrays.asList("JSESSIONID", RP_SSO_COOKIE_NAME));
+        validationTools.verifyOnlyAllowedCookiesStillPresent(webClient, allowedCookies);
 
         // Invoke the protected resource again with the leftover cookies (including a still-valid RP SSO cookie)
         expectations = vData.addSuccessStatusCodesForActions(Constants.GET_LOGIN_PAGE_ONLY);
@@ -204,8 +219,10 @@ public class OidcClientCookieVerificationTests extends CommonTest {
 
         logInAndLogOut(webClient, updatedTestSettings, expectations);
 
+        List<String> allowedCookies = addSessionCookieToExpectedCookiesIfRunningBeta("JSESSIONID", RP_SSO_COOKIE_NAME);
+
         // Only the OP's SSO cookie should have been removed; the RP's should still be present
-        validationTools.verifyOnlyAllowedCookiesStillPresent(webClient, Arrays.asList("JSESSIONID", RP_SSO_COOKIE_NAME));
+        validationTools.verifyOnlyAllowedCookiesStillPresent(webClient, allowedCookies);
 
         // Invoke the protected resource again with the leftover cookies (including a still-valid RP SSO cookie)
         expectations = vData.addSuccessStatusCodesForActions(Constants.GET_LOGIN_PAGE_ONLY);
@@ -235,7 +252,9 @@ public class OidcClientCookieVerificationTests extends CommonTest {
 
         logIn(webClient, updatedTestSettings);
 
-        validationTools.verifyOnlyAllowedCookiesStillPresent(webClient, Arrays.asList("JSESSIONID", "LtpaToken2", OP_SSO_COOKIE_NAME, RP_SSO_COOKIE_NAME));
+        List<String> allowedCookies = addSessionCookieToExpectedCookiesIfRunningBeta("JSESSIONID", "LtpaToken2", OP_SSO_COOKIE_NAME, RP_SSO_COOKIE_NAME);
+
+        validationTools.verifyOnlyAllowedCookiesStillPresent(webClient, allowedCookies);
 
         // Copy all cookies over to a new WebClient
         Set<Cookie> leftoverCookies = webClient.getCookieManager().getCookies();
@@ -261,8 +280,11 @@ public class OidcClientCookieVerificationTests extends CommonTest {
 
         Log.info(thisClass, _testName, "Verify cookies have been deleted from the original web client");
         validationTools.verifyOnlyAllowedCookiesStillPresent(webClient, Arrays.asList("JSESSIONID"));
+
+        allowedCookies = addSessionCookieToExpectedCookiesIfRunningBeta("JSESSIONID", "LtpaToken2", OP_SSO_COOKIE_NAME, RP_SSO_COOKIE_NAME);
+
         Log.info(thisClass, _testName, "Verify cookies are still present in the second web client");
-        validationTools.verifyOnlyAllowedCookiesStillPresent(webClient2, Arrays.asList("JSESSIONID", "LtpaToken2", OP_SSO_COOKIE_NAME, RP_SSO_COOKIE_NAME));
+        validationTools.verifyOnlyAllowedCookiesStillPresent(webClient2, allowedCookies);
 
         // Invoke the protected resource again using the other WebClient with the copied-over cookies still intact
         Log.info(thisClass, _testName, "Invoke the protected resource again using the other WebClient with the copied-over cookies still intact");
@@ -294,6 +316,20 @@ public class OidcClientCookieVerificationTests extends CommonTest {
         expectations = validationTools.addDefaultIDTokenExpectations(expectations, _testName, eSettings.getProviderType(), Constants.LOGIN_USER, settings);
         expectations = validationTools.addDefaultGeneralResponseExpectations(expectations, _testName, eSettings.getProviderType(), Constants.LOGIN_USER, settings);
         return expectations;
+    }
+
+    private List<String> addSessionCookieToExpectedCookiesIfRunningBeta(String... expectedCookies) {
+        List<String> allowedCookies = new ArrayList<>();
+        if (expectedCookies != null) {
+            for (String expectedCookie : expectedCookies) {
+                allowedCookies.add(expectedCookie);
+            }
+        }
+        Log.info(thisClass, _testName, "Global args: " + GLOBAL_JVM_ARGS);
+        if (GLOBAL_JVM_ARGS.contains("-Dcom.ibm.ws.beta.edition=true")) {
+            allowedCookies.add("WASOidcSession");
+        }
+        return allowedCookies;
     }
 
 }

@@ -93,6 +93,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     private final Set<Bean> beansToAdd = new HashSet<Bean>();
     private boolean identityStoreHandlerRegistered = false;
     private boolean identityStoreRegistered = false;
+    private boolean isAlternativeHAMAdded = false;
     private final String applicationName;
     private final String decorator = "Decorator";
     private final String alternative = "Alternative";
@@ -413,6 +414,10 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     @Override
     public void addAuthMech(String applicationName, Class<?> annotatedClass, Class<?> implClass, Properties props) {
         httpAuthenticationMechanismsTracker.addAuthMech(applicationName, annotatedClass, implClass, props);
+    }
+
+    public void addAuthMech(String applicationName, Class<?> implClass, Properties props) {
+        httpAuthenticationMechanismsTracker.addAuthMech(applicationName, implClass, implClass, props);
     }
 
     /**

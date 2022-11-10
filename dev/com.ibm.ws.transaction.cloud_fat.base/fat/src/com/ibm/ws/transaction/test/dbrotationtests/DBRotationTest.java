@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.transaction.test.dbrotationtests;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
@@ -74,11 +73,11 @@ public class DBRotationTest extends FATServletClient {
     public static LibertyServer noShutdownServer1;
 
     public static String[] serverNames = new String[] {
-    	    "com.ibm.ws.transaction_ANYDBCLOUD001",
-    	    "com.ibm.ws.transaction_ANYDBCLOUD002",
-    	    "com.ibm.ws.transaction_ANYDBCLOUD001.longleasecompete",
-    	    "com.ibm.ws.transaction_ANYDBCLOUD001.longleaselogfail",
-    	    "com.ibm.ws.transaction_ANYDBCLOUD001.noShutdown",
+                                                        "com.ibm.ws.transaction_ANYDBCLOUD001",
+                                                        "com.ibm.ws.transaction_ANYDBCLOUD002",
+                                                        "com.ibm.ws.transaction_ANYDBCLOUD001.longleasecompete",
+                                                        "com.ibm.ws.transaction_ANYDBCLOUD001.longleaselogfail",
+                                                        "com.ibm.ws.transaction_ANYDBCLOUD001.noShutdown",
     };
 
     public static SetupRunner runner = new SetupRunner() {
@@ -318,7 +317,14 @@ public class DBRotationTest extends FATServletClient {
         if (FATSuite.databaseContainerType != DatabaseContainerType.Derby) { // Embedded Derby cannot support tests with concurrent server startup
 
             server2.setHttpDefaultPort(cloud2ServerPort);
-            FATUtils.startServers(runner, longLeaseLogFailServer1, server2);
+            try {
+                FATUtils.startServers(runner, longLeaseLogFailServer1, server2);
+            } catch (Exception e) {
+                Log.error(c, method, e);
+                // If we're here, the test will fail but we need to make sure both servers are stopped so the next test has a chance
+                FATUtils.stopServers(longLeaseLogFailServer1, server2);
+                throw e;
+            }
 
             // server2 does not know that server1 has a much longer leaseTimeout configured so it will prematurely
             // (from server1's point of view) acquire server1's log and recover it.
@@ -334,18 +340,15 @@ public class DBRotationTest extends FATServletClient {
             } catch (IOException e) {
             }
 
-            int serverStatus = longLeaseLogFailServer1.executeServerScript("status", null).getReturnCode();
-            Log.info(c, method, "Status of " + longLeaseLogFailServer1.getServerName() + " is " + serverStatus);
-
-            int retries = 0;
-            while (serverStatus == 0 && retries++ < 50) {
-                Thread.sleep(5000);
-                serverStatus = longLeaseLogFailServer1.executeServerScript("status", null).getReturnCode();
-                Log.info(c, method, "Status of " + longLeaseLogFailServer1.getServerName() + " is " + serverStatus);
+            // Check that server1 is dead
+            try {
+                FATUtils.runWithRetries(50, 5000, () -> isDead(longLeaseLogFailServer1));
+            } catch (Exception e) {
+                // server was not stopped
+                FATUtils.stopServers(longLeaseLogFailServer1);
+                fail(longLeaseLogFailServer1.getServerName() + " did not stop");
             }
 
-            // server1 should be stopped
-            assertFalse(longLeaseLogFailServer1.getServerName() + " is not stopped (" + serverStatus + ")", 0 == serverStatus);
             // The server has been halted but its status variable won't have been reset because we crashed it. In order to
             // setup the server for a restart, set the server state manually.
             longLeaseLogFailServer1.setStarted(false);
@@ -359,7 +362,14 @@ public class DBRotationTest extends FATServletClient {
         if (FATSuite.databaseContainerType != DatabaseContainerType.Derby) { // Embedded Derby cannot support tests with concurrent server startup
 
             server2.setHttpDefaultPort(cloud2ServerPort);
-            FATUtils.startServers(runner, noShutdownServer1, server2);
+            try {
+                FATUtils.startServers(runner, noShutdownServer1, server2);
+            } catch (Exception e) {
+                Log.error(c, method, e);
+                // If we're here, the test will fail but we need to make sure both servers are stopped so the next test has a chance
+                FATUtils.stopServers(noShutdownServer1, server2);
+                throw e;
+            }
 
             // server2 does not know that server1 has a much longer leaseTimeout configured so it will prematurely
             // (from server1's point of view) acquire server1's log and recover it.
@@ -371,14 +381,27 @@ public class DBRotationTest extends FATServletClient {
             // server1 now attempts some 2PC which will fail because its logs have been taken but the server will NOT terminate
             runTest(noShutdownServer1, SERVLET_NAME, "setupRecLostLog");
 
-            int serverStatus = noShutdownServer1.executeServerScript("status", null).getReturnCode();
-            Log.info(c, method, "Status of " + noShutdownServer1.getServerName() + " is " + serverStatus);
-
-            assertFalse(noShutdownServer1.getServerName() + " is not stopped", 1 == serverStatus);
-
-            // If this fails the test failed
-            FATUtils.stopServers(new String[] { "WTRN0029E", "WTRN0000E" }, noShutdownServer1);
+            // Check that server1 is not dead
+            try {
+                isDead(noShutdownServer1);
+                FATUtils.stopServers(new String[] { "WTRN0029E", "WTRN0000E" }, noShutdownServer1);
+            } catch (Exception e) {
+                // server was stopped
+                fail(noShutdownServer1.getServerName() + " stopped unexpectedly");
+            }
         }
         Log.info(c, method, "test complete");
+    }
+
+    // Returns false if the server is alive, throws Exception otherwise
+    private boolean isDead(LibertyServer server) throws Exception {
+        final int status = server.executeServerScript("status", null).getReturnCode();
+        if (status == 0) {
+            return false;
+        }
+
+        final String msg = "Status of " + server.getServerName() + " is " + status;
+        Log.info(c, "checkDead", msg);
+        throw new Exception(msg);
     }
 }

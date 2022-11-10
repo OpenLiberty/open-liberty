@@ -39,9 +39,9 @@ import com.ibm.ws.security.test.common.CommonTestClass;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
 import io.openliberty.security.oidcclientcore.config.MetadataUtils;
+import io.openliberty.security.oidcclientcore.config.OidcMetadataService;
 import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
-import io.openliberty.security.oidcclientcore.http.EndpointRequest;
 import io.openliberty.security.oidcclientcore.storage.SessionBasedStorage;
 import io.openliberty.security.oidcclientcore.utils.Utils;
 import test.common.SharedOutputManager;
@@ -56,7 +56,7 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
     private final OidcProviderMetadata providerMetadata = mockery.mock(OidcProviderMetadata.class);
     private final AuthorizationRequestParameters authzParameters = mockery.mock(AuthorizationRequestParameters.class);
     private final SessionBasedStorage sessionBasedStorage = mockery.mock(SessionBasedStorage.class);
-    private final EndpointRequest endpointRequest = mockery.mock(EndpointRequest.class);
+    private final OidcMetadataService oidcMetadataService = mockery.mock(OidcMetadataService.class);
 
     private final String CWWKS2403E_DISCOVERY_EXCEPTION = "CWWKS2403E";
     private final String CWWKS2405E_DISCOVERY_METADATA_MISSING_VALUE = "CWWKS2405E";
@@ -81,13 +81,13 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
         providerUrl = providerUrlBase + testName.getMethodName();
 
         MetadataUtils utils = new MetadataUtils();
-        utils.setEndpointRequest(endpointRequest);
+        utils.setOidcMetadataService(oidcMetadataService);
     }
 
     @After
     public void tearDown() {
         MetadataUtils utils = new MetadataUtils();
-        utils.unsetEndpointRequest(endpointRequest);
+        utils.unsetOidcMetadataService(oidcMetadataService);
 
         outputMgr.resetStreams();
         mockery.assertIsSatisfied();
@@ -144,7 +144,7 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
                 {
                     one(config).getProviderMetadata();
                     will(returnValue(null));
-                    one(endpointRequest).getProviderDiscoveryMetadata(config);
+                    one(oidcMetadataService).getProviderDiscoveryMetadata(config);
                     will(returnValue(discoveryData));
                     one(config).getClientId();
                     will(returnValue(clientId));
@@ -173,7 +173,7 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
                 {
                     one(config).getProviderMetadata();
                     will(returnValue(null));
-                    one(endpointRequest).getProviderDiscoveryMetadata(config);
+                    one(oidcMetadataService).getProviderDiscoveryMetadata(config);
                     will(returnValue(discoveryData));
                 }
             });

@@ -7,20 +7,20 @@ IBM-App-ForceRestart: install, \
 IBM-ShortName: mpTelemetry-1.0
 Subsystem-Name: MicroProfile Telemetry 1.0
 IBM-API-Package: \
-  io.opentelemetry.api.baggage;type="stable",\
-  io.opentelemetry.api;type="stable",\
-  io.opentelemetry.api.trace;type="stable",\
-  io.opentelemetry.api.common;type="stable",\
-  io.opentelemetry.context;type="stable",\
-  io.opentelemetry.sdk.trace.export;type="stable",\
-  io.opentelemetry.sdk.trace.data;type="stable",\
-  io.opentelemetry.sdk.common;type="stable",\
-  io.opentelemetry.sdk.autoconfigure.spi.traces;type=stable,\
-  io.opentelemetry.sdk.autoconfigure.spi;type=stable,\
-  io.opentelemetry.semconv.trace.attributes;type=stable,\
-  io.opentelemetry.semconv.resource.attributes;type=stable,\
-  io.opentelemetry.sdk.resources;type=stable,\
-  io.opentelemetry.instrumentation.annotations;type=stable
+  io.opentelemetry.api.baggage;type="third-party",\
+  io.opentelemetry.api;type="third-party",\
+  io.opentelemetry.api.trace;type="third-party",\
+  io.opentelemetry.api.common;type="third-party",\
+  io.opentelemetry.context;type="third-party",\
+  io.opentelemetry.sdk.trace.export;type="third-party",\
+  io.opentelemetry.sdk.trace.data;type="third-party",\
+  io.opentelemetry.sdk.common;type="third-party",\
+  io.opentelemetry.sdk.autoconfigure.spi.traces;type="third-party",\
+  io.opentelemetry.sdk.autoconfigure.spi;type="third-party",\
+  io.opentelemetry.semconv.trace.attributes;type="third-party",\
+  io.opentelemetry.semconv.resource.attributes;type="third-party",\
+  io.opentelemetry.sdk.resources;type="third-party",\
+  io.opentelemetry.instrumentation.annotations;type="third-party"
 -features=\
   io.openliberty.jakarta.annotation-2.1, \
   io.openliberty.restfulWS-3.1, \

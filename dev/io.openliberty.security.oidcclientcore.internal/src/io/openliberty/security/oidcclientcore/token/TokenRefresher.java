@@ -13,8 +13,6 @@ package io.openliberty.security.oidcclientcore.token;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
@@ -22,8 +20,6 @@ import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
 
 public class TokenRefresher {
-
-    private static final TraceComponent tc = Tr.register(TokenRefresher.class);
 
     private HttpServletRequest request = null;
     private OidcClientConfig oidcClientConfig = null;

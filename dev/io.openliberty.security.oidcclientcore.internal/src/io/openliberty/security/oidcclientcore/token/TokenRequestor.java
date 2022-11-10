@@ -155,7 +155,7 @@ public class TokenRequestor {
         private String refreshToken = null;
         private SSLSocketFactory sslSocketFactory = null;
         private boolean isHostnameVerification = false;
-        private String authMethod = TokenConstants.METHOD_BASIC;
+        private String authMethod = TokenConstants.METHOD_POST;
         private String resources = null;
         private HashMap<String, String> customParams = null;
         private boolean useSystemPropertiesForHttpClientConnections = false;

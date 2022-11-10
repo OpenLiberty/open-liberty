@@ -17,6 +17,7 @@ import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Pageable;
+import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Sort;
@@ -42,8 +43,11 @@ public interface Packages extends CrudRepository<Package, Integer> {
     long updateByLengthLessThanEqualAndHeightBetweenMultiplyLengthMultiplyWidthSetHeight(float maxLength, float minHeight, float maxHeight,
                                                                                          float lengthMultiplier, float widthMultiplier, float newHeight);
 
-    @Where("o.height < ?1 OR o.height > ?2")
-    KeysetAwarePage<Package> whereHeightNotWithin(float minToExclude, float maxToExclude, Pageable pagination, Sort... orderBy);
+    @Where("o.height < :min OR o.height > :max")
+    KeysetAwarePage<Package> whereHeightNotWithin(@Param("min") float minToExclude,
+                                                  @Param("max") float maxToExclude,
+                                                  Pageable pagination,
+                                                  Sort... orderBy);
 
     @Query("SELECT o from Package o WHERE (o.length * o.width * o.height >= ?1 AND o.length * o.width * o.height <= ?2)")
     @OrderBy(value = "width", descending = true)
