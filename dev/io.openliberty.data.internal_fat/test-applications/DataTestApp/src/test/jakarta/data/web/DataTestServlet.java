@@ -456,6 +456,34 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Asynchronous repository method that returns a CompletionStage of KeysetAwarePage.
+     */
+    @Test
+    public void testCompletionStageOfPage() throws ExecutionException, InterruptedException, TimeoutException {
+        LinkedBlockingQueue<Long> sums = new LinkedBlockingQueue<Long>();
+
+        primes.findByNumberLessThanOrderByNumberDesc(42L, Pageable.size(6)).thenCompose(page1 -> {
+            sums.add(page1.stream().mapToLong(p -> p.number).sum());
+            return primes.findByNumberLessThanOrderByNumberDesc(42L, page1.nextPageable());
+        }).thenCompose(page2 -> {
+            sums.add(page2.stream().mapToLong(p -> p.number).sum());
+            return primes.findByNumberLessThanOrderByNumberDesc(42L, page2.nextPageable());
+        }).thenAccept(page3 -> {
+            sums.add(page3.stream().mapToLong(p -> p.number).sum());
+        }).toCompletableFuture().get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
+
+        Long sum;
+        assertNotNull(sum = sums.poll());
+        assertEquals(Long.valueOf(41L + 37L + 31L + 29L + 23L + 19L), sum);
+
+        assertNotNull(sum = sums.poll());
+        assertEquals(Long.valueOf(17L + 13L + 11L + 7L + 5L + 3L), sum);
+
+        assertNotNull(sum = sums.poll());
+        assertEquals(Long.valueOf(2L), sum);
+    }
+
+    /**
      * Count the number of matching elements in the database.
      */
     @Test

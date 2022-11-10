@@ -12,6 +12,7 @@ package test.jakarta.data.web;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
 import jakarta.data.repository.KeysetAwarePage;
@@ -48,6 +49,9 @@ public interface Primes {
     Streamable<Prime> findByNumberLessThanEqualOrderByNumberDesc(long max, Limit limit);
 
     Page<Prime> findByNumberLessThanEqualOrderByNumberDesc(long max, Pageable pagination);
+
+    @Asynchronous
+    CompletionStage<KeysetAwarePage<Prime>> findByNumberLessThanOrderByNumberDesc(long max, Pageable pagination);
 
     @OrderBy(value = "name", descending = true)
     Prime[] findFirst5ByNumberLessThanEqual(long maxNumber);

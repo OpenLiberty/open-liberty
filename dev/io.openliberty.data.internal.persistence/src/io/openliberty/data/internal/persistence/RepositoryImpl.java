@@ -55,6 +55,7 @@ import jakarta.data.Select.Aggregate;
 import jakarta.data.Update;
 import jakarta.data.Where;
 import jakarta.data.repository.KeysetAwarePage;
+import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.KeysetPageable;
 import jakarta.data.repository.Limit;
 import jakarta.data.repository.OrderBy;
@@ -878,23 +879,24 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         else if (asyncCompatibleResultForPagination && consumer != null)
                             return runWithConsumer(queryInfo, pagination, consumer, args);
 
-                        if (pagination != null && Iterator.class.equals(returnType))
+                        Class<?> type = queryInfo.returnTypeParam != null && (Optional.class.equals(returnType)
+                                                                              || CompletableFuture.class.equals(returnType)
+                                                                              || CompletionStage.class.equals(returnType)) //
+                                                                                              ? queryInfo.returnTypeParam //
+                                                                                              : returnType;
+
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "results to be returned as " + type.getName());
+
+                        if (pagination != null && Iterator.class.equals(type))
                             returnValue = new PaginatedIterator<E>(queryInfo, pagination, args); // TODO keyset pagination
-                        else if (pagination instanceof KeysetPageable || KeysetAwarePage.class.equals(returnType))
+                        else if (KeysetAwareSlice.class.equals(type) || KeysetAwarePage.class.equals(type))
                             returnValue = new KeysetAwarePageImpl<E>(queryInfo, pagination, args);
-                        else if (Slice.class.equals(returnType) || Page.class.equals(returnType) || pagination != null && Streamable.class.equals(returnType))
+                        else if (Slice.class.equals(type) || Page.class.equals(type) || pagination != null && Streamable.class.equals(type))
                             returnValue = new PageImpl<E>(queryInfo, pagination, args); // TODO Limit with Page as return type
-                        else if (Publisher.class.equals(returnType))
+                        else if (Publisher.class.equals(type))
                             returnValue = new PublisherImpl<E>(queryInfo, provider.executor, limit, pagination, args);
                         else {
-                            Class<?> type = queryInfo.returnTypeParam != null && (Optional.class.equals(returnType)
-                                                                                  || CompletableFuture.class.equals(returnType)
-                                                                                  || CompletionStage.class.equals(returnType)) //
-                                                                                                  ? queryInfo.returnTypeParam //
-                                                                                                  : returnType;
-                            if (trace && tc.isDebugEnabled())
-                                Tr.debug(this, tc, "results to be returned as " + type.getName());
-
                             em = queryInfo.entityInfo.persister.createEntityManager();
 
                             TypedQuery<?> query = em.createQuery(queryInfo.jpql, queryInfo.entityInfo.type);
