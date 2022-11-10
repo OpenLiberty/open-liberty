@@ -19,7 +19,7 @@
     <repositories>
         <repository>
             <id>eclipse-staging</id>
-            <url>https://oss.sonatype.org/content/repositories/orgeclipsemicroprofile-1626/</url>
+            <url>https://oss.sonatype.org/content/repositories/orgeclipsemicroprofile-1632/</url>
         </repository>
     </repositories>
     
