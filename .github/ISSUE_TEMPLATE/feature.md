@@ -18,7 +18,7 @@ When available, add links to required feature documents. Use "N/A" to mark parti
 - Aha: Externally raised RFE ([Aha](https://cloud-platform.ideas.aha.io/))
   - Link the RFE with this issue
 - UFO: Link to [Upcoming Feature Overview](https://ibm.box.com/v/UFO-Template) document
-  - Set the Box link to be publicly accessible, with a long expiration (10 years)
+  - [Upload the feature UFO to Box](https://ibm.ent.box.com/folder/52716090328) and set the link to be publicly accessible, with a long expiration (10 years)
     - Click "Share" > select "People with link" > click "Link Settings" > under "Link Expiration" select "Disable Shared Link on" > set an expiration date ~10 years into the future
     - If you lack permissions, contact [OpenLiberty/release-architect](https://github.com/orgs/OpenLiberty/teams/release-architect)
 - FTS: Link to Feature Test Summary GH Issue

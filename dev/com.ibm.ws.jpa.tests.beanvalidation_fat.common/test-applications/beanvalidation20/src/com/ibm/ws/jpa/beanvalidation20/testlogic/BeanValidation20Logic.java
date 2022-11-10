@@ -12,15 +12,19 @@
 package com.ibm.ws.jpa.beanvalidation20.testlogic;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
+import java.time.zone.ZoneRules;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.validation.ConstraintViolationException;
 
 import org.junit.Assert;
+import org.junit.Assume;
 
 import com.ibm.ws.jpa.beanvalidation20.model.SimpleBeanVal20Entity;
 import com.ibm.ws.jpa.beanvalidation20.model.SimpleBeanVal20XMLEntity;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.testinfo.TestExecutionContext;
 import com.ibm.ws.testtooling.testlogic.AbstractTestLogic;
 import com.ibm.ws.testtooling.tranjacket.TransactionJacket;
@@ -525,12 +529,34 @@ public class BeanValidation20Logic extends AbstractTestLogic {
             }
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
 
             int id = 16;
+
+            // Value should always be into the future to be accepted for validation
+            // Hibernate only accepts values Instant.MAX < x < Instant.MIN because they convert to Timestamp:
+            //    https://hibernate.atlassian.net/browse/HHH-13482
+            java.time.Instant instant = java.time.Instant.now().plusSeconds(100000);
+
+            // On Hibernate, there appears to be a bug where persisted values do not include daylight savings
+            if (isUsingJPA22Feature() && JPAPersistenceProvider.HIBERNATE.equals(provider)) {
+                ZonedDateTime now = ZonedDateTime.now();
+                ZoneRules zoneRules = now.getZone().getRules();
+                boolean nowDst = zoneRules.isDaylightSavings(now.toInstant());
+                boolean endDst = zoneRules.isDaylightSavings(instant);
+
+                // Validate that this test will not execute over the daylight savings boundary
+                if ((nowDst != endDst)) {
+                    tj.rollbackTransaction();
+                    System.out.println("Skipping test; instant (" + instant + ") will not be within the same daylight savings scope as now (" + now.toInstant() + ")");
+                    Assume.assumeTrue(true);
+                }
+            }
 
             em.clear();
 
@@ -545,11 +571,6 @@ public class BeanValidation20Logic extends AbstractTestLogic {
                 SimpleBeanVal20Entity entity = new SimpleBeanVal20Entity();
                 entity.setId(id);
                 entity.setEmail("valid_email@somewhere.com"); // Must set email since it is @NotNull as well
-
-                // Value should always be into the future to be accepted for validation
-                // Hibernate only accepts values Instant.MAX < x < Instant.MIN because they convert to Timestamp:
-                //    https://hibernate.atlassian.net/browse/HHH-13482
-                java.time.Instant instant = java.time.Instant.now().plusSeconds(100000);
                 entity.setFutureInstant(instant);
 
                 em.persist(entity);
@@ -614,12 +635,34 @@ public class BeanValidation20Logic extends AbstractTestLogic {
             }
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
 
             int id = 17;
+
+            // Value should always be into the future to be accepted for validation
+            // Hibernate only accepts values Instant.MAX < x < Instant.MIN because they convert to Timestamp:
+            //    https://hibernate.atlassian.net/browse/HHH-13482
+            java.time.Instant instant = java.time.Instant.now().plusSeconds(100000);
+
+            // On Hibernate, there appears to be a bug where persisted values do not include daylight savings
+            if (isUsingJPA22Feature() && JPAPersistenceProvider.HIBERNATE.equals(provider)) {
+                ZonedDateTime now = ZonedDateTime.now();
+                ZoneRules zoneRules = now.getZone().getRules();
+                boolean nowDst = zoneRules.isDaylightSavings(now.toInstant());
+                boolean endDst = zoneRules.isDaylightSavings(instant);
+
+                // Validate that this test will not execute over the daylight savings boundary
+                if ((nowDst != endDst)) {
+                    tj.rollbackTransaction();
+                    System.out.println("Skipping test; instant (" + instant + ") will not be within the same daylight savings scope as now (" + now.toInstant() + ")");
+                    Assume.assumeTrue(true);
+                }
+            }
 
             em.clear();
 
@@ -634,11 +677,6 @@ public class BeanValidation20Logic extends AbstractTestLogic {
                 SimpleBeanVal20XMLEntity entity = new SimpleBeanVal20XMLEntity();
                 entity.setId(id);
                 entity.setEmail("valid_email@somewhere.com"); // Must set email since it is @NotNull as well
-
-                // Value should always be into the future to be accepted for validation
-                // Hibernate only accepts values Instant.MAX < x < Instant.MIN because they convert to Timestamp:
-                //    https://hibernate.atlassian.net/browse/HHH-13482
-                java.time.Instant instant = java.time.Instant.now().plusSeconds(100000);
                 entity.setFutureInstant(instant);
 
                 em.persist(entity);
@@ -703,12 +741,35 @@ public class BeanValidation20Logic extends AbstractTestLogic {
             }
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
 
             int id = 18;
+
+            // Value should always be into the future to be accepted for validation
+            // Hibernate only accepts values Instant.MAX < x < Instant.MIN because they convert to Timestamp:
+            //    https://hibernate.atlassian.net/browse/HHH-13482
+            java.time.Instant instant = java.time.Instant.now().minusSeconds(100000);
+
+            // On Hibernate, there appears to be a bug where persisted values do not include daylight savings
+            if (isUsingJPA22Feature() && JPAPersistenceProvider.HIBERNATE.equals(provider)) {
+                ZonedDateTime now = ZonedDateTime.now();
+                ZoneRules zoneRules = now.getZone().getRules();
+                boolean nowDst = zoneRules.isDaylightSavings(now.toInstant());
+                boolean endDst = zoneRules.isDaylightSavings(instant);
+
+                // Validate that this test will not execute over the daylight savings boundary
+                if ((nowDst != endDst)) {
+                    tj.rollbackTransaction();
+                    System.out.println("Skipping test; instant (" + instant + ") will not be within the same daylight savings scope as now (" + now.toInstant() + ")");
+                    Assume.assumeTrue(true);
+                }
+            }
+
             String validationMessage = "SimpleBeanVal20Entity.futureInstant must be in the future";
             boolean onCommit = false;
 
@@ -725,11 +786,6 @@ public class BeanValidation20Logic extends AbstractTestLogic {
                 SimpleBeanVal20Entity entity = new SimpleBeanVal20Entity();
                 entity.setId(id);
                 entity.setEmail("valid_email@somewhere.com"); // Must set email since it is @NotNull as well
-
-                // Value should always be into the future to be accepted for validation
-                // Hibernate only accepts values Instant.MAX < x < Instant.MIN because they convert to Timestamp:
-                //    https://hibernate.atlassian.net/browse/HHH-13482
-                java.time.Instant instant = java.time.Instant.now().minusSeconds(100000);
                 entity.setFutureInstant(instant);
 
                 em.persist(entity);
@@ -782,12 +838,35 @@ public class BeanValidation20Logic extends AbstractTestLogic {
             }
         }
 
+        JPAPersistenceProvider provider = JPAPersistenceProvider.resolveJPAPersistenceProvider(jpaResource);
+
         // Execute Test Case
         try {
             EntityManager em = jpaResource.getEm();
             TransactionJacket tj = jpaResource.getTj();
 
             int id = 19;
+
+            // Value should always be into the future to be accepted for validation
+            // Hibernate only accepts values Instant.MAX < x < Instant.MIN because they convert to Timestamp:
+            //    https://hibernate.atlassian.net/browse/HHH-13482
+            java.time.Instant instant = java.time.Instant.now().minusSeconds(100000);
+
+            // On Hibernate, there appears to be a bug where persisted values do not include daylight savings
+            if (isUsingJPA22Feature() && JPAPersistenceProvider.HIBERNATE.equals(provider)) {
+                ZonedDateTime now = ZonedDateTime.now();
+                ZoneRules zoneRules = now.getZone().getRules();
+                boolean nowDst = zoneRules.isDaylightSavings(now.toInstant());
+                boolean endDst = zoneRules.isDaylightSavings(instant);
+
+                // Validate that this test will not execute over the daylight savings boundary
+                if ((nowDst != endDst)) {
+                    tj.rollbackTransaction();
+                    System.out.println("Skipping test; instant (" + instant + ") will not be within the same daylight savings scope as now (" + now.toInstant() + ")");
+                    Assume.assumeTrue(true);
+                }
+            }
+
             String validationMessage = "SimpleBeanVal20XMLEntity.futureInstant must be in the future";
             boolean onCommit = false;
 
@@ -804,11 +883,6 @@ public class BeanValidation20Logic extends AbstractTestLogic {
                 SimpleBeanVal20XMLEntity entity = new SimpleBeanVal20XMLEntity();
                 entity.setId(id);
                 entity.setEmail("valid_email@somewhere.com"); // Must set email since it is @NotNull as well
-
-                // Value should always be into the future to be accepted for validation
-                // Hibernate only accepts values Instant.MAX < x < Instant.MIN because they convert to Timestamp:
-                //    https://hibernate.atlassian.net/browse/HHH-13482
-                java.time.Instant instant = java.time.Instant.now().minusSeconds(100000);
                 entity.setFutureInstant(instant);
 
                 em.persist(entity);

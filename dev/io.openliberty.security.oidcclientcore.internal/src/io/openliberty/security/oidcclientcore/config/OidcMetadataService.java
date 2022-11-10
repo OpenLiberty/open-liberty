@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.security.oidcclientcore.http;
+package io.openliberty.security.oidcclientcore.config;
 
 import javax.net.ssl.SSLSocketFactory;
 
@@ -28,10 +28,12 @@ import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 
-@Component(service = EndpointRequest.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
-public class EndpointRequest {
+@Component(service = OidcMetadataService.class, immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE)
+public class OidcMetadataService {
 
-    public static final TraceComponent tc = Tr.register(EndpointRequest.class);
+    public static final TraceComponent tc = Tr.register(OidcMetadataService.class);
+
+    public static final String KEY_METADATA_SERVICE = "oidcMetadataService";
 
     private static final String KEY_SSL_SUPPORT = "sslSupport";
     protected static volatile SSLSupport sslSupport;
@@ -45,11 +47,11 @@ public class EndpointRequest {
         sslSupport = null;
     }
 
-    public SSLSupport getSSLSupport() {
+    public static SSLSupport getSSLSupport() {
         return sslSupport;
     }
 
-    public SSLSocketFactory getSSLSocketFactory() {
+    public static SSLSocketFactory getSSLSocketFactory() {
         if (sslSupport != null) {
             return sslSupport.getSSLSocketFactory();
         }

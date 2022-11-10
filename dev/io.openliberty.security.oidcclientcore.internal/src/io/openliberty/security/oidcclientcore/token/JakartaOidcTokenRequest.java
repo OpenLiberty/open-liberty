@@ -26,13 +26,13 @@ import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.config.MetadataUtils;
+import io.openliberty.security.oidcclientcore.config.OidcMetadataService;
 import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
-import io.openliberty.security.oidcclientcore.http.EndpointRequest;
 import io.openliberty.security.oidcclientcore.token.TokenRequestor.Builder;
 
-public class JakartaOidcTokenRequest extends EndpointRequest {
+public class JakartaOidcTokenRequest {
 
     public static final TraceComponent tc = Tr.register(JakartaOidcTokenRequest.class);
 
@@ -72,7 +72,7 @@ public class JakartaOidcTokenRequest extends EndpointRequest {
         }
 
         Builder tokenRequestBuilder = createTokenRequestorBuilder(tokenEndpoint, clientId, clientSecret, null);
-        tokenRequestBuilder.sslSocketFactory(getSSLSocketFactory());
+        tokenRequestBuilder.sslSocketFactory(OidcMetadataService.getSSLSocketFactory());
         tokenRequestBuilder.grantType(TokenConstants.REFRESH_TOKEN);
         tokenRequestBuilder.refreshToken(refreshToken);
         //TODO: check do we need to include scope parameter?
@@ -104,7 +104,7 @@ public class JakartaOidcTokenRequest extends EndpointRequest {
         }
 
         Builder tokenRequestBuilder = createTokenRequestorBuilder(tokenEndpoint, clientId, clientSecret, authzCode);
-        tokenRequestBuilder.sslSocketFactory(getSSLSocketFactory());
+        tokenRequestBuilder.sslSocketFactory(OidcMetadataService.getSSLSocketFactory());
         tokenRequestBuilder.grantType(TokenConstants.AUTHORIZATION_CODE);
         TokenRequestor tokenRequestor = tokenRequestBuilder.build();
         try {

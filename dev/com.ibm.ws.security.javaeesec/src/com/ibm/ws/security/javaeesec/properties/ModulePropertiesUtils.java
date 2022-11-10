@@ -129,7 +129,9 @@ public class ModulePropertiesUtils {
                             List<Class> implClassList = mppi.get().getAuthMechClassList();
                             if (implClassList != null) {
                                 if (implClassList.size() == 0) {
-                                    Tr.error(tc, "JAVAEESEC_ERROR_NO_HAM", getJ2EEModuleName(), getJ2EEApplicationName());
+                                    if (logError) {
+                                        Tr.error(tc, "JAVAEESEC_ERROR_NO_HAM", getJ2EEModuleName(), getJ2EEApplicationName());
+                                    }
                                 } else {
                                     Bean<HttpAuthenticationMechanism> bean = null;
                                     for (Class implClass : implClassList) {
@@ -234,7 +236,7 @@ public class ModulePropertiesUtils {
             bean = (Bean<HttpAuthenticationMechanism>) beans.iterator().next();
         }
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "HAM : " + hamClass + " Number of HAM bean: " + beans.size() + " bean.toString(): " + (bean != null ? beans.iterator().next().toString() : "<NO bean>"));
+            Tr.debug(tc, "HAM : " + hamClass + " Number of HAM bean: " + beans.size() + " bean.toString(): " + (bean != null ? bean.toString() : "<NO bean>"));
         }
         return bean;
     }

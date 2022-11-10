@@ -195,7 +195,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             if (upperTrimmed.startsWith("SELECT")) {
                 queryInfo.type = QueryInfo.Type.SELECT;
 
-                // TODO jpqlCount from @Query
+                queryInfo.jpqlCount = query.count().length() > 0 ? query.count() : null;
                 if (countPages && queryInfo.jpqlCount == null) {
                     // Attempt to infer from provided query
                     int select = upper.indexOf("SELECT");
@@ -315,6 +315,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      */
     private void generateKeysetQueries(QueryInfo queryInfo, List<Sort> keyset, StringBuilder q, StringBuilder o, StringBuilder r) {
         int numKeys = keyset.size();
+        String paramPrefix = queryInfo.paramNames.isEmpty() || queryInfo.paramNames.get(0) == null ? "?" : ":keyset";
         StringBuilder a = o == null ? null : new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (");
         StringBuilder b = r == null ? null : new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (");
         for (int i = 0; i < numKeys; i++) {
@@ -328,13 +329,13 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 boolean asc = keyInfo.isAscending();
                 if (a != null) {
                     a.append(k == 0 ? "o." : " AND o.").append(name);
-                    a.append(k < i ? "=?" : (asc ? ">?" : "<?"));
-                    a.append(queryInfo.paramCount + 1 + k);
+                    a.append(k < i ? '=' : (asc ? '>' : '<'));
+                    a.append(paramPrefix).append(queryInfo.paramCount + 1 + k);
                 }
                 if (b != null) {
                     b.append(k == 0 ? "o." : " AND o.").append(name);
-                    b.append(k < i ? "=?" : (asc ? "<?" : ">?"));
-                    b.append(queryInfo.paramCount + 1 + k);
+                    b.append(k < i ? '=' : (asc ? '<' : '>'));
+                    b.append(paramPrefix).append(queryInfo.paramCount + 1 + k);
                 }
             }
             if (a != null)

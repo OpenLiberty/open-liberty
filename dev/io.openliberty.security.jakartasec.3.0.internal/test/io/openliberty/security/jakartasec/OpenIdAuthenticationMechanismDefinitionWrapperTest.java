@@ -420,7 +420,72 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
         assertEquals(EMPTY_DEFAULT, wrapper.getPromptParameter());
     }
 
-    // TODO: Unit test getPromptParameter with EL expression
+    @Test
+    public void testGetPromptParameterWithLogin() {
+        overrides.put(PROMPT, new PromptType[] { PromptType.LOGIN });
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertEquals("login", wrapper.getPromptParameter());
+    }
+
+    @Test
+    public void testGetPromptParameterWithConsent() {
+        overrides.put(PROMPT, new PromptType[] { PromptType.CONSENT });
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertEquals("consent", wrapper.getPromptParameter());
+    }
+
+    @Test
+    public void testGetPromptParameterWithSelectAccount() {
+        overrides.put(PROMPT, new PromptType[] { PromptType.SELECT_ACCOUNT });
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertEquals("select_account", wrapper.getPromptParameter());
+    }
+
+    @Test
+    public void testGetPromptParameterWithNone() {
+        overrides.put(PROMPT, new PromptType[] { PromptType.NONE });
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertEquals("none", wrapper.getPromptParameter());
+    }
+
+    @Test
+    public void testGetPromptParameterWithLoginAndConsent() {
+        overrides.put(PROMPT, new PromptType[] { PromptType.LOGIN, PromptType.CONSENT });
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        boolean matches = "login consent".equals(wrapper.getPromptParameter()) || "consent login".equals(wrapper.getPromptParameter());
+        assertTrue("Prompt did not match either `login consent` or `consent login`, but was " + wrapper.getPromptParameter(), matches);
+    }
+
+    @Test
+    public void testGetPromptParameterEL() {
+        overrides.put(PROMPT_EXPRESSION, "#{'Log'.concat('in')}");
+
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertEquals("login", wrapper.getPromptParameter());
+    }
+
+    @Test
+    public void testGetPromptParameterEL2() {
+        overrides.put(PROMPT_EXPRESSION, "#{'Login'.concat(' consent')}");
+
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        boolean matches = "login consent".equals(wrapper.getPromptParameter()) || "consent login".equals(wrapper.getPromptParameter());
+        assertTrue("Prompt did not match either `login consent` or `consent login`, but was " + wrapper.getPromptParameter(), matches);
+    }
 
     @Test
     public void testGetDisplayParameter() {
@@ -431,9 +496,48 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
     }
 
     @Test
-    @Ignore("This will fail until the EL implementation can handle inner enums.")
+    public void testGetDisplayParameterWithPopup() {
+        overrides.put(DISPLAY, DisplayType.POPUP);
+
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertEquals("popup", wrapper.getDisplayParameter());
+    }
+
+    @Test
+    public void testGetDisplayParameterWithPage() {
+        overrides.put(DISPLAY, DisplayType.PAGE);
+
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertEquals("page", wrapper.getDisplayParameter());
+    }
+
+    @Test
+    public void testGetDisplayParameterWithTouch() {
+        overrides.put(DISPLAY, DisplayType.TOUCH);
+
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertEquals("touch", wrapper.getDisplayParameter());
+    }
+
+    @Test
+    public void testGetDisplayParameterWithWap() {
+        overrides.put(DISPLAY, DisplayType.WAP);
+
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertEquals("wap", wrapper.getDisplayParameter());
+    }
+
+    @Test
     public void testGetDisplayParameter_EL() {
-        overrides.put(DISPLAY_EXPRESSION, "DisplayType.POPUP");
+        overrides.put(DISPLAY_EXPRESSION, "#{'pop'.concat('up')}");
 
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
         OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);

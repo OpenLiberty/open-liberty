@@ -75,9 +75,9 @@ public class JASPIServerAuthRegistrationModuleTest extends JASPITestBase {
     protected static String contextString = "/JASPIServerAuthRegistrationTestServlet/JASPIBasic";
 
     protected static String urlBase;
-    //protected static String TEST_APP_CONTEXT_ID = "HttpServlet[default_host \\/JASPIServerAuthRegistrationTestServlet]";
     protected static String TEST_APP_CONTEXT_ID = "HttpServlet[default_host".concat(" /").concat("JASPIServerAuthRegistrationTestServlet]");
- 
+    protected static String UNKNOWN_CONTEXT_ID = "unknownContextID";
+
     protected DefaultHttpClient httpclient;
 
     public JASPIServerAuthRegistrationModuleTest() {
@@ -147,7 +147,8 @@ public class JASPIServerAuthRegistrationModuleTest extends JASPITestBase {
     public void testJaspiRegisteredServerAuthModuleAndRemoveNewAppContext_Successful() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
-        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + contextString + buildServerAuthQueryString(REGISTER, PROFILE_SERVLET_MSG_LAYER, TEST_APP1_CONTEXT,
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + contextString + 
+                                                          buildServerAuthQueryString(REGISTER, PROFILE_SERVLET_MSG_LAYER, TEST_APP1_CONTEXT,
                                                                                                                            DEFAULT_AUTHMODULE_CLASS),
                                                           jaspi_basicRoleUser,
                                                           jaspi_basicRolePwd, HttpServletResponse.SC_OK);
@@ -158,6 +159,47 @@ public class JASPIServerAuthRegistrationModuleTest extends JASPITestBase {
         Log.info(logClass, getCurrentTestName(), "Successfully removed server auth module");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
- }
+ 
+
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI> 1) Call registerServerAuthModule with a context ID that does not exist, "unknownContextID".
+     * <LI> 2) verify a new server auth module successfully registered 
+     * <LI> 3) remove the server auth provider with the registration ID returned from the registration and
+     * <LI> 4) finally verify the server auth module was removed.
+     * </OL>
+     * <P> Expected Results:
+     * <OL>
+     * <LI> Return code 200 from all servlet calls
+     * <LI> After registering the server auth module with a context ID that does not exist, the servlet returns: Successfully registered server auth module.
+     * <LI> ServerAuthModule Class: class com.ibm.ws.security.jaspi.test.AuthModule
+     * <LI> After removing the server auth module, the servlet returns: Successfully removed server auth module.
+     * </OL>
+     */
+    @Test
+    public void testJaspiRegisteredServerAuthModuleAndRemoveUnknownAppContext_Successful() throws Exception {
+        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        myServer.restartServer();
+        String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + contextString + 
+                                                          buildServerAuthQueryString(REGISTER, PROFILE_SERVLET_MSG_LAYER, UNKNOWN_CONTEXT_ID,
+                                                                                                                           DEFAULT_AUTHMODULE_CLASS),
+                                                          jaspi_basicRoleUser,
+                                                          jaspi_basicRolePwd, HttpServletResponse.SC_OK);
+
+        verifyServerAuthModuleRegisteredSuccessfully(response);
+        Log.info(logClass, getCurrentTestName(), "Successfully registered server auth module");
+        verifyServerAuthModuleRemovedSuccessfully(response);
+        Log.info(logClass, getCurrentTestName(), "Successfully removed server auth module");
+        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
+    }
+
+}
+
+
+
+
+
 
 

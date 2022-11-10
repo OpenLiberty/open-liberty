@@ -786,6 +786,7 @@ public class BasicHttpAuthenticationMechanismTest {
                 never(response).setStatus(with(any(int.class)));
             }
         });
+
         return this;
     }
 
@@ -868,7 +869,7 @@ public class BasicHttpAuthenticationMechanismTest {
             mockery.checking(new Expectations() {
                 {
                     one(response).setHeader("WWW-Authenticate", "Basic realm=\"" + realmName + "\"");
-                    allowing(response).sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                    allowing(response).sendError(401);
                 }
             });
         } catch (IOException e) {

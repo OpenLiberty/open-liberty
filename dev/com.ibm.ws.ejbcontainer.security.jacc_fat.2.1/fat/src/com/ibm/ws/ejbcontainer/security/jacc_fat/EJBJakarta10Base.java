@@ -275,6 +275,68 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
 
     }
 
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void testGetPolicyConfigWithNonExistantContextId() throws Exception {
+        Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());
+
+        WSPolicyConfigurationFactoryImpl pcf = new WSPolicyConfigurationFactoryImpl();
+        String contextID = "nonExistantContextID";
+        WSPolicyConfigurationImpl policyConfig = new WSPolicyConfigurationImpl(contextID);
+        String cId = policyConfig.getContextID();
+        Log.info(logClass, getName().getMethodName(), "context id = " + cId);
+        if (!cId.equals(contextID)) {
+            throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
+        }
+
+        EJBMethodPermission ejbMethodPerm1 = new EJBMethodPermission("PolicyTestEJBUnchecked", "denyAll,Local,java.lang.String");
+        EJBMethodPermission ejbMethodPerm2 = new EJBMethodPermission("PolicyTestEJBUnchecked", "denyAll,ServiceEndPoint,java.lang.String");
+        Permissions inputPermCollection = new Permissions();
+        inputPermCollection.add(ejbMethodPerm1);
+        inputPermCollection.add(ejbMethodPerm2);
+        policyConfig.addToUncheckedPolicy(inputPermCollection);
+
+        policyConfig.commit();
+
+        PolicyContext.setContextID(contextID);
+        AllPolicyConfigs policyConfigs = AllPolicyConfigs.getInstance();
+        policyConfigs.setPolicyConfig(contextID, policyConfig);
+
+        PolicyConfiguration policyConfigNoContextID = pcf.getPolicyConfiguration();
+        if (policyConfigNoContextID == null) {
+            throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
+        }
+
+        if (!verifyPolicyConfig(inputPermCollection, policyConfig)) {
+            throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
+        }
+
+        Log.info(logClass, getName().getMethodName(), "**Exiting " + getName().getMethodName());
+
+    }
+
+    @Mode(TestMode.LITE)
+    @Test
+    public void testGetPolicyConfigWithContextIdWithNoExistingPolicyConig () throws Exception {
+        Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());
+
+        WSPolicyConfigurationFactoryImpl pcf = new WSPolicyConfigurationFactoryImpl();
+        String contextID = "contextIDWithNoPolicyConfig";
+
+        PolicyContext.setContextID(contextID);
+        AllPolicyConfigs policyConfigs = AllPolicyConfigs.getInstance();
+
+        PolicyConfiguration policyConfigForContextIDWithoutPolicyConfig = pcf.getPolicyConfiguration();
+        if (policyConfigForContextIDWithoutPolicyConfig != null) {
+            throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
+        }
+
+        Log.info(logClass, getName().getMethodName(), "**Exiting " + getName().getMethodName());
+
+    }
+
+
     @Mode(TestMode.LITE)
     @Test
     public void testGetPolicyConfigWithOnlyContextId() throws Exception {

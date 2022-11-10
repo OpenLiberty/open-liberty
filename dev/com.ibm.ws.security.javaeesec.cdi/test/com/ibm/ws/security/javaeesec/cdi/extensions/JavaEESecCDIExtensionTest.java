@@ -32,6 +32,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
@@ -322,6 +323,8 @@ public class JavaEESecCDIExtensionTest {
                 will(returnValue(at1));
                 one(at1).getAnnotation(LoginToContinue.class);
                 will(returnValue(ltc));
+                one(at1).getAnnotation(Alternative.class);
+                will(returnValue(null));
                 one(wasc).getOverrideHttpAuthMethod();
                 will(returnValue(null));
                 one(at1).getAnnotations();

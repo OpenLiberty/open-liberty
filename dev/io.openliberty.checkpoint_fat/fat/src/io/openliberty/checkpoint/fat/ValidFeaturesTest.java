@@ -21,7 +21,6 @@ import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -59,7 +58,6 @@ public class ValidFeaturesTest {
     }
 
     @Test
-    @Ignore
     public void testMicroProfile6_0() throws Exception {
         doSuccesfulRestoreTest();
     }
@@ -75,7 +73,6 @@ public class ValidFeaturesTest {
     }
 
     @Test
-    @Ignore
     public void testWebProfile10_0() throws Exception {
         doSuccesfulRestoreTest();
     }
@@ -91,7 +88,6 @@ public class ValidFeaturesTest {
     }
 
     @Test
-    @Ignore
     public void testWebProfile10_0_testMicroProfile6_0() throws Exception {
         doSuccesfulRestoreTest();
     }

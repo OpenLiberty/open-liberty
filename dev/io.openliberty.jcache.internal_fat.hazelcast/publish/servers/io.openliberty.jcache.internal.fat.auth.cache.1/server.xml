@@ -10,12 +10,12 @@
  -->
 <server>
 
-
 	<featureManager>
 		<feature>appSecurity-3.0</feature>
 		<feature>jsp-2.3</feature>
 		<feature>servlet-4.0</feature>
 	</featureManager>
+
 	<!-- 
 		Include common configuration. 
 	 -->
