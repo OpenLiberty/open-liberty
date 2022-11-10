@@ -42,7 +42,10 @@ public class MPFaultToleranceTimeoutTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests repeatTest = MicroProfileActions.repeat("timeoutServer", TestMode.LITE, MicroProfileActions.MP41, MicroProfileActions.MP50);
+    public static RepeatTests repeatTest = MicroProfileActions.repeat("timeoutServer", TestMode.FULL, //
+                                                                      MicroProfileActions.MP41, // first test in LITE mode
+                                                                      // rest are FULL mode
+                                                                      MicroProfileActions.MP50, MicroProfileActions.MP60);
 
     @BeforeClass
     public static void copyAppToDropins() throws Exception {
