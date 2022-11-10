@@ -58,7 +58,8 @@ import componenttest.topology.impl.LibertyServer;
                 OpenAPITest.class,
                 MPJWTTest.class,
                 MPMetricsTest.class,
-                WebProfileEARtest.class
+                WebProfileEARtest.class,
+                MPHealthTest.class
 })
 
 public class FATSuite {
