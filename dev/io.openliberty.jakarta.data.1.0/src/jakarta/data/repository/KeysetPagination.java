@@ -12,16 +12,7 @@ package jakarta.data.repository;
 
 import java.util.Arrays;
 
-public interface KeysetPageable extends Pageable {
-    public static enum Mode {
-        NEXT, PREVIOUS
-    }
-
-    public interface Cursor {
-        public Object getKeysetElement(int index);
-
-        public int size();
-    }
+public class KeysetPagination extends Pagination implements KeysetPageable {
 
     static class CursorImpl implements Cursor {
         private final Object[] keyset;
@@ -58,7 +49,34 @@ public interface KeysetPageable extends Pageable {
         }
     }
 
-    public Cursor cursor();
+    private final Cursor cursor;
+    private final Mode mode;
 
-    public Mode mode();
+    KeysetPagination(Pageable copyFrom, Mode mode, Cursor cursor) {
+        super(copyFrom.page(), copyFrom.size(), copyFrom.sorts());
+        this.cursor = cursor;
+        this.mode = mode;
+        if (cursor == null || cursor.size() == 0)
+            throw new IllegalArgumentException();
+    }
+
+    @Override
+    public Cursor cursor() {
+        return cursor;
+    }
+
+    @Override
+    public Mode mode() {
+        return mode;
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder("KeysetPageable{size=") //
+                        .append(size()).append(", page=") //
+                        .append(page()).append(", mode=") //
+                        .append(mode).append(", cursor=") //
+                        .append(cursor).append("}") //
+                        .toString();
+    }
 }

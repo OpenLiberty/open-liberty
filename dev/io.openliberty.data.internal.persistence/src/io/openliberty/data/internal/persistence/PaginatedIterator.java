@@ -33,7 +33,7 @@ public class PaginatedIterator<T> implements Iterator<T> {
 
     PaginatedIterator(QueryInfo queryInfo, Pageable pagination, Object[] args) {
         this.queryInfo = queryInfo;
-        this.pagination = pagination == null ? Pageable.of(1, 100) : pagination;
+        this.pagination = pagination == null ? Pageable.ofSize(100) : pagination;
         this.args = args;
 
         getPage();
@@ -49,8 +49,8 @@ public class PaginatedIterator<T> implements Iterator<T> {
 
             // TODO KeysetPageable
             // TODO possible overflow with both of these.
-            long maxPageSize = pagination.getSize();
-            query.setFirstResult((int) ((pagination.getPage() - 1) * maxPageSize));
+            long maxPageSize = pagination.size();
+            query.setFirstResult((int) ((pagination.page() - 1) * maxPageSize));
             query.setMaxResults((int) maxPageSize);
             pagination = pagination.next();
 

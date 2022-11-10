@@ -16,13 +16,13 @@ import java.util.List;
  * Method signatures copied from the Jakarta Data git repo.
  */
 public interface Slice<T> extends Streamable<T> {
-    List<T> getContent();
+    List<T> content();
 
-    long getNumber(); // from Spring Data and Micronaut. Not currently in Jakarta Data.
+    long number(); // from Spring Data and Micronaut. Not currently in Jakarta Data.
 
-    int getNumberOfElements();
+    int numberOfElements();
 
-    Pageable getPageable();
+    Pageable pageable();
 
     boolean hasContent();
 

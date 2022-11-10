@@ -54,18 +54,18 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
         KeysetPageable.Cursor keysetCursor = null;
         // TODO possible overflow with both of these.
         int firstResult;
-        long maxPageSize = pagination.getSize();
+        long maxPageSize = pagination.size();
 
         if (pagination instanceof KeysetPageable) {
             KeysetPageable keysetPagination = (KeysetPageable) pagination;
-            this.isForward = keysetPagination.getMode() == KeysetPageable.Mode.NEXT;
+            this.isForward = keysetPagination.mode() == KeysetPageable.Mode.NEXT;
             this.pagination = pagination;
-            keysetCursor = keysetPagination.getCursor();
+            keysetCursor = keysetPagination.cursor();
             firstResult = 0;
         } else {
             this.isForward = true;
-            this.pagination = pagination == null ? Pageable.of(1, 100) : pagination;
-            firstResult = (int) ((pagination.getPage() - 1) * maxPageSize);
+            this.pagination = pagination == null ? Pageable.ofSize(100) : pagination;
+            firstResult = (int) ((pagination.page() - 1) * maxPageSize);
         }
 
         this.args = args;
@@ -136,9 +136,9 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     }
 
     @Override
-    public List<T> getContent() {
+    public List<T> content() {
         int size = results.size();
-        long max = pagination.getSize();
+        long max = pagination.size();
         return size > max ? new ResultList((int) max) : results;
     }
 
@@ -146,7 +146,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     public <C extends Collection<T>> C getContent(Supplier<C> collectionFactory) {
         C collection = collectionFactory.get();
         long size = results.size();
-        long max = pagination.getSize();
+        long max = pagination.size();
         size = size > max ? max : size;
         for (int i = 0; i < size; i++)
             collection.add(results.get(i));
@@ -155,7 +155,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
 
     @Override
     public Cursor getKeysetCursor(int index) {
-        if (index < 0 || index >= pagination.getSize())
+        if (index < 0 || index >= pagination.size())
             throw new IllegalArgumentException("index: " + index);
 
         T entity = results.get(index);
@@ -164,7 +164,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
         int k = 0;
         for (Sort keyInfo : queryInfo.keyset)
             try {
-                Member accessor = queryInfo.entityInfo.attributeAccessors.get(keyInfo.getProperty());
+                Member accessor = queryInfo.entityInfo.attributeAccessors.get(keyInfo.property());
                 if (accessor instanceof Method)
                     keyValues[k++] = ((Method) accessor).invoke(entity);
                 else
@@ -177,34 +177,34 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     }
 
     @Override
-    public long getNumber() {
-        return pagination.getPage();
+    public long number() {
+        return pagination.page();
     }
 
     @Override
-    public int getNumberOfElements() {
+    public int numberOfElements() {
         int size = results.size();
-        int max = (int) pagination.getSize(); // TODO correct spec interface
+        int max = (int) pagination.size(); // TODO correct spec interface
         return size > max ? max : size;
     }
 
     @Override
-    public Pageable getPageable() {
+    public Pageable pageable() {
         return pagination;
     }
 
     @Override
-    public long getTotalElements() {
+    public long totalElements() {
         if (totalElements == -1)
             totalElements = countTotalElements();
         return totalElements;
     }
 
     @Override
-    public long getTotalPages() {
+    public long totalPages() {
         if (totalElements == -1)
             totalElements = countTotalElements();
-        return totalElements / pagination.getSize() + (totalElements % pagination.getSize() > 0 ? 1 : 0);
+        return totalElements / pagination.size() + (totalElements % pagination.size() > 0 ? 1 : 0);
     }
 
     @Override
@@ -215,23 +215,23 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     @Override
     public Iterator<T> iterator() {
         int size = results.size();
-        long max = pagination.getSize();
+        long max = pagination.size();
         return size > max ? new ResultIterator((int) max) : results.iterator();
     }
 
     @Override
     public KeysetPageable nextPageable() {
         // The extra position is only available for identifying a next page if the current page was obtained in the forward direction
-        int minToHaveNextPage = isForward ? ((int) pagination.getSize() + 1) : 1;
+        int minToHaveNextPage = isForward ? ((int) pagination.size() + 1) : 1;
         if (results.size() < minToHaveNextPage)
             return null;
 
-        Object entity = results.get(Math.min(results.size(), (int) pagination.getSize()) - 1);
+        Object entity = results.get(Math.min(results.size(), (int) pagination.size()) - 1);
 
         ArrayList<Object> keyValues = new ArrayList<>();
         for (Sort keyInfo : queryInfo.keyset)
             try {
-                Member accessor = queryInfo.entityInfo.attributeAccessors.get(keyInfo.getProperty());
+                Member accessor = queryInfo.entityInfo.attributeAccessors.get(keyInfo.property());
                 if (accessor instanceof Method)
                     keyValues.add(((Method) accessor).invoke(entity));
                 else
@@ -246,7 +246,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     @Override
     public KeysetPageable previousPageable() {
         // The extra position is only available for identifying a previous page if the current page was obtained in the reverse direction
-        int minToHavePreviousPage = isForward ? 1 : ((int) pagination.getSize() + 1);
+        int minToHavePreviousPage = isForward ? 1 : ((int) pagination.size() + 1);
         if (results.size() < minToHavePreviousPage)
             return null;
 
@@ -255,7 +255,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
         ArrayList<Object> keyValues = new ArrayList<>();
         for (Sort keyInfo : queryInfo.keyset)
             try {
-                Member accessor = queryInfo.entityInfo.attributeAccessors.get(keyInfo.getProperty());
+                Member accessor = queryInfo.entityInfo.attributeAccessors.get(keyInfo.property());
                 if (accessor instanceof Method)
                     keyValues.add(((Method) accessor).invoke(entity));
                 else
@@ -265,13 +265,13 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
             }
 
         // Decrement page number by 1 unless it would go below 1.
-        Pageable p = pagination.getPage() == 1 ? pagination : Pageable.of(pagination.getPage() - 1, pagination.getSize());
+        Pageable p = pagination.page() == 1 ? pagination : pagination.newPage(pagination.page() - 1);
         return p.beforeKeyset(keyValues.toArray());
     }
 
     @Override
     public Stream<T> stream() {
-        return getContent().stream();
+        return content().stream();
     }
 
     /**

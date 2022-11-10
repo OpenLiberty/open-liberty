@@ -10,61 +10,43 @@
  *******************************************************************************/
 package jakarta.data.repository;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Method signatures are copied from jakarta.data.repository.Pageable from the Jakarta Data repo.
  */
-public class Pageable {
-    private final long pageNumber, pageSize;
+public interface Pageable {
 
-    Pageable(long pageNumber, long pageSize) {
-        if (pageNumber < 1 || pageSize < 1)
-            throw new IllegalArgumentException();
-        this.pageNumber = pageNumber;
-        this.pageSize = pageSize;
+    public static Pageable ofPage(long page) {
+        return new Pagination(page, 10, Collections.emptyList());
     }
 
-    public KeysetPageable afterKeyset(Object... keyset) {
-        return new KeysetPageable(this, KeysetPageable.Mode.NEXT, new KeysetPageable.CursorImpl(keyset));
+    public static Pageable ofSize(int size) {
+        return new Pagination(1, size, Collections.emptyList());
     }
 
-    public KeysetPageable afterKeysetCursor(KeysetPageable.Cursor cursor) {
-        return new KeysetPageable(this, KeysetPageable.Mode.NEXT, cursor);
-    }
+    public KeysetPageable afterKeyset(Object... keyset);
 
-    public KeysetPageable beforeKeyset(Object... keyset) {
-        return new KeysetPageable(this, KeysetPageable.Mode.PREVIOUS, new KeysetPageable.CursorImpl(keyset));
-    }
+    public KeysetPageable afterKeysetCursor(KeysetPageable.Cursor cursor);
 
-    public KeysetPageable beforeKeysetCursor(KeysetPageable.Cursor cursor) {
-        return new KeysetPageable(this, KeysetPageable.Mode.PREVIOUS, cursor);
-    }
+    public KeysetPageable beforeKeyset(Object... keyset);
 
-    public long getPage() {
-        return pageNumber;
-    }
+    public KeysetPageable beforeKeysetCursor(KeysetPageable.Cursor cursor);
 
-    public long getSize() {
-        return pageSize;
-    }
+    public Pageable next();
 
-    public Pageable next() {
-        return new Pageable(pageNumber + 1, pageSize);
-    }
+    public long page();
 
-    public static Pageable of(long page, long size) {
-        return new Pageable(page, size);
-    }
+    public int size();
 
-    public static Pageable page(long page) {
-        return new Pageable(page, 10);
-    }
+    public List<Sort> sorts();
 
-    public static Pageable size(long size) {
-        return new Pageable(1, size);
-    }
+    public Pageable newPage(long page);
 
-    @Override
-    public String toString() {
-        return new StringBuilder("Pageable{size=").append(pageSize).append(", page=").append(pageNumber).append("}").toString();
-    }
+    public Pageable newSize(int size);
+
+    public Pageable sortBy(Iterable<Sort> sorts);
+
+    public Pageable sortBy(Sort... sorts);
 }

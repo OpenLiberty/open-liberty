@@ -327,7 +327,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 b.append(i == 0 ? "(" : " OR (");
             for (int k = 0; k <= i; k++) {
                 Sort keyInfo = keyset.get(k);
-                String name = keyInfo.getProperty();
+                String name = keyInfo.property();
                 boolean asc = keyInfo.isAscending();
                 if (a != null) {
                     a.append(k == 0 ? "o." : " AND o.").append(name);
@@ -851,7 +851,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
                         if (sortList != null) {
                             boolean forward = !(pagination instanceof KeysetPageable)
-                                              || ((KeysetPageable) pagination).getMode() == KeysetPageable.Mode.NEXT;
+                                              || ((KeysetPageable) pagination).mode() == KeysetPageable.Mode.NEXT;
                             StringBuilder q = new StringBuilder(queryInfo.jpql);
                             StringBuilder o = null; // ORDER BY clause based on Sorts
                             for (Sort sort : sortList)
@@ -859,7 +859,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                     throw new NullPointerException("Sort: null");
                                 else {
                                     o = o == null ? new StringBuilder(100).append(" ORDER BY o.") : o.append(", o.");
-                                    o.append(sort.getProperty());
+                                    o.append(sort.property());
                                     if (forward ? sort.isDescending() : sort.isAscending())
                                         o.append(" DESC");
                                 }
@@ -903,12 +903,12 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             queryInfo.setParameters(query, args);
 
                             long maxResults = limit != null ? limit.maxResults() //
-                                            : pagination != null ? pagination.getSize() //
+                                            : pagination != null ? pagination.size() //
                                                             : queryInfo.maxResults;
 
                             long startAt = limit != null ? limit.startAt() - 1 //
                                             : pagination == null || pagination instanceof KeysetPageable ? 0 //
-                                                            : (pagination.getPage() - 1) * maxResults;
+                                                            : (pagination.page() - 1) * maxResults;
                             // TODO KeysetPageable
                             // TODO possible overflow with both of these.
                             if (maxResults > 0)
@@ -1162,8 +1162,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             do {
                 // TODO KeysetPageable
                 // TODO possible overflow with both of these.
-                maxPageSize = pagination.getSize();
-                query.setFirstResult((int) ((pagination.getPage() - 1) * maxPageSize));
+                maxPageSize = pagination.size();
+                query.setFirstResult((int) ((pagination.page() - 1) * maxPageSize));
                 query.setMaxResults((int) maxPageSize);
                 pagination = pagination.next();
 
@@ -1209,8 +1209,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             do {
                 // TODO KeysetPageable
                 // TODO possible overflow with both of these.
-                maxPageSize = pagination.getSize();
-                query.setFirstResult((int) ((pagination.getPage() - 1) * maxPageSize));
+                maxPageSize = pagination.size();
+                query.setFirstResult((int) ((pagination.page() - 1) * maxPageSize));
                 query.setMaxResults((int) maxPageSize);
                 pagination = pagination.next();
 
