@@ -95,8 +95,8 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     private boolean identityStoreRegistered = false;
     private final boolean isAlternativeHAMAdded = false;
     private final String applicationName;
-    private final String decorator = "Decorator";
-    private final String alternative = "Alternative";
+    private static final String DECORATOR = "Decorator";
+    private static final String ALTERNATIVE = "Alternative";
     private final List<LdapIdentityStoreDefinition> ldapDefinitionList = new ArrayList<LdapIdentityStoreDefinition>();
     private final List<DatabaseIdentityStoreDefinition> databaseDefinitionList = new ArrayList<DatabaseIdentityStoreDefinition>();
 
@@ -347,14 +347,14 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         //This is class level annotation
         for (Annotation annt : annotations) {
             Class<? extends Annotation> annType = annt.annotationType();
-            if (decorator.equals(annType.getSimpleName())) {
+            if (DECORATOR.equals(annType.getSimpleName())) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Add Decorator=true");
-                props.put(decorator, true);
-            } else if (alternative.equals(annType.getSimpleName())) {
+                props.put(DECORATOR, true);
+            } else if (ALTERNATIVE.equals(annType.getSimpleName())) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Add Alternative=true");
-                props.put(alternative, true);
+                props.put(ALTERNATIVE, true);
 
             }
         }
@@ -916,8 +916,8 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     private boolean isDecoratorOrAlternative(Map<Class<?>, Properties> authMechs) {
         for (Entry<Class<?>, Properties> authMech : authMechs.entrySet()) {
             Properties value = authMech.getValue();
-            //if (value != null && (value.contains(decorator) || value.contains(alternative))) {
-            if (value != null && (value.toString().contains(decorator) || value.toString().contains(alternative))) {
+            //if (value != null && (value.contains(DECORATOR) || value.contains(ALTERNATIVE))) {
+            if (value != null && (value.toString().contains(DECORATOR) || value.toString().contains(ALTERNATIVE))) {
                 return true;
             }
         }
