@@ -41,8 +41,7 @@ public class ModulePropertiesUtils {
     private final Map<MetaData, HamObject> ModuleToHam = Collections.synchronizedMap(new WeakHashMap<MetaData, HamObject>());
     private final Map<MetaData, HamLookupObject> ModuleToHamLookup = Collections.synchronizedMap(new WeakHashMap<MetaData, HamLookupObject>());
 
-    protected ModulePropertiesUtils() {
-    }
+    protected ModulePropertiesUtils() {}
 
     public static ModulePropertiesUtils getInstance() {
         return self;
@@ -166,14 +165,14 @@ public class ModulePropertiesUtils {
                                         Tr.error(tc, "JAVAEESEC_ERROR_NO_HAM", getJ2EEModuleName(), getJ2EEApplicationName());
                                     }
                                 }
+                            } else {
+                                if (tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "No HAM implementation class defined. Module Name : " + getJ2EEModuleName() + ", Application Name : " + getJ2EEApplicationName());
+                                }
                             }
-                        } else {
-                            if (tc.isDebugEnabled()) {
-                                Tr.debug(tc, "No HAM implementation class defined. Module Name : " + getJ2EEModuleName() + ", Application Name : " + getJ2EEApplicationName());
-                            }
+                        } else if (logError) {
+                            throw new RuntimeException("ModulePropertiesProvider object cannot be identified.");
                         }
-                    } else if (logError) {
-                        throw new RuntimeException("ModulePropertiesProvider object cannot be identified.");
                     }
                 }
                 if (!isCacheable) {

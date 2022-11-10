@@ -93,7 +93,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     private final Set<Bean> beansToAdd = new HashSet<Bean>();
     private boolean identityStoreHandlerRegistered = false;
     private boolean identityStoreRegistered = false;
-    private boolean isAlternativeHAMAdded = false;
+    private final boolean isAlternativeHAMAdded = false;
     private final String applicationName;
     private final String decorator = "Decorator";
     private final String alternative = "Alternative";
@@ -245,8 +245,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         Set<Bean<?>> beans = beanManager.getBeans(Object.class, new AnnotationLiteral<Any>() {
         });
         for (Bean<?> bean : beans) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, stage + " bean name: " + bean.getBeanClass().getName());
+            Tr.debug(tc, stage + " bean name: " + bean.getBeanClass().getName());
         }
     }
 

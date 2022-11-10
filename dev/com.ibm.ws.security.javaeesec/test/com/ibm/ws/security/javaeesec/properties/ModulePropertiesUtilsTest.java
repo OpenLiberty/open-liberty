@@ -29,6 +29,7 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 
 import org.jmock.Expectations;
@@ -324,6 +325,12 @@ public class ModulePropertiesUtilsTest {
         list.add(String.class);
         list.add(String.class);
         withComponentMetaDataModuleName(MODULENAME).withComponentMetaDataAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list);
+        mockery.checking(new Expectations() {
+            {
+                exactly(2).of(bm).getBeans(with(any(Type.class)), with(any(AnnotationLiteral.class)));
+                oneOf(bm2).getBeans(with(any(Type.class)), with(any(AnnotationLiteral.class)));
+            }
+        });
         mpu.setComponentMetaData(cmd);
         mpu.clearModuleTable();
         assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());

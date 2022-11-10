@@ -874,7 +874,6 @@ public class BasicHttpAuthenticationMechanismTest {
             });
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
             e.printStackTrace();
         }
         return this;
