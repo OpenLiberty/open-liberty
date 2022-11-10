@@ -30,7 +30,6 @@ import java.util.Set;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
-//import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
@@ -348,17 +347,18 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         //This is class level annotation
         for (Annotation annt : annotations) {
             Class<? extends Annotation> annType = annt.annotationType();
-            if (annType.getName().equals("jakarta.decorator.Decorator")) {
+            if (decorator.equals(annType.getSimpleName())) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Add Decorator=true");
                 props.put(decorator, true);
-            } else if (annType.getName().equals("jakarta.enterprise.inject.Alternative")) {
+            } else if (alternative.equals(annType.getSimpleName())) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Add Alternative=true");
                 props.put(alternative, true);
 
             }
         }
+
     }
 
     /**
