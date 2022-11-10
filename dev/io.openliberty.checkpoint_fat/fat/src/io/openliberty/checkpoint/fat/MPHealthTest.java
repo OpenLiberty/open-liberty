@@ -69,7 +69,9 @@ public class MPHealthTest extends FATServletClient {
     public TestMethod testMethod;
 
     @ClassRule
-    public static RepeatTests repeatTest = MicroProfileActions.repeat("checkpointMPHealth", TestMode.FULL, MicroProfileActions.MP41, MicroProfileActions.MP50);
+    public static RepeatTests repeatTest = MicroProfileActions.repeat("checkpointMPHealth", TestMode.FULL,
+                                                                      MicroProfileActions.MP41, // first test in LITE mode
+                                                                      MicroProfileActions.MP50, MicroProfileActions.MP60); // rest are FULL mode
 
     @BeforeClass
     public static void copyAppToDropins() throws Exception {
