@@ -134,16 +134,12 @@ public class FeatureUtility {
         fine("additional jsons: " + additionalJsons);
         if (additionalJsons != null && !additionalJsons.isEmpty()) {
         	jsonsRequired.addAll(additionalJsons);
-        	if(!additionalJsons.contains(String.format("com.ibm.websphere.appserver.features:features:%s", openLibertyVersion))){
-        		//if additionalJson is for user feature, add websphere json for license update
-        		jsonsRequired.add(String.format("com.ibm.websphere.appserver.features:features:%s", openLibertyVersion));
-        	}
 		map.put(InstallConstants.JSON_PROVIDED, true);
         }
 
 	boolean isOpenLiberty = (Boolean) map.get(InstallConstants.IS_OPEN_LIBERTY);
         if (!isOpenLiberty) {
-        	jsonsRequired.add(String.format("com.ibm.websphere.appserver.features:features:%s", openLibertyVersion));
+	    jsonsRequired.add(String.format(WEBSPHERE_LIBERTY_GROUP_ID + ":features:%s", openLibertyVersion));
         }else { //check if user is trying to install CL feature onto OL runtime without specifying json cord in featureUtility.prop. 
         	for(String s: jsonsRequired) {
         		if(s.contains(WEBSPHERE_LIBERTY_GROUP_ID) && (additionalJsons == null || additionalJsons.isEmpty())) {
@@ -540,6 +536,7 @@ public class FeatureUtility {
                 throw new InstallException(exceptionMessage);
 
             } else {
+		fine("action.exception.stacktrace: " + map.get(InstallConstants.ACTION_EXCEPTION_STACKTRACE));
                 throw new InstallException(exceptionMessage);
             }
         }
