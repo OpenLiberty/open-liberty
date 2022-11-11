@@ -20,9 +20,12 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class JAXRS20ClientAsyncInvokerTestWithConcurrency extends JAXRS20ClientAsyncInvokerTest {
 
     @Server("jaxrs20.client.JAXRS20ClientAsyncInvokerTest2")

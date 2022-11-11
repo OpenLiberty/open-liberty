@@ -25,9 +25,12 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
- 
+
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class TimeoutClientTest extends AbstractTest {
 
     @Server("jaxrs20.client.TimeoutClientTest")
@@ -73,7 +76,7 @@ public class TimeoutClientTest extends AbstractTest {
         Map<String, String> p = new HashMap<String, String>();
         p.put("param", "timeoutWork");
         p.put("timeout", "1000"); //Return time specified on server side is 2000
-        this.runTestOnServer(target, "testTimeout", p, 
+        this.runTestOnServer(target, "testTimeout", p,
                              "[Timeout Error]:javax.ws.rs.ProcessingException: java.net.SocketTimeoutException: SocketTimeoutException", //CXF
                              "[Timeout Error]:jakarta.ws.rs.ProcessingException: RESTEASY004655"); //RESTEasy
     }

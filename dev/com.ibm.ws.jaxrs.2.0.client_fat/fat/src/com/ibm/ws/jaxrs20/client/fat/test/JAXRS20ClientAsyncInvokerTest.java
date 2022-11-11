@@ -26,9 +26,12 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class JAXRS20ClientAsyncInvokerTest extends AbstractTest {
 
     @Server("jaxrs20.client.JAXRS20ClientAsyncInvokerTest")
@@ -115,7 +118,7 @@ public class JAXRS20ClientAsyncInvokerTest extends AbstractTest {
         this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_post4", p, "Test book4");
     }
 
-    @Test 
+    @Test
     public void testAsyncInvoker_getReceiveTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(asyncInvokerTarget, "testAsyncInvoker_getReceiveTimeout", p, "Timeout as expected");

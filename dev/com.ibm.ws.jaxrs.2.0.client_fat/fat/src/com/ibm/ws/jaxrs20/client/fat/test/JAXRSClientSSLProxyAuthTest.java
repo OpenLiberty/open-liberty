@@ -38,6 +38,8 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -50,6 +52,7 @@ import componenttest.topology.impl.LibertyServer;
  * tracing is enabled.
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
 
     private final static Class<?> c = JAXRSClientSSLProxyAuthTest.class;
@@ -79,7 +82,7 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
         ConfigurationProperties.proxyAuthenticationPassword("myPa$$word");
         ConfigurationProperties.proxyAuthenticationRealm("foo");
         ConfigurationProperties.attemptToProxyIfNoMatchingExpectation(true);
-        
+
         proxyPort = Integer.getInteger("member_3.http");
         proxy = ClientAndServer.startClientAndServer(proxyPort);
 
@@ -166,8 +169,8 @@ public class JAXRSClientSSLProxyAuthTest extends AbstractTest {
              .respond(response().withStatusCode(407).withHeader("Proxy-Authenticate", "Basic realm=\"foo\""));
         proxy.when(request().withHeader(header(string("Proxy-Authorization"), not("amF4cnNVc2VyOm15UGEkJHdvcmQ="))))
              .respond(response().withStatusCode(407).withHeader("Proxy-Authenticate", "Basic realm=\"foo\""));
-        
-        this.runTestOnServer(target, "testProxyToHTTP_ClientBuilder", p, 
+
+        this.runTestOnServer(target, "testProxyToHTTP_ClientBuilder", p,
                              "[Proxy Error]:javax.ws.rs.ClientErrorException: HTTP 407 Proxy Authentication Required", // <= EE8
                              "[Proxy Error]:jakarta.ws.rs.ClientErrorException: HTTP 407 Proxy Authentication Required"); // EE9
 

@@ -23,9 +23,12 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 @SkipForRepeat({"EE9_FEATURES","EE10_FEATURES"}) // Continue to skip these tests for EE9 as JSON4JObjectProvider is not supported
 public class IBMJson4JProvidersTest extends AbstractTest {
 
