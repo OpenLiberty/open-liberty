@@ -22,6 +22,8 @@
 	<include
 		location="${shared.resource.dir}/configs/testingConfig.xml" />
 	<include
+		location="${shared.resource.dir}/configs/httpEndpoint1.xml" />
+	<include
 		location="${shared.resource.dir}/configs/basicRegistry.xml" />
 	<include
 		location="${shared.resource.dir}/configs/customLoginModule.xml" />
@@ -29,8 +31,6 @@
 		location="${shared.resource.dir}/configs/libraries.xml" />
 	<include
 		location="${shared.resource.dir}/configs/ssl.xml" />
-	<include
-		location="${shared.resource.dir}/configs/httpEndpoint1.xml" />
 	<include
 		location="${shared.resource.dir}/configs/appFormLogin.xml" />
 

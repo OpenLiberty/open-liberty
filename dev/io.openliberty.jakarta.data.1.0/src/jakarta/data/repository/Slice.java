@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Method signatures copied from the Jakarta Data git repo.
  */
-public interface Slice<T> {
+public interface Slice<T> extends Streamable<T> {
     List<T> getContent();
 
     long getNumber(); // from Spring Data and Micronaut. Not currently in Jakarta Data.

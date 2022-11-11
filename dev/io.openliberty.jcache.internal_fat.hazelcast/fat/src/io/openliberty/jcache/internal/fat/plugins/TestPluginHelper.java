@@ -33,4 +33,22 @@ public class TestPluginHelper {
     public static TestPlugin getTestPlugin() {
         return testPlugin;
     }
+
+    /**
+     * Is the currently configured test plugin configured for Hazelcast?
+     *
+     * @return True if the plugin is configured for Hazelcast.
+     */
+    public static boolean isHazelcast() {
+        return testPlugin != null && testPlugin.getClass().getName().contains("Hazelcast");
+    }
+
+    /**
+     * Is the currently configured test plugin configured for Infinispan?
+     *
+     * @return True if the plugin is configured for Infinispan.
+     */
+    public static boolean isInfinispan() {
+        return testPlugin != null && testPlugin.getClass().getName().contains("Infinispan");
+    }
 }

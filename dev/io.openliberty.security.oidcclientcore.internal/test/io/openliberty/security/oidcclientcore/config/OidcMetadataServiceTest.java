@@ -8,7 +8,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.security.oidcclientcore.http;
+package io.openliberty.security.oidcclientcore.config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -33,7 +33,7 @@ import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfiguration
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import test.common.SharedOutputManager;
 
-public class EndpointRequestTest extends CommonTestClass {
+public class OidcMetadataServiceTest extends CommonTestClass {
 
     protected static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
 
@@ -53,7 +53,7 @@ public class EndpointRequestTest extends CommonTestClass {
 
     private DiscoveryHandler discoveryHandler = null;
 
-    private EndpointRequest endpointRequest;
+    private OidcMetadataService oidcMetadataService;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -74,7 +74,7 @@ public class EndpointRequestTest extends CommonTestClass {
                 return mockedHttpUtils;
             }
         };
-        endpointRequest = createEndpointRequest();
+        oidcMetadataService = createOidcMetadataService();
         // Ensure provider URLs are unique for each test to avoid cache contamination between tests
         providerUrl = providerUrlBase + testName.getMethodName();
     }
@@ -90,8 +90,8 @@ public class EndpointRequestTest extends CommonTestClass {
         outputMgr.restoreStreams();
     }
 
-    private EndpointRequest createEndpointRequest() {
-        return new EndpointRequest() {
+    private OidcMetadataService createOidcMetadataService() {
+        return new OidcMetadataService() {
             @Override
             public DiscoveryHandler getDiscoveryHandler() {
                 return discoveryHandler;
@@ -108,7 +108,7 @@ public class EndpointRequestTest extends CommonTestClass {
             }
         });
         try {
-            JSONObject result = endpointRequest.getProviderDiscoveryMetadata(config);
+            JSONObject result = oidcMetadataService.getProviderDiscoveryMetadata(config);
             fail("Should have thrown an exception but got " + result);
         } catch (OidcClientConfigurationException e) {
             verifyException(e, CWWKS2401E_OIDC_CLIENT_CONFIGURATION_ERROR + ".+" + CWWKS2404W_OIDC_CLIENT_MISSING_PROVIDER_URI);
@@ -128,7 +128,7 @@ public class EndpointRequestTest extends CommonTestClass {
                     will(returnValue(discoveryData.toString()));
                 }
             });
-            JSONObject result = endpointRequest.getProviderDiscoveryMetadata(config);
+            JSONObject result = oidcMetadataService.getProviderDiscoveryMetadata(config);
             assertEquals(discoveryData, result);
         } catch (Exception e) {
             outputMgr.failWithThrowable(testName.getMethodName(), e);
@@ -147,7 +147,7 @@ public class EndpointRequestTest extends CommonTestClass {
             }
         });
         try {
-            JSONObject result = endpointRequest.getProviderDiscoveryMetadata(config);
+            JSONObject result = oidcMetadataService.getProviderDiscoveryMetadata(config);
             fail("Should have thrown an exception but got " + result);
         } catch (OidcDiscoveryException e) {
             verifyException(e, CWWKS2403E_DISCOVERY_EXCEPTION + ".+" + "Unexpected character");
@@ -168,11 +168,11 @@ public class EndpointRequestTest extends CommonTestClass {
                     will(returnValue(discoveryData.toString()));
                 }
             });
-            JSONObject result = endpointRequest.getProviderDiscoveryMetadata(config);
+            JSONObject result = oidcMetadataService.getProviderDiscoveryMetadata(config);
             assertEquals(discoveryData, result);
 
             // Should get metadata from the cache, so shouldn't need another discoveryHandler call
-            JSONObject result2 = endpointRequest.getProviderDiscoveryMetadata(config);
+            JSONObject result2 = oidcMetadataService.getProviderDiscoveryMetadata(config);
             assertEquals(discoveryData, result2);
         } catch (Exception e) {
             outputMgr.failWithThrowable(testName.getMethodName(), e);
@@ -182,7 +182,7 @@ public class EndpointRequestTest extends CommonTestClass {
     @Test
     public void test_addWellKnownSuffixIfNeeded_noSuffix_noTrailingSlash() throws OidcDiscoveryException {
         String input = providerUrl;
-        String result = endpointRequest.addWellKnownSuffixIfNeeded(input);
+        String result = oidcMetadataService.addWellKnownSuffixIfNeeded(input);
         String expectedValue = providerUrl + "/" + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
         assertEquals(expectedValue, result);
     }
@@ -190,7 +190,7 @@ public class EndpointRequestTest extends CommonTestClass {
     @Test
     public void test_addWellKnownSuffixIfNeeded_noSuffix_withTrailingSlash() throws OidcDiscoveryException {
         String input = providerUrl + "/";
-        String result = endpointRequest.addWellKnownSuffixIfNeeded(input);
+        String result = oidcMetadataService.addWellKnownSuffixIfNeeded(input);
         String expectedValue = providerUrl + "/" + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
         assertEquals(expectedValue, result);
     }
@@ -198,14 +198,14 @@ public class EndpointRequestTest extends CommonTestClass {
     @Test
     public void test_addWellKnownSuffixIfNeeded_includesSuffix_notAsSeparatePath() throws OidcDiscoveryException {
         String input = providerUrl + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
-        String result = endpointRequest.addWellKnownSuffixIfNeeded(input);
+        String result = oidcMetadataService.addWellKnownSuffixIfNeeded(input);
         assertEquals(input, result);
     }
 
     @Test
     public void test_addWellKnownSuffixIfNeeded_includesSuffix() throws OidcDiscoveryException {
         String input = providerUrl + "/" + OidcDiscoveryConstants.WELL_KNOWN_SUFFIX;
-        String result = endpointRequest.addWellKnownSuffixIfNeeded(input);
+        String result = oidcMetadataService.addWellKnownSuffixIfNeeded(input);
         assertEquals(input, result);
     }
 

@@ -12,8 +12,11 @@ package io.openliberty.data.internal.persistence;
 
 import java.util.AbstractList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -139,6 +142,13 @@ public class PageImpl<T> implements Page<T> {
     }
 
     @Override
+    public Iterator<T> iterator() {
+        int size = results.size();
+        long max = pagination.getSize();
+        return size > max ? new ResultIterator((int) max) : results.iterator();
+    }
+
+    @Override
     public Pageable nextPageable() {
         if (results.size() <= pagination.getSize())
             return null;
@@ -146,8 +156,42 @@ public class PageImpl<T> implements Page<T> {
         return pagination.next();
     }
 
+    @Override
+    public Stream<T> stream() {
+        return getContent().stream();
+    }
+
     /**
-     * Restricts the number of results to the specified amount.
+     * Iterator that restricts the number of results to the specified amount.
+     */
+    @Trivial
+    private class ResultIterator implements Iterator<T> {
+        private int index;
+        private final Iterator<T> iterator;
+        private final int size;
+
+        private ResultIterator(int size) {
+            this.size = size;
+            this.iterator = results.iterator();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index < size && iterator.hasNext();
+        }
+
+        @Override
+        public T next() {
+            if (index >= size)
+                throw new NoSuchElementException("Element at index " + index);
+            T result = iterator.next();
+            index++;
+            return result;
+        }
+    }
+
+    /**
+     * List that restricts the number of results to the specified amount.
      */
     @Trivial
     private class ResultList extends AbstractList<T> {

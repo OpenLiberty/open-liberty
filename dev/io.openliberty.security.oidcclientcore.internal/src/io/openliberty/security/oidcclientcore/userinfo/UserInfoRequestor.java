@@ -36,12 +36,12 @@ import io.openliberty.security.common.jwt.jws.JwsSignatureVerifier;
 import io.openliberty.security.common.jwt.jws.JwsVerificationKeyHelper;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.config.MetadataUtils;
+import io.openliberty.security.oidcclientcore.config.OidcMetadataService;
 import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoEndpointNotHttpsException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseNot200Exception;
-import io.openliberty.security.oidcclientcore.http.EndpointRequest;
 import io.openliberty.security.oidcclientcore.http.HttpConstants;
 import io.openliberty.security.oidcclientcore.http.OidcClientHttpUtil;
 
@@ -49,7 +49,6 @@ public class UserInfoRequestor {
 
     public static final TraceComponent tc = Tr.register(UserInfoRequestor.class);
 
-    private final EndpointRequest endpointRequestClass;
     private final OidcClientConfig oidcClientConfig;
     private final String userInfoEndpoint;
     private final String accessToken;
@@ -61,7 +60,6 @@ public class UserInfoRequestor {
     OidcClientHttpUtil oidcClientHttpUtil = OidcClientHttpUtil.getInstance();
 
     private UserInfoRequestor(Builder builder) {
-        this.endpointRequestClass = builder.endpointRequestClass;
         this.oidcClientConfig = builder.oidcClientConfig;
         this.userInfoEndpoint = builder.userInfoEndpoint;
         this.accessToken = builder.accessToken;
@@ -168,7 +166,7 @@ public class UserInfoRequestor {
         RemoteJwkData jwkData = new RemoteJwkData();
         String jwksUri = MetadataUtils.getJwksUri(oidcClientConfig);
         jwkData.setJwksUri(jwksUri);
-        jwkData.setSslSupport(endpointRequestClass.getSSLSupport());
+        jwkData.setSslSupport(OidcMetadataService.getSSLSupport());
         return jwkData;
     }
 
@@ -178,14 +176,13 @@ public class UserInfoRequestor {
                                                   null,
                                                   null,
                                                   accessToken,
-                                                  endpointRequestClass.getSSLSocketFactory(),
+                                                  OidcMetadataService.getSSLSocketFactory(),
                                                   hostnameVerification,
                                                   useSystemPropertiesForHttpClientConnections);
     }
 
     public static class Builder {
 
-        private final EndpointRequest endpointRequestClass;
         private final OidcClientConfig oidcClientConfig;
         private final String userInfoEndpoint;
         private final String accessToken;
@@ -193,8 +190,7 @@ public class UserInfoRequestor {
         private boolean hostnameVerification = false;
         private boolean useSystemPropertiesForHttpClientConnections = false;
 
-        public Builder(EndpointRequest endpointRequestClass, OidcClientConfig oidcClientConfig, String userInfoEndpoint, String accessToken) {
-            this.endpointRequestClass = endpointRequestClass;
+        public Builder(OidcClientConfig oidcClientConfig, String userInfoEndpoint, String accessToken) {
             this.oidcClientConfig = oidcClientConfig;
             this.userInfoEndpoint = userInfoEndpoint;
             this.accessToken = accessToken;

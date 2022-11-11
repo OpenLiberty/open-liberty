@@ -132,12 +132,12 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
 
         boolean alreadyAuthenticated = isAlreadyAuthenticated(request);
 
-        if (isAuthenticationRequired(request, httpMessageContext, alreadyAuthenticated) && !containsStoredState(request, response, client)) {
-            status = processStartFlow(client, request, response, httpMessageContext);
+        if (isAuthenticationRequired(httpMessageContext, alreadyAuthenticated) && !containsStoredState(request, response, client)) {
+            status = processStartFlow(client, httpMessageContext);
         } else if (isCallbackRequest(request)) {
-            status = processCallback(client, request, response, httpMessageContext);
+            status = processCallback(client, httpMessageContext);
         } else if (alreadyAuthenticated) {
-            status = processExpiredTokenResult(processExpiredToken(client, request, response), client, request, response, httpMessageContext);
+            status = processExpiredTokenResult(processExpiredToken(client, request, response), client, httpMessageContext);
         }
 
         return status;
@@ -154,7 +154,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
      *
      * @param alreadyAuthenticated
      */
-    private boolean isAuthenticationRequired(HttpServletRequest request, HttpMessageContext httpMessageContext, boolean alreadyAuthenticated) {
+    private boolean isAuthenticationRequired(HttpMessageContext httpMessageContext, boolean alreadyAuthenticated) {
         return isProtectedResourceWithoutBeingAuthenticated(httpMessageContext, alreadyAuthenticated)
                || isProgrammaticAuthenticationWithoutBeingAuthenticated(httpMessageContext, alreadyAuthenticated);
     }
@@ -188,9 +188,10 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         return request.getUserPrincipal() != null;
     }
 
-    private AuthenticationStatus processStartFlow(Client client, HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) {
+    private AuthenticationStatus processStartFlow(Client client, HttpMessageContext httpMessageContext) {
+        HttpServletRequest request = httpMessageContext.getRequest();
         request.setAttribute(IS_CONTAINER_INITIATED_FLOW, isContainerInitiatedFlow(httpMessageContext.getAuthParameters()));
-        ProviderAuthenticationResult providerAuthenticationResult = client.startFlow(request, response);
+        ProviderAuthenticationResult providerAuthenticationResult = client.startFlow(request, httpMessageContext.getResponse());
         return processStartFlowResult(providerAuthenticationResult, httpMessageContext);
     }
 
@@ -223,8 +224,10 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
      * and the WebContainerSecurityCollaboratorImpl allows access to unprotected resources for AuthResult.RETURN. SEND_CONTINUE will prevent this by properly
      * returning a 401 and not continue to the redirectUri.
      */
-    private AuthenticationStatus processCallback(Client client, HttpServletRequest request, HttpServletResponse response,
-                                                 HttpMessageContext httpMessageContext) throws AuthenticationException {
+    private AuthenticationStatus processCallback(Client client, HttpMessageContext httpMessageContext) throws AuthenticationException {
+        HttpServletRequest request = httpMessageContext.getRequest();
+        HttpServletResponse response = httpMessageContext.getResponse();
+
         OidcClientConfig clientConfig = client.getOidcClientConfig();
 
         Optional<String> originalRequestUrl = getOriginalRequestUrlForRedirect(request, response, clientConfig);
@@ -236,7 +239,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         Optional<HttpServletRequest> originalResourceRequest = getOriginalResourceRequest(clientConfig, httpMessageContext);
         try {
             ProviderAuthenticationResult providerAuthenticationResult = client.continueFlow(request, response);
-            status = processContinueFlowResult(providerAuthenticationResult, httpMessageContext, request, response, client);
+            status = processContinueFlowResult(providerAuthenticationResult, httpMessageContext, client);
         } catch (AuthenticationResponseException | TokenRequestException e) {
             Tr.error(tc, e.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -303,8 +306,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         return new OriginalResourceRequest(request, response, useSession);
     }
 
-    private AuthenticationStatus processContinueFlowResult(ProviderAuthenticationResult providerAuthenticationResult,
-                                                           HttpMessageContext httpMessageContext, HttpServletRequest request, HttpServletResponse response,
+    private AuthenticationStatus processContinueFlowResult(ProviderAuthenticationResult providerAuthenticationResult, HttpMessageContext httpMessageContext,
                                                            Client client) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
 
@@ -312,7 +314,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
             AuthResult authResult = providerAuthenticationResult.getStatus();
 
             if (AuthResult.SUCCESS.equals(authResult)) {
-                status = handleOidcLogin(providerAuthenticationResult, httpMessageContext, request, response, client);
+                status = handleOidcLogin(providerAuthenticationResult, httpMessageContext, client);
             }
         }
 
@@ -320,12 +322,14 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
     }
 
     private AuthenticationStatus handleOidcLogin(ProviderAuthenticationResult providerAuthenticationResult, HttpMessageContext httpMessageContext,
-                                                 HttpServletRequest request, HttpServletResponse response, Client client) throws AuthenticationException {
-        return createAndValidateOidcTokensCredential(providerAuthenticationResult, client, request, response, httpMessageContext);
+                                                 Client client) throws AuthenticationException {
+        return createAndValidateOidcTokensCredential(providerAuthenticationResult, client, httpMessageContext);
     }
 
-    AuthenticationStatus createAndValidateOidcTokensCredential(ProviderAuthenticationResult providerAuthenticationResult, Client client, HttpServletRequest request,
-                                                               HttpServletResponse response, HttpMessageContext httpMessageContext) throws AuthenticationException {
+    AuthenticationStatus createAndValidateOidcTokensCredential(ProviderAuthenticationResult providerAuthenticationResult, Client client,
+                                                               HttpMessageContext httpMessageContext) throws AuthenticationException {
+        HttpServletRequest request = httpMessageContext.getRequest();
+        HttpServletResponse response = httpMessageContext.getResponse();
         OidcTokensCredential credential = createOidcTokensCredential(providerAuthenticationResult, request, response, client);
         return validateCredentials(credential, httpMessageContext);
     }
@@ -385,8 +389,8 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         }
     }
 
-    private AuthenticationStatus processExpiredTokenResult(ProviderAuthenticationResult providerAuthenticationResult, Client client, HttpServletRequest request,
-                                                           HttpServletResponse response, HttpMessageContext httpMessageContext) throws AuthenticationException {
+    private AuthenticationStatus processExpiredTokenResult(ProviderAuthenticationResult providerAuthenticationResult, Client client,
+                                                           HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
 
         if (providerAuthenticationResult != null) {
@@ -395,16 +399,16 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
             if (AuthResult.REDIRECT_TO_PROVIDER.equals(authResult)) {
                 status = httpMessageContext.redirect(providerAuthenticationResult.getRedirectUrl());
             } else if (AuthResult.SUCCESS.equals(authResult)) {
-                status = updateOpenIdContextWithRefreshedTokens(providerAuthenticationResult, client, request, response, httpMessageContext);
+                status = updateOpenIdContextWithRefreshedTokens(providerAuthenticationResult, client, httpMessageContext);
             }
         }
 
         return status;
     }
 
-    private AuthenticationStatus updateOpenIdContextWithRefreshedTokens(ProviderAuthenticationResult providerAuthenticationResult, Client client, HttpServletRequest request,
-                                                                        HttpServletResponse response, HttpMessageContext httpMessageContext) throws AuthenticationException {
-        return createAndValidateOidcTokensCredential(providerAuthenticationResult, client, request, response, httpMessageContext);
+    private AuthenticationStatus updateOpenIdContextWithRefreshedTokens(ProviderAuthenticationResult providerAuthenticationResult, Client client,
+                                                                        HttpMessageContext httpMessageContext) throws AuthenticationException {
+        return createAndValidateOidcTokensCredential(providerAuthenticationResult, client, httpMessageContext);
     }
 
     private ProviderAuthenticationResult processExpiredToken(Client client, HttpServletRequest request, HttpServletResponse response) {

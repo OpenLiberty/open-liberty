@@ -32,7 +32,9 @@ src: \
 	test-applications/mpjwt/src,\
 	test-applications/EJBearApp/src,\
 	test-applications/ServletEARapp/src,\
-	test-applications/webEARapp/src
+	test-applications/webEARapp/src,\
+	test-applications/mphealth/src
+	
 
 fat.project: true
 
@@ -45,8 +47,10 @@ tested.features: \
 	mpOpenTracing-2.0,\
 	microProfile-4.1,\
 	microProfile-5.0,\
+	microProfile-6.0,\
 	webProfile-8.0,\
 	webProfile-9.1,\
+	webProfile-10.0,\
 	ejb-2.3,\
 	jsf-2.3
 
@@ -115,6 +119,8 @@ tested.features: \
 	io.openliberty.org.eclipse.microprofile.openapi.2.0,\
 	com.ibm.ws.kernel.boot,\
 	io.openliberty.org.eclipse.microprofile.jwt.1.2;version=latest,\
-	com.ibm.ws.security.fat.common.jwt;version=latest
+	com.ibm.ws.security.fat.common.jwt;version=latest,\
+	com.ibm.websphere.javaee.jsonp.1.1;version=latest,\
+	io.openliberty.org.eclipse.microprofile.health.3.1;version=latest
 
 -sub: *.bnd
