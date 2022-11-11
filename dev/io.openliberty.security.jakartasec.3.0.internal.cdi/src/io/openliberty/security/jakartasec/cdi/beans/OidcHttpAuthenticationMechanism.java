@@ -59,6 +59,7 @@ import jakarta.security.enterprise.authentication.mechanism.http.HttpAuthenticat
 import jakarta.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
 import jakarta.security.enterprise.identitystore.IdentityStoreHandler;
+import jakarta.security.enterprise.identitystore.openid.AccessToken;
 import jakarta.security.enterprise.identitystore.openid.IdentityToken;
 import jakarta.security.enterprise.identitystore.openid.OpenIdContext;
 import jakarta.security.enterprise.identitystore.openid.RefreshToken;
@@ -381,12 +382,24 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
             clientSubject.getPrivateCredentials().add(openIdContext);
             Hashtable<String, Object> hashtable = utils.getSubjectExistingHashtable(clientSubject);
             if (hashtable != null) {
-                IdentityToken idToken = openIdContext.getIdentityToken();
-                if (idToken != null) {
-                    hashtable.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, String.valueOf(idToken.hashCode()));
+                String newCacheKey = getNewCustomCacheKeyValue(openIdContext);
+                if (newCacheKey != null) {
+                    hashtable.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, newCacheKey);
                 }
             }
         }
+    }
+
+    private String getNewCustomCacheKeyValue(OpenIdContext openIdContext) {
+        IdentityToken idToken = openIdContext.getIdentityToken();
+        if (idToken != null) {
+            return String.valueOf(idToken.hashCode());
+        }
+        AccessToken accessToken = openIdContext.getAccessToken();
+        if (accessToken != null) {
+            return String.valueOf(accessToken.hashCode());
+        }
+        return null;
     }
 
     private AuthenticationStatus processExpiredTokenResult(ProviderAuthenticationResult providerAuthenticationResult, Client client,
