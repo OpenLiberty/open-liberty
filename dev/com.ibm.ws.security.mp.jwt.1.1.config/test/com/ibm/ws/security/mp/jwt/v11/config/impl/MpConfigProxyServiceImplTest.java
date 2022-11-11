@@ -11,12 +11,10 @@
 package com.ibm.ws.security.mp.jwt.v11.config.impl;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Optional;
 
-import org.eclipse.microprofile.config.Config;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -30,6 +28,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 import com.ibm.ws.security.jwt.config.MpConfigProperties;
+import com.ibm.ws.security.mp.jwt.MpConfigProxyService.MpConfigProxy;
 
 import test.common.SharedOutputManager;
 
@@ -47,8 +46,8 @@ public class MpConfigProxyServiceImplTest {
 
     @SuppressWarnings("unchecked")
     private final ClassLoader cl = mockery.mock(ClassLoader.class);
-    private final Config configNoCL = mockery.mock(Config.class, "configNoCL");
-    private final Config configCL = mockery.mock(Config.class, "configCL");
+    private final MpConfigProxy configNoCL = mockery.mock(MpConfigProxy.class, "configNoCL");
+    private final MpConfigProxy configCL = mockery.mock(MpConfigProxy.class, "configCL");
 
     @Rule
     public final TestName testName = new TestName();
@@ -137,70 +136,6 @@ public class MpConfigProxyServiceImplTest {
         assertTrue("true should be returned", output);
     }
 
-    /**
-     * Tests getConfigValue method
-     */
-    @Test
-    public void testGetConfigValueNoCL() {
-        MpConfigProxyServiceImpl mpConfigProxyServiceImpl = new MpConfigProxyServiceImplDouble();
-        String NAME = "name";
-        Class CLAZZ = Object.class;
-
-        String output = (String) mpConfigProxyServiceImpl.getConfigValue(null, NAME, CLAZZ);
-        assertNull("Expected the result to be null but was [" + output + "].", output);
-    }
-
-    @Test
-    public void testGetConfigValueNoCL_supportedMpJwtConfigProperty() {
-        MpConfigProxyServiceImpl mpConfigProxyServiceImpl = new MpConfigProxyServiceImplDouble();
-        String NAME = MpConfigProperties.PUBLIC_KEY;
-        Class CLAZZ = Object.class;
-        String VALUE = "value";
-
-        mockery.checking(new Expectations() {
-            {
-                never(configCL).getValue(NAME, CLAZZ);
-                one(configNoCL).getOptionalValue(NAME, CLAZZ);
-                will(returnValue(Optional.of(VALUE)));
-            }
-        });
-
-        String output = (String) mpConfigProxyServiceImpl.getConfigValue(null, NAME, CLAZZ);
-        assertEquals("the expected value should be returned", VALUE, output);
-    }
-
-    /**
-     * Tests getConfigValue method
-     */
-    @Test
-    public void testGetConfigValueCL_unknownMpJwtConfigProperty() {
-        MpConfigProxyServiceImpl mpConfigProxyServiceImpl = new MpConfigProxyServiceImplDouble();
-        String NAME = "name";
-        Class CLAZZ = Object.class;
-
-        String output = (String) mpConfigProxyServiceImpl.getConfigValue(cl, NAME, CLAZZ);
-        assertNull("Expected the result to be null but was [" + output + "].", output);
-    }
-
-    @Test
-    public void testGetConfigValueCL_supportedMpJwtConfigProperty() {
-        MpConfigProxyServiceImpl mpConfigProxyServiceImpl = new MpConfigProxyServiceImplDouble();
-        String NAME = MpConfigProperties.ISSUER;
-        Class CLAZZ = Object.class;
-        String VALUE = "value";
-
-        mockery.checking(new Expectations() {
-            {
-                never(configNoCL).getValue(NAME, CLAZZ);
-                one(configCL).getOptionalValue(NAME, CLAZZ);
-                will(returnValue(Optional.of(VALUE)));
-            }
-        });
-
-        String output = (String) mpConfigProxyServiceImpl.getConfigValue(cl, NAME, CLAZZ);
-        assertEquals("the expected value should be returned", VALUE, output);
-    }
-
     @Test
     public void testGetConfigValuesNoClassLoader() {
         MpConfigProxyServiceImpl mpConfigProxyServiceImpl = new MpConfigProxyServiceImplDouble();
@@ -286,7 +221,7 @@ public class MpConfigProxyServiceImplTest {
 
     class MpConfigProxyServiceImplDouble extends MpConfigProxyServiceImpl {
         @Override
-        protected Config getConfig(ClassLoader cl) {
+        public MpConfigProxy getConfigProxy(ClassLoader cl) {
             if (cl != null) {
                 return configCL;
             } else {
