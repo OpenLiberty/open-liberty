@@ -34,6 +34,7 @@ src: \
   test-applications/jsonp/src,\
   test-applications/pathparam/src,\
   test-applications/simpleSSL/src,\
+  test-applications/sslContextPropagation/src,\
   test-applications/thirdpartyjerseyclient/src,\
   test-applications/xmlbinding/src
 
