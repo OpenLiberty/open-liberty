@@ -1,0 +1,461 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<openidConnectProvider
+		id="OP0"
+		oauthProviderRef="OAuth0" />
+
+	<oauthProvider
+		id="OAuth0"
+		autoAuthorize="true"
+		tokenFormat="${opTokenFormat}"
+	>
+		<autoAuthorizeClient>client_1</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client_1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_0/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_1/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_2/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_3/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_4/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_5/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_6/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_7/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_8/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_9/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_10/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_11/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_12/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_13/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_14/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_15/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_16/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_17/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_18/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_19/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_20/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_21/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_22/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_23/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_24/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_25/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_26/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_27/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_28/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_29/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_30/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_31/Callback"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>		
+
+	<openidConnectProvider
+		id="OP0_noRefresh"
+		oauthProviderRef="OAuth0_noRefresh" />
+
+	<oauthProvider
+		id="OAuth0_noRefresh"
+		autoAuthorize="true"
+		issueRefreshToken="false"
+		tokenFormat="${opTokenFormat}"
+	>
+		<autoAuthorizeClient>client_1</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client_1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_0/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_1/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_2/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_3/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_4/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_5/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_6/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_7/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_8/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_9/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_10/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_11/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_12/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_13/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_14/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_15/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_16/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_17/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_18/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_19/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_20/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_21/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_22/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_23/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_24/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_25/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_26/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_27/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_28/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_29/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_30/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_31/Callback"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>		
+		 		 
+	<openidConnectProvider
+		id="OP1"
+		idTokenLifetime="15s"
+		oauthProviderRef="OAuth1" />
+
+	<oauthProvider
+		id="OAuth1"
+		autoAuthorize="true"
+		tokenFormat="${opTokenFormat}"
+	>
+		<autoAuthorizeClient>client_1</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client_1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_0/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_1/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_2/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_3/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_4/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_5/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_6/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_7/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_8/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_9/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_10/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_11/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_12/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_13/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_14/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_15/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_16/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_17/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_18/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_19/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_20/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_21/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_22/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_23/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_24/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_25/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_26/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_27/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_28/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_29/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_30/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_31/Callback"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>		
+		 		 
+	<openidConnectProvider
+		id="OP1_noRefresh"
+		idTokenLifetime="15s"
+		oauthProviderRef="OAuth1_noRefresh" />
+
+	<oauthProvider
+		id="OAuth1_noRefresh"
+		autoAuthorize="true"
+		issueRefreshToken="false"
+		tokenFormat="${opTokenFormat}"
+	>
+		<autoAuthorizeClient>client_1</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client_1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_0/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_1/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_2/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_3/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_4/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_5/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_6/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_7/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_8/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_9/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_10/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_11/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_12/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_13/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_14/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_15/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_16/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_17/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_18/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_19/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_20/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_21/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_22/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_23/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_24/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_25/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_26/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_27/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_28/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_29/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_30/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_31/Callback"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>		
+
+	<openidConnectProvider
+		id="OP2"
+		oauthProviderRef="OAuth2" />
+
+	<oauthProvider
+		id="OAuth2"
+		autoAuthorize="true"
+		tokenFormat="${opTokenFormat}"
+		accessTokenLifetime="15s"
+	>
+		<autoAuthorizeClient>client_1</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client_1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_0/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_1/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_2/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_3/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_4/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_5/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_6/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_7/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_8/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_9/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_10/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_11/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_12/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_13/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_14/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_15/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_16/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_17/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_18/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_19/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_20/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_21/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_22/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_23/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_24/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_25/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_26/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_27/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_28/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_29/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_30/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_31/Callback"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>		
+
+	<openidConnectProvider
+		id="OP2_noRefresh"
+		oauthProviderRef="OAuth2_noRefresh" />
+
+	<oauthProvider
+		id="OAuth2_noRefresh"
+		autoAuthorize="true"
+		tokenFormat="${opTokenFormat}"
+		issueRefreshToken="false"
+		accessTokenLifetime="15s"
+	>
+		<autoAuthorizeClient>client_1</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client_1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_0/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_1/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_2/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_3/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_4/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_5/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_6/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_7/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_8/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_9/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_10/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_11/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_12/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_13/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_14/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_15/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_16/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_17/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_18/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_19/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_20/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_21/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_22/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_23/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_24/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_25/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_26/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_27/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_28/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_29/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_30/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_31/Callback"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>		
+
+	<openidConnectProvider
+		id="OP3"
+		idTokenLifetime="15s"
+		oauthProviderRef="OAuth3" />
+
+	<oauthProvider
+		id="OAuth3"
+		autoAuthorize="true"
+		tokenFormat="${opTokenFormat}"
+		accessTokenLifetime="15s"
+	>
+		<autoAuthorizeClient>client_1</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client_1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_0/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_1/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_2/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_3/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_4/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_5/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_6/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_7/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_8/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_9/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_10/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_11/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_12/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_13/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_14/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_15/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_16/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_17/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_18/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_19/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_20/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_21/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_22/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_23/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_24/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_25/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_26/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_27/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_28/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_29/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_30/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_31/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/GoodRedirectUriTokenAutoRefreshTrueRefreshAllowedFalseNotifyProviderFalseTokenExpiryFalseTokensExpiredTrue/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/BadRedirectUriTokenAutoRefreshTrueRefreshAllowedFalseNotifyProviderFalseTokenExpiryFalseTokensExpiredTrue/Callback"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>	
+		
+	<openidConnectProvider
+		id="OP3_noRefresh"
+		idTokenLifetime="15s"
+		oauthProviderRef="OAuth3_noRefresh" />
+
+	<oauthProvider
+		id="OAuth3_noRefresh"
+		autoAuthorize="true"
+		tokenFormat="${opTokenFormat}"
+		issueRefreshToken="false"
+		accessTokenLifetime="15s"
+	>
+		<autoAuthorizeClient>client_1</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client_1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_0/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_1/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_2/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_3/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_4/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_5/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_6/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_7/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_8/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_9/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_10/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_11/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_12/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_13/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_14/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_15/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_16/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_17/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_18/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_19/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_20/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_21/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_22/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_23/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_24/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_25/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_26/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_27/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_28/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_29/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_30/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_31/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/GoodRedirectUriTokenAutoRefreshTrueRefreshAllowedFalseNotifyProviderFalseTokenExpiryFalseTokensExpiredTrue/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/BadRedirectUriTokenAutoRefreshTrueRefreshAllowedFalseNotifyProviderFalseTokenExpiryFalseTokensExpiredTrue/Callback"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>		
+
+</server>

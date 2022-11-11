@@ -98,6 +98,10 @@ public class TokenResponseValidator {
             idtoken = tokenResponse.getIdTokenString();
         }
 
+        if (idtoken == null) {
+            return new JwtClaims();
+        }
+
         JwtContext jwtcontext = null;
         try {
             jwtcontext = JwtParsingUtils.parseJwtWithoutValidation(idtoken);

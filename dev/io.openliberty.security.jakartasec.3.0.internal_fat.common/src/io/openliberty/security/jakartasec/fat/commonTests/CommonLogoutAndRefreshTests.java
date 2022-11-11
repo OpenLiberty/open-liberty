@@ -19,53 +19,12 @@ import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ServerTraceExpectation;
 
 import componenttest.topology.impl.LibertyServer;
-import io.openliberty.security.jakartasec.fat.utils.Constants;
 
 public class CommonLogoutAndRefreshTests extends CommonAnnotatedSecurityTests {
     protected static String baseAppName = null;
 
-    private static final boolean TokenWasRefreshed = true;
-    private static final boolean TokenWasNotRefreshed = false;
-
-    /**
-     * Try to access a protected app, then try to access it again after the tokens expire.
-     * Callers of this method:
-     * - The provider includes a refresh token in the tokens that it creates
-     * - The application has autoTokenRefresh set to true in the annotation
-     * - One of the tokens (id or access) is expired.
-     * Callers using this method expect that we will successfully logout.
-     * This method will make sure that we access the protected app 2 times and that the id_token, access_token and refresh_token are all different in each access.
-     *
-     * Also make sure that we don't get a new token because we've gone down the re-auth path (do that by making sure that the re-auth message is NOT in the trace)
-     *
-     * @param rpServer - the server whose log should be checked for the re-auth message
-     * @param appName - the name of the app to invoke (the specific app will contain properties to set the @@OpenIdAuthenticationMechanismDefinition properly.
-     * @param provider - the provider that the test should use - this info will be used to validate the token created
-     * @param providerAllowsRefresh - flag indicating if a refresh token should be validated
-     * @throws Exception
-     */
-    public void genericGoodRefreshTest(LibertyServer rpServer, String appName, String provider, boolean providerAllowsRefresh) throws Exception {
-
-        WebClient webClient = getAndSaveWebClient();
-        rspValues.setIssuer(opHttpsBase + "/oidc/endpoint/" + provider);
-        Page response1 = runGoodEndToEndTest(webClient, appName, baseAppName);
-
-        // now logged in - wait for token to expire
-        actions.testLogAndSleep(20);
-        String url = rpHttpsBase + "/" + appName + "/" + baseAppName;
-        Page response2 = invokeAppGetToAppWithRefreshedToken(webClient, url); // get to app not because either id or access token is good, but because the token was refreshed.
-
-        if (tokensAreDifferent(response1, response2, providerAllowsRefresh, TokenWasRefreshed)) {
-            Log.info(thisClass, _testName, "Test tokens were refreshed");
-        } else {
-            // TODO 23213
-            fail("Test tokens were NOT refreshed 23213");
-        }
-        Expectations expectations = new Expectations();
-        expectations.addExpectation(new ServerTraceExpectation(null, rpServer, Constants.STRING_DOES_NOT_MATCH, "Redirect to the OpenID Connect Provider Authentication endpoint for re-authentication", "The request did not result in a re-auth request."));
-        validationUtils.validateResult(response2, expectations);
-
-    }
+    protected static final boolean TokenWasRefreshed = true;
+    protected static final boolean TokenWasNotRefreshed = false;
 
     /**
      * Try to access a protected app, then try to access it again after the tokens expire.
