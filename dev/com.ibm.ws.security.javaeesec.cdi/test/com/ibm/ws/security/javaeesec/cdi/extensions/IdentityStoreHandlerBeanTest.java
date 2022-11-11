@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,10 +17,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
@@ -53,7 +55,8 @@ public class IdentityStoreHandlerBeanTest {
     private final CreationalContext<IdentityStoreHandler> cc = context.mock(CreationalContext.class, "cc1");
 
     @Before
-    public void setUp() {}
+    public void setUp() {
+    }
 
     @After
     public void tearDown() throws Exception {
@@ -77,9 +80,13 @@ public class IdentityStoreHandlerBeanTest {
     public void getQualifiers() {
         IdentityStoreHandlerBean ishb = new IdentityStoreHandlerBean(bm);
         Set<Annotation> output = ishb.getQualifiers();
+        Iterator<Annotation> it = output.iterator();
         System.out.println("getQualifiers: " + output);
-        assertEquals("getQualifiers returns incorrect number of elements.", 1, output.size());
-        assertEquals("getQualifiers returns incorrect value.", new AnnotationLiteral<Default>() {}.toString(), output.iterator().next().toString());
+        assertEquals("getQualifiers returns incorrect number of elements.", 2, output.size());
+        assertEquals("getQualifiers returns incorrect value.", new AnnotationLiteral<Default>() {
+        }.toString(), it.next().toString());
+        assertEquals("getQualifiers returns incorrect value.", new AnnotationLiteral<Any>() {
+        }.toString(), it.next().toString());
     }
 
     @Test
@@ -102,7 +109,8 @@ public class IdentityStoreHandlerBeanTest {
         Set<Type> output = ishb.getTypes();
         System.out.println("getTypess: " + output);
         assertEquals("getTypes returns incorrect number of elements.", 1, output.size());
-        assertEquals("getTypes returns incorrect value.", new TypeLiteral<IdentityStoreHandler>() {}.getType().toString(), output.iterator().next().toString());
+        assertEquals("getTypes returns incorrect value.", new TypeLiteral<IdentityStoreHandler>() {
+        }.getType().toString(), output.iterator().next().toString());
     }
 
     @Test

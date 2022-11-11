@@ -663,13 +663,21 @@ public class ELHelper {
 
             } else if (obj instanceof String) {
                 Tr.debug(tc, "processUseFor (String): " + (String) obj);
-                ValidationType[] types = new ValidationType[2];
                 String validation = ((String) obj).toLowerCase();
-                if (validation.contains("validate")) {
+                ValidationType[] types = null;
+                if (validation.contains("validate") && validation.contains("provide_groups")) {
+                    types = new ValidationType[2];
                     types[0] = ValidationType.VALIDATE;
-                }
-                if (validation.contains("provide_groups")) {
                     types[1] = ValidationType.PROVIDE_GROUPS;
+                } else if (validation.contains("validate")) {
+                    types = new ValidationType[1];
+                    types[0] = ValidationType.VALIDATE;
+                } else if (validation.contains("provide_groups")) {
+                    types = new ValidationType[1];
+                    types[0] = ValidationType.PROVIDE_GROUPS;
+                } else {
+                    Tr.debug(tc, "processUseFor result does not contain validate or provide_groups");
+                    throw new IllegalArgumentException("The identity store must be configured with at least one ValidationType.");
                 }
                 result = EnumSet.copyOf(Arrays.asList(types));
                 immediate = isImmediateExpression(useForExpression);

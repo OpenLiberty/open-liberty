@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -49,8 +50,12 @@ public class ModulePropertiesProviderBean<T> implements Bean<ModulePropertiesPro
     public ModulePropertiesProviderBean(BeanManager beanManager, Map<String, ModuleProperties> moduleMap) {
         this.moduleMap = moduleMap;
         qualifiers = new HashSet<Annotation>();
-        qualifiers.add(new AnnotationLiteral<Default>() {});
-        type = new TypeLiteral<ModulePropertiesProvider>() {}.getType();
+        qualifiers.add(new AnnotationLiteral<Default>() {
+        });
+        qualifiers.add(new AnnotationLiteral<Any>() {
+        });
+        type = new TypeLiteral<ModulePropertiesProvider>() {
+        }.getType();
         types = Collections.singleton(type);
         name = this.getClass().getName() + "[" + type + "]";
         id = beanManager.hashCode() + "#" + this.name;
