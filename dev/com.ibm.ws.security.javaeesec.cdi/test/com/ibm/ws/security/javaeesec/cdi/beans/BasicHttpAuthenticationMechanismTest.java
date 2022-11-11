@@ -13,7 +13,6 @@ package com.ibm.ws.security.javaeesec.cdi.beans;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.security.Principal;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -857,7 +856,7 @@ public class BasicHttpAuthenticationMechanismTest {
     }
 
     private void assertMechanismChallenges() throws AuthenticationException {
-        challengesAuthorizationHeader();
+        challengesAuthorizationHeader().withResponseStatus(HttpServletResponse.SC_UNAUTHORIZED);
         AuthenticationStatus status = mechanism.validateRequest(request, response, httpMessageContext);
         assertEquals("The AuthenticationStatus must be AuthenticationStatus.SEND_CONTINUE.", AuthenticationStatus.SEND_CONTINUE, status);
         assertEquals("The realm name must be set in the MessageInfo's map.", realmName,
@@ -865,17 +864,12 @@ public class BasicHttpAuthenticationMechanismTest {
     }
 
     private BasicHttpAuthenticationMechanismTest challengesAuthorizationHeader() {
-        try {
-            mockery.checking(new Expectations() {
-                {
-                    one(response).setHeader("WWW-Authenticate", "Basic realm=\"" + realmName + "\"");
-                    allowing(response).sendError(401);
-                }
-            });
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        mockery.checking(new Expectations() {
+            {
+                one(response).setHeader("WWW-Authenticate", "Basic realm=\"" + realmName + "\"");
+                allowing(httpMessageContext).responseUnauthorized();
+            }
+        });
         return this;
     }
 
