@@ -76,15 +76,16 @@ public class JakartaSecurity30CDIExtension implements Extension {
         AnnotatedType<T> annotatedType = event.getAnnotatedType();
         Annotation oidcAnnotation = annotatedType.getAnnotation(OpenIdAuthenticationMechanismDefinition.class);
         Class<?> annotatedClass = annotatedType.getJavaClass();
-        addOidcHttpAuthenticationMechanismBean(oidcAnnotation, annotatedClass);
+        addOidcHttpAuthenticationMechanismBean(oidcAnnotation, annotatedClass, annotatedType);
         addOidcIdentityStore(beanManager);
         addOpenIdContext(beanManager);
     }
 
-    private void addOidcHttpAuthenticationMechanismBean(Annotation annotation, Class<?> annotatedClass) {
+    private <T> void addOidcHttpAuthenticationMechanismBean(Annotation annotation, Class<?> annotatedClass, AnnotatedType<T> annotatedType) {
         Properties props = new Properties();
         props.put(JakartaSec30Constants.OIDC_ANNOTATION, new OpenIdAuthenticationMechanismDefinitionHolder((OpenIdAuthenticationMechanismDefinition) annotation));
-        primarySecurityCDIExtension.addAuthMech(applicationName, annotatedClass, OidcHttpAuthenticationMechanism.class, props);
+        Set<Annotation> annotations = annotatedType.getAnnotations();
+        primarySecurityCDIExtension.addAuthMech(applicationName, annotatedClass, OidcHttpAuthenticationMechanism.class, annotations, props);
     }
 
     private void addOidcIdentityStore(BeanManager beanManager) {

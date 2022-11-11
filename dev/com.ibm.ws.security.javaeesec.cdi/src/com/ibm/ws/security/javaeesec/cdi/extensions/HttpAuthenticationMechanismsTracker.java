@@ -10,10 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.cdi.extensions;
 
+import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
@@ -103,7 +105,7 @@ public class HttpAuthenticationMechanismsTracker {
         return moduleMapsPerApplication.get(applicationName);
     }
 
-    public void addAuthMech(String applicationName, Class<?> annotatedClass, Class<?> implClass, Properties props) {
+    public void addAuthMech(String applicationName, Class<?> annotatedClass, Class<?> implClass, Set<Annotation> annotations, Properties props) {
         Map<String, ModuleProperties> moduleMap = moduleMapsPerApplication.get(applicationName);
         String moduleName = getModuleFromClass(annotatedClass, moduleMap);
 
