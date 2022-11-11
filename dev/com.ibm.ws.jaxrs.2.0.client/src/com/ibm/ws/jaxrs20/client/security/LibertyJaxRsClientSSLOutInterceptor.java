@@ -138,10 +138,6 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
             Tr.debug(tc, "May not enable feature ssl-1.0 or appSecurity-2.0.");
         }
 
-        // Get the ciphers
-
-        // Get the protocols
-
         return tlsClientParams;
     }
 

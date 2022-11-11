@@ -53,7 +53,9 @@ public class MisMatchingSSLCiphersClientTestServlet extends FATServlet {
                             .path("echo")
                             .request(MediaType.TEXT_PLAIN_TYPE)
                             .get();
+
+            // we should never reach this code, client should throw a javax.ws.rs.ProcessingException instead.
             fail("Request should throw a javax.ws.rs.ProcessingException trying to make a connection with mismatching cipher suites");
-        } catch (ProcessingException ex) {}
+        } catch (ProcessingException ex) {} // we don't need to do anything here
     }
 }
