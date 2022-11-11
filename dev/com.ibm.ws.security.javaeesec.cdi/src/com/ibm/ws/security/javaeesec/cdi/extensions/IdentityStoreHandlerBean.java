@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -42,9 +43,13 @@ public class IdentityStoreHandlerBean implements Bean<IdentityStoreHandler>, Pas
 
     public IdentityStoreHandlerBean(BeanManager beanManager) {
         qualifiers = new HashSet<Annotation>();
-        qualifiers.add(new AnnotationLiteral<Default>() {});
+        qualifiers.add(new AnnotationLiteral<Default>() {
+        });
+        qualifiers.add(new AnnotationLiteral<Any>() {
+        });
 
-        type = new TypeLiteral<IdentityStoreHandler>() {}.getType();
+        type = new TypeLiteral<IdentityStoreHandler>() {
+        }.getType();
         types = Collections.singleton(type);
         name = this.getClass().getName() + "[" + type + "]";
         id = beanManager.hashCode() + "#" + this.name;
@@ -66,7 +71,8 @@ public class IdentityStoreHandlerBean implements Bean<IdentityStoreHandler>, Pas
      * @see javax.enterprise.context.spi.Contextual#destroy(java.lang.Object, javax.enterprise.context.spi.CreationalContext)
      */
     @Override
-    public void destroy(IdentityStoreHandler arg0, CreationalContext<IdentityStoreHandler> arg1) {}
+    public void destroy(IdentityStoreHandler arg0, CreationalContext<IdentityStoreHandler> arg1) {
+    }
 
     /*
      * (non-Javadoc)

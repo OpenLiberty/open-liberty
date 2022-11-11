@@ -61,6 +61,7 @@ import appsecurity.AppsecurityServlet;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -71,7 +72,9 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @SkipIfCheckpointNotSupported
 public class AppsecurityTest extends FATServletClient {
 
-    @Server("checkpointAppSecurity")
+    private static final String SERVER_NAME = "checkpointAppSecurity";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     private static final String APP_NAME = "appsecurity";
@@ -81,8 +84,9 @@ public class AppsecurityTest extends FATServletClient {
     private TestMethod testMethod;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new JakartaEE9Action().forServers("checkpointAppSecurity").fullFATOnly());
+    public static RepeatTests r = RepeatTests.withoutModification() //
+                    .andWith(new JakartaEE9Action().forServers(SERVER_NAME).fullFATOnly()) //
+                    .andWith(new JakartaEE10Action().forServers(SERVER_NAME).fullFATOnly());
 
     @BeforeClass
     public static void createAppAndExportToServer() throws Exception {

@@ -14,6 +14,7 @@
 
 	<include location="imports/ltpa/serversettings/standard_config.xml"/>
 
+    <!--For testing a filter for a URL pattern that does not exist -->
 	<ltpa id="myLtpa" authFilterRef="badAuthFilter"/>
 	<authFilter id="badAuthFilter">
         <requestUrl id="badRequestUrl" urlPattern="/BadSimpleServlet" matchType="contains" />

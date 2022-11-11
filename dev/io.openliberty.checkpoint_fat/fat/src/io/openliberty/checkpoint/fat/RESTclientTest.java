@@ -51,7 +51,10 @@ import restClient.ServerEndpoint;
 public class RESTclientTest {
     public static final String SERVER_NAME = "restClientServer";
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, TestMode.LITE, MicroProfileActions.MP41, MicroProfileActions.MP50);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, TestMode.FULL, //
+                                                             MicroProfileActions.MP41, // first test in LITE mode
+                                                             // rest are FULL mode
+                                                             MicroProfileActions.MP50, MicroProfileActions.MP60);
 
     public static final String APP_NAME = "restClient";
 
