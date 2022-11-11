@@ -90,10 +90,8 @@ public class ProgrammaticTest extends JavaEESecTestBase {
     @Test
     public void testRequestAuthenticate() throws Exception {
         String response = executeGetRequestNoAuthCreds(httpclient, urlHttps + queryString + "?method=authenticate", HttpServletResponse.SC_UNAUTHORIZED);
-        //TODO: temporary disable this test since we may have to challenge the TCK test?
-        //java.lang.AssertionError: Expected result isAuthenticated: false not found in response: Error 401: SRVE0295E: Error reported: 401
         //The runtime change from setStatus to sendError.
-        //mustContain(response, Constants.isAuthenticatedFalse);
+        mustContain(response, "Error 401");
         verifyUserResponse(response, Constants.getUserPrincipalNull, Constants.getRemoteUserNull);
         response = executeGetRequestBasicAuthCreds(httpclient, urlHttps + queryString + "?method=authenticate", Constants.javaeesec_basicRoleUser, Constants.javaeesec_basicRolePwd,
                                                    HttpServletResponse.SC_OK);
