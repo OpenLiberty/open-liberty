@@ -15,6 +15,7 @@ src: \
   fat/src,\
   test-applications/baseclient/src,\
   test-applications/bookstore/src,\
+  test-applications/CiphersTest/src,\
   test-applications/clientcontextinjection/src,\
   test-applications/complexclient/src,\
   test-applications/handleresponses/src,\
@@ -32,6 +33,7 @@ src: \
   test-applications/jaxrsclienttimeout/src,\
   test-applications/jsonp/src,\
   test-applications/pathparam/src,\
+  test-applications/simpleSSL/src,\
   test-applications/thirdpartyjerseyclient/src,\
   test-applications/xmlbinding/src
 

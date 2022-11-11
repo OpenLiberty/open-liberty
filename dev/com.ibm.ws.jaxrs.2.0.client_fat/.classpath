@@ -3,6 +3,7 @@
 	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="test-applications/baseclient/src"/>
 	<classpathentry kind="src" path="test-applications/bookstore/src"/>
+	<classpathentry kind="src" path="test-applications/CiphersTest/src"/>
 	<classpathentry kind="src" path="test-applications/clientcontextinjection/src"/>
 	<classpathentry kind="src" path="test-applications/complexclient/src"/>
 	<classpathentry kind="src" path="test-applications/handleresponses/src"/>
@@ -20,6 +21,7 @@
 	<classpathentry kind="src" path="test-applications/jaxrsclienttimeout/src"/>
 	<classpathentry kind="src" path="test-applications/jsonp/src"/>
 	<classpathentry kind="src" path="test-applications/pathparam/src"/>
+	<classpathentry kind="src" path="test-applications/simpleSSL/src"/>
 	<classpathentry kind="src" path="test-applications/thirdpartyjerseyclient/src"/>
 	<classpathentry kind="src" path="test-applications/xmlbinding/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>

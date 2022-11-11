@@ -1,0 +1,27 @@
+<server>
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+        <feature>jaxrs-2.0</feature>
+        <feature>transportSecurity-1.0</feature>
+    </featureManager>
+
+    <!-- Server SSL configuration -->
+    <ssl id="defaultSSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" />
+
+    <!-- customize SSL configuration -->
+    <ssl id="mySSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" />
+
+    <keyStore id="clientKeyStore" location="key.jks" type="JKS" password="passw0rd" />
+    <keyStore id="clientTrustStore" location="trust.jks" type="JKS" password="passw0rd" />
+
+    <!--  Don't include ./fatTestPorts.xml when using ${bvt.prop.HTTP_secondary} and ${bvt.prop.HTTP_secondary.secure} -->
+    <httpEndpoint id="defaultHttpEndpoint"
+        host="*"
+        httpPort="${bvt.prop.HTTP_secondary}"
+        httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+
+    <javaPermission className="java.util.PropertyPermission" name="bvt.prop.HTTP_default" actions="read"/>
+    <javaPermission className="java.util.PropertyPermission" name="bvt.prop.HTTP_default.secure" actions="read"/>
+    <javaPermission className="java.util.PropertyPermission" name="bvt.prop.HTTP_secondary" actions="read"/>
+    <javaPermission className="java.util.PropertyPermission" name="bvt.prop.HTTP_secondary.secure" actions="read"/>
+</server>
