@@ -126,35 +126,6 @@ public class HttpAuthenticationMechanismsTracker {
         }
     }
 
-    public Properties removeAuthMech(String applicationName, Class<?> implClass) {
-        return removeAuthMech(applicationName, implClass, implClass);
-    }
-
-    public Properties removeAuthMech(String applicationName, Class<?> annotatedClass, Class<?> implClass) {
-        Map<String, ModuleProperties> moduleMap = moduleMapsPerApplication.get(applicationName);
-        String moduleName = getModuleFromClass(annotatedClass, moduleMap);
-
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "moduleName: " + moduleName);
-        }
-
-        if (moduleMap.containsKey(moduleName)) {
-            return moduleMap.get(moduleName).removeFromAuthMechMap(implClass);
-        } else {
-            // if there is no match in the module name, it should be a shared jar file.
-            // so the authmech needs to be removed from all modules.
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Remove the AuthMech from all modules since the module is not found. Module: " + moduleName);
-            }
-
-            Properties props = null;
-            for (Map.Entry<String, ModuleProperties> entry : moduleMap.entrySet()) {
-                props = entry.getValue().removeFromAuthMechMap(implClass);
-            }
-            return props;
-        }
-    }
-
     /**
      * Identify the module name from the class. If the class exists in the jar file, return war file name
      * if it is located under the war file, otherwise returning jar file name.

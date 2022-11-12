@@ -32,7 +32,6 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
@@ -40,6 +39,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.enterprise.util.TypeLiteral;
 import javax.security.enterprise.AuthenticationException;
 import javax.security.enterprise.AuthenticationStatus;
@@ -323,8 +323,6 @@ public class JavaEESecCDIExtensionTest {
                 will(returnValue(at1));
                 one(at1).getAnnotation(LoginToContinue.class);
                 will(returnValue(ltc));
-                one(at1).getAnnotation(Alternative.class);
-                will(returnValue(null));
                 one(wasc).getOverrideHttpAuthMethod();
                 will(returnValue(null));
                 one(at1).getAnnotations();
@@ -640,6 +638,7 @@ public class JavaEESecCDIExtensionTest {
                 exactly(2).of(bn).getTypes();
                 will(returnValue(types));
                 one(abd).addBean(with(any(IdentityStoreHandlerBean.class)));
+                allowing(bm).getBeans(with(any(Type.class)), with(any(AnnotationLiteral.class)));
             }
         });
 
@@ -677,6 +676,7 @@ public class JavaEESecCDIExtensionTest {
                 exactly(2).of(bn).getTypes();
                 will(returnValue(types));
                 never(abd).addBean(with(any(IdentityStoreHandlerBean.class)));
+                allowing(bm).getBeans(with(any(Type.class)), with(any(AnnotationLiteral.class)));
             }
         });
 
@@ -1173,8 +1173,7 @@ public class JavaEESecCDIExtensionTest {
         assertFalse("the result should be false.", j3ce.equalsDatabaseDefinition(disd1, disd2));
     }
 
-    public @interface InvalidAnnotation {
-    }
+    public @interface InvalidAnnotation {}
 
     private InvalidAnnotation getIAInstance() {
         InvalidAnnotation ann = new InvalidAnnotation() {
@@ -1722,11 +1721,9 @@ public class JavaEESecCDIExtensionTest {
         return mm;
     }
 
-    class HAMClass1 {
-    };
+    class HAMClass1 {};
 
-    class HAMClass2 {
-    };
+    class HAMClass2 {};
 
     class ApplicationHAM implements HttpAuthenticationMechanism {
         @Override
@@ -1746,14 +1743,12 @@ public class JavaEESecCDIExtensionTest {
         @Override
         public void cleanSubject(HttpServletRequest request,
                                  HttpServletResponse response,
-                                 HttpMessageContext httpMessageContext) {
-        }
+                                 HttpMessageContext httpMessageContext) {}
     }
 
     class CustomPasswordHash1 implements PasswordHash {
         @Override
-        public void initialize(Map<String, String> parameters) {
-        }
+        public void initialize(Map<String, String> parameters) {}
 
         @Override
         public String generate(char[] password) {
@@ -1768,8 +1763,7 @@ public class JavaEESecCDIExtensionTest {
 
     class CustomPasswordHash2 implements PasswordHash {
         @Override
-        public void initialize(Map<String, String> parameters) {
-        }
+        public void initialize(Map<String, String> parameters) {}
 
         @Override
         public String generate(char[] password) {
