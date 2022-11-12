@@ -17,22 +17,35 @@ import java.util.List;
  * Method signatures are copied from jakarta.data.repository.Pageable from the Jakarta Data repo.
  */
 public interface Pageable {
+    public static enum Mode {
+        CURSOR_NEXT, CURSOR_PREVIOUS, OFFSET
+    }
+
+    public interface Cursor {
+        public Object getKeysetElement(int index);
+
+        public int size();
+    }
 
     public static Pageable ofPage(long page) {
-        return new Pagination(page, 10, Collections.emptyList());
+        return new Pagination(page, 10, Collections.emptyList(), Mode.OFFSET, null);
     }
 
     public static Pageable ofSize(int size) {
-        return new Pagination(1, size, Collections.emptyList());
+        return new Pagination(1, size, Collections.emptyList(), Mode.OFFSET, null);
     }
 
-    public KeysetPageable afterKeyset(Object... keyset);
+    public Pageable afterKeyset(Object... keyset);
 
-    public KeysetPageable afterKeysetCursor(KeysetPageable.Cursor cursor);
+    public Pageable afterKeysetCursor(Pageable.Cursor cursor);
 
-    public KeysetPageable beforeKeyset(Object... keyset);
+    public Pageable beforeKeyset(Object... keyset);
 
-    public KeysetPageable beforeKeysetCursor(KeysetPageable.Cursor cursor);
+    public Pageable beforeKeysetCursor(Pageable.Cursor cursor);
+
+    public Cursor cursor();
+
+    public Mode mode();
 
     public Pageable next();
 

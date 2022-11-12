@@ -47,7 +47,7 @@ public class PaginatedIterator<T> implements Iterator<T> {
             TypedQuery<T> query = (TypedQuery<T>) em.createQuery(queryInfo.jpql, queryInfo.entityInfo.type);
             queryInfo.setParameters(query, args);
 
-            // TODO KeysetPageable
+            // TODO Keyset pagination
             // TODO possible overflow with both of these.
             long maxPageSize = pagination.size();
             query.setFirstResult((int) ((pagination.page() - 1) * maxPageSize));

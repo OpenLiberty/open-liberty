@@ -56,7 +56,6 @@ import jakarta.data.Update;
 import jakarta.data.Where;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
-import jakarta.data.repository.KeysetPageable;
 import jakarta.data.repository.Limit;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Page;
@@ -74,7 +73,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     private static final TraceComponent tc = Tr.register(RepositoryImpl.class);
 
     private static final Set<Class<?>> SPECIAL_PARAM_TYPES = new HashSet<>(Arrays.asList //
-    (Collector.class, Consumer.class, KeysetPageable.class, Limit.class, Pageable.class, Sort.class, Sort[].class));
+    (Collector.class, Consumer.class, Limit.class, Pageable.class, Sort.class, Sort[].class));
 
     private final PersistenceDataProvider provider;
     final Map<Method, CompletableFuture<QueryInfo>> queries = new HashMap<>();
@@ -849,9 +848,14 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                 Collections.addAll(sortList == null ? (sortList = new ArrayList<>()) : sortList, (Sort[]) param);
                         }
 
-                        if (sortList != null) {
-                            boolean forward = !(pagination instanceof KeysetPageable)
-                                              || ((KeysetPageable) pagination).mode() == KeysetPageable.Mode.NEXT;
+                        if (pagination != null)
+                            if (sortList == null)
+                                sortList = pagination.sorts();
+                            else if (sortList != null && !pagination.sorts().isEmpty())
+                                throw new DataException("Repository method signature cannot specify Sort parameters if Pageable also has Sort parameters."); // TODO
+
+                        if (sortList != null && !sortList.isEmpty()) {
+                            boolean forward = pagination == null || pagination.mode() != Pageable.Mode.CURSOR_PREVIOUS;
                             StringBuilder q = new StringBuilder(queryInfo.jpql);
                             StringBuilder o = null; // ORDER BY clause based on Sorts
                             for (Sort sort : sortList)
@@ -864,10 +868,10 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                         o.append(" DESC");
                                 }
 
-                            if (pagination instanceof KeysetPageable)
-                                generateKeysetQueries(queryInfo = queryInfo.withJPQL(null), sortList, q, forward ? o : null, forward ? null : o);
-                            else
+                            if (pagination == null || pagination.mode() == Pageable.Mode.OFFSET)
                                 queryInfo = queryInfo.withJPQL(q.append(o).toString());
+                            else // CURSOR_NEXT or CURSOR_PREVIOUS
+                                generateKeysetQueries(queryInfo = queryInfo.withJPQL(null), sortList, q, forward ? o : null, forward ? null : o);
                         }
 
                         boolean asyncCompatibleResultForPagination = pagination != null &&
@@ -907,9 +911,10 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                                             : queryInfo.maxResults;
 
                             long startAt = limit != null ? limit.startAt() - 1 //
-                                            : pagination == null || pagination instanceof KeysetPageable ? 0 //
-                                                            : (pagination.page() - 1) * maxResults;
-                            // TODO KeysetPageable
+                                            : pagination != null && pagination.mode() == Pageable.Mode.OFFSET //
+                                                            ? (pagination.page() - 1) * maxResults //
+                                                            : 0;
+                            // TODO keyset pagination without returning KeysetAwareSlice/Page - raise error?
                             // TODO possible overflow with both of these.
                             if (maxResults > 0)
                                 query.setMaxResults((int) maxResults);
@@ -1160,7 +1165,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             List<E> page;
             long maxPageSize;
             do {
-                // TODO KeysetPageable
+                // TODO Keyset pagination
                 // TODO possible overflow with both of these.
                 maxPageSize = pagination.size();
                 query.setFirstResult((int) ((pagination.page() - 1) * maxPageSize));
@@ -1207,7 +1212,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             List<E> page;
             long maxPageSize;
             do {
-                // TODO KeysetPageable
+                // TODO Keyset pagination
                 // TODO possible overflow with both of these.
                 maxPageSize = pagination.size();
                 query.setFirstResult((int) ((pagination.page() - 1) * maxPageSize));

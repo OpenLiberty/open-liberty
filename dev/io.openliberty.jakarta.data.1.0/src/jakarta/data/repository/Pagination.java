@@ -19,36 +19,50 @@ import java.util.stream.StreamSupport;
  * Method signatures are copied from jakarta.data.repository.Pageable from the Jakarta Data repo.
  */
 class Pagination implements Pageable {
+    private final Cursor cursor;
+    private final Mode mode;
     private final List<Sort> order;
     private final long pageNumber;
     private final int pageSize;
 
-    Pagination(long pageNumber, int pageSize, List<Sort> order) {
-        if (pageNumber < 1 || pageSize < 1)
+    Pagination(long pageNumber, int pageSize, List<Sort> order, Mode mode, Cursor cursor) {
+        if (pageNumber < 1 || pageSize < 1 || mode != Mode.OFFSET && (cursor == null || cursor.size() == 0))
             throw new IllegalArgumentException();
+        this.cursor = cursor;
+        this.mode = mode;
         this.order = order;
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;
     }
 
     @Override
-    public KeysetPageable afterKeyset(Object... keyset) {
-        return new KeysetPagination(this, KeysetPageable.Mode.NEXT, new KeysetPageable.CursorImpl(keyset));
+    public Pageable afterKeyset(Object... keyset) {
+        return new Pagination(pageNumber, pageSize, order, Mode.CURSOR_NEXT, new KeysetCursor(keyset));
     }
 
     @Override
-    public KeysetPageable afterKeysetCursor(KeysetPageable.Cursor cursor) {
-        return new KeysetPagination(this, KeysetPageable.Mode.NEXT, cursor);
+    public Pageable afterKeysetCursor(Pageable.Cursor cursor) {
+        return new Pagination(pageNumber, pageSize, order, Mode.CURSOR_NEXT, cursor);
     }
 
     @Override
-    public KeysetPageable beforeKeyset(Object... keyset) {
-        return new KeysetPagination(this, KeysetPageable.Mode.PREVIOUS, new KeysetPageable.CursorImpl(keyset));
+    public Pageable beforeKeyset(Object... keyset) {
+        return new Pagination(pageNumber, pageSize, order, Mode.CURSOR_PREVIOUS, new KeysetCursor(keyset));
     }
 
     @Override
-    public KeysetPageable beforeKeysetCursor(KeysetPageable.Cursor cursor) {
-        return new KeysetPagination(this, KeysetPageable.Mode.PREVIOUS, cursor);
+    public Pageable beforeKeysetCursor(Pageable.Cursor cursor) {
+        return new Pagination(pageNumber, pageSize, order, Mode.CURSOR_PREVIOUS, cursor);
+    }
+
+    @Override
+    public Cursor cursor() {
+        return cursor;
+    }
+
+    @Override
+    public Mode mode() {
+        return mode;
     }
 
     @Override
@@ -68,25 +82,28 @@ class Pagination implements Pageable {
 
     @Override
     public Pagination next() {
-        return new Pagination(pageNumber + 1, pageSize, order);
+        if (mode == Mode.OFFSET)
+            return new Pagination(pageNumber + 1, pageSize, order, mode, null);
+        else
+            throw new UnsupportedOperationException();
     }
 
     public static Pagination ofPage(long page) {
-        return new Pagination(page, 10, Collections.emptyList());
+        return new Pagination(page, 10, Collections.emptyList(), Mode.OFFSET, null);
     }
 
     public static Pagination ofSize(int size) {
-        return new Pagination(1, size, Collections.emptyList());
+        return new Pagination(1, size, Collections.emptyList(), Mode.OFFSET, null);
     }
 
     @Override
     public Pagination newPage(long page) {
-        return new Pagination(page, pageSize, order);
+        return new Pagination(page, pageSize, order, mode, cursor);
     }
 
     @Override
     public Pagination newSize(int size) {
-        return new Pagination(pageNumber, size, order);
+        return new Pagination(pageNumber, size, order, mode, cursor);
     }
 
     @Override
@@ -97,7 +114,7 @@ class Pagination implements Pageable {
         else
             order = StreamSupport.stream(sorts.spliterator(), false).collect(Collectors.toUnmodifiableList());
 
-        return new Pagination(pageNumber, pageSize, order);
+        return new Pagination(pageNumber, pageSize, order, mode, cursor);
     }
 
     @Override
@@ -105,7 +122,7 @@ class Pagination implements Pageable {
         @SuppressWarnings("unchecked")
         List<Sort> order = sorts == null ? Collections.EMPTY_LIST : List.of(sorts);
 
-        return new Pagination(pageNumber, pageSize, order);
+        return new Pagination(pageNumber, pageSize, order, mode, cursor);
     }
 
     @Override

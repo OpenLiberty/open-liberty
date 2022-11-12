@@ -14,10 +14,10 @@ package jakarta.data.repository;
  * Methods are copied from proposed interfaces in the Jakarta Data repo.
  */
 public interface KeysetAwareSlice<T> extends Slice<T> {
-    KeysetPageable.Cursor getKeysetCursor(int index);
+    Pageable.Cursor getKeysetCursor(int index);
 
     @Override
-    KeysetPageable nextPageable();
+    Pageable nextPageable();
 
-    KeysetPageable previousPageable();
+    Pageable previousPageable();
 }
