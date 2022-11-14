@@ -54,8 +54,4 @@ public class ModuleProperties {
     public Properties putToAuthMechMap(Class<?> className, Properties props) {
         return authMechMap.put(className, props);
     }
-
-    public Properties removeFromAuthMechMap(Class<?> className) {
-        return authMechMap.remove(className);
-    }
 }
