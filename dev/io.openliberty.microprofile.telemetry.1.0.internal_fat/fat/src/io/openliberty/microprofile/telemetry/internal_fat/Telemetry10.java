@@ -39,9 +39,10 @@ public class Telemetry10 extends FATServletClient {
 
     @Server(SERVER_NAME)
     @TestServlets({
+
                     @TestServlet(servlet = Telemetry10Servlet.class, contextRoot = APP_NAME),
                     @TestServlet(servlet = BaggageServlet.class, contextRoot = APP_NAME),
-                    @TestServlet(servlet = SpanCurrentServlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = SpanCurrentServlet.class, contextRoot = APP_NAME)
     })
     public static LibertyServer server;
 
