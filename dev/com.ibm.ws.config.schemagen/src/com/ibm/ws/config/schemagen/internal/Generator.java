@@ -93,7 +93,7 @@ public class Generator {
      */
     int createSchema(String[] args) {
         ReturnCode rc = ReturnCode.OK;
-
+        
         try {
             rc = generatorOptions.processArgs(args);
             // Now perform more general processing based on the current return code

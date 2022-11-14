@@ -23,6 +23,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -119,33 +120,46 @@ class SchemaWriter {
     private static boolean isEarlyAccess() {
         boolean result = false;
 
-        final Properties props = new Properties();
+        final Properties olProps = new Properties();
+        final Properties wasProps = new Properties();
         AccessController.doPrivileged(new PrivilegedAction<Object>() {
 
             @Override
             public Object run() {
                 try {
-                    Reader r;
+                    Reader ol;
+                    Reader was;
                     final File wasFile = new File(getInstallDir(), "lib/versions/WebSphereApplicationServer.properties");
                     final File olFile = new File(getInstallDir(), "lib/versions/openliberty.properties");
-                    if (olFile.exists())
-                        r = new InputStreamReader(new FileInputStream(olFile), StandardCharsets.UTF_8);
-                    else
-                        r = new InputStreamReader(new FileInputStream(wasFile), StandardCharsets.UTF_8);
-                    props.load(r);
-                    r.close();
+
+                    if (olFile.exists()) {
+                        ol = new InputStreamReader(new FileInputStream(olFile), StandardCharsets.UTF_8);
+                        olProps.load(ol);
+                        ol.close();
+                    }
+                    if (wasFile.exists()) {
+                        was = new InputStreamReader(new FileInputStream(wasFile), StandardCharsets.UTF_8);
+                        wasProps.load(was);
+                        was.close();
+                    }
                 } catch (IOException e) {
                     // ignore because we fail safe. Returning true will result in a GA suitable schema
                 }
                 return null;
             }
         });
-        String edition = props.getProperty("com.ibm.websphere.productEdition");
 
-        if (edition == null) {
+        String olEdition = olProps.getProperty("com.ibm.websphere.productEdition");
+        String wasEdition = wasProps.getProperty("com.ibm.websphere.productEdition");
+
+        if (olEdition == null && wasEdition == null) {
             result = false;
-        } else {
-            result = edition.equals(EARLY_ACCESS);
+        } else if (wasEdition == null) {
+            result = olEdition.equals(EARLY_ACCESS);
+        } else if (olEdition == null) {
+            result = wasEdition.equals(EARLY_ACCESS);
+        } else if (olEdition.equals(EARLY_ACCESS) || wasEdition.equals(EARLY_ACCESS)) {
+            result = true;
         }
         return result;
     }
@@ -174,6 +188,14 @@ class SchemaWriter {
                 }
             } else {
                 installDir = new File(installDirProp);
+            }
+        }
+
+        if (!installDir.getAbsolutePath().endsWith("/wlp")) {
+            if (Arrays.asList(installDir.list()).contains("wlp")) {
+                installDir = new File(installDir.getAbsolutePath() + "/wlp");
+            } else {
+                installDir = installDir.getParentFile();
             }
         }
 
@@ -524,13 +546,13 @@ class SchemaWriter {
     /**
      * This method takes a set of Attribute Definitions and processes them against an existing Map of attributes.
      *
-     * @param currDefId - A String containing the id of the ObjectClassDefinition that we're processing.
-     * @param attrDefs - The Attribute Definitions of the ObjectClassDefinition that we're processing
-     * @param currentAttributes - The existing map of properties from previous ObjectClassDefinition's in the heirarchy.
+     * @param currDefId          - A String containing the id of the ObjectClassDefinition that we're processing.
+     * @param attrDefs           - The Attribute Definitions of the ObjectClassDefinition that we're processing
+     * @param currentAttributes  - The existing map of properties from previous ObjectClassDefinition's in the heirarchy.
      * @param requiredAttributes - The current list of required Attributes from the processed definitions.
      * @param optionalAttributes - The current list of optional Attributes from the processed definitions.
-     * @param attributeMap - The list of ExtendedDefinitionAttributes for all of the OCD's in the heirarchy.
-     * @param required - A boolean indicating whether the list of currentAttributes are required or optional.
+     * @param attributeMap       - The list of ExtendedDefinitionAttributes for all of the OCD's in the heirarchy.
+     * @param required           - A boolean indicating whether the list of currentAttributes are required or optional.
      */
     private void processOCDAttributes(String currDefId, AttributeDefinition[] attrDefs, Map<String, AttributeDefinition> requiredAttributes,
                                       Map<String, AttributeDefinition> optionalAttributes, Map<String, ExtendedAttributeDefinition> attributeMap,
@@ -604,10 +626,10 @@ class SchemaWriter {
      * This method processes the rename attribute. It builds up a new attribute based on the original attribute, but override any values
      * that have been defined in the new attribute.
      *
-     * @param currDefId - A String containing the id of the ObjectClassDefinition that we're processing.
+     * @param currDefId    - A String containing the id of the ObjectClassDefinition that we're processing.
      * @param oldAttribute - The Attribute that is being renamed.
      * @param newAttribute - The new attribute that has the rename extension.
-     * @param required - A boolean indicating whether this attribute is required or optional.
+     * @param required     - A boolean indicating whether this attribute is required or optional.
      * @return - An AttributeDefinition object that contains the "merged" values.
      */
     private AttributeDefinition renameAttribute(String currDefId, ExtendedAttributeDefinition oldAttribute, ExtendedAttributeDefinition newAttribute, boolean required) {
@@ -1469,7 +1491,7 @@ class SchemaWriter {
      * This method adds additional annotations to required schema elements so that WDT is aware
      * that it needs to invoke server specific schema generation and use the generated schema.
      *
-     * @param action The action that should be invoked by WDT on encountering this element
+     * @param action      The action that should be invoked by WDT on encountering this element
      * @param currentType The current OCD type
      * @throws XMLStreamException
      */
