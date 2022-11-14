@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -72,6 +72,17 @@ public class ProducerEndpointFATServlet extends FATServlet {
     }
 
     private static String hostname = getSysProp("testing.ProducerServer.hostname");
+
+    private static final boolean isMetrics50OrLater;
+    static {
+        boolean isMeterFound = true;
+        try {
+            Class.forName("org.eclipse.microprofile.metrics.Meter");
+        } catch (Throwable t) {
+            isMeterFound = false;
+        }
+        isMetrics50OrLater = !isMeterFound;
+    }
 
     private RestClientBuilder builder;
 
@@ -441,8 +452,13 @@ public class ProducerEndpointFATServlet extends FATServlet {
 
         // retrieve the metrics
         int httpPort = Integer.parseInt(getSysProp("bvt.prop.HTTP_default"));
-        String metricValue = getMetric("localhost", httpPort, "/metrics/vendor/grpc.server.receivedMessages.total");
-        if (metricValue == null || Integer.parseInt(metricValue) < 200) {
+        String metricName = "/metrics/vendor/grpc.server.receivedMessages.total";
+        if (isMetrics50OrLater) {
+            metricName = "/metrics?scope=vendor&name=grpc.server.receivedMessages.total";
+        }
+
+        String metricValue = getMetric("localhost", httpPort, metricName, null);
+        if (metricValue == null || Float.valueOf(metricValue).intValue() < 200) {
             fail(String.format("Incorrect metric value [%s]. Expected [%s], got [%s]", "grpc.server.receivedMessages.total", ">=200", metricValue));
         }
         LOG.info(m + " ------------ testClientStreamingMetrics--FINISH -----------------------");
@@ -506,8 +522,13 @@ public class ProducerEndpointFATServlet extends FATServlet {
 
         // retrieve the metrics
         int httpPort = Integer.parseInt(getSysProp("bvt.prop.HTTP_secondary"));
-        String metricValue = getMetric("localhost", httpPort, "/metrics/vendor/grpc.client.receivedMessages.total");
-        if (metricValue == null || Integer.parseInt(metricValue) < 200) {
+        String metricName = "/metrics/vendor/grpc.client.receivedMessages.total";
+        if (isMetrics50OrLater) {
+            metricName = "/metrics?scope=vendor&name=grpc.client.receivedMessages.total";
+        }
+
+        String metricValue = getMetric("localhost", httpPort, metricName, "test_g3store_grpc_AppProducerService_serverStreamA");
+        if (metricValue == null || Float.valueOf(metricValue).intValue() < 200) {
             fail(String.format("Incorrect metric value [%s]. Expected [%s], got [%s]", "grpc.client.receivedMessages.total", ">=200", metricValue));
         }
 

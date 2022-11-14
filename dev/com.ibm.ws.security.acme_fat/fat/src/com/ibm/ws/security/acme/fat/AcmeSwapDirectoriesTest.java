@@ -55,7 +55,7 @@ import componenttest.topology.impl.LibertyServer;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-@SkipForRepeat(SkipForRepeat.EE9_FEATURES) // No value added
+@SkipForRepeat({SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES}) // No value added
 public class AcmeSwapDirectoriesTest {
 
 	@Server("com.ibm.ws.security.acme.fat.simple")

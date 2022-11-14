@@ -28,6 +28,8 @@ import com.ibm.ws.security.spnego.fat.config.InitClass;
 import com.ibm.ws.security.spnego.fat.config.SPNEGOConstants;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.JavaInfo;
@@ -46,7 +48,9 @@ public class FATSuite extends InitClass {
     private static final Class<?> c = FATSuite.class;
 
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.withoutModification().andWith(new JakartaEE9Action());
+    public static RepeatTests repeat = RepeatTests.withoutModification()
+                    .andWith(new JakartaEE9Action().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                    .andWith(new JakartaEE10Action());
 
     /**
      * Rule to setup users, SPNs etc on the KDC.
@@ -168,7 +172,7 @@ public class FATSuite extends InitClass {
      * JakartaEE9 transform a list of applications. The applications are the simple app names and they must exist at '<server>/apps/<appname>'.
      *
      * @param myServer The server to transform the applications on.
-     * @param apps The simple names of the applications to transform.
+     * @param apps     The simple names of the applications to transform.
      */
     public static void transformApps(LibertyServer myServer, String... apps) {
         if (JakartaEE9Action.isActive()) {
@@ -176,6 +180,12 @@ public class FATSuite extends InitClass {
                 Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + app);
                 JakartaEE9Action.transformApp(someArchive);
             }
+        } else if (JakartaEE10Action.isActive()) {
+            for (String app : apps) {
+                Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + app);
+                JakartaEE10Action.transformApp(someArchive);
+            }
         }
+
     }
 }
