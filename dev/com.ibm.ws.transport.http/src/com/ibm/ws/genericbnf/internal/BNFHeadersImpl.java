@@ -599,7 +599,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * Clear the array of buffers used during the parsing or marshalling of
      * headers.
      */
-    private void clearBuffers() {
+    public void clearBuffers() {
         // simply null out the parse buffers list, then release all the created buffers
         final boolean bTrace = TraceComponent.isAnyTracingEnabled();
         for (int i = 0; i <= this.parseIndex; i++) {
@@ -1713,6 +1713,9 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             elem.destroy();
             elem = next;
         }
+
+        //storage.clear();
+        //storage = new HashMap<Integer, HeaderElement>();
         this.hdrSequence = null;
         this.lastHdrInSequence = null;
         this.numberOfHeaders = 0;
