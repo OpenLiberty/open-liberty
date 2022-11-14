@@ -51,6 +51,10 @@ public class JaxRsSSLManager {
             Properties sslProps = getSSLProperties(sslRef, connectionInfo);
             SSLContext sslContext = getSSLContext(sslRef, connectionInfo, sslProps);
 
+            if (sslContext == null) {
+                return null;
+            }
+
             boolean recache = false;
             synchronized (sslContexts) {
                 SSLContext cachedSslContext = sslContexts.get(sslRef);
@@ -92,6 +96,10 @@ public class JaxRsSSLManager {
             Map<String, Object> connectionInfo = getConnectionInfo(host, port);
             Properties sslProps = getSSLProperties(sslRef, connectionInfo);
             SSLContext sslContext = getSSLContext(sslRef, connectionInfo, sslProps);
+
+            if (sslContext == null) {
+                return null;
+            }
 
             String cipherString = sslProps.getProperty(Constants.SSLPROP_ENABLED_CIPHERS);
 
