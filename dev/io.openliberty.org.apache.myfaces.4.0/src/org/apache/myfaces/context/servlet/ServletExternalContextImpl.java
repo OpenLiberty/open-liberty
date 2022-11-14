@@ -589,6 +589,10 @@ public final class ServletExternalContextImpl extends ServletExternalContextImpl
         PartialViewContext partialViewContext = facesContext.getPartialViewContext(); 
         if (partialViewContext.isPartialRequest())
         {
+            if (_servletResponse instanceof HttpServletResponse && facesContext.getResponseComplete())
+            {
+                throw new IllegalStateException();
+            }
             PartialResponseWriter writer = partialViewContext.getPartialResponseWriter();
             this.setResponseContentType("text/xml");
             this.setResponseCharacterEncoding("UTF-8");
