@@ -51,8 +51,9 @@ public class JPATestOLGH9035Logic extends AbstractTestLogic {
             }
         }
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
+        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
 
         //Only run this test on DB2ZOS
         if (!isDB2ZOS) {

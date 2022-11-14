@@ -102,7 +102,7 @@ public abstract class JPADBTestServlet extends JPATestServlet {
     protected static void executeDDL(String scriptName) throws Exception {
         fetchDatabaseMetadata();
 
-        DatabaseVendor vendor = DatabaseVendor.resolveDBProduct(dbProductName);
+        DatabaseVendor vendor = DatabaseVendor.resolveDBProduct(dbProductName, dbProductVersion);
         scriptName = scriptName.replace("${dbvendor}", vendor.toString());
 
         System.out.println("*****");
@@ -168,27 +168,31 @@ public abstract class JPADBTestServlet extends JPATestServlet {
 
     public static boolean isDB2ForZOS() throws Exception {
         String prodName = getDbProductName();
-        return DatabaseVendor.checkDBProductName(prodName, DatabaseVendor.DB2ZOS);
+        String prodVers = getDbProductVersion();
+        return DatabaseVendor.checkDBProductName(prodName, prodVers, DatabaseVendor.DB2ZOS);
     }
 
     public static boolean isDB2ForLUW() throws Exception {
         String prodName = getDbProductName();
-        return DatabaseVendor.checkDBProductName(prodName, DatabaseVendor.DB2LUW);
+        String prodVers = getDbProductVersion();
+        return DatabaseVendor.checkDBProductName(prodName, prodVers, DatabaseVendor.DB2LUW);
     }
 
     public static boolean isDB2ForISeries() throws Exception {
         String prodName = getDbProductName();
-        return DatabaseVendor.checkDBProductName(prodName, DatabaseVendor.DB2I);
+        String prodVers = getDbProductVersion();
+        return DatabaseVendor.checkDBProductName(prodName, prodVers, DatabaseVendor.DB2I);
     }
 
     public static boolean isDB2ForVM_VSE() throws Exception {
         String prodName = getDbProductName();
-        return DatabaseVendor.checkDBProductName(prodName, DatabaseVendor.DB2VMVSE);
+        String prodVers = getDbProductVersion();
+        return DatabaseVendor.checkDBProductName(prodName, prodVers, DatabaseVendor.DB2VMVSE);
     }
 
     public static boolean isDerby() throws Exception {
         String prodName = getDbProductName();
-        return DatabaseVendor.checkDBProductName(prodName, DatabaseVendor.DERBY);
+        String prodVers = getDbProductVersion();
+        return DatabaseVendor.checkDBProductName(prodName, prodVers, DatabaseVendor.DERBY);
     }
-
 }

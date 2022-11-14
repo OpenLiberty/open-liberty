@@ -54,9 +54,11 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
 
         // Execute Test Case
         try {
@@ -80,7 +82,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby || isDB2) {
+                if (isDerby || isDB2 || isDB2ZOS) {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (ABS(COALESCE(ITEM_INTEGER1, ?)) >= ?)";
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
@@ -103,7 +105,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby || isDB2) {
+                if (isDerby || isDB2 || isDB2ZOS) {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (ABS(COALESCE(ITEM_INTEGER1, 0)) >= 99)";
 
                     // EclipseLink 4.0 (JPA 3.1) changed the default behavior to bind literals now that DB2/Derby know what is valid
@@ -134,7 +136,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     Assert.assertNotNull(resultList);
                     Assert.assertEquals("Expecting 0 entries in the result list", 0, resultList.size());
 
-                    if (isDerby || isDB2) {
+                    if (isDerby || isDB2 || isDB2ZOS) {
                         // Expected a failure
                         Assert.fail("Query did not throw expected Exception on derby and db2 platforms.");
                     }
@@ -145,7 +147,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     // If all Arguments of COALESCE are untyped parameters, this is expected to fail for DB2/z and DB2 LUW
                     // Derby: All the arguments to the COALESCE/VALUE function cannot be parameters.
                     //  The function needs at least one argument that is not a parameter. Error 42610.
-                    if (isDerby || isDB2) {
+                    if (isDerby || isDB2 || isDB2ZOS) {
                         // Expected
                     } else {
                         throw t;
@@ -192,10 +194,9 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                                 || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
 
         // Execute Test Case
         try {
@@ -225,7 +226,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                     List<String> sql = SQLListener.getAndClearSQLList();
                     Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                    if (isDerby || isDB2) {
+                    if (isDerby || isDB2 || isDB2ZOS) {
                         String expected = "SELECT 2, COUNT(ABS(?)) FROM SIMPLEENTITYOLGH8294 WHERE (ITEM_INTEGER1 = ABS(?))";
                         Assert.assertEquals(expected, sql.get(0));
                     } // TODO: other databases
@@ -305,10 +306,9 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                                 || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
 
         // Execute Test Case
         try {
@@ -331,7 +331,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     final List<?> resultList = query.getResultList();
 
                     // Expect failure with derby and DB2/z
-                    if (isDerby || isDB2ZOS) {
+                    if (isDerby || isDB2 || isDB2ZOS) {
                         Assert.fail("Expected failure with database product " + dbProductName);
                     }
 
@@ -342,18 +342,18 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     List<String> sql = SQLListener.getAndClearSQLList();
                     Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
                     if (isUsingJPA31Feature()) {
-                        if (isDerby || isDB2) {
+                        if (isDerby || isDB2 || isDB2ZOS) {
                             String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE ((ITEM_STRING1 = TRIM(VARCHAR(? || ?))) AND (ITEM_STRING1 = TRIM(VARCHAR(? || ?))))";
                             Assert.assertEquals(expected, sql.get(0));
                         } // TODO: other databases
                     } else {
-                        if (isDerby || isDB2) {
+                        if (isDerby || isDB2 || isDB2ZOS) {
                             String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE ((ITEM_STRING1 = TRIM(VARCHAR(? || '-'))) AND (ITEM_STRING1 = TRIM(VARCHAR(? || '-'))))";
                             Assert.assertEquals(expected, sql.get(0));
                         } // TODO: other databases
                     }
                 } catch (Throwable t) {
-                    if (isDerby || isDB2ZOS) {
+                    if (isDerby || isDB2 || isDB2ZOS) {
                         // This is expected to fail
                         // When both the operands of the CONCATE function are untyped parameters, error on DB2/z
                         // It is not allowed for both operands of '||' to be ? parameters on Derby
@@ -382,7 +382,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     final List<?> resultList = query.getResultList();
 
                     // Expect failure with derby and DB2/z
-                    if (isDerby || isDB2ZOS) {
+                    if (isDerby || isDB2 || isDB2ZOS) {
                         Assert.fail("Expected failure with database product " + dbProductName);
                     }
 
@@ -395,7 +395,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                         Assert.assertEquals(expected, sql.get(0));
                     } // TODO: other databases
                 } catch (Throwable t) {
-                    if (isDerby || isDB2ZOS) {
+                    if (isDerby || isDB2 || isDB2ZOS) {
                         // This is expected to fail
                         // When both the operands of the CONCATE function are untyped parameters, error on DB2/z
                         // It is not allowed for both operands of '||' to be ? parameters on Derby
@@ -441,9 +441,11 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
 
         // Execute Test Case
         try {
@@ -468,7 +470,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby || isDB2) {
+                if (isDerby || isDB2 || isDB2ZOS) {
                     String expected = "SELECT t0.KEY_CHAR, t0.ITEM_BOOLEAN1, t0.ITEM_DATE1, t0.ITEM_INTEGER1, t0.ITEM_STRING1 FROM SIMPLEENTITYOLGH8294 t0 WHERE ((t0.ITEM_STRING1 = ?) AND EXISTS (SELECT 1 FROM SIMPLEENTITYOLGH8294 t1 WHERE (t0.ITEM_INTEGER1 = ?)))";
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
@@ -491,7 +493,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby || isDB2) {
+                if (isDerby || isDB2 || isDB2ZOS) {
                     String expected = "SELECT t0.KEY_CHAR, t0.ITEM_BOOLEAN1, t0.ITEM_DATE1, t0.ITEM_INTEGER1, t0.ITEM_STRING1 FROM SIMPLEENTITYOLGH8294 t0 WHERE ((t0.ITEM_STRING1 = 'Test') AND EXISTS (SELECT 1 FROM SIMPLEENTITYOLGH8294 t1 WHERE (t0.ITEM_INTEGER1 = 33)))";
 
                     //TODO: Alter test until EclipseLink 3.0 are updated to include the fix
@@ -540,9 +542,11 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
 
         // Execute Test Case
         try {
@@ -566,7 +570,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby || isDB2) {
+                if (isDerby || isDB2 || isDB2ZOS) {
                     String expected = "SELECT (ITEM_INTEGER1 + ?) FROM SIMPLEENTITYOLGH8294 WHERE ((ITEM_INTEGER1 + ?) > 1)";
 
                     // EclipseLink 4.0 (JPA 3.1) changed the default behavior to bind literals now that DB2/Derby know what is valid
@@ -630,7 +634,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby || isDB2) {
+                if (isDerby || isDB2 || isDB2ZOS) {
                     String expected = "SELECT (ITEM_INTEGER1 + 4) FROM SIMPLEENTITYOLGH8294 WHERE (ABS((ITEM_INTEGER1 + 4)) > 1)";
 
                     // EclipseLink 4.0 (JPA 3.1) changed the default behavior to bind literals now that DB2/Derby know what is valid
@@ -680,10 +684,9 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                                 || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
 
         // Execute Test Case
         try {
@@ -707,7 +710,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     final List<?> resultList = query.getResultList();
 
                     // Expect failure with derby and DB2/z
-                    if (isDerby || isDB2ZOS) {
+                    if (isDerby || isDB2 || isDB2ZOS) {
                         Assert.fail("Expected failure with database product " + dbProductName);
                     }
 
@@ -723,7 +726,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                         Assert.assertEquals(expected, sql.get(0));
                     } // TODO: other databases
                 } catch (Throwable t) {
-                    if (isDerby || isDB2ZOS) {
+                    if (isDerby || isDB2 || isDB2ZOS) {
                         // This is expected to fail
                         // Use as the left operand of an IN list is not allowed when all operands are untyped parameters, error 42X35 on Derby
                         // When all the operands of an IN predicate are untyped parameters, error on DB2/z
@@ -749,7 +752,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     final List<?> resultList = query.getResultList();
 
                     // Expect failure with derby and DB2/z
-                    if (isDerby || isDB2ZOS) {
+                    if (isDerby || isDB2 || isDB2ZOS) {
                         Assert.fail("Expected failure with database product " + dbProductName);
                     }
 
@@ -771,7 +774,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                         } // TODO: other databases
                     }
                 } catch (Throwable t) {
-                    if (isDerby || isDB2ZOS) {
+                    if (isDerby || isDB2 || isDB2ZOS) {
                         // This is expected to fail
                         // Use as the left operand of an IN list is not allowed when all operands are untyped parameters, error 42X35 on Derby
                         // When all the operands of an IN predicate are untyped parameters, error on DB2/z
@@ -798,7 +801,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     final List<?> resultList = query.getResultList();
 
                     // Expect failure with derby and DB2/z
-                    if (isDerby || isDB2ZOS) {
+                    if (isDerby || isDB2 || isDB2ZOS) {
                         Assert.fail("Expected failure with database product " + dbProductName);
                     }
 
@@ -820,7 +823,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                         } // TODO: other databases
                     }
                 } catch (Throwable t) {
-                    if (isDerby || isDB2ZOS) {
+                    if (isDerby || isDB2 || isDB2ZOS) {
                         // This is expected to fail
                         // Use as the left operand of an IN list is not allowed when all operands are untyped parameters, error 42X35 on Derby
                         // When all the operands of an IN predicate are untyped parameters, error on DB2/z
@@ -847,7 +850,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     final List<?> resultList = query.getResultList();
 
                     // Expect failure with derby and DB2/z
-                    if (isDerby || isDB2ZOS) {
+                    if (isDerby || isDB2 || isDB2ZOS) {
                         Assert.fail("Expected failure with database product " + dbProductName);
                     }
 
@@ -869,7 +872,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                         } // TODO: other databases
                     }
                 } catch (Throwable t) {
-                    if (isDerby || isDB2ZOS) {
+                    if (isDerby || isDB2 || isDB2ZOS) {
                         // This is expected to fail
                         // Use as the left operand of an IN list is not allowed when all operands are untyped parameters, error 42X35 on Derby
                         // When all the operands of an IN predicate are untyped parameters, error on DB2/z
@@ -915,9 +918,11 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
 
         // Execute Test Case
         try {
@@ -944,7 +949,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby || isDB2) {
+                if (isDerby || isDB2 || isDB2ZOS) {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE ? LIKE ? ESCAPE '_'";
 
                     // EclipseLink 4.0 (JPA 3.1) changed the default behavior to bind literals now that DB2/Derby know what is valid
@@ -977,7 +982,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby || isDB2) {
+                if (isDerby || isDB2 || isDB2ZOS) {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE ITEM_STRING1 LIKE ?";
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
@@ -1019,9 +1024,11 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
         }
 
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
+        final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
 
         // Execute Test Case
         try {
@@ -1045,7 +1052,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby || isDB2) {
+                if (isDerby || isDB2 || isDB2ZOS) {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (TRIM(ITEM_STRING1) = TRIM(SUBSTR(?, 1, 5)))";
 
                     // EclipseLink 4.0 (JPA 3.1) changed the default behavior to bind literals now that DB2/Derby know what is valid
@@ -1077,7 +1084,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby || isDB2) {
+                if (isDerby || isDB2 || isDB2ZOS) {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (TRIM(ITEM_STRING1) = TRIM(SUBSTR(?, ?, 5)))";
 
                     // EclipseLink 4.0 (JPA 3.1) changed the default behavior to bind literals now that DB2/Derby know what is valid
@@ -1110,7 +1117,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby || isDB2) {
+                if (isDerby || isDB2 || isDB2ZOS) {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (ITEM_STRING1 = SUBSTR(?, ?, ?))";
                     Assert.assertEquals(expected, sql.get(0));
                 } // TODO: other databases
@@ -1139,7 +1146,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 List<String> sql = SQLListener.getAndClearSQLList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby || isDB2) {
+                if (isDerby || isDB2 || isDB2ZOS) {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (SUBSTR(ITEM_STRING1, 1, ?) NOT IN (?, ?, ?, ?))";
 
                     // EclipseLink 4.0 (JPA 3.1) changed the default behavior to bind literals now that DB2/Derby know what is valid

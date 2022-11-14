@@ -52,10 +52,11 @@ public class JPATestOLGH8820Logic extends AbstractTestLogic {
             }
         }
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
-        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        final boolean isMySQL = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.MYSQL);
+        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.ORACLE);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        final boolean isMySQL = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.MYSQL);
 
         // TODO: Add support for more database platforms
         if (!isOracle || !isDB2 || !isMySQL) {
@@ -130,10 +131,11 @@ public class JPATestOLGH8820Logic extends AbstractTestLogic {
             }
         }
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
+        final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
-        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        final boolean isMySQL = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.MYSQL);
+        final boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.ORACLE);
+        final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        final boolean isMySQL = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.MYSQL);
 
         // TODO: Add support for more database platforms
         if (!isOracle || !isDB2 || !isMySQL) {
