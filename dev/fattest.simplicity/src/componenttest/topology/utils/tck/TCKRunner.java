@@ -199,7 +199,7 @@ public class TCKRunner {
 
         String[] dependencyOutput = runDependencyCmd();
         TCKJarInfo tckJarInfo = getTCKJarInfo(this.type, dependencyOutput);
-        TCKResultsInfo resultsInfo = new TCKResultsInfo(this.type, this.specName, this.server.getOpenLibertyVersion(), tckJarInfo);
+        TCKResultsInfo resultsInfo = new TCKResultsInfo(this.type, this.specName, this.server, tckJarInfo);
         TCKResultsWriter.preparePublicationFile(resultsInfo);
     }
 

@@ -10,12 +10,17 @@
  *******************************************************************************/
 package componenttest.topology.utils.tck;
 
+import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.LibertyServer;
 
 /**
  * Metadata about a set of TCK Results
  */
 public class TCKResultsInfo {
+
+    private static final Class<TCKResultsInfo> c = TCKResultsInfo.class;
 
     public static enum Type {
         MICROPROFILE, //A MicroProfile TCK
@@ -32,20 +37,18 @@ public class TCKResultsInfo {
 
     private final String javaMajorVersion;// = resultInfo.get("java_major_version");
     private final String javaVersion;// = resultInfo.get("java_info");
-    private final String openLibertyVersion;// = resultInfo.get("product_version");
     private final Type type;// = resultInfo.get("results_type");
-    private final String osVersion;// = resultInfo.get("os_name");
     private final String specName;// = resultInfo.get("feature_name");
-    private TCKJarInfo tckJarInfo;
+    private final TCKJarInfo tckJarInfo;
+    private final LibertyServer server;
 
-    public TCKResultsInfo(Type type, String specName, String openLibertyVersion, TCKJarInfo tckJarInfo) {
+    public TCKResultsInfo(Type type, String specName, LibertyServer server, TCKJarInfo tckJarInfo) {
         this.type = type;
         this.specName = specName;
-        this.openLibertyVersion = openLibertyVersion;
         this.javaVersion = System.getProperty("java.runtime.name") + " (" + System.getProperty("java.runtime.version") + ')';
         JavaInfo javaInfo = JavaInfo.forCurrentVM();
         this.javaMajorVersion = String.valueOf(javaInfo.majorVersion());
-        this.osVersion = System.getProperty("os.name");
+        this.server = server;
         this.tckJarInfo = tckJarInfo;
     }
 
@@ -67,7 +70,7 @@ public class TCKResultsInfo {
      * @return the openLibertyVersion
      */
     public String getOpenLibertyVersion() {
-        return openLibertyVersion;
+        return this.server.getOpenLibertyVersion();
     }
 
     /**
@@ -78,10 +81,27 @@ public class TCKResultsInfo {
     }
 
     /**
+     * @return the osName
+     */
+    public String getOsName() {
+        try {
+            return server.getMachine().getRawOSName();
+        } catch (Exception e) {
+            Log.error(c, "getOsName", e);
+            return "UNKNOWN";
+        }
+    }
+
+    /**
      * @return the osVersion
      */
     public String getOsVersion() {
-        return osVersion;
+        try {
+            return server.getMachine().getOSVersion();
+        } catch (Exception e) {
+            Log.error(c, "getOsVersion", e);
+            return "UNKNOWN";
+        }
     }
 
     /**

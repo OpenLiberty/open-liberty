@@ -39,6 +39,7 @@ public class TCKResultsWriter {
         String javaVersion = resultInfo.getJavaVersion();
         String openLibertyVersion = resultInfo.getOpenLibertyVersion();
         Type type = resultInfo.getType();
+        String osName = resultInfo.getOsName();
         String osVersion = resultInfo.getOsVersion();
         String specName = resultInfo.getSpecName();
         String specVersion = resultInfo.getSpecVersion();
@@ -74,7 +75,7 @@ public class TCKResultsWriter {
         String filename = openLibertyVersion + "-" + fullSpecName.replace(" ", "-") + "-Java" + javaMajorVersion + "-TCKResults.adoc";
         Path outputPath = Paths.get("results", filename);
         File outputFile = outputPath.toFile();
-        String adocContent = getADocHeader(filename, fullSpecName, specURL, openLibertyVersion, javaMajorVersion, javaVersion, osVersion, tckURL, tckSHA);
+        String adocContent = getADocHeader(filename, fullSpecName, specURL, openLibertyVersion, javaMajorVersion, javaVersion, osName, osVersion, tckURL, tckSHA);
 
         try (FileWriter output = new FileWriter(outputFile)) {
             Path junitPath = Paths.get("results", "junit");
@@ -103,7 +104,7 @@ public class TCKResultsWriter {
     }
 
     private static String getADocHeader(String filename, String fullSpecName, String specURL, String openLibertyVersion, String javaMajorVersion, String javaVersion,
-                                        String osVersion, String tckURL, String tckSHA) {
+                                        String osName, String osVersion, String tckURL, String tckSHA) {
         StringBuilder builder = new StringBuilder();
 
         builder.append(":page-layout: certification ").append(NEW_LINE);
@@ -152,6 +153,8 @@ public class TCKResultsWriter {
 
         builder.append("* Summary of the information for the certification environment, operating system, cloud, ...:").append(NEW_LINE);
         builder.append("+").append(NEW_LINE);
+        builder.append(osName);
+        builder.append(": ");
         builder.append(osVersion).append(NEW_LINE);
         builder.append(NEW_LINE);
 
