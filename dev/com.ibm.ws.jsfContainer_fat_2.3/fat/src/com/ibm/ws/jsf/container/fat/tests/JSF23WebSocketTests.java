@@ -35,6 +35,7 @@ import com.ibm.ws.jsf.container.fat.utils.UseImplementation;
 import com.ibm.ws.jsf.container.fat.utils.WebArchiveInfo;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
@@ -149,6 +150,7 @@ public class JSF23WebSocketTests extends FATServletClient {
      *
      * @throws Exception
      */
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void testOpenAndCloseWebsocket() throws Exception {
         try (WebClient webClient = new WebClient()) {
