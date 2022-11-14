@@ -15,6 +15,7 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import org.junit.After;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
@@ -38,6 +39,27 @@ public class FailoverTest extends TxFATServletClient {
     public static final String SERVLET_NAME = "transaction/FailoverServlet";
 
     protected static final int START_TIMEOUT = 30000;
+
+    // This is the server that will be stopped after each test
+    protected LibertyServer server;
+    protected String[] serverMsgs;
+
+    @After
+    public void cleanup() throws Exception {
+
+        if (server != null) {
+            if (serverMsgs != null) {
+                FATUtils.stopServers(serverMsgs, server);
+                serverMsgs = null;
+            } else {
+                FATUtils.stopServers(server);
+            }
+
+            server = null;
+        }
+
+        FailoverTest.commonCleanup(this.getClass().getName());
+    }
 
     public void runInServletAndCheck(LibertyServer server, String path, String method) throws Exception {
         StringBuilder sb = runInServlet(server, path, method);
