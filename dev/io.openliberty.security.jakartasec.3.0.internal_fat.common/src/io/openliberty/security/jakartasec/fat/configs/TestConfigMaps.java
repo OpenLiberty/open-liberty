@@ -12,7 +12,6 @@ package io.openliberty.security.jakartasec.fat.configs;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import io.openliberty.security.jakartasec.fat.utils.Constants;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.PromptType;
@@ -253,28 +252,13 @@ public class TestConfigMaps {
 
     }
 
-//    public static Map<String, Object> mergeMaps(Map<String, Object>... indivMaps) throws Exception {
-//
-//        Map<String, Object> updatedMap = new HashMap<String, Object>();
-//        for (Map<String, Object> aMap : indivMaps) {
-//            for (Entry<String, Object> x : aMap.entrySet()) {
-//                updatedMap.put(x.getKey(), x.getValue());
-//            }
-//        }
-//        return updatedMap;
-//
-//    }
-
     public static Map<String, Object> mergeMaps(Map<String, Object> updatedMap, Map<String, Object> newMap) throws Exception {
 
         if (updatedMap == null) {
             updatedMap = new HashMap<String, Object>();
         }
-//        for (Map<String, Object> aMap : newMap.entrySet()) {
-        for (Entry<String, Object> x : newMap.entrySet()) {
-            updatedMap.put(x.getKey(), x.getValue());
-        }
-//        }
+
+        updatedMap.putAll(newMap);
         return updatedMap;
 
     }

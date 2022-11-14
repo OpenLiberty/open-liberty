@@ -37,13 +37,13 @@ import com.ibm.ws.security.fat.common.expectations.ResponseTitleExpectation;
 import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
 import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
 import com.ibm.ws.security.fat.common.utils.AutomationTools;
-import com.ibm.ws.security.fat.common.utils.CommonExpectations;
 import com.ibm.ws.security.fat.common.utils.MySkipRule;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.security.jakartasec.fat.utils.CommonExpectations;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
 import io.openliberty.security.jakartasec.fat.utils.OpenIdContextExpectationHelpers;
 import io.openliberty.security.jakartasec.fat.utils.ResponseValues;
@@ -286,7 +286,7 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
 
     public Page invokeAppGetToAppWithRefreshedToken(WebClient webClient, String url) throws Exception {
 
-        return invokeApp(webClient, url, getProcessAppAccessWithRefreshtedTokenExpectations(""));
+        return invokeApp(webClient, url, getProcessAppAccessWithRefreshedTokenExpectations(""));
 
     }
 
@@ -367,7 +367,7 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
         return processLoginexpectations;
     }
 
-    public Expectations getProcessAppAccessWithRefreshtedTokenExpectations(String app) throws Exception {
+    public Expectations getProcessAppAccessWithRefreshedTokenExpectations(String app) throws Exception {
 
         Expectations processLoginexpectations = getGeneralAppExpecations(app);
         //            // check for the correct values from the callback in the server log
@@ -544,7 +544,7 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
     }
 
     /**
-     * Compare access_tokens, id_tokens and refresh_tokens between 2 reponses. Can be used to validate that we've invoked refresh properly, or have had to login again
+     * Compare access_tokens, id_tokens and refresh_tokens between 2 responses. Can be used to validate that we've invoked refresh properly, or have had to login again
      *
      * @param response1 - the output from the first request
      * @param response2 - the output from teh second request
@@ -562,20 +562,24 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
         }
 
         return differentToken;
-//        if (provderAllowsRefresh) {
-//            return accessTokensAreDifferent(response1, response2) && idTokensAreDifferent(response1, response2) && refreshTokensAreDifferent(response1, response2);
-//        } else {
-//            return accessTokensAreDifferent(response1, response2) && idTokensAreDifferent(response1, response2);
-//        }
     }
 
     public boolean tokensAreTheSame(Page response1, Page response2, boolean provderAllowsRefresh) throws Exception {
 
+        boolean tokensAreTheSame = !accessTokensAreDifferent(response1, response2) && !idTokensAreDifferent(response1, response2);
         if (provderAllowsRefresh) {
-            return !accessTokensAreDifferent(response1, response2) && !idTokensAreDifferent(response1, response2) && !refreshTokensAreDifferent(response1, response2);
-        } else {
-            return !accessTokensAreDifferent(response1, response2) && !idTokensAreDifferent(response1, response2);
+            return tokensAreTheSame && !refreshTokensAreDifferent(response1, response2);
         }
+        return tokensAreTheSame;
+    }
+
+    public boolean tokensAreTheSameIdTokenNull(Page response1, Page response2, boolean provderAllowsRefresh) throws Exception {
+
+        boolean tokensAreTheSame = !accessTokensAreDifferent(response1, response2) && idTokensAreDifferent(response1, response2);
+        if (provderAllowsRefresh) {
+            return tokensAreTheSame && !refreshTokensAreDifferent(response1, response2);
+        }
+        return tokensAreTheSame;
     }
 
     public boolean accessTokensAreDifferent(Page response1, Page response2) throws Exception {
@@ -607,7 +611,9 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
         String second_id_token = AutomationTools.getTokenFromResponse(response2,
                                                                       ServletMessageConstants.SERVLET + ServletMessageConstants.OPENID_CONTEXT
                                                                                  + ServletMessageConstants.ID_TOKEN);
-
+        if (first_id_token == null || first_id_token.equals("null")) {
+            return true; // will only have a null first id_token in the case of multiple refreshes
+        }
         if (first_id_token.equals(second_id_token)) {
             Log.info(thisClass, _testName, "Both id_tokens were the same");
             return false;
