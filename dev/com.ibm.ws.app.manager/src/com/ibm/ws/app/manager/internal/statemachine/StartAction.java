@@ -32,10 +32,13 @@ import com.ibm.wsspi.application.handler.ApplicationHandler;
 import com.ibm.wsspi.application.handler.ApplicationMonitoringInformation;
 import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
 
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 /**
  *
  */
-class StartAction implements Action {
+class StartAction implements Action, CheckpointHook {
     private static final TraceComponent _tc = Tr.register(StartAction.class);
     private final ApplicationConfig _config;
     private final ApplicationInstallInfo _aii;
@@ -125,6 +128,24 @@ class StartAction implements Action {
         _appMonitor = appMonitor;
         _update = update;
         _configurator = configurator;
+        CheckpointPhase checkpointPhase = CheckpointPhase.getPhase();
+        if (checkpointPhase == CheckpointPhase.APPLICATIONS) {
+            checkpointPhase.addMultiThreadedHook(this);
+        }
+    }
+
+    @Override
+    public void prepare() {
+        if (_callback.get() != null) {
+            // application startup timed out, fail checkpoint
+            final ApplicationHandler<?> handler = _aii.getHandler();
+            if (handler == null) {
+                // this should never happen
+                throw new IllegalStateException("The application handler is not available");
+            }
+            throw new IllegalStateException(AppMessageHelper.get(handler).formatMessage("APPLICATION_SLOW_STARTUP", _config.getName(),
+                                                                                        TimestampUtils.getElapsedTimeNanos(_startTime.get())));
+        }
     }
 
     /** {@inheritDoc} */

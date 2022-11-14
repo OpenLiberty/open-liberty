@@ -59,7 +59,8 @@ import componenttest.topology.impl.LibertyServer;
                 MPJWTTest.class,
                 MPMetricsTest.class,
                 WebProfileEARtest.class,
-                MPHealthTest.class
+                MPHealthTest.class,
+                SlowAppStartTest.class
 })
 
 public class FATSuite {
