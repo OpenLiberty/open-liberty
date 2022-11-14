@@ -24,11 +24,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
@@ -40,6 +41,7 @@ import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
 import javax.enterprise.inject.spi.ProcessBeanAttributes;
 import javax.enterprise.inject.spi.WithAnnotations;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.security.enterprise.authentication.mechanism.http.BasicAuthenticationMechanismDefinition;
 import javax.security.enterprise.authentication.mechanism.http.CustomFormAuthenticationMechanismDefinition;
 import javax.security.enterprise.authentication.mechanism.http.FormAuthenticationMechanismDefinition;
@@ -91,8 +93,10 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     private final Set<Bean> beansToAdd = new HashSet<Bean>();
     private boolean identityStoreHandlerRegistered = false;
     private boolean identityStoreRegistered = false;
-    private boolean isAlternativeHAMAdded = false;
+    private final boolean isAlternativeHAMAdded = false;
     private final String applicationName;
+    private static final String DECORATOR = "Decorator";
+    private static final String ALTERNATIVE = "Alternative";
     private final List<LdapIdentityStoreDefinition> ldapDefinitionList = new ArrayList<LdapIdentityStoreDefinition>();
     private final List<DatabaseIdentityStoreDefinition> databaseDefinitionList = new ArrayList<DatabaseIdentityStoreDefinition>();
 
@@ -141,41 +145,42 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
 
     public <T> void processAnnotatedType(ProcessAnnotatedType<T> processAnnotatedType, BeanManager beanManager) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "processAnnotatedType : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
+            Tr.debug(tc, "instance: " + Integer.toHexString(this.hashCode()) + " BeanManager: " + Integer.toHexString(beanManager.hashCode()));
         AnnotatedType<T> annotatedType = processAnnotatedType.getAnnotatedType();
 
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "processAnnotatedType : annotation : " + annotatedType);
+            Tr.debug(tc, "annotationType: " + annotatedType);
 
         Class<?> javaClass = annotatedType.getJavaClass();
         boolean isAuthMechOverridden = isAuthMechOverridden();
-        if (isApplicationAuthMech(javaClass)) {
+        boolean isApplicationAuthMech = isApplicationAuthMech(javaClass);
+        Set<Annotation> annotations = annotatedType.getAnnotations();
+        if (isApplicationAuthMech) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Found an application specific HttpAuthenticationMechanism : " + javaClass);
+                Tr.debug(tc, "Found an application specific HttpAuthenticationMechanism: " + javaClass);
             }
+
             if (isAuthMechOverridden) {
                 createModulePropertiesProviderBeanForGlobalLogin(beanManager, javaClass);
             } else {
                 Annotation ltc = annotatedType.getAnnotation(LoginToContinue.class);
-                Annotation alternative = annotatedType.getAnnotation(Alternative.class);
-                createModulePropertiesProviderBeanForApplicationAuthMechToAdd(beanManager, ltc, alternative, javaClass);
+                createModulePropertiesProviderBeanForApplicationAuthMechToAdd(beanManager, ltc, javaClass, annotations);
             }
         }
+
         //look at the class level annotations
-        Set<Annotation> annotations = annotatedType.getAnnotations();
         for (Annotation annotation : annotations) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Annotations found: " + annotation);
                 Tr.debug(tc, "Annotation class: ", annotation.getClass());
             }
 
-            // TODO: If I see my annotations, create beans by type. Add more bean types.
             Class<? extends Annotation> annotationType = annotation.annotationType();
             if (BasicAuthenticationMechanismDefinition.class.equals(annotationType)) {
                 if (isAuthMechOverridden) {
                     createModulePropertiesProviderBeanForGlobalLogin(beanManager, javaClass);
                 } else {
-                    createModulePropertiesProviderBeanForBasicToAdd(beanManager, annotation, annotationType, javaClass);
+                    createModulePropertiesProviderBeanForBasicToAdd(beanManager, annotations, annotation, annotationType, javaClass);
                 }
             } else if (FormAuthenticationMechanismDefinition.class.equals(annotationType) || CustomFormAuthenticationMechanismDefinition.class.equals(annotationType)) {
                 if (isAuthMechOverridden) {
@@ -204,7 +209,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
 
     public <T> void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "afterBeanDiscovery : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
+            Tr.debug(tc, "instance: " + Integer.toHexString(this.hashCode()) + " BeanManager: " + Integer.toHexString(beanManager.hashCode()));
         try {
             verifyConfiguration();
             if (!identityStoreHandlerRegistered) {
@@ -230,11 +235,23 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         for (Bean bean : beansToAdd) {
             afterBeanDiscovery.addBean(bean);
         }
+
+        if (tc.isDebugEnabled()) {
+            printBeans(beanManager, "After addBean()");
+        }
+    }
+
+    void printBeans(BeanManager beanManager, String stage) {
+        Set<Bean<?>> beans = beanManager.getBeans(Object.class, new AnnotationLiteral<Any>() {
+        });
+        for (Bean<?> bean : beans) {
+            Tr.debug(tc, stage + " bean name: " + bean.getBeanClass().getName());
+        }
     }
 
     public void processBean(@Observes ProcessBean<?> processBean, BeanManager beanManager) {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "processBean : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
+            Tr.debug(tc, "instance: " + Integer.toHexString(this.hashCode()) + " BeanManager: " + Integer.toHexString(beanManager.hashCode()));
         if (!identityStoreHandlerRegistered) {
             if (isIdentityStoreHandler(processBean)) {
                 identityStoreHandlerRegistered = true;
@@ -302,15 +319,18 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
 
     /**
      * @param beanManager
+     * @param annotations
      * @param annotation
      * @param annotationType
      */
-    private void createModulePropertiesProviderBeanForBasicToAdd(BeanManager beanManager, Annotation annotation, Class<? extends Annotation> annotationType, Class annotatedClass) {
+    private void createModulePropertiesProviderBeanForBasicToAdd(BeanManager beanManager, Set<Annotation> annotations, Annotation annotation,
+                                                                 Class<? extends Annotation> annotationType, Class annotatedClass) {
         try {
             Method realmNameMethod = annotationType.getMethod("realmName");
             String realmName = (String) realmNameMethod.invoke(annotation);
             Properties props = new Properties();
             props.put(JavaEESecConstants.REALM_NAME, realmName);
+            addDecoratOrAlternativeProps(annotations, props);
             addAuthMech(applicationName, annotatedClass, BasicHttpAuthenticationMechanism.class, props);
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -320,12 +340,34 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     }
 
     /**
+     * @param annotations
+     * @param props
+     */
+    private void addDecoratOrAlternativeProps(Set<Annotation> annotations, Properties props) {
+        //This is class level annotation
+        for (Annotation annt : annotations) {
+            Class<? extends Annotation> annType = annt.annotationType();
+            if (DECORATOR.equals(annType.getSimpleName())) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Add Decorator=true");
+                props.put(DECORATOR, true);
+            } else if (ALTERNATIVE.equals(annType.getSimpleName())) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Add Alternative=true");
+                props.put(ALTERNATIVE, true);
+
+            }
+        }
+
+    }
+
+    /**
      * @param beanManager
      * @param ltc         LoginToContinue annotation if it exists.
      * @param implClass   the implementation class
      */
     @SuppressWarnings("rawtypes")
-    private void createModulePropertiesProviderBeanForApplicationAuthMechToAdd(BeanManager beanManager, Annotation ltc, Annotation alternative, Class implClass) {
+    private void createModulePropertiesProviderBeanForApplicationAuthMechToAdd(BeanManager beanManager, Annotation ltc, Class implClass, Set<Annotation> annotations) {
         Properties props = null;
         if (ltc != null) {
             try {
@@ -336,22 +378,12 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
                 e.printStackTrace();
             }
         }
-        boolean isAlternative = (alternative != null);
-        if (isAlternative) {
-            // Use the alternative instead of the existing authMech
-            Class<?> existingAuthMechClass = httpAuthenticationMechanismsTracker.getExistingAuthMechClass(applicationName);
-            boolean authMechAlreadyExists = (existingAuthMechClass != null);
-            if (authMechAlreadyExists) {
-                httpAuthenticationMechanismsTracker.removeAuthMech(applicationName, existingAuthMechClass);
-            }
-            addAuthMech(applicationName, implClass, props);
-            isAlternativeHAMAdded = true;
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "adding alternative HAM: " + implClass);
-            }
-        } else if (!isAlternativeHAMAdded) {
-            addAuthMech(applicationName, implClass, props);
+        if (props == null) {
+            props = new Properties();
         }
+        addDecoratOrAlternativeProps(annotations, props);
+
+        addAuthMech(applicationName, implClass, implClass, props);
     }
 
     /**
@@ -854,7 +886,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
                     Map<Class<?>, Properties> authMechs = httpAuthenticationMechanismsTracker.getAuthMechs(applicationName, j2eeModuleName);
                     if (authMechs != null && !authMechs.isEmpty()) {
                         // make sure that only one HAM.
-                        if (authMechs.size() != 1) {
+                        if (authMechs.size() != 1 && !isDecoratorOrAlternative(authMechs)) {
                             String appName = mmd.getJ2EEName().getApplication();
                             String authMechNames = getAuthMechNames(authMechs);
                             Tr.error(tc, "JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS", j2eeModuleName, appName, authMechNames);
@@ -876,6 +908,20 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
                 }
             }
         }
+    }
+
+    /**
+     * @param authMechs
+     */
+    private boolean isDecoratorOrAlternative(Map<Class<?>, Properties> authMechs) {
+        for (Entry<Class<?>, Properties> authMech : authMechs.entrySet()) {
+            Properties value = authMech.getValue();
+            //if (value != null && (value.contains(DECORATOR) || value.contains(ALTERNATIVE))) {
+            if (value != null && (value.toString().contains(DECORATOR) || value.toString().contains(ALTERNATIVE))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String getAuthMechNames(Map<Class<?>, Properties> authMechs) {

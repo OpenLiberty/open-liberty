@@ -15,7 +15,8 @@
 	<version>1.0-SNAPSHOT</version>
 	<name>Jakarta JSON Binding TCK Runner TCK Module</name>
 
-	<repositories> <!-- For artifacts not yet in Maven Central -->
+	<!-- For artifacts not yet in Maven Central -->
+	<!-- <repositories> 
 		<repository>
 			<id>sonatype-nexus-staging</id>
 			<name>Sonatype Nexus Staging</name>
@@ -27,7 +28,7 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
-	</repositories>
+	</repositories> -->
 
 	<properties>
 		<!-- Global Maven settings -->

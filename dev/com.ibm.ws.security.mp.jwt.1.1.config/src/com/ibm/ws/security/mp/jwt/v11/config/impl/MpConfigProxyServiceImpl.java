@@ -11,7 +11,6 @@
 package com.ibm.ws.security.mp.jwt.v11.config.impl;
 
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -26,7 +25,6 @@ import org.osgi.service.component.annotations.Modified;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.jwt.config.MpConfigProperties;
 import com.ibm.ws.security.mp.jwt.MpConfigProxyService;
 import com.ibm.ws.security.mp.jwt.v11.config.TraceConstants;
@@ -61,62 +59,20 @@ public class MpConfigProxyServiceImpl implements MpConfigProxyService {
         return MP_VERSION;
     }
 
-    /**
-     * @return
-     */
-    @Sensitive
-    @Override
-    public <T> T getConfigValue(ClassLoader cl, String propertyName, Class<T> propertyType) throws IllegalArgumentException, NoSuchElementException {
-        if (isAcceptableMpConfigProperty(propertyName)) {
-            Optional<T> value = getConfig(cl).getOptionalValue(propertyName, propertyType);
-            if (value != null && value.isPresent()) {
-                return value.get();
-            }
-            return null;
-        }
-        return null;
-    }
-
-    /** return */
-    @Sensitive
-    @Override
-    public MpConfigProperties getConfigProperties(ClassLoader cl) {
-        Config config = getConfig(cl);
-        Set<String> propertyNames = getSupportedConfigPropertyNames();
-        MpConfigProperties mpConfigProps = new MpConfigProperties();
-
-        for (String propertyName : propertyNames) {
-            Optional<String> value = config.getOptionalValue(propertyName, String.class);
-            if (value != null && value.isPresent()) {
-                String valueString = value.get().trim();
-                if (!valueString.isEmpty()) {
-                    mpConfigProps.put(propertyName, valueString);
-                } else {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, propertyName + " is empty. Ignore it.");
-                    }
-
-                }
-            } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, propertyName + " is not in mpConfig.");
-                }
-            }
-        }
-
-        return mpConfigProps;
-    }
-
     @Override
     public Set<String> getSupportedConfigPropertyNames() {
         return MpConfigProperties.acceptableMpConfigPropNames11;
     }
 
-    protected Config getConfig(ClassLoader cl) {
-        if (cl != null) {
-            return ConfigProvider.getConfig(cl);
-        } else {
-            return ConfigProvider.getConfig();
-        }
+    @Override
+    public MpConfigProxy getConfigProxy(ClassLoader cl) {
+        Config config = cl != null ? ConfigProvider.getConfig(cl) : ConfigProvider.getConfig();
+
+        return new MpConfigProxy() {
+            @Override
+            public <T> Optional<T> getOptionalValue(String propertyName, Class<T> propertyType) {
+                return config.getOptionalValue(propertyName, propertyType);
+            }
+        };
     }
 }
