@@ -62,16 +62,8 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     protected static final boolean TokenAutoRefresh = true;
     protected static final boolean DoNotTokenAutoRefresh = false;
 
-    protected static final boolean NotifyProvider = true;
-    protected static final boolean DoNotNotifyProvider = false;
-    protected static final boolean IDTokenHonorExpiry = true;
-    protected static final boolean IDTokenDoNotHonorExpiry = false;
-    protected static final boolean AccessTokenHonorExpiry = true;
-    protected static final boolean AccessTokenDoNotHonorExpiry = false;
-
-    protected static final String goodRedirectUri = "goodRedirectUri";
-    protected static final String badRedirectUri = "badRedirectUri";
-//    protected static final String emptyRedirectUri = "emptyRedirectUri";
+    protected static final boolean ProvderAllowsRefresh = true;
+    protected static final boolean ProvderDoesNotAllowsRefresh = false;
 
     protected static final boolean TokenWasRefreshedSecondTime = true;
     protected static final boolean TokenWasNotRefreshedSecondTime = false;
@@ -473,7 +465,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshTrue_providerAllowsRefreshTrue_notifyProviderTrue_idTokenExpiryTrue_accessTokenExpiryTrue() throws Exception {
 
-        genericGoodRefreshTest(true, true, true, true, true, TokenWasRefreshedSecondTime);
+        genericGoodRefreshTest(TokenAutoRefresh, ProvderAllowsRefresh, NotifyProvider, IDTokenHonorExpiry, AccessTokenHonorExpiry, TokenWasRefreshedSecondTime);
 
     }
 
@@ -488,7 +480,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshTrue_providerAllowsRefreshTrue_notifyProviderTrue_idTokenExpiryTrue_accessTokenExpiryFalse() throws Exception {
 
-        genericGoodRefreshTest(true, true, true, true, false, TokenWasNotRefreshedSecondTime);
+        genericGoodRefreshTest(TokenAutoRefresh, ProvderAllowsRefresh, NotifyProvider, IDTokenHonorExpiry, AccessTokenDoNotHonorExpiry, TokenWasNotRefreshedSecondTime);
 
     }
 
@@ -501,7 +493,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshTrue_providerAllowsRefreshTrue_notifyProviderTrue_idTokenExpiryFalse_accessTokenExpiryTrue() throws Exception {
 
-        genericGoodRefreshTest(true, true, true, false, true, TokenWasRefreshedSecondTime);
+        genericGoodRefreshTest(TokenAutoRefresh, ProvderAllowsRefresh, NotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenHonorExpiry, TokenWasRefreshedSecondTime);
 
     }
 
@@ -514,7 +506,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshTrue_providerAllowsRefreshTrue_notifyProviderTrue_idTokenExpiryFalse_accessTokenExpiryFalse() throws Exception {
 
-        genericGoodRefreshTest(true, true, true, false, false, TokenWasRefreshedSecondTime);
+        genericGoodRefreshTest(TokenAutoRefresh, ProvderAllowsRefresh, NotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenDoNotHonorExpiry, TokenWasRefreshedSecondTime);
 
     }
 
@@ -527,7 +519,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshTrue_providerAllowsRefreshTrue_notifyProviderFalse_idTokenExpiryTrue_accessTokenExpiryTrue() throws Exception {
 
-        genericGoodRefreshTest(true, true, false, true, true, TokenWasRefreshedSecondTime);
+        genericGoodRefreshTest(TokenAutoRefresh, ProvderAllowsRefresh, DoNotNotifyProvider, IDTokenHonorExpiry, AccessTokenHonorExpiry, TokenWasRefreshedSecondTime);
 
     }
 
@@ -540,7 +532,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshTrue_providerAllowsRefreshTrue_notifyProviderFalse_idTokenExpiryTrue_accessTokenExpiryFalse() throws Exception {
 
-        genericGoodRefreshTest(true, true, false, true, false, TokenWasNotRefreshedSecondTime);
+        genericGoodRefreshTest(TokenAutoRefresh, ProvderAllowsRefresh, DoNotNotifyProvider, IDTokenHonorExpiry, AccessTokenDoNotHonorExpiry, TokenWasNotRefreshedSecondTime);
 
     }
 
@@ -553,7 +545,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshTrue_providerAllowsRefreshTrue_notifyProviderFalse_idTokenExpiryFalse_accessTokenExpiryTrue() throws Exception {
 
-        genericGoodRefreshTest(true, true, false, false, true, TokenWasRefreshedSecondTime);
+        genericGoodRefreshTest(TokenAutoRefresh, ProvderAllowsRefresh, DoNotNotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenHonorExpiry, TokenWasRefreshedSecondTime);
 
     }
 
@@ -566,7 +558,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshTrue_providerAllowsRefreshTrue_notifyProviderFalse_idTokenExpiryFalse_accessTokenExpiryFalse() throws Exception {
 
-        genericGoodRefreshTest(true, true, false, false, false, TokenWasRefreshedSecondTime);
+        genericGoodRefreshTest(TokenAutoRefresh, ProvderAllowsRefresh, DoNotNotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenDoNotHonorExpiry, TokenWasRefreshedSecondTime);
 
     }
 
@@ -579,7 +571,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshTrue_providerAllowsRefreshFalse_notifyProviderTrue_idTokenExpiryTrue_accessTokenExpiryTrue() throws Exception {
 
-        genericGoodLogoutTest(true, false, true, true, true);
+        genericGoodLogoutTest(TokenAutoRefresh, ProvderDoesNotAllowsRefresh, NotifyProvider, IDTokenHonorExpiry, AccessTokenHonorExpiry);
 
     }
 
@@ -592,7 +584,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshTrue_providerAllowsRefreshFalse_notifyProviderTrue_idTokenExpiryTrue_accessTokenExpiryFalse() throws Exception {
 
-        genericGoodLogoutTest(true, false, true, true, false);
+        genericGoodLogoutTest(TokenAutoRefresh, ProvderDoesNotAllowsRefresh, NotifyProvider, IDTokenHonorExpiry, AccessTokenDoNotHonorExpiry);
 
     }
 
@@ -605,7 +597,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshTrue_providerAllowsRefreshFalse_notifyProviderTrue_idTokenExpiryFalse_accessTokenExpiryTrue() throws Exception {
 
-        genericGoodLogoutTest(true, false, true, false, true);
+        genericGoodLogoutTest(TokenAutoRefresh, ProvderDoesNotAllowsRefresh, NotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenHonorExpiry);
 
     }
 
@@ -618,7 +610,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshTrue_providerAllowsRefreshFalse_notifyProviderTrue_idTokenExpiryFalse_accessTokenExpiryFalse() throws Exception {
 
-        genericGoodLogoutTest(true, false, true, false, false);
+        genericGoodLogoutTest(TokenAutoRefresh, ProvderDoesNotAllowsRefresh, NotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenDoNotHonorExpiry);
 
     }
 
@@ -633,7 +625,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshTrue_providerAllowsRefreshFalse_notifyProviderFalse_idTokenExpiryTrue_accessTokenExpiryTrue() throws Exception {
 
-        genericReAuthn(true, false, false, true, true);
+        genericReAuthn(TokenAutoRefresh, ProvderDoesNotAllowsRefresh, DoNotNotifyProvider, IDTokenHonorExpiry, AccessTokenHonorExpiry);
 
     }
 
@@ -648,7 +640,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshTrue_providerAllowsRefreshFalse_notifyProviderFalse_idTokenExpiryTrue_accessTokenExpiryFalse() throws Exception {
 
-        genericReAuthn(true, false, false, true, false);
+        genericReAuthn(TokenAutoRefresh, ProvderDoesNotAllowsRefresh, DoNotNotifyProvider, IDTokenHonorExpiry, AccessTokenDoNotHonorExpiry);
 
     }
 
@@ -663,7 +655,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshTrue_providerAllowsRefreshFalse_notifyProviderFalse_idTokenExpiryFalse_accessTokenExpiryTrue() throws Exception {
 
-        genericReAuthn(true, false, false, false, true);
+        genericReAuthn(TokenAutoRefresh, ProvderDoesNotAllowsRefresh, DoNotNotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenHonorExpiry);
 
     }
 
@@ -678,7 +670,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshTrue_providerAllowsRefreshFalse_notifyProviderFalse_idTokenExpiryFalse_accessTokenExpiryFalse() throws Exception {
 
-        genericReAuthn(true, false, false, false, false);
+        genericReAuthn(TokenAutoRefresh, ProvderDoesNotAllowsRefresh, DoNotNotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenDoNotHonorExpiry);
 
     }
 
@@ -691,7 +683,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshFalse_providerAllowsRefreshTrue_notifyProviderTrue_idTokenExpiryTrue_accessTokenExpiryTrue() throws Exception {
 
-        genericGoodLogoutTest(false, true, true, true, true);
+        genericGoodLogoutTest(DoNotTokenAutoRefresh, ProvderAllowsRefresh, NotifyProvider, IDTokenHonorExpiry, AccessTokenHonorExpiry);
 
     }
 
@@ -704,7 +696,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshFalse_providerAllowsRefreshTrue_notifyProviderTrue_idTokenExpiryTrue_accessTokenExpiryFalse() throws Exception {
 
-        genericGoodLogoutTest(false, true, true, true, false);
+        genericGoodLogoutTest(DoNotTokenAutoRefresh, ProvderAllowsRefresh, NotifyProvider, IDTokenHonorExpiry, AccessTokenDoNotHonorExpiry);
 
     }
 
@@ -717,7 +709,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshFalse_providerAllowsRefreshTrue_notifyProviderTrue_idTokenExpiryFalse_accessTokenExpiryTrue() throws Exception {
 
-        genericGoodLogoutTest(false, true, true, false, true);
+        genericGoodLogoutTest(DoNotTokenAutoRefresh, ProvderAllowsRefresh, NotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenHonorExpiry);
 
     }
 
@@ -731,7 +723,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshFalse_providerAllowsRefreshTrue_notifyProviderTrue_idTokenExpiryFalse_accessTokenExpiryFalse() throws Exception {
 
-        genericGoodEndToEndReAccessTest(false, true, true, false, false);
+        genericGoodEndToEndReAccessTest(DoNotTokenAutoRefresh, ProvderAllowsRefresh, NotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenDoNotHonorExpiry);
 
     }
 
@@ -745,7 +737,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshFalse_providerAllowsRefreshTrue_notifyProviderFalse_idTokenExpiryTrue_accessTokenExpiryTrue() throws Exception {
 
-        genericReAuthn(false, true, false, true, true);
+        genericReAuthn(DoNotTokenAutoRefresh, ProvderAllowsRefresh, DoNotNotifyProvider, IDTokenHonorExpiry, AccessTokenHonorExpiry);
 
     }
 
@@ -759,7 +751,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshFalse_providerAllowsRefreshTrue_notifyProviderFalse_idTokenExpiryTrue_accessTokenExpiryFalse() throws Exception {
 
-        genericReAuthn(false, true, false, true, false);
+        genericReAuthn(DoNotTokenAutoRefresh, ProvderAllowsRefresh, DoNotNotifyProvider, IDTokenHonorExpiry, AccessTokenDoNotHonorExpiry);
 
     }
 
@@ -773,7 +765,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshFalse_providerAllowsRefreshTrue_notifyProviderFalse_idTokenExpiryFalse_accessTokenExpiryTrue() throws Exception {
 
-        genericReAuthn(false, true, false, false, true);
+        genericReAuthn(DoNotTokenAutoRefresh, ProvderAllowsRefresh, DoNotNotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenHonorExpiry);
 
     }
 
@@ -787,64 +779,63 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicRefreshTests_tokenAutoRefreshFalse_providerAllowsRefreshTrue_notifyProviderFalse_idTokenExpiryFalse_accessTokenExpiryFalse() throws Exception {
 
-        genericGoodEndToEndReAccessTest(false, true, false, false, false);
+        genericGoodEndToEndReAccessTest(DoNotTokenAutoRefresh, ProvderAllowsRefresh, DoNotNotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenDoNotHonorExpiry);
 
     }
 
-    //chc
     @Test
     public void BasicRefreshTests_tokenAutoRefreshFalse_providerAllowsRefreshFalse_notifyProviderTrue_idTokenExpiryTrue_accessTokenExpiryTrue() throws Exception {
 
-        genericGoodLogoutTest(false, false, true, true, true);
+        genericGoodLogoutTest(DoNotTokenAutoRefresh, ProvderDoesNotAllowsRefresh, NotifyProvider, IDTokenHonorExpiry, AccessTokenHonorExpiry);
 
     }
 
     @Test
     public void BasicRefreshTests_tokenAutoRefreshFalse_providerAllowsRefreshFalse_notifyProviderTrue_idTokenExpiryTrue_accessTokenExpiryFalse() throws Exception {
 
-        genericGoodLogoutTest(false, false, true, true, false);
+        genericGoodLogoutTest(DoNotTokenAutoRefresh, ProvderDoesNotAllowsRefresh, NotifyProvider, IDTokenHonorExpiry, AccessTokenDoNotHonorExpiry);
 
     }
 
     @Test
     public void BasicRefreshTests_tokenAutoRefreshFalse_providerAllowsRefreshFalse_notifyProviderTrue_idTokenExpiryFalse_accessTokenExpiryTrue() throws Exception {
 
-        genericGoodLogoutTest(false, false, true, false, true);
+        genericGoodLogoutTest(DoNotTokenAutoRefresh, ProvderDoesNotAllowsRefresh, NotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenHonorExpiry);
 
     }
 
     @Test
     public void BasicRefreshTests_tokenAutoRefreshFalse_providerAllowsRefreshFalse_notifyProviderTrue_idTokenExpiryFalse_accessTokenExpiryFalse() throws Exception {
 
-        genericGoodEndToEndReAccessTest(false, false, true, false, false);
+        genericGoodEndToEndReAccessTest(DoNotTokenAutoRefresh, ProvderDoesNotAllowsRefresh, NotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenDoNotHonorExpiry);
 
     }
 
     @Test
     public void BasicRefreshTests_tokenAutoRefreshFalse_providerAllowsRefreshFalse_notifyProviderFalse_idTokenExpiryTrue_accessTokenExpiryTrue() throws Exception {
 
-        genericReAuthn(false, false, false, true, true);
+        genericReAuthn(DoNotTokenAutoRefresh, ProvderDoesNotAllowsRefresh, DoNotNotifyProvider, IDTokenHonorExpiry, AccessTokenHonorExpiry);
 
     }
 
     @Test
     public void BasicRefreshTests_tokenAutoRefreshFalse_providerAllowsRefreshFalse_notifyProviderFalse_idTokenExpiryTrue_accessTokenExpiryFalse() throws Exception {
 
-        genericReAuthn(false, false, false, true, false);
+        genericReAuthn(DoNotTokenAutoRefresh, ProvderDoesNotAllowsRefresh, DoNotNotifyProvider, IDTokenHonorExpiry, AccessTokenDoNotHonorExpiry);
 
     }
 
     @Test
     public void BasicRefreshTests_tokenAutoRefreshFalse_providerAllowsRefreshFalse_notifyProviderFalse_idTokenExpiryFalse_accessTokenExpiryTrue() throws Exception {
 
-        genericReAuthn(false, false, false, false, true);
+        genericReAuthn(DoNotTokenAutoRefresh, ProvderDoesNotAllowsRefresh, DoNotNotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenHonorExpiry);
 
     }
 
     @Test
     public void BasicRefreshTests_tokenAutoRefreshFalse_providerAllowsRefreshFalse_notifyProviderFalse_idTokenExpiryFalse_accessTokenExpiryFalse() throws Exception {
 
-        genericGoodEndToEndReAccessTest(false, false, false, false, false);
+        genericGoodEndToEndReAccessTest(DoNotTokenAutoRefresh, ProvderDoesNotAllowsRefresh, DoNotNotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenDoNotHonorExpiry);
 
     }
 
