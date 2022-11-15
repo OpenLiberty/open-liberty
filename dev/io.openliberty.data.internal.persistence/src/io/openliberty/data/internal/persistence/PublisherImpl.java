@@ -51,11 +51,11 @@ public class PublisherImpl<T> extends SubmissionPublisher<T> implements Runnable
 
             if (pagination != null) {
                 for (Pageable p = pagination; p != null; p = p == null ? null : p.next()) {
-                    // TODO KeysetPageable
+                    // TODO Keyset pagination
                     // TODO possible overflow with both of these.
-                    long maxPageSize = p.getSize();
-                    query.setFirstResult((int) ((p.getPage() - 1) * maxPageSize));
-                    query.setMaxResults((int) p.getSize());
+                    long maxPageSize = p.size();
+                    query.setFirstResult((int) ((p.page() - 1) * maxPageSize));
+                    query.setMaxResults(p.size());
                     List<T> results = query.getResultList();
                     if (results.isEmpty())
                         p = null;

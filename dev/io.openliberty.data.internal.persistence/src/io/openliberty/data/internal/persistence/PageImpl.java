@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.RandomAccess;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -41,7 +42,7 @@ public class PageImpl<T> implements Page<T> {
 
     PageImpl(QueryInfo queryInfo, Pageable pagination, Object[] args) {
         this.queryInfo = queryInfo;
-        this.pagination = pagination == null ? Pageable.of(1, 100) : pagination;
+        this.pagination = pagination == null ? Pageable.ofSize(100) : pagination;
         this.args = args;
 
         EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
@@ -51,8 +52,8 @@ public class PageImpl<T> implements Page<T> {
             queryInfo.setParameters(query, args);
 
             // TODO possible overflow with both of these.
-            long maxPageSize = pagination.getSize();
-            query.setFirstResult((int) ((pagination.getPage() - 1) * maxPageSize));
+            long maxPageSize = pagination.size();
+            query.setFirstResult((int) ((pagination.page() - 1) * maxPageSize));
             query.setMaxResults((int) maxPageSize + 1);
 
             results = query.getResultList();
@@ -69,7 +70,7 @@ public class PageImpl<T> implements Page<T> {
      * @param jpql count query.
      */
     private long countTotalElements() {
-        if (pagination.getPage() == 1L && results.size() <= pagination.getSize())
+        if (pagination.page() == 1L && results.size() <= pagination.size())
             return results.size();
 
         EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
@@ -88,9 +89,9 @@ public class PageImpl<T> implements Page<T> {
     }
 
     @Override
-    public List<T> getContent() {
+    public List<T> content() {
         int size = results.size();
-        long max = pagination.getSize();
+        long max = pagination.size();
         return size > max ? new ResultList((int) max) : results;
     }
 
@@ -98,7 +99,7 @@ public class PageImpl<T> implements Page<T> {
     public <C extends Collection<T>> C getContent(Supplier<C> collectionFactory) {
         C collection = collectionFactory.get();
         long size = results.size();
-        long max = pagination.getSize();
+        long max = pagination.size();
         size = size > max ? max : size;
         for (int i = 0; i < size; i++)
             collection.add(results.get(i));
@@ -106,34 +107,34 @@ public class PageImpl<T> implements Page<T> {
     }
 
     @Override
-    public long getNumber() {
-        return pagination.getPage();
+    public long number() {
+        return pagination.page();
     }
 
     @Override
-    public int getNumberOfElements() {
+    public int numberOfElements() {
         int size = results.size();
-        int max = (int) pagination.getSize(); // TODO fix data type to int in spec
+        int max = (int) pagination.size(); // TODO fix data type to int in spec
         return size > max ? max : size;
     }
 
     @Override
-    public Pageable getPageable() {
+    public Pageable pageable() {
         return pagination;
     }
 
     @Override
-    public long getTotalElements() {
+    public long totalElements() {
         if (totalElements == -1)
             totalElements = countTotalElements();
         return totalElements;
     }
 
     @Override
-    public long getTotalPages() {
+    public long totalPages() {
         if (totalElements == -1)
             totalElements = countTotalElements();
-        return totalElements / pagination.getSize() + (totalElements % pagination.getSize() > 0 ? 1 : 0);
+        return totalElements / pagination.size() + (totalElements % pagination.size() > 0 ? 1 : 0);
     }
 
     @Override
@@ -144,13 +145,13 @@ public class PageImpl<T> implements Page<T> {
     @Override
     public Iterator<T> iterator() {
         int size = results.size();
-        long max = pagination.getSize();
+        long max = pagination.size();
         return size > max ? new ResultIterator((int) max) : results.iterator();
     }
 
     @Override
     public Pageable nextPageable() {
-        if (results.size() <= pagination.getSize())
+        if (results.size() <= pagination.size())
             return null;
 
         return pagination.next();
@@ -158,7 +159,7 @@ public class PageImpl<T> implements Page<T> {
 
     @Override
     public Stream<T> stream() {
-        return getContent().stream();
+        return content().stream();
     }
 
     /**
@@ -194,7 +195,7 @@ public class PageImpl<T> implements Page<T> {
      * List that restricts the number of results to the specified amount.
      */
     @Trivial
-    private class ResultList extends AbstractList<T> {
+    private class ResultList extends AbstractList<T> implements RandomAccess {
         private final int size;
 
         private ResultList(int size) {
