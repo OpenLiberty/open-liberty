@@ -13,6 +13,7 @@ package io.openliberty.microprofile.metrics.internal.monitor_fat;
 import java.io.BufferedReader;
 
 import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -20,6 +21,8 @@ import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -89,7 +92,7 @@ public class MetricsMonitorTest {
     @Test
     public void testVendorMetricsPresent() throws Exception {
 
-        String testName = "testDisableMpMetricsFeature";
+        String testName = "testVendorMetricsPresent";
 
         Log.info(c, testName,
                 "------- Enable mpMetrics-5.0 vendor metrics should be available ------");
@@ -99,15 +102,30 @@ public class MetricsMonitorTest {
         Assert.assertNotNull("CWWKO0219I NOT FOUND", server.waitForStringInLog("defaultHttpEndpoint-ssl", 60000));
         Log.info(c, testName, "------- server started -----");
         Assert.assertNotNull("CWWKT0016I NOT FOUND", server.waitForStringInLogUsingMark("CWWKT0016I"));
+
+        Assert.assertNotNull("No CWPMI2003I message", server.waitForStringInLogUsingMark("CWPMI2003I"));
+        
         checkStrings(getHttpsServlet("/metrics"), new String[] { "mp_scope=\"base\"", "p_scope=\"vendor\"" }, new String[] {});
 
+        
+        server.setMarkToEndOfLog();
         Log.info(c, testName, "------- Remove mpMetrics-5.0: no metrics should be available ------");
         server.setServerConfigurationFile("server_monitorOnly.xml");
-        String logMsg = server.waitForStringInLogUsingMark("CWPMI2003I");
+        Assert.assertNotNull("CWWKF0008I NOT FOUND", server.waitForStringInLogUsingMark("CWWKF0008I"));
+       
+        //Check for Trace output from MetricsConfig indicating that the WAB is unregistered (this would imply /metrics no longer active)
+        server.waitForStringInTrace("io.openliberty.microprofile.metrics50.internal.MetricsConfig 1 Unregistered web app bundle");       
         
-        //TODO: actually test that /metrics does not respond
-        Log.info(c, testName, logMsg);
-        Assert.assertNotNull("No CWPMI2003I message", logMsg);
+        
+        //For additional checking, check that we will get an ConnectException when trying to connect to /metrics
+        String exceptionString = null;
+        try {
+            getHttpsServlet("/metrics");
+        } catch (ConnectException exception) {
+            exceptionString = exception.toString();
+            
+        }
+        Assert.assertNotNull(exceptionString);
     }
 
     private String getHttpServlet(String servletPath) throws Exception {
@@ -158,6 +176,7 @@ public class MetricsMonitorTest {
             con.setRequestProperty("Authorization", authorization);
             con.setRequestProperty("Accept", "text/plain");
             con.setRequestMethod("GET");
+
 
             String sep = System.getProperty("line.separator");
             String line = null;
