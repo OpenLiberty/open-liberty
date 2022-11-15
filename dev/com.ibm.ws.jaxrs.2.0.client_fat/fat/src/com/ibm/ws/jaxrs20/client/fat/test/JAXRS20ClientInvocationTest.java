@@ -26,11 +26,14 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class JAXRS20ClientInvocationTest extends AbstractTest {
 
     @Server("jaxrs20.client.JAXRS20ClientInvocationTest")
@@ -69,9 +72,9 @@ public class JAXRS20ClientInvocationTest extends AbstractTest {
         serverRef = null;
     }
 
-    @Test    
+    @Test
     public void testClientClass() throws Exception {
-        Map<String, String> p = new HashMap<String, String>();        
+        Map<String, String> p = new HashMap<String, String>();
         if ((JakartaEE9Action.isActive()) || (JakartaEE10Action.isActive())) {
             this.runTestOnServer(invocationTarget, "testClientClass", p, "io.openliberty.org.jboss.resteasy.common.client.LibertyResteasyClientImpl");
         } else {

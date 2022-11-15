@@ -31,6 +31,8 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -46,6 +48,7 @@ import componenttest.topology.impl.LibertyServer;
  * to the server.
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class JAXRSClient100ContinueTest extends AbstractTest {
 
     private final static Class<?> c = JAXRSClient100ContinueTest.class;
@@ -65,9 +68,9 @@ public class JAXRSClient100ContinueTest extends AbstractTest {
                                                        "com.ibm.ws.jaxrs20.client.jaxrsclient100Continue.client");
 
         System.setProperty("mockserver.useBouncyCastleForKeyAndCertificateGeneration", "true");
-        
+
         mockServerPort = Integer.getInteger("member_4.http");
-        //mockServerPort = 10080; //DIAG: tcptunnel --local-port=9080 --remote-host=localhost --remote-port=10080 --stay-alive --log 
+        //mockServerPort = 10080; //DIAG: tcptunnel --local-port=9080 --remote-host=localhost --remote-port=10080 --stay-alive --log
         mockServerClient = startClientAndServer(mockServerPort);
 
         // Make sure we don't fail because we try to start an
@@ -105,7 +108,7 @@ public class JAXRSClient100ContinueTest extends AbstractTest {
                                        .withBody("This is a really big body"))
                         .respond(response().withStatusCode(200)
                                            .withBody("We got it!"));
-        
+
         Map<String, String> p = new HashMap<String, String>();
         p.put("mockServerIP", "localhost");
         p.put("mockServerPort", "" + mockServerPort);

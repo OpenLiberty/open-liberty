@@ -31,13 +31,18 @@ import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientLtpaTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientSSLDefaultTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientSSLFiltersTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientSSLProxyAuthTest;
+import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientSSLTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientSSLTestNoLibertySSLCfg;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientSSLTestNoLibertySSLFeature;
 import com.ibm.ws.jaxrs20.client.fat.test.JAXRSClientStandaloneTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JacksonProvidersTest;
 import com.ibm.ws.jaxrs20.client.fat.test.JsonPProvidersTest;
+import com.ibm.ws.jaxrs20.client.fat.test.MatchingSSLCiphersTest;
+import com.ibm.ws.jaxrs20.client.fat.test.MisMatchingSSLCiphersTest;
 import com.ibm.ws.jaxrs20.client.fat.test.PathParamTest;
 import com.ibm.ws.jaxrs20.client.fat.test.ProxyClientTest;
+import com.ibm.ws.jaxrs20.client.fat.test.SimpleSSLMultipleServersTest;
+import com.ibm.ws.jaxrs20.client.fat.test.SimpleSSLTest;
 import com.ibm.ws.jaxrs20.client.fat.test.ThirdpartyJerseyClientTest;
 import com.ibm.ws.jaxrs20.client.fat.test.TimeoutClientTest;
 import com.ibm.ws.jaxrs20.client.fat.test.XmlBindingTest;
@@ -68,21 +73,25 @@ import componenttest.rules.repeater.RepeatTests;
                 JAXRSClientSSLProxyAuthTest.class,
                 JAXRSClientSSLDefaultTest.class,
                 JAXRSClientSSLFiltersTest.class,
-                //JAXRSClientSSLTest.class,
+                JAXRSClientSSLTest.class,
                 JAXRSClientSSLTestNoLibertySSLCfg.class,
                 JAXRSClientSSLTestNoLibertySSLFeature.class,
                 JAXRSClientStandaloneTest.class,
                 JsonPProvidersTest.class,
+                MatchingSSLCiphersTest.class,
+                MisMatchingSSLCiphersTest.class,
                 PathParamTest.class,
                 ProxyClientTest.class,
+                SimpleSSLMultipleServersTest.class,
+                SimpleSSLTest.class,
                 ThirdpartyJerseyClientTest.class,
                 TimeoutClientTest.class,
                 XmlBindingTest.class
 })
 public class FATSuite {
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
-    .andWith(FeatureReplacementAction.EE8_FEATURES().withID("JAXRS-2.1"))
-    .andWith(new JakartaEE9Action().alwaysAddFeature("jsonb-2.0"))
-    .andWith(new JakartaEE10Action().alwaysAddFeature("jsonb-3.0"));
+    public static RepeatTests r = RepeatTests.withoutModification()
+        .andWith(FeatureReplacementAction.EE8_FEATURES().withID("JAXRS-2.1"))
+        .andWith(new JakartaEE9Action().alwaysAddFeature("jsonb-2.0"))
+        .andWith(new JakartaEE10Action().alwaysAddFeature("jsonb-3.0").alwaysAddFeature("servlet-6.0"));
 }
