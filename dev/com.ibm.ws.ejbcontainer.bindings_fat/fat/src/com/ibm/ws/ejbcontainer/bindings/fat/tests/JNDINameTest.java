@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,13 +32,12 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.FATServletClient;
 
 /**
  *
  */
 @RunWith(FATRunner.class)
-public class JNDINameTest extends FATServletClient {
+public class JNDINameTest extends AbstractTest {
 
     @Rule
     public TestWatcher watchman = new TestWatcher() {
@@ -84,9 +83,6 @@ public class JNDINameTest extends FATServletClient {
 
     @AfterClass
     public static void cleanUp() throws Exception {
-        if (server != null && server.isStarted()) {
-            server.stopServer();
-        }
+        stopServer(server);
     }
-
 }

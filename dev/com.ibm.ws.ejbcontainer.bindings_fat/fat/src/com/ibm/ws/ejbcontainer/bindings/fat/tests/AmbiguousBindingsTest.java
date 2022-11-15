@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,7 +43,7 @@ import componenttest.topology.utils.FATServletClient;
  *
  */
 @RunWith(FATRunner.class)
-public class AmbiguousBindingsTest extends FATServletClient {
+public class AmbiguousBindingsTest extends AbstractTest {
 
     @Rule
     public TestWatcher watchman = new TestWatcher() {
@@ -97,9 +97,7 @@ public class AmbiguousBindingsTest extends FATServletClient {
 
     @AfterClass
     public static void cleanUp() throws Exception {
-        if (server != null && server.isStarted()) {
-            server.stopServer("CNTR0338W", "CNTR4002E", "CWWKZ0106E", "CWWKZ0002E");
-        }
+        stopServer(server, "CNTR0338W", "CNTR4002E", "CWWKZ0106E", "CWWKZ0002E");
 
         // Remove the customBindings.OnError configuration that was added by repeat actions
         if (RepeatOnErrorEE7.isActive()) {
