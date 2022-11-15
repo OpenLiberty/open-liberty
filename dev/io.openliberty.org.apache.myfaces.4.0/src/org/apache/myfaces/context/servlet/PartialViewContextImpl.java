@@ -431,8 +431,7 @@ public class PartialViewContextImpl extends PartialViewContext
         try
         {
             String currentEncoding = writer.getCharacterEncoding();
-            writer.writePreamble("<?xml version=\"1.0\" encoding=\""+
-                (currentEncoding == null ? "UTF-8" : currentEncoding) +"\"?>");
+
             writer.startDocument();
             
             writer.writeAttribute("id", viewRoot.getContainerClientId(context),"id");
