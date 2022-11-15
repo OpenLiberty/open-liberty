@@ -169,8 +169,10 @@ public class IMAPTest {
         // which is then used to create the actual GreenMail server.
         int imapPort = Integer.getInteger("imap_port"); // As per server.xml
         // Need to add -D to the start of the property name
-        System.out.println("Starting IMAP server on port "+imapPort);
+        System.out.println("Starting IMAP server on port " + imapPort);
         ServerSetup imapSetup = new ServerSetup(imapPort, "localhost", "imap");
+        // Allow 30 seconds for mail server to start
+        imapSetup.setServerStartupTimeout(30000);
         imapServer = new GreenMail(imapSetup);
         // Start the imapServer, the GreenMail server is now listening for connections
         imapServer.start();
