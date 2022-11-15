@@ -122,6 +122,10 @@ public class MPJWTTest extends FATServletClient {
     public void testRolesEndpoint() throws Exception {
         try {
             server.checkpointRestore();
+
+            // wait on LTPA to be available to avoid error "CWWKS4000E: ... The requested TokenService instance of type Ltpa2 could not be found."
+            assertNotNull("'CWWKS4105I: LTPA configuration is ready' message not found.", server.waitForStringInLog("CWWKS4105I.*"));
+
             Response response = makeRequest(urlRoles, authHeaderAdmin);
             assertEquals("Incorrect response code from " + urlRoles, 200, response.getStatus());
             assertEquals("Incorrect groups claim in token " + urlRoles, "[\"admin\",\"user\"]", response.readEntity(String.class));
@@ -140,6 +144,10 @@ public class MPJWTTest extends FATServletClient {
     public void testUpdatedClockSkewOnRestore() throws Exception {
         try {
             server.checkpointRestore();
+
+            // wait on LTPA to be available to avoid error "CWWKS4000E: ... The requested TokenService instance of type Ltpa2 could not be found."
+            assertNotNull("'CWWKS4105I: LTPA configuration is ready' message not found.", server.waitForStringInLog("CWWKS4105I.*"));
+
             Response response = makeRequest(urlUsername, authHeaderUser);
             assertEquals("Incorrect response code from " + urlUsername, 200, response.getStatus());
             server.stopServer(false, "");
@@ -173,6 +181,10 @@ public class MPJWTTest extends FATServletClient {
     public void testUpdatedAudienceOnRestore() throws Exception {
         try {
             server.checkpointRestore();
+
+            // wait on LTPA to be available to avoid error "CWWKS4000E: ... The requested TokenService instance of type Ltpa2 could not be found."
+            assertNotNull("'CWWKS4105I: LTPA configuration is ready' message not found.", server.waitForStringInLog("CWWKS4105I.*"));
+
             Response response = makeRequest(urlUsername, authHeaderUser);
             assertEquals("Incorrect response code from " + urlUsername, 200, response.getStatus());
             server.stopServer(false, "");
