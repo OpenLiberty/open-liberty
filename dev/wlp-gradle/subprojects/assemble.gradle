@@ -18,10 +18,33 @@
  *
  * Configure 'assemble' to depend on above tasks.
  */
+
+
+task cleanAllEmbeddedPoms {
+    dependsOn jar
+    dependsOn ':build.cleanPom:jar'
+    doLast {
+      fileTree(project.buildDir).matching {
+      include "**/*.jar"
+          }.each { aFile ->
+            def myArgs = [
+              aFile, new File(project.buildDir, 'tmp')]                 
+            javaexec {
+                classpath files(RootProject.file('/build.cleanPom/build/libs/build.cleanPom.jar'))
+                main = 'io.openliberty.process.PostProcessBNDPom'
+                args = myArgs
+            }
+          }
+        }
+    }
+
+
+
 def publishWlpJarDefault = parseBoolean(bnd.get('test.project', 'false')) ? 'true' : 'false'
 if (bnd.get('publish.tool.jar', '').empty && !parseBoolean(bnd.get('publish.wlp.jar.disabled', publishWlpJarDefault))) {
     task publishWLPJars(type: Copy) {
         dependsOn jar
+        dependsOn cleanAllEmbeddedPoms
         from project.buildDir
         into buildImage.file('wlp/' + bnd.get('publish.wlp.jar.suffix', 'lib'))
         include bnd.get('publish.wlp.jar.include', '*.jar')
