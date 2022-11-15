@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +33,7 @@ public class PostProcessBNDPom {
 
     private static String jarPath;
     private static String pomEntryPath;
+    private static List<String> filteredGroups = Arrays.asList("org.springframework");
 
     /**
      * @param args
@@ -40,9 +42,11 @@ public class PostProcessBNDPom {
 
         jarPath = args[0];
         String outputDir = args[1];
+        System.out.println("Reading jar: " + jarPath);
         Model pom = readJARPom(jarPath);
         removeDevDependecies(pom);
         writeTempPom(pom, outputDir);
+        System.out.println("Writing pom to: " + outputDir);
         replacePomFile(outputDir + "/pom.xml", jarPath);
 
     }
@@ -90,7 +94,7 @@ public class PostProcessBNDPom {
         List<Dependency> deps = pom.getDependencies();
         for (Iterator iterator = deps.iterator(); iterator.hasNext();) {
             Dependency dependency = (Dependency) iterator.next();
-            if (dependency.getGroupId().equals("dev"))
+            if ((dependency.getGroupId().equals("dev")) || (filteredGroups.contains(dependency)))
                 iterator.remove();
         }
 
