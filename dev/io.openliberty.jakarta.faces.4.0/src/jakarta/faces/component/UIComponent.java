@@ -138,12 +138,18 @@ public abstract class UIComponent
      */
     private boolean _initialStateMarked = false;
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
+    protected Map<String, ValueExpression> bindings;
+
     public UIComponent()
     {
     }
 
     public abstract Map<String, Object> getAttributes();
-    
+
     /**
      * @since 2.2
      * @return 
