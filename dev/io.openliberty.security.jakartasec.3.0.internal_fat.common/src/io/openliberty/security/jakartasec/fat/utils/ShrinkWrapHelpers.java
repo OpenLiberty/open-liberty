@@ -10,8 +10,10 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec.fat.utils;
 
+import java.io.File;
 import java.util.Map;
 
+import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
@@ -85,6 +87,22 @@ public class ShrinkWrapHelpers {
 //        addResourcesToApp(war);
 
         ShrinkHelper.exportDropinAppToServer(server, war);
+    }
+
+    public void dropinAppWithWebXmlAndBnd(LibertyServer server, String newWar, String sourceWar, String... packages) throws Exception {
+
+        WebArchive war = ShrinkHelper.buildDefaultAppFromPath(newWar, sourceWar, packages);
+        war.add(new FileAsset(new File("test-applications/" + newWar + "/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml");
+        war.add(new FileAsset(new File("test-applications/" + newWar + "/resources/META-INF/ibm-application-bnd.xml")), "META-INF/ibm-application-bnd.xml");
+        ShrinkHelper.exportDropinAppToServer(server, war);
+
+    }
+
+    public void dropinApp(LibertyServer server, String newWar, String sourceWar, String... packages) throws Exception {
+
+        WebArchive war = ShrinkHelper.buildDefaultAppFromPath(newWar, sourceWar, packages);
+        ShrinkHelper.exportDropinAppToServer(server, war);
+
     }
 
     /**

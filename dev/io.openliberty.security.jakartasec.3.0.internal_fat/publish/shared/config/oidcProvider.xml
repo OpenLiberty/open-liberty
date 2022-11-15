@@ -34,6 +34,54 @@
 				enabled="true"
 			>
 			</client>
+			<client
+				name="client_98"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/rpClientWildcardProtected"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+			<client
+				name="client_99"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/rpProtectedClient"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>		
+
+	<openidConnectProvider
+		id="OP2"
+		oauthProviderRef="OAuth2" />
+
+	<oauthProvider
+		id="OAuth2"
+		autoAuthorize="true"
+		tokenFormat="${opTokenFormat}"
+	>
+		<autoAuthorizeClient>client_98</autoAuthorizeClient>
+		<autoAuthorizeClient>client_99</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client_98"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/rpClientWildcardProtected"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+			<client
+				name="client_99"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/rpProtectedClient"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
 		</localStore>
 	</oauthProvider>		
 			
