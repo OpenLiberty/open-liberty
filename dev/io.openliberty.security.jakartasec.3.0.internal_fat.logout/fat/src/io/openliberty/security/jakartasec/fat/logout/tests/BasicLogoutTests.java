@@ -53,20 +53,10 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
 
     protected static ShrinkWrapHelpers swh = null;
 
-    protected static final boolean NotifyProvider = true;
-    protected static final boolean DoNotNotifyProvider = false;
-    protected static final boolean IDTokenHonorExpiry = true;
-    protected static final boolean IDTokenDoNotHonorExpiry = false;
-    protected static final boolean AccessTokenHonorExpiry = true;
-    protected static final boolean AcessTokenDoNotHonorExpiry = false;
     protected static final boolean IDTokenShortLifetime = true;
     protected static final boolean IDTokenLongLifetime = false;
     protected static final boolean AccessTokenShortLifetime = true;
     protected static final boolean AccessTokenLongLifetime = false;
-
-    protected static final String goodRedirectUri = "goodRedirectUri";
-    protected static final String badRedirectUri = "badRedirectUri";
-    protected static final String emptyRedirectUri = "emptyRedirectUri";
 
     @ClassRule
     public static RepeatTests repeat = createTokenTypeRepeat(Constants.OPAQUE_TOKEN_FORMAT);
@@ -476,7 +466,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicLogoutTests_notifyProviderTrue_idTokenExpiryTrue_shortIdTokenLifetime_accessTokenExpiryFalse_shortAccessTokenLifetime() throws Exception {
 
-        genericGoodLogoutTest(NotifyProvider, IDTokenHonorExpiry, AcessTokenDoNotHonorExpiry, IDTokenShortLifetime, AccessTokenShortLifetime);
+        genericGoodLogoutTest(NotifyProvider, IDTokenHonorExpiry, AccessTokenDoNotHonorExpiry, IDTokenShortLifetime, AccessTokenShortLifetime);
 
     }
 
@@ -488,7 +478,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicLogoutTests_notifyProviderTrue_idTokenExpiryTrue_shortIdTokenLifetime_accessTokenExpiryFalse_longAccessTokenLifetime() throws Exception {
 
-        genericGoodLogoutTest(NotifyProvider, IDTokenHonorExpiry, AcessTokenDoNotHonorExpiry, IDTokenShortLifetime, AccessTokenLongLifetime);
+        genericGoodLogoutTest(NotifyProvider, IDTokenHonorExpiry, AccessTokenDoNotHonorExpiry, IDTokenShortLifetime, AccessTokenLongLifetime);
 
     }
 
@@ -526,7 +516,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicLogoutTests_notifyProviderTrue_idTokenExpiryTrue_longIdTokenLifetime_accessTokenExpiryFalse_shortAccessTokenLifetime() throws Exception {
 
-        genericGoodEndToEndReAccessTest(NotifyProvider, IDTokenHonorExpiry, AcessTokenDoNotHonorExpiry, IDTokenLongLifetime, AccessTokenShortLifetime);
+        genericGoodEndToEndReAccessTest(NotifyProvider, IDTokenHonorExpiry, AccessTokenDoNotHonorExpiry, IDTokenLongLifetime, AccessTokenShortLifetime);
 
     }
 
@@ -539,7 +529,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicLogoutTests_notifyProviderTrue_idTokenExpiryTrue_longIdTokenLifetime_accessTokenExpiryFalse_longAccessTokenLifetime() throws Exception {
 
-        genericGoodEndToEndReAccessTest(NotifyProvider, IDTokenHonorExpiry, AcessTokenDoNotHonorExpiry, IDTokenLongLifetime, AccessTokenLongLifetime);
+        genericGoodEndToEndReAccessTest(NotifyProvider, IDTokenHonorExpiry, AccessTokenDoNotHonorExpiry, IDTokenLongLifetime, AccessTokenLongLifetime);
 
     }
 
@@ -577,7 +567,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicLogoutTests_notifyProviderTrue_idTokenExpiryFalse_shortIdTokenLifetime_accessTokenExpiryFalse_shortAccessTokenLifetime() throws Exception {
 
-        genericGoodEndToEndReAccessTest(NotifyProvider, IDTokenDoNotHonorExpiry, AcessTokenDoNotHonorExpiry, IDTokenShortLifetime, AccessTokenShortLifetime);
+        genericGoodEndToEndReAccessTest(NotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenDoNotHonorExpiry, IDTokenShortLifetime, AccessTokenShortLifetime);
 
     }
 
@@ -590,7 +580,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicLogoutTests_notifyProviderTrue_idTokenExpiryFalse_shortIdTokenLifetime_accessTokenExpiryFalse_longAccessTokenLifetime() throws Exception {
 
-        genericGoodEndToEndReAccessTest(NotifyProvider, IDTokenDoNotHonorExpiry, AcessTokenDoNotHonorExpiry, IDTokenShortLifetime, AccessTokenLongLifetime);
+        genericGoodEndToEndReAccessTest(NotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenDoNotHonorExpiry, IDTokenShortLifetime, AccessTokenLongLifetime);
 
     }
 
@@ -628,7 +618,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicLogoutTests_notifyProviderTrue_idTokenExpiryFalse_longIdTokenLifetime_accessTokenExpiryFalse_shortAccessTokenLifetime() throws Exception {
 
-        genericGoodEndToEndReAccessTest(NotifyProvider, IDTokenDoNotHonorExpiry, AcessTokenDoNotHonorExpiry, IDTokenLongLifetime, AccessTokenShortLifetime);
+        genericGoodEndToEndReAccessTest(NotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenDoNotHonorExpiry, IDTokenLongLifetime, AccessTokenShortLifetime);
 
     }
 
@@ -641,7 +631,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicLogoutTests_notifyProviderTrue_idTokenExpiryFalse_longIdTokenLifetime_accessTokenExpiryFalse_longAccessTokenLifetime() throws Exception {
 
-        genericGoodEndToEndReAccessTest(NotifyProvider, IDTokenDoNotHonorExpiry, AcessTokenDoNotHonorExpiry, IDTokenLongLifetime, AccessTokenLongLifetime);
+        genericGoodEndToEndReAccessTest(NotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenDoNotHonorExpiry, IDTokenLongLifetime, AccessTokenLongLifetime);
 
     }
 
@@ -677,7 +667,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicLogoutTests_notifyProviderFalse_idTokenExpiryTrue_shortIdTokenLifetime_accessTokenExpiryFalse_shortAccessTokenLifetime() throws Exception {
 
-        genericReAuthn(DoNotNotifyProvider, IDTokenHonorExpiry, AcessTokenDoNotHonorExpiry, IDTokenShortLifetime, AccessTokenShortLifetime);
+        genericReAuthn(DoNotNotifyProvider, IDTokenHonorExpiry, AccessTokenDoNotHonorExpiry, IDTokenShortLifetime, AccessTokenShortLifetime);
 
     }
 
@@ -689,7 +679,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicLogoutTests_notifyProviderFalse_idTokenExpiryTrue_shortIdTokenLifetime_accessTokenExpiryFalse_longAccessTokenLifetime() throws Exception {
 
-        genericReAuthn(DoNotNotifyProvider, IDTokenHonorExpiry, AcessTokenDoNotHonorExpiry, IDTokenShortLifetime, AccessTokenLongLifetime);
+        genericReAuthn(DoNotNotifyProvider, IDTokenHonorExpiry, AccessTokenDoNotHonorExpiry, IDTokenShortLifetime, AccessTokenLongLifetime);
 
     }
 
@@ -727,7 +717,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicLogoutTests_notifyProviderFalse_idTokenExpiryTrue_longIdTokenLifetime_accessTokenExpiryFalse_shortAccessTokenLifetime() throws Exception {
 
-        genericGoodEndToEndReAccessTest(DoNotNotifyProvider, IDTokenHonorExpiry, AcessTokenDoNotHonorExpiry, IDTokenLongLifetime, AccessTokenShortLifetime);
+        genericGoodEndToEndReAccessTest(DoNotNotifyProvider, IDTokenHonorExpiry, AccessTokenDoNotHonorExpiry, IDTokenLongLifetime, AccessTokenShortLifetime);
 
     }
 
@@ -740,7 +730,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicLogoutTests_notifyProviderFalse_idTokenExpiryTrue_longIdTokenLifetime_accessTokenExpiryFalse_longAccessTokenLifetime() throws Exception {
 
-        genericGoodEndToEndReAccessTest(DoNotNotifyProvider, IDTokenHonorExpiry, AcessTokenDoNotHonorExpiry, IDTokenLongLifetime, AccessTokenLongLifetime);
+        genericGoodEndToEndReAccessTest(DoNotNotifyProvider, IDTokenHonorExpiry, AccessTokenDoNotHonorExpiry, IDTokenLongLifetime, AccessTokenLongLifetime);
 
     }
 
@@ -778,7 +768,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicLogoutTests_notifyProviderFalse_idTokenExpiryFalse_shortIdTokenLifetime_accessTokenExpiryFalse_shortAccessTokenLifetime() throws Exception {
 
-        genericGoodEndToEndReAccessTest(DoNotNotifyProvider, IDTokenDoNotHonorExpiry, AcessTokenDoNotHonorExpiry, IDTokenShortLifetime, AccessTokenShortLifetime);
+        genericGoodEndToEndReAccessTest(DoNotNotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenDoNotHonorExpiry, IDTokenShortLifetime, AccessTokenShortLifetime);
 
     }
 
@@ -791,7 +781,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicLogoutTests_notifyProviderFalse_idTokenExpiryFalse_shortIdTokenLifetime_accessTokenExpiryFalse_longAccessTokenLifetime() throws Exception {
 
-        genericGoodEndToEndReAccessTest(DoNotNotifyProvider, IDTokenDoNotHonorExpiry, AcessTokenDoNotHonorExpiry, IDTokenShortLifetime, AccessTokenLongLifetime);
+        genericGoodEndToEndReAccessTest(DoNotNotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenDoNotHonorExpiry, IDTokenShortLifetime, AccessTokenLongLifetime);
 
     }
 
@@ -829,7 +819,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicLogoutTests_notifyProviderFalse_idTokenExpiryFalse_longIdTokenLifetime_accessTokenExpiryFalse_shortAccessTokenLifetime() throws Exception {
 
-        genericGoodEndToEndReAccessTest(DoNotNotifyProvider, IDTokenDoNotHonorExpiry, AcessTokenDoNotHonorExpiry, IDTokenLongLifetime, AccessTokenShortLifetime);
+        genericGoodEndToEndReAccessTest(DoNotNotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenDoNotHonorExpiry, IDTokenLongLifetime, AccessTokenShortLifetime);
 
     }
 
@@ -842,7 +832,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicLogoutTests_notifyProviderFalse_idTokenExpiryFalse_longIdTokenLifetime_accessTokenExpiryFalse_longAccessTokenLifetime() throws Exception {
 
-        genericGoodEndToEndReAccessTest(DoNotNotifyProvider, IDTokenDoNotHonorExpiry, AcessTokenDoNotHonorExpiry, IDTokenLongLifetime, AccessTokenLongLifetime);
+        genericGoodEndToEndReAccessTest(DoNotNotifyProvider, IDTokenDoNotHonorExpiry, AccessTokenDoNotHonorExpiry, IDTokenLongLifetime, AccessTokenLongLifetime);
 
     }
 

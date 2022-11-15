@@ -26,6 +26,17 @@ public class CommonLogoutAndRefreshTests extends CommonAnnotatedSecurityTests {
     protected static final boolean TokenWasRefreshed = true;
     protected static final boolean TokenWasNotRefreshed = false;
 
+    protected static final boolean NotifyProvider = true;
+    protected static final boolean DoNotNotifyProvider = false;
+    protected static final boolean IDTokenHonorExpiry = true;
+    protected static final boolean IDTokenDoNotHonorExpiry = false;
+    protected static final boolean AccessTokenHonorExpiry = true;
+    protected static final boolean AccessTokenDoNotHonorExpiry = false;
+
+    protected static final String goodRedirectUri = "goodRedirectUri";
+    protected static final String badRedirectUri = "badRedirectUri";
+    protected static final String emptyRedirectUri = "emptyRedirectUri";
+
     /**
      * Try to access a protected app, then try to access it again after the tokens expire.
      * Callers of this method:
