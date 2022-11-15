@@ -1,5 +1,5 @@
 plugins {
-	id 'org.springframework.boot' version '2.0.4.RELEASE'
+	id 'org.springframework.boot' version '2.7.1'
 }
 
 apply plugin: 'java'
@@ -8,6 +8,8 @@ apply plugin: 'io.spring.dependency-management'
 group = 'com.ibm.ws.example'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
+
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-websocket')
