@@ -1695,29 +1695,38 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     private void clearAllHeaders() {
         final boolean bTrace = TraceComponent.isAnyTracingEnabled();
         if (bTrace && tc.isEntryEnabled()) {
-            Tr.entry(tc, "clearAllHeaders()");
+            Tr.entry(tc, "clearAllHeaders() storage size on Entry = " + storage.size());
         }
 
-        HeaderElement elem = this.hdrSequence;
-        while (null != elem) {
-            final HeaderElement next = elem.nextSequence;
-            final HeaderKeys key = elem.getKey();
-            final int ord = key.getOrdinal();
-            if (storage.containsKey(ord)) {
-                // first instance being removed
-                if (key.useFilters()) {
-                    filterRemove(key, null);
-                }
-                storage.remove(ord);
-            }
-            elem.destroy();
-            elem = next;
-        }
+        int beginCount = storage.size();
+        /*
+         * HeaderElement elem = this.hdrSequence;
+         * while (null != elem) {
+         * final HeaderElement next = elem.nextSequence;
+         * final HeaderKeys key = elem.getKey();
+         * final int ord = key.getOrdinal();
+         * if (storage.containsKey(ord)) {
+         * // first instance being removed
+         * if (key.useFilters()) {
+         * filterRemove(key, null);
+         * }
+         * storage.remove(ord);
+         * }
+         * elem.destroy();
+         * elem = next;
+         * }
+         * if (bTrace && tc.isEntryEnabled()) {
+         * int elementsRemoved = beginCount - storage.size();
+         * Tr.debug(tc, "clearAllHeaders storage elements removed = " + elementsRemoved);
+         * Tr.debug(tc, "clearAllHeaders storage elements remaining = " + storage.size());
+         * }
+         */
+        storage = new HashMap<Integer, HeaderElement>();
         this.hdrSequence = null;
         this.lastHdrInSequence = null;
         this.numberOfHeaders = 0;
         if (bTrace && tc.isEntryEnabled()) {
-            Tr.exit(tc, "clearAllHeaders()");
+            Tr.exit(tc, "clearAllHeaders() storage size on exit = " + storage.size());
         }
         headersAdded = new BitSet();
     }
