@@ -18,14 +18,13 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.websphere.jsonsupport.JSON;
 import com.ibm.websphere.jsonsupport.JSONMarshallException;
 import com.ibm.websphere.jsonsupport.test.User.Role;
@@ -59,7 +58,7 @@ public class CompareTest {
         su.managedUsersList = managedUsers;
         su.managedUsers = managedUsers.toArray(su.managedUsers);
 
-        //setup hashmaps for tesitng		
+        //setup hashmaps for tesitng
         su.userMap = new HashMap<Object, User>();
         User u1 = new User();
         u1.height = 5.8f;
@@ -82,7 +81,7 @@ public class CompareTest {
         //setup a POJO java object for comparison
         SuperUser td = setupUser();
 
-        //Use ObjectMapper to JSONP 
+        //Use ObjectMapper to JSONP
         JSON j = new JSONJacksonImpl();
         String jsonPString = null;
         jsonPString = j.stringify(td);
@@ -102,13 +101,12 @@ public class CompareTest {
 
     @Ignore
     @Test
-    public void marshallIgnoreNullTest()
-                    throws JsonGenerationException, JsonMappingException, IOException, JSONMarshallException {
+    public void marshallIgnoreNullTest() throws JsonGenerationException, JsonMappingException, IOException, JSONMarshallException {
 
         //setup a POJO java object for comparison
         SuperUser td = setupUser();
 
-        //Setup and use JSONP mapper 
+        //Setup and use JSONP mapper
         JSON j = new JSONJacksonImpl();
         String jsonPString = null;
         jsonPString = j.stringify(td);
@@ -117,7 +115,6 @@ public class CompareTest {
         String jsonJackson = null;
         ObjectMapper m = new ObjectMapper();
         StringWriter sw = new StringWriter();
-        m.getSerializationConfig().setSerializationInclusion(Inclusion.NON_NULL);
         m.writeValue(sw, td);
         jsonJackson = sw.toString();
 
