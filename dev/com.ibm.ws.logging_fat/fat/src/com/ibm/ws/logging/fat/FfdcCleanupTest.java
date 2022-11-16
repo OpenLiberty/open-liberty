@@ -83,8 +83,8 @@ public class FfdcCleanupTest {
         server.updateServerConfiguration(serverConfig);
 
         RemoteFile messagesLogFile = server.getDefaultLogFile();
-        String line = server.waitForStringInLog("based on the maxFfdcAge value configured.", 15000, messagesLogFile);
-        assertTrue("The FFDC file was not deleted.", line.contains("Deleted 1 FFDC file"));
+        String line = server.waitForStringInLog("TRAS3014I", 15000, messagesLogFile);
+        assertTrue("The FFDC file was not deleted.", line.contains("TRAS3014I"));
     }
 
     @Test
@@ -100,7 +100,7 @@ public class FfdcCleanupTest {
             server.updateServerConfiguration(serverConfig);
 
             RemoteFile messagesLogFile = server.getDefaultLogFile();
-            String line = server.waitForStringInLog("based on the maxFfdcAge value configured.", 15000, messagesLogFile);
+            String line = server.waitForStringInLog("TRAS3014I", 15000, messagesLogFile);
             assertNull("The FFDC file was incorrectly deleted.", line);
         } catch (Exception e) {
 
@@ -113,7 +113,7 @@ public class FfdcCleanupTest {
         hitWebPage("ffdc-servlet", "FFDCServlet", true, "?generateFFDC=true");
         Thread.sleep(61000);
         RemoteFile messagesLogFile = server.getDefaultLogFile();
-        String line = server.waitForStringInLog("based on the maxFfdcAge value configured.", 15000, messagesLogFile);
+        String line = server.waitForStringInLog("TRAS3014I", 15000, messagesLogFile);
         assertNull("The FFDC file was incorrectly deleted.", line);
     }
 

@@ -64,10 +64,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -235,10 +234,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -529,10 +527,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -700,10 +697,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -994,10 +990,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -1067,10 +1062,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -1193,11 +1187,10 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
         // Execute Test Case
         try {
@@ -1356,11 +1349,10 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
         // Execute Test Case
         try {
@@ -1390,9 +1382,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
             if (isUsingJPA31Feature()) {
-                if (isDB2Z || isDB2) {
+                if (isDB2) {
                     Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = VARCHAR(VARCHAR(? || ?) || ?))", sql.remove(0));
-                } else if (isDerby) {
+                } else if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = VARCHAR(VARCHAR(? || ' ') || ?))", sql.remove(0));
                 } else if (isPostgres) {
                     Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = ? || ? || ?)", sql.remove(0));
@@ -1415,9 +1407,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
             if (isUsingJPA31Feature()) {
-                if (isDB2Z || isDB2) {
+                if (isDB2) {
                     Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = VARCHAR(VARCHAR(? || ?) || STRVAL2))", sql.remove(0));
-                } else if (isDerby) {
+                } else if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = VARCHAR(VARCHAR(? || ' ') || STRVAL2))", sql.remove(0));
                 } else if (isPostgres) {
                     Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = ? || ? || STRVAL2)", sql.remove(0));
@@ -1559,11 +1551,10 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
         // Execute Test Case
         try {
@@ -1722,11 +1713,10 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
         // Execute Test Case
         try {
@@ -1906,11 +1896,10 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
         // Execute Test Case
         try {
@@ -2090,11 +2079,10 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
         // Execute Test Case
         try {
@@ -2234,10 +2222,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -2339,10 +2326,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -2366,7 +2352,11 @@ public class TestFunctionLogic extends AbstractTestLogic {
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
             if (isUsingJPA31Feature()) {
-                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM(?))", sql.remove(0));
+                if (isDB2Z) {
+                    Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM('  HELLO WORD '))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM(?))", sql.remove(0));
+                }
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM('  HELLO WORD '))", sql.remove(0));
@@ -2406,7 +2396,11 @@ public class TestFunctionLogic extends AbstractTestLogic {
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
             if (isUsingJPA31Feature()) {
-                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM(?))", sql.remove(0));
+                if (isDB2Z) {
+                    Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM('  HELLO WORD '))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM(?))", sql.remove(0));
+                }
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM('  HELLO WORD '))", sql.remove(0));
@@ -2452,8 +2446,7 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
 
         // Execute Test Case
         try {
@@ -2555,12 +2548,11 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
-        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.ORACLE);
+        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
         // Execute Test Case
         try {
@@ -2706,12 +2698,11 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
-        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.ORACLE);
+        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
         // Execute Test Case
         try {
@@ -2913,11 +2904,10 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
-        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.ORACLE);
+        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
         // Execute Test Case
         try {
@@ -3075,10 +3065,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -3183,10 +3172,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -3307,10 +3295,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -3415,10 +3402,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -3520,10 +3506,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -3625,10 +3610,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -3730,12 +3714,11 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
-        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.ORACLE);
+        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
         // Execute Test Case
         try {
@@ -3893,12 +3876,11 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
-        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.ORACLE);
+        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
         // Execute Test Case
         try {
@@ -3929,7 +3911,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
             if (isUsingJPA31Feature()) {
-                if (isOracle) {
+                if (isDB2Z) {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE('HI', 'ABCDEFGHIJKLMNOP'))", sql.remove(0));
+                } else if (isOracle) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = INSTR(?, ?))", sql.remove(0));
                 } else if (isPostgres) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = STRPOS(?, ?))", sql.remove(0));
@@ -3956,7 +3940,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
             if (isUsingJPA31Feature()) {
-                if (isOracle) {
+                if (isDB2Z) {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE('HI', 'ABCDEFGHIJKLMNOP'))", sql.remove(0));
+                } else if (isOracle) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = INSTR(?, ?))", sql.remove(0));
                 } else if (isPostgres) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = STRPOS(?, ?))", sql.remove(0));
@@ -4016,7 +4002,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
             if (isUsingJPA31Feature()) {
-                if (isOracle) {
+                if (isDB2Z) {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE('HI', 'ABCDEFGHIJKLMNOP'))", sql.remove(0));
+                } else if (isOracle) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = INSTR(?, ?))", sql.remove(0));
                 } else if (isPostgres) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = STRPOS(?, ?))", sql.remove(0));
@@ -4050,7 +4038,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
             if (isUsingJPA31Feature()) {
-                if (isOracle) {
+                if (isDB2Z) {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE('HI', 'ABCDEFGHIJKLMNOP'))", sql.remove(0));
+                } else if (isOracle) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = INSTR(?, ?))", sql.remove(0));
                 } else if (isPostgres) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = STRPOS(?, ?))", sql.remove(0));
@@ -4108,11 +4098,10 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
-        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.ORACLE);
+        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
         // Execute Test Case
         try {
@@ -4282,12 +4271,11 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
-        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.ORACLE);
+        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
         // Execute Test Case
         try {
@@ -4450,12 +4438,11 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
-        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.ORACLE);
+        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
         // Execute Test Case
         try {
@@ -4485,7 +4472,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
             if (isUsingJPA31Feature()) {
-                if (isOracle) {
+                if (isDB2Z) {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE('X', 'OXOOOOOXXOOOOOOXX', 3))", sql.remove(0));
+                } else if (isOracle) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = INSTR(?, ?, ?))", sql.remove(0));
                 } else if (isPostgres) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = COALESCE(NULLIF(STRPOS(SUBSTRING(? FROM ?), ?), 0) - 1 + ?, 0))", sql.remove(0));
@@ -4510,7 +4499,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
             if (isUsingJPA31Feature()) {
-                if (isOracle) {
+                if (isDB2Z) {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE('X', 'OXOOOOOXXOOOOOOXX', 3))", sql.remove(0));
+                } else if (isOracle) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = INSTR(?, ?, ?))", sql.remove(0));
                 } else if (isPostgres) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = COALESCE(NULLIF(STRPOS(SUBSTRING(? FROM ?), ?), 0) - 1 + ?, 0))", sql.remove(0));
@@ -4570,7 +4561,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
             if (isUsingJPA31Feature()) {
-                if (isOracle) {
+                if (isDB2Z) {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE('X', 'OXOOOOOXXOOOOOOXX', 3))", sql.remove(0));
+                } else if (isOracle) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = INSTR(?, ?, ?))", sql.remove(0));
                 } else if (isPostgres) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = COALESCE(NULLIF(STRPOS(SUBSTRING(? FROM ?), ?), 0) - 1 + ?, 0))", sql.remove(0));
@@ -4604,7 +4597,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
             if (isUsingJPA31Feature()) {
-                if (isOracle) {
+                if (isDB2Z) {
+                    Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE('X', 'OXOOOOOXXOOOOOOXX', 3))", sql.remove(0));
+                } else if (isOracle) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = INSTR(?, ?, ?))", sql.remove(0));
                 } else if (isPostgres) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = COALESCE(NULLIF(STRPOS(SUBSTRING(? FROM ?), ?), 0) - 1 + ?, 0))", sql.remove(0));
@@ -4662,10 +4657,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
-        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.ORACLE);
+        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
         // Execute Test Case
         try {
@@ -4828,10 +4822,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -4933,10 +4926,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -5054,10 +5046,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -5159,10 +5150,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -5264,10 +5254,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -5291,7 +5280,11 @@ public class TestFunctionLogic extends AbstractTestLogic {
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
             if (isUsingJPA31Feature()) {
-                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM(?))", sql.remove(0));
+                if (isDB2Z) {
+                    Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM('  HELLO WORD '))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM(?))", sql.remove(0));
+                }
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM('  HELLO WORD '))", sql.remove(0));
@@ -5332,7 +5325,11 @@ public class TestFunctionLogic extends AbstractTestLogic {
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
             if (isUsingJPA31Feature()) {
-                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM(?))", sql.remove(0));
+                if (isDB2Z) {
+                    Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM('  HELLO WORD '))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM(?))", sql.remove(0));
+                }
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM('  HELLO WORD '))", sql.remove(0));
@@ -5378,8 +5375,7 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
 
         // Execute Test Case
         try {
@@ -5481,12 +5477,11 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
-        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.ORACLE);
+        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
         // Execute Test Case
         try {
@@ -5599,12 +5594,11 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
-        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
-        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
+        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.ORACLE);
+        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
         // Execute Test Case
         try {
@@ -5633,7 +5627,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
             if (isUsingJPA31Feature()) {
-                if (isDB2Z || isDB2) {
+                if (isDB2Z) {
+                    Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(TRAILING 'A' FROM 'AAAHELLO WORDAA'))", sql.remove(0));
+                } else if (isDB2) {
                     Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(TRAILING 'A' FROM ?))", sql.remove(0));
                 } else if (isOracle || isPostgres) {
                     Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM(?, ?))", sql.remove(0));
@@ -5743,11 +5739,10 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.ORACLE);
-        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.POSTGRES);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isOracle = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.ORACLE);
+        boolean isPostgres = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.POSTGRES);
 
         // Execute Test Case
         try {
@@ -5868,10 +5863,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -5981,10 +5975,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -6114,10 +6107,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -6227,10 +6219,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -6398,10 +6389,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -6696,10 +6686,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -6836,10 +6825,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -7092,10 +7080,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -7240,10 +7227,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -7512,10 +7498,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -7617,10 +7602,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -7644,7 +7628,11 @@ public class TestFunctionLogic extends AbstractTestLogic {
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
             if (isUsingJPA31Feature()) {
-                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(?))", sql.remove(0));
+                if (isDB2Z) {
+                    Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('  HELLO WORD '))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(?))", sql.remove(0));
+                }
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('  HELLO WORD '))", sql.remove(0));
@@ -7684,7 +7672,11 @@ public class TestFunctionLogic extends AbstractTestLogic {
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
             if (isUsingJPA31Feature()) {
-                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(?))", sql.remove(0));
+                if (isDB2Z) {
+                    Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('  HELLO WORD '))", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(?))", sql.remove(0));
+                }
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('  HELLO WORD '))", sql.remove(0));
@@ -7730,8 +7722,7 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
 
         // Execute Test Case
         try {
@@ -7833,10 +7824,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -7971,10 +7961,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -8001,7 +7990,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
             if (isUsingJPA31Feature()) {
-                if (isDB2Z || isDB2) {
+                if (isDB2Z) {
+                    Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('A' FROM 'AAAHELLO WORDAA'))", sql.remove(0));
+                } else if (isDB2) {
                     Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('A' FROM ?))", sql.remove(0));
                 } else {
                     Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(? FROM ?))", sql.remove(0));
@@ -8072,7 +8063,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
             if (isUsingJPA31Feature()) {
-                if (isDB2Z || isDB2) {
+                if (isDB2Z) {
+                    Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('A' FROM 'AAAHELLO WORDAA'))", sql.remove(0));
+                } else if (isDB2) {
                     Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('A' FROM ?))", sql.remove(0));
                 } else {
                     Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(? FROM ?))", sql.remove(0));
@@ -8153,9 +8146,8 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
 
         // Execute Test Case
         try {
@@ -8302,10 +8294,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -8410,10 +8401,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -8438,7 +8428,11 @@ public class TestFunctionLogic extends AbstractTestLogic {
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
             if (isUsingJPA31Feature()) {
-                Assert.assertEquals("SELECT TRIM(?), STRVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
+                if (isDB2Z) {
+                    Assert.assertEquals("SELECT TRIM('  HELLO WORD '), STRVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT TRIM(?), STRVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
+                }
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT TRIM('  HELLO WORD '), STRVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = 23)", sql.remove(0));
@@ -8480,7 +8474,11 @@ public class TestFunctionLogic extends AbstractTestLogic {
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
             if (isUsingJPA31Feature()) {
-                Assert.assertEquals("SELECT TRIM(?), STRVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
+                if (isDB2Z) {
+                    Assert.assertEquals("SELECT TRIM('  HELLO WORD '), STRVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
+                } else {
+                    Assert.assertEquals("SELECT TRIM(?), STRVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
+                }
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT TRIM('  HELLO WORD '), STRVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = 23)", sql.remove(0));
@@ -8526,8 +8524,7 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
 
         // Execute Test Case
         try {
@@ -8632,10 +8629,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -8737,10 +8733,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {
@@ -8858,10 +8853,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
         final String dbProductName = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductName") == null) ? "UNKNOWN" : (String) testProps.get("dbProductName"));
         final String dbProductVersion = (testProps == null) ? "UNKNOWN" : ((testProps.get("dbProductVersion") == null) ? "UNKNOWN" : (String) testProps.get("dbProductVersion"));
 
-        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductVersion, DatabaseVendor.DB2ZOS)
-                         || DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2ZOS);
-        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DB2);
-        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, DatabaseVendor.DERBY);
+        boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
+        boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
 
         // Execute Test Case
         try {

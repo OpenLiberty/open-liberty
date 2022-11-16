@@ -140,7 +140,6 @@ public class JwtComponent implements JwtConfig {
     }
 
     private void process(Map<String, Object> props) {
-        // TODO Auto-generated method stub
         if (props == null || props.isEmpty()) {
             return;
         }
@@ -234,13 +233,11 @@ public class JwtComponent implements JwtConfig {
 
     @Override
     public String getId() {
-        // TODO Auto-generated method stub
         return issuer;
     }
 
     @Override
     public String getIssuerUrl() {
-        // TODO Auto-generated method stub
         return issuerUrl;
     }
 
@@ -252,55 +249,46 @@ public class JwtComponent implements JwtConfig {
 
     @Override
     public List<String> getAudiences() {
-        // TODO Auto-generated method stub
         return audiences;
     }
 
     @Override
     public String getSignatureAlgorithm() {
-        // TODO Auto-generated method stub
         return sigAlg;
     }
 
     @Override
     public List<String> getClaims() {
-        // TODO Auto-generated method stub
         return claims;
     }
 
     @Override
     public String getScope() {
-        // TODO Auto-generated method stub
         return scope;
     }
 
     @Override
     public boolean getJti() {
-        // TODO Auto-generated method stub
         return jti;
     }
 
     @Override
     public String getTrustStoreRef() {
-        // TODO Auto-generated method stub
         return trustStoreRef;
     }
 
     @Override
     public String getKeyStoreRef() {
-        // TODO Auto-generated method stub
         return keyStoreRef;
     }
 
     @Override
     public String getKeyAlias() {
-        // TODO Auto-generated method stub
         return keyAlias;
     }
 
     @Override
     public String getTrustedAlias() {
-        // TODO Auto-generated method stub
         return trustedAlias;
     }
 

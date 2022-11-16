@@ -19,6 +19,7 @@ import java.util.function.Supplier;
 import javax.net.ssl.SSLContext;
 import jakarta.ws.rs.client.ClientBuilder;
 
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
@@ -59,7 +60,10 @@ public class SslClientBuilderListener implements ClientBuilderListener {
     public void building(ClientBuilder clientBuilder) { // for JAX-RS clients
         Object sslRef = clientBuilder.getConfiguration().getProperty(JAXRSClientConstants.SSL_REFKEY);
         try {
-            getSSLContext(toRefString(sslRef)).ifPresent(clientBuilder::sslContext);
+            SSLContext sslContext = ((ResteasyClientBuilder) clientBuilder).getSSLContext();
+            if (sslContext == null) {
+                getSSLContext(toRefString(sslRef)).ifPresent(clientBuilder::sslContext);
+            }
         } catch (SSLException ex) {
             throw new IllegalStateException(ex);
         }

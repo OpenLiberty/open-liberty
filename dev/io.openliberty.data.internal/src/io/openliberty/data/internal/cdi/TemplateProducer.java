@@ -23,6 +23,7 @@ import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import io.openliberty.data.internal.LibertyDataProvider;
 import jakarta.data.Template;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
@@ -63,7 +64,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
             if (id == null || entityClass == null)
                 throw new NullPointerException(id == null ? "id" : "entityClass");
 
-            svc.getProvider(entityClass).getTemplate().delete(entityClass, id);
+            ((LibertyDataProvider) svc.getProvider(entityClass, null, null)).getTemplate().delete(entityClass, id);
         }
 
         @Override
@@ -71,7 +72,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
             if (id == null || entityClass == null)
                 throw new NullPointerException(id == null ? "id" : "entityClass");
 
-            return svc.getProvider(entityClass).getTemplate().find(entityClass, id);
+            return ((LibertyDataProvider) svc.getProvider(entityClass, null, null)).getTemplate().find(entityClass, id);
         }
 
         @Override
@@ -79,7 +80,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
             if (entity == null)
                 throw new NullPointerException("entity");
 
-            return svc.getProvider(entity.getClass()).getTemplate().insert(entity);
+            return ((LibertyDataProvider) svc.getProvider(entity.getClass(), null, null)).getTemplate().insert(entity);
         }
 
         @Override
@@ -87,7 +88,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
             if (entity == null)
                 throw new NullPointerException("entity");
 
-            return svc.getProvider(entity.getClass()).getTemplate().insert(entity, ttl);
+            return ((LibertyDataProvider) svc.getProvider(entity.getClass(), null, null)).getTemplate().insert(entity, ttl);
         }
 
         @Override
@@ -97,7 +98,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
                 return Collections.<T> emptyList();
 
             Class<?> entityClass = it.next().getClass();
-            return svc.getProvider(entityClass).getTemplate().insert(entities);
+            return ((LibertyDataProvider) svc.getProvider(entityClass, null, null)).getTemplate().insert(entities);
         }
 
         @Override
@@ -107,7 +108,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
                 return Collections.<T> emptyList();
 
             Class<?> entityClass = it.next().getClass();
-            return svc.getProvider(entityClass).getTemplate().insert(entities, ttl);
+            return ((LibertyDataProvider) svc.getProvider(entityClass, null, null)).getTemplate().insert(entities, ttl);
         }
 
         @Override
@@ -115,7 +116,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
             if (entity == null)
                 throw new NullPointerException("entity");
 
-            return svc.getProvider(entity.getClass()).getTemplate().update(entity);
+            return ((LibertyDataProvider) svc.getProvider(entity.getClass(), null, null)).getTemplate().update(entity);
         }
 
         @Override
@@ -125,7 +126,7 @@ public class TemplateProducer implements PrivilegedAction<DataExtensionMetadata>
                 return Collections.<T> emptyList();
 
             Class<?> entityClass = it.next().getClass();
-            return svc.getProvider(entityClass).getTemplate().update(entities);
+            return ((LibertyDataProvider) svc.getProvider(entityClass, null, null)).getTemplate().update(entities);
         }
     }
 }

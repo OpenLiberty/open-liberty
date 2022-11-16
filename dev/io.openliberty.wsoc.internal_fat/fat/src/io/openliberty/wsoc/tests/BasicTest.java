@@ -226,7 +226,8 @@ public class BasicTest {
     @Mode(TestMode.FULL)
     // We expect to see an IllegalStateException due to invalid state when deploying endpoint.addsclosed
     // We also expect to see java.io.IOException: Stream is closed when the request fails to process due to the IllegalStateException
-    @ExpectedFFDC(value = { "java.lang.IllegalStateException", "java.io.IOException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID })
+    // for why we are using AllowedFFDC instead of ExpectedFFDC - see comment #1 at the top of the file
+    @AllowedFFDC(value = { "java.lang.IllegalStateException", "java.io.IOException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID })
     // We allow the FFDC due to "Websocket request processed but provided upgrade header "null" does not match websocket" when upgrading request
     @AllowedFFDC({ "java.lang.Exception" })
     @Test

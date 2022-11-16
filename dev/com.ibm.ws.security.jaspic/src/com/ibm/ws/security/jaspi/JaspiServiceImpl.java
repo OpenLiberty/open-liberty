@@ -105,8 +105,7 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
     private SubjectManager subjectManager = null;
     public HashMap<String, Object> extraAuditData = new HashMap<String, Object>();
 
-    public JaspiServiceImpl() {
-    }
+    public JaspiServiceImpl() {}
 
     @Reference(name = KEY_UNAUTHENTICATED_SUBJECT_SERVICE,
                service = UnauthenticatedSubjectService.class,
@@ -716,12 +715,7 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
 
                 case HttpServletResponse.SC_UNAUTHORIZED:
                     String realm = (String) jaspiRequest.getMessageInfo().getMap().get(AttributeNameConstants.WSCREDENTIAL_REALM);
-                    AuthResult jsr375AuthResult = (AuthResult) jaspiRequest.getMessageInfo().getMap().get("JSR375_CHALLENGE");
-                    if (jsr375AuthResult != null) {
-                        authResult = new AuthenticationResult(AuthResult.TAI_CHALLENGE, realm != null ? realm : (String) null);
-                    } else {
-                        authResult = new AuthenticationResult(AuthResult.SEND_401, realm != null ? realm : (String) null);
-                    }
+                    authResult = new AuthenticationResult(AuthResult.SEND_401, realm != null ? realm : (String) null);
                     pretty = "SEND_401";
                     break;
 

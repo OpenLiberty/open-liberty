@@ -28,8 +28,8 @@ import java.util.concurrent.TimeoutException;
 
 import jakarta.annotation.Resource;
 import jakarta.data.Entities;
-import jakarta.data.DataException;
 import jakarta.data.Template;
+import jakarta.data.exceptions.DataException;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.HeuristicMixedException;

@@ -12,6 +12,8 @@ package jakarta.data;
 
 import java.util.function.Supplier;
 
+import jakarta.data.exceptions.DataException;
+
 /**
  * Copied from jakarta.nosql.mapping.IdNotFoundException to investigate
  * how well the NoSQL template pattern works for relational database access.

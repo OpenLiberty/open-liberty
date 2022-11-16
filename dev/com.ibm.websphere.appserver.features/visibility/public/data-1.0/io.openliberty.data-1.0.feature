@@ -5,6 +5,8 @@ singleton=true
 IBM-ShortName: data-1.0
 IBM-API-Package: \
   jakarta.data; type="spec",\
+  jakarta.data.exceptions; type="spec",\
+  jakarta.data.provider; type="spec",\
   jakarta.data.repository; type="spec"
 Subsystem-Name: Jakarta Data 1.0
 #TODO com.ibm.websphere.appserver.eeCompatible-11.0

@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 public interface Page<T> extends Slice<T> {
     <C extends Collection<T>> C getContent(Supplier<C> collectionFactory); // TODO this is from Jakarta NoSQL only
 
-    long getTotalElements();
+    long totalElements();
 
-    long getTotalPages();
+    long totalPages();
 }

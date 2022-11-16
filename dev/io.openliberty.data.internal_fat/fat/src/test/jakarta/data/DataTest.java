@@ -10,6 +10,10 @@
  *******************************************************************************/
 package test.jakarta.data;
 
+import jakarta.data.provider.DataProvider;
+
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -20,9 +24,11 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import test.jakarta.data.inmemory.web.ProviderTestServlet;
 import test.jakarta.data.web.DataTestServlet;
 
 @RunWith(FATRunner.class)
@@ -30,13 +36,23 @@ import test.jakarta.data.web.DataTestServlet;
 public class DataTest extends FATServletClient {
 
     @Server("io.openliberty.data.internal.fat")
-    @TestServlet(servlet = DataTestServlet.class, contextRoot = "DataTestApp")
+    @TestServlets({ @TestServlet(servlet = DataTestServlet.class, contextRoot = "DataTestApp"),
+                    @TestServlet(servlet = ProviderTestServlet.class, contextRoot = "ProviderTestApp") })
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive war = ShrinkHelper.buildDefaultApp("DataTestApp", "test.jakarta.data.web");
         ShrinkHelper.exportAppToServer(server, war);
+
+        JavaArchive providerJar = ShrinkWrap.create(JavaArchive.class, "palindrome-data-provider.jar")
+                        .addPackage("test.jakarta.data.inmemory.provider")
+                        .addAsServiceProvider(DataProvider.class.getName(),
+                                              "test.jakarta.data.inmemory.provider.PalindromeProvider");
+
+        WebArchive providerWar = ShrinkHelper.buildDefaultApp("ProviderTestApp", "test.jakarta.data.inmemory.web")
+                        .addAsLibrary(providerJar);
+        ShrinkHelper.exportAppToServer(server, providerWar);
 
         server.startServer();
     }

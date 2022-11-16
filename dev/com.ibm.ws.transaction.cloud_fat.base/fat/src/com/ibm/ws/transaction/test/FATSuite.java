@@ -15,8 +15,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
+
 import com.ibm.ws.transaction.test.tests.DupXidTest;
-import com.ibm.ws.transaction.test.tests.FATSuiteBase;
 import com.ibm.ws.transaction.test.tests.Simple2PCCloudTest;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -28,7 +29,7 @@ import componenttest.topology.database.container.DatabaseContainerType;
                 DupXidTest.class,
                 Simple2PCCloudTest.class,
 })
-public class FATSuite extends FATSuiteBase {
+public class FATSuite extends TxTestContainerSuite {
 
     static {
         databaseContainerType = DatabaseContainerType.Derby;

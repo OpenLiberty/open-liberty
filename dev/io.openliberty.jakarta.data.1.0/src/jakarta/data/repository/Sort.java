@@ -42,7 +42,7 @@ public class Sort {
         return !asc;
     }
 
-    public String getProperty() {
+    public String property() {
         return prop;
     }
 

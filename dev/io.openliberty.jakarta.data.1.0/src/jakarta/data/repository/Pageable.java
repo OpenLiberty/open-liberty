@@ -10,61 +10,56 @@
  *******************************************************************************/
 package jakarta.data.repository;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Method signatures are copied from jakarta.data.repository.Pageable from the Jakarta Data repo.
  */
-public class Pageable {
-    private final long pageNumber, pageSize;
-
-    Pageable(long pageNumber, long pageSize) {
-        if (pageNumber < 1 || pageSize < 1)
-            throw new IllegalArgumentException();
-        this.pageNumber = pageNumber;
-        this.pageSize = pageSize;
+public interface Pageable {
+    public static enum Mode {
+        CURSOR_NEXT, CURSOR_PREVIOUS, OFFSET
     }
 
-    public KeysetPageable afterKeyset(Object... keyset) {
-        return new KeysetPageable(this, KeysetPageable.Mode.NEXT, new KeysetPageable.CursorImpl(keyset));
+    public interface Cursor {
+        public Object getKeysetElement(int index);
+
+        public int size();
     }
 
-    public KeysetPageable afterKeysetCursor(KeysetPageable.Cursor cursor) {
-        return new KeysetPageable(this, KeysetPageable.Mode.NEXT, cursor);
+    public static Pageable ofPage(long page) {
+        return new Pagination(page, 10, Collections.emptyList(), Mode.OFFSET, null);
     }
 
-    public KeysetPageable beforeKeyset(Object... keyset) {
-        return new KeysetPageable(this, KeysetPageable.Mode.PREVIOUS, new KeysetPageable.CursorImpl(keyset));
+    public static Pageable ofSize(int size) {
+        return new Pagination(1, size, Collections.emptyList(), Mode.OFFSET, null);
     }
 
-    public KeysetPageable beforeKeysetCursor(KeysetPageable.Cursor cursor) {
-        return new KeysetPageable(this, KeysetPageable.Mode.PREVIOUS, cursor);
-    }
+    public Pageable afterKeyset(Object... keyset);
 
-    public long getPage() {
-        return pageNumber;
-    }
+    public Pageable afterKeysetCursor(Pageable.Cursor cursor);
 
-    public long getSize() {
-        return pageSize;
-    }
+    public Pageable beforeKeyset(Object... keyset);
 
-    public Pageable next() {
-        return new Pageable(pageNumber + 1, pageSize);
-    }
+    public Pageable beforeKeysetCursor(Pageable.Cursor cursor);
 
-    public static Pageable of(long page, long size) {
-        return new Pageable(page, size);
-    }
+    public Cursor cursor();
 
-    public static Pageable page(long page) {
-        return new Pageable(page, 10);
-    }
+    public Mode mode();
 
-    public static Pageable size(long size) {
-        return new Pageable(1, size);
-    }
+    public Pageable next();
 
-    @Override
-    public String toString() {
-        return new StringBuilder("Pageable{size=").append(pageSize).append(", page=").append(pageNumber).append("}").toString();
-    }
+    public long page();
+
+    public int size();
+
+    public List<Sort> sorts();
+
+    public Pageable newPage(long page);
+
+    public Pageable newSize(int size);
+
+    public Pageable sortBy(Iterable<Sort> sorts);
+
+    public Pageable sortBy(Sort... sorts);
 }

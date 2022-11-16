@@ -10,7 +10,7 @@ com.cloudant:cloudant-http:2.16.0
 com.cloudant:cloudant-http:2.8.0
 com.fasterxml.jackson.core:jackson-annotations:2.13.4
 com.fasterxml.jackson.core:jackson-core:2.13.4
-com.fasterxml.jackson.core:jackson-databind:2.13.4
+com.fasterxml.jackson.core:jackson-databind:2.13.4.2
 com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.4
 com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.13.4
 com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4
@@ -527,8 +527,9 @@ org.eclipse.transformer:org.eclipse.transformer.bnd.analyzer:0.5.0
 org.eclipse.transformer:org.eclipse.transformer.cli:0.5.0
 org.eclipse.transformer:org.eclipse.transformer.jakarta:0.5.0
 org.eclipse.transformer:org.eclipse.transformer:0.5.0
+org.eclipse:yasson:1.0.11
 org.eclipse:yasson:2.0.4
-org.eclipse:yasson:3.0.0
+org.eclipse:yasson:3.0.2
 org.ehcache:ehcache:3.8.1
 org.ektorp:org.ektorp:1.5.0
 org.fusesource.jansi:jansi:1.18

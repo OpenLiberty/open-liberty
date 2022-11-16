@@ -36,13 +36,14 @@ Export-Package: io.openliberty.restfulWS.internal.ssl.component;thread-context=t
 Import-Package: \
   !org.eclipse.microprofile.rest.client,\
   !org.eclipse.microprofile.rest.client.spi,\
+  org.jboss.resteasy.client.jaxrs;version="[4.7.0,7.0.0)",\
   *
 
 DynamicImport-Package: \
   org.eclipse.microprofile.rest.client,\
   org.eclipse.microprofile.rest.client.spi
 
-#Private-Package: 
+#Private-Package:
 
 Include-Resource:\
   io/openliberty=${bin}/io/openliberty, \
