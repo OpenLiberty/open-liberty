@@ -37,7 +37,6 @@ import componenttest.topology.utils.HttpsRequest;
 
 @RunWith(FATRunner.class)
 public class ConfigOpenApiSchemaTest extends FATServletClient {
-
     /**  */
     private static final String SERVER_NAME = "com.ibm.ws.rest.handler.config.openapi.fat";
 
@@ -47,6 +46,9 @@ public class ConfigOpenApiSchemaTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         FATSuite.setupServerSideAnnotations(server);
+
+        // Delete once feature 18696 is GA.
+        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
 
         server.startServer();
 
