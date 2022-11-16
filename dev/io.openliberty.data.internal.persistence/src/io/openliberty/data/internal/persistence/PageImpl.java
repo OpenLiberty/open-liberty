@@ -23,7 +23,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
-import jakarta.data.DataException;
+import jakarta.data.exceptions.DataException;
 import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
 import jakarta.persistence.EntityManager;

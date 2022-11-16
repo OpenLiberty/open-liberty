@@ -28,8 +28,8 @@ import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import jakarta.data.IdNotFoundException;
-import jakarta.data.DataException;
 import jakarta.data.Template;
+import jakarta.data.exceptions.DataException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;

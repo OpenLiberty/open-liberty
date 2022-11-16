@@ -47,12 +47,12 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import jakarta.data.DataException;
 import jakarta.data.Delete;
 import jakarta.data.Inheritance;
 import jakarta.data.Result;
 import jakarta.data.Select;
 import jakarta.data.Select.Aggregate;
+import jakarta.data.exceptions.DataException;
 import jakarta.data.Update;
 import jakarta.data.Where;
 import jakarta.data.repository.KeysetAwarePage;

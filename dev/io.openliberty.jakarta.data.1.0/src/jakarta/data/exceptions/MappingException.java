@@ -8,22 +8,23 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data;
+package jakarta.data.exceptions;
 
 /**
- * Method signatures copied from jakarta.data.DataException.
+ * copied from Jakarta Data git repository
  */
-public class DataException extends RuntimeException {
+public class MappingException extends DataException {
+    private static final long serialVersionUID = 6021238091536264838L;
 
-    public DataException(String message) {
+    public MappingException(String message) {
         super(message);
     }
 
-    public DataException(String message, Throwable cause) {
+    public MappingException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public DataException(Throwable cause) {
+    public MappingException(Throwable cause) {
         super(cause);
     }
 }

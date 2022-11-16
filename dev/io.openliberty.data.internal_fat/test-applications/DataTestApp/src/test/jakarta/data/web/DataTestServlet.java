@@ -52,9 +52,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jakarta.annotation.Resource;
-import jakarta.data.DataException;
 import jakarta.data.Entities;
 import jakarta.data.Template;
+import jakarta.data.exceptions.DataException;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.Limit;
 import jakarta.data.repository.Page;
