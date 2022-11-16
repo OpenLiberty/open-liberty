@@ -158,6 +158,10 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
     protected void setSecurityService(ServiceReference<SecurityService> reference) {
         securityServiceRef.setReference(reference);
         securityService = securityServiceRef.getService();
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "OLGH22405 - setSecurityService service.pid:" + reference.getProperty("service.pid"));
+            Tr.debug(tc, "OLGH22405 - setSecurityService securityService:" + securityService);
+        }
         initOidcClientAuth = true;
     }
 
@@ -917,9 +921,20 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "subject from oidcCookie is:" + subject);
         }
-        SecurityService securityService = securityServiceRef.getService();
-        AuthenticationService authenticationService = securityService.getAuthenticationService();
-        return authenticateWithSubject(req, resp, subject, authenticationService, authenticationData);
+        try {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "OLGH22405 - securityService:" + securityServiceRef.getService());
+                Tr.debug(tc, "OLGH22405 - authenticationService:" + securityServiceRef.getService().getAuthenticationService());
+            }
+            SecurityService securityService = securityServiceRef.getService();
+            AuthenticationService authenticationService = securityService.getAuthenticationService();
+            return authenticateWithSubject(req, resp, subject, authenticationService, authenticationData);
+        } catch (Exception e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "OLGH22405 - exception authenticateWithSubject():" + e.getMessage());
+            }
+        }
+        return false;
     }
 
     /**
