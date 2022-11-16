@@ -30,8 +30,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
-import io.openliberty.data.internal.DataProvider;
+import io.openliberty.data.internal.LibertyDataProvider;
 import jakarta.data.Entities;
+import jakarta.data.provider.DataProvider;
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Repository;
 import jakarta.enterprise.event.Observes;
@@ -114,8 +115,8 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionM
         for (AnnotatedType<?> repositoryType : repositoryTypes) {
             Class<?> repositoryInterface = repositoryType.getJavaClass();
             Class<?> entityClass = getEntityClass(repositoryInterface);
-            DataProvider provider = svc.getProvider(entityClass);
             ClassLoader loader = repositoryInterface.getClassLoader();
+            DataProvider provider = svc.getProvider(entityClass, loader, null);
 
             EntityGroupKey entityGroupKey = new EntityGroupKey("DefaultDataStore", loader, provider); // TODO configuration of different providers in Jakarta Data
             List<Class<?>> entityClasses = entityGroups.get(entityGroupKey);
@@ -131,8 +132,8 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionM
 
         for (Entities anno : entitiesListsForTemplate) {
             for (Class<?> entityClass : anno.value()) {
-                DataProvider provider = svc.getProvider(entityClass);
                 ClassLoader loader = entityClass.getClassLoader();
+                DataProvider provider = svc.getProvider(entityClass, loader, null);
 
                 EntityGroupKey entityGroupKey = new EntityGroupKey(anno.provider(), loader, provider);
                 List<Class<?>> entityClasses = entityGroups.get(entityGroupKey);
@@ -146,13 +147,14 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionM
         for (Entry<EntityGroupKey, List<Class<?>>> entry : entityGroups.entrySet()) {
             EntityGroupKey entityGroupKey = entry.getKey();
             List<Class<?>> entityClasses = entry.getValue();
-            DataProvider provider = entityGroupKey.provider;
-            try {
-                provider.entitiesFound(entityGroupKey.databaseId, entityGroupKey.loader, entityClasses);
-            } catch (Exception x) {
-                x.printStackTrace();
-                System.err.println("ERROR: Unable to provide entities for " + entityGroupKey.databaseId + ": " + entityClasses);
-            }
+            if (entityGroupKey.provider instanceof LibertyDataProvider)
+                try {
+                    LibertyDataProvider provider = (LibertyDataProvider) entityGroupKey.provider;
+                    provider.entitiesFound(entityGroupKey.databaseId, entityGroupKey.loader, entityClasses);
+                } catch (Exception x) {
+                    x.printStackTrace();
+                    System.err.println("ERROR: Unable to provide entities for " + entityGroupKey.databaseId + ": " + entityClasses);
+                }
         }
         // TODO copy remaining code for this method
     }

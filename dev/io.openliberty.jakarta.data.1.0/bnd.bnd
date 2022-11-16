@@ -22,6 +22,7 @@ Bundle-Description: Copied Jakarta Data API classes and some proposed or experim
 
 Export-Package: \
   jakarta.data;version="1.0.0",\
+  jakarta.data.provider;version="1.0.0",\
   jakarta.data.repository;version="1.0.0"
 
 instrument.classesExcludes: jakarta/data/*.class

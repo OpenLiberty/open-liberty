@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Flow.Publisher;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.BaseStream;
@@ -75,6 +76,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     private static final Set<Class<?>> SPECIAL_PARAM_TYPES = new HashSet<>(Arrays.asList //
     (Collector.class, Consumer.class, Limit.class, Pageable.class, Sort.class, Sort[].class));
 
+    AtomicBoolean isDisposed = new AtomicBoolean();
     private final PersistenceDataProvider provider;
     final Map<Method, CompletableFuture<QueryInfo>> queries = new HashMap<>();
     private final Class<R> repositoryInterface;
@@ -755,7 +757,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 if ("hashCode".equals(methodName))
                     return System.identityHashCode(proxy);
                 else if ("toString".equals(methodName))
-                    return repositoryInterface.getName() + "[QueryHandler]@" + Integer.toHexString(System.identityHashCode(proxy));
+                    return repositoryInterface.getName() + "(Proxy)@" + Integer.toHexString(System.identityHashCode(proxy));
             } else if (args.length == 1) {
                 if ("equals".equals(methodName))
                     return proxy == args[0];
@@ -767,6 +769,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), args);
         try {
+            if (isDisposed.get())
+                throw new IllegalStateException("Repository instance " + repositoryInterface.getName() +
+                                                "(Proxy)@" + Integer.toHexString(System.identityHashCode(proxy)) +
+                                                " is no longer in scope."); // TODO
+
             QueryInfo queryInfo = queryInfoFuture.join();
 
             LocalTransactionCoordinator suspendedLTC = null;

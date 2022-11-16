@@ -12,13 +12,15 @@ package io.openliberty.data.internal.cdi;
 
 import java.lang.annotation.Annotation;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
-import io.openliberty.data.internal.DataProvider;
+import jakarta.data.provider.DataProvider;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
@@ -59,6 +61,7 @@ public class RepositoryProducer<R, P> implements Producer<R> {
 
     private final Bean<R> bean;
     private final Factory<P> factory;
+    private final Map<R, R> intercepted = new ConcurrentHashMap<>();
 
     public RepositoryProducer(Bean<R> bean, Factory<P> factory) {
         this.bean = bean;
@@ -67,7 +70,9 @@ public class RepositoryProducer<R, P> implements Producer<R> {
 
     @Override
     public void dispose(R repository) {
-        // TODO
+        R r = intercepted.remove(repository);
+
+        factory.provider.disposeRepository(r == null ? repository : r);
     }
 
     @Override
@@ -100,7 +105,11 @@ public class RepositoryProducer<R, P> implements Producer<R> {
 
         R instance = factory.provider.createRepository(repositoryInterface, factory.entityClass);
 
-        instance = intercept ? interception.createInterceptedInstance(instance) : instance;
+        if (intercept) {
+            R r = interception.createInterceptedInstance(instance);
+            intercepted.put(r, instance);
+            instance = r;
+        }
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "produce", instance.toString());
