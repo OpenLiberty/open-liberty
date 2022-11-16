@@ -2207,7 +2207,7 @@ public class BaseTraceService implements TrService {
                 }
             }
             if(deletedCounter > 0) {
-                Tr.info(tc, "Deleted " + deletedCounter + " FFDC file(s) based on the maxFfdcAge value configured.");
+                Tr.info(tc, "FFDC_FILE_DELETION", deletedCounter);
             }
         }
     }
