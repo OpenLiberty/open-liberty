@@ -15,9 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import io.openliberty.security.jakartasec.fat.utils.ServletMessageConstants;
-import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
-import jakarta.json.JsonValue;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
 import jakarta.security.enterprise.identitystore.openid.AccessToken;
 import jakarta.security.enterprise.identitystore.openid.IdentityToken;
@@ -71,7 +69,7 @@ public class OpenIdContextLogger {
          * }
          */
 
-        //      logProviderMetadata(ps);
+        logProviderMetadata(ps);
 
         logSubject(ps);
 
@@ -81,7 +79,7 @@ public class OpenIdContextLogger {
 
         logRefreshTokenClaims(ps);
 
-        logClaims(ps);
+        logUserinfoClaims(ps);
 
         // TODO logJsonClaims(ps);
 
@@ -105,7 +103,11 @@ public class OpenIdContextLogger {
 
         OpenIdClaims claims = context.getClaims();
         if (claims != null) {
-            claimsSub = claims.getSubject();
+            try {
+                claimsSub = claims.getSubject();
+            } catch (java.lang.IllegalArgumentException e) {
+                claimsSub = null;
+            }
             ServletLogger.printLine(ps, caller, ServletMessageConstants.CLAIMS_SUBJECT + claimsSub);
         } else {
             ServletLogger.printLine(ps, caller, ServletMessageConstants.SUBS_MISMATCH_NULL);
@@ -202,12 +204,14 @@ public class OpenIdContextLogger {
 
     }
 
-    protected void logClaims(ServletOutputStream ps) throws IOException {
+    protected void logUserinfoClaims(ServletOutputStream ps) throws IOException {
 
         // TODO - do something with this
         OpenIdClaims claims = context.getClaims();
         if (claims == null) {
             ServletLogger.printLine(ps, caller, ServletMessageConstants.NULL_CLAIMS);
+        } else {
+            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + claims.toString());
         }
         // TODO - do something with the claims - many individual get methods...
 
@@ -238,10 +242,19 @@ public class OpenIdContextLogger {
 
         JsonObject pmd = context.getProviderMetadata();
 
-        JsonArray pmdArray = pmd.asJsonArray();
-
-        JsonValue boo = pmdArray.get(0);
-
+        if (pmd != null) {
+            ServletLogger.printLine(ps, caller, ServletMessageConstants.PROVIDER_METADATA + pmd.toString());
+            // TODO update once I can see what the data really looks like
+            //for (String key : claims.get)
+        } else {
+            ServletLogger.printLine(ps, caller, ServletMessageConstants.PROVIDER_METADATA + ServletMessageConstants.NULL);
+        }
     }
+
+//        JsonArray pmdArray = pmd.asJsonArray();
+//
+//        JsonValue boo = pmdArray.get(0);
+//
+//    }
 
 }

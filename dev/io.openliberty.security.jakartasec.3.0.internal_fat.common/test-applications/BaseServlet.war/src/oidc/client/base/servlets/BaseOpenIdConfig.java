@@ -168,6 +168,16 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         return value;
     }
 
+    public String getUserinfoEndpoint() {
+
+        String value = "";
+        if (config.containsKey(Constants.USERINFOENDPOINT)) {
+            value = getStringValue(Constants.USERINFOENDPOINT);
+        }
+
+        return value;
+    }
+
     public String getLogoutRedirectURI() {
         System.out.println("in BaseOpenIdConfig - getLogoutRedirectURI");
         String value = "";

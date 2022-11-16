@@ -54,6 +54,7 @@ public class ServletMessageConstants {
     public static final String JAKARTA_OIDC = "JAKARTA_OIDC";
     public static final String BASIC = "BASIC";
     public static final String BASE_SERVLET = "BaseServlet";
+    public static final String PROVIDER_METADATA = "ProviderMetadata: ";
 
     /** messages **/
     public static final String SUBS_MISMATCH_NULL = "OpenIdContext subjects do NOT match since there are no claims";
@@ -65,4 +66,5 @@ public class ServletMessageConstants {
     public static final String GETTING_COOKIES = "Getting cookies";
     public static final String HELLO_MSG = "Hello world from ";
     public static final String EMPTY = "empty";
+    public static final String USERINFO = "userinfo: ";
 }

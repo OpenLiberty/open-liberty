@@ -133,7 +133,7 @@ public class BasicOIDCAnnotationWithOidcClientConfigTests extends BasicOIDCAnnot
         Expectations expectations = new Expectations();
         expectations.addSuccessCodeForCurrentAction();
         expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, url, "Did not land on the RP Protected test application."));
-        expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, "\"client_98\"", "Did not find the proper client which should be client_99."));
+        expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, "\"client_98\"", "Did not find the proper client which should be client_98."));
         WsSubjectExpectationHelpers.getWsSubjectExpectations(null, expectations, ServletMessageConstants.SERVLET, rspValues);
         validationUtils.validateResult(response, expectations);
 

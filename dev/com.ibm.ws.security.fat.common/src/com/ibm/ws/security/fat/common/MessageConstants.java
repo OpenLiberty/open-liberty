@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,8 @@ public class MessageConstants {
     public static final String CWWKO0221E_PORT_IN_USE = "CWWKO0221E";
     public static final String CWWKO0227E_EXECUTOR_SERVICE_MISSING = "CWWKO0227E";
     public static final String CWWKO0801E_UNABLE_TO_INIT_SSL = "CWWKO0801E";
+
+    public static final String SRVE0190E_FILE_NOT_FOUND = "SRVE0190E";
 
     public static final String SSL_NOT_RESTARTED_PROPERLY = "SSL may not have started properly";
 
