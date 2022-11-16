@@ -96,9 +96,9 @@ Design preliminaries determine whether a formal design, which will be provided b
   - Owner adds label `No Design Approval Request`
 - [ ] No Design / No UFO approved. ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect)) or N/A
   - Approver adds label `No Design Approved`
-- [ ] Feature / Capability stabilized, superseded, or discontinued or N/A
-  - Owner adds label `Product Management Approval Request` and contacts [OpenLiberty/product-management](https://github.com/orgs/OpenLiberty/teams/product-management))
-  - Approver adds label `Product Management Approved` ([OpenLiberty/product-management](https://github.com/orgs/OpenLiberty/teams/product-management)
+- [ ] Feature / Capability stabilization or discontinuation or N/A
+  - Owner adds label `Product Management Approval Request` and contacts [OpenLiberty/product-management](https://github.com/orgs/OpenLiberty/teams/product-management)
+  - Approver adds label `Product Management Approved` ([OpenLiberty/product-management](https://github.com/orgs/OpenLiberty/teams/product-management))
 
 ### **FAT Documentation**
 - [ ] "Feature Test Summary" child task created
