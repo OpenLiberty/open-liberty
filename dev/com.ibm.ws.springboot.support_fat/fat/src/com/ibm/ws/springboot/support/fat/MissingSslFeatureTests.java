@@ -25,7 +25,6 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import componenttest.annotation.MaximumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import junit.framework.Assert;
@@ -34,7 +33,6 @@ import junit.framework.Assert;
 @Mode(FULL)
 public class MissingSslFeatureTests extends AbstractSpringTests {
 
-    private static final String TEST_MISSING_SSL_FOR_15 = "testMissingSslFeatureFor15";
     private static final String TEST_MISSING_SSL_FOR_20 = "testMissingSslFeatureFor20";
 
     @Override
@@ -45,9 +43,7 @@ public class MissingSslFeatureTests extends AbstractSpringTests {
     @Override
     public String getApplication() {
         String methodName = testName.getMethodName();
-        if (TEST_MISSING_SSL_FOR_15.equals(methodName)) {
-            return SPRING_BOOT_15_APP_BASE;
-        } else if (TEST_MISSING_SSL_FOR_20.equals(methodName)) {
+        if (TEST_MISSING_SSL_FOR_20.equals(methodName)) {
             return SPRING_BOOT_20_APP_BASE;
         }
         Assert.fail("Unknown test.");
@@ -58,9 +54,7 @@ public class MissingSslFeatureTests extends AbstractSpringTests {
     public Set<String> getFeatures() {
         String methodName = testName.getMethodName();
         Set<String> features = new HashSet<>(Arrays.asList("servlet-3.1"));
-        if (TEST_MISSING_SSL_FOR_15.equals(methodName)) {
-            features.add("springBoot-1.5");
-        } else if (TEST_MISSING_SSL_FOR_20.equals(methodName)) {
+        if (TEST_MISSING_SSL_FOR_20.equals(methodName)) {
             features.add("springBoot-2.0");
         } else {
             Assert.fail("Unknown test.");
@@ -81,18 +75,7 @@ public class MissingSslFeatureTests extends AbstractSpringTests {
 
     @After
     public void stopTestServer() throws Exception {
-        String methodName = testName.getMethodName();
-        if (TEST_MISSING_SSL_FOR_15.equals(methodName) && !javaVersion.startsWith("1.")) {
-            super.stopServer(true, "CWWKC0258E", "CWWKZ0002E", "CWWKC0265W");
-        } else {
-            super.stopServer(true, "CWWKC0258E", "CWWKZ0002E");
-        }
-    }
-
-    @Test
-    @MaximumJavaLevel(javaLevel = 8)
-    public void testMissingSslFeatureFor15() throws Exception {
-        testMissingSslFeature();
+        super.stopServer(true, "CWWKC0258E", "CWWKZ0002E");
     }
 
     @Test
