@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.jpa.web;
+package test.jakarta.data.web;
 
 import java.time.OffsetDateTime;
 
@@ -26,7 +26,6 @@ import jakarta.persistence.Id;
 public record Order(@GeneratedValue(strategy = GenerationType.SEQUENCE) @Id Long id, String purchasedBy, OffsetDateTime purchasedOn, float total) {
 
     Order(String purchasedBy, OffsetDateTime purchasedOn, float total) {
-        // null for the id creates an error.
         this(-1L, purchasedBy, purchasedOn, total);
     }
 }

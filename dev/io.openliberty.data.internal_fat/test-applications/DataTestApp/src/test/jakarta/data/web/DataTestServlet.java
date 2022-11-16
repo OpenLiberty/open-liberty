@@ -99,6 +99,9 @@ public class DataTestServlet extends FATServlet {
     Houses houses;
 
     @Inject
+    OrderRepo orders;
+    
+    @Inject
     Packages packages;
 
     @Inject
@@ -162,7 +165,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use repository methods with aggregate functions in the select clause.
      */
-    @Test
+    //----@Test
     public void testAggregateFunctions() {
         // Remove data from previous test:
         Product[] allProducts = products.findByVersionGreaterThanEqualOrderByPrice(-1);
@@ -214,7 +217,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use repository methods that are designated as asynchronous by the Concurrency Asynchronous annotation.
      */
-    @Test
+    //----@Test
     public void testAsynchronous() throws ExecutionException, InterruptedException, TimeoutException {
         // Clear out old data before running test
         CompletableFuture<Long> deleted = personnel.removeAll();
@@ -388,7 +391,7 @@ public class DataTestServlet extends FATServlet {
      * actually do run asynchronously by performing database operations that would
      * deadlock if not run asynchronously.
      */
-    @Test
+    //----@Test
     public void testAsyncPreventsDeadlock() throws ExecutionException, InterruptedException, NotSupportedException, SystemException, TimeoutException {
         // Clear out old data before running test
         CompletableFuture<Long> deleted = personnel.removeAll();
@@ -647,7 +650,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Query for distinct values of an attribute.
      */
-    @Test
+    //----@Test
     public void testDistinctAttribute() {
         Product prod1 = new Product();
         prod1.pk = UUID.nameUUIDFromBytes("TDA-T-L1".getBytes());
@@ -771,7 +774,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Unannotated entity with an attribute that is an embeddable type.
      */
-    @Test
+    //----@Test
     public void testEmbeddable() {
         houses.deleteAll();
 
@@ -1025,7 +1028,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Search for missing item. Insert it. Search again.
      */
-    @Test
+    //----@Test
     public void testFindCreateFind() {
         UUID id = UUID.nameUUIDFromBytes("OL306-233F".getBytes());
 
@@ -1073,7 +1076,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use the % and _ characters, which are wildcards in JPQL, within query parameters.
      */
-    @Test
+    //----@Test
     public void testFindLike() throws Exception {
         // Remove data from previous tests:
         Product[] allProducts = products.findByVersionGreaterThanEqualOrderByPrice(-1);
@@ -1132,7 +1135,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Search for multiple entries.
      */
-    @Test
+    //----@Test
     public void testFindMultiple() throws Exception {
         assertEquals(Collections.EMPTY_LIST, persons.find("TestFindMultiple"));
 
@@ -1186,6 +1189,36 @@ public class DataTestServlet extends FATServlet {
         assertNotNull(found);
         assertEquals(1, found.size());
         assertEquals(jude.ssn_id, found.get(0).ssn_id);
+    }
+
+    /**
+     * Avoid specifying a primary key value and let it be generated.
+     */
+    @Test
+    public void testGeneratedKey() {
+        ZoneOffset MDT = ZoneOffset.ofHours(-6);
+
+        Order o1 = new Order("testGeneratedKey-Customer1", OffsetDateTime.of(2022, 6, 1, 9, 30, 0, 0, MDT), 25.99f);
+//        o1.purchasedBy = "testGeneratedKey-Customer1";
+//        o1.purchasedOn = OffsetDateTime.of(2022, 6, 1, 9, 30, 0, 0, MDT);
+//        o1.total = 25.99f;
+        o1 = orders.save(o1); // new instance with generated key
+
+        Order o2 = new Order("testGeneratedKey-Customer2", OffsetDateTime.of(2022, 6, 1, 14, 0, 0, 0, MDT), 148.98f);
+//        o2.purchasedBy = "testGeneratedKey-Customer2";
+//        o2.purchasedOn = OffsetDateTime.of(2022, 6, 1, 14, 0, 0, 0, MDT);
+//        o2.total = 148.98f;
+        o2 = orders.save(o2);
+
+        assertNotNull(o1.id());
+        assertNotNull(o2.id());
+        assertEquals(false, o1.id().equals(o2.id()));
+
+        assertEquals(true, orders.addTaxAndShipping(o2.id(), 1.08f, 7.99f));
+
+        o2 = orders.findById(o2.id()).get();
+
+        assertEquals(168.89f, o2.total(), 0.01f);
     }
 
     /**
@@ -2427,7 +2460,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Invoke methods that are annotated with the Select, Where, Update, and Delete annotations.
      */
-    @Test
+    //----@Test
     public void testPartialQueryAnnotations() {
         Shipment s1 = new Shipment();
         s1.setDestination("200 1st Ave SW, Rochester, MN 55902");
@@ -2517,7 +2550,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use the provided methods of a Repository<T, K> interface that is a copy of Jakarta NoSQL's.
      */
-    @Test
+    //----@Test
     public void testRepositoryBuiltInMethods() {
         ZoneOffset CDT = ZoneOffset.ofHours(-5);
 
@@ -2651,7 +2684,7 @@ public class DataTestServlet extends FATServlet {
      *
      * @throws InterruptedException
      */
-    @Test
+    //----@Test
     public void testRepositoryCustomMethods() throws InterruptedException {
         ZoneOffset CDT = ZoneOffset.ofHours(-5);
 
@@ -2994,7 +3027,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use repository updateBy methods.
      */
-    @Test
+    //----@Test
     public void testRepositoryUpdateMethods() {
         ZoneOffset CDT = ZoneOffset.ofHours(-5);
 
@@ -3065,7 +3098,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use repository updateBy methods with multiplication and division,
      */
-    @Test
+    //----@Test
     public void testRepositoryUpdateMethodsMultiplyAndDivide() {
         packages.deleteAll();
 
@@ -4357,7 +4390,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Update multiple entries.
      */
-    @Test
+    //----@Test
     public void testUpdateMultiple() {
         assertEquals(0, products.putOnSale("TestUpdateMultiple-match", .10f));
 
@@ -4410,7 +4443,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use JPQL query to update based on version.
      */
-    @Test
+    //----@Test
     public void testVersionedUpdateViaQuery() {
         Product prod1 = new Product();
         prod1.pk = UUID.nameUUIDFromBytes("Q6008-U8-21001".getBytes());
@@ -4433,7 +4466,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use repository save method to update based on version.
      */
-    @Test
+    //----@Test
     public void testVersionedUpdateViaRepository() {
         Product prod1 = new Product();
         prod1.pk = UUID.nameUUIDFromBytes("3400R-6120-1".getBytes());

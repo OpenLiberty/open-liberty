@@ -177,6 +177,11 @@ pluginManagement {
   }
 }
 
+import org.apache.tools.ant.DirectoryScanner
+
+DirectoryScanner.removeDefaultExclude('**/.gitattributes')
+DirectoryScanner.removeDefaultExclude('**/.gitignore')
+
 // Require Java 11
 if (!JavaVersion.current().isJava11Compatible()) {
   println "ERROR: Building this repository requires Java 11. To use Java 11 follow these steps:\n" + 

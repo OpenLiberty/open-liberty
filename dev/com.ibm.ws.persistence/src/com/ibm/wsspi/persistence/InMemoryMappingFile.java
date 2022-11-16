@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,7 +27,7 @@ public final class InMemoryMappingFile {
 
      /**
       * An in memory mapping file.
-      * 
+      *
       * @param resourceName
       *             - A non-null unique file name.
       * @param mappingFile
@@ -38,6 +38,11 @@ public final class InMemoryMappingFile {
           _resourceName =
                "mappingfile-" + _counter.incrementAndGet() + "-" + String.valueOf(Arrays.hashCode(_mappingFile));
      }
+
+     public InMemoryMappingFile(byte[] file, String resourceName) {
+         _mappingFile = file;
+         _resourceName = resourceName;
+    }
 
      @Trivial
      public String getName() {

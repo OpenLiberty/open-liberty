@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -33,7 +33,7 @@ import javax.sql.DataSource;
  * </ul>
  * </p> If required properties are not provided, an IllegalArgumentException will be thrown when
  * trying to create PersistenceServiceUnit.
- * 
+ *
  */
 public final class PersistenceServiceUnitConfig {
     // Required
@@ -148,7 +148,7 @@ public final class PersistenceServiceUnitConfig {
 
     /**
      * Stringified path to orm mapping files.
-     * 
+     *
      * @return the mappingFileNames
      */
     public List<String> getMappingFileNames() {
@@ -173,7 +173,7 @@ public final class PersistenceServiceUnitConfig {
 
     /**
      * Stringified class names of all Entities, Embeddables, and MappedSuperClasses.
-     * 
+     *
      * @return the classes
      */
     public List<String> getClasses() {
@@ -190,9 +190,9 @@ public final class PersistenceServiceUnitConfig {
 
     /**
      * A ClassLoader that can be used to load the resources returned by
-     * 
+     *
      * {@link com.ibm.wsspi.persistence.PersistenceServiceUnitConfig#getMappingFileNames()} and {@link com.ibm.wsspi.persistence.PersistenceServiceUnitConfig#getClasses()}
-     * 
+     *
      * @return the consumerLoader
      */
     public ClassLoader getConsumerLoader() {

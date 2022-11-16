@@ -21,6 +21,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
 import java.sql.SQLSyntaxErrorException;
@@ -146,6 +148,15 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             }
 
             Class<?> entityClass = returnTypeAtDepth.get(returnTypeAtDepth.size() - 1);
+            try {
+                if (entityClass.isRecord()) {
+                    entityClass = entityClass.getClassLoader().loadClass(entityClass.getName() + "Record");
+                }
+            } catch (ClassNotFoundException e) {
+                // TODO Auto-generated catch block
+                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+                e.printStackTrace();
+            }
 
             if (!inheritance || !defaultEntityClass.isAssignableFrom(entityClass)) // TODO allow other entity types from model
                 entityClass = defaultEntityClass;
@@ -1648,6 +1659,22 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 }
                 throw new UnsupportedOperationException(method.toString());
             }
+
+        for (int i = 0; i < (args == null ? 0 : args.length); i++) {
+            Class<?> argClass = args[i].getClass();
+            if (argClass.isRecord()) {
+                try {
+                    final Record recordObj = (Record) args[i];
+                    args[i] = AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () -> {
+                        Class entityClass = argClass.getClassLoader().loadClass(argClass.getName() + "Record");
+                        Constructor ctor = entityClass.getConstructor(new Class[] { argClass });
+                        return ctor.newInstance(recordObj);
+                    });
+                } catch (PrivilegedActionException x) {
+                    throw (Exception) x.getCause();
+                }
+            }
+        }
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())

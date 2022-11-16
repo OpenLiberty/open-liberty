@@ -121,7 +121,19 @@ public class RepositoryProducer<R, P> implements Producer<R> {
                         Tr.debug(this, tc, "add " + anno + " for " + method.getAnnotated().getJavaMember());
                 }
 
-        RepositoryImpl<R, ?> handler = new RepositoryImpl<>(factory.provider, factory.entityDefiner, repositoryInterface, factory.entityClass);
+        RepositoryImpl<R, ?> handler = null;
+        if (factory.entityClass.isRecord()) {
+            try {
+                handler = new RepositoryImpl<>(factory.provider, factory.entityDefiner, repositoryInterface, factory.entityClass.getClassLoader().loadClass(factory.entityClass.getName()
+                                                                                                                                                            + "Record"));
+            } catch (ClassNotFoundException e) {
+                // TODO Auto-generated catch block
+                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+                e.printStackTrace();
+            }
+        } else {
+            handler = new RepositoryImpl<>(factory.provider, factory.entityDefiner, repositoryInterface, factory.entityClass);
+        }
 
         R instance = repositoryInterface.cast(Proxy.newProxyInstance(repositoryInterface.getClassLoader(),
                                                                      new Class<?>[] { repositoryInterface },

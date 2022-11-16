@@ -606,27 +606,27 @@ public class DataJPATestServlet extends FATServlet {
     public void testGeneratedKey() {
         ZoneOffset MDT = ZoneOffset.ofHours(-6);
 
-        Order o1 = new Order();
-        o1.purchasedBy = "testGeneratedKey-Customer1";
-        o1.purchasedOn = OffsetDateTime.of(2022, 6, 1, 9, 30, 0, 0, MDT);
-        o1.total = 25.99f;
-        o1 = orders.save(o1);
+        Order o1 = new Order("testGeneratedKey-Customer1", OffsetDateTime.of(2022, 6, 1, 9, 30, 0, 0, MDT), 25.99f);
+//      o1.purchasedBy = "testGeneratedKey-Customer1";
+//      o1.purchasedOn = OffsetDateTime.of(2022, 6, 1, 9, 30, 0, 0, MDT);
+//      o1.total = 25.99f;
+        o1 = orders.save(o1); // new instance with generated key
 
-        Order o2 = new Order();
-        o2.purchasedBy = "testGeneratedKey-Customer2";
-        o2.purchasedOn = OffsetDateTime.of(2022, 6, 1, 14, 0, 0, 0, MDT);
-        o2.total = 148.98f;
+        Order o2 = new Order("testGeneratedKey-Customer2", OffsetDateTime.of(2022, 6, 1, 14, 0, 0, 0, MDT), 148.98f);
+//      o2.purchasedBy = "testGeneratedKey-Customer2";
+//      o2.purchasedOn = OffsetDateTime.of(2022, 6, 1, 14, 0, 0, 0, MDT);
+//      o2.total = 148.98f;
         o2 = orders.save(o2);
 
-        assertNotNull(o1.id);
-        assertNotNull(o2.id);
-        assertEquals(false, o1.id.equals(o2.id));
+        assertNotNull(o1.id());
+        assertNotNull(o2.id());
+        assertEquals(false, o1.id().equals(o2.id()));
 
-        assertEquals(true, orders.addTaxAndShipping(o2.id, 1.08f, 7.99f));
+        assertEquals(true, orders.addTaxAndShipping(o2.id(), 1.08f, 7.99f));
 
-        o2 = orders.findById(o2.id).get();
+        o2 = orders.findById(o2.id()).get();
 
-        assertEquals(168.89f, o2.total, 0.01f);
+        assertEquals(168.89f, o2.total(), 0.01f);
     }
 
     /**

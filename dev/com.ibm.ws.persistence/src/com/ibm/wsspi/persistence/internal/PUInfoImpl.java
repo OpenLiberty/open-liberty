@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -120,7 +120,12 @@ public final class PUInfoImpl implements PersistenceUnitInfo {
     private List<InMemoryMappingFile> copyInMemoryMappingFiles(List<InMemoryMappingFile> copyIMMF) {
         List<InMemoryMappingFile> immf = new ArrayList<InMemoryMappingFile>();
         for (InMemoryMappingFile file : copyIMMF) {
-            immf.add(new InMemoryMappingFile(file.getMappingFile()));
+            String name = file.getName();
+            if (name.startsWith("mappingfile-")) {
+                immf.add(new InMemoryMappingFile(file.getMappingFile()));
+            } else {
+                immf.add(new InMemoryMappingFile(file.getMappingFile(), name));
+            }
         }
         return immf;
     }
@@ -280,7 +285,11 @@ public final class PUInfoImpl implements PersistenceUnitInfo {
             _inMemHandler.register(url, immf);
             // Save a reference to the URL so we can cleanup later.
             _inMemoryMappingFileURLs.add(url);
-            res.add(immf.getName());
+            // Only include resources that start with "mappingfile-" as to exclude in memory classes.
+            String resourceName = immf.getName();
+            if (resourceName.startsWith("mappingfile-")) {
+                res.add(immf.getName());
+            }
         }
 
         return res;

@@ -14,10 +14,12 @@ package com.ibm.wsspi.persistence.internal;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -282,6 +284,7 @@ public class DatabaseStoreImpl implements DatabaseStore {
         // table prefix, schema, and keyGenerationStrategy to all entities
 
         InMemoryMappingFile ormFile = null;
+        ArrayList<InMemoryMappingFile> generatedEnties = null;
         SpecialEntitySet entitySet = entityClassNames.length == 0 ? SpecialEntitySet.NONE : recognizeSpecialEntityPackage(entityClassNames[0]);
         if (entitySet.equals(SpecialEntitySet.PERSISTENT_EXECUTOR)) {
             String ormFileContents = createOrmFileContentsForPersistentExecutor();
@@ -293,14 +296,26 @@ public class DatabaseStoreImpl implements DatabaseStore {
             // hidden internal non-ship property for experimenting with Jakarta Data
             String[] entityClassEntries = (String[]) properties.get("io.openliberty.persistence.internal.entityClassInfo");
             ormFile = createOrmFile(schema, tablePrefix, entityClassNames, entityClassEntries);
+            generatedEnties = (ArrayList<InMemoryMappingFile>) properties.get("io.openliberty.persistence.internal.generatedEnties");
         }
 
         PersistenceServiceUnitConfig config = new PersistenceServiceUnitConfig();
         config.setClasses(Arrays.asList(entityClassNames));
         config.setConsumerLoader(loader);
         config.setProperties(puProps);
-        if (ormFile != null)
-            config.setInMemoryMappingFiles(Collections.singletonList(ormFile));
+
+        List<InMemoryMappingFile> inMemoryFiles = null;
+        if (generatedEnties != null)
+            inMemoryFiles = generatedEnties;
+        if (ormFile != null) {
+            if(inMemoryFiles == null) {
+                inMemoryFiles = Collections.singletonList(ormFile);
+            } else {
+                inMemoryFiles.add(ormFile);
+            }
+        }
+        config.setInMemoryMappingFiles(inMemoryFiles);
+
         config.setJtaDataSource(dataSource);
         if (nonJTADataSource != null)
             config.setNonJtaDataSource(nonJTADataSource);
