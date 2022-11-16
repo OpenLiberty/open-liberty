@@ -4,6 +4,6 @@ visibility=private
 singleton=true
 -features=, \
   io.openliberty.jsonbImpl-3.0.1; ibm.tolerates:="3.0.0"
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

@@ -9,6 +9,6 @@ IBM-ShortName: jsonpContainer-2.1
 Subsystem-Name: Jakarta JSON Processing 2.1 Container
 -features=io.openliberty.jsonpImpl-2.1.0, \
   com.ibm.websphere.appserver.eeCompatible-10.0
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

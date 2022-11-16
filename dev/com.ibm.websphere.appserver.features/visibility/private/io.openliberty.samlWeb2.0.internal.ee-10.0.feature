@@ -8,5 +8,5 @@ visibility = private
 -bundles=\
   io.openliberty.security.saml.internal.wab.2.0, \
   io.openliberty.security.common.internal
-kind=beta
+kind=ga
 edition=core

@@ -11,6 +11,6 @@ IBM-SPI-Package: com.ibm.wsspi.webservices.handler
   io.openliberty.globalhandler.spi; location:=dev/spi/ibm/
 -files=\
   dev/spi/ibm/javadoc/io.openliberty.globalhandler.spi_1.0-javadoc.zip
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

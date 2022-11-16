@@ -46,7 +46,7 @@ Subsystem-Name: Jakarta Server Pages 3.1
 -jars=com.ibm.websphere.appserver.spi.jsp; location:=dev/spi/ibm/, \
  io.openliberty.jakarta.pages.tld.3.1; location:=dev/api/spec/
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.jsp_1.0-javadoc.zip
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

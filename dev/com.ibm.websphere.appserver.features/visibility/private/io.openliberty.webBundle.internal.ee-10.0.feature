@@ -8,6 +8,6 @@ visibility = private
 
 -bundles= com.ibm.ws.app.manager.wab.jakarta; start-phase:=APPLICATION_EARLY
 
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

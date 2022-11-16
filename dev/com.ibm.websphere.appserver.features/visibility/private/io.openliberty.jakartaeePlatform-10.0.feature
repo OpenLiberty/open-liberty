@@ -4,6 +4,6 @@ IBM-Process-Types: client, server
 -features=io.openliberty.jakartaeePlatform-9.0
 -bundles=io.openliberty.jakartaee.platform.v10, \
  com.ibm.ws.javaee.version
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

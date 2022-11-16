@@ -33,6 +33,6 @@ Subsystem-Category: JakartaEE10Application
 -files=bin/tools/ws-webserverPluginutil.jar, \
  bin/pluginUtility; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/pluginUtility.bat
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

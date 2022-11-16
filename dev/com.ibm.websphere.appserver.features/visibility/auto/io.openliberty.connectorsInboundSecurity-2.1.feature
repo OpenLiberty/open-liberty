@@ -9,5 +9,5 @@ IBM-Provision-Capability:\
 IBM-Install-Policy: when-satisfied
 -bundles=\
    io.openliberty.connectors.security.internal.inbound
-kind=beta
+kind=ga
 edition=base

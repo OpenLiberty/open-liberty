@@ -10,6 +10,6 @@ IBM-Process-Types: client, \
   com.ibm.websphere.appserver.classloading-1.0
 -bundles=\
   io.openliberty.xmlBinding.4.0.internal.tools
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

@@ -31,7 +31,7 @@ Subsystem-Name: Jakarta XML Binding 4.0
  bin/xmlBinding/xjc; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/xmlBinding/tools/ws-xjc.jar, \
  bin/xmlBinding/schemagen.bat
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-AlsoKnownAs: jaxb-4.0

@@ -22,5 +22,5 @@ IBM-API-Package: \
   io.openliberty.mail.2.1.internal, \
   io.openliberty.org.eclipse.angus.mail, \
   com.ibm.ws.javamail.config
-kind=beta
+kind=ga
 edition=core

@@ -9,6 +9,6 @@ IBM-Process-Types: client, \
   io.openliberty.jakarta.activation-2.1
 -bundles=\
   io.openliberty.jakarta.mail.2.1;location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.mail:jakarta.mail-api:2.1.1"
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

@@ -33,6 +33,6 @@ Subsystem-Name: Jakarta Batch 2.1
   com.ibm.websphere.security, \
   com.ibm.jbatch.container.jakarta.ee10, \
   io.openliberty.jakarta.batch.2.1; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.batch:jakarta.batch-api:2.1.1"
-kind=beta
+kind=ga
 edition=base
 WLP-Activation-Type: parallel
