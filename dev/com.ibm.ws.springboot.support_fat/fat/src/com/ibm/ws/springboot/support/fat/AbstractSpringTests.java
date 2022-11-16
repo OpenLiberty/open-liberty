@@ -62,7 +62,6 @@ public abstract class AbstractSpringTests {
     public static final String ID_KEY_STORE = "springBootKeyStore-";
     public static final String ID_TRUST_STORE = "springBootTrustStore-";
 
-    public static final String SPRING_BOOT_15_APP_BASE = "com.ibm.ws.springboot.support.version15.test.app.jar";
     public static final String SPRING_BOOT_20_APP_WAR = "com.ibm.ws.springboot.support.version20.test.war.app-0.0.1-SNAPSHOT.war";
     public static final String SPRING_BOOT_20_APP_JAVA = "com.ibm.ws.springboot.support.version20.test.java.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_20_APP_WEBANNO = "com.ibm.ws.springboot.support.version20.test.webanno.app-0.0.1-SNAPSHOT.jar";
