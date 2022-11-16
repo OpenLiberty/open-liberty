@@ -100,7 +100,7 @@ var editorTree = (function() {
         }
 
         // Create label control
-        var labelControl = $("<label for=\"" + identifier_string + "\"  class=\"editorTreeNodeLabel\">" + elementLabel + "</label>");
+        var labelControl = $("<div class=\"editorTreeNodeLabel\">" + elementLabel + "</div>");
         if(elementIsRoot) {
             labelControl.addClass("editorTreeNodeRoot");
             labelControl.attr("id", "editorTreeNodeRootLabel");

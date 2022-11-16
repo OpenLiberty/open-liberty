@@ -12,7 +12,7 @@
  var validationUtils = (function() {
     "use strict";
 
-    var VALIDATION_API_SCHEMA_URI = "/openapi/platform/validation/";
+    var VALIDATION_API_SCHEMA_URI = "/ibm/api/platform/validation/";
     var VALIDATION_URI_PREFIX = "/validation/";
     var VALIDATION_URI_SUFFIX = "/{uid}";
     var REFERENCE_PROPERTY_KEY = "$ref";

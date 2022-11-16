@@ -295,18 +295,33 @@
     // Get the node identifier string
     var getNodeIdString = function(nodeName, context) {
         var nodeIdString = $("#attribute_id").val();
-        var placeholder = $("#attribute_id")[0].placeholder;
-
-        if(!nodeIdString && nodeName) {
-            if(placeholder === editorMessages.EMPTY_STRING_ATTRIBUTE_VALUE) { // Case: Id parameter value is left as empty string
+        // attribute_id does not always exists
+        var placeholder;
+        if (nodeIdString) {
+            placeholder = $("#attribute_id")[0].placeholder;
+        }
+        if (!nodeIdString && nodeName) {
+            if (placeholder === editorMessages.EMPTY_STRING_ATTRIBUTE_VALUE) { // Case: Id parameter value is left as empty string
                 nodeIdString = "";
             } else { // Case: Top-level dataSource without id
                 // id is computed based on the order of appearance within server config, starting at 0. like <nodeName>[default-0]
                 var id = getDefaultNodeID(nodeName);
-                if(context === "testConnection") {
+                if (context === "testConnection") {
                     nodeIdString = nodeName + "[default-" + id + "]";
                 } else {
-                    nodeIdString =   "default-" + id;
+                    nodeIdString = "default-" + id;
+                }
+            }
+        } else if (nodeIdString && nodeName && nodeIdString.endsWith(".needed-index")) {
+            // handle special case when we don't have id for child elment
+            // nested case or singleton
+            nodeIdString = nodeIdString.substring(0, nodeIdString.indexOf('.needed-index'));
+            if (nodeIdString.startsWith("transaction") || !nodeIdString.startsWith(nodeName)) {
+                var nodeId = getDefaultNodeID(nodeName);
+                if (context === "testConnection") {
+                    nodeIdString = nodeIdString + "[default-" + nodeId + "]";
+                } else { //fetchConfig
+                    nodeIdString = "default-" + nodeId;
                 }
             }
         }
@@ -332,6 +347,7 @@
             // Add the question mark when there are query parameters
             queryParameters = "?" + queryParameters;
         }
+
         var deferred = new $.Deferred();
         $.ajax({
             url: VALIDATION_API_URI + form.nodeName + "/" + form.nodeIdString + queryParameters,

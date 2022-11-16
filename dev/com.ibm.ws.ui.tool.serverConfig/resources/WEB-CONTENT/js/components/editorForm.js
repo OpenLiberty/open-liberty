@@ -91,10 +91,31 @@
                 editorForm.append("<a href=\"#\" draggable=\"false\" role=\"button\" " + deleteButtonEnablement + " id=\"removeButton\" class=\"btn btn-default\">" + editorMessages.REMOVE + "</a>");
 
                 var nodeName = element.nodeName;
+                var attr_id_hidden_val;
                 // Add "Test" button only if the element is supported by the validator APIs
                 if(isValidationSupportedOnNode(nodeName)) {
                     var validatorMetaDataParameters = getMetaDataStringForTestButton(nodeName);
                     editorForm.append("<a draggable=\"false\" role=\"button\" id=\"testButton\" class=\"btn btn-default\"" + validatorMetaDataParameters + ">" + editorMessages.TEST + "</a>");
+                    // handle the element dataSource nested case
+                    if (elementPath.length > 2) {
+                        // nested-under-singleton
+                        if (element.parentElement.nodeName === 'transaction') {
+                            if (element.id) {
+                                attr_id_hidden_val = element.parentElement.nodeName + "/" + nodeName + "[" + element.id + "]";
+                            } else {
+                                attr_id_hidden_val = element.parentElement.nodeName + "/" + nodeName + ".needed-index";
+                            }
+                        } else { // nested
+                            // parent nodeName has id
+                            if (element.parentElement.id) {
+                                if (element.id) {
+                                    attr_id_hidden_val = element.parentElement.nodeName + "[" + element.parentElement.id + "]/" + nodeName + "[" + element.id + "]";
+                                } else {
+                                    attr_id_hidden_val = element.parentElement.nodeName + "[" + element.parentElement.id + "]/" + nodeName + ".needed-index";
+                                }
+                            }
+                        }
+                    }
                 }
 
                 // Create form
@@ -178,10 +199,15 @@
 
                 // Process attributes (if present)
                 var attributes = schemaUtils.getAttributes(elementDeclaration);
+                var attrIdFound = false;
                 attributes.forEach(function(attribute) {
 
                     // Obtain attribute name
                     var attributeName = attribute.getAttribute("name");
+
+                    if (attributeName === 'id') {
+                        attrIdFound = true;
+                    }
 
                     // Obtain attribute value
                     var attributeValue = element.getAttribute(attribute.getAttribute("name"));
@@ -330,6 +356,14 @@
 
                 // Add form to controls panel
                 editorForm.append(form);
+
+                // checking if ID exists, if not create it
+                if (!attrIdFound && attr_id_hidden_val) {
+                    // create a hidden attribute_id
+                    var attrID = $("<div id=\"attribute_id" + "\"type=\"text\">" + "ID" + "</div>").addClass("hidden");
+                    attrID.val(attr_id_hidden_val);
+                    editorForm.append(attrID);
+                }
             }
         }
 
@@ -353,7 +387,6 @@
 
         customizationManager.applyEditorFormCustomization(element);
     };
-
 
 
     var validateInputControl = function(inputJQueryObject, onlyFixValues) {
