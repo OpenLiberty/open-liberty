@@ -32,7 +32,8 @@ public class TCKResultsInfo {
         String artifact; //the maven artifact ID
         String version; //the maven version
         String jarPath; //the local path on disk to the TCK jar
-        String sha; //a sha256 hash of the TCK jar
+        String sha256; //a sha256 hash of the TCK jar
+        String sha1; //a sha256 hash of the TCK jar
     }
 
     private final String javaMajorVersion;// = resultInfo.get("java_major_version");
@@ -125,9 +126,21 @@ public class TCKResultsInfo {
     /**
      * @return
      */
-    public String getSHA() {
+    public String getSHA256() {
         if (this.tckJarInfo != null) {
-            return this.tckJarInfo.sha;
+            return this.tckJarInfo.sha256;
+        } else {
+            return "UNKNOWN";
+        }
+
+    }
+
+    /**
+     * @return
+     */
+    public String getSHA1() {
+        if (this.tckJarInfo != null) {
+            return this.tckJarInfo.sha1;
         } else {
             return "UNKNOWN";
         }

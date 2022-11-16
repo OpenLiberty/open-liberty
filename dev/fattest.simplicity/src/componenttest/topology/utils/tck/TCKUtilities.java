@@ -27,13 +27,6 @@ import com.ibm.websphere.simplicity.log.Log;
 public class TCKUtilities {
     private static final Class<TCKUtilities> c = TCKUtilities.class;
 
-    public static String generateSHA256(String filePath) {
-        File file = new File(filePath);
-        String sha256 = generateSHA256(file);
-
-        return sha256;
-    }
-
     public static String generateSHA256(File file) {
         String sha256 = null;
         try {
@@ -43,7 +36,23 @@ public class TCKUtilities {
             Log.error(c, "generateSHA256", e, "Could not read file: " + file);
             sha256 = "UNKNOWN";
         } catch (NoSuchAlgorithmException e) {
-            Log.error(c, "generateSHA256", e, "Could not generate SHA for: " + file);
+            Log.error(c, "generateSHA256", e, "Could not generate SHA-256 for: " + file);
+            sha256 = "UNKNOWN";
+        }
+
+        return sha256;
+    }
+
+    public static String generateSHA1(File file) {
+        String sha256 = null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
+            sha256 = getFileChecksum(md, file);
+        } catch (IOException e) {
+            Log.error(c, "generateSHA1", e, "Could not read file: " + file);
+            sha256 = "UNKNOWN";
+        } catch (NoSuchAlgorithmException e) {
+            Log.error(c, "generateSHA1", e, "Could not generate SHA-1 for: " + file);
             sha256 = "UNKNOWN";
         }
 

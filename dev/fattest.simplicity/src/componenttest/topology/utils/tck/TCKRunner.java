@@ -973,8 +973,9 @@ public class TCKRunner {
         }
 
         if (tckJar != null) {
-            String sha = TCKUtilities.generateSHA256(tckJar.jarPath);
-            tckJar.sha = sha;
+            File tckFile = new File(tckJar.jarPath);
+            tckJar.sha1 = TCKUtilities.generateSHA1(tckFile);
+            tckJar.sha256 = TCKUtilities.generateSHA256(tckFile);
         }
 
         return tckJar;
