@@ -1701,7 +1701,11 @@ public class UIRepeat extends UIComponentBase implements NamingContainer
             {
                 if (parentSaved == null)
                 {
-                    return null;
+                    Object[] values = new Object[3];
+                    values[0] = super.saveState(context);
+                    values[1] = null;
+                    values[2] = UIComponentBase.saveAttachedState(context, _rowStates);
+                    return values;
                 }
                 else
                 {
