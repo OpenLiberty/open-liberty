@@ -15,9 +15,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 import com.ibm.ws.transaction.test.dbrotationtests.DBRotationTest;
-import com.ibm.ws.transaction.test.dbrotationtests.DualServerDynamicDBRotationTest1;
-import com.ibm.ws.transaction.test.tests.FATSuiteBase;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -27,13 +26,13 @@ import componenttest.topology.database.container.DatabaseContainerType;
 @SuiteClasses({
                 DBRotationTest.class,
 })
-public class FATSuite extends FATSuiteBase {
+public class FATSuite extends TxTestContainerSuite {
 
-    static {
+  static {
         databaseContainerType = DatabaseContainerType.DB2;
-    }
+  }
 
-    @ClassRule
+  @ClassRule
 	public static RepeatTests r = RepeatTests.withoutModification()
 				.andWith(FeatureReplacementAction.EE8_FEATURES().forServers(DBRotationTest.serverNames))
 				.andWith(FeatureReplacementAction.EE9_FEATURES().forServers(DBRotationTest.serverNames))

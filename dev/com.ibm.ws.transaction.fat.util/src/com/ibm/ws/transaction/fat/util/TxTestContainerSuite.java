@@ -8,13 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.transaction.test.tests;
+package com.ibm.ws.transaction.fat.util;
 
 import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.transaction.fat.util.FATUtils;
-import com.ibm.ws.transaction.test.FATSuite;
 
 import componenttest.containers.TestContainerSuite;
 import componenttest.topology.database.container.DatabaseContainerFactory;
@@ -23,20 +22,36 @@ import componenttest.topology.database.container.DatabaseContainerType;
 /**
  *
  */
-public class FATSuiteBase extends TestContainerSuite {
+public class TxTestContainerSuite extends TestContainerSuite {
 
     public static DatabaseContainerType databaseContainerType;
     public static JdbcDatabaseContainer<?> testContainer;
 
     public static void beforeSuite() throws Exception {
-        testContainer = DatabaseContainerFactory.createType(databaseContainerType);
-        Log.info(FATSuite.class, "beforeSuite", "starting test container of type: " + databaseContainerType);
-        testContainer.withStartupTimeout(FATUtils.TESTCONTAINER_STARTUP_TIMEOUT).start();
-        Log.info(FATSuite.class, "beforeSuite", "started test container of type: " + databaseContainerType);
+        if (testContainer == null) {
+          testContainer = DatabaseContainerFactory.createType(databaseContainerType);
+        }
+
+        switch (databaseContainerType) {
+          case Derby:
+          case SQLServer:
+            testContainer.waitingFor(Wait.forHealthcheck()).start();
+            break;
+          case Oracle:
+            testContainer.waitingFor(Wait.forLogMessage(".*DATABASE IS READY TO USE!.*", 1)).start();
+            break;
+          case Postgres:
+            testContainer.waitingFor(Wait.forLogMessage(".*database system is ready.*", 2)).start();
+            break;
+          default:
+            testContainer.start();
+            break;
+        }
+        Log.info(TxTestContainerSuite.class, "beforeSuite", "started test container of type: " + databaseContainerType);
     }
 
     public static void afterSuite() {
-        Log.info(FATSuite.class, "afterSuite", "stop test container");
+        Log.info(TxTestContainerSuite.class, "afterSuite", "stop test container");
         testContainer.stop();
     }
 }
