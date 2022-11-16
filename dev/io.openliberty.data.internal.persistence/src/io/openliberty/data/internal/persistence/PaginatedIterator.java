@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import jakarta.data.DataException;
+import jakarta.data.exceptions.DataException;
 import jakarta.data.repository.Pageable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;

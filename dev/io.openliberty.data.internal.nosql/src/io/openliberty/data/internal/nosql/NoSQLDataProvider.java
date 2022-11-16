@@ -12,18 +12,20 @@ package io.openliberty.data.internal.nosql;
 
 import java.lang.reflect.Proxy;
 import java.util.List;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
-import io.openliberty.data.internal.DataProvider;
+import io.openliberty.data.internal.LibertyDataProvider;
 import jakarta.data.Template;
+import jakarta.data.provider.DatabaseType;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
-           service = DataProvider.class)
-public class NoSQLDataProvider implements DataProvider {
+           service = LibertyDataProvider.class)
+public class NoSQLDataProvider implements LibertyDataProvider {
 
     @Override
     public <R> R createRepository(Class<R> repositoryInterface, Class<?> entityClass) {
@@ -31,6 +33,12 @@ public class NoSQLDataProvider implements DataProvider {
         return repositoryInterface.cast(Proxy.newProxyInstance(repositoryInterface.getClassLoader(),
                                                                new Class<?>[] { repositoryInterface },
                                                                new QueryHandler<>(repositoryInterface, entityClass)));
+    }
+
+    @Override
+    public void disposeRepository(Object repository) {
+        // TODO hopefully this entire class can be deleted in favor of directly invoking
+        // the NoSQL DataProvider if that pattern gets added to the specification.
     }
 
     @Override
@@ -42,5 +50,15 @@ public class NoSQLDataProvider implements DataProvider {
     @Trivial
     public Template getTemplate() {
         return null; // TODO return a Jakarta NoSQL Template
+    }
+
+    @Override
+    public String name() {
+        return "Open Liberty Mock NoSQL Data Provider";
+    }
+
+    @Override
+    public Set<DatabaseType> supportedDatabaseTypes() {
+        return Set.of(DatabaseType.COLUMN, DatabaseType.DOCUMENT, DatabaseType.GRAPH, DatabaseType.KEY_VALUE);
     }
 }

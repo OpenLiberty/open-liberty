@@ -12,6 +12,7 @@ package io.openliberty.data.internal.cdi;
 
 import java.lang.annotation.Annotation;
 import java.util.Collections;
+import java.util.ServiceLoader;
 import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
@@ -23,8 +24,10 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
-import io.openliberty.data.internal.DataProvider;
+import io.openliberty.data.internal.LibertyDataProvider;
 import jakarta.data.Entities;
+import jakarta.data.provider.DataProvider;
+import jakarta.data.provider.DatabaseType;
 import jakarta.data.repository.Repository;
 import jakarta.enterprise.inject.spi.Extension;
 
@@ -38,10 +41,10 @@ public class DataExtensionMetadata implements CDIExtensionMetadata {
     private static final Set<Class<? extends Extension>> extensions = Collections.singleton(DataExtension.class);
 
     @Reference(name = "NoSQLDataProvider", cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY, target = "(id=unbound)")
-    DataProvider noSQLDataProvider;
+    LibertyDataProvider noSQLDataProvider;
 
     @Reference(name = "PersistenceDataProvider", cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY, target = "(id=unbound)")
-    DataProvider persistenceDataProvider;
+    LibertyDataProvider persistenceDataProvider;
 
     @Override
     //@Trivial
@@ -65,25 +68,39 @@ public class DataExtensionMetadata implements CDIExtensionMetadata {
      * Get the provider of data repositories for the specified entity class.
      *
      * @param entityClass
+     * @param classLoader
+     * @param databaseType
      * @return the provider
      */
-    DataProvider getProvider(Class<?> entityClass) {
-        DataProvider provider = persistenceDataProvider;
-        for (Annotation anno : entityClass.getAnnotations()) {
-            String annoClassName = anno.annotationType().getName();
-            if ("jakarta.persistence.Entity".equals(annoClassName)) {
-                break;
+    DataProvider getProvider(Class<?> entityClass, ClassLoader classLoader, DatabaseType type) {
+        if (type == null)
+            for (Annotation anno : entityClass.getAnnotations()) {
+                String annoClassName = anno.annotationType().getName();
+                if ("jakarta.persistence.Entity".equals(annoClassName)) {
+                    type = DatabaseType.RELATIONAL;
+                    break;
+                }
+                if ("jakarta.nosql.mapping.Entity".equals(annoClassName))
+                    break;
             }
-            if ("jakarta.nosql.mapping.Entity".equals(annoClassName)) {
-                provider = noSQLDataProvider;
-                break;
+
+        DataProvider dataProvider = null;
+        for (DataProvider provider : ServiceLoader.load(DataProvider.class, classLoader)) {
+            if (type == null) {
+                if (dataProvider == null)
+                    dataProvider = provider;
+            } else if (provider.supportedDatabaseTypes().contains(type)) {
+                dataProvider = provider;
+                break; // exact match for database type
             }
         }
-        if (provider == null) {
-            provider = noSQLDataProvider;
-            if (provider == null)
+
+        if (dataProvider == null) {
+            dataProvider = persistenceDataProvider == null ? noSQLDataProvider : persistenceDataProvider;
+            if (dataProvider == null)
                 throw new IllegalStateException("Jakarta Data requires either Jakarta Persistence or Jakarta NoSQL"); // TODO
         }
-        return provider;
+
+        return dataProvider;
     }
 }

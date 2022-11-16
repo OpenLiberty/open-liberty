@@ -23,6 +23,8 @@
 
   <application location="DataTestApp.war"/>
 
+  <application location="ProviderTestApp.war"/>
+
   <databaseStore id="DefaultDataStore" createTables="true" dataSourceRef="DerbyDataSource">
     <authData user="dbuser1" password="dbpwd1"/>
   </databaseStore>
@@ -34,7 +36,7 @@
 
   <library id="DerbyLib">
     <file name="${shared.resource.dir}/derby/derby.jar"/>
-  </library>  
+  </library>
 
   <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 

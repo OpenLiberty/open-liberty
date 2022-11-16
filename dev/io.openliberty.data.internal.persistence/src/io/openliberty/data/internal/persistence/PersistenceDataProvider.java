@@ -12,6 +12,7 @@ package io.openliberty.data.internal.persistence;
 
 import java.lang.reflect.Proxy;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -23,16 +24,19 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;
 
-import io.openliberty.data.internal.DataProvider;
+import io.openliberty.data.internal.LibertyDataProvider;
 import jakarta.data.Template;
+import jakarta.data.provider.DatabaseType;
 
 /**
  * Simulates a provider for relational databases by delegating
  * JPQL queries to the Jakarta Persistence layer.
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
-           service = DataProvider.class)
-public class PersistenceDataProvider implements DataProvider {
+           service = LibertyDataProvider.class)
+public class PersistenceDataProvider implements LibertyDataProvider {
+
+    private static final Set<DatabaseType> DB_TYPES = Set.of(DatabaseType.RELATIONAL);
 
     final ConcurrentHashMap<Class<?>, CompletableFuture<EntityInfo>> entityInfoMap = new ConcurrentHashMap<>();
 
@@ -55,6 +59,12 @@ public class PersistenceDataProvider implements DataProvider {
     }
 
     @Override
+    public void disposeRepository(Object repository) {
+        RepositoryImpl<?, ?> handler = (RepositoryImpl<?, ?>) Proxy.getInvocationHandler(repository);
+        handler.isDisposed.set(true);
+    }
+
+    @Override
     public void entitiesFound(String databaseId, ClassLoader loader, List<Class<?>> entities) {
         executor.submit(new EntityDefiner(this, databaseId, loader, entities));
     }
@@ -62,5 +72,15 @@ public class PersistenceDataProvider implements DataProvider {
     @Override
     public Template getTemplate() {
         return new TemplateImpl(this);
+    }
+
+    @Override
+    public String name() {
+        return "Open Liberty Mock Data Provider";
+    }
+
+    @Override
+    public Set<DatabaseType> supportedDatabaseTypes() {
+        return DB_TYPES;
     }
 }
