@@ -18,7 +18,7 @@ import com.ibm.wsspi.http.channel.outbound.HttpOutboundServiceContext;
 
 /**
  * Factory for all of the pooled objects used in the HTTP channel.
- * 
+ *
  */
 public class HttpObjectFactory {
 
@@ -49,14 +49,13 @@ public class HttpObjectFactory {
 
     /**
      * Retrieve an uninitialized request message.
-     * 
+     *
      * @return HttpRequestMessageImpl
      */
     public HttpRequestMessageImpl getRequest() {
-        HttpRequestMessageImpl req = (HttpRequestMessageImpl) this.reqPool.get();
-        if (null == req) {
-            req = new HttpRequestMessageImpl();
-        }
+
+        HttpRequestMessageImpl req = new HttpRequestMessageImpl();
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getRequest(): " + req);
         }
@@ -65,7 +64,7 @@ public class HttpObjectFactory {
 
     /**
      * Retrieve an incoming request object from the factory.
-     * 
+     *
      * @param hsc
      * @return HttpRequestMessageImpl
      */
@@ -77,7 +76,7 @@ public class HttpObjectFactory {
 
     /**
      * Retrieve an outgoing request object from the factory.
-     * 
+     *
      * @param hsc
      * @return HttpRequestMessageImpl
      */
@@ -89,26 +88,23 @@ public class HttpObjectFactory {
 
     /**
      * Return a request object to the factory for pooling.
-     * 
+     *
      * @param request
      */
     public void releaseRequest(HttpRequestMessageImpl request) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "releaseRequest: " + request);
         }
-        this.reqPool.put(request);
+        request = null;
     }
 
     /**
      * Retrieve an uninitialized response message.
-     * 
+     *
      * @return HttpResponseMessageImpl
      */
     public HttpResponseMessageImpl getResponse() {
-        HttpResponseMessageImpl resp = (HttpResponseMessageImpl) this.respPool.get();
-        if (null == resp) {
-            resp = new HttpResponseMessageImpl();
-        }
+        HttpResponseMessageImpl resp = new HttpResponseMessageImpl();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getResponse(): " + resp);
         }
@@ -117,7 +113,7 @@ public class HttpObjectFactory {
 
     /**
      * Retrieve an outgoing response object from the factory.
-     * 
+     *
      * @param hsc
      * @return HttpResponseMessageImpl
      */
@@ -129,7 +125,7 @@ public class HttpObjectFactory {
 
     /**
      * Retrieve an incoming response object from the factory.
-     * 
+     *
      * @param hsc
      * @return HttpResponseMessageImpl
      */
@@ -141,20 +137,20 @@ public class HttpObjectFactory {
 
     /**
      * Return a response object to the factory for pooling.
-     * 
+     *
      * @param response
      */
     public void releaseResponse(HttpResponseMessageImpl response) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "releaseResponse: " + response);
         }
-        this.respPool.put(response);
+        response = null;
     }
 
     /**
      * Get a new trailers object. init() is not called on the object so the
      * default values for certain variables are used (byte cache size, etc).
-     * 
+     *
      * @return HttpTrailersImpl
      */
     public HttpTrailersImpl getTrailers() {
@@ -170,7 +166,7 @@ public class HttpObjectFactory {
 
     /**
      * Return a trailers object to the pool.
-     * 
+     *
      * @param h
      */
     public void releaseTrailers(HttpTrailersImpl h) {
