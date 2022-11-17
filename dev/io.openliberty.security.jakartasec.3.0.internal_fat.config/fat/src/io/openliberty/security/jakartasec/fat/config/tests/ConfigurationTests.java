@@ -118,6 +118,44 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         swh.deployConfigurableTestApps(rpServer, "omittedClientSecret.war", "GenericOIDCAuthMechanism.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "omittedClientSecret", "allValues.openIdConfig.properties", TestConfigMaps.getEmptyClientSecret()),
                                        "oidc.client.generic.servlets", "oidc.client.base.*");
+
+        swh.deployConfigurableTestApps(rpServer, "literalRedirectURI.war", "GenericOIDCAuthMechanism.war",
+                                       buildUpdatedConfigMap(opServer, rpServer, "literalRedirectURI", "allValues.openIdConfig.properties",
+                                                             TestConfigMaps.getLiteralRedirectURI(rpHttpsBase)),
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "notRegisteredWithOPRedirectURI.war", "GenericOIDCAuthMechanism.war",
+                                       buildUpdatedConfigMap(opServer, rpServer, "notRegisteredWithOPRedirectURI", "allValues.openIdConfig.properties",
+                                                             TestConfigMaps.getNotRegisteredWithOPRedirectURI(rpHttpsBase)),
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "doesNotExistRedirectURI.war", "GenericOIDCAuthMechanism.war",
+                                       buildUpdatedConfigMap(opServer, rpServer, "doesNotExistRedirectURI", "allValues.openIdConfig.properties",
+                                                             TestConfigMaps.getDoesNotExistRedirectURI(rpHttpsBase)),
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "badRedirectURI.war", "GenericOIDCAuthMechanism.war",
+                                       buildUpdatedConfigMap(opServer, rpServer, "badRedirectURI", "allValues.openIdConfig.properties",
+                                                             TestConfigMaps.getBadRedirectURI()),
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "omittedRedirectURI.war", "GenericOIDCAuthMechanism.war",
+                                       buildUpdatedConfigMap(opServer, rpServer, "omittedRedirectURI", "allValues.openIdConfig.properties",
+                                                             TestConfigMaps.getEmptyRedirectURI()),
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "ELRedirectURI.war", "GenericOIDCAuthMechanism.war",
+                                       buildUpdatedConfigMap(opServer, rpServer, "ELRedirectURI", "allValues.openIdConfig.properties",
+                                                             TestConfigMaps.getELRedirectURI()),
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "ELRedirectURIConcatInSingleEvalExpression.war", "GenericOIDCAuthMechanism.war",
+                                       buildUpdatedConfigMap(opServer, rpServer, "ELRedirectURIConcatInSingleEvalExpression", "allValues.openIdConfig.properties",
+                                                             TestConfigMaps.getELRedirectURIConcatInSingleEvalExpression()),
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "ELRedirectURITwoEvalExpressions.war", "GenericOIDCAuthMechanism.war",
+                                       buildUpdatedConfigMap(opServer, rpServer, "ELRedirectURITwoEvalExpressions", "allValues.openIdConfig.properties",
+                                                             TestConfigMaps.getELRedirectURITwoEvalExpressions()),
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "ELRedirectURIDoesNotContainBaseURL.war", "GenericOIDCAuthMechanism.war",
+                                       buildUpdatedConfigMap(opServer, rpServer, "ELRedirectURIDoesNotContainBaseURL", "allValues.openIdConfig.properties",
+                                                             TestConfigMaps.getELRedirectURIDoesNotContainBaseURL(rpHttpsBase)),
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
+
         swh.deployConfigurableTestApps(rpServer, "useSessionTrue.war", "GenericOIDCAuthMechanism.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "useSessionTrue", "allValues.openIdConfig.properties",
                                                              TestConfigMaps.getUseSessionExpressionTrue()),
@@ -345,6 +383,202 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorize message."));
 
         expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWOAU0038E_CLIENT_COULD_NOT_BE_VERIFIED, "Did not receive an error message stating that the client could not be verified."));
+
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     *
+     * Test with a literal redirectURI (no EL expression).
+     *
+     * @throws Exception
+     */
+    @Test
+    public void ConfigurationTests_literalRedirectURI() throws Exception {
+
+        runGoodEndToEndTest("literalRedirectURI", "GenericOIDCAuthMechanism");
+
+    }
+
+    /**
+     *
+     * Test with a redirectURI not registered with the OP. This should fail.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidRedirectUriException" })
+    @Test
+    public void ConfigurationTests_notRegisteredWithOPRedirectURI() throws Exception {
+
+        WebClient webClient = getAndSaveWebClient();
+
+        String app = "GenericOIDCAuthMechanism";
+        String url = rpHttpsBase + "/notRegisteredWithOPRedirectURI/" + app;
+
+        Page response = actions.invokeUrl(_testName, webClient, url);
+
+        Expectations expectations = new Expectations();
+        expectations.addSuccessStatusCodes();
+        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
+                                                                                          + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
+        expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, MessageConstants.CWOAU0062E_REDIRECT_URI_INVALID, "Did not receive an error message stating that the redirect URI is not valid."));
+        expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWOAU0056E_REDIRECT_URI_NOT_REGISTERED, "Did not receive an error message stating that the redirect URI is not registered with the OP."));
+
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     *
+     * Test with a redirectURI that is registered with the OP, but does not exist on the RP.
+     * This should fail with a 404.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void ConfigurationTests_doesNotExistRedirectURI() throws Exception {
+
+        WebClient webClient = getAndSaveWebClient();
+
+        String app = "GenericOIDCAuthMechanism";
+        String url = rpHttpsBase + "/doesNotExistRedirectURI/" + app;
+
+        Page response = invokeAppReturnLoginPage(webClient, url);
+        response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectation(new ResponseStatusExpectation(Constants.NOT_FOUND_STATUS));
+        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.NOT_FOUND_MSG, "Did not receive the Not Found message."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.SRVE0190E_FILE_NOT_FOUND, "Did not receive an error message stating that the redirect URI resource was not found in the RP."));
+
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     *
+     * Test with a redirectURI that isn't a proper URI. This should fail.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidRedirectUriException" })
+    @Test
+    public void ConfigurationTests_badRedirectURI() throws Exception {
+
+        WebClient webClient = getAndSaveWebClient();
+
+        String app = "GenericOIDCAuthMechanism";
+        String url = rpHttpsBase + "/badRedirectURI/" + app;
+
+        Page response = actions.invokeUrl(_testName, webClient, url);
+
+        Expectations expectations = new Expectations();
+        expectations.addSuccessStatusCodes();
+        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
+                                                                                          + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
+        expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, MessageConstants.CWOAU0062E_REDIRECT_URI_INVALID, "Did not receive an error message stating that the redirect URI is not valid."));
+        expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWOAU0026E_REDIRECT_URI_INVALID, "Did not receive an error message stating that the redirect URI is not valid."));
+
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     *
+     * Test with a redirectURI that is empty. This should fail.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "com.ibm.oauth.core.api.error.oauth20.OAuth20MissingParameterException" })
+    @Test
+    public void ConfigurationTests_omittedRedirectURI() throws Exception {
+
+        WebClient webClient = getAndSaveWebClient();
+
+        String app = "GenericOIDCAuthMechanism";
+        String url = rpHttpsBase + "/omittedRedirectURI/" + app;
+
+        Page response = actions.invokeUrl(_testName, webClient, url);
+
+        Expectations expectations = new Expectations();
+        expectations.addSuccessStatusCodes();
+        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
+                                                                                          + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
+        expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, MessageConstants.CWOAU0033E_REQ_RUNTIME_PARAM_MISSING, "Did not receive an error message stating that the required redirectURI was missing."));
+
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     *
+     * Test with a redirectURI which contains an EL expression with baseURL.
+     * e.g., "${baseURL}/Callback"
+     *
+     * @throws Exception
+     */
+    @Test
+    public void ConfigurationTests_ELRedirectURI() throws Exception {
+
+        runGoodEndToEndTest("ELRedirectURI", "GenericOIDCAuthMechanism");
+
+    }
+
+    /**
+     *
+     * Test with a redirectURI which contains an EL expression with baseURL
+     * concatenated with another variable in the same expression.
+     * e.g., "${baseURL += openIdConfig.callbackServlet}"
+     *
+     * @throws Exception
+     */
+    @Test
+    public void ConfigurationTests_ELRedirectURI_concatInSingleEvalExpression() throws Exception {
+
+        runGoodEndToEndTest("ELRedirectURIConcatInSingleEvalExpression", "GenericOIDCAuthMechanism");
+
+    }
+
+    /**
+     *
+     * Test with a redirectURI which contains two eval expressions.
+     * e.g., "${baseURL}${openIdConfig.callbackServlet}"
+     *
+     * @throws Exception
+     */
+    @Test
+    public void ConfigurationTests_ELRedirectURI_twoEvalExpressions() throws Exception {
+
+        runGoodEndToEndTest("ELRedirectURITwoEvalExpressions", "GenericOIDCAuthMechanism");
+
+    }
+
+    /**
+     *
+     * Test with a redirectURI which does not contain the baseURL variable.
+     * This should fail, since we only do double EL expression evaluation if the first EL returned
+     * contains the baseURL variable.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidRedirectUriException" })
+    @Test
+    public void ConfigurationTests_ELRedirectURI_doesNotContainBaseURL() throws Exception {
+
+        WebClient webClient = getAndSaveWebClient();
+
+        String app = "GenericOIDCAuthMechanism";
+        String url = rpHttpsBase + "/ELRedirectURIDoesNotContainBaseURL/" + app;
+
+        Page response = actions.invokeUrl(_testName, webClient, url);
+
+        Expectations expectations = new Expectations();
+        expectations.addSuccessStatusCodes();
+        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
+                                                                                          + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
+        expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, MessageConstants.CWOAU0062E_REDIRECT_URI_INVALID, "Did not receive an error message stating that the redirect URI is not valid."));
+        expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWOAU0026E_REDIRECT_URI_INVALID, "Did not receive an error message stating that the redirect URI is not valid."));
 
         validationUtils.validateResult(response, expectations);
 

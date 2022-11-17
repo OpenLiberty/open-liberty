@@ -71,6 +71,60 @@ public class TestConfigMaps {
         return updatedMap;
     }
 
+    public static Map<String, Object> getLiteralRedirectURI(String rpHttpsBase) throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.REDIRECT_URI, rpHttpsBase + "/literalRedirectURI/Callback");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getNotRegisteredWithOPRedirectURI(String rpHttpsBase) throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.REDIRECT_URI, rpHttpsBase + "/notRegisteredWithOPRedirectURI/Callback");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getDoesNotExistRedirectURI(String rpHttpsBase) throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.REDIRECT_URI, rpHttpsBase + "/doesNotExistRedirectURI/doesNotExist");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getBadRedirectURI() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.REDIRECT_URI, "notARedirectURI");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getEmptyRedirectURI() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.REDIRECT_URI, Constants.EMPTY_VALUE);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getELRedirectURI() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.REDIRECT_URI, "${baseURL}/Callback");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getELRedirectURIConcatInSingleEvalExpression() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.REDIRECT_URI, "${baseURL += openIdConfig.callbackServlet}");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getELRedirectURITwoEvalExpressions() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.REDIRECT_URI, "${baseURL}${openIdConfig.callbackServlet}");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getELRedirectURIDoesNotContainBaseURL(String rpHttpsBase) throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.REDIRECT_URI, rpHttpsBase + "/ELRedirectURIDoesNotContainBaseURL/${openIdConfig.callbackServlet}");
+        return updatedMap;
+    }
+
     public static Map<String, Object> getUseSessionExpressionTrue() throws Exception {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();

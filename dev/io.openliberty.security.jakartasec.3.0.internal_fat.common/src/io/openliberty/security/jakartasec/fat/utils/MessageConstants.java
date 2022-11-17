@@ -13,11 +13,12 @@ package io.openliberty.security.jakartasec.fat.utils;
 public class MessageConstants extends com.ibm.ws.security.fat.common.MessageConstants {
 
     public static final String CWOAU0023E_CLIENTID_NOT_FOUND = "CWOAU0023E";
-
+    public static final String CWOAU0026E_REDIRECT_URI_INVALID = "CWOAU0026E";
     public static final String CWOAU0033E_REQ_RUNTIME_PARAM_MISSING = "CWOAU0033E";
     public static final String CWOAU0038E_CLIENT_COULD_NOT_BE_VERIFIED = "CWOAU0038E";
-
+    public static final String CWOAU0056E_REDIRECT_URI_NOT_REGISTERED = "CWOAU0056E";
     public static final String CWOAU0061E_COULD_NOT_FIND_CLIENT = "CWOAU0061E";
+    public static final String CWOAU0062E_REDIRECT_URI_INVALID = "CWOAU0062E";
 
     public static final String CWWKS1406E_INVALID_CLIENT_CREDENTIAL = "CWWKS1406E";
 
@@ -40,5 +41,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS2500W_MISSING_CLIENTID_EL = "CWWKS2500W";
 
     public static final String CWWKS9104A_NO_ACCESS_FOR_USER = "CWWKS9104A";
+
+    public static final String SRVE0190E_FILE_NOT_FOUND = "SRVE0190E";
 
 }
