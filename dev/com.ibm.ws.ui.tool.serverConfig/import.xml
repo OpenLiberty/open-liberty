@@ -31,6 +31,7 @@
 
     <target name="post-compile">
         <antcall target="get-jquery-lib" />
+        <antcall target="get-carbon-lib" />
         <antcall target="get-bootstrap-lib" />
         <antcall target="get-orion-lib" />
         <copy-one-font-file font-file="IBMPlexSans/IBMPlexSans-Regular.woff" font-target-dir="lib/fonts" />
