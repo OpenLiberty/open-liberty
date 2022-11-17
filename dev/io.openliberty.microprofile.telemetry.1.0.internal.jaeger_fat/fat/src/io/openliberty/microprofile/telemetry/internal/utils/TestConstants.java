@@ -38,6 +38,11 @@ public class TestConstants {
     public static final String ENV_OTEL_EXPORTER_JAEGER_ENDPOINT = "OTEL_EXPORTER_JAEGER_ENDPOINT";
 
     /**
+     * Environment variable to set the Zipkin exporter endpoint
+     */
+    public static final String ENV_OTEL_EXPORTER_ZIPKIN_ENDPOINT = "OTEL_EXPORTER_ZIPKIN_ENDPOINT";
+
+    /**
      * Environment variable to set the maximum time to wait before sending a batch of traces to the trace server
      */
     public static final String ENV_OTEL_BSP_SCHEDULE_DELAY = "OTEL_BSP_SCHEDULE_DELAY";

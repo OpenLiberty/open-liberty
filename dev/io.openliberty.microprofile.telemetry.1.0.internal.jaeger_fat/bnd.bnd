@@ -25,7 +25,9 @@ fat.project: true
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true
 
-fat.test.container.images: jaegertracing/all-in-one:1.39
+fat.test.container.images: \
+    jaegertracing/all-in-one:1.39, \
+    openzipkin/zipkin-slim:2.23
 
 grpcVersion=1.43.2
 

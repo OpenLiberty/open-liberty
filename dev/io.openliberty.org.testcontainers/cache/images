@@ -25,6 +25,7 @@ letsencrypt/pebble-challtestsrv:latest
 letsencrypt/pebble:latest
 mariadb:10.3
 mcr.microsoft.com/mssql/server:2019-CU10-ubuntu-16.04
+openzipkin/zipkin-slim:2.23
 postgres:14.1-alpine
 ryanesch/acme-boulder:1.2
 testcontainers/ryuk:0.3.4

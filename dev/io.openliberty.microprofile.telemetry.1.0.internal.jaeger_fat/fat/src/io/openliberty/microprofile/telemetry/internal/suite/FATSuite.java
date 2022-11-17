@@ -21,6 +21,7 @@ import io.openliberty.microprofile.telemetry.internal.tests.AutoInstrumentationT
 import io.openliberty.microprofile.telemetry.internal.tests.JaegerLegacyTest;
 import io.openliberty.microprofile.telemetry.internal.tests.JaegerOltpTest;
 import io.openliberty.microprofile.telemetry.internal.tests.TracingNotEnabledTest;
+import io.openliberty.microprofile.telemetry.internal.tests.ZipkinTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -28,7 +29,8 @@ import io.openliberty.microprofile.telemetry.internal.tests.TracingNotEnabledTes
                 AutoInstrumentationTest.class,
                 TracingNotEnabledTest.class,
                 JaegerOltpTest.class,
-                JaegerLegacyTest.class
+                JaegerLegacyTest.class,
+                ZipkinTest.class,
 })
 
 @MinimumJavaLevel(javaLevel = 11)
