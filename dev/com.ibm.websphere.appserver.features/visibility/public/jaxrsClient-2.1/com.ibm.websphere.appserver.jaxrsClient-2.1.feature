@@ -22,3 +22,4 @@ Subsystem-Name: Java RESTful Services Client 2.1
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

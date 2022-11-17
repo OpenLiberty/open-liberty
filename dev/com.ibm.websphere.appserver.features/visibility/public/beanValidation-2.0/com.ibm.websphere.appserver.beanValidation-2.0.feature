@@ -33,3 +33,4 @@ IBM-API-Package: \
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

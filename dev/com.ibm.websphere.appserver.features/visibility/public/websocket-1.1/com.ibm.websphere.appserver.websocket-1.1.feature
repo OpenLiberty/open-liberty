@@ -21,3 +21,4 @@ Subsystem-Name: Java WebSocket 1.1
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

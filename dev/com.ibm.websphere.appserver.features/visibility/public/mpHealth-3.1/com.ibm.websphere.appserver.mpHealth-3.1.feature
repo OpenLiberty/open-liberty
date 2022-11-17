@@ -23,3 +23,4 @@ Subsystem-Name: MicroProfile Health 3.1
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

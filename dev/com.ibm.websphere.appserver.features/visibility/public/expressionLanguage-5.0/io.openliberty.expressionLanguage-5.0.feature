@@ -19,3 +19,4 @@ Subsystem-Name: Jakarta Expression Language 5.0
 kind=beta
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

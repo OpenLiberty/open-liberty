@@ -24,3 +24,4 @@ Subsystem-Name: MicroProfile Metrics 5.0
  io.openliberty.io.micrometer; location:="lib/"
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

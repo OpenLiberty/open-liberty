@@ -21,3 +21,4 @@ Subsystem-Name: MicroProfile Metrics 3.0
  io.openliberty.microprofile.metrics.internal.public
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true

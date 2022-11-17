@@ -23,3 +23,4 @@ Subsystem-Name: MicroProfile 6.0
   io.openliberty.mpTelemetry-1.0
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

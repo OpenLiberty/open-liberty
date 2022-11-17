@@ -22,3 +22,4 @@ Subsystem-Name: MicroProfile Health 4.0
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

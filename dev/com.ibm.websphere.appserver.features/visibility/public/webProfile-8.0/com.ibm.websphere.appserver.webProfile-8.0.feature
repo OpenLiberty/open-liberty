@@ -27,3 +27,4 @@ Subsystem-Name: Java EE Web Profile 8.0
   com.ibm.websphere.appserver.jsf-2.3
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true

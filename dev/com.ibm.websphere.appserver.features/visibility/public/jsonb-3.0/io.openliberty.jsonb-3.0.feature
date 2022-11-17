@@ -16,3 +16,4 @@ IBM-API-Package: jakarta.json.bind; type="spec", \
 kind=beta
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true
