@@ -14,10 +14,10 @@
                    xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
                    localization="OSGI-INF/l10n/metatype">
 
-    <OCD id="com.ibm.ws.messaging.comms.wasJmsOutbound" ibm:alias="wasJmsOutbound" name="%wasJmsOutbound" description="%wasJmsOutbound.desc" >
+    <OCD id="com.ibm.ws.messaging.comms.wasJmsOutbound" ibm:alias="wasJmsOutbound" name="%wasJmsOutbound" description="%wasJmsOutbound.desc" ibm:objectClass="com.ibm.wsspi.application.lifecycle.ApplicationPrereq">
 
         <AD id="id" name="%wasJmsOutboundId" description="%wasJmsOutboundId.desc" required="true" type="String"/>
-         
+
         <AD name="%useSSL" description="%useSSL.desc" id="useSSL" required="false" type="Boolean" default="false" />
 
         <!-- tcpOptionsRef, tcpOptions.target are copied from elsewhere and their origins are lost, 
@@ -25,7 +25,7 @@
              sslOptions would be a better model to copy. -->
         <AD id="tcpOptionsRef" name="%tcpOptions" description="%tcpOptions.desc"
             ibm:reference="com.ibm.ws.tcpchannel.options" ibm:type="pid" cardinality="1"
-            type="String" required="false" default="defaultTCPOptions" />        
+            type="String" required="false" default="defaultTCPOptions" />
 
         <AD id="tcpOptions.target" name="internal" description="internal use only" 
             ibm:final="true" required="false" type="String" 
@@ -42,10 +42,10 @@
         <AD id="sslOptions.cardinality.minimum" name="internal" description="internal use only"
             ibm:final="true" required="false" type="String"
             default="${count(sslOptionsRef)}" />
-        <!-- Is there even one sslOptions configured anywhere?  -->          
+        <!-- Is there even one sslOptions configured anywhere?  -->
         <AD id="anySSLOptionsRef" name="internal" description="internal use only" 
             ibm:reference="com.ibm.ws.sslchannel.options" ibm:type="pid" required="true" 
-            cardinality="1" type="String" default="*" ibm:final="true" />           
+            cardinality="1" type="String" default="*" ibm:final="true" />
         <!-- If there is even one sslOptions configured anywhere then there must be a defaultSSLOptions  -->
         <AD id="defaultSSLOptions.cardinality.minimum" name="internal" description="internal use only"
             ibm:final="true" required="false" type="String"
