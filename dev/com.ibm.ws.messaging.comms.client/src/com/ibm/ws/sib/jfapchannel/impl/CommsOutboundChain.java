@@ -68,8 +68,6 @@ public class CommsOutboundChain {
     public CommsOutboundChain(
             @Reference(name="tcpOptions", target="(id=unbound)")
             ChannelConfiguration tcpOptions,
-//            @Reference(name="defaultTCPOptions", target="(id=defaultTCPOptions)", cardinality=OPTIONAL)
-//            ChannelConfiguration defaultTCPOptions,
             @Reference(name="sslOptions", target="(id=unbound)", cardinality=OPTIONAL)
             ChannelConfiguration sslOptions,
             /* We have preserved the original behaviour of using defaultSSLOptions 
@@ -83,8 +81,8 @@ public class CommsOutboundChain {
             SingletonsReady singletonsReady,
             Map<Object, Object> properties) {
 
-		if (isAnyTracingEnabled() && tc.isEntryEnabled())
-			entry(this, tc, "<init>", tcpOptions,/* defaultTCPOptions, */sslOptions, defaultSSLOptions, commsClientService, properties);
+        if (isAnyTracingEnabled() && tc.isEntryEnabled())
+            entry(this, tc, "<init>", tcpOptions,/* defaultTCPOptions, */sslOptions, defaultSSLOptions, commsClientService, properties);
 
         //this.tcpOptions = Optional.ofNullable(tcpOptions).orElse(defaultTCPOptions);
         this.tcpOptions = tcpOptions;
@@ -92,7 +90,7 @@ public class CommsOutboundChain {
         this.commsClientService = commsClientService;
 
         isSSLChain = MetatypeUtils.parseBoolean(OUTBOUND_CHAIN_CONFIG_ALIAS, "useSSL", properties.get("useSSL"), false);
-        
+
         String id = (String) properties.get("id");
         chainName = id;
         tcpChannelName = id + "_JfapTcp";
@@ -132,7 +130,7 @@ public class CommsOutboundChain {
                     throw new ChainException(new Throwable(nls.getFormattedMessage("missingSslOptions.ChainNotStarted", new Object[] { chainName }, null)));              
                 }
                 Map<String, Object> sslprops = sslOptions.getConfiguration();
-                
+
                 ChannelData sslChannel = cfw.getChannel(sslChannelName);
                 if (sslChannel == null) {
                     sslChannel = cfw.addChannel(sslChannelName, cfw.lookupFactory("SSLChannel"), new HashMap<Object, Object>(sslprops));
@@ -148,7 +146,7 @@ public class CommsOutboundChain {
 
             ChainData cd = cfw.addChain(chainName, FlowType.OUTBOUND, chanList);
             cd.setEnabled(true);
-                      
+
             // The Fat test:
             // /com.ibm.ws.messaging_fat/fat/src/com/ibm/ws/messaging/fat/CommsWithSSL/CommsWithSSLTest.java
             // Checks for the presence of this string in the trace log, in order to ascertain that the chain has been enabled.
@@ -197,11 +195,11 @@ public class CommsOutboundChain {
             if (cd != null) {
                 cfw.removeChain(cd);
             }
-            
+
         } catch (Exception exception) {
             if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, "Failure in terminating conservations and physical connections while destroying chain : " + chainName, exception);
         }
-        
+
         removeChannel(tcpChannelName);
         if (isSSLChain)
             removeChannel(sslChannelName);
@@ -209,7 +207,7 @@ public class CommsOutboundChain {
 
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "terminateConnectionsAssociatedWithChain");
     }
-    
+
     /**
      * Remove a channel from the channel framework.
      * @param channelName of the channel to be removed.
@@ -217,7 +215,7 @@ public class CommsOutboundChain {
     private void removeChannel(String channelName) {
         if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "removeChannel", channelName);
-        
+
         ChannelFramework cfw = commsClientService.getChannelFramework();
         try {
             if (cfw.getChannel(channelName) != null)
@@ -229,7 +227,7 @@ public class CommsOutboundChain {
             if (isAnyTracingEnabled() && tc.isDebugEnabled())
                 SibTr.debug(this, tc, "Error removing channel:" + channelName, exception);
         }
-        
+
         if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "removeChannel");
     }
