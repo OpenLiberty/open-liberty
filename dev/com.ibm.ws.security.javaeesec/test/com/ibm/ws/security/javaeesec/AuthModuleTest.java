@@ -14,10 +14,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.inject.Instance;
@@ -148,6 +146,11 @@ public class AuthModuleTest {
                 will(returnValue(true));
                 allowing(httpMessageContext).getMessageInfo();
                 will(returnValue(messageInfo));
+                allowing(httpMessageContext).getRequest();
+                will(returnValue(request));
+                allowing(httpMessageContext).getResponse();
+                will(returnValue(response));
+
             }
         });
 
@@ -373,8 +376,7 @@ public class AuthModuleTest {
         public HttpAuthenticationMechanism getHttpAuthenticationMechanism() {
             return ham;
         }
-        
-    
+
     }
 
 }
