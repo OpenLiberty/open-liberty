@@ -38,6 +38,7 @@ import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.impl.octracker.OutboundConnectionTracker;
 import com.ibm.ws.sib.jfapchannel.richclient.impl.JFapChannelFactory;
 import com.ibm.ws.sib.utils.ras.SibTr;
+import com.ibm.wsspi.application.lifecycle.ApplicationPrereq;
 import com.ibm.wsspi.channelfw.ChannelConfiguration;
 import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.exception.ChainException;
@@ -45,10 +46,10 @@ import com.ibm.wsspi.channelfw.exception.ChannelException;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 
 @Component(
-        name = "com.ibm.ws.messaging.comms.wasJmsOutbound",
+        configurationPid = "com.ibm.ws.messaging.comms.wasJmsOutbound",
         configurationPolicy = REQUIRE,
         property = "service.vendor=IBM")
-public class CommsOutboundChain {
+public class CommsOutboundChain implements ApplicationPrereq {
     private static final TraceComponent tc = Tr.register(CommsOutboundChain.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);
     private static final TraceNLS nls = TraceNLS.getTraceNLS(JFapChannelConstants.MSG_BUNDLE);
     private final static String OUTBOUND_CHAIN_CONFIG_ALIAS = "wasJmsOutbound";
@@ -230,5 +231,11 @@ public class CommsOutboundChain {
 
         if (isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(this, tc, "removeChannel");
+    }
+
+
+    @Override
+    public String getApplicationPrereqID() {
+        return chainName;
     }
 }
