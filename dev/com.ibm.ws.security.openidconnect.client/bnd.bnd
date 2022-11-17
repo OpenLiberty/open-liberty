@@ -61,11 +61,12 @@ Service-Component: \
     configuration-policy:=ignore; \
     oidcClientConfig=com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig; \
     userResolver=com.ibm.wsspi.security.oauth20.UserCredentialResolver; \
+    securityService=com.ibm.ws.security.SecurityService; \
     sslSupport=com.ibm.wsspi.ssl.SSLSupport; \
     authFilter='com.ibm.ws.security.authentication.filter.AuthenticationFilter(id=*)'; \
     authCacheService=com.ibm.ws.security.authentication.cache.AuthCacheService; \
-    dynamic:='oidcClientConfig,sslSupport,authFilter'; \
-    optional:='sslSupport,authFilter,userResolver'; \
+    dynamic:='oidcClientConfig,securityService,sslSupport,authFilter'; \
+    optional:='securityService,sslSupport,authFilter,userResolver'; \
     multiple:='oidcClientConfig,authFilter,userResolver';\
     greedy:='authFilter'; \
     properties:="service.vendor=IBM", \
