@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.rest.handler.RESTHandler;
 import com.ibm.wsspi.rest.handler.RESTRequest;
 import com.ibm.wsspi.rest.handler.RESTResponse;
@@ -34,6 +35,7 @@ import io.smallrye.openapi.runtime.io.OpenApiSerializer;
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE,
            service = { RESTHandler.class },
            property = { RESTHandler.PROPERTY_REST_HANDLER_CONTEXT_ROOT + "=/openapi/platform",
+                        RESTHandler.PROPERTY_REST_HANDLER_CONTEXT_ROOT + "=/ibm/api/platform",
                         RESTHandler.PROPERTY_REST_HANDLER_ROOT + "=/config" })
 public class ConfigSchemaRESTHandler implements RESTHandler {
     private static final TraceComponent tc = Tr.register(ConfigSchemaRESTHandler.class);
@@ -52,6 +54,14 @@ public class ConfigSchemaRESTHandler implements RESTHandler {
             }
             response.setResponseHeader("Accept", "GET");
             response.sendError(405); // Method Not Allowed
+            return;
+        }
+
+        // Delete once feature 18696 is GA.
+        // Remove com.ibm.ws.kernel.boot from bnd buildpath once the Beta check is no longer needed.
+        if (!ProductInfo.getBetaEdition() && request.getContextPath().contains("/ibm/api")) {
+            response.setResponseHeader("Accept", "GET");
+            response.sendError(404); // Not Found
             return;
         }
 
