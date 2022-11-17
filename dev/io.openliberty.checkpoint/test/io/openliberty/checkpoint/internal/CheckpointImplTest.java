@@ -49,6 +49,7 @@ import org.osgi.service.condition.Condition;
 
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
 import com.ibm.ws.threading.listeners.CompletionListener;
+import com.ibm.wsspi.kernel.feature.LibertyFeature;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 
 import io.openliberty.checkpoint.internal.criu.CheckpointFailedException;
@@ -139,6 +140,20 @@ public class CheckpointImplTest {
                             i = i + 1;
                         }
                         return featureServices;
+                    }
+                    if ("getService".equals(m.getName())) {
+                        @SuppressWarnings("unchecked")
+                        ServiceReference<LibertyFeature> ref = (ServiceReference<LibertyFeature>) a[0];
+                        String featureName = (String) ref.getProperty("ibm.featureName");
+                        return Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { LibertyFeature.class }, (p1, m1, a1) -> {
+                            if ("getHeader".equals(m1.getName())) {
+                                return featureName.startsWith("notSupported") ? null : "true";
+                            }
+                            throw new UnsupportedOperationException(m1.getName());
+                        });
+                    }
+                    if ("ungetService".equals(m.getName())) {
+                        return true;
                     }
                     throw new UnsupportedOperationException(m.getName());
                 });
@@ -482,6 +497,15 @@ public class CheckpointImplTest {
             assertTrue(msg + " notSupported1", msg.contains("notSupported1"));
             assertTrue(msg + " notSupported2", msg.contains("notSupported2"));
         }
+    }
+
+    @Test
+    public void testSupportedFeature() {
+        TestCRIU criu = new TestCRIU();
+        WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
+        Hooks hooks = new Hooks(emptyList(), emptyList(), new HashSet<>(Arrays.asList("supported1", "supported2")));
+        CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(hooks), criu, locAdmin, CheckpointPhase.FEATURES);
+        checkpoint.checkpoint();
     }
 
     @Test
