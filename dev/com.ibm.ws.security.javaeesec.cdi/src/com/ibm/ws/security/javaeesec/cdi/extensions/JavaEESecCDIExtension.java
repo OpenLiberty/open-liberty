@@ -161,7 +161,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             }
 
             if (isAuthMechOverridden) {
-                createModulePropertiesProviderBeanForGlobalLogin(beanManager, javaClass);
+                createModulePropertiesProviderBeanForGlobalLogin(beanManager, javaClass, annotations);
             } else {
                 Annotation ltc = annotatedType.getAnnotation(LoginToContinue.class);
                 createModulePropertiesProviderBeanForApplicationAuthMechToAdd(beanManager, ltc, javaClass, annotations);
@@ -178,15 +178,15 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             Class<? extends Annotation> annotationType = annotation.annotationType();
             if (BasicAuthenticationMechanismDefinition.class.equals(annotationType)) {
                 if (isAuthMechOverridden) {
-                    createModulePropertiesProviderBeanForGlobalLogin(beanManager, javaClass);
+                    createModulePropertiesProviderBeanForGlobalLogin(beanManager, javaClass, annotations);
                 } else {
-                    createModulePropertiesProviderBeanForBasicToAdd(beanManager, annotations, annotation, annotationType, javaClass);
+                    createModulePropertiesProviderBeanForBasicToAdd(beanManager, annotation, annotationType, javaClass, annotations);
                 }
             } else if (FormAuthenticationMechanismDefinition.class.equals(annotationType) || CustomFormAuthenticationMechanismDefinition.class.equals(annotationType)) {
                 if (isAuthMechOverridden) {
-                    createModulePropertiesProviderBeanForGlobalLogin(beanManager, javaClass);
+                    createModulePropertiesProviderBeanForGlobalLogin(beanManager, javaClass, annotations);
                 } else {
-                    createModulePropertiesProviderBeanForFormToAdd(beanManager, annotation, annotationType, javaClass);
+                    createModulePropertiesProviderBeanForFormToAdd(beanManager, annotation, annotationType, javaClass, annotations);
                 }
             } else if (LdapIdentityStoreDefinition.class.equals(annotationType)) {
                 createLdapIdentityStoreBeanToAdd(beanManager, annotation, annotationType);
@@ -298,7 +298,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
      * @param annotationType
      */
     private <T> void createModulePropertiesProviderBeanForFormToAdd(BeanManager beanManager, Annotation annotation, Class<? extends Annotation> annotationType,
-                                                                    Class<?> annotatedClass) {
+                                                                    Class<?> annotatedClass, Set<Annotation> annotations) {
         try {
             Method loginToContinueMethod = annotationType.getMethod("loginToContinue");
             Annotation ltcAnnotation = (Annotation) loginToContinueMethod.invoke(annotation);
@@ -309,7 +309,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             } else {
                 implClass = CustomFormAuthenticationMechanism.class;
             }
-            addAuthMech(applicationName, annotatedClass, implClass, props);
+            addAuthMech(applicationName, annotatedClass, implClass, annotations, props);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
@@ -323,15 +323,14 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
      * @param annotation
      * @param annotationType
      */
-    private void createModulePropertiesProviderBeanForBasicToAdd(BeanManager beanManager, Set<Annotation> annotations, Annotation annotation,
-                                                                 Class<? extends Annotation> annotationType, Class annotatedClass) {
+    private void createModulePropertiesProviderBeanForBasicToAdd(BeanManager beanManager, Annotation annotation,
+                                                                 Class<? extends Annotation> annotationType, Class annotatedClass, Set<Annotation> annotations) {
         try {
             Method realmNameMethod = annotationType.getMethod("realmName");
             String realmName = (String) realmNameMethod.invoke(annotation);
             Properties props = new Properties();
             props.put(JavaEESecConstants.REALM_NAME, realmName);
-            addDecoratOrAlternativeProps(annotations, props);
-            addAuthMech(applicationName, annotatedClass, BasicHttpAuthenticationMechanism.class, props);
+            addAuthMech(applicationName, annotatedClass, BasicHttpAuthenticationMechanism.class, annotations, props);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
@@ -358,7 +357,6 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
 
             }
         }
-
     }
 
     /**
@@ -381,15 +379,15 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         if (props == null) {
             props = new Properties();
         }
-        addDecoratOrAlternativeProps(annotations, props);
 
-        addAuthMech(applicationName, implClass, implClass, props);
+        addAuthMech(applicationName, implClass, implClass, annotations, props);
     }
 
     /**
      * @param beanManager
+     * @param annotations
      */
-    private void createModulePropertiesProviderBeanForGlobalLogin(BeanManager beanManager, Class annotatedClass) {
+    private void createModulePropertiesProviderBeanForGlobalLogin(BeanManager beanManager, Class annotatedClass, Set<Annotation> annotations) {
         try {
             Properties props;
             Class implClass;
@@ -402,7 +400,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
                 props = getGlobalLoginBasicProps();
                 implClass = BasicHttpAuthenticationMechanism.class;
             }
-            addAuthMech(applicationName, annotatedClass, implClass, props);
+            addAuthMech(applicationName, annotatedClass, implClass, annotations, props);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
@@ -411,12 +409,12 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     }
 
     @Override
-    public void addAuthMech(String applicationName, Class<?> annotatedClass, Class<?> implClass, Properties props) {
-        httpAuthenticationMechanismsTracker.addAuthMech(applicationName, annotatedClass, implClass, props);
-    }
-
-    public void addAuthMech(String applicationName, Class<?> implClass, Properties props) {
-        httpAuthenticationMechanismsTracker.addAuthMech(applicationName, implClass, implClass, props);
+    public void addAuthMech(String applicationName, Class<?> annotatedClass, Class<?> implClass, Set<Annotation> annotations, Properties props) {
+        if (props == null) {
+            props = new Properties();
+        }
+        addDecoratOrAlternativeProps(annotations, props);
+        httpAuthenticationMechanismsTracker.addAuthMech(applicationName, annotatedClass, implClass, annotations, props);
     }
 
     /**

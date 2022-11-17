@@ -11,7 +11,9 @@
 package io.openliberty.security.jakartasec.cdi.extensions;
 
 import java.lang.annotation.Annotation;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -50,6 +52,7 @@ public class JakartaSecurity30CDIExtensionTest {
     private BeanManager beanManager;
     private AnnotatedType<?> annotatedType;
     private Annotation oidcAnnotation;
+    private final Set<Annotation> annotations = new HashSet<Annotation>();
     private AfterBeanDiscovery afterBeanDiscovery;
 
     @BeforeClass
@@ -98,6 +101,7 @@ public class JakartaSecurity30CDIExtensionTest {
 
         jakartaSecurity30CDIExtension.processAnnotatedOidc(event, beanManager);
         jakartaSecurity30CDIExtension.afterBeanDiscovery(afterBeanDiscovery, beanManager);
+
     }
 
     private void withAnnotatedClassEvent() {
@@ -113,6 +117,7 @@ public class JakartaSecurity30CDIExtensionTest {
                 will(returnValue(oidcAnnotation));
                 allowing(annotatedType).getJavaClass();
                 will(returnValue(AnnotatedClass.class));
+                allowing(annotatedType).getAnnotations();
             }
         });
     }
@@ -120,8 +125,9 @@ public class JakartaSecurity30CDIExtensionTest {
     private void cdiExtensionAddsAuthenticationMechanism() {
         mockery.checking(new Expectations() {
             {
+                allowing(annotatedType).getAnnotations();
                 one(primarySecurityCDIExtension).addAuthMech(with(any(String.class)), with(AnnotatedClass.class), with(OidcHttpAuthenticationMechanism.class),
-                                                             with(anOidcAnnotationInProperties(oidcAnnotation)));
+                                                             with(annotations), with(anOidcAnnotationInProperties(oidcAnnotation)));
             }
         });
     }
