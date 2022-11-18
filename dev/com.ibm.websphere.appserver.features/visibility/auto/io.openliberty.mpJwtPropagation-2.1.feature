@@ -9,5 +9,5 @@ IBM-Install-Policy: when-satisfied
 -bundles= \
  com.ibm.ws.security.mp.jwt.propagation, \
  io.openliberty.restfulWS.internal.globalhandler
-kind=beta
+kind=ga
 edition=core

@@ -22,6 +22,6 @@ Subsystem-Name: MicroProfile Metrics 5.0
  io.openliberty.microprofile.metrics.5.0.monitor.internal
 -jars=io.openliberty.io.smallrye.metrics; location:="lib/", \
  io.openliberty.io.micrometer; location:="lib/"
-kind=beta
+kind=ga
 edition=core
 WLP-InstantOn-Enabled: true

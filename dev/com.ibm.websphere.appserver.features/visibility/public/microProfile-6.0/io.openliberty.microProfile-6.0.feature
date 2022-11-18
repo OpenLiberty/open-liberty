@@ -21,6 +21,6 @@ Subsystem-Name: MicroProfile 6.0
   io.openliberty.mpMetrics-5.0, \
   io.openliberty.mpRestClient-3.0, \
   io.openliberty.mpTelemetry-1.0
-kind=beta
+kind=ga
 edition=core
 WLP-InstantOn-Enabled: true
