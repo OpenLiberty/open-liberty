@@ -10,16 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.wsat.fat.tests;
 
-import static java.util.stream.Collectors.toList;
-
-import java.util.Arrays;
 import java.util.Hashtable;
-import java.util.List;
-import java.util.logging.Level;
 
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,9 +20,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.WsAtomicTransaction;
-import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
-import com.ibm.ws.wsat.fat.util.WSATTest;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;

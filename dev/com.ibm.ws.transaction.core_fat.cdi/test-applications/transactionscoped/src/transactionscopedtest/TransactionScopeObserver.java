@@ -10,21 +10,11 @@
  *******************************************************************************/
 package transactionscopedtest;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Destroyed;
 import javax.enterprise.context.Initialized;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.transaction.TransactionScoped;
 
 @ApplicationScoped
@@ -52,22 +42,22 @@ public class TransactionScopeObserver {
         return seenDestroyed;
     }
 
-    public void requestInit(@Observes @Initialized(RequestScoped.class)Object event){
+    public void requestInit(@Observes @Initialized(RequestScoped.class) Object event) {
         System.out.println("Observed RequestScoped Initialized");
         seenRequestInitialized = true;
     }
 
-    public void requestDestroyed(@Observes @Destroyed(RequestScoped.class)Object event){
+    public void requestDestroyed(@Observes @Destroyed(RequestScoped.class) Object event) {
         System.out.println("Observed RequestScoped Initialized");
         seenRequestDestroyed = true;
     }
 
-    public void transactionInit(@Observes @Initialized(TransactionScoped.class)Object event){
+    public void transactionInit(@Observes @Initialized(TransactionScoped.class) Object event) {
         System.out.println("Observed TransactionScoped Initialized");
         seenInitialized = true;
     }
 
-    public void transactionDestroyed(@Observes @Destroyed(TransactionScoped.class)Object event){
+    public void transactionDestroyed(@Observes @Destroyed(TransactionScoped.class) Object event) {
         System.out.println("Observed TransactionScoped Initialized");
         seenDestroyed = true;
     }

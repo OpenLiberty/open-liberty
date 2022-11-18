@@ -15,13 +15,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.rules.repeater.EmptyAction;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
-
 import com.ibm.ws.wsat.fat.tests.AssertionTest;
 import com.ibm.ws.wsat.fat.tests.DBWithoutAssertionTest;
 import com.ibm.ws.wsat.fat.tests.EJBCDITest;
+
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({

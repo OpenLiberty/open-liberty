@@ -12,7 +12,6 @@ package com.ibm.ws.transaction.test.tests;
 
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
-import java.util.Arrays;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -26,7 +25,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -92,7 +90,7 @@ public class EJBNewTxDBTest extends FATServletClient {
     /**
      * Test enlistment in transactions.
      *
-     * @param request HTTP request
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */

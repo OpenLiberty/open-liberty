@@ -18,8 +18,6 @@ import com.ibm.ws.wsat.fat.tests.MultiRecoveryTest;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 
 @AllowedFFDC(value = { "javax.transaction.SystemException", "javax.transaction.xa.XAException", "java.io.IOException", "java.io.EOFException", "java.net.SocketException", "com.ibm.tx.jta.ut.util.AlreadyDumpedException" })
 @RunWith(FATRunner.class)
