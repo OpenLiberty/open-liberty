@@ -39,13 +39,11 @@ public class TCKResultsWriter {
         String javaVersion = resultInfo.getJavaVersion();
         String openLibertyVersion = resultInfo.getOpenLibertyVersion();
         Type type = resultInfo.getType();
+        String osName = resultInfo.getOsName();
         String osVersion = resultInfo.getOsVersion();
         String specName = resultInfo.getSpecName();
         String specVersion = resultInfo.getSpecVersion();
 
-        String filename = openLibertyVersion + "-" + specName.replace(" ", "-") + "-" + specVersion + "-Java" + javaMajorVersion + "-TCKResults.adoc";
-        Path outputPath = Paths.get("results", filename);
-        File outputFile = outputPath.toFile();
         SAXParserFactory factory = null;
         SAXParser saxParser = null;
         try {
@@ -62,23 +60,22 @@ public class TCKResultsWriter {
         String fullSpecName;
         String specURL = null;
         String tckURL = null;
-        String tckSHA = resultInfo.getSHA();
-        String tckSHAURL = null;
+        String tckSHA1 = resultInfo.getSHA1();
+        String tckSHA256 = resultInfo.getSHA256();
         if (type.equals(Type.MICROPROFILE)) {
             fullSpecName = "MicroProfile " + specName + " " + specVersion;
-            specURL = "https://download.eclipse.org/microprofile/microprofile-" + MPSpecLower + "-" + specVersion + "/microprofile-" + MPSpecLower + "-spec-"
-                      + specVersion + ".html"; //format of this URL is very inconsistent, may need to be manually updated
-            tckURL = "https://download.eclipse.org/microprofile/microprofile-" + MPSpecLower + "-" + specVersion + "/microprofile-" + MPSpecLower + "-tck-"
-                     + specVersion + ".jar"; //format of this URL is very inconsistent, may need to be manually updated
-            tckSHAURL = "https://download.eclipse.org/microprofile/microprofile-" + MPSpecLower + "-" + specVersion + "/microprofile-" + MPSpecLower + "-tck-"
-                        + specVersion + ".jar.sha256"; //just a placeholder, needs to be manually updated
+            specURL = "https://github.com/eclipse/microprofile-" + MPSpecLower + "/tree/" + specVersion;
+            tckURL = "https://repo1.maven.org/maven2/org/eclipse/microprofile/" + MPSpecLower + "/microprofile-" + MPSpecLower + "-tck/" + specVersion + "/microprofile-"
+                     + MPSpecLower + "-tck-" + specVersion + ".jar";
         } else {
             fullSpecName = "Jakarta " + specName + " " + specVersion;
             specURL = "https://jakarta.ee/specifications/" + specName + "/" + specVersion;
             tckURL = "https://download.eclipse.org/ee4j/" + specName + "/jakartaee10/promoted/eftl/" + specName + "-tck-" + specVersion + ".zip"; //just a placeholder, needs to be manually updated
-            tckSHAURL = "https://download.eclipse.org/ee4j/" + specName + "/jakartaee10/promoted/eftl/" + specName + "-tck-" + specVersion + ".info"; //just a placeholder, needs to be manually updated
         }
-        String adocContent = getADocHeader(filename, fullSpecName, specURL, openLibertyVersion, javaMajorVersion, javaVersion, osVersion, tckURL, tckSHA, tckSHAURL);
+        String filename = openLibertyVersion + "-" + fullSpecName.replace(" ", "-") + "-Java" + javaMajorVersion + "-TCKResults.adoc";
+        Path outputPath = Paths.get("results", filename);
+        File outputFile = outputPath.toFile();
+        String adocContent = getADocHeader(filename, fullSpecName, specURL, openLibertyVersion, javaMajorVersion, javaVersion, osName, osVersion, tckURL, tckSHA1, tckSHA256);
 
         try (FileWriter output = new FileWriter(outputFile)) {
             Path junitPath = Paths.get("results", "junit");
@@ -107,7 +104,7 @@ public class TCKResultsWriter {
     }
 
     private static String getADocHeader(String filename, String fullSpecName, String specURL, String openLibertyVersion, String javaMajorVersion, String javaVersion,
-                                        String osVersion, String tckURL, String tckSHA, String tckSHA_URL) {
+                                        String osName, String osVersion, String tckURL, String tckSHA1, String tckSHA256) {
         StringBuilder builder = new StringBuilder();
 
         builder.append(":page-layout: certification ").append(NEW_LINE);
@@ -132,16 +129,17 @@ public class TCKResultsWriter {
         builder.append("* Specification Name, Version and download URL:").append(NEW_LINE);
         builder.append("+").append(NEW_LINE);
         builder.append(specURL);
-        builder.append("[").append(fullSpecName).append("]").append(NEW_LINE);
+        builder.append("[").append(fullSpecName).append(" Specification]").append(NEW_LINE);
         builder.append(NEW_LINE);
 
-        builder.append("* TCK Version, digital SHA-256 fingerprint and download URL:").append(NEW_LINE);
+        builder.append("* (Optional) TCK Version, digital fingerprint and download URL:").append(NEW_LINE);
         builder.append("+").append(NEW_LINE);
         builder.append(tckURL);
-        builder.append("[").append(fullSpecName).append("]").append(NEW_LINE);
+        builder.append("[").append(fullSpecName).append(" TCK]").append(NEW_LINE);
         builder.append("+").append(NEW_LINE);
-        builder.append(tckSHA_URL);
-        builder.append("[").append(tckSHA).append("] (SHA-256)").append(NEW_LINE);
+        builder.append("SHA-1: `").append(tckSHA1).append("`").append(NEW_LINE);
+        builder.append("+").append(NEW_LINE);
+        builder.append("SHA-256: `").append(tckSHA256).append("`").append(NEW_LINE);
         builder.append(NEW_LINE);
 
         builder.append("* Public URL of TCK Results Summary:").append(NEW_LINE);
@@ -157,6 +155,8 @@ public class TCKResultsWriter {
 
         builder.append("* Summary of the information for the certification environment, operating system, cloud, ...:").append(NEW_LINE);
         builder.append("+").append(NEW_LINE);
+        builder.append(osName);
+        builder.append(": ");
         builder.append(osVersion).append(NEW_LINE);
         builder.append(NEW_LINE);
 
