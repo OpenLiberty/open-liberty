@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,10 @@ import javax.websocket.server.ServerEndpointConfig;
  *     }
  * </code>
  * </pre>
+ * 
+ * @deprecated Since websocket-2.1 - This SPI is no longer necessary: the jakarta.websocket.server.ServerContainer now has upgradeHttpToWebSocket as part of the WebSocket 2.1 API.
  */
+@Deprecated
 public interface WsWsocServerContainer extends ServerContainer {
 
     /**
@@ -48,7 +51,9 @@ public interface WsWsocServerContainer extends ServerContainer {
      * 
      * @throws ServletException
      * @throws IOException
+     * @deprecated Since websocket-2.1 - Use jakarta.websocket.server.ServerContainer#upgradeHttpToWebSocket(Object httpServletRequest, Object httpServletResponse, ServerEndpointConfig sec, Map<String,String> pathParameters) instead.
      */
+    @Deprecated
     public void doUpgrade(HttpServletRequest req, HttpServletResponse resp, ServerEndpointConfig sec, Map<String, String> pathParams) throws ServletException, IOException;
 
 }
