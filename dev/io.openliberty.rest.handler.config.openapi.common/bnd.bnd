@@ -19,6 +19,7 @@ bVersion=1.0
 
 WS-TraceGroup: rest.config
 
+Web-ContextPath: ibm/api/platform
 Web-ContextPath: openapi/platform
 OL-VirtualHost: ${admin.virtual.host}
 

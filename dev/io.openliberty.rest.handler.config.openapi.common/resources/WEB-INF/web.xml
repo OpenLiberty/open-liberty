@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2019 IBM Corporation and others.
+    Copyright (c) 2019, 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -71,6 +71,48 @@
       <transport-guarantee>CONFIDENTIAL</transport-guarantee>
     </user-data-constraint>
   </security-constraint>
+  
+  <security-constraint id="SecurityConstraint_4">
+    <display-name>ibm/api/platform REST Security Constraint - Administrator Role</display-name>
+    <web-resource-collection id="WebResourceCollection_4">
+      <web-resource-name>/ibm/api/platform REST URL</web-resource-name>
+      <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>allAuthenticatedUsers</role-name>
+      <role-name>Administrator</role-name>
+    </auth-constraint>
+    <user-data-constraint id="UserDataConstraint_4">
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+
+  <security-constraint id="SecurityConstraint_5">
+    <display-name>ibm/api/platform REST Security Constraint - OPTIONS</display-name>
+    <web-resource-collection id="WebResourceCollection_5">
+      <web-resource-name>ibm/api/platform REST URL</web-resource-name>
+      <url-pattern>/*</url-pattern>
+      <http-method>OPTIONS</http-method>
+    </web-resource-collection>
+    <user-data-constraint id="UserDataConstraint_5">
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+
+  <security-constraint id="SecurityConstraint_6">
+    <display-name>ibm/api/platform REST Security Constraint - Viewer Role</display-name>
+    <web-resource-collection id="WebResourceCollection_6">
+      <web-resource-name>ibm/api/platform REST URL</web-resource-name>
+      <url-pattern>/*</url-pattern>
+      <http-method>GET</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>Viewer</role-name>
+    </auth-constraint>
+    <user-data-constraint id="UserDataConstraint_6">
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
 
   <security-role id="SecurityRole_1">
     <description>Any Role</description>
@@ -90,7 +132,8 @@
   <login-config id="LoginConfig_1">
   	<auth-method>CLIENT_CERT</auth-method>
     <realm-name>openapi/platform</realm-name>
-  </login-config>  
+    <realm-name>ibm/api/platform</realm-name>
+  </login-config>
 
 </web-app>
   

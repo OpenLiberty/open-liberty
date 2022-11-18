@@ -18,14 +18,28 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/request")
+import io.openliberty.checkpoint.fat.SlowAppStartTest;
+
+@WebServlet(urlPatterns = "/request", loadOnStartup = 1)
 public class ServletA extends HttpServlet {
 
     /**  */
     private static final long serialVersionUID = 1L;
 
     @Override
+    public void init() throws ServletException {
+        try {
+            System.out.println(SlowAppStartTest.TEST_INIT_SLEEPING);
+            Thread.sleep(20000);
+            System.out.println(SlowAppStartTest.TEST_INIT_DONE);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new ServletException(e);
+        }
+    }
+
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.getOutputStream().println("Got ServletA");
+        response.getOutputStream().println("TEST - Slow start servlet");
     }
 }

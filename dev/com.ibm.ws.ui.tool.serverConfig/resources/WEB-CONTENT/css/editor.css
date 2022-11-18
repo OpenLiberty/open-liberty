@@ -16,9 +16,27 @@ html {
 }
 
 @font-face {
-    font-family: "IBM Plex Sans Regular";
-    src: url("../fonts/IBMPlexSans-Regular.woff");
+font-family: "IBM Plex Sans Regular";
+src: url("../fonts/IBMPlexSans-Regular.woff");
 }
+
+/* reset carbon-css effects - start */
+body {
+	line-height: 1.42857143;
+	font: unset;
+	letter-spacing: normal;
+	-moz-osx-font-smoothing: auto;
+	font-weight: normal;
+}
+
+#loginConfigId, #authAliasInput {
+	background-color: #fff;
+}
+
+.bx--label {
+	margin-bottom: 0;
+}
+/* reset carbon-css effects - end */
 
 body,
 .tooltip,
@@ -27,7 +45,7 @@ body,
 	We want to avoid overriding the font-family used by the code editor.
 	We want to only override the classes in bootstrap that define Helvetica as a font-family
 	*/
-  	font-family: 'IBM Plex Sans Regular', Helvetica, Arial, sans-serif;
+	font-family: 'IBM Plex Sans Regular', Helvetica, Arial, sans-serif;
 }
 
 /* VISIBILITY */
@@ -40,8 +58,8 @@ body,
 
 .noSelect {
 	-webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 }
 
 /* NO-OUTLINE */
@@ -220,8 +238,8 @@ input[placeholder] {
 
 .authMode-btn.disabled {
 	cursor: pointer;
-    background-color: #8b8b8b !important;
-    color: #bfbfbf !important;
+	background-color: #8b8b8b !important;
+	color: #bfbfbf !important;
 }
 
 
@@ -250,9 +268,9 @@ input[placeholder] {
 	padding-top: 8px;
 	padding-bottom: 8px;
 	overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    outline: none;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	outline: none;
 }
 
 
@@ -433,8 +451,8 @@ footer  {
 
 .unsupportedServer {
 	color : #b4b1b1;
-   	cursor: default;
-   	pointer-events: none;
+	cursor: default;
+	pointer-events: none;
 }
 
 .stickyFooter {
@@ -533,12 +551,12 @@ footer  {
 
 /* FILE EXPLORER */
 .hidden {
-    position:absolute;
-    left:-10000px;
-    top:auto;
-    width:1px;
-    height:1px;
-    overflow:hidden;
+	position:absolute;
+	left:-10000px;
+	top:auto;
+	width:1px;
+	height:1px;
+	overflow:hidden;
 }
 
 #fileExplorerContent {
@@ -572,7 +590,7 @@ footer  {
 	width: 32px;
 	height: 32px;
 	background-color: inherit;
-    border: none;
+	border: none;
 }
 
 #fileExplorer .fileExplorerToggleExpansionButton:hover {
@@ -845,6 +863,10 @@ footer  {
 	text-align: center;
 }
 
+#authModeTabs .validationTabs {
+width: 33.33%;
+}
+
 #authModeTabs .tabs,
 #editorNavigation .editorNavigationTab {
 	display: block;
@@ -855,7 +877,7 @@ footer  {
 	font-size: 18px;
 	line-height: 25px;
 	text-decoration: none;
-	color: #58595b;
+	color: black;
 	-webkit-flex-shrink: 0;
 	flex-shrink: 0;
 }
@@ -874,7 +896,7 @@ footer  {
 #editorNavigation .editorNavigationTab.active {
 	cursor: default;
 	background-color: inherit;
-	color: black;
+	color: #204e75;
 	box-shadow: inset 0px -2px 0px 0px #4178BE;
 }
 
@@ -931,19 +953,14 @@ footer  {
 	color: black;
 	transition: none;
 	box-shadow: none;
-	border-color: rgb(222, 226, 230);
 }
 
 #editorForm input:-ms-input-placeholder {
-   color: #999999;
+color: #999999;
 }
 
 #editorForm input::-ms-clear {
-    display: none;
-}
-
-#editorForm input:focus {
-	border-color: rgb(222, 226, 230);
+	display: none;
 }
 
 #editorForm input[readonly] {
@@ -954,15 +971,15 @@ footer  {
 }
 
 #editorForm .editorFormFieldButton {
-	padding-top: 4px;
-	padding-bottom: 2px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 	padding-left: 16px;
 	padding-right: 16px;
 	border-radius: 0;
 }
 
 #testEndResult h4,
-#dialogTestDatasourceJSONContainer h4,
+#dialogTestConnectionJSONContainer h4,
 #testParameters h4,
 #editorForm label {
 	color: black;
@@ -986,10 +1003,6 @@ footer  {
 	color: grey !important;
 }
 
-#editorForm .clearInputFeedbackAction_error {
-	border-color: #a91024 !important;
-}
-
 #editorForm .input-error-message {
 	color: #a91024;
 	font-weight: bold;
@@ -1008,13 +1021,13 @@ footer  {
 /* ORION EDITOR */
 
 #orionEditorContainer {
-  	width: 100%;
-  	height: calc(100vh - 85px);
+	width: 100%;
+	height: calc(100vh - 85px);
 }
 
 #orionEditor {
-   	width: 100%;
-   	height: 100%;
+	width: 100%;
+	height: 100%;
 }
 
 .textviewTooltip {
@@ -1022,15 +1035,15 @@ footer  {
 }
 
 .textviewTooltip .hoverTooltipTitle {
-    font-weight: bold;
+	font-weight: bold;
 }
 
 .textviewTooltip p {
-    margin-bottom: 10px !important;
+	margin-bottom: 10px !important;
 }
 
 .textviewTooltip {
-   	box-sizing: content-box !important;
+	box-sizing: content-box !important;
 }
 
 #editorNavigationSpacer {
@@ -1042,11 +1055,11 @@ footer  {
 	margin-top: 10px;
 	white-space: nowrap;
 	overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    margin-left: 20px;
-    margin-right: 20px;
-    cursor: default;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	margin-left: 20px;
+	margin-right: 20px;
+	cursor: default;
 }
 
 #orionEditor .textview {
@@ -1120,6 +1133,715 @@ footer  {
 	vertical-align: middle;
 	font-size: 16px;
 	padding: 6px;
+	outline-offset: -3px !important;
+	white-space: normal;
+}
+
+
+.dialog-btn[disabled] {
+	color: #bfbfbf;
+	background-color: #8b8b8b;
+}
+
+.dialog-btn-primary, .dialog-btn-primary:focus {
+	color: white;
+	background-color: #4178BE;
+}
+
+.dialog-btn-primary:hover {
+	color: white;
+	background-color: #5596E6;
+}
+
+.dialog-btn-primary:active {
+	background-color: #325c80;
+}
+
+.dialog-btn-danger, .dialog-btn-danger:focus {
+	color: white;
+	background-color: #a90f22;
+}
+
+.dialog-btn-danger:hover {
+	color: white;
+	background-color: #b53445;
+}
+
+.dialog-btn-danger:active {
+	background-color: #8f1321;
+}
+
+.modal-title {
+	outline: none;
+}
+
+/* TESTING DATASOURCE DIALOG */
+#authModeTabs {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+/* ADD CHILD DIALOG */
+
+#testParameters,
+#dialogAddChildElementSearchContainer {
+	margin: 15px;
+	margin-top: 10px;
+}
+
+#testParameters input,
+#dialogAddChildElementSearch {
+	border-radius: 0;
+	transition: none;
+	box-shadow: none;
+}
+
+#dialogAddChildElementListContainer {
+	height: 330px;
+	overflow-y: auto;
+	margin: 15px;
+	background-color: white;
+}
+
+#dialogTestConnectionDescription:focus,
+#dialogAddChildElementDescription:focus {
+	background-color: #C0E6FF;
+}
+
+#dialogTestConnectionDescription,
+#dialogAddChildElementDescription {
+	color: black;
+	box-shadow: none;
+	resize: vertical;
+	border: none;
+	border-radius: 0;
+	background-color: white;
+	cursor: default;
+}
+
+#dialogTestConnectionDescription {
+	min-height: 100px;
+	height: auto;
+}
+
+#testEndResult,
+#dialogTestConnectionJSONContainer,
+#dialogAddChildElementDescriptionContainer {
+	margin: 15px;
+}
+
+#testEndResult, #dialogTestConnectionJSONContainer {
+	margin-top: 5px;
+	margin-bottom: 0px;
+}
+
+#dialogAddChildElementListContainer .dialogAddChildElementListItem {
+	display: block;
+	background-color: white;
+	height: 34px;
+	line-height: 34px;
+	padding-left: 14px;
+	margin-bottom: 1px;
+	color: black;
+	text-decoration: none !important;
+	text-align: center;
+	outline-offset: -2px;
+}
+
+#dialogAddChildElementListContainer {
+	background-color: #f4f4f1;
+}
+
+#dialogAddChildElementListContainer .dialogAddChildElementListItem:hover {
+	color: black;
+	background-color: #C0E6FF;
+	cursor: pointer;
+}
+
+#dialogAddChildElementListContainer .dialogAddChildElementListItem.active {
+	outline-color: white;
+	color: white;
+	background-color: #404e56;
+}
+
+/* REMOVE ELEMENT DIALOG */
+
+#dialogRemoveElement .modal-dialog {
+	width: 360px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#dialogRemoveElementMessageContainer {
+	margin-left: 15px;
+	margin-right: 15px;
+	margin-top: 5px;
+	margin-bottom: 20px;
+	display: table;
+}
+
+#dialogRemoveElementMessageIcon {
+	display: table-cell;
+	margin-left: 5px;
+	margin-right: 10px;
+}
+
+#dialogRemoveElementMessageText {
+	display: table-cell;
+	vertical-align: middle;
+	line-height: 16px;
+	white-space: normal;
+}
+
+/* ENUMERATION DIALOG */
+
+#dialogEnumerationSelectTitle {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+#dialogEnumerationSelect .modal-boolean {
+	width: 300px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#dialogEnumerationSelectListContainer {
+	margin: 15px;
+	margin-top: 10px;
+}
+
+#dialogEnumerationSelectListContainer .enumerationOption {
+	padding: 8px;
+	padding-left: 12px;
+	padding-right: 12px;
+	color: black;
+	text-decoration: none;
+	display: block;
+	background-color: white;
+	margin-bottom: 1px;
+	cursor: pointer;
+	outline-offset: -2px;
+}
+
+#dialogEnumerationSelectListContainer .enumerationOption:hover {
+	background-color: #C0E6FF;
+}
+
+#dialogEnumerationSelectListContainer .enumerationOption.active {
+	color: white;
+	background-color: #404e56;
+}
+
+#dialogEnumerationSelectListContainer .enumerationOption span.enumerationOptionValue {
+	display: block;
+}
+
+#dialogEnumerationSelectListContainer .enumerationOption span.enumerationOptionDescription {
+	display: block;
+	font-size: 12px;
+	color: #58595b;
+}
+
+#dialogEnumerationSelectListContainer .enumerationOption.active span.enumerationOptionDescription {
+	color: white;
+}
+
+/* SAVE BEFORE CLOSING DIALOG */
+
+#dialogSaveBeforeClosing .modal-dialog {
+	width: 360px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#dialogSaveBeforeClosingMessageContainer {
+	margin-left: 15px;
+	margin-right: 15px;
+	margin-top: 5px;
+	margin-bottom: 20px;
+	display: table;
+}
+
+#dialogSaveBeforeClosingIcon {
+	display: table-cell;
+	margin-left: 5px;
+	margin-right: 10px;
+}
+
+#dialogSaveBeforeClosingText {
+	display: table-cell;
+	vertical-align: middle;
+	line-height: 16px;
+	white-space: normal;
+}
+
+#dialogSaveBeforeClosingSaveButton {
+	display: table-cell;
+	width: 175px;
+}
+
+#dialogSaveBeforeClosingSaveButton.loading {
+	background-color: #4178BE;
+}
+
+#dialogSaveBeforeClosingSaveButton img {
+	margin-top: -2px;
+	margin-right: 8px;
+}
+
+#dialogSaveBeforeClosingDontSaveButton {
+	display: table-cell;
+	width: 175px;
+}
+
+#dialogSaveBeforeClosingButtonSeparator {
+	display: table-cell;
+	width: 10px;
+}
+
+/* ERROR SAVING FILE DIALOG */
+
+#dialogErrorSavingFile .modal-dialog {
+	width: 400px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#dialogErrorSavingFileMessageContainer {
+	margin-left: 15px;
+	margin-right: 15px;
+	margin-top: 5px;
+	margin-bottom: 20px;
+	display: table;
+}
+
+#dialogErrorSavingFileIcon {
+	display: table-cell;
+	margin-left: 5px;
+	margin-right: 10px;
+}
+
+#dialogErrorSavingFileText {
+	display: table-cell;
+	vertical-align: middle;
+	line-height: 16px;
+	white-space: normal;
+}
+
+/* DRAG AND DROP */
+
+#editorTree .dragTarget {
+	position: relative;
+	z-index: 1001;
+	outline: 2px solid rgb(24, 125, 184);
+	box-shadow: 0 0 25px rgb(24, 125, 184);
+
+}
+
+#editorTree .invalidDragTarget {
+	cursor: not-allowed;
+	opacity: .15;
+}
+
+#editorTree .invalidDragTarget .editorTreeDragPoint{
+	cursor: not-allowed;
+}
+
+
+
+/* SETTINGS */
+
+#settingsButtonLink {
+	height: 30px;
+	width: 30px;
+	margin-top: 5px;
+	margin-right: 16px;
+	margin-left: auto;
+	-webkit-flex-shrink: 0;
+	flex-shrink: 0;
+}
+
+#settingsButtonLink img {
+	margin-top: 4px;
+	margin-left: 4px;
+}
+
+#settings {
+	min-width: 200px;
+}
+
+#settings .settingsTitle {
+	display: block;
+	font-size: 17px;
+	border-bottom: solid 1px #9b9b9b;
+	margin-bottom: 5px;
+	cursor: default;
+}
+
+.popover {
+	background-color: #404e56;
+	color: white;
+	border-radius: 0;
+	border: none;
+}
+
+.popover.bottom .arrow:after {
+	border-bottom-color: #404e56;
+}
+
+.configurationEditorToggle {
+padding: 2px;
+width: 40px;
+height: 24px;
+border-radius: 12px;
+transition: background 0.3s;
+}
+
+.configurationEditorToggleOn {
+background-color: #4178BE;
+}
+
+.configurationEditorToggleOff {
+background-color: #929399;
+}
+
+.configurationEditorToggle:before {
+	content: "";
+	display: block;
+	border-radius: 100%;
+	background-color: white;
+	height: 20px;
+	width: 20px;
+	transition: margin 0.3s;
+}
+
+.configurationEditorToggleOn:before {
+	margin-left: 16px;
+}
+
+#settings .editorSetting {
+	display: block;
+	line-height: 24px;
+	text-decoration: none;
+	color: white;
+	padding: 3px;
+	margin-left: 10px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+/* INCLUDE CUSTOMIZATION */
+
+#includeCustomizationContainer {
+	display: inline-block;
+	margin-left: 10px;
+}
+
+#includeCustomizationLink {
+	color: #4178BE;
+	display: inline-block;
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+#includeCustomizationLink[disabled] {
+	color: #8b8b8b;
+	text-decoration: none;
+	cursor: default;
+	pointer-events: none;
+}
+
+#includeCustomizationMessage {
+	display: inline-block;
+	cursor: default;
+	margin-left: 10px;
+}
+
+#includeLocationRefresh {
+	color: #4178BE;
+	text-decoration: underline;
+}
+
+
+/* FILE CHANGED DURING EDITING DIALOG */
+
+#dialogFileChangedDuringEditing .modal-dialog {
+	width: 360px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#dialogFileChangedDuringEditingMessageContainer {
+	margin-left: 15px;
+	margin-right: 15px;
+	margin-top: 5px;
+	margin-bottom: 20px;
+	display: table;
+}
+
+#dialogFileChangedDuringEditingIcon {
+	display: table-cell;
+	margin-left: 5px;
+	margin-right: 10px;
+}
+
+#dialogFileChangedDuringEditingText {
+	display: table-cell;
+	vertical-align: middle;
+	line-height: 16px;
+	white-space: normal;
+}
+
+#dialogFileChangedDuringEditingOverwriteButton {
+	display: table-cell;
+	width: 175px;
+}
+
+#dialogFileChangedDuringEditingOverwriteButton img {
+	margin-top: -2px;
+	margin-right: 8px;
+}
+
+#dialogFileChangedDuringEditingCancelButton {
+	display: table-cell;
+	width: 175px;
+}
+
+#labelDialogFileChangedDuringEditingButtonSeparator {
+	display: table-cell;
+	width: 10px;
+}
+
+
+/* SELECT FEATURE DIALOG */
+
+#dialogSelectFeatureSearchContainer {
+	margin: 15px;
+	margin-top: 10px;
+}
+
+#dialogSelectFeatureSearch {
+	border-radius: 0;
+	transition: none;
+	box-shadow: none;
+}
+
+#dialogSelectFeatureListContainer {
+	height: 330px;
+	overflow-y: auto;
+	margin: 15px;
+	background-color: white;
+}
+
+#dialogSelectFeatureDescription:focus {
+	background-color: #C0E6FF;
+}
+
+#dialogSelectFeatureDescription {
+	color: black;
+	box-shadow: none;
+	resize: vertical;
+	border: none;
+	border-radius: 0;
+	background-color: white;
+	cursor: default;
+}
+
+#dialogSelectFeatureDescriptionContainer {
+	margin: 15px;
+}
+
+#dialogSelectFeatureListContainer .dialogSelectFeatureListItem {
+	display: block;
+	background-color: white;
+	height: 34px;
+	line-height: 34px;
+	padding-left: 14px;
+	margin-bottom: 1px;
+	color: black;
+	text-decoration: none !important;
+	text-align: center;
+	outline-offset: -2px;
+}
+
+#dialogSelectFeatureListContainer {
+	background-color: #f4f4f1;
+}
+
+#dialogSelectFeatureListContainer .dialogSelectFeatureListItem:hover {
+	color: black;
+	background-color: #C0E6FF;
+	cursor: pointer;
+}
+
+#dialogSelectFeatureListContainer .dialogSelectFeatureListItem.active {
+	outline-color: white;
+	color: white;
+	background-color: #404e56;
+}
+
+.containerAuthenticationRow {
+	float: left;
+	height: auto;
+	width: 100%;
+}
+
+#testAuthAliasParameter .containerAuthSubSection {
+	margin-left: 25px;
+}
+
+#testAuthAliasParameter, #testParameters {
+	margin-bottom: 0;
+}
+
+#testNoReference {
+	padding-bottom: 5px;
+}
+
+.containerAuthenticationRow h6 {
+	margin: 0 0 5px 0;
+}
+
+.containerAuthenticationLeftSection {
+	width: 30px;
+	float: left;
+}
+
+.containerAuthenticationRightSection {
+	width: calc(100% - 40px);
+	float: left;
+}
+
+.containerAuthenticationFullRowSection {
+	width: calc(100% - 10px);
+	float: left;
+	padding-top: 5px;
+}
+
+.containerAuthenticationRadioElement {
+	padding: 5px;
+}
+
+.containerAuthenticationRadioLabel {
+	font-weight: normal;
+	margin-bottom: 5px;
+}
+
+.keyValueTable {
+	margin: 10px 0;
+	width: 100%;
+	height: auto;
+}
+
+.keyValueTableRow {
+	width: 102%;
+	border: 0;
+	float: left;
+	min-height: 20px;
+}
+
+#keyValueTableRowValueSection {
+	width: 100%;
+	float: left;
+	height: auto;
+	max-height: 14vh;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+.keyValueTableRowTitle {
+	width: calc(100% - 120px);
+	height: auto;
+	float: left;
+	font-size: 14px;
+}
+
+.keyValueTableItemKey, .keyValueTableItemValue {
+	width: calc(50% - 60px);
+	height: auto;
+	float: left;
+}
+
+.keyValueTableTitle {
+	background: #dbdbdf;
+	display: block;
+}
+
+.keyValueTableTitle.keyValueTableItemKey {
+	border-top-left-radius: 5px;
+}
+
+.keyValueTableItemAction {
+	float: left;
+	margin-left: 5px;
+}
+
+.keyValueTableTitle.keyValueTableItemAction {
+	border-top-right-radius: 5px;
+}
+
+.keyValueTableItemActionIcon {
+	cursor: pointer;
+	background-color: #327632;
+	color: white;
+	opacity: 1;
+	min-width: 65px;
+}
+
+.keyValueTableItemActionIcon:hover {
+	opacity: 0.7;
+}
+
+.keyValueTableItemActionIconRemove {
+	background-color: #58595b;
+	margin-top: 25px;
+	max-width: 90px;
+}
+
+.keyValueTableItemActionIconAdd {
+border-radius: 3px;
+}
+
+.keyValueTableItemActionIconDisabled, .keyValueTableItemActionIconDisabled:hover {
+	cursor: not-allowed;
+	pointer-events: none;
+	background-color: #8b8b8b;
+}
+
+#testAuthAliasParameter .has-error {
+	border-color: #a94442;
+}
+
+#dialogTestConnectionButton {
+	margin-top: 15px;
+}
+
+#authModeTabs.disabledButton {
+	display: none;
+}
+
+#testButton.unsavedNodeTestConnectionButton {
+	opacity: 0.65;
+	cursor: not-allowed;
+}
+
+#testPasswordInputTitle {
+	margin-top: 15px;
+}
+
+#NoResourceReferenceUserCredentials {
+	display: none;
+}
+
+#dialogValidateConnectionElement {
+	font-weight: normal;
+	font-family: unset;
+}
+
+#dialogValidateConnectionElement .validationTypeDescription {
+	font-size: 16px;
+	padding: 2px 0 5px 0;
 	outline-offset: -3px !important;
 	white-space: normal;
 }

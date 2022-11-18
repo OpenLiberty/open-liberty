@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.cdi.extensions;
 
+import java.lang.annotation.Annotation;
 import java.util.Properties;
+import java.util.Set;
 
 public interface PrimarySecurityCDIExtension {
 
@@ -18,7 +20,7 @@ public interface PrimarySecurityCDIExtension {
 
     void deregisterMechanismClass(Class<?> mechanismClass);
 
-    void addAuthMech(String applicationName, Class<?> annotatedClass, Class<?> implClass, Properties props);
+    void addAuthMech(String applicationName, Class<?> annotatedClass, Class<?> implClass, Set<Annotation> annotations, Properties props);
 
     boolean existAuthMech(String applicationName, Class<?> implClass);
 
