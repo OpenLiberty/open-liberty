@@ -1182,7 +1182,7 @@ public class DataTestServlet extends FATServlet {
         // 5,  101,    2, false
         // 17, 10001,  2, false
 
-        Pageable initialPagination = Pageable.ofPage(2).newSize(8).afterKeyset(false, 4, 23L);
+        Pageable initialPagination = Pageable.ofPage(2).size(8).afterKeyset(false, 4, 23L);
         KeysetAwarePage<Prime> page2 = primes.findByNumberBetweenOrderByEvenDescSumOfBitsDescNumberAsc(0L, 45L, initialPagination);
 
         assertIterableEquals(List.of(29L, 43L, 7L, 11L, 13L, 19L, 37L, 41L),
@@ -1240,7 +1240,7 @@ public class DataTestServlet extends FATServlet {
         KeysetAwarePage<Package> page;
 
         // Page 3
-        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(20.0f, Pageable.ofSize(3).newPage(3).beforeKeyset(40.0f, 94.0f, 42.0f, 240));
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(20.0f, Pageable.ofSize(3).page(3).beforeKeyset(40.0f, 94.0f, 42.0f, 240));
 
         assertEquals(3L, page.number());
 
@@ -1297,7 +1297,7 @@ public class DataTestServlet extends FATServlet {
             }
         };
 
-        page = packages.findByHeightGreaterThan(20.0f, Pageable.ofSize(2).newPage(3).beforeKeysetCursor(cursor));
+        page = packages.findByHeightGreaterThan(20.0f, Pageable.ofSize(2).page(3).beforeKeysetCursor(cursor));
 
         assertEquals(3L, page.number());
 
@@ -1356,7 +1356,7 @@ public class DataTestServlet extends FATServlet {
         Package p230 = packages.findById(230).orElseThrow();
 
         Pageable pagination = Pageable.ofSize(4)
-                        .newPage(5)
+                        .page(5)
                         .sortBy(Sort.asc("width"), Sort.desc("length"), Sort.asc("id"))
                         .beforeKeyset(p230.width, p230.length, p230.id);
         page = packages.whereHeightNotWithin(20.0f, 38.5f, pagination);
@@ -1426,7 +1426,7 @@ public class DataTestServlet extends FATServlet {
         KeysetAwarePage<Package> page;
 
         // Page 3
-        page = packages.findByHeightGreaterThan(20.0f, Pageable.ofPage(3).newSize(3).beforeKeyset(10.0f, 31.0f, 310));
+        page = packages.findByHeightGreaterThan(20.0f, Pageable.ofPage(3).size(3).beforeKeyset(10.0f, 31.0f, 310));
 
         assertEquals(3L, page.number());
 
@@ -1475,7 +1475,7 @@ public class DataTestServlet extends FATServlet {
         // Page 5
         page = packages.whereHeightNotWithin(32.0f, 35.5f,
                                              Pageable.ofSize(2)
-                                                             .newPage(5)
+                                                             .page(5)
                                                              .sortBy(Sort.asc("height"), Sort.desc("length"), Sort.asc("id"))
                                                              .beforeKeyset(40.0f, 0.0f, 0));
 
@@ -1643,7 +1643,7 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
         // page 2:
         assertIterableEquals(List.of("Canada", "Bangladesh", "Mexico", "Canada"),
-                             tariffs.findByLeviedByOrderByKey("USA", Pageable.ofSize(4).newPage(2))
+                             tariffs.findByLeviedByOrderByKey("USA", Pageable.ofSize(4).page(2))
                                              .stream()
                                              .map(o -> o.leviedAgainst)
                                              .collect(Collectors.toList()));
@@ -2171,7 +2171,7 @@ public class DataTestServlet extends FATServlet {
 
         // Paging that comes out even:
         page2 = reservations.findByHostStartsWith("testRepositoryCustom-host",
-                                                  Pageable.ofPage(2).newSize(3),
+                                                  Pageable.ofPage(2).size(3),
                                                   Sort.desc("meetingID"));
         assertIterableEquals(List.of(10030006L, 10030005L, 10030004L),
                              page2
@@ -2688,7 +2688,7 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testTotalCountsWithKeysetPagination() {
-        KeysetAwarePage<Prime> page3 = primes.findByNumberBetween(3L, 50L, Pageable.ofPage(3).newSize(5).beforeKeyset(47L));
+        KeysetAwarePage<Prime> page3 = primes.findByNumberBetween(3L, 50L, Pageable.ofPage(3).size(5).beforeKeyset(47L));
         assertEquals(14L, page3.totalElements());
         assertEquals(3L, page3.totalPages());
 

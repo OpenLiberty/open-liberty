@@ -55,9 +55,9 @@ public interface Pageable {
 
     public List<Sort> sorts();
 
-    public Pageable newPage(long page);
+    public Pageable page(long page);
 
-    public Pageable newSize(int size);
+    public Pageable size(int size);
 
     public Pageable sortBy(Iterable<Sort> sorts);
 

@@ -232,7 +232,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
                 throw new DataException(x.getCause());
             }
 
-        return pagination.newPage(pagination.page() + 1).afterKeyset(keyValues.toArray());
+        return pagination.page(pagination.page() + 1).afterKeyset(keyValues.toArray());
     }
 
     @Override
@@ -257,7 +257,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
             }
 
         // Decrement page number by 1 unless it would go below 1.
-        Pageable p = pagination.page() == 1 ? pagination : pagination.newPage(pagination.page() - 1);
+        Pageable p = pagination.page() == 1 ? pagination : pagination.page(pagination.page() - 1);
         return p.beforeKeyset(keyValues.toArray());
     }
 
