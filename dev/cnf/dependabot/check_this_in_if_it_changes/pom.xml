@@ -4432,11 +4432,6 @@
       <version>3.17.200</version>
     </dependency>
     <dependency>
-      <groupId>org.eclipse</groupId>
-      <artifactId>yasson</artifactId>
-      <version>1.0.8</version>
-    </dependency>
-    <dependency>
       <groupId>org.jboss.classfilewriter</groupId>
       <artifactId>jboss-classfilewriter</artifactId>
       <version>1.2.5.Final</version>
