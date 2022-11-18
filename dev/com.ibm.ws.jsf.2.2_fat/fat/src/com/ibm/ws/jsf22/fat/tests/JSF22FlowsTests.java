@@ -10,7 +10,6 @@
  */
 package com.ibm.ws.jsf22.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
@@ -30,11 +29,12 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -54,7 +54,6 @@ import junit.framework.Assert;
  */
 
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE10_FEATURES)
 public class JSF22FlowsTests {
     @Rule
     public TestName name = new TestName();
@@ -68,13 +67,23 @@ public class JSF22FlowsTests {
 
     @BeforeClass
     public static void setup() throws Exception {
+        boolean isEE10 = JakartaEE10Action.isActive();
+
         JavaArchive JSF22FacesFlowsJar = ShrinkHelper.buildJavaArchive("JSF22FacesFlows.jar", "");
 
-        WebArchive JSF22FacesFlowsWar = ShrinkHelper.buildDefaultApp("JSF22FacesFlows.war", "com.ibm.ws.jsf22.fat.flows.beans");
+        WebArchive JSF22FacesFlowsWar = ShrinkHelper.buildDefaultApp("JSF22FacesFlows.war",
+                                                                     isEE10 ? "com.ibm.ws.jsf22.fat.flows.beans.faces40" : "com.ibm.ws.jsf22.fat.flows.beans.jsf22");
 
         JSF22FacesFlowsWar.addAsLibraries(JSF22FacesFlowsJar);
 
         ShrinkHelper.exportDropinAppToServer(jsfFacesFlowsServer, JSF22FacesFlowsWar);
+
+        if (isEE10) {
+            // For Faces 4.0, CDI @Named is used since @ManagedBean is no longer available.
+            ServerConfiguration config = jsfFacesFlowsServer.getServerConfiguration();
+            config.getFeatureManager().getFeatures().add("cdi-4.0");
+            jsfFacesFlowsServer.updateServerConfiguration(config);
+        }
 
         jsfFacesFlowsServer.startServer(JSF22FlowsTests.class.getSimpleName() + ".log");
     }

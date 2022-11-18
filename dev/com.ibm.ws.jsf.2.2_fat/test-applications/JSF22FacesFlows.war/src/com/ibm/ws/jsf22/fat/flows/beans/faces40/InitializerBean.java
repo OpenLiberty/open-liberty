@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  2015  IBM Corporation and others.
+ * Copyright (c)  2015, 2022  IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,13 +12,16 @@ package com.ibm.ws.jsf22.fat.flows.beans.faces40;
 
 import java.util.Map;
 
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
+@RequestScoped
 public class InitializerBean {
 
-    public InitializerBean() {}
+    public InitializerBean() {
+    }
 
     public void initialize() {
         FacesContext facesContext = FacesContext.getCurrentInstance();

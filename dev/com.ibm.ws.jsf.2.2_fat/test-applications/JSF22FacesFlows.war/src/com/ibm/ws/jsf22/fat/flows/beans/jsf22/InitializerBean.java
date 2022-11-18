@@ -18,7 +18,8 @@ import javax.faces.context.FacesContext;
 @ManagedBean
 public class InitializerBean {
 
-    public InitializerBean() {}
+    public InitializerBean() {
+    }
 
     public void initialize() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
