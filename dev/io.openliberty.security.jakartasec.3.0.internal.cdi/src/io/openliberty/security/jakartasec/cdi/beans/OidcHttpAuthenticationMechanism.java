@@ -36,12 +36,12 @@ import io.openliberty.security.jakartasec.OpenIdAuthenticationMechanismDefinitio
 import io.openliberty.security.jakartasec.credential.OidcTokensCredential;
 import io.openliberty.security.jakartasec.identitystore.OpenIdContextUtils;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestUtils;
-import io.openliberty.security.oidcclientcore.authentication.OriginalResourceRequest;
 import io.openliberty.security.oidcclientcore.client.Client;
 import io.openliberty.security.oidcclientcore.client.ClientManager;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException;
 import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
+import io.openliberty.security.oidcclientcore.http.OriginalResourceRequest;
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import io.openliberty.security.oidcclientcore.storage.Storage;
 import io.openliberty.security.oidcclientcore.storage.StorageFactory;

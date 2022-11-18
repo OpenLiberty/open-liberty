@@ -10,6 +10,9 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.authentication;
 
+import static io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants.WAS_OIDC_REQ_HEADERS;
+import static io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants.WAS_OIDC_REQ_METHOD;
+import static io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants.WAS_OIDC_REQ_PARAMS;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -38,7 +41,9 @@ import org.junit.rules.TestName;
 
 import com.ibm.ws.security.test.common.CommonTestClass;
 
+import io.openliberty.security.oidcclientcore.http.OriginalResourceRequest;
 import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
+import io.openliberty.security.oidcclientcore.storage.SessionBasedStorage;
 import io.openliberty.security.oidcclientcore.utils.Utils;
 import test.common.SharedOutputManager;
 
@@ -65,6 +70,7 @@ public class OriginalResourceRequestTest extends CommonTestClass {
     private final HttpServletRequest request = mockery.mock(HttpServletRequest.class);
     private final HttpServletResponse response = mockery.mock(HttpServletResponse.class);
     private final HttpSession httpSession = mockery.mock(HttpSession.class);
+    private final SessionBasedStorage sessionBasedStorage = mockery.mock(SessionBasedStorage.class);
 
     OriginalResourceRequest originalResourceRequest;
 
@@ -114,6 +120,45 @@ public class OriginalResourceRequestTest extends CommonTestClass {
     public static void tearDownAfterClass() throws Exception {
         outputMgr.dumpStreams();
         outputMgr.restoreStreams();
+    }
+
+    @Test
+    public void test_storeFullRequest() throws Exception {
+        String state = "12345";
+        String stateHash = Utils.getStrHashCode(state);
+
+        String requestMethod = "POST";
+
+        Enumeration<String> headerNames = Collections.enumeration(Arrays.asList("Content-Type"));
+        Enumeration<String> contentTypes = Collections.enumeration(Arrays.asList("application/x-www-form-urlencoded"));
+
+        Enumeration<String> paramNames = Collections.enumeration(Arrays.asList("id", "language"));
+        String[] ids = new String[] { "1234" };
+        String[] languages = new String[] { "Java" };
+
+        mockery.checking(new Expectations() {
+            {
+                one(request).getMethod();
+                will(returnValue(requestMethod));
+                one(sessionBasedStorage).store(with(equal(WAS_OIDC_REQ_METHOD + stateHash)), with(any(String.class)));
+
+                one(request).getHeaderNames();
+                will(returnValue(headerNames));
+                one(request).getHeaders("Content-Type");
+                will(returnValue(contentTypes));
+                one(sessionBasedStorage).store(with(equal(WAS_OIDC_REQ_HEADERS + stateHash)), with(any(String.class)));
+
+                one(request).getParameterNames();
+                will(returnValue(paramNames));
+                one(request).getParameterValues("id");
+                will(returnValue(ids));
+                one(request).getParameterValues("language");
+                will(returnValue(languages));
+                one(sessionBasedStorage).store(with(equal(WAS_OIDC_REQ_PARAMS + stateHash)), with(any(String.class)));
+            }
+        });
+
+        OriginalResourceRequest.storeFullRequest(request, sessionBasedStorage, state);
     }
 
     @Test
