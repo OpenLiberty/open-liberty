@@ -52,9 +52,11 @@ import jakarta.data.Inheritance;
 import jakarta.data.Result;
 import jakarta.data.Select;
 import jakarta.data.Select.Aggregate;
-import jakarta.data.exceptions.DataException;
 import jakarta.data.Update;
 import jakarta.data.Where;
+import jakarta.data.exceptions.DataException;
+import jakarta.data.exceptions.EmptyResultException;
+import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.Limit;
@@ -953,7 +955,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                 List<?> results = query.getResultList();
 
                                 if (queryInfo.entityInfo.type.equals(type)) {
-                                    returnValue = results.isEmpty() ? null : results.get(0);
+                                    returnValue = results.isEmpty() ? nullIfOptional(returnType) : oneResult(results);
                                 } else if (type.isInstance(results)) {
                                     returnValue = results;
                                 } else if (queryInfo.returnArrayType != null) {
@@ -975,10 +977,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                 } else if (Streamable.class.equals(type)) {
                                     returnValue = new StreamableImpl<>(results);
                                 } else if (results.isEmpty()) {
-                                    returnValue = null;
-                                } else if (results.size() == 1) {
-                                    // single result
-                                    returnValue = results.get(0);
+                                    returnValue = nullIfOptional(returnType);
+                                } else { // single result of other type
+                                    returnValue = oneResult(results);
                                     if (returnValue != null && !type.isAssignableFrom(returnValue.getClass())) {
                                         // TODO these conversions are not all safe
                                         if (double.class.equals(type) || Double.class.equals(type))
@@ -994,8 +995,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                         else if (byte.class.equals(type) || Byte.class.equals(type))
                                             returnValue = ((Number) returnValue).byteValue();
                                     }
-                                } else { // TODO convert other return types?
-                                    returnValue = results;
                                 }
                             }
                         }
@@ -1106,6 +1105,31 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), x);
             throw x;
         }
+    }
+
+    /**
+     * Handles the cases where no results are found by return null or raising EmptyResultException.
+     *
+     * @param returnType return type of repository method.
+     * @return null if the specified return type is java.util.Optional.
+     * @throws EmptyResultException if not Optional.
+     */
+    @Trivial
+    private final Void nullIfOptional(Class<?> returnType) {
+        if (Optional.class.equals(returnType))
+            return null;
+        else
+            throw new EmptyResultException("Query with return type of " + returnType.getName() +
+                                           " returned no results. If this is expected, specify a return type of array, Collection, or Optional for the repository method.");
+    }
+
+    @Trivial
+    private final Object oneResult(List<?> results) {
+        if (results.size() == 1)
+            return results.get(0);
+        else
+            throw new NonUniqueResultException("Found " + results.size() +
+                                               " results. To limit to a single result, specify Limit.of(1) as a parameter or use the findFirstBy name pattern.");
     }
 
     /**

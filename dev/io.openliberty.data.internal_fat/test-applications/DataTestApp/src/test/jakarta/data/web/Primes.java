@@ -37,6 +37,11 @@ public interface Primes {
 
     Integer countNumberBetween(long first, long last);
 
+    @Query("SELECT p.number FROM Prime p WHERE p.number >= ?1 AND p.number <= ?2")
+    long findAsLongBetween(long min, long max);
+
+    Prime findByNumberBetween(long min, long max);
+
     @OrderBy("number")
     KeysetAwarePage<Prime> findByNumberBetween(long min, long max, Pageable pagination);
 

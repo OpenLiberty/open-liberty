@@ -55,6 +55,8 @@ import jakarta.annotation.Resource;
 import jakarta.data.Entities;
 import jakarta.data.Template;
 import jakarta.data.exceptions.DataException;
+import jakarta.data.exceptions.EmptyResultException;
+import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.Limit;
 import jakarta.data.repository.Page;
@@ -657,7 +659,12 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testFindCreateFind() {
-        assertEquals(null, products.findItem("OL306-233F"));
+        try {
+            Product prod = products.findItem("OL306-233F");
+            fail("Should not find " + prod);
+        } catch (EmptyResultException x) {
+            // expected
+        }
 
         Product prod = new Product();
         prod.id = "OL306-233F";
@@ -2476,6 +2483,56 @@ public class DataTestServlet extends FATServlet {
                           reserved,
                           Comparator.<ReservedTimeSlot, Instant> comparing(o -> o.start().toInstant())
                                           .thenComparing(Comparator.<ReservedTimeSlot, Instant> comparing(o -> o.stop().toInstant())));
+    }
+
+    /**
+     * Repository method returns a single result or raises the specification-defined exceptions for none or too many.
+     */
+    @Test
+    public void testSingleResult() {
+        // With entity class as return type:
+
+        // Single result is fine:
+        Prime p = primes.findByNumberBetween(14L, 18L);
+        assertEquals(17L, p.number);
+
+        // No result must raise EmptyResultException:
+        try {
+            p = primes.findByNumberBetween(24L, 28L);
+            fail("Unexpected prime " + p);
+        } catch (EmptyResultException x) {
+            // expected
+        }
+
+        // Multiple results must raise NonUniqueResultException:
+        try {
+            p = primes.findByNumberBetween(34L, 48L);
+            fail("Should find more primes than " + p);
+        } catch (NonUniqueResultException x) {
+            // expected
+        }
+
+        // With custom return type:
+
+        // Single result is fine:
+        long n = primes.findAsLongBetween(12L, 16L);
+        assertEquals(13L, n);
+
+        // No result must raise EmptyResultException:
+        try {
+            n = primes.findAsLongBetween(32L, 36L);
+            fail("Unexpected prime number " + n);
+        } catch (EmptyResultException x) {
+            // expected
+        }
+
+        // Multiple results must raise NonUniqueResultException:
+        try {
+            n = primes.findAsLongBetween(22L, 42L);
+            fail("Should find more prime numbers than " + n);
+        } catch (NonUniqueResultException x) {
+            // expected
+        }
     }
 
     /**
