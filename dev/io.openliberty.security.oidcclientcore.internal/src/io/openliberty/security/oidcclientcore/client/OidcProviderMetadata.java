@@ -29,7 +29,7 @@ public interface OidcProviderMetadata {
 
     String getSubjectTypeSupported();
 
-    String getIdTokenSigningAlgorithmsSupported();
+    String[] getIdTokenSigningAlgorithmsSupported();
 
     String getResponseTypeSupported();
 

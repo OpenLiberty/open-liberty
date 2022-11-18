@@ -30,7 +30,6 @@ public class TestOpenIdProviderMetadataDefinition {
     protected static String ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED = "idTokenSigningAlgorithmsSupported";
     protected static String RESPONSE_TYPE_SUPPORTED = "responseTypeSupported";
     protected static String SUBJECT_TYPE_SUPPORTED_DEFAULT = JakartaSec30Constants.SUBJECT_TYPE_SUPPORTED_DEFAULT;
-    protected static String ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED_DEFAULT = OpenIdConstant.DEFAULT_JWT_SIGNED_ALGORITHM;
     protected static String RESPONSE_TYPE_SUPPORTED_DEFAULT = JakartaSec30Constants.RESPONSE_TYPE_SUPPORTED_DEFAULT;
 
     protected static OpenIdProviderMetadata getInstanceofAnnotation(final Map<String, Object> overrides) {
@@ -79,7 +78,7 @@ public class TestOpenIdProviderMetadataDefinition {
             @Override
             public String idTokenSigningAlgorithmsSupported() {
                 return (overrides != null
-                        && overrides.containsKey(ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED)) ? (String) overrides.get(ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED) : ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED_DEFAULT;
+                        && overrides.containsKey(ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED)) ? (String) overrides.get(ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED) : OpenIdConstant.DEFAULT_JWT_SIGNED_ALGORITHM;
             }
 
             @Override

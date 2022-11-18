@@ -10,12 +10,18 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.javaeesec.identitystore.ELHelper;
 
 import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
+import jakarta.el.ELProcessor;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdProviderMetadata;
 
@@ -26,9 +32,14 @@ public class OpenIdProviderMetadataWrapper implements OidcProviderMetadata {
 
     private static final TraceComponent tc = Tr.register(LogoutDefinitionWrapper.class);
 
+    public static final String EVAL_EXPRESSION_PATTERN_GROUP_NAME = "expr";
+    // Looks for either "${...}" or "#{...}"
+    public static final Pattern EVAL_EXPRESSION_PATTERN = Pattern.compile("(\\$|#)\\{(?<" + EVAL_EXPRESSION_PATTERN_GROUP_NAME + ">[^}]*)\\}");
+
     private final OpenIdProviderMetadata providerMetadata;
 
     private final ELHelper elHelper;
+    private final ELProcessor elProcessor;
 
     private final String authorizationEndpoint;
     private final String tokenEndpoint;
@@ -37,13 +48,14 @@ public class OpenIdProviderMetadataWrapper implements OidcProviderMetadata {
     private final String jwksURI;
     private final String issuer;
     private final String subjectTypeSupported;
-    private final String idTokenSigningAlgorithmsSupported;
+    private final String[] idTokenSigningAlgorithmsSupported;
     private final String responseTypeSupported;
 
     public OpenIdProviderMetadataWrapper(OpenIdProviderMetadata providerMetadata) {
         this.providerMetadata = providerMetadata;
 
         this.elHelper = new ELHelper();
+        this.elProcessor = new ELProcessor();
         this.authorizationEndpoint = evaluateAuthorizationEndpoint(true);
         this.tokenEndpoint = evaluateTokenEndpoint(true);
         this.userinfoEndpoint = evaluateUserinfoEndpoint(true);
@@ -119,13 +131,14 @@ public class OpenIdProviderMetadataWrapper implements OidcProviderMetadata {
     }
 
     @Override
-    public String getIdTokenSigningAlgorithmsSupported() {
+    public String[] getIdTokenSigningAlgorithmsSupported() {
         return (idTokenSigningAlgorithmsSupported != null) ? idTokenSigningAlgorithmsSupported : evaluateIdTokenSigningAlgorithmsSupported(false);
     }
 
-    private String evaluateIdTokenSigningAlgorithmsSupported(boolean immediateOnly) {
-        return evaluateStringAttribute("idTokenSigningAlgorithmsSupported", providerMetadata.idTokenSigningAlgorithmsSupported(), OpenIdConstant.DEFAULT_JWT_SIGNED_ALGORITHM,
-                                       immediateOnly);
+    private String[] evaluateIdTokenSigningAlgorithmsSupported(boolean immediateOnly) {
+        return evaluateStringArrayAttribute("idTokenSigningAlgorithmsSupported", providerMetadata.idTokenSigningAlgorithmsSupported(),
+                                            new String[] { OpenIdConstant.DEFAULT_JWT_SIGNED_ALGORITHM },
+                                            immediateOnly);
     }
 
     @Override
@@ -154,6 +167,31 @@ public class OpenIdProviderMetadataWrapper implements OidcProviderMetadata {
 
             return attributeDefault;
         }
+    }
+
+    private String[] evaluateStringArrayAttribute(String attributeName, String attribute, String[] attributeDefault, boolean immediateOnly) {
+        StringBuffer sb = new StringBuffer();
+        Matcher matcher = EVAL_EXPRESSION_PATTERN.matcher(attribute);
+        while (matcher.find()) {
+            // Extract and evaluate each expression within the string and build a new resulting string with the result(s)
+            String exprGroup = matcher.group(EVAL_EXPRESSION_PATTERN_GROUP_NAME);
+            String processedExp = elProcessor.eval(exprGroup);
+            matcher.appendReplacement(sb, processedExp);
+        }
+        matcher.appendTail(sb);
+        return createStringArrayFromDelimitedString(sb, ",");
+    }
+
+    String[] createStringArrayFromDelimitedString(StringBuffer sb, String delimiter) {
+        String[] processedString = sb.toString().split(delimiter);
+        List<String> entries = new ArrayList<>();
+        for (String segment : processedString) {
+            String trimmed = segment.trim();
+            if (!trimmed.isEmpty()) {
+                entries.add(trimmed);
+            }
+        }
+        return entries.toArray(new String[entries.size()]);
     }
 
     private void issueWarningMessage(String attributeName, Object valueProvided, Object attributeDefault) {

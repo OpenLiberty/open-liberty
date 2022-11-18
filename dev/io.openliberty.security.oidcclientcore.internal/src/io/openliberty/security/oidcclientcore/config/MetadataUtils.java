@@ -122,7 +122,7 @@ public class MetadataUtils {
                                                        OidcDiscoveryConstants.METADATA_KEY_ISSUER);
     }
 
-    public static String getIdTokenSigningAlgorithmsSupported(OidcClientConfig oidcClientConfig) throws OidcDiscoveryException, OidcClientConfigurationException {
+    public static String[] getIdTokenSigningAlgorithmsSupported(OidcClientConfig oidcClientConfig) throws OidcDiscoveryException, OidcClientConfigurationException {
         return getValueFromProviderOrDiscoveryMetadata(oidcClientConfig,
                                                        metadata -> metadata.getIdTokenSigningAlgorithmsSupported(),
                                                        OidcDiscoveryConstants.METADATA_KEY_ID_TOKEN_SIGNING_ALG_VALUES_SUPPORTED);
