@@ -12,6 +12,9 @@
 
 	<openidConnectProvider
 		id="OP0"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
 		oauthProviderRef="OAuth0" />
 
 	<oauthProvider
@@ -66,6 +69,9 @@ https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_31/Callback"
 
 	<openidConnectProvider
 		id="OP0_noRefresh"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
 		oauthProviderRef="OAuth0_noRefresh" />
 
 	<oauthProvider
@@ -121,6 +127,9 @@ https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_31/Callback"
 		 		 
 	<openidConnectProvider
 		id="OP1"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
 		idTokenLifetime="15s"
 		oauthProviderRef="OAuth1" />
 
@@ -176,6 +185,9 @@ https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_31/Callback"
 		 		 
 	<openidConnectProvider
 		id="OP1_noRefresh"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
 		idTokenLifetime="15s"
 		oauthProviderRef="OAuth1_noRefresh" />
 
@@ -232,6 +244,9 @@ https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_31/Callback"
 
 	<openidConnectProvider
 		id="OP2"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
 		oauthProviderRef="OAuth2" />
 
 	<oauthProvider
@@ -287,6 +302,9 @@ https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_31/Callback"
 
 	<openidConnectProvider
 		id="OP2_noRefresh"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
 		oauthProviderRef="OAuth2_noRefresh" />
 
 	<oauthProvider
@@ -343,6 +361,9 @@ https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_31/Callback"
 
 	<openidConnectProvider
 		id="OP3"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
 		idTokenLifetime="15s"
 		oauthProviderRef="OAuth3" />
 
@@ -401,6 +422,9 @@ https://localhost:${bvt.prop.security_2_HTTP_default.secure}/BadRedirectUriToken
 		
 	<openidConnectProvider
 		id="OP3_noRefresh"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
 		idTokenLifetime="15s"
 		oauthProviderRef="OAuth3_noRefresh" />
 
