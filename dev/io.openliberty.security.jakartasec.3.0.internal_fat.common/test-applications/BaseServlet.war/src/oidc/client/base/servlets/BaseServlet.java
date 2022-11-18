@@ -47,7 +47,7 @@ public class BaseServlet extends HttpServlet {
             request.logout();
         }
 
-        recordHelloWorld(outputStream);
+        recordWhichApp(outputStream);
 
         RequestLogger requestLogger = new RequestLogger(request, ServletMessageConstants.SERVLET + ServletMessageConstants.REQUEST);
         requestLogger.printRequest(outputStream);
@@ -60,12 +60,11 @@ public class BaseServlet extends HttpServlet {
 
     }
 
-    protected void recordHelloWorld(ServletOutputStream outputStream) throws IOException {
+    protected void recordWhichApp(ServletOutputStream outputStream) throws IOException {
 
         ServletLogger.printLine(outputStream, "got here servlet");
-        String prefix = "Hello world from ";
-        ServletLogger.printLine(outputStream, prefix + getShortName(this.getClass().getSuperclass().getName()));
-        ServletLogger.printLine(outputStream, prefix + getShortName(this.getClass().getName()));
+        ServletLogger.printLine(outputStream, ServletMessageConstants.HELLO_MSG + getShortName(this.getClass().getSuperclass().getName()));
+        ServletLogger.printLine(outputStream, ServletMessageConstants.HELLO_MSG + getShortName(this.getClass().getName()));
 
     }
 

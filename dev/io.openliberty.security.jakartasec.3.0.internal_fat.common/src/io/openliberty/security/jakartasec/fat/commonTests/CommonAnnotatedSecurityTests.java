@@ -118,6 +118,11 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
      */
     protected static RepeatTests createTokenTypeRepeats(String specialCase) {
 
+        RepeatTests rTests = null;
+        return createTokenTypeRepeats(rTests, specialCase);
+    }
+
+    protected static RepeatTests createTokenTypeRepeats(RepeatTests rTests, String specialCase) {
         String additionalString = "";
 //        List<String> repeatTokenTypes = Arrays.asList(Constants.JWT_TOKEN_FORMAT);
         List<String> repeatTokenTypes = Arrays.asList(Constants.JWT_TOKEN_FORMAT, Constants.OPAQUE_TOKEN_FORMAT);
@@ -125,10 +130,20 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
         if (specialCase != null) {
             additionalString = specialCase + "_";
         }
-        RepeatTests rTests = null;
         for (String tokenType : repeatTokenTypes) {
             rTests = addRepeat(rTests, new SecurityTestRepeatAction(additionalString + tokenType));
         }
+        return rTests;
+    }
+
+    protected static RepeatTests createMultipleTokenTypeRepeats(String... extraCases) {
+
+        RepeatTests rTests = null;
+
+        for (String aCase : extraCases) {
+            rTests = createTokenTypeRepeats(rTests, aCase);
+        }
+
         return rTests;
     }
 
@@ -177,14 +192,14 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
 
     public Expectations getGotToTheAppExpectations(String app, String url) throws Exception {
         Expectations expectations = getGotToTheAppExpectations(null, app, url);
-        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, Constants.BASE_SERVLET_MESSAGE
+        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, ServletMessageConstants.HELLO_MSG
                                                                                                  + "BaseServlet", "Did not land on the unprotected app."));
         return expectations;
     }
 
     public Expectations getGotToTheAppExpectations(String currentAction, String app, String url) throws Exception {
         Expectations expectations = CommonExpectations.successfullyReachedUrl(currentAction, url);
-        expectations.addExpectation(new ResponseFullExpectation(currentAction, Constants.STRING_CONTAINS, Constants.BASE_SERVLET_MESSAGE
+        expectations.addExpectation(new ResponseFullExpectation(currentAction, Constants.STRING_CONTAINS, ServletMessageConstants.HELLO_MSG
                                                                                                           + app, "Did not land on the unprotected app."));
         return expectations;
 

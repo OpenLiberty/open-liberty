@@ -25,7 +25,9 @@ public class ServletLogger {
     public static void printLine(ServletOutputStream ps, String msg) throws IOException {
 
         System.out.println(msg);
-        ps.println(msg);
+        if (ps != null) {
+            ps.println(msg);
+        }
 
     }
 

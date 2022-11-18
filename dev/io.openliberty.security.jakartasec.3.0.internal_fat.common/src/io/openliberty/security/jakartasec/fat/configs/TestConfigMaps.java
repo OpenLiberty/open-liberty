@@ -13,10 +13,26 @@ package io.openliberty.security.jakartasec.fat.configs;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ibm.websphere.simplicity.log.Log;
+
 import io.openliberty.security.jakartasec.fat.utils.Constants;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.PromptType;
 
 public class TestConfigMaps {
+    protected static Class<?> thisClass = TestConfigMaps.class;
+
+    // constants for userinfo apps that return good or bad group information
+    public static final String UserInfoDefaultCallerGroupsClaimGoodGroups = "UserInfoDefaultCallerGroupsClaimGoodGroups";
+    public static final String UserInfoDefaultCallerGroupsClaimBadGroups = "UserInfoDefaultCallerGroupsClaimBadGroups";
+    public static final String UserInfoOtherCallerGroupsClaimGoodGroups = "UserInfoOtherCallerGroupsClaimGoodGroups";
+    public static final String UserInfoOtherCallerGroupsClaimBadGroups = "UserInfoOtherCallerGroupsClaimBadGroups";
+
+    public static final String UserInfoDefaultCallerNameClaimGoodCaller = "UserInfoDefaultCallerNameClaimGoodCaller";
+    public static final String UserInfoDefaultCallerNameClaimBadCaller = "UserInfoDefaultCallerNameClaimBadCaller";
+    public static final String UserInfoOtherCallerNameClaimGoodCaller = "UserInfoOtherCallerNameClaimGoodCaller";
+    public static final String UserInfoOtherCallerNameClaimBadCaller = "UserInfoOtherCallerNameClaimBadCaller";
+
+    public static final String AllDefault = "UserInfo";
 
     /*************** OpenIdAuthenticationMechanismDefinition ************/
     public static Map<String, Object> getProviderUri(String opBase, String provider) throws Exception {
@@ -302,6 +318,24 @@ public class TestConfigMaps {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
         updatedMap.put(Constants.IDENTITY_TOKEN_EXPIRY_EXPRESSION, String.valueOf(false));
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getUserInfo(String rpBase, String userinfoApp) throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        Log.info(thisClass, "", "userinfoApp: " + userinfoApp);
+        updatedMap.put(Constants.USERINFOENDPOINT, rpBase + "/UserInfo/" + userinfoApp);
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getUserInfoEmpty() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        Log.info(thisClass, "", "userinfoApp:  (not set)");
+        updatedMap.put(Constants.USERINFOENDPOINT, "");
         return updatedMap;
 
     }

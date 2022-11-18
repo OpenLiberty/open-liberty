@@ -11,7 +11,6 @@
 package io.openliberty.security.jakartasec.fat.utils;
 
 public class Constants extends com.ibm.ws.security.fat.common.Constants {
-    public static final String BASE_SERVLET_MESSAGE = "Hello world from ";
 
     public static final String OPEN_ID_CONFIG_PROPERTIES = "/openIdConfig.properties";
     public static final String PROVIDER_CONFIG_PROPERTIES = "/providerConfig.properties";
@@ -46,6 +45,8 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String TOKEN_AUTO_REFRESH = "tokenAutoRefresh";
     public static final String TOKEN_AUTO_REFRESH_EXPRESSION = "tokenAutoRefreshExpression";
 
+    public static final String USERINFOENDPOINT = "userinfoEndpoint";
+
     public static final String EMPTY_VALUE = "EmptyValue";
     public static final String NULL_VALUE = "NullValue";
 
@@ -64,4 +65,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final int TOKEN_MIN_VALIDITY = 10 * 1000;
 
     public static final String OPEN_LIBERTY = "Open Liberty";
+
+    public static final String USERINFO_JWT = "userinfoJwt";
+    public static final String USERINFO_JSONOBJECT = "userinfoJsonObject";
 }

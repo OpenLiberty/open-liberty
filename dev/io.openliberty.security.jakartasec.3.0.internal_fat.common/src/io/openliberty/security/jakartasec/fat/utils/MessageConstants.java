@@ -42,6 +42,4 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
 
     public static final String CWWKS9104A_NO_ACCESS_FOR_USER = "CWWKS9104A";
 
-    public static final String SRVE0190E_FILE_NOT_FOUND = "SRVE0190E";
-
 }
