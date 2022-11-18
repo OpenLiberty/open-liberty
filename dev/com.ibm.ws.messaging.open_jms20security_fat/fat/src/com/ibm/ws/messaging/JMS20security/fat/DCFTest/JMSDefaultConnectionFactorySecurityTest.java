@@ -24,6 +24,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.messaging.JMS20security.fat.TestUtils;
 
 import componenttest.custom.junit.runner.FATRunner;
@@ -144,6 +145,8 @@ public class JMSDefaultConnectionFactorySecurityTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
+        ShrinkHelper.cleanAllExportedArchives();
     }
 
     @Test

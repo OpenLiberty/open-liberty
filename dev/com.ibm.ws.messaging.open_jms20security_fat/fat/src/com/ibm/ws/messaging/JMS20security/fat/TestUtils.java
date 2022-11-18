@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,8 +49,7 @@ public class TestUtils {
         return addWebApp(targetServer, IS_DROPIN, appName, packageNames);
     }
 
-    // The dropins folder is not cleared by LibertyServer.preTestTidyup so use apps instead.
-    public static final boolean IS_DROPIN = false;
+    public static final boolean IS_DROPIN = true;
 
     public static WebArchive addWebApp(
         LibertyServer targetServer,
