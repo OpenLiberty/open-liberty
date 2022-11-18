@@ -68,12 +68,12 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
     public static LibertyServer opServer;
     @Server("jakartasec-3.0_fat.config.rp.userinfo.jwt.jwt")
     public static LibertyServer rpJwtJwtServer;
-    @Server("jakartasec-3.0_fat.config.rp.userinfo.jose.jwt")
-    public static LibertyServer rpJoseJwtServer;
+    @Server("jakartasec-3.0_fat.config.rp.userinfo.json.jwt")
+    public static LibertyServer rpJsonJwtServer;
     @Server("jakartasec-3.0_fat.config.rp.userinfo.jwt.opaque")
     public static LibertyServer rpJwtOpaqueServer;
-    @Server("jakartasec-3.0_fat.config.rp.userinfo.jose.opaque")
-    public static LibertyServer rpJoseOpaqueServer;
+    @Server("jakartasec-3.0_fat.config.rp.userinfo.json.opaque")
+    public static LibertyServer rpJsonOpaqueServer;
     public static LibertyServer rpServer;
     protected static ShrinkWrapHelpers swh = null;
 
@@ -133,9 +133,9 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
         if (RepeatTestFilter.getRepeatActionsAsString().contains(Constants.USERINFO_JSONOBJECT)) {
             userinfoResponseFormat = "Json";
             if (RepeatTestFilter.getRepeatActionsAsString().contains(Constants.JWT_TOKEN_FORMAT)) {
-                rpServer = rpJoseJwtServer;
+                rpServer = rpJsonJwtServer;
             } else {
-                rpServer = rpJoseOpaqueServer;
+                rpServer = rpJsonOpaqueServer;
             }
         } else {
             userinfoResponseFormat = "Jwt";
