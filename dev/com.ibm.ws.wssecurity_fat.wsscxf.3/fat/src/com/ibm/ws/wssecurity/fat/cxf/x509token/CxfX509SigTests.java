@@ -11,9 +11,6 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.x509token;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
-
 import java.io.File;
 import java.util.Set;
 
@@ -32,9 +29,10 @@ import com.ibm.ws.wssecurity.fat.utils.common.UpdateWSDLPortNum;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -67,6 +65,16 @@ public class CxfX509SigTests extends CommonTests {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
             featureVersion = "EE7cbh2";
+        } else if (features.contains("usr:wsseccbh-2.0") & features.contains("xmlWS-3.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
+            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+            featureVersion = "EE9cbh2";
+        } else if (features.contains("usr:wsseccbh-2.0") & features.contains("xmlWS-4.0")) {
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+            server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
+            copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
+            featureVersion = "EE10cbh2";
         }
 
         ShrinkHelper.defaultDropinApp(server, "x509sigclient", "com.ibm.ws.wssecurity.fat.x509sigclient", "test.wssecfvt.x509sig", "test.wssecfvt.x509sig.types");
@@ -269,7 +277,6 @@ public class CxfX509SigTests extends CommonTests {
     }
 
     //issue 23060
-    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
     @Test
     public void testCxfClientSignWithExpKey() throws Exception {
 
@@ -279,6 +286,10 @@ public class CxfX509SigTests extends CommonTests {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_expcert.xml");
         } else if (featureVersion.equals("EE7cbh2")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_expcert_wss4j.xml");
+        } else if (featureVersion.equals("EE9cbh2")) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_expcert_ee9_wss4j.xml");
+        } else if (featureVersion.equals("EE10cbh2")) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_expcert_ee10_wss4j.xml");
         }
 
         genericTest(
@@ -308,14 +319,13 @@ public class CxfX509SigTests extends CommonTests {
 
         if (featureVersion.equals("EE7cbh1")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-        } else if (featureVersion.equals("EE7cbh2")) {
+        } else if (featureVersion.equals("EE7cbh2") || featureVersion.equals("EE9cbh2") || featureVersion.equals("EE10cbh2")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
         }
 
     }
 
     //issue 23060
-    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
     @Test
     public void testCxfClientBadClKeyStorePswd() throws Exception {
 
@@ -325,6 +335,10 @@ public class CxfX509SigTests extends CommonTests {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badclpwd.xml");
         } else if (featureVersion.equals("EE7cbh2")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badclpwd_wss4j.xml");
+        } else if (featureVersion.equals("EE9cbh2")) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badclpwd_ee9_wss4j.xml");
+        } else if (featureVersion.equals("EE10cbh2")) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badclpwd_ee10_wss4j.xml");
         }
 
         genericTest(
@@ -354,16 +368,16 @@ public class CxfX509SigTests extends CommonTests {
 
         if (featureVersion.equals("EE7cbh1")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-        } else if (featureVersion.equals("EE7cbh2")) {
+        } else if (featureVersion.equals("EE7cbh2") || featureVersion.equals("EE9cbh2") || featureVersion.equals("EE10cbh2")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
         }
 
     }
 
     //issue 23060
-    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
     @Test
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" },
+                  repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID, JakartaEE9Action.ID, JakartaEE10Action.ID })
     public void testCxfClientBadSrvKeyStorePswd() throws Exception {
 
         // use server config with bad server pw
@@ -372,6 +386,10 @@ public class CxfX509SigTests extends CommonTests {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badsvrpwd.xml");
         } else if (featureVersion.equals("EE7cbh2")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badsvrpwd_wss4j.xml");
+        } else if (featureVersion.equals("EE9cbh2")) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badsvrpwd_ee9_wss4j.xml");
+        } else if (featureVersion.equals("EE10cbh2")) {
+            reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badsvrpwd_ee10_wss4j.xml");
         }
 
         genericTest(
@@ -401,7 +419,7 @@ public class CxfX509SigTests extends CommonTests {
 
         if (featureVersion.equals("EE7cbh1")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig.xml");
-        } else if (featureVersion.equals("EE7cbh2")) {
+        } else if (featureVersion.equals("EE7cbh2") || featureVersion.equals("EE9cbh2") || featureVersion.equals("EE10cbh2")) {
             reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_orig_wss4j.xml");
         }
 
