@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<com.ibm.etools.webservice.wscbnd:ClientBinding xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:com.ibm.etools.webservice.wscbnd="http://www.ibm.com/websphere/appserver/schemas/5.0.2/wscbnd.xmi" xmi:id="ClientBinding_1257965698824">
-  <serviceRefs xmi:id="ServiceRef_1257965698824" serviceRefLink="service/EchoService">
-    <portQnameBindings xmi:id="PortQnameBinding_1257965698824" portQnameNamespaceLink="http://com/ibm/was/wssample/sei/echo/" portQnameLocalNameLink="EchoServicePort" overriddenEndpointURI="http://localhost:9080/WSSampleSei/EchoService"/>
-  </serviceRefs>
-  <serviceRefs xmi:id="ServiceRef_1257966068377" serviceRefLink="service/EchoService12">
-    <portQnameBindings xmi:id="PortQnameBinding_1257966068377" portQnameNamespaceLink="http://com/ibm/was/wssample/sei/echo/" portQnameLocalNameLink="EchoService12Port" overriddenEndpointURI="http://wsi6.rtp.raleigh.ibm.com:9080/InteropService/EchoService12"/>
-  </serviceRefs>
-</com.ibm.etools.webservice.wscbnd:ClientBinding>
