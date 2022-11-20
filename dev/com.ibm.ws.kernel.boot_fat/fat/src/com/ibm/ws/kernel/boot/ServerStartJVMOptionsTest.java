@@ -636,6 +636,86 @@ public class ServerStartJVMOptionsTest {
         server.stopServer();
     }
 
+    /**
+     * This test ensures trailing whitespaces are removed from jvm.options lines
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testServerStartJVMOptionTrailingSpace() throws Exception {
+        Log.entering(c, testName.getMethodName());
+
+        String[] parms = new String[2];
+        parms[0] = "start";
+        parms[1] = SERVER_NAME;
+
+        Properties envVars = new Properties();
+        envVars.put("CDPATH", ".");
+
+        initialize();
+
+        Writer isw = new OutputStreamWriter(new FileOutputStream(jvmoptionsconfigdefaults), "UTF-8");
+        BufferedWriter bw = new BufferedWriter(isw);
+        bw.write("-DTest1=Test1  \r\n");
+        bw.close();
+
+        ProgramOutput po = server.getMachine().execute(serverCommand, parms, executionDir, envVars);
+        Log.info(c, testName.getMethodName(), "server start stdout = " + po.getStdout());
+        Log.info(c, testName.getMethodName(), "server start stderr = " + po.getStderr());
+        server.waitForStringInLog("CWWKF0011I");
+        server.resetStarted();
+
+        server.serverDump();
+        File[] filesAfterDump = new File(executionDir + "/usr/servers/" + SERVER_NAME).listFiles();
+
+        File dumpFile = new File("");
+        for (File f : filesAfterDump) {
+            String fileName = f.getName();
+            Log.info(c, testName.getMethodName(), "Found file: " + fileName);
+            if (fileName.startsWith(SERVER_NAME + ".dump") && fileName.endsWith(".zip")) {
+                dumpFile = f;
+                break;
+            }
+        }
+
+        if (dumpFile.getPath().compareTo("") == 0) {
+            fail("The Dump File was not found");
+        }
+
+        ZipFile zipFile = new ZipFile(dumpFile);
+
+        boolean foundTest1 = false;
+        String theLine = null;
+        for (Enumeration<? extends ZipEntry> en = zipFile.entries(); en.hasMoreElements();) {
+            ZipEntry entry = en.nextElement();
+            String entryName = entry.getName();
+            if (entryName.endsWith("JavaRuntimeInformation.txt")) {
+                InputStream inputstream = zipFile.getInputStream(entry);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputstream));
+                String line;
+                int i = 0;
+                while ((line = reader.readLine()) != null) {
+                    Log.info(c, testName.getMethodName(), "Run" + i + ": " + line);
+                    if (line.contains("-DTest1=Test1")) {
+                        foundTest1 = true;
+                        theLine = line;
+                        break;
+                    }
+                    i++;
+                }
+
+                reader.close();
+                inputstream.close();
+            }
+        }
+
+        zipFile.close();
+        dumpFile.delete();
+        assertTrue("The jvm option was not found", foundTest1);
+        assertTrue("The jvm option [" + theLine + "] was not stripped", theLine.endsWith("-DTest1=Test1"));
+
+        server.stopServer();
+    }
+
     public void initialize() {
         File dirs = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/configDropins/defaults");
         File dirs2 = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/configDropins/overrides");
