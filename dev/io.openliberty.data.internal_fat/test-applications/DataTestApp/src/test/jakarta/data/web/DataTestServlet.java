@@ -56,6 +56,7 @@ import jakarta.data.Entities;
 import jakarta.data.Template;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
+import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.Limit;
@@ -1663,6 +1664,45 @@ public class DataTestServlet extends FATServlet {
         assertEquals(t8.leviedAgainst, list.get(7).leviedAgainst);
 
         assertEquals(8, tariffs.deleteByLeviedBy("USA"));
+    }
+
+    /**
+     * Exceed the maximum offset allowed by JPA.
+     */
+    @Test
+    public void testOverflow() {
+        Limit range = Limit.range(Integer.MAX_VALUE + 5L, Integer.MAX_VALUE + 10L);
+        try {
+            Streamable<Prime> found = primes.findByNumberLessThanEqualOrderByNumberDesc(9L, range);
+            fail("Expected an error because starting position of range exceeds Integer.MAX_VALUE. Found: " + found);
+        } catch (UnsupportedOperationException x) {
+            // expected
+        }
+
+        try {
+            Stream<Prime> found = primes.findFirst2147483648ByNumberGreaterThan(1L);
+            fail("Expected an error because limit exceeds Integer.MAX_VALUE. Found: " + found);
+        } catch (MappingException x) {
+            boolean expected = false;
+            for (Throwable cause = x; !expected && cause != null; cause = cause.getCause())
+                expected = cause instanceof UnsupportedOperationException;
+            if (!expected)
+                throw x;
+        }
+
+        try {
+            KeysetAwarePage<Prime> found = primes.findByNumberBetween(5L, 15L, Pageable.ofSize(Integer.MAX_VALUE / 30).page(33));
+            fail("Expected an error because when offset for pagination exceeds Integer.MAX_VALUE. Found: " + found);
+        } catch (UnsupportedOperationException x) {
+            // expected
+        }
+
+        try {
+            Page<Prime> found = primes.findByNumberLessThanEqualOrderByNumberDesc(52L, Pageable.ofSize(Integer.MAX_VALUE / 20).page(22));
+            fail("Expected an error because when offset for pagination exceeds Integer.MAX_VALUE. Found: " + found);
+        } catch (UnsupportedOperationException x) {
+            // expected
+        }
     }
 
     /**

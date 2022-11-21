@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
@@ -39,6 +40,7 @@ public class PageImpl<T> implements Page<T> {
     private final List<T> results;
     private long totalElements = -1;
 
+    @FFDCIgnore(Exception.class)
     PageImpl(QueryInfo queryInfo, Pageable pagination, Object[] args) {
         this.queryInfo = queryInfo;
         this.pagination = pagination == null ? Pageable.ofSize(100) : pagination;
@@ -51,7 +53,7 @@ public class PageImpl<T> implements Page<T> {
             queryInfo.setParameters(query, args);
 
             int maxPageSize = pagination.size();
-            query.setFirstResult((int) ((pagination.page() - 1) * maxPageSize)); // TODO possible overflow
+            query.setFirstResult(RepositoryImpl.computeOffset(pagination.page(), maxPageSize));
             query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1));
 
             results = query.getResultList();
@@ -67,6 +69,7 @@ public class PageImpl<T> implements Page<T> {
      *
      * @param jpql count query.
      */
+    @FFDCIgnore(Exception.class)
     private long countTotalElements() {
         if (pagination.page() == 1L && results.size() <= pagination.size() && pagination.size() < Integer.MAX_VALUE)
             return results.size();

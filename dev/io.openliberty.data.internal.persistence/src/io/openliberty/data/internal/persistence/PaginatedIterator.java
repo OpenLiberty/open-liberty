@@ -47,10 +47,9 @@ public class PaginatedIterator<T> implements Iterator<T> {
             queryInfo.setParameters(query, args);
 
             // TODO Keyset pagination
-            // TODO possible overflow with both of these.
-            long maxPageSize = pagination.size();
-            query.setFirstResult((int) ((pagination.page() - 1) * maxPageSize));
-            query.setMaxResults((int) maxPageSize);
+            int maxPageSize = pagination.size();
+            query.setFirstResult(RepositoryImpl.computeOffset(pagination.page(), maxPageSize));
+            query.setMaxResults(maxPageSize);
             pagination = pagination.next();
 
             page = query.getResultList();

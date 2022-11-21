@@ -58,6 +58,8 @@ public interface Primes {
     @Asynchronous
     CompletionStage<KeysetAwarePage<Prime>> findByNumberLessThanOrderByNumberDesc(long max, Pageable pagination);
 
+    Stream<Prime> findFirst2147483648ByNumberGreaterThan(long min); // Exceeds Integer.MAX_VALUE by 1
+
     @OrderBy(value = "name", descending = true)
     Prime[] findFirst5ByNumberLessThanEqual(long maxNumber);
 
