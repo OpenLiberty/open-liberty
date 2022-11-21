@@ -100,7 +100,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
                 for (int size = results.size(), i = 0, j = size - (size > maxPageSize ? 2 : 1); i < j; i++, j--)
                     Collections.swap(results, i, j);
         } catch (Exception x) {
-            throw new DataException(x);
+            throw RepositoryImpl.failure(x);
         } finally {
             em.close();
         }
@@ -121,7 +121,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
 
             return query.getSingleResult();
         } catch (Exception x) {
-            throw new DataException(x);
+            throw RepositoryImpl.failure(x);
         } finally {
             em.close();
         }

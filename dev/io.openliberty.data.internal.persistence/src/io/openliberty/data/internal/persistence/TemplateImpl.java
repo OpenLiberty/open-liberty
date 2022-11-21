@@ -29,7 +29,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import jakarta.data.IdNotFoundException;
 import jakarta.data.Template;
-import jakarta.data.exceptions.DataException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
@@ -176,8 +175,10 @@ public class TemplateImpl implements Template {
                 Tr.exit(this, tc, "find", failure);
         if (failure == null)
             return found;
+        else if (failure instanceof Error)
+            throw (Error) failure;
         else
-            throw new DataException(failure);
+            throw RepositoryImpl.failure((Exception) failure);
     }
 
     @Override
@@ -260,8 +261,10 @@ public class TemplateImpl implements Template {
                             : failure);
         if (failure == null)
             return entity;
+        else if (failure instanceof Error)
+            throw (Error) failure;
         else
-            throw new DataException(failure);
+            throw RepositoryImpl.failure((Exception) failure);
     }
 
     @Override
@@ -352,8 +355,10 @@ public class TemplateImpl implements Template {
                             : failure);
         if (failure == null)
             return entities;
+        else if (failure instanceof Error)
+            throw (Error) failure;
         else
-            throw new DataException(failure);
+            throw RepositoryImpl.failure((Exception) failure);
     }
 
     // TODO Lock timeout could be more appropriate for inserts, but there is no way to set it in JPA
@@ -441,8 +446,10 @@ public class TemplateImpl implements Template {
                             : failure);
         if (failure == null)
             return returnValue;
+        else if (failure instanceof Error)
+            throw (Error) failure;
         else
-            throw new DataException(failure);
+            throw RepositoryImpl.failure((Exception) failure);
     }
 
     @FFDCIgnore(Throwable.class)
@@ -520,7 +527,9 @@ public class TemplateImpl implements Template {
                             : failure);
         if (failure == null)
             return returnValue;
+        else if (failure instanceof Error)
+            throw (Error) failure;
         else
-            throw new DataException(failure);
+            throw RepositoryImpl.failure((Exception) failure);
     }
 }

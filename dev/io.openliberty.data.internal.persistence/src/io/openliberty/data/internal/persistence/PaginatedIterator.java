@@ -16,7 +16,6 @@ import java.util.NoSuchElementException;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import jakarta.data.exceptions.DataException;
 import jakarta.data.repository.Pageable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -58,7 +57,7 @@ public class PaginatedIterator<T> implements Iterator<T> {
             index = -1;
             hasNext = !page.isEmpty();
         } catch (Exception x) {
-            throw new DataException(x);
+            throw RepositoryImpl.failure(x);
         } finally {
             em.close();
         }

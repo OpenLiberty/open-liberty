@@ -17,6 +17,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.sql.SQLNonTransientConnectionException;
+import java.sql.SQLRecoverableException;
+import java.sql.SQLTransientConnectionException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -54,6 +57,7 @@ import jakarta.data.Select;
 import jakarta.data.Select.Aggregate;
 import jakarta.data.Update;
 import jakarta.data.Where;
+import jakarta.data.exceptions.DataConnectionException;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
 import jakarta.data.exceptions.NonUniqueResultException;
@@ -69,6 +73,8 @@ import jakarta.data.repository.Slice;
 import jakarta.data.repository.Sort;
 import jakarta.data.repository.Streamable;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceException;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Status;
 
@@ -280,6 +286,51 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         queryInfo.jpql = q == null ? queryInfo.jpql : q.toString();
 
         return queryInfo;
+    }
+
+    /**
+     * Replaces an exception with a Jakarta Data specification-defined exception,
+     * chaining the original exception as the cause.
+     * This method replaces all exceptions that are not RuntimeExceptions.
+     * For RuntimeExceptions, it only replaces those that are
+     * jakarta.persistence.PersistenceException (and subclasses).
+     *
+     * @param original exception to possibly replace.
+     * @return exception to replace with, if any. Otherwise, the original.
+     */
+    @Trivial
+    static RuntimeException failure(Exception original) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        RuntimeException x = null;
+        if (original instanceof PersistenceException) {
+            for (Throwable cause = original; x == null && cause != null; cause = cause.getCause()) {
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(tc, "checking " + cause.getClass().getName() + " with message " + cause.getMessage());
+
+                // TODO If this ever becomes real code, it should be delegated to the JDBC integration layer
+                // where there is more thorough logic that takes into account configuration and database differences
+                if (cause instanceof SQLRecoverableException
+                    || cause instanceof SQLNonTransientConnectionException
+                    || cause instanceof SQLTransientConnectionException)
+                    x = new DataConnectionException(original);
+            }
+            if (x == null) {
+                if (original instanceof NoResultException)
+                    x = new EmptyResultException(original);
+                else if (original instanceof jakarta.persistence.NonUniqueResultException)
+                    x = new NonUniqueResultException(original);
+                else
+                    x = new DataException(original);
+            }
+        } else if (original instanceof RuntimeException) {
+            x = (RuntimeException) original;
+        } else {
+            x = new DataException(original);
+        }
+
+        if (trace && tc.isDebugEnabled() && x != original)
+            Tr.debug(tc, "replaced with " + x.getClass().getName());
+        return x;
     }
 
     /**
@@ -1101,6 +1152,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), returnValue);
             return returnValue;
         } catch (Throwable x) {
+            if (x instanceof Exception)
+                x = failure((Exception) x);
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), x);
             throw x;

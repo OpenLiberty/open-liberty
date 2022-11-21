@@ -2884,8 +2884,8 @@ public class DataTestServlet extends FATServlet {
         try {
             products.save(prod1a);
             fail("Able to update using old version.");
-        } catch (RuntimeException x) {
-            if ("jakarta.persistence.OptimisticLockException".equals(x.getClass().getName()))
+        } catch (DataException x) {
+            if (x.getCause() != null && "jakarta.persistence.OptimisticLockException".equals(x.getCause().getClass().getName()))
                 ; // expected;
             else
                 throw x;
