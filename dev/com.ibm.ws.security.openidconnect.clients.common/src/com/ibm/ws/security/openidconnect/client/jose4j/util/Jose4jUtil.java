@@ -57,10 +57,9 @@ import com.ibm.wsspi.security.token.AttributeNameConstants;
 import com.ibm.wsspi.ssl.SSLSupport;
 
 import io.openliberty.security.common.jwt.JwtParsingUtils;
-import io.openliberty.security.oidcclientcore.utils.CommonJose4jUtils;
 import io.openliberty.security.oidcclientcore.utils.Utils;
 
-public class Jose4jUtil extends CommonJose4jUtils {
+public class Jose4jUtil {
 
     private static final TraceComponent tc = Tr.register(Jose4jUtil.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
     private static final String SIGNATURE_ALG_HS = "HS";
@@ -473,6 +472,7 @@ public class Jose4jUtil extends CommonJose4jUtils {
     }
 
     public JwtClaims validateJwsSignature(JwtContext jwtContext, ConvergedClientConfig clientConfig, OidcClientRequest oidcClientRequest) throws Exception {
+        // TODO - update to use io.openliberty.security.common.jwt.jws.JwsVerificationKeyHelper and io.openliberty.security.common.jwt.jws.JwsSignatureVerifier
         JsonWebStructure jwStructure = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
         Key key = getSignatureVerificationKeyFromJsonWebStructure(jwStructure, clientConfig, oidcClientRequest);
 

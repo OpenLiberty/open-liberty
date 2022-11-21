@@ -61,7 +61,7 @@ public class Client {
         return tokenResponseValidator.validate(tokenResponse);
     }
 
-    public JWKSet getJwkSet() {
+    public static JWKSet getJwkSet() {
         if (jwkSet == null) {
             jwkSet = new JWKSet();
         }
