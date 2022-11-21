@@ -14,10 +14,8 @@
 
     <keyStore id="defaultKeyStore" password="testServer1" />
 
-    <webApplication id="system" location="system.war" contextRoot="/">
-    	<classloader apiTypeVisibility="+third-party" />
+    <webApplication id="spanTest" location="spanTest.war" >
+        <classloader apiTypeVisibility="+third-party"/>
     </webApplication>
-    
-    <javaPermission className="java.util.PropertyPermission" name="*" actions="read,write" />
     
 </server>

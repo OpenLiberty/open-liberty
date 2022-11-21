@@ -6,23 +6,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - Initial implementation
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.guides.system;
-
-import jakarta.enterprise.context.RequestScoped;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.MediaType;
-
-@RequestScoped
-@Path("properties")
-public class SystemResource {
-
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String getProperties() {
-        return System.getProperties().getProperty("os.name");
-    }
-}
+/**
+ * Utilities for setting up and querying a Jaeger server
+ */
+package io.openliberty.microprofile.telemetry.internal.utils.jaeger;
