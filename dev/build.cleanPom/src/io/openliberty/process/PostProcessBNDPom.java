@@ -33,7 +33,7 @@ public class PostProcessBNDPom {
 
     private static String jarPath;
     private static String pomEntryPath;
-    private static List<String> filteredGroups = Arrays.asList("org.springframework");
+    private static List<String> filteredGroups = Arrays.asList("org.springframework", "org.springframework.boot");
 
     /**
      * @param args
@@ -44,11 +44,12 @@ public class PostProcessBNDPom {
         String outputDir = args[1];
         System.out.println("Reading jar: " + jarPath);
         Model pom = readJARPom(jarPath);
-        removeDevDependecies(pom);
-        writeTempPom(pom, outputDir);
-        System.out.println("Writing pom to: " + outputDir);
-        replacePomFile(outputDir + "/pom.xml", jarPath);
-
+        if (pom != null) {
+            removeDevDependecies(pom);
+            writeTempPom(pom, outputDir);
+            System.out.println("Writing pom to: " + outputDir);
+            replacePomFile(outputDir + "/pom.xml", jarPath);
+        }
     }
 
     /**
@@ -94,7 +95,7 @@ public class PostProcessBNDPom {
         List<Dependency> deps = pom.getDependencies();
         for (Iterator iterator = deps.iterator(); iterator.hasNext();) {
             Dependency dependency = (Dependency) iterator.next();
-            if ((dependency.getGroupId().equals("dev")) || (filteredGroups.contains(dependency)))
+            if ((dependency.getGroupId().equals("dev")) || (filteredGroups.contains(dependency.getGroupId())))
                 iterator.remove();
         }
 
