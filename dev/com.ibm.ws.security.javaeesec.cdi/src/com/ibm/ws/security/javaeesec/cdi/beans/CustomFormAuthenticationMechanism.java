@@ -106,7 +106,7 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
     private AuthenticationStatus handleFormLogin(@Sensitive Credential credential, HttpServletResponse rsp, Subject clientSubject,
                                                  HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = utils.handleAuthenticate(getCDI(), JavaEESecConstants.DEFAULT_REALM, credential, clientSubject, httpMessageContext);
-        int rspStatus = -1;
+        int rspStatus;
         if (status == AuthenticationStatus.SUCCESS) {
             Map messageInfoMap = httpMessageContext.getMessageInfo().getMap();
             messageInfoMap.put("javax.servlet.http.authType", "CUSTOM_FORM");
@@ -117,11 +117,10 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
             rspStatus = HttpServletResponse.SC_OK;
         } else {
             httpMessageContext.responseUnauthorized();
+            rspStatus = HttpServletResponse.SC_UNAUTHORIZED;
             // TODO: Audit invalid user or password
         }
-        if (rsp != null && rspStatus != -1) {
-            rsp.setStatus(rspStatus);
-        }
+        httpMessageContext.getResponse().setStatus(rspStatus);
         return status;
     }
 
