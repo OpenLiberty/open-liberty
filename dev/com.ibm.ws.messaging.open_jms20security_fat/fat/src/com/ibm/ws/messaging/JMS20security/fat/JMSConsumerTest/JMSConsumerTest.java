@@ -32,6 +32,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.JMSActivationSpec;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.ServerConfigurationFactory;
@@ -821,5 +822,7 @@ public class JMSConsumerTest {
             exception.printStackTrace();
             throw new RuntimeException("tearDown exception", exception);
         }
+        
+        ShrinkHelper.cleanAllExportedArchives();
     }
 }
