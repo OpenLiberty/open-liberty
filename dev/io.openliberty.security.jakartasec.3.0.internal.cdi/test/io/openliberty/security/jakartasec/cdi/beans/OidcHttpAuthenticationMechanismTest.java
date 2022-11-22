@@ -34,6 +34,7 @@ import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException;
 import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException.ValidationResult;
 import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
+import io.openliberty.security.oidcclientcore.exceptions.UnsupportedResponseTypeException;
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import io.openliberty.security.oidcclientcore.token.JakartaOidcTokenRequest;
 import io.openliberty.security.oidcclientcore.token.TokenResponse;
@@ -350,7 +351,7 @@ public class OidcHttpAuthenticationMechanismTest {
         });
     }
 
-    private void clientStartsFlow(ProviderAuthenticationResult providerAuthenticationResult) {
+    private void clientStartsFlow(ProviderAuthenticationResult providerAuthenticationResult) throws UnsupportedResponseTypeException {
         mockery.checking(new Expectations() {
             {
                 one(client).startFlow(request, response);
@@ -359,7 +360,7 @@ public class OidcHttpAuthenticationMechanismTest {
         });
     }
 
-    private void clientContinuesFlow(ProviderAuthenticationResult providerAuthenticationResult) throws AuthenticationResponseException, TokenRequestException {
+    private void clientContinuesFlow(ProviderAuthenticationResult providerAuthenticationResult) throws UnsupportedResponseTypeException, AuthenticationResponseException, TokenRequestException {
         mockery.checking(new Expectations() {
             {
                 one(client).continueFlow(request, response);
@@ -368,7 +369,7 @@ public class OidcHttpAuthenticationMechanismTest {
         });
     }
 
-    private void clientContinuesFlowThrowsException(Exception exception) throws AuthenticationResponseException, TokenRequestException {
+    private void clientContinuesFlowThrowsException(Exception exception) throws UnsupportedResponseTypeException, AuthenticationResponseException, TokenRequestException {
         mockery.checking(new Expectations() {
             {
                 one(client).continueFlow(request, response);

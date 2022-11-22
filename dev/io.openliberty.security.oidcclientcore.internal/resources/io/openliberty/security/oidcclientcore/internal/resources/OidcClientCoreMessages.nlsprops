@@ -111,3 +111,7 @@ JWK_CONNECTION_TIMED_OUT.useraction=Update the jwksConnectTimeout property in th
 JWK_READ_TIMED_OUT=CWWKS2422E: The OpenID Connect client failed to read data from the [{0}] JWK URI of the OpenID Connect provider within {1} milliseconds. Consider updating the jwksReadTimeout property in the OpenID Connect client configuration.
 JWK_READ_TIMED_OUT.explanation=The OpenID Connect client cannot read the JWK data from the JWK URI within the configured time frame.
 JWK_READ_TIMED_OUT.useraction=Update the jwksReadTimeout property in the OpenID Connect client configuration. Verify that the OpenID Connect provider is reachable.
+
+OIDC_CLIENT_INVALID_RESPONSE_TYPE=CWWKS2423E: Invalid response type ''{0}'' is specified. Valid response types are [{1}].
+OIDC_CLIENT_INVALID_RESPONSE_TYPE.explanation=Specified response type is not valid. 
+OIDC_CLIENT_INVALID_RESPONSE_TYPE.useraction=Specify one of the available response types.
