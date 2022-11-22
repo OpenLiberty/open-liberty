@@ -181,7 +181,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                     if ((currentFlow != null && !currentFlow.equals(targetFlow)) ||
                                     (targetFlow != null && !targetFlow.equals(currentFlow)))
                     {
-                        if (navigationCaseParameters == null)
+                        // MYFACES-4504: check isEmpty()
+                        if (navigationCaseParameters == null || navigationCaseParameters.isEmpty())
                         {
                             navigationCaseParameters = new HashMap<>(5, 1f);
                         }
