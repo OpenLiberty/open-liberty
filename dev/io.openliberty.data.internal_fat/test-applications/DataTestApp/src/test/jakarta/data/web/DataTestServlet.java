@@ -55,6 +55,9 @@ import jakarta.annotation.Resource;
 import jakarta.data.Entities;
 import jakarta.data.Template;
 import jakarta.data.exceptions.DataException;
+import jakarta.data.exceptions.EmptyResultException;
+import jakarta.data.exceptions.MappingException;
+import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.Limit;
 import jakarta.data.repository.Page;
@@ -657,7 +660,12 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testFindCreateFind() {
-        assertEquals(null, products.findItem("OL306-233F"));
+        try {
+            Product prod = products.findItem("OL306-233F");
+            fail("Should not find " + prod);
+        } catch (EmptyResultException x) {
+            // expected
+        }
 
         Product prod = new Product();
         prod.id = "OL306-233F";
@@ -1182,7 +1190,7 @@ public class DataTestServlet extends FATServlet {
         // 5,  101,    2, false
         // 17, 10001,  2, false
 
-        Pageable initialPagination = Pageable.ofPage(2).newSize(8).afterKeyset(false, 4, 23L);
+        Pageable initialPagination = Pageable.ofPage(2).size(8).afterKeyset(false, 4, 23L);
         KeysetAwarePage<Prime> page2 = primes.findByNumberBetweenOrderByEvenDescSumOfBitsDescNumberAsc(0L, 45L, initialPagination);
 
         assertIterableEquals(List.of(29L, 43L, 7L, 11L, 13L, 19L, 37L, 41L),
@@ -1240,7 +1248,7 @@ public class DataTestServlet extends FATServlet {
         KeysetAwarePage<Package> page;
 
         // Page 3
-        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(20.0f, Pageable.ofSize(3).newPage(3).beforeKeyset(40.0f, 94.0f, 42.0f, 240));
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(20.0f, Pageable.ofSize(3).page(3).beforeKeyset(40.0f, 94.0f, 42.0f, 240));
 
         assertEquals(3L, page.number());
 
@@ -1297,7 +1305,7 @@ public class DataTestServlet extends FATServlet {
             }
         };
 
-        page = packages.findByHeightGreaterThan(20.0f, Pageable.ofSize(2).newPage(3).beforeKeysetCursor(cursor));
+        page = packages.findByHeightGreaterThan(20.0f, Pageable.ofSize(2).page(3).beforeKeysetCursor(cursor));
 
         assertEquals(3L, page.number());
 
@@ -1356,7 +1364,7 @@ public class DataTestServlet extends FATServlet {
         Package p230 = packages.findById(230).orElseThrow();
 
         Pageable pagination = Pageable.ofSize(4)
-                        .newPage(5)
+                        .page(5)
                         .sortBy(Sort.asc("width"), Sort.desc("length"), Sort.asc("id"))
                         .beforeKeyset(p230.width, p230.length, p230.id);
         page = packages.whereHeightNotWithin(20.0f, 38.5f, pagination);
@@ -1426,7 +1434,7 @@ public class DataTestServlet extends FATServlet {
         KeysetAwarePage<Package> page;
 
         // Page 3
-        page = packages.findByHeightGreaterThan(20.0f, Pageable.ofPage(3).newSize(3).beforeKeyset(10.0f, 31.0f, 310));
+        page = packages.findByHeightGreaterThan(20.0f, Pageable.ofPage(3).size(3).beforeKeyset(10.0f, 31.0f, 310));
 
         assertEquals(3L, page.number());
 
@@ -1475,7 +1483,7 @@ public class DataTestServlet extends FATServlet {
         // Page 5
         page = packages.whereHeightNotWithin(32.0f, 35.5f,
                                              Pageable.ofSize(2)
-                                                             .newPage(5)
+                                                             .page(5)
                                                              .sortBy(Sort.asc("height"), Sort.desc("length"), Sort.asc("id"))
                                                              .beforeKeyset(40.0f, 0.0f, 0));
 
@@ -1643,7 +1651,7 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
         // page 2:
         assertIterableEquals(List.of("Canada", "Bangladesh", "Mexico", "Canada"),
-                             tariffs.findByLeviedByOrderByKey("USA", Pageable.ofSize(4).newPage(2))
+                             tariffs.findByLeviedByOrderByKey("USA", Pageable.ofSize(4).page(2))
                                              .stream()
                                              .map(o -> o.leviedAgainst)
                                              .collect(Collectors.toList()));
@@ -1656,6 +1664,45 @@ public class DataTestServlet extends FATServlet {
         assertEquals(t8.leviedAgainst, list.get(7).leviedAgainst);
 
         assertEquals(8, tariffs.deleteByLeviedBy("USA"));
+    }
+
+    /**
+     * Exceed the maximum offset allowed by JPA.
+     */
+    @Test
+    public void testOverflow() {
+        Limit range = Limit.range(Integer.MAX_VALUE + 5L, Integer.MAX_VALUE + 10L);
+        try {
+            Streamable<Prime> found = primes.findByNumberLessThanEqualOrderByNumberDesc(9L, range);
+            fail("Expected an error because starting position of range exceeds Integer.MAX_VALUE. Found: " + found);
+        } catch (UnsupportedOperationException x) {
+            // expected
+        }
+
+        try {
+            Stream<Prime> found = primes.findFirst2147483648ByNumberGreaterThan(1L);
+            fail("Expected an error because limit exceeds Integer.MAX_VALUE. Found: " + found);
+        } catch (MappingException x) {
+            boolean expected = false;
+            for (Throwable cause = x; !expected && cause != null; cause = cause.getCause())
+                expected = cause instanceof UnsupportedOperationException;
+            if (!expected)
+                throw x;
+        }
+
+        try {
+            KeysetAwarePage<Prime> found = primes.findByNumberBetween(5L, 15L, Pageable.ofSize(Integer.MAX_VALUE / 30).page(33));
+            fail("Expected an error because when offset for pagination exceeds Integer.MAX_VALUE. Found: " + found);
+        } catch (UnsupportedOperationException x) {
+            // expected
+        }
+
+        try {
+            Page<Prime> found = primes.findByNumberLessThanEqualOrderByNumberDesc(52L, Pageable.ofSize(Integer.MAX_VALUE / 20).page(22));
+            fail("Expected an error because when offset for pagination exceeds Integer.MAX_VALUE. Found: " + found);
+        } catch (UnsupportedOperationException x) {
+            // expected
+        }
     }
 
     /**
@@ -2171,7 +2218,7 @@ public class DataTestServlet extends FATServlet {
 
         // Paging that comes out even:
         page2 = reservations.findByHostStartsWith("testRepositoryCustom-host",
-                                                  Pageable.ofPage(2).newSize(3),
+                                                  Pageable.ofPage(2).size(3),
                                                   Sort.desc("meetingID"));
         assertIterableEquals(List.of(10030006L, 10030005L, 10030004L),
                              page2
@@ -2479,6 +2526,56 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Repository method returns a single result or raises the specification-defined exceptions for none or too many.
+     */
+    @Test
+    public void testSingleResult() {
+        // With entity class as return type:
+
+        // Single result is fine:
+        Prime p = primes.findByNumberBetween(14L, 18L);
+        assertEquals(17L, p.number);
+
+        // No result must raise EmptyResultException:
+        try {
+            p = primes.findByNumberBetween(24L, 28L);
+            fail("Unexpected prime " + p);
+        } catch (EmptyResultException x) {
+            // expected
+        }
+
+        // Multiple results must raise NonUniqueResultException:
+        try {
+            p = primes.findByNumberBetween(34L, 48L);
+            fail("Should find more primes than " + p);
+        } catch (NonUniqueResultException x) {
+            // expected
+        }
+
+        // With custom return type:
+
+        // Single result is fine:
+        long n = primes.findAsLongBetween(12L, 16L);
+        assertEquals(13L, n);
+
+        // No result must raise EmptyResultException:
+        try {
+            n = primes.findAsLongBetween(32L, 36L);
+            fail("Unexpected prime number " + n);
+        } catch (EmptyResultException x) {
+            // expected
+        }
+
+        // Multiple results must raise NonUniqueResultException:
+        try {
+            n = primes.findAsLongBetween(22L, 42L);
+            fail("Should find more prime numbers than " + n);
+        } catch (NonUniqueResultException x) {
+            // expected
+        }
+    }
+
+    /**
      * Repository method that returns a stream and uses it as a parallel stream.
      */
     @Test
@@ -2688,7 +2785,7 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testTotalCountsWithKeysetPagination() {
-        KeysetAwarePage<Prime> page3 = primes.findByNumberBetween(3L, 50L, Pageable.ofPage(3).newSize(5).beforeKeyset(47L));
+        KeysetAwarePage<Prime> page3 = primes.findByNumberBetween(3L, 50L, Pageable.ofPage(3).size(5).beforeKeyset(47L));
         assertEquals(14L, page3.totalElements());
         assertEquals(3L, page3.totalPages());
 
@@ -2827,8 +2924,8 @@ public class DataTestServlet extends FATServlet {
         try {
             products.save(prod1a);
             fail("Able to update using old version.");
-        } catch (RuntimeException x) {
-            if ("jakarta.persistence.OptimisticLockException".equals(x.getClass().getName()))
+        } catch (DataException x) {
+            if (x.getCause() != null && "jakarta.persistence.OptimisticLockException".equals(x.getCause().getClass().getName()))
                 ; // expected;
             else
                 throw x;

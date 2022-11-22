@@ -22,8 +22,8 @@ import java.util.stream.Stream;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import jakarta.data.exceptions.DataException;
 import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
 import jakarta.persistence.EntityManager;
@@ -40,6 +40,7 @@ public class PageImpl<T> implements Page<T> {
     private final List<T> results;
     private long totalElements = -1;
 
+    @FFDCIgnore(Exception.class)
     PageImpl(QueryInfo queryInfo, Pageable pagination, Object[] args) {
         this.queryInfo = queryInfo;
         this.pagination = pagination == null ? Pageable.ofSize(100) : pagination;
@@ -51,14 +52,13 @@ public class PageImpl<T> implements Page<T> {
             TypedQuery<T> query = (TypedQuery<T>) em.createQuery(queryInfo.jpql, queryInfo.entityInfo.type);
             queryInfo.setParameters(query, args);
 
-            // TODO possible overflow with both of these.
-            long maxPageSize = pagination.size();
-            query.setFirstResult((int) ((pagination.page() - 1) * maxPageSize));
-            query.setMaxResults((int) maxPageSize + 1);
+            int maxPageSize = pagination.size();
+            query.setFirstResult(RepositoryImpl.computeOffset(pagination.page(), maxPageSize));
+            query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1));
 
             results = query.getResultList();
         } catch (Exception x) {
-            throw new DataException(x);
+            throw RepositoryImpl.failure(x);
         } finally {
             em.close();
         }
@@ -69,8 +69,9 @@ public class PageImpl<T> implements Page<T> {
      *
      * @param jpql count query.
      */
+    @FFDCIgnore(Exception.class)
     private long countTotalElements() {
-        if (pagination.page() == 1L && results.size() <= pagination.size())
+        if (pagination.page() == 1L && results.size() <= pagination.size() && pagination.size() < Integer.MAX_VALUE)
             return results.size();
 
         EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
@@ -82,7 +83,7 @@ public class PageImpl<T> implements Page<T> {
 
             return query.getSingleResult();
         } catch (Exception x) {
-            throw new DataException(x);
+            throw RepositoryImpl.failure(x);
         } finally {
             em.close();
         }
@@ -91,15 +92,15 @@ public class PageImpl<T> implements Page<T> {
     @Override
     public List<T> content() {
         int size = results.size();
-        long max = pagination.size();
-        return size > max ? new ResultList((int) max) : results;
+        int max = pagination.size();
+        return size > max ? new ResultList(max) : results;
     }
 
     @Override
     public <C extends Collection<T>> C getContent(Supplier<C> collectionFactory) {
         C collection = collectionFactory.get();
-        long size = results.size();
-        long max = pagination.size();
+        int size = results.size();
+        int max = pagination.size();
         size = size > max ? max : size;
         for (int i = 0; i < size; i++)
             collection.add(results.get(i));
@@ -114,7 +115,7 @@ public class PageImpl<T> implements Page<T> {
     @Override
     public int numberOfElements() {
         int size = results.size();
-        int max = (int) pagination.size(); // TODO fix data type to int in spec
+        int max = pagination.size();
         return size > max ? max : size;
     }
 
@@ -145,13 +146,13 @@ public class PageImpl<T> implements Page<T> {
     @Override
     public Iterator<T> iterator() {
         int size = results.size();
-        long max = pagination.size();
-        return size > max ? new ResultIterator((int) max) : results.iterator();
+        int max = pagination.size();
+        return size > max ? new ResultIterator(max) : results.iterator();
     }
 
     @Override
     public Pageable nextPageable() {
-        if (results.size() <= pagination.size())
+        if (results.size() <= pagination.size() && pagination.size() < Integer.MAX_VALUE)
             return null;
 
         return pagination.next();
