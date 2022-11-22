@@ -90,7 +90,7 @@ public class ServerEnvTest {
     /**
      * Test - Variable expansion in server.env does NOT work when it is NOT enabled.
      * -- Note it is ALWAYS enabled for Windows --
-     * -- So this test not applicable to Windows. There is no way to disable it. --
+     * -- So this test not applicable to Windows. There is no way to disable variable expansion on Windows. --
      *
      * To enable this test for Z/OS, I believe you would need to ensure that
      * both the server script and the server.env file are generated in EBCDIC.
