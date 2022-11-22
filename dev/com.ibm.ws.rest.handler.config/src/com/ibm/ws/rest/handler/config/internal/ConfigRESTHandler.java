@@ -176,7 +176,8 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
             // Don't display items starting with config. or service. or ibm.extends (added by config service)
             // Also don't display items added by app-defined resources
             if (key.startsWith("config.") || key.startsWith("service.") || key.startsWith("ibm.extends") ||
-                key.equals("creates.objectClass") || key.equals("jndiName.unique")) {
+                key.equals("creates.objectClass") || key.equals("jndiName.unique") ||
+                key.startsWith("osgi.ds.")) {
                 continue;
             }
 

@@ -17,15 +17,20 @@ import org.junit.runners.Suite.SuiteClasses;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import io.openliberty.microprofile.telemetry.internal.tests.AutoInstrumentationTest;
+import io.openliberty.microprofile.telemetry.internal.tests.JaegerLegacyTest;
+import io.openliberty.microprofile.telemetry.internal.tests.JaegerOltpTest;
 import io.openliberty.microprofile.telemetry.internal.tests.TracingNotEnabledTest;
+import io.openliberty.microprofile.telemetry.internal.tests.ZipkinTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class, // Must keep this test to run something in the Java 6 builds.
-                AutoInstrumentationTest.class,
-                TracingNotEnabledTest.class
+                TracingNotEnabledTest.class,
+                JaegerOltpTest.class,
+                JaegerLegacyTest.class,
+                ZipkinTest.class,
 })
+
 @MinimumJavaLevel(javaLevel = 11)
 /**
  * Purpose: This suite collects and runs all known good test suites.

@@ -199,7 +199,7 @@ public class TCKRunner {
 
         String[] dependencyOutput = runDependencyCmd();
         TCKJarInfo tckJarInfo = getTCKJarInfo(this.type, dependencyOutput);
-        TCKResultsInfo resultsInfo = new TCKResultsInfo(this.type, this.specName, this.server.getOpenLibertyVersion(), tckJarInfo);
+        TCKResultsInfo resultsInfo = new TCKResultsInfo(this.type, this.specName, this.server, tckJarInfo);
         TCKResultsWriter.preparePublicationFile(resultsInfo);
     }
 
@@ -956,10 +956,11 @@ public class TCKRunner {
 
     private static TCKJarInfo getTCKJarInfo(Type type, String[] dependencyOutput) {
         //org.eclipse.microprofile.config:microprofile-config-tck:jar:3.0.2:compile:/Users/tevans/.m2/repository/org/eclipse/microprofile/config/microprofile-config-tck/3.0.2/microprofile-config-tck-3.0.2.jar
-        Pattern tckPattern = Pattern.compile(type.toString().toLowerCase() + "(.*):(.*-tck):jar:(.*):.*:(/.*\\.jar)", Pattern.DOTALL);
+        //jakarta.json:jakarta.json-tck-tests:2.1.0:compile:/Users/tevans/.m2/repository/jakarta/json/jakarta.json-tck-tests/2.1.0/jakarta.json-tck-tests-2.1.0.jar
+        Pattern tckPattern = Pattern.compile(type.toString().toLowerCase() + "(.*):(.*-tck|.*-tck-tests):jar:(.*):.*:(.*\\.jar)", Pattern.DOTALL);
         TCKJarInfo tckJar = null;
         for (String sCurrentLine : dependencyOutput) {
-            if (sCurrentLine.contains("-tck:jar")) {
+            if (sCurrentLine.contains("-tck:jar") || sCurrentLine.contains("-tck-tests:jar")) {
                 Matcher nameMatcher = tckPattern.matcher(sCurrentLine);
                 if (nameMatcher.find()) {
                     tckJar = new TCKJarInfo();
@@ -972,8 +973,9 @@ public class TCKRunner {
         }
 
         if (tckJar != null) {
-            String sha = TCKUtilities.generateSHA256(tckJar.jarPath);
-            tckJar.sha = sha;
+            File tckFile = new File(tckJar.jarPath);
+            tckJar.sha1 = TCKUtilities.generateSHA1(tckFile);
+            tckJar.sha256 = TCKUtilities.generateSHA256(tckFile);
         }
 
         return tckJar;

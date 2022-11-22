@@ -833,6 +833,15 @@ public class BasicHttpAuthenticationMechanismTest {
         return this;
     }
 
+    private BasicHttpAuthenticationMechanismTest withResponseUnauthorized() {
+        mockery.checking(new Expectations() {
+            {
+                allowing(httpMessageContext).responseUnauthorized();
+            }
+        });
+        return this;
+    }
+
     private void assertValidateRequestNOTDONE() throws AuthenticationException {
         withResponseStatus(HttpServletResponse.SC_OK);
         isRegistryAvailable = false;
@@ -849,14 +858,14 @@ public class BasicHttpAuthenticationMechanismTest {
     }
 
     private void assertValidateRequestFAILURE() throws AuthenticationException {
-        withResponseStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        withResponseUnauthorized();
 
         AuthenticationStatus status = mechanism.validateRequest(request, response, httpMessageContext);
         assertEquals("The AuthenticationStatus must be AuthenticationStatus.SEND_FAILURE.", AuthenticationStatus.SEND_FAILURE, status);
     }
 
     private void assertMechanismChallenges() throws AuthenticationException {
-        challengesAuthorizationHeader().withResponseStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        challengesAuthorizationHeader().withResponseUnauthorized();
         AuthenticationStatus status = mechanism.validateRequest(request, response, httpMessageContext);
         assertEquals("The AuthenticationStatus must be AuthenticationStatus.SEND_CONTINUE.", AuthenticationStatus.SEND_CONTINUE, status);
         assertEquals("The realm name must be set in the MessageInfo's map.", realmName,
@@ -867,7 +876,6 @@ public class BasicHttpAuthenticationMechanismTest {
         mockery.checking(new Expectations() {
             {
                 one(response).setHeader("WWW-Authenticate", "Basic realm=\"" + realmName + "\"");
-                allowing(httpMessageContext).responseUnauthorized();
             }
         });
         return this;

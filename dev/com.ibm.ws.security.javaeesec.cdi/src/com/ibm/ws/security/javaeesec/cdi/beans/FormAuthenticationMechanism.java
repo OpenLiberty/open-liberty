@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.cdi.beans;
 
-import java.util.Hashtable;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -33,8 +32,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
-import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
-import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 @Default
 @ApplicationScoped
@@ -137,21 +134,20 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
     private AuthenticationStatus handleFormLogin(String username, @Sensitive String password, HttpServletResponse rsp, Subject clientSubject,
                                                  HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
-        int rspStatus = HttpServletResponse.SC_UNAUTHORIZED;
         UsernamePasswordCredential credential = new UsernamePasswordCredential(username, password);
         status = utils.validateUserAndPassword(getCDI(), JavaEESecConstants.DEFAULT_REALM, clientSubject, credential, httpMessageContext);
         if (status == AuthenticationStatus.SUCCESS) {
             Map messageInfoMap = httpMessageContext.getMessageInfo().getMap();
             messageInfoMap.put("javax.servlet.http.authType", "FORM");
             messageInfoMap.put("javax.servlet.http.registerSession", Boolean.TRUE.toString());
-            rspStatus = HttpServletResponse.SC_OK;
+            rsp.setStatus(HttpServletResponse.SC_OK);
         } else if (status == AuthenticationStatus.NOT_DONE) {
             // set SC_OK, since if the target is not protected, it'll be processed.
-            rspStatus = HttpServletResponse.SC_OK;
+            rsp.setStatus(HttpServletResponse.SC_OK);
         } else {
+            httpMessageContext.responseUnauthorized();
             // TODO: Audit invalid user or password
         }
-        rsp.setStatus(rspStatus);
         return status;
     }
 

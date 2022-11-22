@@ -77,6 +77,8 @@ public class HttpMessageContextImpl implements HttpMessageContext {
         this(messageInfo, clientSubject, handler);
         this.authenticationParameters = authenticationParameters;
         this.isAuthenticationRequest = true;
+        request = (HttpServletRequest) messageInfo.getRequestMessage();
+        response = (HttpServletResponse) messageInfo.getResponseMessage();
     }
 
     /*

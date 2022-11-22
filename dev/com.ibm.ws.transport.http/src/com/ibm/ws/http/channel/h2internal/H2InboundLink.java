@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,9 +20,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
-
 import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -39,12 +36,12 @@ import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
-import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.channelfw.VirtualConnection;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
 import com.ibm.wsspi.tcpchannel.TCPRequestContext;
@@ -86,7 +83,7 @@ public class H2InboundLink extends HttpInboundLink {
     private final int closeWaitForReadWatchDogTimer = 5000;
     private final int STREAM_CLOSE_DELAY = 2000;
 
-    private boolean isClosing = false;
+    private final boolean isClosing = false;
 
     // keep track of the highest IDs processed
     private int highestClientStreamId = 0;
@@ -251,8 +248,7 @@ public class H2InboundLink extends HttpInboundLink {
                         Tr.debug(tc, "createNewInboundLink cannot open a new push stream; maximum number of open push streams reached" + openPushStreams);
                     }
                     return null;
-                }
-                else if(FrameworkState.isStopping()) {
+                } else if (FrameworkState.isStopping()) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "createNewInboundLink cannot open a new push stream; framework is stopping");
                     }
@@ -1148,6 +1144,8 @@ public class H2InboundLink extends HttpInboundLink {
 
         // the device link close should always use the initial VC that this object was created with, so inVC will be ignored.
 
+        boolean closeOnThisThreadOutsideSync = false;
+
         synchronized (linkStatusSync) {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1162,18 +1160,18 @@ public class H2InboundLink extends HttpInboundLink {
                     if (closeFuture != null && !closeFuture.cancel(false)) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "close(vc,e): returning: could not cancel close future, close of muxLink is being done on a different thread"
-                                + " :close: H2InboundLink hc: " + this.hashCode());
+                                         + " :close: H2InboundLink hc: " + this.hashCode());
                         }
                         return;
                     }
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "close(vc,e): no active close runnable, will close from this thread due to server shutdown "
-                            + " :close: H2InboundLink hc: " + this.hashCode());
+                        Tr.debug(tc, "close(vc,e): no active close runnable, will close from this thread due to server shutdown or error"
+                                     + " :close: H2InboundLink hc: " + this.hashCode());
                     }
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "close(vc,e): returning: close of muxLink is being done on a different thread"
-                            + " :close: H2InboundLink hc: " + this.hashCode());
+                                     + " :close: H2InboundLink hc: " + this.hashCode());
                     }
                     return;
                 }
@@ -1238,8 +1236,13 @@ public class H2InboundLink extends HttpInboundLink {
                     }
                 }
 
-                // do the close immediately on this thread
-                connTimeout.run();
+                // We had a deadlock here when an exception happened. We are still in the linkStatusSync
+                // block, and the connTimeout.run() goes through shutting down all of the different links
+                // and objects.  Moving the connTimeout.run() outside of the sync block if not waiting on
+                // connection init.
+
+                // do the close immediately on this thread if the connection was initializing
+                // otherwise exit the sync block and do it there
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "close(vc,e): initLock count is : " + initLock.getCount());
@@ -1247,12 +1250,23 @@ public class H2InboundLink extends HttpInboundLink {
 
                 // if we are waiting on connection initialization and an error occurred, release the latch
                 if (0 < initLock.getCount()) {
+                    connTimeout.run();
+
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "close(vc,e): wake up the initLock countDownLatch");
                     }
                     initLock.countDown();
+                } else {
+                    closeOnThisThreadOutsideSync = true;
                 }
             }
+        }
+
+        if (closeOnThisThreadOutsideSync) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "close(vc,e): Closing the connection due to exception or shutdown outside the linkStatusSync block");
+            }
+            connTimeout.run();
         }
     }
 
@@ -1408,7 +1422,7 @@ public class H2InboundLink extends HttpInboundLink {
         return configuredInactivityTimeout;
     }
 
-    public boolean isClosing(){
+    public boolean isClosing() {
         return this.isClosing;
     }
 

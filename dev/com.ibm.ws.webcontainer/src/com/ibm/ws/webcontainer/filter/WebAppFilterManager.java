@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -496,7 +496,9 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
     }
 
     private FilterInstanceWrapper _loadFilter(String filterName) throws ServletException {
-        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
+        final boolean isTraceOn = com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled();
+
+        if (isTraceOn && logger.isLoggable(Level.FINE))
             logger.entering(CLASS_NAME, "_loadFilter", "filter--->" + filterName);
 
         FilterInstanceWrapper fiw = null;
@@ -519,7 +521,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
             // get the filter class name
             String filterClass = filterConfig.getFilterClassName();
 
-            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) // 306998.15
+            if (isTraceOn && logger.isLoggable(Level.FINE)) // 306998.15
                 logger.logp(Level.FINE, CLASS_NAME, "_loadFilter", "Instantiating Filter Class: {0}", filterClass);
 
             ManagedObject mo =  null;
@@ -539,7 +541,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                     // classloader used WASCC.web.webcontainer
                     final ClassLoader filterLoader = filterConfig.getFilterClassLoader();
                     if (filterLoader != null) {
-                        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { // 306998.15
+                        if (isTraceOn && logger.isLoggable(Level.FINE)) { // 306998.15
                             logger.logp(Level.FINE, CLASS_NAME, "_loadFilter", "FilterConfig classloader: " + filterLoader);
                         }
                         
@@ -553,7 +555,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                                   }
                             });
                         if (is!=null) {
-                             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { // 306998.15
+                             if (isTraceOn && logger.isLoggable(Level.FINE)) { // 306998.15
                                 logger.logp(Level.FINE, CLASS_NAME, "_loadFilter", "serialized filter exists: " +  serializedName);
                             }
                            filter = (javax.servlet.Filter) Beans.instantiate(filterLoader, filterClass);
@@ -571,7 +573,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                         // only needed for
                         // init.
                     } else {
-                        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { // 306998.15
+                        if (isTraceOn && logger.isLoggable(Level.FINE)) { // 306998.15
                             logger.logp(Level.FINE, CLASS_NAME, "_loadFilter", "Filter default classloader: " + webApp.getClassLoader());
                         }
                         final ClassLoader loader = webApp.getClassLoader();
@@ -652,7 +654,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
             }
         }
 
-        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
+        if (isTraceOn && logger.isLoggable(Level.FINE))
             logger.exiting(CLASS_NAME, "_loadFilter");
 
         return fiw;
@@ -1053,7 +1055,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                     IServletWrapper servletWrapper = ((ExtensionProcessor) requestProcessor).getServletWrapper(request, response);
                     if (servletWrapper != null) {
                         requestProcessor = servletWrapper;
-                    } else if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                    } else if (isTraceOn && logger.isLoggable(Level.FINE)) {
                         logger.logp(Level.FINE, CLASS_NAME, "handleRequest", "ExtensionProcessor could not return us a ServletWrapper");
                     }
                 }
@@ -1129,12 +1131,12 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
             }
             //PI08268
             
-            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
+            if (isTraceOn && logger.isLoggable(Level.FINE)) 
                 logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "### looking at isFiltersDefined");
 
             if (context.isFiltersDefined()) {
 
-                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
+                if (isTraceOn && logger.isLoggable(Level.FINE)) 
                     logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "### calling doFilter");
 
                 doFilter(request, response, requestProcessor, dispatchContext);
@@ -1143,20 +1145,20 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
 
                 boolean handled = false;
 
-                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
+                if (isTraceOn && logger.isLoggable(Level.FINE)) 
                     logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "no more filters defined");
 
                 if (requestProcessor != null) {
                     if (!RegisterRequestInterceptor.notifyRequestInterceptors("AfterFilters", httpServletReq, httpServletRes)) {
 
-                        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
+                        if (isTraceOn && logger.isLoggable(Level.FINE)) 
                             logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "looking at WSOC upgrade handlers");
 
                         WsocHandler wsocHandler = ((com.ibm.ws.webcontainer.osgi.webapp.WebApp) webApp).getWebSocketHandler();
                         if (wsocHandler != null) {
                             //Should WebSocket handle this request?
                             if (wsocHandler.isWsocRequest(request)) {
-                                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
+                                if (isTraceOn && logger.isLoggable(Level.FINE)) 
                                     logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "upgrade to WSOC");
                                 HttpServletRequest httpRequest = (HttpServletRequest) ServletUtil.unwrapRequest(request, HttpServletRequest.class);
                                 HttpServletResponse httpResponse = (HttpServletResponse) ServletUtil.unwrapResponse(response, HttpServletResponse.class);
@@ -1166,11 +1168,11 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                         }
 
                         if (!handled) {
-                            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
+                            if (isTraceOn && logger.isLoggable(Level.FINE)) 
                                 logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "looking at H2 upgrade");
                             // Check if this is an HTTP2 upgrade request
                             if (request instanceof HttpServletRequest) {
-                                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
+                                if (isTraceOn && logger.isLoggable(Level.FINE)) 
                                     logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "looking at H2 handler");
                                 H2Handler h2Handler = ((com.ibm.ws.webcontainer.osgi.webapp.WebApp) webApp).getH2Handler();
                                 if (h2Handler != null) {
@@ -1183,10 +1185,10 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                                         }
                                     }
 
-                                    if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
+                                    if (isTraceOn && logger.isLoggable(Level.FINE)) 
                                         logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "looking at isH2Request");
                                     if (httpInboundConnection != null && h2Handler.isH2Request(httpInboundConnection, request)) {
-                                        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
+                                        if (isTraceOn && logger.isLoggable(Level.FINE)) 
                                             logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "upgrading to H2");
                                         HttpServletRequest httpRequest = (HttpServletRequest) ServletUtil.unwrapRequest(request, HttpServletRequest.class);                                
                                         HttpServletResponse httpResponse = (HttpServletResponse) ServletUtil.unwrapResponse(response, HttpServletResponse.class);
@@ -1220,7 +1222,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                                     }
                                 }
                             }
-                            if (h2InUse && com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
+                            if (h2InUse && isTraceOn && logger.isLoggable(Level.FINE)) 
                                 logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "in H2 processing calling requestProcessor.handleRequest");
 
                             try {
