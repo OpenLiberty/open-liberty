@@ -207,7 +207,7 @@ public class TCPConfigurationImpl implements BootstrapConfiguration, TCPConfigCo
             }
 
             // add the name for the channel
-            if (key.equalsIgnoreCase(ConfigConstants.ExternalName)) {
+            if (key.equalsIgnoreCase(ConfigConstants.EXTERNAL_NAME)) {
                 this.externalName = (String) value;
                 continue;
             }

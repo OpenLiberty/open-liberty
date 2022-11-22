@@ -144,7 +144,7 @@ public class UDPConfigurationImpl implements BootstrapConfiguration {
                         continue;
                     }
                 }
-                if (key.equalsIgnoreCase(ConfigConstants.ExternalName)) {
+                if (key.equalsIgnoreCase(ConfigConstants.EXTERNAL_NAME)) {
                     setExternalName((String) value);
                     continue;
                 }

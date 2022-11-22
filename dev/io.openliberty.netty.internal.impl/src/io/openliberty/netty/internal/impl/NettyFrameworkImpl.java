@@ -321,7 +321,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
                 closeFuture.addListener(future -> {
                     if (!future.isSuccess()) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            String channelName = channel.attr(ConfigConstants.NameKey).get();
+                            String channelName = channel.attr(ConfigConstants.NAME_KEY).get();
                             Tr.debug(tc,
                                     "channel " + channelName + " failed to stop due to: " + future.cause().getMessage());
                         }

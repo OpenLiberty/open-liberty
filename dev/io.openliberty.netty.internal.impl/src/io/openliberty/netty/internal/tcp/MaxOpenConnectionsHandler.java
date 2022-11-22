@@ -49,7 +49,7 @@ public class MaxOpenConnectionsHandler extends ChannelInboundHandlerAdapter {
             // notify every 10 minutes if max concurrent conns was hit
             long currentTime = System.currentTimeMillis();
             if (currentTime > (lastConnExceededTime + 600000L)) {
-                String channelName = ctx.channel().attr(ConfigConstants.NameKey).get();
+                String channelName = ctx.channel().attr(ConfigConstants.NAME_KEY).get();
                 Tr.warning(tc, TCPMessageConstants.MAX_CONNS_EXCEEDED, channelName, maxConnections);
                 lastConnExceededTime = currentTime;
             }

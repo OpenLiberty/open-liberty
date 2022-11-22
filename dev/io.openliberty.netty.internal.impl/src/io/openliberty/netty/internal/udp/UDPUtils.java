@@ -92,10 +92,10 @@ public class UDPUtils {
                 channel.closeFuture().addListener(innerFuture -> framework.stop(channel));
 
                 // set common channel attrs
-                channel.attr(ConfigConstants.NameKey).set(config.getExternalName());
-                channel.attr(ConfigConstants.HostKey).set(newHost);
-                channel.attr(ConfigConstants.PortKey).set(inetPort);
-                channel.attr(ConfigConstants.IsInboundKey).set(config.isInboundChannel());
+                channel.attr(ConfigConstants.NAME_KEY).set(config.getExternalName());
+                channel.attr(ConfigConstants.HOST_KEY).set(newHost);
+                channel.attr(ConfigConstants.PORT_KEY).set(inetPort);
+                channel.attr(ConfigConstants.IS_INBOUND_KEY).set(config.isInboundChannel());
                 
                 // set up a helpful log message
                 String hostLogString = newHost;
@@ -241,10 +241,10 @@ public class UDPUtils {
      * @param channel
      */
     public static void logChannelStopped(Channel channel) {
-        String channelName = channel.attr(ConfigConstants.NameKey).get();
-        String host = channel.attr(ConfigConstants.HostKey).get();
-        Integer port = channel.attr(ConfigConstants.PortKey).get();
-        if (channel.attr(ConfigConstants.IsInboundKey).get()) {
+        String channelName = channel.attr(ConfigConstants.NAME_KEY).get();
+        String host = channel.attr(ConfigConstants.HOST_KEY).get();
+        Integer port = channel.attr(ConfigConstants.PORT_KEY).get();
+        if (channel.attr(ConfigConstants.IS_INBOUND_KEY).get()) {
             Tr.info(tc, UDPMessageConstants.UDP_CHANNEL_STOPPED, channelName, host, String.valueOf(port));
         } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, UDPMessageConstants.UDP_CHANNEL_STOPPED, channelName, host, String.valueOf(port));

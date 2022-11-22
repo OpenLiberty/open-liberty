@@ -24,17 +24,20 @@ import io.netty.channel.ChannelPromise;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.AttributeKey;
 
+/**
+ * Channel handler which logs TCP connection events to ensure that logging between Netty and Channelfw are 
+ * as closely related as possible.
+ */
 @Trivial
-public class LibertyLoggingHandler extends LoggingHandler{
+class TCPLoggingHandler extends LoggingHandler{
 
-	protected static final TraceComponent tc = Tr.register(LibertyLoggingHandler.class, new String[]{TCPMessageConstants.TCP_TRACE_NAME,TCPMessageConstants.NETTY_TRACE_NAME},
-			TCPMessageConstants.TCP_BUNDLE, LibertyLoggingHandler.class.getName());
+	protected static final TraceComponent tc = Tr.register(TCPLoggingHandler.class, new String[]{TCPMessageConstants.TCP_TRACE_NAME,TCPMessageConstants.NETTY_TRACE_NAME},
+			TCPMessageConstants.TCP_BUNDLE, TCPLoggingHandler.class.getName());
 	
 	protected final static AttributeKey<Integer> BYTES_READ_KEY = AttributeKey.valueOf("BYTES_READ");
 
-	public LibertyLoggingHandler(){
-		super(LibertyLoggingHandler.class);
-		//TODO Check mapping between logger level in Netty and TraceComponent
+	public TCPLoggingHandler(){
+		super(TCPLoggingHandler.class);
 	}
 	
 	@Override
@@ -49,7 +52,7 @@ public class LibertyLoggingHandler extends LoggingHandler{
 	@Override
 	public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-			Tr.event(ctx.channel(), tc, "registered " + ctx.channel() + ", key is " + null); //TODO Can't get selection key for Netty, check if this is actually necessary
+			Tr.event(ctx.channel(), tc, "registered Logging Handler for channel: " + ctx.channel());
 		}
 		ctx.fireChannelRegistered();
 	}
@@ -111,15 +114,9 @@ public class LibertyLoggingHandler extends LoggingHandler{
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-			Tr.event(ctx.channel(), tc, "read (async) called for local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress()+ (msg instanceof ByteBuf ? " bytes read: "+((ByteBuf) msg).readableBytes() : " object read: " + msg));
+			Tr.event(ctx.channel(), tc, "read (async) called for local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress()+ " bytes read: "+((ByteBuf) msg).readableBytes());
 		}
-		if(msg instanceof ByteBuf) {
-			ctx.channel().attr(BYTES_READ_KEY).getAndSet(ctx.channel().attr(BYTES_READ_KEY).get() + ((ByteBuf) msg).readableBytes());
-		}else {
-			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(ctx.channel(), tc, "Could not get bytes for object: " + msg);
-			}
-		}
+		ctx.channel().attr(BYTES_READ_KEY).getAndSet(ctx.channel().attr(BYTES_READ_KEY).get() + ((ByteBuf) msg).readableBytes());
 		ctx.fireChannelRead(msg);
 	}
 
@@ -128,14 +125,14 @@ public class LibertyLoggingHandler extends LoggingHandler{
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
 			Tr.event(ctx.channel(), tc, "write (async) requested for local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress()+ (msg instanceof ByteBuf ? " bytes to be written: "+((ByteBuf) msg).readableBytes() : " object to write: " + msg));
 		}
-		Integer bytesToWrite = (msg instanceof ByteBuf ? ((ByteBuf) msg).readableBytes() : null);
+		Integer bytesToWrite = ((ByteBuf) msg).readableBytes();
 		ctx.write(msg, promise).addListener(new ChannelFutureListener() {
 			@Override
 			public void operationComplete(ChannelFuture future) throws Exception {
 				if(future.isSuccess())
-					Tr.event(ctx.channel(), tc, "write (async) finished sucessfully for local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress()+ " wrote: " + (bytesToWrite == null ? msg : bytesToWrite + " bytes"));
+					Tr.event(ctx.channel(), tc, "write (async) finished sucessfully for local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress()+ " wrote: " + bytesToWrite + " bytes");
 				else
-					Tr.event(ctx.channel(), tc, "write (async) FAILED for local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress()+" did not write : "+ (bytesToWrite == null ? msg : bytesToWrite + " bytes"));
+					Tr.event(ctx.channel(), tc, "write (async) FAILED for local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress()+" did not write : "+ bytesToWrite + " bytes");
 			}
 		});
 	}
@@ -155,7 +152,5 @@ public class LibertyLoggingHandler extends LoggingHandler{
 		}
 		super.userEventTriggered(ctx, evt);
 	}
-
-
 
 }

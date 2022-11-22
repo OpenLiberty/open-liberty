@@ -38,7 +38,7 @@ public class TCPChannelInitializerImpl extends ChannelInitializerWrapper {
     @Override
     protected void initChannel(Channel channel) throws Exception {
         if (TraceComponent.isAnyTracingEnabled()) {
-        	channel.pipeline().addFirst(new LibertyLoggingHandler());
+        	channel.pipeline().addFirst(new TCPLoggingHandler());
 		}
         if (config.getInactivityTimeout() > 0) {
             channel.pipeline().addLast(new InactivityTimeoutHandler(0, 0, config.getInactivityTimeout(), TimeUnit.MILLISECONDS));
