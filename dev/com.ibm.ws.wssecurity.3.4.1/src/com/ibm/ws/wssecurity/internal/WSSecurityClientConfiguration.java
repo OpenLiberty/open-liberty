@@ -255,8 +255,7 @@ public class WSSecurityClientConfiguration implements ConfigurationListener {
                 if (entry_key.startsWith(".")
                     || entry_key.startsWith("config.")
                     || entry_key.startsWith("service.")
-                    || entry_key.equals("id")
-                    || entry_key.startsWith("osgi.ds.")) {
+                    || entry_key.equals("id")) {
                     continue;
                 }
                 Object entry_value = entry.getValue();//(String) properties.get(entry_key);

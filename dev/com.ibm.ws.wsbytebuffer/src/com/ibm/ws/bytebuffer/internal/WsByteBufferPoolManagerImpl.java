@@ -127,8 +127,7 @@ public class WsByteBufferPoolManagerImpl implements WsByteBufferPoolManager {
                     key.startsWith("component.") ||
                     key.startsWith("config.") ||
                     key.startsWith("parentPid") ||
-                    key.startsWith("id") ||
-                    key.startsWith("osgi.ds.")) {
+                    key.startsWith("id")) {
                     // skip osgi standard properties
                     continue;
                 }
