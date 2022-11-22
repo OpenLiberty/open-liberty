@@ -229,8 +229,7 @@ public class SampleTAI implements TrustAssociationInterceptor {
                 if (key.startsWith(".")
                     || key.startsWith("config.")
                     || key.startsWith("service.")
-                    || key.equals("id")
-                    || key.startsWith("osgi.ds.")) {
+                    || key.equals("id")) {
                     continue;
                 }
                 Object value = cProps.get(key);

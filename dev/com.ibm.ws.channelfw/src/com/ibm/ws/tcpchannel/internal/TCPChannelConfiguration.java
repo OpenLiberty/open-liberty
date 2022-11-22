@@ -128,8 +128,7 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
                key.startsWith("service.") ||
                key.startsWith("component.") ||
                key.startsWith("config.") ||
-               key.startsWith("objectClass") ||
-               key.startsWith("osgi.ds.");
+               key.startsWith("objectClass");
     }
 
     private void setValues() throws ChannelException {
