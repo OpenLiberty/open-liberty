@@ -21,7 +21,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWOAU0062E_REDIRECT_URI_INVALID = "CWOAU0062E";
 
     public static final String CWWKS1406E_INVALID_CLIENT_CREDENTIAL = "CWWKS1406E";
-
+    public static final String CWWKS1608E_MULTIPLE_RESPONSE_TYPE_ERROR = "CWWKS1608E";
     public static final String CWWKS1652A_AUTH_SEND_FAILURE = "CWWKS1652A";
 
     public static final String CWWKS1925E_MULTIPLE_ANNOTATIONS = "CWWKS1925E";
@@ -35,6 +35,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS2405E_PROVIDERMETADATA_MISSING_AUTHENDPOINT = "CWWKS2405E";
     public static final String CWWKS2407E_ERROR_VERIFYING_RESPONSE = "CWWKS2407E";
     public static final String CWWKS2410E_CANNOT_FIND_STATE = "CWWKS2410E";
+    public static final String CWWKS2423E_OIDC_CLIENT_INVALID_RESPONSE_TYPE = "CWWKS2423E";
 
     public static final String CWWKS2416E_FAILED_TO_REACH_ENDPOINT = "CWWKS2416E";
 

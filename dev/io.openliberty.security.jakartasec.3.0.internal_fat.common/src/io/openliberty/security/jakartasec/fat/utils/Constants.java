@@ -27,6 +27,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String CLIENT_SECURE_BASE = "clientSecureBase";
     public static final String USE_SESSION = "useSession";
     public static final String USE_SESSION_EXPRESSION = "useSessionExpression";
+    public static final String RESPONSE_TYPE = "responseType";
     public static final String PROVIDER = "provider";
     public static final String LOGOUT = "logout";
     public static final String LOGOUT_REDIRECT_URI = "logoutRedirectURI";
@@ -55,8 +56,17 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String EMAIL_SCOPE = "email";
     public static final String PROFILE_SCOPE = "profile";
 
-    // flows
+    // authorization code flow
     public static final String CODE_FLOW = "code";
+
+    // implicit flows
+    public static final String IDTOKEN_FLOW = "id_token";
+    public static final String IDTOKEN_TOKEN_FLOW = "id_token token";
+
+    // hybrid flows
+    public static final String CODE_IDTOKEN_FLOW = "code id_token";
+    public static final String CODE_TOKEN_FLOW = "code token";
+    public static final String CODE_IDTOKEN_TOKEN_FLOW = "code id_token token";
 
     // Display
     public static final String PAGE_DISPLAY = "page";
