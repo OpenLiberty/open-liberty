@@ -140,10 +140,10 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
             Map messageInfoMap = httpMessageContext.getMessageInfo().getMap();
             messageInfoMap.put("javax.servlet.http.authType", "FORM");
             messageInfoMap.put("javax.servlet.http.registerSession", Boolean.TRUE.toString());
-            rsp.setStatus(HttpServletResponse.SC_OK);
+            httpMessageContext.getResponse().setStatus(HttpServletResponse.SC_OK);
         } else if (status == AuthenticationStatus.NOT_DONE) {
             // set SC_OK, since if the target is not protected, it'll be processed.
-            rsp.setStatus(HttpServletResponse.SC_OK);
+            httpMessageContext.getResponse().setStatus(HttpServletResponse.SC_OK);
         } else {
             httpMessageContext.responseUnauthorized();
             // TODO: Audit invalid user or password

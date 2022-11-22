@@ -122,7 +122,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
 
     @SuppressWarnings("unchecked")
     private AuthenticationStatus setChallengeAuthorizationHeader(HttpMessageContext httpMessageContext) {
-        HttpServletResponse rsp = (HttpServletResponse) httpMessageContext.getMessageInfo().getResponseMessage();
+        HttpServletResponse rsp = httpMessageContext.getResponse();
         rsp.setHeader("WWW-Authenticate", "Basic realm=\"" + realmName + "\"");
         httpMessageContext.responseUnauthorized();
         httpMessageContext.getMessageInfo().getMap().put(AttributeNameConstants.WSCREDENTIAL_REALM, realmName);
