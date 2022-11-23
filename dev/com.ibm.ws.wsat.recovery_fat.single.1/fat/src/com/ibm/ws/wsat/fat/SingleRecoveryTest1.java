@@ -10,34 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.wsat.fat;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.tx.jta.ut.util.XAResourceImpl;
-import com.ibm.websphere.simplicity.ProgramOutput;
-import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.wsat.fat.tests.SingleRecoveryTest;
-import com.ibm.ws.wsat.fat.util.WSATTest;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.exception.TopologyException;
-import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
-import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
 public class SingleRecoveryTest1 extends SingleRecoveryTest {

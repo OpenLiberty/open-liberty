@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -255,7 +255,7 @@ public class SimpleServlet extends FATServlet {
     /**
      * Test enlistment in transactions.
      *
-     * @param request HTTP request
+     * @param request  HTTP request
      * @param response HTTP response
      * @throws Exception if an error occurs.
      */
@@ -560,8 +560,6 @@ public class SimpleServlet extends FATServlet {
     }
 
     public void testLTCAfterGlobalTran(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        InitialContext context = new InitialContext();
-        //DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/derby");
         UserTransaction tran = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
         Statement stmt;
         Connection con;

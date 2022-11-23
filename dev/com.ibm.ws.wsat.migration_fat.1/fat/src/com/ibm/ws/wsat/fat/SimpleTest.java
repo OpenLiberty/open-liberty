@@ -26,7 +26,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.transaction.fat.util.FATUtils;
-import com.ibm.ws.wsat.fat.util.WSATTest;
 import com.ibm.ws.wsat.fat.util.DBTestBase;
 
 import componenttest.annotation.AllowedFFDC;
