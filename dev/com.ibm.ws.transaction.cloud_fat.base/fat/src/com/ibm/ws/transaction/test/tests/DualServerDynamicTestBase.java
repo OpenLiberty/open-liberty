@@ -20,11 +20,11 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.RemoteFile;
-import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
-import com.ibm.ws.transaction.test.FATSuite;
+import com.ibm.ws.transaction.fat.util.TxShrinkHelper;
+import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.database.container.DatabaseContainerType;
@@ -41,6 +41,7 @@ public class DualServerDynamicTestBase extends FATServletClient {
 
     protected static LibertyServer serverTemplate;
     public static final String APP_NAME = "transaction";
+    protected static final String APP_PATH = "../com.ibm.ws.transaction.cloud_fat.base/";
 
     public static LibertyServer server1;
     public static LibertyServer server2;
@@ -49,7 +50,7 @@ public class DualServerDynamicTestBase extends FATServletClient {
     public static String cloud1RecoveryIdentity;
 
     public static void setupDriver(LibertyServer server) throws Exception {
-        JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
+        JdbcDatabaseContainer<?> testContainer = TxTestContainerSuite.testContainer;
         //Get driver name
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
@@ -72,10 +73,10 @@ public class DualServerDynamicTestBase extends FATServletClient {
         final String method = "dynamicTest";
         final String id = String.format("%03d", test);
 
-        Log.info(getClass(), method, "FATSuite.databaseContainerType: " + FATSuite.databaseContainerType);
+        Log.info(getClass(), method, "FATSuite.databaseContainerType: " + TxTestContainerSuite.databaseContainerType);
 
         // Start Servers
-        if (FATSuite.databaseContainerType != DatabaseContainerType.Derby) {
+        if (TxTestContainerSuite.databaseContainerType != DatabaseContainerType.Derby) {
             FATUtils.startServers(runner, server1, server2);
         } else {
             FATUtils.startServers(runner, server1);
@@ -93,7 +94,7 @@ public class DualServerDynamicTestBase extends FATServletClient {
         server1.postStopServerArchive(); // must explicitly collect since crashed server
 
         // Now start server2
-        if (FATSuite.databaseContainerType == DatabaseContainerType.Derby) {
+        if (TxTestContainerSuite.databaseContainerType == DatabaseContainerType.Derby) {
             FATUtils.startServers(runner, server2);
         }
 
@@ -148,8 +149,8 @@ public class DualServerDynamicTestBase extends FATServletClient {
         servletName = APP_NAME + "/" + servlet;
         cloud1RecoveryIdentity = recoveryId;
 
-        ShrinkHelper.defaultApp(server1, APP_NAME, "com.ibm.ws.transaction.*");
-        ShrinkHelper.defaultApp(server2, APP_NAME, "com.ibm.ws.transaction.*");
+        TxShrinkHelper.defaultApp(server1, APP_NAME, APP_PATH, "servlets.*");
+        TxShrinkHelper.defaultApp(server2, APP_NAME, APP_PATH, "servlets.*");
 
         server1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
         server2.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);

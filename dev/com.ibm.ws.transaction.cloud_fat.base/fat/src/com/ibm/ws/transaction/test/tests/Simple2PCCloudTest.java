@@ -29,7 +29,6 @@ import com.ibm.websphere.simplicity.config.Fileset;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
-import com.ibm.ws.transaction.web.Simple2PCCloudServlet;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
@@ -40,6 +39,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import servlets.Simple2PCCloudServlet;
 
 @RunWith(FATRunner.class)
 public class Simple2PCCloudTest extends FATServletClient {
@@ -64,13 +64,9 @@ public class Simple2PCCloudTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
-        // Include the 'app1.web' package and all of it's java classes and sub-packages
-        // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
-        // Exports the resulting application to the ${server.config.dir}/apps/ directory
-        ShrinkHelper.defaultApp(server1, APP_NAME, "com.ibm.ws.transaction.*");
-        ShrinkHelper.defaultApp(server2, APP_NAME, "com.ibm.ws.transaction.*");
-        ShrinkHelper.defaultApp(longLeaseLengthServer1, APP_NAME, "com.ibm.ws.transaction.*");
+        ShrinkHelper.defaultApp(server1, APP_NAME, "servlets.*");
+        ShrinkHelper.defaultApp(server2, APP_NAME, "servlets.*");
+        ShrinkHelper.defaultApp(longLeaseLengthServer1, APP_NAME, "servlets.*");
 
         server1.setServerStartTimeout(LOG_SEARCH_TIMEOUT);
         server2.setServerStartTimeout(LOG_SEARCH_TIMEOUT);

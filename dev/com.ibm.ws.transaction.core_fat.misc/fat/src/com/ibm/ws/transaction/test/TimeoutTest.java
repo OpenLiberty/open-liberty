@@ -18,27 +18,15 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.transaction.web.TimeoutServlet;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import servlets.TimeoutServlet;
 
-/**
- * Example Shrinkwrap FAT project:
- * <li> Application packaging is done in the @BeforeClass, instead of ant scripting.
- * <li> Injects servers via @Server annotation. Annotation value corresponds to the
- * server directory name in 'publish/servers/%annotation_value%' where ports get
- * assigned to the LibertyServer instance when the 'testports.properties' does not
- * get used.
- * <li> Specifies an @RunWith(FATRunner.class) annotation. Traditionally this has been
- * added to bytecode automatically by ant.
- * <li> Uses the @TestServlet annotation to define test servlets. Notice that not all @Test
- * methods are defined in this class. All of the @Test methods are defined on the test
- * servlet referenced by the annotation, and will be run whenever this test class runs.
- */
 @RunWith(FATRunner.class)
 public class TimeoutTest extends FATServletClient {
 
@@ -52,9 +40,9 @@ public class TimeoutTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.transaction.web.*");
+        ShrinkHelper.defaultApp(server, APP_NAME, "servlets.*");
 
-        server.setServerStartTimeout(300000);
+        server.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
         server.startServer();
     }
 
@@ -70,5 +58,4 @@ public class TimeoutTest extends FATServletClient {
             }
         });
     }
-
 }

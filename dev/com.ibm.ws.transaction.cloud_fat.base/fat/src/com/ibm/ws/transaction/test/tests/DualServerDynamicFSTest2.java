@@ -14,13 +14,12 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.transaction.web.SimpleFS2PCCloudServlet;
-
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;
+import servlets.SimpleFS2PCCloudServlet;
 
 @Mode
 @RunWith(FATRunner.class)

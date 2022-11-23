@@ -17,7 +17,6 @@ dependencies {
                project(':io.openliberty.org.apache.commons.logging')
 }
 
-
 File sharedDir = new File(autoFvtDir, 'publish/shared/resources')
 
 task addDerbyToSharedDir(type: Copy) {
@@ -27,16 +26,7 @@ task addDerbyToSharedDir(type: Copy) {
 }
 
 task copyCommonFiles {
-  dependsOn ':com.ibm.ws.transaction.core_fat.base:autoFVT'
   doLast {
-    /*
-     * Copy test application resources.
-     */
-    copy {
-      from project(':com.ibm.ws.transaction.core_fat.base').file('test-applications')
-      into new File('test-applications')
-    }
-
     /*
      * Copy common publish files.
      */
@@ -57,9 +47,6 @@ jar {
 autoFVT.dependsOn jar
 
 clean.doLast {
-  if (file('test-applications').exists()){
-    file('test-applications').deleteDir()
-  }
   if (file('publish').exists()){
     file('publish').deleteDir()
   }

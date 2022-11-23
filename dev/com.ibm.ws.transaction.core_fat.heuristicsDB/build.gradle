@@ -13,8 +13,8 @@
 dependencies {
   requiredLibs project(":com.ibm.ws.transaction.fat.util"),
                project(":com.ibm.ws.tx.embeddable"),
-               project(":com.ibm.ws.transaction.core_fat.base"),
                project(":com.ibm.ws.transaction.core_fat.baseDB"),
+               project(":com.ibm.ws.transaction.core_fat.heuristics"),
                project(':io.openliberty.org.apache.commons.logging')
 }
 
@@ -27,16 +27,7 @@ task addDerbyToSharedDir(type: Copy) {
 }
 
 task copyCommonFiles {
-  dependsOn ':com.ibm.ws.transaction.core_fat.base:autoFVT'
   doLast {
-    /*
-     * Copy test application resources.
-     */
-    copy {
-      from project(':com.ibm.ws.transaction.core_fat.base').file('test-applications/transaction')
-      into new File('test-applications/transaction')
-    }
-
     /*
      * Copy common publish files.
      */
@@ -57,9 +48,6 @@ jar {
 autoFVT.dependsOn copyCommonFiles
 
 clean.doLast {
-  if (file('test-applications').exists()){
-    file('test-applications').deleteDir()
-  }
   if (file('publish').exists()){
     file('publish').deleteDir()
   }

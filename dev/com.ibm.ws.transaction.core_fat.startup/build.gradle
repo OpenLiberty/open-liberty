@@ -17,7 +17,6 @@ dependencies {
                project(':io.openliberty.org.apache.commons.logging')
 }
 
-
 File sharedDir = new File(autoFvtDir, 'publish/shared/resources')
 
 task addDerbyToSharedDir(type: Copy) {
@@ -26,31 +25,10 @@ task addDerbyToSharedDir(type: Copy) {
   rename 'derby-.*.jar', 'derby.jar'
 }
 
-task copyCommonFiles {
-  doLast {
-    /*
-     * Copy test application resources.
-     */
-    copy {
-      from project(':com.ibm.ws.transaction.core_fat.base').file('test-applications/transaction')
-      into new File('test-applications/transaction')
-    }
-  }
-}
-
 addRequiredLibraries.dependsOn addDerbyToSharedDir
 addRequiredLibraries.dependsOn addJakartaTransformer
 
-jar {
-  dependsOn copyCommonFiles
-}
-
-autoFVT.dependsOn copyCommonFiles
-
 clean.doLast {
-  if (file('test-applications').exists()){
-    file('test-applications').deleteDir()
-  }
   if (file('build').exists()){
     file('build').deleteDir()
   }

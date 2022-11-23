@@ -16,13 +16,13 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.transaction.fat.util.FATUtils;
-import com.ibm.ws.transaction.web.ForcePrepareServlet;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import servlets.ForcePrepareServlet;
 
 @RunWith(FATRunner.class)
 public class ForcePrepareTest extends FATServletClient {
@@ -37,9 +37,9 @@ public class ForcePrepareTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.transaction.web.*");
+        ShrinkHelper.defaultApp(server, APP_NAME, "servlets.*");
 
-        server.setServerStartTimeout(300000);
+        server.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
         FATUtils.startServers(server);
     }
 
