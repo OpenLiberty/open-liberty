@@ -22,7 +22,8 @@ Bundle-SymbolicName: io.openliberty.jakarta.faces.4.0; singleton:=true
 Bundle-Description:  Jakarta Server Faces, MyFaces 4.0 API
 Implementation-Version: 4.0.0
 
-Export-Package: jakarta.faces.*; version=${Implementation-Version}, \
+Export-Package: \
+  jakarta.faces.*; version=${Implementation-Version}, \
   org.apache.myfaces.core.api.shared.*; version=${Implementation-Version}
 
 
@@ -33,13 +34,9 @@ DynamicImport-Package: \
   org.apache.myfaces.spi
 
 # Use this format once we have an official release and not an RC3
-# @${repo;org.apache.myfaces.core.api;${Implementation-Version};EXACT}!/jakarta/faces, \
-# @${repo;org.apache.myfaces.core.api;${Implementation-Version};EXACT}!/META-INF/**
-# Determine if we need the jakarta/faces entry here.
-# Determine if org.apache.myfaces.core:myfaces-api should be used instead.
-Include-Resource: \
-	@${repo;org.apache.myfaces.core.api;4.0.0.RC3;EXACT}!/jakarta/faces, \
-	@${repo;org.apache.myfaces.core.api;4.0.0.RC3;EXACT}!/META-INF/**
+# @${repo;org.apache.myfaces.core:myfaces-api;${Implementation-Version};EXACT}!/META-INF/**
+-includeresource: \
+	@${repo;org.apache.myfaces.core:myfaces-api;4.0.0.RC3;EXACT}!/META-INF/**
 
 instrument.disabled: true
 
@@ -48,7 +45,7 @@ publish.wlp.jar.suffix: dev/api/spec
 # Use this once we have a non RC3 release
 # org.apache.myfaces.core:myfaces-api;strategy=exact;version=${Implementation-Version},\
 -buildpath: \
-    org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9, \
+    org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9;strategy=exact, \
     org.apache.myfaces.core:myfaces-api;strategy=exact;version=4.0.0.RC3, \
     io.openliberty.jakarta.expressionLanguage.5.0;version=latest, \
     io.openliberty.jakarta.servlet.6.0;version=latest

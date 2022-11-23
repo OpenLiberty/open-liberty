@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -23,13 +23,12 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 Export-Package: \
 	jakarta.websocket; version="2.1.0",\
 
-Include-Resource: \
-  @${repo;jakarta.websocket:jakarta.websocket-client-api;2.1.0}!/META-INF/LICENSE, \
-  @${repo;jakarta.websocket:jakarta.websocket-client-api;2.1.0}!/META-INF/NOTICE
-
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
+-includeresource: \
+  @${repo;jakarta.websocket:jakarta.websocket-client-api;2.1.0;EXACT}!/!(META-INF/maven/*|module-info.class)
+
 -buildpath: \
-	jakarta.websocket:jakarta.websocket-client-api;version=2.1.0
+  jakarta.websocket:jakarta.websocket-client-api;version=2.1.0;strategy=exact
