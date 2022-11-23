@@ -13,3 +13,4 @@
      <wasJmsOutbound id="BootstrapSecureMessaging" useSSL="true" />
      <com.ibm.ws.messaging.lifecycle.SingletonAgent id="messaging.comms.client.service" />
 </server>
+
