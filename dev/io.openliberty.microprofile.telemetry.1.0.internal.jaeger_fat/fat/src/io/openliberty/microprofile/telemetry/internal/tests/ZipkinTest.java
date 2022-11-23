@@ -135,6 +135,31 @@ public class ZipkinTest {
         assertThat(child, hasProperty("name", equalToIgnoringCase(TestResource.TEST_OPERATION_NAME)));
     }
 
+    @Test
+    public void testExceptionRecorded() throws Exception {
+        HttpRequest request = new HttpRequest(server, "/spanTest/exception");
+        String traceId = request.run(String.class);
+
+        List<ZipkinSpan> spans = client.waitForSpansForTraceId(traceId, hasSize(1));
+
+        ZipkinSpan span = spans.get(0);
+
+        // Note Zipkin doesn't record any details about the exception, just that it occurred
+        assertThat(span, ZipkinSpanMatcher.hasAnnotation("exception"));
+    }
+
+    @Test
+    public void testAttributeAdded() throws Exception {
+        HttpRequest request = new HttpRequest(server, "/spanTest/attributeAdded");
+        String traceId = request.run(String.class);
+
+        List<ZipkinSpan> spans = client.waitForSpansForTraceId(traceId, hasSize(1));
+
+        ZipkinSpan span = spans.get(0);
+
+        assertThat(span, ZipkinSpanMatcher.hasTag(TestResource.TEST_ATTRIBUTE_KEY.getKey(), TestResource.TEST_ATTRIBUTE_VALUE));
+    }
+
     private boolean hasParent(ZipkinSpan span) {
         return span.getParentId() != null;
     }
