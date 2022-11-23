@@ -22,17 +22,17 @@ import org.junit.runner.RunWith;
 
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ProgramOutput;
-import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
+import com.ibm.ws.transaction.fat.util.TxShrinkHelper;
 import com.ibm.ws.transaction.test.tests.DualServerDynamicTestBase;
-import com.ibm.ws.transaction.web.Simple2PCCloudServlet;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import servlets.Simple2PCCloudServlet;
 
 @RunWith(FATRunner.class)
 public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
@@ -84,18 +84,15 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
         System.out.println("NYTRACE: DualServerPeerLockingTest.setUp called");
         servletName = APP_NAME + "/Simple2PCCloudServlet";
         cloud1RecoveryIdentity = "cloud001";
-        // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
-        // Include the 'app1.web' package and all of it's java classes and sub-packages
-        // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
-        // Exports the resulting application to the ${server.config.dir}/apps/ directory
-        ShrinkHelper.defaultApp(server1, APP_NAME, "com.ibm.ws.transaction.*");
-        ShrinkHelper.defaultApp(server2, APP_NAME, "com.ibm.ws.transaction.*");
-        ShrinkHelper.defaultApp(defaultAttributesServer1, APP_NAME, "com.ibm.ws.transaction.*");
-        ShrinkHelper.defaultApp(defaultAttributesServer2, APP_NAME, "com.ibm.ws.transaction.*");
-        ShrinkHelper.defaultApp(longPeerStaleTimeServer1, APP_NAME, "com.ibm.ws.transaction.*");
-        ShrinkHelper.defaultApp(longPeerStaleTimeServer2, APP_NAME, "com.ibm.ws.transaction.*");
-        ShrinkHelper.defaultApp(peerLockingDisabledServer1, APP_NAME, "com.ibm.ws.transaction.*");
-        ShrinkHelper.defaultApp(peerLockingEnabledServer1, APP_NAME, "com.ibm.ws.transaction.*");
+
+        TxShrinkHelper.defaultApp(server1, APP_NAME, APP_PATH, "servlets.*");
+        TxShrinkHelper.defaultApp(server2, APP_NAME, APP_PATH, "servlets.*");
+        TxShrinkHelper.defaultApp(defaultAttributesServer1, APP_NAME, APP_PATH, "servlets.*");
+        TxShrinkHelper.defaultApp(defaultAttributesServer2, APP_NAME, APP_PATH, "servlets.*");
+        TxShrinkHelper.defaultApp(longPeerStaleTimeServer1, APP_NAME, APP_PATH, "servlets.*");
+        TxShrinkHelper.defaultApp(longPeerStaleTimeServer2, APP_NAME, APP_PATH, "servlets.*");
+        TxShrinkHelper.defaultApp(peerLockingDisabledServer1, APP_NAME, APP_PATH, "servlets.*");
+        TxShrinkHelper.defaultApp(peerLockingEnabledServer1, APP_NAME, APP_PATH, "servlets.*");
 
         server1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
         server2.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);

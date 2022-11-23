@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,6 @@ import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
-import com.ibm.ws.transaction.web.DupXidServlet;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -34,6 +33,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import servlets.DupXidServlet;
 
 @RunWith(FATRunner.class)
 @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
@@ -63,11 +63,11 @@ public class DupXidTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(server1, APP_NAME, "com.ibm.ws.transaction.web.*");
-        ShrinkHelper.defaultApp(server2, APP_NAME, "com.ibm.ws.transaction.web.*");
+        ShrinkHelper.defaultApp(server1, APP_NAME, "servlets.*");
+        ShrinkHelper.defaultApp(server2, APP_NAME, "servlets.*");
 
-        server1.setServerStartTimeout(300000);
-        server2.setServerStartTimeout(300000);
+        server1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        server2.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
 
         FATUtils.startServers(server1);
     }
@@ -163,5 +163,4 @@ public class DupXidTest extends FATServletClient {
         //Check for key string to see whether recovery has been attempted
         assertNotNull(server1.waitForStringInTrace("Performed recovery for com.ibm.ws.transaction_DUPXID001"));
     }
-
 }

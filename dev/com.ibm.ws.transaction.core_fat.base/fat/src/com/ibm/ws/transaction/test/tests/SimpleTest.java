@@ -21,7 +21,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.transaction.web.SimpleServlet;
+import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
@@ -29,6 +29,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import servlets.SimpleServlet;
 
 @RunWith(FATRunner.class)
 public class SimpleTest extends FATServletClient {
@@ -43,10 +44,10 @@ public class SimpleTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.transaction.web.*");
+        ShrinkHelper.defaultApp(server, APP_NAME, "servlets.*");
 
         try {
-            server.setServerStartTimeout(300000);
+            server.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
             server.startServer();
         } catch (Exception e) {
             Log.error(SimpleTest.class, "setUp", e);
