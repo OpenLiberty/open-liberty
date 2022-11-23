@@ -102,12 +102,14 @@ public class WithSpanInterceptor {
     private static final class MethodRequestSpanNameExtractor implements SpanNameExtractor<MethodRequest> {
         @Override
         public String extract(final MethodRequest methodRequest) {
-            WithSpan annotation = methodRequest.getMethod().getDeclaredAnnotation(WithSpan.class);
-            String spanName = annotation.value();
-            if (spanName.isEmpty()) {
-                spanName = SpanNames.fromMethod(methodRequest.getMethod());
-            }
-            return spanName;
+            return AccessController.doPrivileged((PrivilegedAction<String>) () -> {
+                WithSpan annotation = methodRequest.getMethod().getDeclaredAnnotation(WithSpan.class);
+                String spanName = annotation.value();
+                if (spanName.isEmpty()) {
+                    spanName = SpanNames.fromMethod(methodRequest.getMethod());
+                }
+                return spanName;
+            });
         }
     }
 
