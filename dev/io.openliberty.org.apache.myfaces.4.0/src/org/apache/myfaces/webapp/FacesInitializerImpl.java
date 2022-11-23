@@ -33,6 +33,7 @@ import org.apache.myfaces.spi.InjectionProviderFactory;
 import org.apache.myfaces.util.ExternalSpecifications;
 import org.apache.myfaces.view.facelets.tag.MetaRulesetImpl;
 
+import jakarta.el.ELManager;
 import jakarta.el.ExpressionFactory;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ProjectStage;
@@ -723,24 +724,10 @@ public class FacesInitializerImpl implements FacesInitializer
     protected void initContainerIntegration(ServletContext servletContext, ExternalContext externalContext)
     {
         ExpressionFactory expressionFactory = getUserDefinedExpressionFactory(externalContext);
+
         if (expressionFactory == null)
         {
-            String[] candidates = new String[] { "org.apache.el.ExpressionFactoryImpl",
-                "com.sun.el.ExpressionFactoryImpl", "de.odysseus.el.ExpressionFactoryImpl",
-                "org.jboss.el.ExpressionFactoryImpl", "com.caucho.el.ExpressionFactoryImpl" };
-            
-            for (String candidate : candidates)
-            {
-                expressionFactory = loadExpressionFactory(candidate, false);
-                if (expressionFactory != null)
-                {
-                    if (log.isLoggable(Level.FINE))
-                    {
-                        log.fine(ExpressionFactory.class.getName() + " implementation found: " + candidate);
-                    }
-                    break;
-                }
-            }
+            expressionFactory = ELManager.getExpressionFactory();
         }
 
         if (expressionFactory == null)
