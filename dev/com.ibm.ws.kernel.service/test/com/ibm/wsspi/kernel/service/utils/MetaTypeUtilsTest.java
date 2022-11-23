@@ -25,21 +25,24 @@ import java.io.ObjectOutputStream;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.ibm.wsspi.kernel.service.utils.SerializableSchedule.DayOfWeekIterator;
 
 import test.common.SharedOutputManager;
 import test.utils.Utils;
@@ -404,6 +407,14 @@ public class MetaTypeUtilsTest {
         SerializableSchedule testSchedule;
         SerializableSchedule expectedSchedule;
 
+        TreeSet<DayOfWeek> weekdays = new TreeSet<DayOfWeek>();
+        TreeSet<DayOfWeek> alldays = new TreeSet<DayOfWeek>();
+        TreeSet<DayOfWeek> wednesday = new TreeSet<DayOfWeek>();
+
+        Collections.addAll(weekdays, DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY);
+        Collections.addAll(alldays, DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
+        Collections.addAll(wednesday, DayOfWeek.WEDNESDAY);
+
         //Test startup
         testSchedule = MetatypeUtils.evaluateSchedule("startup")[0];
         assertTrue(testSchedule.isStartup());
@@ -414,8 +425,7 @@ public class MetaTypeUtilsTest {
 
         //Test components
         testSchedule = MetatypeUtils.evaluateSchedule("MON-FRI 8:00-17:00 America/Chicago")[0];
-        assertFalse(testSchedule.isStartup());
-        assertTrue(testSchedule.getValidDays().containsAll(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY)));
+        assertEquals(weekdays, testSchedule.getValidDays());
         assertEquals(LocalTime.of(8, 0), testSchedule.getStartTime());
         assertEquals(LocalTime.of(17, 0), testSchedule.getEndTime());
         assertEquals(ZoneId.of("America/Chicago"), testSchedule.getTimezone());
@@ -426,10 +436,13 @@ public class MetaTypeUtilsTest {
 
         //Test Days of week
         testSchedule = MetatypeUtils.evaluateSchedule("MON-SUN 8")[0];
-        assertTrue(testSchedule.getValidDays().containsAll(Arrays.asList(DayOfWeek.values())));
+        assertEquals(alldays, testSchedule.getValidDays());
 
         testSchedule = MetatypeUtils.evaluateSchedule("WED-TUES 8")[0];
-        assertTrue(testSchedule.getValidDays().containsAll(Arrays.asList(DayOfWeek.values())));
+        assertEquals(alldays, testSchedule.getValidDays());
+
+        testSchedule = MetatypeUtils.evaluateSchedule("WED-WED 8")[0];
+        assertEquals(wednesday, testSchedule.getValidDays());
 
         //Test Serializable
         testSchedule = MetatypeUtils.evaluateSchedule("MON-FRI 8:00-17:00 America/Chicago")[0];
@@ -573,8 +586,37 @@ public class MetaTypeUtilsTest {
     }
 
     @Test
-    public void testScheduleWithin() throws Exception {
-        //Test now
+    public void testDayOfWeekIterator() throws Exception {
+        DayOfWeekIterator testIterator;
+        List<DayOfWeek> expectedDays;
+
+        //Test same start and end
+        testIterator = new DayOfWeekIterator(DayOfWeek.MONDAY, DayOfWeek.MONDAY);
+        assertTrue(testIterator.hasNext());
+        assertEquals(DayOfWeek.MONDAY, testIterator.next());
+        assertFalse(testIterator.hasNext());
+
+        //Test range of days
+        testIterator = new DayOfWeekIterator(DayOfWeek.MONDAY, DayOfWeek.FRIDAY);
+        expectedDays = new ArrayList<>(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY));
+        while (testIterator.hasNext()) {
+            assertTrue(expectedDays.remove(testIterator.next()));
+        }
+        assertEquals(0, expectedDays.size());
+
+        //Test all days
+        testIterator = new DayOfWeekIterator(DayOfWeek.WEDNESDAY, DayOfWeek.TUESDAY);
+        expectedDays = new ArrayList<>(Arrays.asList(DayOfWeek.values()));
+        assertTrue(testIterator.isComplete());
+        while (testIterator.hasNext()) {
+            assertTrue(expectedDays.remove(testIterator.next()));
+        }
+        assertEquals(0, expectedDays.size());
+    }
+
+    @Test
+    public void testScheduleCheck() throws Exception {
+        //Test now relying on server time only
         LocalDate today = ZonedDateTime.now().toLocalDate();
         LocalTime now = ZonedDateTime.now().toLocalTime();
         ZoneId here = ZonedDateTime.now().getZone();
@@ -583,24 +625,11 @@ public class MetaTypeUtilsTest {
         SerializableSchedule invalidNowDate = new SerializableSchedule(today.plusDays(1).getDayOfWeek(), today.plusDays(2).getDayOfWeek(), now.minusHours(1), now.plusHours(1), here);
         SerializableSchedule invalidNowTime = new SerializableSchedule(today.minusDays(1).getDayOfWeek(), today.plusDays(1).getDayOfWeek(), now.plusHours(1), now.plusHours(2), here);
 
-        assertTrue(validNow.withinSchedule());
-        assertFalse(invalidNowDate.withinSchedule());
-        assertFalse(invalidNowTime.withinSchedule());
+        assertTrue(validNow.checkNow());
+        assertFalse(invalidNowDate.checkNow());
+        assertFalse(invalidNowTime.checkNow());
 
-        //Test LocalDateTime
-        today = LocalDate.of(2021, 8, 25);
-        now = LocalTime.of(5, 0);
-        LocalDateTime testDateTime = LocalDateTime.of(today, now);
-
-        SerializableSchedule validLDT = new SerializableSchedule(today.minusDays(1).getDayOfWeek(), today.plusDays(1).getDayOfWeek(), now.minusHours(1), now.plusHours(1), here);
-        SerializableSchedule invalidLDTDate = new SerializableSchedule(today.plusDays(1).getDayOfWeek(), today.plusDays(2).getDayOfWeek(), now.minusHours(1), now.plusHours(1), here);
-        SerializableSchedule invalidLDTTime = new SerializableSchedule(today.minusDays(1).getDayOfWeek(), today.plusDays(1).getDayOfWeek(), now.plusHours(1), now.plusHours(2), here);
-
-        assertTrue(validLDT.withinSchedule(testDateTime));
-        assertFalse(invalidLDTDate.withinSchedule(testDateTime));
-        assertFalse(invalidLDTTime.withinSchedule(testDateTime));
-
-        //Test ZonedDateTime
+        //Test ZonedDateTime relying on a constant offset (no DST)
         here = ZoneId.of("GMT-6");
         ZonedDateTime testZonedDateTime = ZonedDateTime.of(today, now, here);
 
@@ -608,9 +637,53 @@ public class MetaTypeUtilsTest {
         SerializableSchedule invalidZDTDate = new SerializableSchedule(today.plusDays(1).getDayOfWeek(), today.plusDays(2).getDayOfWeek(), now.minusHours(1), now.plusHours(1), here);
         SerializableSchedule invalidZDTTime = new SerializableSchedule(today.minusDays(1).getDayOfWeek(), today.plusDays(1).getDayOfWeek(), now.plusHours(1), now.plusHours(2), here);
 
-        assertTrue(validZDT.withinSchedule(testZonedDateTime));
-        assertFalse(invalidZDTDate.withinSchedule(testZonedDateTime));
-        assertFalse(invalidZDTTime.withinSchedule(testZonedDateTime));
-    }
+        assertTrue(validZDT.checkInstant(testZonedDateTime));
+        assertFalse(invalidZDTDate.checkInstant(testZonedDateTime));
+        assertFalse(invalidZDTTime.checkInstant(testZonedDateTime));
 
+        //Test ZonedDateTime with different timezone between schedule and server time
+        LocalTime atFifteenFifteen = LocalTime.of(15, 15);
+        ZoneId pacific = ZoneId.of("America/Los_Angeles");
+        ZoneId central = ZoneId.of("America/Chicago");
+
+        ZonedDateTime inPacific = ZonedDateTime.of(today, atFifteenFifteen, pacific);
+        ZonedDateTime inCentral = ZonedDateTime.of(today, atFifteenFifteen, central);
+
+        // [TODAY 15:00-15:30]
+        SerializableSchedule centralSchedule = new SerializableSchedule(today.getDayOfWeek(), null, LocalTime.of(15, 0), LocalTime.of(15, 30), central);
+
+        assertTrue(centralSchedule.checkInstant(inCentral));
+        assertFalse(centralSchedule.checkInstant(inPacific));
+
+        //Test withinSchedule correctly accounts for offsets (DaylightSavingsTime)
+        LocalDate standardDay = LocalDate.of(2022, 11, 22); //Tuesday
+        LocalDate dayLightSavingDay = LocalDate.of(2022, 11, 1); //Tuesday
+        LocalTime atTwoThirty = LocalTime.of(2, 30); //2:30
+
+        ZonedDateTime zonedST = ZonedDateTime.of(standardDay, atTwoThirty, ZoneId.of("GMT-6"));
+        ZonedDateTime zonedDST = ZonedDateTime.of(dayLightSavingDay, atTwoThirty, ZoneId.of("GMT-5"));
+
+        // [TUE 2:00-3:00]
+        SerializableSchedule dstSchedule = new SerializableSchedule(DayOfWeek.TUESDAY, null, LocalTime.of(2, 0), LocalTime.of(3, 0), central);
+
+        //Make sure that schedule is valid regardless of offset
+        assertTrue(dstSchedule.checkInstant(zonedST));
+        assertTrue(dstSchedule.checkInstant(zonedDST));
+
+        //Test scheduled time is wrapped around midnight
+        LocalTime atOneThrity = LocalTime.of(1, 30);
+        LocalTime atThriteenFifteen = LocalTime.of(13, 15);
+        LocalTime atTwentyOneHundred = LocalTime.of(21, 0);
+
+        ZonedDateTime inMorning = ZonedDateTime.of(today, atOneThrity, here);
+        ZonedDateTime inAfternoon = ZonedDateTime.of(today, atThriteenFifteen, here);
+        ZonedDateTime inEvening = ZonedDateTime.of(today, atTwentyOneHundred, here);
+
+        // [TODAY 20:00-8:00] === [TODAY 20:00-23:59, TODAY 0:00-8:00]
+        SerializableSchedule wrappedSchedule = new SerializableSchedule(today.getDayOfWeek(), null, LocalTime.of(20, 0), LocalTime.of(8, 0), here);
+
+        assertTrue(wrappedSchedule.checkInstant(inMorning));
+        assertFalse(wrappedSchedule.checkInstant(inAfternoon));
+        assertTrue(wrappedSchedule.checkInstant(inEvening));
+    }
 }

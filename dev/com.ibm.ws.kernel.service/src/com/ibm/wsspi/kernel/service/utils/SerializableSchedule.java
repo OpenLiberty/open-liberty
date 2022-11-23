@@ -13,16 +13,17 @@ package com.ibm.wsspi.kernel.service.utils;
 import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeParseException;
 import java.time.format.TextStyle;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -39,7 +40,7 @@ public class SerializableSchedule implements Serializable, Traceable, FFDCSelfIn
     private static final long serialVersionUID = 1L;
 
     private final boolean startup;
-    private final List<DayOfWeek> validDays;
+    private final SortedSet<DayOfWeek> validDays;
     private final LocalTime startTime;
     private final LocalTime endTime;
     private final ZoneId timezone;
@@ -53,7 +54,7 @@ public class SerializableSchedule implements Serializable, Traceable, FFDCSelfIn
      * @param endTime   - the endTime of a schedule range.
      * @param timezone  - the timezone of a schedule. If null will use server timezone.
      */
-    public SerializableSchedule(DayOfWeek startDay, DayOfWeek endDay, LocalTime startTime, LocalTime endTime, ZoneId timezone) {
+    SerializableSchedule(DayOfWeek startDay, DayOfWeek endDay, LocalTime startTime, LocalTime endTime, ZoneId timezone) {
 
         //This constructor is only used in testing.  No need to translate this exception.
         if (startDay == null || startTime == null) {
@@ -117,7 +118,7 @@ public class SerializableSchedule implements Serializable, Traceable, FFDCSelfIn
         String[] splitDaysTimesZone = strVal.split(" ");
 
         if (splitDaysTimesZone.length < 2 || splitDaysTimesZone.length > 3) {
-            throw new IllegalArgumentException(Tr.formatMessage(tc, "invalidScheduleDelimit", originalStr, "MON-FRI 8-17:00 GMT-6"));
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "invalidScheduleDelimit", originalStr, "MON-FRI 8-17:00 America/Chicago"));
         }
 
         //Parse DayOfWeek
@@ -126,7 +127,7 @@ public class SerializableSchedule implements Serializable, Traceable, FFDCSelfIn
 
         // Ensure only one or two values
         if (splitDays.length < 1 || splitDays.length > 2)
-            throw new IllegalArgumentException(Tr.formatMessage(tc, "invalidScheduleDelimitRange", splitDaysTimesZone[0], "MON-FRI"));
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "invalidScheduleDelimitRange", splitDaysTimesZone[0], "MON-FRI 17:00 Asia/Ho_Chi_Minh"));
 
         //Attempt to parse
         try {
@@ -141,7 +142,7 @@ public class SerializableSchedule implements Serializable, Traceable, FFDCSelfIn
 
         //Ensure only one or two values
         if (splitTimes.length < 1 || splitTimes.length > 2)
-            throw new IllegalArgumentException(Tr.formatMessage(tc, "invalidScheduleDelimitRange", splitDaysTimesZone[1], "8:00-17:00"));
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "invalidScheduleDelimitRange", splitDaysTimesZone[1], "MON 8:00-17:00 Africa/Porto-Novo"));
 
         //Attempt to parse
         try {
@@ -170,7 +171,7 @@ public class SerializableSchedule implements Serializable, Traceable, FFDCSelfIn
     /**
      * @return the validDays
      */
-    public List<DayOfWeek> getValidDays() {
+    public SortedSet<DayOfWeek> getValidDays() {
         return validDays;
     }
 
@@ -195,26 +196,24 @@ public class SerializableSchedule implements Serializable, Traceable, FFDCSelfIn
         return timezone;
     }
 
-    private static List<DayOfWeek> evaluateValidDays(DayOfWeek startDay, DayOfWeek endDay) {
+    private static SortedSet<DayOfWeek> evaluateValidDays(DayOfWeek startDay, DayOfWeek endDay) {
+        TreeSet<DayOfWeek> result = new TreeSet<>();
+
         //Handle a single day
         if (endDay == null) {
-            return Arrays.asList(startDay);
+            result.add(startDay);
+            return result;
         }
 
-        //Need to iterate through days of week. Easier to use position in a circular array [0-6]
-        int startDayPosition = startDay.getValue() - 1; //Adjust since DayOfWeek uses values 1-7
-        int endDayPosition = endDay.getValue() % 7; //Adjust if endDay is Sunday (7) we want to iterate till Monday (0).
+        DayOfWeekIterator iterator = new DayOfWeekIterator(startDay, endDay);
 
-        //User has specified all days
-        if (startDayPosition == endDayPosition) {
-            return Arrays.asList(DayOfWeek.values());
+        if (iterator.isComplete()) {
+            result.addAll(Arrays.asList(DayOfWeek.values()));
+            return result;
         }
 
-        ArrayList<DayOfWeek> result = new ArrayList<>();
-
-        //Increment through circular array [0-6]
-        for (int day = startDayPosition; day != endDayPosition; day = (day + 1) % 7) {
-            result.add(DayOfWeek.of(day + 1));
+        while (iterator.hasNext()) {
+            result.add(iterator.next());
         }
 
         return result;
@@ -296,7 +295,7 @@ public class SerializableSchedule implements Serializable, Traceable, FFDCSelfIn
 
         //Compare fields taking into account possible null values
         boolean startupBool = Boolean.compare(this.startup, c.startup) == 0;
-        boolean validDaysBool = this.validDays == null ? c.validDays == null : (this.validDays.containsAll(c.validDays) && c.validDays.containsAll(this.validDays));
+        boolean validDaysBool = this.validDays == null ? c.validDays == null : (this.validDays.equals(c.validDays));
         boolean startTimeBool = this.startTime == null ? c.startTime == null : this.startTime.equals(c.startTime);
         boolean endTimeBool = this.endTime == null ? c.endTime == null : this.endTime.equals(c.endTime);
         boolean timezoneBool = this.timezone == null ? c.timezone == null : this.timezone.equals(c.timezone);
@@ -305,77 +304,131 @@ public class SerializableSchedule implements Serializable, Traceable, FFDCSelfIn
     }
 
     /**
-     * Method to determine if the current server time is within the schedule represented by this object.
+     * Method to check if the current server time is within the schedule represented by this object.
      * Note: This method will automatically adjust to use the schedule's timezone, and not the server's timezone.
      *
-     * @return boolean - true the time provided is within the scheduled represented by this object, false otherwise.
+     * @return boolean - true the current time is within the scheduled represented by this object, false otherwise.
      */
-    public boolean withinSchedule() {
-        return withinSchedule(ZonedDateTime.now());
-    }
-
-    /**
-     * Method to determine if a LocalDateTime is within the schedule represented by this object.
-     * Note: This method assumes that the LocalDateTime provided represents a ZonedDateTime within the timezone of this schedule.
-     *
-     * @param time - LocalDateTime
-     * @return boolean - true the time provided is within the scheduled represented by this object, false otherwise.
-     */
-    public boolean withinSchedule(LocalDateTime time) {
-        return withinSchedule(time.atZone(timezone));
+    public boolean checkNow() {
+        return checkInstant(ZonedDateTime.now());
     }
 
     /**
      * <pre>
-     * Method to determine if a ZonedDateTime is within the schedule represented by this object.
+     * Method to check if a ZonedDateTime (ZDT) is within the schedule represented by this object.
      *
-     * To check the current server time use {@link #withinSchedule()} instead.
-     * To check a LocalDateTime without the timezone component use {@link #withinSchedule(LocalDateTime)} instead.
+     * To check the current server time use {@link #checkNow()} instead.
      *
-     * This method will convert the time provided to the timezone that this schedule uses.
-     * Then it will check if that time is within the schedule.
+     * This method will convert the ZDT provided to the timezone that this schedule uses.
+     * This method will use the date associated with the ZDT provided to actualize the conceptual start/end times this schedule represents.
+     * Then it will check if the provided ZDT is within the schedule.
      *
      * If this schedule represents the moment the server starts, then withinSchedule will always return false.
      * </pre>
      *
-     * @param time - ZonedDateTime
+     * @param now - ZonedDateTime representing an instance in time
      * @return boolean - true the time provided is within the scheduled represented by this object, false otherwise.
      */
-    public boolean withinSchedule(ZonedDateTime time) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "withinSchedule", time);
-        }
-
+    public boolean checkInstant(ZonedDateTime now) {
         if (isStartup()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "withinSchedule", "No moment in time will ever be within this schedule since it represents the server startup time.", this);
-            }
             return false;
         }
 
         //Adjust provided time to the same timezone as this object
-        if (time.getZone() != timezone) {
-            time = time.withZoneSameInstant(timezone);
+        if (now.getZone() != timezone) {
+            now = now.withZoneSameInstant(timezone);
         }
-
-        final boolean result;
 
         // If day is not valid don't check time
-        if (!validDays.contains(time.getDayOfWeek())) {
-            result = false;
-        } else {
-            LocalTime check = time.toLocalTime();
-            result = startTime.isBefore(endTime) ? // Dont need to worry about wrapped time
-                            (startTime.isBefore(check) && check.isBefore(endTime)) : // [ xxx start --- check --- end xxx ]
-                            (check.isBefore(endTime) || startTime.isBefore(check)); //  [ --- check --- end xxx start --- check --- ]
+        if (!validDays.contains(now.getDayOfWeek())) {
+            return false;
         }
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "withinSchedule", result);
-        }
+        // Actualize the conceptual start/end times of this object into a real world ZDT
+        // That way we can compare them with the ZDT provided to this method.
+        LocalDate today = now.toLocalDate();
+        ZonedDateTime zonedStartTime = ZonedDateTime.of(startTime.atDate(today), timezone);
+        ZonedDateTime zonedEndTime = ZonedDateTime.of(endTime.atDate(today), timezone);
 
-        return result;
-
+        return zonedStartTime.isBefore(zonedEndTime) ? // Don't need to worry about wrapped time
+                        (zonedStartTime.isBefore(now) && now.isBefore(zonedEndTime)) : //  [ xxx start --- now --- end xxx ]
+                        (now.isBefore(zonedEndTime) || zonedStartTime.isBefore(now)); //  [ --- now --- end xxx start --- now --- ]
     }
 
+    /**
+     * Iterator that has a circular cursor that will traverse days of the
+     * week from a start to an end.
+     *
+     * <pre>
+     * Example:
+     * Input: start=FRI end=TUE
+     *
+     * Day of week      | MON | TUE | WED | THU | FRI | SAT | SUN |
+     * Day value        |  1  |  2  |  3  |  4  |  5  |  6  |  7  |
+     * Cursor index     |  0  |  1  |  2  |  3  |  4  |  5  |  6  |
+     * Cursor Positions --------end^             ^start -----------
+     * </pre>
+     *
+     */
+    static class DayOfWeekIterator implements Iterator<DayOfWeek> {
+
+        //DayOfWeek values are 1-7, this iterator uses indices 0-6
+        private static final int DayIndexOffset = 1;
+
+        //Index should wrap at at this boundary
+        private static final int DayIndexBoundary = 7;
+
+        private final int start;
+        private final int end;
+        private final boolean linearMode;
+
+        private int cursor;
+
+        public DayOfWeekIterator(DayOfWeek start, DayOfWeek end) {
+            if (completeAlgorithm(start.getValue() - DayIndexOffset, end.getValue() - DayIndexOffset)) {
+                //All days are represented by iterator therefore order doesn't matter and we don't need to cycle
+                this.linearMode = true;
+                this.start = 0;
+                this.end = 6;
+                this.cursor = this.start - 1;
+            } else {
+                //Order does matter and we need to make sure the cursor will cycle
+                this.linearMode = false;
+                this.start = start.getValue() - DayIndexOffset;
+                this.end = end.getValue() - DayIndexOffset;
+                this.cursor = Math.floorMod(this.start - 1, DayIndexBoundary);
+            }
+        }
+
+        @Override
+        public boolean hasNext() {
+            return cursor != end;
+        }
+
+        @Override
+        public DayOfWeek next() {
+            if (linearMode) {
+                cursor++;
+            } else {
+                cursor = (cursor + 1) % DayIndexBoundary;
+            }
+            return DayOfWeek.of(cursor + DayIndexOffset);
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Unsupported method remove");
+        }
+
+        /**
+         * Heuristic algorithm to determine if the iterator contains all possible elements
+         */
+        public boolean isComplete() {
+            return completeAlgorithm(this.start, this.end);
+        }
+
+        private static boolean completeAlgorithm(int start, int end) {
+            return (end + 1) % DayIndexBoundary == start;
+        }
+    }
 }
