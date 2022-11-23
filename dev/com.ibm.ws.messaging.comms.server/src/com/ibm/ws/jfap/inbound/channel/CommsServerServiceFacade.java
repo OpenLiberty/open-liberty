@@ -80,7 +80,7 @@ public class CommsServerServiceFacade implements Singleton {
 
     private final CHFWBundle chfw;
     private final ChannelConfiguration tcpOptions;
-    private final AtomicReference<SecureFacet> secureFacetRef = new AtomicReference<>();
+    private final AtomicReference<InboundSecureFacet> secureFacetRef = new AtomicReference<>();
     private final EventEngine eventEngine;
 
     /** Lock to guard chain actions (update,stop and sslOnlyStop).. as of now as all chain actions are executed by SCR thread */
@@ -144,7 +144,7 @@ public class CommsServerServiceFacade implements Singleton {
     }
 
     @Reference(name = "secureFacet", cardinality = OPTIONAL, policy = DYNAMIC, policyOption = GREEDY, unbind = "unbindSecureFacet")
-    void bindSecureFacet(SecureFacet facet) {
+    void bindSecureFacet(InboundSecureFacet facet) {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "bindSecureFacet", facet);
         if (securePort >= 0 && facet.areSecureSocketsEnabled()) inboundSecureChain.enable(true);
         synchronized (factotum) {
@@ -153,7 +153,7 @@ public class CommsServerServiceFacade implements Singleton {
         }
     }
 
-    void unbindSecureFacet(SecureFacet facet) {
+    void unbindSecureFacet(InboundSecureFacet facet) {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "unbindSecureFacet", facet);
         synchronized (factotum) {
             if (this.secureFacetRef.compareAndSet(facet, null))

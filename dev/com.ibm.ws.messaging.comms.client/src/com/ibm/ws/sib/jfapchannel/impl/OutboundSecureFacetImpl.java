@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jfap.inbound.channel;
+package com.ibm.ws.sib.jfapchannel.impl;
 
 import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
 import static com.ibm.ws.sib.utils.ras.SibTr.entry;
@@ -29,24 +29,20 @@ import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.wsspi.channelfw.ChannelConfiguration;
 
 /**
- * This component shares its configuration pid with {@link CommsServerServiceFacade}.
- * This component will deal with the SSL configuration of a <code>wasJmsEndpoint</code>. 
+ * This component shares its configuration pid with {@link CommsOutboundChain}.
+ * This component will deal with the SSL configuration of a <code>wasJmsOutbound</code>. 
  * 
  */
 @Component(
-        configurationPid = "com.ibm.ws.messaging.comms.server",
+        configurationPid = "com.ibm.ws.messaging.comms.wasJmsOutbound",
         configurationPolicy = REQUIRE, 
         property = "service.vendor=IBM")
-public class SecureSocketsLayerFacetImpl implements SecureFacet {
-    private static final TraceComponent tc = Tr.register(SecureSocketsLayerFacetImpl.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);
-
-    // delete the SSL refs from the facade class and move enough logic in here to let the Facade class drive the initialisation via this component
-
+public class OutboundSecureFacetImpl implements OutboundSecureFacet {
+    private static final TraceComponent tc = Tr.register(OutboundSecureFacetImpl.class, JFapChannelConstants.MSG_GROUP, JFapChannelConstants.MSG_BUNDLE);
     private final ChannelConfiguration sslOptions;
-    private final boolean secureSocketsEnabled;
 
     @Activate
-    public SecureSocketsLayerFacetImpl(
+    public OutboundSecureFacetImpl(
             @Reference(name = "sslOptions", target = "(id=unbound)", cardinality = OPTIONAL) // target to be overwritten by metatype
             ChannelConfiguration sslOptions,
             /* We have preserved the original behaviour of using defaultSSLOptions 
@@ -57,13 +53,10 @@ public class SecureSocketsLayerFacetImpl implements SecureFacet {
             ChannelFactoryProvider sslFactoryProvider,
             Map<String, Object> properties) {
         final String methodName = "<init>";
-        if (isAnyTracingEnabled() && tc.isEntryEnabled())
-            entry(this, tc, methodName, new Object[]{sslOptions, defaultSSLOptions, sslFactoryProvider, properties});
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, methodName, new Object[]{sslOptions, defaultSSLOptions, sslFactoryProvider, properties});
 
         this.sslOptions = Optional.ofNullable(sslOptions).orElse(defaultSSLOptions);
-        this.secureSocketsEnabled = sslFactoryProvider != null;
     }
-    
+
     public ChannelConfiguration getOptions() { return sslOptions; }
-    public boolean areSecureSocketsEnabled() { return secureSocketsEnabled; }
 }
