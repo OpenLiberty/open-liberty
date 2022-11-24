@@ -15,6 +15,8 @@ import java.security.Key;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jose4j.jwa.AlgorithmConstraints;
+import org.jose4j.jwa.AlgorithmConstraints.ConstraintType;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.consumer.InvalidJwtException;
@@ -23,13 +25,11 @@ import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.jwt.consumer.JwtContext;
 import org.jose4j.jwx.JsonWebStructure;
 
-import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.security.common.jwk.impl.JWKSet;
 
 import io.openliberty.security.common.jwt.JwtParsingUtils;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestParameters;
@@ -45,13 +45,9 @@ public class TokenResponseValidator {
 
     public static final TraceComponent tc = Tr.register(TokenResponseValidator.class);
 
-    static boolean initialized = false;
-
     OidcClientConfig clientConfig;
-    JWKSet jwkset;
     private HttpServletRequest request;
     private HttpServletResponse response;
-    JSONObject discoveredProviderMetadata = null;
     private Storage storage;
 
     public TokenResponseValidator(OidcClientConfig oidcClientConfig) {
@@ -141,6 +137,7 @@ public class TokenResponseValidator {
         Key verificationKey = JwtUtils.getJwsVerificationKey(jws, clientConfig);
 
         JwtConsumerBuilder builder = new JwtConsumerBuilder();
+        builder.setJwsAlgorithmConstraints(new AlgorithmConstraints(ConstraintType.WHITELIST, MetadataUtils.getIdTokenSigningAlgorithmsSupported(clientConfig)));
         builder.setRequireExpirationTime().setAllowedClockSkewInSeconds(120).setExpectedAudience(clientConfig.getClientId()).setExpectedIssuer(false,
                                                                                                                                                issuerconfigured).setRequireSubject().setSkipDefaultAudienceValidation().setVerificationKey(verificationKey).setRelaxVerificationKeyValidation();
 
@@ -151,13 +148,6 @@ public class TokenResponseValidator {
     public String getStateParameter() {
         return request.getParameter(AuthorizationRequestParameters.STATE);
         //TODO: maybe throw an exception right here if this state is not valid
-    }
-
-    /**
-     * @param jwkSet
-     */
-    public void setJwkSet(JWKSet jwkSet) {
-        this.jwkset = jwkSet;
     }
 
     /**

@@ -57,7 +57,6 @@ public class Client {
         TokenResponseValidator tokenResponseValidator = new TokenResponseValidator(this.oidcClientConfig);
         tokenResponseValidator.setRequest(request);
         tokenResponseValidator.setResponse(response);
-        tokenResponseValidator.setJwkSet(getJwkSet());
         return tokenResponseValidator.validate(tokenResponse);
     }
 
