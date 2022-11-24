@@ -88,8 +88,8 @@ autoFVT.doLast {
 	'jakartasec-3.0_fat.config.rp.ELOverride',
 	'jakartasec-3.0_fat.config.rp.userinfo.jwt.jwt',
 	'jakartasec-3.0_fat.config.rp.userinfo.jwt.opaque',
-	'jakartasec-3.0_fat.config.rp.userinfo.jose.jwt',
-	'jakartasec-3.0_fat.config.rp.userinfo.jose.opaque'
+	'jakartasec-3.0_fat.config.rp.userinfo.json.jwt',
+	'jakartasec-3.0_fat.config.rp.userinfo.json.opaque'
 
   ]
 

@@ -30,6 +30,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
+import com.ibm.wsspi.ssl.SSLSupport;
 
 import io.openliberty.security.common.jwt.exceptions.SharedKeyMissingException;
 import io.openliberty.security.common.jwt.exceptions.UnsupportedSignatureAlgorithmException;
@@ -53,15 +54,15 @@ public class JwsVerificationKeyHelper {
         SUPPORTED_SIGNATURE_ALGORITHMS = Collections.unmodifiableSet(supportedAlgorithms);
     }
 
-    private String clientId;
+    private String configId;
     @Sensitive
-    private ProtectedString clientSecret;
+    private ProtectedString sharedSecret;
     private RemoteJwkData remoteJwkData;
     private JWKSet jwkSet;
 
     private JwsVerificationKeyHelper(Builder builder) {
-        this.clientId = builder.clientId;
-        this.clientSecret = builder.clientSecret;
+        this.configId = builder.configId;
+        this.sharedSecret = builder.sharedSecret;
         this.remoteJwkData = builder.remoteJwkData;
         this.jwkSet = builder.jwkSet;
     }
@@ -86,11 +87,11 @@ public class JwsVerificationKeyHelper {
     }
 
     Key getSharedKey() throws SharedKeyMissingException, UnsupportedEncodingException {
-        if (clientSecret == null || clientSecret.isEmpty()) {
+        if (sharedSecret == null || sharedSecret.isEmpty()) {
             throw new SharedKeyMissingException();
         }
-        String clientSecretProtectedString = new String(clientSecret.getChars());
-        return new HmacKey(clientSecretProtectedString.getBytes("UTF-8"));
+        String sharedSecretProtectedString = new String(sharedSecret.getChars());
+        return new HmacKey(sharedSecretProtectedString.getBytes("UTF-8"));
     }
 
     Key retrievePublicKey(JsonWebStructure jws, String signatureAlgorithmFromJws) throws IOException, Exception {
@@ -101,14 +102,19 @@ public class JwsVerificationKeyHelper {
     }
 
     JwKRetriever createJwkRetriever(String signatureAlgorithmFromJws) throws Exception {
-        JwKRetriever jwkRetriever = new JwKRetriever(clientId, null, remoteJwkData.getJwksUri(), jwkSet, remoteJwkData.getSslSupport(), false, null, null, signatureAlgorithmFromJws);
+        String jwksUri = (remoteJwkData == null) ? null : remoteJwkData.getJwksUri();
+        SSLSupport sslSupport = (remoteJwkData == null) ? null : remoteJwkData.getSslSupport();
+
+        JwKRetriever jwkRetriever = new JwKRetriever(configId, null, jwksUri, jwkSet, sslSupport, false, null, null, signatureAlgorithmFromJws);
         // Override the retriever's HttpUtils member so we can set connection and read timeouts
         jwkRetriever.httpUtils = new HttpUtils() {
             @Override
             public HttpGet createHttpGetMethod(String url, final List<NameValuePair> commonHeaders) {
                 HttpGet request = super.createHttpGetMethod(url, commonHeaders);
-                RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(remoteJwkData.getJwksConnectTimeout()).setSocketTimeout(remoteJwkData.getJwksReadTimeout()).build();
-                request.setConfig(requestConfig);
+                if (remoteJwkData != null) {
+                    RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(remoteJwkData.getJwksConnectTimeout()).setSocketTimeout(remoteJwkData.getJwksReadTimeout()).build();
+                    request.setConfig(requestConfig);
+                }
                 return request;
             }
         };
@@ -117,19 +123,19 @@ public class JwsVerificationKeyHelper {
 
     public static class Builder {
 
-        private String clientId;
+        private String configId;
         @Sensitive
-        private ProtectedString clientSecret;
+        private ProtectedString sharedSecret;
         private RemoteJwkData remoteJwkData;
         private JWKSet jwkSet;
 
-        public Builder clientId(String clientId) {
-            this.clientId = clientId;
+        public Builder configId(String configId) {
+            this.configId = configId;
             return this;
         }
 
-        public Builder clientSecret(@Sensitive ProtectedString clientSecret) {
-            this.clientSecret = clientSecret;
+        public Builder sharedSecret(@Sensitive ProtectedString sharedSecret) {
+            this.sharedSecret = sharedSecret;
             return this;
         }
 

@@ -29,7 +29,7 @@ public class WebserviceEndpointPropertiesComponentImpl implements WebserviceEndp
     private final Map<String, String> attributes = new HashMap<String, String>();
 
     // These are properties added by the config runtime -- ignore them.
-    private final String[] ignoredPrefixes = { "service.", "config.", "component.", "osgi.ds." };
+    private final String[] ignoredPrefixes = { "service.", "config.", "component." };
 
     @Activate
     protected void activate(Map<String, Object> config) {

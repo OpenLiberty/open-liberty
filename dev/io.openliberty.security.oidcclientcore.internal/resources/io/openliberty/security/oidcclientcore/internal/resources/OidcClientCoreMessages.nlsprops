@@ -86,9 +86,9 @@ TOKEN_REQUEST_ERROR=CWWKS2416E: The {0} OpenID Connect client encountered the fo
 TOKEN_REQUEST_ERROR.explanation=The OpenID Connect client might be missing information, the request to the token endpoint failed, or another error occurred while processing the token endpoint response.
 TOKEN_REQUEST_ERROR.useraction=See the error in the message for more information. Verify that the OpenID Connect provider returned a code in the authentication response.
 
-#
-# CWWKS2417E removed and available
-#
+TOKEN_MISSING_REQUIRED_CLAIM=CWWKS2417E: The token is missing the required [{0}] claim.
+TOKEN_MISSING_REQUIRED_CLAIM.explanation=The claim that is specified in the message must be present in the token, but it is missing.
+TOKEN_MISSING_REQUIRED_CLAIM.useraction=Check the format and content of the token that is returned from the OpenID Connect provider.
 
 USERINFO_RESPONSE_ERROR=CWWKS2418W: The OpenID Connect client encountered the following error when it sent a request to the [{0}] User Info URL of the OpenID Connect provider: {1}
 USERINFO_RESPONSE_ERROR.explanation=The User Info response from the OpenID Connect provider might be malformed or missing information, or the OpenID Connect provider encountered an error when it handled the request.

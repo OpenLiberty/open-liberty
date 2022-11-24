@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,7 +73,7 @@ public class GenericFrameTests extends H2FATDriverServlet {
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
 
         h2Client.addExpectedFrame(secondFrameHeaders.clone());
-        h2Client.addExpectedFrame(new FrameData(7, dataString.getBytes(), 0, false, false, false));
+        // May or may not get the data frame response, don't count on it
 
         // Skip over stream IDs 3 and 5 create a stream with ID 7
         h2Client.sendFrame(frameHeadersToSend.clone());

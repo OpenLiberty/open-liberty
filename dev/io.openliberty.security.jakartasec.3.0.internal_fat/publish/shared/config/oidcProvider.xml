@@ -12,6 +12,9 @@
 		 
 	<openidConnectProvider
 		id="OP1"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
 		oauthProviderRef="OAuth1" />
 
 	<oauthProvider
@@ -54,7 +57,10 @@
 	</oauthProvider>		
 
 	<openidConnectProvider
-		id="OP2"
+		id="OP2"		
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
 		oauthProviderRef="OAuth2" />
 
 	<oauthProvider

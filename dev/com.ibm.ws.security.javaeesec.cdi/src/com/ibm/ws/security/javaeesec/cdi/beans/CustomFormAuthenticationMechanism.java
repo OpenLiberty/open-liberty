@@ -10,7 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.cdi.beans;
 
-import java.util.Hashtable;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -32,8 +31,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
-import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
-import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 @Default
 @ApplicationScoped
@@ -119,12 +116,11 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
             // set SC_OK, since if the target is not protected, it'll be processed.
             rspStatus = HttpServletResponse.SC_OK;
         } else {
+            httpMessageContext.responseUnauthorized();
             rspStatus = HttpServletResponse.SC_UNAUTHORIZED;
             // TODO: Audit invalid user or password
         }
-        if (rsp != null) {
-            rsp.setStatus(rspStatus);
-        }
+        httpMessageContext.getResponse().setStatus(rspStatus);
         return status;
     }
 

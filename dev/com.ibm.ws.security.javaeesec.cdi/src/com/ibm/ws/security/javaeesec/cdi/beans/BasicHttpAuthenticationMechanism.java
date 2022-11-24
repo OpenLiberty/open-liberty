@@ -122,9 +122,8 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
 
     @SuppressWarnings("unchecked")
     private AuthenticationStatus setChallengeAuthorizationHeader(HttpMessageContext httpMessageContext) {
-        HttpServletResponse rsp = (HttpServletResponse) httpMessageContext.getMessageInfo().getResponseMessage();
+        HttpServletResponse rsp = httpMessageContext.getResponse();
         rsp.setHeader("WWW-Authenticate", "Basic realm=\"" + realmName + "\"");
-        rsp.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
         httpMessageContext.responseUnauthorized();
         httpMessageContext.getMessageInfo().getMap().put(AttributeNameConstants.WSCREDENTIAL_REALM, realmName);
 
@@ -135,7 +134,6 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     private AuthenticationStatus handleAuthorizationHeader(@Sensitive String authorizationHeader, Subject clientSubject,
                                                            HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
-        int rspStatus = HttpServletResponse.SC_UNAUTHORIZED;
         HttpServletResponse rsp = httpMessageContext.getResponse();
         if (authorizationHeader.startsWith("Basic ")) {
             String encodedHeader = authorizationHeader.substring(6);
@@ -149,17 +147,17 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
                     Map messageInfoMap = httpMessageContext.getMessageInfo().getMap();
                     messageInfoMap.put("javax.servlet.http.authType", "BASIC");
                     messageInfoMap.put("javax.servlet.http.registerSession", Boolean.TRUE.toString());
-                    rspStatus = HttpServletResponse.SC_OK;
+                    rsp.setStatus(HttpServletResponse.SC_OK);
                 } else if (status == AuthenticationStatus.NOT_DONE) {
                     // set SC_OK, since if the target is not protected, it'll be processed.
-                    rspStatus = HttpServletResponse.SC_OK;
+                    rsp.setStatus(HttpServletResponse.SC_OK);
                 } else if (status == AuthenticationStatus.SEND_FAILURE) {
                     rsp.setHeader("WWW-Authenticate", "Basic realm=\"" + realmName + "\"");
                     httpMessageContext.getMessageInfo().getMap().put(AttributeNameConstants.WSCREDENTIAL_REALM, realmName);
+                    httpMessageContext.responseUnauthorized();
                 }
             }
         }
-        rsp.setStatus(rspStatus);
         return status;
     }
 

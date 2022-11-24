@@ -16,7 +16,6 @@ import java.util.NoSuchElementException;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import jakarta.data.exceptions.DataException;
 import jakarta.data.repository.Pageable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -48,17 +47,16 @@ public class PaginatedIterator<T> implements Iterator<T> {
             queryInfo.setParameters(query, args);
 
             // TODO Keyset pagination
-            // TODO possible overflow with both of these.
-            long maxPageSize = pagination.size();
-            query.setFirstResult((int) ((pagination.page() - 1) * maxPageSize));
-            query.setMaxResults((int) maxPageSize);
+            int maxPageSize = pagination.size();
+            query.setFirstResult(RepositoryImpl.computeOffset(pagination.page(), maxPageSize));
+            query.setMaxResults(maxPageSize);
             pagination = pagination.next();
 
             page = query.getResultList();
             index = -1;
             hasNext = !page.isEmpty();
         } catch (Exception x) {
-            throw new DataException(x);
+            throw RepositoryImpl.failure(x);
         } finally {
             em.close();
         }

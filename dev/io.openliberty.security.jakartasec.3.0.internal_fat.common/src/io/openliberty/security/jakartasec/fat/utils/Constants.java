@@ -47,6 +47,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String TOKEN_AUTO_REFRESH_EXPRESSION = "tokenAutoRefreshExpression";
 
     public static final String USERINFOENDPOINT = "userinfoEndpoint";
+    public static final String IDTOKENSIGNINGALGORITHMSSUPPORTED = "idTokenSigningAlgorithmsSupported";
 
     public static final String EMPTY_VALUE = "EmptyValue";
     public static final String NULL_VALUE = "NullValue";

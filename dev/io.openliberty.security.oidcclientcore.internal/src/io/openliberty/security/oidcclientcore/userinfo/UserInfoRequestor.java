@@ -11,7 +11,6 @@
 package io.openliberty.security.oidcclientcore.userinfo;
 
 import java.io.IOException;
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,26 +23,21 @@ import org.apache.http.NameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtContext;
-import org.jose4j.jwx.JsonWebStructure;
 
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.security.common.jwt.JwtParsingUtils;
-import io.openliberty.security.common.jwt.jwk.RemoteJwkData;
 import io.openliberty.security.common.jwt.jws.JwsSignatureVerifier;
-import io.openliberty.security.common.jwt.jws.JwsVerificationKeyHelper;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
-import io.openliberty.security.oidcclientcore.config.MetadataUtils;
 import io.openliberty.security.oidcclientcore.config.OidcMetadataService;
-import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
-import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoEndpointNotHttpsException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseNot200Exception;
 import io.openliberty.security.oidcclientcore.http.HttpConstants;
 import io.openliberty.security.oidcclientcore.http.OidcClientHttpUtil;
+import io.openliberty.security.oidcclientcore.jwt.JwtUtils;
 
 public class UserInfoRequestor {
 
@@ -138,36 +132,13 @@ public class UserInfoRequestor {
         JwtContext jwtContext = JwtParsingUtils.parseJwtWithoutValidation(responseString);
         if (jwtContext != null) {
             // Validate the JWS signature only; extract the claims so they can be verified elsewhere
-            JwsSignatureVerifier signatureVerifier = createSignatureVerifier(jwtContext);
+            JwsSignatureVerifier signatureVerifier = JwtUtils.createJwsSignatureVerifier(jwtContext, oidcClientConfig);
             JwtClaims claims = signatureVerifier.validateJwsSignature(jwtContext);
             if (claims != null) {
                 return JSONObject.parse(claims.toJson());
             }
         }
         return null;
-    }
-
-    JwsSignatureVerifier createSignatureVerifier(JwtContext jwtContext) throws Exception {
-        JsonWebStructure jws = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
-
-        RemoteJwkData jwkData = initializeRemoteJwkData(oidcClientConfig);
-
-        JwsVerificationKeyHelper.Builder keyHelperBuilder = new JwsVerificationKeyHelper.Builder();
-        JwsVerificationKeyHelper keyHelper = keyHelperBuilder.clientId(oidcClientConfig.getClientId()).clientSecret(oidcClientConfig.getClientSecret()).remoteJwkData(jwkData).build();
-
-        Key jwtVerificationKey = keyHelper.getVerificationKey(jws);
-
-        io.openliberty.security.common.jwt.jws.JwsSignatureVerifier.Builder verifierBuilder = new JwsSignatureVerifier.Builder();
-        JwsSignatureVerifier signatureVerifier = verifierBuilder.key(jwtVerificationKey).signatureAlgorithm(jws.getAlgorithmHeaderValue()).build();
-        return signatureVerifier;
-    }
-
-    RemoteJwkData initializeRemoteJwkData(OidcClientConfig oidcClientConfig) throws OidcDiscoveryException, OidcClientConfigurationException {
-        RemoteJwkData jwkData = new RemoteJwkData();
-        String jwksUri = MetadataUtils.getJwksUri(oidcClientConfig);
-        jwkData.setJwksUri(jwksUri);
-        jwkData.setSslSupport(OidcMetadataService.getSSLSupport());
-        return jwkData;
     }
 
     private Map<String, Object> getFromUserInfoEndpoint() throws HttpException, IOException {

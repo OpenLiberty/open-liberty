@@ -187,6 +187,17 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         return value;
     }
 
+    public String getIdTokenSigningAlgorithmsSupported() {
+
+        String value = "RS256"; // spec default is RS256, OIDC default is HS256
+        if (config.containsKey(Constants.IDTOKENSIGNINGALGORITHMSSUPPORTED)) {
+            value = getStringValue(Constants.IDTOKENSIGNINGALGORITHMSSUPPORTED);
+        }
+
+        return value;
+
+    }
+
     public String getLogoutRedirectURI() {
         System.out.println("in BaseOpenIdConfig - getLogoutRedirectURI");
         String value = "";

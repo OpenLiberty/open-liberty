@@ -70,7 +70,7 @@ class QueryInfo {
     /**
      * Value from findFirst#By, or 1 for findFirstBy, otherwise 0.
      */
-    long maxResults;
+    int maxResults;
 
     /**
      * Repository method to which this query information pertains.

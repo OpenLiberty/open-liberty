@@ -10,147 +10,107 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+
+import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.Server;
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.HttpRequest;
+import io.jaegertracing.api_v2.Model.Span;
+import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
+import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
+import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
+import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
 
+/**
+ * Test logging to Jaeger without tracing enabled
+ * <p>
+ * This is a full mode test because it requires a longer wait to assert a lack of functionality
+ */
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@Mode(TestMode.LITE)
-public class TracingNotEnabledTest extends MicroProfileTelemetryTestBase {
+public class TracingNotEnabledTest {
 
-    private static Class<?> c = AutoInstrumentationTest.class;
-    private static LibertyServer server = LibertyServerFactory.getLibertyServer("testServer1");
-    private static final int NUM_OF_CALLS = 3;
+    private static final String SERVICE_NAME = "Test service";
+
+    private static final Class<TracingNotEnabledTest> c = TracingNotEnabledTest.class;
+
+    @ClassRule
+    public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(TracingNotEnabledTest.class, "jaeger"));
+
+    public static JaegerQueryClient client;
+
+    @Server("spanTestServer")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
 
-        String os = System.getProperty("os.name").toLowerCase();
-        Log.info(c, "setUp", "os.name = " + os);
+        client = new JaegerQueryClient(jaegerContainer);
 
-        clearContainerOutput();
-        String jaegerHost = jaegerContainer.getHost();
-        String jaegerGrpcPort = String.valueOf(jaegerContainer.getMappedPort(JAEGER_GRPC_PORT));
-        Log.info(c, "setUp", "Jaeger container: host=" + jaegerHost + "  port=" + jaegerGrpcPort);
-        server.addEnvVar(ENV_OTEL_SERVICE_NAME, OTEL_SERVICE_NAME_SYSTEM);
-        server.addEnvVar(ENV_OTEL_TRACES_EXPORTER, OTEL_TRACES_EXPORTER_JAEGER);
-        server.addEnvVar(ENV_OTEL_EXPORTER_JAEGER_ENDPOINT, "http://" + jaegerHost + ":" + jaegerGrpcPort);
-        //server.addEnvVar(ENV_OTEL_SDK_DISABLED, OTEL_SDK_DISABLED); tracing not enabled
+        server.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "otlp");
+        server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOltpGrpcUrl());
+
+        server.addEnvVar(TestConstants.ENV_OTEL_SERVICE_NAME, SERVICE_NAME);
+        server.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100"); // Wait no more than 100ms to send traces to the server
+        // server.addEnvVar(TestConstants.ENV_OTEL_SDK_DISABLED, "false"); // Do not enable tracing
+
         // Construct the test application
-        WebArchive system = ShrinkWrap.create(WebArchive.class, "system.war");
-        system.addPackages(true, "io.openliberty.guides.system");
-        ShrinkHelper.exportAppToServer(server, system);
-        serverStart();
-    }
-
-    @Before
-    public void setUpTest() throws Exception {
-
-        if (!server.isStarted()) {
-            serverStart();
-        }
-        server.addInstalledAppForValidation("system");
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    @AfterClass
-    public static void completeTest() throws Exception {
-        try {
-            if (server.isStarted()) {
-                Log.info(c, "competeTest", "---> Stopping server..");
-                server.stopServer("TRAS4301W");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void serverStart() throws Exception {
-        Log.info(c, "serverStart", "--->  Starting Server.. ");
+        WebArchive jaegerTest = ShrinkWrap.create(WebArchive.class, "spanTest.war")
+                                          .addClass(TestResource.class);
+        ShrinkHelper.exportAppToServer(server, jaegerTest, SERVER_ONLY);
         server.startServer();
     }
 
-    @Override
-    protected LibertyServer getServer() {
-        return server;
+    @AfterClass
+    public static void teardown() throws Exception {
+        server.stopServer();
+    }
+
+    @AfterClass
+    public static void closeClient() throws Exception {
+        client.close();
     }
 
     @Test
-    public void notEnabledTest() throws JSONException, InterruptedException {
-        int count = NUM_OF_CALLS;
-        String result = null;
-        while (count > 0) {
-            result = runApp(getAppUrl("system/properties"));
-            count--;
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-            }
-        }
-        Log.info(c, "systemSpanTest", "system = " + result);
-        assertNotNull("result is null", result);
-        // Query Jaeger for spans
-        int retries = 10;
-        JSONArray dataArray = null;
-        do {
-            Thread.sleep(1000); // Delay for 1 second
-            String json = queryJaeger();
-            Log.info(c, "systemSpanTest", "Jaeger json = " + json);
-            assertNotNull("Jaeger returned empty json", json);
-            //
-            // The normal return JSON structure will be like this:
-            // {
-            //   "data":[
-            //     {
-            //       "traceID":"...",
-            //       "spans":[...],
-            //       "processes": { },
-            //       "warnings":"..."
-            //     }
-            //     {
-            //       "traceID":"...",
-            //       "spans":[...],
-            //       "processes": { },
-            //       "warnings":"..."
-            //     }
-            //   ],
-            //  "total":0,
-            //  "limit":0,
-            //  "offest":0,
-            //  "errors":"null"
-            // }
-            JSONObject jobj = new JSONObject(json);
-            // Make sure erorrs is null
-            assertTrue("errors is not null", jobj.getString("errors").equals("null"));
-            // Make sure data contains the same number of spans as the number of JAX-RS calls
-            dataArray = jobj.getJSONArray("data");
-            retries--;
-        } while ((retries > 0) && ((dataArray == null) || (dataArray.length() < NUM_OF_CALLS)));
-        assertEquals("data contains spans but tracing is not enabled", 0, dataArray.length());
+    public void testTracingNotEnabled() throws Exception {
+        HttpRequest request = new HttpRequest(server, "/spanTest");
+        String traceId = request.run(String.class);
+
+        Log.info(c, "testBasic", "TraceId is " + traceId);
+
+        // We still expect a blank traceId when tracing is disabled
+        assertThat(traceId, equalTo("00000000000000000000000000000000"));
+
+        // Wait 12 seconds to give a chance for any traces to arrive
+        // With BSP_SCHEDULE_DELAY, traces should be sent after 100ms,
+        // however the default is to send only every 10 seconds.
+        Thread.sleep(12_000);
+
+        // With tracing disabled, we expect a traceId of 00000000000000000000000000000000, which Jaeger reports is an invalid ID.
+        // Instead, we check for all traces for the service. As we start a clean Jaeger instance for this test, there should be none.
+        List<Span> spans = client.getSpansForServiceName(SERVICE_NAME);
+        assertThat(spans, is(empty()));
     }
 
 }

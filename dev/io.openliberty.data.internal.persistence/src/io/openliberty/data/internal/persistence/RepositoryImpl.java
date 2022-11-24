@@ -17,6 +17,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.sql.SQLNonTransientConnectionException;
+import java.sql.SQLRecoverableException;
+import java.sql.SQLTransientConnectionException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,6 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Flow.Publisher;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -52,9 +56,13 @@ import jakarta.data.Inheritance;
 import jakarta.data.Result;
 import jakarta.data.Select;
 import jakarta.data.Select.Aggregate;
-import jakarta.data.exceptions.DataException;
 import jakarta.data.Update;
 import jakarta.data.Where;
+import jakarta.data.exceptions.DataConnectionException;
+import jakarta.data.exceptions.DataException;
+import jakarta.data.exceptions.EmptyResultException;
+import jakarta.data.exceptions.MappingException;
+import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.Limit;
@@ -67,6 +75,8 @@ import jakarta.data.repository.Slice;
 import jakarta.data.repository.Sort;
 import jakarta.data.repository.Streamable;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceException;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Status;
 
@@ -278,6 +288,84 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         queryInfo.jpql = q == null ? queryInfo.jpql : q.toString();
 
         return queryInfo;
+    }
+
+    /**
+     * Compute the zero-based offset to use as a starting point for a Limit range.
+     *
+     * @param limit limit that was specified by the application.
+     * @return offset value.
+     * @throws UnsupportedOperationException if the starting point for the limited range is not positive or would overflow Integer.MAX_VALUE.
+     */
+    static int computeOffset(Limit range) {
+        long startIndex = range.startAt() - 1;
+        if (startIndex >= 0 && startIndex <= Integer.MAX_VALUE)
+            return (int) startIndex;
+        else
+            throw new UnsupportedOperationException("The starting point for " + range + " is not within 1 to Integer.MAX_VALUE (2147483647)."); // TODO
+    }
+
+    /**
+     * Compute the zero-based offset for the start of a page.
+     *
+     * @param pageNumber  requested page number.
+     * @param maxPageSize maximum size of pages.
+     * @return offset for the specified page.
+     * @throws UnsupportedOperationException if the offset exceeds Integer.MAX_VALUE.
+     */
+    static int computeOffset(long pageNumber, int maxPageSize) {
+        long pageIndex = pageNumber - 1; // zero-based
+        if (Integer.MAX_VALUE / maxPageSize >= pageIndex)
+            return (int) (pageIndex * maxPageSize);
+        else
+            throw new UnsupportedOperationException("The offset for " + pageNumber + " pages of size " + maxPageSize + " exceeds Integer.MAX_VALUE (2147483647)."); // TODO
+    }
+
+    /**
+     * Replaces an exception with a Jakarta Data specification-defined exception,
+     * chaining the original exception as the cause.
+     * This method replaces all exceptions that are not RuntimeExceptions.
+     * For RuntimeExceptions, it only replaces those that are
+     * jakarta.persistence.PersistenceException (and subclasses).
+     *
+     * @param original exception to possibly replace.
+     * @return exception to replace with, if any. Otherwise, the original.
+     */
+    @Trivial
+    static RuntimeException failure(Exception original) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        RuntimeException x = null;
+        if (original instanceof PersistenceException) {
+            for (Throwable cause = original; x == null && cause != null; cause = cause.getCause()) {
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(tc, "checking " + cause.getClass().getName() + " with message " + cause.getMessage());
+
+                // TODO If this ever becomes real code, it should be delegated to the JDBC integration layer
+                // where there is more thorough logic that takes into account configuration and database differences
+                if (cause instanceof SQLRecoverableException
+                    || cause instanceof SQLNonTransientConnectionException
+                    || cause instanceof SQLTransientConnectionException)
+                    x = new DataConnectionException(original);
+            }
+            if (x == null) {
+                if (original instanceof NoResultException)
+                    x = new EmptyResultException(original);
+                else if (original instanceof jakarta.persistence.NonUniqueResultException)
+                    x = new NonUniqueResultException(original);
+                else
+                    x = new DataException(original);
+            }
+        } else if (original instanceof CompletionException) {
+            x = new MappingException(original); // TODO categorization is too broad
+        } else if (original instanceof RuntimeException) {
+            x = (RuntimeException) original;
+        } else {
+            x = new DataException(original);
+        }
+
+        if (trace && tc.isDebugEnabled() && x != original)
+            Tr.debug(tc, "replaced with " + x.getClass().getName());
+        return x;
     }
 
     /**
@@ -913,20 +1001,19 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             TypedQuery<?> query = em.createQuery(queryInfo.jpql, queryInfo.entityInfo.type);
                             queryInfo.setParameters(query, args);
 
-                            long maxResults = limit != null ? limit.maxResults() //
+                            int maxResults = limit != null ? (int) limit.maxResults() // TODO fix data type in spec
                                             : pagination != null ? pagination.size() //
                                                             : queryInfo.maxResults;
 
-                            long startAt = limit != null ? limit.startAt() - 1 //
+                            int startAt = limit != null ? computeOffset(limit) //
                                             : pagination != null && pagination.mode() == Pageable.Mode.OFFSET //
-                                                            ? (pagination.page() - 1) * maxResults //
+                                                            ? computeOffset(pagination.page(), maxResults) //
                                                             : 0;
                             // TODO keyset pagination without returning KeysetAwareSlice/Page - raise error?
-                            // TODO possible overflow with both of these.
                             if (maxResults > 0)
-                                query.setMaxResults((int) maxResults);
+                                query.setMaxResults(maxResults);
                             if (startAt > 0)
-                                query.setFirstResult((int) startAt);
+                                query.setFirstResult(startAt);
 
                             if (collector != null) { // Does not provide much value over directly returning Stream
                                 try (Stream<?> stream = query.getResultStream()) {
@@ -953,7 +1040,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                 List<?> results = query.getResultList();
 
                                 if (queryInfo.entityInfo.type.equals(type)) {
-                                    returnValue = results.isEmpty() ? null : results.get(0);
+                                    returnValue = results.isEmpty() ? nullIfOptional(returnType) : oneResult(results);
                                 } else if (type.isInstance(results)) {
                                     returnValue = results;
                                 } else if (queryInfo.returnArrayType != null) {
@@ -975,10 +1062,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                 } else if (Streamable.class.equals(type)) {
                                     returnValue = new StreamableImpl<>(results);
                                 } else if (results.isEmpty()) {
-                                    returnValue = null;
-                                } else if (results.size() == 1) {
-                                    // single result
-                                    returnValue = results.get(0);
+                                    returnValue = nullIfOptional(returnType);
+                                } else { // single result of other type
+                                    returnValue = oneResult(results);
                                     if (returnValue != null && !type.isAssignableFrom(returnValue.getClass())) {
                                         // TODO these conversions are not all safe
                                         if (double.class.equals(type) || Double.class.equals(type))
@@ -994,8 +1080,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                         else if (byte.class.equals(type) || Byte.class.equals(type))
                                             returnValue = ((Number) returnValue).byteValue();
                                     }
-                                } else { // TODO convert other return types?
-                                    returnValue = results;
                                 }
                             }
                         }
@@ -1102,10 +1186,37 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), returnValue);
             return returnValue;
         } catch (Throwable x) {
+            if (x instanceof Exception)
+                x = failure((Exception) x);
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), x);
             throw x;
         }
+    }
+
+    /**
+     * Handles the cases where no results are found by return null or raising EmptyResultException.
+     *
+     * @param returnType return type of repository method.
+     * @return null if the specified return type is java.util.Optional.
+     * @throws EmptyResultException if not Optional.
+     */
+    @Trivial
+    private final Void nullIfOptional(Class<?> returnType) {
+        if (Optional.class.equals(returnType))
+            return null;
+        else
+            throw new EmptyResultException("Query with return type of " + returnType.getName() +
+                                           " returned no results. If this is expected, specify a return type of array, Collection, or Optional for the repository method.");
+    }
+
+    @Trivial
+    private final Object oneResult(List<?> results) {
+        if (results.size() == 1)
+            return results.get(0);
+        else
+            throw new NonUniqueResultException("Found " + results.size() +
+                                               " results. To limit to a single result, specify Limit.of(1) as a parameter or use the findFirstBy name pattern.");
     }
 
     /**
@@ -1119,13 +1230,16 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         int first = s.indexOf("First");
         if (first >= 0) {
             int length = s.length();
-            long num = first + 5 == length ? 1 : 0;
+            int num = first + 5 == length ? 1 : 0;
             if (num == 0)
                 for (int c = first + 5; c < length; c++) {
                     char ch = s.charAt(c);
-                    if (ch >= '0' && ch <= '9')
-                        num = num * 10 + (ch - '0');
-                    else {
+                    if (ch >= '0' && ch <= '9') {
+                        if (num <= (Integer.MAX_VALUE - (ch - '0')) / 10)
+                            num = num * 10 + (ch - '0');
+                        else
+                            throw new UnsupportedOperationException(s + " exceeds Integer.MAX_VALUE (2147483647)."); // TODO
+                    } else {
                         if (c == first + 5)
                             num = 1;
                         break;
@@ -1170,13 +1284,12 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             queryInfo.setParameters(query, args);
 
             List<E> page;
-            long maxPageSize;
+            int maxPageSize;
             do {
                 // TODO Keyset pagination
-                // TODO possible overflow with both of these.
                 maxPageSize = pagination.size();
-                query.setFirstResult((int) ((pagination.page() - 1) * maxPageSize));
-                query.setMaxResults((int) maxPageSize);
+                query.setFirstResult(computeOffset(pagination.page(), maxPageSize));
+                query.setMaxResults(maxPageSize);
                 pagination = pagination.next();
 
                 page = query.getResultList();
@@ -1217,13 +1330,12 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             queryInfo.setParameters(query, args);
 
             List<E> page;
-            long maxPageSize;
+            int maxPageSize;
             do {
                 // TODO Keyset pagination
-                // TODO possible overflow with both of these.
                 maxPageSize = pagination.size();
-                query.setFirstResult((int) ((pagination.page() - 1) * maxPageSize));
-                query.setMaxResults((int) maxPageSize);
+                query.setFirstResult(computeOffset(pagination.page(), maxPageSize));
+                query.setMaxResults(maxPageSize);
                 pagination = pagination.next();
 
                 page = query.getResultList();

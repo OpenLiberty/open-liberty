@@ -110,8 +110,7 @@ public class UDPConfigurationImpl implements BootstrapConfiguration {
                     key.startsWith("component.") ||
                     key.startsWith("config.") ||
                     key.startsWith("objectClass") ||
-                    key.startsWith("parentPid") ||
-                    key.startsWith("osgi.ds.")) {
+                    key.startsWith("parentPid")) {
                     // skip osgi standard properties
                     continue;
                 }

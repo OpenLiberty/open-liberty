@@ -121,7 +121,7 @@ public class UserInfoServlet extends HttpServlet {
         JsonObjectBuilder claims = Json.createObjectBuilder();
         claims.add(getSub(), createSub());
         claims.add(getGroupId(), createGroups());
-        // TODO - hard coded port - not good.....
+        // Hard coded port is ok here since we won't use the iss from userinfo
         claims.add("iss", "https://localhost:8920/oidc/endpoint/OP1");
         claims.add(getName(), createName());
         claims.add("access_token", accessToken);

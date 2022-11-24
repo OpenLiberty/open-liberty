@@ -10,14 +10,7 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.authentication;
 
-import static io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants.WAS_OIDC_REQ_HEADERS;
-import static io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants.WAS_OIDC_REQ_METHOD;
-import static io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants.WAS_OIDC_REQ_PARAMS;
-
-import java.util.Base64;
-import java.util.Enumeration;
 import java.util.Set;
-import java.util.StringJoiner;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,11 +26,11 @@ import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.config.MetadataUtils;
 import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
+import io.openliberty.security.oidcclientcore.http.OriginalResourceRequest;
 import io.openliberty.security.oidcclientcore.storage.CookieStorageProperties;
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import io.openliberty.security.oidcclientcore.storage.StorageFactory;
 import io.openliberty.security.oidcclientcore.storage.StorageProperties;
-import io.openliberty.security.oidcclientcore.utils.Utils;
 
 public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
 
@@ -252,61 +245,7 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
     }
 
     void storeFullRequest(String state) {
-        Base64.Encoder encoder = Base64.getEncoder();
-        String stateHash = Utils.getStrHashCode(state);
-        storeRequestCookies(encoder, stateHash);
-        storeRequestMethod(encoder, stateHash);
-        storeRequestHeaders(encoder, stateHash);
-        storeRequestParameters(encoder, stateHash);
-    }
-
-    void storeRequestCookies(Base64.Encoder encoder, String stateHash) {
-        // cookies should be automatically restored during redirection to original resource
-    }
-
-    void storeRequestMethod(Base64.Encoder encoder, String stateHash) {
-        String method = request.getMethod();
-        String encodedMethod = encoder.encodeToString(method.getBytes());
-        storage.store(WAS_OIDC_REQ_METHOD + stateHash, encodedMethod);
-    }
-
-    void storeRequestHeaders(Base64.Encoder encoder, String stateHash) {
-        StringJoiner headerJoiner = new StringJoiner("&");
-        Enumeration<String> headerNames = request.getHeaderNames();
-        while (headerNames.hasMoreElements()) {
-            String headerName = headerNames.nextElement();
-            String encodedHeaderName = encoder.encodeToString(headerName.getBytes());
-            StringJoiner valueJoiner = new StringJoiner(".");
-            Enumeration<String> headerValues = request.getHeaders(headerName);
-            while (headerValues.hasMoreElements()) {
-                String headerValue = headerValues.nextElement();
-                String encodedHeaderValue = encoder.encodeToString(headerValue.getBytes());
-                valueJoiner.add(encodedHeaderValue);
-            }
-            String encodedHeaderValues = valueJoiner.toString();
-            headerJoiner.add(encodedHeaderName + ":" + encodedHeaderValues);
-        }
-        String encodedHeaders = headerJoiner.toString();
-        storage.store(WAS_OIDC_REQ_HEADERS + stateHash, encodedHeaders);
-    }
-
-    void storeRequestParameters(Base64.Encoder encoder, String stateHash) {
-        StringJoiner paramJoiner = new StringJoiner("&");
-        Enumeration<String> paramNames = request.getParameterNames();
-        while (paramNames.hasMoreElements()) {
-            String paramName = paramNames.nextElement();
-            String encodedParamName = encoder.encodeToString(paramName.getBytes());
-            StringJoiner valueJoiner = new StringJoiner(".");
-            String[] paramValues = request.getParameterValues(paramName);
-            for (String paramValue : paramValues) {
-                String encodedParamValue = encoder.encodeToString(paramValue.getBytes());
-                valueJoiner.add(encodedParamValue);
-            }
-            String encodedParamValues = valueJoiner.toString();
-            paramJoiner.add(encodedParamName + ":" + encodedParamValues);
-        }
-        String encodedParams = paramJoiner.toString();
-        storage.store(WAS_OIDC_REQ_PARAMS + stateHash, encodedParams);
+        OriginalResourceRequest.storeFullRequest(request, storage, state);
     }
 
 }

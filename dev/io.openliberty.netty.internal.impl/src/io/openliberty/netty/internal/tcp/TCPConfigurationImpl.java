@@ -152,8 +152,7 @@ public class TCPConfigurationImpl implements BootstrapConfiguration, TCPConfigCo
                key.startsWith("service.") ||
                key.startsWith("component.") ||
                key.startsWith("config.") ||
-               key.startsWith("objectClass") ||
-               key.startsWith("osgi.ds.");
+               key.startsWith("objectClass");
     }
     //@formatter:on
 

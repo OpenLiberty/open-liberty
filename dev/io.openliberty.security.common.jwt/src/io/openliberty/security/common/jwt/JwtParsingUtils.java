@@ -24,13 +24,12 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.security.common.jwt.exceptions.JwtContextMissingJoseObjects;
-import io.openliberty.security.common.jwt.jws.JwsSignatureVerifier;
 
 public class JwtParsingUtils {
 
     private static final TraceComponent tc = Tr.register(JwtParsingUtils.class);
 
-    public static JwtContext parseJwtWithoutValidation(String jwtString) throws Exception {
+    public static JwtContext parseJwtWithoutValidation(String jwtString) throws InvalidJwtException {
         JwtConsumer firstPassJwtConsumer = new JwtConsumerBuilder().setSkipAllValidators().setDisableRequireSignature().setSkipSignatureVerification().build();
         return firstPassJwtConsumer.process(jwtString);
     }
@@ -54,24 +53,6 @@ public class JwtParsingUtils {
     public static JwtClaims parseJwtWithValidation(String jwtString, JwtConsumer jwtConsumer) throws InvalidJwtException {
         JwtContext validatedJwtContext = jwtConsumer.process(jwtString);
         return validatedJwtContext.getJwtClaims();
-    }
-
-    public static JwtClaims parseJwtWithValidation(String jwtString, JwsSignatureVerifier signatureVerifier) throws Exception {
-        //        JwtConsumerBuilder builder = new JwtConsumerBuilder();
-        //        builder.setRequireExpirationTime()
-        //               .setAllowedClockSkewInSeconds(120)
-        //               .setExpectedAudience(this.clientid)
-        //               .setExpectedIssuer(false, this.issuerconfigured)
-        //               .setRequireSubject()
-        //               .setSkipDefaultAudienceValidation()
-        //               .setVerificationKey(signatureVerifier.getKey())
-        //               .setRelaxVerificationKeyValidation();
-        //
-        //        JwtConsumer jwtConsumer = builder.build();
-        //
-        //        JwtContext validatedJwtContext = jwtConsumer.process(jwtString);
-        //        return validatedJwtContext.getJwtClaims();
-        return null;
     }
 
 }

@@ -174,6 +174,13 @@ public class ApacheDSandKDC {
             Log.error(c, methodName, e, "Partition creation failed, trying a second time");
             Thread.sleep(5000);
             directoryService.addPartition(p);
+
+            /*
+             * Added the retry above, but still seeing rare exceptions from addPartition on z/OS: java.lang.Error: ERR_545 couldn't obtain free translation
+             * Throwing an exception here if we do succeed with a retry so we can add more tries if it turns out that a retry helps.
+             */
+
+            throw new Exception("Retrying directoryService.addPartion does help in some cases, add more retries to ApacheDSandKDC class.");
         }
 
         Entry entry = directoryService.newEntry(new Dn(BASE_DN));
