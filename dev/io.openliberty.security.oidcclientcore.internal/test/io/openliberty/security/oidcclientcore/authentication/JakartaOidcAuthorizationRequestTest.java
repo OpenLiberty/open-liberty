@@ -11,17 +11,10 @@
 package io.openliberty.security.oidcclientcore.authentication;
 
 import static io.openliberty.security.oidcclientcore.authentication.JakartaOidcAuthorizationRequest.IS_CONTAINER_INITIATED_FLOW;
-import static io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants.WAS_OIDC_REQ_HEADERS;
-import static io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants.WAS_OIDC_REQ_METHOD;
-import static io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants.WAS_OIDC_REQ_PARAMS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,7 +36,6 @@ import io.openliberty.security.oidcclientcore.config.OidcMetadataService;
 import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.storage.SessionBasedStorage;
-import io.openliberty.security.oidcclientcore.utils.Utils;
 import test.common.SharedOutputManager;
 
 public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
@@ -270,45 +262,6 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
             }
         });
         authzRequest.addExtraParameters(authzParameters);
-    }
-
-    @Test
-    public void test_storeFullRequest() throws Exception {
-        String state = "12345";
-        String stateHash = Utils.getStrHashCode(state);
-
-        String requestMethod = "POST";
-
-        Enumeration<String> headerNames = Collections.enumeration(Arrays.asList("Content-Type"));
-        Enumeration<String> contentTypes = Collections.enumeration(Arrays.asList("application/x-www-form-urlencoded"));
-
-        Enumeration<String> paramNames = Collections.enumeration(Arrays.asList("id", "language"));
-        String[] ids = new String[] { "1234" };
-        String[] languages = new String[] { "Java" };
-
-        mockery.checking(new Expectations() {
-            {
-                one(request).getMethod();
-                will(returnValue(requestMethod));
-                one(sessionBasedStorage).store(with(equal(WAS_OIDC_REQ_METHOD + stateHash)), with(any(String.class)));
-
-                one(request).getHeaderNames();
-                will(returnValue(headerNames));
-                one(request).getHeaders("Content-Type");
-                will(returnValue(contentTypes));
-                one(sessionBasedStorage).store(with(equal(WAS_OIDC_REQ_HEADERS + stateHash)), with(any(String.class)));
-
-                one(request).getParameterNames();
-                will(returnValue(paramNames));
-                one(request).getParameterValues("id");
-                will(returnValue(ids));
-                one(request).getParameterValues("language");
-                will(returnValue(languages));
-                one(sessionBasedStorage).store(with(equal(WAS_OIDC_REQ_PARAMS + stateHash)), with(any(String.class)));
-            }
-        });
-
-        authzRequest.storeFullRequest(state);
     }
 
     @Test
