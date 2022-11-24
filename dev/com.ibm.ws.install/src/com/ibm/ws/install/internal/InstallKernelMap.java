@@ -81,6 +81,7 @@ import com.ibm.ws.repository.parsers.Parser;
 import com.ibm.ws.repository.resolver.RepositoryResolutionException;
 import com.ibm.ws.repository.resolver.RepositoryResolver;
 import com.ibm.ws.repository.resources.RepositoryResource;
+import com.ibm.ws.repository.resources.internal.EsaResourceImpl;
 import com.ibm.ws.repository.resources.writeable.RepositoryResourceWritable;
 import com.ibm.ws.repository.strategies.writeable.AddThenDeleteStrategy;
 
@@ -855,13 +856,13 @@ public class InstallKernelMap implements Map {
 
             int alreadyInstalled = 0;
             Collection<String> featureToInstall = (Collection<String>) data.get(InstallConstants.FEATURES_TO_RESOLVE);
-
+            Map<String, String> shortNameMap = new HashMap<String, String>();
             if (data.get(InstallConstants.INSTALL_INDIVIDUAL_ESAS) != null) {
                 try {
                     if (data.get(InstallConstants.INSTALL_INDIVIDUAL_ESAS).equals(Boolean.TRUE)) {
                         Path tempDir = Files.createTempDirectory("generatedJson");
                         tempDir.toFile().deleteOnExit();
-                        Map<String, String> shortNameMap = new HashMap<String, String>();
+
                         File individualEsaJson = generateJsonFromIndividualESAs(tempDir, shortNameMap);
 
                         RepositoryConnection repo = new SingleFileRepositoryConnection(individualEsaJson);
@@ -961,7 +962,18 @@ public class InstallKernelMap implements Map {
                         if (repoResrc.getRepositoryConnection() instanceof DirectoryRepositoryConnection) {
                             featuresResolved.add(repoResrc.getId());
                         } else {
-                            featuresResolved.add(repoResrc.getMavenCoordinates());
+                            if (repoResrc.getMavenCoordinates() == null) { //if user specified ESA file path
+                                if (repoResrc instanceof EsaResourceImpl) {
+                                    String shortName = ((EsaResourceImpl) repoResrc).getShortName();
+                                    for (String k : shortNameMap.keySet()) {
+                                        if (shortNameMap.get(k).equals(shortName)) {
+                                            featuresResolved.add(k);
+                                        }
+                                    }
+                                }
+                            } else {
+                                featuresResolved.add(repoResrc.getMavenCoordinates());
+                            }
                         }
                     }
                 }
@@ -1530,8 +1542,9 @@ public class InstallKernelMap implements Map {
 
             // Overload the Maven coordinates field with the file path, since the ESA should be installed from that path
             Map<File, String> fileToGroupIdMap = (Map<File, String>) data.get(GENERATE_JSON_GROUP_ID_MAP);
-            resource.setMavenCoordinates(ArtifactDownloaderUtils.getMavenCoordFromPath(esa.getAbsolutePath(), fileToGroupIdMap.get(esa)));
-
+            if (fileToGroupIdMap != null) {
+                resource.setMavenCoordinates(ArtifactDownloaderUtils.getMavenCoordFromPath(esa.getAbsolutePath(), fileToGroupIdMap.get(esa)));
+            }
             resource.uploadToMassive(new AddThenDeleteStrategy());
         }
 
