@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -173,7 +173,7 @@ var editorMessages = {
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "Seleccione una característica para visualizar la descripción.",
 "SUPPORT_MESSAGE" : "La configuración de servidor no está disponible para los servidores Node.js ni los servidores en un contenedor Docker al que se accede a través del controlador colectivo.",
 "NO_ROLE_MESSAGE": "El usuario no está en un rol que tenga permiso para realizar cambios de configuración. Los archivos están disponibles en modalidad de sólo lectura.",
-	
+    
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "ACCIONES NECESARIAS PARA MIEMBROS DE COLECTIVO:",
 "RUN_UPDATE_HOST" : "Ejecute 'collective updateHost' o 'collective registerHost' con '--hostWritePath' especificando una vía de acceso a la que rpcUser tenga permisos de escritura.  También se deben proporcionar credenciales de host válidas.",
@@ -190,5 +190,4 @@ var editorMessages = {
 "LINK_JAVA" : "Cree un enlace a JAVA en /usr/bin. Por ejemplo /usr/bin/java -> [víaAccesoAJAVA]",
 "JAVA_ON_PATH" : "Añada JAVA a la variable de entorno PATH.  La exportación de PATH se debe realizar en .bashrc en Linux.", 
 "MORE_INFORMATION" : "Para más información, consulte: "
-
 };

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -173,7 +173,7 @@ var editorMessages = {
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "기능을 선택하여 해당 설명을 봅니다.",
 "SUPPORT_MESSAGE" : "서버 구성은 집합체 제어기를 통해 액세스되는 Docker 컨테이너의 서버와 Node.js 서버에 사용할 수 없습니다.",
 "NO_ROLE_MESSAGE": "사용자가 구성을 변경할 수 있는 권한이 있는 역할에 없습니다. 파일은 읽기 전용 모드에서 사용할 수 있습니다.",
-	
+    
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "집합체 멤버에 필요한 조치:",
 "RUN_UPDATE_HOST" : "rpcUser에 쓰기 권한이 있는 경로를 지정하는 '--hostWritePath'를 사용하여 'collective updateHost' 또는 'collective registerHost'를 실행하십시오. 올바른 호스트 신임 정보도 제공되어야 합니다.",
@@ -190,5 +190,4 @@ var editorMessages = {
 "LINK_JAVA" : "/usr/bin에서 JAVA에 대한 링크 작성(예/: /usr/bin/java -> [pathToJAVA])",
 "JAVA_ON_PATH" : "JAVA를 PATH 환경 변수에 추가. Linux의 .bashrc에서 PATH 내보내기를 수행해야 합니다.", 
 "MORE_INFORMATION" : "자세한 정보는 다음을 참조하십시오. "
-
 };

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -173,7 +173,7 @@ var editorMessages = {
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "Válasszon ki egy szolgáltatást a leírásának megtekintéséhez.",
 "SUPPORT_MESSAGE" : "Nem érhető el kiszolgálóbeállítás a Node.js kiszolgálókra és a kollektív vezérlőn keresztül elért Docker tároló kiszolgálókra.",
 "NO_ROLE_MESSAGE": "A felhasználó nem olyan szerephez tartozik, amelynek engedélye van konfigurációs módosítások végrehajtására. A fájlok írásvédett módban érhetők el.",
-	
+    
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "KOLLEKTÍVA TAGOK ESETÉN SZÜKSÉGES MŰVELETEK:",
 "RUN_UPDATE_HOST" : "Futtassa a 'collective updateHost' vagy 'collective registerHost' parancsot a '--hostWritePath' paraméterrel, olyan útvonal megadásával, amelyhez az rpcUser felhasználónak írási engedélye van.  Az érvényes hoszt hitelesítési adatokat szintén meg kell adnia.",
@@ -190,5 +190,4 @@ var editorMessages = {
 "LINK_JAVA" : "Hivatkozás létrehozása a JAVA-hoz az /usr/bin könyvtárban. Például:  /usr/bin/java -> [pathToJAVA]",
 "JAVA_ON_PATH" : "JAVA hozzáadása a PATH környezeti változóhoz.  Linuxon el kell végezni a PATH exportálását a .bashrc fájlba.", 
 "MORE_INFORMATION" : "További információkért lásd: "
-
 };

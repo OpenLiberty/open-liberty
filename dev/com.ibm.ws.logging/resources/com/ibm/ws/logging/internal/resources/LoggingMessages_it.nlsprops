@@ -168,6 +168,10 @@ JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Manca il nome intestazione p
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=La registrazione JSON usa l'attributo logFormat da accessLogging per selezionare quali campi messaggio http_access.log includere. \u00c8 necessario fornire un nome intestazione quando si usano i campi %i o %o nell'attributo accessLogging logFormat.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.useraction=Fornire un nome intestazione per il campo nell'attributo accessLogging logFormat.
 
+FFDC_FILE_DELETION=TRAS3014I: Eliminati {0} file FFDC basati sul valore maxFfdcAge configurato.
+FFDC_FILE_DELETION.explanation=Il numero di file FFDC eliminati durante una ripulitura FFDC.
+FFDC_FILE_DELETION.useraction=Non \u00e8 richiesta alcuna azione.
+
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

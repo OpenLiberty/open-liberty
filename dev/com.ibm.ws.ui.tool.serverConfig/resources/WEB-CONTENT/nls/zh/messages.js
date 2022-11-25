@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -173,7 +173,7 @@ var editorMessages = {
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "选择一个功能部件以查看其描述。",
 "SUPPORT_MESSAGE" : "服务器配置不适用于通过集合体控制器访问的 Node.js 服务器或 Docker 容器中的服务器。",
 "NO_ROLE_MESSAGE": "该用户所具有的角色无权进行配置更改。可以只读方式访问文件。",
-	
+    
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "集合体成员所需的操作：",
 "RUN_UPDATE_HOST" : "带“--hostWritePath”参数（指定一个 rpcUser 具有写权限的路径）运行“collective updateHost”或“collective registerHost”。 同时必须提供有效的主机凭证。",
@@ -190,5 +190,4 @@ var editorMessages = {
 "LINK_JAVA" : "在 /usr/bin 中创建指向 JAVA 的链接。例如，/usr/bin/java -> [pathToJAVA]",
 "JAVA_ON_PATH" : "将 JAVA 添加到 PATH 环境变量。导出此 PATH（在 Linux 系统上应在  .bashrc 文件中）。", 
 "MORE_INFORMATION" : "有关更多信息，请参阅："
-
 };

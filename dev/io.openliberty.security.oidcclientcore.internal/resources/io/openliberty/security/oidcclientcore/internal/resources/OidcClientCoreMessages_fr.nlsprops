@@ -33,9 +33,9 @@ DISCOVERY_EXCEPTION=CWWKS2403E: Le client {0} OpenID Connect a rencontr\u00e9 l'
 DISCOVERY_EXCEPTION.explanation=Il se peut que des informations soient manquantes dans la configuration du client OpenID Connect ou que le client ait rencontr\u00e9 une erreur lors de la communication avec le fournisseur OpenID Connect.
 DISCOVERY_EXCEPTION.useraction=Pour plus d'informations, reportez-vous au message d'erreur.
 
-OIDC_CLIENT_MISSING_PROVIDER_URI=CWWKS2404E: L''attribut providerURI du client OpenID Connect {0} a la valeur null ou est vide et aucune m\u00e9tadonn\u00e9e n''est disponible pour le fournisseur OpenID Connect.
-OIDC_CLIENT_MISSING_PROVIDER_URI.explanation=Le client OpenID Connect doit reconna\u00eetre les m\u00e9tadonn\u00e9es du fournisseur OpenID Connect, mais le client n'a pas d'attribut providerURI ni de m\u00e9tadonn\u00e9es de fournisseur configur\u00e9es.
-OIDC_CLIENT_MISSING_PROVIDER_URI.useraction=Sp\u00e9cifiez une valeur pour l'attribut providerURI dans la configuration du client OpenID Connect ou sp\u00e9cifiez les m\u00e9tadonn\u00e9es du fournisseur OpenID Connect dans la configuration du client.
+OIDC_CLIENT_MISSING_PROVIDER_URI=CWWKS2404W: Le client OpenID Connect ne peut pas effectuer de reconnaissance car l''attribut providerURI du client OpenID Connect {0} est nul ou vide.
+OIDC_CLIENT_MISSING_PROVIDER_URI.explanation=Le client OpenID Connect doit d\u00e9couvrir les m\u00e9tadonn\u00e9es du fournisseur OpenID Connect mais il n'a pas d'attribut providerURI configur\u00e9.
+OIDC_CLIENT_MISSING_PROVIDER_URI.useraction=Sp\u00e9cifiez une valeur pour l'attribut providerURI dans la configuration du client OpenID Connect ou assurez-vous que les m\u00e9tadonn\u00e9es du fournisseur OpenID Connect dans la configuration du client contiennent toutes les donn\u00e9es requises par celui-ci.
 
 DISCOVERY_METADATA_MISSING_VALUE=CWWKS2405E: La propri\u00e9t\u00e9 [{0}] requise est manquante dans les m\u00e9tadonn\u00e9es du fournisseur OpenID Connect.
 DISCOVERY_METADATA_MISSING_VALUE.explanation=La propri\u00e9t\u00e9 sp\u00e9cifi\u00e9e dans le message doit \u00eatre pr\u00e9sente dans les m\u00e9tadonn\u00e9es du fournisseur OpenID Connect, mais elle est manquante.
@@ -86,10 +86,9 @@ TOKEN_REQUEST_ERROR=CWWKS2416E: Le client {0} OpenID Connect a rencontr\u00e9 l'
 TOKEN_REQUEST_ERROR.explanation=Il se peut que des informations soient manquantes pour le client OpenID Connect, que la demande adress\u00e9e au noeud final de jeton ait \u00e9chou\u00e9 ou qu'une autre erreur se soit produite lors du traitement de la r\u00e9ponse du noeud final de jeton.
 TOKEN_REQUEST_ERROR.useraction=Pour plus d'informations, reportez-vous au message d'erreur. V\u00e9rifiez que le fournisseur OpenID Connect a renvoy\u00e9 un code dans la r\u00e9ponse d'authentification.
 
-# Do not translate "token_endpoint"
-TOKEN_ENDPOINT_MISSING=CWWKS2417E: Le client {0} OpenID Connect ne trouve pas de valeur pour le noeud final de jeton du fournisseur OpenID Connect.
-TOKEN_ENDPOINT_MISSING.explanation=L'URL du noeud final de jeton est manquante dans les m\u00e9tadonn\u00e9es du fournisseur OpenID Connect et dans la configuration du client OpenID Connect.
-TOKEN_ENDPOINT_MISSING.useraction=V\u00e9rifiez que les m\u00e9tadonn\u00e9es du fournisseur OpenID Connect contiennent une valeur token_endpoint. Un noeud final de jeton peut \u00e9galement \u00eatre sp\u00e9cifi\u00e9 dans la configuration du client OpenID Connect.
+#
+# CWWKS2417E removed and available
+#
 
 USERINFO_RESPONSE_ERROR=CWWKS2418W: Le client OpenID Connect a rencontr\u00e9 l''erreur suivante lorsqu''il a envoy\u00e9 une demande \u00e0 l''URL User Info [{0}] du fournisseur OpenID Connect : {1}
 USERINFO_RESPONSE_ERROR.explanation=Il se peut que la r\u00e9ponse User Info du fournisseur OpenID Connect soit mal form\u00e9e ou qu'il manque des informations, ou bien le fournisseur OpenID Connect a rencontr\u00e9 une erreur en traitant la demande.

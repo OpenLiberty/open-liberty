@@ -724,6 +724,10 @@ info.checkpoint.restore.failed=CWWKE0957I: Die Wiederherstellung des Pr\u00fcfpu
 info.checkpoint.restore.failed.explanation=Beim Wiederherstellen eines Pr\u00fcfpunktserverprozesses ist ein Fehler aufgetreten.  Der Server wurde ohne Verwendung des Pr\u00fcfpunktimages gestartet.
 info.checkpoint.restore.failed.useraction=\u00dcberpr\u00fcfen Sie die Protokolle, um festzustellen, warum der Pr\u00fcfpunktprozess nicht wiederhergestellt wurde.
 
+error.checkpoint.failed=CWWKE0958E: Die Serverpr\u00fcfpunktanforderung ist fehlgeschlagen. Die folgende Ausgabe stammt aus der CRIU-Datei {0}, die Details dazu enth\u00e4lt, warum der Pr\u00fcfpunkt fehlgeschlagen ist.
+error.checkpoint.failed.explanation=Eine Pr\u00fcfpunktanforderung f\u00fcr den Server ist fehlgeschlagen. Es wurde kein g\u00fcltiges Pr\u00fcfpunktprozessimage f\u00fcr den Server erstellt.
+error.checkpoint.failed.useraction=Um festzustellen, warum der Pr\u00fcfpunkt fehlgeschlagen ist, \u00fcberpr\u00fcfen Sie die Protokolldateien im Pr\u00fcfpunktverzeichnis, das sich im Serverprotokollverzeichnis befindet.
+
 info.serverStarting=Server {0} wird gestartet.
 info.serverStarted=Der Server {0} wurde gestartet.
 info.serverStartedWithPID=Der Server {0} wurde mit der Prozess-ID {1} gestartet.
