@@ -30,7 +30,7 @@ com.ibm.ws.sib.trm.attach
 
 -dsannotations: \
 	com.ibm.ws.jfap.inbound.channel.CommsServerServiceFacade, \
-	com.ibm.ws.jfap.inbound.channel.SecureSocketsLayerFacetImpl
+	com.ibm.ws.jfap.inbound.channel.InboundSecureFacetImpl
 
 instrument.disabled: true
 

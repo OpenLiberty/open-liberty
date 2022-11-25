@@ -26,7 +26,6 @@ import static org.osgi.service.component.annotations.ReferencePolicyOption.GREED
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -39,7 +38,6 @@ import com.ibm.websphere.channelfw.ChannelData;
 import com.ibm.websphere.channelfw.FlowType;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.jfap.inbound.channel.InboundSecureFacet;
 import com.ibm.ws.messaging.lifecycle.SingletonsReady;
 import com.ibm.ws.sib.jfapchannel.ClientConnectionManager;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
