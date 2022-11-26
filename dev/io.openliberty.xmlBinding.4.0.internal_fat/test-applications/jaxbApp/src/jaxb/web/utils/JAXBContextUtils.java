@@ -93,18 +93,13 @@ public class JAXBContextUtils {
      * @return
      */
     public static Items getItems() {
-        if (ITEMS == null) {
-            Items tempItems = new Items();
-            List<Item> itemList = createItemsList();
-            List<String> itemNames = createItemNames(itemList);
-            tempItems.setItem(itemList);
-            tempItems.setItemNames(itemNames);
-            ITEMS = tempItems;
-            return ITEMS;
-        } else {
-            return ITEMS;
-        }
-
+        Items tempItems = new Items();
+        List<Item> itemList = createItemsList();
+        List<String> itemNames = createItemNames(itemList);
+        tempItems.setItem(itemList);
+        tempItems.setItemNames(itemNames);
+        ITEMS = tempItems;
+        return ITEMS;
     }
 
     /**
