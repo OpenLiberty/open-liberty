@@ -27,10 +27,11 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.BaggageServlet;
-import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.OpenTelemetryServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.OpenTelemetryBeanServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.PatchTestApp;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.SpanCurrentServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.Telemetry10Servlet;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.WithSpanServlet;
 
 @RunWith(FATRunner.class)
 public class Telemetry10 extends FATServletClient {
@@ -41,9 +42,10 @@ public class Telemetry10 extends FATServletClient {
     @Server(SERVER_NAME)
     @TestServlets({
                     @TestServlet(servlet = Telemetry10Servlet.class, contextRoot = APP_NAME),
-                    @TestServlet(servlet = OpenTelemetryServlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = OpenTelemetryBeanServlet.class, contextRoot = APP_NAME),
                     @TestServlet(servlet = BaggageServlet.class, contextRoot = APP_NAME),
-                    @TestServlet(servlet = SpanCurrentServlet.class, contextRoot = APP_NAME)
+                    @TestServlet(servlet = SpanCurrentServlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = WithSpanServlet.class, contextRoot = APP_NAME),
     })
     public static LibertyServer server;
 
@@ -52,9 +54,10 @@ public class Telemetry10 extends FATServletClient {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addAsResource(Telemetry10Servlet.class.getResource("microprofile-config.properties"), "META-INF/microprofile-config.properties")
                         .addClasses(Telemetry10Servlet.class,
-                                    OpenTelemetryServlet.class,
+                                    OpenTelemetryBeanServlet.class,
                                     PatchTestApp.class,
                                     BaggageServlet.class,
+                                    WithSpanServlet.class,
                                     SpanCurrentServlet.class);
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
