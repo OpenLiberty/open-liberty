@@ -168,6 +168,10 @@ JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Numele de antet lipse\u015ft
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=Jurnalizarea JSON utilizeaz\u0103 atributul logFormat de la accessLogging pentru a selecta ce c\u00e2mpuri de mesaj http_access.log s\u0103 includ\u0103. Un nume de antet trebuie furnizat c\u00e2nd utiliza\u0163i c\u00e2mpurile %i sau %o \u00een atributul accessLogging logFormat.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.useraction=Furniza\u0163i un nume de antet pentru c\u00e2mp \u00een atributul accessLogging logFormat.
 
+FFDC_FILE_DELETION=TRAS3014I: Au fost \u0219terse {0} fi\u0219iere FFDC pe baza valorii maxFfdcAge configurate.
+FFDC_FILE_DELETION.explanation=Num\u0103rul fi\u0219ierelor FFDC care au fost \u0219terse \u00een timpul unei cur\u0103\u021b\u0103ri FFDC.
+FFDC_FILE_DELETION.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

@@ -33,9 +33,9 @@ DISCOVERY_EXCEPTION=CWWKS2403E: Clientul OpenID Connect {0} a \u00eent\u00e2mpin
 DISCOVERY_EXCEPTION.explanation=Ar putea lipsi de informa\u021bii din configura\u021bia client OpenID Connect sau clientul a \u00eent\u00e2lnit o eroare \u00een timpul comunic\u0103rii cu furnizorul OpenID Connect.
 DISCOVERY_EXCEPTION.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare.
 
-OIDC_CLIENT_MISSING_PROVIDER_URI=CWWKS2404E: Atributul providerURI pentru clientul {0} OpenID Connect este nul sau gol \u0219i nu exist\u0103 metadate disponibile pentru furnizorul OpenID Connect.
-OIDC_CLIENT_MISSING_PROVIDER_URI.explanation=Clientul OpenID Connect trebuie s\u0103 descopere metadate pentru furnizorul OpenID Connect, dar clientul nu are un atribut providerURI sau metadate de furnizor configurate.
-OIDC_CLIENT_MISSING_PROVIDER_URI.useraction=Specifica\u021bi o valoare pentru atributul providerURI \u00een configura\u021bia clientului OpenID Connect sau specifica\u021bi metadatele furnizorului OpenID Connect \u00een configura\u021bia clientului.
+OIDC_CLIENT_MISSING_PROVIDER_URI=CWWKS2404W: Clientul OpenID Connect nu poate realiza descoperirea deoarece atributul providerURI pentru clientul OpenID Connect {0} este null sau este gol.
+OIDC_CLIENT_MISSING_PROVIDER_URI.explanation=Clientul OpenID Connect trebuie s\u0103 descopere metadate pentru furnizorul OpenID Connect, dar clientul nu are un atribut providerURI configurat.
+OIDC_CLIENT_MISSING_PROVIDER_URI.useraction=Specifica\u021bi o valoare pentru atributul providerURI \u00een configura\u021bia clientului OpenID Connect sau asigura\u021bi-v\u0103 c\u0103 metadatele furnizorului OpenID Connect din configura\u021bia clientului con\u021bin toate datele care sunt cerute de clientul OpenID Connect.
 
 DISCOVERY_METADATA_MISSING_VALUE=CWWKS2405E: Din metadatele furnizorului OpenID Connect lipse\u0219te proprietatea [{0}] necesar\u0103.
 DISCOVERY_METADATA_MISSING_VALUE.explanation=Proprietatea care este specificat\u0103 \u00een mesaj trebuie s\u0103 fie prezent\u0103 \u00een metadatele furnizorului OpenID Connect, dar lipse\u0219te.
@@ -86,10 +86,9 @@ TOKEN_REQUEST_ERROR=CWWKS2416E: Clientul OpenID Connect {0} a \u00eent\u00e2mpin
 TOKEN_REQUEST_ERROR.explanation=Clientului OpenID Connect ar putea s\u0103 \u00eei lipseasc\u0103 informa\u021bii, cererea la punctul final de jeton a e\u0219uat sau a ap\u0103rut o alt\u0103 eroare \u00een timpul proces\u0103rii r\u0103spunsului de la punctul final de jeton.
 TOKEN_REQUEST_ERROR.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare. Verifica\u021bi dac\u0103 furnizorul OpenID Connect a returnat un cod \u00een r\u0103spunsul pentru autentificare.
 
-# Do not translate "token_endpoint"
-TOKEN_ENDPOINT_MISSING=CWWKS2417E: Clientul OpenID Connect {0} nu poate g\u0103si o valoare pentru punctul final de jeton pentru furnizorul OpenID Connect.
-TOKEN_ENDPOINT_MISSING.explanation=URL-ul punctului final de jeton lipse\u0219te din metadatele furnizorului OpenID Connect \u0219i din configura\u021bia clientului OpenID Connect.
-TOKEN_ENDPOINT_MISSING.useraction=Verifica\u021bi dac\u0103 metadatele furnizorului OpenID Connect con\u021bin o valoare token_endpoint. Un punct final de jeton poate fi specificat \u0219i \u00een configura\u021bia clientului OpenID Connect.
+#
+# CWWKS2417E removed and available
+#
 
 USERINFO_RESPONSE_ERROR=CWWKS2418W: Clientul OpenID Connect a primit urm\u0103toarea eroare atunci c\u00e2nd a trimis o cerere c\u0103tre URL-ul de informa\u021bii de utilizator [{0}] al furnizorului OpenID Connect: {1}
 USERINFO_RESPONSE_ERROR.explanation=R\u0103spunsul cu informa\u021bii de utilizator de la furnizorul OpenID Connect ar putea avea un format gre\u0219it sau informa\u021bii lips\u0103 sau furnizorul OpenID Connect a primit o eroare c\u00e2nd a tratat cererea.

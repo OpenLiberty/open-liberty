@@ -168,6 +168,10 @@ JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Falta el nombre de cabecera 
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=El registro de JSON utiliza el atributo logFormat de accessLogging para seleccionar qu\u00e9 campos de mensaje http_access.log message deben incluirse. Debe suministrarse un nombre de cabecera cuando se utilizan los campo %i o %o en el atributo accessLogging logFormat.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.useraction=Proporcione un nombre de cabecera para el campo en el atributo accessLogging logFormat.
 
+FFDC_FILE_DELETION=TRAS3014I: Se han suprimido {0} archivos FFDC basados en el valor maxFfdcAge configurado.
+FFDC_FILE_DELETION.explanation=El n\u00famero de archivos FFDC que se han suprimido durante una limpieza FFDC.
+FFDC_FILE_DELETION.useraction=No se requiere ninguna acci\u00f3n.
+
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

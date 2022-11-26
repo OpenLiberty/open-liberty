@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -173,7 +173,7 @@ var editorMessages = {
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "Wählen Sie ein Feature aus, um dessen Beschreibung anzuzeigen.",
 "SUPPORT_MESSAGE" : "Es ist weder eine Serverkonfiguration für Node.js-Server noch eine Serverkonfiguration für Docker-Server, auf die über den Verbundcontroller zugegriffen wird, verfügbar.",
 "NO_ROLE_MESSAGE": "Der Benutzer hat nicht die Rolle, die für die Durchführung der Konfigurationsänderungen berechtigt ist. Die Dateien sind im Lesezugriffsmodus verfügbar. ",
-	
+    
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "Erforderliche Aktionen für Verbundmember:",
 "RUN_UPDATE_HOST" : "Führen Sie 'collective updateHost' oder 'collective registerHost' mit '--hostWritePath' aus und geben Sie dabei einen Pfad an, für den der RPC-Benutzer schreibberechtigt ist. Gültige Hostberechtigungsnachweise müssen ebenfalls angegeben werden.",
@@ -190,5 +190,4 @@ var editorMessages = {
 "LINK_JAVA" : "Erstellung eines Links zu JAVA in /usr/bin, z. B. /usr/bin/java -> [Pfad-zu_JAVA]",
 "JAVA_ON_PATH" : "Hinzufügen von JAVA zur Umgebungsvariablen PATH. Der Export der Variablen PATH muss unter Linux in .bashrc erfolgen.", 
 "MORE_INFORMATION" : "Weitere Informationen finden Sie hier: "
-
 };

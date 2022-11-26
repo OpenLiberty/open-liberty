@@ -724,6 +724,10 @@ info.checkpoint.restore.failed=CWWKE0957I: A restaura\u00e7\u00e3o do processo d
 info.checkpoint.restore.failed.explanation=Ocorreu um erro ao restaurar um processo do servidor de ponto de verifica\u00e7\u00e3o.  O servidor foi iniciado sem usar a imagem do ponto de verifica\u00e7\u00e3o.
 info.checkpoint.restore.failed.useraction=Verifique os logs para determinar por que o processo de ponto de verifica\u00e7\u00e3o n\u00e3o foi restaurado.
 
+error.checkpoint.failed=CWWKE0958E: A solicita\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o do servidor falhou. A sa\u00edda a seguir \u00e9 do arquivo CRIU {0} que cont\u00e9m detalhes sobre o motivo da falha do ponto de verifica\u00e7\u00e3o.
+error.checkpoint.failed.explanation=Uma solicita\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o para o servidor falhou. Nenhuma imagem de processo de ponto de verifica\u00e7\u00e3o v\u00e1lida para o servidor foi criada.
+error.checkpoint.failed.useraction=Para determinar por que o ponto de verifica\u00e7\u00e3o falhou, inspecione os arquivos de log no diret\u00f3rio do ponto de verifica\u00e7\u00e3o que est\u00e1 localizado no diret\u00f3rio de logs do servidor.
+
 info.serverStarting=Iniciando servidor {0}.
 info.serverStarted=Servidor {0} iniciado.
 info.serverStartedWithPID=O servidor {0} foi iniciado com o ID de processo {1}.

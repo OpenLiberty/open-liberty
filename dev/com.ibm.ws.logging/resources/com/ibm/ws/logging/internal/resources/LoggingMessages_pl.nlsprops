@@ -168,6 +168,10 @@ JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Brak nag\u0142\u00f3wka co n
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=Podczas rejestrowania w formacie JSON atrybut logFormat konfiguracji accessLogging s\u0142u\u017cy do wybierania p\u00f3l komunikat\u00f3w dziennika http_access.log do uwzgl\u0119dnienia. Gdy w atrybucie logFormat konfiguracji accessLogging u\u017cywane s\u0105 pola %i lub %o, nale\u017cy poda\u0107 nazw\u0119 nag\u0142\u00f3wka.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.useraction=Podaj nazw\u0119 nag\u0142\u00f3wka dla pola w atrybucie logFormat konfiguracji accessLogging.
 
+FFDC_FILE_DELETION=TRAS3014I: Na podstawie skonfigurowanej warto\u015bci parametru maxFfdcAge usuni\u0119to nast\u0119puj\u0105c\u0105 liczb\u0119 plik\u00f3w FFDC: {0}.
+FFDC_FILE_DELETION.explanation=Liczba plik\u00f3w FFDC, kt\u00f3re zosta\u0142y usuni\u0119te podczas czyszczenia FFDC.
+FFDC_FILE_DELETION.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

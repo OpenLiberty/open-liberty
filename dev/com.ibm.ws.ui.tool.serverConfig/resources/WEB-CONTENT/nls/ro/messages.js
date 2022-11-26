@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -173,7 +173,7 @@ var editorMessages = {
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "Selectaţi o caracteristică pentru a-i vizualiza descrierea.",
 "SUPPORT_MESSAGE" : "Configuraţia serverului nu este disponibilă pentru serverele Node.js şi nici pentru serverele dintr-un container Docker accesate prin controlerul de colectiv.",
 "NO_ROLE_MESSAGE": "Utilizatorul nu este într-un rol care are permisiunea să facă modificări de configuraţie. Fişierele sunt accesibile doar în modul numai-citire.",
-	
+    
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "ACŢIUNI NECESARE PENTRU MEMBRII COLECTIVULUI:",
 "RUN_UPDATE_HOST" : "Rulaţi 'collective updateHost' sau 'collective registerHost' cu '--hostWritePath' specificând o cale la care rpcUser are permisiuni de scriere.  Trebuie furnizate de asemenea acreditări valide pentru gazdă.",
@@ -190,5 +190,4 @@ var editorMessages = {
 "LINK_JAVA" : "Creaţi o legătura la JAVA în /usr/bin. De ex. /usr/bin/java -> [pathToJAVA]",
 "JAVA_ON_PATH" : "Adăugaţi JAVA la variabila de mediu PATH.  Exportul PATH trebuie făcut în .bashrc pe Linux.", 
 "MORE_INFORMATION" : "Pentru informaţii suplimentare vedeţi: "
-
 };
