@@ -12,6 +12,8 @@ package io.openliberty.microprofile.telemetry.internal.cdi;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -102,12 +104,14 @@ public class WithSpanInterceptor {
     private static final class MethodRequestSpanNameExtractor implements SpanNameExtractor<MethodRequest> {
         @Override
         public String extract(final MethodRequest methodRequest) {
-            WithSpan annotation = methodRequest.getMethod().getDeclaredAnnotation(WithSpan.class);
-            String spanName = annotation.value();
-            if (spanName.isEmpty()) {
-                spanName = SpanNames.fromMethod(methodRequest.getMethod());
-            }
-            return spanName;
+            return AccessController.doPrivileged((PrivilegedAction<String>) () -> {
+                WithSpan annotation = methodRequest.getMethod().getDeclaredAnnotation(WithSpan.class);
+                String spanName = annotation.value();
+                if (spanName.isEmpty()) {
+                    spanName = SpanNames.fromMethod(methodRequest.getMethod());
+                }
+                return spanName;
+            });
         }
     }
 
