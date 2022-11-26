@@ -20,6 +20,7 @@ import java.lang.reflect.Type;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
 import java.sql.SQLTransientConnectionException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,6 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -1041,26 +1043,51 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
                                 if (queryInfo.entityInfo.type.equals(type)) {
                                     returnValue = results.isEmpty() ? nullIfOptional(returnType) : oneResult(results);
-                                } else if (type.isInstance(results)) {
+                                } else if (type.isInstance(results) && (results.isEmpty() || !(results.get(0) instanceof Object[]))) {
                                     returnValue = results;
                                 } else if (queryInfo.returnArrayType != null) {
-                                    Object r = Array.newInstance(queryInfo.returnArrayType, results.size());
-                                    int i = 0;
-                                    for (Object result : results)
-                                        Array.set(r, i++, result);
-                                    returnValue = r;
-                                } else if (Collection.class.isAssignableFrom(type)) {
+                                    int size = results.size();
+                                    if (size == 1 && results.get(0) instanceof Object[]) {
+                                        Object[] a = (Object[]) results.get(0);
+                                        returnValue = Array.newInstance(queryInfo.returnArrayType, a.length);
+                                        for (int i = 0; i < a.length; i++)
+                                            Array.set(returnValue, i, queryInfo.returnArrayType.isInstance(a[i]) ? a[i] : to(queryInfo.returnArrayType, a[i]));
+                                    } else {
+                                        returnValue = Array.newInstance(queryInfo.returnArrayType, size);
+                                        int i = 0;
+                                        for (Object result : results)
+                                            Array.set(returnValue, i++, result);
+                                    }
+                                } else if (Streamable.class.equals(type)) {
+                                    returnValue = new StreamableImpl<>(results);
+                                } else if (Iterable.class.isAssignableFrom(type)) {
                                     try {
-                                        @SuppressWarnings("unchecked")
-                                        Constructor<? extends Collection<Object>> c = (Constructor<? extends Collection<Object>>) type.getConstructor();
-                                        Collection<Object> list = c.newInstance();
-                                        list.addAll(results);
+                                        Collection<Object> list;
+                                        if (type.isInterface()) {
+                                            if (type.isAssignableFrom(ArrayList.class)) // covers Iterable, Collection, List
+                                                list = new ArrayList<>(results.size());
+                                            else if (type.isAssignableFrom(ArrayDeque.class)) // covers Queue, Deque
+                                                list = new ArrayDeque<>(results.size());
+                                            else if (type.isAssignableFrom(LinkedHashSet.class)) // covers Set
+                                                list = new LinkedHashSet<>(results.size());
+                                            else
+                                                throw new UnsupportedOperationException(type + " is an unsupported return type.");
+                                        } else {
+                                            @SuppressWarnings("unchecked")
+                                            Constructor<? extends Collection<Object>> c = (Constructor<? extends Collection<Object>>) type.getConstructor();
+                                            list = c.newInstance();
+                                        }
+                                        if (results.size() == 1 && results.get(0) instanceof Object[]) {
+                                            Object[] a = (Object[]) results.get(0);
+                                            for (int i = 0; i < a.length; i++)
+                                                list.add(queryInfo.returnTypeParam.isInstance(a[i]) ? a[i] : to(queryInfo.returnTypeParam, a[i]));
+                                        } else {
+                                            list.addAll(results);
+                                        }
                                         returnValue = list;
                                     } catch (NoSuchMethodException x) {
                                         throw new UnsupportedOperationException(type + " lacks public zero parameter constructor.");
                                     }
-                                } else if (Streamable.class.equals(type)) {
-                                    returnValue = new StreamableImpl<>(results);
                                 } else if (results.isEmpty()) {
                                     returnValue = nullIfOptional(returnType);
                                 } else { // single result of other type
@@ -1351,6 +1378,44 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         }
 
         return void.class.equals(queryInfo.method.getReturnType()) ? null : CompletableFuture.completedFuture(null);
+    }
+
+    /**
+     * Converts to the specified type, raising an error if the conversion cannot be made.
+     *
+     * @param type type to convert to.
+     * @param item item to convert.
+     * @return new instance of the requested type.
+     */
+    private static final Object to(Class<?> type, Object item) {
+        Object result = item;
+        if (item == null) {
+            if (type.isPrimitive())
+                throw new NullPointerException();
+        } else if (item instanceof Number && (type.isPrimitive() || Number.class.isAssignableFrom(type))) {
+            Number n = (Number) item;
+            if (long.class.equals(type) || Long.class.equals(type))
+                result = n.longValue();
+            else if (double.class.equals(type) || Double.class.equals(type))
+                result = n.doubleValue();
+            else if (float.class.equals(type) || Float.class.equals(type))
+                result = n.floatValue();
+            else if (int.class.equals(type) || Integer.class.equals(type))
+                result = n.intValue();
+            else if (short.class.equals(type) || Short.class.equals(type))
+                result = n.shortValue();
+            else if (byte.class.equals(type) || Byte.class.equals(type))
+                result = n.byteValue();
+            else if (boolean.class.equals(type) || Boolean.class.equals(type))
+                result = n.longValue() != 0L;
+        } else if (type.isAssignableFrom(String.class)) {
+            result = item.toString();
+        }
+        if (result == item && item != null)
+            throw new DataException("Query returned a result of type " + item.getClass().getName() +
+                                    " which is not compatible with the type that is expected by the repository method signature: " +
+                                    type.getName()); // TODO
+        return result;
     }
 
     @Trivial

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,6 +34,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
+import java.util.Stack;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -1664,6 +1666,77 @@ public class DataTestServlet extends FATServlet {
         assertEquals(t8.leviedAgainst, list.get(7).leviedAgainst);
 
         assertEquals(8, tariffs.deleteByLeviedBy("USA"));
+    }
+
+    /**
+     * Various return types for a repository query that performs multiple aggregate functions.
+     */
+    @Test
+    public void testMultipleAggregates() {
+        Object[] objects = primes.minMaxSumCountAverageObject(50);
+        assertEquals(Long.valueOf(2L), objects[0]); // minimum
+        assertEquals(Long.valueOf(47L), objects[1]); // maximum
+        assertEquals(Long.valueOf(328L), objects[2]); // sum
+        assertEquals(Long.valueOf(15L), objects[3]); // count
+        assertEquals(true, objects[4] instanceof Number); // average
+        assertEquals(21.0, Math.floor(((Number) objects[4]).doubleValue()), 0.01);
+
+        Number[] numbers = primes.minMaxSumCountAverageNumber(45);
+        assertEquals(Long.valueOf(2L), numbers[0]); // minimum
+        assertEquals(Long.valueOf(43L), numbers[1]); // maximum
+        assertEquals(Long.valueOf(281L), numbers[2]); // sum
+        assertEquals(Long.valueOf(14L), numbers[3]); // count
+        assertEquals(20.0, Math.floor(numbers[4].doubleValue()), 0.01);
+
+        Long[] longs = primes.minMaxSumCountAverageLong(42);
+        assertEquals(Long.valueOf(2L), longs[0]); // minimum
+        assertEquals(Long.valueOf(41L), longs[1]); // maximum
+        assertEquals(Long.valueOf(238L), longs[2]); // sum
+        assertEquals(Long.valueOf(13L), longs[3]); // count
+        assertEquals(Long.valueOf(18L), longs[4]); // average
+
+        int[] ints = primes.minMaxSumCountAverageInt(40);
+        assertEquals(2, ints[0]); // minimum
+        assertEquals(37, ints[1]); // maximum
+        assertEquals(197, ints[2]); // sum
+        assertEquals(12, ints[3]); // count
+        assertEquals(16, ints[4]); // average
+
+        float[] floats = primes.minMaxSumCountAverageFloat(35);
+        assertEquals(2.0f, floats[0], 0.01f); // minimum
+        assertEquals(31.0f, floats[1], 0.01f); // maximum
+        assertEquals(160.0f, floats[2], 0.01f); // sum
+        assertEquals(11.0f, floats[3], 0.01f); // count
+        assertEquals(14.0f, Math.floor(floats[4]), 0.01f); // average
+
+        List<Long> list = primes.minMaxSumCountAverageList(30);
+        assertEquals(Long.valueOf(2L), list.get(0)); // minimum
+        assertEquals(Long.valueOf(29L), list.get(1)); // maximum
+        assertEquals(Long.valueOf(129L), list.get(2)); // sum
+        assertEquals(Long.valueOf(10L), list.get(3)); // count
+        assertEquals(Long.valueOf(12L), list.get(4)); // average
+
+        Stack<String> stack = primes.minMaxSumCountAverageStack(25);
+        assertEquals("2", stack.get(0)); // minimum
+        assertEquals("23", stack.get(1)); // maximum
+        assertEquals("100", stack.get(2)); // sum
+        assertEquals("9", stack.get(3)); // count
+        assertEquals(stack.get(4), true, stack.get(4).startsWith("11.")); // average
+
+        Iterable<Integer> iterable = primes.minMaxSumCountAverageIterable(20);
+        Iterator<Integer> it = iterable.iterator();
+        assertEquals(Integer.valueOf(2), it.next()); // minimum
+        assertEquals(Integer.valueOf(19), it.next()); // maximum
+        assertEquals(Integer.valueOf(77), it.next()); // sum
+        assertEquals(Integer.valueOf(8), it.next()); // count
+        assertEquals(Integer.valueOf(9), it.next()); // average
+
+        Deque<Double> deque = primes.minMaxSumCountAverageDeque(18);
+        assertEquals(2.0, deque.removeFirst(), 0.01); // minimum
+        assertEquals(17.0, deque.removeFirst(), 0.01); // maximum
+        assertEquals(58.0, deque.removeFirst(), 0.01); // sum
+        assertEquals(7.0, deque.removeFirst(), 0.01); // count
+        assertEquals(8.0, Math.floor(deque.removeFirst()), 0.01); // average
     }
 
     /**

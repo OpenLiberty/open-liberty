@@ -10,7 +10,10 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import java.util.Deque;
+import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
@@ -68,6 +71,33 @@ public interface Primes {
     boolean existsByNumber(long number);
 
     Boolean existsNumberBetween(Long first, Long last);
+
+    @Query("SELECT MIN(o.number), MAX(o.number), SUM(o.number), COUNT(o.number), AVG(o.number) FROM Prime o WHERE o.number < ?1")
+    Deque<Double> minMaxSumCountAverageDeque(long numBelow);
+
+    @Query("SELECT MIN(o.number), MAX(o.number), SUM(o.number), COUNT(o.number), AVG(o.number) FROM Prime o WHERE o.number < ?1")
+    float[] minMaxSumCountAverageFloat(long numBelow);
+
+    @Query("SELECT MIN(o.number), MAX(o.number), SUM(o.number), COUNT(o.number), AVG(o.number) FROM Prime o WHERE o.number < ?1")
+    int[] minMaxSumCountAverageInt(long numBelow);
+
+    @Query("SELECT MIN(o.number), MAX(o.number), SUM(o.number), COUNT(o.number), AVG(o.number) FROM Prime o WHERE o.number < ?1")
+    Iterable<Integer> minMaxSumCountAverageIterable(long numBelow);
+
+    @Query("SELECT MIN(o.number), MAX(o.number), SUM(o.number), COUNT(o.number), AVG(o.number) FROM Prime o WHERE o.number < ?1")
+    List<Long> minMaxSumCountAverageList(long numBelow);
+
+    @Query("SELECT MIN(o.number), MAX(o.number), SUM(o.number), COUNT(o.number), AVG(o.number) FROM Prime o WHERE o.number < ?1")
+    Long[] minMaxSumCountAverageLong(long numBelow);
+
+    @Query("SELECT MIN(o.number), MAX(o.number), SUM(o.number), COUNT(o.number), AVG(o.number) FROM Prime o WHERE o.number < ?1")
+    Number[] minMaxSumCountAverageNumber(long numBelow);
+
+    @Query("SELECT MIN(o.number), MAX(o.number), SUM(o.number), COUNT(o.number), AVG(o.number) FROM Prime o WHERE o.number < ?1")
+    Object[] minMaxSumCountAverageObject(long numBelow); // TODO List<Number>?, List<Object>?
+
+    @Query("SELECT MIN(o.number), MAX(o.number), SUM(o.number), COUNT(o.number), AVG(o.number) FROM Prime o WHERE o.number < ?1")
+    Stack<String> minMaxSumCountAverageStack(long numBelow);
 
     @Query(value = "SELECT NEW java.util.AbstractMap.SimpleImmutableEntry(p.number, p.name) FROM Prime p WHERE p.number <= ?1 ORDER BY p.name",
            count = "SELECT COUNT(p) FROM Prime p WHERE p.number <= ?1")
