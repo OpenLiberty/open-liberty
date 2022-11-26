@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,7 @@ import componenttest.topology.impl.LibertyServerWrapper;
  * 2.0 token in the HTTP POST request.
  */
 
+//issue 23060
 @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
@@ -143,9 +144,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
 
         testSAMLServer.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES, SAMLMessageConstants.CWWKF0001E_FEATURE_MISSING);
         testSAMLServer2.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKS3107W_GROUP_USER_MISMATCH, SAMLMessageConstants.CWWKW0232E_CANNOT_CREATE_SUBJECT_FOR_USER, SAMLMessageConstants.CWWKW0210E_CANNOT_CREATE_SUBJECT, SAMLMessageConstants.CWWKW0228E_SAML_ASSERTION_MISSING, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES, SAMLMessageConstants.CWWKF0001E_FEATURE_MISSING);
-        
-        //issue 18363
-        setFeatureVersion("EE7");
+       
 		
     }
 
@@ -336,13 +335,8 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     @Test
     public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userIdentifierBad() throws Exception {
         
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-    	    badAttrValueTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userIdentifierBad.xml", userIdentifierString);
-    	} else if ("EE8".equals(getFeatureVersion())) {
-    		badAttrValueTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userIdentifierBad_ee8.xml", userIdentifierString);
-    	}//end of 18363
-    	
+    	badAttrValueTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userIdentifierBad.xml", userIdentifierString);
+     	
     }
  
     /*
@@ -361,13 +355,8 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userIdentifierBad() throws Exception {
-       
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-    	    badAttrValueTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userIdentifierBad.xml", userIdentifierString);
-    	} else if ("EE8".equals(getFeatureVersion())) {
-    		badAttrValueTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userIdentifierBad_ee8.xml", userIdentifierString);
-    	}//End of 18363
+      
+    	badAttrValueTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userIdentifierBad.xml", userIdentifierString);
     	
     }
 
@@ -387,13 +376,8 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierBad() throws Exception {
-        
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-    	    badAttrValueTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierBad.xml", userUniqueIdentifierString);
-    	} else if ("EE8".equals(getFeatureVersion())) {
-    		badAttrValueTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierBad_ee8.xml", userUniqueIdentifierString);
-    	}//End of 18363
+       
+        badAttrValueTest("server_2_caller_mapToUserRegistry_Group_inRegistry_userUniqueIdentifierBad.xml", userUniqueIdentifierString);
     	
     }
   
@@ -413,13 +397,8 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierBad() throws Exception {
-        
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-    	    badAttrValueTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierBad.xml", userUniqueIdentifierString);
-    	} else if ("EE8".equals(getFeatureVersion())) {
-    		badAttrValueTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierBad_ee8.xml", userUniqueIdentifierString);
-    	}//End of 18363
+    	
+    	badAttrValueTest("server_2_caller_mapToUserRegistry_Group_notInRegistry_userUniqueIdentifierBad.xml", userUniqueIdentifierString);
     	
     }
 
@@ -442,14 +421,9 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     
     @Test
     public void testCxfCaller_mapToUserRegistry_No_inRegistry_identifiersGood() throws Exception {
-        
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
+        	
     	    generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
-    	} else if ("EE8".equals(getFeatureVersion())) {
-    		generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_identifiersGood_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
-    	}//End of 18363
-    	
+     	
     }
 
     /*
@@ -469,14 +443,9 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     
     @Test
     public void testCxfCaller_mapToUserRegistry_No_notInRegistry_identifiersGood() throws Exception {
-        
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-    	    generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
-    	} else if ("EE8".equals(getFeatureVersion())) {
-    		generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_identifiersGood_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
-    	}//End of 18363
-    	
+         	
+   	    generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_identifiersGood.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
+    
     }
  
     /********** identifiers are Omitted **********/
@@ -497,13 +466,8 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      
     @Test
     public void testCxfCaller_mapToUserRegistry_No_inRegistry_identifiersOmitted() throws Exception {
-        
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-    	    generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_identifiersOmitted.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
-    	} else if ("EE8".equals(getFeatureVersion())) {
-    		generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_identifiersOmitted_ee8.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
-    	}//End of 18363
+          	
+    	 generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_identifiersOmitted.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
     	
     }
    
@@ -524,14 +488,9 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     
     @Test
     public void testCxfCaller_mapToUserRegistry_No_notInRegistry_identifiersOmitted() throws Exception {
-        
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-    	    generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_identifiersOmitted.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
-    	} else if ("EE8".equals(getFeatureVersion())) {
-    		generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_identifiersOmitted_ee8.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
-    	}//End of 18363
-    	
+        	
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_identifiersOmitted.xml", defaultServerCfgRealm, defaultIDPUser, defaultNullGroup);
+    	  	
     }
 
     /*
@@ -552,12 +511,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     @Test
     public void testCxfCaller_mapToUserRegistry_No_inRegistry_groupIdentifierOmitted() throws Exception {
 
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-            generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_groupIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
-    	} else if ("EE8".equals(getFeatureVersion())) {
-    		generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_groupIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
-    	}//End of 18363
+         generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_groupIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
     	
     }
  
@@ -579,12 +533,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     @Test
     public void testCxfCaller_mapToUserRegistry_No_notInRegistry_groupIdentifierOmitted() throws Exception {
         
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-    	    generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_groupIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
-    	} else if ("EE8".equals(getFeatureVersion())) {
-    		generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_groupIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
-    	}//End of 18363
+       generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_groupIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
     	
     }
   
@@ -605,13 +554,8 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     
     @Test
     public void testCxfCaller_mapToUserRegistry_No_inRegistry_realmIdentifierOmitted() throws Exception {
-        
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-    	    generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_realmIdentifierOmitted.xml", defaultServerCfgRealm, defaultIDPIdentifierUser, defaultServerCfgGroups);
-    	} else if ("EE8".equals(getFeatureVersion())) {
-    		 generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_realmIdentifierOmitted_ee8.xml", defaultServerCfgRealm, defaultIDPIdentifierUser, defaultServerCfgGroups);
-    	}//End of 18363
+           	
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_realmIdentifierOmitted.xml", defaultServerCfgRealm, defaultIDPIdentifierUser, defaultServerCfgGroups);
     	
     }
 
@@ -633,13 +577,8 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     @Test
     public void testCxfCaller_mapToUserRegistry_No_notInRegistry_realmIdentifierOmitted() throws Exception {
         
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-    	    generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_realmIdentifierOmitted.xml", defaultServerCfgRealm, defaultIDPIdentifierUser, defaultServerCfgGroups);
-    	} else if ("EE8".equals(getFeatureVersion())) {
-    		generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_realmIdentifierOmitted_ee8.xml", defaultServerCfgRealm, defaultIDPIdentifierUser, defaultServerCfgGroups);
-    	}//End of 18363
-    	
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_realmIdentifierOmitted.xml", defaultServerCfgRealm, defaultIDPIdentifierUser, defaultServerCfgGroups);
+       	
     }
 
  
@@ -660,13 +599,8 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     
     @Test
     public void testCxfCaller_mapToUserRegistry_No_inRegistry_userIdentifierOmitted() throws Exception {
-        
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-    	    generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_userIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPIdentifierGroup);
-    	} else if ("EE8".equals(getFeatureVersion())) {
-    		generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_userIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPIdentifierGroup);
-    	}//End of 18363
+           	
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_userIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPIdentifierGroup);
     	
     }
  
@@ -687,13 +621,8 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     
     @Test
     public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userIdentifierOmitted() throws Exception {
-        
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-    		generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPIdentifierGroup);
-    	} else if ("EE8".equals(getFeatureVersion())) {
-    		generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPIdentifierGroup);
-    	}//End of 18363
+           	
+       generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPUser, defaultIDPIdentifierGroup);
     	
     }
 
@@ -714,14 +643,9 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     
     @Test
     public void testCxfCaller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierOmitted() throws Exception {
-        
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-    	    generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
-    	} else if ("EE8".equals(getFeatureVersion())) {
-    		generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
-    	}//End of 18363
-    	
+            	
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_userUniqueIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
+    	  	
     }
 
     /*
@@ -742,12 +666,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     @Test
     public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierOmitted() throws Exception {
         
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-    	    generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
-    	} else if ("EE8".equals(getFeatureVersion())) {
-    		generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierOmitted_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
-    	}//End of 18363
+       generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userUniqueIdentifierOmitted.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultIDPGroups);
     	
     }
  
@@ -769,14 +688,9 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     
     @Test
     public void testCxfCaller_mapToUserRegistry_No_inRegistry_groupIdentifierBad() throws Exception {
-        
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-    	   generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_groupIdentifierBad.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
-    	} else if ("EE8".equals(getFeatureVersion())) {
-    		generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_groupIdentifierBad_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
-    	}//End of 18363
-    	
+          	
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_No_inRegistry_groupIdentifierBad.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
+    	   	
     }
     
     /*
@@ -796,14 +710,9 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     
     @Test
     public void testCxfCaller_mapToUserRegistry_No_notInRegistry_groupIdentifierBad() throws Exception {
-       
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-    	    generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_groupIdentifierBad.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
-    	} else if ("EE8".equals(getFeatureVersion())) {
-    		generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_groupIdentifierBad_ee8.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
-    	}//End of 18363
-    	
+        	
+    	generalPositiveTest("server_2_caller_mapToUserRegistry_No_notInRegistry_groupIdentifierBad.xml", defaultIDPIdentifierRealm, defaultIDPIdentifierUser, defaultNullGroup);
+       	
     }
  
     /*
@@ -822,14 +731,9 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_No_inRegistry_realmIdentifierBad() throws Exception {
-        
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-    	    badAttrValueTest("server_2_caller_mapToUserRegistry_No_inRegistry_realmIdentifierBad.xml", realmIdentifierString);
-    	} else if ("EE8".equals(getFeatureVersion())) {
-    		badAttrValueTest("server_2_caller_mapToUserRegistry_No_inRegistry_realmIdentifierBad_ee8.xml", realmIdentifierString);
-    	}//End of 18363
-    	
+        	
+    	badAttrValueTest("server_2_caller_mapToUserRegistry_No_inRegistry_realmIdentifierBad.xml", realmIdentifierString);
+    	    	
     }
  
     /*
@@ -848,14 +752,9 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_No_notInRegistry_realmIdentifierBad() throws Exception {
-       
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-    	    badAttrValueTest("server_2_caller_mapToUserRegistry_No_notInRegistry_realmIdentifierBad.xml", realmIdentifierString);
-    	} else if ("EE8".equals(getFeatureVersion())) {
-    		badAttrValueTest("server_2_caller_mapToUserRegistry_No_notInRegistry_realmIdentifierBad_ee8.xml", realmIdentifierString);
-    	}//End of 18363
-    	
+       	
+    	 badAttrValueTest("server_2_caller_mapToUserRegistry_No_notInRegistry_realmIdentifierBad.xml", realmIdentifierString);
+    	  	
     }
   
     /*
@@ -874,13 +773,9 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_No_inRegistry_userIdentifierBad() throws Exception {
-        
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-    	    badAttrValueTest("server_2_caller_mapToUserRegistry_No_inRegistry_userIdentifierBad.xml", userIdentifierString);
-    	} else if ("EE8".equals(getFeatureVersion())) {
-    		badAttrValueTest("server_2_caller_mapToUserRegistry_No_inRegistry_userIdentifierBad_ee8.xml", userIdentifierString);
-    	} //End of 18363
+        	
+    	badAttrValueTest("server_2_caller_mapToUserRegistry_No_inRegistry_userIdentifierBad.xml", userIdentifierString);
+    	
     }
     
  
@@ -900,13 +795,8 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
     @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_No_notInRegistry_userIdentifierBad() throws Exception {
-        
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-    	    badAttrValueTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userIdentifierBad.xml", userIdentifierString);
-    	} else if ("EE8".equals(getFeatureVersion())) {
-    		badAttrValueTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userIdentifierBad_ee8.xml", userIdentifierString);
-    	}//End of 18363
+          	
+    	badAttrValueTest("server_2_caller_mapToUserRegistry_No_notInRegistry_userIdentifierBad.xml", userIdentifierString); 	
     	
     }	
     
