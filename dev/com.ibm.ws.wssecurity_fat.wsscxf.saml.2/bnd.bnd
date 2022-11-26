@@ -21,34 +21,31 @@ src: \
 
 fat.project: true
 
-#tested.features: jsp-2.3, jdbc-4.1, el-3.0, appsecurity-3.0, servlet-4.0, jaxb-2.3, cdi-2.0, jaxws-2.3
-
 tested.features:\
   jdbc-4.1, \
-  jaxws-2.3, \
   xmlWS-3.0, \
+  xmlWS-4.0, \
   jaxb-2.3, \
   xmlBinding-3.0, \
+  xmlBinding-4.0, \
   jsp-2.3, \
   pages-3.0, \
+  pages-3.1, \
   servlet-4.0, \
   servlet-5.0, \
+  servlet-6.0, \
   appSecurity-3.0, \
   appSecurity-4.0, \
+  appSecurity-5.0, \
   cdi-2.0, \
   cdi-3.0, \
+  cdi-4.0, \
   el-3.0, \
   expressionlanguage-4.0, \
   expressionlanguage-5.0, \
-  pages-3.1, \
-  servlet-6.0, \
-  appsecurity-5.0, \
-  xmlws-4.0, \
-  jsonp-2.1, \
-  xmlbinding-4.0, \
-  cdi-4.0
-  
+  jsonp-2.1
 
+  
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)
 # For all project names that match the pattern "*_fat*", dependencies for junit,

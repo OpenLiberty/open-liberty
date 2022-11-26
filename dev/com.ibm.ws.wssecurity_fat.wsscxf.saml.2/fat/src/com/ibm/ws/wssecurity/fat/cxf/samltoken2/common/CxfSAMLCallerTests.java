@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,17 +54,15 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
     protected static String servicePort = null;
     protected static String serviceSecurePort = null;
     protected static CXFSAMLCommonUtils commonUtils = new CXFSAMLCommonUtils();
+    
     //issue 18363
     protected static String featureVersion = "";
-
-    //issue 18363
     public static String getFeatureVersion() {
         return featureVersion;
     }
-    
     public static void setFeatureVersion(String version) {
         featureVersion = version;
-    } //End of issue 18363
+    } 
     
     /**
      * TestDescription:
@@ -103,12 +101,11 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
     }
    
     //scenario 2
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID, JakartaEE10Action.ID })
     @Test
     public void testCxfCallerHttpsPolicy() throws Exception {
         
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
+    	//issue 23060
+    	if ("EE7cbh1".equals(getFeatureVersion())) {
     	    if (testSAMLServer2 == null) {
                 //1 server reconfig
                 testSAMLServer.reconfigServer(buildSPServerName("server_2in1_asymProtection.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -117,7 +114,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
                 testSAMLServer2.reconfigServer(buildSPServerName("server_2_caller_asymProtection.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
                 testSAMLServer.reconfigServer(buildSPServerName("server_1_asymProtection.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
             }
-    	} else if (("EE8".equals(getFeatureVersion())) || ("EE9".equals(getFeatureVersion()))){
+    	} else if ("EE7cbh2".equals(getFeatureVersion())) {
     		if (testSAMLServer2 == null) {
                 //1 server reconfig
                 testSAMLServer.reconfigServer(buildSPServerName("server_2in1_asymProtection_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -126,7 +123,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
                 testSAMLServer2.reconfigServer(buildSPServerName("server_2_caller_asymProtection_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
                 testSAMLServer.reconfigServer(buildSPServerName("server_1_asymProtection_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
             }
-    	} //End of 18363
+    	} 
     	
         // Create the conversation object which will maintain state for us
         String webServiceName = "FatSamlC03Service";
@@ -149,12 +146,16 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
     }
  
     //scenario 3 - done
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID, JakartaEE10Action.ID })
+    //issue 23060
+    //In this test, CBH is not used, but still using the EE7cbh condition checker to reference the respective ehcache old/new format xml
+    //for the test coverage on cxf section of "org.apache.cxf.ws.security.tokenstore.TokenStore" within both ehcache _ee7 and _ee8 xml.
+    //Note that in the format ehcache "cxf-ehcache_ee8.xml", the wss4j section of "ws-security.nonce.cache.instance" template is commented out 
+    //since it's not supported/used in the current runtime
     @Test
     public void testCxfCaller_WithRealmName() throws Exception {
         
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
+    	//issue 23060
+    	if ("EE7cbh1".equals(getFeatureVersion())) {
     	    if (testSAMLServer2 == null) {
                 // 1 server reconfig
                 testSAMLServer.reconfigServer(buildSPServerName("server_2in1_realmName.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -164,7 +165,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
                 // shouldn't need to reconfig server 1 - we don't need to change anything there
                 //			testSAMLServer.reconfigServer(buildSPServerName("server_1_realmName.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
             }
-    	} else if (("EE8".equals(getFeatureVersion())) || ("EE9".equals(getFeatureVersion()))){
+    	} else if ("EE7cbh2".equals(getFeatureVersion())) {
     		if (testSAMLServer2 == null) {
                 // 1 server reconfig
                 testSAMLServer.reconfigServer(buildSPServerName("server_2in1_realmName_ee8.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -174,7 +175,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
                 // shouldn't need to reconfig server 1 - we don't need to change anything there
                 //			testSAMLServer.reconfigServer(buildSPServerName("server_1_realmName.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
             }
-    	}// End of 18363
+    	}
     	
         // Create the conversation object which will maintain state for us
         String webServiceName = "FatSamlC02Service";
@@ -195,13 +196,12 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
 
     }
  
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID, JakartaEE10Action.ID })
     //scenario 5
     @Test
     public void testCxfCallerHttpsPolicy_IncludeTokenInSubjectIsFalse() throws Exception {
         
-    	//issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
+    	//issue 23060
+    	if ("EE7cbh1".equals(getFeatureVersion())) {
     	    if (testSAMLServer2 == null) {
                 // 1 server reconfig
                 testSAMLServer.reconfigServer(buildSPServerName("server_2in1_asymProtection_TokenInSubFalse.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -210,7 +210,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
                 testSAMLServer2.reconfigServer(buildSPServerName("server_2_caller_asymProtection_TokenInSubFalse.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
                 testSAMLServer.reconfigServer(buildSPServerName("server_1_asymProtection.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
             }
-    	} else if (("EE8".equals(getFeatureVersion())) || ("EE9".equals(getFeatureVersion()))){
+    	} else if ("EE7cbh2".equals(getFeatureVersion())) {
     		if (testSAMLServer2 == null) {
                 // 1 server reconfig
                 testSAMLServer.reconfigServer(buildSPServerName("server_2in1_asymProtection_TokenInSubFalse_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -219,7 +219,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
                 testSAMLServer2.reconfigServer(buildSPServerName("server_2_caller_asymProtection_TokenInSubFalse_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
                 testSAMLServer.reconfigServer(buildSPServerName("server_1_asymProtection_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
             }
-    	}// End of 18363
+    	}
     	
         // Create the conversation object which will maintain state for us
         String webServiceName = "FatSamlC04Service";
