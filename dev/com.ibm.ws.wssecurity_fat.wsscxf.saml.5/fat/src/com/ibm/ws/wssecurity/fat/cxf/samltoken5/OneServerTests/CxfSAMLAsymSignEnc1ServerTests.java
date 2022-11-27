@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.LibertyServerWrapper;
 
 
@@ -55,12 +56,14 @@ import componenttest.topology.impl.LibertyServerWrapper;
 public class CxfSAMLAsymSignEnc1ServerTests extends CxfSAMLAsymSignEncTests {
 
     private static final Class<?> thisClass = CxfSAMLAsymSignEnc1ServerTests.class;
+    protected static String repeatAction = "";
 
     @BeforeClass
     public static void setupBeforeTest() throws Exception {
 
-        //		flowType = SAMLConstants.SOLICITED_SP_INITIATED ;
-        flowType = chooseRandomFlow();
+    	//issue 23060 FAT can't use random chooseRandomFlow()
+        flowType = SAMLConstants.SOLICITED_SP_INITIATED ;
+        
         idpSupportedType = SAMLConstants.TFIM_TYPE;
 
         msgUtils.printClassName(thisClass.toString());
@@ -89,8 +92,19 @@ public class CxfSAMLAsymSignEnc1ServerTests extends CxfSAMLAsymSignEncTests {
         testSettings.setSpTargetApp(testSAMLServer.getHttpString() + "/samlcxfclient/CxfSamlSvcClient");
         testSettings.setSamlTokenValidationData(testSettings.getIdpUserName(), testSettings.getSamlTokenValidationData().getIssuer(), testSettings.getSamlTokenValidationData().getInResponseTo(), testSettings.getSamlTokenValidationData().getMessageID(), testSettings.getSamlTokenValidationData().getEncryptionKeyUser(), testSettings.getSamlTokenValidationData().getRecipient(), testSettings.getSamlTokenValidationData().getEncryptAlg());
 
-        //issue 18363
-        setFeatureVersion("EE7");
+	    //issue 23060
+        //Note that in the new format ehcache "cxf-ehcache_ee8.xml", the wss4j section of "ws-security.nonce.cache.instance" template is commented out 
+        //since it's not supported/used in the current runtime
+        Log.info(thisClass, "setupBeforeTest", "current repeat action: " + RepeatTestFilter.getRepeatActionsAsString());
+        repeatAction = RepeatTestFilter.getRepeatActionsAsString();
+        //default NO_MODIFICATION repeat action does not use any name extension
+        if (repeatAction == "" || repeatAction == null ) {
+            Log.info(thisClass,"setupBeforeTest", "the test is: EE7 to run with OLD format ehcache ");
+            setEhcacheVersion("EE7OLDEhcache");
+        } else if (repeatAction.contains("_EE7cbh-2.0")) {
+            Log.info(thisClass, "setupBeforeTest", "the test is: EE7 to run with NEW format ehcache ");
+            setEhcacheVersion("EE7NEWEhcache");
+        }
         
      }
 }

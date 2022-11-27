@@ -21,7 +21,7 @@ import com.ibm.ws.wssecurity.fat.cxf.samltoken5.OneServerTests.CxfSAMLSymSignEnc
 import com.ibm.ws.wssecurity.fat.cxf.samltoken5.TwoServerTests.CxfSAMLSymSignEnc2ServerTests;
 import com.ibm.ws.wssecurity.fat.cxf.samltoken5.OneServerTests.CxfSAMLAsymSignEnc1ServerTests;
 import com.ibm.ws.wssecurity.fat.cxf.samltoken5.TwoServerTests.CxfSAMLAsymSignEnc2ServerTests;
-
+import com.ibm.ws.wssecurity.fat.utils.common.RepeatWithEE7cbh20;
 
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -33,7 +33,9 @@ import componenttest.rules.repeater.RepeatTests;
 	   //Lite
 	   AlwaysRunAndPassTest.class,
              
-       //Full 
+       //Full for EE7 old/new format ehcache; 
+	   //as well as for EE7 wsseccbh-1.0/wsseccbh-2.0 on some tests
+       //Full mode also runs Lite tests
        CxfSAMLSymSignEnc2ServerTests.class, 
        CxfSAMLAsymSignEnc2ServerTests.class,
        CxfSAMLSymSignEnc1ServerTests.class, 
@@ -48,8 +50,8 @@ import componenttest.rules.repeater.RepeatTests;
  */
 public class FATSuite {
 	
-    //The following run EE7 and EE8 full fat but no EE9 lite fat
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("usr:wsseccbh-1.0").addFeature("usr:wsseccbh-2.0")).andWith(FeatureReplacementAction.EE10_FEATURES().removeFeature("usr:wsseccbh-1.0").addFeature("usr:wsseccbh-2.0"));
-    
+    //issue 23060
+    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new RepeatWithEE7cbh20().fullFATOnly()).andWith(FeatureReplacementAction.EE9_FEATURES()).andWith(FeatureReplacementAction.EE10_FEATURES());
+
 }
