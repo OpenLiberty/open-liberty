@@ -32,6 +32,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -101,7 +102,7 @@ public class PasswordUtilAPITest {
              * The feature passwordUtilties-1.0 starts federatedRegistry-1.0, except when using EE9 since then
              * appSecurity-1.0 (which brings in federatedRegistry-1.0) is no longer compatible.
              */
-            if (!JakartaEE9Action.isActive()) {
+            if (!JakartaEE9Action.isActive() && !JakartaEE10Action.isActive()) {
                 assertFalse("Federated registry feature (federatedRegistry-1.0) should have started.", myServer.findStringsInLogs("federatedRegistry-1.0").isEmpty());
             } else {
                 assertTrue("Federated registry feature (federatedRegistry-1.0) should not have started.", myServer.findStringsInLogs("federatedRegistry-1.0").isEmpty());

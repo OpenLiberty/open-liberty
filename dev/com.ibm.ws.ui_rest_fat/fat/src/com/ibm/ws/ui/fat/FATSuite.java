@@ -72,11 +72,15 @@ public class FATSuite {
     static {
         boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("win");
         if (!isWindows) {
-            r = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new FeatureReplacementAction("restConnector-1.0", "restConnector-2.0").fullFATOnly()).andWith(FeatureReplacementAction.EE9_FEATURES().alwaysAddFeature("servlet-5.0"));
+            r = RepeatTests.with(new EmptyAction().fullFATOnly())
+            		.andWith(new FeatureReplacementAction("restConnector-1.0", "restConnector-2.0").fullFATOnly())
+            		.andWith(FeatureReplacementAction.EE9_FEATURES().alwaysAddFeature("servlet-5.0")
+            				.conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+            		.andWith(FeatureReplacementAction.EE10_FEATURES().alwaysAddFeature("servlet-6.0"));
         } else {
             // On Windows only run each repeat scenario on lite or full mode so
             // that both do not run on Windows.
-            r = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new FeatureReplacementAction("restConnector-1.0", "restConnector-2.0").fullFATOnly()).andWith(FeatureReplacementAction.EE9_FEATURES().alwaysAddFeature("servlet-5.0").liteFATOnly());
+            r = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new FeatureReplacementAction("restConnector-1.0", "restConnector-2.0").fullFATOnly()).andWith(FeatureReplacementAction.EE10_FEATURES().alwaysAddFeature("servlet-6.0").liteFATOnly());
         }
     }
     private static final Class<?> c = FATSuite.class;

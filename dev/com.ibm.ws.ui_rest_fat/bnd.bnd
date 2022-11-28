@@ -24,10 +24,12 @@ tested.features:\
     pages-3.0, \
     com.ibm.websphere.appserver.autorestconnector-2.0, \
     basicpublicautofeaturetool-1.0, \
-    scopedprodextn:publicprodextntool-1.0 \
-    jsp-2.2 \
-    servlet-3.1 \
-    scopedprodextn:publicprodextntool-1.0
+    scopedprodextn:publicprodextntool-1.0, \
+    jsp-2.2, \
+    servlet-3.1, \
+    scopedprodextn:publicprodextntool-1.0, \
+    expressionlanguage-5.0, \
+    pages-3.1
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}

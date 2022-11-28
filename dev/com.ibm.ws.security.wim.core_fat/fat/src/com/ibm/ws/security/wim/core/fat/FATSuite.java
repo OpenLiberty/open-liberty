@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import com.ibm.ws.com.unboundid.InMemoryLDAPServer;
 import com.ibm.ws.com.unboundid.InMemoryTDSLDAPServer;
 
 import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -88,6 +89,11 @@ public class FATSuite {
             for (String appPath : appPaths) {
                 Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + appPath);
                 JakartaEE9Action.transformApp(someArchive);
+            }
+        } else if (JakartaEE10Action.isActive()) {
+            for (String appPath : appPaths) {
+                Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + appPath);
+                JakartaEE10Action.transformApp(someArchive);
             }
         }
     }

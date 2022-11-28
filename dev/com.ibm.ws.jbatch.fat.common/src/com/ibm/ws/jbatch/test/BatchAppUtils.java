@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
@@ -207,6 +208,8 @@ public class BatchAppUtils {
         targetServer.copyFileToLibertyServerRoot(PrebuiltAppArtifactPath, "dropins", appName);
         if (JakartaEE9Action.isActive()) {
             JakartaEE9Action.transformApp(Paths.get(targetServer.getServerRoot(), "dropins", appName));
+        } else if (JakartaEE10Action.isActive()) {
+            JakartaEE10Action.transformApp(Paths.get(targetServer.getServerRoot(), "dropins", appName));
         }
     }
 

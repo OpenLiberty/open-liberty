@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.logging.Logger;
 
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 
 public class GrpcMetricsTestUtils {
@@ -33,9 +35,13 @@ public class GrpcMetricsTestUtils {
      * @param expectedValue - the expected value
      * @return the actual value received from the Metrics endpoint
      */
-    public static String checkMetric(LibertyServer server, String metricName, String expectedValue) {
-        String metricValue = getMetric(server, metricName);
-        if (metricValue == null || !metricValue.equals(expectedValue)) {
+    public static String checkMetric(LibertyServer server, String metricName, String grpcMethod, String expectedValue) {
+        if (RepeatTestFilter.isRepeatActionActive(JakartaEE10Action.ID)) {
+            metricName = metricName.replace("/vendor", "?scope=vendor");
+            metricName = metricName.replace("/grpc", "&name=grpc");
+        }
+        String metricValue = getMetric(server, metricName, grpcMethod);
+        if (metricValue == null || !compareMetric(metricValue, expectedValue)) {
             fail(String.format("Incorrect metric value [%s]. Expected [%s], got [%s]", metricName, expectedValue, metricValue));
         }
         return metricValue;
@@ -50,12 +56,28 @@ public class GrpcMetricsTestUtils {
      * @param port          - server HTTP port.
      * @return the actual value received from the Metrics endpoint
      */
-    public static String checkMetric(String metricName, String expectedValue, String hostname, int port) {
-        String metricValue = getMetric(hostname, port, metricName);
-        if (metricValue == null || !metricValue.equals(expectedValue)) {
+    public static String checkMetric(String metricName, String expectedValue, String hostname, int port, String grpcMethod) {
+        if (RepeatTestFilter.isRepeatActionActive(JakartaEE10Action.ID)) {
+            metricName = metricName.replace("/vendor", "?scope=vendor");
+            metricName = metricName.replace("/grpc", "&name=grpc");
+        }
+        String metricValue = getMetric(hostname, port, metricName, grpcMethod);
+        if (metricValue == null || !compareMetric(metricValue, expectedValue)) {
             fail(String.format("Incorrect metric value [%s]. Expected [%s], got [%s]", metricName, expectedValue, metricValue));
         }
         return metricValue;
+    }
+
+    /**
+     * Before MP Metrics 5.0, the return value was an integer. Now it is a float. This method will
+     * do the right thing to make sure that the compare works with the different versions of MP Metrics.
+     *
+     * @param metricValue   returned value from MP Metrics
+     * @param expectedValue the expected value
+     * @return whether it matches or not.
+     */
+    private static boolean compareMetric(String metricValue, String expectedValue) {
+        return Float.valueOf(metricValue).intValue() == Float.valueOf(expectedValue).intValue();
     }
 
     /**
@@ -65,8 +87,8 @@ public class GrpcMetricsTestUtils {
      * @param metricName - the metric to retrieve
      * @return the value of the specified metric
      */
-    protected static String getMetric(LibertyServer server, String metricName) {
-        return getMetric(server.getHostname(), server.getHttpDefaultPort(), metricName);
+    protected static String getMetric(LibertyServer server, String metricName, String grpcMethod) {
+        return getMetric(server.getHostname(), server.getHttpDefaultPort(), metricName, grpcMethod);
     }
 
     /**
@@ -77,7 +99,7 @@ public class GrpcMetricsTestUtils {
      * @param port       - server HTTP port.
      * @return the value of the specified metric
      */
-    public static String getMetric(String hostname, int port, String metricName) {
+    public static String getMetric(String hostname, int port, String metricName, String grpcMethod) {
         String m = "getMetric";
         LOG.info(m + " ----------------------------------------------------------------");
         LOG.info(m + " ---------hostname=" + hostname + "----port=" + port + "------metricName=" + metricName);
@@ -92,6 +114,7 @@ public class GrpcMetricsTestUtils {
             con.setDoOutput(true);
             con.setUseCaches(false);
             con.setRequestMethod("GET");
+            con.setRequestProperty("Accept", "text/plain");
 
             retcode = con.getResponseCode();
             if (retcode != 200) {
@@ -107,6 +130,9 @@ public class GrpcMetricsTestUtils {
 
             for (String line = br.readLine(); line != null; line = br.readLine()) {
                 if (!line.startsWith("#")) {
+                    if (grpcMethod != null && !line.contains(grpcMethod)) {
+                        continue;
+                    }
                     String[] mertricAttr = line.split(" ");
                     if (mertricAttr.length > 0) {
                         metricValue = mertricAttr[mertricAttr.length - 1];

@@ -50,7 +50,7 @@ import componenttest.custom.junit.runner.FATRunner;
  * that do not interact with an ACME CA service.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat(SkipForRepeat.EE9_FEATURES) // No value added
+@SkipForRepeat({SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES}) // No value added
 public class AcmeClientTest {
 
 	private static final String TEST_DOMAIN_1 = "domain1.com";

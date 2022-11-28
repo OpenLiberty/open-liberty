@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.osgi.framework.VersionRange;
 import org.osgi.service.component.ComponentContext;
@@ -70,6 +71,7 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
     private ClassLoadingService classLoadingService;
     private volatile Library sharedLib = null;
     private static boolean isSuccesfulActivation = true;
+    private static AtomicBoolean isActivated = new AtomicBoolean();
 
     /**
      * Used by SharedMetricRegistries to figure out if it should provide any
@@ -84,6 +86,9 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
 
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> properties) throws Exception {
+
+        if (isActivated.get())
+            return;
 
         File smallRyeMetricsJarFile;
         try {
@@ -163,6 +168,7 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
              * throw new Exception("Unable to initialize MicroProfile Metrics 5.0 feature");
              */
         }
+        isActivated.set(true);
     }
 
     @Override

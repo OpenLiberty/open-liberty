@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,17 @@ import com.ibm.testapp.g3store.utilsProducer.ProducerUtils;
 public class ProducerServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static Logger log = Logger.getLogger(ProducerServlet.class.getName());
+
+    private static final boolean isMetrics50OrLater;
+    static {
+        boolean isMeterFound = true;
+        try {
+            Class.forName("org.eclipse.microprofile.metrics.Meter");
+        } catch (Throwable t) {
+            isMeterFound = false;
+        }
+        isMetrics50OrLater = !isMeterFound;
+    }
 
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -274,7 +285,12 @@ public class ProducerServlet extends HttpServlet {
 
         // retrieve the metrics
         int httpPort = Integer.parseInt(ProducerUtils.getSysProp("bvt.prop.HTTP_secondary"));
-        String metricValue = getMetric("localhost", httpPort, "/metrics/vendor/grpc.client.receivedMessages.total");
+        String metricName = "/metrics/vendor/grpc.client.receivedMessages.total";
+        if (isMetrics50OrLater) {
+            metricName = "/metrics?scope=vendor&name=grpc.client.receivedMessages.total";
+        }
+
+        String metricValue = getMetric("localhost", httpPort, metricName, "test_g3store_grpc_AppProducerService_serverStreamA");
 
         // create HTML response
         response.setContentType("text/html");
@@ -302,7 +318,12 @@ public class ProducerServlet extends HttpServlet {
 
         // retrieve the metrics
         int httpPort = Integer.parseInt(ProducerUtils.getSysProp("bvt.prop.HTTP_default"));
-        String metricValue = getMetric("localhost", httpPort, "/metrics/vendor/grpc.server.receivedMessages.total");
+        String metricName = "/metrics/vendor/grpc.server.receivedMessages.total";
+        if (isMetrics50OrLater) {
+            metricName = "/metrics?scope=vendor&name=grpc.server.receivedMessages.total";
+        }
+
+        String metricValue = getMetric("localhost", httpPort, metricName, null);
 
         // create HTML response
         response.setContentType("text/html");
