@@ -27,13 +27,13 @@ public class TCKResultsInfo {
         JAKARTA //A Jakarta EE TCK
     }
 
-    static class TCKJarInfo {
-        String group; //the maven group ID
-        String artifact; //the maven artifact ID
-        String version; //the maven version
-        String jarPath; //the local path on disk to the TCK jar
-        String sha256; //a sha256 hash of the TCK jar
-        String sha1; //a sha256 hash of the TCK jar
+    public static class TCKJarInfo {
+        public String group; //the maven group ID
+        public String artifact; //the maven artifact ID
+        public String version; //the maven version
+        public String jarPath; //the local path on disk to the TCK jar
+        public String sha256; //a sha256 hash of the TCK jar
+        public String sha1; //a sha256 hash of the TCK jar
     }
 
     private final String javaMajorVersion;// = resultInfo.get("java_major_version");

@@ -1,0 +1,94 @@
+11:52:56,713 [INFO] Scanning for projects...
+11:52:56,772 [WARNING] 
+11:52:56,772 [WARNING] Some problems were encountered while building the effective model for com.ibm.ws.microprofile.health:tck.runner.tck:jar:1.0-SNAPSHOT
+11:52:56,772 [WARNING] 'dependencies.dependency.systemPath' for com.ibm.ws:fattest.simplicity:jar should not point at files within the project directory, ${project.basedir}/../../../lib/fattest.simplicity.jar will be unresolvable by dependent projects @ line 58, column 25
+11:52:56,772 [WARNING] 
+11:52:56,773 [WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+11:52:56,773 [WARNING] 
+11:52:56,773 [WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+11:52:56,773 [WARNING] 
+11:52:56,775 [INFO] ------------------------------------------------------------------------
+11:52:56,775 [INFO] Reactor Build Order:
+11:52:56,776 [INFO] 
+11:52:56,776 [INFO] MicroProfile Health 1.0 TCK Runner TCK Module                      [jar]
+11:52:56,776 [INFO] MicroProfile Health 1.0 TCK Runner                                 [pom]
+11:52:56,904 [INFO] 
+11:52:56,904 [INFO] -----------< com.ibm.ws.microprofile.health:tck.runner.tck >------------
+11:52:56,905 [INFO] Building MicroProfile Health 1.0 TCK Runner TCK Module 1.0-SNAPSHOT [1/2]
+11:52:56,905 [INFO] --------------------------------[ jar ]---------------------------------
+11:52:57,179 [INFO] 
+11:52:57,179 [INFO] --- maven-dependency-plugin:2.9:list (default-cli) @ tck.runner.tck ---
+11:52:57,782 [INFO] 
+11:52:57,782 [INFO] The following files have been resolved:
+11:52:57,782 [INFO]    javax.json:javax.json-api:jar:1.0:compile:/Users/tevans/.m2/repository/javax/json/javax.json-api/1.0/javax.json-api-1.0.jar
+11:52:57,782 [INFO]    org.testng:testng:jar:6.9.9:test:/Users/tevans/.m2/repository/org/testng/testng/6.9.9/testng-6.9.9.jar
+11:52:57,782 [INFO]    org.jboss.arquillian.testng:arquillian-testng-container:jar:1.1.14.Final:compile:/Users/tevans/.m2/repository/org/jboss/arquillian/testng/arquillian-testng-container/1.1.14.Final/arquillian-testng-container-1.1.14.Final.jar
+11:52:57,782 [INFO]    javax.interceptor:javax.interceptor-api:jar:1.2:provided:/Users/tevans/.m2/repository/javax/interceptor/javax.interceptor-api/1.2/javax.interceptor-api-1.2.jar
+11:52:57,782 [INFO]    com.beust:jcommander:jar:1.48:test:/Users/tevans/.m2/repository/com/beust/jcommander/1.48/jcommander-1.48.jar
+11:52:57,782 [INFO]    io.openliberty.arquillian:arquillian-liberty-managed:jar:1.0.5:test:/Users/tevans/.m2/repository/io/openliberty/arquillian/arquillian-liberty-managed/1.0.5/arquillian-liberty-managed-1.0.5.jar
+11:52:57,782 [INFO]    org.jboss.arquillian.config:arquillian-config-api:jar:1.3.0.Final:compile:/Users/tevans/.m2/repository/org/jboss/arquillian/config/arquillian-config-api/1.3.0.Final/arquillian-config-api-1.3.0.Final.jar
+11:52:57,783 [INFO]    javax.el:javax.el-api:jar:3.0.0:provided:/Users/tevans/.m2/repository/javax/el/javax.el-api/3.0.0/javax.el-api-3.0.0.jar
+11:52:57,783 [INFO]    org.jboss.arquillian.core:arquillian-core-impl-base:jar:1.3.0.Final:compile:/Users/tevans/.m2/repository/org/jboss/arquillian/core/arquillian-core-impl-base/1.3.0.Final/arquillian-core-impl-base-1.3.0.Final.jar
+11:52:57,783 [INFO]    org.jboss.arquillian.container:arquillian-container-spi:jar:1.3.0.Final:compile:/Users/tevans/.m2/repository/org/jboss/arquillian/container/arquillian-container-spi/1.3.0.Final/arquillian-container-spi-1.3.0.Final.jar
+11:52:57,783 [INFO]    org.jboss.arquillian.testenricher:arquillian-testenricher-cdi:jar:1.3.0.Final:test:/Users/tevans/.m2/repository/org/jboss/arquillian/testenricher/arquillian-testenricher-cdi/1.3.0.Final/arquillian-testenricher-cdi-1.3.0.Final.jar
+11:52:57,783 [INFO]    org.jboss.spec.javax.servlet:jboss-servlet-api_3.0_spec:jar:1.0.2.Final:test:/Users/tevans/.m2/repository/org/jboss/spec/javax/servlet/jboss-servlet-api_3.0_spec/1.0.2.Final/jboss-servlet-api_3.0_spec-1.0.2.Final.jar
+11:52:57,783 [INFO]    org.apache.httpcomponents:httpclient:jar:4.5.2:compile:/Users/tevans/.m2/repository/org/apache/httpcomponents/httpclient/4.5.2/httpclient-4.5.2.jar
+11:52:57,783 [INFO]    org.jboss.arquillian.container:arquillian-container-test-impl-base:jar:1.3.0.Final:compile:/Users/tevans/.m2/repository/org/jboss/arquillian/container/arquillian-container-test-impl-base/1.3.0.Final/arquillian-container-test-impl-base-1.3.0.Final.jar
+11:52:57,783 [INFO]    org.yaml:snakeyaml:jar:1.15:test:/Users/tevans/.m2/repository/org/yaml/snakeyaml/1.15/snakeyaml-1.15.jar
+11:52:57,783 [INFO]    org.jboss.arquillian.core:arquillian-core-spi:jar:1.3.0.Final:compile:/Users/tevans/.m2/repository/org/jboss/arquillian/core/arquillian-core-spi/1.3.0.Final/arquillian-core-spi-1.3.0.Final.jar
+11:52:57,783 [INFO]    org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-base:jar:2.0.0:compile:/Users/tevans/.m2/repository/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-api-base/2.0.0/shrinkwrap-descriptors-api-base-2.0.0.jar
+11:52:57,783 [INFO]    org.jboss.shrinkwrap:shrinkwrap-spi:jar:1.2.6:compile:/Users/tevans/.m2/repository/org/jboss/shrinkwrap/shrinkwrap-spi/1.2.6/shrinkwrap-spi-1.2.6.jar
+11:52:57,783 [INFO]    org.eclipse.microprofile.health:microprofile-health-tck:jar:1.0:compile:/Users/tevans/.m2/repository/org/eclipse/microprofile/health/microprofile-health-tck/1.0/microprofile-health-tck-1.0.jar
+11:52:57,783 [INFO]    commons-codec:commons-codec:jar:1.9:compile:/Users/tevans/.m2/repository/commons-codec/commons-codec/1.9/commons-codec-1.9.jar
+11:52:57,783 [INFO]    org.jboss.arquillian.testng:arquillian-testng-core:jar:1.3.0.Final:compile:/Users/tevans/.m2/repository/org/jboss/arquillian/testng/arquillian-testng-core/1.3.0.Final/arquillian-testng-core-1.3.0.Final.jar
+11:52:57,783 [INFO]    org.jboss.arquillian.test:arquillian-test-spi:jar:1.3.0.Final:compile:/Users/tevans/.m2/repository/org/jboss/arquillian/test/arquillian-test-spi/1.3.0.Final/arquillian-test-spi-1.3.0.Final.jar
+11:52:57,783 [INFO]    commons-logging:commons-logging:jar:1.2:compile:/Users/tevans/.m2/repository/commons-logging/commons-logging/1.2/commons-logging-1.2.jar
+11:52:57,783 [INFO]    org.jboss.arquillian.testenricher:arquillian-testenricher-resource:jar:1.3.0.Final:test:/Users/tevans/.m2/repository/org/jboss/arquillian/testenricher/arquillian-testenricher-resource/1.3.0.Final/arquillian-testenricher-resource-1.3.0.Final.jar
+11:52:57,784 [INFO]    org.eclipse.microprofile.health:microprofile-health-api:jar:1.0:system:/Users/tevans/Liberty/openLibertyGit/open-liberty/dev/build.image/wlp/dev/api/stable/com.ibm.websphere.org.eclipse.microprofile.health.1.0_1.0.72.jar
+11:52:57,784 [INFO]    org.glassfish:javax.json:jar:1.0:compile:/Users/tevans/.m2/repository/org/glassfish/javax.json/1.0/javax.json-1.0.jar
+11:52:57,784 [INFO]    junit:junit:jar:4.10:test:/Users/tevans/.m2/repository/junit/junit/4.10/junit-4.10.jar
+11:52:57,784 [INFO]    org.jboss.arquillian.container:arquillian-container-test-spi:jar:1.3.0.Final:compile:/Users/tevans/.m2/repository/org/jboss/arquillian/container/arquillian-container-test-spi/1.3.0.Final/arquillian-container-test-spi-1.3.0.Final.jar
+11:52:57,784 [INFO]    org.jboss.arquillian.test:arquillian-test-api:jar:1.3.0.Final:compile:/Users/tevans/.m2/repository/org/jboss/arquillian/test/arquillian-test-api/1.3.0.Final/arquillian-test-api-1.3.0.Final.jar
+11:52:57,784 [INFO]    org.jboss.arquillian.test:arquillian-test-impl-base:jar:1.3.0.Final:compile:/Users/tevans/.m2/repository/org/jboss/arquillian/test/arquillian-test-impl-base/1.3.0.Final/arquillian-test-impl-base-1.3.0.Final.jar
+11:52:57,784 [INFO]    com.ibm.ws:fattest.simplicity:jar:1:system:/Users/tevans/Liberty/openLibertyGit/open-liberty/dev/com.ibm.ws.microprofile.health.1.0_fat_tck/build/libs/autoFVT/publish/tckRunner/tck/../../../lib/fattest.simplicity.jar
+11:52:57,784 [INFO]    org.apache.ant:ant-launcher:jar:1.7.0:test:/Users/tevans/.m2/repository/org/apache/ant/ant-launcher/1.7.0/ant-launcher-1.7.0.jar
+11:52:57,784 [INFO]    org.apache.ant:ant:jar:1.7.0:test:/Users/tevans/.m2/repository/org/apache/ant/ant/1.7.0/ant-1.7.0.jar
+11:52:57,784 [INFO]    org.apache.httpcomponents:fluent-hc:jar:4.5.6:test:/Users/tevans/.m2/repository/org/apache/httpcomponents/fluent-hc/4.5.6/fluent-hc-4.5.6.jar
+11:52:57,784 [INFO]    org.beanshell:bsh:jar:2.0b4:test:/Users/tevans/.m2/repository/org/beanshell/bsh/2.0b4/bsh-2.0b4.jar
+11:52:57,784 [INFO]    org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-spi:jar:2.0.0:compile:/Users/tevans/.m2/repository/org/jboss/shrinkwrap/descriptors/shrinkwrap-descriptors-spi/2.0.0/shrinkwrap-descriptors-spi-2.0.0.jar
+11:52:57,784 [INFO]    org.jboss.shrinkwrap:shrinkwrap-impl-base:jar:1.2.6:compile:/Users/tevans/.m2/repository/org/jboss/shrinkwrap/shrinkwrap-impl-base/1.2.6/shrinkwrap-impl-base-1.2.6.jar
+11:52:57,784 [INFO]    javax.enterprise:cdi-api:jar:1.2:provided:/Users/tevans/.m2/repository/javax/enterprise/cdi-api/1.2/cdi-api-1.2.jar
+11:52:57,784 [INFO]    org.jboss.arquillian.config:arquillian-config-impl-base:jar:1.3.0.Final:compile:/Users/tevans/.m2/repository/org/jboss/arquillian/config/arquillian-config-impl-base/1.3.0.Final/arquillian-config-impl-base-1.3.0.Final.jar
+11:52:57,784 [INFO]    org.jboss.arquillian.protocol:arquillian-protocol-servlet:jar:1.3.0.Final:test:/Users/tevans/.m2/repository/org/jboss/arquillian/protocol/arquillian-protocol-servlet/1.3.0.Final/arquillian-protocol-servlet-1.3.0.Final.jar
+11:52:57,784 [INFO]    javax.inject:javax.inject:jar:1:provided:/Users/tevans/.m2/repository/javax/inject/javax.inject/1/javax.inject-1.jar
+11:52:57,784 [INFO]    org.jboss.arquillian.testenricher:arquillian-testenricher-ejb:jar:1.3.0.Final:test:/Users/tevans/.m2/repository/org/jboss/arquillian/testenricher/arquillian-testenricher-ejb/1.3.0.Final/arquillian-testenricher-ejb-1.3.0.Final.jar
+11:52:57,784 [INFO]    org.jboss.weld:weld-core-bom:pom:3.0.4.Final:test:/Users/tevans/.m2/repository/org/jboss/weld/weld-core-bom/3.0.4.Final/weld-core-bom-3.0.4.Final.pom
+11:52:57,784 [INFO]    org.jboss.arquillian.container:arquillian-container-impl-base:jar:1.3.0.Final:compile:/Users/tevans/.m2/repository/org/jboss/arquillian/container/arquillian-container-impl-base/1.3.0.Final/arquillian-container-impl-base-1.3.0.Final.jar
+11:52:57,785 [INFO]    org.jboss.arquillian.testenricher:arquillian-testenricher-initialcontext:jar:1.3.0.Final:test:/Users/tevans/.m2/repository/org/jboss/arquillian/testenricher/arquillian-testenricher-initialcontext/1.3.0.Final/arquillian-testenricher-initialcontext-1.3.0.Final.jar
+11:52:57,785 [INFO]    org.jboss.arquillian.core:arquillian-core-api:jar:1.3.0.Final:compile:/Users/tevans/.m2/repository/org/jboss/arquillian/core/arquillian-core-api/1.3.0.Final/arquillian-core-api-1.3.0.Final.jar
+11:52:57,785 [INFO]    org.jboss.shrinkwrap:shrinkwrap-api:jar:1.2.6:compile:/Users/tevans/.m2/repository/org/jboss/shrinkwrap/shrinkwrap-api/1.2.6/shrinkwrap-api-1.2.6.jar
+11:52:57,785 [INFO]    org.apache.httpcomponents:httpcore:jar:4.4.4:compile:/Users/tevans/.m2/repository/org/apache/httpcomponents/httpcore/4.4.4/httpcore-4.4.4.jar
+11:52:57,785 [INFO]    org.hamcrest:hamcrest-core:jar:1.1:test:/Users/tevans/.m2/repository/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar
+11:52:57,785 [INFO]    org.jboss.arquillian.container:arquillian-container-test-api:jar:1.3.0.Final:compile:/Users/tevans/.m2/repository/org/jboss/arquillian/container/arquillian-container-test-api/1.3.0.Final/arquillian-container-test-api-1.3.0.Final.jar
+11:52:57,785 [INFO] 
+11:52:57,785 [INFO] 
+11:52:57,785 [INFO] -------------< com.ibm.ws.microprofile.health:tck.runner >--------------
+11:52:57,785 [INFO] Building MicroProfile Health 1.0 TCK Runner 1.0-SNAPSHOT           [2/2]
+11:52:57,785 [INFO] --------------------------------[ pom ]---------------------------------
+11:52:57,832 [INFO] 
+11:52:57,833 [INFO] --- maven-dependency-plugin:2.8:list (default-cli) @ tck.runner ---
+11:52:58,172 [INFO] 
+11:52:58,172 [INFO] The following files have been resolved:
+11:52:58,172 [INFO]    none
+11:52:58,172 [INFO] 
+11:52:58,172 [INFO] ------------------------------------------------------------------------
+11:52:58,172 [INFO] Reactor Summary for MicroProfile Health 1.0 TCK Runner 1.0-SNAPSHOT:
+11:52:58,172 [INFO] 
+11:52:58,173 [INFO] MicroProfile Health 1.0 TCK Runner TCK Module ...... SUCCESS [  0.881 s]
+11:52:58,173 [INFO] MicroProfile Health 1.0 TCK Runner ................. SUCCESS [  0.387 s]
+11:52:58,173 [INFO] ------------------------------------------------------------------------
+11:52:58,173 [INFO] BUILD SUCCESS
+11:52:58,173 [INFO] ------------------------------------------------------------------------
+11:52:58,173 [INFO] Total time:  1.476 s
+11:52:58,173 [INFO] Finished at: 2022-11-28T11:52:58Z
+11:52:58,173 [INFO] ------------------------------------------------------------------------

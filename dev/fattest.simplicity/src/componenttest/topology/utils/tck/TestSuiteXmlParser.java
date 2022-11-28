@@ -10,15 +10,12 @@
  *******************************************************************************/
 package componenttest.topology.utils.tck;
 
-import java.util.List;
 import java.util.LinkedList;
-import java.util.Scanner;
+import java.util.List;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class TestSuiteXmlParser extends DefaultHandler {
 
@@ -31,15 +28,14 @@ public class TestSuiteXmlParser extends DefaultHandler {
     private TestSuiteResult currentSuite = null;
     private TestCaseResult currentCase = null;
 
-    private List<TestSuiteResult> results = new LinkedList<TestSuiteResult>();
+    private final List<TestSuiteResult> results = new LinkedList<TestSuiteResult>();
 
     public List<TestSuiteResult> getResults() {
         return results;
     }
-    
+
     @Override
-    public void startDocument() throws SAXException {
-    }
+    public void startDocument() throws SAXException {}
 
     @Override
     public void startElement(String uri, String lName, String qName, Attributes attributes) throws SAXException {
