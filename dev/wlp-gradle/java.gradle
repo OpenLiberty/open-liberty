@@ -17,7 +17,11 @@
  */
 subprojects {
   apply plugin: 'java'
-  
+
+  tasks.withType(Copy).all {
+  	duplicatesStrategy 'include'
+  }
+
   task publishJunitReport() {
     ext {
       outputFilesDir = rootProject.file(rootProject.ext.get('published.outputs.files'))
