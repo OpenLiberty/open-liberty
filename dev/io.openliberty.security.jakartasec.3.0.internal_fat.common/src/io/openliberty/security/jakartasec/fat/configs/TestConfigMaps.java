@@ -153,6 +153,62 @@ public class TestConfigMaps {
         return updatedMap;
     }
 
+    public static Map<String, Object> getResponseTypeCode() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.RESPONSE_TYPE, Constants.CODE_FLOW);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getResponseTypeIdToken() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.RESPONSE_TYPE, Constants.IDTOKEN_FLOW);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getResponseTypeIdTokenToken() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.RESPONSE_TYPE, Constants.IDTOKEN_TOKEN_FLOW);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getResponseTypeCodeIdToken() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.RESPONSE_TYPE, Constants.CODE_IDTOKEN_FLOW);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getResponseTypeCodeToken() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.RESPONSE_TYPE, Constants.CODE_TOKEN_FLOW);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getResponseTypeCodeIdTokenToken() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.RESPONSE_TYPE, Constants.CODE_IDTOKEN_TOKEN_FLOW);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getResponseTypeUnknown() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.RESPONSE_TYPE, "unknown");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getResponseTypeEmpty() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.RESPONSE_TYPE, Constants.EMPTY_VALUE);
+        return updatedMap;
+    }
+
     public static Map<String, Object> getOP2() throws Exception {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();

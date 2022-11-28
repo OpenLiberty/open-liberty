@@ -89,6 +89,15 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         return value;
     }
 
+    public String getResponseType() {
+
+        String value = Constants.CODE_FLOW;
+        if (config.containsKey(Constants.RESPONSE_TYPE)) {
+            value = getStringValue(Constants.RESPONSE_TYPE);
+        }
+        return value;
+    }
+
     public boolean getTokenAutoRefreshExpression() {
 
         boolean value = false;

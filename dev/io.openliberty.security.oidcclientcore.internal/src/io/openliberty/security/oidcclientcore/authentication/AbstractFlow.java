@@ -10,22 +10,28 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.authentication;
 
+import java.util.StringJoiner;
+
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
+import io.openliberty.security.oidcclientcore.exceptions.UnsupportedResponseTypeException;
 
 public abstract class AbstractFlow implements Flow {
 
     public static final String AUTHORIZATION_CODE_RESPONSE_TYPE = "code";
-    public static final String IMPLICIT_RESPONSE_TYPE = "token";
 
-    public static Flow getInstance(OidcClientConfig oidcClientConfig) {
+    public static String ALLOWED_RESPONSE_TYPES;
+    static {
+        StringJoiner joiner = new StringJoiner(",");
+        joiner.add("'" + AUTHORIZATION_CODE_RESPONSE_TYPE + "'");
+        ALLOWED_RESPONSE_TYPES = joiner.toString();
+    }
+
+    public static Flow getInstance(OidcClientConfig oidcClientConfig) throws UnsupportedResponseTypeException {
         String configResponseType = oidcClientConfig.getResponseType();
-        String[] responseTypes = configResponseType.split(" ");
-        for (String responseType : responseTypes) {
-            if (IMPLICIT_RESPONSE_TYPE.equals(responseType)) {
-                return new ImplicitFlow(oidcClientConfig);
-            }
+        if (AUTHORIZATION_CODE_RESPONSE_TYPE.equals(configResponseType)) {
+            return new AuthorizationCodeFlow(oidcClientConfig);
         }
-        return new AuthorizationCodeFlow(oidcClientConfig);
+        throw new UnsupportedResponseTypeException(configResponseType, ALLOWED_RESPONSE_TYPES);
     }
 
 }
