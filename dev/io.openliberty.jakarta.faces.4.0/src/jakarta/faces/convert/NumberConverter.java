@@ -198,10 +198,21 @@ public class NumberConverter implements Converter, PartialStateHolder
         {
             parsed = format.parse(value, parsePosition);
         }
-        
-        if (parsePosition.getIndex() != value.length())
+        if (isIntegerOnly())
         {
-            throw new ParseException(value, parsePosition.getIndex());
+            char decimalSeparater = new DecimalFormatSymbols(getLocale()).getDecimalSeparator();
+            int decimalParseIndex = value.indexOf(decimalSeparater);
+            if (decimalParseIndex != -1 && decimalParseIndex != parsePosition.getIndex())
+            {
+                throw new ParseException(value, parsePosition.getIndex());
+            }
+        }
+        else
+        {
+            if (parsePosition.getIndex() != value.length())
+            {
+                throw new ParseException(value, parsePosition.getIndex());
+            }
         }
 
         return parsed;
