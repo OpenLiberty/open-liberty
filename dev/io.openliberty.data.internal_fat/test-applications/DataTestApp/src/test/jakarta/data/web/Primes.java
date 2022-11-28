@@ -44,6 +44,16 @@ public interface Primes {
     @Query("SELECT p.number FROM Prime p WHERE p.number >= ?1 AND p.number <= ?2")
     long findAsLongBetween(long min, long max);
 
+    @OrderBy("number")
+    List<Prime> findByEvenFalseAndNumberLessThan(long max);
+
+    List<Prime> findByEvenNotFalseAndNumberLessThan(long max);
+
+    @OrderBy(value = "number", descending = true)
+    List<Prime> findByEvenNotTrueAndNumberLessThan(long max);
+
+    List<Prime> findByEvenTrueAndNumberLessThan(long max);
+
     Prime findByNumberBetween(long min, long max);
 
     @OrderBy("number")

@@ -552,9 +552,13 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     condition = Condition.NULL;
                 }
                 break;
-            case 'e': // Like
+            case 'e': // Like, True, False
                 if (expression.endsWith("Like"))
                     condition = Condition.LIKE;
+                else if (expression.endsWith("True"))
+                    condition = Condition.TRUE;
+                else if (expression.endsWith("False"))
+                    condition = Condition.FALSE;
                 break;
             case 'h': // StartsWith | EndsWith
                 if (expression.endsWith("StartsWith"))
@@ -628,7 +632,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 break;
             case NULL:
             case NOT_NULL:
-                q.append(attributeExpr).append(' ').append(condition.operator);
+            case TRUE:
+            case FALSE:
+                q.append(attributeExpr).append(condition.operator);
                 break;
             default:
                 q.append(attributeExpr).append(negated ? " NOT " : "").append(condition.operator).append('?').append(++queryInfo.paramCount);

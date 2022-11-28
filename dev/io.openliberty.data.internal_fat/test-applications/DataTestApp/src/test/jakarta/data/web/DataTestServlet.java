@@ -463,6 +463,36 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Test True, False, NotTrue, and NotFalse on repository methods.
+     */
+    @Test
+    public void testBooleanConditions() {
+        assertIterableEquals(List.of(3L, 5L, 7L),
+                             primes.findByEvenFalseAndNumberLessThan(10L)
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(7L, 5L, 3L),
+                             primes.findByEvenNotTrueAndNumberLessThan(10L)
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(2L),
+                             primes.findByEvenTrueAndNumberLessThan(10L)
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(2L),
+                             primes.findByEvenNotFalseAndNumberLessThan(10L)
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
      * Asynchronous repository method that returns a CompletionStage of KeysetAwarePage.
      */
     @Test
