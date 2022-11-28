@@ -1,0 +1,58 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+        <!-- Core profile features (no super feature that contains these) -->
+        <feature>cdi-4.0</feature> <!-- Includes Annotations 2.1, Dependency Injection 2.0, and Interceptors 2.1 -->
+        <feature>jsonp-2.1</feature>
+        <feature>jsonb-3.0</feature>
+        <feature>restfulWS-3.1</feature>
+        <!-- Features being tested -->
+        <feature>data-1.0</feature>
+        <!-- Features needed for arquillan support -->
+        <feature>localConnector-1.0</feature>
+        <!-- Required by test infrastructure -->
+	    <feature>timedexit-1.0</feature>
+        <!-- Convenience feature -->
+	    <feature>arquillian-support-jakarta-2.1</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml" />
+
+
+    <!-- Allow Arquillian to monitor application -->
+    <applicationMonitor updateTrigger="mbean"/>
+
+    <!-- Allow Arquillian access to dropins directory for application installation -->
+    <remoteFileAccess>
+        <writeDir>${server.config.dir}/dropins</writeDir>
+    </remoteFileAccess>
+    
+    <!-- Include test dependencies needed on the server at runtime at a global scope -->
+    <library id="global">
+               <fileset dir="${shared.resource.dir}/junit5/5.9.0" includes="*.jar"/>
+               <fileset dir="${shared.resource.dir}/sigtest/1.6" includes="*.jar"/>
+    </library>
+
+    <!--Java2 security-->
+    <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+
+    <!-- Signature test application permissions -->
+    <javaPermission codeBase="${shared.resource.dir}/sigtest/sigtest-maven-plugin.jar" className="java.security.AllPermission"/>
+    <javaPermission codeBase="${server.config.dir}/dropins/signatureTest.war" className="java.security.AllPermission"/>
+	
+    <!-- Signature test plugin permissions -->
+    <javaPermission codeBase="${shared.resource.dir}/sigtest/1.6/sigtest.jar" className="java.security.AllPermission" />
+    <javaPermission codeBase="${shared.resource.dir}/sigtest/1.6/sigtest.jar" className="java.lang.RuntimePermission"  name="accessClassInPackage.jdk.internal" />
+    <javaPermission codeBase="${shared.resource.dir}/sigtest/1.6/sigtest.jar" className="java.lang.RuntimePermission"  name="accessClassInPackage.jdk.internal.reflect" />
+    <javaPermission codeBase="${shared.resource.dir}/sigtest/1.6/sigtest.jar" className="java.lang.RuntimePermission"  name="accessClassInPackage.jdk.internal.vm.annotation" />
+
+</server>
