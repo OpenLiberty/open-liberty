@@ -32,4 +32,5 @@ tested.features:\
 	io.openliberty.jakarta.restfulWS.3.1;version=latest,\
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	com.ibm.ws.componenttest.2.0;version=latest,\
-	io.openliberty.io.opentelemetry.internal;version=latest
+	io.openliberty.io.opentelemetry.internal;version=latest,\
+        io.openliberty.org.eclipse.microprofile.rest.client.3.0;version=latest
