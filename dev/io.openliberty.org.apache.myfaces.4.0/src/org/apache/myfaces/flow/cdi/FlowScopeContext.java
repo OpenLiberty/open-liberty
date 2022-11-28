@@ -244,7 +244,7 @@ public class FlowScopeContext implements Context
         List<String> activeFlowMapKeys = getStorageHolder(facesContext).getActiveFlowMapKeys(facesContext);
         for (String flowMapKey : activeFlowMapKeys)
         {
-            ContextualStorage storage = getContextualStorage(facesContext, false, flowMapKey);
+            ContextualStorage storage = getContextualStorage(facesContext, true, flowMapKey);
 
             Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
             ContextualInstanceInfo<?> contextualInstanceInfo = contextMap.get(storage.getBeanKey(bean));
