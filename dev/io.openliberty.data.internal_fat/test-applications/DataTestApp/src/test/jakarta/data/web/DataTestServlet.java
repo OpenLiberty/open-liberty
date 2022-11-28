@@ -140,7 +140,10 @@ public class DataTestServlet extends FATServlet {
                     new Prime(37, "25", "100101", 3, "XXXVII", "thirty-seven"),
                     new Prime(41, "29", "101001", 3, "XLI", "forty-one"),
                     new Prime(43, "2B", "101011", 4, "XLIII", "forty-three"),
-                    new Prime(47, "2F", "101111", 5, "XLVII", "forty-seven"));
+                    new Prime(47, "2F", "101111", 5, "XLVII", "forty-seven"),
+                    new Prime(4001, "FA1", "111110100001", 7, null, "four thousand one"),
+                    new Prime(4003, "FA3", "111110100011", 8, null, "four thousand three"),
+                    new Prime(4007, "FA7", "111110100111", 9, null, "four thousand seven"));
     }
 
     /**
@@ -1737,6 +1740,24 @@ public class DataTestServlet extends FATServlet {
         assertEquals(58.0, deque.removeFirst(), 0.01); // sum
         assertEquals(7.0, deque.removeFirst(), 0.01); // count
         assertEquals(8.0, Math.floor(deque.removeFirst()), 0.01); // average
+    }
+
+    /**
+     * Test Null and NotNull on repository methods.
+     */
+    @Test
+    public void testNulls() {
+        assertIterableEquals(List.of(4001L, 4003L, 4007L),
+                             primes.findByNumberInAndRomanNumeralNull(Set.of(41L, 4001L, 43L, 4003L, 47L, 4007L))
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(41L, 43L, 47L),
+                             primes.findByNumberInAndRomanNumeralNotNull(Set.of(41L, 4001L, 43L, 4003L, 47L, 4007L))
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
     }
 
     /**

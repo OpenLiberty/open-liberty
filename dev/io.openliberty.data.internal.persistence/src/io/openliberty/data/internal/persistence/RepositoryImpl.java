@@ -542,12 +542,15 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     }
                 }
                 break;
-            case 'l': // GreaterThanEqual | LessThanEqual
-                if (length > Condition.LESS_THAN_EQUAL.length && expression.charAt(length - 4) == 'q')
+            case 'l': // GreaterThanEqual | LessThanEqual | Null
+                if (length > Condition.LESS_THAN_EQUAL.length && expression.charAt(length - 4) == 'q') {
                     if (expression.endsWith("GreaterThanEqual"))
                         condition = Condition.GREATER_THAN_EQUAL;
                     else if (expression.endsWith("LessThanEqual"))
                         condition = Condition.LESS_THAN_EQUAL;
+                } else if (expression.endsWith("Null")) {
+                    condition = Condition.NULL;
+                }
                 break;
             case 'e': // Like
                 if (expression.endsWith("Like"))
@@ -622,6 +625,10 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     q.append(" ?").append(++queryInfo.paramCount).append(negated ? " NOT " : " ").append("MEMBER OF ").append(attributeExpr);
                 else
                     q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ?").append(++queryInfo.paramCount).append(", '%')");
+                break;
+            case NULL:
+            case NOT_NULL:
+                q.append(attributeExpr).append(' ').append(condition.operator);
                 break;
             default:
                 q.append(attributeExpr).append(negated ? " NOT " : "").append(condition.operator).append('?').append(++queryInfo.paramCount);

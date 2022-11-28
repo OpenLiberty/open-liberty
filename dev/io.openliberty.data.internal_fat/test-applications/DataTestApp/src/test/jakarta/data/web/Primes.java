@@ -13,6 +13,7 @@ package test.jakarta.data.web;
 import java.util.Deque;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -49,6 +50,12 @@ public interface Primes {
     KeysetAwarePage<Prime> findByNumberBetween(long min, long max, Pageable pagination);
 
     KeysetAwarePage<Prime> findByNumberBetweenOrderByEvenDescSumOfBitsDescNumberAsc(long min, long max, Pageable pagination);
+
+    @OrderBy("number")
+    List<Prime> findByNumberInAndRomanNumeralNull(Iterable<Long> nums);
+
+    @OrderBy("number")
+    List<Prime> findByNumberInAndRomanNumeralNotNull(Set<Long> nums);
 
     Stream<Prime> findByNumberLessThan(long max);
 

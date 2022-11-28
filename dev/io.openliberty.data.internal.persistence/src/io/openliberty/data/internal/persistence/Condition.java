@@ -24,6 +24,8 @@ enum Condition {
     LESS_THAN_EQUAL("<=", 13),
     LIKE(null, 4),
     NOT_EQUALS("<>", 3),
+    NOT_NULL("IS NOT NULL", 7),
+    NULL("IS NULL", 4),
     STARTS_WITH(null, 10);
 
     final int length;
@@ -48,6 +50,10 @@ enum Condition {
                 return GREATER_THAN;
             case NOT_EQUALS:
                 return EQUALS;
+            case NOT_NULL:
+                return NULL;
+            case NULL:
+                return NOT_NULL;
             default:
                 return null;
         }
