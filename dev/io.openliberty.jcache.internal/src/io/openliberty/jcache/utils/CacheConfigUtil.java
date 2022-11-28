@@ -56,6 +56,11 @@ public class CacheConfigUtil {
 
     private static final TraceComponent tc = Tr.register(CacheConfigUtil.class);
     private static final String HAZELCAST_PROVIDER = "com.hazelcast.cache.HazelcastCachingProvider";
+    private static final String HAZELCAST_MEMBER_PROVIDER = "com.hazelcast.cache.HazelcastMemberCachingProvider";
+    private static final String HAZELCAST_SERVER_IMPL_PROVIDER = "com.hazelcast.cache.impl.HazelcastServerCachingProvider";
+    private static final String HAZELCAST_CLIENT_PROVIDER = "com.hazelcast.client.cache.HazelcastClientCachingProvider";
+    private static final String HAZELCAST_CLIENT_IMPL_PROVIDER = "com.hazelcast.client.cache.impl.HazelcastClientCachingProvider";
+
     private static final String INFINISPAN_EMBEDDED_PROVIDER = "org.infinispan.jcache.embedded.JCachingProvider";
     private static final String INFINISPAN_REMOTE_PROVIDER = "org.infinispan.jcache.remote.JCachingProvider";
 
@@ -79,7 +84,7 @@ public class CacheConfigUtil {
      * configuration for use when getting the {@link CacheManager} from the
      * {@link CachingProvider}.
      *
-     * @param configuredUri   The configured URI.
+     * @param uriValue        The configured URI.
      * @param cachingProvider The {@link CachingProvider} that will be used to get
      *                            the {@link CacheManager} from.
      * @param properties      The configured properties. These may be updated.
@@ -105,6 +110,10 @@ public class CacheConfigUtil {
         switch (cachingProvider.getClass().getName()) {
 
             case HAZELCAST_PROVIDER:
+            case HAZELCAST_MEMBER_PROVIDER:
+            case HAZELCAST_SERVER_IMPL_PROVIDER:
+            case HAZELCAST_CLIENT_PROVIDER:
+            case HAZELCAST_CLIENT_IMPL_PROVIDER:
                 if (uriValue != null)
                     properties.setProperty("hazelcast.config.location", uriValue);
                 break;
