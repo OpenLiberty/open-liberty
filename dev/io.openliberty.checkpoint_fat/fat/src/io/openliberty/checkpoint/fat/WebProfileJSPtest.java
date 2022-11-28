@@ -10,6 +10,8 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -59,18 +61,12 @@ public class WebProfileJSPtest {
                         .addAsWebInfResource(new File(server.getInstallRoot() + "/usr/servers/" + server.getServerName() + "/web.xml"))
                         .addAsWebResource(new File(server.getInstallRoot() + "/usr/servers/" + server.getServerName() + "/JSPfile.jsp"))
                         .addAsResource(new File(server.getInstallRoot() + "/usr/servers/" + server.getServerName() + "/alternateJSPdir/alternateJSPfile.jsp"));
-
         ShrinkHelper.exportAppToServer(server, war, DeployOptions.OVERWRITE);
     }
 
     @Test
     public void testJSPwithUpdate() throws Exception {
-
         server.setCheckpoint(CheckpointPhase.APPLICATIONS);
-        server.startServer();
-        server.stopServer();
-        server.checkpointRestore();
-
         server.startServer();
 
         URL url1 = new URL("http://localhost:" + server.getHttpDefaultPort() + "/JSPapp/alternateJSPfile.jsp");
@@ -91,20 +87,16 @@ public class WebProfileJSPtest {
         URL url2 = new URL("http://localhost:" + server.getHttpDefaultPort() + "/JSPapp");
         int responseCode2 = HttpUtils.getHttpConnection(url2, 5000, HTTPRequestMethod.GET).getResponseCode();
 
-        if (responseCode2 < 200 || responseCode2 >= 300) {
-            fail("request did not return a 200 HTTP response code");
-        }
+        assertEquals("Incorrect response code from " + url2, 200, responseCode2);
 
-        server.findStringsInLogs("jsp servlet");
+        assertNotNull(server.findStringsInLogs("jsp servlet"));
 
         URL url3 = new URL("http://localhost:" + server.getHttpDefaultPort() + "/JSPapp/alternateJSPfile.jsp");
         int responseCode3 = HttpUtils.getHttpConnection(url3, 5000, HTTPRequestMethod.GET).getResponseCode();
 
-        if (responseCode3 < 200 || responseCode3 >= 300) {
-            fail("request did not return a 200 HTTP response code");
-        }
+        assertEquals("Incorrect response code from " + url3, 200, responseCode3);
 
-        server.findStringsInLogs("alternate jsp dir");
+        assertNotNull(server.findStringsInLogs("alternate jsp dir"));
     }
 
     @After

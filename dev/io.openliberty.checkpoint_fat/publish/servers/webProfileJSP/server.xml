@@ -11,6 +11,7 @@
  <server description="webProfile EAR server">
 
     <featureManager>
+    	<feature>servlet-4.0</feature>
         <feature>jsp-2.3</feature>
         <feature>checkpoint-1.0</feature>
     </featureManager>
