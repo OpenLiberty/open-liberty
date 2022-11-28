@@ -54,7 +54,7 @@ import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
-import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatActions.EEVersion;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -113,12 +113,7 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
 
         // MP features are only compatible if they're in MP versions which work with EE10
         compatibleFeatures.removeAll(FeatureUtilities.allMpFeatures());
-        // Add only the MP 6.0 features which we've made compatible
-
-        compatibleFeatures.addAll(MicroProfileActions.MP60.getFeatures());
-        compatibleFeatures.add("mpContextPropagation-1.3");
-        // TODO: switch to adding all of them when ready
-        //compatibleFeatures.addAll(FeatureUtilities.compatibleMpFeatures(EEVersion.EE10));
+        compatibleFeatures.addAll(FeatureUtilities.compatibleMpFeatures(EEVersion.EE10));
 
         // Value-add features which aren't compatible
         compatibleFeatures.remove("openid-2.0"); // stabilized
@@ -144,9 +139,6 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
         // Logically, incompatible features are all those that aren't compatible...
         incompatibleFeatures.addAll(allFeatures);
         incompatibleFeatures.removeAll(compatibleFeatures);
-
-        // TODO: We're working on getting mpGraphQL-2.0 to be EE10 compatible, so don't assert that it isn't
-        incompatibleFeatures.remove("mpGraphQL-2.0");
 
         // Test features may or may not be compatible, we don't want to assert either way
         incompatibleFeatures.removeAll(FeatureUtilities.allTestFeatures());
@@ -187,9 +179,6 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
 
         // jcaInboundSecurity-1.0 was removed in Jakarta EE 10 in favor of using an auto feature.
         ee8Features.remove("jcaInboundSecurity-1.0");
-
-        // TODO nosqlUnused-1.0 is a temporary workaround and can eventually be removed
-        ee8Features.remove("nosqlUnused-1.0");
 
         // servlet long name is the same for EE10 so it will fail because the prefixes
         // match and it is marked as a singleton.
@@ -328,7 +317,8 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
             if (!JakartaEE10Action.EE10_FEATURE_SET.contains(feature)) {
                 // The features below are not included in the convenience feature
                 // so they will not conflict on the long name.
-                if (!feature.startsWith("jsonpContainer-") &&
+                if (!feature.startsWith("connectorsInboundSecurity-") &&
+                    !feature.startsWith("jsonpContainer-") &&
                     !feature.startsWith("jsonbContainer-") &&
                     !feature.startsWith("facesContainer-") &&
                     !feature.startsWith("jakartaeeClient-")) {

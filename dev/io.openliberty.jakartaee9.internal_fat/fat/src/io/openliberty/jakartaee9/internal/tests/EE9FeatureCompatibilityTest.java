@@ -54,7 +54,6 @@ import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatActions.EEVersion;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -141,9 +140,6 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         incompatibleFeatures.addAll(allFeatures);
         incompatibleFeatures.removeAll(compatibleFeatures);
 
-        // ...but there are a few in-development features which are maybe compatible
-        incompatibleFeatures.removeAll(MicroProfileActions.MP60.getFeatures());
-
         // Test features may or may not be compatible, we don't want to assert either way
         incompatibleFeatures.removeAll(FeatureUtilities.allTestFeatures());
 
@@ -180,9 +176,6 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
 
         // j2eeManagement-1.1 was removed in Jakarta EE 9 so there is no replacement
         ee8Features.remove("j2eeManagement-1.1");
-
-        // TODO nosqlUnused-1.0 is a temporary workaround and can eventually be removed
-        ee8Features.remove("nosqlUnused-1.0");
 
         // servlet long name is the same for EE9 so it will fail because the prefixes
         // match and it is marked as a singleton.
@@ -317,7 +310,9 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
             if (!JakartaEE9Action.EE9_FEATURE_SET.contains(feature)) {
                 // The features below are not included in the convenience feature
                 // so they will not conflict on the long name.
-                if (!feature.startsWith("jsonpContainer-") &&
+                if (!feature.startsWith("nosql-") &&
+                    !feature.startsWith("data-") &&
+                    !feature.startsWith("jsonpContainer-") &&
                     !feature.startsWith("jsonbContainer-") &&
                     !feature.startsWith("facesContainer-") &&
                     !feature.startsWith("jakartaeeClient-")) {
