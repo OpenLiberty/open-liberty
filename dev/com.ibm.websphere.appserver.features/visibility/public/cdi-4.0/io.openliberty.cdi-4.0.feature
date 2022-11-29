@@ -75,3 +75,4 @@ Subsystem-Name: Jakarta Contexts and Dependency Injection 4.0
 kind=beta
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

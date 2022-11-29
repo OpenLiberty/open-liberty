@@ -26,3 +26,4 @@ Subsystem-Name: JSON Web Token 1.0
   dev/api/ibm/javadoc/io.openliberty.jwt_1.1-javadoc.zip
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true

@@ -24,3 +24,4 @@ Subsystem-Name: MicroProfile JSON Web Token 1.2
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

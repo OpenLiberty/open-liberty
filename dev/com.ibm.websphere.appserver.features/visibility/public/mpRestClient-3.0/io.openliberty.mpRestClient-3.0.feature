@@ -31,3 +31,4 @@ Subsystem-Name: MicroProfile Rest Client 3.0
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

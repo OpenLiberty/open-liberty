@@ -16,3 +16,4 @@ Subsystem-Name: Java EE Managed Bean 1.0
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

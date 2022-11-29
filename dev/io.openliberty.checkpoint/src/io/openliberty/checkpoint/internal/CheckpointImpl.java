@@ -62,6 +62,7 @@ import com.ibm.ws.runtime.update.RuntimeUpdateListener;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
 import com.ibm.ws.threading.listeners.CompletionListener;
+import com.ibm.wsspi.kernel.feature.LibertyFeature;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.location.WsResource;
@@ -93,139 +94,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
            // use immediate component to avoid lazy instantiation and deactivate
            immediate = true)
 public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus {
-    private static final Set<String> SUPPORTED_FEATURES;
-    static {
-        String[] supported = {
-                               // NOTE that these lists are only the public features.
-                               // Some sections may have duplicates from other sections.
-                               // This is for simplicity in listing the features for the supported profiles,
-                               // please do not remove the duplicates.
-
-                               // The checkpont feature must be supported
-                               "checkpoint-1.0",
-
-                               // Some utility features that are helpful
-                               "osgiConsole-1.0",
-
-                               // webProfile-8.0 + microProfile-4.1
-                               "appSecurity-2.0",
-                               "appSecurity-3.0",
-                               "beanValidation-2.0",
-                               "cdi-2.0",
-                               "distributedMap-1.0",
-                               "ejbLite-3.2",
-                               "el-3.0",
-                               "jaspic-1.1",
-                               "jaxrs-2.1",
-                               "jaxrsClient-2.1",
-                               "jdbc-4.2",
-                               "jndi-1.0",
-                               "jpa-2.2",
-                               "jpaContainer-2.2",
-                               "jsf-2.3",
-                               "json-1.0",
-                               "jsonb-1.0",
-                               "jsonp-1.1",
-                               "jsp-2.3",
-                               "jwt-1.0",
-                               "managedBeans-1.0",
-                               "microProfile-4.1",
-                               "monitor-1.0",
-                               "mpConfig-2.0",
-                               "mpFaultTolerance-3.0",
-                               "mpHealth-3.1",
-                               "mpJwt-1.2",
-                               "mpMetrics-3.0",
-                               "mpOpenAPI-2.0",
-                               "mpOpenTracing-2.0",
-                               "mpRestClient-2.0",
-                               "opentracing-2.0",
-                               "servlet-4.0",
-                               "ssl-1.0",
-                               "webProfile-8.0",
-                               "websocket-1.1",
-
-                               // webProfile-9.1 + microProfile-5.0
-                               "appAuthentication-2.0",
-                               "appSecurity-4.0",
-                               "beanValidation-3.0",
-                               "cdi-3.0",
-                               "concurrent-2.0",
-                               "distributedMap-1.0",
-                               "enterpriseBeansLite-4.0",
-                               "expressionLanguage-4.0",
-                               "faces-3.0",
-                               "jdbc-4.2",
-                               "jndi-1.0",
-                               "json-1.0",
-                               "jsonb-2.0",
-                               "jsonp-2.0",
-                               "jwt-1.0",
-                               "managedBeans-2.0",
-                               "microProfile-5.0",
-                               "monitor-1.0",
-                               "mpConfig-3.0",
-                               "mpFaultTolerance-4.0",
-                               "mpHealth-4.0",
-                               "mpJwt-2.0",
-                               "mpMetrics-4.0",
-                               "mpOpenAPI-3.0",
-                               "mpOpenTracing-3.0",
-                               "mpRestClient-3.0",
-                               "pages-3.0",
-                               "persistence-3.0",
-                               "persistenceContainer-3.0",
-                               "restfulWS-3.0",
-                               "restfulWSClient-3.0",
-                               "servlet-5.0",
-                               "ssl-1.0",
-                               "transportSecurity-1.0",
-                               "webProfile-9.1",
-                               "websocket-2.0",
-                               "xmlBinding-3.0",
-
-                               // webProfile-10.0 + microProfile-6.0
-                               "appAuthentication-3.0",
-                               "appSecurity-5.0",
-                               "beanValidation-3.0",
-                               "cdi-4.0",
-                               "concurrent-3.0",
-                               "distributedMap-1.0",
-                               "enterpriseBeansLite-4.0",
-                               "expressionLanguage-5.0",
-                               "faces-4.0",
-                               "jdbc-4.2",
-                               "jndi-1.0",
-                               "json-1.0",
-                               "jsonb-3.0",
-                               "jsonp-2.1",
-                               "jwt-1.0",
-                               "managedBeans-2.0",
-                               "microProfile-6.0",
-                               "monitor-1.0",
-                               "mpConfig-3.0",
-                               "mpFaultTolerance-4.0",
-                               "mpHealth-4.0",
-                               "mpJwt-2.1",
-                               "mpMetrics-5.0",
-                               "mpOpenAPI-3.1",
-                               "mpRestClient-3.0",
-                               "mpTelemetry-1.0",
-                               "pages-3.1",
-                               "persistence-3.1",
-                               "persistenceContainer-3.1",
-                               "restfulWS-3.1",
-                               "restfulWSClient-3.1",
-                               "servlet-6.0",
-                               "ssl-1.0",
-                               "transportSecurity-1.0",
-                               "webProfile-10.0",
-                               "websocket-2.1"
-        };
-        Set<String> result = new HashSet<>();
-        result.addAll(Arrays.asList(supported));
-        SUPPORTED_FEATURES = Collections.unmodifiableSet(result);
-    }
+    private static final String INSTANTON_ENABLED_HEADER = "WLP-InstantOn-Enabled";
 
     private static final String CHECKPOINT_STUB_CRIU = "io.openliberty.checkpoint.stub.criu";
     private static final String CHECKPOINT_CRIU_UNPRIVILEGED = "io.openliberty.checkpoint.criu.unprivileged";
@@ -503,14 +372,26 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             // shortcut if all features area allowed
             return;
         }
+        BundleContext context = cc.getBundleContext();
+        if (context == null) {
+            return;
+        }
         try {
-            ServiceReference<?>[] features = cc.getBundleContext().getServiceReferences("com.ibm.wsspi.kernel.feature.LibertyFeature", null);
+            ServiceReference<?>[] features = context.getServiceReferences("com.ibm.wsspi.kernel.feature.LibertyFeature", null);
             if (features != null) {
                 List<Object> unsupported = new ArrayList<>(0);
                 for (ServiceReference<?> feature : features) {
-                    Object featureName = feature.getProperty("ibm.featureName");
-                    if (!SUPPORTED_FEATURES.contains(featureName) && !allowedFeatures.contains(featureName)) {
-                        unsupported.add(featureName);
+                    LibertyFeature libertyFeature = (LibertyFeature) context.getService(feature);
+                    if (libertyFeature != null) {
+                        try {
+                            String instantonEnabled = libertyFeature.getHeader(INSTANTON_ENABLED_HEADER);
+                            Object featureName = feature.getProperty("ibm.featureName");
+                            if (!(Boolean.parseBoolean(instantonEnabled) || allowedFeatures.contains(featureName))) {
+                                unsupported.add(featureName);
+                            }
+                        } finally {
+                            context.ungetService(feature);
+                        }
                     }
                 }
                 if (!unsupported.isEmpty()) {

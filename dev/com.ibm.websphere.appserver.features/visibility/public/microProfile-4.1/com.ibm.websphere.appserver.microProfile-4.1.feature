@@ -24,3 +24,4 @@ Subsystem-Name: MicroProfile 4.1
   com.ibm.websphere.appserver.mpRestClient-2.0
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true

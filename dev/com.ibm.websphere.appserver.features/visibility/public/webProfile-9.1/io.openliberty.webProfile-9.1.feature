@@ -28,3 +28,4 @@ Subsystem-Name: Jakarta EE Web Profile 9.1
   io.openliberty.jsonp-2.0
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true

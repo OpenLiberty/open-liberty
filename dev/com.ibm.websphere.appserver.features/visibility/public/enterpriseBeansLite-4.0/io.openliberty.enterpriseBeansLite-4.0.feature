@@ -25,3 +25,4 @@ Subsystem-Name: Jakarta Enterprise Beans 4.0 Lite
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

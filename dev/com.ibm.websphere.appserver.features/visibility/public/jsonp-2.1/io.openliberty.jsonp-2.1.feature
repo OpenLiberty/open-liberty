@@ -12,3 +12,4 @@ Subsystem-Name: Jakarta JSON Processing 2.1
 kind=beta
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

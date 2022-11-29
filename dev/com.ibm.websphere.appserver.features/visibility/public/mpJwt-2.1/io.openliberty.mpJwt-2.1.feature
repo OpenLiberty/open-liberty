@@ -21,3 +21,4 @@ Subsystem-Name: MicroProfile JSON Web Token 2.1
 kind=beta
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

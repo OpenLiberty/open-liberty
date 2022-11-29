@@ -17,3 +17,4 @@ Subsystem-Name: Jakarta RESTful Web Services 3.1
 kind=beta
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true
