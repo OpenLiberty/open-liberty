@@ -141,9 +141,11 @@ public class DataTestServlet extends FATServlet {
                     new Prime(41, "29", "101001", 3, "XLI", "forty-one"),
                     new Prime(43, "2B", "101011", 4, "XLIII", "forty-three"),
                     new Prime(47, "2F", "101111", 5, "XLVII", "forty-seven"),
-                    new Prime(4001, "FA1", "111110100001", 7, null, "four thousand one"),
-                    new Prime(4003, "FA3", "111110100011", 8, null, "four thousand three"),
-                    new Prime(4007, "FA7", "111110100111", 9, null, "four thousand seven"));
+                    new Prime(4001, "FA1", "111110100001", 7, null, "four thousand one"), // romanNumeralSymbols null
+                    new Prime(4003, "FA3", "111110100011", 8, null, "four thousand three"), // romanNumeralSymbols null
+                    new Prime(4007, "FA7", "111110100111", 9, null, "four thousand seven"), // romanNumeralSymbols null
+                    new Prime(4013, "FAD", "111110101101", 9, "", "four thousand thirteen"), // empty list of romanNumeralSymbols
+                    new Prime(4019, "FB3", "111110110011", 9, "", "four thousand nineteen")); // empty list of romanNumeralSymbols
     }
 
     /**
@@ -676,6 +678,27 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         assertEquals(4, shippingAddresses.removeAll());
+    }
+
+    /**
+     * Test Empty and NotEmpty on repository methods.
+     */
+    @Test
+    public void testEmpty() {
+        assertIterableEquals(List.of(4007L, 4013L, 4019L),
+                             primes.findByNumberInAndRomanNumeralSymbolsEmpty(Set.of(7L, 4007L, 13L, 4013L, 19L, 4019L))
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+
+        Stack<Long> list = new Stack<>();
+        list.addAll(Set.of(7L, 4007L, 13L, 4013L, 19L, 4019L));
+
+        assertIterableEquals(List.of(7L, 13L, 19L),
+                             primes.findByNumberInAndRomanNumeralSymbolsNotEmpty(list)
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
     }
 
     /**

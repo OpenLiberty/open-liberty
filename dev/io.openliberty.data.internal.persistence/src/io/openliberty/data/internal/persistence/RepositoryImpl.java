@@ -569,6 +569,10 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             case 's': // Contains
                 if (expression.endsWith("Contains"))
                     condition = Condition.CONTAINS;
+                break;
+            case 'y': // Empty
+                if (expression.endsWith("Empty"))
+                    condition = Condition.EMPTY;
         }
 
         boolean negated = length > condition.length + 3 //
@@ -634,6 +638,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             case NOT_NULL:
             case TRUE:
             case FALSE:
+            case EMPTY:
+            case NOT_EMPTY:
                 q.append(attributeExpr).append(condition.operator);
                 break;
             default:

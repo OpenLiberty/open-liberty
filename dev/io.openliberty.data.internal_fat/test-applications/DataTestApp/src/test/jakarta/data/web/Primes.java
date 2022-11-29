@@ -10,6 +10,7 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import java.util.Collection;
 import java.util.Deque;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +67,12 @@ public interface Primes {
 
     @OrderBy("number")
     List<Prime> findByNumberInAndRomanNumeralNotNull(Set<Long> nums);
+
+    @OrderBy("number")
+    List<Prime> findByNumberInAndRomanNumeralSymbolsEmpty(Collection<Long> nums);
+
+    @OrderBy("number")
+    List<Prime> findByNumberInAndRomanNumeralSymbolsNotEmpty(Stack<Long> nums);
 
     Stream<Prime> findByNumberLessThan(long max);
 

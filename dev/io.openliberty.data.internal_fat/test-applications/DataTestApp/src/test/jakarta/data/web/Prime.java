@@ -10,6 +10,8 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import java.util.ArrayList;
+
 import jakarta.data.Entity;
 import jakarta.data.Id;
 
@@ -31,6 +33,8 @@ public class Prime {
 
     public String romanNumeral;
 
+    public ArrayList<String> romanNumeralSymbols;
+
     public int sumOfBits;
 
     public Prime() {
@@ -44,6 +48,11 @@ public class Prime {
         this.romanNumeral = romanNumeral;
         this.number = number;
         this.sumOfBits = sumOfBits;
+        if (romanNumeral != null) {
+            this.romanNumeralSymbols = new ArrayList<>(romanNumeral.length());
+            for (int i = 0; i < romanNumeral.length(); i++)
+                romanNumeralSymbols.add(romanNumeral.substring(i, i + 1));
+        }
     }
 
     @Override
