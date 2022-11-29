@@ -12,7 +12,6 @@
 <server>
 
 	<!--  3/2021 update to add cxf_features.xml content here to replace the include of imports/cxf_features.xml -->
-    <!--  and allow EE8 feature replacement to be picked up dynamically during testing -->
     
 	<featureManager>
 		<feature>ssl-1.0</feature>

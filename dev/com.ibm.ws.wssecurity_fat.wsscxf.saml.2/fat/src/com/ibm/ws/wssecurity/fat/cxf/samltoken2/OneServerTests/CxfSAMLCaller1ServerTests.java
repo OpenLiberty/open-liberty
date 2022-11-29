@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -88,13 +88,15 @@ public class CxfSAMLCaller1ServerTests extends CxfSAMLCallerTests {
 
         testSAMLServer.addIgnoredServerExceptions(SAMLMessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES, SAMLMessageConstants.CWWKG0101W_CONFIG_NOT_VISIBLE_TO_OTHER_BUNDLES, SAMLMessageConstants.CWWKF0001E_FEATURE_MISSING);
         
-        //issue 18363
+        //issue 23060 
+        //The condition checker is also used in some tests which do not run with CBH, 
+        //where it acts another checker to reference the respective old/new format ehcache xml.
         Set<String> features = testSAMLServer.getServer().getServerConfiguration().getFeatureManager().getFeatures(); 
-		if (features.contains("jaxws-2.2")) {
-			setFeatureVersion("EE7");
-        } else if (features.contains("xmlWS-3.0")) {
-            setFeatureVersion("EE9");
-        }// End of 18363
+		if (features.contains("usr:wsseccbh-1.0")) {
+            setFeatureVersion("EE7cbh1");
+        } else if (features.contains("usr:wsseccbh-2.0")) {
+            setFeatureVersion("EE7cbh2");
+        } 
         
     }
 }
