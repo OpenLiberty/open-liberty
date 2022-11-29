@@ -176,6 +176,7 @@ public class ServletUtil
       return requestHeaders;
    }
 
+   // Liberty change begin
    private static class InitDataCacheKey {
        private final String requestUrl;
        private final String contextPath;
@@ -202,4 +203,5 @@ public class ServletUtil
            return Objects.hash(this.requestUrl, this.contextPath);
        }
    }
+   // Liberty change end
 }
