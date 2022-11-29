@@ -10,20 +10,19 @@
  *******************************************************************************/
 package componenttest.topology.utils.tck;
 
-import java.util.List;
 import java.util.LinkedList;
-import java.util.Scanner;
+import java.util.List;
 
 public class TestSuiteResult {
-    private int failures;
-    private int errors;
+    private final int failures;
+    private final int errors;
 
     private String packageName;
-    private String name;
-    private String timestamp;
-    private String tests;
+    private final String name;
+    private final String timestamp;
+    private final String tests;
 
-    private List<TestCaseResult> results = new LinkedList<TestCaseResult>();
+    private final List<TestCaseResult> results = new LinkedList<TestCaseResult>();
 
     public TestSuiteResult(String name, int failures, int errors, String timestamp, String tests) {
         this.failures = failures;
@@ -37,6 +36,7 @@ public class TestSuiteResult {
         results.add(result);
     }
 
+    @Override
     public String toString() {
         StringBuilder strBuild = new StringBuilder();
 
@@ -46,12 +46,12 @@ public class TestSuiteResult {
         } else {
             pass = "FAILED";
         }
-        strBuild.append("Test suite: " + name +  " "  +  timestamp);
+        strBuild.append("Test suite: " + name + " " + timestamp);
         strBuild.append(System.lineSeparator());
         strBuild.append("Tests:" + tests + " Failures:" + failures + " Errors:" + errors);
         strBuild.append(System.lineSeparator());
 
-        for (TestCaseResult testCase : results) { 
+        for (TestCaseResult testCase : results) {
             strBuild.append("   " + testCase.toString());
             strBuild.append(System.lineSeparator());
         }
