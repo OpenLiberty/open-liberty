@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jsf22.fat.viewscopedjsf;
+package com.ibm.ws.jsf22.fat.viewscopedjsf.bean.faces40;
 
 import java.io.Serializable;
 import java.util.logging.Logger;

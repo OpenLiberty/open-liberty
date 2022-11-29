@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jsf22.fat.PI63135;
+package com.ibm.ws.jsf22.fat.PI63135.bean.jsf22;
 
 import java.io.Serializable;
 
