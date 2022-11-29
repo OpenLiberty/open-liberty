@@ -62,7 +62,7 @@ invalidScheduleDelimit.useraction=Ensure that the schedule specified in the serv
 
 invalidScheduleDelimitRange=CWWKE0108E: Schedule ranges must be delimited by a single hyphen (-). Provided: {0}. Valid example: {1}
 invalidScheduleDelimitRange.explanation=A range of days or times must have a start and end component delimited by a single hyphen (-).
-invalidScheduleDelimitRange.useraction=Ensure that the schedule specified in the server configuration uses a single hyphen (-) to delimit day and time ranges.
+invalidScheduleDelimitRange.useraction=Ensure that the schedule that is specified in the server configuration uses a single hyphen (-) to delimit day and time ranges.
 
 invalidScheduleParse=CWWKE0109E: Unable to parse the provided parameter to a valid {0}. Provided: {1}. Valid example(s): {2}.
 invalidScheduleParse.explanation=A schedule must be able to evaluate days as java.time.DayOfWeek, times as java.time.LocalTime, and timezones as java.time.ZoneID.
