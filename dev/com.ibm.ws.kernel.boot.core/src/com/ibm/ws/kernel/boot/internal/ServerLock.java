@@ -35,8 +35,8 @@ public class ServerLock {
 
     /**
      * @param bootProps
-     *            {@link BootstrapConfig} containing all established/calculated
-     *            values for server name and directories.
+     *                      {@link BootstrapConfig} containing all established/calculated
+     *                      values for server name and directories.
      * @return constructed ServerLock
      */
     public static ServerLock createTestLock(BootstrapConfig bootProps) {
@@ -71,12 +71,12 @@ public class ServerLock {
      * and are writiable.
      *
      * @param bootProps
-     *            {@link BootstrapConfig} containing all established/calculated
-     *            values for server name and directories.
+     *                      {@link BootstrapConfig} containing all established/calculated
+     *                      values for server name and directories.
      * @return constructed ServerLock
      *
      * @throws LaunchException
-     *             exception thrown if server directories/files are not writable.
+     *                             exception thrown if server directories/files are not writable.
      */
     public static ServerLock createServerLock(BootstrapConfig bootProps) {
         String serverName = bootProps.getProcessName();
@@ -221,8 +221,8 @@ public class ServerLock {
      * or multiple instances of a same server within same JVM is not supported.
      *
      * @throws LaunchException
-     *             exception thrown if there's a problem getting the lock or
-     *             another instance of this server is running
+     *                             exception thrown if there's a problem getting the lock or
+     *                             another instance of this server is running
      */
     public synchronized void obtainServerLock() {
 
@@ -245,21 +245,9 @@ public class ServerLock {
     /**
      * Try to obtain server lock
      *
-     * Uses default timeout which was originally based on polling interval and max polling attempts in milliseconds.
-     *
      * @return true if server lock was obtained (!null & valid)
      */
     private synchronized boolean getServerLock() {
-        return getServerLock((int) (BootstrapConstants.POLL_INTERVAL_MS * BootstrapConstants.MAX_POLL_ATTEMPTS) / 1000);
-    }
-
-    /**
-     * Try to obtain server lock
-     *
-     * @param timeout value in seconds
-     * @return true if server lock was obtained (!null & valid)
-     */
-    private synchronized boolean getServerLock(int timeout) {
 
         Boolean fileExists = Boolean.FALSE;
         final File sDir = lockFile;
@@ -278,38 +266,20 @@ public class ServerLock {
             fos = new FileOutputStream(lockFile);
             fc = fos.getChannel();
 
-            final long timeoutMillis = timeout * 1000;
-            final long startTime = System.currentTimeMillis();
-            final long expireTime = startTime + timeoutMillis;
-
-            // If we immediately try to get the lock, it seems to always be unavailable.  After
-            // a failed attempt at getting the lock, we sleep for 500ms.  That's pretty much
-            // the same thing as sleeping for 500ms and then trying to get the lock.  So this
-            // smaller delay is added, which will normally allow us to get the lock on the 1st try.
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                //
-            }
             // Try for a short period of time to obtain the lock
             // (if status mechanisms temporarily grab the file, we want to wait
             // to try to grab it.. )
-           do {
+            for (int i = 0; i < BootstrapConstants.MAX_POLL_ATTEMPTS; i++) {
                 serverLock = fc.tryLock();
-               if (serverLock != null) {
+                if (serverLock != null) {
                     break;
                 } else {
                     try {
-                        long timeNow = System.currentTimeMillis();
-                         if ((timeNow) > expireTime) {
-                            break;
-                        }
                         Thread.sleep(BootstrapConstants.POLL_INTERVAL_MS);
                     } catch (InterruptedException e) {
                     }
                 }
-            } while (true);
-
+            }
         } catch (OverlappingFileLockException e) {
             // If we encounter an exception obtaining the lock, we can try
             // try closing the the relevant streams (channel first)
@@ -401,31 +371,14 @@ public class ServerLock {
      * <p>
      * This is a separate process using the attach API to stop the server.
      *
-     * @return {@link ReturnCode#OK} if server lock file can be obtained within the
-     *         DEFAULT timeout period (see {@link #getServerLock()}, will otherwise
+     * @return {@link ReturnCode#OK} if server lock file can be obtained within
+     *         3 seconds (see {@link #getServerLock()}, will otherwise
      *         return {@link ReturnCode#ERROR_SERVER_STOP}
      */
     public synchronized ReturnCode waitForStop() {
-        return waitForStop(Integer.valueOf(BootstrapConstants.SERVER_STOP_WAIT_TIME_DEFAULT));
 
-    }
-
-    /**
-     * Wait until the server lock file can be obtained: Used when stopping
-     * the server to wait until the server has terminated.
-     * <p>
-     * This is a separate process using the attach API to stop the server.
-     *
-     * @param timeOut value in milliseconds.
-     * @return {@link ReturnCode#OK} if server lock file can be obtained within
-     *         timeout period (see {@link #getServerLock()}, will otherwise
-     *         return {@link ReturnCode#ERROR_SERVER_STOP}
-     * @return
-     */
-    public synchronized ReturnCode waitForStop(int timeOut) {
-
-        // if the lock is null or is invalid, the lock could not be obtained within the time out
-        if (!getServerLock(timeOut)) {
+        // if the lock is null or is invalid, the lock could not be obtained within the timeout
+        if (!getServerLock()) {
             serverLock = null;
             lockFileChannel = null;
             System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.stopServerError"),
