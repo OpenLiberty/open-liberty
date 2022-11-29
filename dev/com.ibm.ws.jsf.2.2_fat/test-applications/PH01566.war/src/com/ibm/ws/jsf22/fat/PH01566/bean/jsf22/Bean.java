@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  2015  IBM Corporation and others.
+ * Copyright (c) 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,21 +13,21 @@ package com.ibm.ws.jsf22.fat.PH01566.bean.jsf22;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
-@ManagedBean(name="bean")
+@ManagedBean(name = "bean")
 @SessionScoped
 public class Bean {
 
-	private String welcome = "application initialization succeeded";
-	
-	public Bean() {
-	}
+    private String welcome = "application initialization succeeded";
 
-	public String getWelcome() {
-		return welcome;
-	}
+    public Bean() {
+    }
 
-	public void setWelcome(String welcome) {
-		this.welcome = welcome;
-	}
-	
+    public String getWelcome() {
+        return welcome;
+    }
+
+    public void setWelcome(String welcome) {
+        this.welcome = welcome;
+    }
+
 }

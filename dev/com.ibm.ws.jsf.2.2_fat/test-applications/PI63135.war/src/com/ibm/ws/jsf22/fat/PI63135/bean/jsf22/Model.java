@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  2016  IBM Corporation and others.
+ * Copyright (c) 2016 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,29 +22,27 @@ public class Model implements Serializable {
 
     private String message = null;
     private String status = null;
-    
+
     public String getMessage() {
         return message;
     }
-    
+
     public void setMessage(String message) {
         this.message = message;
     }
-    
+
     public String action() {
         if (message == null) {
             status = "PI63135: Message is NULL!";
-        }
-        else if (message.isEmpty()) {
+        } else if (message.isEmpty()) {
             status = "PI63135: Message is an empty string!";
-        }
-        else {
+        } else {
             status = "PI63135: Message is --> " + message;
         }
-        
+
         return "messageStatus?faces-redirect=true";
     }
-    
+
     public String getStatus() {
         return status;
     }
