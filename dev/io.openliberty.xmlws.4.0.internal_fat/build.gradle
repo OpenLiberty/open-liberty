@@ -22,7 +22,7 @@ dependencies {
 				'org.jvnet.staxex:stax-ex:1.7.7',
 				'org.glassfish.jaxb:jaxb-runtime:3.0.+',
 				'org.glassfish.jaxb:jaxb-core:3.0.+',
-				'org.glassfish.gmbal:gmbal-api-only:3.1.0-b001'
+				'org.glassfish.gmbal:gmbal-api-only:4.0.3'
 requiredLibs 	project(':io.openliberty.jakarta'),
   			   	project(':io.openliberty.jakarta.xmlBinding.4.0'),
   			   	'javax.xml.bind:jaxb-api:2.2.+',
