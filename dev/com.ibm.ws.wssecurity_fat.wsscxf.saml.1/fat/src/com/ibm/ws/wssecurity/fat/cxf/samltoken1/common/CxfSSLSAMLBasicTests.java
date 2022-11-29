@@ -21,17 +21,13 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTest;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLCommonTestHelpers;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLConstants;
 import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
-import componenttest.annotation.AllowedFFDC;
+
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
-import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
-import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
-import componenttest.rules.repeater.JakartaEE9Action;
-import componenttest.rules.repeater.JakartaEE10Action;
 
 
 /**
@@ -58,18 +54,7 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
     protected static String servicePort = null;
     protected static String serviceSecurePort = null;
     protected static CXFSAMLCommonUtils commonUtils = new CXFSAMLCommonUtils();
-    //issue 18363
-    protected static String featureVersion = "";
-
-    //issue 18363
-    public static String getFeatureVersion() {
-        return featureVersion;
-    }
     
-    public static void setFeatureVersion(String version) {
-        featureVersion = version;
-    } //End of issue 18363
-
     /**
      * TestDescription:
      * 
@@ -83,8 +68,8 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
      */
  
     @Mode(TestMode.LITE)
-    //@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID, JakartaEE10Action.ID })
+    //Other than running EE9/EE10 repeat rules on Lite mode, 
+    //this test also runs EE7 no modification repeat rule on Full mode per 1-server reconfig or 2-server reconfig
     @Test
     public void testSAMLCxfSvcClient_TransportEnabled() throws Exception {
     	
@@ -124,18 +109,6 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
     @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
     @Test
     public void testSAMLCxfSvcClient_TransportEnabled_httpFromClient() throws Exception {
-
-    	//issue 18363
-    	if ("EE8".equals(getFeatureVersion())) {
-    		if (testSAMLServer2 == null) {
-                //1 server reconfig
-        		testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_ee8.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-        	} else {
-        	    //2 servers reconfig
-        		testSAMLServer2.reconfigServer("server_2_ee8.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-        		testSAMLServer.reconfigServer("server_1_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-        	} 
-    	} //End of 18363
     	
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
@@ -144,16 +117,10 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
         updatedTestSettings.setCXFSettings(_testName, null, servicePort, null, "user1", "user1pwd", "SamlTokenTransportSecure",
                 "SamlTokenTransportSecurePort", "", "False", null, null);
 
+        //issue 23060 
         String CXF_SAML_TOKEN_SERVICE_HTTPS_NOT_USED = "HttpsToken could not be asserted: Not an HTTPs connection"; // slightly different error with new runtime
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, CXF_SAML_TOKEN_SERVICE_HTTPS_NOT_USED));
-        /*
-        //issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-            genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SERVICE_HTTPS_NOT_USED));
-    	} else if ("EE8".equals(getFeatureVersion())) {
-    		String CXF_SAML_TOKEN_SERVICE_HTTPS_NOT_USED = "HttpsToken could not be asserted: Not an HTTPs connection"; // @AV999 slightly different error with new runtime
-            genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, CXF_SAML_TOKEN_SERVICE_HTTPS_NOT_USED));
-    	} //End of 18363*/
+        
     }
   
     /**
@@ -170,8 +137,8 @@ public class CxfSSLSAMLBasicTests extends SAMLCommonTest {
      */
  
     @Mode(TestMode.LITE)
-    //@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
-    @AllowedFFDC(value = { "java.util.MissingResourceException" }, repeatAction = { JakartaEE9Action.ID, JakartaEE10Action.ID })
+    //Other than running EE9/EE10 repeat rules on Lite mode, 
+    //this test also runs EE7 repeat rule on Full mode per 1-server reconfig or 2-server reconfig
     @Test
     public void testSAMLCxfSvcClient_TransportNotEnabled_httpsFromClient() throws Exception {
   
