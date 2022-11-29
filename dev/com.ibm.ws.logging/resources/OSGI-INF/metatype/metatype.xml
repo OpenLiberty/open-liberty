@@ -142,11 +142,11 @@
 
         <AD name="%max.ffdc.age" description="%max.ffdc.age.desc" 
             ibm:variable="com.ibm.ws.logging.max.ffdc.age"
-            id="maxFfdcAge" required="false" type="String" ibm:type="duration(m)" default="-1" ibm:beta="true">
+            id="maxFfdcAge" required="false" type="String" ibm:type="duration(m)" default="-1">
         </AD>
 
         <AD name="internal" description="internal use only" 
-            id="ffdcCleanupStartDelay" required="false" type="Integer" default="-1" ibm:beta="true">
+            id="ffdcCleanupStartDelay" required="false" type="Integer" default="-1">
         </AD>
     </OCD>
   
