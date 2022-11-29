@@ -10,7 +10,11 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import java.util.Deque;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
@@ -40,12 +44,28 @@ public interface Primes {
     @Query("SELECT p.number FROM Prime p WHERE p.number >= ?1 AND p.number <= ?2")
     long findAsLongBetween(long min, long max);
 
+    @OrderBy("number")
+    List<Prime> findByEvenFalseAndNumberLessThan(long max);
+
+    List<Prime> findByEvenNotFalseAndNumberLessThan(long max);
+
+    @OrderBy(value = "number", descending = true)
+    List<Prime> findByEvenNotTrueAndNumberLessThan(long max);
+
+    List<Prime> findByEvenTrueAndNumberLessThan(long max);
+
     Prime findByNumberBetween(long min, long max);
 
     @OrderBy("number")
     KeysetAwarePage<Prime> findByNumberBetween(long min, long max, Pageable pagination);
 
     KeysetAwarePage<Prime> findByNumberBetweenOrderByEvenDescSumOfBitsDescNumberAsc(long min, long max, Pageable pagination);
+
+    @OrderBy("number")
+    List<Prime> findByNumberInAndRomanNumeralNull(Iterable<Long> nums);
+
+    @OrderBy("number")
+    List<Prime> findByNumberInAndRomanNumeralNotNull(Set<Long> nums);
 
     Stream<Prime> findByNumberLessThan(long max);
 
@@ -68,6 +88,33 @@ public interface Primes {
     boolean existsByNumber(long number);
 
     Boolean existsNumberBetween(Long first, Long last);
+
+    @Query("SELECT MIN(o.number), MAX(o.number), SUM(o.number), COUNT(o.number), AVG(o.number) FROM Prime o WHERE o.number < ?1")
+    Deque<Double> minMaxSumCountAverageDeque(long numBelow);
+
+    @Query("SELECT MIN(o.number), MAX(o.number), SUM(o.number), COUNT(o.number), AVG(o.number) FROM Prime o WHERE o.number < ?1")
+    float[] minMaxSumCountAverageFloat(long numBelow);
+
+    @Query("SELECT MIN(o.number), MAX(o.number), SUM(o.number), COUNT(o.number), AVG(o.number) FROM Prime o WHERE o.number < ?1")
+    int[] minMaxSumCountAverageInt(long numBelow);
+
+    @Query("SELECT MIN(o.number), MAX(o.number), SUM(o.number), COUNT(o.number), AVG(o.number) FROM Prime o WHERE o.number < ?1")
+    Iterable<Integer> minMaxSumCountAverageIterable(long numBelow);
+
+    @Query("SELECT MIN(o.number), MAX(o.number), SUM(o.number), COUNT(o.number), AVG(o.number) FROM Prime o WHERE o.number < ?1")
+    List<Long> minMaxSumCountAverageList(long numBelow);
+
+    @Query("SELECT MIN(o.number), MAX(o.number), SUM(o.number), COUNT(o.number), AVG(o.number) FROM Prime o WHERE o.number < ?1")
+    Long[] minMaxSumCountAverageLong(long numBelow);
+
+    @Query("SELECT MIN(o.number), MAX(o.number), SUM(o.number), COUNT(o.number), AVG(o.number) FROM Prime o WHERE o.number < ?1")
+    Number[] minMaxSumCountAverageNumber(long numBelow);
+
+    @Query("SELECT MIN(o.number), MAX(o.number), SUM(o.number), COUNT(o.number), AVG(o.number) FROM Prime o WHERE o.number < ?1")
+    Object[] minMaxSumCountAverageObject(long numBelow); // TODO List<Number>?, List<Object>?
+
+    @Query("SELECT MIN(o.number), MAX(o.number), SUM(o.number), COUNT(o.number), AVG(o.number) FROM Prime o WHERE o.number < ?1")
+    Stack<String> minMaxSumCountAverageStack(long numBelow);
 
     @Query(value = "SELECT NEW java.util.AbstractMap.SimpleImmutableEntry(p.number, p.name) FROM Prime p WHERE p.number <= ?1 ORDER BY p.name",
            count = "SELECT COUNT(p) FROM Prime p WHERE p.number <= ?1")
