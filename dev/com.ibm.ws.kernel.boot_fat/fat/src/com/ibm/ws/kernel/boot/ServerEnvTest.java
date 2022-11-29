@@ -79,7 +79,7 @@ public class ServerEnvTest {
         final String METHOD_NAME = "testVariableExpansionInServerEnv";
         Log.entering(c, METHOD_NAME);
 
-        if (OS.contains("OS/390") || OS.contains("z/OS") || OS.contains("zOS")) {
+        if (OS.contains("os/390") || OS.contains("z/os") || OS.contains("zos")) {
             return;
         }
         varsExpandInServerEnv(true);
@@ -107,7 +107,7 @@ public class ServerEnvTest {
     public void testVariableExpansionInServerEnvWhenExpansionNotEnabled() throws Exception {
         final String METHOD_NAME = "testVariableExpansionInServerEnvWhenExpansionNotEnabled";
         Log.entering(c, METHOD_NAME);
-        if (OS.contains("win") || OS.contains("OS/390") || OS.contains("z/OS") || OS.contains("zOS")) {
+        if (OS.contains("win") || OS.contains("os/390") || OS.contains("z/os") || OS.contains("zos")) {
             return;
         }
         varsExpandInServerEnv(false);
