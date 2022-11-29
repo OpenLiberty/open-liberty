@@ -55,6 +55,7 @@ tested.features:\
 
 -buildpath: \
     com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+    io.openliberty.com.google.gson;version=latest,\
     io.openliberty.grpc.1.0.internal;version=latest,\
     io.openliberty.grpc.1.0.internal.client;version=latest,\
     io.openliberty.grpc.1.0.internal.common;version=latest,\
@@ -90,8 +91,8 @@ tested.features:\
     org.brotli:dec;version=0.1.2,\
     net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
     xml-apis:xml-apis;version=1.4.01,\
-    com.google.protobuf:protobuf-java;version=3.19.2, \
-    com.google.protobuf:protobuf-java-util;version=3.19.2, \
+    com.google.protobuf:protobuf-java;version=3.19.6, \
+    com.google.protobuf:protobuf-java-util;version=3.19.6, \
     com.ibm.websphere.javaee.jaxrs.2.1,\
     com.ibm.websphere.javaee.cdi.2.0,\
     com.ibm.websphere.appserver.api.distributedMap;version=latest,\
