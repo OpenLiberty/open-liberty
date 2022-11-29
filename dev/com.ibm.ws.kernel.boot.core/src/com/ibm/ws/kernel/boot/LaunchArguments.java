@@ -19,10 +19,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
-import com.ibm.ws.kernel.boot.internal.KernelUtils;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.openliberty.checkpoint.spi.CheckpointPhase;
@@ -37,8 +35,7 @@ public class LaunchArguments {
     private static final List<String> KNOWN_OPTIONS = Collections.unmodifiableList(Arrays.asList(new String[] { "archive", "include",
                                                                                                                 "os", "pid", "pid-file",
                                                                                                                 "script", "template", "force",
-                                                                                                                "target", "no-password", "server-root",
-                                                                                                                "timeout" }));
+                                                                                                                "target", "no-password", "server-root" }));
 
     /**
      * Script argument: set by both batch and shell scripts to record the
@@ -201,8 +198,6 @@ public class LaunchArguments {
                         }
                     } else if (isClient && argToLower.equals("--autoacceptsigner")) {
                         initProps.put(BootstrapConstants.AUTO_ACCEPT_SIGNER, "true");
-						
-					  // options with a value.  (option=value)	
                     } else {
                         int index = arg.indexOf('=');
                         String value = "";
@@ -218,28 +213,7 @@ public class LaunchArguments {
                             key = null;
                         }
                         if (KNOWN_OPTIONS.contains(key)) {
-
-                            //  **** T I M E O U T   o p t i o n ****
-                            if (key != null && key.equals("timeout")) {
-                                // --timeout is only valid for the stop command
-                                if ( !action.equals("--stop") ) {
-                                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.optionNotApplicableToAction"), "--" + key, action));
-                                    returnValue = ReturnCode.BAD_ARGUMENT;
-                                    break;
-                                }
-                                String saveValue = value;
-                                value = KernelUtils.parseDuration(value, TimeUnit.SECONDS);
-
-                                if (!isValidTimeoutValue(value)) {
-                                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.badOptionValue"), saveValue, "--" + key));
-                                    returnValue = ReturnCode.BAD_ARGUMENT;
-                                    break;
-                                }
-                            }
-
-                            //  **** A L L   o p t i o n s  with a value ****
                             options.put(key, value);
-
                         } else {
 
                             System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.unknownArgument"), arg));
@@ -292,18 +266,6 @@ public class LaunchArguments {
         returnCode = setCheckpointPhase(checkpointPhase, returnValue);
         processName = processNameArg;
         actionOption = action;
-    }
-
-    /**
-     * @param timeout
-     */
-    private boolean isValidTimeoutValue(String timeoutString) {
-        try {
-            Integer.parseInt(timeoutString);
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -371,31 +333,6 @@ public class LaunchArguments {
 
     public String getScript() {
         return script;
-    }
-
-    // The timeout is the for whatever action is being processed.
-    // So it might be a start timeout (currently not implemented) or a stop timeout.
-    private int timeoutInSeconds = -1;
-
-    public int getStopTimeout() {
-        return getTimeout(BootstrapConstants.SERVER_STOP_WAIT_TIME_DEFAULT);
-    }
-
-    /**
-     * @param defaultValue
-     * @return Value of --timeout option in seconds if specified. If not specified return the default.
-     */
-    private int getTimeout(String defaultValue) {
-        if (timeoutInSeconds > 0)
-            return timeoutInSeconds;
-
-        timeoutInSeconds = Integer.valueOf(defaultValue);
-
-        String timeoutString = getOption("timeout");
-        if (timeoutString != null) {
-            timeoutInSeconds = Integer.valueOf(timeoutString);
-        }
-        return timeoutInSeconds;
     }
 
 }
