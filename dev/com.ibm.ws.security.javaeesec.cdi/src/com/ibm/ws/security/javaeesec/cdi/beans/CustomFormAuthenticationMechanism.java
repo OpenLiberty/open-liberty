@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -81,8 +81,7 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
                     status = AuthenticationStatus.SEND_CONTINUE;
                 }
             } else {
-                boolean newAuth = authParams.isNewAuthentication();
-                status = handleFormLogin(cred, newAuth == true ? null : httpMessageContext.getResponse(), clientSubject, httpMessageContext);
+                status = handleFormLogin(cred, clientSubject, httpMessageContext);
             }
         }
         return status;
@@ -103,7 +102,7 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private AuthenticationStatus handleFormLogin(@Sensitive Credential credential, HttpServletResponse rsp, Subject clientSubject,
+    private AuthenticationStatus handleFormLogin(@Sensitive Credential credential, Subject clientSubject,
                                                  HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = utils.handleAuthenticate(getCDI(), JavaEESecConstants.DEFAULT_REALM, credential, clientSubject, httpMessageContext);
         int rspStatus;
