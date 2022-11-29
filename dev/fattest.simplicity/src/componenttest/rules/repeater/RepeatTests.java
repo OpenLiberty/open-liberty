@@ -178,8 +178,8 @@ public class RepeatTests extends ExternalResource {
                     }
 
                     if (repeatNotAny) {
-                        // Note: If the user has requested an action NOT be any of the 
-						//       active actions, we ignore isEnabled() flag.
+                        // Note: If the user has requested an action NOT be any of the
+                        //       active actions, we ignore isEnabled() flag.
                         return !RepeatTestFilter.isRepeatActionActive(repeatAny);
                     } else {
                         // Note: If the user has requested any of the active actions, we ignore isEnabled() flag.

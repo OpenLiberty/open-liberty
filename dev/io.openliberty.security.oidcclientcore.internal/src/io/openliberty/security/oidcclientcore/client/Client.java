@@ -24,6 +24,7 @@ import io.openliberty.security.oidcclientcore.authentication.AbstractFlow;
 import io.openliberty.security.oidcclientcore.authentication.Flow;
 import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException;
 import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
+import io.openliberty.security.oidcclientcore.exceptions.UnsupportedResponseTypeException;
 import io.openliberty.security.oidcclientcore.logout.LogoutHandler;
 import io.openliberty.security.oidcclientcore.token.TokenRefresher;
 import io.openliberty.security.oidcclientcore.token.TokenResponse;
@@ -43,12 +44,13 @@ public class Client {
         return oidcClientConfig;
     }
 
-    public ProviderAuthenticationResult startFlow(HttpServletRequest request, HttpServletResponse response) {
+    public ProviderAuthenticationResult startFlow(HttpServletRequest request, HttpServletResponse response) throws UnsupportedResponseTypeException {
         Flow flow = AbstractFlow.getInstance(oidcClientConfig);
         return flow.startFlow(request, response);
     }
 
-    public ProviderAuthenticationResult continueFlow(HttpServletRequest request, HttpServletResponse response) throws AuthenticationResponseException, TokenRequestException {
+    public ProviderAuthenticationResult continueFlow(HttpServletRequest request,
+                                                     HttpServletResponse response) throws UnsupportedResponseTypeException, AuthenticationResponseException, TokenRequestException {
         Flow flow = AbstractFlow.getInstance(oidcClientConfig);
         return flow.continueFlow(request, response);
     }
@@ -57,7 +59,6 @@ public class Client {
         TokenResponseValidator tokenResponseValidator = new TokenResponseValidator(this.oidcClientConfig);
         tokenResponseValidator.setRequest(request);
         tokenResponseValidator.setResponse(response);
-        tokenResponseValidator.setJwkSet(getJwkSet());
         return tokenResponseValidator.validate(tokenResponse);
     }
 

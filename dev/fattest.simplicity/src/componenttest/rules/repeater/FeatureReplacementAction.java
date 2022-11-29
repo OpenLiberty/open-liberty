@@ -153,6 +153,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
     private final Set<String> serverConfigPaths = new HashSet<String>();
     private boolean calledForServers = false;
     private boolean calledForServerConfigPaths = false;
+    private boolean useCachedServers;
 
     private static final String pathToAutoFVTTestFiles = "lib/LibertyFATTestFiles/";
     private static final String pathToAutoFVTTestServers = "publish/servers/";
@@ -612,7 +613,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
         }
         // Make sure config updates are pushed to the liberty install's copy of the servers & clients
         for (String serverName : servers)
-            LibertyServerFactory.getLibertyServer(serverName);
+            LibertyServerFactory.getLibertyServer(serverName, null, !useCachedServers);
         for (String clientName : clients)
             LibertyClientFactory.getLibertyClient(clientName);
     }
@@ -887,4 +888,9 @@ public class FeatureReplacementAction implements RepeatTestAction {
         }
     }
 
+    @Override
+    public RepeatTestAction useCachedServers() {
+        useCachedServers = true;
+        return this;
+    }
 }

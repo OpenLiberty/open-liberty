@@ -94,7 +94,7 @@ public class RepositoryProducer<R, P> implements Producer<R> {
         InterceptionFactory<R> interception = factory.beanMgr.createInterceptionFactory(cc, repositoryInterface);
 
         boolean intercept = false;
-        for (AnnotatedMethodConfigurator<? super R> method : factory.beanMgr.createInterceptionFactory(cc, repositoryInterface).configure().methods())
+        for (AnnotatedMethodConfigurator<? super R> method : interception.configure().methods())
             for (Annotation anno : method.getAnnotated().getAnnotations())
                 if ("jakarta.enterprise.concurrent.Asynchronous".equals(anno.annotationType().getName())) {
                     intercept = true;

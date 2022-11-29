@@ -18,9 +18,8 @@ import com.ibm.ws.wsat.fat.tests.MultiRecoveryTest;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 
+@SuppressWarnings("restriction")
 @AllowedFFDC(value = { "javax.transaction.SystemException", "javax.transaction.xa.XAException", "java.io.IOException", "java.io.EOFException" })
 @RunWith(FATRunner.class)
 public class MultiRecoveryTest4 extends MultiRecoveryTest {

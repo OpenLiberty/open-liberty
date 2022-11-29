@@ -19,6 +19,7 @@ import org.junit.rules.TestName;
 
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
@@ -38,6 +39,11 @@ public class AuthDataFatUtils {
             for (String app : apps) {
                 Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + app);
                 JakartaEE9Action.transformApp(someArchive);
+            }
+        } else if (JakartaEE10Action.isActive()) {
+            for (String app : apps) {
+                Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + "apps" + File.separatorChar + app);
+                JakartaEE10Action.transformApp(someArchive);
             }
         }
     }

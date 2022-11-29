@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,6 +34,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
+import java.util.Stack;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -55,6 +57,9 @@ import jakarta.annotation.Resource;
 import jakarta.data.Entities;
 import jakarta.data.Template;
 import jakarta.data.exceptions.DataException;
+import jakarta.data.exceptions.EmptyResultException;
+import jakarta.data.exceptions.MappingException;
+import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.Limit;
 import jakarta.data.repository.Page;
@@ -135,7 +140,10 @@ public class DataTestServlet extends FATServlet {
                     new Prime(37, "25", "100101", 3, "XXXVII", "thirty-seven"),
                     new Prime(41, "29", "101001", 3, "XLI", "forty-one"),
                     new Prime(43, "2B", "101011", 4, "XLIII", "forty-three"),
-                    new Prime(47, "2F", "101111", 5, "XLVII", "forty-seven"));
+                    new Prime(47, "2F", "101111", 5, "XLVII", "forty-seven"),
+                    new Prime(4001, "FA1", "111110100001", 7, null, "four thousand one"),
+                    new Prime(4003, "FA3", "111110100011", 8, null, "four thousand three"),
+                    new Prime(4007, "FA7", "111110100111", 9, null, "four thousand seven"));
     }
 
     /**
@@ -455,6 +463,36 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Test True, False, NotTrue, and NotFalse on repository methods.
+     */
+    @Test
+    public void testBooleanConditions() {
+        assertIterableEquals(List.of(3L, 5L, 7L),
+                             primes.findByEvenFalseAndNumberLessThan(10L)
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(7L, 5L, 3L),
+                             primes.findByEvenNotTrueAndNumberLessThan(10L)
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(2L),
+                             primes.findByEvenTrueAndNumberLessThan(10L)
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(2L),
+                             primes.findByEvenNotFalseAndNumberLessThan(10L)
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
      * Asynchronous repository method that returns a CompletionStage of KeysetAwarePage.
      */
     @Test
@@ -657,7 +695,12 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testFindCreateFind() {
-        assertEquals(null, products.findItem("OL306-233F"));
+        try {
+            Product prod = products.findItem("OL306-233F");
+            fail("Should not find " + prod);
+        } catch (EmptyResultException x) {
+            // expected
+        }
 
         Product prod = new Product();
         prod.id = "OL306-233F";
@@ -1182,7 +1225,7 @@ public class DataTestServlet extends FATServlet {
         // 5,  101,    2, false
         // 17, 10001,  2, false
 
-        Pageable initialPagination = Pageable.ofPage(2).newSize(8).afterKeyset(false, 4, 23L);
+        Pageable initialPagination = Pageable.ofPage(2).size(8).afterKeyset(false, 4, 23L);
         KeysetAwarePage<Prime> page2 = primes.findByNumberBetweenOrderByEvenDescSumOfBitsDescNumberAsc(0L, 45L, initialPagination);
 
         assertIterableEquals(List.of(29L, 43L, 7L, 11L, 13L, 19L, 37L, 41L),
@@ -1240,7 +1283,7 @@ public class DataTestServlet extends FATServlet {
         KeysetAwarePage<Package> page;
 
         // Page 3
-        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(20.0f, Pageable.ofSize(3).newPage(3).beforeKeyset(40.0f, 94.0f, 42.0f, 240));
+        page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(20.0f, Pageable.ofSize(3).page(3).beforeKeyset(40.0f, 94.0f, 42.0f, 240));
 
         assertEquals(3L, page.number());
 
@@ -1297,7 +1340,7 @@ public class DataTestServlet extends FATServlet {
             }
         };
 
-        page = packages.findByHeightGreaterThan(20.0f, Pageable.ofSize(2).newPage(3).beforeKeysetCursor(cursor));
+        page = packages.findByHeightGreaterThan(20.0f, Pageable.ofSize(2).page(3).beforeKeysetCursor(cursor));
 
         assertEquals(3L, page.number());
 
@@ -1356,7 +1399,7 @@ public class DataTestServlet extends FATServlet {
         Package p230 = packages.findById(230).orElseThrow();
 
         Pageable pagination = Pageable.ofSize(4)
-                        .newPage(5)
+                        .page(5)
                         .sortBy(Sort.asc("width"), Sort.desc("length"), Sort.asc("id"))
                         .beforeKeyset(p230.width, p230.length, p230.id);
         page = packages.whereHeightNotWithin(20.0f, 38.5f, pagination);
@@ -1426,7 +1469,7 @@ public class DataTestServlet extends FATServlet {
         KeysetAwarePage<Package> page;
 
         // Page 3
-        page = packages.findByHeightGreaterThan(20.0f, Pageable.ofPage(3).newSize(3).beforeKeyset(10.0f, 31.0f, 310));
+        page = packages.findByHeightGreaterThan(20.0f, Pageable.ofPage(3).size(3).beforeKeyset(10.0f, 31.0f, 310));
 
         assertEquals(3L, page.number());
 
@@ -1475,7 +1518,7 @@ public class DataTestServlet extends FATServlet {
         // Page 5
         page = packages.whereHeightNotWithin(32.0f, 35.5f,
                                              Pageable.ofSize(2)
-                                                             .newPage(5)
+                                                             .page(5)
                                                              .sortBy(Sort.asc("height"), Sort.desc("length"), Sort.asc("id"))
                                                              .beforeKeyset(40.0f, 0.0f, 0));
 
@@ -1643,7 +1686,7 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
         // page 2:
         assertIterableEquals(List.of("Canada", "Bangladesh", "Mexico", "Canada"),
-                             tariffs.findByLeviedByOrderByKey("USA", Pageable.ofSize(4).newPage(2))
+                             tariffs.findByLeviedByOrderByKey("USA", Pageable.ofSize(4).page(2))
                                              .stream()
                                              .map(o -> o.leviedAgainst)
                                              .collect(Collectors.toList()));
@@ -1656,6 +1699,134 @@ public class DataTestServlet extends FATServlet {
         assertEquals(t8.leviedAgainst, list.get(7).leviedAgainst);
 
         assertEquals(8, tariffs.deleteByLeviedBy("USA"));
+    }
+
+    /**
+     * Various return types for a repository query that performs multiple aggregate functions.
+     */
+    @Test
+    public void testMultipleAggregates() {
+        Object[] objects = primes.minMaxSumCountAverageObject(50);
+        assertEquals(Long.valueOf(2L), objects[0]); // minimum
+        assertEquals(Long.valueOf(47L), objects[1]); // maximum
+        assertEquals(Long.valueOf(328L), objects[2]); // sum
+        assertEquals(Long.valueOf(15L), objects[3]); // count
+        assertEquals(true, objects[4] instanceof Number); // average
+        assertEquals(21.0, Math.floor(((Number) objects[4]).doubleValue()), 0.01);
+
+        Number[] numbers = primes.minMaxSumCountAverageNumber(45);
+        assertEquals(Long.valueOf(2L), numbers[0]); // minimum
+        assertEquals(Long.valueOf(43L), numbers[1]); // maximum
+        assertEquals(Long.valueOf(281L), numbers[2]); // sum
+        assertEquals(Long.valueOf(14L), numbers[3]); // count
+        assertEquals(20.0, Math.floor(numbers[4].doubleValue()), 0.01);
+
+        Long[] longs = primes.minMaxSumCountAverageLong(42);
+        assertEquals(Long.valueOf(2L), longs[0]); // minimum
+        assertEquals(Long.valueOf(41L), longs[1]); // maximum
+        assertEquals(Long.valueOf(238L), longs[2]); // sum
+        assertEquals(Long.valueOf(13L), longs[3]); // count
+        assertEquals(Long.valueOf(18L), longs[4]); // average
+
+        int[] ints = primes.minMaxSumCountAverageInt(40);
+        assertEquals(2, ints[0]); // minimum
+        assertEquals(37, ints[1]); // maximum
+        assertEquals(197, ints[2]); // sum
+        assertEquals(12, ints[3]); // count
+        assertEquals(16, ints[4]); // average
+
+        float[] floats = primes.minMaxSumCountAverageFloat(35);
+        assertEquals(2.0f, floats[0], 0.01f); // minimum
+        assertEquals(31.0f, floats[1], 0.01f); // maximum
+        assertEquals(160.0f, floats[2], 0.01f); // sum
+        assertEquals(11.0f, floats[3], 0.01f); // count
+        assertEquals(14.0f, Math.floor(floats[4]), 0.01f); // average
+
+        List<Long> list = primes.minMaxSumCountAverageList(30);
+        assertEquals(Long.valueOf(2L), list.get(0)); // minimum
+        assertEquals(Long.valueOf(29L), list.get(1)); // maximum
+        assertEquals(Long.valueOf(129L), list.get(2)); // sum
+        assertEquals(Long.valueOf(10L), list.get(3)); // count
+        assertEquals(Long.valueOf(12L), list.get(4)); // average
+
+        Stack<String> stack = primes.minMaxSumCountAverageStack(25);
+        assertEquals("2", stack.get(0)); // minimum
+        assertEquals("23", stack.get(1)); // maximum
+        assertEquals("100", stack.get(2)); // sum
+        assertEquals("9", stack.get(3)); // count
+        assertEquals(stack.get(4), true, stack.get(4).startsWith("11.")); // average
+
+        Iterable<Integer> iterable = primes.minMaxSumCountAverageIterable(20);
+        Iterator<Integer> it = iterable.iterator();
+        assertEquals(Integer.valueOf(2), it.next()); // minimum
+        assertEquals(Integer.valueOf(19), it.next()); // maximum
+        assertEquals(Integer.valueOf(77), it.next()); // sum
+        assertEquals(Integer.valueOf(8), it.next()); // count
+        assertEquals(Integer.valueOf(9), it.next()); // average
+
+        Deque<Double> deque = primes.minMaxSumCountAverageDeque(18);
+        assertEquals(2.0, deque.removeFirst(), 0.01); // minimum
+        assertEquals(17.0, deque.removeFirst(), 0.01); // maximum
+        assertEquals(58.0, deque.removeFirst(), 0.01); // sum
+        assertEquals(7.0, deque.removeFirst(), 0.01); // count
+        assertEquals(8.0, Math.floor(deque.removeFirst()), 0.01); // average
+    }
+
+    /**
+     * Test Null and NotNull on repository methods.
+     */
+    @Test
+    public void testNulls() {
+        assertIterableEquals(List.of(4001L, 4003L, 4007L),
+                             primes.findByNumberInAndRomanNumeralNull(Set.of(41L, 4001L, 43L, 4003L, 47L, 4007L))
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(41L, 43L, 47L),
+                             primes.findByNumberInAndRomanNumeralNotNull(Set.of(41L, 4001L, 43L, 4003L, 47L, 4007L))
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Exceed the maximum offset allowed by JPA.
+     */
+    @Test
+    public void testOverflow() {
+        Limit range = Limit.range(Integer.MAX_VALUE + 5L, Integer.MAX_VALUE + 10L);
+        try {
+            Streamable<Prime> found = primes.findByNumberLessThanEqualOrderByNumberDesc(9L, range);
+            fail("Expected an error because starting position of range exceeds Integer.MAX_VALUE. Found: " + found);
+        } catch (UnsupportedOperationException x) {
+            // expected
+        }
+
+        try {
+            Stream<Prime> found = primes.findFirst2147483648ByNumberGreaterThan(1L);
+            fail("Expected an error because limit exceeds Integer.MAX_VALUE. Found: " + found);
+        } catch (MappingException x) {
+            boolean expected = false;
+            for (Throwable cause = x; !expected && cause != null; cause = cause.getCause())
+                expected = cause instanceof UnsupportedOperationException;
+            if (!expected)
+                throw x;
+        }
+
+        try {
+            KeysetAwarePage<Prime> found = primes.findByNumberBetween(5L, 15L, Pageable.ofSize(Integer.MAX_VALUE / 30).page(33));
+            fail("Expected an error because when offset for pagination exceeds Integer.MAX_VALUE. Found: " + found);
+        } catch (UnsupportedOperationException x) {
+            // expected
+        }
+
+        try {
+            Page<Prime> found = primes.findByNumberLessThanEqualOrderByNumberDesc(52L, Pageable.ofSize(Integer.MAX_VALUE / 20).page(22));
+            fail("Expected an error because when offset for pagination exceeds Integer.MAX_VALUE. Found: " + found);
+        } catch (UnsupportedOperationException x) {
+            // expected
+        }
     }
 
     /**
@@ -2171,7 +2342,7 @@ public class DataTestServlet extends FATServlet {
 
         // Paging that comes out even:
         page2 = reservations.findByHostStartsWith("testRepositoryCustom-host",
-                                                  Pageable.ofPage(2).newSize(3),
+                                                  Pageable.ofPage(2).size(3),
                                                   Sort.desc("meetingID"));
         assertIterableEquals(List.of(10030006L, 10030005L, 10030004L),
                              page2
@@ -2479,6 +2650,56 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Repository method returns a single result or raises the specification-defined exceptions for none or too many.
+     */
+    @Test
+    public void testSingleResult() {
+        // With entity class as return type:
+
+        // Single result is fine:
+        Prime p = primes.findByNumberBetween(14L, 18L);
+        assertEquals(17L, p.number);
+
+        // No result must raise EmptyResultException:
+        try {
+            p = primes.findByNumberBetween(24L, 28L);
+            fail("Unexpected prime " + p);
+        } catch (EmptyResultException x) {
+            // expected
+        }
+
+        // Multiple results must raise NonUniqueResultException:
+        try {
+            p = primes.findByNumberBetween(34L, 48L);
+            fail("Should find more primes than " + p);
+        } catch (NonUniqueResultException x) {
+            // expected
+        }
+
+        // With custom return type:
+
+        // Single result is fine:
+        long n = primes.findAsLongBetween(12L, 16L);
+        assertEquals(13L, n);
+
+        // No result must raise EmptyResultException:
+        try {
+            n = primes.findAsLongBetween(32L, 36L);
+            fail("Unexpected prime number " + n);
+        } catch (EmptyResultException x) {
+            // expected
+        }
+
+        // Multiple results must raise NonUniqueResultException:
+        try {
+            n = primes.findAsLongBetween(22L, 42L);
+            fail("Should find more prime numbers than " + n);
+        } catch (NonUniqueResultException x) {
+            // expected
+        }
+    }
+
+    /**
      * Repository method that returns a stream and uses it as a parallel stream.
      */
     @Test
@@ -2688,7 +2909,7 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testTotalCountsWithKeysetPagination() {
-        KeysetAwarePage<Prime> page3 = primes.findByNumberBetween(3L, 50L, Pageable.ofPage(3).newSize(5).beforeKeyset(47L));
+        KeysetAwarePage<Prime> page3 = primes.findByNumberBetween(3L, 50L, Pageable.ofPage(3).size(5).beforeKeyset(47L));
         assertEquals(14L, page3.totalElements());
         assertEquals(3L, page3.totalPages());
 
@@ -2827,8 +3048,8 @@ public class DataTestServlet extends FATServlet {
         try {
             products.save(prod1a);
             fail("Able to update using old version.");
-        } catch (RuntimeException x) {
-            if ("jakarta.persistence.OptimisticLockException".equals(x.getClass().getName()))
+        } catch (DataException x) {
+            if (x.getCause() != null && "jakarta.persistence.OptimisticLockException".equals(x.getCause().getClass().getName()))
                 ; // expected;
             else
                 throw x;

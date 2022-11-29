@@ -83,7 +83,6 @@ public class WebProfileJSPtest {
         server.stopServer("SRVE0190E");
 
         ServerConfiguration preConfig = server.getServerConfiguration();
-        preConfig.getWebContainer();
         preConfig.getJspEngine().setExtraAttribute("extendedDocumentRoot", server.getInstallRoot() + "/usr/servers/" + server.getServerName() + "/alternateJSPdir");
         server.updateServerConfiguration(preConfig);
 

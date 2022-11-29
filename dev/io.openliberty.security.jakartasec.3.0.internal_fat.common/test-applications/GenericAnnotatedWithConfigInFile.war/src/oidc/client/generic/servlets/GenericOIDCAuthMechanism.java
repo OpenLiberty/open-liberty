@@ -30,9 +30,11 @@ import oidc.client.base.servlets.BaseServlet;
                                          //                                         useSessionExpression = "${openIdConfig.useSessionExpression}",
                                          //                                         redirectToOriginalResource = false,
                                          //                                         redirectToOriginalResourceExpression = "${openIdConfig.redirectToOriginalResource}", // overrides specified value
+                                         responseType = "${openIdConfig.responseType}",
                                          providerMetadata = @OpenIdProviderMetadata(authorizationEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/authorize",
                                                                                     tokenEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/token",
-                                                                                    userinfoEndpoint = "${openIdConfig.userinfoEndpoint}"))
+                                                                                    userinfoEndpoint = "${openIdConfig.userinfoEndpoint}",
+                                                                                    idTokenSigningAlgorithmsSupported = "${openIdConfig.idTokenSigningAlgorithmsSupported}"))
 @DeclareRoles("all")
 @ServletSecurity(@HttpConstraint(rolesAllowed = "all"))
 public class GenericOIDCAuthMechanism extends BaseServlet {

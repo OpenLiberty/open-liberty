@@ -147,6 +147,7 @@ public class JASPIServerAuthRegistrationModuleTest extends JASPITestBase {
     public void testJaspiRegisteredServerAuthModuleAndRemoveNewAppContext_Successful() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
+        myServer.restartServer();
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + contextString + 
                                                           buildServerAuthQueryString(REGISTER, PROFILE_SERVLET_MSG_LAYER, TEST_APP1_CONTEXT,
                                                                                                                            DEFAULT_AUTHMODULE_CLASS),

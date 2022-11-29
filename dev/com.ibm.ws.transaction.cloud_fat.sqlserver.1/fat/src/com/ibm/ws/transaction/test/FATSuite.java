@@ -24,17 +24,17 @@ import componenttest.topology.database.container.DatabaseContainerType;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                DualServerDynamicDBRotationTest1.class,
+	DualServerDynamicDBRotationTest1.class,
 })
 public class FATSuite extends TxTestContainerSuite {
 
-    static {
-        databaseContainerType = DatabaseContainerType.SQLServer;
-    }
+	static {
+		databaseContainerType = DatabaseContainerType.SQLServer;
+	}
 
-    @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(DualServerDynamicDBRotationTest1.serverNames))
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers(DualServerDynamicDBRotationTest1.serverNames))
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().forServers(DualServerDynamicDBRotationTest1.serverNames));
+	@ClassRule
+	public static RepeatTests r = RepeatTests.withoutModification()
+	.andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(DualServerDynamicDBRotationTest1.serverNames))
+	.andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers(DualServerDynamicDBRotationTest1.serverNames))
+	.andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().forServers(DualServerDynamicDBRotationTest1.serverNames));
 }

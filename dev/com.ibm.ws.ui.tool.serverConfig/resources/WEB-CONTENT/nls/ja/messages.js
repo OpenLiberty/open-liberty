@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -173,7 +173,7 @@ var editorMessages = {
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "機能を選択すると、その機能の説明が表示されます。",
 "SUPPORT_MESSAGE" : "サーバー構成は、Node.js サーバーに対しても、集合コントローラーを介してアクセスされる Docker コンテナー内のサーバーに対しても使用できません。",
 "NO_ROLE_MESSAGE": "ユーザーは構成変更の権限を持つロールに属していません。 ファイルは読み取り専用モードで使用可能です。",
-	
+    
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "集合メンバーに必要なアクション:",
 "RUN_UPDATE_HOST" : "rpcUser が書き込み権限を持つパスを '--hostWritePath' に指定して、'collective updateHost' または 'collective registerHost' を実行してください。  ホストの有効な資格情報も指定する必要があります。",
@@ -190,5 +190,4 @@ var editorMessages = {
 "LINK_JAVA" : "/usr/bin に JAVA へのリンクを作成します。 例: /usr/bin/java -> [pathToJAVA]",
 "JAVA_ON_PATH" : "PATH 環境変数に JAVA を追加します。  Linux の .bashrc で PATH のエクスポートを行います。", 
 "MORE_INFORMATION" : "詳細については、以下を参照してください。 "
-
 };

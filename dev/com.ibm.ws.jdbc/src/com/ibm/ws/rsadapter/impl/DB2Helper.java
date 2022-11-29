@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2021 IBM Corporation and others.
+ * Copyright (c) 2003, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -266,7 +266,7 @@ public class DB2Helper extends DatabaseHelper {
                || -4214 == ec
                || -30082 == ec // CONNECTION FAILED FOR SECURITY REASON
                // [ibm][db2][jcc][t4][2013][11249] Connection authorization failure occurred.  Reason: User ID or Password invalid.
-               || x.getMessage() != null && x.getMessage().indexOf("[2013]") > 0;
+               || (x.getMessage() != null && x.getMessage().indexOf("[2013]") > 0);
     }
 
     @Override
@@ -327,3 +327,4 @@ public class DB2Helper extends DatabaseHelper {
     }
 
 }
+

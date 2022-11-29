@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -173,7 +173,7 @@ var editorMessages = {
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "Vybráním funkce zobrazíte její popis.",
 "SUPPORT_MESSAGE" : "Konfigurace serveru není dostupná pro servery Node.js ani servery v kontejneru Docker přístupné přes kolektivní řadič.",
 "NO_ROLE_MESSAGE": "Uživatel nemá roli, která má oprávnění provádět změny konfigurace. Soubory jsou k dispozici v režimu jen pro čtení.",
-	
+    
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "NEZBYTNÉ AKCE PRO ČLENY KOLEKTIVU:",
 "RUN_UPDATE_HOST" : "Spusťte 'collective updateHost' nebo 'collective registerHost' s '--hostWritePath' určující cestu, ke které má rpcUser oprávnění k zápisu. Lze zadat i platná pověření hostitele.",
@@ -190,5 +190,4 @@ var editorMessages = {
 "LINK_JAVA" : "Vytvořte odkaz na JAVA v /usr/bin. Např. /usr/bin/java -> [cesta_k_JAVA]",
 "JAVA_ON_PATH" : "Přidejte JAVA do proměnné prostředí PATH. V systému Linux by měl být export proměnné PATH proveden do souboru .bashrc.", 
 "MORE_INFORMATION" : "Další informace viz: "
-
 };

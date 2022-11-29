@@ -36,12 +36,13 @@ import io.openliberty.security.jakartasec.OpenIdAuthenticationMechanismDefinitio
 import io.openliberty.security.jakartasec.credential.OidcTokensCredential;
 import io.openliberty.security.jakartasec.identitystore.OpenIdContextUtils;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestUtils;
-import io.openliberty.security.oidcclientcore.authentication.OriginalResourceRequest;
 import io.openliberty.security.oidcclientcore.client.Client;
 import io.openliberty.security.oidcclientcore.client.ClientManager;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException;
 import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
+import io.openliberty.security.oidcclientcore.exceptions.UnsupportedResponseTypeException;
+import io.openliberty.security.oidcclientcore.http.OriginalResourceRequest;
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import io.openliberty.security.oidcclientcore.storage.Storage;
 import io.openliberty.security.oidcclientcore.storage.StorageFactory;
@@ -191,9 +192,19 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
 
     private AuthenticationStatus processStartFlow(Client client, HttpMessageContext httpMessageContext) {
         HttpServletRequest request = httpMessageContext.getRequest();
+        HttpServletResponse response = httpMessageContext.getResponse();
+
         request.setAttribute(IS_CONTAINER_INITIATED_FLOW, isContainerInitiatedFlow(httpMessageContext.getAuthParameters()));
-        ProviderAuthenticationResult providerAuthenticationResult = client.startFlow(request, httpMessageContext.getResponse());
-        return processStartFlowResult(providerAuthenticationResult, httpMessageContext);
+
+        AuthenticationStatus status = AuthenticationStatus.SEND_CONTINUE;
+        try {
+            ProviderAuthenticationResult providerAuthenticationResult = client.startFlow(request, response);
+            status = processStartFlowResult(providerAuthenticationResult, httpMessageContext);
+        } catch (Exception e) {
+            Tr.error(tc, e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        }
+        return status;
     }
 
     private AuthenticationStatus processStartFlowResult(ProviderAuthenticationResult providerAuthenticationResult, HttpMessageContext httpMessageContext) {
@@ -241,7 +252,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         try {
             ProviderAuthenticationResult providerAuthenticationResult = client.continueFlow(request, response);
             status = processContinueFlowResult(providerAuthenticationResult, httpMessageContext, client);
-        } catch (AuthenticationResponseException | TokenRequestException e) {
+        } catch (UnsupportedResponseTypeException | AuthenticationResponseException | TokenRequestException e) {
             Tr.error(tc, e.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }

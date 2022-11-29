@@ -17,7 +17,6 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.wsat.fat.tests.MultiServerTest;
 
-import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 

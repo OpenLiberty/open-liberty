@@ -12,6 +12,9 @@
 		 		 
 	<openidConnectProvider
 		id="OP1"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
 		oauthProviderRef="OAuth1" />
 
 	<oauthProvider
@@ -45,6 +48,7 @@
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/useSessionTrueELFalse/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/useSessionFalseELTrue/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/useSessionFalseELFalse/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/responseTypeCode/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ClaimsDefinition/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ClaimsDefinitionNoRole/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/badCallerNameClaim/Callback,

@@ -96,6 +96,7 @@ public class TCKRunner {
     private final String suiteFileName;
     private final Map<String, String> additionalMvnProps;
     private final boolean isTestNG;
+    private final String relativeTckRunner;
     private final Type type;
     private final String specName;
 
@@ -109,7 +110,7 @@ public class TCKRunner {
      * @param specName   the formal name for the specification being tested
      */
     public static void runTCK(LibertyServer server, String bucketName, String testName, Type type, String specName) throws Exception {
-        runTCK(server, bucketName, testName, type, specName, DEFAULT_SUITE_FILENAME, Collections.<String, String> emptyMap());
+        runTCK(server, bucketName, testName, type, specName, DEFAULT_SUITE_FILENAME, RELATIVE_TCK_RUNNER, Collections.<String, String> emptyMap());
     }
 
     /**
@@ -124,26 +125,24 @@ public class TCKRunner {
      */
     public static void runTCK(LibertyServer server, String bucketName, String testName, Type type, String specName,
                               Map<String, String> additionalProps) throws Exception {
-        runTCK(server, bucketName, testName, type, specName, DEFAULT_SUITE_FILENAME, additionalProps);
+        runTCK(server, bucketName, testName, type, specName, DEFAULT_SUITE_FILENAME, RELATIVE_TCK_RUNNER, additionalProps);
     }
 
     /**
      * runs "mvn clean test" in the tck folder, passing through all the required properties
      *
-     * @param  server          the liberty server which should be used to run the TCK
-     * @param  bucketName      the name of the test project
-     * @param  testName        the name of the method that's being used to launch the TCK
-     * @param  type            the type of TCK (either MICROPROFILE or JAKARTA)
-     * @param  specName        the formal name for the specification being tested
-     * @param  suiteFileName   the name of the suite xml file
-     * @param  additionalProps java properties to set when running the mvn command
-     * @param  versionedJars   A set of versioned jars
-     * @return                 the integer return code from the mvn command. Anything other than 0 should be regarded as a failure.
-     * @throws Exception       occurs if anything goes wrong in setting up and running the mvn command.
+     * @param  server        the liberty server which should be used to run the TCK
+     * @param  bucketName    the name of the test project
+     * @param  testName      the name of the method that's being used to launch the TCK
+     * @param  type          the type of TCK (either MICROPROFILE or JAKARTA)
+     * @param  specName      the formal name for the specification being tested
+     * @param  suiteFileName the name of the suite xml file
+     * @return               the integer return code from the mvn command. Anything other than 0 should be regarded as a failure.
+     * @throws Exception     occurs if anything goes wrong in setting up and running the mvn command.
      */
     public static void runTCK(LibertyServer server, String bucketName, String testName, Type type, String specName,
                               String suiteFileName) throws Exception {
-        runTCK(server, bucketName, testName, type, specName, suiteFileName, Collections.<String, String> emptyMap());
+        runTCK(server, bucketName, testName, type, specName, suiteFileName, RELATIVE_TCK_RUNNER, Collections.<String, String> emptyMap());
     }
 
     /**
@@ -161,7 +160,27 @@ public class TCKRunner {
      */
     public static void runTCK(LibertyServer server, String bucketName, String testName, Type type, String specName, String suiteFileName,
                               Map<String, String> additionalProps) throws Exception {
-        TCKRunner mvn = new TCKRunner(server, bucketName, testName, type, specName, suiteFileName, additionalProps);
+        TCKRunner mvn = new TCKRunner(server, bucketName, testName, type, specName, suiteFileName, RELATIVE_TCK_RUNNER, additionalProps);
+        mvn.runTCK();
+    }
+
+    /**
+     * runs "mvn clean test" in the tck folder, passing through all the required properties
+     *
+     * @param  server            the liberty server which should be used to run the TCK
+     * @param  bucketName        the name of the test project
+     * @param  testName          the name of the method that's being used to launch the TCK
+     * @param  type              the type of TCK (either MICROPROFILE or JAKARTA)
+     * @param  specName          the formal name for the specification being tested
+     * @param  suiteFileName     the name of the suite xml file
+     * @param  relativeTckRunner the relative path to the TCK runner when multiple exist
+     * @param  additionalProps   java properties to set when running the mvn command
+     * @return                   the integer return code from the mvn command. Anything other than 0 should be regarded as a failure.
+     * @throws Exception         occurs if anything goes wrong in setting up and running the mvn command.
+     */
+    public static void runTCK(LibertyServer server, String bucketName, String testName, Type type, String specName, String suiteFileName,
+                              String relativeTckRunner, Map<String, String> additionalProps) throws Exception {
+        TCKRunner mvn = new TCKRunner(server, bucketName, testName, type, specName, suiteFileName, relativeTckRunner, additionalProps);
         mvn.runTCK();
     }
 
@@ -177,7 +196,7 @@ public class TCKRunner {
      * @param additionalProps java properties to set when running the mvn command
      */
     private TCKRunner(LibertyServer server, String bucketName, String testName, Type type, String specName, String suiteFileName,
-                      Map<String, String> additionalMvnProps) {
+                      String relativeTckRunner, Map<String, String> additionalMvnProps) {
         this.server = server;
         this.suiteFileName = suiteFileName;
         this.bucketName = bucketName;
@@ -186,6 +205,7 @@ public class TCKRunner {
         this.specName = specName;
         this.additionalMvnProps = additionalMvnProps;
         this.isTestNG = suiteFileName != null;
+        this.relativeTckRunner = relativeTckRunner;
 
     }
 
@@ -198,7 +218,7 @@ public class TCKRunner {
         assertTestsPassed(this.bucketName, this.testName, failingTestsList);
 
         String[] dependencyOutput = runDependencyCmd();
-        TCKJarInfo tckJarInfo = getTCKJarInfo(this.type, dependencyOutput);
+        TCKJarInfo tckJarInfo = TCKUtilities.getTCKJarInfo(this.type, dependencyOutput);
         TCKResultsInfo resultsInfo = new TCKResultsInfo(this.type, this.specName, this.server, tckJarInfo);
         TCKResultsWriter.preparePublicationFile(resultsInfo);
     }
@@ -458,8 +478,15 @@ public class TCKRunner {
      *
      * @return The TCK runner dir
      */
-    private static File getTCKRunnerDir() {
-        return new File(RELATIVE_TCK_RUNNER);
+    private File getTCKRunnerDir() {
+        File tckRunner = new File(this.relativeTckRunner);
+
+        if (!tckRunner.exists()) {
+            tckRunner = new File(RELATIVE_TCK_RUNNER);
+        }
+
+        return tckRunner;
+
     }
 
     /**
@@ -822,7 +849,11 @@ public class TCKRunner {
         // be passed to the mvn command line so chars like ^[]- are off limits
         //
         String expandedJarNameFragment = jarNameFragment.replaceAll("\\.", "\\\\\\.").replaceAll("DOTSTAR", ".*").replaceAll("DOT", "\\.").replaceAll("STAR", ".*");
-        String stringPattern = ".*" + expandedJarNameFragment + ".*" + "\\.jar";
+
+        // Use [0-9_\\.]* to account for the release version for liberty
+        // But avoid matching characters otherwise we may match against the wrong artifact
+        // i.e. ${io.openliberty.org.jboss.weld5} will match io.openliberty.org.jboss.weld5.se_1.0.70.jar
+        String stringPattern = ".*" + expandedJarNameFragment + "[0-9_\\.]*" + "\\.jar";
         Log.finer(c, "jarPathInDir", "looking for jar " + jarNameFragment + " using " + stringPattern + " in dir " + dir);
 
         // Looking for (for example):
@@ -952,32 +983,5 @@ public class TCKRunner {
 
         String[] lines = output.toArray(new String[0]);
         return lines;
-    }
-
-    private static TCKJarInfo getTCKJarInfo(Type type, String[] dependencyOutput) {
-        //org.eclipse.microprofile.config:microprofile-config-tck:jar:3.0.2:compile:/Users/tevans/.m2/repository/org/eclipse/microprofile/config/microprofile-config-tck/3.0.2/microprofile-config-tck-3.0.2.jar
-        //jakarta.json:jakarta.json-tck-tests:2.1.0:compile:/Users/tevans/.m2/repository/jakarta/json/jakarta.json-tck-tests/2.1.0/jakarta.json-tck-tests-2.1.0.jar
-        Pattern tckPattern = Pattern.compile(type.toString().toLowerCase() + "(.*):(.*-tck|.*-tck-tests):jar:(.*):.*:(.*\\.jar)", Pattern.DOTALL);
-        TCKJarInfo tckJar = null;
-        for (String sCurrentLine : dependencyOutput) {
-            if (sCurrentLine.contains("-tck:jar") || sCurrentLine.contains("-tck-tests:jar")) {
-                Matcher nameMatcher = tckPattern.matcher(sCurrentLine);
-                if (nameMatcher.find()) {
-                    tckJar = new TCKJarInfo();
-                    tckJar.group = nameMatcher.group(1);
-                    tckJar.artifact = nameMatcher.group(2);
-                    tckJar.version = nameMatcher.group(3);
-                    tckJar.jarPath = nameMatcher.group(4);
-                }
-            }
-        }
-
-        if (tckJar != null) {
-            File tckFile = new File(tckJar.jarPath);
-            tckJar.sha1 = TCKUtilities.generateSHA1(tckFile);
-            tckJar.sha256 = TCKUtilities.generateSHA256(tckFile);
-        }
-
-        return tckJar;
     }
 }

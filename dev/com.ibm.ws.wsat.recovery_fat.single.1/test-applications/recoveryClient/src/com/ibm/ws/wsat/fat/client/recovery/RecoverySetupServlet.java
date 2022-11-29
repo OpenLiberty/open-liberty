@@ -22,8 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 import javax.xml.ws.BindingProvider;
 
-import com.ibm.tx.jta.ut.util.XAResourceImpl;
-
 @WebServlet({ "/RecoverySetupServlet" })
 public class RecoverySetupServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;

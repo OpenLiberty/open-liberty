@@ -165,6 +165,39 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
                                                              TestConfigMaps.getUseSessionExpressionFalse()),
                                        "oidc.client.generic.servlets", "oidc.client.base.*");
 
+        swh.deployConfigurableTestApps(rpServer, "responseTypeCode.war", "GenericOIDCAuthMechanism.war",
+                                       buildUpdatedConfigMap(opServer, rpServer, "responseTypeCode", "allValues.openIdConfig.properties",
+                                                             TestConfigMaps.getResponseTypeCode()),
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "responseTypeIdToken.war", "GenericOIDCAuthMechanism.war",
+                                       buildUpdatedConfigMap(opServer, rpServer, "responseTypeIdToken", "allValues.openIdConfig.properties",
+                                                             TestConfigMaps.getResponseTypeIdToken()),
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "responseTypeIdTokenToken.war", "GenericOIDCAuthMechanism.war",
+                                       buildUpdatedConfigMap(opServer, rpServer, "responseTypeIdTokenToken", "allValues.openIdConfig.properties",
+                                                             TestConfigMaps.getResponseTypeIdTokenToken()),
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "responseTypeCodeIdToken.war", "GenericOIDCAuthMechanism.war",
+                                       buildUpdatedConfigMap(opServer, rpServer, "responseTypeCodeIdToken", "allValues.openIdConfig.properties",
+                                                             TestConfigMaps.getResponseTypeCodeIdToken()),
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "responseTypeCodeToken.war", "GenericOIDCAuthMechanism.war",
+                                       buildUpdatedConfigMap(opServer, rpServer, "responseTypeCodeToken", "allValues.openIdConfig.properties",
+                                                             TestConfigMaps.getResponseTypeCodeToken()),
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "responseTypeCodeIdTokenToken.war", "GenericOIDCAuthMechanism.war",
+                                       buildUpdatedConfigMap(opServer, rpServer, "responseTypeCodeIdTokenToken", "allValues.openIdConfig.properties",
+                                                             TestConfigMaps.getResponseTypeCodeIdTokenToken()),
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "responseTypeUnknown.war", "GenericOIDCAuthMechanism.war",
+                                       buildUpdatedConfigMap(opServer, rpServer, "responseTypeUnknown", "allValues.openIdConfig.properties",
+                                                             TestConfigMaps.getResponseTypeUnknown()),
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "responseTypeEmpty.war", "GenericOIDCAuthMechanism.war",
+                                       buildUpdatedConfigMap(opServer, rpServer, "responseTypeEmpty", "allValues.openIdConfig.properties",
+                                                             TestConfigMaps.getResponseTypeEmpty()),
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
+
     }
 
     /****************************************************************************************************************/
@@ -622,4 +655,200 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
 
     // useSession - may need a different OP with different httpSession values in the server config in order to fully test
     // <httpSession cookieHttpOnly="false" cookieName="clientJSESSIONID"/>
+
+    /**
+     *
+     * Test with Authorization Code Flow.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void ConfigurationTests_responseType_code() throws Exception {
+
+        runGoodEndToEndTest("responseTypeCode", "GenericOIDCAuthMechanism");
+
+    }
+
+    /**
+     *
+     * Test with Implicit Flow. This should fail, since implicit flow isn't currently supported.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.UnsupportedResponseTypeException" })
+    @Test
+    public void ConfigurationTests_responseType_idToken() throws Exception {
+
+        WebClient webClient = getAndSaveWebClient();
+
+        String app = "GenericOIDCAuthMechanism";
+        String url = rpHttpsBase + "/responseTypeIdToken/" + app;
+
+        Page response = actions.invokeUrl(_testName, webClient, url);
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
+        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorized message."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2423E_OIDC_CLIENT_INVALID_RESPONSE_TYPE, "Did not receive an error message stating that the response type is not valid."));
+
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     *
+     * Test with Implicit Flow. This should fail, since implicit flow isn't currently supported.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.UnsupportedResponseTypeException" })
+    @Test
+    public void ConfigurationTests_responseType_idTokenToken() throws Exception {
+
+        WebClient webClient = getAndSaveWebClient();
+
+        String app = "GenericOIDCAuthMechanism";
+        String url = rpHttpsBase + "/responseTypeIdTokenToken/" + app;
+
+        Page response = actions.invokeUrl(_testName, webClient, url);
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
+        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorized message."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2423E_OIDC_CLIENT_INVALID_RESPONSE_TYPE, "Did not receive an error message stating that the response type is not valid."));
+
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     *
+     * Test with Hybrid Flow. This should fail, since hybrid flow isn't currently supported.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.UnsupportedResponseTypeException" })
+    @Test
+    public void ConfigurationTests_responseType_codeIdToken() throws Exception {
+
+        WebClient webClient = getAndSaveWebClient();
+
+        String app = "GenericOIDCAuthMechanism";
+        String url = rpHttpsBase + "/responseTypeCodeIdToken/" + app;
+
+        Page response = actions.invokeUrl(_testName, webClient, url);
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
+        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorized message."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2423E_OIDC_CLIENT_INVALID_RESPONSE_TYPE, "Did not receive an error message stating that the response type is not valid."));
+
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     *
+     * Test with Hybrid Flow. This should fail, since hybrid flow isn't currently supported.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.UnsupportedResponseTypeException" })
+    @Test
+    public void ConfigurationTests_responseType_codeToken() throws Exception {
+
+        WebClient webClient = getAndSaveWebClient();
+
+        String app = "GenericOIDCAuthMechanism";
+        String url = rpHttpsBase + "/responseTypeCodeToken/" + app;
+
+        Page response = actions.invokeUrl(_testName, webClient, url);
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
+        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorized message."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2423E_OIDC_CLIENT_INVALID_RESPONSE_TYPE, "Did not receive an error message stating that the response type is not valid."));
+
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     *
+     * Test with Hybrid Flow. This should fail, since hybrid flow isn't currently supported.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.UnsupportedResponseTypeException" })
+    @Test
+    public void ConfigurationTests_responseType_codeIdTokenToken() throws Exception {
+
+        WebClient webClient = getAndSaveWebClient();
+
+        String app = "GenericOIDCAuthMechanism";
+        String url = rpHttpsBase + "/responseTypeCodeIdTokenToken/" + app;
+
+        Page response = actions.invokeUrl(_testName, webClient, url);
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
+        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorized message."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2423E_OIDC_CLIENT_INVALID_RESPONSE_TYPE, "Did not receive an error message stating that the response type is not valid."));
+
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     *
+     * Test with an unknown response type. This should fail.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.UnsupportedResponseTypeException" })
+    @Test
+    public void ConfigurationTests_responseType_unknown() throws Exception {
+
+        WebClient webClient = getAndSaveWebClient();
+
+        String app = "GenericOIDCAuthMechanism";
+        String url = rpHttpsBase + "/responseTypeUnknown/" + app;
+
+        Page response = actions.invokeUrl(_testName, webClient, url);
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
+        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorized message."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2423E_OIDC_CLIENT_INVALID_RESPONSE_TYPE, "Did not receive an error message stating that the response type is not valid."));
+
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     *
+     * Test with an empty response type. This should fail.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.UnsupportedResponseTypeException" })
+    @Test
+    public void ConfigurationTests_responseType_empty() throws Exception {
+
+        WebClient webClient = getAndSaveWebClient();
+
+        String app = "GenericOIDCAuthMechanism";
+        String url = rpHttpsBase + "/responseTypeEmpty/" + app;
+
+        Page response = actions.invokeUrl(_testName, webClient, url);
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
+        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorized message."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2423E_OIDC_CLIENT_INVALID_RESPONSE_TYPE, "Did not receive an error message stating that the response type is not valid."));
+
+        validationUtils.validateResult(response, expectations);
+
+    }
+
 }

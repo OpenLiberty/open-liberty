@@ -18,6 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.wssecurity.fat.cxf.samltoken2.OneServerTests.CxfSAMLCaller1ServerTests;
 import com.ibm.ws.wssecurity.fat.cxf.samltoken2.TwoServerTests.CxfSAMLCaller2ServerTests;
+import com.ibm.ws.wssecurity.fat.utils.common.RepeatWithEE7cbh20;
 
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -26,9 +27,10 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({
 
-	    //Lite
+	    //Lite for EE9, EE10 tests
+	    //Full mode also runs some tests with EE7 wsseccbh-1.0 and -2.0 and old/new formats of ehcache
         CxfSAMLCaller1ServerTests.class,
-        //Full 
+        //Full mode runs only EE7 with old format ehcache and couple of tests run with wsseccbh-1.0
         CxfSAMLCaller2ServerTests.class
 })
 
@@ -36,8 +38,9 @@ import componenttest.rules.repeater.RepeatTests;
  * Purpose: This suite collects and runs all known good test suites.
  */
 public class FATSuite {
-	
-	//The following run EE7 and EE8 full fat and EE9 lite fat
+
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("usr:wsseccbh-1.0").addFeature("usr:wsseccbh-2.0")).andWith(FeatureReplacementAction.EE10_FEATURES().removeFeature("usr:wsseccbh-1.0").addFeature("usr:wsseccbh-2.0"));
+    //issue 23060
+    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new RepeatWithEE7cbh20().fullFATOnly()).andWith(FeatureReplacementAction.EE9_FEATURES()).andWith(FeatureReplacementAction.EE10_FEATURES());
+
 }

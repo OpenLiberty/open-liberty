@@ -1,0 +1,3 @@
+-Dcom.ibm.tools.attach.enable=yes
+--add-exports=java.base/jdk.internal.vm.annotation=ALL-UNNAMED
+--add-opens=java.base/jdk.internal.vm.annotation=ALL-UNNAMED

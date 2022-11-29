@@ -10,19 +10,19 @@
  *     IBM Corporation - initial API and implementation
  -->
 <faces-config version="2.2"
-              xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
 
-      <!-- A flow definition for the simpleFacesConfig flow.
-          We have a start node and two views explicitly defined, as well as two return nodes. -->
-      <flow-definition id="simpleFacesConfig">
+    <!-- A flow definition for the simpleFacesConfig flow.
+        We have a start node and two views explicitly defined, as well as two return nodes. -->
+    <flow-definition id="simpleFacesConfig">
         <start-node>simpleFacesConfig</start-node>
         <view id="simpleFacesConfig">
-          <vdl-document>/simpleFacesConfig/simpleFacesConfig.xhtml</vdl-document>
+            <vdl-document>/simpleFacesConfig/simpleFacesConfig.xhtml</vdl-document>
         </view>
         <view id="simpleFacesConfig2">
-          <vdl-document>/simpleFacesConfig/simpleFacesConfig2.xhtml</vdl-document>
+            <vdl-document>/simpleFacesConfig/simpleFacesConfig2.xhtml</vdl-document>
         </view>
         <flow-return id="goIndexFacesConfig">
             <from-outcome>/JSF22Flows_index</from-outcome>
@@ -30,5 +30,5 @@
         <flow-return id="goReturnFacesConfig">
             <from-outcome>/JSF22Flows_return</from-outcome>
         </flow-return>
-      </flow-definition>
+    </flow-definition>
 </faces-config>

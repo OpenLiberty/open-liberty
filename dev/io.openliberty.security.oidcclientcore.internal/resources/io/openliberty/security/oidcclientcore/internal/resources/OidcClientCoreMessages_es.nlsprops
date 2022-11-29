@@ -33,9 +33,9 @@ DISCOVERY_EXCEPTION=CWWKS2403E: El cliente de OpenID Connect {0} ha encontrado e
 DISCOVERY_EXCEPTION.explanation=Puede que falte informaci\u00f3n en la configuraci\u00f3n del cliente de OpenID Connect o que se haya producido un error en el cliente al comunicarse con el proveedor de OpenID Connect.
 DISCOVERY_EXCEPTION.useraction=Consulte el error en el mensaje para obtener m\u00e1s informaci\u00f3n.
 
-OIDC_CLIENT_MISSING_PROVIDER_URI=CWWKS2404E: El atributo providerURI del cliente de OpenID Connect {0} es nulo o est\u00e1 vac\u00edo y no hay metadatos disponibles para el proveedor de OpenID Connect.
-OIDC_CLIENT_MISSING_PROVIDER_URI.explanation=El cliente de OpenID Connect tiene que descubrir los metadatos del proveedor de OpenID Connect, pero el cliente no tiene configurados un atributo providerURI ni metadatos de proveedor.
-OIDC_CLIENT_MISSING_PROVIDER_URI.useraction=Especifique un valor en el atributo providerURI de la configuraci\u00f3n del cliente de OpenID Connect o especifique los metadatos del proveedor de OpenID Connect en la configuraci\u00f3n del cliente.
+OIDC_CLIENT_MISSING_PROVIDER_URI=CWWKS2404W: El cliente de OpenID Connect no puede realizar el descubrimiento porque el atributo providerURI para el cliente de OpenID Connect {0} es nulo o est\u00e1 vac\u00edo.
+OIDC_CLIENT_MISSING_PROVIDER_URI.explanation=El cliente de OpenID Connect debe descubrir metadatos para el proveedor de OpenID Connect, pero el cliente no tiene configurado un atributo providerURI.
+OIDC_CLIENT_MISSING_PROVIDER_URI.useraction=Especifique un valor para el atributo providerURI en la configuraci\u00f3n del cliente de OpenID Connect, o aseg\u00farese de que los metadatos del proveedor de OpenID Connect de la configuraci\u00f3n del cliente contienen todos los datos que necesita el cliente de OpenID Connect.
 
 DISCOVERY_METADATA_MISSING_VALUE=CWWKS2405E: A los metadatos del proveedor de OpenID Connect les falta la propiedad obligatoria [{0}].
 DISCOVERY_METADATA_MISSING_VALUE.explanation=La propiedad especificada en el mensaje tiene que estar presente en los metadatos del proveedor de OpenID Connect, pero falta.
@@ -86,10 +86,9 @@ TOKEN_REQUEST_ERROR=CWWKS2416E: El cliente de OpenID Connect {0} ha encontrado e
 TOKEN_REQUEST_ERROR.explanation=Es posible que al cliente de OpenID Connect le falte informaci\u00f3n, que la solicitud al punto final de se\u00f1al haya fallado o que se haya producido otro error al procesar la respuesta del punto final de se\u00f1al.
 TOKEN_REQUEST_ERROR.useraction=Consulte el error en el mensaje para obtener m\u00e1s informaci\u00f3n. Verifique que el proveedor de OpenID Connect ha devuelto un c\u00f3digo en la respuesta de autenticaci\u00f3n.
 
-# Do not translate "token_endpoint"
-TOKEN_ENDPOINT_MISSING=CWWKS2417E: El cliente de OpenID Connect {0} no puede encontrar un valor para el punto final de se\u00f1al del proveedor de OpenID Connect.
-TOKEN_ENDPOINT_MISSING.explanation=Falta el URL de punto final de se\u00f1al en los metadatos del proveedor de OpenID Connect y la configuraci\u00f3n del cliente de OpenID Connect.
-TOKEN_ENDPOINT_MISSING.useraction=Verifique que los metadatos del proveedor de OpenID Connect contienen un valor token_endpoint. Tambi\u00e9n se puede especificar un punto final de se\u00f1al en la configuraci\u00f3n del cliente de OpenID Connect.
+#
+# CWWKS2417E removed and available
+#
 
 USERINFO_RESPONSE_ERROR=CWWKS2418W: El cliente de OpenID Connect ha encontrado el siguiente error al enviar una solicitud al URL de informaci\u00f3n de usuario [{0}] del proveedor de OpenID Connect: {1}
 USERINFO_RESPONSE_ERROR.explanation=Es posible que la respuesta de informaci\u00f3n de usuario del proveedor de OpenID Connect tenga un formato incorrecto o que falte informaci\u00f3n, o que el proveedor de OpenID Connect haya encontrado un error al manejar la solicitud.

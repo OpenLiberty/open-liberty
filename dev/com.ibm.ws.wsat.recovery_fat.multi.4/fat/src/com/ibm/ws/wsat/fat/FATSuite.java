@@ -14,7 +14,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -23,10 +22,11 @@ import componenttest.rules.repeater.RepeatTests;
 	MultiRecoveryTest4.class,
 })
 public class FATSuite {
+
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT())
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly())
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT().useCachedServers())
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().useCachedServers())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().useCachedServers())
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().useCachedServers())
                     ;
 }

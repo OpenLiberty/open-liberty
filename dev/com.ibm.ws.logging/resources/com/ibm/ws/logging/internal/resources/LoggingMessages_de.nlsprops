@@ -168,6 +168,10 @@ JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Der Headername fehlt f\u00fc
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=Die JSON-Protokollierung verwendet das Attribut logFormat aus accessLogging, um auszuw\u00e4hlen, welche http_access.log-Nachrichtenfelder einbezogen werden sollen. Ein Headername muss angegeben werden, wenn die Felder %i oder %o im accessLogging logFormat-Attribut verwendet werden.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.useraction=Geben Sie einen Headernamen f\u00fcr das Feld im Attribut accessLogging logFormat an.
 
+FFDC_FILE_DELETION=TRAS3014I: {0} FFDC-Dateien wurden basierend auf dem konfigurierten maxFfdcAge-Wert gel\u00f6scht.
+FFDC_FILE_DELETION.explanation=Die Anzahl der FFDC-Dateien, die w\u00e4hrend einer FFDC-Bereinigung gel\u00f6scht wurden.
+FFDC_FILE_DELETION.useraction=Es ist keine Aktion erforderlich.
+
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

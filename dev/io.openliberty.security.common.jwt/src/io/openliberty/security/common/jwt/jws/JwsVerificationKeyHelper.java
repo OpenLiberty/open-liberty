@@ -90,8 +90,8 @@ public class JwsVerificationKeyHelper {
         if (sharedSecret == null || sharedSecret.isEmpty()) {
             throw new SharedKeyMissingException();
         }
-        String clientSecretProtectedString = new String(sharedSecret.getChars());
-        return new HmacKey(clientSecretProtectedString.getBytes("UTF-8"));
+        String sharedSecretProtectedString = new String(sharedSecret.getChars());
+        return new HmacKey(sharedSecretProtectedString.getBytes("UTF-8"));
     }
 
     Key retrievePublicKey(JsonWebStructure jws, String signatureAlgorithmFromJws) throws IOException, Exception {

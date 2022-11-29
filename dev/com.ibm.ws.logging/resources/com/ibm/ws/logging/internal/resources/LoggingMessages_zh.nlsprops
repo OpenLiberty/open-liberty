@@ -168,6 +168,10 @@ JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: \u4e00\u4e2a\u6216\u591a\u4e
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=JSON \u65e5\u5fd7\u8bb0\u5f55\u4f7f\u7528 accessLogging \u4e2d\u7684 logFormat \u5c5e\u6027\u6765\u9009\u62e9\u6240\u8981\u5305\u62ec\u7684 http_access.log \u6d88\u606f\u5b57\u6bb5\u3002\u5728 accessLogging logFormat \u5c5e\u6027\u4e2d\u4f7f\u7528 %i \u6216 %o \u5b57\u6bb5\u65f6\uff0c\u5fc5\u987b\u63d0\u4f9b\u6807\u5934\u540d\u79f0\u3002
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.useraction=\u8bf7\u4e3a accessLogging logFormat \u5c5e\u6027\u4e2d\u7684\u5b57\u6bb5\u63d0\u4f9b\u6807\u5934\u540d\u79f0\u3002
 
+FFDC_FILE_DELETION=TRAS3014I: \u5df2\u6839\u636e\u6240\u914d\u7f6e\u7684 maxFfdcAge \u503c\u5220\u9664\u4e86 {0} \u4e2a FFDC \u6587\u4ef6\u3002
+FFDC_FILE_DELETION.explanation=\u5728 FFDC \u6e05\u9664\u671f\u95f4\u5220\u9664\u7684 FFDC \u6587\u4ef6\u6570\u3002
+FFDC_FILE_DELETION.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

@@ -168,6 +168,10 @@ JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Legal\u00e1bb egy accessLogg
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=A JSON napl\u00f3z\u00e1s a logFormat attrib\u00fatumot haszn\u00e1lja az accessLogging sor\u00e1n, amikor kiv\u00e1lasztja a szerepeltetett http_access.log \u00fczenetmez\u0151ket. A(z) %i vagy %o mez\u0151k haszn\u00e1latakor az accessLogging logFormat attrib\u00fatumban meg kell adni egy fejl\u00e9cnevet.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.useraction=Adjon meg a mez\u0151h\u00f6z egy fejl\u00e9cnevet az accessLogging logFormat attrib\u00fatumban.
 
+FFDC_FILE_DELETION=TRAS3014I: T\u00f6r\u00f6lt {0} FFDC f\u00e1jlok a be\u00e1ll\u00edtott maxFfdcAge \u00e9rt\u00e9k alapj\u00e1n.
+FFDC_FILE_DELETION.explanation=Az FFDC ki\u00fcr\u00edt\u00e9s sor\u00e1n t\u00f6r\u00f6lt FFDC f\u00e1jlok sz\u00e1ma.
+FFDC_FILE_DELETION.useraction=Nem kell semmit tennie.
+
 # Note: no 9999 message kept here because saving footprint space is more important
 
 # End of file

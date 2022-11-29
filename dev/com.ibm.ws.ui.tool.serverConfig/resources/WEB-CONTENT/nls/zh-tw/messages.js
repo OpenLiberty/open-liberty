@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 IBM Corporation and others.
+ * Copyright (c) 2016, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -173,7 +173,7 @@ var editorMessages = {
 "SELECT_FEATURE_TO_VIEW_DESCRIPTION": "選取功能，以檢視其說明。",
 "SUPPORT_MESSAGE" : "無論是 Node.js 伺服器或 Docker 儲存器中的伺服器，都無法透過群體控制器來存取「伺服器配置」。",
 "NO_ROLE_MESSAGE": "使用者的角色不具有執行配置變更的權限。將提供唯讀模式的檔案。",
-	
+    
 // Messages for Collective Debugging
 "REQUIRED_ACTIONS" : "群體成員的必要動作：",
 "RUN_UPDATE_HOST" : "執行 'collective updateHost' 或 'collective registerHost'，並將 '--hostWritePath' 指定成 rpcUser 具備寫入權的路徑。同時必須提供有效的主機認證。",
@@ -190,5 +190,4 @@ var editorMessages = {
 "LINK_JAVA" : "在 /usr/bin 中建立指向 JAVA 的鏈結。例如 /usr/bin/java -> [pathToJAVA]",
 "JAVA_ON_PATH" : "新增 JAVA 至 PATH 環境變數。在 Linux 上，如果要匯出 PATH，應在 .bashrc 中完成。", 
 "MORE_INFORMATION" : "如需相關資訊，請參閱："
-
 };

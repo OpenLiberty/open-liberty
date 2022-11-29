@@ -21,6 +21,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.webcontainer.security.test.servlets.BasicAuthClient;
 import com.ibm.ws.webcontainer.security.test.servlets.ServletClient;
 
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -148,7 +149,7 @@ public class EJBAnnTestBase {
         /*
          * EE9 removed getCallerIdentity() from SessionContext.
          */
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
             verifyResponseWithoutDeprecated(response, getCallerPrincipal, isCallerInRoleManager, isCallerInRoleEmployee);
         } else {
             mustContain(response, getCallerPrincipal);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,7 @@ import org.apache.http.util.EntityUtils;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
@@ -217,7 +218,10 @@ public class JASPITestBase {
         verifyServerUpdated(server);
         assertNotNull("The JASPI user feature did not report it was ready",
                       server.waitForStringInLogUsingMark(MSG_JASPI_PROVIDER_ACTIVATED));
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEE10Action.isActive()) {
+            assertNotNull("The feature manager did not report the JASPI provider is included in features.",
+                          server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-3.0"));
+        } else if (JakartaEE9Action.isActive()) {
             assertNotNull("The feature manager did not report the JASPI provider is included in features.",
                           server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-2.0"));
         } else {
@@ -247,7 +251,10 @@ public class JASPITestBase {
         verifyServerStarted(server);
         assertNotNull("The JASPI user feature did not report it was ready",
                       server.waitForStringInLogUsingMark(MSG_JASPI_PROVIDER_ACTIVATED));
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEE10Action.isActive()) {
+            assertNotNull("The feature manager did not report the JASPI provider is included in features.",
+                          server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-3.0"));
+        } else if (JakartaEE9Action.isActive()) {
             assertNotNull("The feature manager did not report the JASPI provider is included in features.",
                           server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-2.0"));
         } else {
@@ -294,7 +301,7 @@ public class JASPITestBase {
      * Process the response from an http invocation, such as validating
      * the status code, extracting the response entity...
      *
-     * @param response the HttpResponse
+     * @param response           the HttpResponse
      * @param expectedStatusCode
      * @return The response entity text, or null if request failed
      * @throws IOException
@@ -319,10 +326,10 @@ public class JASPITestBase {
      * Send HttpClient get request to the given URL, ensure that the user is redirected to the form login page
      * and that the JASPI provider was or was not called, as expected.
      *
-     * @param httpclient HttpClient object to execute request
-     * @param url URL for request, should be protected and redirect to form login page
+     * @param httpclient   HttpClient object to execute request
+     * @param url          URL for request, should be protected and redirect to form login page
      * @param providerName Name of JASPI provider that should authenticate the request, null if JASPI not enabled for request
-     * @param formTitle Name of Login form (defaults to Form Login Page if not specified)
+     * @param formTitle    Name of Login form (defaults to Form Login Page if not specified)
      * @throws Exception
      */
 
@@ -364,9 +371,9 @@ public class JASPITestBase {
      * Post HttpClient request to execute a form login on the given page, using the given username and password
      *
      * @param httpclient HttpClient object to execute login
-     * @param url URL for login page
-     * @param username User name
-     * @param password User password
+     * @param url        URL for login page
+     * @param username   User name
+     * @param password   User password
      * @return URL of page redirected to after the login
      * @throws Exception
      */

@@ -89,6 +89,15 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         return value;
     }
 
+    public String getResponseType() {
+
+        String value = Constants.CODE_FLOW;
+        if (config.containsKey(Constants.RESPONSE_TYPE)) {
+            value = getStringValue(Constants.RESPONSE_TYPE);
+        }
+        return value;
+    }
+
     public boolean getTokenAutoRefreshExpression() {
 
         boolean value = false;
@@ -176,6 +185,17 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         }
 
         return value;
+    }
+
+    public String getIdTokenSigningAlgorithmsSupported() {
+
+        String value = "RS256"; // spec default is RS256, OIDC default is HS256
+        if (config.containsKey(Constants.IDTOKENSIGNINGALGORITHMSSUPPORTED)) {
+            value = getStringValue(Constants.IDTOKENSIGNINGALGORITHMSSUPPORTED);
+        }
+
+        return value;
+
     }
 
     public String getLogoutRedirectURI() {

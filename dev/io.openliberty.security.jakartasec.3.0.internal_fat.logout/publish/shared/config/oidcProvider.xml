@@ -12,6 +12,9 @@
 
 	<openidConnectProvider
 		id="OP0"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
 		oauthProviderRef="OAuth0" />
 
 	<oauthProvider
@@ -66,6 +69,9 @@ https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_31/Callback"
 		 		 
 	<openidConnectProvider
 		id="OP1"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
 		idTokenLifetime="15s"
 		oauthProviderRef="OAuth1" />
 
@@ -121,6 +127,9 @@ https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_31/Callback"
 
 	<openidConnectProvider
 		id="OP2"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
 		oauthProviderRef="OAuth2" />
 
 	<oauthProvider
@@ -177,6 +186,9 @@ https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_31/Callback"
 
 	<openidConnectProvider
 		id="OP3"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
 		idTokenLifetime="15s"
 		oauthProviderRef="OAuth3" />
 
@@ -244,6 +256,9 @@ https://localhost:${bvt.prop.security_2_HTTP_default.secure}/GoodRedirectNotifyP
 <!--
 	<openidConnectProvider
 		id="OP4"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
 		idTokenLifetime="15s"
 		oauthProviderRef="OAuth4" />
 
