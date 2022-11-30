@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2014 IBM Corporation and others.
+ * Copyright (c) 2006, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
 import com.ibm.ws.ras.instrument.internal.introspect.InjectedTraceAnnotationVisitor;
+import com.ibm.ws.ras.instrument.internal.main.ComputeRequiredException;
 import com.ibm.ws.ras.instrument.internal.model.ClassInfo;
 import com.ibm.ws.ras.instrument.internal.model.MethodInfo;
 
@@ -101,6 +102,8 @@ public abstract class AbstractRasMethodAdapter<C extends AbstractRasClassAdapter
      */
     private final C classAdapter;
 
+    private final boolean throwComputeFrames;
+    
     /**
      * The trace configuration and introspection information at the method level.
      */
@@ -229,6 +232,7 @@ public abstract class AbstractRasMethodAdapter<C extends AbstractRasClassAdapter
         super(visitor);
 
         this.classAdapter = classAdapter;
+        this.throwComputeFrames = classAdapter.getThrowComputeFrames();
         this.visitFramesAfterCallbacks = visitFrames;
         this.methodName = methodName;
         this.isStatic = (access & ACC_STATIC) != 0;
@@ -911,7 +915,6 @@ public abstract class AbstractRasMethodAdapter<C extends AbstractRasClassAdapter
             super.visitVarInsn(opcode, var);
         }
 
-        // Constructor processing
         if (waitingForSuper) {
             switch (opcode) {
                 case ALOAD:
@@ -925,15 +928,28 @@ public abstract class AbstractRasMethodAdapter<C extends AbstractRasClassAdapter
                 case LLOAD:
                     push(OTHER, 2);
                     break;
+                    
+               	// Storing to a local variable invalidates
+               	// the trace injection assumption.  Exit the
+               	// current trace injection and change from
+               	// COMPUTE_MAXS to COMPUTE_FRAMES.
+
                 case ASTORE:
                 case ISTORE:
                 case FSTORE:
+                	if (throwComputeFrames) {
+                		throw new ComputeRequiredException();
+                	}
                     pop(1);
                     break;
                 case DSTORE:
                 case LSTORE:
+                	if (throwComputeFrames) {
+                		throw new ComputeRequiredException();
+                	}                	
                     pop(2);
                     break;
+
                 case RET:
                     break;
             }
