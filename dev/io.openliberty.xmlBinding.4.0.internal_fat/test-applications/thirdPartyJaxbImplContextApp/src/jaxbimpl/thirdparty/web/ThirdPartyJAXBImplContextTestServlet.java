@@ -11,6 +11,7 @@
 package jaxbimpl.thirdparty.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
@@ -205,8 +206,9 @@ public class ThirdPartyJAXBImplContextTestServlet extends FATServlet {
 
         thirdPartyPropertyMapContext.generateSchema(ssor);
         String schemaString = ((StringSchemaOutputResolver) ssor).getSchema();
-        assertTrue("Expected generated schema, " + schemaString + " to equal " + JAXBXMLSchemaConstants.EXPECTED_MOXY_SCHEMA_VALUE,
-                   schemaString.contains(JAXBXMLSchemaConstants.EXPECTED_MOXY_SCHEMA_VALUE));
+        String notFoundString = JAXBContextUtils.searchArrayInString(schemaString, JAXBXMLSchemaConstants.EXPECTED_SCHEMA_CONTENTS);
+
+        assertNull(notFoundString + " is expected to be in generated schema: " + schemaString, notFoundString);
     }
 
     /*
@@ -222,7 +224,9 @@ public class ThirdPartyJAXBImplContextTestServlet extends FATServlet {
 
         thirdPartySystemPropertyContext.generateSchema(ssor);
         String schemaString = ((StringSchemaOutputResolver) ssor).getSchema();
-        assertTrue("Expected generated schema, " + schemaString + " to equal " + JAXBXMLSchemaConstants.EXPECTED_MOXY_SCHEMA_VALUE,
-                   schemaString.contains(JAXBXMLSchemaConstants.EXPECTED_MOXY_SCHEMA_VALUE));
+        String notFoundString = JAXBContextUtils.searchArrayInString(schemaString, JAXBXMLSchemaConstants.EXPECTED_SCHEMA_CONTENTS);
+
+        assertNull(notFoundString + " is expected to be in generated schema: " + schemaString, notFoundString);
     }
+
 }
