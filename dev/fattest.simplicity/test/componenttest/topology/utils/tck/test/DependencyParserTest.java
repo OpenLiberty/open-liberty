@@ -33,41 +33,16 @@ import componenttest.topology.utils.tck.TCKUtilities;
  */
 public class DependencyParserTest {
 
-//    public static Pattern getTCKPatternMatcher(Type type) {
-//        //org.eclipse.microprofile.config:microprofile-config-tck:jar:3.0.2:compile:/Users/tevans/.m2/repository/org/eclipse/microprofile/config/microprofile-config-tck/3.0.2/microprofile-config-tck-3.0.2.jar
-//        //jakarta.json:jakarta.json-tck-tests:jar:2.1.0:compile:/Users/tevans/.m2/repository/jakarta/json/jakarta.json-tck-tests/2.1.0/jakarta.json-tck-tests-2.1.0.jar
-//
-//        //group:artifact:version:type:scope:path
-//        String basicRegEx = "[a-zA-Z0-9\\.\\-_]";
-//        String groupRegEx = basicRegEx + "*" + type.toString().toLowerCase() + basicRegEx + "+";
-//        String artifactRegEx = basicRegEx + "+\\-tck|" + basicRegEx + "+\\-tck\\-tests";
-//        String versionRegEx = basicRegEx + "+";
-//        String typeRegEx = "jar";
-//        String scopeRegEx = "compile";
-//        String pathRegEx = ".+\\.jar";
-//
-//        String regex = "(" + groupRegEx + "):(" + artifactRegEx + "):" + typeRegEx + ":("
-//                       + versionRegEx + "):" + scopeRegEx + ":(" + pathRegEx + ")";
-//
-////        String regex = "(" + groupRegEx + "):(" + artifactRegEx + "):" + typeRegEx + ":("
-////                       + versionRegEx + "):" + scopeRegEx + ":(" + pathRegEx + ")";
-//
-//        Pattern tckPattern = Pattern.compile(regex, Pattern.DOTALL);
-//
-//        return tckPattern;
-//    }
-
-    //group:artifact:version:type:scope:path
     @Test
     public void testMPTCKPatternMatcher() {
         String microprofile = "11:52:57,783 [INFO]    org.eclipse.microprofile.health:microprofile-health-tck:jar:1.0:compile:/Users/tevans/.m2/repository/org/eclipse/microprofile/health/microprofile-health-tck/1.0/microprofile-health-tck-1.0.jar";
         Pattern tckPattern = TCKUtilities.getTCKPatternMatcher(Type.MICROPROFILE);
         Matcher nameMatcher = tckPattern.matcher(microprofile);
         if (nameMatcher.find()) {
-            String group = nameMatcher.group(1);
-            String artifact = nameMatcher.group(2);
-            String version = nameMatcher.group(3);
-            String jarPath = nameMatcher.group(4);
+            String group = nameMatcher.group("group");
+            String artifact = nameMatcher.group("artifact");
+            String version = nameMatcher.group("version");
+            String jarPath = nameMatcher.group("path");
 
             System.out.println(group + ":" + artifact + ":" + version + "=" + jarPath);
 
@@ -80,17 +55,16 @@ public class DependencyParserTest {
         }
     }
 
-    //group:artifact:version:type:scope:path
     @Test
     public void testWindowsMPTCKPatternMatcher() {
         String microprofile = "23:09:37,026 [INFO]    org.eclipse.microprofile.health:microprofile-health-tck:jar:1.0:compile:C:\\Users\\jazz_build\\Build\\jazz-build-engines\\wasrtc\\EBCPROD\\build\\dev\\com.ibm.ws.microprofile.health.1.0_fat_tck\\autoFVT\\publish\\tckRunner\\apache-maven-3.8.6\\repo\\org\\eclipse\\microprofile\\health\\microprofile-health-tck\\1.0\\microprofile-health-tck-1.0.jar";
         Pattern tckPattern = TCKUtilities.getTCKPatternMatcher(Type.MICROPROFILE);
         Matcher nameMatcher = tckPattern.matcher(microprofile);
         if (nameMatcher.find()) {
-            String group = nameMatcher.group(1);
-            String artifact = nameMatcher.group(2);
-            String version = nameMatcher.group(3);
-            String jarPath = nameMatcher.group(4);
+            String group = nameMatcher.group("group");
+            String artifact = nameMatcher.group("artifact");
+            String version = nameMatcher.group("version");
+            String jarPath = nameMatcher.group("path");
 
             System.out.println(group + ":" + artifact + ":" + version + "=" + jarPath);
 
@@ -104,7 +78,6 @@ public class DependencyParserTest {
         }
     }
 
-    //group:artifact:version:type:scope:path
     @Test
     public void testBadMPTCKPatternMatcher() {
         String microprofile = "11:52:57,784 [INFO]    org.eclipse.microprofile.health:microprofile-health-api:jar:1.0:system:/Users/tevans/Liberty/openLibertyGit/open-liberty/dev/build.image/wlp/dev/api/stable/com.ibm.websphere.org.eclipse.microprofile.health.1.0_1.0.72.jar";
@@ -115,17 +88,16 @@ public class DependencyParserTest {
         }
     }
 
-    //group:artifact:version:type:scope:path
     @Test
     public void testJakartaTCKPatternMatcher() {
         String jakarta = "11:52:57,783 [INFO]    jakarta.json:jakarta.json-tck-tests:jar:2.1.0:compile:/Users/tevans/.m2/repository/jakarta/json/jakarta.json-tck-tests/2.1.0/jakarta.json-tck-tests-2.1.0.jar";
         Pattern tckPattern = TCKUtilities.getTCKPatternMatcher(Type.JAKARTA);
         Matcher nameMatcher = tckPattern.matcher(jakarta);
         if (nameMatcher.find()) {
-            String group = nameMatcher.group(1);
-            String artifact = nameMatcher.group(2);
-            String version = nameMatcher.group(3);
-            String jarPath = nameMatcher.group(4);
+            String group = nameMatcher.group("group");
+            String artifact = nameMatcher.group("artifact");
+            String version = nameMatcher.group("version");
+            String jarPath = nameMatcher.group("path");
 
             System.out.println(group + ":" + artifact + ":" + version + "=" + jarPath);
 
@@ -133,6 +105,28 @@ public class DependencyParserTest {
             assertEquals("jakarta.json-tck-tests", artifact);
             assertEquals("2.1.0", version);
             assertEquals("/Users/tevans/.m2/repository/jakarta/json/jakarta.json-tck-tests/2.1.0/jakarta.json-tck-tests-2.1.0.jar", jarPath);
+        } else {
+            fail("Pattern did not match");
+        }
+    }
+
+    @Test
+    public void testJakartaTCKPatternMatcher2() {
+        String jakarta = "13:38:19,095 [INFO]    jakarta.json.bind:jakarta.json.bind-tck:jar:3.0.0:test:/Users/tevans/.m2/repository/jakarta/json/bind/jakarta.json.bind-tck/3.0.0/jakarta.json.bind-tck-3.0.0.jar";
+        Pattern tckPattern = TCKUtilities.getTCKPatternMatcher(Type.JAKARTA);
+        Matcher nameMatcher = tckPattern.matcher(jakarta);
+        if (nameMatcher.find()) {
+            String group = nameMatcher.group("group");
+            String artifact = nameMatcher.group("artifact");
+            String version = nameMatcher.group("version");
+            String jarPath = nameMatcher.group("path");
+
+            System.out.println(group + ":" + artifact + ":" + version + "=" + jarPath);
+
+            assertEquals("jakarta.json.bind", group);
+            assertEquals("jakarta.json.bind-tck", artifact);
+            assertEquals("3.0.0", version);
+            assertEquals("/Users/tevans/.m2/repository/jakarta/json/bind/jakarta.json.bind-tck/3.0.0/jakarta.json.bind-tck-3.0.0.jar", jarPath);
         } else {
             fail("Pattern did not match");
         }

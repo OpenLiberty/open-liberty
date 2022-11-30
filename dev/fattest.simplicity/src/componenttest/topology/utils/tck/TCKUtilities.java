@@ -139,26 +139,35 @@ public class TCKUtilities {
         }
     }
 
+    //org.eclipse.microprofile.config:microprofile-config-tck:jar:3.0.2:compile:/Users/tevans/.m2/repository/org/eclipse/microprofile/config/microprofile-config-tck/3.0.2/microprofile-config-tck-3.0.2.jar
+    //jakarta.json:jakarta.json-tck-tests:jar:2.1.0:compile:/Users/tevans/.m2/repository/jakarta/json/jakarta.json-tck-tests/2.1.0/jakarta.json-tck-tests-2.1.0.jar
+
+    private static final String basicRegEx = "[a-zA-Z0-9\\.\\-_]";
+    private static final String mpGroupRegEx = basicRegEx + "*microprofile" + basicRegEx + "+";
+    private static final String jakartaGroupRegEx = basicRegEx + "*jakarta" + basicRegEx + "+";
+    private static final String artifactRegEx = basicRegEx + "+\\-tck|" + basicRegEx + "+\\-tck\\-tests";
+    private static final String versionRegEx = basicRegEx + "+";
+    private static final String typeRegEx = "jar";
+    private static final String scopeRegEx = "compile|test";
+    private static final String pathRegEx = ".+\\.jar";
+
+    //(group):(artifact):(type):(version):(scope):(path)
+    private static final String mpRegex = "(?<group>" + mpGroupRegEx + "):(?<artifact>" + artifactRegEx + "):(?<type>" + typeRegEx + "):(?<version>"
+                                          + versionRegEx + "):(?<scope>" + scopeRegEx + "):(?<path>" + pathRegEx + ")";
+
+    private static final String jakartaRegex = "(?<group>" + jakartaGroupRegEx + "):(?<artifact>" + artifactRegEx + "):(?<type>" + typeRegEx + "):(?<version>"
+                                               + versionRegEx + "):(?<scope>" + scopeRegEx + "):(?<path>" + pathRegEx + ")";
+
+    public static final Pattern MP_TCK_PATTERN = Pattern.compile(mpRegex, Pattern.DOTALL);
+    public static final Pattern JAKARTA_TCK_PATTERN = Pattern.compile(jakartaRegex, Pattern.DOTALL);
+
     public static Pattern getTCKPatternMatcher(Type type) {
-        //org.eclipse.microprofile.config:microprofile-config-tck:jar:3.0.2:compile:/Users/tevans/.m2/repository/org/eclipse/microprofile/config/microprofile-config-tck/3.0.2/microprofile-config-tck-3.0.2.jar
-        //jakarta.json:jakarta.json-tck-tests:jar:2.1.0:compile:/Users/tevans/.m2/repository/jakarta/json/jakarta.json-tck-tests/2.1.0/jakarta.json-tck-tests-2.1.0.jar
-
-        //group:artifact:version:type:scope:path
-        //group:artifact:version:type:scope:path
-        String basicRegEx = "[a-zA-Z0-9\\.\\-_]";
-        String groupRegEx = basicRegEx + "*" + type.toString().toLowerCase() + basicRegEx + "+";
-        String artifactRegEx = basicRegEx + "+\\-tck|" + basicRegEx + "+\\-tck\\-tests";
-        String versionRegEx = basicRegEx + "+";
-        String typeRegEx = "jar";
-        String scopeRegEx = "compile";
-        String pathRegEx = ".+\\.jar";
-
-        String regex = "(" + groupRegEx + "):(" + artifactRegEx + "):" + typeRegEx + ":("
-                       + versionRegEx + "):" + scopeRegEx + ":(" + pathRegEx + ")";
-
-        Pattern tckPattern = Pattern.compile(regex, Pattern.DOTALL);
-
-        return tckPattern;
+        if (type == Type.MICROPROFILE) {
+            return MP_TCK_PATTERN;
+        } else if (type == Type.JAKARTA) {
+            return JAKARTA_TCK_PATTERN;
+        }
+        throw new IllegalArgumentException("Unknown type: " + type);
     }
 
     public static TCKJarInfo getTCKJarInfo(Type type, String[] dependencyOutput) {
@@ -181,10 +190,10 @@ public class TCKUtilities {
                 Matcher nameMatcher = tckPattern.matcher(sCurrentLine);
                 if (nameMatcher.find()) {
                     tckJar = new TCKJarInfo();
-                    tckJar.group = nameMatcher.group(1);
-                    tckJar.artifact = nameMatcher.group(2);
-                    tckJar.version = nameMatcher.group(3);
-                    tckJar.jarPath = nameMatcher.group(4);
+                    tckJar.group = nameMatcher.group("group");
+                    tckJar.artifact = nameMatcher.group("artifact");
+                    tckJar.version = nameMatcher.group("version");
+                    tckJar.jarPath = nameMatcher.group("path");
                     Log.info(c, "getTCKJarInfo", "Group: " + tckJar.group);
                     Log.info(c, "getTCKJarInfo", "Artifact: " + tckJar.artifact);
                     Log.info(c, "getTCKJarInfo", "Version: " + tckJar.version);
