@@ -28,6 +28,7 @@ src: src, resources
 
 app-resources= \
   META-INF/services/jakarta.ws.rs.client.ClientBuilder | \
+  META-INF/services/jakarta.ws.rs.core.EntityPart$Builder | \
   META-INF/services/jakarta.ws.rs.sse.SseEventSource\$Builder | \
   META-INF/services/jakarta.ws.rs.sse.SseEventSource.Builder | \
   META-INF/services/jakarta.ws.rs.ext.MessageBodyReader | \

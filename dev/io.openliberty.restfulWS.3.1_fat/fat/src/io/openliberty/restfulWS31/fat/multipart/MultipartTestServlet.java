@@ -126,44 +126,40 @@ public class MultipartTestServlet extends FATServlet {
     }
     
     private void testEntityPartMultipartRequest(String path, boolean useDefault) {
-        List<EntityPart> parts = new ArrayList<>();
 
+        List<EntityPart> parts = null;
         try {
+             File file = new File("./person.xml");
             if (useDefault) {
-                ResteasyEntityPartBuilder builder = new ResteasyEntityPartBuilder("fileid");
-                parts.add(builder.content(new ByteArrayInputStream("person1234".getBytes()))
-                                .build());
-
-                builder = new ResteasyEntityPartBuilder("description");
-                parts.add(builder.content(new ByteArrayInputStream("XML file about person1234".getBytes()))
-                                .build());
-
-                File file = new File("./person.xml");
-                builder = new ResteasyEntityPartBuilder("thefile");
-                parts.add(builder.fileName("person.xml")
+                parts = List.of(
+                        EntityPart.withName("fileid")
+                                .content(new ByteArrayInputStream("person1234".getBytes()))
+                                .build(),
+                        EntityPart.withName("description")
+                                .content(new ByteArrayInputStream("XML file about person1234".getBytes()))
+                                .build(),
+                        EntityPart.withName("thefile")
                                 .content("person.xml",new FileInputStream(file))
-                                .build());
-                
+                                .build()
+                 );               
                 
             } else {
-                ResteasyEntityPartBuilder builder = new ResteasyEntityPartBuilder("fileid");
-                parts.add(builder.content(new ByteArrayInputStream("person1234".getBytes()))
+                parts = List.of(
+                        EntityPart.withName("fileid")
+                                .content(new ByteArrayInputStream("person1234".getBytes()))
                                 .mediaType(MediaType.TEXT_PLAIN)
-                                .build());
-
-                builder = new ResteasyEntityPartBuilder("description");
-                parts.add(builder.content(new ByteArrayInputStream("XML file about person1234".getBytes()))
+                                .build(),
+                        EntityPart.withName("description")
+                                .content(new ByteArrayInputStream("XML file about person1234".getBytes()))
                                 .mediaType(MediaType.WILDCARD)
-                                .build());
-
-                File file = new File("./person.xml");
-                builder = new ResteasyEntityPartBuilder("thefile");
-                parts.add(builder.fileName("person.xml")
+                                .build(),
+                        EntityPart.withName("thefile")
                                 .content("person.xml",new FileInputStream(file))
                                 .mediaType(MediaType.APPLICATION_XML_TYPE)
-                                .build());
-                
+                                .build()
+                 );
             }
+
         } catch (IOException e) {
             e.printStackTrace();
             fail("Exception caught: " + e);
