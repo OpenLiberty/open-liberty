@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2018 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,121 +10,55 @@
  *******************************************************************************/
 package com.ibm.ws.sib.api.jms.service;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.Map;
+import static java.security.AccessController.doPrivileged;
+import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.component.ComponentContext;
+import java.security.PrivilegedAction;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.SIDestinationAddressFactory;
-import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.jca.rar.ResourceAdapterBundleService;
+import com.ibm.ws.messaging.lifecycle.SingletonsReady;
 import com.ibm.ws.sib.common.service.CommonServiceFacade;
 import com.ibm.ws.sib.utils.TraceGroups;
 import com.ibm.ws.sib.utils.ras.SibTr;
 import com.ibm.wsspi.classloading.ClassLoaderIdentity;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
-import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.sib.core.SelectionCriteriaFactory;
 
+/**
+ * This component is the point of entry for JCA into SIB messaging.
+ * Any dependencies that need to be in place for JCA to work should be expressed here.
+ */
+@Component (configurationPolicy = IGNORE, immediate = true, property= {"type=wasJms","service.vendor=IBM"})
 public class JmsServiceFacade implements ResourceAdapterBundleService {
 
-    /** RAS trace variable */
-    private static final TraceComponent tc = SibTr.register(
-                                                            JmsServiceFacade.class, TraceGroups.TRGRP_RA,
+    private static final TraceComponent tc = SibTr.register(JmsServiceFacade.class, TraceGroups.TRGRP_RA,
                                                             "com.ibm.ws.sib.ra.CWSIVMessages");
-    private static final String CLASS_NAME = "com.ibm.ws.sib.api.jms.JmsServiceFacade";
-
-    //Liberty COMMS change
-    //Obtain required factories through CommonServiceFacade
-    private static final AtomicServiceReference<CommonServiceFacade> _commonServiceFacadeRef = new AtomicServiceReference<CommonServiceFacade>("commonServiceFacade");
-
-    private static BundleContext bundleContext;
-
-    public void activate(ComponentContext context,
-                         Map<String, Object> properties, Map<String, Object> serviceList) {
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, CLASS_NAME + "activate", new Object[] { context,
-                                                                   properties });
-        }
-
-        bundleContext = context.getBundleContext();
-        try {
-
-            _commonServiceFacadeRef.activate(context);
-
-        } catch (Exception e) {
-
-            SibTr.exception(tc, e);
-            FFDCFilter.processException(e, CLASS_NAME, "1", this);
-        }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, CLASS_NAME + "activate");
-        }
+    
+    /**
+     * @param singletonsReady force this component to wait for SingletonsReady
+     */
+    @Activate
+    public JmsServiceFacade(@Reference(name = "singletonsReady") SingletonsReady singletonsReady) {
+    	if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.entry(tc, "<init>",singletonsReady);
+    	if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            SibTr.exit(tc, "<init>");
+    }
+    
+    public static final SIDestinationAddressFactory getSIDestinationAddressFactory() {      
+		return CommonServiceFacade.getJsDestinationAddressFactory();
     }
 
-    protected void modified(ComponentContext context,
-                            Map<String, Object> properties) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, CLASS_NAME + "modified", new Object[] { context,
-                                                                   properties });
-        }
-
-        try {
-
-            _commonServiceFacadeRef.activate(context);
-        } catch (Exception e) {
-            SibTr.exception(tc, e);
-            FFDCFilter
-                            .processException(e, this.getClass().getName(), "2", this);
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, CLASS_NAME + "modified");
-        }
-
-    }
-
-    protected void deactivate(ComponentContext context,
-                              Map<String, Object> properties) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, CLASS_NAME + "deactivate", new Object[] { context,
-                                                                     properties });
-        }
-
-        try {
-            _commonServiceFacadeRef.deactivate(context);
-        } catch (Exception e) {
-            SibTr.exception(tc, e);
-            FFDCFilter.processException(e, CLASS_NAME, "3", this);
-        }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, CLASS_NAME + "deactivate");
-        }
-    }
-
-    //Liberty COMMS change
-    //Obtain required factories through CommonServiceFacade
-    protected void setCommonServiceFacade(ServiceReference<CommonServiceFacade> ref) {
-        _commonServiceFacadeRef.setReference(ref);
-    }
-
-    protected void unsetCommonServiceFacade(ServiceReference<CommonServiceFacade> ref) {
-        _commonServiceFacadeRef.unsetReference(ref);
-    }
-
-    public static SIDestinationAddressFactory getSIDestinationAddressFactory()
-    {
-        return _commonServiceFacadeRef.getService().getJsDestinationAddressFactory();
-    }
-
-    public static SelectionCriteriaFactory getSelectionCriteriaFactory()
-    {
-        return _commonServiceFacadeRef.getService().getSelectionCriteriaFactory();
+    public static final SelectionCriteriaFactory getSelectionCriteriaFactory() {     
+		return CommonServiceFacade.getSelectionCriteriaFactory();
     }
 
     @Override
@@ -136,14 +70,9 @@ public class JmsServiceFacade implements ResourceAdapterBundleService {
      * Returns true if environment is client container.
      * This has to be only used by JMS 20 module (so it is safe .. as no chance of NPE..i.e bundleContext is always initialized properly)
      */
-    public static boolean isClientContainer()
-    {
-        String processType = AccessController.doPrivileged(new PrivilegedAction<String>() {
-            @Override
-            public String run() {
-                return bundleContext.getProperty(WsLocationConstants.LOC_PROCESS_TYPE);
-            }
-        });
-        return Boolean.valueOf(WsLocationConstants.LOC_PROCESS_TYPE_CLIENT.equals(processType));
+    public static boolean isClientContainer() {
+    	Bundle bundle = FrameworkUtil.getBundle(JmsServiceFacade.class);
+        String processType = doPrivileged((PrivilegedAction<String>)() -> bundle.getBundleContext().getProperty(WsLocationConstants.LOC_PROCESS_TYPE));
+        return WsLocationConstants.LOC_PROCESS_TYPE_CLIENT.equals(processType);
     }
 }

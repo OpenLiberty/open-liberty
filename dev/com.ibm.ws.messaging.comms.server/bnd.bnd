@@ -28,23 +28,9 @@ com.ibm.ws.sib.jfapchannel.server,\
 com.ibm.ws.sib.jfapchannel.server.impl,\
 com.ibm.ws.sib.trm.attach
 
-Service-Component: \
-   com.ibm.ws.messaging.comms.server;\
-   implementation:=com.ibm.ws.jfap.inbound.channel.CommsServerServiceFacade;\
-   chfwBundle=com.ibm.websphere.channelfw.osgi.CHFWBundle;\
-   tcpOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
-   sslOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
-   sslSupport=com.ibm.websphere.channelfw.osgi.ChannelFactoryProvider;\
-   commonServiceFacade=com.ibm.ws.sib.common.service.CommonServiceFacade;\
-   commsClientService=com.ibm.ws.sib.comms.CommsClientServiceFacadeInterface;\
-   eventService=com.ibm.websphere.event.EventEngine;\
-   dynamic:='tcpOptions,sslOptions,sslSupport';\
-   optional:='commonServiceFacade,sslOptions,sslSupport';\
-   greedy:='tcpOptions,sslOptions,sslSupport';\
-   configuration-policy:=require;\
-   modified:=modified; \
-   immediate:=true;\
-   properties:='sslSupport.target=(type=SSLChannel), service.vendor=IBM'
+-dsannotations: \
+	com.ibm.ws.jfap.inbound.channel.CommsServerServiceFacade, \
+	com.ibm.ws.jfap.inbound.channel.InboundSecureFacetImpl
 
 instrument.disabled: true
 

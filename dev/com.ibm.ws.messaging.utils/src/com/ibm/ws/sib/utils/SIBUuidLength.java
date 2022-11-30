@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,10 @@
 package com.ibm.ws.sib.utils;
 
 import java.net.InetAddress;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.UUID;
@@ -158,7 +162,7 @@ abstract class SIBUuidLength {
     String rc;
 
     try {
-      rc = InetAddress.getLocalHost().getHostAddress();
+      rc = doPrivEx(() -> InetAddress.getLocalHost().getHostAddress());
     } catch (Exception e) {
       // No FFDC code needed
       rc = Long.valueOf(new Random().nextLong()).toString();
@@ -167,4 +171,5 @@ abstract class SIBUuidLength {
     return rc;
   }
 
+  private static <T> T doPrivEx(PrivilegedExceptionAction<T> action) throws Exception { return AccessController.doPrivileged(action); }
 }

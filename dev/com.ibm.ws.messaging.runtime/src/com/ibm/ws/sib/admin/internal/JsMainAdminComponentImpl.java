@@ -128,7 +128,8 @@ public class JsMainAdminComponentImpl implements JsMainAdminComponent, Applicati
     }
 
     public static JsAdminService getJsAdminService() {
-        return SingletonsReady.requireService(JsAdminService.class);
+        return SingletonsReady.findService(JsAdminService.class)
+                .orElse(null);
     }
 
     @Override

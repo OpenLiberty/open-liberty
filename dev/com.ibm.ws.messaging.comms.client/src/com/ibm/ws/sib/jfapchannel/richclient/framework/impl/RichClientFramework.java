@@ -81,9 +81,13 @@ public class RichClientFramework extends Framework
      */
     public RichClientFramework()
     {
+        this(ChannelFrameworkReference.getInstance());
+    }
+
+    public RichClientFramework(ChannelFramework framework) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, "<init>");
-        framework = ChannelFrameworkReference.getInstance();
+            SibTr.entry(this, tc, "<init>", framework);
+        this.framework = framework;
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(tc, "<init>");
     }

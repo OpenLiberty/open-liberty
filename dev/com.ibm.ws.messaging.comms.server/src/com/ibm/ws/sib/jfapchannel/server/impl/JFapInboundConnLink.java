@@ -22,6 +22,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.exception.SIException;
 import com.ibm.websphere.sib.exception.SIResourceException;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.sib.comms.server.GenericTransportAcceptListener;
 import com.ibm.ws.sib.jfapchannel.AcceptListener;
 import com.ibm.ws.sib.jfapchannel.Conversation;
 import com.ibm.ws.sib.jfapchannel.ConversationMetaData;
@@ -133,8 +134,7 @@ public class JFapInboundConnLink extends InboundApplicationLink implements MetaD
         if (acceptListener == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 SibTr.debug(this, tc, "null accept listener - obtaining one from factory");
-            acceptListener =
-                            ServerConnectionManagerImpl.getAcceptListenerFactory().manufactureAcceptListener();
+            acceptListener = new GenericTransportAcceptListener();
         }
 
         // begin F196678.10

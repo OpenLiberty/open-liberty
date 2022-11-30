@@ -180,8 +180,8 @@ public class CommsInboundChain implements ChainEventListener {
         Map<String, Object> sslOptions = (_isSecureChain) ? _commsServerFacade.getSslOptions() : null;
 
         final ChainConfiguration newConfig = new ChainConfiguration(
-                        (_isSecureChain) ? _commsServerFacade.getConfigured_wasJmsSSLPort() : _commsServerFacade.getConfigured_wasJmsPort(),
-                        _commsServerFacade.getConfigured_Host(),
+                        (_isSecureChain) ? _commsServerFacade.getSecurePort() : _commsServerFacade.getBasicPort(),
+                        _commsServerFacade.getHost(),
                         tcpOptions,
                         sslOptions);
 
@@ -290,7 +290,7 @@ public class CommsInboundChain implements ChainEventListener {
                 _isChainStarted = false;
                 jmsActivePort = -1;
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    SibTr.debug(tc, "JFAP chain InboundBasicMessaging failed in obtaining Listening port from ChannelFrameWork", e);
+                    SibTr.debug(tc, "JFAP chain " + _chainName +  " failed in obtaining Listening port from ChannelFrameWork", e);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                     SibTr.exit(tc, "update");
                 return;
@@ -298,7 +298,7 @@ public class CommsInboundChain implements ChainEventListener {
 
             //Chain successfully started and bound to port. Channel Framework logs to System.out. So just add to trace
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                SibTr.debug(tc, "JFAP chain InboundBasicMessaging successfully started and bound to port: ", jmsActivePort);
+                SibTr.debug(tc, "JFAP chain " + _chainName +  " successfully started and bound to port: ", jmsActivePort);
 
             _isChainStarted = true;
             newConfig.isValidConfig = true;
