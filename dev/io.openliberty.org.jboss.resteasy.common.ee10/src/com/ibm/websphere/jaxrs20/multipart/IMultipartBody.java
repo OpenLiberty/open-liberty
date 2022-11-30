@@ -16,7 +16,10 @@ import jakarta.ws.rs.core.MediaType;
 
 /**
  * This interface abstracts the IBM API for MultipartBody operations.
+ * 
+ * @deprecated Since restfulWS-3.1 - See jakarta.ws.rs.core.EntityPart instead.
  */
+@Deprecated
 public interface IMultipartBody {
 
     /**

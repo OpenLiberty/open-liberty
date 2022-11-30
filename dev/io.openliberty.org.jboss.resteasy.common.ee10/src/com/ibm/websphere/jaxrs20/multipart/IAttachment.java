@@ -16,7 +16,10 @@ import jakarta.ws.rs.core.MultivaluedMap;
 
 /**
  * This interface represents an attachment; generally a multipart part.
+ * 
+ * @deprecated Since restfulWS-3.1 - Use jakarta.ws.rs.core.EntityPart instead.
  */
+@Deprecated
 public interface IAttachment {
 
     /**
