@@ -10,14 +10,32 @@
  *******************************************************************************/
 package com.ibm.ws.sib.jfapchannel.impl;
 
+import static com.ibm.ws.sib.jfapchannel.impl.Connection.State.CLOSED;
+import static com.ibm.ws.sib.jfapchannel.impl.Connection.State.CLOSE_IN_PROGRESS;
+import static com.ibm.ws.sib.jfapchannel.impl.Connection.State.CLOSE_NOTIFYING_PEER_PENDING;
+import static com.ibm.ws.sib.jfapchannel.impl.Connection.State.CLOSE_PENDING;
+import static com.ibm.ws.sib.jfapchannel.impl.Connection.State.INVALIDATE_IN_PROGRESS;
+import static com.ibm.ws.sib.jfapchannel.impl.Connection.State.INVALIDATE_NOTIFYING_PEER_IN_PROGRESS;
+import static com.ibm.ws.sib.jfapchannel.impl.Connection.State.INVALIDATE_NOTIFYING_PEER_PENDING;
+import static com.ibm.ws.sib.jfapchannel.impl.Connection.State.INVALIDATE_PENDING;
+import static com.ibm.ws.sib.jfapchannel.impl.Connection.State.OPEN;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.unmodifiableSet;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import com.ibm.websphere.ras.TraceComponent;
+
 import com.ibm.ejs.ras.TraceNLS;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.sib.exception.SIErrorException;
 import com.ibm.websphere.sib.exception.SIException;
 import com.ibm.websphere.sib.exception.SIResourceException;
@@ -26,6 +44,7 @@ import com.ibm.ws.sib.jfapchannel.AcceptListener;
 import com.ibm.ws.sib.jfapchannel.ConnectionClosedListener;
 import com.ibm.ws.sib.jfapchannel.ConnectionInterface;
 import com.ibm.ws.sib.jfapchannel.Conversation;
+import com.ibm.ws.sib.jfapchannel.Conversation.ThrottlingPolicy;
 import com.ibm.ws.sib.jfapchannel.ConversationMetaData;
 import com.ibm.ws.sib.jfapchannel.ConversationReceiveListener;
 import com.ibm.ws.sib.jfapchannel.ConversationUsageType;
@@ -33,7 +52,6 @@ import com.ibm.ws.sib.jfapchannel.HandshakeProperties;
 import com.ibm.ws.sib.jfapchannel.JFapByteBuffer;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.SendListener;
-import com.ibm.ws.sib.jfapchannel.Conversation.ThrottlingPolicy;
 import com.ibm.ws.sib.jfapchannel.buffer.WsByteBuffer;
 import com.ibm.ws.sib.jfapchannel.buffer.WsByteBufferPool;
 import com.ibm.ws.sib.jfapchannel.framework.FrameworkException;
@@ -153,22 +171,6 @@ public abstract class Connection implements ConnectionInterface
 
    private final ConnectionEventRecorder eventRecorder;
 
-   // begin D203646
-   /** Enumeration class for states that a connection may be in. */
-   private static class StateEnum
-   {
-              private String description;
-              private StateEnum(String description)
-              {
-                 this.description = "Connection state: "+description;
-              }
-              public String toString()
-              {
-                 return description;
-              }
-   }
-
-
    // Enumerations for states which the connection may be in.
    // The state transition table is as follows:
    //
@@ -189,29 +191,35 @@ public abstract class Connection implements ConnectionInterface
    //           |-->  INVALIDATE_NOTIFYING_PEER_PENDING --\                                              |
    //           |                                         |                                              |
    //           \-----------------------------------------|-----> INVALIDATE_NOTIFYING_PEER_IN_PROGRESS -/
-   //
-   // Notes:
-   // - Invalidate is an intermediate step before close implemented by subclasses (invalidateImpl),
-   //   that can be skipped when the subclasses call us directly.
-   // - A close can be changed into an invalidate.
-   // - The _PENDING states are entered when a close or invalidate is requested
-   //   while sends are active, deferring the transition to the _IN_PROGRESS state
-   //   to the post-send callback.
-   // - CLOSED is the final state (where the physical socket is cleaned up) for both
-   //   the CLOSE_ and INVALIDATE_ paths.
-   private static final StateEnum OPEN = new StateEnum("OPEN");
-   private static final StateEnum CLOSED = new StateEnum("CLOSED");
-   private static final StateEnum CLOSE_IN_PROGRESS = new StateEnum("CLOSE_IN_PROGRESS");
-   private static final StateEnum CLOSE_NOTIFYING_PEER_PENDING = new StateEnum("CLOSE_NOTIFYING_PEER_PENDING");
-   private static final StateEnum CLOSE_PENDING = new StateEnum("CLOSE_PENDING");
-   private static final StateEnum INVALIDATE_PENDING = new StateEnum("INVALIDATE_PENDING");
-   private static final StateEnum INVALIDATE_IN_PROGRESS = new StateEnum("INVALIDATE_IN_PROGRESS");
-   private static final StateEnum INVALIDATE_NOTIFYING_PEER_PENDING = new StateEnum("INVALIDATE_NOTIFYING_PEER_PENDING");
-   private static final StateEnum INVALIDATE_NOTIFYING_PEER_IN_PROGRESS = new StateEnum("INVALIDATE_NOTIFYING_PEER_IN_PROGRESS");
+   
+   public enum State {
+       //
+       // Notes:
+       // - Invalidate is an intermediate step before close implemented by subclasses (invalidateImpl),
+       //   that can be skipped when the subclasses call us directly.
+       // - A close can be changed into an invalidate.
+       // - The _PENDING states are entered when a close or invalidate is requested
+       //   while sends are active, deferring the transition to the _IN_PROGRESS state
+       //   to the post-send callback.
+       // - CLOSED is the final state (where the physical socket is cleaned up) for both
+       //   the CLOSE_ and INVALIDATE_ paths.
+       CLOSED,
+       INVALIDATE_IN_PROGRESS(CLOSED),
+       CLOSE_IN_PROGRESS(CLOSED, INVALIDATE_IN_PROGRESS),
+       INVALIDATE_NOTIFYING_PEER_IN_PROGRESS(CLOSED),
+       INVALIDATE_PENDING(INVALIDATE_IN_PROGRESS),
+       INVALIDATE_NOTIFYING_PEER_PENDING(INVALIDATE_NOTIFYING_PEER_IN_PROGRESS),
+       CLOSE_PENDING(CLOSE_IN_PROGRESS, INVALIDATE_PENDING),
+       CLOSE_NOTIFYING_PEER_PENDING(CLOSE_IN_PROGRESS, INVALIDATE_PENDING),
+       OPEN(CLOSE_PENDING, CLOSE_NOTIFYING_PEER_PENDING, CLOSE_IN_PROGRESS, INVALIDATE_PENDING, INVALIDATE_IN_PROGRESS, INVALIDATE_NOTIFYING_PEER_PENDING, INVALIDATE_NOTIFYING_PEER_IN_PROGRESS);
+       final Set<State> transitions;
+       State(State...nextStates) { this.transitions = unmodifiableSet(new HashSet<>(asList(nextStates))); }
+   }
+
    //
    // Current state of the connection.  To ensure correctness, one must hold the stateLock
    // monitor before testing or setting its value.
-   private StateEnum state = OPEN;
+   private State state = OPEN;
 
    /**
     * Lock object for state field. This object's monitor should be held before reading or writing the state field.
@@ -461,7 +469,7 @@ public abstract class Connection implements ConnectionInterface
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "postSendProcessing");
 
-      StateEnum action = OPEN;
+      final Optional<State> previousState;
       synchronized(stateLock)
       {
          if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -473,22 +481,25 @@ public abstract class Connection implements ConnectionInterface
          --threadsSendingData;
          if (threadsSendingData == 0)
          {
-            if ((state == CLOSE_PENDING) ||
-                (state == CLOSE_NOTIFYING_PEER_PENDING))
-            {
-               action = state;
+            switch (state) {
+            case CLOSE_PENDING:
+            case CLOSE_NOTIFYING_PEER_PENDING:
+               previousState = Optional.of(state);
                state = CLOSE_IN_PROGRESS;
-            }
-            else if (state == INVALIDATE_PENDING)
-            {
-               action = state;
+               break;
+            case INVALIDATE_PENDING:
+               previousState = Optional.of(state);
                state = INVALIDATE_IN_PROGRESS;
-            }
-            else if (state == INVALIDATE_NOTIFYING_PEER_PENDING)
-            {
-               action = state;
+               break;
+            case INVALIDATE_NOTIFYING_PEER_PENDING:
+               previousState = Optional.of(state);
                state = INVALIDATE_NOTIFYING_PEER_IN_PROGRESS;
+               break;
+            default:
+               previousState = Optional.empty();
             }
+         } else {
+            previousState = Optional.empty();
          }
       }
 
@@ -496,35 +507,23 @@ public abstract class Connection implements ConnectionInterface
       // objects monitor across a call to send data.
 
       // Perform any deferred action
-      if (action == CLOSE_PENDING)
-      {
-         //@stoptracescan@
-         if (TraceComponent.isAnyTracingEnabled()) JFapUtils.debugSummaryMessage(tc, this, null, "Performing deferred close");
-         //@starttracescan@
-         nonThreadSafePhysicalClose(false);
+      previousState.ifPresent( action -> {
+      if (TraceComponent.isAnyTracingEnabled()) JFapUtils.debugSummaryMessage(tc, this, null, "Performing deferred action: " + action);
+      switch (action) {
+      case CLOSE_PENDING:
+          nonThreadSafePhysicalClose(false);
+          break;
+      case CLOSE_NOTIFYING_PEER_PENDING:
+          nonThreadSafePhysicalClose(true);
+          break;
+      case INVALIDATE_PENDING:
+          nonThreadSafeInvalidate(false, invalidatePendingThrowable);
+          break;
+      case INVALIDATE_NOTIFYING_PEER_PENDING:
+          nonThreadSafeInvalidate(true, invalidatePendingThrowable);
+          break;
       }
-      else if (action == CLOSE_NOTIFYING_PEER_PENDING)
-      {
-         //@stoptracescan@
-         if (TraceComponent.isAnyTracingEnabled()) JFapUtils.debugSummaryMessage(tc, this, null, "Performing deferred close");
-         //@starttracescan@
-         nonThreadSafePhysicalClose(true);
-      }
-      else if (action == INVALIDATE_PENDING)
-      {
-         //@stoptracescan@
-         if (TraceComponent.isAnyTracingEnabled()) JFapUtils.debugSummaryMessage(tc, this, null, "Performing deferred invalidate");
-         //@starttracescan@
-         nonThreadSafeInvalidate(false, invalidatePendingThrowable);
-      }
-      else if (action == INVALIDATE_NOTIFYING_PEER_PENDING)
-      {
-         //@stoptracescan@
-         if (TraceComponent.isAnyTracingEnabled()) JFapUtils.debugSummaryMessage(tc, this, null, "Performing deferred invalidate");
-         //@starttracescan@
-         nonThreadSafeInvalidate(true, invalidatePendingThrowable);
-      }
-
+      });
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "postSendProcessing");
    }
 
