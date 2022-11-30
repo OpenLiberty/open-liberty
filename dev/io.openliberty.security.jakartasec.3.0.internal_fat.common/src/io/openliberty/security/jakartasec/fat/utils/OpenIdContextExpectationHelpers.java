@@ -174,4 +174,10 @@ public class OpenIdContextExpectationHelpers {
     public static String buildContextString(String requester) throws Exception {
         return requester + ServletMessageConstants.OPENID_CONTEXT + ServletMessageConstants.OPENID_CONTEXT;
     }
+
+    public static String buildAccessTokenScopeString(String requester, String... scopes) throws Exception {
+        return requester + ServletMessageConstants.ACCESS_TOKEN + ServletMessageConstants.CLAIM
+               + ServletMessageConstants.KEY + Constants.SCOPE + " "
+               + ServletMessageConstants.VALUE + "[" + String.join(", ", scopes) + "]";
+    }
 }

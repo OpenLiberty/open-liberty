@@ -69,6 +69,15 @@ public class MinimumBaseOpenIdConfig {
         }
     }
 
+    public String[] getScopeValue(String key) {
+        String value = config.getProperty(key);
+        String[] returnValue = {};
+        if (value != null && !value.isEmpty() && !value.contains(Constants.EMPTY_VALUE)) {
+            returnValue = value.split(" ");
+        }
+        return returnValue;
+    }
+
     public boolean getBooleanValue(String key) {
         String value = config.getProperty(key);
         try {
