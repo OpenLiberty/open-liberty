@@ -20,6 +20,8 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -44,8 +46,10 @@ public class FATSuite {
     public static String UserApiEndpoint = Constants.USERINFO_ENDPOINT;
 
     /*
-     * Run EE9 tests in LITE mode and run all tests in FULL mode.
+     * Run EE10 tests in LITE mode and run all tests in FULL mode.
      */
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new JakartaEE9Action().liteFATOnly());
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+            .andWith(new JakartaEE9Action().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+            .andWith(new JakartaEE10Action().liteFATOnly());
 }

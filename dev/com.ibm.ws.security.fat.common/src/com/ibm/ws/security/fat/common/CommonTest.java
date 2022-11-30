@@ -48,13 +48,6 @@ public class CommonTest {
 
             String methodName = "failed";
             Log.info(thisClass, methodName, _testName + ": Test failed");
-            Log.info(thisClass, methodName, "");
-            Log.info(thisClass, methodName, "TTTTT EEEEE  SSSS TTTTT   FFFFF  AAA  IIIII L     EEEEE DDDD");
-            Log.info(thisClass, methodName, "  T   E     S       T     F     A   A   I   L     E     D   D");
-            Log.info(thisClass, methodName, "  T   EEE    SSS    T     FFF   AAAAA   I   L     EEE   D   D");
-            Log.info(thisClass, methodName, "  T   E         S   T     F     A   A   I   L     E     D   D");
-            Log.info(thisClass, methodName, "  T   EEEEE SSSS    T     F     A   A IIIII LLLLL EEEEE DDDD");
-            Log.info(thisClass, methodName, "");
             super.failed(e, description);
         }
 
@@ -63,13 +56,6 @@ public class CommonTest {
 
             String methodName = "succeeded";
             Log.info(thisClass, methodName, _testName + ": Test succeeded");
-            Log.info(thisClass, methodName, "");
-            Log.info(thisClass, methodName, "TTTTT EEEEE  SSSS TTTTT   PPPP   AAA   SSSS SSSSS EEEEE DDDD");
-            Log.info(thisClass, methodName, "  T   E     S       T     P   P A   A S     S     E     D   D");
-            Log.info(thisClass, methodName, "  T   EEE    SSS    T     PPPP  AAAAA  SSS   SSS  EEE   D   D");
-            Log.info(thisClass, methodName, "  T   E         S   T     F     A   A     S     S E     D   D");
-            Log.info(thisClass, methodName, "  T   EEEEE SSSS    T     F     A   A SSSS  SSSS  EEEEE DDDD");
-            Log.info(thisClass, methodName, "");
             super.succeeded(description);
         }
     };
@@ -77,13 +63,7 @@ public class CommonTest {
     protected static void testSkipped() {
 
         String methodName = "testSkipped";
-        Log.info(thisClass, methodName, "");
-        Log.info(thisClass, methodName, "TTTTT EEEEE  SSSS TTTTT   SSSS K   K IIIII PPPP  PPPP  EEEEE DDDD");
-        Log.info(thisClass, methodName, "  T   E     S       T    S     K  K    I   P   P P   P E     D   D");
-        Log.info(thisClass, methodName, "  T   EEE    SSS    T     SSS  KKK     I   PPPP  PPPP  EEE   D   D");
-        Log.info(thisClass, methodName, "  T   E         S   T        S K  K    I   P     P     E     D   D");
-        Log.info(thisClass, methodName, "  T   EEEEE SSSS    T    SSSS  K   K IIIII P     P     EEEEE DDDD");
-        Log.info(thisClass, methodName, "");
+        Log.info(thisClass, methodName, _testName + ": Test skipped");
     }
 
     /**

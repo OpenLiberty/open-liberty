@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE10RepeatAction;
 import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction;
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.openidconnect.client.fat.jaxrs.IBM.OIDCTokenMappingResolverGenericTest;
@@ -62,15 +63,16 @@ public class FATSuite {
     }
 
     /*
-     * Run EE9 tests in only FULL mode and run EE7/EE8 tests only in LITE mode.
+     * Run EE9 and EE10 tests in only FULL mode and run EE7/EE8 tests only in LITE mode.
      *
-     * This was done to increase coverage of EE9 while not adding a large amount of test runtime.
+     * This was done to increase coverage of EE9 and EE10 while not adding a large amount of test runtime.
      *
      */
     /* always add servlet-5.0 to enable EE9 in the op which had no feature versions to swap out to enable EE9 */
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
             .andWith(new SecurityTestRepeatAction().onlyOnWindows().fullFATOnly())
-            .andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().removeFeatures(REMOVE).addFeatures(INSERT).alwaysAddFeature("servlet-5.0").fullFATOnly());
+            .andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().removeFeatures(REMOVE).addFeatures(INSERT).alwaysAddFeature("servlet-5.0").fullFATOnly())
+            .andWith(new SecurityTestFeatureEE10RepeatAction().notOnWindows().removeFeatures(REMOVE).addFeatures(INSERT).alwaysAddFeature("servlet-6.0").fullFATOnly());
 
 }

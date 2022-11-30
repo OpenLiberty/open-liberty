@@ -31,7 +31,7 @@ import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientDiscoveryJWTBa
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.EmptyAction;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -57,11 +57,11 @@ import componenttest.rules.repeater.RepeatTests;
  */
 public class FATSuite extends CommonLocalLDAPServerSuite {
     /*
-     * Run EE9 tests in only FULL mode and run EE7/EE8 tests only in LITE mode.
+     * Run EE10 tests in only FULL mode and run EE7/EE8 tests only in LITE mode.
      *
-     * This was done to increase coverage of EE9 while not adding a large amount of of test runtime.
+     * This was done to increase coverage of EE10 while not adding a large amount of test runtime.
      */
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
-            .andWith(new JakartaEE9Action().fullFATOnly());
+            .andWith(new JakartaEE10Action().fullFATOnly());
 }

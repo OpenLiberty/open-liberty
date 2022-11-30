@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE10RepeatAction;
 import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction;
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.fat.common.utils.ldaputils.CommonRemoteLDAPServerSuite;
@@ -103,15 +104,16 @@ public class FATSuite extends CommonRemoteLDAPServerSuite {
     }
 
     /*
-     * Run EE9 tests in only LITE mode on all but Windows - the transforms just run too slowly on the Windows OS.
-     * So, we'll run without EE9 in LIte mode on Windows.
+     * Run EE9 and EE10 tests in only LITE mode on all but Windows - the transforms just run too slowly on the Windows OS.
+     * So, we'll run without EE9 and EE10 in LIte mode on Windows.
      * We'll run EE7/EE8 tests everywhere in FULL mode.
      *
-     * This was done to increase coverage of EE9 while not adding a large amount of of test runtime.
+     * This was done to increase coverage of EE9 and EE10 while not adding a large amount of of test runtime.
      */
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
                     .andWith(new SecurityTestRepeatAction().onlyOnWindows().liteFATOnly())
-                    .andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().removeFeatures(REMOVE).addFeatures(INSERT).liteFATOnly());
+                    .andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().removeFeatures(REMOVE).addFeatures(INSERT).liteFATOnly())
+                    .andWith(new SecurityTestFeatureEE10RepeatAction().notOnWindows().removeFeatures(REMOVE).addFeatures(INSERT).liteFATOnly());
 
 }
