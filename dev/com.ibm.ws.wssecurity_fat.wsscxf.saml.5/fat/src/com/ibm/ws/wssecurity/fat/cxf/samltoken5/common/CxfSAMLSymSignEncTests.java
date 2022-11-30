@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,17 +56,15 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
     protected static String servicePort = null;
     protected static String serviceSecurePort = null;
     protected static CXFSAMLCommonUtils commonUtils = new CXFSAMLCommonUtils();
-    //issue 18363
-    protected static String featureVersion = "";
-
-    //issue 18363
-    public static String getFeatureVersion() {
-        return featureVersion;
-    }
     
-    public static void setFeatureVersion(String version) {
-        featureVersion = version;
-    } //End of issue 18363
+    //issue 23060
+    protected static String ehcacheVersion = "";
+    public static String getEhcacheVersion() {
+        return ehcacheVersion;
+    }
+    public static void setEhcacheVersion(String version) {
+        ehcacheVersion = version;
+    } 
     
     /**
      * TestDescription:
@@ -85,8 +83,8 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
     @Test
     public void testSAMLCXFSignedSupportingTokens_Symmmetric() throws Exception {
         
-    	//issue 18363
-    	if ("EE8".equals(getFeatureVersion())) {
+    	//issue 23060
+    	if ("EE7NEWEhcache".equals(getEhcacheVersion())) {
     	    if (testSAMLServer2 == null) {
                 //1 server reconfig
     		    testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_symSignEnc_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -95,7 +93,7 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
     		    testSAMLServer2.reconfigServer("server_2_symSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     		    testSAMLServer.reconfigServer("server_1_symSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     	    }
-    	}//End of 18363   
+    	}  
     	
     	WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
@@ -116,12 +114,11 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
     //3/2021 @AV999 - even though the client policy does not have SignedSupportingTokens, 
     //the saml token is signed by default with the new runtime and making the request processing successful at the provider   
     
-    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testSAMLCXFSignedSupportingTokens_Symmmetric_ClientNotSigned() throws Exception {
 
-    	//issue 18363
-    	if ("EE8".equals(getFeatureVersion())) {
+    	//issue 23060
+    	if ("EE7NEWEhcache".equals(getEhcacheVersion())) {
     	    if (testSAMLServer2 == null) {
                 //1 server reconfig
     		    testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_symSignEnc_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -130,7 +127,7 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
     		    testSAMLServer2.reconfigServer("server_2_symSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     		    testSAMLServer.reconfigServer("server_1_symSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     	    }
-    	}//End of 18363   
+    	}   
     	
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
@@ -138,14 +135,8 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
         updatedTestSettings.updatePartnerInSettings("sp1", true);
         updatedTestSettings.setCXFSettings(_testName, null, servicePort, null, null, null, "SAMLSymSignService",
                 "SAMLSymSignPort", "", "False", null, commonUtils.processClientWsdl("ClientSymOmitSign.wsdl", servicePort));
-        /*
-        //issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-    		genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setErrorSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SYM_SIGN_SERVICE_CLIENT_NOT_SIGN));
-    	} else if ("EE8".equals(getFeatureVersion())) {
-            genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SYM_SIGN_SERVICE));
-    	}//End of 18363
-    	*/
+        
+        //issue 23060 both EE7 old/new format ehcache return with same error expectation with new jaxws-2.2
     	genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SYM_SIGN_SERVICE));
     	
     } 
@@ -153,8 +144,8 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
     @Test
     public void testSAMLCXFEncryptedSupportingTokens_Symmmetric() throws Exception {
     
-    	//issue 18363
-    	if ("EE8".equals(getFeatureVersion())) {
+    	//issue 23060
+    	if ("EE7NEWEhcache".equals(getEhcacheVersion())) {
     	    if (testSAMLServer2 == null) {
                 //1 server reconfig
     		    testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_symSignEnc_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -163,7 +154,7 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
     		    testSAMLServer2.reconfigServer("server_2_symSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     		    testSAMLServer.reconfigServer("server_1_symSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     	    }
-    	}//End of 18363   
+    	}   
     	
     	WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
@@ -182,12 +173,11 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
      * The test should fail since the policy can not be satisfied
      */
     
-    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testSAMLCXFEncryptedSupportingTokens_Symmmetric_ClientNotEncrypted() throws Exception {
     	
-    	//issue 18363
-    	if ("EE8".equals(getFeatureVersion())) {
+    	//issue 23060
+    	if ("EE7NEWEhcache".equals(getEhcacheVersion())) {
     	    if (testSAMLServer2 == null) {
                 //1 server reconfig
     		    testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_symSignEnc_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -196,7 +186,7 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
        	        testSAMLServer2.reconfigServer("server_2_symSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     	        testSAMLServer.reconfigServer("server_1_symSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     	    }
-    	}//End of 18363   
+    	}   
     	
     	WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
@@ -212,8 +202,8 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
     @Test
     public void testSAMLCXFSignedEncryptedSupportingTokens_Symmmetric() throws Exception {
     	
-    	//issue 18363
-    	if ("EE8".equals(getFeatureVersion())) {
+    	//issue 23060
+    	if ("EE7NEWEhcache".equals(getEhcacheVersion())) {
     	    if (testSAMLServer2 == null) {
                 //1 server reconfig
     		    testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_symSignEnc_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -222,7 +212,7 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
     		    testSAMLServer2.reconfigServer("server_2_symSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     		    testSAMLServer.reconfigServer("server_1_symSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     	    }
-    	}//End of 18363   
+    	}  
     	
     	WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
@@ -241,12 +231,11 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
      * The test should fail since the policy can not be satisfied
      */
   
-    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testSAMLCXFSignedEncryptedSupportingTokens_Symmmetric_ClientNotEncrypted() throws Exception {
     
-    	//issue 18363
-    	if ("EE8".equals(getFeatureVersion())) {
+    	//issue 23060
+    	if ("EE7NEWEhcache".equals(getEhcacheVersion())) {
     	    if (testSAMLServer2 == null) {
                 //1 server reconfig
     		    testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_symSignEnc_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -255,7 +244,7 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
     		    testSAMLServer2.reconfigServer("server_2_symSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     		    testSAMLServer.reconfigServer("server_1_symSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     	    }
-    	}//End of 18363   
+    	}   
     	
     	WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
@@ -279,12 +268,11 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
     //Looks like with the new runtime the saml tokens are signed by default.
     //This change causes the test to complete the message exchange successful between client and providers
     
-    //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testSAMLCXFSignedEncryptedSupportingTokens_Symmmetric_ClientNotSigned() throws Exception {
 
-    	//issue 18363
-    	if ("EE8".equals(getFeatureVersion())) {
+    	//issue 23060
+    	if ("EE7NEWEhcache".equals(getEhcacheVersion())) {
     	    if (testSAMLServer2 == null) {
                 //1 server reconfig
     		    testSAMLServer.reconfigServer(buildSPServerName("server_2_in_1_symSignEnc_wss4j.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
@@ -293,7 +281,7 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
     		    testSAMLServer2.reconfigServer("server_2_symSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     		    testSAMLServer.reconfigServer("server_1_symSignEnc_wss4j.xml", _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
     	    }
-    	}//End of 18363   
+    	} 
     	
         WebClient webClient = SAMLCommonTestHelpers.getWebClient();
 
@@ -301,14 +289,8 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
         updatedTestSettings.updatePartnerInSettings("sp1", true);
         updatedTestSettings.setCXFSettings(_testName, null, servicePort, null, null, null, "SAMLSymSignEncrService",
                 "SAMLSymSignEncrPort", "", "False", null, commonUtils.processClientWsdl("ClientSymOmitSignKeepEncr.wsdl", servicePort));
-        /*
-        //issue 18363
-    	if ("EE7".equals(getFeatureVersion())) {
-    		genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SYM_SIGN_ENCR_SERVICE_CLIENT_NOT_SIGN_OR_ENCR));
-    	} else if ("EE8".equals(getFeatureVersion())) {
-            genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SYM_SIGN_ENCR_SERVICE));
-    	}//End of 18363
-    	*/
+        
+        //issue 23060 both EE7 old/new format ehcache return with same error expectation with new jaxws-2.2
     	genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SYM_SIGN_ENCR_SERVICE));
     	
     }
