@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,6 +62,10 @@ public class ServerEnvTest {
 
     /**
      * Test - Variable expansion in server.env works when enabled.
+     *
+     * To enable this test for Z/OS, I believe you would need to ensure that
+     * both the server script and the server.env file are generated in EBCDIC.
+     *
      * server.env contents:
      * [
      * #enable_variable_expansion
@@ -75,6 +79,9 @@ public class ServerEnvTest {
         final String METHOD_NAME = "testVariableExpansionInServerEnv";
         Log.entering(c, METHOD_NAME);
 
+        if (OS.contains("os/390") || OS.contains("z/os") || OS.contains("zos")) {
+            return;
+        }
         varsExpandInServerEnv(true);
 
         Log.exiting(c, METHOD_NAME);
@@ -83,7 +90,11 @@ public class ServerEnvTest {
     /**
      * Test - Variable expansion in server.env does NOT work when it is NOT enabled.
      * -- Note it is ALWAYS enabled for Windows --
-     * -- So this test not applicable to Windows --
+     * -- So this test not applicable to Windows. There is no way to disable variable expansion on Windows. --
+     *
+     * To enable this test for Z/OS, I believe you would need to ensure that
+     * both the server script and the server.env file are generated in EBCDIC.
+     *
      * server.env contents:
      * [
      * LOG_FILE=${CONSOLE_LOG_FILE_NAME}
@@ -96,7 +107,7 @@ public class ServerEnvTest {
     public void testVariableExpansionInServerEnvWhenExpansionNotEnabled() throws Exception {
         final String METHOD_NAME = "testVariableExpansionInServerEnvWhenExpansionNotEnabled";
         Log.entering(c, METHOD_NAME);
-        if (OS.contains("win")) {
+        if (OS.contains("win") || OS.contains("os/390") || OS.contains("z/os") || OS.contains("zos")) {
             return;
         }
         varsExpandInServerEnv(false);
