@@ -25,13 +25,18 @@ import org.junit.Test;
 
 public class Generatorv2WithSchmea11BetaBuildTest extends Generatorv2WithSchema11Test {
   private static File version = new File("build/wlp/lib/versions/WebSphereApplicationServer.properties");
+  private static File olversion = new File("build/wlp/lib/versions/openliberty.properties");
+  
   @BeforeClass
   public static void setup() throws Exception {
     version.getParentFile().mkdirs();
     Properties props = new Properties();
     props.setProperty("com.ibm.websphere.productEdition","EARLY_ACCESS");
     props.store(new FileWriter(version), null);
-    setup(new String[] {"build/server.xsd", "-outputVersion=2", "-schemaVersion=1.1"});
+    
+    Properties olProps = new Properties();
+    olProps.setProperty("com.ibm.websphere.productEdition","EARLY_ACCESS");
+    olProps.store(new FileWriter(olversion), null);
   }
 
   @AfterClass
@@ -40,13 +45,50 @@ public class Generatorv2WithSchmea11BetaBuildTest extends Generatorv2WithSchema1
   }
 
   @Test
-  public void checkBetaTagOnOCD() throws XPathExpressionException {
+  public void checkBetaTagOnOCDwas() throws Exception {
+	beforeWAS();
     Object obj = xp.evaluate("/schema/complexType[@name='serverType']//element[@name='betaElement']", root, XPathConstants.NODE);
     assertNotNull("betaElement should be in schema", obj);
   }
 
   @Test
-  public void checkBetaTagOnAD() throws XPathExpressionException {
+  public void checkBetaTagOnADwas() throws Exception {
+	beforeWAS();
     assertNotNull("betaElement should be in schema", xp.evaluate("/schema/complexType[@name='test']/attribute[@name='beta']", root, XPathConstants.NODE));
+  }
+  
+  @Test
+  public void checkBetaTagOnOCDol() throws Exception {
+	beforeOL();
+    Object obj = xp.evaluate("/schema/complexType[@name='serverType']//element[@name='betaElement']", root, XPathConstants.NODE);
+    assertNotNull("betaElement should be in schema", obj);
+  }
+
+  @Test
+  public void checkBetaTagOnADol() throws Exception {
+	beforeOL();
+    assertNotNull("betaElement should be in schema", xp.evaluate("/schema/complexType[@name='test']/attribute[@name='beta']", root, XPathConstants.NODE));
+  }
+  
+  private void beforeWAS() throws Exception {
+	  Properties props = new Properties();
+	  props.setProperty("com.ibm.websphere.productEdition","EARLY_ACCESS");
+	  props.store(new FileWriter(version), null);
+	  
+	  Properties olProps = new Properties();
+	  olProps.setProperty("com.ibm.websphere.productEdition","Open");
+	  olProps.store(new FileWriter(olversion), null);
+	  setup(new String[] {"build/server.xsd", "-outputVersion=2", "-schemaVersion=1.1"});
+  }
+  
+  private void beforeOL() throws Exception {
+	  Properties props = new Properties();
+	  props.setProperty("com.ibm.websphere.productEdition","Open");
+	  props.store(new FileWriter(version), null);
+	  
+	  Properties olProps = new Properties();
+	  olProps.setProperty("com.ibm.websphere.productEdition","EARLY_ACCESS");
+	  olProps.store(new FileWriter(olversion), null);
+	  setup(new String[] {"build/server.xsd", "-outputVersion=2", "-schemaVersion=1.1"});
   }
 }
