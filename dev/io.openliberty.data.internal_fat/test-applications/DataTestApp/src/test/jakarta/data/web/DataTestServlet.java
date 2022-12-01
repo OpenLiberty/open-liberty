@@ -635,7 +635,7 @@ public class DataTestServlet extends FATServlet {
         a1.id = 1001L;
         a1.city = "Rochester";
         a1.state = "Minnesota";
-        a1.streetAddress = new StreetAddress(2800, "37th St NW");
+        a1.streetAddress = new StreetAddress(2800, "37th St NW", List.of("Receiving Dock", "Building 040-1"));
         a1.zipCode = 55901;
         shippingAddresses.save(a1);
 
@@ -676,6 +676,29 @@ public class DataTestServlet extends FATServlet {
                              Stream.of(shippingAddresses.findByHouseNumberBetweenOrderByStreetNameAscHouseNumber(150, 250))
                                              .map(a -> a.houseNumber + " " + a.streetName)
                                              .collect(Collectors.toList()));
+
+        // [EclipseLink-6002] Aggregated objects cannot be written/deleted/queried independently from their owners.
+        //                    Descriptor: [RelationalDescriptor(test.jakarta.data.web.StreetAddress --> [])]
+        //                    Query: ReportQuery(referenceClass=StreetAddress )
+        // TODO uncomment the following to reproduce the above error:
+        // List<ShippingAddress> found = shippingAddresses.findByRecipientInfoNotEmpty();
+        // assertEquals(1, found.size());
+        // ShippingAddress a = found.get(0);
+        // assertEquals(a1.id, a.id);
+        // assertEquals(a1.city, a.city);
+        // assertEquals(a1.state, a.state);
+        // assertEquals(a1.zipCode, a.zipCode);
+        // assertEquals(a1.streetAddress.houseNumber, a.streetAddress.houseNumber);
+        // assertEquals(a1.streetAddress.streetName, a.streetAddress.streetName);
+        // assertEquals(a1.streetAddress.recipientInfo, a.streetAddress.recipientInfo);
+
+        // assertEquals(3L, shippingAddresses.countByRecipientInfoEmpty());
+
+        // [EclipseLink-4002] Internal Exception: java.sql.SQLIntegrityConstraintViolationException:
+        //                    DELETE on table 'SHIPPINGADDRESS' caused a violation of foreign key constraint 'SHPPNGSHPPNGDDRSSD' for key (1001)
+        // TODO Entity removal fails without the above error unless we add the following lines to first remove the rows from the collection attribute's table,
+        a1.streetAddress.recipientInfo = new ArrayList<>();
+        shippingAddresses.save(a1);
 
         assertEquals(4, shippingAddresses.removeAll());
     }
