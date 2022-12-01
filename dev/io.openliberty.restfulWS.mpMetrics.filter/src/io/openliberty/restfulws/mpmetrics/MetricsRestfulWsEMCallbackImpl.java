@@ -96,7 +96,7 @@ public class MetricsRestfulWsEMCallbackImpl implements DefaultExceptionMapperCal
         }
 
         // Todo: update reference to message
-        Tr.warning(tc, "METRICS_UNHANDLED_JAXRS_EXCEPTION", throwable);
+        Tr.warning(tc, "METRICS_UNHANDLED_RESTFULWS_EXCEPTION", throwable);
 
         return Collections.singletonMap(EXCEPTION_KEY, throwable);
     }
