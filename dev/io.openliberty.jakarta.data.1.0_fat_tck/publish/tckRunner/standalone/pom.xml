@@ -33,7 +33,7 @@
 		<repository>
 			<name>IBM DHE Maven repository</name>
 			<id>DHE</id>
-			<url>http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
+			<url>https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
 		</repository>
 	</repositories>
 
