@@ -398,6 +398,10 @@ public class FailoverTest1 extends FailoverTest {
         assertFalse("Unexpectedly found duplicates on startup", lines.size() > 0);
 
         // The processing here, should result (through our fake jdbc driver) in duplicate rows being inserted into the recovery logs
+        //
+        // The fake jdbc driver inserts those duplicate rows through the IfxPreparedStatement.duplicateAndHalt() method. The jdbc driver
+        // knows that it should be inserting these duplicates because we configured the HATable in the FailOverServlet.setupForDuplicationRuntime()
+        // method
         boolean retry = true;
         int attempts = 0;
         while (retry && attempts <= 1) {
@@ -405,6 +409,8 @@ public class FailoverTest1 extends FailoverTest {
                 Log.info(this.getClass(), method, "Retry the duplicate process");
             runInServletAndCheck(server, SERVLET_NAME, "driveSixTransactions");
 
+            // The FailOverServlet.checkForDuplicates() method drives a query directly against the WAS_TRAN_LOG table in order to determine
+            // the presence of duplicate rows. If it finds a duplicate row it will write "SQL TRANLOG: Found DUPLICATE row" to the logs.
             Log.info(this.getClass(), method, "call checkForDuplicates");
             StringBuilder sb = runTestWithResponse(server, SERVLET_NAME, "checkForDuplicates");
             assertTrue("checkForDuplicates did not return " + SUCCESS + ". Returned: " + sb.toString(), sb.toString().contains(SUCCESS));
@@ -428,8 +434,8 @@ public class FailoverTest1 extends FailoverTest {
     }
 
     /**
-     * Inject duplicate recovery log entries into a database log, crash the server and test
-     * that recovery succeeds.
+     * This is normal recovery processing. We want to check theat there are no duplicate rows in "normal" recovery processing.
+     * Crash the server and check that recovery succeeds and that there are no duplicate records in the log.
      *
      */
     @Test

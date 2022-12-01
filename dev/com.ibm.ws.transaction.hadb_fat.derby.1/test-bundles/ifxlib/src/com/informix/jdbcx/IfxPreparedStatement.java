@@ -960,6 +960,42 @@ public class IfxPreparedStatement implements PreparedStatement {
                 }
             }
 
+            // Once more, with feeling - this means we may have 3 rows with the same values but allows the discovery of duplicates, even if a row
+            // on which a duplicate was based has been deleted just before the duplication process (this situation occurred in a defect)
+            for (List<Object> valueList : _duplicateRows.values()) {
+                if (valueList != null) {
+                    System.out.println("IfxPreparedStatement(" + wrappedPS + "): duplicateAndHalt list size - " + valueList.size() + " and list " + valueList);
+                    ListIterator<Object> listItr = valueList.listIterator();
+
+                    int theIndex = 0;
+                    while (listItr.hasNext()) {
+                        theIndex++;
+                        Object theObj = listItr.next();
+                        System.out.println("IfxPreparedStatement(" + wrappedPS + "): duplicateAndHalt, working with object - " + theObj);
+                        if (theObj instanceof String) {
+                            String theString = (String) theObj;
+                            System.out.println("IfxPreparedStatement(" + wrappedPS + "): duplicateAndHalt setString, index: " + theIndex + " value: " + theString);
+                            wrappedPS.setString(theIndex, theString);
+                        } else if (theObj instanceof Short) {
+                            Short theShort = (Short) theObj;
+                            System.out.println("IfxPreparedStatement(" + wrappedPS + "): duplicateAndHalt setShort, index: " + theIndex + " value: " + theShort);
+                            wrappedPS.setShort(theIndex, theShort);
+                        } else if (theObj instanceof Long) {
+                            Long theLong = (Long) theObj;
+                            System.out.println("IfxPreparedStatement(" + wrappedPS + "): duplicateAndHalt setLong, index: " + theIndex + " value: " + theLong);
+                            wrappedPS.setLong(theIndex, theLong);
+                        } else if (theObj instanceof byte[]) {
+                            byte[] theArray = (byte[]) theObj;
+                            String theBytesString = toHexString(theArray, 32);
+                            System.out.println("IfxPreparedStatement(" + wrappedPS + "): setBytes, index: " + theIndex + " value: " + theBytesString);
+                            wrappedPS.setBytes(theIndex, theArray);
+                        }
+                    }
+                    addBatch();
+                    int[] ret = wrappedPS.executeBatch();
+                }
+            }
+
             System.out.println("IfxPreparedStatement(" + wrappedPS + "): duplicateAndHalt, now commit");
             Connection myconn = getConnection();
             myconn.commit();
