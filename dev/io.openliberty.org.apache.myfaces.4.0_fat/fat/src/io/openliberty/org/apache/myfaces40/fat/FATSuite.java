@@ -20,6 +20,7 @@ import io.openliberty.org.apache.myfaces40.fat.tests.Faces40ThirdPartyApiTests;
 import io.openliberty.org.apache.myfaces40.fat.tests.FacesConfigTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.FacesContextGetLifecycleTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.InputTextTypeTest;
+import io.openliberty.org.apache.myfaces40.fat.tests.LayoutAttributeTests;
 import io.openliberty.org.apache.myfaces40.fat.tests.SelectItemTests;
 import io.openliberty.org.apache.myfaces40.fat.tests.SimpleTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.UIViewRootGetDoctypeTest;
@@ -30,6 +31,7 @@ import io.openliberty.org.apache.myfaces40.fat.tests.UIViewRootGetDoctypeTest;
                 ExternalContextAddResponseCookieTest.class,
                 FacesConfigTest.class,
                 InputTextTypeTest.class,
+                LayoutAttributeTests.class,
                 ExtensionlessMappingTest.class,
                 SelectItemTests.class,
                 FacesContextGetLifecycleTest.class,
