@@ -5,8 +5,6 @@ The Open Liberty @LIBERTY_VERSION@ Project (https://openliberty.io/).
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 TABLE OF CONTENTS
 
-THIS IBM NOTICES FILE CONSISTS OF THE FOLLOWING SECTIONS:
-
 APACHE V1.1
 APACHE V2
 BSD
@@ -69,7 +67,17 @@ MICROPROFILE.REACTIVE.STREAMS.OPERATORS, JBOSS-JANDEX, SMALLRYE.CONFIG,
 MICROPROFILE.FAULTTOLERANCE, JBOSS.RESTEASY.JAXB.PROVIDED,
 SMALLRYE.REACTIVE.STREAMS-OPERATORS, MICROPROFILE.JWT,
 OPENSAML-MESSAGING-IMPL, SMALLRYE.GRAPHQL, JOSE4J,
-NET.SHIBBOLETH.UTILITIES/JAVA.SUPPORT
+NET.SHIBBOLETH.UTILITIES/JAVA.SUPPORT, FELIX.GOGO.SHELL, MICROPROFILE OPENAPI, VALIDATION-API, ARIES,
+SMALLRYE.OPENAPI.JAXRS, JBOSS-LOGGING, MICROPROFILE.OPENTRACING, APACHE
+TAGLIBS STANDARD, ARIES.UTIL, APACHE.JASPER.EXPRESSIONLANGUAGE,
+JBOSS.CLASSFILEWRITER, COMMON IO, COMMONS FILEUPLOAD,
+MICROPROFILE.METRICS.CDI, SMALLRYE CONFIG, APACHE COMMONS CODEC,
+JAKARTA-VALIDATION, APACHE MYFACES, FELIX.GOGO.RUNTIME,
+SMALLRYE-OPENAPI-CORE, MICROPROFILE.OPENAPI, MICROPROFILE.REST.CLIENT,
+JAKARTA BATCH, OPENAPI SPECIFICATION, APACHE.HTTPCOMPONENTS,
+ARIES.JNDI.API, JANSI, ARIES.JNDI.CORE, FASTERXML JACKSON, JEDPARSER,
+MICROPROFILE.OPENTRACING.JAEGER, WELD, APACHE.XML.RESOLVER,
+HIBERNATE.VALIDATOR, FELIX.GOGO.COMMAND, MICROPROFILE.JWT, NEKOHTML
 
 Apache License
 Version 2.0, January 2004
@@ -384,7 +392,7 @@ http://sitepen.com), BURRITO (Copyright 2010 (c) Mihai Bazon
 Inc. All rights reserved), SWAGGER-UI/HIGHLIGHT.JS (Copyright Not
 Found), DOJO (Copyright (c) 2005-2013 The Dojo Foundation), ESPRIMA
 (Copyright (C) 2012 2011 [Ariya
-Hidayat](http://ariya.ofilabs.com/about))
+Hidayat](http://ariya.ofilabs.com/about)), JAKARTA.XML.BIND.API (Copyright (c) 2018 Oracle and/or its affiliates.)
 
 
 Redistribution and use in source and binary forms, with or without 
@@ -446,7 +454,8 @@ Hammer.), ASM (Copyright (c) 2000-2011 INRIA France Telecom), SAAJ-IMPL (Copyrig
 (c) 1997, 2020 Oracle and/or its affiliates.), 
 SAAJ (Copyright (c) 2011-2014 Oracle and/or its affiliates), JAKARTA-JWS
 (Copyright (c) 2013, 2020 Oracle and/or its affiliates. All rights
-reserved.)
+reserved.), ASM (Copyright (c) 2000-2011 INRIA, France Telecom), DOJO (Copyright (c)
+[OpenJS Foundation](https://openjsf.org/))
 
 
 Redistribution and use in source and binary forms, with or without 
@@ -541,7 +550,9 @@ under the Eclipse Public License (source code available via the
 indicated URL):
 
 PERSISTENCE_2_1.XSD [OSGi Core]
-(https://github.com/osgi/bundles/tree/98b13a515d350989f218f92c41d1b66f940c1633)
+(https://github.com/osgi/bundles/tree/98b13a515d350989f218f92c41d1b66f940c1633), 
+JAVAEE.PERSISTENCE
+(https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api/2.2)
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 1 NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -592,7 +603,31 @@ OSGI-RESOURCE-LOCATOR
 (https://repo1.maven.org/maven2/org/glassfish/hk2/osgi-resource-locator/1.0.3/),
 JAKARTA.AUTHORIZATION
 (https://repo1.maven.org/maven2/jakarta/authentication/jakarta.authentication-api/2.0.0/),
-ECLIPSEYASSON (https://repo1.maven.org/maven2/org/eclipse/yasson/1.0/)
+ECLIPSEYASSON (https://repo1.maven.org/maven2/org/eclipse/yasson/1.0/), 
+ORG.ECLIPSE.OSGI
+(https://repo1.maven.org/maven2/org/eclipse/platform/org.eclipse.osgi/3.17.200/),
+JSONP (https://github.com/jakartaee/jsonp-api/tree/2.0.0), JAKARTA
+CONCURRENCY
+(https://mvnrepository.com/artifact/jakarta.enterprise.concurrent/jakarta.enterprise.concurrent-api/2.0.0),
+JAKARTA.EXPRESSIONLANGUAGE
+(https://mvnrepository.com/artifact/jakarta.el/jakarta.el-api/4.0.0),
+JAKARTA.JSON
+(https://jakarta.ee/specifications/jsonb/3.0/jakarta-jsonb-spec-3.0.html),
+EXPRESSIONLANGUAGE
+(https://mvnrepository.com/artifact/jakarta.el/jakarta.el-api/4.0.0),
+JAKARTA.XML.WS
+(https://repo1.maven.org/maven2/jakarta/xml/ws/jakarta.xml.ws-api/3.0.0/),
+JAKARTA-RESTFULWS
+(https://jakarta.ee/specifications/restful-ws/3.0/jakarta-restful-ws-spec-3.0.html),
+JAKARTA-PAGES (https://github.com/jakartaee/pages/tree/3.0.0-RELEASE),
+JAVAX.SERVLET.SIP (https://github.com/RestComm/sip-servlets), JAKARTASEC
+(https://github.com/jakartaee/security/tree/2.0.0-RELEASE),
+JAKARTA-SECURITY
+(https://github.com/jakartaee/security/tree/2.0.0-RELEASE),
+JAKARTA.ENTERPRISEBEANS
+(https://github.com/jakartaee/enterprise-beans/tree/4.0.0-RELEASE),
+JAKARTAEE/CONNECTORS (https://github.com/jakartaee/connectors), JAKARTA
+CONNECTORS (https://github.com/jakartaee/connectors/tree/2.0.0)
 
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
@@ -1395,7 +1430,9 @@ SLF4J-JDK14 (Copyright (c) 2004-2011 QOS.ch), JSLITMUS.JS [Lodash]
 (Copyright (c) 2010-2014, The Dojo Foundation), BENCHMARK.JS [Lodash]
 (Copyright 2010-2015 Mathias Bynens <http://mathiasbynens.be/>),
 MOMENT.JS [weld] (No Copyright Found), CORE-JS (Copyright (c) 2014-2017 Denis Pushkarev), NORMALIZE.CSS
-(Copyright © Nicolas Gallagher and Jonathan Neal)
+(Copyright © Nicolas Gallagher and Jonathan Neal), 
+SLF4J-API (Copyright (c) 2004-2011 QOS.ch), SLF4J-JDK14 (Copyright (c)
+2004-2011 QOS.ch)
 
 Permission is hereby granted, free of charge, to any person obtaining a 
 copy of this software and associated documentation files (the 
@@ -1759,7 +1796,6 @@ opener, sorted-object
 END OF OTHER KNOWN LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-
 THE REMAINDER OF THIS OPEN LIBERTY @LIBERTY_VERSION@ PROJECT NOTICES FILE CONSISTS OF THE FOLLOWING 
 SECTIONS:
 
@@ -1791,7 +1827,10 @@ SIL OPEN FONT LICENSE 1.1
 The Program includes some or all of the following works licensed under
 the SIL OPEN FONT LICENSE 1.1
 
-IBM PLEX SANS, FONT-AWESOME [weld]
+IBM PLEX SANS, FONT-AWESOME [weld], 
+IBMPLEXSANS-BOLD.WOFF, IBMPLEXSANS-LIGHT.WOFF, IBMPLEXSANS-MEDIUM.WOFF,
+IBMPLEXSANS-EXTRALIGHT.WOFF, IBMPLEXSANS-REGULAR.WOFF,
+IBMPLEXSANS-SEMIBOLD.WOFF
 
 SIL OPEN FONT LICENSE
 
@@ -1894,3 +1933,4 @@ END OF OPEN LIBERTY @LIBERTY_VERSION@ PROJECT NOTICES AND INFORMATION
 
 END OF NOTICES AND INFORMATION FILE
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
