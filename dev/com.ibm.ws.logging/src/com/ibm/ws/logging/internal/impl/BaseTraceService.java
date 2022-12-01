@@ -259,20 +259,7 @@ public class BaseTraceService implements TrService {
     private boolean isLogRolloverScheduled = false;
     private boolean isFfdcCleanupScheduled = false;
 
-    private static Boolean isBetaEdition;
     private static TraceComponent tc = Tr.register(BaseTraceService.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
-
-    public Boolean betaFenceCheck() {
-        if (isBetaEdition == null) {
-            if (Boolean.getBoolean("com.ibm.ws.beta.edition")) {
-                isBetaEdition = true;
-            } else {
-                Tr.warning(tc, "The 'maxFfdcAge' logging configuration option is in beta and is not available in this version of OpenLiberty.");
-                isBetaEdition = false;
-            }
-        }
-        return isBetaEdition;
-    }
 
     /** Flags for suppressing traceback output to the console */
     private static class StackTraceFlags {
@@ -402,8 +389,7 @@ public class BaseTraceService implements TrService {
 
         scheduleTimeBasedLogRollover(trConfig);
 
-        if (betaFenceCheck())
-            scheduleFfdcFileDeletion(trConfig);
+        scheduleFfdcFileDeletion(trConfig);
         /*
          * Need to know the values of wlpServerName and wlpUserDir
          * They are passed into the handlers for use as part of the jsonified output
