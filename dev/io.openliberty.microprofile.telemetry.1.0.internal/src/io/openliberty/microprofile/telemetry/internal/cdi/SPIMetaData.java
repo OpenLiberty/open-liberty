@@ -21,6 +21,9 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.ws.cdi.extension.CDIExtensionMetadataInternal;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
+import io.openliberty.microprofile.telemetry.internal.helper.AgentDetection;
+import io.openliberty.microprofile.telemetry.internal.rest.TelemetryClientFilter;
+import io.openliberty.microprofile.telemetry.internal.rest.TelemetryContainerFilter;
 
 @Component(service = CDIExtensionMetadata.class, configurationPolicy = IGNORE)
 public class SPIMetaData implements CDIExtensionMetadata, CDIExtensionMetadataInternal {
@@ -29,7 +32,11 @@ public class SPIMetaData implements CDIExtensionMetadata, CDIExtensionMetadataIn
     public Set<Class<?>> getBeanClasses() {
         Set<Class<?>> beans = new HashSet<Class<?>>();
         beans.add(OpenTelemetryProducer.class);
-        beans.add(WithSpanInterceptor.class);
+        if (!AgentDetection.isAgentActive()) {
+            beans.add(WithSpanInterceptor.class);
+        }
+        beans.add(TelemetryClientFilter.class);
+        beans.add(TelemetryContainerFilter.class);
         return beans;
     }
 

@@ -20,6 +20,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.microprofile.config.Config;
 
+import io.openliberty.microprofile.telemetry.internal.helper.AgentDetection;
+import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.trace.Span;
@@ -49,6 +51,13 @@ public class OpenTelemetryProducer {
     @ApplicationScoped
     @Produces
     public OpenTelemetry getOpenTelemetry() {
+
+        if (AgentDetection.isAgentActive()) {
+            // If we're using the agent, it will have set GlobalOpenTelemetry and we must use its instance
+            // all config is handled by the agent in this case
+            return GlobalOpenTelemetry.get();
+        }
+
         HashMap<String, String> telemetryProperties = getTelemetryProperties();
         //Builds tracer provider if user has enabled tracing aspects with config properties
         if (!checkDisabled(telemetryProperties)) {
@@ -77,6 +86,11 @@ public class OpenTelemetryProducer {
     }
 
     public void disposeOpenTelemetry(@Disposes OpenTelemetry openTelemetry) {
+
+        if (AgentDetection.isAgentActive()) {
+            return;
+        }
+
         if (openTelemetry instanceof OpenTelemetrySdk) {
             OpenTelemetrySdk sdk = (OpenTelemetrySdk) openTelemetry;
             List<CompletableResultCode> results = new ArrayList<>();
