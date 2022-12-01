@@ -185,6 +185,7 @@ public class TestConfiguration {
                 }
             });
         }
+
         return osName;
     }
 
