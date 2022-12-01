@@ -59,7 +59,10 @@ import org.jboss.resteasy.plugins.providers.multipart.IAttachmentImpl;
  * Note that the {@code InputStreams} passed to the builder will be closed by the JAX-RS runtime. Closing
  * the streams prior to sending may result in unexpected behavior.
  * </p>
+ * 
+ * @deprecated Since restfulWS-3.1 - See jakarta.ws.rs.core.EntityPart instead.
  */
+@Deprecated
 public class AttachmentBuilder {
     private static final String CONTENT_TYPE_HEADER = "Content-Type";
     private static final String CONTENT_ID_HEADER = "Content-ID";
