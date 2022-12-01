@@ -638,9 +638,13 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             case NOT_NULL:
             case TRUE:
             case FALSE:
-            case EMPTY:
-            case NOT_EMPTY:
                 q.append(attributeExpr).append(condition.operator);
+                break;
+            case EMPTY:
+                q.append(attributeExpr).append(queryInfo.entityInfo.collectionAttributeNames.contains(name) ? Condition.EMPTY.operator : Condition.NULL.operator);
+                break;
+            case NOT_EMPTY:
+                q.append(attributeExpr).append(queryInfo.entityInfo.collectionAttributeNames.contains(name) ? Condition.NOT_EMPTY.operator : Condition.NOT_NULL.operator);
                 break;
             default:
                 q.append(attributeExpr).append(negated ? " NOT " : "").append(condition.operator).append('?').append(++queryInfo.paramCount);

@@ -63,6 +63,12 @@ public interface Primes {
     KeysetAwarePage<Prime> findByNumberBetweenOrderByEvenDescSumOfBitsDescNumberAsc(long min, long max, Pageable pagination);
 
     @OrderBy("number")
+    List<Prime> findByNumberInAndRomanNumeralEmpty(List<Long> nums);
+
+    @OrderBy("number")
+    List<Prime> findByNumberInAndRomanNumeralNotEmpty(List<Long> nums);
+
+    @OrderBy("number")
     List<Prime> findByNumberInAndRomanNumeralNull(Iterable<Long> nums);
 
     @OrderBy("number")

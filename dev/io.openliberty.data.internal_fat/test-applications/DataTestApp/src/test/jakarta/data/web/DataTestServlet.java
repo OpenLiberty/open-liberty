@@ -699,6 +699,17 @@ public class DataTestServlet extends FATServlet {
                                              .stream()
                                              .map(p -> p.number)
                                              .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(4003L),
+                             primes.findByNumberInAndRomanNumeralEmpty(List.of(43L, 4003L))
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+        assertIterableEquals(List.of(43L),
+                             primes.findByNumberInAndRomanNumeralNotEmpty(List.of(43L, 4003L))
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
     }
 
     /**
