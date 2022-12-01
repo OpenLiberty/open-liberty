@@ -13,6 +13,9 @@ package com.ibm.ws.webcontainer.security.test.servlets;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 import org.junit.rules.TestName;
 
 import com.ibm.websphere.simplicity.log.Log;
@@ -32,6 +35,7 @@ public class TestConfiguration {
     private final String application;
 
     private String currentConfigFile;
+    private static String osName = null;
 
     public TestConfiguration(LibertyServer server, Class<?> logClass, TestName name, String application) {
         this.server = server;
@@ -151,12 +155,37 @@ public class TestConfiguration {
     }
 
     /**
+     *
      * Asserts that the application is started. This message is issued only once
      * in the server life cycle unless the application is reinstalled.
      */
     public void assertApplicationStarted() {
-        assertNotNull("The application " + application + " should have started",
-                      server.waitForStringInLogUsingMark("CWWKZ0001I.* " + application, 300000));
+        if (isWindows()) {
+            assertNotNull("The application " + application + " should have started",
+                          server.waitForStringInLogUsingMark("CWWKZ0001I.* " + application, 900000));
+
+        } else {
+            assertNotNull("The application " + application + " should have started",
+                          server.waitForStringInLogUsingMark("CWWKZ0001I.* " + application, 300000));
+
+        }
+    }
+
+    protected static boolean isWindows() {
+        String name = getOSName();
+        return name.toLowerCase().startsWith("windows");
+    }
+
+    protected static String getOSName() {
+        if (osName == null) {
+            osName = AccessController.doPrivileged(new PrivilegedAction<String>() {
+                @Override
+                public String run() {
+                    return System.getProperty("os.name", "unknown");
+                }
+            });
+        }
+        return osName;
     }
 
     /**
