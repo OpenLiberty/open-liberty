@@ -42,6 +42,7 @@ public class Generatorv2WithSchmea11BetaBuildTest extends Generatorv2WithSchema1
   @AfterClass
   public static void tearDown() {
     version.delete();
+    olversion.delete();
   }
 
   @Test
