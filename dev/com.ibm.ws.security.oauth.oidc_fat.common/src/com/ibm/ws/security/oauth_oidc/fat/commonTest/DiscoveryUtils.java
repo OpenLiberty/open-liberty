@@ -21,8 +21,8 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationDa
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.HttpException;
 import com.meterware.httpunit.WebConversation;
-import com.meterware.httpunit.WebResponse;
 import com.meterware.httpunit.WebRequest;
+import com.meterware.httpunit.WebResponse;
 
 public class DiscoveryUtils {
 
@@ -52,6 +52,7 @@ public class DiscoveryUtils {
                 msg = "The discovery endpoint appears to be working properly";
             } catch (Exception e) {
                 Log.info(thisClass, "waitForDiscoveryToBeReady", e.toString());
+                helpers.testSleep(1);
             }
             nowTime = new Instant().getMillis();
         }
