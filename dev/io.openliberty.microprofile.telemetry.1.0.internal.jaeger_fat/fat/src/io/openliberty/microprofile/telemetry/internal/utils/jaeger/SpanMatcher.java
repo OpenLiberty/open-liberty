@@ -11,9 +11,10 @@
 package io.openliberty.microprofile.telemetry.internal.utils.jaeger;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -26,14 +27,20 @@ import io.jaegertracing.api_v2.Model.Log;
 import io.jaegertracing.api_v2.Model.Span;
 import io.jaegertracing.api_v2.Model.SpanRef;
 import io.jaegertracing.api_v2.Model.SpanRefType;
+import io.jaegertracing.api_v2.Model.ValueType;
+import io.opentelemetry.api.trace.StatusCode;
 
 /**
  * Hamcrest {@link Matcher} for performing assertions against {@link Span} objects retrieved from Jaeger
  */
 public class SpanMatcher extends TypeSafeDiagnosingMatcher<Span> {
 
+    private static final Class<SpanMatcher> c = SpanMatcher.class;
+
     List<KeyValue> expectedTags = new ArrayList<>();
     List<List<KeyValue>> expectedLogs = new ArrayList<>();
+    List<String> expectedEvents = new ArrayList<>();
+    List<Class<?>> expectedExceptions = new ArrayList<>();
     ByteString expectedTraceId = null;
     ByteString expectedParentSpanId = null;
     Boolean expectHasParent = null;
@@ -68,9 +75,14 @@ public class SpanMatcher extends TypeSafeDiagnosingMatcher<Span> {
             desc.appendValue(expectedTags);
         }
 
-        if (!expectedLogs.isEmpty()) {
-            desc.appendText("\n  with logs: ");
-            desc.appendValue(expectedLogs);
+        if (!expectedEvents.isEmpty()) {
+            desc.appendText("\n  with event logs: ");
+            desc.appendValue(expectedEvents);
+        }
+
+        if (!expectedExceptions.isEmpty()) {
+            desc.appendText("\n  with exception logs: ");
+            desc.appendValue(expectedExceptions);
         }
     }
 
@@ -109,15 +121,22 @@ public class SpanMatcher extends TypeSafeDiagnosingMatcher<Span> {
             }
         }
 
-        for (List<KeyValue> expectedLogFields : expectedLogs) {
-            boolean foundExpectedLog = false;
-            for (Log actualLog : span.getLogsList()) {
-                if (logMatches(actualLog, expectedLogFields)) {
-                    foundExpectedLog = true;
-                    break;
-                }
+        for (String eventName : expectedEvents) {
+            Optional<Log> matchingLog = span.getLogsList()
+                                            .stream()
+                                            .filter(l -> isEventLog(l, eventName))
+                                            .findAny();
+            if (!matchingLog.isPresent()) {
+                return false;
             }
-            if (!foundExpectedLog) {
+        }
+
+        for (Class<?> exceptionClass : expectedExceptions) {
+            Optional<Log> matchingLog = span.getLogsList()
+                                            .stream()
+                                            .filter(l -> isExceptionLog(l, exceptionClass))
+                                            .findAny();
+            if (!matchingLog.isPresent()) {
                 return false;
             }
         }
@@ -125,14 +144,57 @@ public class SpanMatcher extends TypeSafeDiagnosingMatcher<Span> {
         return true;
     }
 
-    private boolean logMatches(Log actual, List<KeyValue> expected) {
-        return actual.getFieldsCount() == expected.size()
-               && actual.getFieldsList().containsAll(expected);
+    /**
+     * Tests whether a log is an event log with the given name
+     *
+     * @param log the log to test
+     * @param eventName the expected event name
+     * @return {@code true} if the log is an event with the given name, otherwise {@code false}
+     */
+    private boolean isEventLog(Log log, String eventName) {
+        List<KeyValue> fields = log.getFieldsList();
+        return fields.size() == 1
+               && anyMatches(fields, e -> e.getKey().equals("event") && e.getVStr().equals(eventName));
+    }
+
+    /**
+     * Tests whether a log is an exception log for the given exception class
+     *
+     * @param log the log to test
+     * @param exceptionClass the expected exception class
+     * @return {@code true} if the log is an exception log for the given class, otherwise {@code false}
+     */
+    private boolean isExceptionLog(Log log, Class<?> exceptionClass) {
+        List<KeyValue> fields = log.getFieldsList();
+        return anyMatches(fields, f -> f.getKey().equals("event") && f.getVStr().equals("exception"))
+               && anyMatches(fields, f -> f.getKey().equals("exception.type") && f.getVStr().equals(exceptionClass.getName()))
+               && anyMatches(fields, f -> f.getKey().equals("exception.stacktrace") && f.getVStr().contains(exceptionClass.getName()));
+    }
+
+    /**
+     * Tests if any element of a collection matches a condition
+     *
+     * @param <V> the element type
+     * @param collection the collection to search
+     * @param condition the condition to test for
+     * @return {@code true} if any member matches the condition, otherwise {@code false}
+     */
+    private <V> boolean anyMatches(Collection<V> collection, Predicate<V> condition) {
+        for (V entry : collection) {
+            if (condition.test(entry)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public SpanMatcher withEventLog(String name) {
-        List<KeyValue> log = Collections.singletonList(KeyValue.newBuilder().setKey("event").setVStr(name).build());
-        expectedLogs.add(log);
+        expectedEvents.add(name);
+        return this;
+    }
+
+    public SpanMatcher withExceptionLog(Class<?> exceptionClass) {
+        expectedExceptions.add(exceptionClass);
         return this;
     }
 
@@ -162,6 +224,16 @@ public class SpanMatcher extends TypeSafeDiagnosingMatcher<Span> {
         return this;
     }
 
+    public SpanMatcher withStatus(StatusCode status) {
+        KeyValue statusTag = KeyValue.newBuilder().setKey("otel.status_code").setVStr(status.name()).build();
+        expectedTags.add(statusTag);
+
+        KeyValue errorTag = KeyValue.newBuilder().setKey("error").setVType(ValueType.BOOL).setVBool(status == StatusCode.ERROR ? true : false).build();
+        expectedTags.add(errorTag);
+
+        return this;
+    }
+
     public static SpanMatcher span() {
         return new SpanMatcher();
     }
@@ -178,6 +250,10 @@ public class SpanMatcher extends TypeSafeDiagnosingMatcher<Span> {
         return span().withEventLog(name);
     }
 
+    public static SpanMatcher hasExceptionLog(Class<?> exceptionClass) {
+        return span().withExceptionLog(exceptionClass);
+    }
+
     public static SpanMatcher hasParent() {
         return span().withParent();
     }
@@ -188,6 +264,10 @@ public class SpanMatcher extends TypeSafeDiagnosingMatcher<Span> {
 
     public static SpanMatcher hasParentSpanId(ByteString spanId) {
         return span().withParentSpanId(spanId);
+    }
+
+    public static SpanMatcher hasStatus(StatusCode status) {
+        return span().withStatus(status);
     }
 
 }
