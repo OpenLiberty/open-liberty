@@ -176,6 +176,53 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	}
 
 	/**
+	 * Test installation of feature json-1.0.esa from local repository
+	 *
+	 * @throws Exception
+	 */
+	@Test
+	public void testInstallFeatureESA() throws Exception {
+	    final String METHOD_NAME = "testInstallFeatureESA";
+	    Log.entering(c, METHOD_NAME);
+	    // Setup
+	    replaceWlpProperties("21.0.0.4");
+	    String[] json10FilesList = {
+		    relativeMinifiedRoot + "/wlp/lib/features/com.ibm.websphere.appserver.json-1.0.mf" };
+	    deleteFiles(METHOD_NAME, "json-1.0", json10FilesList);
+
+	    copyFileToMinifiedRoot("etc",
+		    "../../publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+
+	    copyFileToMinifiedRoot("repo/com/ibm/websphere/appserver/features/features/21.0.0.4",
+		    "../../publish/repo/com/ibm/websphere/appserver/features/features/21.0.0.4/features-21.0.0.4.json");
+
+	    copyFileToMinifiedRoot("repo/io/openliberty/features/features/21.0.0.4",
+		    "../../publish/repo/io/openliberty/features/features/21.0.0.4/features-21.0.0.4.json");
+
+	    copyFileToMinifiedRoot("repo/io/openliberty/features/json-1.0/21.0.0.4",
+		    "../../publish/repo/io/openliberty/features/json-1.0/21.0.0.4/json-1.0-21.0.0.4.esa");
+
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", minifiedRoot + "/repo/");
+
+	    // Begin Test
+	    String[] param1s = { "installFeature",
+		    minifiedRoot + "/repo/io/openliberty/features/json-1.0/21.0.0.4/json-1.0-21.0.0.4.esa",
+		    "--verbose" };
+//		String[] fileLists = { "lib/features/com.ibm.websphere.appserver.json-1.0.mf" };
+	    ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+	    String output = po.getStdout();
+
+	    assertTrue("Should contain json-1.0", output.contains("json-1.0"));
+	    if (!output.contains("Connection reset")) {
+		assertFalse("Connection timed out" + System.lineSeparator() + output,
+			output.contains("Connection timed out"));
+		assertEquals("Exit code should be 0", 0, po.getReturnCode());
+	    }
+
+	    Log.exiting(c, METHOD_NAME);
+	}
+
+	/**
 	 * Test the installation of features eventLogging-1.0 and osgiConsole-1.0, which
 	 * should also install the autofeature eventLogging-1.0-osgiCOnsole-1.0
 	 * 
