@@ -181,15 +181,25 @@ public abstract class Connection implements ConnectionInterface
         State(State...nextStates) { this.transitions = unmodifiableSet(new HashSet<>(asList(nextStates))); }
     }
 
-    //
-    // Current state of the connection.  To ensure correctness, one must hold the stateLock
-    // monitor before testing or setting its value.
-    private State state = OPEN;
+    public static class StateHolder {
+        private State state = OPEN;
 
-    /**
-     * Lock object for state field. This object's monitor should be held before reading or writing the state field.
-     * An anonymous inner class is used as it is easier to spot in java cores etc.
-     */
+        State currentState() { return state; }
+
+        synchronized boolean changeState(final State from, final State to) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "changeState from="+from+", to="+to);
+            if (from != state) return false;
+            if (from.transitions.contains(to)) {
+                state = to;
+                return true;
+            }
+            throw new IllegalStateException("Illegal attempt to change state from " + from + " to " + to);
+        }
+    }
+
+    // The state of the connection.
+    private StateHolder state = new StateHolder();
+    // Guard lock for state, writeLock() must be held for state transition.
     private final ReadWriteLock stateLock = new ReentrantReadWriteLock();
 
     private interface L extends AutoCloseable {
@@ -292,18 +302,23 @@ public abstract class Connection implements ConnectionInterface
          throws SIResourceException;
 
     /**
-     * Initiates a new conversation on this connection.
+     * Initiates a new Conversation on this Connection.
      */
     protected ConversationImpl startNewConversationGeneric(ConversationImpl conv, boolean onClientSide, AcceptListener acceptListener)
             throws SIResourceException
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(this, tc, "startNewConversationGeneric", new Object[] {conv, ""+onClientSide, acceptListener});
+            SibTr.entry(this, tc, "startNewConversationGeneric", new Object[] {conv,onClientSide, acceptListener});
 
         if (onClientSide)
             conv.setOnClientSide();                                              // F181603.2
 
-        conversationTable.add(conv);
+        try (L l = obtainLock(stateLock.readLock())) {
+           if (state.currentState() != OPEN) {
+              throw new SIResourceException(nls.getFormattedMessage("CONNECTION_CLOSED_SICJ0044", null, "CONNECTION_CLOSED_SICJ0044"));
+           }
+           conversationTable.add(conv);
+        }
 
         if (first)
         {
@@ -402,7 +417,7 @@ public abstract class Connection implements ConnectionInterface
 
         try (L l = obtainLock(stateLock.readLock()))
         {
-            if (state != OPEN && !(okayIfClosing && ((state == CLOSE_IN_PROGRESS) || (state == INVALIDATE_NOTIFYING_PEER_IN_PROGRESS))))
+            if (state.currentState() != OPEN && !(okayIfClosing && ((state.currentState() == CLOSE_IN_PROGRESS) || (state.currentState() == INVALIDATE_NOTIFYING_PEER_IN_PROGRESS))))
             {
                 // If we are not in an open state and we are not about to send the last transmission before
                 // closing - then throw an exception.
@@ -437,19 +452,19 @@ public abstract class Connection implements ConnectionInterface
             // finished
             if (threadsSendingData.decrementAndGet() == 0)
             {
-                switch (state) {
+                switch (state.currentState()) {
                 case CLOSE_PENDING:
                 case CLOSE_NOTIFYING_PEER_PENDING:
-                    previousState = Optional.of(state);
-                    state = CLOSE_IN_PROGRESS;
+                    previousState = Optional.of(state.currentState());
+                    state.changeState(previousState.get(), CLOSE_IN_PROGRESS);
                     break;
                 case INVALIDATE_PENDING:
-                    previousState = Optional.of(state);
-                    state = INVALIDATE_IN_PROGRESS;
+                    previousState = Optional.of(state.currentState());
+                    state.changeState(previousState.get(), INVALIDATE_IN_PROGRESS);
                     break;
                 case INVALIDATE_NOTIFYING_PEER_PENDING:
-                    previousState = Optional.of(state);
-                    state = INVALIDATE_NOTIFYING_PEER_IN_PROGRESS;
+                    previousState = Optional.of(state.currentState());
+                    state.changeState(previousState.get(), INVALIDATE_NOTIFYING_PEER_IN_PROGRESS);
                     break;
                 default:
                     previousState = Optional.empty();
@@ -733,19 +748,19 @@ public abstract class Connection implements ConnectionInterface
 
         try (L l = obtainLock(stateLock.writeLock()))
         {
-            if (state == OPEN)
+            if (state.currentState() == OPEN)
             {
                 if (threadsSendingData.get() > 0)
                 {
                     // If there are currently threads sending data then defer the close
-                    if (notifyPeer) state = CLOSE_NOTIFYING_PEER_PENDING;
-                    else state = CLOSE_PENDING;
+                    if (notifyPeer) state.changeState(OPEN, CLOSE_NOTIFYING_PEER_PENDING);
+                    else state.changeState(OPEN,CLOSE_PENDING);
 
                     if (TraceComponent.isAnyTracingEnabled()) JFapUtils.debugSummaryMessage(tc, this, null, "Deferring call to close");
                 }
                 else
                 {
-                    state = CLOSE_IN_PROGRESS;
+                    state.changeState(OPEN, CLOSE_IN_PROGRESS);
                     performCloseOnThisThread = true;
                 }
             }
@@ -824,8 +839,8 @@ public abstract class Connection implements ConnectionInterface
         boolean completeClose;
         try (L l = obtainLock(stateLock.writeLock()))
         {
-            completeClose = state != CLOSED;
-            state = CLOSED;
+            completeClose = state.currentState() != CLOSED;
+            state.changeState(state.currentState(), CLOSED);
         }
 
         if (completeClose)
@@ -981,10 +996,10 @@ public abstract class Connection implements ConnectionInterface
 
         try (L l = obtainLock(stateLock.writeLock()))
         {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+          if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 SibTr.debug(this, tc, "state = "+state+", threadsSendingData = "+threadsSendingData);
 
-            if (state == OPEN)
+            if (state.currentState() == OPEN)
             {
                 // In open state, no other threads are attempting to close or
                 // invalidate this connection.
@@ -997,7 +1012,8 @@ public abstract class Connection implements ConnectionInterface
                 {
                     // If there are currently threads sending data then defer the invalidate
                     // until these threads are exiting the send method.
-                    state = notifyPeer ? INVALIDATE_NOTIFYING_PEER_PENDING : INVALIDATE_PENDING;
+                    if(notifyPeer) state.changeState(OPEN,INVALIDATE_NOTIFYING_PEER_PENDING);
+                        else state.changeState(OPEN,INVALIDATE_PENDING);
 
                     if (TraceComponent.isAnyTracingEnabled()) JFapUtils.debugSummaryMessage(tc, this, null, "Deferring call to invalidate");
                     invalidatePendingThrowable = throwable;
@@ -1011,12 +1027,13 @@ public abstract class Connection implements ConnectionInterface
                     // If we need to notify our peer then set the state to invalidate
                     // notifying peer in progress.  This permits one last transmission
                     // to be made.
-                    state = notifyPeer ? INVALIDATE_NOTIFYING_PEER_IN_PROGRESS : INVALIDATE_IN_PROGRESS;
+                    if(notifyPeer) state.changeState(OPEN,INVALIDATE_NOTIFYING_PEER_IN_PROGRESS);
+                      else state.changeState(OPEN,INVALIDATE_IN_PROGRESS);
                     performInvalidateOnThisThread = true;
                 }
             }
-            else if ((state == CLOSE_NOTIFYING_PEER_PENDING) ||
-                    (state == CLOSE_PENDING))
+            else if ((state.currentState() == CLOSE_NOTIFYING_PEER_PENDING) ||
+                    (state.currentState() == CLOSE_PENDING))
             {
                 // Upgrade a pending close to a pending invalidate.  Regardless of
                 // whether the close request intended to notify the peer, we we not
@@ -1027,12 +1044,12 @@ public abstract class Connection implements ConnectionInterface
                 purgePriorityQueue = true;
                 notifyPeer = false;
 
-                state = INVALIDATE_PENDING;
+                state.changeState(state.currentState(),INVALIDATE_PENDING);
                 if (TraceComponent.isAnyTracingEnabled()) JFapUtils.debugSummaryMessage(tc, this, null, "Deferring call to invalidate");
 
                 invalidatePendingThrowable = throwable;
             }
-            else if (state == CLOSE_IN_PROGRESS)
+            else if (state.currentState() == CLOSE_IN_PROGRESS)
             {
                 // If there is already a close in progress - usurp it by purging
                 // the priority queue and not notifying our peer.  This avoids the
@@ -1040,7 +1057,7 @@ public abstract class Connection implements ConnectionInterface
                 purgePriorityQueue = true;
                 notifyPeer = false;
                 performInvalidateOnThisThread = true;
-                state = INVALIDATE_IN_PROGRESS;
+                state.changeState(CLOSE_IN_PROGRESS,INVALIDATE_IN_PROGRESS);
             }
         }
 
@@ -1483,7 +1500,7 @@ public abstract class Connection implements ConnectionInterface
     {
         try (L l = obtainLock(stateLock.readLock()))
         {
-            return (state == CLOSE_NOTIFYING_PEER_PENDING || state == CLOSE_PENDING);
+            return (state.currentState() == CLOSE_NOTIFYING_PEER_PENDING || state.currentState() == CLOSE_PENDING);
         }
     }
 
@@ -1496,7 +1513,7 @@ public abstract class Connection implements ConnectionInterface
     {
         try (L l = obtainLock(stateLock.readLock()))
         {
-            return (state == INVALIDATE_NOTIFYING_PEER_PENDING || state == INVALIDATE_PENDING);
+            return (state.currentState() == INVALIDATE_NOTIFYING_PEER_PENDING || state.currentState() == INVALIDATE_PENDING);
         }
     }
 
@@ -1528,7 +1545,7 @@ public abstract class Connection implements ConnectionInterface
 
         try (L l = obtainLock(stateLock.readLock()))
         {
-            if (state != OPEN) {
+            if (state.currentState() != OPEN) {
                 throw new SIConnectionDroppedException(nls.getFormattedMessage("CONNECTION_CLOSED_SICJ0044", null, "CONNECTION_CLOSED_SICJ0044"));
             }
         }
@@ -1552,7 +1569,7 @@ public abstract class Connection implements ConnectionInterface
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "isClosed");
         try (L l = obtainLock(stateLock.readLock()))
         {
-            boolean answer = (state != OPEN);
+            boolean answer = (state.currentState() != OPEN);
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "isClosed", answer);
             return answer;
         }
