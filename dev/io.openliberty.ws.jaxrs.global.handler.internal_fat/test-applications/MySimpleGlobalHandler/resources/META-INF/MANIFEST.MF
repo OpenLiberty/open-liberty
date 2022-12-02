@@ -1,0 +1,8 @@
+Bundle-Activator: io.openliberty.jaxrs.fat.globalhandler.simple.userbundle.MySimpleHandlerActivitor
+Bundle-ManifestVersion: 2
+Bundle-Name: MySimpleGlobalHandler
+Bundle-SymbolicName: MySimpleGlobalHandler
+Bundle-Version: 1.0.0
+Manifest-Version: 1.0
+Export-Package: io.openliberty.jaxrs.fat.globalhandler.simple.userbundle
+Import-Package: com.ibm.wsspi.webservices.handler,org.osgi.framework
