@@ -156,18 +156,32 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
             }
 
             logConfigContents(m, "Original contents", contents);
+            int authsIndex = contents.indexOf("\"auths\"");
+            boolean replacedAuth = false;
+
             if (contents.contains(registry)) {
-                Log.info(c, m, "Config already contains private registry");
-                return;
+                Log.info(c, m, "Config already contains the private registry: " + registry);
+                int registryIndex = contents.indexOf(registry, authsIndex);
+                int authIndex = contents.indexOf("\"auth\":", registryIndex);
+                int authIndexEnd = contents.indexOf(',', authIndex) + 1;
+                String authSubstring = contents.substring(authIndex, authIndexEnd);
+                if (authSubstring.contains(authToken)) {
+                    Log.info(c, m, "Config already contains the correct authToken for registry: " + registry);
+                    return;
+                } else {
+                    replacedAuth = true;
+                    Log.info(c, m, "Replacing auth token for registry: " + registry);
+                    contents = contents.replace(authSubstring, "\"auth\": \"" + authToken + "\",");
+                }
             }
-            int authIndex = contents.indexOf("\"auths\"");
-            if (authIndex >= 0) {
-                Log.info(c, m, "Other auths exist. Need to add private registry");
-                int splitAt = contents.indexOf('{', authIndex);
+
+            if (authsIndex >= 0 && !replacedAuth) {
+                Log.info(c, m, "Other auths exist. Need to add private registry: " + registry);
+                int splitAt = contents.indexOf('{', authsIndex);
                 String firstHalf = contents.substring(0, splitAt + 1);
                 String secondHalf = contents.substring(splitAt + 1);
                 contents = firstHalf + '\n' + privateAuth + ",\n" + secondHalf;
-            } else {
+            } else if (!replacedAuth) {
                 Log.info(c, m, "No auths exist. Adding auth block");
                 int splitAt = contents.indexOf('{');
                 String firstHalf = contents.substring(0, splitAt + 1);
@@ -217,10 +231,10 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
             Log.error(c, "test", e, "Unable to locate any healthy docker-engine instances");
             throw new InvalidConfigurationException("Unable to locate any healthy docker-engine instances", e);
         }
-        return transportConfig = TransportConfig.builder()
-                        .dockerHost(config.getDockerHost())
-                        .sslConfig(config.getSSLConfig())
-                        .build();
+        return transportConfig = TransportConfig.builder() //
+                                                .dockerHost(config.getDockerHost()) //
+                                                .sslConfig(config.getSSLConfig()) //
+                                                .build();
     }
 
     private class AvailableDockerHostFilter implements ExternalTestServiceFilter {
@@ -284,12 +298,12 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
             final String m = "test";
             final int maxAttempts = FATRunner.FAT_TEST_LOCALRUN ? 1 : 4; // attempt up to 4 times for remote builds
 
-            config = DefaultDockerClientConfig.createDefaultConfigBuilder()
-                            .withRegistryUsername(null)
-                            .withDockerHost(System.getProperty("DOCKER_HOST"))
-                            .withDockerTlsVerify(System.getProperty("DOCKER_TLS_VERIFY"))
-                            .withDockerCertPath(System.getProperty("DOCKER_CERT_PATH"))
-                            .build();
+            config = DefaultDockerClientConfig.createDefaultConfigBuilder() //
+                                              .withRegistryUsername(null) //
+                                              .withDockerHost(System.getProperty("DOCKER_HOST")) //
+                                              .withDockerTlsVerify(System.getProperty("DOCKER_TLS_VERIFY")) //
+                                              .withDockerCertPath(System.getProperty("DOCKER_CERT_PATH")) //
+                                              .build();
 
             Throwable firstIssue = null;
             for (int attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -298,9 +312,9 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
                     String dockerHost = config.getDockerHost().toASCIIString().replace("tcp://", "https://");
                     Log.info(c, m, "  Pinging URL: " + dockerHost);
                     SocketFactory sslSf = config.getSSLConfig().getSSLContext().getSocketFactory();
-                    String resp = new HttpsRequest(dockerHost + "/_ping")
-                                    .sslSocketFactory(sslSf)
-                                    .run(String.class);
+                    String resp = new HttpsRequest(dockerHost + "/_ping") //
+                                                                         .sslSocketFactory(sslSf) //
+                                                                         .run(String.class);
                     Log.info(c, m, "  Ping successful. Response: " + resp);
                     return;
                 } catch (Throwable t) {
@@ -436,7 +450,7 @@ public class ExternalTestServiceDockerClientStrategy extends DockerClientProvide
      * substitution for synthetic images, and programmatically committed images.
      * This will be determined on an image-to-image basis
      *
-     * @see    ArtifactoryImageNameSubstitutor#apply(org.testcontainers.utility.DockerImageName)
+     * @see ArtifactoryImageNameSubstitutor#apply(org.testcontainers.utility.DockerImageName)
      *
      * @return true, we are using the substitutor, false otherwise.
      */
