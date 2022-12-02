@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
@@ -351,5 +353,30 @@ public class RESTHelper {
         }
 
         return type.trim().toLowerCase(Locale.ENGLISH);
+    }
+
+    /**
+     * Under servlet 6, a path parameter which was 'foo//bar' will
+     * get collapsed by the container to 'foo/bar'. This method attempts
+     * to repair that by looking at the original URI
+     */
+    public static String repairSlashes(String objectName, RESTRequest request) {
+        if (objectName.indexOf('/') == -1) {
+            return objectName;
+        }        
+        String decodedURI = RESTHelper.URLDecoder(request.getURI(), JSONConverter.getConverter());
+        String regexPattern = "\\Q" + objectName.replaceAll("/", "\\\\E/+\\\\Q") + "\\E";
+        Pattern pattern = Pattern.compile(regexPattern);
+        Matcher matcher = pattern.matcher(decodedURI);
+        boolean matchFound = matcher.find();
+        if (matchFound) {
+            // The group is in fact what we want, it is the new version of objectName
+            return matcher.group();
+        } else {
+            // This shouldn't happen. Could throw an exception or just return the
+            // original objectName and log.
+            // TODO
+            throw new RuntimeException("Wibble");
+        }
     }
 }
