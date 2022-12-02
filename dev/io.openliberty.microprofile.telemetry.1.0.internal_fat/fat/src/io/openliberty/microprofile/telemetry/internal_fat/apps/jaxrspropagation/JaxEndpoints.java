@@ -20,6 +20,8 @@ import static io.opentelemetry.api.trace.SpanKind.SERVER;
 
 import java.net.URI;
 import java.util.List;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Future;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.ApplicationPath;
@@ -93,17 +95,54 @@ public class JaxEndpoints extends Application {
             .request(MediaType.TEXT_PLAIN)
             .get(String.class);
 
+        client.close();
+
         return Response.ok(result).build();
+    }
+
+    @GET
+    @Path("/jaxclientasync")
+    public Response getJaxAsync(@Context UriInfo uriInfo) {
+        assertNotNull(Span.current());
+        try {
+            Thread.sleep(3000);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        spanExporter.reset();
+
+        Baggage.builder().put("foo", "bar").build().makeCurrent();
+        Baggage baggage = Baggage.current();
+        assertEquals("bar", baggage.getEntryValue("foo"));
+
+        Client client = ClientBuilder.newClient();
+        String url = new String(uriInfo.getAbsolutePath().toString());
+        url = url.replace("jaxclientasync", "jaxtwo"); //The jaxclient will use the URL as given so it needs the final part to be provided.
+
+        Future<String> result = client.target(url)
+            .request(MediaType.TEXT_PLAIN)
+            .async()
+            .get(String.class);
+
+	try {
+            return Response.ok(result.get()).build(); 
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            client.close(); //This needs tobe after result.get()
+        }
     }
 
     @GET
     @Path("/jaxtwo")
     public Response getJaxTwo() {
         assertNotNull(Span.current());
-        Baggage result = Baggage.current();
-        assertEquals("bar", result.getEntryValue("foo"));
+        Baggage baggage = Baggage.current();
+        assertEquals("bar", baggage.getEntryValue("foo"));
         return Response.ok("Test Passed").build();
     }
+
+    ////// MP code below //////
 
     @GET
     @Path("/mpclient")
@@ -133,16 +172,16 @@ public class JaxEndpoints extends Application {
                          .baseUri(baseUri)
                          .build(MPTwo.class);
 
-        two.getMPTwo();
-        return Response.ok("Test Passed").build();
+        String result = two.getMPTwo();
+        return Response.ok(result).build();
     }
 
     @GET
     @Path("/mptwo")
     public Response getMPTwo() {
         assertNotNull(Span.current());
-        Baggage result = Baggage.current();
-        assertEquals("bar", result.getEntryValue("foo"));
+        Baggage baggage = Baggage.current();
+        assertEquals("bar", baggage.getEntryValue("foo"));
 
         return Response.ok("Test Passed").build();
     }
@@ -152,7 +191,48 @@ public class JaxEndpoints extends Application {
 
         @GET
         @Path("/mptwo")
-        public Response getMPTwo();
+        public String getMPTwo();
+
+    }
+
+    @GET
+    @Path("/mpclientasync")
+    public Response getMPAsync	(@Context UriInfo uriInfo) {
+        assertNotNull(Span.current());
+        try {
+            Thread.sleep(3000);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        spanExporter.reset();
+
+        Baggage.builder().put("foo", "bar").build().makeCurrent();
+        Baggage baggage = Baggage.current();
+        assertEquals("bar", baggage.getEntryValue("foo"));
+
+        String baseUrl = uriInfo.getAbsolutePath().toString().replace("/mpclientasync", ""); //The mpclient will add the final part of the URL for you, so we remove the final part.
+        URI baseUri = null;
+        try {
+            baseUri = new URI(baseUrl);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        assertNotNull(Span.current());
+        MPTwoAsync two = RestClientBuilder.newBuilder()
+                         .baseUri(baseUri)
+                         .build(MPTwoAsync.class);
+
+        String result = two.getMPTwo().toCompletableFuture().join();
+        return Response.ok(result).build();
+    }
+
+    @RegisterRestClient
+    public interface MPTwoAsync {
+
+        @GET
+        @Path("/mptwo")
+        public CompletionStage<String> getMPTwo();
 
     }
 
