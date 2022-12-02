@@ -33,11 +33,14 @@ import componenttest.rules.repeater.RepeatTests;
                JAXRSDynamicHandlerTest.class,
                JAXRSMessageContextAPITest.class,
                CDIRolesAllowedTest.class,
-               JAXRSClientHandlerTest.class
+               JAXRSClientHandlerTest.class,
+               SimpleGlobalHandlerTest.class
 })
 public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
                                              .andWith(FeatureReplacementAction.EE8_FEATURES())
-                                             .andWith(FeatureReplacementAction.EE9_FEATURES());
+                                             .andWith(FeatureReplacementAction.EE9_FEATURES())
+                                             .andWith(FeatureReplacementAction.EE10_FEATURES()
+                                                      .alwaysAddFeature("servlet-6.0"));
 }
