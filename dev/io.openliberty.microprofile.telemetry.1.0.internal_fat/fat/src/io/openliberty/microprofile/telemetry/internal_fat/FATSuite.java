@@ -19,7 +19,8 @@ import componenttest.annotation.MinimumJavaLevel;
 @RunWith(Suite.class)
 @MinimumJavaLevel(javaLevel = 11)
 @SuiteClasses({
-                Telemetry10.class
+                Telemetry10.class,
+                JaxIntegration.class
 })
 public class FATSuite {
 
