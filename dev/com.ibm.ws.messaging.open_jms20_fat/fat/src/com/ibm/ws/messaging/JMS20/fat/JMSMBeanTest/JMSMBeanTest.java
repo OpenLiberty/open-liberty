@@ -31,6 +31,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.messaging.JMS20.fat.TestUtils;
 
 // This test cannot be run under jakarta, as jakarta has no replacement
@@ -72,6 +73,7 @@ public class JMSMBeanTest {
         } catch ( Exception e ) {
             e.printStackTrace();
         }
+        ShrinkHelper.cleanAllExportedArchives();
     }
 
     //

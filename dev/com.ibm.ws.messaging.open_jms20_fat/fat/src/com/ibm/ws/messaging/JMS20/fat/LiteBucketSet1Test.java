@@ -19,6 +19,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
+
 import componenttest.custom.junit.runner.FATRunner;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -84,6 +86,8 @@ public class LiteBucketSet1Test {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
+        ShrinkHelper.cleanAllExportedArchives();
     }
 
     // start of tests from JMSProducerTest_118071

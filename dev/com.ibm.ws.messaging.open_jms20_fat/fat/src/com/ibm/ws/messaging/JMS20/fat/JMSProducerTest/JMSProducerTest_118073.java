@@ -25,6 +25,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.messaging.JMS20.fat.TestUtils;
 
 @RunWith(FATRunner.class)
@@ -110,6 +111,7 @@ public class JMSProducerTest_118073 {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        ShrinkHelper.cleanAllExportedArchives();
     }
 
     //
