@@ -27,6 +27,8 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
@@ -71,8 +73,32 @@ public class JaxIntegration extends FATServletClient {
     }
 
     @Test
+    @Mode(TestMode.EXPERIMENTAL)
+    public void testIntegrationWithJaxClientAsync() throws Exception {
+        HttpRequest pokeJax = new HttpRequest(server, "/" + APP_NAME + "/endpoints/jaxclientasync");
+        assertEquals("Test Passed", pokeJax.run(java.lang.String.class));
+
+        Thread.sleep(1000);
+
+        HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans");
+        assertEquals("Test Passed", readspans.run(java.lang.String.class));
+    }
+
+    @Test
     public void testIntegrationWithMpClient() throws Exception {
         HttpRequest pokeMp = new HttpRequest(server, "/" + APP_NAME + "/endpoints/jaxclient");
+        assertEquals("Test Passed", pokeMp.run(java.lang.String.class));
+
+        Thread.sleep(1000);
+
+        HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans");
+        assertEquals("Test Passed", readspans.run(java.lang.String.class));
+    }
+
+    @Test
+    @Mode(TestMode.EXPERIMENTAL)
+    public void testIntegrationWithMpClientAsync() throws Exception {
+        HttpRequest pokeMp = new HttpRequest(server, "/" + APP_NAME + "/endpoints/mpclientasync");
         assertEquals("Test Passed", pokeMp.run(java.lang.String.class));
 
         Thread.sleep(1000);
