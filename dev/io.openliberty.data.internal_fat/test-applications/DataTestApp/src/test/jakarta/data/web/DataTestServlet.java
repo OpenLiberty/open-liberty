@@ -141,9 +141,11 @@ public class DataTestServlet extends FATServlet {
                     new Prime(41, "29", "101001", 3, "XLI", "forty-one"),
                     new Prime(43, "2B", "101011", 4, "XLIII", "forty-three"),
                     new Prime(47, "2F", "101111", 5, "XLVII", "forty-seven"),
-                    new Prime(4001, "FA1", "111110100001", 7, null, "four thousand one"),
-                    new Prime(4003, "FA3", "111110100011", 8, null, "four thousand three"),
-                    new Prime(4007, "FA7", "111110100111", 9, null, "four thousand seven"));
+                    new Prime(4001, "FA1", "111110100001", 7, null, "four thousand one"), // romanNumeralSymbols null
+                    new Prime(4003, "FA3", "111110100011", 8, null, "four thousand three"), // romanNumeralSymbols null
+                    new Prime(4007, "FA7", "111110100111", 9, null, "four thousand seven"), // romanNumeralSymbols null
+                    new Prime(4013, "FAD", "111110101101", 9, "", "four thousand thirteen"), // empty list of romanNumeralSymbols
+                    new Prime(4019, "FB3", "111110110011", 9, "", "four thousand nineteen")); // empty list of romanNumeralSymbols
     }
 
     /**
@@ -633,7 +635,7 @@ public class DataTestServlet extends FATServlet {
         a1.id = 1001L;
         a1.city = "Rochester";
         a1.state = "Minnesota";
-        a1.streetAddress = new StreetAddress(2800, "37th St NW");
+        a1.streetAddress = new StreetAddress(2800, "37th St NW", List.of("Receiving Dock", "Building 040-1"));
         a1.zipCode = 55901;
         shippingAddresses.save(a1);
 
@@ -675,7 +677,62 @@ public class DataTestServlet extends FATServlet {
                                              .map(a -> a.houseNumber + " " + a.streetName)
                                              .collect(Collectors.toList()));
 
+        // [EclipseLink-6002] Aggregated objects cannot be written/deleted/queried independently from their owners.
+        //                    Descriptor: [RelationalDescriptor(test.jakarta.data.web.StreetAddress --> [])]
+        //                    Query: ReportQuery(referenceClass=StreetAddress )
+        // TODO uncomment the following to reproduce the above error:
+        // List<ShippingAddress> found = shippingAddresses.findByRecipientInfoNotEmpty();
+        // assertEquals(1, found.size());
+        // ShippingAddress a = found.get(0);
+        // assertEquals(a1.id, a.id);
+        // assertEquals(a1.city, a.city);
+        // assertEquals(a1.state, a.state);
+        // assertEquals(a1.zipCode, a.zipCode);
+        // assertEquals(a1.streetAddress.houseNumber, a.streetAddress.houseNumber);
+        // assertEquals(a1.streetAddress.streetName, a.streetAddress.streetName);
+        // assertEquals(a1.streetAddress.recipientInfo, a.streetAddress.recipientInfo);
+
+        // assertEquals(3L, shippingAddresses.countByRecipientInfoEmpty());
+
+        // [EclipseLink-4002] Internal Exception: java.sql.SQLIntegrityConstraintViolationException:
+        //                    DELETE on table 'SHIPPINGADDRESS' caused a violation of foreign key constraint 'SHPPNGSHPPNGDDRSSD' for key (1001)
+        // TODO Entity removal fails without the above error unless we add the following lines to first remove the rows from the collection attribute's table,
+        a1.streetAddress.recipientInfo = new ArrayList<>();
+        shippingAddresses.save(a1);
+
         assertEquals(4, shippingAddresses.removeAll());
+    }
+
+    /**
+     * Test Empty and NotEmpty on repository methods.
+     */
+    @Test
+    public void testEmpty() {
+        assertIterableEquals(List.of(4007L, 4013L, 4019L),
+                             primes.findByNumberInAndRomanNumeralSymbolsEmpty(Set.of(7L, 4007L, 13L, 4013L, 19L, 4019L))
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+
+        Stack<Long> list = new Stack<>();
+        list.addAll(Set.of(7L, 4007L, 13L, 4013L, 19L, 4019L));
+
+        assertIterableEquals(List.of(7L, 13L, 19L),
+                             primes.findByNumberInAndRomanNumeralSymbolsNotEmpty(list)
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(4003L),
+                             primes.findByNumberInAndRomanNumeralEmpty(List.of(43L, 4003L))
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+        assertIterableEquals(List.of(43L),
+                             primes.findByNumberInAndRomanNumeralNotEmpty(List.of(43L, 4003L))
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
     }
 
     /**

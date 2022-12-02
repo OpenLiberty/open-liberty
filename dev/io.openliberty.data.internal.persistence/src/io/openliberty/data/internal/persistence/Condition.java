@@ -15,6 +15,7 @@ package io.openliberty.data.internal.persistence;
 enum Condition {
     BETWEEN(null, 7),
     CONTAINS(null, 8),
+    EMPTY(" IS EMPTY", 5),
     ENDS_WITH(null, 8),
     EQUALS("=", 0),
     FALSE("=FALSE", 5),
@@ -24,6 +25,7 @@ enum Condition {
     LESS_THAN("<", 8),
     LESS_THAN_EQUAL("<=", 13),
     LIKE(null, 4),
+    NOT_EMPTY(" IS NOT EMPTY", 8),
     NOT_EQUALS("<>", 3),
     NOT_NULL(" IS NOT NULL", 7),
     NULL(" IS NULL", 4),
@@ -56,6 +58,10 @@ enum Condition {
                 return FALSE;
             case FALSE:
                 return TRUE;
+            case EMPTY:
+                return NOT_EMPTY;
+            case NOT_EMPTY:
+                return EMPTY;
             case NOT_EQUALS:
                 return EQUALS;
             case NOT_NULL:

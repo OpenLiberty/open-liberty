@@ -10,6 +10,8 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import java.util.List;
+
 import jakarta.data.Delete;
 import jakarta.data.Select;
 import jakarta.data.repository.Query;
@@ -20,8 +22,12 @@ import jakarta.data.repository.Repository;
  */
 @Repository
 public interface ShippingAddresses {
+    long countByRecipientInfoEmpty();
+
     @Select({ "houseNumber", "streetName" })
     StreetAddress[] findByHouseNumberBetweenOrderByStreetNameAscHouseNumber(int minHouseNumber, int maxHouseNumber);
+
+    List<ShippingAddress> findByRecipientInfoNotEmpty();
 
     WorkAddress[] findByStreetNameAndFloorNumber(String streetName, int floorNumber);
 

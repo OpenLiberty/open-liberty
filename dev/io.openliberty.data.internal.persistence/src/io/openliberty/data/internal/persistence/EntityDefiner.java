@@ -147,49 +147,9 @@ class EntityDefiner implements Runnable {
                     if (discriminatorColumn != null)
                         xml.append("  <discriminator-column name=\"").append(discriminatorColumn.value()).append("\"/>").append(EOLN);
 
-                    xml.append("  <attributes>").append(EOLN);
+                    writeAttributes(xml, c, keyAttributeName, embeddableTypes);
 
-                    List<Field> fields = new ArrayList<Field>();
-                    for (Class<?> superc = c; superc != null; superc = superc.getSuperclass()) {
-                        boolean isMappedSuperclass = superc.getAnnotation(MappedSuperclass.class) != null;
-                        if (isMappedSuperclass || superc == c)
-                            for (Field f : superc.getFields())
-                                if (isMappedSuperclass || c.equals(f.getDeclaringClass()))
-                                    fields.add(f);
-                    }
-
-                    for (Field field : fields) {
-                        Id id = field.getAnnotation(Id.class);
-                        Column column = field.getAnnotation(Column.class);
-                        Generated generated = field.getAnnotation(Generated.class);
-                        Embeddable embeddable = field.getType().getAnnotation(Embeddable.class);
-
-                        String attributeName = field.getName();
-                        String columnName = column == null || column.value().length() == 0 ? //
-                                        id == null || id.value().length() == 0 ? null : id.value() : //
-                                        column.value();
-                        boolean isCollection = Collection.class.isAssignableFrom(field.getType());
-
-                        String columnType;
-                        if (embeddable == null) {
-                            columnType = id != null || keyAttributeName.equals(attributeName) ? "id" : //
-                                            "version".equals(attributeName) ? "version" : //
-                                                            isCollection ? "element-collection" : //
-                                                                            "basic";
-                        } else {
-                            columnType = "embedded";
-                            embeddableTypes.add(field.getType());
-                        }
-
-                        xml.append("   <" + columnType + " name=\"" + attributeName + "\">").append(EOLN);
-                        if (columnName != null)
-                            xml.append("    <column name=\"" + columnName + "\"/>").append(EOLN);
-                        if (generated != null)
-                            xml.append("    <generated-value strategy=\"" + generated.value().name() + "\"/>").append(EOLN);
-                        xml.append("   </" + columnType + ">").append(EOLN);
-                    }
-
-                    xml.append("  </attributes>").append(EOLN).append(" </entity>").append(EOLN);
+                    xml.append(" </entity>").append(EOLN);
 
                     entityClassInfo.add(xml.toString());
                 } else {
@@ -198,7 +158,9 @@ class EntityDefiner implements Runnable {
             }
 
             for (Class<?> type : embeddableTypes) {
-                StringBuilder xml = new StringBuilder(100).append(" <embeddable class=\"").append(type.getName()).append("\"/>").append(EOLN);
+                StringBuilder xml = new StringBuilder(500).append(" <embeddable class=\"").append(type.getName()).append("\">").append(EOLN);
+                writeAttributes(xml, type, null, null);
+                xml.append(" </embeddable>").append(EOLN);
                 entityClassInfo.add(xml.toString());
             }
 
@@ -228,6 +190,8 @@ class EntityDefiner implements Runnable {
                             String fullAttributeName = attributeName + '.' + embeddableAttributeName;
                             attributeNames.put(embeddableAttributeName.toUpperCase(), fullAttributeName);
                             attributeAccessors.put(fullAttributeName, attr.getJavaMember());
+                            if (PersistentAttributeType.ELEMENT_COLLECTION.equals(embAttr.getPersistentAttributeType()))
+                                collectionAttributeNames.add(fullAttributeName);
                         }
                     } else {
                         attributeNames.put(attributeName.toUpperCase(), attributeName);
@@ -294,5 +258,53 @@ class EntityDefiner implements Runnable {
             if (em != null)
                 em.close();
         }
+    }
+
+    private void writeAttributes(StringBuilder xml, Class<?> c, String keyAttributeName, List<Class<?>> embeddableTypes) {
+        xml.append("  <attributes>").append(EOLN);
+
+        List<Field> fields = new ArrayList<Field>();
+        for (Class<?> superc = c; superc != null; superc = superc.getSuperclass()) {
+            boolean isMappedSuperclass = superc.getAnnotation(MappedSuperclass.class) != null;
+            if (isMappedSuperclass || superc == c)
+                for (Field f : superc.getFields())
+                    if (isMappedSuperclass || c.equals(f.getDeclaringClass()))
+                        fields.add(f);
+        }
+
+        for (Field field : fields) {
+            Id id = field.getAnnotation(Id.class);
+            Column column = field.getAnnotation(Column.class);
+            Generated generated = field.getAnnotation(Generated.class);
+            Embeddable embeddable = field.getType().getAnnotation(Embeddable.class);
+
+            String attributeName = field.getName();
+            String columnName = column == null || column.value().length() == 0 ? //
+                            id == null || id.value().length() == 0 ? null : id.value() : //
+                            column.value();
+            boolean isCollection = Collection.class.isAssignableFrom(field.getType());
+
+            String columnType;
+            if (embeddable == null) {
+                columnType = id != null || keyAttributeName != null && keyAttributeName.equals(attributeName) ? "id" : //
+                                "version".equals(attributeName) ? "version" : //
+                                                isCollection ? "element-collection" : //
+                                                                "basic";
+            } else if (embeddableTypes == null) {
+                throw new UnsupportedOperationException("TODO: Embeddedable within an Embeddable");
+            } else {
+                columnType = "embedded";
+                embeddableTypes.add(field.getType());
+            }
+
+            xml.append("   <" + columnType + " name=\"" + attributeName + "\">").append(EOLN);
+            if (columnName != null)
+                xml.append("    <column name=\"" + columnName + "\"/>").append(EOLN);
+            if (generated != null)
+                xml.append("    <generated-value strategy=\"" + generated.value().name() + "\"/>").append(EOLN);
+            xml.append("   </" + columnType + ">").append(EOLN);
+        }
+
+        xml.append("  </attributes>").append(EOLN);
     }
 }
