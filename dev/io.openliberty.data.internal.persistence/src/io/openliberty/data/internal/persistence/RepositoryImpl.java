@@ -323,6 +323,24 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     }
 
     /**
+     * Indicates if the characters leading up to, but not including, the endBefore position
+     * in the text matches the searchFor. For example, a true value will be returned by
+     * endsWith("Not", "findByNameNotNullAndPriceLessThan", 13).
+     * But for any number other than 13, the above will return false because no position
+     * other than 13 immediately follows a string ending with "Not".
+     *
+     * @param searchFor string to search for in the position immediately prior to the endBefore position.
+     * @param text      the text to search.
+     * @param endBefore position before to match.
+     * @return true if found, otherwise false.
+     */
+    @Trivial
+    private static boolean endsWith(String searchFor, String text, int endBefore) {
+        int searchLen = searchFor.length();
+        return endBefore >= searchLen && text.regionMatches(endBefore - searchLen, searchFor, 0, searchLen);
+    }
+
+    /**
      * Replaces an exception with a Jakarta Data specification-defined exception,
      * chaining the original exception as the cause.
      * This method replaces all exceptions that are not RuntimeExceptions.
@@ -519,67 +537,85 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     }
 
     /**
-     * Generates JPQL for a findBy or deleteBy condition such as MyColumn[Not?]Like
+     * Generates JPQL for a *By condition such as MyColumn[Not]Like[IgnoreCase]
      */
     private void generateRepositoryQueryCondition(QueryInfo queryInfo, String expression, StringBuilder q) {
-        int length = expression.length();
+        int end = expression.length();
+        char last = expression.charAt(end - 1);
+        boolean ignoreCase;
+        if (ignoreCase = last == 'e' && endsWith("IgnoreCas", expression, end - 1)) {
+            if (0 == (end -= 10))
+                throw new MappingException("Entity property name or condition is required before IgnoreCase."); // TODO
+            last = expression.charAt(end - 1);
+        }
 
         Condition condition = Condition.EQUALS;
-        switch (expression.charAt(length - 1)) {
+        switch (last) {
             case 'n': // GreaterThan | LessThan | In | Between
-                if (length > Condition.IN.length) {
-                    char ch = expression.charAt(length - 2);
+                if (end > 2) {
+                    char ch = expression.charAt(end - 2);
                     if (ch == 'a') { // GreaterThan | LessThan
-                        if (expression.endsWith("GreaterThan"))
+                        if (endsWith("GreaterTh", expression, end - 2))
                             condition = Condition.GREATER_THAN;
-                        else if (expression.endsWith("LessThan"))
+                        else if (endsWith("LessTh", expression, end - 2))
                             condition = Condition.LESS_THAN;
                     } else if (ch == 'I') { // In
                         condition = Condition.IN;
-                    } else if (expression.endsWith("Between")) {
+                    } else if (ch == 'e' && endsWith("Betwe", expression, end - 2)) {
                         condition = Condition.BETWEEN;
                     }
                 }
                 break;
             case 'l': // GreaterThanEqual | LessThanEqual | Null
-                if (length > Condition.LESS_THAN_EQUAL.length && expression.charAt(length - 4) == 'q') {
-                    if (expression.endsWith("GreaterThanEqual"))
-                        condition = Condition.GREATER_THAN_EQUAL;
-                    else if (expression.endsWith("LessThanEqual"))
-                        condition = Condition.LESS_THAN_EQUAL;
-                } else if (expression.endsWith("Null")) {
-                    condition = Condition.NULL;
+                if (end > 4) {
+                    char ch = expression.charAt(end - 2);
+                    if (ch == 'a') { // GreaterThanEqual | LessThanEqual
+                        if (endsWith("GreaterThanEqu", expression, end - 2))
+                            condition = Condition.GREATER_THAN_EQUAL;
+                        else if (endsWith("LessThanEqu", expression, end - 2))
+                            condition = Condition.LESS_THAN_EQUAL;
+                    } else if (ch == 'l' & expression.charAt(end - 3) == 'u' && expression.charAt(end - 4) == 'N') {
+                        condition = Condition.NULL;
+                    }
                 }
                 break;
             case 'e': // Like, True, False
-                if (expression.endsWith("Like"))
-                    condition = Condition.LIKE;
-                else if (expression.endsWith("True"))
-                    condition = Condition.TRUE;
-                else if (expression.endsWith("False"))
-                    condition = Condition.FALSE;
+                if (end > 4) {
+                    char ch = expression.charAt(end - 4);
+                    if (ch == 'L') {
+                        if (expression.charAt(end - 3) == 'i' && expression.charAt(end - 2) == 'k')
+                            condition = Condition.LIKE;
+                    } else if (ch == 'T') {
+                        if (expression.charAt(end - 3) == 'r' && expression.charAt(end - 2) == 'u')
+                            condition = Condition.TRUE;
+                    } else if (endsWith("Fals", expression, end - 1)) {
+                        condition = Condition.FALSE;
+                    }
+                }
                 break;
             case 'h': // StartsWith | EndsWith
-                if (expression.endsWith("StartsWith"))
-                    condition = Condition.STARTS_WITH;
-                else if (expression.endsWith("EndsWith"))
-                    condition = Condition.ENDS_WITH;
+                if (end > 8) {
+                    char ch = expression.charAt(end - 8);
+                    if (ch == 'E') {
+                        if (endsWith("ndsWit", expression, end - 1))
+                            condition = Condition.ENDS_WITH;
+                    } else if (end > 10 && ch == 'a' && endsWith("StartsWit", expression, end - 1)) {
+                        condition = Condition.STARTS_WITH;
+                    }
+                }
                 break;
             case 's': // Contains
-                if (expression.endsWith("Contains"))
+                if (endsWith("Contain", expression, end - 1))
                     condition = Condition.CONTAINS;
                 break;
             case 'y': // Empty
-                if (expression.endsWith("Empty"))
+                if (endsWith("Empt", expression, end - 1))
                     condition = Condition.EMPTY;
         }
 
-        boolean negated = length > condition.length + 3 //
-                          && expression.charAt(length - condition.length - 3) == 'N'
-                          && expression.charAt(length - condition.length - 2) == 'o'
-                          && expression.charAt(length - condition.length - 1) == 't';
+        boolean negated = endsWith("Not", expression, end - condition.length);
 
-        String attribute = expression.substring(0, length - condition.length - (negated ? 3 : 0));
+        String attribute = expression.substring(0, end - condition.length - (negated ? 3 : 0));
 
         if (negated) {
             Condition negatedCondition = condition.negate();
@@ -589,6 +625,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             }
         }
 
+        // TODO expecting that Upper/Lower will be removed in favor of IgnoreCase
         boolean upper = false;
         boolean lower = false;
         if (attribute.length() > 5 && ((upper = attribute.startsWith("Upper")) || (lower = attribute.startsWith("Lower"))))
@@ -605,7 +642,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         }
 
         StringBuilder a = new StringBuilder();
-        if (upper)
+        if (upper || ignoreCase)
             a.append("UPPER(o.").append(name).append(')');
         else if (lower)
             a.append("LOWER(o.").append(name).append(')');
@@ -614,24 +651,35 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
         String attributeExpr = a.toString();
 
+        boolean isCollection = queryInfo.entityInfo.collectionAttributeNames.contains(name);
+        if (isCollection)
+            condition.verifyCollectionsSupported(name, ignoreCase);
+
         switch (condition) {
             case STARTS_WITH:
-                q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT(?").append(++queryInfo.paramCount).append(", '%')");
+                q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT(");
+                appendParam(q, ignoreCase, ++queryInfo.paramCount).append(", '%')");
                 break;
             case ENDS_WITH:
-                q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ?").append(++queryInfo.paramCount).append(")");
+                q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ");
+                appendParam(q, ignoreCase, ++queryInfo.paramCount).append(")");
                 break;
             case LIKE:
-                q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE ?").append(++queryInfo.paramCount);
+                q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE ");
+                appendParam(q, ignoreCase, ++queryInfo.paramCount);
                 break;
             case BETWEEN:
-                q.append(attributeExpr).append(negated ? " NOT " : " ").append("BETWEEN ?").append(++queryInfo.paramCount).append(" AND ?").append(++queryInfo.paramCount);
+                q.append(attributeExpr).append(negated ? " NOT " : " ").append("BETWEEN ");
+                appendParam(q, ignoreCase, ++queryInfo.paramCount).append(" AND ");
+                appendParam(q, ignoreCase, ++queryInfo.paramCount);
                 break;
             case CONTAINS:
-                if (queryInfo.entityInfo.collectionAttributeNames.contains(name))
+                if (isCollection) {
                     q.append(" ?").append(++queryInfo.paramCount).append(negated ? " NOT " : " ").append("MEMBER OF ").append(attributeExpr);
-                else
-                    q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ?").append(++queryInfo.paramCount).append(", '%')");
+                } else {
+                    q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ");
+                    appendParam(q, ignoreCase, ++queryInfo.paramCount).append(", '%')");
+                }
                 break;
             case NULL:
             case NOT_NULL:
@@ -640,14 +688,32 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 q.append(attributeExpr).append(condition.operator);
                 break;
             case EMPTY:
-                q.append(attributeExpr).append(queryInfo.entityInfo.collectionAttributeNames.contains(name) ? Condition.EMPTY.operator : Condition.NULL.operator);
+                q.append(attributeExpr).append(isCollection ? Condition.EMPTY.operator : Condition.NULL.operator);
                 break;
             case NOT_EMPTY:
-                q.append(attributeExpr).append(queryInfo.entityInfo.collectionAttributeNames.contains(name) ? Condition.NOT_EMPTY.operator : Condition.NOT_NULL.operator);
+                q.append(attributeExpr).append(isCollection ? Condition.NOT_EMPTY.operator : Condition.NOT_NULL.operator);
                 break;
+            case IN:
+                if (ignoreCase)
+                    throw new MappingException(new UnsupportedOperationException("Repository keyword IgnoreCase cannot be combined with the In keyword.")); // TODO
             default:
-                q.append(attributeExpr).append(negated ? " NOT " : "").append(condition.operator).append('?').append(++queryInfo.paramCount);
+                q.append(attributeExpr).append(negated ? " NOT " : "").append(condition.operator);
+                appendParam(q, ignoreCase, ++queryInfo.paramCount);
         }
+    }
+
+    /**
+     * Appends JQPL for a repository method parameter. Either of the form ?1 or UPPER(?1)
+     *
+     * @param q     builder for the JPQL query.
+     * @param upper indicates if the query parameter should be compared in upper case.
+     * @param num   parameter number.
+     * @return the same builder for the JPQL query.
+     */
+    @Trivial
+    private static StringBuilder appendParam(StringBuilder q, boolean upper, int num) {
+        q.append(upper ? "UPPER(?" : '?').append(num);
+        return upper ? q.append(')') : q;
     }
 
     /**
