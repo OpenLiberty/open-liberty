@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Flow.Publisher;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
@@ -93,8 +92,6 @@ public interface Reservations extends CrudRepository<Reservation, Long> {
     // @Result(ReservedTimeSlot.class)
     // @Select({ "start", "stop" })
     // Stream<ReservedTimeSlot> findByStopOrStopOrStart(OffsetDateTime stop1, OffsetDateTime stop2, OffsetDateTime stop3);
-
-    Publisher<Reservation> findByHostLikeOrderByMeetingID(String hostMatcher);
 
     Page<Reservation> findByHostStartsWith(String hostPrefix, Pageable pagination, Sort sort);
 
