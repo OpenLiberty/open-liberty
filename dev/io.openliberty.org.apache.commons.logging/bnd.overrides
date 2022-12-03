@@ -4,4 +4,17 @@ bVersion=1.2
 Bundle-SymbolicName: io.openliberty.org.apache.commons.logging
 
 Include-Resource: \
-   @${repo;commons-logging:commons-logging;1.2;EXACT}!/!META-INF/maven/*
+   @${repo;commons-logging:commons-logging;1.2;EXACT}!/!META-INF/maven/*, \
+   org/apache/commons/logging=${bin}/org/apache/commons/logging
+
+instrument.classesExcludes: \
+   org/apache/commons/logging/*.class
+
+Import-Package: \
+ javax.servlet;version="[2.1.0,3.0.0)";resolution:=optional, \
+ !org.apache.avalon.framework.logger, \
+ !org.apache.log, \
+ !org.apache.log4j
+
+Export-Package: org.apache.commons.logging;version="1.2", \
+ org.apache.commons.logging.impl;version="1.2"
