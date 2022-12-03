@@ -17,4 +17,5 @@ instrument.disabled: true
 	com.ibm.ws.org.apache.aries.jndi.api;version=latest,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.ws.org.slf4j.api;version=latest,\
-	com.ibm.ws.org.apache.aries.util
+	com.ibm.ws.org.apache.aries.util,\
+	com.ibm.ws.kernel.service

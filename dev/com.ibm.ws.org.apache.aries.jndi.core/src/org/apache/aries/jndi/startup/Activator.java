@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 import javax.naming.NamingException;
 import javax.naming.spi.InitialContextFactory;
@@ -58,6 +59,8 @@ import org.osgi.util.tracker.BundleTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ibm.ws.kernel.service.util.JavaInfo;
+
 /**
  * The activator for this bundle makes sure the static classes in it are
  * driven so they can do their magic stuff properly.
@@ -85,6 +88,20 @@ public class Activator implements BundleActivator {
 
     private ObjectFactoryBuilder originalOFBuilder;
     private OSGiObjectFactoryBuilder ofBuilder;
+
+    //In Java20+ the ObjectFactoryBuilder static field is in the NamingManagerHelper class.
+    private final Class<?> objectFactoryBuilderHolder = new Supplier<Class<?>>() {
+        @Override
+        public Class<?> get() {
+            if (JavaInfo.majorVersion() >= 20) {
+                try {
+                    return Class.forName("com.sun.naming.internal.NamingManagerHelper");
+                } catch (ClassNotFoundException e) {
+                }
+            }
+            return NamingManager.class;
+        }
+    }.get();
 
     public static Collection<ServiceReference<InitialContextFactoryBuilder>> getInitialContextFactoryBuilderServices() {
         return instance.icfBuilders.getReferences();
@@ -176,7 +193,7 @@ public class Activator implements BundleActivator {
                 } catch (IllegalStateException e) {
                     // use reflection to force the builder to be used
                     if (isPropertyEnabled(context, FORCE_BUILDER)) {
-                        originalICFBuilder = swapStaticField(InitialContextFactoryBuilder.class, builder);
+                        originalICFBuilder = swapStaticField(NamingManager.class, InitialContextFactoryBuilder.class, builder);
                     }
                 }
                 icfBuilder = builder;
@@ -200,7 +217,7 @@ public class Activator implements BundleActivator {
                 } catch (IllegalStateException e) {
                     // use reflection to force the builder to be used
                     if (isPropertyEnabled(context, FORCE_BUILDER)) {
-                        originalOFBuilder = swapStaticField(ObjectFactoryBuilder.class, builder);
+                        originalOFBuilder = swapStaticField(objectFactoryBuilderHolder, ObjectFactoryBuilder.class, builder);
                     }
                 }
                 ofBuilder = builder;
@@ -232,10 +249,10 @@ public class Activator implements BundleActivator {
          * on the NamingManager.
          */
         if (icfBuilder != null) {
-            swapStaticField(InitialContextFactoryBuilder.class, originalICFBuilder);
+            swapStaticField(NamingManager.class, InitialContextFactoryBuilder.class, originalICFBuilder);
         }
         if (ofBuilder != null) {
-            swapStaticField(ObjectFactoryBuilder.class, originalOFBuilder);
+            swapStaticField(objectFactoryBuilderHolder, ObjectFactoryBuilder.class, originalOFBuilder);
         }
 
         icfBuilders.close();
@@ -281,12 +298,12 @@ public class Activator implements BundleActivator {
      * There are no public API to reset the InitialContextFactoryBuilder or
      * ObjectFactoryBuilder on the NamingManager so try to use reflection.
      */
-    private static <T> T swapStaticField(Class<T> expectedType, Object value) throws IllegalStateException {
+    private static <T> T swapStaticField(Class targetClass, Class<T> fieldType, Object value) throws IllegalStateException {
         try {
-            for (Field field : NamingManager.class.getDeclaredFields()) {
-                if (expectedType.equals(field.getType())) {
+            for (Field field : targetClass.getDeclaredFields()) {
+                if (fieldType.equals(field.getType())) {
                     field.setAccessible(true);
-                    T original = expectedType.cast(field.get(null));
+                    T original = fieldType.cast(field.get(null));
                     field.set(null, value);
                     return original;
                 }
@@ -296,7 +313,7 @@ public class Activator implements BundleActivator {
             LOGGER.debug("Error setting field.", t);
             throw new IllegalStateException(t);
         }
-        throw new IllegalStateException("Error setting field: no field found for type " + expectedType);
+        throw new IllegalStateException("Error setting field: no field found for type " + fieldType);
     }
 
     private static List<String> getInitialContextFactoryInterfaces(ServiceReference<InitialContextFactory> ref) {
