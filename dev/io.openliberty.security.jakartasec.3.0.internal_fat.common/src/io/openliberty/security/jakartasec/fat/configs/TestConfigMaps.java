@@ -269,6 +269,12 @@ public class TestConfigMaps {
         return updatedMap;
     }
 
+    public static Map<String, Object> getScopeExpressionDuplicateScope() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.SCOPE_EXPRESSION, String.join(" ", Constants.OPENID_SCOPE, Constants.OPENID_SCOPE));
+        return updatedMap;
+    }
+
     public static Map<String, Object> getOP2() throws Exception {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();

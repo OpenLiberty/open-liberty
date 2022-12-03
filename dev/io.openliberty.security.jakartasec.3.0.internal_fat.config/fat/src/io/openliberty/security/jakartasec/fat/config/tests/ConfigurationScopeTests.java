@@ -143,6 +143,10 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
                                        buildUpdatedConfigMap(opServer, rpServer, "scopeELUnknownScope", "allValues.openIdConfig.properties",
                                                              TestConfigMaps.getScopeExpressionUnknownScope()),
                                        "oidc.client.generic.servlets", "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "scopeELDuplicateScope.war", "GenericOIDCAuthMechanism.war",
+                                       buildUpdatedConfigMap(opServer, rpServer, "scopeELDuplicateScope", "allValues.openIdConfig.properties",
+                                                             TestConfigMaps.getScopeExpressionDuplicateScope()),
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
 
     }
 
@@ -555,4 +559,34 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
         validationUtils.validateResult(response, expectations);
 
     }
+
+    /**
+     *
+     * Test with a duplicate scope.
+     * The duplicate scope should be removed.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void ConfigurationScopeTests_scopeExpression_duplicateScope() throws Exception {
+
+        WebClient webClient = getAndSaveWebClient();
+
+        String requester = ServletMessageConstants.SERVLET + ServletMessageConstants.OPENID_CONTEXT;
+
+        String app = "GenericOIDCAuthMechanism";
+        String url = rpHttpsBase + "/scopeELDuplicateScope/" + app;
+
+        Page response = invokeAppReturnLoginPage(webClient, url);
+        response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
+
+        Expectations expectations = new Expectations();
+        expectations.addSuccessCodeForCurrentAction();
+        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, buildAccessTokenScopeString(requester,
+                                                                                                                             Constants.OPENID_SCOPE), "The access token scope claim returned by the server should not contains duplicate scopes."));
+
+        validationUtils.validateResult(response, expectations);
+
+    }
+
 }
