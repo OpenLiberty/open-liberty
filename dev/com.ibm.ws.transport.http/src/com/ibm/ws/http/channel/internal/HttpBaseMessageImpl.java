@@ -201,7 +201,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
         this.bIsCloseSet = false;
         setBinaryParseState(HttpInternalConstants.PARSING_BINARY_VERSION);
         if (null != this.myTrailers) {
-            this.myTrailers.destroy();
+            this.myTrailers.clearBuffers();
             this.myTrailers = null;
         }
     }
@@ -223,7 +223,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
         }
         this.bIsIncoming = false;
         if (null != this.myTrailers) {
-            this.myTrailers.destroy();
+            this.myTrailers.clearBuffers();
             this.myTrailers = null;
         }
     }
@@ -667,7 +667,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      *
      * @param version
      * @throws NullPointerException
-     *             if the input version is null
+     *                                  if the input version is null
      */
     @Override
     public void setVersion(VersionValues version) {
@@ -689,7 +689,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * @param version
      * @throws UnsupportedProtocolVersionException
      * @throws NullPointerException
-     *             if input version is null
+     *                                                 if input version is null
      */
     @Override
     public void setVersion(String version) throws UnsupportedProtocolVersionException {
@@ -710,7 +710,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * @param version
      * @throws UnsupportedProtocolVersionException
      * @throws NullPointerException
-     *             if input version is null
+     *                                                 if input version is null
      */
     @Override
     public void setVersion(byte[] version) throws UnsupportedProtocolVersionException {
@@ -742,7 +742,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      *
      * @param length
      * @throws IllegalArgumentException
-     *             if input length is invalid
+     *                                      if input length is invalid
      */
     @Override
     public void setContentLength(long length) {
@@ -1837,7 +1837,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      *
      * @param type
      * @throws NullPointerException
-     *             if input string is null
+     *                                  if input string is null
      */
     @Override
     public void setMIMEType(String type) {
@@ -1899,7 +1899,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * If the content type is null, or there is no explicit character encoding, <code>null</code> is returned.
      *
      * @param contentType
-     *            a content type header.
+     *                        a content type header.
      * @return Returns the character encoding for this flow, or null if the given
      *         content-type header is null or if no character enoding is present
      *         in the content-type header.
@@ -1936,7 +1936,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      *
      * @param set
      * @throws NullPointerException
-     *             if the input Charset is null
+     *                                  if the input Charset is null
      */
     @Override
     public void setCharset(Charset set) {
@@ -2681,7 +2681,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * operation. This is allowed on an outgoing message only.
      *
      * @param cookie
-     *            the <code>HttpCookie</code> to add.
+     *                       the <code>HttpCookie</code> to add.
      * @param cookieType
      * @return TRUE if the cookie was set successfully otherwise returns FALSE.
      *         if setcookie constraints are violated.
@@ -2740,7 +2740,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * @param header
      * @return the caching data for the particular set of Cookies.
      * @throws IllegalArgumentException
-     *             if the header is not a cookie header
+     *                                      if the header is not a cookie header
      */
     private CookieCacheData getCookieCache(HttpHeaderKeys header) {
         // 347066 - removed sync because we only allow 1 thread to be working
@@ -2840,9 +2840,9 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      * Marshall the list of Cookies into the base header storage area.
      *
      * @param list
-     *            the list of new cookies.
+     *                   the list of new cookies.
      * @param header
-     *            the type of header the new cookies are intended for.
+     *                   the type of header the new cookies are intended for.
      */
     private void marshallCookies(List<HttpCookie> list, HeaderKeys header) {
 

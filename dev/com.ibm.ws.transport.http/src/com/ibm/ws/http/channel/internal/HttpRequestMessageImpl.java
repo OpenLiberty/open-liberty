@@ -292,11 +292,8 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Destroying this request: " + this);
         }
-        HttpObjectFactory tempFactory = getObjectFactory();
         super.destroy();
-        if (null != tempFactory) {
-            tempFactory.releaseRequest(this);
-        }
+
     }
 
     @Override
@@ -2100,14 +2097,13 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         H2StreamProcessor promisedSP = ((H2HttpInboundLinkWrap) link).muxLink.createNewInboundLink(promisedStreamId);
         if (promisedSP == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                if(((H2HttpInboundLinkWrap) link).muxLink.isClosing()){
+                if (((H2HttpInboundLinkWrap) link).muxLink.isClosing()) {
                     Tr.exit(tc, "pushNewRequest exit; cannot create new push stream - "
-                            + "server is shutting down, closing link: " + link);
-                }
-                else{
+                                + "server is shutting down, closing link: " + link);
+                } else {
                     Tr.exit(tc, "pushNewRequest exit; cannot create new push stream -"
-                            + " the max number of concurrent streams has already been reached on link: " + link); 
-                }                
+                                + " the max number of concurrent streams has already been reached on link: " + link);
+                }
             }
             return;
         }

@@ -552,54 +552,56 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * Clear out information on this object so that it can be re-used.
      */
-    public void clear() {
-        final boolean bTrace = TraceComponent.isAnyTracingEnabled();
-        if (bTrace && tc.isEntryEnabled()) {
-            Tr.entry(tc, "clear");
-        }
-
-        clearAllHeaders();
-        this.eohPosition = HeaderStorage.NOTSET;
-        this.currentElem = null;
-        this.stateOfParsing = PARSING_CRLF;
-        this.binaryParsingState = GenericConstants.PARSING_HDR_FLAG;
-        this.parsedToken = null;
-        this.parsedTokenLength = 0;
-        this.bytePosition = 0;
-        this.byteLimit = 0;
-        this.currentReadBB = null;
-        clearBuffers();
-        this.debugContext = this;
-        this.numCRLFs = 0;
-        this.bIsMultiLine = false;
-        this.lastCRLFBufferIndex = HeaderStorage.NOTSET;
-        this.lastCRLFPosition = HeaderStorage.NOTSET;
-        this.lastCRLFisCR = false;
-        this.headerChangeCount = 0;
-        this.headerAddCount = 0;
-        this.bOverChangeLimit = false;
-        this.compactHeaderFlag = false;
-        this.table = null;
-        this.isPushPromise = false;
-        this.processedXForwardedHeader = false;
-        this.processedForwardedHeader = false;
-        this.forwardHeaderErrorState = false;
-        this.forwardedByList = null;
-        this.forwardedForList = null;
-        this.forwardedHost = null;
-        this.forwardedPort = null;
-        this.forwardedProto = null;
-
-        if (bTrace && tc.isEntryEnabled()) {
-            Tr.exit(tc, "clear");
-        }
-    }
+    /*
+     * public void clear() {
+     * final boolean bTrace = TraceComponent.isAnyTracingEnabled();
+     * if (bTrace && tc.isEntryEnabled()) {
+     * Tr.entry(tc, "clear");
+     * }
+     *
+     * clearAllHeaders();
+     * this.eohPosition = HeaderStorage.NOTSET;
+     * this.currentElem = null;
+     * this.stateOfParsing = PARSING_CRLF;
+     * this.binaryParsingState = GenericConstants.PARSING_HDR_FLAG;
+     * this.parsedToken = null;
+     * this.parsedTokenLength = 0;
+     * this.bytePosition = 0;
+     * this.byteLimit = 0;
+     * this.currentReadBB = null;
+     * clearBuffers();
+     * this.debugContext = this;
+     * this.numCRLFs = 0;
+     * this.bIsMultiLine = false;
+     * this.lastCRLFBufferIndex = HeaderStorage.NOTSET;
+     * this.lastCRLFPosition = HeaderStorage.NOTSET;
+     * this.lastCRLFisCR = false;
+     * this.headerChangeCount = 0;
+     * this.headerAddCount = 0;
+     * this.bOverChangeLimit = false;
+     * this.compactHeaderFlag = false;
+     * this.table = null;
+     * this.isPushPromise = false;
+     * this.processedXForwardedHeader = false;
+     * this.processedForwardedHeader = false;
+     * this.forwardHeaderErrorState = false;
+     * this.forwardedByList = null;
+     * this.forwardedForList = null;
+     * this.forwardedHost = null;
+     * this.forwardedPort = null;
+     * this.forwardedProto = null;
+     *
+     * if (bTrace && tc.isEntryEnabled()) {
+     * Tr.exit(tc, "clear");
+     * }
+     * }
+     */
 
     /**
      * Clear the array of buffers used during the parsing or marshalling of
      * headers.
      */
-    private void clearBuffers() {
+    public void clearBuffers() {
         // simply null out the parse buffers list, then release all the created buffers
         final boolean bTrace = TraceComponent.isAnyTracingEnabled();
         for (int i = 0; i <= this.parseIndex; i++) {
@@ -648,7 +650,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         // the first header parsed threw an error perhaps), then clear
         // the message now
         if (null != this.hdrSequence || HeaderStorage.NOTSET != this.parseIndex) {
-            clear();
+            clearBuffers();
         }
         this.byteCacheSize = DEFAULT_CACHESIZE;
         this.incomingBufferSize = DEFAULT_BUFFERSIZE;

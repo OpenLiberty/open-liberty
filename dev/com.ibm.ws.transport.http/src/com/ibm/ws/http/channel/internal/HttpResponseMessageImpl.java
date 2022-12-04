@@ -303,11 +303,9 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Destroying this response: " + this);
         }
-        HttpObjectFactory tempFactory = getObjectFactory();
+
         super.destroy();
-        if (null != tempFactory) {
-            tempFactory.releaseResponse(this);
-        }
+
     }
 
     /**

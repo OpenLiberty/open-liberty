@@ -27,12 +27,12 @@ import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 /**
  * Class to store the "name: value" pairs for the HTTP trailer headers
- * 
+ *
  * Note there is no support for cookies in this implementation of the
  * HttpTrailers interface. A cookie header can be present in an http
  * trailer. The get/set and removal of such cookie headers is
  * currently not supported.
- * 
+ *
  */
 public class HttpTrailersImpl extends BNFHeadersImpl implements HttpTrailers {
 
@@ -60,19 +60,20 @@ public class HttpTrailersImpl extends BNFHeadersImpl implements HttpTrailers {
     /**
      * Initialize this trailer header storage object with certain
      * configuration information.
-     * 
+     *
      * @param useDirect
      * @param outSize
      * @param inSize
      * @param cacheSize
      */
+    @Override
     public void init(boolean useDirect, int outSize, int inSize, int cacheSize) {
         super.init(useDirect, outSize, inSize, cacheSize);
     }
 
     /**
      * Set the factory that this object will use.
-     * 
+     *
      * @param fact
      */
     public void setFactory(HttpObjectFactory fact) {
@@ -85,20 +86,22 @@ public class HttpTrailersImpl extends BNFHeadersImpl implements HttpTrailers {
 
     /**
      * Query whether there is a deferred trailer header of the given name.
-     * 
+     *
      * @param target
      * @return boolean (true if exists)
      */
+    @Override
     public boolean containsDeferredTrailer(String target) {
         return containsDeferredTrailer(findKey(target));
     }
 
     /**
      * Query whether there is a deferred trailer header of the given name.
-     * 
+     *
      * @param target
      * @return boolean (true if exists)
      */
+    @Override
     public boolean containsDeferredTrailer(HeaderKeys target) {
         if (null == target) {
             return false;
@@ -108,24 +111,25 @@ public class HttpTrailersImpl extends BNFHeadersImpl implements HttpTrailers {
 
     /**
      * Set a trailer based upon a not-yet established value.
-     * 
+     *
      * When the deferred trailer is set, it is the users responsibility to
      * synchronize the deferred trailer list with the Trailer header field
      * up front. For instance if one sets the deferred trailer
      * HDR_CONTENT_LANGUAGE, then the trailer header in the head of the HTTP
      * request/response should contain "Trailer:Content-Language"
-     * 
+     *
      * @param hdr
-     *            the header to use.
+     *                the header to use.
      * @param htg
-     *            the object which will generate the value for this trailer
-     *            dynamically. An <code>HttpTrailerGenerator</code> is called
-     *            immediately after the 0-size chunk is sent, but before closing
-     *            or recycling the connection.
+     *                the object which will generate the value for this trailer
+     *                dynamically. An <code>HttpTrailerGenerator</code> is called
+     *                immediately after the 0-size chunk is sent, but before closing
+     *                or recycling the connection.
      * @throws IllegalArgumentException
-     *             if any parameter is NULL or if the
-     *             header represented is unsupported.
+     *                                      if any parameter is NULL or if the
+     *                                      header represented is unsupported.
      */
+    @Override
     public void setDeferredTrailer(HeaderKeys hdr, HttpTrailerGenerator htg) {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "setDeferredTrailer(HeaderKeys): " + hdr);
@@ -142,24 +146,25 @@ public class HttpTrailersImpl extends BNFHeadersImpl implements HttpTrailers {
 
     /**
      * Set a trailer based upon a not-yet established value.
-     * 
+     *
      * When the deferred trailer is set, it is the users responsibility
      * to synchronize the deferred trailer list with the Trailer header field.
      * For instance if one sets the deferred trailer "test1", then the trailer
      * header in the outbound HTTP Request/Response should contain,
      * "Trailer: test1"
-     * 
+     *
      * @param hdr
-     *            the header to use.
+     *                the header to use.
      * @param htg
-     *            the object which will generate the value for this trailer
-     *            dynamically. An <code>HttpTrailerGenerator</code> is called
-     *            immedietly after the 0-size chunk is sent, but before closing or
-     *            recycling the connection.
+     *                the object which will generate the value for this trailer
+     *                dynamically. An <code>HttpTrailerGenerator</code> is called
+     *                immedietly after the 0-size chunk is sent, but before closing or
+     *                recycling the connection.
      * @throws IllegalArgumentException
-     *             if any parameter is NULL or if the
-     *             header represented is unsupported.
+     *                                      if any parameter is NULL or if the
+     *                                      header represented is unsupported.
      */
+    @Override
     public void setDeferredTrailer(String hdr, HttpTrailerGenerator htg) {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "setDeferredTrailer(String): " + hdr);
@@ -176,17 +181,18 @@ public class HttpTrailersImpl extends BNFHeadersImpl implements HttpTrailers {
     /**
      * Remove a deferred trailer from the current list of trailers to generate
      * when serializing this object.
-     * 
+     *
      * The user is responsible for maintaining consistency between the trailer
      * header field at the head of the HTTP request/response with the deferred
      * trailer list. For instance after removeDeferredTrailer("test1"), is
      * called the trailer header field should not contain "test1".
-     * 
+     *
      * @param hdr
-     *            the trailer name to remove (i.e. 'Date').
+     *                the trailer name to remove (i.e. 'Date').
      * @throws IllegalArgumentException
-     *             if hdr is NULL.
+     *                                      if hdr is NULL.
      */
+    @Override
     public void removeDeferredTrailer(String hdr) {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "removeDeferredTrailer(String): " + hdr);
@@ -200,18 +206,19 @@ public class HttpTrailersImpl extends BNFHeadersImpl implements HttpTrailers {
     /**
      * Remove a deferred trailer from the current list of trailers to generate
      * when serializing this object.
-     * 
+     *
      * The user is responsible for maintaining consistency between the trailer
      * header field at the head of the HTTP request/response with the deferred
      * trailer list. For instance after removeDeferredTrailer(
      * HDR_CONTENT_LANGUAGE), is called the trailer header field should not
      * contain "Content-Language".
-     * 
+     *
      * @param hdr
-     *            the trailer to remove (i.e. 'Date').
+     *                the trailer to remove (i.e. 'Date').
      * @throws IllegalArgumentException
-     *             if hdr is NULL.
+     *                                      if hdr is NULL.
      */
+    @Override
     public void removeDeferredTrailer(HeaderKeys hdr) {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "removeDeferredTrailer(HeaderKeys): " + hdr);
@@ -224,13 +231,14 @@ public class HttpTrailersImpl extends BNFHeadersImpl implements HttpTrailers {
 
     /**
      * Compute all deferred headers.
-     * 
+     *
      * <p>
      * All <code>HttpTrailerGenerator</code> will be called upon to create the value for their respective header. The values they create will automatically be added to the
      * Trailer-based <code>BNFHeaders</code> object for immediate serialization.
      * </p>
-     * 
+     *
      */
+    @Override
     public void computeRemainingTrailers() {
         if (tc.isEntryEnabled()) {
             Tr.entry(tc, "computeRemainingTrailers");
@@ -252,20 +260,20 @@ public class HttpTrailersImpl extends BNFHeadersImpl implements HttpTrailers {
     /**
      * Destroy this object.
      */
+    @Override
     public void destroy() {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Destroy trailers: " + this);
         }
         super.destroy();
         if (null != this.myFactory) {
-            this.myFactory.releaseTrailers(this);
             this.myFactory = null;
         }
     }
 
     /**
      * Create a duplicate version of these trailer headers.
-     * 
+     *
      * @return HttpTrailersImpl
      */
     public HttpTrailersImpl duplicate() {
@@ -287,11 +295,12 @@ public class HttpTrailersImpl extends BNFHeadersImpl implements HttpTrailers {
 
     /**
      * Read an instance of this object from the input stream.
-     * 
+     *
      * @param s
      * @throws IOException
      * @throws ClassNotFoundException
      */
+    @Override
     public void readExternal(ObjectInput s) throws IOException, ClassNotFoundException {
 
         super.readExternal(s);
@@ -300,10 +309,11 @@ public class HttpTrailersImpl extends BNFHeadersImpl implements HttpTrailers {
 
     /**
      * Write this object instance to the output stream.
-     * 
+     *
      * @param s
      * @throws IOException
      */
+    @Override
     public void writeExternal(ObjectOutput s) throws IOException {
         // finish any outstanding trailers and then tell the BNF layer to write
         // them out
@@ -314,6 +324,7 @@ public class HttpTrailersImpl extends BNFHeadersImpl implements HttpTrailers {
     /**
      * @see com.ibm.ws.genericbnf.internal.BNFHeadersImpl#findKey(byte[], int, int)
      */
+    @Override
     protected HeaderKeys findKey(byte[] data, int offset, int length) {
         return HttpHeaderKeys.find(data, offset, length);
     }
@@ -321,6 +332,7 @@ public class HttpTrailersImpl extends BNFHeadersImpl implements HttpTrailers {
     /**
      * see com.ibm.ws.genericbnf.impl.BNFHeadersImpl#findKey(byte[])
      */
+    @Override
     protected HeaderKeys findKey(byte[] name) {
         return HttpHeaderKeys.find(name, 0, name.length);
     }
@@ -328,8 +340,13 @@ public class HttpTrailersImpl extends BNFHeadersImpl implements HttpTrailers {
     /**
      * @see com.ibm.ws.genericbnf.internal.BNFHeadersImpl#findKey(java.lang.String)
      */
+    @Override
     protected HeaderKeys findKey(String name) {
         return HttpHeaderKeys.find(name);
     }
 
+    @Override
+    public void clear() {
+        super.clearBuffers();
+    }
 }

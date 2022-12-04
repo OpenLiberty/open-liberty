@@ -80,9 +80,11 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
     /** Current state of the read-ahead read for response thread */
     private int read_state = READ_STATE_IDLE;
     /** Sync object for the synchronous reads */
-    private final Object readAheadSyncer = new Object() {};
+    private final Object readAheadSyncer = new Object() {
+    };
     /** Object used to synchronize getting/setting read-ahead states */
-    protected Object stateSyncObject = new Object() {};
+    protected Object stateSyncObject = new Object() {
+    };
     /** Save-spot for any error found during the read-ahead callback */
     private IOException readException = null;
     /** Simple flag on whether read-ahead is enabled or not */
@@ -536,7 +538,7 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
      * request message state.
      *
      * @param cb
-     *            - app side read callback
+     *                       - app side read callback
      * @param forceQueue
      * @return VirtualConnection - non null if the final response has already
      *         arrived
@@ -845,7 +847,8 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
         // possibly clean up any existing request object
         if (null != getMyRequest() && isRequestOwner()) {
             if (!getMyRequest().equals(temp)) {
-                getMyRequest().destroy();
+                getMyRequest().clearBuffers();
+                setMyRequest(null);
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Caller overlaying same message");
@@ -871,9 +874,9 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
      * Send the headers for the outgoing request synchronously.
      *
      * @throws IOException
-     *             -- if a socket error occurs
+     *                                  -- if a socket error occurs
      * @throws MessageSentException
-     *             -- if the headers have already been sent
+     *                                  -- if the headers have already been sent
      */
     @Override
     public void sendRequestHeaders() throws IOException, MessageSentException {
@@ -918,7 +921,7 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
      * @param bForce
      * @return VirtualConnection
      * @throws MessageSentException
-     *             -- if the headers have already been sent
+     *                                  -- if the headers have already been sent
      */
     @Override
     public VirtualConnection sendRequestHeaders(InterChannelCallback callback, boolean bForce) throws MessageSentException {
@@ -958,9 +961,9 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
      *
      * @param body
      * @throws IOException
-     *             -- if a socket error occurs
+     *                                  -- if a socket error occurs
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     @Override
     public void sendRequestBody(WsByteBuffer[] body) throws IOException, MessageSentException {
@@ -1017,7 +1020,7 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
      * @param bForce
      * @return VirtualConnection
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     @Override
     public VirtualConnection sendRequestBody(WsByteBuffer[] body, InterChannelCallback callback, boolean bForce) throws MessageSentException {
@@ -1056,9 +1059,9 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
      *
      * @param body
      * @throws IOException
-     *             -- if a socket error occurs
+     *                                  -- if a socket error occurs
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     @Override
     public void sendRawRequestBody(WsByteBuffer[] body) throws IOException, MessageSentException {
@@ -1086,7 +1089,7 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
      * @param bForce
      * @return VirtualConnection
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     @Override
     public VirtualConnection sendRawRequestBody(WsByteBuffer[] body, InterChannelCallback callback, boolean bForce) throws MessageSentException {
@@ -1114,11 +1117,11 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
      * message, then the zero-length chunk is automatically appended.
      *
      * @param body
-     *            (last set of buffers to send, null if no body data)
+     *                 (last set of buffers to send, null if no body data)
      * @throws IOException
-     *             -- if a socket error occurs
+     *                                  -- if a socket error occurs
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     @Override
     public void finishRequestMessage(WsByteBuffer[] body) throws IOException, MessageSentException {
@@ -1212,12 +1215,12 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
      * code will always be null and the callback always used.
      *
      * @param body
-     *            (last set of body data, null if no body information)
+     *                     (last set of body data, null if no body information)
      * @param callback
      * @param bForce
      * @return VirtualConnection
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     @Override
     public VirtualConnection finishRequestMessage(WsByteBuffer[] body, InterChannelCallback callback, boolean bForce) throws MessageSentException {
@@ -1300,11 +1303,11 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
      * This method will return when the response has been received and the headers parsed.
      *
      * @param body
-     *            -- null if there is no body data
+     *                 -- null if there is no body data
      * @throws IOException
-     *             -- if a socket exception occurs
+     *                                  -- if a socket exception occurs
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     @Override
     public void finishRawRequestMessage(WsByteBuffer[] body) throws IOException, MessageSentException {
@@ -1331,12 +1334,12 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
      * The force flag allows the caller to force the asynchronous communication such that the callback is always used.
      *
      * @param body
-     *            -- null if there is no more body data
+     *                     -- null if there is no more body data
      * @param callback
      * @param bForce
      * @return VirtualConnection
      * @throws MessageSentException
-     *             -- if a finishMessage API was already used
+     *                                  -- if a finishMessage API was already used
      */
     @Override
     public VirtualConnection finishRawRequestMessage(WsByteBuffer[] body, InterChannelCallback callback, boolean bForce) throws MessageSentException {
@@ -1778,7 +1781,7 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
      *
      * @return boolean -- false means there is no need to read for a body
      * @throws IOException
-     *             -- if this not a valid time to get the body
+     *                         -- if this not a valid time to get the body
      */
     private boolean checkBodyValidity() throws IOException {
         // LI4335 - allow response body reading if early reads are in place
@@ -1818,9 +1821,9 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
      *
      * @return WsByteBuffer[]
      * @throws IOException
-     *             -- if a socket exceptions happens
+     *                                      -- if a socket exceptions happens
      * @throws IllegalHttpBodyException
-     *             -- if the body was malformed
+     *                                      -- if the body was malformed
      */
     @Override
     public WsByteBuffer[] getResponseBodyBuffers() throws IOException, IllegalHttpBodyException {
@@ -1882,7 +1885,7 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
      * @return VirtualConnection (null if an async read is in progress,
      *         non-null if data is ready)
      * @throws BodyCompleteException
-     *             -- if the entire body has already been read
+     *                                   -- if the entire body has already been read
      */
     @Override
     public VirtualConnection getResponseBodyBuffers(InterChannelCallback callback, boolean bForce) throws BodyCompleteException {
@@ -1966,9 +1969,9 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
      *
      * @return WsByteBuffer
      * @throws IOException
-     *             -- if a socket exceptions happens
+     *                                      -- if a socket exceptions happens
      * @throws IllegalHttpBodyException
-     *             -- if the body was malformed
+     *                                      -- if the body was malformed
      */
     @Override
     public WsByteBuffer getResponseBodyBuffer() throws IOException, IllegalHttpBodyException {
@@ -2031,7 +2034,7 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
      * @return VirtualConnection (null if an async read is in progress,
      *         non-null if data is ready)
      * @throws BodyCompleteException
-     *             -- if the entire body has already been read
+     *                                   -- if the entire body has already been read
      */
     @Override
     public VirtualConnection getResponseBodyBuffer(InterChannelCallback callback, boolean bForce) throws BodyCompleteException {
@@ -2114,9 +2117,9 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
      *
      * @return WsByteBuffer
      * @throws IOException
-     *             -- if a socket exceptions happens
+     *                                      -- if a socket exceptions happens
      * @throws IllegalHttpBodyException
-     *             -- if the body was malformed
+     *                                      -- if the body was malformed
      */
     @Override
     public WsByteBuffer getRawResponseBodyBuffer() throws IOException, IllegalHttpBodyException {
@@ -2142,9 +2145,9 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
      *
      * @return WsByteBuffer[]
      * @throws IOException
-     *             -- if a socket exceptions happens
+     *                                      -- if a socket exceptions happens
      * @throws IllegalHttpBodyException
-     *             -- if the body was malformed
+     *                                      -- if the body was malformed
      */
     @Override
     public WsByteBuffer[] getRawResponseBodyBuffers() throws IOException, IllegalHttpBodyException {
@@ -2174,7 +2177,7 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
      * @param bForce
      * @return VirtualConnection
      * @throws BodyCompleteException
-     *             -- if the entire body has already been read
+     *                                   -- if the entire body has already been read
      */
     @Override
     public VirtualConnection getRawResponseBodyBuffer(InterChannelCallback callback, boolean bForce) throws BodyCompleteException {
@@ -2204,7 +2207,7 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
      * @param bForce
      * @return VirtualConnection
      * @throws BodyCompleteException
-     *             -- if the entire body has already been read
+     *                                   -- if the entire body has already been read
      */
     @Override
     public VirtualConnection getRawResponseBodyBuffers(InterChannelCallback callback, boolean bForce) throws BodyCompleteException {
@@ -2635,7 +2638,8 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
      * @see com.ibm.wsspi.http.channel.HttpServiceContext#setStartTime()
      */
     @Override
-    public void setStartTime() {}
+    public void setStartTime() {
+    }
 
     /*
      * (non-Javadoc)
@@ -2653,7 +2657,8 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
      * @see com.ibm.ws.http.channel.internal.HttpServiceContextImpl#resetStartTime()
      */
     @Override
-    public void resetStartTime() {}
+    public void resetStartTime() {
+    }
 
     /*
      * (non-Javadoc)
