@@ -118,6 +118,22 @@ public class MinimumBaseOpenIdConfig {
 
     }
 
+    public int getIntValue(String key, int defaultValue) {
+        String value = config.getProperty(key);
+        if (value.equals(Constants.EMPTY_VALUE)) {
+            System.out.println("Can't return an empty value for config attribute: " + key + ", but will return the default value.");
+            return defaultValue;
+        } else {
+            if (value.equals(Constants.NULL_VALUE)) {
+                System.out.println("Can't unset the value for config attribute: " + key + ", but will return the default value.");
+                return defaultValue;
+            } else {
+                System.out.println("Setting the value for config attribute: " + key + " to: " + value);
+                return Integer.valueOf(value);
+            }
+        }
+    }
+
     public String getProviderBase() {
 
         String value = "Must be set in openIdConfig.properties before it can be used";;

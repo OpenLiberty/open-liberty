@@ -49,7 +49,7 @@ import oidc.client.base.servlets.BaseServlet;
                                          extraParameters = {},
                                          extraParametersExpression = "",
                                          jwksConnectTimeout = Constants.DEFAULT_JWKS_CONN_TIMEOUT,
-                                         jwksReadTimeoutExpression = "",
+                                         jwksReadTimeoutExpression = "${openIdConfig.jwksReadTimeoutExpression}",
                                          tokenAutoRefresh = false,
                                          tokenAutoRefreshExpression = "",
                                          tokenMinValidity = Constants.TOKEN_MIN_VALIDITY,

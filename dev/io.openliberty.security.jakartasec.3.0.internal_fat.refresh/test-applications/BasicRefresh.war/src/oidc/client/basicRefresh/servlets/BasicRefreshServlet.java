@@ -28,6 +28,7 @@ import oidc.client.base.servlets.BaseServlet;
                                          claimsDefinition = @ClaimsDefinition(callerNameClaim = "${openIdConfig.callerNameClaim}",
                                                                               callerGroupsClaim = "${openIdConfig.callerGroupsClaim}"),
                                          redirectURI = "${baseURL}/Callback",
+                                         jwksReadTimeoutExpression = "${openIdConfig.jwksReadTimeoutExpression}",
                                          tokenMinValidity = 0, // tokens used with these tests have very short lifetimes so the test cases don't have to sleep too long - keep this small to allow such short lifetimes
                                          promptExpression = "${openIdConfig.promptExpression}",
                                          tokenAutoRefreshExpression = "${openIdConfig.tokenAutoRefreshExpression}",
