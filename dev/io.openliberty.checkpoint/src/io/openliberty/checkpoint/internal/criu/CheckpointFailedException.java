@@ -35,9 +35,10 @@ public class CheckpointFailedException extends RuntimeException {
         SYSTEM_CHECKPOINT_FAILED(74, false),
         UNKNOWN_CHECKPOINT(75, false),
 
-        JVM_RESTORE_FAILED(76, true),
-        LIBERTY_RESTORE_FAILED(77, true),
-        UNKNOWN_RESTORE(78, true);
+        SYSTEM_RESTORE_FAILED(80, true),
+        JVM_RESTORE_FAILED(81, true),
+        LIBERTY_RESTORE_FAILED(82, true),
+        UNKNOWN_RESTORE(83, true);
 
         final int errorCode;
         final boolean isRestore;
