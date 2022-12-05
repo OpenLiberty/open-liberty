@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,13 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
+import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.RSCommonTestTools;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestServer;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
@@ -30,12 +29,19 @@ import com.ibm.ws.security.openidconnect.server.fat.CommonTests.GenericCookieNam
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebResponse;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
 
+// during setup, we define the endpoint values that the tests will use (such as the authorization, token, end_session endpoints).
+// authorization and token can be specified using "providers" or "endpoint" in the url - like: https://localhost:8920/oidc/providers/OidcConfigSample/authorize or https://localhost:8920/oidc/endpoint/OidcConfigSample/authorize
+// end_session uses "endpoint" - when backchannel logout is enabled, we build the logout token and verify the issuer - the issuer to validate against is built using the end_session request which will always have "endpoint",
+// but, the issuer in the id_token specified in the id_token_hint could have been created using "providers" - the server will log the verification failure, but continue with the logout, we'll now ignore the error messages.
+// I could force the test code to use "endpoint" in the auth and token endpoints, but I'd like to show that we can proceed with that error.
 @LibertyServerWrapper
+@AllowedFFDC({ "io.openliberty.security.openidconnect.backchannellogout.LogoutTokenBuilderException" })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class OIDCCookieNameTest extends GenericCookieNameTests {
@@ -49,7 +55,7 @@ public class OIDCCookieNameTest extends GenericCookieNameTests {
 
         msgUtils.printClassName(thisClass.toString());
         Log.info(thisClass, "setupBeforeTest", "Prep for test");
-        // add any additional messages that you want the "start" to wait for 
+        // add any additional messages that you want the "start" to wait for
         // we should wait for any providers that this test requires
         List<String> extraMsgs = new ArrayList<String>();
         extraMsgs.add("CWWKS1631I.*");
@@ -70,6 +76,11 @@ public class OIDCCookieNameTest extends GenericCookieNameTests {
         targetProvider = Constants.OIDCCONFIGSAMPLE_APP;
         flowType = Constants.WEB_CLIENT_FLOW;
         goodActions = Constants.BASIC_PROTECTED_RESOURCE_ACTIONS;
+
+        // The following error messages will be part of the ffdc that's issued - ignore them since the backchannel logout will continue
+        testOPServer.addIgnoredServerExceptions(MessageConstants.CWWKS1642E_BACK_CHANNEL_LOGOUT_FAILURE_BUILDING_LOGOUT_TOKEN,
+                                                MessageConstants.CWWKS1643E_BACK_CHANNEL_LOGOUT_CANNOT_EXTRACT_CLAIMS,
+                                                MessageConstants.CWWKS1646E_BACK_CHANNEL_LOGOUT_ISSUER_MISMATCH);
 
     }
 
