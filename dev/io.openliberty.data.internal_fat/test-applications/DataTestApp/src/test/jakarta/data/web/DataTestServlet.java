@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,9 +40,6 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Flow.Publisher;
-import java.util.concurrent.Flow.Subscriber;
-import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -2314,53 +2310,6 @@ public class DataTestServlet extends FATServlet {
                                              .map(r -> r.start().toInstant())
                                              .sorted()
                                              .collect(Collectors.toList()));
-
-        Publisher<Reservation> publisher = reservations.findByHostLikeOrderByMeetingID("testRepositoryCustom-host%");
-        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
-        publisher.subscribe(new Subscriber<Reservation>() {
-            final int REQUEST_SIZE = 3;
-            int count = 0;
-            Subscription subscription;
-
-            @Override
-            public void onSubscribe(Subscription s) {
-                subscription = s;
-                subscription.request(REQUEST_SIZE);
-            }
-
-            @Override
-            public void onNext(Reservation item) {
-                System.out.println(Long.toHexString(Thread.currentThread().getId()) + " onNext " + item);
-                results.add(item);
-                if (++count % REQUEST_SIZE == 0)
-                    subscription.request(REQUEST_SIZE);
-            }
-
-            @Override
-            public void onError(Throwable x) {
-                results.add(x);
-            }
-
-            @Override
-            public void onComplete() {
-                System.out.println(Long.toHexString(Thread.currentThread().getId()) + " onComplete");
-            }
-        });
-
-        Set<Long> expected = new HashSet<Long>();
-        expected.addAll(List.of(10030001L, 10030002L, 10030003L, 10030004L, 10030005L, 10030006L, 10030007L, 10030008L, 10030009L));
-
-        for (int i = 1; i <= 9; i++) {
-            Object result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES);
-            assertNotNull(result);
-            System.out.println("Received " + result);
-            if (result instanceof Throwable)
-                throw new AssertionError("onError notification received", (Throwable) result);
-            else
-                assertEquals(result.toString() + " is not expected", true, expected.remove(((Reservation) result).meetingID));
-        }
-
-        assertEquals("Some results are missing", Collections.EMPTY_SET, expected);
 
         // Pagination where the final page includes less than the maximum page size,
         Page<Reservation> page1 = reservations.findByHostStartsWith("testRepositoryCustom-host",

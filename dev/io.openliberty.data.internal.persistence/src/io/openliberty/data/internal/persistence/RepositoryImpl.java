@@ -36,7 +36,6 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Flow.Publisher;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -1018,8 +1017,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             returnValue = new KeysetAwarePageImpl<E>(queryInfo, pagination, args);
                         else if (Slice.class.equals(type) || Page.class.equals(type) || pagination != null && Streamable.class.equals(type))
                             returnValue = new PageImpl<E>(queryInfo, pagination, args); // TODO Limit with Page as return type
-                        else if (Publisher.class.equals(type))
-                            returnValue = new PublisherImpl<E>(queryInfo, provider.executor, limit, pagination, args);
                         else {
                             em = queryInfo.entityInfo.persister.createEntityManager();
 
