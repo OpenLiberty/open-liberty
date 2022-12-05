@@ -39,6 +39,11 @@ public class RepeatWithJPA30Hibernate extends JakartaEE9Action {
         FATSuite.provider = JPAPersistenceProvider.HIBERNATE;
     }
 
+    @Override
+    public boolean isEnabled() {
+        return Boolean.getBoolean("jpa.enable.repeat.hibernate") && super.isEnabled();
+    }
+
 //    // Overriding this method will disable Jakarta EE9 transformer
 //    @Override
 //    public String getID() {
