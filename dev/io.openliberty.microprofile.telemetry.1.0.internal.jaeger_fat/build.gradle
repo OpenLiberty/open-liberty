@@ -38,7 +38,7 @@ dependencies {
 
 task addAgent(type: Copy) {
   from configurations.telemetryAgent
-  into new File(autoFvtDir, 'publish/servers/TelemetryAgent')
+  into new File(autoFvtDir, 'publish/files')
   rename { 'opentelemetry-javaagent.jar' }
 }
 

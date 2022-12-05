@@ -81,6 +81,8 @@ public class AgentTest {
 
         client = new JaegerQueryClient(jaegerContainer);
 
+        server.copyFileToLibertyServerRoot("opentelemetry-javaagent.jar");
+
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "otlp");
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOltpGrpcUrl());
         server.addEnvVar("OTEL_METRICS_EXPORTER", "none");
@@ -276,6 +278,60 @@ public class AgentTest {
         Span root = findOneFrom(spans, hasNoParent());
         assertThat(root, span().withKind(SERVER)
                                .withTag(SemanticAttributes.HTTP_ROUTE.getKey(), "/agentTest/httpclient"));
+
+        Span child1 = findOneFrom(spans, hasParentSpanId(root.getSpanId()));
+        assertThat(child1, hasKind(CLIENT));
+
+        Span child2 = findOneFrom(spans, hasParentSpanId(child1.getSpanId()));
+        assertThat(child2, span().withKind(SERVER)
+                                 .withTag(SemanticAttributes.HTTP_ROUTE.getKey(), "/agentTest/httpclient/target"));
+    }
+
+    /**
+     * Test that instrumentation of JAX-RS client calls still occurs
+     */
+    @Test
+    public void testJaxRSClient() throws Exception {
+        HttpRequest request = new HttpRequest(server, "/agentTest/jaxrsclient");
+        String traceId = request.run(String.class);
+        traceIdsUsed.add(traceId);
+
+        // Expect 3 spans:
+        //   server receiving request from test
+        //   JAX-RS client sending request
+        //   server receiving request from HTTP client
+        List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(3));
+
+        Span root = findOneFrom(spans, hasNoParent());
+        assertThat(root, span().withKind(SERVER)
+                               .withTag(SemanticAttributes.HTTP_ROUTE.getKey(), "/agentTest/jaxrsclient"));
+
+        Span child1 = findOneFrom(spans, hasParentSpanId(root.getSpanId()));
+        assertThat(child1, hasKind(CLIENT));
+
+        Span child2 = findOneFrom(spans, hasParentSpanId(child1.getSpanId()));
+        assertThat(child2, span().withKind(SERVER)
+                                 .withTag(SemanticAttributes.HTTP_ROUTE.getKey(), "/agentTest/httpclient/target"));
+    }
+
+    /**
+     * Test that instrumentation of MP Rest Client calls still occurs
+     */
+    @Test
+    public void testMPRestClient() throws Exception {
+        HttpRequest request = new HttpRequest(server, "/agentTest/mprestclient");
+        String traceId = request.run(String.class);
+        traceIdsUsed.add(traceId);
+
+        // Expect 3 spans:
+        //   server receiving request from test
+        //   JAX-RS client sending request
+        //   server receiving request from HTTP client
+        List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(3));
+
+        Span root = findOneFrom(spans, hasNoParent());
+        assertThat(root, span().withKind(SERVER)
+                               .withTag(SemanticAttributes.HTTP_ROUTE.getKey(), "/agentTest/mprestclient"));
 
         Span child1 = findOneFrom(spans, hasParentSpanId(root.getSpanId()));
         assertThat(child1, hasKind(CLIENT));

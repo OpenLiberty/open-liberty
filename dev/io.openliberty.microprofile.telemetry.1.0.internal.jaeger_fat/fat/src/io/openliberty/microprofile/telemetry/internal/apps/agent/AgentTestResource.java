@@ -21,6 +21,8 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.microprofile.rest.client.RestClientBuilder;
+
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Scope;
@@ -31,8 +33,10 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.UriInfo;
 
 @ApplicationPath("/")
@@ -140,6 +144,29 @@ public class AgentTestResource extends Application {
         return span.getSpanContext().getTraceId();
     }
 
+    @GET
+    @Path("/jaxrsclient")
+    public String callJaxRSClient(@Context UriInfo uriInfo) {
+        Span span = Span.current();
+        ClientBuilder.newClient()
+                     .target(uriInfo.getBaseUri())
+                     .path("httpclient/target")
+                     .request(MediaType.TEXT_PLAIN)
+                     .get(String.class);
+        return span.getSpanContext().getTraceId();
+    }
+
+    @GET
+    @Path("/mprestclient")
+    public String callMPRestClient(@Context UriInfo uriInfo) {
+        Span span = Span.current();
+        AgentTestRestClient client = RestClientBuilder.newBuilder()
+                                                      .baseUri(uriInfo.getBaseUri())
+                                                      .build(AgentTestRestClient.class);
+        client.getTarget();
+        return span.getSpanContext().getTraceId();
+    }
+
     @WithSpan
     private String withSpanNonBeanMethod() {
         return Span.current().getSpanContext().getSpanId();
@@ -151,6 +178,13 @@ public class AgentTestResource extends Application {
         public String withSpanMethod() {
             return Span.current().getSpanContext().getSpanId();
         }
+    }
+
+    @Path("/")
+    public static interface AgentTestRestClient {
+        @GET
+        @Path("/httpclient/target")
+        public String getTarget();
     }
 
 }
