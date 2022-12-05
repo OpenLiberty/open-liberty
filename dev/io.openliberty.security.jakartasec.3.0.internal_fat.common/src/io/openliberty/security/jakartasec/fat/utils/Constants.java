@@ -48,6 +48,8 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
 
     public static final String USERINFOENDPOINT = "userinfoEndpoint";
     public static final String IDTOKENSIGNINGALGORITHMSSUPPORTED = "idTokenSigningAlgorithmsSupported";
+    public static final String JWKSCONNECTTIMEOUTEXPRESSION = "jwksConnectTimeoutExpression";
+    public static final String JWKSREADTIMEOUTEXPRESSION = "jwksReadTimeoutExpression";
 
     public static final String EMPTY_VALUE = "EmptyValue";
     public static final String NULL_VALUE = "NullValue";
@@ -73,6 +75,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String PAGE_DISPLAY = "page";
 
     public static final int DEFAULT_JWKS_CONN_TIMEOUT = 500;
+    public static final int OVERRIDE_DEFAULT_JWKS_CONN_TIMEOUT = 60000;
     public static final int TOKEN_MIN_VALIDITY = 10 * 1000;
 
     public static final String OPEN_LIBERTY = "Open Liberty";

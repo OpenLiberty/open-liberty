@@ -46,7 +46,7 @@ import oidc.client.base.servlets.BaseServlet;
                                          extraParameters = {},
                                          extraParametersExpression = "",
                                          jwksConnectTimeout = Constants.DEFAULT_JWKS_CONN_TIMEOUT,
-                                         jwksReadTimeoutExpression = "",
+                                         jwksReadTimeout = Constants.OVERRIDE_DEFAULT_JWKS_CONN_TIMEOUT,
                                          tokenAutoRefresh = false,
                                          tokenAutoRefreshExpression = "",
                                          tokenMinValidity = Constants.TOKEN_MIN_VALIDITY,

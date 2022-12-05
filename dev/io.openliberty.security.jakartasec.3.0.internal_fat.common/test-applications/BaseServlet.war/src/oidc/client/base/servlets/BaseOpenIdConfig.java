@@ -198,6 +198,29 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
 
     }
 
+    public int getJwksConnectTimeoutExpression() {
+
+        int value = 500;
+        if (config.containsKey(Constants.JWKSCONNECTTIMEOUTEXPRESSION)) {
+            value = getIntValue(Constants.JWKSCONNECTTIMEOUTEXPRESSION, 500);
+        }
+
+        return value;
+
+    }
+
+    public int getJwksReadTimeoutExpression() {
+
+//        int value = 500;
+        int value = Constants.OVERRIDE_DEFAULT_JWKS_CONN_TIMEOUT;
+        if (config.containsKey(Constants.JWKSREADTIMEOUTEXPRESSION)) {
+            value = getIntValue(Constants.JWKSREADTIMEOUTEXPRESSION, 500);
+        }
+
+        return value;
+
+    }
+
     public String getLogoutRedirectURI() {
         System.out.println("in BaseOpenIdConfig - getLogoutRedirectURI");
         String value = "";
