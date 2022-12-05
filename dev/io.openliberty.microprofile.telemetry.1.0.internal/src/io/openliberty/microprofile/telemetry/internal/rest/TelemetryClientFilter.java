@@ -10,6 +10,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.rest;
 
+import static io.openliberty.microprofile.telemetry.internal.helper.AgentDetection.isAgentActive;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
@@ -76,7 +77,7 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
             @Override
             public Void run() {
                 Context parentContext = Context.current();
-                if (instrumenter.shouldStart(parentContext, request)) {
+                if ((!isAgentActive()) && instrumenter.shouldStart(parentContext, request)) {
                     Context spanContext = instrumenter.start(parentContext, request);
                     Scope scope = spanContext.makeCurrent();
                     request.setProperty(configString + "context", spanContext);
