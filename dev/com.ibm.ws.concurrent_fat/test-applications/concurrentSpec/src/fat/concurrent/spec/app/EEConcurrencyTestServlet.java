@@ -9389,27 +9389,27 @@ public class EEConcurrencyTestServlet extends FATServlet {
         ScheduledFuture<?> future1 = schedxsvcDefault.schedule((Runnable) new CounterTask(), 1000000, TimeUnit.DAYS);
         try {
             long days = future1.getDelay(TimeUnit.DAYS);
-            if (days != 106751l) // maximum possible due to limiations of java.util.concurrent.TimeUnit
+            if (days > 1000000l || days < 106751l) // maximum possible due to limitations of java.util.concurrent.TimeUnit
                 throw new Exception("Task1: Unexpected delay in days: " + days);
 
             long hours = future1.getDelay(TimeUnit.HOURS);
-            if (hours != 2562047l)
+            if (hours > 24000000l || hours < 2562047l)
                 throw new Exception("Task1: Unexpected delay in hours: " + hours);
 
             long minutes = future1.getDelay(TimeUnit.MINUTES);
-            if (minutes != 153722867l)
+            if (minutes > 1440000000l || minutes < 153722867l)
                 throw new Exception("Task1: Unexpected delay in minutes: " + minutes);
 
             long seconds = future1.getDelay(TimeUnit.SECONDS); // expecting 9223372036, but allow for additional time that might have elapsed
-            if (seconds < 9223372030l || seconds > 9223372036l)
+            if (seconds > 86400000000l || seconds < 9223372030l)
                 throw new Exception("Task1: Unexpected delay in seconds: " + seconds);
 
             long millis = future1.getDelay(TimeUnit.MILLISECONDS);
-            if (millis < 9223372030000l || millis > 9223372038000l)
+            if (millis > 86400000000000l || millis < 9223372030000l)
                 throw new Exception("Task1: Unexpected delay in milliseconds: " + millis);
 
             long micros = future1.getDelay(TimeUnit.MICROSECONDS);
-            if (micros < 9223372030000000l || micros > 9223372038000000l)
+            if (micros > 86400000000000000l || micros < 9223372030000000l)
                 throw new Exception("Task1: Unexpected delay in microseconds: " + micros);
 
             long nanos = future1.getDelay(TimeUnit.NANOSECONDS);
@@ -9424,15 +9424,15 @@ public class EEConcurrencyTestServlet extends FATServlet {
                     throw new Exception("Task2: Unexpected delay in seconds: " + days);
 
                 minutes = future2.getDelay(TimeUnit.MINUTES);
-                if (minutes != 153722866l)
+                if (minutes > 153722867l || minutes < 153722866l) // allow for rounding up or down
                     throw new Exception("Task2: Unexpected delay in minutes: " + minutes);
 
                 hours = future2.getDelay(TimeUnit.HOURS);
-                if (hours != 2562047l)
+                if (hours > 2562048l || hours < 2562047l)
                     throw new Exception("Task2: Unexpected delay in hours: " + hours);
 
                 days = future1.getDelay(TimeUnit.DAYS);
-                if (days != 106751l)
+                if (days > 106752l || days < 106751l)
                     throw new Exception("Task1: Unexpected delay in days: " + days);
 
                 int result = future1.compareTo(future2);
@@ -9446,7 +9446,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
         }
 
         long days = future1.getDelay(TimeUnit.DAYS);
-        if (days != 106751l)
+        if (days > 106752l || days < 106751l)
             throw new Exception("Delay should remain unchanged after canceling task in order to be consistent with java.util.concurrent.ScheduledThreadPoolExecutor. Instead: "
                                 + days);
 
