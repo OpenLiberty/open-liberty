@@ -156,13 +156,13 @@ JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: Es wurde ein ung\u00fcltiges Zeichen i
 JSON_FIELDS_INVALID_CHARACHTER.explanation= In der Eigenschaft f\u00fcr die Zuordnung von JSON-Protokollierungsfeldnamen k\u00f6nnen Sie nur Buchstaben, Zahlen und : (Doppelpunkt) angeben.
 JSON_FIELDS_INVALID_CHARACHTER.useraction= \u00c4ndern Sie den Wert f\u00fcr die Eigenschaft f\u00fcr die Zuordnung von JSON-Protokollierungsfeldnamen und entfernen Sie die ung\u00fcltigen Zeichen.
 
-LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3012W: Die Eigenschaft f\u00fcr die Startzeit des Protokollrollover ist falsch formatiert. Daher wird der Wert auf den Standardwert '00:00' gesetzt, der Mitternacht darstellt.
+LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3015W: Die Eigenschaft f\u00fcr die Startzeit des Protokollrollover ist falsch formatiert. Daher wird der Wert auf den Standardwert '00:00' gesetzt, der Mitternacht darstellt.
 LOG_ROLLOVER_START_TIME_FORMAT_WARNING.explanation=Die Eigenschaft f\u00fcr die Rollover-Startzeit muss das Format HH:MM haben, wobei 00:00 f\u00fcr Mitternacht steht.
 LOG_ROLLOVER_START_TIME_FORMAT_WARNING.useraction=Stellen Sie sicher, dass der Eigenschaftswert f\u00fcr die Rollover-Startzeit ordnungsgem\u00e4\u00df in der 24-Stunden-Notation HH:MM formatiert ist, wobei 00:00 f\u00fcr Mitternacht steht.
 
 LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING=TRAS3013W: Das Protokollumlaufintervall darf nicht k\u00fcrzer als 1 Minute sein. Wenn ein Wert kleiner als 1 Minute angegeben wird, wird das Protokoll\u00fcberlaufintervall auf einen Standardwert von 1 Tag gesetzt.
-LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.explanation=TRAS3013W: Das Protokollumlaufintervall darf nicht k\u00fcrzer als 1 Minute sein.
-LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=TRAS3013W: Geben Sie ein Protokollumlaufintervall an, das gr\u00f6\u00dfer-gleich 1 Minute ist.
+LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.explanation=Das Protokollumlaufintervall darf nicht k\u00fcrzer als 1 Minute sein.
+LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=Geben Sie ein Protokollumlaufintervall an, das gr\u00f6\u00dfer-gleich 1 Minute ist.
 
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Der Headername fehlt f\u00fcr eines oder mehrere accessLogging logFormat-Felder: {0}.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=Die JSON-Protokollierung verwendet das Attribut logFormat aus accessLogging, um auszuw\u00e4hlen, welche http_access.log-Nachrichtenfelder einbezogen werden sollen. Ein Headername muss angegeben werden, wenn die Felder %i oder %o im accessLogging logFormat-Attribut verwendet werden.

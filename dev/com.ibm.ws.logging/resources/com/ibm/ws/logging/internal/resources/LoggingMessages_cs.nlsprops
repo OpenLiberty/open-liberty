@@ -156,13 +156,13 @@ JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: Ve vlastnosti mapov\u00e1n\u00ed n\u00
 JSON_FIELDS_INVALID_CHARACHTER.explanation= Ve vlastnosti mapov\u00e1n\u00ed n\u00e1zv\u016f pol\u00ed protokolov\u00e1n\u00ed JSON lze pou\u017e\u00edvat pouze p\u00edsmena, \u010d\u00edslice a dvojte\u010dku.
 JSON_FIELDS_INVALID_CHARACHTER.useraction= Zm\u011b\u0148te hodnotu vlastnosti mapov\u00e1n\u00ed n\u00e1zv\u016f pol\u00ed protokolov\u00e1n\u00ed JSON, aby neobsahovala neplatn\u00fd znak.
 
-LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3012W: Vlastnost pro \u010das spu\u0161t\u011bn\u00ed p\u0159eto\u010den\u00ed protokolu m\u00e1 chybn\u00fd form\u00e1t. V d\u016fsledku toho je hodnota nastavena na v\u00fdchoz\u00ed hodnotu '00:00', kter\u00e1 p\u0159edstavuje p\u016flnoc.
+LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3015W: Vlastnost pro \u010das spu\u0161t\u011bn\u00ed p\u0159eto\u010den\u00ed protokolu m\u00e1 chybn\u00fd form\u00e1t. V d\u016fsledku toho je hodnota nastavena na v\u00fdchoz\u00ed hodnotu '00:00', kter\u00e1 p\u0159edstavuje p\u016flnoc.
 LOG_ROLLOVER_START_TIME_FORMAT_WARNING.explanation=Vlastnost pro \u010das spu\u0161t\u011bn\u00ed p\u0159eto\u010den\u00ed mus\u00ed b\u00fdt ve form\u00e1tu HH:MM, p\u0159i\u010dem\u017e 00:00 p\u0159edstavuje p\u016flnoc.
 LOG_ROLLOVER_START_TIME_FORMAT_WARNING.useraction=Ujist\u011bte se, \u017ee hodnota vlastnosti \u010dasu spu\u0161t\u011bn\u00ed p\u0159eto\u010den\u00ed je \u0159\u00e1dn\u011b naform\u00e1tov\u00e1na ve 24hodinov\u00e9 notaci HH:MM, kde 00:00 p\u0159edstavuje p\u016flnoc.
 
 LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING=TRAS3013W: Interval p\u0159eto\u010den\u00ed protokolu nesm\u00ed b\u00fdt krat\u0161\u00ed ne\u017e 1 minuta. Je-li uvedena hodnota men\u0161\u00ed ne\u017e 1 minuta, interval p\u0159eto\u010den\u00ed protokolu je nastaven na v\u00fdchoz\u00ed hodnotu 1 den.
-LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.explanation=TRAS3013W: Interval p\u0159eto\u010den\u00ed protokolu nesm\u00ed b\u00fdt krat\u0161\u00ed ne\u017e 1 minuta.
-LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=TRAS3013W: Zadejte interval p\u0159eto\u010den\u00ed protokolu, kter\u00fd se rovn\u00e1 nebo je del\u0161\u00ed ne\u017e 1 minuta.
+LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.explanation=Interval p\u0159eto\u010den\u00ed protokolu nesm\u00ed b\u00fdt krat\u0161\u00ed ne\u017e 1 minuta.
+LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=Zadejte interval p\u0159eto\u010den\u00ed protokolu, kter\u00fd se rovn\u00e1 nebo je del\u0161\u00ed ne\u017e 1 minuta.
 
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Chyb\u00ed n\u00e1zev z\u00e1hlav\u00ed pro jedno nebo v\u00edce pol\u00ed accessLogging logFormat: {0}.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=Protokolov\u00e1n\u00ed JSON pou\u017e\u00edv\u00e1 atribut logFormat z accessLogging pro v\u00fdb\u011br toho, jak\u00e1 pole zpr\u00e1v http_access.log se maj\u00ed zahrnout. P\u0159i pou\u017eit\u00ed pol\u00ed %i nebo %o v atributu accessLogging logFormat mus\u00ed b\u00fdt zad\u00e1n n\u00e1zev z\u00e1hlav\u00ed.
