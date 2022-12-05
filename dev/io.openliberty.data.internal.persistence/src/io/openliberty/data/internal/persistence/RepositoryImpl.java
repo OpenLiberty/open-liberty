@@ -331,13 +331,14 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      *
      * @param searchFor string to search for in the position immediately prior to the endBefore position.
      * @param text      the text to search.
-     * @param endBefore position before to match.
+     * @param minStart  the earliest possible starting point for the searchFor string in the text.
+     * @param endBefore position before which to match.
      * @return true if found, otherwise false.
      */
     @Trivial
-    private static boolean endsWith(String searchFor, String text, int endBefore) {
+    private static boolean endsWith(String searchFor, String text, int minStart, int endBefore) {
         int searchLen = searchFor.length();
-        return endBefore >= searchLen && text.regionMatches(endBefore - searchLen, searchFor, 0, searchLen);
+        return endBefore - minStart >= searchLen && text.regionMatches(endBefore - searchLen, searchFor, 0, searchLen);
     }
 
     /**
@@ -479,8 +480,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             q = generateSelect(queryInfo);
             if (orderBy > c || orderBy == -1 && methodName.length() > c) {
                 int where = q.length();
-                String s = orderBy > 0 ? methodName.substring(c, orderBy) : methodName.substring(c);
-                generateRepositoryQueryConditions(queryInfo, s, q);
+                generateRepositoryQueryConditions(queryInfo, methodName, c, orderBy > 0 ? orderBy : methodName.length(), q);
                 if (countPages)
                     generateCount(queryInfo, q.substring(where));
             }
@@ -510,7 +510,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             }
             q = new StringBuilder(150).append("DELETE FROM ").append(queryInfo.entityInfo.name).append(" o");
             if (methodName.length() > c)
-                generateRepositoryQueryConditions(queryInfo, methodName.substring(c), q);
+                generateRepositoryQueryConditions(queryInfo, methodName, c, methodName.length(), q);
             queryInfo.type = QueryInfo.Type.DELETE;
         } else if (methodName.startsWith("update")) {
             int by = methodName.indexOf("By", 6);
@@ -522,14 +522,14 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             int c = by < 0 ? 5 : by + 2;
             q = new StringBuilder(150).append("SELECT COUNT(o) FROM ").append(queryInfo.entityInfo.name).append(" o");
             if (methodName.length() > c)
-                generateRepositoryQueryConditions(queryInfo, methodName.substring(c), q);
+                generateRepositoryQueryConditions(queryInfo, methodName, c, methodName.length(), q);
             queryInfo.type = QueryInfo.Type.COUNT;
         } else if (methodName.startsWith("exists")) {
             int by = methodName.indexOf("By", 6);
             int c = by < 0 ? 6 : by + 2;
             q = new StringBuilder(200).append("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM ").append(queryInfo.entityInfo.name).append(" o");
             if (methodName.length() > c)
-                generateRepositoryQueryConditions(queryInfo, methodName.substring(c), q);
+                generateRepositoryQueryConditions(queryInfo, methodName, c, methodName.length(), q);
             queryInfo.type = QueryInfo.Type.EXISTS;
         }
 
@@ -539,83 +539,83 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     /**
      * Generates JPQL for a *By condition such as MyColumn[Not]Like[IgnoreCase]
      */
-    private void generateRepositoryQueryCondition(QueryInfo queryInfo, String expression, StringBuilder q) {
-        int end = expression.length();
-        char last = expression.charAt(end - 1);
+    private void generateRepositoryQueryCondition(QueryInfo queryInfo, String methodName, int start, int endBefore, StringBuilder q) {
+        char last = methodName.charAt(endBefore - 1);
         boolean ignoreCase;
-        if (ignoreCase = last == 'e' && endsWith("IgnoreCas", expression, end - 1)) {
-            if (0 == (end -= 10))
+        if (ignoreCase = last == 'e' && endsWith("IgnoreCas", methodName, start, endBefore - 1)) {
+            if (0 == (endBefore -= 10))
                 throw new MappingException("Entity property name or condition is required before IgnoreCase."); // TODO
-            last = expression.charAt(end - 1);
+            last = methodName.charAt(endBefore - 1);
         }
+        int length = endBefore - start;
 
         Condition condition = Condition.EQUALS;
         switch (last) {
             case 'n': // GreaterThan | LessThan | In | Between
-                if (end > 2) {
-                    char ch = expression.charAt(end - 2);
+                if (length > 2) {
+                    char ch = methodName.charAt(endBefore - 2);
                     if (ch == 'a') { // GreaterThan | LessThan
-                        if (endsWith("GreaterTh", expression, end - 2))
+                        if (endsWith("GreaterTh", methodName, start, endBefore - 2))
                             condition = Condition.GREATER_THAN;
-                        else if (endsWith("LessTh", expression, end - 2))
+                        else if (endsWith("LessTh", methodName, start, endBefore - 2))
                             condition = Condition.LESS_THAN;
                     } else if (ch == 'I') { // In
                         condition = Condition.IN;
-                    } else if (ch == 'e' && endsWith("Betwe", expression, end - 2)) {
+                    } else if (ch == 'e' && endsWith("Betwe", methodName, start, endBefore - 2)) {
                         condition = Condition.BETWEEN;
                     }
                 }
                 break;
             case 'l': // GreaterThanEqual | LessThanEqual | Null
-                if (end > 4) {
-                    char ch = expression.charAt(end - 2);
+                if (length > 4) {
+                    char ch = methodName.charAt(endBefore - 2);
                     if (ch == 'a') { // GreaterThanEqual | LessThanEqual
-                        if (endsWith("GreaterThanEqu", expression, end - 2))
+                        if (endsWith("GreaterThanEqu", methodName, start, endBefore - 2))
                             condition = Condition.GREATER_THAN_EQUAL;
-                        else if (endsWith("LessThanEqu", expression, end - 2))
+                        else if (endsWith("LessThanEqu", methodName, start, endBefore - 2))
                             condition = Condition.LESS_THAN_EQUAL;
-                    } else if (ch == 'l' & expression.charAt(end - 3) == 'u' && expression.charAt(end - 4) == 'N') {
+                    } else if (ch == 'l' & methodName.charAt(endBefore - 3) == 'u' && methodName.charAt(endBefore - 4) == 'N') {
                         condition = Condition.NULL;
                     }
                 }
                 break;
             case 'e': // Like, True, False
-                if (end > 4) {
-                    char ch = expression.charAt(end - 4);
+                if (length > 4) {
+                    char ch = methodName.charAt(endBefore - 4);
                     if (ch == 'L') {
-                        if (expression.charAt(end - 3) == 'i' && expression.charAt(end - 2) == 'k')
+                        if (methodName.charAt(endBefore - 3) == 'i' && methodName.charAt(endBefore - 2) == 'k')
                             condition = Condition.LIKE;
                     } else if (ch == 'T') {
-                        if (expression.charAt(end - 3) == 'r' && expression.charAt(end - 2) == 'u')
+                        if (methodName.charAt(endBefore - 3) == 'r' && methodName.charAt(endBefore - 2) == 'u')
                             condition = Condition.TRUE;
-                    } else if (endsWith("Fals", expression, end - 1)) {
+                    } else if (endsWith("Fals", methodName, start, endBefore - 1)) {
                         condition = Condition.FALSE;
                     }
                 }
                 break;
             case 'h': // StartsWith | EndsWith
-                if (end > 8) {
-                    char ch = expression.charAt(end - 8);
+                if (length > 8) {
+                    char ch = methodName.charAt(endBefore - 8);
                     if (ch == 'E') {
-                        if (endsWith("ndsWit", expression, end - 1))
+                        if (endsWith("ndsWit", methodName, start, endBefore - 1))
                             condition = Condition.ENDS_WITH;
-                    } else if (end > 10 && ch == 'a' && endsWith("StartsWit", expression, end - 1)) {
+                    } else if (endBefore > 10 && ch == 'a' && endsWith("StartsWit", methodName, start, endBefore - 1)) {
                         condition = Condition.STARTS_WITH;
                     }
                 }
                 break;
             case 's': // Contains
-                if (endsWith("Contain", expression, end - 1))
+                if (endsWith("Contain", methodName, start, endBefore - 1))
                     condition = Condition.CONTAINS;
                 break;
             case 'y': // Empty
-                if (endsWith("Empt", expression, end - 1))
+                if (endsWith("Empt", methodName, start, endBefore - 1))
                     condition = Condition.EMPTY;
         }
 
-        boolean negated = endsWith("Not", expression, end - condition.length);
+        boolean negated = endsWith("Not", methodName, start, endBefore - condition.length);
 
-        String attribute = expression.substring(0, end - condition.length - (negated ? 3 : 0));
+        String attribute = methodName.substring(start, endBefore - condition.length - (negated ? 3 : 0));
 
         if (negated) {
             Condition negatedCondition = condition.negate();
@@ -717,21 +717,20 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     }
 
     /**
-     * Generates the JPQL WHERE clause for all findBy, deleteBy, or updateBy conditions such as MyColumn[Not?]Like
+     * Generates the JPQL WHERE clause for all findBy, deleteBy, or updateBy conditions such as MyColumn[Not]Like[IgnoreCase]
      */
-    private void generateRepositoryQueryConditions(QueryInfo queryInfo, String conditions, StringBuilder q) {
+    private void generateRepositoryQueryConditions(QueryInfo queryInfo, String methodName, int start, int endBefore, StringBuilder q) {
         queryInfo.paramCount = 0;
         queryInfo.hasWhere = true;
         q.append(" WHERE (");
-        for (int and = 0, or = 0, iNext, i = 0; queryInfo.hasWhere && i >= 0; i = iNext) {
-            and = and == -1 || and > i ? and : conditions.indexOf("And", i);
-            or = or == -1 || or > i ? or : conditions.indexOf("Or", i);
+        for (int and = start, or = start, iNext = start, i = start; queryInfo.hasWhere && i >= start && iNext < endBefore; i = iNext) {
+            and = and == -1 || and > i ? and : methodName.indexOf("And", i);
+            or = or == -1 || or > i ? or : methodName.indexOf("Or", i);
             iNext = Math.min(and, or);
             if (iNext < 0)
                 iNext = Math.max(and, or);
-            String condition = iNext < 0 ? conditions.substring(i) : conditions.substring(i, iNext);
-            generateRepositoryQueryCondition(queryInfo, condition, q);
-            if (iNext > 0) {
+            generateRepositoryQueryCondition(queryInfo, methodName, i, iNext < 0 || iNext >= endBefore ? endBefore : iNext, q);
+            if (iNext > 0 && iNext < endBefore) {
                 q.append(iNext == and ? " AND " : " OR ");
                 iNext += (iNext == and ? 3 : 2);
             }
@@ -811,7 +810,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
         // Compute the WHERE clause first due to its parameters being ordered first in the repository method signature
         StringBuilder where = new StringBuilder(150);
-        generateRepositoryQueryConditions(queryInfo, methodName.substring(c, uFirst), where);
+        generateRepositoryQueryConditions(queryInfo, methodName, c, uFirst, where);
 
         StringBuilder q = new StringBuilder(250);
         q.append("UPDATE ").append(queryInfo.entityInfo.name).append(" o SET");
