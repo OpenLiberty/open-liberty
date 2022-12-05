@@ -1,0 +1,7 @@
+bootstrap.include=../testports.properties
+
+# Exempt because the OTel agent does not work with Java 2 Security enabled
+websphere.java.security.exempt=true
+
+# This file is used by AgentConfigTest.testConfigFromBootstrap
+otel.service.name=bootstrap-properties-test-service

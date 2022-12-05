@@ -47,6 +47,11 @@ public class TestConstants {
      */
     public static final String ENV_OTEL_BSP_SCHEDULE_DELAY = "OTEL_BSP_SCHEDULE_DELAY";
 
+    /**
+     * The TraceID value returned when there is no active trace
+     */
+    public static final String NULL_TRACE_ID = "00000000000000000000000000000000";
+
     /*
      * Private constructor, no instances
      */

@@ -17,6 +17,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import io.openliberty.microprofile.telemetry.internal.tests.AgentConfigTest;
 import io.openliberty.microprofile.telemetry.internal.tests.AgentTest;
 import io.openliberty.microprofile.telemetry.internal.tests.JaegerLegacyTest;
 import io.openliberty.microprofile.telemetry.internal.tests.JaegerOltpTest;
@@ -31,6 +32,7 @@ import io.openliberty.microprofile.telemetry.internal.tests.ZipkinTest;
                 JaegerLegacyTest.class,
                 ZipkinTest.class,
                 AgentTest.class,
+                AgentConfigTest.class,
 })
 
 @MinimumJavaLevel(javaLevel = 11)
