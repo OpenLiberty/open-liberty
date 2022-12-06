@@ -46,7 +46,7 @@ public class MetricsTCKLauncher {
     @AfterClass
     public static void tearDown() throws Exception {
         // Ignore CWWKZ0131W - In windows, some jars are being locked during the test. Issue #2768
-        server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWWKZ0002E", "CWWKZ0131W", "CWWKW1001W", "CWWKW1002W", "CWPMI2005W");
+        server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWWKZ0002E", "CWWKZ0131W", "CWWKW1001W", "CWWKW1002W", "CWPMI2005W", "CWPMI2006W");
     }
 
     @Test
