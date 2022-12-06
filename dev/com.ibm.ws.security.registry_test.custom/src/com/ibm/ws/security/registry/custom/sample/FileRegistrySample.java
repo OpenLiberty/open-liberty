@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2019 IBM Corporation and others.
+ * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,16 +53,47 @@ public class FileRegistrySample implements UserRegistry {
     private static String MULTI_VALUE_DELIMITER = ",";
 
     /** Default Constructor **/
-    public FileRegistrySample() throws java.rmi.RemoteException {}
+    public FileRegistrySample() throws java.rmi.RemoteException {
+    }
 
+    /**
+     * Activate the component. This is called by OSGi when the user registry is placed in a user feature.
+     *
+     * @param componentContext
+     * @param newProperties
+     * @throws CustomRegistryException
+     */
     protected void activate(ComponentContext componentContext, Map<String, Object> newProperties) throws CustomRegistryException {
         Properties props = new Properties();
         props.putAll(newProperties);
         this.initialize(props);
     }
 
+    /**
+     * Deactivate the component. This is called by OSGi when the user registry is placed in a user feature.
+     *
+     * @param componentContext
+     * @param newProperties
+     * @throws CustomRegistryException
+     */
     protected void deactivate() {
         /* Put any deactivate logic here. */
+    }
+
+    /**
+     * This method is only called when properties are passed in via Bell configuration. It should perform
+     * much like the activate method, which isn't called when the UserRegistry is configured as a BELL.
+     *
+     * @param bellProperties The properties configured on the BELL from server XML configuration.
+     */
+    public void updateBell(Map<String, String> bellProperties) {
+        try {
+            Properties props = new Properties();
+            props.putAll(bellProperties);
+            this.initialize(props);
+        } catch (CustomRegistryException e) {
+            e.printStackTrace(); // Would be better to log.
+        }
     }
 
     /**
@@ -70,9 +101,9 @@ public class FileRegistrySample implements UserRegistry {
      * registry.
      *
      * @param props - The registry-specific properties with which to
-     *            initialize the custom registry
+     *                  initialize the custom registry
      * @exception CustomRegistryException
-     *                if there is any registry-specific problem
+     *                                        if there is any registry-specific problem
      **/
     @Override
     public void initialize(Properties props) throws CustomRegistryException {
@@ -97,16 +128,16 @@ public class FileRegistrySample implements UserRegistry {
      * a user when the user's name and password are given.
      *
      * @param userSecurityName the name of user
-     * @param password the password of the user
+     * @param password         the password of the user
      * @return a valid userSecurityName. Normally this is
      *         the name of same user whose password was checked
      *         but if the implementation wants to return any other
      *         valid userSecurityName in the registry it can do so
      * @exception CheckPasswordFailedException if userSecurityName/
-     *                password combination does not exist
-     *                in the registry
-     * @exception CustomRegistryException if there is any registry-
-     *                specific problem
+     *                                             password combination does not exist
+     *                                             in the registry
+     * @exception CustomRegistryException      if there is any registry-
+     *                                             specific problem
      **/
     @Override
     public String checkPassword(String userSecurityName, String passwd) throws PasswordCheckFailedException, CustomRegistryException {
@@ -149,11 +180,11 @@ public class FileRegistrySample implements UserRegistry {
      * @param cert the X509 certificate chain
      * @return The mapped name of the user userSecurityName
      * @exception CertificateMapNotSupportedException if the
-     *                particular certificate is not supported.
-     * @exception CertificateMapFailedException if the mapping of
-     *                the certificate fails.
-     * @exception CustomRegistryException if there is any registry
-     *                -specific problem
+     *                                                    particular certificate is not supported.
+     * @exception CertificateMapFailedException       if the mapping of
+     *                                                    the certificate fails.
+     * @exception CustomRegistryException             if there is any registry
+     *                                                    -specific problem
      **/
     @Override
     public String mapCertificate(X509Certificate[] cert) throws CertificateMapNotSupportedException, CertificateMapFailedException, CustomRegistryException {
@@ -184,7 +215,7 @@ public class FileRegistrySample implements UserRegistry {
      *         recommended that you use your own value for realm.
      *
      * @exception CustomRegistryException if there is any registry-
-     *                specific problem
+     *                                        specific problem
      **/
     @Override
     public String getRealm() throws CustomRegistryException {
@@ -201,18 +232,18 @@ public class FileRegistrySample implements UserRegistry {
      * adding them (users) to roles.
      *
      * @param pattern the pattern to match. (For example, a* will
-     *            match all userSecurityNames starting with a)
-     * @param limit the maximum number of users that should be
-     *            returned. This is very useful in situations where
-     *            there are thousands of users in the registry and
-     *            getting all of them at once is not practical. The
-     *            default is 100. A value of 0 implies get all the
-     *            users and hence must be used with care.
+     *                    match all userSecurityNames starting with a)
+     * @param limit   the maximum number of users that should be
+     *                    returned. This is very useful in situations where
+     *                    there are thousands of users in the registry and
+     *                    getting all of them at once is not practical. The
+     *                    default is 100. A value of 0 implies get all the
+     *                    users and hence must be used with care.
      * @return a Result object that contains the list of users
      *         requested and a flag to indicate if more users
      *         exist.
      * @exception CustomRegistryException if there is any registry-
-     *                specific problem
+     *                                        specific problem
      **/
     @Override
     public Result getUsers(String pattern, int limit) throws CustomRegistryException {
@@ -278,10 +309,10 @@ public class FileRegistrySample implements UserRegistry {
      *         represents a descriptive, not necessarily
      *         unique, name for a user. If a display name
      *         does not exist return null or empty string.
-     * @exception EntryNotFoundException if userSecurityName
-     *                does not exist.
+     * @exception EntryNotFoundException  if userSecurityName
+     *                                        does not exist.
      * @exception CustomRegistryException if there is any registry-
-     *                specific problem
+     *                                        specific problem
      **/
     @Override
     public String getUserDisplayName(String userSecurityName) throws CustomRegistryException, EntryNotFoundException {
@@ -326,10 +357,10 @@ public class FileRegistrySample implements UserRegistry {
      *         data that serves to represent the user. For example, for
      *         the UNIX user registry, the unique ID for a user can be
      *         the UID.
-     * @exception EntryNotFoundException if userSecurityName does not
-     *                exist.
+     * @exception EntryNotFoundException  if userSecurityName does not
+     *                                        exist.
      * @exception CustomRegistryException if there is any registry-
-     *                specific problem
+     *                                        specific problem
      **/
     @Override
     public String getUniqueUserId(String userSecurityName) throws CustomRegistryException, EntryNotFoundException {
@@ -369,9 +400,9 @@ public class FileRegistrySample implements UserRegistry {
      *
      * @param uniqueUserId - The unique ID of the user.
      * @return The userSecurityName of the user.
-     * @exception EntryNotFoundException if the unique user ID does not exist.
+     * @exception EntryNotFoundException  if the unique user ID does not exist.
      * @exception CustomRegistryException if there is any registry-specific
-     *                problem
+     *                                        problem
      **/
     @Override
     public String getUserSecurityName(String uniqueUserId) throws CustomRegistryException, EntryNotFoundException {
@@ -410,9 +441,9 @@ public class FileRegistrySample implements UserRegistry {
      * @param userSecurityName - The name of the user
      * @return True if the user is valid; otherwise false
      * @exception CustomRegistryException if there is any registry-
-     *                specific problem
-     * @exception RemoteException as this extends java.rmi.Remote
-     *                interface
+     *                                        specific problem
+     * @exception RemoteException         as this extends java.rmi.Remote
+     *                                        interface
      **/
     @Override
     public boolean isValidUser(String userSecurityName) throws CustomRegistryException {
@@ -447,17 +478,17 @@ public class FileRegistrySample implements UserRegistry {
      * the registry for adding them (groups) to roles.
      *
      * @param pattern the pattern to match. (For example, a* matches
-     *            all groupSecurityNames starting with a)
-     * @param Limits the maximum number of groups to return
-     *            This is very useful in situations where there
-     *            are thousands of groups in the registry and getting all
-     *            of them at once is not practical. The default is 100.
-     *            A value of 0 implies get all the groups and hence must
-     *            be used with care.
+     *                    all groupSecurityNames starting with a)
+     * @param Limits  the maximum number of groups to return
+     *                    This is very useful in situations where there
+     *                    are thousands of groups in the registry and getting all
+     *                    of them at once is not practical. The default is 100.
+     *                    A value of 0 implies get all the groups and hence must
+     *                    be used with care.
      * @return A Result object that contains the list of groups
      *         requested and a flag to indicate if more groups exist.
      * @exception CustomRegistryException if there is any registry-specific
-     *                problem
+     *                                        problem
      **/
     @Override
     public Result getGroups(String pattern, int limit) throws CustomRegistryException {
@@ -505,10 +536,10 @@ public class FileRegistrySample implements UserRegistry {
      *         descriptive, not necessarily unique, name for a group.
      *         If a display name does not exist return null or empty
      *         string.
-     * @exception EntryNotFoundException if groupSecurityName does
-     *                not exist.
+     * @exception EntryNotFoundException  if groupSecurityName does
+     *                                        not exist.
      * @exception CustomRegistryException if there is any registry-
-     *                specific problem
+     *                                        specific problem
      **/
     @Override
     public String getGroupDisplayName(String groupSecurityName) throws CustomRegistryException, EntryNotFoundException {
@@ -551,11 +582,11 @@ public class FileRegistrySample implements UserRegistry {
      *         registry-specific, data that serves to represent
      *         the group. For example, for the UNIX user registry,
      *         the unique ID might be the GID.
-     * @exception EntryNotFoundException if groupSecurityName does
-     *                not exist.
+     * @exception EntryNotFoundException  if groupSecurityName does
+     *                                        not exist.
      * @exception CustomRegistryException if there is any registry-
-     *                specific problem
-     * @exception RemoteException as this extends java.rmi.Remote
+     *                                        specific problem
+     * @exception RemoteException         as this extends java.rmi.Remote
      **/
     @Override
     public String getUniqueGroupId(String groupSecurityName) throws CustomRegistryException, EntryNotFoundException {
@@ -598,9 +629,9 @@ public class FileRegistrySample implements UserRegistry {
      *         that serves to represent the entry. For example, for the
      *         UNIX user registry, the unique ID for a group might be
      *         the GID and the Unique ID for the user might be the UID.
-     * @exception EntryNotFoundException if uniqueUserId does not exist.
+     * @exception EntryNotFoundException  if uniqueUserId does not exist.
      * @exception CustomRegistryException if there is any registry-specific
-     *                problem
+     *                                        problem
      **/
     @Override
     public List<String> getUniqueGroupIds(String uniqueUserId) throws CustomRegistryException, EntryNotFoundException {
@@ -638,10 +669,10 @@ public class FileRegistrySample implements UserRegistry {
      *
      * @param uniqueGroupId the unique ID of the group.
      * @return The name of the group.
-     * @exception EntryNotFoundException if the uniqueGroupId does
-     *                not exist.
+     * @exception EntryNotFoundException  if the uniqueGroupId does
+     *                                        not exist.
      * @exception CustomRegistryException if there is any registry-
-     *                specific problem
+     *                                        specific problem
      **/
     @Override
     public String getGroupSecurityName(String uniqueGroupId) throws CustomRegistryException, EntryNotFoundException {
@@ -679,7 +710,7 @@ public class FileRegistrySample implements UserRegistry {
      * @param groupSecurityName the name of the group
      * @return True if the groups exists; otherwise false
      * @exception CustomRegistryException if there is any registry-
-     *                specific problem
+     *                                        specific problem
      **/
     @Override
     public boolean isValidGroup(String groupSecurityName) throws CustomRegistryException {
@@ -720,11 +751,11 @@ public class FileRegistrySample implements UserRegistry {
      * @param userSecurityName the name of the user
      * @return A list of all the group securityNames that the user
      *         belongs to.
-     * @exception EntryNotFoundException if user does not exist.
+     * @exception EntryNotFoundException  if user does not exist.
      * @exception CustomRegistryException if there is any registry-
-     *                specific problem
-     * @exception RemoteException as this extends the java.rmi.Remote
-     *                interface
+     *                                        specific problem
+     * @exception RemoteException         as this extends the java.rmi.Remote
+     *                                        interface
      **/
     @Override
     public List<String> getGroupsForUser(String userName) throws CustomRegistryException, EntryNotFoundException {
@@ -781,20 +812,20 @@ public class FileRegistrySample implements UserRegistry {
      * without creating the NotImplemented exception.
      *
      * @param groupSecurityName the name of the group
-     * @param Limits the maximum number of users that should be
-     *            returned. This is very useful in situations where there
-     *            are lots of users in the registry and getting all of
-     *            them at once is not practical. A value of 0 implies
-     *            get all the users and hence must be used with care.
+     * @param Limits            the maximum number of users that should be
+     *                              returned. This is very useful in situations where there
+     *                              are lots of users in the registry and getting all of
+     *                              them at once is not practical. A value of 0 implies
+     *                              get all the users and hence must be used with care.
      * @return A Result object that contains the list of users
      *         requested and a flag to indicate if more users exist.
      * @exception NotImplementedException create this exception in rare
-     *                situations if it is not practical to get this information
-     *                for any of the group or groups from the registry.
-     * @exception EntryNotFoundException if the group does not exist in
-     *                the registry
+     *                                        situations if it is not practical to get this information
+     *                                        for any of the group or groups from the registry.
+     * @exception EntryNotFoundException  if the group does not exist in
+     *                                        the registry
      * @exception CustomRegistryException if there is any registry-specific
-     *                problem
+     *                                        problem
      **/
     @Override
     public Result getUsersForGroup(String groupSecurityName, int limit) throws NotImplementedException, EntryNotFoundException, CustomRegistryException {

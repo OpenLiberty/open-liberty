@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,17 +41,17 @@ import componenttest.topology.utils.LDAPFatUtils;
 
 /**
  * This test will test federating a stand-alone Custom UserRegistry (CUR) loaded via
- * a user feature to federated registries, while maintaining the same behavior as the
+ * a bells-1.0 to federated registries, while maintaining the same behavior as the
  * CUR had stand-alone.
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
-public class FederateStandaloneCurTest {
+public class FederateStandaloneCurBellTest {
 
-    @Server("com.ibm.ws.security.wim.registry.fat.FederateStandaloneCur")
+    @Server("com.ibm.ws.security.wim.registry.fat.FederateStandaloneCurBell")
     public static LibertyServer libertyServer;
 
-    private static final Class<?> c = FederateStandaloneCurTest.class;
+    private static final Class<?> c = FederateStandaloneCurBellTest.class;
     private static UserRegistryServletConnection servlet;
     private static ServerConfiguration startConfiguration = null;
 
@@ -106,8 +106,7 @@ public class FederateStandaloneCurTest {
 
         Log.info(c, "setUpLibertyServer", "Starting the server... (will wait for userRegistry servlet to start)");
         libertyServer.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/securitylibertyinternals-1.0.mf");
-        libertyServer.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/customRegistrySample-1.0.mf");
-        libertyServer.copyFileToLibertyInstallRoot("lib", "internalfeatures/com.ibm.ws.security.registry_test.custom_1.0.jar");
+        libertyServer.copyFileToLibertyServerRoot("resources/lib", "internalfeatures/com.ibm.ws.security.registry_test.custom_1.0.jar");
         libertyServer.addInstalledAppForValidation("userRegistry");
         libertyServer.startServer(c.getName() + ".log");
 
@@ -145,11 +144,10 @@ public class FederateStandaloneCurTest {
         }
 
         /*
-         * Delete any files we copied to the test server and uninstall the user bundles.
+         * Delete any files we copied to the test server and uninstall the BELL library.
          */
         libertyServer.deleteFileFromLibertyInstallRoot("lib/features/webspheresecuritylibertyinternals-1.0.mf");
-        libertyServer.deleteFileFromLibertyInstallRoot("lib/features/customRegistrySample-1.0.mf");
-        libertyServer.deleteFileFromLibertyInstallRoot("lib/com.ibm.ws.security.registry_test.custom_1.0.jar");
+        libertyServer.deleteFileFromLibertyServerRoot("resources/lib/com.ibm.ws.security.registry_test.custom_1.0.jar");
     }
 
     /**
@@ -209,7 +207,7 @@ public class FederateStandaloneCurTest {
      * @param federate Whether to enable federatedRegistry-1.0 feature.
      * @throws Exception If the server could not be updated.
      */
-    private static ServerConfiguration updateLibertyConfiguration(boolean federate) throws Exception {
+    private static void updateLibertyConfiguration(boolean federate) throws Exception {
         ServerConfiguration server = startConfiguration.clone();
 
         if (federate) {
@@ -233,7 +231,7 @@ public class FederateStandaloneCurTest {
             federatedRepository.getPrimaryRealm().setUniqueGroupIdMapping(new RealmPropertyMapping("uniqueId", "uniqueId"));
         }
 
-        return server;
+        updateConfigDynamically(libertyServer, server, true);
     }
 
     /**
@@ -242,10 +240,8 @@ public class FederateStandaloneCurTest {
      * @throws Exception If the test fails for some unforeseen reason.
      */
     @Test
-    public void customUserRegistry_userfeature_standalone() throws Exception {
-        ServerConfiguration config = updateLibertyConfiguration(false);
-        updateConfigDynamically(libertyServer, config, true);
-
+    public void customUserRegistry_bell_standalone() throws Exception {
+        updateLibertyConfiguration(false);
         doAssertions(STANDALONE_REALM, STANDALONE_TYPE);
     }
 
@@ -255,10 +251,8 @@ public class FederateStandaloneCurTest {
      * @throws Exception If the test fails for some unforeseen reason.
      */
     @Test
-    public void customUserRegistry_userfeature_federated() throws Exception {
-        ServerConfiguration config = updateLibertyConfiguration(true);
-        updateConfigDynamically(libertyServer, config, true);
-
+    public void customUserRegistry_bell_federated() throws Exception {
+        updateLibertyConfiguration(true);
         doAssertions(FEDERATED_REALM, FEDERATED_TYPE);
     }
 
