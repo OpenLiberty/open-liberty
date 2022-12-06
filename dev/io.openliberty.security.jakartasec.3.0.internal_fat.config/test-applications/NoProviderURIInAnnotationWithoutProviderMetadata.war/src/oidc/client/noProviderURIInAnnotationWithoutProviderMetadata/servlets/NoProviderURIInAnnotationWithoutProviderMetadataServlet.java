@@ -24,7 +24,7 @@ import oidc.client.base.servlets.BaseServlet;
                                          clientId = "client_1",
                                          clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger",
                                          redirectURI = "${providerBean.clientSecureRoot}/NoProviderURIInAnnotationWithoutProviderMetadata/Callback",
-                                         jwksReadTimeout = Constants.OVERRIDE_DEFAULT_JWKS_CONN_TIMEOUT,
+                                         jwksReadTimeout = Constants.OVERRIDE_DEFAULT_JWKS_READ_TIMEOUT,
                                          claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub", callerGroupsClaim = "groupIds"))
 @DeclareRoles("all")
 @ServletSecurity(@HttpConstraint(rolesAllowed = "all"))

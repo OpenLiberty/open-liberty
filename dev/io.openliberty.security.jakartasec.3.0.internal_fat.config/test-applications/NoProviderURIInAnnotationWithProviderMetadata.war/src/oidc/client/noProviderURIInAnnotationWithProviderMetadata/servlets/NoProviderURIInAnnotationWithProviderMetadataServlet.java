@@ -26,7 +26,7 @@ import oidc.client.base.servlets.BaseServlet;
                                          clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger",
                                          claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub", callerGroupsClaim = "groupIds"),
                                          redirectURI = "${providerBean.clientSecureRoot}/NoProviderURIInAnnotationWithProviderMetadata/Callback",
-                                         jwksReadTimeout = Constants.OVERRIDE_DEFAULT_JWKS_CONN_TIMEOUT,
+                                         jwksReadTimeout = Constants.OVERRIDE_DEFAULT_JWKS_READ_TIMEOUT,
                                          providerMetadata = @OpenIdProviderMetadata(authorizationEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/authorize",
                                                                                     tokenEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/token",
                                                                                     issuer = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1",

@@ -20,7 +20,7 @@ import oidc.client.base.servlets.BaseServlet;
 
 @WebServlet("/OnlyProviderInAnnotationServlet")
 @OpenIdAuthenticationMechanismDefinition(
-                                         providerURI = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1", jwksReadTimeout = Constants.OVERRIDE_DEFAULT_JWKS_CONN_TIMEOUT)
+                                         providerURI = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1", jwksReadTimeout = Constants.OVERRIDE_DEFAULT_JWKS_READ_TIMEOUT)
 // have to include the jwksReadTimeout value to avoid random timeouts - it should not affect what the test is trying to verify
 @DeclareRoles("all")
 @ServletSecurity(@HttpConstraint(rolesAllowed = "all"))
