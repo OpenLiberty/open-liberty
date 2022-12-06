@@ -49,6 +49,17 @@ public @interface OrderBy {
     boolean descending() default false;
 
     /**
+     * Indicate whether or not to request case insensitive comparison when
+     * sorting by this attribute.<p>
+     *
+     * The default value of <code>false</code> means that case insensitive
+     * comparison is not requested.<p>
+     *
+     * @return whether or not to request case insensitive comparison.
+     */
+    boolean ignoreCase() default false;
+
+    /**
      * Entity attribute name to sort by.<p>
      *
      * For example, with JPQL for relational databases,<p>

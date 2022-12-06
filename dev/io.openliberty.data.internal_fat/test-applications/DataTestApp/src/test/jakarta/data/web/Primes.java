@@ -27,6 +27,7 @@ import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Sort;
 import jakarta.data.repository.Streamable;
 import jakarta.enterprise.concurrent.Asynchronous;
 
@@ -75,7 +76,15 @@ public interface Primes {
     @OrderBy("number")
     KeysetAwarePage<Prime> findByNumberBetween(long min, long max, Pageable pagination);
 
+    List<Prime> findByNumberBetween(long min, long max, Sort... orderBy);
+
+    KeysetAwarePage<Prime> findByNumberBetweenAndEvenFalse(long min, long max, Pageable pagination);
+
+    Page<Prime> findByNumberBetweenAndSumOfBitsNotNull(long min, long max, Pageable pagination);
+
     KeysetAwarePage<Prime> findByNumberBetweenOrderByEvenDescSumOfBitsDescNumberAsc(long min, long max, Pageable pagination);
+
+    List<Prime> findByNumberBetweenOrderByNameIgnoreCaseDesc(long min, long max);
 
     @OrderBy("number")
     List<Prime> findByNumberInAndRomanNumeralEmpty(List<Long> nums);

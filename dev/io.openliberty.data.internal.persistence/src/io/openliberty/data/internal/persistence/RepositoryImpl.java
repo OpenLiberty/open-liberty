@@ -268,15 +268,26 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             List<Sort> keyset = needsKeysetQueries ? new ArrayList<>(orderBy.length) : null;
 
             for (int i = 0; i < orderBy.length; i++) {
-                o.append(i == 0 ? " ORDER BY o." : ", o.").append(orderBy[i].value());
+                o.append(i == 0 ? " ORDER BY " : ", ").append(orderBy[i].ignoreCase() ? "LOWER(o." : "o.").append(orderBy[i].value());
+                if (orderBy[i].ignoreCase())
+                    o.append(")");
                 if (orderBy[i].descending())
                     o.append(" DESC");
+
                 if (needsKeysetQueries) {
-                    r.append(i == 0 ? " ORDER BY o." : ", o.").append(orderBy[i].value());
+                    r.append(i == 0 ? " ORDER BY " : ", ").append(orderBy[i].ignoreCase() ? "LOWER(o." : "o.").append(orderBy[i].value());
+                    if (orderBy[i].ignoreCase())
+                        r.append(")");
                     if (!orderBy[i].descending())
                         r.append(" DESC");
 
-                    keyset.add(orderBy[i].descending() ? Sort.desc(orderBy[i].value()) : Sort.asc(orderBy[i].value()));
+                    keyset.add(orderBy[i].ignoreCase() ? //
+                                    orderBy[i].descending() ? //
+                                                    Sort.descIgnoreCase(orderBy[i].value()) : //
+                                                    Sort.ascIgnoreCase(orderBy[i].value()) : //
+                                    orderBy[i].descending() ? //
+                                                    Sort.desc(orderBy[i].value()) : //
+                                                    Sort.asc(orderBy[i].value()));
                 }
             }
 
@@ -438,16 +449,27 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 Sort keyInfo = keyset.get(k);
                 String name = keyInfo.property();
                 boolean asc = keyInfo.isAscending();
-                if (a != null) {
-                    a.append(k == 0 ? "o." : " AND o.").append(name);
-                    a.append(k < i ? '=' : (asc ? '>' : '<'));
-                    a.append(paramPrefix).append(queryInfo.paramCount + 1 + k);
-                }
-                if (b != null) {
-                    b.append(k == 0 ? "o." : " AND o.").append(name);
-                    b.append(k < i ? '=' : (asc ? '<' : '>'));
-                    b.append(paramPrefix).append(queryInfo.paramCount + 1 + k);
-                }
+                boolean lower = keyInfo.ignoreCase();
+                if (a != null)
+                    if (lower) {
+                        a.append(k == 0 ? "LOWER(o." : " AND LOWER(o.").append(name).append(')');
+                        a.append(k < i ? '=' : (asc ? '>' : '<'));
+                        a.append("LOWER(").append(paramPrefix).append(queryInfo.paramCount + 1 + k).append(')');
+                    } else {
+                        a.append(k == 0 ? "o." : " AND o.").append(name);
+                        a.append(k < i ? '=' : (asc ? '>' : '<'));
+                        a.append(paramPrefix).append(queryInfo.paramCount + 1 + k);
+                    }
+                if (b != null)
+                    if (lower) {
+                        b.append(k == 0 ? "LOWER(o." : " AND LOWER(o.").append(name).append(')');
+                        b.append(k < i ? '=' : (asc ? '<' : '>'));
+                        b.append("LOWER(").append(paramPrefix).append(queryInfo.paramCount + 1 + k).append(')');
+                    } else {
+                        b.append(k == 0 ? "o." : " AND o.").append(name);
+                        b.append(k < i ? '=' : (asc ? '<' : '>'));
+                        b.append(paramPrefix).append(queryInfo.paramCount + 1 + k);
+                    }
             }
             if (a != null)
                 a.append(')');
@@ -642,9 +664,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         }
 
         StringBuilder a = new StringBuilder();
-        if (upper || ignoreCase)
+        if (upper)
             a.append("UPPER(o.").append(name).append(')');
-        else if (lower)
+        else if (lower || ignoreCase)
             a.append("LOWER(o.").append(name).append(')');
         else
             a.append("o.").append(name);
@@ -703,17 +725,17 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     }
 
     /**
-     * Appends JQPL for a repository method parameter. Either of the form ?1 or UPPER(?1)
+     * Appends JQPL for a repository method parameter. Either of the form ?1 or LOWER(?1)
      *
      * @param q     builder for the JPQL query.
-     * @param upper indicates if the query parameter should be compared in upper case.
+     * @param lower indicates if the query parameter should be compared in lower case.
      * @param num   parameter number.
      * @return the same builder for the JPQL query.
      */
     @Trivial
-    private static StringBuilder appendParam(StringBuilder q, boolean upper, int num) {
-        q.append(upper ? "UPPER(?" : '?').append(num);
-        return upper ? q.append(')') : q;
+    private static StringBuilder appendParam(StringBuilder q, boolean lower, int num) {
+        q.append(lower ? "LOWER(?" : '?').append(num);
+        return lower ? q.append(')') : q;
     }
 
     /**
@@ -759,14 +781,26 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             if (iNext < 0)
                 iNext = Math.max(asc, desc);
 
-            String attribute = iNext < 0 ? methodName.substring(i) : methodName.substring(i, iNext);
-            String name = queryInfo.entityInfo.getAttributeName(attribute);
-            o.append("o.").append(name);
+            boolean ignoreCase;
+            int endBefore = iNext < 0 ? methodName.length() : iNext;
+            if (ignoreCase = endsWith("IgnoreCase", methodName, i, endBefore))
+                endBefore -= 10;
 
-            if (needsKeysetQueries) {
-                r.append("o.").append(name);
-                keyset.add(iNext > 0 && iNext == desc ? Sort.desc(name) : Sort.asc(name));
-            }
+            String attribute = methodName.substring(i, endBefore);
+            String name = queryInfo.entityInfo.getAttributeName(attribute);
+            if (ignoreCase)
+                o.append(ignoreCase ? "LOWER(o." : "o.").append(name).append(')');
+            else
+                o.append("o.").append(name);
+
+            if (needsKeysetQueries)
+                if (ignoreCase) {
+                    r.append(ignoreCase ? "LOWER(o." : "o.").append(name).append(')');
+                    keyset.add(iNext > 0 && iNext == desc ? Sort.descIgnoreCase(name) : Sort.ascIgnoreCase(name));
+                } else {
+                    r.append("o.").append(name);
+                    keyset.add(iNext > 0 && iNext == desc ? Sort.desc(name) : Sort.asc(name));
+                }
 
             if (iNext > 0) {
                 if (iNext == desc)
@@ -1046,14 +1080,16 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                 if (sort == null)
                                     throw new NullPointerException("Sort: null");
                                 else {
-                                    o = o == null ? new StringBuilder(100).append(" ORDER BY o.") : o.append(", o.");
-                                    o.append(sort.property());
+                                    o = o == null ? new StringBuilder(100).append(" ORDER BY ") : o.append(", ");
+                                    o.append(sort.ignoreCase() ? "LOWER(o." : "o.").append(sort.property());
+                                    if (sort.ignoreCase())
+                                        o.append(')');
                                     if (forward ? sort.isDescending() : sort.isAscending())
                                         o.append(" DESC");
                                 }
 
                             if (pagination == null || pagination.mode() == Pageable.Mode.OFFSET)
-                                queryInfo = queryInfo.withJPQL(q.append(o).toString());
+                                (queryInfo = queryInfo.withJPQL(q.append(o).toString())).keyset = sortList; // offset pagination can be a starting point for keyset pagination
                             else // CURSOR_NEXT or CURSOR_PREVIOUS
                                 generateKeysetQueries(queryInfo = queryInfo.withJPQL(null), sortList, q, forward ? o : null, forward ? null : o);
                         }
