@@ -46,12 +46,14 @@ public class TokenResponseValidator {
     public static final TraceComponent tc = Tr.register(TokenResponseValidator.class);
 
     OidcClientConfig clientConfig;
-    private HttpServletRequest request;
-    private HttpServletResponse response;
+    private final HttpServletRequest request;
+    private final HttpServletResponse response;
     private Storage storage;
 
-    public TokenResponseValidator(OidcClientConfig oidcClientConfig) {
+    public TokenResponseValidator(OidcClientConfig oidcClientConfig, HttpServletRequest request, HttpServletResponse response) {
         this.clientConfig = oidcClientConfig;
+        this.request = request;
+        this.response = response;
     }
 
     @FFDCIgnore({ TokenValidationException.class, Exception.class })
@@ -148,20 +150,6 @@ public class TokenResponseValidator {
     public String getStateParameter() {
         return request.getParameter(AuthorizationRequestParameters.STATE);
         //TODO: maybe throw an exception right here if this state is not valid
-    }
-
-    /**
-     * @param request
-     */
-    public void setRequest(HttpServletRequest request) {
-        this.request = request;
-    }
-
-    /**
-     * @param response
-     */
-    public void setResponse(HttpServletResponse response) {
-        this.response = response;
     }
 
 }

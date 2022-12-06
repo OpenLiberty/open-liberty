@@ -56,9 +56,7 @@ public class Client {
     }
 
     public JwtClaims validate(TokenResponse tokenResponse, HttpServletRequest request, HttpServletResponse response) throws TokenValidationException {
-        TokenResponseValidator tokenResponseValidator = new TokenResponseValidator(this.oidcClientConfig);
-        tokenResponseValidator.setRequest(request);
-        tokenResponseValidator.setResponse(response);
+        TokenResponseValidator tokenResponseValidator = new TokenResponseValidator(this.oidcClientConfig, request, response);
         return tokenResponseValidator.validate(tokenResponse);
     }
 

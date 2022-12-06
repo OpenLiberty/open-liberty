@@ -27,6 +27,7 @@ import org.jose4j.jwt.consumer.JwtContext;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.security.common.jwt.JwtParsingUtils;
 import io.openliberty.security.common.jwt.jws.JwsSignatureVerifier;
@@ -64,6 +65,7 @@ public class UserInfoRequestor {
         this.params = new ArrayList<NameValuePair>();
     }
 
+    @FFDCIgnore(Exception.class)
     public UserInfoResponse requestUserInfo() throws UserInfoResponseException {
         if (!userInfoEndpoint.toLowerCase().startsWith(HttpConstants.HTTPS_SCHEME)) {
             throw new UserInfoEndpointNotHttpsException(userInfoEndpoint, oidcClientConfig.getClientId());

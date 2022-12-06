@@ -115,3 +115,7 @@ JWK_READ_TIMED_OUT.useraction=Update the jwksReadTimeout property in the OpenID 
 OIDC_CLIENT_INVALID_RESPONSE_TYPE=CWWKS2423E: The following invalid response type is specified: ''{0}''. Valid response types are [{1}].
 OIDC_CLIENT_INVALID_RESPONSE_TYPE.explanation=The specified response type is not valid. 
 OIDC_CLIENT_INVALID_RESPONSE_TYPE.useraction=Specify one of the valid response types.
+
+TOKEN_CLAIM_VALUE_MISMATCH=CWWKS2424E: The [{0}] value for the [{1}] claim in the token does not match the [{2}] expected value.
+TOKEN_CLAIM_VALUE_MISMATCH.explanation=The claim value is incorrect or malformed. The configuration for the OpenID Connect client might be incorrect, or the token was created with incorrect values.
+TOKEN_CLAIM_VALUE_MISMATCH.useraction=Ensure the attribute in the OpenID Connect client configuration that is related to the claim that is specified in the message is configured correctly.

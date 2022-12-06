@@ -42,6 +42,7 @@ import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.ws.security.test.common.CommonTestClass;
 import com.ibm.ws.security.test.common.jwt.utils.JwtUnitTestUtils;
 
+import io.openliberty.security.common.jwt.exceptions.SignatureAlgorithmNotInAllowedList;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoEndpointNotHttpsException;
@@ -315,7 +316,7 @@ public class UserInfoRequestorTest extends CommonTestClass {
         UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(oidcClientConfig, userInfoEndpoint, accessToken).build();
         mockery.checking(new Expectations() {
             {
-                one(oidcClientConfig).getProviderMetadata();
+                allowing(oidcClientConfig).getProviderMetadata();
                 will(returnValue(providerMetadata));
                 one(providerMetadata).getJwksURI();
                 will(returnValue(jwksUri));
@@ -327,6 +328,8 @@ public class UserInfoRequestorTest extends CommonTestClass {
                 will(returnValue(500));
                 one(oidcClientConfig).getJwksReadTimeout();
                 will(returnValue(500));
+                one(providerMetadata).getIdTokenSigningAlgorithmsSupported();
+                will(returnValue("HS256"));
             }
         });
 
@@ -339,11 +342,11 @@ public class UserInfoRequestorTest extends CommonTestClass {
     }
 
     @Test
-    public void test_extractClaimsFromJwtResponse_withClaims() throws Exception {
+    public void test_extractClaimsFromJwtResponse_signatureAlgorithmNotAllowed() throws Exception {
         UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(oidcClientConfig, userInfoEndpoint, accessToken).build();
         mockery.checking(new Expectations() {
             {
-                one(oidcClientConfig).getProviderMetadata();
+                allowing(oidcClientConfig).getProviderMetadata();
                 will(returnValue(providerMetadata));
                 one(providerMetadata).getJwksURI();
                 will(returnValue(jwksUri));
@@ -355,6 +358,41 @@ public class UserInfoRequestorTest extends CommonTestClass {
                 will(returnValue(500));
                 one(oidcClientConfig).getJwksReadTimeout();
                 will(returnValue(500));
+                one(providerMetadata).getIdTokenSigningAlgorithmsSupported();
+                will(returnValue("RS256"));
+            }
+        });
+
+        JSONObject claims = new JSONObject();
+        String jwtResponse = JwtUnitTestUtils.getHS256Jws(claims, clientSecretString);
+
+        try {
+            JSONObject extractedClaims = userInfoRequestor.extractClaimsFromJwtResponse(jwtResponse);
+            fail("Should have thrown an exception but got claims: " + extractedClaims);
+        } catch (SignatureAlgorithmNotInAllowedList e) {
+            verifyException(e, "CWWKS2521E");
+        }
+    }
+
+    @Test
+    public void test_extractClaimsFromJwtResponse_withClaims() throws Exception {
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(oidcClientConfig, userInfoEndpoint, accessToken).build();
+        mockery.checking(new Expectations() {
+            {
+                allowing(oidcClientConfig).getProviderMetadata();
+                will(returnValue(providerMetadata));
+                one(providerMetadata).getJwksURI();
+                will(returnValue(jwksUri));
+                one(oidcClientConfig).getClientId();
+                will(returnValue(clientId));
+                one(oidcClientConfig).getClientSecret();
+                will(returnValue(clientSecret));
+                one(oidcClientConfig).getJwksConnectTimeout();
+                will(returnValue(500));
+                one(oidcClientConfig).getJwksReadTimeout();
+                will(returnValue(500));
+                one(providerMetadata).getIdTokenSigningAlgorithmsSupported();
+                will(returnValue("HS256"));
             }
         });
 
