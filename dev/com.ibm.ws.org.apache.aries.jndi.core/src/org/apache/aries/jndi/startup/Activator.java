@@ -19,6 +19,8 @@
 package org.apache.aries.jndi.startup;
 
 import java.lang.reflect.Field;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -59,8 +61,6 @@ import org.osgi.util.tracker.BundleTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ibm.ws.kernel.service.util.JavaInfo;
-
 /**
  * The activator for this bundle makes sure the static classes in it are
  * driven so they can do their magic stuff properly.
@@ -93,7 +93,7 @@ public class Activator implements BundleActivator {
     private final Class<?> objectFactoryBuilderHolder = new Supplier<Class<?>>() {
         @Override
         public Class<?> get() {
-            if (JavaInfo.majorVersion() >= 20) {
+            if (javaMajorVersion() >= 20) {
                 try {
                     return Class.forName("com.sun.naming.internal.NamingManagerHelper");
                 } catch (ClassNotFoundException e) {
@@ -102,6 +102,20 @@ public class Activator implements BundleActivator {
             return NamingManager.class;
         }
     }.get();
+
+    private int javaMajorVersion() {
+        String version = AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                return System.getProperty("java.version");
+            }
+        });
+
+        String[] versionElements = version.split("\\D");
+
+        // Pre-JDK 9 java.version is 1.MAJOR.MINOR. Post-JDK 9 java.version is MAJOR.MINOR
+        return Integer.valueOf(versionElements[Integer.valueOf(versionElements[0]) == 1 ? 1 : 0]);
+    }
 
     public static Collection<ServiceReference<InitialContextFactoryBuilder>> getInitialContextFactoryBuilderServices() {
         return instance.icfBuilders.getReferences();

@@ -14,7 +14,7 @@ bVersion=1.1
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.aries.jndi.core
 
-Import-Package: com.sun.naming.internal;resolution:="optional",*
+Import-Package: !com.sun.naming.internal,*
 
 Private-Package: \
     org.apache.aries.jndi, \
