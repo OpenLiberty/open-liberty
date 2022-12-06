@@ -10,6 +10,9 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec.identitystore;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.StringReader;
 import java.util.Optional;
 
@@ -46,8 +49,8 @@ public class OpenIdContextImpl implements OpenIdContext {
     private AccessToken accessToken;
     private IdentityToken identityToken;
     private OpenIdClaims userinfoClaims;
-    private JsonObject userinfoClaimsAsJson = null;
-    private JsonObject providerMetadata; // TODO: Store JSON String instead for serialization
+    private transient JsonObject userinfoClaimsAsJson = null;
+    private transient JsonObject providerMetadata;
     private String state; // TODO: Determine if storage values can be obtained without relying on state.
     private boolean useSession;
     private String clientId;
@@ -293,6 +296,33 @@ public class OpenIdContextImpl implements OpenIdContext {
         } else {
             return new CookieBasedStorage(request, response);
         }
+    }
+
+    private void readObject(ObjectInputStream input) throws ClassNotFoundException, IOException {
+        /*
+         * Read all non-transient fields.
+         */
+        input.defaultReadObject();
+
+        /*
+         * Read the providerMetadata JSON string back and use it to construct a Json
+         * instance.
+         */
+        providerMetadata = Json.createReader(new StringReader((String) input.readObject())).readObject();
+
+    }
+
+    private void writeObject(ObjectOutputStream output) throws IOException {
+        /*
+         * Write all non-transient fields.
+         */
+        output.defaultWriteObject();
+
+        /*
+         * Since the JsonObject class is not serializable, we are going to copy the
+         * JSON string instead.
+         */
+        output.writeObject(providerMetadata.toString());
     }
 
 }

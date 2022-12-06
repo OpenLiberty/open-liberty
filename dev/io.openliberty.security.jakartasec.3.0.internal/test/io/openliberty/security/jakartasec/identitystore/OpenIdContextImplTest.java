@@ -49,11 +49,11 @@ import test.common.SharedOutputManager;
 public class OpenIdContextImplTest {
 
     private static final String SUBJECT_IN_ID_TOKEN = "Jackson";
-    private static final String TOKEN_TYPE_BEARER = "Bearer";
+    protected static final String TOKEN_TYPE_BEARER = "Bearer";
     private static final String TOKEN_TYPE_MAC = "MAC";
     private static final Long ONE_HOUR = Long.valueOf(3600);
-    private static final String STATE = "1234567890";
-    private static final String clientID = "myClient";
+    protected static final String STATE = "1234567890";
+    protected static final String clientID = "myClient";
 
     private final Mockery mockery = new JUnit4Mockery();
 
