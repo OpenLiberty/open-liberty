@@ -36,8 +36,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.LocalFile;
+import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
@@ -85,9 +87,14 @@ public class AgentConfigTest {
     @Before
     public void resetServer() throws Exception {
         // Replace any test files with their original versions
+        copyToServer("server.xml-original", "server.xml");
         copyToServer("jvm.options-original", "jvm.options");
         copyToServer("bootstrap.properties-original", "bootstrap.properties");
         deleteFromServer("agent-config.properties");
+
+        // Reset the expected apps
+        server.removeAllInstalledAppsForValidation();
+        server.addInstalledAppForValidation("agentTest");
 
         // Env vars are cleared when the server starts, so we need to set the core ones up again
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "otlp");
@@ -248,6 +255,48 @@ public class AgentConfigTest {
 
         Span span2 = TestUtils.findOneFrom(spans2, hasName("span2"));
         assertThat(span2, hasParentSpanId(span1.getSpanId()));
+    }
+
+    @Test
+    public void testAgentMultiApp() throws Exception {
+        // Deploy two apps and associated server.xml
+        server.removeAllInstalledAppsForValidation(); // Not starting the normal app
+
+        PropertiesAsset app1Config = new PropertiesAsset().addProperty("otel.service.name", "multi-app-1");
+        WebArchive app1 = ShrinkWrap.create(WebArchive.class, "multiApp1.war")
+                                    .addPackage(AgentConfigTestResource.class.getPackage())
+                                    .addAsResource(app1Config, "META-INF/microprofile-config.properties");
+        ShrinkHelper.exportAppToServer(server, app1, DeployOptions.SERVER_ONLY);
+
+        PropertiesAsset app2Config = new PropertiesAsset().addProperty("otel.service.name", "multi-app-2");
+        WebArchive app2 = ShrinkWrap.create(WebArchive.class, "multiApp2.war")
+                                    .addPackage(AgentConfigTestResource.class.getPackage())
+                                    .addAsResource(app2Config, "META-INF/microprofile-config.properties");
+        ShrinkHelper.exportAppToServer(server, app2, DeployOptions.SERVER_ONLY);
+
+        copyToServer("server.xml-multi-app", "server.xml");
+
+        server.startServer();
+
+        // Test we can call app1
+        String traceId = new HttpRequest(server, "/multiApp1").run(String.class);
+        Span span1 = client.waitForSpansForTraceId(traceId, hasSize(1)).get(0);
+
+        // microprofile-config.properties is not read by the agent
+        assertThat(span1, hasServiceName("unknown_service:java"));
+        assertThat(span1, hasNoParent());
+        assertThat(span1, hasKind(SERVER));
+        assertThat(span1, hasName("/multiApp1/"));
+
+        // Test we can call app2
+        String traceId2 = new HttpRequest(server, "/multiApp2").run(String.class);
+        Span span2 = client.waitForSpansForTraceId(traceId2, hasSize(1)).get(0);
+
+        // microprofile-config.properties is not read by the agent
+        assertThat(span2, hasServiceName("unknown_service:java"));
+        assertThat(span2, hasNoParent());
+        assertThat(span2, hasKind(SERVER));
+        assertThat(span2, hasName("/multiApp2/"));
     }
 
     private void copyToServer(String src, String dst) throws Exception {
