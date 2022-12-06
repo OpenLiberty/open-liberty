@@ -1031,42 +1031,42 @@ public class DataTestServlet extends FATServlet {
 
         // Not
         assertIterableEquals(List.of("two", "five", "seven"),
-                             primes.findByNameNotIgnoreCaseAndNumberLessThanOrderByNumberAsc("Three", 10)
+                             primes.findByNameIgnoreCaseNotAndNumberLessThanOrderByNumberAsc("Three", 10)
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
 
         // StartsWith
         assertIterableEquals(List.of("thirteen", "thirty-one", "thirty-seven"),
-                             primes.findByNameStartsWithIgnoreCaseAndNumberLessThanOrderByNumberAsc("Thirt%n", 1000)
+                             primes.findByNameIgnoreCaseStartsWithAndNumberLessThanOrderByNumberAsc("Thirt%n", 1000)
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
 
         // Like
         assertIterableEquals(List.of("thirteen", "thirty-seven"),
-                             primes.findByNameLikeIgnoreCaseAndNumberLessThanOrderByNumberAsc("Thirt%n", 1000)
+                             primes.findByNameIgnoreCaseLikeAndNumberLessThanOrderByNumberAsc("Thirt%n", 1000)
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
 
         // Contains
         assertIterableEquals(List.of("twenty-three", "seventeen"),
-                             primes.findByNameContainsIgnoreCaseAndNumberLessThanOrderByNumberDesc("ent%ee", 1000)
+                             primes.findByNameIgnoreCaseContainsAndNumberLessThanOrderByNumberDesc("ent%ee", 1000)
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
 
         // Between
         assertIterableEquals(List.of("nineteen", "seventeen", "seven"),
-                             primes.findByNameBetweenIgnoreCaseAndNumberLessThanOrderByNumberDesc("Nine", "SEVENTEEN", 50)
+                             primes.findByNameIgnoreCaseBetweenAndNumberLessThanOrderByNumberDesc("Nine", "SEVENTEEN", 50)
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
 
         // GreaterThan, LessThanEqual
         assertIterableEquals(List.of("XLVII", "XLIII", "XIII", "XI", "VII", "V", "III"),
-                             primes.findByHexGreaterThanIgnoreCaseAndRomanNumeralLessThanEqualIgnoreCaseAndNumberLessThan("2a", "xlvII", 50)
+                             primes.findByHexIgnoreCaseGreaterThanAndRomanNumeralIgnoreCaseLessThanEqualAndNumberLessThan("2a", "xlvII", 50)
                                              .stream()
                                              .map(p -> p.romanNumeral)
                                              .collect(Collectors.toList()));

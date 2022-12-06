@@ -57,19 +57,19 @@ public interface Primes {
     List<Prime> findByEvenTrueAndNumberLessThan(long max);
 
     @OrderBy(value = "romanNumeral", descending = true)
-    List<Prime> findByHexGreaterThanIgnoreCaseAndRomanNumeralLessThanEqualIgnoreCaseAndNumberLessThan(String hexAbove, String maxNumeral, long numBelow);
-
-    List<Prime> findByNameBetweenIgnoreCaseAndNumberLessThanOrderByNumberDesc(String first, String last, long max);
+    List<Prime> findByHexIgnoreCaseGreaterThanAndRomanNumeralIgnoreCaseLessThanEqualAndNumberLessThan(String hexAbove, String maxNumeral, long numBelow);
 
     Prime findByNameIgnoreCase(String name);
 
-    List<Prime> findByNameContainsIgnoreCaseAndNumberLessThanOrderByNumberDesc(String pattern, long max);
+    List<Prime> findByNameIgnoreCaseBetweenAndNumberLessThanOrderByNumberDesc(String first, String last, long max);
 
-    List<Prime> findByNameLikeIgnoreCaseAndNumberLessThanOrderByNumberAsc(String pattern, long max);
+    List<Prime> findByNameIgnoreCaseContainsAndNumberLessThanOrderByNumberDesc(String pattern, long max);
 
-    List<Prime> findByNameNotIgnoreCaseAndNumberLessThanOrderByNumberAsc(String name, long max);
+    List<Prime> findByNameIgnoreCaseLikeAndNumberLessThanOrderByNumberAsc(String pattern, long max);
 
-    List<Prime> findByNameStartsWithIgnoreCaseAndNumberLessThanOrderByNumberAsc(String pattern, long max);
+    List<Prime> findByNameIgnoreCaseNotAndNumberLessThanOrderByNumberAsc(String name, long max);
+
+    List<Prime> findByNameIgnoreCaseStartsWithAndNumberLessThanOrderByNumberAsc(String pattern, long max);
 
     Prime findByNumberBetween(long min, long max);
 

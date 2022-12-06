@@ -559,20 +559,13 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     }
 
     /**
-     * Generates JPQL for a *By condition such as MyColumn[Not]Like[IgnoreCase]
+     * Generates JPQL for a *By condition such as MyColumn[IgnoreCase][Not]Like
      */
     private void generateRepositoryQueryCondition(QueryInfo queryInfo, String methodName, int start, int endBefore, StringBuilder q) {
-        char last = methodName.charAt(endBefore - 1);
-        boolean ignoreCase;
-        if (ignoreCase = last == 'e' && endsWith("IgnoreCas", methodName, start, endBefore - 1)) {
-            if (0 == (endBefore -= 10))
-                throw new MappingException("Entity property name or condition is required before IgnoreCase."); // TODO
-            last = methodName.charAt(endBefore - 1);
-        }
         int length = endBefore - start;
 
         Condition condition = Condition.EQUALS;
-        switch (last) {
+        switch (methodName.charAt(endBefore - 1)) {
             case 'n': // GreaterThan | LessThan | In | Between
                 if (length > 2) {
                     char ch = methodName.charAt(endBefore - 2);
@@ -637,7 +630,12 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
         boolean negated = endsWith("Not", methodName, start, endBefore - condition.length);
 
-        String attribute = methodName.substring(start, endBefore - condition.length - (negated ? 3 : 0));
+        boolean ignoreCase = endsWith("IgnoreCase", methodName, start, endBefore - condition.length - (negated ? 3 : 0));
+
+        String attribute = methodName.substring(start, endBefore - condition.length - (ignoreCase ? 10 : 0) - (negated ? 3 : 0));
+
+        if (attribute.length() == 0)
+            throw new MappingException("Entity property name is missing."); // TODO possibly combine with unknown entity property name
 
         if (negated) {
             Condition negatedCondition = condition.negate();
@@ -739,7 +737,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     }
 
     /**
-     * Generates the JPQL WHERE clause for all findBy, deleteBy, or updateBy conditions such as MyColumn[Not]Like[IgnoreCase]
+     * Generates the JPQL WHERE clause for all findBy, deleteBy, or updateBy conditions such as MyColumn[IgnoreCase][Not]Like
      */
     private void generateRepositoryQueryConditions(QueryInfo queryInfo, String methodName, int start, int endBefore, StringBuilder q) {
         queryInfo.paramCount = 0;
