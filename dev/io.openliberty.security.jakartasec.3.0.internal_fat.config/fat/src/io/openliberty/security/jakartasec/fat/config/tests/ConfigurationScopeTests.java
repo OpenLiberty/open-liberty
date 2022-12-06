@@ -12,7 +12,9 @@ package io.openliberty.security.jakartasec.fat.config.tests;
 
 import static io.openliberty.security.jakartasec.fat.utils.OpenIdContextExpectationHelpers.buildAccessTokenScopeString;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -37,6 +39,7 @@ import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurit
 import io.openliberty.security.jakartasec.fat.configs.TestConfigMaps;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
 import io.openliberty.security.jakartasec.fat.utils.MessageConstants;
+import io.openliberty.security.jakartasec.fat.utils.OpenIdContextExpectationHelpers;
 import io.openliberty.security.jakartasec.fat.utils.ServletMessageConstants;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 
@@ -97,26 +100,37 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
 
         swh = new ShrinkWrapHelpers(opHttpBase, opHttpsBase, rpHttpBase, rpHttpsBase);
 
-        swh.defaultDropinApp(rpServer, "ScopeOpenId.war", "oidc.client.scopeOpenId.servlets", "oidc.client.base.*");
-        swh.defaultDropinApp(rpServer, "ScopeOpenIdProfile.war", "oidc.client.scopeOpenIdProfile.servlets", "oidc.client.base.*");
-        swh.defaultDropinApp(rpServer, "ScopeOpenIdEmail.war", "oidc.client.scopeOpenIdEmail.servlets", "oidc.client.base.*");
-        swh.defaultDropinApp(rpServer, "ScopeOpenIdProfileEmail.war", "oidc.client.scopeOpenIdProfileEmail.servlets", "oidc.client.base.*");
+        // deploy the userinfo endpoint apps
+        swh.dropinAppWithJose4j(rpServer, "UserInfo.war", "userinfo.servlets");
+
+        swh.deployConfigurableTestApps(rpServer, "ScopeOpenId.war", "ScopeOpenId.war",
+                                       buildUpdatedConfigMapWithMockUserInfo(opServer, rpServer, "ScopeOpenId", "allValues.openIdConfig.properties", new HashMap<>()),
+                                       "oidc.client.scopeOpenId.servlets", "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "ScopeOpenIdProfile.war", "ScopeOpenIdProfile.war",
+                                       buildUpdatedConfigMapWithMockUserInfo(opServer, rpServer, "ScopeOpenIdProfile", "allValues.openIdConfig.properties", new HashMap<>()),
+                                       "oidc.client.scopeOpenIdProfile.servlets", "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "ScopeOpenIdEmail.war", "ScopeOpenIdEmail.war",
+                                       buildUpdatedConfigMapWithMockUserInfo(opServer, rpServer, "ScopeOpenIdEmail", "allValues.openIdConfig.properties", new HashMap<>()),
+                                       "oidc.client.scopeOpenIdEmail.servlets", "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "ScopeOpenIdProfileEmail.war", "ScopeOpenIdProfileEmail.war",
+                                       buildUpdatedConfigMapWithMockUserInfo(opServer, rpServer, "ScopeOpenIdProfileEmail", "allValues.openIdConfig.properties", new HashMap<>()),
+                                       "oidc.client.scopeOpenIdProfileEmail.servlets", "oidc.client.base.*");
 
         swh.deployConfigurableTestApps(rpServer, "scopeOpenIdProfileEmailELOpenId.war", "ScopeOpenIdProfileEmailWithEL.war",
-                                       buildUpdatedConfigMap(opServer, rpServer, "scopeOpenIdProfileEmailELOpenId", "allValues.openIdConfig.properties",
-                                                             TestConfigMaps.getScopeExpressionOpenId()),
+                                       buildUpdatedConfigMapWithMockUserInfo(opServer, rpServer, "scopeOpenIdProfileEmailELOpenId", "allValues.openIdConfig.properties",
+                                                                             TestConfigMaps.getScopeExpressionOpenId()),
                                        "oidc.client.scopeOpenIdProfileEmailWithEL.servlets", "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "scopeOpenIdProfileEmailELOpenIdProfile.war", "ScopeOpenIdProfileEmailWithEL.war",
-                                       buildUpdatedConfigMap(opServer, rpServer, "scopeOpenIdProfileEmailELOpenIdProfile", "allValues.openIdConfig.properties",
-                                                             TestConfigMaps.getScopeExpressionOpenIdProfile()),
+                                       buildUpdatedConfigMapWithMockUserInfo(opServer, rpServer, "scopeOpenIdProfileEmailELOpenIdProfile", "allValues.openIdConfig.properties",
+                                                                             TestConfigMaps.getScopeExpressionOpenIdProfile()),
                                        "oidc.client.scopeOpenIdProfileEmailWithEL.servlets", "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "scopeOpenIdProfileEmailELOpenIdEmail.war", "ScopeOpenIdProfileEmailWithEL.war",
-                                       buildUpdatedConfigMap(opServer, rpServer, "scopeOpenIdProfileEmailELOpenIdEmail", "allValues.openIdConfig.properties",
-                                                             TestConfigMaps.getScopeExpressionOpenIdEmail()),
+                                       buildUpdatedConfigMapWithMockUserInfo(opServer, rpServer, "scopeOpenIdProfileEmailELOpenIdEmail", "allValues.openIdConfig.properties",
+                                                                             TestConfigMaps.getScopeExpressionOpenIdEmail()),
                                        "oidc.client.scopeOpenIdProfileEmailWithEL.servlets", "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "scopeOpenIdProfileEmailELOpenIdProfileEmail.war", "ScopeOpenIdProfileEmailWithEL.war",
-                                       buildUpdatedConfigMap(opServer, rpServer, "scopeOpenIdProfileEmailELOpenIdProfileEmail", "allValues.openIdConfig.properties",
-                                                             TestConfigMaps.getScopeExpressionOpenIdProfileEmail()),
+                                       buildUpdatedConfigMapWithMockUserInfo(opServer, rpServer, "scopeOpenIdProfileEmailELOpenIdProfileEmail", "allValues.openIdConfig.properties",
+                                                                             TestConfigMaps.getScopeExpressionOpenIdProfileEmail()),
                                        "oidc.client.scopeOpenIdProfileEmailWithEL.servlets", "oidc.client.base.*");
 
         swh.deployConfigurableTestApps(rpServer, "scopeELNoOpenId.war", "GenericOIDCAuthMechanism.war",
@@ -150,6 +164,14 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    public static Map<String, Object> buildUpdatedConfigMapWithMockUserInfo(LibertyServer opServer, LibertyServer rpServer, String appName, String configFileName,
+                                                                            Map<String, Object> overrideConfigSettings) throws Exception {
+
+        Map<String, Object> userInfoConfigMap = TestConfigMaps.getUserInfo(rpHttpsBase, "JsonUserInfoScopeServlet");
+        overrideConfigSettings.putAll(userInfoConfigMap);
+        return buildUpdatedConfigMap(opServer, rpServer, appName, configFileName, overrideConfigSettings);
+    }
+
     /****************************************************************************************************************/
     /* Tests */
     /****************************************************************************************************************/
@@ -163,9 +185,10 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
     @Test
     public void ConfigurationScopeTests_scope_openId() throws Exception {
 
-        WebClient webClient = getAndSaveWebClient();
-
         String requester = ServletMessageConstants.SERVLET + ServletMessageConstants.OPENID_CONTEXT;
+        String[] scopes = { Constants.OPENID_SCOPE };
+
+        WebClient webClient = getAndSaveWebClient();
 
         String app = "ScopeOpenIdServlet";
         String url = rpHttpsBase + "/ScopeOpenId/" + app;
@@ -175,8 +198,8 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
 
         Expectations expectations = new Expectations();
         expectations.addSuccessCodeForCurrentAction();
-        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, buildAccessTokenScopeString(requester,
-                                                                                                                             Constants.OPENID_SCOPE), "The access token scope claim returned by the server does not match what is configured by the client."));
+        OpenIdContextExpectationHelpers.getOpenIdContextAccessTokenScopeExpectations(null, expectations, requester, scopes);
+        OpenIdContextExpectationHelpers.getOpenIdContextMockUserInfoExpectations(null, expectations, requester, scopes);
 
         validationUtils.validateResult(response, expectations);
 
@@ -191,9 +214,10 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
     @Test
     public void ConfigurationScopeTests_scope_openIdProfile() throws Exception {
 
-        WebClient webClient = getAndSaveWebClient();
-
         String requester = ServletMessageConstants.SERVLET + ServletMessageConstants.OPENID_CONTEXT;
+        String[] scopes = { Constants.OPENID_SCOPE, Constants.PROFILE_SCOPE };
+
+        WebClient webClient = getAndSaveWebClient();
 
         String app = "ScopeOpenIdProfileServlet";
         String url = rpHttpsBase + "/ScopeOpenIdProfile/" + app;
@@ -203,9 +227,8 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
 
         Expectations expectations = new Expectations();
         expectations.addSuccessCodeForCurrentAction();
-        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, buildAccessTokenScopeString(requester,
-                                                                                                                             Constants.OPENID_SCOPE,
-                                                                                                                             Constants.PROFILE_SCOPE), "The access token scope claim returned by the server does not match what is configured by the client."));
+        OpenIdContextExpectationHelpers.getOpenIdContextAccessTokenScopeExpectations(null, expectations, requester, scopes);
+        OpenIdContextExpectationHelpers.getOpenIdContextMockUserInfoExpectations(null, expectations, requester, scopes);
 
         validationUtils.validateResult(response, expectations);
 
@@ -220,9 +243,10 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
     @Test
     public void ConfigurationScopeTests_scope_openIdEmail() throws Exception {
 
-        WebClient webClient = getAndSaveWebClient();
-
         String requester = ServletMessageConstants.SERVLET + ServletMessageConstants.OPENID_CONTEXT;
+        String[] scopes = new String[] { Constants.OPENID_SCOPE, Constants.EMAIL_SCOPE };
+
+        WebClient webClient = getAndSaveWebClient();
 
         String app = "ScopeOpenIdEmailServlet";
         String url = rpHttpsBase + "/ScopeOpenIdEmail/" + app;
@@ -232,9 +256,8 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
 
         Expectations expectations = new Expectations();
         expectations.addSuccessCodeForCurrentAction();
-        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, buildAccessTokenScopeString(requester,
-                                                                                                                             Constants.OPENID_SCOPE,
-                                                                                                                             Constants.EMAIL_SCOPE), "The access token scope claim returned by the server does not match what is configured by the client."));
+        OpenIdContextExpectationHelpers.getOpenIdContextAccessTokenScopeExpectations(null, expectations, requester, scopes);
+        OpenIdContextExpectationHelpers.getOpenIdContextMockUserInfoExpectations(null, expectations, requester, scopes);
 
         validationUtils.validateResult(response, expectations);
 
@@ -249,9 +272,10 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
     @Test
     public void ConfigurationScopeTests_scope_openIdProfileEmail() throws Exception {
 
-        WebClient webClient = getAndSaveWebClient();
-
         String requester = ServletMessageConstants.SERVLET + ServletMessageConstants.OPENID_CONTEXT;
+        String[] scopes = { Constants.OPENID_SCOPE, Constants.PROFILE_SCOPE, Constants.EMAIL_SCOPE };
+
+        WebClient webClient = getAndSaveWebClient();
 
         String app = "ScopeOpenIdProfileEmailServlet";
         String url = rpHttpsBase + "/ScopeOpenIdProfileEmail/" + app;
@@ -261,10 +285,8 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
 
         Expectations expectations = new Expectations();
         expectations.addSuccessCodeForCurrentAction();
-        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, buildAccessTokenScopeString(requester,
-                                                                                                                             Constants.OPENID_SCOPE,
-                                                                                                                             Constants.PROFILE_SCOPE,
-                                                                                                                             Constants.EMAIL_SCOPE), "The access token scope claim returned by the server does not match what is configured by the client."));
+        OpenIdContextExpectationHelpers.getOpenIdContextAccessTokenScopeExpectations(null, expectations, requester, scopes);
+        OpenIdContextExpectationHelpers.getOpenIdContextMockUserInfoExpectations(null, expectations, requester, scopes);
 
         validationUtils.validateResult(response, expectations);
 
@@ -280,9 +302,10 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
     @Test
     public void ConfigurationScopeTests_scope_openIdProfileEmail_scopeExpression_openId() throws Exception {
 
-        WebClient webClient = getAndSaveWebClient();
-
         String requester = ServletMessageConstants.SERVLET + ServletMessageConstants.OPENID_CONTEXT;
+        String[] scopes = { Constants.OPENID_SCOPE };
+
+        WebClient webClient = getAndSaveWebClient();
 
         String app = "ScopeOpenIdProfileEmailWithELServlet";
         String url = rpHttpsBase + "/scopeOpenIdProfileEmailELOpenId/" + app;
@@ -292,8 +315,8 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
 
         Expectations expectations = new Expectations();
         expectations.addSuccessCodeForCurrentAction();
-        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, buildAccessTokenScopeString(requester,
-                                                                                                                             Constants.OPENID_SCOPE), "The access token scope claim returned by the server does not match what is configured by the client."));
+        OpenIdContextExpectationHelpers.getOpenIdContextAccessTokenScopeExpectations(null, expectations, requester, scopes);
+        OpenIdContextExpectationHelpers.getOpenIdContextMockUserInfoExpectations(null, expectations, requester, scopes);
 
         validationUtils.validateResult(response, expectations);
 
@@ -309,9 +332,10 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
     @Test
     public void ConfigurationScopeTests_scope_openIdProfileEmail_scopeExpression_openIdProfile() throws Exception {
 
-        WebClient webClient = getAndSaveWebClient();
-
         String requester = ServletMessageConstants.SERVLET + ServletMessageConstants.OPENID_CONTEXT;
+        String[] scopes = { Constants.OPENID_SCOPE, Constants.PROFILE_SCOPE };
+
+        WebClient webClient = getAndSaveWebClient();
 
         String app = "ScopeOpenIdProfileEmailWithELServlet";
         String url = rpHttpsBase + "/scopeOpenIdProfileEmailELOpenIdProfile/" + app;
@@ -321,9 +345,9 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
 
         Expectations expectations = new Expectations();
         expectations.addSuccessCodeForCurrentAction();
-        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, buildAccessTokenScopeString(requester,
-                                                                                                                             Constants.OPENID_SCOPE,
-                                                                                                                             Constants.PROFILE_SCOPE), "The access token scope claim returned by the server does not match what is configured by the client."));
+        OpenIdContextExpectationHelpers.getOpenIdContextAccessTokenScopeExpectations(null, expectations, requester, scopes);
+        OpenIdContextExpectationHelpers.getOpenIdContextMockUserInfoExpectations(null, expectations, requester, scopes);
+
         validationUtils.validateResult(response, expectations);
 
     }
@@ -338,9 +362,10 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
     @Test
     public void ConfigurationScopeTests_scope_openIdProfileEmail_scopeExpression_openIdEmail() throws Exception {
 
-        WebClient webClient = getAndSaveWebClient();
-
         String requester = ServletMessageConstants.SERVLET + ServletMessageConstants.OPENID_CONTEXT;
+        String[] scopes = { Constants.OPENID_SCOPE, Constants.EMAIL_SCOPE };
+
+        WebClient webClient = getAndSaveWebClient();
 
         String app = "ScopeOpenIdProfileEmailWithELServlet";
         String url = rpHttpsBase + "/scopeOpenIdProfileEmailELOpenIdEmail/" + app;
@@ -350,9 +375,9 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
 
         Expectations expectations = new Expectations();
         expectations.addSuccessCodeForCurrentAction();
-        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, buildAccessTokenScopeString(requester,
-                                                                                                                             Constants.OPENID_SCOPE,
-                                                                                                                             Constants.EMAIL_SCOPE), "The access token scope claim returned by the server does not match what is configured by the client."));
+        OpenIdContextExpectationHelpers.getOpenIdContextAccessTokenScopeExpectations(null, expectations, requester, scopes);
+        OpenIdContextExpectationHelpers.getOpenIdContextMockUserInfoExpectations(null, expectations, requester, scopes);
+
         validationUtils.validateResult(response, expectations);
 
     }
@@ -367,9 +392,10 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
     @Test
     public void ConfigurationScopeTests_scope_openIdProfileEmail_scopeExpression_openIdProfileEmail() throws Exception {
 
-        WebClient webClient = getAndSaveWebClient();
-
         String requester = ServletMessageConstants.SERVLET + ServletMessageConstants.OPENID_CONTEXT;
+        String[] scopes = { Constants.OPENID_SCOPE, Constants.PROFILE_SCOPE, Constants.EMAIL_SCOPE };
+
+        WebClient webClient = getAndSaveWebClient();
 
         String app = "ScopeOpenIdProfileEmailWithELServlet";
         String url = rpHttpsBase + "/scopeOpenIdProfileEmailELOpenIdProfileEmail/" + app;
@@ -379,10 +405,9 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
 
         Expectations expectations = new Expectations();
         expectations.addSuccessCodeForCurrentAction();
-        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, buildAccessTokenScopeString(requester,
-                                                                                                                             Constants.OPENID_SCOPE,
-                                                                                                                             Constants.PROFILE_SCOPE,
-                                                                                                                             Constants.EMAIL_SCOPE), "The access token scope claim returned by the server does not match what is configured by the client."));
+        OpenIdContextExpectationHelpers.getOpenIdContextAccessTokenScopeExpectations(null, expectations, requester, scopes);
+        OpenIdContextExpectationHelpers.getOpenIdContextMockUserInfoExpectations(null, expectations, requester, scopes);
+
         validationUtils.validateResult(response, expectations);
 
     }

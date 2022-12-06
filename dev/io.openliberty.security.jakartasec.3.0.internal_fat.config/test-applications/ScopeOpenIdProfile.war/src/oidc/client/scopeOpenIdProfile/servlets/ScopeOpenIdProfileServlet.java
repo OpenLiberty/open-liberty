@@ -14,6 +14,7 @@ import io.openliberty.security.jakartasec.fat.utils.Constants;
 import jakarta.annotation.security.DeclareRoles;
 import jakarta.security.enterprise.authentication.mechanism.http.OpenIdAuthenticationMechanismDefinition;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.ClaimsDefinition;
+import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdProviderMetadata;
 import jakarta.servlet.annotation.HttpConstraint;
 import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebServlet;
@@ -25,7 +26,8 @@ import oidc.client.base.servlets.BaseServlet;
                                          clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger",
                                          claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub", callerGroupsClaim = "groupIds"),
                                          redirectURI = "${baseURL}/Callback",
-                                         scope = { Constants.OPENID_SCOPE, Constants.PROFILE_SCOPE })
+                                         scope = { Constants.OPENID_SCOPE, Constants.PROFILE_SCOPE },
+                                         providerMetadata = @OpenIdProviderMetadata(userinfoEndpoint = "${openIdConfig.userinfoEndpoint}"))
 @DeclareRoles("all")
 @ServletSecurity(@HttpConstraint(rolesAllowed = "all"))
 public class ScopeOpenIdProfileServlet extends BaseServlet {

@@ -176,7 +176,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
         swh = new ShrinkWrapHelpers(opHttpBase, opHttpsBase, rpHttpBase, rpHttpsBase);
 
         // deploy the userinfo endpoint apps
-        swh.defaultDropinApp(rpServer, "UserInfo.war", "userinfo.servlets");
+        swh.dropinAppWithJose4j(rpServer, "UserInfo.war", "userinfo.servlets");
 
         // deploy the userinfo test apps
         // apps where the callerNameClaim and callerGroupsClaim are the default

@@ -15,6 +15,7 @@ public class ServletMessageConstants {
     /** Values **/
     public static final String NULL = "null";
     public static final String NULL_CLAIMS = "Claims are null";
+    public static final String OPTIONAL_EMPTY = "Optional.empty";
 
     /** Caller values **/
     public static final String CALLBACK = "Callback: ";
