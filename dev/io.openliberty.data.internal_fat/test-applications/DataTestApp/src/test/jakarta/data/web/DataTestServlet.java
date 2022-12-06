@@ -139,8 +139,8 @@ public class DataTestServlet extends FATServlet {
                     new Prime(47, "2F", "101111", 5, "XLVII", "forty-seven"),
                     new Prime(4001, "FA1", "111110100001", 7, null, "four thousand one"), // romanNumeralSymbols null
                     new Prime(4003, "FA3", "111110100011", 8, null, "four thousand three"), // romanNumeralSymbols null
-                    new Prime(4007, "FA7", "111110100111", 9, null, "four thousand seven"), // romanNumeralSymbols null
-                    new Prime(4013, "FAD", "111110101101", 9, "", "four thousand thirteen"), // empty list of romanNumeralSymbols
+                    new Prime(4007, "Fa7", "111110100111", 9, null, "four thousand seven"), // romanNumeralSymbols null
+                    new Prime(4013, "FAD", "111110101101", 9, "", "Four Thousand Thirteen"), // empty list of romanNumeralSymbols
                     new Prime(4019, "FB3", "111110110011", 9, "", "four thousand nineteen")); // empty list of romanNumeralSymbols
     }
 
@@ -938,10 +938,94 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Keyset pagination with ignoreCase in the sort criteria.
+     */
+    @Test
+    public void testIgnoreCaseInKeysetPagination() {
+        Pageable pagination = Pageable.ofSize(3).sortBy(Sort.asc("sumOfBits"), Sort.descIgnoreCase("name"));
+        KeysetAwarePage<Prime> page1 = primes.findByNumberBetweenAndEvenFalse(4000L, 4020L, pagination);
+        assertIterableEquals(List.of("four thousand one", "four thousand three", "Four Thousand Thirteen"),
+                             page1
+                                             .stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        KeysetAwarePage<Prime> page2 = primes.findByNumberBetweenAndEvenFalse(4000L, 4020L, page1.nextPageable());
+        assertIterableEquals(List.of("four thousand seven", "four thousand nineteen"),
+                             page2
+                                             .stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        pagination = Pageable.ofSize(4).sortBy(Sort.ascIgnoreCase("name"));
+        page1 = primes.findByNumberBetweenAndEvenFalse(4000L, 4020L, pagination);
+        assertIterableEquals(List.of("four thousand nineteen", "four thousand one", "four thousand seven", "Four Thousand Thirteen"),
+                             page1
+                                             .stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        page2 = primes.findByNumberBetweenAndEvenFalse(4000L, 4020L, page1.nextPageable());
+        assertIterableEquals(List.of("four thousand three"),
+                             page2
+                                             .stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Offset pagination with ignoreCase in the sort criteria.
+     */
+    @Test
+    public void testIgnoreCaseInOffsetPagination() {
+        Pageable pagination = Pageable.ofSize(4).sortBy(Sort.asc("sumOfBits"), Sort.ascIgnoreCase("name"));
+        Page<Prime> page1 = primes.findByNumberBetweenAndSumOfBitsNotNull(4000L, 4020L, pagination);
+        assertIterableEquals(List.of("four thousand one", "four thousand three", "four thousand nineteen", "four thousand seven"),
+                             page1
+                                             .stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        Page<Prime> page2 = primes.findByNumberBetweenAndSumOfBitsNotNull(4000L, 4020L, page1.nextPageable());
+        assertIterableEquals(List.of("Four Thousand Thirteen"),
+                             page2
+                                             .stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        pagination = Pageable.ofSize(3).sortBy(Sort.descIgnoreCase("hex"));
+        page1 = primes.findByNumberBetweenAndSumOfBitsNotNull(4000L, 4020L, pagination);
+        assertIterableEquals(List.of("FB3", "FAD", "Fa7"),
+                             page1
+                                             .stream()
+                                             .map(p -> p.hex)
+                                             .collect(Collectors.toList()));
+
+        page2 = primes.findByNumberBetweenAndSumOfBitsNotNull(4000L, 4020L, page1.nextPageable());
+        assertIterableEquals(List.of("FA3", "FA1"),
+                             page2
+                                             .stream()
+                                             .map(p -> p.hex)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Specify IgnoreCase keyword in OrderBy.
+     */
+    @Test
+    public void testIgnoreCaseInOrderByPatternOfMethodName() {
+        assertIterableEquals(List.of("four thousand three", "Four Thousand Thirteen", "four thousand seven", "four thousand one", "four thousand nineteen"),
+                             primes.findByNumberBetweenOrderByNameIgnoreCaseDesc(4000L, 4020L)
+                                             .stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
      * Specify IgnoreCase on various conditions.
      */
     @Test
-    public void testIgnoreCase() {
+    public void testIgnoreCaseInQueryConditions() {
         // Equals
         assertEquals("twenty-nine", primes.findByNameIgnoreCase("Twenty-Nine").name);
 
@@ -985,6 +1069,24 @@ public class DataTestServlet extends FATServlet {
                              primes.findByHexGreaterThanIgnoreCaseAndRomanNumeralLessThanEqualIgnoreCaseAndNumberLessThan("2a", "xlvII", 50)
                                              .stream()
                                              .map(p -> p.romanNumeral)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Specify Sorts with ignoreCase.
+     */
+    @Test
+    public void testIgnoreCaseInSorts() {
+        assertIterableEquals(List.of("FA1", "FA3", "FB3", "FAD", "Fa7"),
+                             primes.findByNumberBetween(4000L, 4020L, Sort.asc("sumOfBits"), Sort.descIgnoreCase("hex"))
+                                             .stream()
+                                             .map(p -> p.hex)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("FA1", "FA3", "Fa7", "FAD", "FB3"),
+                             primes.findByNumberBetween(4000L, 4020L, Sort.ascIgnoreCase("hex"), Sort.desc("sumOfBits"))
+                                             .stream()
+                                             .map(p -> p.hex)
                                              .collect(Collectors.toList()));
     }
 
