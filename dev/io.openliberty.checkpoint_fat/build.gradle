@@ -8,6 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+configurations {
+    jaegerClient
+    requiredLibs.extendsFrom jaegerClient
+    yasson
+    jsonbapi
+}
 
 task copyBundles {
   enabled project.file('test-bundles').exists()
@@ -23,15 +29,22 @@ task copyBundles {
   }
 }
 
+task addYasson(type: Copy) {
+  from configurations.yasson
+  into "${buildDir}/autoFVT/publish/shared/resources/yasson/"
+}
+
+task addJsonBApi(type: Copy) {
+  from configurations.jsonbapi
+  into "${buildDir}/autoFVT/publish/files/jsonbapi/"
+}
+
 addRequiredLibraries {
     dependsOn addJakartaTransformer
     dependsOn addDerby
     dependsOn copyBundles
-}
-
-configurations {
-    jaegerClient
-    requiredLibs.extendsFrom jaegerClient
+    dependsOn addYasson
+    dependsOn addJsonBApi
 }
 
 dependencies {
@@ -49,6 +62,8 @@ dependencies {
   jaegerClient project(':com.ibm.ws.org.slf4j.api')
   jaegerClient project(':com.ibm.ws.org.slf4j.simple')
   jaegerClient project(':io.openliberty.com.google.gson')
+  yasson 'org.eclipse:yasson:1.0.8'
+  jsonbapi 'javax.json.bind:javax.json.bind-api:1.0'
 }
 
 autoFVT {
