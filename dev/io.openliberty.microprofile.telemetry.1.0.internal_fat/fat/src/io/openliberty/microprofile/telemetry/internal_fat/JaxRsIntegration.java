@@ -25,8 +25,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
@@ -67,7 +65,6 @@ public class JaxRsIntegration extends FATServletClient {
     }
 
     @Test
-    @Mode(TestMode.EXPERIMENTAL)
     public void testIntegrationWithJaxRsClientAsync() throws Exception {
         HttpRequest pokeJax = new HttpRequest(server, "/" + APP_NAME + "/endpoints/jaxrsclientasync");
         assertEquals("Test Passed", pokeJax.run(String.class));
@@ -90,7 +87,6 @@ public class JaxRsIntegration extends FATServletClient {
     }
 
     @Test
-    @Mode(TestMode.EXPERIMENTAL)
     public void testIntegrationWithMpClientAsync() throws Exception {
         HttpRequest pokeMp = new HttpRequest(server, "/" + APP_NAME + "/endpoints/mpclientasync");
         assertEquals("Test Passed", pokeMp.run(String.class));
