@@ -23,6 +23,7 @@ import org.junit.Test;
 public class HttpAuthenticationMechanismsTrackerTest {
 
     private static final String APP_NAME = "App1";
+    private static final String MODULE_NAME = "App1.war";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -62,6 +63,14 @@ public class HttpAuthenticationMechanismsTrackerTest {
         httpAuthenticationMechanismsTracker.initialize(null);
 
         assertNull("There must not be AuthMechs for a null application name.", httpAuthenticationMechanismsTracker.getAuthMechs(null, null));
+    }
+
+    @Test
+    public void testGetAuthMechs_nonNullAppName_uninitialized_null() {
+        HttpAuthenticationMechanismsTracker httpAuthenticationMechanismsTracker = new HttpAuthenticationMechanismsTracker();
+
+        assertNull("There must not be AuthMechs for an uninitialized HttpAuthenticationMechanismsTracker.",
+                   httpAuthenticationMechanismsTracker.getAuthMechs(APP_NAME, MODULE_NAME));
     }
 
     @Test
