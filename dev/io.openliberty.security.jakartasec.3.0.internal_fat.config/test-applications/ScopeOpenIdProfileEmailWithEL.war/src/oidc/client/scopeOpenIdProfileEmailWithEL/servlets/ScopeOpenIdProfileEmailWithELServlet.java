@@ -28,6 +28,7 @@ import oidc.client.base.servlets.BaseServlet;
                                          redirectURI = "${baseURL}/Callback",
                                          scope = { Constants.OPENID_SCOPE, Constants.PROFILE_SCOPE, Constants.EMAIL_SCOPE },
                                          scopeExpression = "${openIdConfig.scopeExpression}",
+                                         jwksReadTimeoutExpression = "${openIdConfig.jwksReadTimeoutExpression}",
                                          providerMetadata = @OpenIdProviderMetadata(userinfoEndpoint = "${openIdConfig.userinfoEndpoint}"))
 @DeclareRoles("all")
 @ServletSecurity(@HttpConstraint(rolesAllowed = "all"))

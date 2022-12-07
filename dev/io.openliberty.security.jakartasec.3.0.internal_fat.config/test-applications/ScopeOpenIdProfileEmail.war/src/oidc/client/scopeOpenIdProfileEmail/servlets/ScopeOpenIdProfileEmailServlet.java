@@ -27,6 +27,7 @@ import oidc.client.base.servlets.BaseServlet;
                                          claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub", callerGroupsClaim = "groupIds"),
                                          redirectURI = "${baseURL}/Callback",
                                          scope = { Constants.OPENID_SCOPE, Constants.PROFILE_SCOPE, Constants.EMAIL_SCOPE },
+                                         jwksReadTimeoutExpression = "${openIdConfig.jwksReadTimeoutExpression}",
                                          providerMetadata = @OpenIdProviderMetadata(userinfoEndpoint = "${openIdConfig.userinfoEndpoint}"))
 @DeclareRoles("all")
 @ServletSecurity(@HttpConstraint(rolesAllowed = "all"))

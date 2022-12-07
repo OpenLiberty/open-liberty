@@ -25,7 +25,8 @@ import oidc.client.base.servlets.BaseServlet;
                                          clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger",
                                          claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub", callerGroupsClaim = "groupIds"),
                                          redirectURI = "${baseURL}/Callback",
-                                         scope = { Constants.OPENID_SCOPE })
+                                         scope = { Constants.OPENID_SCOPE },
+                                         jwksReadTimeoutExpression = "${openIdConfig.jwksReadTimeoutExpression}")
 @DeclareRoles("all")
 @ServletSecurity(@HttpConstraint(rolesAllowed = "all"))
 public class ScopeOpenIdServlet extends BaseServlet {
