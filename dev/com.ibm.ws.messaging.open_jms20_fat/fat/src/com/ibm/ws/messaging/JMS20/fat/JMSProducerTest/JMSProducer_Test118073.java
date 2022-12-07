@@ -30,6 +30,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.messaging.JMS20.fat.TestUtils;
 
 // TODO: What is the relationship of this test and the similarly named
@@ -86,6 +87,7 @@ public class JMSProducer_Test118073 {
         } catch ( Exception e ) {
             e.printStackTrace();
         }
+        ShrinkHelper.cleanAllExportedArchives();
     }
 
     //

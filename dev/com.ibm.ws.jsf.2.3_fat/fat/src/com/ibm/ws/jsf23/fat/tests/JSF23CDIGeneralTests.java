@@ -182,6 +182,7 @@ public class JSF23CDIGeneralTests {
      *
      * @throws Exception
      */
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void testCDIManagedProperty() throws Exception {
         String contextRoot = "CDIManagedProperty";

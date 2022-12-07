@@ -345,4 +345,26 @@ public class JAXBContextUtils {
                    isEqual);
 
     }
+
+    /**
+     * @param searchString    String to search
+     * @param expectedStrings Array of strings to search in searchString
+     * @return boolean Return false if any string in expectedStrings does not exist in searchString
+     */
+    public static String searchArrayInString(String searchString, String[] expectedStrings) {
+        for (String expString : expectedStrings) {
+            if (!searchString.contains(expString)) {
+                return expString;
+            }
+        }
+        return null;
+    }
+
+    public static String arrayToString(String[] stringArray) {
+        StringBuilder sb = new StringBuilder();
+        for (String string : stringArray) {
+            sb.append(string);
+        }
+        return sb.toString();
+    }
 }

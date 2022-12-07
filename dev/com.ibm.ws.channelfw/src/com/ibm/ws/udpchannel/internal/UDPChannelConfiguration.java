@@ -64,7 +64,8 @@ public class UDPChannelConfiguration {
                     key.startsWith("component.") ||
                     key.startsWith("config.") ||
                     key.startsWith("objectClass") ||
-                    key.startsWith("parentPid")) {
+                    key.startsWith("parentPid") ||
+                    key.startsWith("osgi.ds.")) {
                     // skip osgi standard properties
                     continue;
                 }

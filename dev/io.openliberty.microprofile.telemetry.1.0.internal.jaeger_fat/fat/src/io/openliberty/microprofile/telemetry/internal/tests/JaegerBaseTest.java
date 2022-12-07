@@ -36,6 +36,7 @@ import io.jaegertracing.api_v2.Model.SpanRef;
 import io.jaegertracing.api_v2.Model.SpanRefType;
 import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
+import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 
 /**
@@ -111,6 +112,32 @@ public abstract class JaegerBaseTest {
 
         assertThat(parent, hasProperty("operationName", equalTo("/spanTest/subspan")));
         assertThat(child, hasProperty("operationName", equalTo(TestResource.TEST_OPERATION_NAME)));
+    }
+
+    @Test
+    public void testExceptionRecorded() throws Exception {
+        HttpRequest request = new HttpRequest(server, "/spanTest/exception");
+        String traceId = request.run(String.class);
+
+        List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(1));
+
+        Span span = spans.get(0);
+
+        assertThat(span, span().withStatus(StatusCode.ERROR)
+                               .withExceptionLog(RuntimeException.class));
+        assertThat(span.getLogs(0).hasTimestamp(), is(true));
+    }
+
+    @Test
+    public void testAttributeAdded() throws Exception {
+        HttpRequest request = new HttpRequest(server, "/spanTest/attributeAdded");
+        String traceId = request.run(String.class);
+
+        List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(1));
+
+        Span span = spans.get(0);
+
+        assertThat(span, span().withTag(TestResource.TEST_ATTRIBUTE_KEY.getKey(), TestResource.TEST_ATTRIBUTE_VALUE));
     }
 
     private boolean hasParent(Span span) {

@@ -181,7 +181,7 @@ public class CustomFormAuthenticationMechanismTest {
     @Test
     public void testValidateRequestValidIdAndPWIdentityStoreHandler() throws Exception {
         IdentityStoreHandler mish = new MyIdentityStoreHandler();
-        withMessageContext(ap).withIsNewAuthentication(false).withGetResponse().withMessageInfo();
+        withMessageContext(ap).withMessageInfo();
         withUsernamePassword(USER1, PASSWORD1).withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_OK);
 
         AuthenticationStatus status = cfam.validateRequest(request, res, hmc);
@@ -191,7 +191,7 @@ public class CustomFormAuthenticationMechanismTest {
     @Test
     public void testValidateRequestInvalidIdAndPWIdentityStoreHandler() throws Exception {
         IdentityStoreHandler mish = new MyIdentityStoreHandler();
-        withMessageContext(ap).withIsNewAuthentication(false).withGetResponse();
+        withMessageContext(ap);
         withUsernamePassword(USER1, "invalid").withIDSBeanInstance(ids, false, false).withIDSHandlerBeanInstance(mish);
         withResponseUnauthorized().withSetStatusToResponse(HttpServletResponse.SC_UNAUTHORIZED);
 
@@ -202,7 +202,7 @@ public class CustomFormAuthenticationMechanismTest {
     @Test
     public void testValidateRequestValidIdAndPWNoIdentityStoreHandlerCallbackHandler() throws Exception {
         final MyCallbackHandler mch = new MyCallbackHandler();
-        withMessageContext(ap).withIsNewAuthentication(false).withGetResponse().withMessageInfo().withHandler(mch);
+        withMessageContext(ap).withMessageInfo().withHandler(mch);
         withUsernamePassword(USER1, PASSWORD1).withIDSBeanInstance(null, true, false).withSetStatusToResponse(HttpServletResponse.SC_OK);
 
         AuthenticationStatus status = cfam.validateRequest(request, res, hmc);
@@ -211,7 +211,7 @@ public class CustomFormAuthenticationMechanismTest {
 
     @Test
     public void testValidateRequestValidIdAndPWNoIdentityStoreHandlerNoUserRegistry() throws Exception {
-        withMessageContext(ap).withIsNewAuthentication(false).withGetResponse();
+        withMessageContext(ap);
         withUsernamePassword(USER1, PASSWORD1).withIDSBeanInstance(null, true, false).withSetStatusToResponse(HttpServletResponse.SC_OK);
         isRegistryAvailable = false;
         AuthenticationStatus status = cfam.validateRequest(request, res, hmc);
@@ -222,7 +222,7 @@ public class CustomFormAuthenticationMechanismTest {
     @Test
     public void testValidateRequestInvalidIdAndPWNoIdentityStoreHandlerCallbackHandler() throws Exception {
         final MyCallbackHandler mch = new MyCallbackHandler();
-        withMessageContext(ap).withIsNewAuthentication(false).withGetResponse().withHandler(mch);
+        withMessageContext(ap).withHandler(mch);
         withUsernamePassword(USER1, "invalid").withIDSBeanInstance(null, false, true);
         withResponseUnauthorized().withSetStatusToResponse(HttpServletResponse.SC_UNAUTHORIZED);
 
@@ -234,7 +234,7 @@ public class CustomFormAuthenticationMechanismTest {
     public void testValidateRequestValidIdAndPWNoIdentityStoreHandlerCallbackHandlerException() throws Exception {
         final String msg = "An Exception by CallbackHandler";
         IOException ex = new IOException(msg);
-        withMessageContext(ap).withIsNewAuthentication(false).withGetResponse().withHandler(ch);
+        withMessageContext(ap).withHandler(ch);
         withUsernamePassword(USER1, PASSWORD1).withIDSBeanInstance(null, true, false).withCallbackHandlerException(ex);
 
         try {
@@ -249,7 +249,7 @@ public class CustomFormAuthenticationMechanismTest {
     @Test
     public void testValidateRequestInvalidCredential() throws Exception {
         CallerOnlyCredential coc = new CallerOnlyCredential(USER1);
-        withMessageContext(ap).withIsNewAuthentication(false).withGetResponse().withHandler(ch);
+        withMessageContext(ap).withHandler(ch);
         withCredential(coc).withIDSBeanInstance(null, false, true);
 
         try {
@@ -391,16 +391,6 @@ public class CustomFormAuthenticationMechanismTest {
         return this;
     }
 
-    private CustomFormAuthenticationMechanismTest withIsNewAuthentication(final boolean value) throws Exception {
-        mockery.checking(new Expectations() {
-            {
-                one(ap).isNewAuthentication();
-                will(returnValue(value));
-            }
-        });
-        return this;
-    }
-
     private CustomFormAuthenticationMechanismTest withGetResponse() throws Exception {
 
         mockery.checking(new Expectations() {
@@ -504,7 +494,7 @@ public class CustomFormAuthenticationMechanismTest {
     }
 
     private CustomFormAuthenticationMechanismTest withNewAuthenticate(Credential cred) {
-        setNewAuthenticateExpectations().withAuthParamsExpectations(ap).withCredentialExpectations(cred);
+        setNewAuthenticateExpectations().withCredentialExpectations(cred);
         return this;
     }
 
@@ -512,16 +502,6 @@ public class CustomFormAuthenticationMechanismTest {
         mockery.checking(new Expectations() {
             {
                 never(hmc).getResponse();
-            }
-        });
-        return this;
-    }
-
-    private CustomFormAuthenticationMechanismTest withAuthParamsExpectations(final AuthenticationParameters ap) {
-        mockery.checking(new Expectations() {
-            {
-                one(ap).isNewAuthentication();
-                will(returnValue(true));
             }
         });
         return this;

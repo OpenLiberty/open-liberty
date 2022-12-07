@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,15 +33,13 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
+import java.util.Stack;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Flow.Publisher;
-import java.util.concurrent.Flow.Subscriber;
-import java.util.concurrent.Flow.Subscription;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -138,7 +136,12 @@ public class DataTestServlet extends FATServlet {
                     new Prime(37, "25", "100101", 3, "XXXVII", "thirty-seven"),
                     new Prime(41, "29", "101001", 3, "XLI", "forty-one"),
                     new Prime(43, "2B", "101011", 4, "XLIII", "forty-three"),
-                    new Prime(47, "2F", "101111", 5, "XLVII", "forty-seven"));
+                    new Prime(47, "2F", "101111", 5, "XLVII", "forty-seven"),
+                    new Prime(4001, "FA1", "111110100001", 7, null, "four thousand one"), // romanNumeralSymbols null
+                    new Prime(4003, "FA3", "111110100011", 8, null, "four thousand three"), // romanNumeralSymbols null
+                    new Prime(4007, "Fa7", "111110100111", 9, null, "four thousand seven"), // romanNumeralSymbols null
+                    new Prime(4013, "FAD", "111110101101", 9, "", "Four Thousand Thirteen"), // empty list of romanNumeralSymbols
+                    new Prime(4019, "FB3", "111110110011", 9, "", "four thousand nineteen")); // empty list of romanNumeralSymbols
     }
 
     /**
@@ -458,6 +461,36 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Test True, False, NotTrue, and NotFalse on repository methods.
+     */
+    @Test
+    public void testBooleanConditions() {
+        assertIterableEquals(List.of(3L, 5L, 7L),
+                             primes.findByEvenFalseAndNumberLessThan(10L)
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(7L, 5L, 3L),
+                             primes.findByEvenNotTrueAndNumberLessThan(10L)
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(2L),
+                             primes.findByEvenTrueAndNumberLessThan(10L)
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(2L),
+                             primes.findByEvenNotFalseAndNumberLessThan(10L)
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
      * Asynchronous repository method that returns a CompletionStage of KeysetAwarePage.
      */
     @Test
@@ -598,7 +631,7 @@ public class DataTestServlet extends FATServlet {
         a1.id = 1001L;
         a1.city = "Rochester";
         a1.state = "Minnesota";
-        a1.streetAddress = new StreetAddress(2800, "37th St NW");
+        a1.streetAddress = new StreetAddress(2800, "37th St NW", List.of("Receiving Dock", "Building 040-1"));
         a1.zipCode = 55901;
         shippingAddresses.save(a1);
 
@@ -640,7 +673,62 @@ public class DataTestServlet extends FATServlet {
                                              .map(a -> a.houseNumber + " " + a.streetName)
                                              .collect(Collectors.toList()));
 
+        // [EclipseLink-6002] Aggregated objects cannot be written/deleted/queried independently from their owners.
+        //                    Descriptor: [RelationalDescriptor(test.jakarta.data.web.StreetAddress --> [])]
+        //                    Query: ReportQuery(referenceClass=StreetAddress )
+        // TODO uncomment the following to reproduce the above error:
+        // List<ShippingAddress> found = shippingAddresses.findByRecipientInfoNotEmpty();
+        // assertEquals(1, found.size());
+        // ShippingAddress a = found.get(0);
+        // assertEquals(a1.id, a.id);
+        // assertEquals(a1.city, a.city);
+        // assertEquals(a1.state, a.state);
+        // assertEquals(a1.zipCode, a.zipCode);
+        // assertEquals(a1.streetAddress.houseNumber, a.streetAddress.houseNumber);
+        // assertEquals(a1.streetAddress.streetName, a.streetAddress.streetName);
+        // assertEquals(a1.streetAddress.recipientInfo, a.streetAddress.recipientInfo);
+
+        // assertEquals(3L, shippingAddresses.countByRecipientInfoEmpty());
+
+        // [EclipseLink-4002] Internal Exception: java.sql.SQLIntegrityConstraintViolationException:
+        //                    DELETE on table 'SHIPPINGADDRESS' caused a violation of foreign key constraint 'SHPPNGSHPPNGDDRSSD' for key (1001)
+        // TODO Entity removal fails without the above error unless we add the following lines to first remove the rows from the collection attribute's table,
+        a1.streetAddress.recipientInfo = new ArrayList<>();
+        shippingAddresses.save(a1);
+
         assertEquals(4, shippingAddresses.removeAll());
+    }
+
+    /**
+     * Test Empty and NotEmpty on repository methods.
+     */
+    @Test
+    public void testEmpty() {
+        assertIterableEquals(List.of(4007L, 4013L, 4019L),
+                             primes.findByNumberInAndRomanNumeralSymbolsEmpty(Set.of(7L, 4007L, 13L, 4013L, 19L, 4019L))
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+
+        Stack<Long> list = new Stack<>();
+        list.addAll(Set.of(7L, 4007L, 13L, 4013L, 19L, 4019L));
+
+        assertIterableEquals(List.of(7L, 13L, 19L),
+                             primes.findByNumberInAndRomanNumeralSymbolsNotEmpty(list)
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(4003L),
+                             primes.findByNumberInAndRomanNumeralEmpty(List.of(43L, 4003L))
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+        assertIterableEquals(List.of(43L),
+                             primes.findByNumberInAndRomanNumeralNotEmpty(List.of(43L, 4003L))
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
     }
 
     /**
@@ -847,6 +935,159 @@ public class DataTestServlet extends FATServlet {
         o2 = orders.findById(o2.id).get();
 
         assertEquals(168.89f, o2.total, 0.01f);
+    }
+
+    /**
+     * Keyset pagination with ignoreCase in the sort criteria.
+     */
+    @Test
+    public void testIgnoreCaseInKeysetPagination() {
+        Pageable pagination = Pageable.ofSize(3).sortBy(Sort.asc("sumOfBits"), Sort.descIgnoreCase("name"));
+        KeysetAwarePage<Prime> page1 = primes.findByNumberBetweenAndEvenFalse(4000L, 4020L, pagination);
+        assertIterableEquals(List.of("four thousand one", "four thousand three", "Four Thousand Thirteen"),
+                             page1
+                                             .stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        KeysetAwarePage<Prime> page2 = primes.findByNumberBetweenAndEvenFalse(4000L, 4020L, page1.nextPageable());
+        assertIterableEquals(List.of("four thousand seven", "four thousand nineteen"),
+                             page2
+                                             .stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        pagination = Pageable.ofSize(4).sortBy(Sort.ascIgnoreCase("name"));
+        page1 = primes.findByNumberBetweenAndEvenFalse(4000L, 4020L, pagination);
+        assertIterableEquals(List.of("four thousand nineteen", "four thousand one", "four thousand seven", "Four Thousand Thirteen"),
+                             page1
+                                             .stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        page2 = primes.findByNumberBetweenAndEvenFalse(4000L, 4020L, page1.nextPageable());
+        assertIterableEquals(List.of("four thousand three"),
+                             page2
+                                             .stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Offset pagination with ignoreCase in the sort criteria.
+     */
+    @Test
+    public void testIgnoreCaseInOffsetPagination() {
+        Pageable pagination = Pageable.ofSize(4).sortBy(Sort.asc("sumOfBits"), Sort.ascIgnoreCase("name"));
+        Page<Prime> page1 = primes.findByNumberBetweenAndSumOfBitsNotNull(4000L, 4020L, pagination);
+        assertIterableEquals(List.of("four thousand one", "four thousand three", "four thousand nineteen", "four thousand seven"),
+                             page1
+                                             .stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        Page<Prime> page2 = primes.findByNumberBetweenAndSumOfBitsNotNull(4000L, 4020L, page1.nextPageable());
+        assertIterableEquals(List.of("Four Thousand Thirteen"),
+                             page2
+                                             .stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        pagination = Pageable.ofSize(3).sortBy(Sort.descIgnoreCase("hex"));
+        page1 = primes.findByNumberBetweenAndSumOfBitsNotNull(4000L, 4020L, pagination);
+        assertIterableEquals(List.of("FB3", "FAD", "Fa7"),
+                             page1
+                                             .stream()
+                                             .map(p -> p.hex)
+                                             .collect(Collectors.toList()));
+
+        page2 = primes.findByNumberBetweenAndSumOfBitsNotNull(4000L, 4020L, page1.nextPageable());
+        assertIterableEquals(List.of("FA3", "FA1"),
+                             page2
+                                             .stream()
+                                             .map(p -> p.hex)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Specify IgnoreCase keyword in OrderBy.
+     */
+    @Test
+    public void testIgnoreCaseInOrderByPatternOfMethodName() {
+        assertIterableEquals(List.of("four thousand three", "Four Thousand Thirteen", "four thousand seven", "four thousand one", "four thousand nineteen"),
+                             primes.findByNumberBetweenOrderByNameIgnoreCaseDesc(4000L, 4020L)
+                                             .stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Specify IgnoreCase on various conditions.
+     */
+    @Test
+    public void testIgnoreCaseInQueryConditions() {
+        // Equals
+        assertEquals("twenty-nine", primes.findByNameIgnoreCase("Twenty-Nine").name);
+
+        // Not
+        assertIterableEquals(List.of("two", "five", "seven"),
+                             primes.findByNameIgnoreCaseNotAndNumberLessThanOrderByNumberAsc("Three", 10)
+                                             .stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        // StartsWith
+        assertIterableEquals(List.of("thirteen", "thirty-one", "thirty-seven"),
+                             primes.findByNameIgnoreCaseStartsWithAndNumberLessThanOrderByNumberAsc("Thirt%n", 1000)
+                                             .stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        // Like
+        assertIterableEquals(List.of("thirteen", "thirty-seven"),
+                             primes.findByNameIgnoreCaseLikeAndNumberLessThanOrderByNumberAsc("Thirt%n", 1000)
+                                             .stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        // Contains
+        assertIterableEquals(List.of("twenty-three", "seventeen"),
+                             primes.findByNameIgnoreCaseContainsAndNumberLessThanOrderByNumberDesc("ent%ee", 1000)
+                                             .stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        // Between
+        assertIterableEquals(List.of("nineteen", "seventeen", "seven"),
+                             primes.findByNameIgnoreCaseBetweenAndNumberLessThanOrderByNumberDesc("Nine", "SEVENTEEN", 50)
+                                             .stream()
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
+
+        // GreaterThan, LessThanEqual
+        assertIterableEquals(List.of("XLVII", "XLIII", "XIII", "XI", "VII", "V", "III"),
+                             primes.findByHexIgnoreCaseGreaterThanAndRomanNumeralIgnoreCaseLessThanEqualAndNumberLessThan("2a", "xlvII", 50)
+                                             .stream()
+                                             .map(p -> p.romanNumeral)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Specify Sorts with ignoreCase.
+     */
+    @Test
+    public void testIgnoreCaseInSorts() {
+        assertIterableEquals(List.of("FA1", "FA3", "FB3", "FAD", "Fa7"),
+                             primes.findByNumberBetween(4000L, 4020L, Sort.asc("sumOfBits"), Sort.descIgnoreCase("hex"))
+                                             .stream()
+                                             .map(p -> p.hex)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("FA1", "FA3", "Fa7", "FAD", "FB3"),
+                             primes.findByNumberBetween(4000L, 4020L, Sort.ascIgnoreCase("hex"), Sort.desc("sumOfBits"))
+                                             .stream()
+                                             .map(p -> p.hex)
+                                             .collect(Collectors.toList()));
     }
 
     /**
@@ -1667,6 +1908,95 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Various return types for a repository query that performs multiple aggregate functions.
+     */
+    @Test
+    public void testMultipleAggregates() {
+        Object[] objects = primes.minMaxSumCountAverageObject(50);
+        assertEquals(Long.valueOf(2L), objects[0]); // minimum
+        assertEquals(Long.valueOf(47L), objects[1]); // maximum
+        assertEquals(Long.valueOf(328L), objects[2]); // sum
+        assertEquals(Long.valueOf(15L), objects[3]); // count
+        assertEquals(true, objects[4] instanceof Number); // average
+        assertEquals(21.0, Math.floor(((Number) objects[4]).doubleValue()), 0.01);
+
+        Number[] numbers = primes.minMaxSumCountAverageNumber(45);
+        assertEquals(Long.valueOf(2L), numbers[0]); // minimum
+        assertEquals(Long.valueOf(43L), numbers[1]); // maximum
+        assertEquals(Long.valueOf(281L), numbers[2]); // sum
+        assertEquals(Long.valueOf(14L), numbers[3]); // count
+        assertEquals(20.0, Math.floor(numbers[4].doubleValue()), 0.01);
+
+        Long[] longs = primes.minMaxSumCountAverageLong(42);
+        assertEquals(Long.valueOf(2L), longs[0]); // minimum
+        assertEquals(Long.valueOf(41L), longs[1]); // maximum
+        assertEquals(Long.valueOf(238L), longs[2]); // sum
+        assertEquals(Long.valueOf(13L), longs[3]); // count
+        assertEquals(Long.valueOf(18L), longs[4]); // average
+
+        int[] ints = primes.minMaxSumCountAverageInt(40);
+        assertEquals(2, ints[0]); // minimum
+        assertEquals(37, ints[1]); // maximum
+        assertEquals(197, ints[2]); // sum
+        assertEquals(12, ints[3]); // count
+        assertEquals(16, ints[4]); // average
+
+        float[] floats = primes.minMaxSumCountAverageFloat(35);
+        assertEquals(2.0f, floats[0], 0.01f); // minimum
+        assertEquals(31.0f, floats[1], 0.01f); // maximum
+        assertEquals(160.0f, floats[2], 0.01f); // sum
+        assertEquals(11.0f, floats[3], 0.01f); // count
+        assertEquals(14.0f, Math.floor(floats[4]), 0.01f); // average
+
+        List<Long> list = primes.minMaxSumCountAverageList(30);
+        assertEquals(Long.valueOf(2L), list.get(0)); // minimum
+        assertEquals(Long.valueOf(29L), list.get(1)); // maximum
+        assertEquals(Long.valueOf(129L), list.get(2)); // sum
+        assertEquals(Long.valueOf(10L), list.get(3)); // count
+        assertEquals(Long.valueOf(12L), list.get(4)); // average
+
+        Stack<String> stack = primes.minMaxSumCountAverageStack(25);
+        assertEquals("2", stack.get(0)); // minimum
+        assertEquals("23", stack.get(1)); // maximum
+        assertEquals("100", stack.get(2)); // sum
+        assertEquals("9", stack.get(3)); // count
+        assertEquals(stack.get(4), true, stack.get(4).startsWith("11.")); // average
+
+        Iterable<Integer> iterable = primes.minMaxSumCountAverageIterable(20);
+        Iterator<Integer> it = iterable.iterator();
+        assertEquals(Integer.valueOf(2), it.next()); // minimum
+        assertEquals(Integer.valueOf(19), it.next()); // maximum
+        assertEquals(Integer.valueOf(77), it.next()); // sum
+        assertEquals(Integer.valueOf(8), it.next()); // count
+        assertEquals(Integer.valueOf(9), it.next()); // average
+
+        Deque<Double> deque = primes.minMaxSumCountAverageDeque(18);
+        assertEquals(2.0, deque.removeFirst(), 0.01); // minimum
+        assertEquals(17.0, deque.removeFirst(), 0.01); // maximum
+        assertEquals(58.0, deque.removeFirst(), 0.01); // sum
+        assertEquals(7.0, deque.removeFirst(), 0.01); // count
+        assertEquals(8.0, Math.floor(deque.removeFirst()), 0.01); // average
+    }
+
+    /**
+     * Test Null and NotNull on repository methods.
+     */
+    @Test
+    public void testNulls() {
+        assertIterableEquals(List.of(4001L, 4003L, 4007L),
+                             primes.findByNumberInAndRomanNumeralNull(Set.of(41L, 4001L, 43L, 4003L, 47L, 4007L))
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of(41L, 43L, 47L),
+                             primes.findByNumberInAndRomanNumeralNotNull(Set.of(41L, 4001L, 43L, 4003L, 47L, 4007L))
+                                             .stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
      * Exceed the maximum offset allowed by JPA.
      */
     @Test
@@ -2133,53 +2463,6 @@ public class DataTestServlet extends FATServlet {
                                              .map(r -> r.start().toInstant())
                                              .sorted()
                                              .collect(Collectors.toList()));
-
-        Publisher<Reservation> publisher = reservations.findByHostLikeOrderByMeetingID("testRepositoryCustom-host%");
-        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
-        publisher.subscribe(new Subscriber<Reservation>() {
-            final int REQUEST_SIZE = 3;
-            int count = 0;
-            Subscription subscription;
-
-            @Override
-            public void onSubscribe(Subscription s) {
-                subscription = s;
-                subscription.request(REQUEST_SIZE);
-            }
-
-            @Override
-            public void onNext(Reservation item) {
-                System.out.println(Long.toHexString(Thread.currentThread().getId()) + " onNext " + item);
-                results.add(item);
-                if (++count % REQUEST_SIZE == 0)
-                    subscription.request(REQUEST_SIZE);
-            }
-
-            @Override
-            public void onError(Throwable x) {
-                results.add(x);
-            }
-
-            @Override
-            public void onComplete() {
-                System.out.println(Long.toHexString(Thread.currentThread().getId()) + " onComplete");
-            }
-        });
-
-        Set<Long> expected = new HashSet<Long>();
-        expected.addAll(List.of(10030001L, 10030002L, 10030003L, 10030004L, 10030005L, 10030006L, 10030007L, 10030008L, 10030009L));
-
-        for (int i = 1; i <= 9; i++) {
-            Object result = results.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES);
-            assertNotNull(result);
-            System.out.println("Received " + result);
-            if (result instanceof Throwable)
-                throw new AssertionError("onError notification received", (Throwable) result);
-            else
-                assertEquals(result.toString() + " is not expected", true, expected.remove(((Reservation) result).meetingID));
-        }
-
-        assertEquals("Some results are missing", Collections.EMPTY_SET, expected);
 
         // Pagination where the final page includes less than the maximum page size,
         Page<Reservation> page1 = reservations.findByHostStartsWith("testRepositoryCustom-host",

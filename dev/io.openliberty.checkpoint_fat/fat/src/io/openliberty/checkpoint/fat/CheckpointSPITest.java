@@ -116,7 +116,7 @@ public class CheckpointSPITest {
         server.startServer(getTestMethodNameOnly(testName) + ".log");
         ProgramOutput output = server.checkpointRestore();
         int retureCode = output.getReturnCode();
-        assertEquals("Wrong return code for failed checkpoint.", 77, retureCode);
+        assertEquals("Wrong return code for failed checkpoint.", 82, retureCode);
     }
 
     @Test

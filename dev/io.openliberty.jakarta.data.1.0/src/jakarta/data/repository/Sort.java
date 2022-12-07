@@ -15,23 +15,37 @@ package jakarta.data.repository;
  */
 public class Sort {
     private final boolean asc;
+    private final boolean ignoreCase;
     private final String prop;
 
-    private Sort(boolean ascending, String property) {
+    private Sort(boolean ascending, String property, boolean ignoreCase) {
         asc = ascending;
+        this.ignoreCase = ignoreCase;
         prop = property;
     }
 
     public static Sort asc(String property) {
-        return new Sort(true, property);
+        return new Sort(true, property, false);
+    }
+
+    public static Sort ascIgnoreCase(String property) {
+        return new Sort(true, property, true);
     }
 
     public static Sort desc(String property) {
-        return new Sort(false, property);
+        return new Sort(false, property, false);
     }
 
-    public static Sort of(String property, Direction direction) {
-        return new Sort(direction == Direction.ASC, property);
+    public static Sort descIgnoreCase(String property) {
+        return new Sort(false, property, true);
+    }
+
+    public static Sort of(String property, Direction direction, boolean ignoreCase) {
+        return new Sort(direction == Direction.ASC, property, ignoreCase);
+    }
+
+    public boolean ignoreCase() {
+        return ignoreCase;
     }
 
     public boolean isAscending() {
@@ -48,6 +62,6 @@ public class Sort {
 
     @Override
     public String toString() {
-        return "Sort by " + prop + (asc ? " ASC" : " DESC");
+        return "Sort by " + prop + (asc ? " ASC" : " DESC") + (ignoreCase ? " ignore case" : "");
     }
 }

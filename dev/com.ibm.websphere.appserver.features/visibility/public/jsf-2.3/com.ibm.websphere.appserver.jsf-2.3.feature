@@ -57,3 +57,4 @@ Subsystem-Name: JavaServer Faces 2.3
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

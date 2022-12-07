@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,7 @@ import componenttest.topology.utils.FATServletClient;
  *
  */
 @RunWith(FATRunner.class)
-public class ServerXMLBindingTest extends FATServletClient {
+public class ServerXMLBindingTest extends AbstractTest {
 
     @Rule
     public TestWatcher watchman = new TestWatcher() {
@@ -78,10 +78,7 @@ public class ServerXMLBindingTest extends FATServletClient {
         //lookupServerXMLBindings
         FATServletClient.runTest(server, servlet, "lookupServerXMLBindings");
 
-        if (server != null && server.isStarted()) {
-            server.stopServer("CNTR0338W");
-        }
-
+        stopServer(server, "CNTR0338W");
     }
 
     @Test
@@ -98,10 +95,7 @@ public class ServerXMLBindingTest extends FATServletClient {
         //lookupServerXMLBindings
         FATServletClient.runTest(server, servlet, "lookupServerXMLBindings");
 
-        if (server != null && server.isStarted()) {
-            server.stopServer("CNTR0338W");
-        }
-
+        stopServer(server, "CNTR0338W");
     }
 
     static org.jboss.shrinkwrap.api.Filter<ArchivePath> xmlFilter = new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {

@@ -122,7 +122,7 @@ public class RestMetricsTest {
     public static void tearDown() throws Exception {
         if (server != null) {
             server.stopServer("MetricsUnmappedUncheckedException", "MetricsUnmappedCheckedException",
-                              "Fault: Unmapped Checked","SRVE0777E", "SRVE0315E", "CWPMI2005W");
+                              "Fault: Unmapped Checked","SRVE0777E", "SRVE0315E", "CWPMI2005W", "CWPMI2006W");
         }
     }
 

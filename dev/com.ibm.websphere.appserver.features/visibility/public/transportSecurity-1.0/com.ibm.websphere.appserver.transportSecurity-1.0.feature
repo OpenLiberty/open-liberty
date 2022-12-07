@@ -7,3 +7,4 @@ Subsystem-Name: Transport Security 1.0
 -features=com.ibm.websphere.appserver.ssl-1.0
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true

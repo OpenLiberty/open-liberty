@@ -21,3 +21,4 @@ Subsystem-Name: Jakarta Authentication 3.0
   io.openliberty.security.jaspic.2.0.internal
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

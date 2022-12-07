@@ -16,7 +16,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
-
 import com.ibm.ws.transaction.test.tests.DupXidTest;
 import com.ibm.ws.transaction.test.tests.Simple2PCCloudTest;
 

@@ -20,19 +20,21 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.transaction.web.SimpleServlet;
+import com.ibm.ws.transaction.fat.util.TxShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import servlets.SimpleServlet;
 
 @RunWith(FATRunner.class)
 public class SimpleDBTranlogTestNoRecOnStart extends FATServletClient {
 
     public static final String APP_NAME = "transaction";
     public static final String SERVLET_NAME = APP_NAME + "/SimpleServlet";
+    private static final String APP_PATH = "../com.ibm.ws.transaction.core_fat.base/";
 
     @Server("com.ibm.ws.transaction.dblog_noRecoveryOnStartup")
     @TestServlet(servlet = SimpleServlet.class, contextRoot = APP_NAME)
@@ -41,7 +43,7 @@ public class SimpleDBTranlogTestNoRecOnStart extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.transaction.web.*");
+        TxShrinkHelper.buildDefaultApp(server, APP_NAME, APP_PATH, "servlets.*");
 
         server.setServerStartTimeout(300000);
         server.startServer();

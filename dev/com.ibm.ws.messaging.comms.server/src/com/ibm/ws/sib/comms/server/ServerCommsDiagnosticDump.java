@@ -121,7 +121,7 @@ public class ServerCommsDiagnosticDump {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "dumpMEtoMEConversations", writer);
 
-        List<Conversation> conversations = ServerConnectionManager.getRef().getActiveOutboundMEtoMEConversations();
+        List<Conversation> conversations = ServerConnectionManager.getActiveOutboundMEtoMEConversations();
         Map<Object, List<Conversation>> connectionToConversationMap = buildConnectionMap(conversations);
 
         // Dump each comms connection.

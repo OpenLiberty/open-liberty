@@ -224,7 +224,7 @@ public class OpenIdClaimsImplTest {
         assertUserinfoClaim(WEBSITE, STRING_VALUE, openIdClaims.getWebsite().get());
     }
 
-    private OpenIdClaims createOpenIdClaimsWithStringClaim(String name, String value) throws InvalidJwtException {
+    protected static OpenIdClaims createOpenIdClaimsWithStringClaim(String name, String value) throws InvalidJwtException {
         Map<String, Object> claimsMapWithString = org.jose4j.jwt.JwtClaims.parse("{\"" + name + "\":\"" + value + "\"}").getClaimsMap();
         return new OpenIdClaimsImpl(claimsMapWithString);
     }

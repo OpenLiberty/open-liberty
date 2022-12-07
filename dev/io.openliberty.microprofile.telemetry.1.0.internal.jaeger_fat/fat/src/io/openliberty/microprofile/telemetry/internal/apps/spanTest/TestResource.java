@@ -10,6 +10,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.apps.spanTest;
 
+import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.api.trace.Tracer;
@@ -33,6 +34,9 @@ public class TestResource extends Application {
 
     public static final String TEST_OPERATION_NAME = "TestOp";
     public static final String TEST_EVENT_NAME = "TestEvent";
+
+    public static final AttributeKey<String> TEST_ATTRIBUTE_KEY = AttributeKey.stringKey("test_key_foo");
+    public static final String TEST_ATTRIBUTE_VALUE = "test_value_bar";
 
     @Inject
     private Tracer tracer;
@@ -67,6 +71,14 @@ public class TestResource extends Application {
         Span span = Span.current();
         span.recordException(new RuntimeException());
         span.setStatus(StatusCode.ERROR);
+        return span.getSpanContext().getTraceId();
+    }
+
+    @GET
+    @Path("/attributeAdded")
+    public String attributeAdded() {
+        Span span = Span.current();
+        span.setAttribute(TEST_ATTRIBUTE_KEY, TEST_ATTRIBUTE_VALUE);
         return span.getSpanContext().getTraceId();
     }
 }

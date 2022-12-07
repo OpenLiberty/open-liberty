@@ -9,3 +9,4 @@ Subsystem-Name: Checkpoint and Restore Support 1.0
 kind=beta
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

@@ -15,10 +15,10 @@ Bundle-SymbolicName: io.openliberty.jakarta.jstl.2.0; singleton:=true
 Bundle-Description: Jakarta Standard Tag Library, version 2.0
 
 Export-Package: \
-	jakarta.servlet.jsp.jstl.core,\
-	jakarta.servlet.jsp.jstl.fmt,\
-	jakarta.servlet.jsp.jstl.sql,\
-	jakarta.servlet.jsp.jstl.tlv
+	jakarta.servlet.jsp.jstl.core;version=2.0.0,\
+	jakarta.servlet.jsp.jstl.fmt;version=2.0.0,\
+	jakarta.servlet.jsp.jstl.sql;version=2.0.0,\
+	jakarta.servlet.jsp.jstl.tlv;version=2.0.0
 
 Import-Package:  jakarta.servlet.jsp.jstl.*;version="[2.0.0,3.0.0)", \
  jakarta.servlet.jsp.*;version="[3.0.0,3.1.0)", \

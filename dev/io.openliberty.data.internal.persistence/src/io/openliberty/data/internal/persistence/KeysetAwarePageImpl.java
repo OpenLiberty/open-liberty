@@ -61,7 +61,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
 
         int maxPageSize = this.pagination.size();
         int firstResult = this.pagination.mode() == Pageable.Mode.OFFSET //
-                        ? RepositoryImpl.computeOffset(pagination.page(), maxPageSize) //
+                        ? RepositoryImpl.computeOffset(this.pagination.page(), maxPageSize) //
                         : 0;
 
         EntityManager em = queryInfo.entityInfo.persister.createEntityManager();

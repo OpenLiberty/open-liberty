@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.sib.jfapchannel.richclient.buffer.impl;
 
+import static com.ibm.ws.messaging.lifecycle.SingletonsReady.requireService;
+
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
 import com.ibm.ws.sib.jfapchannel.buffer.WsByteBuffer;
@@ -62,7 +64,7 @@ public class RichByteBufferPool extends WsByteBufferPool
     */
    public RichByteBufferPool()
    {
-      actualPoolManager = CommsClientServiceFacade.getBufferPoolManager();
+      actualPoolManager = requireService(CommsClientServiceFacade.class).getBufferPoolManager();
       byteBufferWrapperPool = new ObjectPool("WsByteBufferWrapperPool", 100);
    }
 

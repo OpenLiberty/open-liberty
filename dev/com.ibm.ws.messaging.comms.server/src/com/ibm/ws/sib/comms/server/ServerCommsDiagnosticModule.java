@@ -109,8 +109,7 @@ public class ServerCommsDiagnosticModule extends ClientCommsDiagnosticModule
    {
       if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "dumpMEtoMEConversations", is);
       
-      final ServerConnectionManager scm = ServerConnectionManager.getRef();
-      final List obc = scm.getActiveOutboundMEtoMEConversations();
+      final List obc = ServerConnectionManager.getActiveOutboundMEtoMEConversations();
       
       is.writeLine("", "");
       is.writeLine("\n------ ME to ME Conversation Dump ------ ", ">");
@@ -360,7 +359,7 @@ public class ServerCommsDiagnosticModule extends ClientCommsDiagnosticModule
            SibTr.entry(this, tc, "dumpMEtoMEConversations", writer);
 
        try {
-           List<Conversation> conversations = ServerConnectionManager.getRef().getActiveOutboundMEtoMEConversations();
+           List<Conversation> conversations = ServerConnectionManager.getActiveOutboundMEtoMEConversations();
            Map<Object, LinkedList<Conversation>> connectionToConversationMap = buildConnectionMap(conversations);
 
            // Dump each comms connection.

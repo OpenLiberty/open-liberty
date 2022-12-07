@@ -12,3 +12,4 @@ Subsystem-Name: OSGi Debug Console 1.0
  com.ibm.ws.org.apache.felix.gogo.runtime; start-phase:=SERVICE_EARLY
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true

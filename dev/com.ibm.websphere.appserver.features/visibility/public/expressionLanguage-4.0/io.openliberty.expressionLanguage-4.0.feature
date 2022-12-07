@@ -19,3 +19,4 @@ Subsystem-Name: Jakarta Expression Language 4.0
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

@@ -15,7 +15,6 @@ import java.io.File;
 import org.eclipse.openj9.criu.CRIUSupport;
 import org.eclipse.openj9.criu.JVMCRIUException;
 import org.eclipse.openj9.criu.JVMCheckpointException;
-import org.eclipse.openj9.criu.RestoreException;
 import org.eclipse.openj9.criu.SystemCheckpointException;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -33,7 +32,7 @@ public class ExecuteCRIU_OpenJ9 implements ExecuteCRIU {
     }
 
     @Override
-    @FFDCIgnore({ JVMCheckpointException.class, SystemCheckpointException.class, RestoreException.class, JVMCRIUException.class, RuntimeException.class, NoSuchMethodError.class })
+    @FFDCIgnore({ JVMCheckpointException.class, SystemCheckpointException.class, JVMCRIUException.class, RuntimeException.class, NoSuchMethodError.class })
     public void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps, boolean unprivileged) throws CheckpointFailedException {
         CRIUSupport criuSupport = new CRIUSupport(imageDir.toPath());
         try {
@@ -63,11 +62,16 @@ public class ExecuteCRIU_OpenJ9 implements ExecuteCRIU {
             throw new CheckpointFailedException(Type.JVM_CHECKPOINT_FAILED, e.getMessage(), e);
         } catch (SystemCheckpointException e) {
             throw new CheckpointFailedException(Type.SYSTEM_CHECKPOINT_FAILED, e.getMessage(), e);
-        } catch (RestoreException e) {
-            throw new CheckpointFailedException(Type.JVM_RESTORE_FAILED, e.getMessage(), e);
         } catch (JVMCRIUException e) {
             throw new CheckpointFailedException(checkpointImpl.getUnknownType(), e.getMessage(), e);
         } catch (RuntimeException e) {
+            String exceptionName = e.getClass().getSimpleName();
+            if ("JVMRestoreException".equals(exceptionName) || "RestoreException".equals(exceptionName)) {
+                throw new CheckpointFailedException(Type.JVM_RESTORE_FAILED, e.getMessage(), e);
+            }
+            if ("SystemRestoreException".equals(exceptionName)) {
+                throw new CheckpointFailedException(Type.SYSTEM_RESTORE_FAILED, e.getMessage(), e);
+            }
             throw new CheckpointFailedException(checkpointImpl.getUnknownType(), e.getMessage(), e);
         }
     }

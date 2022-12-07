@@ -54,3 +54,4 @@ Subsystem-Name: Jakarta Server Faces 4.0
 kind=beta
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package oidc.client.similarAnnotations.servlets;
 
+import io.openliberty.security.jakartasec.fat.utils.Constants;
 import jakarta.annotation.security.DeclareRoles;
 import jakarta.security.enterprise.authentication.mechanism.http.OpenIdAuthenticationMechanismDefinition;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.ClaimsDefinition;
@@ -24,6 +25,7 @@ import oidc.client.base.servlets.BaseServlet;
                                          clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger",
                                          claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub", callerGroupsClaim = "groupIds"),
                                          redirectURI = "${baseURL}/Callback",
+                                         jwksReadTimeout = Constants.OVERRIDE_DEFAULT_JWKS_READ_TIMEOUT,
                                          providerMetadata = @OpenIdProviderMetadata(authorizationEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/authorize",
                                                                                     tokenEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/token"))
 @DeclareRoles("all")

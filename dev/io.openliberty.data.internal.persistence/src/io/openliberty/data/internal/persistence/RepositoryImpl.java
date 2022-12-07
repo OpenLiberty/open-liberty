@@ -20,6 +20,7 @@ import java.lang.reflect.Type;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
 import java.sql.SQLTransientConnectionException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,6 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,7 +36,6 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Flow.Publisher;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -267,15 +268,26 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             List<Sort> keyset = needsKeysetQueries ? new ArrayList<>(orderBy.length) : null;
 
             for (int i = 0; i < orderBy.length; i++) {
-                o.append(i == 0 ? " ORDER BY o." : ", o.").append(orderBy[i].value());
+                o.append(i == 0 ? " ORDER BY " : ", ").append(orderBy[i].ignoreCase() ? "LOWER(o." : "o.").append(orderBy[i].value());
+                if (orderBy[i].ignoreCase())
+                    o.append(")");
                 if (orderBy[i].descending())
                     o.append(" DESC");
+
                 if (needsKeysetQueries) {
-                    r.append(i == 0 ? " ORDER BY o." : ", o.").append(orderBy[i].value());
+                    r.append(i == 0 ? " ORDER BY " : ", ").append(orderBy[i].ignoreCase() ? "LOWER(o." : "o.").append(orderBy[i].value());
+                    if (orderBy[i].ignoreCase())
+                        r.append(")");
                     if (!orderBy[i].descending())
                         r.append(" DESC");
 
-                    keyset.add(orderBy[i].descending() ? Sort.desc(orderBy[i].value()) : Sort.asc(orderBy[i].value()));
+                    keyset.add(orderBy[i].ignoreCase() ? //
+                                    orderBy[i].descending() ? //
+                                                    Sort.descIgnoreCase(orderBy[i].value()) : //
+                                                    Sort.ascIgnoreCase(orderBy[i].value()) : //
+                                    orderBy[i].descending() ? //
+                                                    Sort.desc(orderBy[i].value()) : //
+                                                    Sort.asc(orderBy[i].value()));
                 }
             }
 
@@ -319,6 +331,25 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             return (int) (pageIndex * maxPageSize);
         else
             throw new UnsupportedOperationException("The offset for " + pageNumber + " pages of size " + maxPageSize + " exceeds Integer.MAX_VALUE (2147483647)."); // TODO
+    }
+
+    /**
+     * Indicates if the characters leading up to, but not including, the endBefore position
+     * in the text matches the searchFor. For example, a true value will be returned by
+     * endsWith("Not", "findByNameNotNullAndPriceLessThan", 13).
+     * But for any number other than 13, the above will return false because no position
+     * other than 13 immediately follows a string ending with "Not".
+     *
+     * @param searchFor string to search for in the position immediately prior to the endBefore position.
+     * @param text      the text to search.
+     * @param minStart  the earliest possible starting point for the searchFor string in the text.
+     * @param endBefore position before which to match.
+     * @return true if found, otherwise false.
+     */
+    @Trivial
+    private static boolean endsWith(String searchFor, String text, int minStart, int endBefore) {
+        int searchLen = searchFor.length();
+        return endBefore - minStart >= searchLen && text.regionMatches(endBefore - searchLen, searchFor, 0, searchLen);
     }
 
     /**
@@ -418,16 +449,27 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 Sort keyInfo = keyset.get(k);
                 String name = keyInfo.property();
                 boolean asc = keyInfo.isAscending();
-                if (a != null) {
-                    a.append(k == 0 ? "o." : " AND o.").append(name);
-                    a.append(k < i ? '=' : (asc ? '>' : '<'));
-                    a.append(paramPrefix).append(queryInfo.paramCount + 1 + k);
-                }
-                if (b != null) {
-                    b.append(k == 0 ? "o." : " AND o.").append(name);
-                    b.append(k < i ? '=' : (asc ? '<' : '>'));
-                    b.append(paramPrefix).append(queryInfo.paramCount + 1 + k);
-                }
+                boolean lower = keyInfo.ignoreCase();
+                if (a != null)
+                    if (lower) {
+                        a.append(k == 0 ? "LOWER(o." : " AND LOWER(o.").append(name).append(')');
+                        a.append(k < i ? '=' : (asc ? '>' : '<'));
+                        a.append("LOWER(").append(paramPrefix).append(queryInfo.paramCount + 1 + k).append(')');
+                    } else {
+                        a.append(k == 0 ? "o." : " AND o.").append(name);
+                        a.append(k < i ? '=' : (asc ? '>' : '<'));
+                        a.append(paramPrefix).append(queryInfo.paramCount + 1 + k);
+                    }
+                if (b != null)
+                    if (lower) {
+                        b.append(k == 0 ? "LOWER(o." : " AND LOWER(o.").append(name).append(')');
+                        b.append(k < i ? '=' : (asc ? '<' : '>'));
+                        b.append("LOWER(").append(paramPrefix).append(queryInfo.paramCount + 1 + k).append(')');
+                    } else {
+                        b.append(k == 0 ? "o." : " AND o.").append(name);
+                        b.append(k < i ? '=' : (asc ? '<' : '>'));
+                        b.append(paramPrefix).append(queryInfo.paramCount + 1 + k);
+                    }
             }
             if (a != null)
                 a.append(')');
@@ -460,8 +502,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             q = generateSelect(queryInfo);
             if (orderBy > c || orderBy == -1 && methodName.length() > c) {
                 int where = q.length();
-                String s = orderBy > 0 ? methodName.substring(c, orderBy) : methodName.substring(c);
-                generateRepositoryQueryConditions(queryInfo, s, q);
+                generateRepositoryQueryConditions(queryInfo, methodName, c, orderBy > 0 ? orderBy : methodName.length(), q);
                 if (countPages)
                     generateCount(queryInfo, q.substring(where));
             }
@@ -491,7 +532,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             }
             q = new StringBuilder(150).append("DELETE FROM ").append(queryInfo.entityInfo.name).append(" o");
             if (methodName.length() > c)
-                generateRepositoryQueryConditions(queryInfo, methodName.substring(c), q);
+                generateRepositoryQueryConditions(queryInfo, methodName, c, methodName.length(), q);
             queryInfo.type = QueryInfo.Type.DELETE;
         } else if (methodName.startsWith("update")) {
             int by = methodName.indexOf("By", 6);
@@ -503,14 +544,14 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             int c = by < 0 ? 5 : by + 2;
             q = new StringBuilder(150).append("SELECT COUNT(o) FROM ").append(queryInfo.entityInfo.name).append(" o");
             if (methodName.length() > c)
-                generateRepositoryQueryConditions(queryInfo, methodName.substring(c), q);
+                generateRepositoryQueryConditions(queryInfo, methodName, c, methodName.length(), q);
             queryInfo.type = QueryInfo.Type.COUNT;
         } else if (methodName.startsWith("exists")) {
             int by = methodName.indexOf("By", 6);
             int c = by < 0 ? 6 : by + 2;
             q = new StringBuilder(200).append("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM ").append(queryInfo.entityInfo.name).append(" o");
             if (methodName.length() > c)
-                generateRepositoryQueryConditions(queryInfo, methodName.substring(c), q);
+                generateRepositoryQueryConditions(queryInfo, methodName, c, methodName.length(), q);
             queryInfo.type = QueryInfo.Type.EXISTS;
         }
 
@@ -518,56 +559,83 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     }
 
     /**
-     * Generates JPQL for a findBy or deleteBy condition such as MyColumn[Not?]Like
+     * Generates JPQL for a *By condition such as MyColumn[IgnoreCase][Not]Like
      */
-    private void generateRepositoryQueryCondition(QueryInfo queryInfo, String expression, StringBuilder q) {
-        int length = expression.length();
+    private void generateRepositoryQueryCondition(QueryInfo queryInfo, String methodName, int start, int endBefore, StringBuilder q) {
+        int length = endBefore - start;
 
         Condition condition = Condition.EQUALS;
-        switch (expression.charAt(length - 1)) {
+        switch (methodName.charAt(endBefore - 1)) {
             case 'n': // GreaterThan | LessThan | In | Between
-                if (length > Condition.IN.length) {
-                    char ch = expression.charAt(length - 2);
+                if (length > 2) {
+                    char ch = methodName.charAt(endBefore - 2);
                     if (ch == 'a') { // GreaterThan | LessThan
-                        if (expression.endsWith("GreaterThan"))
+                        if (endsWith("GreaterTh", methodName, start, endBefore - 2))
                             condition = Condition.GREATER_THAN;
-                        else if (expression.endsWith("LessThan"))
+                        else if (endsWith("LessTh", methodName, start, endBefore - 2))
                             condition = Condition.LESS_THAN;
                     } else if (ch == 'I') { // In
                         condition = Condition.IN;
-                    } else if (expression.endsWith("Between")) {
+                    } else if (ch == 'e' && endsWith("Betwe", methodName, start, endBefore - 2)) {
                         condition = Condition.BETWEEN;
                     }
                 }
                 break;
-            case 'l': // GreaterThanEqual | LessThanEqual
-                if (length > Condition.LESS_THAN_EQUAL.length && expression.charAt(length - 4) == 'q')
-                    if (expression.endsWith("GreaterThanEqual"))
-                        condition = Condition.GREATER_THAN_EQUAL;
-                    else if (expression.endsWith("LessThanEqual"))
-                        condition = Condition.LESS_THAN_EQUAL;
+            case 'l': // GreaterThanEqual | LessThanEqual | Null
+                if (length > 4) {
+                    char ch = methodName.charAt(endBefore - 2);
+                    if (ch == 'a') { // GreaterThanEqual | LessThanEqual
+                        if (endsWith("GreaterThanEqu", methodName, start, endBefore - 2))
+                            condition = Condition.GREATER_THAN_EQUAL;
+                        else if (endsWith("LessThanEqu", methodName, start, endBefore - 2))
+                            condition = Condition.LESS_THAN_EQUAL;
+                    } else if (ch == 'l' & methodName.charAt(endBefore - 3) == 'u' && methodName.charAt(endBefore - 4) == 'N') {
+                        condition = Condition.NULL;
+                    }
+                }
                 break;
-            case 'e': // Like
-                if (expression.endsWith("Like"))
-                    condition = Condition.LIKE;
+            case 'e': // Like, True, False
+                if (length > 4) {
+                    char ch = methodName.charAt(endBefore - 4);
+                    if (ch == 'L') {
+                        if (methodName.charAt(endBefore - 3) == 'i' && methodName.charAt(endBefore - 2) == 'k')
+                            condition = Condition.LIKE;
+                    } else if (ch == 'T') {
+                        if (methodName.charAt(endBefore - 3) == 'r' && methodName.charAt(endBefore - 2) == 'u')
+                            condition = Condition.TRUE;
+                    } else if (endsWith("Fals", methodName, start, endBefore - 1)) {
+                        condition = Condition.FALSE;
+                    }
+                }
                 break;
             case 'h': // StartsWith | EndsWith
-                if (expression.endsWith("StartsWith"))
-                    condition = Condition.STARTS_WITH;
-                else if (expression.endsWith("EndsWith"))
-                    condition = Condition.ENDS_WITH;
+                if (length > 8) {
+                    char ch = methodName.charAt(endBefore - 8);
+                    if (ch == 'E') {
+                        if (endsWith("ndsWit", methodName, start, endBefore - 1))
+                            condition = Condition.ENDS_WITH;
+                    } else if (endBefore > 10 && ch == 'a' && endsWith("StartsWit", methodName, start, endBefore - 1)) {
+                        condition = Condition.STARTS_WITH;
+                    }
+                }
                 break;
             case 's': // Contains
-                if (expression.endsWith("Contains"))
+                if (endsWith("Contain", methodName, start, endBefore - 1))
                     condition = Condition.CONTAINS;
+                break;
+            case 'y': // Empty
+                if (endsWith("Empt", methodName, start, endBefore - 1))
+                    condition = Condition.EMPTY;
         }
 
-        boolean negated = length > condition.length + 3 //
-                          && expression.charAt(length - condition.length - 3) == 'N'
-                          && expression.charAt(length - condition.length - 2) == 'o'
-                          && expression.charAt(length - condition.length - 1) == 't';
+        boolean negated = endsWith("Not", methodName, start, endBefore - condition.length);
 
-        String attribute = expression.substring(0, length - condition.length - (negated ? 3 : 0));
+        boolean ignoreCase = endsWith("IgnoreCase", methodName, start, endBefore - condition.length - (negated ? 3 : 0));
+
+        String attribute = methodName.substring(start, endBefore - condition.length - (ignoreCase ? 10 : 0) - (negated ? 3 : 0));
+
+        if (attribute.length() == 0)
+            throw new MappingException("Entity property name is missing."); // TODO possibly combine with unknown entity property name
 
         if (negated) {
             Condition negatedCondition = condition.negate();
@@ -577,6 +645,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             }
         }
 
+        // TODO expecting that Upper/Lower will be removed in favor of IgnoreCase
         boolean upper = false;
         boolean lower = false;
         if (attribute.length() > 5 && ((upper = attribute.startsWith("Upper")) || (lower = attribute.startsWith("Lower"))))
@@ -595,53 +664,93 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         StringBuilder a = new StringBuilder();
         if (upper)
             a.append("UPPER(o.").append(name).append(')');
-        else if (lower)
+        else if (lower || ignoreCase)
             a.append("LOWER(o.").append(name).append(')');
         else
             a.append("o.").append(name);
 
         String attributeExpr = a.toString();
 
+        boolean isCollection = queryInfo.entityInfo.collectionAttributeNames.contains(name);
+        if (isCollection)
+            condition.verifyCollectionsSupported(name, ignoreCase);
+
         switch (condition) {
             case STARTS_WITH:
-                q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT(?").append(++queryInfo.paramCount).append(", '%')");
+                q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT(");
+                appendParam(q, ignoreCase, ++queryInfo.paramCount).append(", '%')");
                 break;
             case ENDS_WITH:
-                q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ?").append(++queryInfo.paramCount).append(")");
+                q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ");
+                appendParam(q, ignoreCase, ++queryInfo.paramCount).append(")");
                 break;
             case LIKE:
-                q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE ?").append(++queryInfo.paramCount);
+                q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE ");
+                appendParam(q, ignoreCase, ++queryInfo.paramCount);
                 break;
             case BETWEEN:
-                q.append(attributeExpr).append(negated ? " NOT " : " ").append("BETWEEN ?").append(++queryInfo.paramCount).append(" AND ?").append(++queryInfo.paramCount);
+                q.append(attributeExpr).append(negated ? " NOT " : " ").append("BETWEEN ");
+                appendParam(q, ignoreCase, ++queryInfo.paramCount).append(" AND ");
+                appendParam(q, ignoreCase, ++queryInfo.paramCount);
                 break;
             case CONTAINS:
-                if (queryInfo.entityInfo.collectionAttributeNames.contains(name))
+                if (isCollection) {
                     q.append(" ?").append(++queryInfo.paramCount).append(negated ? " NOT " : " ").append("MEMBER OF ").append(attributeExpr);
-                else
-                    q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ?").append(++queryInfo.paramCount).append(", '%')");
+                } else {
+                    q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ");
+                    appendParam(q, ignoreCase, ++queryInfo.paramCount).append(", '%')");
+                }
                 break;
+            case NULL:
+            case NOT_NULL:
+            case TRUE:
+            case FALSE:
+                q.append(attributeExpr).append(condition.operator);
+                break;
+            case EMPTY:
+                q.append(attributeExpr).append(isCollection ? Condition.EMPTY.operator : Condition.NULL.operator);
+                break;
+            case NOT_EMPTY:
+                q.append(attributeExpr).append(isCollection ? Condition.NOT_EMPTY.operator : Condition.NOT_NULL.operator);
+                break;
+            case IN:
+                if (ignoreCase)
+                    throw new MappingException(new UnsupportedOperationException("Repository keyword IgnoreCase cannot be combined with the In keyword.")); // TODO
             default:
-                q.append(attributeExpr).append(negated ? " NOT " : "").append(condition.operator).append('?').append(++queryInfo.paramCount);
+                q.append(attributeExpr).append(negated ? " NOT " : "").append(condition.operator);
+                appendParam(q, ignoreCase, ++queryInfo.paramCount);
         }
     }
 
     /**
-     * Generates the JPQL WHERE clause for all findBy, deleteBy, or updateBy conditions such as MyColumn[Not?]Like
+     * Appends JQPL for a repository method parameter. Either of the form ?1 or LOWER(?1)
+     *
+     * @param q     builder for the JPQL query.
+     * @param lower indicates if the query parameter should be compared in lower case.
+     * @param num   parameter number.
+     * @return the same builder for the JPQL query.
      */
-    private void generateRepositoryQueryConditions(QueryInfo queryInfo, String conditions, StringBuilder q) {
+    @Trivial
+    private static StringBuilder appendParam(StringBuilder q, boolean lower, int num) {
+        q.append(lower ? "LOWER(?" : '?').append(num);
+        return lower ? q.append(')') : q;
+    }
+
+    /**
+     * Generates the JPQL WHERE clause for all findBy, deleteBy, or updateBy conditions such as MyColumn[IgnoreCase][Not]Like
+     */
+    private void generateRepositoryQueryConditions(QueryInfo queryInfo, String methodName, int start, int endBefore, StringBuilder q) {
         queryInfo.paramCount = 0;
         queryInfo.hasWhere = true;
         q.append(" WHERE (");
-        for (int and = 0, or = 0, iNext, i = 0; queryInfo.hasWhere && i >= 0; i = iNext) {
-            and = and == -1 || and > i ? and : conditions.indexOf("And", i);
-            or = or == -1 || or > i ? or : conditions.indexOf("Or", i);
+        for (int and = start, or = start, iNext = start, i = start; queryInfo.hasWhere && i >= start && iNext < endBefore; i = iNext) {
+            and = and == -1 || and > i ? and : methodName.indexOf("And", i);
+            or = or == -1 || or > i ? or : methodName.indexOf("Or", i);
             iNext = Math.min(and, or);
             if (iNext < 0)
                 iNext = Math.max(and, or);
-            String condition = iNext < 0 ? conditions.substring(i) : conditions.substring(i, iNext);
-            generateRepositoryQueryCondition(queryInfo, condition, q);
-            if (iNext > 0) {
+            generateRepositoryQueryCondition(queryInfo, methodName, i, iNext < 0 || iNext >= endBefore ? endBefore : iNext, q);
+            if (iNext > 0 && iNext < endBefore) {
                 q.append(iNext == and ? " AND " : " OR ");
                 iNext += (iNext == and ? 3 : 2);
             }
@@ -670,14 +779,26 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             if (iNext < 0)
                 iNext = Math.max(asc, desc);
 
-            String attribute = iNext < 0 ? methodName.substring(i) : methodName.substring(i, iNext);
-            String name = queryInfo.entityInfo.getAttributeName(attribute);
-            o.append("o.").append(name);
+            boolean ignoreCase;
+            int endBefore = iNext < 0 ? methodName.length() : iNext;
+            if (ignoreCase = endsWith("IgnoreCase", methodName, i, endBefore))
+                endBefore -= 10;
 
-            if (needsKeysetQueries) {
-                r.append("o.").append(name);
-                keyset.add(iNext > 0 && iNext == desc ? Sort.desc(name) : Sort.asc(name));
-            }
+            String attribute = methodName.substring(i, endBefore);
+            String name = queryInfo.entityInfo.getAttributeName(attribute);
+            if (ignoreCase)
+                o.append(ignoreCase ? "LOWER(o." : "o.").append(name).append(')');
+            else
+                o.append("o.").append(name);
+
+            if (needsKeysetQueries)
+                if (ignoreCase) {
+                    r.append(ignoreCase ? "LOWER(o." : "o.").append(name).append(')');
+                    keyset.add(iNext > 0 && iNext == desc ? Sort.descIgnoreCase(name) : Sort.ascIgnoreCase(name));
+                } else {
+                    r.append("o.").append(name);
+                    keyset.add(iNext > 0 && iNext == desc ? Sort.desc(name) : Sort.asc(name));
+                }
 
             if (iNext > 0) {
                 if (iNext == desc)
@@ -721,7 +842,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
         // Compute the WHERE clause first due to its parameters being ordered first in the repository method signature
         StringBuilder where = new StringBuilder(150);
-        generateRepositoryQueryConditions(queryInfo, methodName.substring(c, uFirst), where);
+        generateRepositoryQueryConditions(queryInfo, methodName, c, uFirst, where);
 
         StringBuilder q = new StringBuilder(250);
         q.append("UPDATE ").append(queryInfo.entityInfo.name).append(" o SET");
@@ -957,14 +1078,16 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                 if (sort == null)
                                     throw new NullPointerException("Sort: null");
                                 else {
-                                    o = o == null ? new StringBuilder(100).append(" ORDER BY o.") : o.append(", o.");
-                                    o.append(sort.property());
+                                    o = o == null ? new StringBuilder(100).append(" ORDER BY ") : o.append(", ");
+                                    o.append(sort.ignoreCase() ? "LOWER(o." : "o.").append(sort.property());
+                                    if (sort.ignoreCase())
+                                        o.append(')');
                                     if (forward ? sort.isDescending() : sort.isAscending())
                                         o.append(" DESC");
                                 }
 
                             if (pagination == null || pagination.mode() == Pageable.Mode.OFFSET)
-                                queryInfo = queryInfo.withJPQL(q.append(o).toString());
+                                (queryInfo = queryInfo.withJPQL(q.append(o).toString())).keyset = sortList; // offset pagination can be a starting point for keyset pagination
                             else // CURSOR_NEXT or CURSOR_PREVIOUS
                                 generateKeysetQueries(queryInfo = queryInfo.withJPQL(null), sortList, q, forward ? o : null, forward ? null : o);
                         }
@@ -993,8 +1116,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             returnValue = new KeysetAwarePageImpl<E>(queryInfo, pagination, args);
                         else if (Slice.class.equals(type) || Page.class.equals(type) || pagination != null && Streamable.class.equals(type))
                             returnValue = new PageImpl<E>(queryInfo, pagination, args); // TODO Limit with Page as return type
-                        else if (Publisher.class.equals(type))
-                            returnValue = new PublisherImpl<E>(queryInfo, provider.executor, limit, pagination, args);
                         else {
                             em = queryInfo.entityInfo.persister.createEntityManager();
 
@@ -1041,26 +1162,51 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
                                 if (queryInfo.entityInfo.type.equals(type)) {
                                     returnValue = results.isEmpty() ? nullIfOptional(returnType) : oneResult(results);
-                                } else if (type.isInstance(results)) {
+                                } else if (type.isInstance(results) && (results.isEmpty() || !(results.get(0) instanceof Object[]))) {
                                     returnValue = results;
                                 } else if (queryInfo.returnArrayType != null) {
-                                    Object r = Array.newInstance(queryInfo.returnArrayType, results.size());
-                                    int i = 0;
-                                    for (Object result : results)
-                                        Array.set(r, i++, result);
-                                    returnValue = r;
-                                } else if (Collection.class.isAssignableFrom(type)) {
+                                    int size = results.size();
+                                    if (size == 1 && results.get(0) instanceof Object[]) {
+                                        Object[] a = (Object[]) results.get(0);
+                                        returnValue = Array.newInstance(queryInfo.returnArrayType, a.length);
+                                        for (int i = 0; i < a.length; i++)
+                                            Array.set(returnValue, i, queryInfo.returnArrayType.isInstance(a[i]) ? a[i] : to(queryInfo.returnArrayType, a[i]));
+                                    } else {
+                                        returnValue = Array.newInstance(queryInfo.returnArrayType, size);
+                                        int i = 0;
+                                        for (Object result : results)
+                                            Array.set(returnValue, i++, result);
+                                    }
+                                } else if (Streamable.class.equals(type)) {
+                                    returnValue = new StreamableImpl<>(results);
+                                } else if (Iterable.class.isAssignableFrom(type)) {
                                     try {
-                                        @SuppressWarnings("unchecked")
-                                        Constructor<? extends Collection<Object>> c = (Constructor<? extends Collection<Object>>) type.getConstructor();
-                                        Collection<Object> list = c.newInstance();
-                                        list.addAll(results);
+                                        Collection<Object> list;
+                                        if (type.isInterface()) {
+                                            if (type.isAssignableFrom(ArrayList.class)) // covers Iterable, Collection, List
+                                                list = new ArrayList<>(results.size());
+                                            else if (type.isAssignableFrom(ArrayDeque.class)) // covers Queue, Deque
+                                                list = new ArrayDeque<>(results.size());
+                                            else if (type.isAssignableFrom(LinkedHashSet.class)) // covers Set
+                                                list = new LinkedHashSet<>(results.size());
+                                            else
+                                                throw new UnsupportedOperationException(type + " is an unsupported return type.");
+                                        } else {
+                                            @SuppressWarnings("unchecked")
+                                            Constructor<? extends Collection<Object>> c = (Constructor<? extends Collection<Object>>) type.getConstructor();
+                                            list = c.newInstance();
+                                        }
+                                        if (results.size() == 1 && results.get(0) instanceof Object[]) {
+                                            Object[] a = (Object[]) results.get(0);
+                                            for (int i = 0; i < a.length; i++)
+                                                list.add(queryInfo.returnTypeParam.isInstance(a[i]) ? a[i] : to(queryInfo.returnTypeParam, a[i]));
+                                        } else {
+                                            list.addAll(results);
+                                        }
                                         returnValue = list;
                                     } catch (NoSuchMethodException x) {
                                         throw new UnsupportedOperationException(type + " lacks public zero parameter constructor.");
                                     }
-                                } else if (Streamable.class.equals(type)) {
-                                    returnValue = new StreamableImpl<>(results);
                                 } else if (results.isEmpty()) {
                                     returnValue = nullIfOptional(returnType);
                                 } else { // single result of other type
@@ -1351,6 +1497,44 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         }
 
         return void.class.equals(queryInfo.method.getReturnType()) ? null : CompletableFuture.completedFuture(null);
+    }
+
+    /**
+     * Converts to the specified type, raising an error if the conversion cannot be made.
+     *
+     * @param type type to convert to.
+     * @param item item to convert.
+     * @return new instance of the requested type.
+     */
+    private static final Object to(Class<?> type, Object item) {
+        Object result = item;
+        if (item == null) {
+            if (type.isPrimitive())
+                throw new NullPointerException();
+        } else if (item instanceof Number && (type.isPrimitive() || Number.class.isAssignableFrom(type))) {
+            Number n = (Number) item;
+            if (long.class.equals(type) || Long.class.equals(type))
+                result = n.longValue();
+            else if (double.class.equals(type) || Double.class.equals(type))
+                result = n.doubleValue();
+            else if (float.class.equals(type) || Float.class.equals(type))
+                result = n.floatValue();
+            else if (int.class.equals(type) || Integer.class.equals(type))
+                result = n.intValue();
+            else if (short.class.equals(type) || Short.class.equals(type))
+                result = n.shortValue();
+            else if (byte.class.equals(type) || Byte.class.equals(type))
+                result = n.byteValue();
+            else if (boolean.class.equals(type) || Boolean.class.equals(type))
+                result = n.longValue() != 0L;
+        } else if (type.isAssignableFrom(String.class)) {
+            result = item.toString();
+        }
+        if (result == item && item != null)
+            throw new DataException("Query returned a result of type " + item.getClass().getName() +
+                                    " which is not compatible with the type that is expected by the repository method signature: " +
+                                    type.getName()); // TODO
+        return result;
     }
 
     @Trivial

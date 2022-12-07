@@ -55,7 +55,6 @@ public class EE8FeatureReplacementAction extends FeatureReplacementAction {
                                                  "jaxb-2.2",
                                                  "managedBeans-1.0",
                                                  "mdb-3.2",
-                                                 "nosqlUnused-1.0", // TODO temporarily exists to work around transformer limitation. Remove once no longer needed.
                                                  "componenttest-1.0",
                                                  "txtest-1.0",
                                                  "websocket-1.1",

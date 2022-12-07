@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -129,7 +129,7 @@ public class LoginToContinueInterceptor {
                             // redirect to the original url.
                             postLoginProcess(req, res);
                         } else if (AuthenticationStatus.SEND_FAILURE.equals(result)) {
-                            redirectErrorPage(mpp.getAuthMechProperties(getClass(ic)), req, res);
+                            redirectErrorPage(mpp.getAuthMechProperties(getClass(ic)), req, hmc);
                         }
                         return result;
                     } else if (hmc.getRequest().getUserPrincipal() != null) {
@@ -240,8 +240,7 @@ public class LoginToContinueInterceptor {
                 status = AuthenticationStatus.SEND_FAILURE;
             }
         } else {
-            res.setStatus(HttpServletResponse.SC_FOUND);
-            res.sendRedirect(res.encodeURL(getUrl(req, loginPage, false)));
+            httpMessageContext.redirect(getUrl(req, loginPage, false));
         }
         return status;
     }
@@ -352,10 +351,10 @@ public class LoginToContinueInterceptor {
         req.setAttribute(ATTR_DONE_LOGIN_PROCESS, Boolean.TRUE);
     }
 
-    protected void redirectErrorPage(Properties props, HttpServletRequest req, HttpServletResponse res) throws IOException {
+    protected void redirectErrorPage(Properties props, HttpServletRequest req, HttpMessageContext hmc) throws IOException {
         String errorPage = resolveString((String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE), _errorPage);
         if (errorPage != null && !errorPage.isEmpty()) {
-            res.sendRedirect(res.encodeURL(getUrl(req, errorPage, _useGlobalLogin)));
+            hmc.redirect(getUrl(req, errorPage, _useGlobalLogin));
         }
         req.setAttribute(ATTR_DONE_LOGIN_PROCESS, Boolean.TRUE);
     }

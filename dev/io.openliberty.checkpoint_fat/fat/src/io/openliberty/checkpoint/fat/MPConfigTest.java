@@ -77,8 +77,14 @@ public class MPConfigTest extends FATServletClient {
             case envValueChangeTest:
                 configureEnvVariable(server, singletonMap("req_scope_key", "envValue"));
                 break;
+            case providerEnvValueChangeTest:
+                configureEnvVariable(server, singletonMap("provider_req_scope_key", "providerEnvValue"));
+                break;
             case appScopeEnvValueChangeTest:
                 configureEnvVariable(server, singletonMap("app_scope_key", "envValue"));
+                break;
+            case appScopeProviderEnvValueChangeTest:
+                configureEnvVariable(server, singletonMap("provider_app_scope_key", "providerEnvValue"));
                 break;
             case configObjectAppScopeEnvValueChangeTest:
                 configureEnvVariable(server, singletonMap("config_object_app_scope_key", "envValue"));
@@ -109,6 +115,15 @@ public class MPConfigTest extends FATServletClient {
                 case envValueChangeTest:
                     configureEnvVariable(server, singletonMap("req_scope_key", "envValueChange"));
                     break;
+                case noDefaultEnvValueTest:
+                    configureEnvVariable(server, singletonMap("optional_req_scope_key", "optionalEnvValue"));
+                    break;
+                case noDefaultServerValueTest:
+                    updateVariableConfig("optional_req_scope_key", "optionalServerValue");
+                    break;
+                case providerEnvValueChangeTest:
+                    configureEnvVariable(server, singletonMap("provider_req_scope_key", "providerEnvValueChange"));
+                    break;
 
                 // MPConfigBeanWithApplicationScope bean
                 case appScopeEnvValueTest:
@@ -122,6 +137,15 @@ public class MPConfigTest extends FATServletClient {
                     break;
                 case appScopeEnvValueChangeTest:
                     configureEnvVariable(server, singletonMap("app_scope_key", "envValueChange"));
+                    break;
+                case appScopeNoDefaultEnvValueTest:
+                    configureEnvVariable(server, singletonMap("optional_app_scope_key", "optionalEnvValue"));
+                    break;
+                case appScopeNoDefaultServerValueTest:
+                    updateVariableConfig("optional_app_scope_key", "optionalServerValue");
+                    break;
+                case appScopeProviderEnvValueChangeTest:
+                    configureEnvVariable(server, singletonMap("provider_app_scope_key", "providerEnvValueChange"));
                     break;
 
                 // ApplicationScopedOnCheckpointBeanWithConfigObject bean
@@ -203,6 +227,9 @@ public class MPConfigTest extends FATServletClient {
                 case serverValueTest:
                 case annoValueTest:
                 case envValueChangeTest:
+                case noDefaultEnvValueTest:
+                case noDefaultServerValueTest:
+                case providerEnvValueChangeTest:
                     assertNull("CWWKC0651W message not expected in logs", server.waitForStringInLog("CWWKC0651W:.*", 100));
                     break;
 
@@ -211,6 +238,9 @@ public class MPConfigTest extends FATServletClient {
                 case appScopeServerValueTest:
                 case appScopeAnnoValueTest:
                 case appScopeEnvValueChangeTest:
+                case appScopeNoDefaultEnvValueTest:
+                case appScopeNoDefaultServerValueTest:
+                case appScopeProviderEnvValueChangeTest:
                     assertNull("CWWKC0651W message not expected in logs", server.waitForStringInLog("CWWKC0651W:.*", 100));
                     break;
 
@@ -272,11 +302,17 @@ public class MPConfigTest extends FATServletClient {
         serverValueTest,
         annoValueTest,
         defaultValueTest,
+        noDefaultEnvValueTest,
+        noDefaultServerValueTest,
+        providerEnvValueChangeTest,
         appScopeEnvValueTest,
         appScopeEnvValueChangeTest,
         appScopeServerValueTest,
         appScopeAnnoValueTest,
         appScopeDefaultValueTest,
+        appScopeNoDefaultEnvValueTest,
+        appScopeNoDefaultServerValueTest,
+        appScopeProviderEnvValueChangeTest,
         applicationScopedValueTest,
         configObjectAppScopeEnvValueTest,
         configObjectAppScopeEnvValueChangeTest,

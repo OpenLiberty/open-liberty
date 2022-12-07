@@ -62,7 +62,7 @@ public class CommonLogoutAndRefreshTests extends CommonAnnotatedSecurityTests {
         Page response1 = runGoodEndToEndTest(webClient, appName, baseAppName);
 
         // now logged in - wait for token to expire
-        actions.testLogAndSleep(20);
+        actions.testLogAndSleep(25);
         String url = rpHttpsBase + "/" + appName + "/" + baseAppName;
         Page response2 = invokeAppGetToApp(webClient, url); // get to app not because either id or access token is good, but because the token was refreshed.
 
@@ -97,7 +97,7 @@ public class CommonLogoutAndRefreshTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest(webClient, appName, baseAppName);
 
         // now logged in - wait for token to expire
-        actions.testLogAndSleep(20);
+        actions.testLogAndSleep(25);
         String url = rpHttpsBase + "/" + appName + "/" + baseAppName;
         invokeAppReturnLogoutPage(webClient, url);
 
@@ -130,7 +130,7 @@ public class CommonLogoutAndRefreshTests extends CommonAnnotatedSecurityTests {
         Page response1 = runGoodEndToEndTest(webClient, appName, baseAppName);
 
         // now logged in - wait for token to expire
-        actions.testLogAndSleep(20);
+        actions.testLogAndSleep(25);
         String url = rpHttpsBase + "/" + appName + "/" + baseAppName;
         Page response2 = invokeAppGetToApp(webClient, url);
 
@@ -162,7 +162,7 @@ public class CommonLogoutAndRefreshTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest(webClient, appName, baseAppName);
 
         // now logged in - wait for token to expire
-        actions.testLogAndSleep(20);
+        actions.testLogAndSleep(25);
         String url = rpHttpsBase + "/" + appName + "/" + baseAppName;
         invokeAppGetToSplashPage(webClient, url);
 

@@ -72,7 +72,7 @@ https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_31/Callback"
 		signatureAlgorithm="RS256"
 		keyAliasName="rs256"
 		keystoreRef="key_allSigAlg"
-		idTokenLifetime="15s"
+		idTokenLifetime="20s"
 		oauthProviderRef="OAuth1" />
 
 	<oauthProvider
@@ -136,7 +136,7 @@ https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_31/Callback"
 		id="OAuth2"
 		autoAuthorize="true"
 		tokenFormat="${opTokenFormat}"
-		accessTokenLifetime="15s"
+		accessTokenLifetime="20s"
 	>
 		<autoAuthorizeClient>client_1</autoAuthorizeClient>
 		
@@ -189,14 +189,14 @@ https://localhost:${bvt.prop.security_2_HTTP_default.secure}/App_31/Callback"
 		signatureAlgorithm="RS256"
 		keyAliasName="rs256"
 		keystoreRef="key_allSigAlg"
-		idTokenLifetime="15s"
+		idTokenLifetime="20s"
 		oauthProviderRef="OAuth3" />
 
 	<oauthProvider
 		id="OAuth3"
 		autoAuthorize="true"
 		tokenFormat="${opTokenFormat}"
-		accessTokenLifetime="15s"
+		accessTokenLifetime="20s"
 	>
 		<autoAuthorizeClient>client_1</autoAuthorizeClient>
 		
@@ -259,14 +259,14 @@ https://localhost:${bvt.prop.security_2_HTTP_default.secure}/GoodRedirectNotifyP
 		signatureAlgorithm="RS256"
 		keyAliasName="rs256"
 		keystoreRef="key_allSigAlg"
-		idTokenLifetime="15s"
+		idTokenLifetime="20s"
 		oauthProviderRef="OAuth4" />
 
 	<oauthProvider
 		id="OAuth4"
 		autoAuthorize="true"
 		tokenFormat="${opTokenFormat}"
-		accessTokenLifetime="15s"
+		accessTokenLifetime="20s"
 	>
 		<autoAuthorizeClient>client_1</autoAuthorizeClient>
 		

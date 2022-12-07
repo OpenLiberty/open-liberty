@@ -19,3 +19,4 @@ Subsystem-Name: Java Naming and Directory Interface 1.0
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

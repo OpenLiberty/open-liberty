@@ -23,3 +23,4 @@ Subsystem-Name: Distributed Map interface for Dynamic Caching 1.0
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

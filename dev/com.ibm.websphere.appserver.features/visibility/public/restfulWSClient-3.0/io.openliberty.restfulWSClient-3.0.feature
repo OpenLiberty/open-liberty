@@ -51,3 +51,4 @@ Subsystem-Name: Jakarta RESTful Web Services 3.0 Client
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

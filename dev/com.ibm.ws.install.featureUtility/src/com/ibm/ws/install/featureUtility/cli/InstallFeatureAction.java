@@ -56,7 +56,6 @@ public class InstallFeatureAction implements ActionHandler {
         private String fromDir;
         private String to;
         private String featuresBom;
-        private File esaFile;
         private List<File> esaFiles;
         private List<String> additionalJsons;
         private Boolean noCache;
@@ -185,12 +184,10 @@ public class InstallFeatureAction implements ActionHandler {
         private ReturnCode esaInstallInit(String esaPath) {
 
                 try {
-                        String feature = InstallUtils.getFeatureName(esaFile);
-//                        Set<String> features = new HashSet<String>();
-//                        features.add(feature);
-                        featureNames.add(feature);
-//                        installKernel.resolve(feature, esaFile, repoType);
-//                        featureLicenses = installKernel.getFeatureLicense(Locale.getDefault());
+		    File esaFile = new File(esaPath);
+		    String feature = InstallUtils.getFeatureName(esaFile);
+		    featureNames.add(feature);
+		    esaFiles.add(esaFile);
                 } catch (InstallException e) {
                         logger.log(Level.SEVERE, e.getMessage(), e);
                         return FeatureUtilityExecutor.returnCode(e.getRc());

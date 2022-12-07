@@ -10,13 +10,10 @@
  *******************************************************************************/
 package jaxb.web;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
 
 import org.junit.Test;
 
@@ -53,16 +50,9 @@ public class JAXBContextTestServlet extends FATServlet {
 
         riContext.generateSchema(ssor);
         String schemaString = ((StringSchemaOutputResolver) ssor).getSchema();
+        String notFoundString = JAXBContextUtils.searchArrayInString(schemaString, JAXBXMLSchemaConstants.EXPECTED_SCHEMA_CONTENTS);
 
-        Path file = Paths.get("./schema.xml");
-        file.toAbsolutePath();
-        List<String> content = Files.readAllLines(Paths.get("schemaEE10.xml"));
-
-        if (content != null) {
-            for (String s : content) {
-                assertTrue("Expected generated schema " + schemaString + " to contain: " + s, schemaString.contains(s));
-            }
-        }
+        assertNull(notFoundString + " is expected to be in generated schema: " + schemaString, notFoundString);
     }
 
     @Test

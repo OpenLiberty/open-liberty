@@ -125,10 +125,12 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
     }
 
     @Override
-    public AuthenticationStatus validateRequest(HttpServletRequest request,
-                                                HttpServletResponse response,
+    public AuthenticationStatus validateRequest(HttpServletRequest req,
+                                                HttpServletResponse res,
                                                 HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
+        HttpServletRequest request = httpMessageContext.getRequest();
+        HttpServletResponse response = httpMessageContext.getResponse();
 
         Client client = getClient(request);
 

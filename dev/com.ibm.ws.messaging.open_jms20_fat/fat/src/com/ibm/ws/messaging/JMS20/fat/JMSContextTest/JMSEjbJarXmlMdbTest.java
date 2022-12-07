@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 
 import componenttest.custom.junit.runner.FATRunner;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.messaging.JMS20.fat.TestUtils;
 
 import componenttest.topology.impl.LibertyServer;
@@ -75,6 +76,8 @@ public class JMSEjbJarXmlMdbTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
+        ShrinkHelper.cleanAllExportedArchives();
     }
 
     // JMSRedelivery_120846

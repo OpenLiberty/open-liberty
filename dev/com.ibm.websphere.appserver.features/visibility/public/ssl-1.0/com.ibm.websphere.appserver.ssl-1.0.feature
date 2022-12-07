@@ -22,3 +22,4 @@ Subsystem-Name: Secure Socket Layer 1.0
 kind=ga
 edition=core
 superseded-by=transportSecurity-1.0
+WLP-InstantOn-Enabled: true

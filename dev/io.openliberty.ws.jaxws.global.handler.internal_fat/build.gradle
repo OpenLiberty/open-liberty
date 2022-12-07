@@ -22,7 +22,7 @@ dependencies {
     'org.eclipse.jetty.websocket:javax-websocket-client-impl:9.2.2.v20140723',
     'org.eclipse.jetty:jetty-io:9.2.2.v20140723',
     'org.eclipse.jetty:jetty-util:9.2.2.v20140723',
-    'org.glassfish.gmbal:gmbal-api-only:3.1.0-b001',
+    'org.glassfish.gmbal:gmbal-api-only:4.0.3',
     project(':com.ibm.websphere.javaee.jaxws.2.2'),
     project(':com.ibm.ws.jaxb.tools'),
     project(':com.ibm.ws.jaxws.tools'),

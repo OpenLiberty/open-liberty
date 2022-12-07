@@ -34,7 +34,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 import com.ibm.ws.messaging.JMS20.fat.TestUtils;
-
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 @RunWith(FATRunner.class)
@@ -139,6 +139,7 @@ public class SharedSubscriptionWithMsgSelTest_129623 {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        ShrinkHelper.cleanAllExportedArchives();
     }
 
     @Test

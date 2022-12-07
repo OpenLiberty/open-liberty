@@ -26,23 +26,8 @@ task addDerbyToSharedDir(type: Copy) {
   rename 'derby-.*.jar', 'derby.jar'
 }
 
-task copyFAT {
-    copy {
-      from project(':com.ibm.ws.transaction.cloud_fat.base').file('fat/src/com/ibm/ws/transaction/test/tests')
-      into new File('fat/src/com/ibm/ws/transaction/test/tests')
-    }
-}
-
 task copyCommonFiles {
   doLast {
-    /*
-     * Copy test application resources.
-     */
-    copy {
-      from project(':com.ibm.ws.transaction.cloud_fat.base').file('test-applications')
-      into new File('test-applications')
-    }
-
     /*
      * Copy common publish files.
      */
@@ -53,7 +38,6 @@ task copyCommonFiles {
   }
 }
 
-addRequiredLibraries.dependsOn copyFAT
 addRequiredLibraries.dependsOn addDerbyToSharedDir
 addRequiredLibraries.dependsOn addJakartaTransformer
 
@@ -64,16 +48,10 @@ jar {
 autoFVT.dependsOn copyCommonFiles
 
 clean.doLast {
-  if (file('test-applications').exists()){
-    file('test-applications').deleteDir()
-  }
   if (file('publish').exists()){
     file('publish').deleteDir()
   }
   if (file('build').exists()){
     file('build').deleteDir()
-  }
-  if (file('fat/src/com/ibm/ws/transaction/test/tests').exists()){
-    file('fat/src/com/ibm/ws/transaction/test/tests').deleteDir()
   }
 }

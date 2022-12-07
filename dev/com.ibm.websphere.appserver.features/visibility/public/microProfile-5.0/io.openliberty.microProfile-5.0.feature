@@ -23,3 +23,4 @@ Subsystem-Name: MicroProfile 5.0
   io.openliberty.mpOpenTracing-3.0
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true

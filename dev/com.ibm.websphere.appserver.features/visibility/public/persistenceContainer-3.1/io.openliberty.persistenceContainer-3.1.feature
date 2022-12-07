@@ -25,3 +25,4 @@ IBM-App-ForceRestart: uninstall, \
  com.ibm.ws.jpa.container.jakarta, \
  com.ibm.ws.jpa.container.thirdparty.jakarta
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

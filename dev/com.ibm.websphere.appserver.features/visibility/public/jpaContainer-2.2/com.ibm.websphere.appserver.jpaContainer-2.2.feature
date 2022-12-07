@@ -25,3 +25,4 @@ IBM-App-ForceRestart: uninstall, \
  com.ibm.ws.jpa.container, \
  com.ibm.ws.jpa.container.thirdparty
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

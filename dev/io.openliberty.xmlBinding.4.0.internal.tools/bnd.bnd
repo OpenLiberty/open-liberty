@@ -19,6 +19,8 @@ Multi-Release: true
 Bundle-Name: io.openliberty.xmlBinding.4.0.internal.tools
 Bundle-SymbolicName: io.openliberty.xmlBinding.4.0.internal.tools; singleton:=true
     
+jaxb-version=4.0.1
+    
 # The SPI definition under META-INF/services
 # Do not publish RI javax.xml.bind.JAXBContext
 app-resources= \
@@ -76,11 +78,11 @@ Export-Package: \
   org.glassfish.jaxb.*;version="4.0";thread-context=true
 
 Include-Resource: \
-  @${repo;org.glassfish.jaxb:codemodel;4.0.0}!/!(META-INF/maven/*|module-info.class), \
-  @${repo;org.glassfish.jaxb:jaxb-core;4.0.0}!/!(META-INF/maven/*|module-info.class), \
-  @${repo;org.glassfish.jaxb:jaxb-runtime;4.0.0}!/!(META-INF/maven/*|module-info.class), \
-  @${repo;org.glassfish.jaxb:txw2;4.0.0}!/!(META-INF/maven/*|module-info.class), \
-  @${repo;org.glassfish.jaxb:xsom;4.0.0}!/!(META-INF/maven/*|module-info.class), \
+  @${repo;org.glassfish.jaxb:codemodel;${jaxb-version}}!/!(META-INF/maven/*|module-info.class), \
+  @${repo;org.glassfish.jaxb:jaxb-core;${jaxb-version}}!/!(META-INF/maven/*|module-info.class), \
+  @${repo;org.glassfish.jaxb:jaxb-runtime;${jaxb-version}}!/!(META-INF/maven/*|module-info.class), \
+  @${repo;org.glassfish.jaxb:txw2;${jaxb-version}}!/!(META-INF/maven/*|module-info.class), \
+  @${repo;org.glassfish.jaxb:xsom;${jaxb-version}}!/!(META-INF/maven/*|module-info.class), \
   @${repo;com.sun.xml.bind.external:relaxng-datatype;3.0.1}!/!(META-INF/maven/*|module-info.class), \
   @${repo;com.sun.xml.bind.external:rngom;3.0.1}!/!(META-INF/maven/*|module-info.class), \
   @${repo;com.sun.istack:istack-commons-runtime;4.0.1}!/!(META-INF/maven/*|module-info.class), \
@@ -102,12 +104,12 @@ instrument.disabled: true
 
 -buildpath: \
 	io.openliberty.jakarta.xmlBinding.4.0;version=latest, \
-	org.glassfish.jaxb:codemodel;version=4.0, \
-	org.glassfish.jaxb:jaxb-core;version=4.0, \
-	org.glassfish.jaxb:jaxb-jxc;version=4.0, \
-	org.glassfish.jaxb:jaxb-runtime;version=4.0, \
-	org.glassfish.jaxb:jaxb-xjc;version=4.0, \
-	org.glassfish.jaxb:xsom;version=4.0, \
+	org.glassfish.jaxb:codemodel;version=${jaxb-version}, \
+	org.glassfish.jaxb:jaxb-core;version=${jaxb-version}, \
+	org.glassfish.jaxb:jaxb-jxc;version=${jaxb-version}, \
+	org.glassfish.jaxb:jaxb-runtime;version=${jaxb-version}, \
+	org.glassfish.jaxb:jaxb-xjc;version=${jaxb-version}, \
+	org.glassfish.jaxb:xsom;version=${jaxb-version}, \
 	com.sun.xml.bind.external:relaxng-datatype;version=3.0.1, \
     com.sun.xml.bind.external:rngom;version=3.0.1, \
     com.sun.istack:istack-commons-runtime;version=4.0.1, \

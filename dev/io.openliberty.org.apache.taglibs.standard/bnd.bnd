@@ -20,9 +20,9 @@ Import-Package: \
    !com.oracle.wls.shaded.org.apache.xml.serialize,\
    !com.oracle.wls.shaded.org.apache.xml.serializer,\
    !org.apache.xerces*, \
-   jakarta.servlet.jsp.jstl.*;version="[2.0,4.0)", \
-   jakarta.servlet.jsp.*;version="[3.0,4.0)", \
-   jakarta.servlet.*;version="[5.0,7.0)", \
+   jakarta.servlet.jsp.jstl.*;version="[2.0,3.0)", \
+   jakarta.servlet.jsp.*;version="[3.0,3.1)", \
+   jakarta.servlet.*;version="[5.0,6.0)", \
    *
 
 Export-Package: \

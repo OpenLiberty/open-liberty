@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2021 IBM Corporation and others.
+ * Copyright (c) 2007, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,10 +34,9 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-public class BndErrorTest extends FATServletClient {
+public class BndErrorTest extends AbstractTest {
 
     @Rule
     public TestWatcher watchman = new TestWatcher() {
@@ -71,11 +70,8 @@ public class BndErrorTest extends FATServletClient {
 
     @AfterClass
     public static void cleanUp() throws Exception {
-        if (server != null && server.isStarted()) {
-
-            server.stopServer("CNTR4002E", "CWWKZ0106E", "CWWKZ0002E", "CNTR0136E", "CNTR0137E", "CNTR0138E", "CNTR0139E", "CNTR0130E", "CNTR0140", "CNTR0141E", "CNTR0339W",
-                              "CNTR0340W", "CWWKZ0004E");
-        }
+        stopServer(server, "CNTR4002E", "CWWKZ0106E", "CWWKZ0002E", "CNTR0136E", "CNTR0137E", "CNTR0138E", "CNTR0139E", "CNTR0130E", "CNTR0140", "CNTR0141E", "CNTR0339W",
+                   "CNTR0340W", "CWWKZ0004E");
     }
 
     private static void installApp(int appNum, String appName) throws Exception {

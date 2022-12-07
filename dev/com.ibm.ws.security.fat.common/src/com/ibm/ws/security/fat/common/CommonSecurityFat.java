@@ -100,7 +100,8 @@ public class CommonSecurityFat {
             }
             loggingUtils.logTestCaseInServerLog(server, _testName, actionToLog);
             try {
-                server.setMarkToEndOfLog(server.getDefaultLogFile());
+                server.setMarkToEndOfLog(); // mesages.log
+                server.setTraceMarkToEndOfDefaultTrace();
             } catch (Exception e) {
                 Log.error(thisClass, "Failed to set mark to end of default log file for server " + server.getServerName(), e);
             }
@@ -138,7 +139,8 @@ public class CommonSecurityFat {
             }
             loggingUtils.logTestCaseInServerLog(server, _testName + ": " + infoToLog, actionToLog);
             try {
-                server.setMarkToEndOfLog(server.getDefaultLogFile());
+                server.setMarkToEndOfLog(); // mesages.log
+                server.setTraceMarkToEndOfDefaultTrace();
             } catch (Exception e) {
                 Log.error(thisClass, "Failed to set mark to end of default log file for server " + server.getServerName(), e);
             }

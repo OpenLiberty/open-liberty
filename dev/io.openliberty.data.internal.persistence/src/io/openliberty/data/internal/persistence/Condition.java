@@ -10,28 +10,40 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
+import jakarta.data.exceptions.MappingException;
+
 /**
  */
 enum Condition {
-    BETWEEN(null, 7),
-    CONTAINS(null, 8),
-    ENDS_WITH(null, 8),
-    EQUALS("=", 0),
-    GREATER_THAN(">", 11),
-    GREATER_THAN_EQUAL(">=", 16),
-    IN(" IN ", 2),
-    LESS_THAN("<", 8),
-    LESS_THAN_EQUAL("<=", 13),
-    LIKE(null, 4),
-    NOT_EQUALS("<>", 3),
-    STARTS_WITH(null, 10);
+    BETWEEN(null, 7, false),
+    CONTAINS(null, 8, true),
+    EMPTY(" IS EMPTY", 5, true),
+    ENDS_WITH(null, 8, false),
+    EQUALS("=", 0, true),
+    FALSE("=FALSE", 5, false),
+    GREATER_THAN(">", 11, false),
+    GREATER_THAN_EQUAL(">=", 16, false),
+    IN(" IN ", 2, false),
+    LESS_THAN("<", 8, false),
+    LESS_THAN_EQUAL("<=", 13, false),
+    LIKE(null, 4, false),
+    NOT_EMPTY(" IS NOT EMPTY", 8, true),
+    NOT_EQUALS("<>", 3, true),
+    NOT_NULL(" IS NOT NULL", 7, false),
+    NULL(" IS NULL", 4, false),
+    STARTS_WITH(null, 10, false),
+    TRUE("=TRUE", 4, false);
 
     final int length;
     final String operator;
+    final boolean supportsCollections;
 
-    Condition(String operator, int length) {
+    Condition(String operator, int length, boolean supportsCollections) {
         this.operator = operator;
         this.length = length;
+        this.supportsCollections = supportsCollections;
     }
 
     Condition negate() {
@@ -46,10 +58,39 @@ enum Condition {
                 return GREATER_THAN_EQUAL;
             case LESS_THAN_EQUAL:
                 return GREATER_THAN;
+            case NULL:
+                return NOT_NULL;
+            case TRUE:
+                return FALSE;
+            case FALSE:
+                return TRUE;
+            case EMPTY:
+                return NOT_EMPTY;
+            case NOT_EMPTY:
+                return EMPTY;
             case NOT_EQUALS:
                 return EQUALS;
+            case NOT_NULL:
+                return NULL;
             default:
                 return null;
         }
+    }
+
+    /**
+     * Confirm that collections are supported for this condition,
+     * based on whether case insensitive comparison is requested.
+     *
+     * @param attributeName entity attribute to which the condition is to be applied.
+     * @param ignoreCase    indicates if the condition is to be performed ignoring case.
+     * @throws MappingException with chained UnsupportedOperationException if not supported.
+     */
+    @Trivial
+    void verifyCollectionsSupported(String attributeName, boolean ignoreCase) {
+        if (!supportsCollections || ignoreCase)
+            throw new MappingException(new UnsupportedOperationException("Repository keyword " +
+                                                                         (ignoreCase ? "IgnoreCase" : name()) +
+                                                                         " which is applied to entity property " + attributeName +
+                                                                         " is not supported for collection properties.")); // TODO
     }
 }
