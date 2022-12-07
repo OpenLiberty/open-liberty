@@ -27,6 +27,7 @@ import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Sort;
 import jakarta.data.repository.Streamable;
 import jakarta.enterprise.concurrent.Asynchronous;
 
@@ -55,12 +56,35 @@ public interface Primes {
 
     List<Prime> findByEvenTrueAndNumberLessThan(long max);
 
+    @OrderBy(value = "romanNumeral", descending = true)
+    List<Prime> findByHexIgnoreCaseGreaterThanAndRomanNumeralIgnoreCaseLessThanEqualAndNumberLessThan(String hexAbove, String maxNumeral, long numBelow);
+
+    Prime findByNameIgnoreCase(String name);
+
+    List<Prime> findByNameIgnoreCaseBetweenAndNumberLessThanOrderByNumberDesc(String first, String last, long max);
+
+    List<Prime> findByNameIgnoreCaseContainsAndNumberLessThanOrderByNumberDesc(String pattern, long max);
+
+    List<Prime> findByNameIgnoreCaseLikeAndNumberLessThanOrderByNumberAsc(String pattern, long max);
+
+    List<Prime> findByNameIgnoreCaseNotAndNumberLessThanOrderByNumberAsc(String name, long max);
+
+    List<Prime> findByNameIgnoreCaseStartsWithAndNumberLessThanOrderByNumberAsc(String pattern, long max);
+
     Prime findByNumberBetween(long min, long max);
 
     @OrderBy("number")
     KeysetAwarePage<Prime> findByNumberBetween(long min, long max, Pageable pagination);
 
+    List<Prime> findByNumberBetween(long min, long max, Sort... orderBy);
+
+    KeysetAwarePage<Prime> findByNumberBetweenAndEvenFalse(long min, long max, Pageable pagination);
+
+    Page<Prime> findByNumberBetweenAndSumOfBitsNotNull(long min, long max, Pageable pagination);
+
     KeysetAwarePage<Prime> findByNumberBetweenOrderByEvenDescSumOfBitsDescNumberAsc(long min, long max, Pageable pagination);
+
+    List<Prime> findByNumberBetweenOrderByNameIgnoreCaseDesc(long min, long max);
 
     @OrderBy("number")
     List<Prime> findByNumberInAndRomanNumeralEmpty(List<Long> nums);
