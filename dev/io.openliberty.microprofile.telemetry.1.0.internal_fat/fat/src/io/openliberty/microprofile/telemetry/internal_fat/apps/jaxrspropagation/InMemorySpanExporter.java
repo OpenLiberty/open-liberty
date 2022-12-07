@@ -19,7 +19,7 @@
  */
 // Original file source: https://github.com/eclipse/microprofile-telemetry/blob/main/tracing/tck/src/main/java/org/eclipse/microprofile/telemetry/tracing/tck/exporter/InMemorySpanExporter.java
 
-package io.openliberty.microprofile.telemetry.internal_fat.apps.jaxpropagation;
+package io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation;
 
 import static java.util.Comparator.comparingLong;
 import static java.util.concurrent.TimeUnit.SECONDS;

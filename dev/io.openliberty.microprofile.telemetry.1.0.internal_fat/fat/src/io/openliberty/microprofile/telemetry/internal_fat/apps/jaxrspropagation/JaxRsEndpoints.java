@@ -8,47 +8,39 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry.internal_fat.apps.jaxpropagation;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+package io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation;
 
 import static io.opentelemetry.api.trace.SpanKind.CLIENT;
-import static io.opentelemetry.api.trace.SpanKind.INTERNAL;
 import static io.opentelemetry.api.trace.SpanKind.SERVER;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Future;
 
-import jakarta.inject.Inject;
-import jakarta.ws.rs.ApplicationPath;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.PATCH;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.core.Application;
-import jakarta.ws.rs.core.Response;
-
-import io.opentelemetry.api.baggage.Baggage;
-import io.opentelemetry.context.Scope;
-import io.opentelemetry.api.trace.Span;
-import io.opentelemetry.instrumentation.annotations.WithSpan;
-import io.opentelemetry.sdk.trace.data.SpanData;
-
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.UriInfo;
-import jakarta.ws.rs.client.Client;
-import jakarta.ws.rs.client.ClientBuilder;
-
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
+import io.opentelemetry.api.baggage.Baggage;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.sdk.trace.data.SpanData;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
+
 @ApplicationPath("")
 @Path("endpoints")
-public class JaxEndpoints extends Application {
+public class JaxRsEndpoints extends Application {
 
     @Inject
     InMemorySpanExporter spanExporter;
@@ -73,7 +65,7 @@ public class JaxEndpoints extends Application {
     }
 
     @GET
-    @Path("/jaxclient")
+    @Path("/jaxrsclient")
     public Response getJax(@Context UriInfo uriInfo) {
         assertNotNull(Span.current());
         try {
@@ -89,11 +81,11 @@ public class JaxEndpoints extends Application {
 
         Client client = ClientBuilder.newClient();
         String url = new String(uriInfo.getAbsolutePath().toString());
-        url = url.replace("jaxclient", "jaxtwo"); //The jaxclient will use the URL as given so it needs the final part to be provided.
+        url = url.replace("jaxrsclient", "jaxrstwo"); //The jaxrsclient will use the URL as given so it needs the final part to be provided.
 
         String result = client.target(url)
-            .request(MediaType.TEXT_PLAIN)
-            .get(String.class);
+                        .request(MediaType.TEXT_PLAIN)
+                        .get(String.class);
 
         client.close();
 
@@ -101,7 +93,7 @@ public class JaxEndpoints extends Application {
     }
 
     @GET
-    @Path("/jaxclientasync")
+    @Path("/jaxrsclientasync")
     public Response getJaxAsync(@Context UriInfo uriInfo) {
         assertNotNull(Span.current());
         try {
@@ -117,15 +109,15 @@ public class JaxEndpoints extends Application {
 
         Client client = ClientBuilder.newClient();
         String url = new String(uriInfo.getAbsolutePath().toString());
-        url = url.replace("jaxclientasync", "jaxtwo"); //The jaxclient will use the URL as given so it needs the final part to be provided.
+        url = url.replace("jaxrsclientasync", "jaxrstwo"); //The jaxrsclient will use the URL as given so it needs the final part to be provided.
 
         Future<String> result = client.target(url)
-            .request(MediaType.TEXT_PLAIN)
-            .async()
-            .get(String.class);
+                        .request(MediaType.TEXT_PLAIN)
+                        .async()
+                        .get(String.class);
 
-	try {
-            return Response.ok(result.get()).build(); 
+        try {
+            return Response.ok(result.get()).build();
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -134,8 +126,8 @@ public class JaxEndpoints extends Application {
     }
 
     @GET
-    @Path("/jaxtwo")
-    public Response getJaxTwo() {
+    @Path("/jaxrstwo")
+    public Response getJaxRsTwo() {
         assertNotNull(Span.current());
         Baggage baggage = Baggage.current();
         assertEquals("bar", baggage.getEntryValue("foo"));
@@ -169,8 +161,8 @@ public class JaxEndpoints extends Application {
 
         assertNotNull(Span.current());
         MPTwo two = RestClientBuilder.newBuilder()
-                         .baseUri(baseUri)
-                         .build(MPTwo.class);
+                        .baseUri(baseUri)
+                        .build(MPTwo.class);
 
         String result = two.getMPTwo();
         return Response.ok(result).build();
@@ -197,7 +189,7 @@ public class JaxEndpoints extends Application {
 
     @GET
     @Path("/mpclientasync")
-    public Response getMPAsync	(@Context UriInfo uriInfo) {
+    public Response getMPAsync(@Context UriInfo uriInfo) {
         assertNotNull(Span.current());
         try {
             Thread.sleep(3000);
@@ -220,8 +212,8 @@ public class JaxEndpoints extends Application {
 
         assertNotNull(Span.current());
         MPTwoAsync two = RestClientBuilder.newBuilder()
-                         .baseUri(baseUri)
-                         .build(MPTwoAsync.class);
+                        .baseUri(baseUri)
+                        .build(MPTwoAsync.class);
 
         String result = two.getMPTwo().toCompletableFuture().join();
         return Response.ok(result).build();

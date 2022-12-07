@@ -20,7 +20,7 @@ import componenttest.annotation.MinimumJavaLevel;
 @MinimumJavaLevel(javaLevel = 11)
 @SuiteClasses({
                 Telemetry10.class,
-                JaxIntegration.class,
+                JaxRsIntegration.class,
                 TelemetryBeanTest.class
 })
 public class FATSuite {
