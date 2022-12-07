@@ -23,6 +23,7 @@ import oidc.client.base.servlets.BaseServlet;
 @OpenIdAuthenticationMechanismDefinition(providerURI = "${providerBean.providerSecureRoot}/oidc/endpoint/OP2", clientId = "${openIdConfig.clientId}",
                                          clientSecret = "${openIdConfig.clientSecret}",
                                          redirectURI = "${baseURL}/Callback",
+                                         jwksReadTimeoutExpression = "${openIdConfig.jwksReadTimeoutExpression}",
                                          redirectToOriginalResourceExpression = "${openIdConfig.redirectToOriginalResourceExpression}",
                                          claimsDefinition = @ClaimsDefinition(callerNameClaim = "${openIdConfig.callerNameClaim}",
                                                                               callerGroupsClaim = "${openIdConfig.callerGroupsClaim}"),

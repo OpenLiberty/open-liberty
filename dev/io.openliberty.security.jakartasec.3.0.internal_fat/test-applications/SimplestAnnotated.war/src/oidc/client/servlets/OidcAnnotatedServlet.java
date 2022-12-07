@@ -10,6 +10,7 @@
  *******************************************************************************/
 package oidc.client.servlets;
 
+import io.openliberty.security.jakartasec.fat.utils.Constants;
 import jakarta.annotation.security.DeclareRoles;
 import jakarta.security.enterprise.authentication.mechanism.http.OpenIdAuthenticationMechanismDefinition;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.ClaimsDefinition;
@@ -26,6 +27,7 @@ import oidc.client.base.servlets.BaseServlet;
                                          claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub", callerGroupsClaim = "groupIds"),
                                          useSession = false,
                                          redirectURI = "https://localhost:8940/SimplestAnnotated/Callback",
+                                         jwksReadTimeout = Constants.OVERRIDE_DEFAULT_JWKS_READ_TIMEOUT,
                                          providerMetadata = @OpenIdProviderMetadata(authorizationEndpoint = "https://localhost:8920/oidc/endpoint/OP1/authorize",
                                                                                     tokenEndpoint = "https://localhost:8920/oidc/endpoint/OP1/token"))
 @DeclareRoles("all")
