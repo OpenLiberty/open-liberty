@@ -17,6 +17,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
+import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -125,6 +126,15 @@ public class MetadataUtils {
         return getValueFromProviderOrDiscoveryMetadata(oidcClientConfig,
                                                        metadata -> metadata.getIdTokenSigningAlgorithmsSupported(),
                                                        OidcDiscoveryConstants.METADATA_KEY_ID_TOKEN_SIGNING_ALG_VALUES_SUPPORTED);
+    }
+
+    public static String[] getUserInfoSigningAlgorithmsSupported(OidcClientConfig oidcClientConfig) throws OidcDiscoveryException, OidcClientConfigurationException {
+        JSONArray signingAlgsFromDiscovery = getValueFromDiscoveryMetadata(oidcClientConfig, OidcDiscoveryConstants.METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED);
+        String[] algorithms = new String[signingAlgsFromDiscovery.size()];
+        for (int i = 0; i < signingAlgsFromDiscovery.size(); i++) {
+            algorithms[i] = (String) signingAlgsFromDiscovery.get(i);
+        }
+        return algorithms;
     }
 
 }

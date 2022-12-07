@@ -32,6 +32,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import io.openliberty.security.common.jwt.JwtParsingUtils;
 import io.openliberty.security.common.jwt.jws.JwsSignatureVerifier;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
+import io.openliberty.security.oidcclientcore.config.MetadataUtils;
 import io.openliberty.security.oidcclientcore.config.OidcMetadataService;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoEndpointNotHttpsException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseException;
@@ -134,7 +135,8 @@ public class UserInfoRequestor {
         JwtContext jwtContext = JwtParsingUtils.parseJwtWithoutValidation(responseString);
         if (jwtContext != null) {
             // Validate the JWS signature only; extract the claims so they can be verified elsewhere
-            JwsSignatureVerifier signatureVerifier = JwtUtils.createJwsSignatureVerifier(jwtContext, oidcClientConfig);
+            String[] signingAlgsSupported = MetadataUtils.getUserInfoSigningAlgorithmsSupported(oidcClientConfig);
+            JwsSignatureVerifier signatureVerifier = JwtUtils.createJwsSignatureVerifier(jwtContext, oidcClientConfig, signingAlgsSupported);
             JwtClaims claims = signatureVerifier.validateJwsSignature(jwtContext);
             if (claims != null) {
                 return JSONObject.parse(claims.toJson());
