@@ -38,4 +38,9 @@ public class RepeatWithJPA31Hibernate extends JakartaEE10Action {
         FATSuite.repeatPhase = "hibernate31-cfg.xml";
         FATSuite.provider = JPAPersistenceProvider.HIBERNATE;
     }
+
+    @Override
+    public boolean isEnabled() {
+        return Boolean.getBoolean("jpa.enable.repeat.hibernate") && super.isEnabled();
+    }
 }

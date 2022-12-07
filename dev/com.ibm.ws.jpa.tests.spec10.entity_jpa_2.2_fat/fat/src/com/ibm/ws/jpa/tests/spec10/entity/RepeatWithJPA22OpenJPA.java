@@ -42,4 +42,9 @@ public class RepeatWithJPA22OpenJPA extends EE8FeatureReplacementAction {
     public String getID() {
         return ID;
     }
+
+    @Override
+    public boolean isEnabled() {
+        return Boolean.getBoolean("jpa.enable.repeat.openjpa") && super.isEnabled();
+    }
 }
