@@ -31,7 +31,6 @@ import io.opentelemetry.sdk.logs.SdkLoggerProvider;
 import io.opentelemetry.sdk.metrics.SdkMeterProvider;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
@@ -127,14 +126,14 @@ public class OpenTelemetryProducer {
     }
 
     @Produces
-    @RequestScoped
+    @ApplicationScoped
     public Span getSpan() {
-        return Span.current();
+        return new SpanProxy();
     }
 
     @Produces
-    @RequestScoped
+    @ApplicationScoped
     public Baggage getBaggage() {
-        return Baggage.current();
+        return new BaggageProxy();
     }
 }
