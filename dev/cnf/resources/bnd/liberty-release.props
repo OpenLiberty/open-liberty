@@ -11,13 +11,13 @@
 
 releaseTypeGA=true
 
-libertyBaseVersion=22.0.0
-libertyFixpackVersion=13
+libertyBaseVersion=23.0.0
+libertyFixpackVersion=1
 libertyServiceVersion=${libertyBaseVersion}.${libertyFixpackVersion}
-libertyBetaVersion=2022.13.0.0
+libertyBetaVersion=2023.1.0.0
 libertyRelease=${if;${releaseTypeGA};${libertyServiceVersion};${libertyBetaVersion}}
 
-libertyBundleMicroVersion=72
+libertyBundleMicroVersion=73
 copyrightBuildYear=2022
 buildID=${libertyRelease}-${def;buildLabel}
 productEdition=BASE_ILAN
