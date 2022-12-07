@@ -12,6 +12,8 @@ package com.ibm.ws.cdi.proxy;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ReflectPermission;
+
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -38,6 +40,10 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
  */
 public class ProxyServicesImpl implements ProxyServices {
 
+    private static final ReflectPermission SUPPRESS_ACCESS_CHECKS_PERMISSION = new ReflectPermission("suppressAccessChecks");
+    private static final RuntimePermission DECLARED_MEMBERS_PERMISSION = new RuntimePermission("accessDeclaredMembers");
+    private static final RuntimePermission GET_CLASS_LOADER_PERMISSION = new RuntimePermission("getClassLoader");
+
     private static final ManifestElement[] WELD_PACKAGES;
     private static final ClassLoader CLASS_LOADER_FOR_SYSTEM_CLASSES = org.jboss.weld.bean.ManagedBean.class.getClassLoader(); //I'm using this classloader because we'll need the weld classes to proxy anything.
 
@@ -47,7 +53,7 @@ public class ProxyServicesImpl implements ProxyServices {
 
         private static final Method defineClass1, defineClass2, getClassLoadingLock;
 
-        //This will be evaluated lazily when ClassLoaderMethods is first called. 
+        //This will be evaluated lazily when ClassLoaderMethods is first called.
         static {
             try {
                 Method[] methods = AccessController.doPrivileged(new PrivilegedExceptionAction<Method[]>() {
@@ -91,48 +97,50 @@ public class ProxyServicesImpl implements ProxyServices {
     }
 
     private ClassLoader getClassLoader(final Class<?> proxiedBeanType) {
-        return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-            @Override
-            public ClassLoader run() {
-                // Must always use the bean type's classloader;
-                // Otherwise package private access does not work.
-                // Unfortunately this causes us issues for types from OSGi bundles.
+        // Must always use the bean type's classloader;
+        // Otherwise package private access does not work.
+        // Unfortunately this causes us issues for types from OSGi bundles.
 
-                // It would be nice if we could have a marking header that allowed for
-                // bundles to declare they provide CDI bean types, but this becomes
-                // problematic for interface types that beans may be using for
-                // injection types because the exporter may have no idea their types
-                // are going to be used for CDI.  Therefore we have no way of knowing
-                // ahead of time what bundles are providing CDI bean types.
+        // It would be nice if we could have a marking header that allowed for
+        // bundles to declare they provide CDI bean types, but this becomes
+        // problematic for interface types that beans may be using for
+        // injection types because the exporter may have no idea their types
+        // are going to be used for CDI.  Therefore we have no way of knowing
+        // ahead of time what bundles are providing CDI bean types.
 
-                // This makes it impossible to use weaving hooks to add new dynamic
-                // import packages.  The weaving hook approach requires
-                // a weaving hook registration that knows ahead of time what
-                // bundles provide CDI bean types and then on first class define using
-                // that bundle's class loader the weaving hook would add the necessary
-                // weld packages as dynamic imports.  We cannot and will
-                // not be able to know exactly which bundles are providing bean
-                // types until this getClassLoader method is called.  But by the time
-                // this method is called it is too late for a weaving hook to do
-                // anything because weld is going to use the returned class loader
-                // immediately to reflectively define a proxy class.  The class loader
-                // MUST have visibility to the weld packages before this reflective
-                // call to defineClass.
-                ClassLoader cl = proxiedBeanType.getClassLoader();
-                if (cl == null) {
-                    cl = CLASS_LOADER_FOR_SYSTEM_CLASSES;
-                } else if (cl instanceof BundleReference) {
-                    Bundle b = ((BundleReference) cl).getBundle();
-                    addWeldDynamicImports(b, WELD_PACKAGES);
-                }
-                return cl;
-            }
-        });
+        // This makes it impossible to use weaving hooks to add new dynamic
+        // import packages.  The weaving hook approach requires
+        // a weaving hook registration that knows ahead of time what
+        // bundles provide CDI bean types and then on first class define using
+        // that bundle's class loader the weaving hook would add the necessary
+        // weld packages as dynamic imports.  We cannot and will
+        // not be able to know exactly which bundles are providing bean
+        // types until this getClassLoader method is called.  But by the time
+        // this method is called it is too late for a weaving hook to do
+        // anything because weld is going to use the returned class loader
+        // immediately to reflectively define a proxy class.  The class loader
+        // MUST have visibility to the weld packages before this reflective
+        // call to defineClass.
+        ClassLoader cl = proxiedBeanType.getClassLoader();
+        if (cl == null) {
+            cl = CLASS_LOADER_FOR_SYSTEM_CLASSES;
+        } else if (cl instanceof BundleReference) {
+            Bundle b = ((BundleReference) cl).getBundle();
+            addWeldDynamicImports(b, WELD_PACKAGES);
+        }
+        return cl;
     }
 
     @Override
     @FFDCIgnore(ClassNotFoundException.class)
     public Class<?> defineClass(Class<?> originalClass, String className, byte[] classBytes, int off, int len, ProtectionDomain protectionDomain) throws ClassFormatError {
+
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            sm.checkPermission(SUPPRESS_ACCESS_CHECKS_PERMISSION);
+            sm.checkPermission(DECLARED_MEMBERS_PERMISSION);
+            sm.checkPermission(GET_CLASS_LOADER_PERMISSION);
+        }
 
         ClassLoader loader = loaderMap.get(originalClass);
         Object classLoaderLock = null;
@@ -143,15 +151,6 @@ public class ProxyServicesImpl implements ProxyServices {
         }
 
         synchronized (classLoaderLock) {
-            SecurityManager security = System.getSecurityManager();
-java.io.FilePermission a = new java.io.FilePermission("/", "read");
-            if (security != null) {
-                //try {
-                    security.checkPermission(a);
-                //} catch (java.security.AccessControlException e) {
-                //    return false;
-                //}
-            }
 
             try {
                 //First check we haven't defined this in another thread.
@@ -183,6 +182,9 @@ java.io.FilePermission a = new java.io.FilePermission("/", "read");
 
     @Override
     public Class<?> loadClass(Class<?> originalClass, String classBinaryName) throws ClassNotFoundException {
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) sm.checkPermission(GET_CLASS_LOADER_PERMISSION);
+
         ClassLoader cl = loaderMap.get(originalClass);
         return loadClass(classBinaryName, cl);
     }
