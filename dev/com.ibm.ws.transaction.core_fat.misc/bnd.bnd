@@ -17,7 +17,7 @@ src: \
 	test-applications/ddTimeout/src,\
 	test-applications/eventlistener/src,\
 	test-applications/transaction/src
-
+	
 -sub: *.bnd
 
 fat.project: true

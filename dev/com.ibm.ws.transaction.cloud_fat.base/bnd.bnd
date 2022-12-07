@@ -13,7 +13,7 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/transaction/src
+  test-applications/transaction/src
 
 fat.project: true
 
@@ -54,4 +54,3 @@ tested.features:\
 	io.openliberty.org.testcontainers;version=latest,\
 	com.ibm.ws.transaction.test.util;version=latest,\
 	com.ibm.ws.transaction.fat.util;version=latest
-	

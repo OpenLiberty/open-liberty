@@ -18,7 +18,6 @@ dependencies {
                project(':io.openliberty.org.apache.commons.logging')
 }
 
-
 File sharedDir = new File(autoFvtDir, 'publish/shared/resources')
 
 task addDerbyToSharedDir(type: Copy) {
@@ -27,24 +26,8 @@ task addDerbyToSharedDir(type: Copy) {
   rename 'derby-.*.jar', 'derby.jar'
 }
 
-task copyFAT {
-    dependsOn ':com.ibm.ws.transaction.core_fat.base:autoFVT'
-    copy {
-      from project(':com.ibm.ws.transaction.core_fat.xa').file('fat/src/com/ibm/ws/transaction/test/tests')
-      into new File('fat/src/com/ibm/ws/transaction/test/tests')
-    }
-}
-
 task copyCommonFiles {
   doLast {
-    /*
-     * Copy test application resources.
-     */
-    copy {
-      from project(':com.ibm.ws.transaction.core_fat.base').file('test-applications/transaction')
-      into new File('test-applications/transaction')
-    }
-
     /*
      * Copy common publish files.
      */
@@ -55,7 +38,6 @@ task copyCommonFiles {
   }
 }
 
-addRequiredLibraries.dependsOn copyFAT
 addRequiredLibraries.dependsOn addDerbyToSharedDir
 addRequiredLibraries.dependsOn addJakartaTransformer
 
@@ -66,14 +48,8 @@ jar {
 autoFVT.dependsOn copyCommonFiles
 
 clean.doLast {
-  if (file('test-applications').exists()){
-    file('test-applications').deleteDir()
-  }
   if (file('publish').exists()){
     file('publish').deleteDir()
-  }
-  if (file('fat/src/com/ibm/ws/transaction/test/tests').exists()){
-    file('fat/src/com/ibm/ws/transaction/test/tests').deleteDir()
   }
   if (file('build').exists()){
     file('build').deleteDir()

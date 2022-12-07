@@ -12,9 +12,7 @@
 bVersion=1.0
 
 src: \
-	fat/src,\
-	test-bundles/cloudtx/src,\
-	test-applications/transaction/src
+	fat/src
 
 fat.project: true
 fat.test.databases: true

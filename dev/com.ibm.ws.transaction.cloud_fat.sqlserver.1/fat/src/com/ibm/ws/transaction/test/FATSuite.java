@@ -16,7 +16,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
-import com.ibm.ws.transaction.test.dbrotationtests.DualServerDynamicDBRotationTest1;
+import com.ibm.ws.transaction.test.tests.DualServerDynamicDBRotationTest1;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
