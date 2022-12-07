@@ -125,7 +125,7 @@ public class TimeBasedLogRolloverTest {
     public void cleanUp() throws Exception {
         if (serverInUse != null && serverInUse.isStarted()) {
             serverInUse.stopServer("com.ibm.ws.logging.fat.ffdc.servlet.FFDCServlet.doGet", "ArithmeticException",
-                                   "CWWKG0081E", "CWWKG0083W", "TRAS3012W", "TRAS3013W");
+                                   "CWWKG0081E", "CWWKG0083W", "TRAS3015W", "TRAS3013W");
         }
     }
 
@@ -339,9 +339,9 @@ public class TimeBasedLogRolloverTest {
             Thread.sleep(2000); //padding
         }
         setServerConfiguration(true, false, false, "24:00", "", 0);
-        List<String> lines = serverInUse.findStringsInLogs("TRAS3012W");
+        List<String> lines = serverInUse.findStringsInLogs("TRAS3015W");
         LOG.logp(Level.INFO, CLASS_NAME, "testInvalidRolloverInterval", "Found warning: "+lines.toString());
-        assertTrue("No TRAS3012W warning was found indicating that 24:00 is an invalid rolloverStartTime", lines.size() > 0);
+        assertTrue("No TRAS3015W warning was found indicating that 24:00 is an invalid rolloverStartTime", lines.size() > 0);
     }
 
     /*

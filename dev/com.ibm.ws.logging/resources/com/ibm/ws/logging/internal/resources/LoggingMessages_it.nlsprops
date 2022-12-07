@@ -156,13 +156,13 @@ JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: \u00c8 stato fornito un carattere non 
 JSON_FIELDS_INVALID_CHARACHTER.explanation= Nella propriet\u00e0 di associazione del nome campo di registrazione JSON sono accettati solo le lettere, i numeri e :
 JSON_FIELDS_INVALID_CHARACHTER.useraction= Modificare il valore della propriet\u00e0 di associazione del nome campo di registrazione JSON rimuovendo i caratteri non validi.
 
-LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3012W: La propriet\u00e0 del tempo di inizio del rollover del log \u00e8 formattata in modo non corretto. Di conseguenza, il valore \u00e8 impostato su un default di '00.00', che rappresenta la mezzanotte.
+LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3015W: La propriet\u00e0 del tempo di inizio del rollover del log \u00e8 formattata in modo non corretto. Di conseguenza, il valore \u00e8 impostato su un default di '00.00', che rappresenta la mezzanotte.
 LOG_ROLLOVER_START_TIME_FORMAT_WARNING.explanation=La propriet\u00e0 del tempo di inizio del rollover deve essere formattata HH:MM, con le 00.00 che rappresenta la mezzanotte.
 LOG_ROLLOVER_START_TIME_FORMAT_WARNING.useraction=Assicurarsi che il valore di propriet\u00e0 del tempo di inizio del rollover sia correttamente formattato in notazione HH:MM 24 ore, dove 00.00 rappresenta la mezzanotte.
 
 LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING=TRAS3013W: L'intervallo di rollover log non pu\u00f2 essere lungo meno di 1 minuto. Se viene specificato un valore inferiore a 1 minuto, l'intervallo di rollover di log \u00e8 impostato su un valore predefinito di 1 giorno.
-LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.explanation=TRAS3013W: L'intervallo di rollover log non pu\u00f2 essere lungo meno di 1 minuto.
-LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=TRAS3013W: Specificare un intervallo di rollover di log uguale o superiore a 1 minuto.
+LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.explanation=L'intervallo di rollover log non pu\u00f2 essere lungo meno di 1 minuto.
+LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=Specificare un intervallo di rollover di log uguale o superiore a 1 minuto.
 
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Manca il nome intestazione per uno o pi\u00f9 campi accessLogging logFormat: {0}.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=La registrazione JSON usa l'attributo logFormat da accessLogging per selezionare quali campi messaggio http_access.log includere. \u00c8 necessario fornire un nome intestazione quando si usano i campi %i o %o nell'attributo accessLogging logFormat.

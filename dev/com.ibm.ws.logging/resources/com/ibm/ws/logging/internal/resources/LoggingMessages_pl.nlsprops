@@ -156,13 +156,13 @@ JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: Wprowadzono niepoprawny znak we w\u014
 JSON_FIELDS_INVALID_CHARACHTER.explanation= We w\u0142a\u015bciwo\u015bci odwzorowania nazwy pola rejestrowania JSON s\u0105 akceptowane tylko litery, cyfry i znak :
 JSON_FIELDS_INVALID_CHARACHTER.useraction= Zmie\u0144 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci odwzorowania nazwy pola rejestrowania JSON tak, aby usun\u0105\u0107 niepoprawne znaki
 
-LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3012W: W\u0142a\u015bciwo\u015b\u0107 czasu rozpocz\u0119cia zast\u0119powania dziennika jest niepoprawnie sformatowana. W rezultacie warto\u015b\u0107 zostanie ustawiona na warto\u015b\u0107 domy\u015bln\u0105 '00:00', kt\u00f3ra oznacza p\u00f3\u0142noc.
+LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3015W: W\u0142a\u015bciwo\u015b\u0107 czasu rozpocz\u0119cia zast\u0119powania dziennika jest niepoprawnie sformatowana. W rezultacie warto\u015b\u0107 zostanie ustawiona na warto\u015b\u0107 domy\u015bln\u0105 '00:00', kt\u00f3ra oznacza p\u00f3\u0142noc.
 LOG_ROLLOVER_START_TIME_FORMAT_WARNING.explanation=W\u0142a\u015bciwo\u015b\u0107 czasu rozpocz\u0119cia zast\u0105pienia musi by\u0107 sformatowana w formacie GG:MM, a warto\u015b\u0107 00:00 oznacza p\u00f3\u0142noc.
 LOG_ROLLOVER_START_TIME_FORMAT_WARNING.useraction=Upewnij si\u0119, \u017ce warto\u015b\u0107 w\u0142a\u015bciwo\u015bci czasu rozpocz\u0119cia zast\u0105pienia jest poprawnie sformatowana w notacji 24-godzinnej (GG:MM), gdzie 00:00 oznacza p\u00f3\u0142noc.
 
 LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING=TRAS3013W: Odst\u0119p czasu zast\u0105pienia dziennika nie mo\u017ce by\u0107 kr\u00f3tszy od 1 minuty. Je\u015bli zostanie podana warto\u015b\u0107 kr\u00f3tsza od minuty, odst\u0119p czasu zast\u0105pienia dziennika zostanie ustawiony na warto\u015b\u0107 domy\u015bln\u0105 wynosz\u0105c\u0105 1 dzie\u0144.
-LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.explanation=TRAS3013W: Odst\u0119p czasu zast\u0105pienia dziennika nie mo\u017ce by\u0107 kr\u00f3tszy od 1 minuty.
-LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=TRAS3013W: Nale\u017cy poda\u0107 odst\u0119p czasu zast\u0105pienia dziennika, kt\u00f3ry jest r\u00f3wny lub d\u0142u\u017cszy od 1 minuty.
+LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.explanation=Odst\u0119p czasu zast\u0105pienia dziennika nie mo\u017ce by\u0107 kr\u00f3tszy od 1 minuty.
+LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=Nale\u017cy poda\u0107 odst\u0119p czasu zast\u0105pienia dziennika, kt\u00f3ry jest r\u00f3wny lub d\u0142u\u017cszy od 1 minuty.
 
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Brak nag\u0142\u00f3wka co najmniej jednego pola logFormat konfiguracji accessLogging: {0}.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=Podczas rejestrowania w formacie JSON atrybut logFormat konfiguracji accessLogging s\u0142u\u017cy do wybierania p\u00f3l komunikat\u00f3w dziennika http_access.log do uwzgl\u0119dnienia. Gdy w atrybucie logFormat konfiguracji accessLogging u\u017cywane s\u0105 pola %i lub %o, nale\u017cy poda\u0107 nazw\u0119 nag\u0142\u00f3wka.
