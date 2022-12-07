@@ -173,6 +173,7 @@ public class OpenIdContextExpectationHelpers {
     public static void getOpenIdContextMockUserInfoExpectations(String action, Expectations expectations, String requester, String[] scopes) throws Exception {
         Set<String> scopeSet = new HashSet<>(Arrays.asList(scopes));
 
+        // relates to JsonUserInfoScopeServlet - only uses a subset of the profile scope claims for brevity
         String profileScopeCheckType = scopeSet.contains(OpenIdConstant.PROFILE_SCOPE) ? Constants.STRING_DOES_NOT_CONTAIN : Constants.STRING_CONTAINS;
         expectations.addExpectation(new ResponseFullExpectation(null, profileScopeCheckType, buildUserInfoClaimString(requester, OpenIdConstant.NAME,
                                                                                                                       ServletMessageConstants.OPTIONAL_EMPTY), "The userinfo name claim was not as expected."));

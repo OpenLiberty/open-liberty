@@ -45,6 +45,14 @@ import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 
 /**
  * Tests @OpenIdAuthenticationMechanismDefinition scope and scopeExpression.
+ *
+ * This class contain tests for the regular scope attribute, tests that ensure that the scopeExpression attribute overrides the scope attribute, and tests some negative cases.
+ *
+ * In the positive test cases, these tests will validate that the correct scope is being sent to the server, by validating the scopes returned in the access token.
+ * Also, in the positive test cases, a mock userinfo endpoint (JsonUserInfoScopeServlet) was created to test that the scopes sent from the client via the access token are correct.
+ * The mock userinfo endpoint returns claims based on the scopes it receives in the access token and the client verifies these claims sent back.
+ * Only a subset of the profile scope claims are used to be sent back from the mock userinfo endpoint for brevity.
+ * In the negative test cases, the normal userinfo endpoint is called to verify the error messages.
  */
 /**
  * Tests appSecurity-5.0

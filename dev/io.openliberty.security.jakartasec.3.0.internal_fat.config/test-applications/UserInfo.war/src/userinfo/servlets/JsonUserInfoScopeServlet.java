@@ -26,6 +26,15 @@ import jakarta.json.JsonObjectBuilder;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
 import jakarta.servlet.annotation.WebServlet;
 
+/**
+ *
+ * Mock userinfo servlet created to test OpenIdAuthenticationMechanismDefinition scope and scopeExpression.
+ * This servlet takes the scope claim from the access token and returns userinfo claims based on the scopes available.
+ * Only a subset of profile scope claims are added for brevity.
+ *
+ * The tests can be found in io.openliberty.security.jakartasec.fat.config.tests.ConfigurationScopeTests.java
+ *
+ */
 @WebServlet("/JsonUserInfoScopeServlet")
 public class JsonUserInfoScopeServlet extends JsonUserInfoServlet {
 
