@@ -123,6 +123,22 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
         }
     }
 
+    public static class skipIfJwtUserInfo extends MySkipRule {
+        @Override
+        public Boolean callSpecificCheck() {
+            String instance = RepeatTestFilter.getRepeatActionsAsString();
+            Log.info(thisClass, "skipIfJwtUserInfo", instance);
+
+            if (instance.contains(Constants.USERINFO_JWT)) {
+                Log.info(thisClass, "skipIfJwtUserInfo", "Test case is using a userinfo endpoint that returns data in JWT format - skip test");
+                testSkipped();
+                return true;
+            }
+            Log.info(thisClass, "skipIfJwtUserInfo", "Test case is using a userinfo endpoint that returns data in JSON format - run test");
+            return false;
+        }
+    }
+
     @BeforeClass
     public static void setUp() throws Exception {
 
@@ -399,6 +415,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJwtUserInfo.class)
     @Test
     public void ConfigurationUserInfoTests_defaultNameClaimOtherGroupClaims_UserinfoGoodSubGoodGroups() throws Exception {
 
@@ -450,6 +467,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJwtUserInfo.class)
     @Test
     public void ConfigurationUserInfoTests_defaultNameClaimOtherGroupClaims_UserinfoBadSubGoodGroups() throws Exception {
 
@@ -467,6 +485,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJwtUserInfo.class)
     @Test
     public void ConfigurationUserInfoTests_otherNameClaimDefaultGroupClaims_UserinfoGoodSubGoodGroups() throws Exception {
 
@@ -486,6 +505,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJwtUserInfo.class)
     @Test
     public void ConfigurationUserInfoTests_otherNameClaimDefaultGroupClaims_UserinfoGoodSubBadGroups() throws Exception {
 
@@ -506,6 +526,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJwtUserInfo.class)
     @Test
     public void ConfigurationUserInfoTests_otherNameClaimDefaultGroupClaims_UserinfoBadSubGoodGroups() throws Exception {
 
