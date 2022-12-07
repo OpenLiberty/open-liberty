@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -52,6 +53,7 @@ import org.apache.cxf.binding.soap.SoapVersionFactory;
 import org.apache.cxf.common.i18n.Message;
 import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.common.util.StringUtils;
+import org.apache.cxf.common.xmlschema.XmlSchemaUtils;
 import org.apache.cxf.databinding.DataBinding;
 import org.apache.cxf.databinding.DataReader;
 import org.apache.cxf.headers.HeaderManager;
@@ -65,6 +67,10 @@ import org.apache.cxf.staxutils.PartialXMLStreamReader;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.staxutils.StaxUtils.StreamToDOMContext;
 import org.apache.cxf.staxutils.W3CDOMStreamWriter;
+import org.apache.ws.commons.schema.XmlSchema;
+import org.apache.ws.commons.schema.XmlSchemaAny;
+import org.apache.ws.commons.schema.XmlSchemaAttribute;
+import org.apache.ws.commons.schema.XmlSchemaElement;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
 
@@ -75,6 +81,10 @@ public class ReadHeadersInterceptor extends AbstractSoapInterceptor {
     public static final String BODY_EVENTS = "body.events";
     public static final String ENVELOPE_PREFIX = "envelope.prefix";
     public static final String BODY_PREFIX = "body.prefix";
+    
+
+    
+    public static final String ENV_SOAP_NS = "http://schemas.xmlsoap.org/soap/envelope/";
     /**
      *
      */
@@ -363,11 +373,35 @@ public class ReadHeadersInterceptor extends AbstractSoapInterceptor {
                 switch (event) {
                 case XMLStreamConstants.START_ELEMENT:
                     read++;
-                    addEvent(eventFactory.createStartElement(new QName(reader.getNamespaceURI(), reader
-                                                            .getLocalName(), reader.getPrefix()), null, null));
+
+                    // Liberty Change Start: Support unprefixed namespaces in SOAP Envelope and SOAP Body tags by accounting for null prefixes.
+                    String prefix = reader.getPrefix();
+                    String nsURI = reader.getNamespaceURI();
+                    if (prefix == null || prefix.equals("")) {
+                            addEvent(eventFactory.createStartElement(new QName(nsURI, reader.getLocalName(), XMLConstants.DEFAULT_NS_PREFIX), null, null));
+                    } else {
+                        addEvent(eventFactory.createStartElement(new QName(nsURI, reader.getLocalName(), prefix), null, null));
+                    }
+                    // Liberty Change End.
+                                                          
                     for (int i = 0; i < reader.getNamespaceCount(); i++) {
-                        addEvent(eventFactory.createNamespace(reader.getNamespacePrefix(i),
-                                                         reader.getNamespaceURI(i)));
+                        // Start Liberty Change: CXF is calling XMLEventFactory.createNamespace(prefix, namespaceURI) but if the
+                        // prefix is null because the message is using the default namespace, CXF thows a parsing error for passing a
+                        // null prefix. Same if the URI is also null, in case of URI being null we need to use the local name of the element
+                    	// in order to create the namespace on the writer. 
+                        // addEvent(eventFactory.createNamespace(reader.getNamespacePrefix(i),
+                        //                                      reader.getNamespaceURI(i)));
+                        prefix = reader.getNamespacePrefix(i);
+                        nsURI = reader.getNamespaceURI(i);
+                        if(nsURI != null && prefix != null)  {
+                            addEvent(eventFactory.createNamespace(prefix,
+                                                                  nsURI));
+                        } else if (nsURI != null) {
+                           addEvent(eventFactory.createNamespace(XMLConstants.DEFAULT_NS_PREFIX, nsURI));
+                        } else {
+                            addEvent(eventFactory.createNamespace(reader.getLocalName()));	
+                        }
+                        // End Liberty Change
                     }
                     for (int i = 0; i < reader.getAttributeCount(); i++) {
                         addEvent(eventFactory.createAttribute(reader.getAttributePrefix(i),
@@ -382,8 +416,21 @@ public class ReadHeadersInterceptor extends AbstractSoapInterceptor {
                     break;
                 case XMLStreamConstants.END_ELEMENT:
                     if (read > 0) {
-                        addEvent(eventFactory.createEndElement(new QName(reader.getNamespaceURI(), reader
-                                                              .getLocalName(), reader.getPrefix()), null));
+                    	
+                        // Start Liberty Change: CXF is calling XMLEventFactory.createEndElement(new QName(namespace, localName, prefix)...)
+                        // but this method cannot be called null values. This means an error is thrown by XML Parser when the reader is parsing a 
+                        // SOAP Envelope that using the default namespace and has a null prefix
+                        // addEvent(eventFactory.createEndElement(new QName(reader.getNamespaceURI(), reader
+                        //                                                    .getLocalName(), reader.getPrefix()), null));
+                    	prefix = reader.getPrefix();
+                    	nsURI = reader.getNamespaceURI();
+                        if(prefix != null) {
+                            addEvent(eventFactory.createEndElement(new QName(nsURI, reader
+                                                                             .getLocalName(), prefix), null));
+                        } else {
+                            addEvent(eventFactory.createEndElement(new QName(nsURI, reader.getLocalName(), XMLConstants.DEFAULT_NS_PREFIX), null));
+                        }
+                        // Liberty Change End.
                     }
                     read--;
                     break;

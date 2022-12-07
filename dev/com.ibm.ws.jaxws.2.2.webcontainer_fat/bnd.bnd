@@ -24,6 +24,7 @@ src: \
   test-applications/httpConduitProperties/src,\
   test-applications/pureCXF/src,\
   test-applications/pureCXFWSDLFirst/src,\
+  test-applications/soapEnvelopePrefix/src,\
   test-applications/stubClient/src,\
   test-applications/testBindingTypeWsdlWeb/src,\
   test-applications/testCXFJMXSupport/src,\
@@ -34,6 +35,7 @@ src: \
   test-applications/testWebServiceMonitor/src,\
   test-applications/virtualhost/src,\
   test-applications/webServiceRefFeatures/src
+  
   
 
 fat.project: true
