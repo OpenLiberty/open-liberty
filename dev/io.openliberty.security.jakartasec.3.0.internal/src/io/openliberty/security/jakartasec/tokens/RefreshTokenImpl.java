@@ -10,11 +10,15 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec.tokens;
 
+import java.io.Serializable;
+
 import com.ibm.websphere.ras.annotation.Sensitive;
 
 import jakarta.security.enterprise.identitystore.openid.RefreshToken;
 
-public class RefreshTokenImpl implements RefreshToken {
+public class RefreshTokenImpl implements RefreshToken, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private final String tokenString;
 

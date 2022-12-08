@@ -41,7 +41,7 @@ public class OpenIdClaimsImplSerializationTest {
         try (ObjectInputStream input = new ObjectInputStream(new FileInputStream(SERIALIZED_FILE_VERS_1))) {
             object = (OpenIdClaimsImpl) input.readObject();
         }
-        assertNotNull("IdentityTokenImpl instance could not be read from the serialized file.", object);
+        assertNotNull("OpenIdClaimsImpl instance could not be read from the serialized file.", object);
 
         assertEquals("Incorrect subject", SUBJECT, object.getSubject());
     }
