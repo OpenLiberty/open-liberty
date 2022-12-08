@@ -255,7 +255,8 @@ option-desc.stop.force=\
 option-key.timeout=\
 \ \ \ \ --timeout
 option-desc.stop.timeout=\
-\tAmount of time to allow for the server to stop before giving up.     \n\
-\tSpecify a positive integer followed by a unit of time, which can be  \n\
-\tminutes (m), or seconds (s). For example, specify 5 minutes as 5m or \n\
-\t300s.
+\tSets the maximum amount of time the \"server stop\" command waits for\n\
+\tconfirmation that the server has stopped.  Specify a positive integer\n\
+\tfollowed by a unit of time, which can be minutes (m), or seconds (s).\n\
+\tFor example, specify 2.5 minutes as --timeout=2m30s or               \n\
+\t--timeout=150s. The default is 30 seconds.\n

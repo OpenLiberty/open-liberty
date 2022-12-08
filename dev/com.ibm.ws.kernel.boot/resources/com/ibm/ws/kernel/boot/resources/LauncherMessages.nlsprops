@@ -128,7 +128,7 @@ error.kernelDefFile=CWWKE0023E: The specified kernel definition ({0}) does not e
 error.kernelDefFile.explanation=The specified kernel definition could not be found.
 error.kernelDefFile.useraction=Ensure that the kernel definition resource exists and can be read by the current user.
 
-error.badOptionValue=CWWKE0024E: The ({0}) value for the ({1}) option  is not valid.
+error.badOptionValue=CWWKE0024E: The ({0}) value for the ({1}) option is not valid.
 error.badOptionValue.explanation=The specified value is not appropriate for the specified option.
 error.badOptionValue.useraction=Run the `server help` command for a description of the options.  If the value is a number, ensure it is in the valid range.
 
@@ -395,6 +395,11 @@ audit.system.exit.useraction=If stopping the server was unexpected, determine wh
 audit.jvm.shutdown=CWWKE0085I: The server {0} is stopping because the JVM is exiting.
 audit.jvm.shutdown.explanation=The server intercepted a request to stop the JVM and will attempt to stop in an orderly manner. The JVM might be exiting because the operating system sent a terminating signal to the server process.
 audit.jvm.shutdown.useraction=If stopping the server was unexpected, determine if a terminating signal was sent to the server process.
+
+
+error.optionRequiresEquals=CWWKE0086E: The option {0} requires "=" followed by a value. 
+error.optionRequiresEquals.explanation=The specified option must be followed by an equals sign, "=", and a value.
+error.optionRequiresEquals.useraction=The option should be in the form --option=value.
 
 warning.serverStartedCommandPortDisabled=CWWKE0087W: Server start was initiated for server {0}, but it is not possible to tell if startup was completed because the server command port is disabled.
 warning.serverStartedCommandPortDisabled.explanation=The server command port is required for communication with a running server.  The command port was explicitly disabled for this server, therefore it is not possible to tell when the server has completed startup.
