@@ -201,16 +201,16 @@ public class LaunchArguments {
                         }
                     } else if (isClient && argToLower.equals("--autoacceptsigner")) {
                         initProps.put(BootstrapConstants.AUTO_ACCEPT_SIGNER, "true");
-						
-					  // options with a value.  (option=value)	
+
+                        // options with a value.  (option=value)
                     } else {
-                        int index = arg.indexOf('=');
+                        int eqIndex = arg.indexOf('=');
                         String value = "";
                         String key;
                         if (argToLower.startsWith("--")) {
-                            if (index != -1) {
-                                key = argToLower.substring(2, index);
-                                value = arg.substring(index + 1);
+                            if (eqIndex != -1) {
+                                key = argToLower.substring(2, eqIndex);
+                                value = arg.substring(eqIndex + 1);
                             } else {
                                 key = arg.substring(2);
                             }
@@ -222,16 +222,23 @@ public class LaunchArguments {
                             //  **** T I M E O U T   o p t i o n ****
                             if (key != null && key.equals("timeout")) {
                                 // --timeout is only valid for the stop command
-                                if ( !action.equals("--stop") ) {
-                                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.optionNotApplicableToAction"), "--" + key, action));
+                                // action can be null if user enter the "run","debug", or checkpoint commands
+                                if (action == null || !action.equals("--stop")) {
+                                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.optionNotApplicableToCommand"), arg));
                                     returnValue = ReturnCode.BAD_ARGUMENT;
                                     break;
+                                } else {
+                                    if (eqIndex == -1) {
+                                        System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.optionRequiresEquals"), arg));
+                                        returnValue = ReturnCode.BAD_ARGUMENT;
+                                        break;
+                                    }
                                 }
                                 String saveValue = value;
                                 value = KernelUtils.parseDuration(value, TimeUnit.SECONDS);
 
                                 if (!isValidTimeoutValue(value)) {
-                                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.badOptionValue"), saveValue, "--" + key));
+                                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.badOptionValue"), saveValue, arg));
                                     returnValue = ReturnCode.BAD_ARGUMENT;
                                     break;
                                 }
@@ -386,11 +393,15 @@ public class LaunchArguments {
      * @return Value of --timeout option in seconds if specified. If not specified return the default.
      */
     private int getTimeout(String defaultValue) {
-        if (timeoutInSeconds > 0)
+        // If we've already computed the timeout, just return it.
+        if (timeoutInSeconds > 0) {
             return timeoutInSeconds;
+        }
 
+        // Start with the default value
         timeoutInSeconds = Integer.valueOf(defaultValue);
 
+        // Then see if it was overridden on the command line.
         String timeoutString = getOption("timeout");
         if (timeoutString != null) {
             timeoutInSeconds = Integer.valueOf(timeoutString);
