@@ -25,13 +25,9 @@
 
   <application location="ProviderTestApp.war"/>
 
-  <databaseStore id="DefaultDataStore" createTables="true" dataSourceRef="DerbyDataSource">
-    <authData user="dbuser1" password="dbpwd1"/>
-  </databaseStore>
-
-  <dataSource id="DerbyDataSource">
+  <dataSource id="DefaultDataSource">
     <jdbcDriver libraryRef="DerbyLib"/>
-    <properties.derby.embedded createDatabase="create" databaseName="memory:testdb"/>
+    <properties.derby.embedded createDatabase="create" databaseName="memory:testdb" user="dbuser1" password="dbpwd1"/>
   </dataSource>
 
   <library id="DerbyLib">

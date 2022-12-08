@@ -118,7 +118,7 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionM
             ClassLoader loader = repositoryInterface.getClassLoader();
             DataProvider provider = svc.getProvider(entityClass, loader, null);
 
-            EntityGroupKey entityGroupKey = new EntityGroupKey("DefaultDataStore", loader, provider); // TODO configuration of different providers in Jakarta Data
+            EntityGroupKey entityGroupKey = new EntityGroupKey("defaultDatabaseStore", loader, provider); // TODO configuration of different providers in Jakarta Data
             List<Class<?>> entityClasses = entityGroups.get(entityGroupKey);
             if (entityClasses == null)
                 entityGroups.put(entityGroupKey, entityClasses = new ArrayList<>());
@@ -135,7 +135,7 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionM
                 ClassLoader loader = entityClass.getClassLoader();
                 DataProvider provider = svc.getProvider(entityClass, loader, null);
 
-                EntityGroupKey entityGroupKey = new EntityGroupKey(anno.provider(), loader, provider);
+                EntityGroupKey entityGroupKey = new EntityGroupKey("defaultDatabaseStore", loader, provider); // TODO temporarily hard coded
                 List<Class<?>> entityClasses = entityGroups.get(entityGroupKey);
                 if (entityClasses == null)
                     entityGroups.put(entityGroupKey, entityClasses = new ArrayList<>());
