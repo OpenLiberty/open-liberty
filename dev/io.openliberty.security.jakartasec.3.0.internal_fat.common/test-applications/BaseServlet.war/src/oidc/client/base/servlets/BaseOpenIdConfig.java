@@ -63,7 +63,7 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
 
         String[] value = { Constants.OPENID_SCOPE, Constants.PROFILE_SCOPE, Constants.EMAIL_SCOPE };
         if (config.containsKey(Constants.SCOPE_EXPRESSION)) {
-            value = getScopeValue(Constants.SCOPE_EXPRESSION);
+            value = getStringArrayValue(Constants.SCOPE_EXPRESSION, " ");
         }
 
         return value;
