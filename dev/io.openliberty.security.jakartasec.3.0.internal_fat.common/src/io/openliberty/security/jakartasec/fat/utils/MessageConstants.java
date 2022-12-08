@@ -19,9 +19,11 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWOAU0056E_REDIRECT_URI_NOT_REGISTERED = "CWOAU0056E";
     public static final String CWOAU0061E_COULD_NOT_FIND_CLIENT = "CWOAU0061E";
     public static final String CWOAU0062E_REDIRECT_URI_INVALID = "CWOAU0062E";
+    public static final String CWOAU0064E_SCOPE_MISMATCH = "CWOAU0064E";
 
     public static final String CWWKS1406E_INVALID_CLIENT_CREDENTIAL = "CWWKS1406E";
     public static final String CWWKS1608E_MULTIPLE_RESPONSE_TYPE_ERROR = "CWWKS1608E";
+    public static final String CWWKS1619E_OPENID_SCOPE_MISSING = "CWWKS1619E";
     public static final String CWWKS1652A_AUTH_SEND_FAILURE = "CWWKS1652A";
 
     public static final String CWWKS1925E_MULTIPLE_ANNOTATIONS = "CWWKS1925E";

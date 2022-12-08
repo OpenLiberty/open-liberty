@@ -209,6 +209,72 @@ public class TestConfigMaps {
         return updatedMap;
     }
 
+    public static Map<String, Object> getScopeExpressionOpenId() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.SCOPE_EXPRESSION, Constants.OPENID_SCOPE);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getScopeExpressionOpenIdProfile() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.SCOPE_EXPRESSION, String.join(" ", Constants.OPENID_SCOPE, Constants.PROFILE_SCOPE));
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getScopeExpressionOpenIdEmail() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.SCOPE_EXPRESSION, String.join(" ", Constants.OPENID_SCOPE, Constants.EMAIL_SCOPE));
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getScopeExpressionOpenIdProfileEmail() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.SCOPE_EXPRESSION, String.join(" ", Constants.OPENID_SCOPE, Constants.PROFILE_SCOPE, Constants.EMAIL_SCOPE));
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getScopeExpressionNoOpenId() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.SCOPE_EXPRESSION, Constants.PROFILE_SCOPE);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getScopeExpressionEmpty() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.SCOPE_EXPRESSION, Constants.EMPTY_VALUE);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getScopeExpressionNoScopesInCommonExceptOpenId() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.SCOPE_EXPRESSION, String.join(" ", Constants.OPENID_SCOPE, "scope1"));
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getScopeExpressionMoreScopesThanConfiguredOnServer() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.SCOPE_EXPRESSION, String.join(" ", Constants.OPENID_SCOPE, Constants.PROFILE_SCOPE, Constants.EMAIL_SCOPE, "scope1"));
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getScopeExpressionUppercaseScopes() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.SCOPE_EXPRESSION, String.join(" ", Constants.OPENID_SCOPE, Constants.PROFILE_SCOPE, Constants.EMAIL_SCOPE).toUpperCase());
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getScopeExpressionUnknownScope() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.SCOPE_EXPRESSION, "unknown");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getScopeExpressionDuplicateScope() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.SCOPE_EXPRESSION, String.join(" ", Constants.OPENID_SCOPE, Constants.OPENID_SCOPE));
+        return updatedMap;
+    }
+
     public static Map<String, Object> getOP2() throws Exception {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();

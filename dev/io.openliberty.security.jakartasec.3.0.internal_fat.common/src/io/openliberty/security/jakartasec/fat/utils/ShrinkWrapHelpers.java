@@ -98,6 +98,25 @@ public class ShrinkWrapHelpers {
 
     }
 
+    public void dropinAppWithJose4j(LibertyServer server, String appName, String... packages) throws Exception {
+        Log.info(thisClass, "dropinAppWithJose4j", "starting update with jose4j");
+        WebArchive war = ShrinkHelper.buildDefaultApp(appName, packages);
+        addUtilClassesToApp(war);
+        addProviderConfigToApp(war);
+        addJose4j(war);
+        ShrinkHelper.exportDropinAppToServer(server, war);
+    }
+
+    public WebArchive addJose4j(WebArchive war) throws Exception {
+        Log.info(thisClass, "addJose4j", "starting update with jose4j");
+        try {
+            war.addAsLibrary(new File("lib/com.ibm.ws.org.jose4j.jar"));
+        } catch (Exception e) {
+            Log.info(thisClass, "addJose4j", e.getMessage());
+        }
+        return war;
+    }
+
     public void dropinApp(LibertyServer server, String newWar, String sourceWar, String... packages) throws Exception {
 
         WebArchive war = ShrinkHelper.buildDefaultAppFromPath(newWar, sourceWar, packages);
