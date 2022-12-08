@@ -27,10 +27,12 @@ Export-Package: com.ibm.ws.security.authentication.filter;provider:=true
 Private-Package: \
     com.ibm.ws.security.authentication.filter.internal.*
 
- Include-Resource: OSGI-INF=resources/OSGI-INF
+Include-Resource: OSGI-INF=resources/OSGI-INF
 
 -dsannotations: com.ibm.ws.security.authentication.filter.internal.AuthenticationFilterImpl
 -dsannotations-inherit: true
+
+instrument.classesExcludes: com/ibm/ws/security/authentication/filter/internal/resources/*.class
 
 -buildpath: \
     com.ibm.websphere.javaee.servlet.3.0;version=latest, \

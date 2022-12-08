@@ -1,0 +1,31 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+ <server description="FederatedStandaloneCurTest">
+	<include location="../fatTestPorts.xml" />
+
+	<!-- Enable features -->
+	<featureManager>
+		<feature>appSecurity-2.0</feature>
+		<feature>securitylibertyinternals-1.0</feature>
+		<feature>bells-1.0</feature>
+		<feature>servlet-3.1</feature>
+	</featureManager>
+
+	<bell libraryRef="BellLibrary">
+		<properties 
+			groupsFile="${server.config.dir}/resources/security/groups.props"
+			multiValueDelimiter=";"
+			usersFile="${server.config.dir}/resources/security/users.props"/>
+	</bell>
+	<library id="BellLibrary">
+		<file name="${server.config.dir}/resources/lib/com.ibm.ws.security.registry_test.custom_1.0.jar"/>
+	</library>
+</server>
