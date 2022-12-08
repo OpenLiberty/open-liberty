@@ -199,7 +199,7 @@ public class HttpAuthenticationMechanismsTracker {
 
         if (applicationName != null && !applicationName.isEmpty()) {
             Map<String, ModuleProperties> moduleMap = moduleMapsPerApplication.get(applicationName);
-            if (moduleMap.containsKey(moduleName)) {
+            if (moduleMap != null && moduleMap.containsKey(moduleName)) {
                 authMechs = moduleMap.get(moduleName).getAuthMechMap();
             }
         }
