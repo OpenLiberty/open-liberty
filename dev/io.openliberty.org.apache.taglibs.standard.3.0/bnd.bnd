@@ -42,6 +42,6 @@ Export-Package: \
   org.eclipse.tags.shaded.org.apache.xpath.*
 
 -buildpath: \
-  org.glassfish.web:jakarta.servlet.jsp.jstl;version=3.0, \
+  org.glassfish.web:jakarta.servlet.jsp.jstl;version=3.0.1, \
   io.openliberty.jakarta.servlet.6.0;version=latest,\
-  io.openliberty.jakarta.pages.3.0;version=latest
+  io.openliberty.jakarta.pages.3.1;version=latest
