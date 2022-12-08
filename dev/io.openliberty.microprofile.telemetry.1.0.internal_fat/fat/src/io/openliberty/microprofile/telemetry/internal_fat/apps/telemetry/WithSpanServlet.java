@@ -12,7 +12,10 @@ package io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
+
+import java.util.ArrayList;
 
 import org.junit.Test;
 
@@ -34,13 +37,14 @@ public class WithSpanServlet extends FATServlet {
     private SpanBean spanBean;
 
     private static final String PARAMETER_TEST = "testString";
+    private static final String INVALID_SPAN_ID = "0000000000000000";
 
     @Test
     public void callNotAnnotated() {
         //Returned spanId from methodNotAnnotated should not be the spanID of 0000000000000000
         //No span was created
         String spanId = spanBean.methodNotAnnotated();
-        assertThat(spanId, equalTo("0000000000000000"));
+        assertThat(spanId, equalTo(INVALID_SPAN_ID));
     }
 
     @Test
@@ -48,10 +52,14 @@ public class WithSpanServlet extends FATServlet {
         String spanId = spanBean.methodAnnotated();
         //Span should end when returned to this method so the current span should have the default spanID of 0000000000000000
         Span span = Span.current();
-        assertThat(span.getSpanContext().getSpanId(), equalTo("0000000000000000"));
+        assertThat(span.getSpanContext().getSpanId(), equalTo(INVALID_SPAN_ID));
 
         //Returned spanId from methodAnnotated should not be the default spanID
-        assertThat(spanId, not(equalTo("0000000000000000")));
+        assertThat(spanId, not(equalTo(INVALID_SPAN_ID)));
+        //Create another span
+        String newSpanId = spanBean.methodAnnotated();
+        assertThat(newSpanId, not(equalTo(INVALID_SPAN_ID)));
+        assertThat(spanId, not(equalTo(newSpanId)));
     }
 
     @Test
@@ -61,55 +69,67 @@ public class WithSpanServlet extends FATServlet {
         assertThat(spanParameter, equalTo(PARAMETER_TEST));
     }
 
-    /*
-     * Make multiple calls to
-     *
-     * @Test
-     * public void callRecursiveAnnotated() {
-     * int calls = 2;
-     * Span span = Span.current();
-     * String previousId = span.getSpanContext().getSpanId();
-     * spanBean.methodRecursiveAnnotated(calls, previousId);
-     * }
-     */
+    @Test
+    public void callNestedAnnotated() {
+        ArrayList<String> ids = spanBean.nestedAnnotated();
+        assertThat(ids, hasSize(2));
+        assertThat(ids.get(0), not(equalTo(ids.get(1))));
+    }
 
     @ApplicationScoped
     public static class SpanBean {
 
+        @Inject
+        private SpanBean spanBean;
+
+        @Inject
+        private SecondSpanBean secondSpanBean;
+
         //Creates a span for this method
         @WithSpan
-        String methodAnnotated() {
+        public String methodAnnotated() {
             Span span = Span.current();
             return span.getSpanContext().getSpanId();
         }
 
         //Creates a span for this method
-        //Method calls itself a number of times and compares the current span with the parent span
-        //TO DO
-        //The currentId remains the same as the previousId - It's not clear if this is expected behaviour or not
         @WithSpan
-        void methodRecursiveAnnotated(int calls, String previousId) {
+        public ArrayList<String> nestedAnnotated() {
+            ArrayList<String> ids = new ArrayList<String>();
             Span span = Span.current();
-            String currentId = span.getSpanContext().getSpanId();
-            System.out.println(currentId + " " + previousId);
-            if (calls > 0) {
-                methodRecursiveAnnotated(calls - 1, currentId);
-            }
+            ids.add(span.getSpanContext().getSpanId());
+            ids.add(secondSpanBean.methodAnnotated());
+            return ids;
         }
 
         //SpanAttribute is applied to the method parameter
         @WithSpan
-        String methodAnnotatedWithParameter(@SpanAttribute("testParameter") String testParameter) {
+        public String methodAnnotatedWithParameter(@SpanAttribute("testParameter") String testParameter) {
             Span span = Span.current();
+
+            System.out.println(span.getSpanContext().getTraceFlags());
             ReadableSpan readableSpan = (ReadableSpan) span;
             return readableSpan.getAttribute(AttributeKey.stringKey("testParameter"));
         }
 
         //Method is not annotated so no span is created
-        String methodNotAnnotated() {
+        public String methodNotAnnotated() {
             Span span = Span.current();
             return span.getSpanContext().getSpanId();
         }
 
     }
+
+    @ApplicationScoped
+    public static class SecondSpanBean {
+
+        //Creates a span for this method
+        @WithSpan
+        public String methodAnnotated() {
+            Span span = Span.current();
+            return span.getSpanContext().getSpanId();
+        }
+
+    }
+
 }
