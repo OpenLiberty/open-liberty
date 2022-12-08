@@ -75,7 +75,8 @@ instrument.classesExcludes: com/ibm/ws/transport/iiop/resources/*.class
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	org.hamcrest:hamcrest-all;version=1.3, \
-	org.apache.servicemix.bundles:org.apache.servicemix.bundles.bcel;version=5.2, \
+	org.apache.bcel:bcel;version=6.6.1, \
+        com.ibm.ws.org.apache.commons.lang3;version=latest,\
 	com.ibm.ws.org.apache.yoko.osgi.1.5;version=latest,\
 	com.ibm.ws.org.apache.yoko.util.1.5;version=latest,\
 	com.ibm.ws.org.apache.yoko.rmi.impl.1.5;version=latest,\
