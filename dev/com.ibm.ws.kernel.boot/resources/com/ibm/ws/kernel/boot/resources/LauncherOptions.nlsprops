@@ -257,6 +257,11 @@ option-key.timeout=\
 option-desc.stop.timeout=\
 \tSets the maximum amount of time the \"server stop\" command waits for\n\
 \tconfirmation that the server has stopped.  Specify a positive integer\n\
-\tfollowed by a unit of time, which can be minutes (m), or seconds (s).\n\
-\tFor example, specify 2.5 minutes as --timeout=2m30s or               \n\
-\t--timeout=150s. The default is 30 seconds.\n
+\tfollowed by a unit of time, which can include minutes (m) and        \n\
+\tseconds (s). For example, specify 2.5 minutes as --timeout=2m30s     \n\
+\tor --timeout=150s. The default value is 30 seconds.                  \n\
+\t   This timeout is not related to the quiesce stage, which is the    \n\
+\tmaximum amount of time the server waits for services to perform      \n\
+\tpre-shutdown work before beginning to shut down the server runtime.  \n\
+\tThe quiesce stage timer is not configurable, though it can be        \n\
+\tskipped using the --force option.\n

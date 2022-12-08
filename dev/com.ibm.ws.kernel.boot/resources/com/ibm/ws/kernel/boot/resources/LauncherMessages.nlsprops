@@ -146,9 +146,9 @@ warning.singleServer=CWWKE0027W: Only one server may be specified on the command
 warning.singleServer.explanation=You may specify only one server on the command line. The first server name has been processed; the remaining names have been ignored.
 warning.singleServer.useraction=No action is required. Specify only one server to avoid this warning.
 
-error.optionNotApplicableToAction=CWWKE0028E: The ({0}) option is not applicable for the ({1}) action.
-error.optionNotApplicableToAction.explanation=The specified option is not allowed for the specified action.
-error.optionNotApplicableToAction.useraction=Run the `server <action> help` command  to get information about valid options for the action.
+error.optionNotApplicableToCommand=CWWKE0028E: The ({0}) option is not applicable for the command.
+error.optionNotApplicableToCommand.explanation=The specified option is not allowed for the specified command.
+error.optionNotApplicableToCommand.useraction=Run the `server <command> help` command to get information about valid options for the command.
   
 error.serverAlreadyRunning=CWWKE0029E: An instance of server {0} is already running.
 error.serverAlreadyRunning.explanation=You are trying to start a server that is already running.
@@ -396,10 +396,9 @@ audit.jvm.shutdown=CWWKE0085I: The server {0} is stopping because the JVM is exi
 audit.jvm.shutdown.explanation=The server intercepted a request to stop the JVM and will attempt to stop in an orderly manner. The JVM might be exiting because the operating system sent a terminating signal to the server process.
 audit.jvm.shutdown.useraction=If stopping the server was unexpected, determine if a terminating signal was sent to the server process.
 
-
-error.optionRequiresEquals=CWWKE0086E: The option {0} requires "=" followed by a value. 
-error.optionRequiresEquals.explanation=The specified option must be followed by an equals sign, "=", and a value.
-error.optionRequiresEquals.useraction=The option should be in the form --option=value.
+error.optionRequiresEquals=CWWKE0086E: The {0} option must include an equals sign (=) before the specified value. 
+error.optionRequiresEquals.explanation=The specified option must be followed by an equals sign (=) and a value.
+error.optionRequiresEquals.useraction=The option must be specified in the following format: --option=value.
 
 warning.serverStartedCommandPortDisabled=CWWKE0087W: Server start was initiated for server {0}, but it is not possible to tell if startup was completed because the server command port is disabled.
 warning.serverStartedCommandPortDisabled.explanation=The server command port is required for communication with a running server.  The command port was explicitly disabled for this server, therefore it is not possible to tell when the server has completed startup.

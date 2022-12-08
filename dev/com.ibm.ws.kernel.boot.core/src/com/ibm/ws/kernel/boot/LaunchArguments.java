@@ -222,13 +222,14 @@ public class LaunchArguments {
                             //  **** T I M E O U T   o p t i o n ****
                             if (key != null && key.equals("timeout")) {
                                 // --timeout is only valid for the stop command
-                                if (!action.equals("--stop")) {
-                                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.optionNotApplicableToAction"), "--" + key, action));
+                                // action can be null if user enter the "run","debug", or checkpoint commands
+                                if (action == null || !action.equals("--stop")) {
+                                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.optionNotApplicableToCommand"), arg));
                                     returnValue = ReturnCode.BAD_ARGUMENT;
                                     break;
                                 } else {
                                     if (eqIndex == -1) {
-                                        System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.optionRequiresEquals"), "--" + key));
+                                        System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.optionRequiresEquals"), arg));
                                         returnValue = ReturnCode.BAD_ARGUMENT;
                                         break;
                                     }
@@ -237,7 +238,7 @@ public class LaunchArguments {
                                 value = KernelUtils.parseDuration(value, TimeUnit.SECONDS);
 
                                 if (!isValidTimeoutValue(value)) {
-                                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.badOptionValue"), saveValue, "--" + key));
+                                    System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.badOptionValue"), saveValue, arg));
                                     returnValue = ReturnCode.BAD_ARGUMENT;
                                     break;
                                 }
