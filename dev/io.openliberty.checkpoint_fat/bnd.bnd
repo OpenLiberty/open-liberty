@@ -53,7 +53,9 @@ tested.features: \
 	webProfile-9.1,\
 	webProfile-10.0,\
 	ejb-2.3,\
-	jsf-2.3
+	jsf-2.3,
+	ssl-1.0,\
+	transportSecurity-1.0
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}
