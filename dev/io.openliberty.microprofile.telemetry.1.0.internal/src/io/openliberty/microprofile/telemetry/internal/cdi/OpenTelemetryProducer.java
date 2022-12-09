@@ -42,6 +42,10 @@ public class OpenTelemetryProducer {
     private static final String INSTRUMENTATION_NAME = "io.openliberty.microprofile.telemetry";
     private static final String ENV_DISABLE_PROPERTY = "OTEL_SDK_DISABLED";
     private static final String CONFIG_DISABLE_PROPERTY = "otel.sdk.disabled";
+    private static final String ENV_METRICS_EXPORTER_PROPERTY = "OTEL_METRICS_EXPORTER";
+    private static final String CONFIG_METRICS_EXPORTER_PROPERTY = "otel.metrics.exporter";
+    private static final String ENV_LOGS_EXPORTER_PROPERTY = "OTEL_LOGS_EXPORTER";
+    private static final String CONFIG_LOGS_EXPORTER_PROPERTY = "otel.logs.exporter";
 
     @Inject
     Config config;
@@ -127,8 +131,16 @@ public class OpenTelemetryProducer {
         HashMap<String, String> telemetryProperties = new HashMap<>();
         for (String propertyName : config.getPropertyNames()) {
             if (propertyName.startsWith("otel.") || propertyName.startsWith("OTEL_")) {
-                config.getOptionalValue(propertyName, String.class).ifPresent(
-                                                                              value -> telemetryProperties.put(propertyName, value));
+                //Do not set metrics or logs exporter
+                if ((!propertyName.equals(ENV_METRICS_EXPORTER_PROPERTY)) && (!propertyName.equals(CONFIG_METRICS_EXPORTER_PROPERTY))
+                    && (!propertyName.equals(ENV_LOGS_EXPORTER_PROPERTY)) && (!propertyName.equals(CONFIG_LOGS_EXPORTER_PROPERTY))) {
+                    config.getOptionalValue(propertyName, String.class).ifPresent(
+                                                                                  value -> telemetryProperties.put(propertyName, value));
+
+                }
+                //Metrics and logs are disabled by default
+                telemetryProperties.put(CONFIG_METRICS_EXPORTER_PROPERTY, "none");
+                telemetryProperties.put(CONFIG_LOGS_EXPORTER_PROPERTY, "none");
             }
         }
         return telemetryProperties;
