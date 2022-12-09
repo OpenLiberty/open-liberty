@@ -107,12 +107,11 @@ class EntityDefiner implements Runnable {
             if (refs.isEmpty())
                 throw new IllegalArgumentException("Not found: " + databaseId);
 
-            DatabaseStore dbstore = bc.getService(refs.iterator().next());
-            String tablePrefix = dbstore.getTablePrefix();
-            // TODO persistence service needs to be fixed to allow the tablePrefix to be retrieved
-            // prior to invoking createPersistenceServiceUnit.  For now, just blank it out:
-            if (tablePrefix == null)
-                tablePrefix = "";
+            ServiceReference<DatabaseStore> ref = refs.iterator().next();
+            String tablePrefix = (String) ref.getProperty("tablePrefix");
+
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, databaseId + " databaseStore reference", ref);
 
             // Classes explicitly annotated with JPA @Entity:
             ArrayList<String> entityClassNames = new ArrayList<>(entities.size());
@@ -133,7 +132,7 @@ class EntityDefiner implements Runnable {
                     StringBuilder xml = new StringBuilder(500).append(" <entity class=\"" + c.getName() + "\">").append(EOLN);
 
                     if (c.getAnnotation(Inheritance.class) == null) {
-                        String tableName = tablePrefix + (entity == null || entity.value() == null ? c.getSimpleName() : entity.value());
+                        String tableName = tablePrefix + (entity == null || entity.value().length() == 0 ? c.getSimpleName() : entity.value());
                         xml.append("  <table name=\"" + tableName + "\"/>").append(EOLN);
                     } else {
                         xml.append("  <inheritance strategy=\"SINGLE_TABLE\"/>").append(EOLN);
@@ -167,6 +166,7 @@ class EntityDefiner implements Runnable {
             Map<String, ?> properties = Collections.singletonMap("io.openliberty.persistence.internal.entityClassInfo",
                                                                  entityClassInfo.toArray(new String[entityClassInfo.size()]));
 
+            DatabaseStore dbstore = bc.getService(ref);
             PersistenceServiceUnit punit = dbstore.createPersistenceServiceUnit(loader,
                                                                                 properties,
                                                                                 entityClassNames.toArray(new String[entityClassNames.size()]));

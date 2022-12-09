@@ -22,7 +22,7 @@
 
   <application location="TemplateTestApp.war"/>
 
-  <databaseStore id="DefaultDataStore" createTables="true" dataSourceRef="DerbyDataSource">
+  <databaseStore id="defaultDatabaseStore" createTables="true" tablePrefix="DATA" dataSourceRef="DerbyDataSource">
     <authData user="dbuser1" password="dbpwd1"/>
   </databaseStore>
 
