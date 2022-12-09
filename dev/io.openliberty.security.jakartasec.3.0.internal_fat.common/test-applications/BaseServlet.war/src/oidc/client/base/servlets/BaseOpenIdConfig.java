@@ -69,6 +69,16 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         return value;
     }
 
+    public String getResponseMode() {
+
+        String value = Constants.QUERY_RESPONSE_MODE;
+        if (config.containsKey(Constants.RESPONSE_MODE)) {
+            value = getStringValue(Constants.RESPONSE_MODE);
+        }
+
+        return value;
+    }
+
     public String getClientId() {
 
         String value = "client_1";
@@ -182,6 +192,16 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         boolean value = false;
         if (config.containsKey(Constants.IDENTITY_TOKEN_EXPIRY_EXPRESSION)) {
             value = getBooleanValue(Constants.IDENTITY_TOKEN_EXPIRY_EXPRESSION);
+        }
+
+        return value;
+    }
+
+    public String getAuthorizationEndpoint() {
+
+        String value = "";
+        if (config.containsKey(Constants.AUTHORIZATION_ENDPOINT)) {
+            value = getStringValue(Constants.AUTHORIZATION_ENDPOINT);
         }
 
         return value;

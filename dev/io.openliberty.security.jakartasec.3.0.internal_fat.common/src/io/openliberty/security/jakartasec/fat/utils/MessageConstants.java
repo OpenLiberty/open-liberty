@@ -37,6 +37,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS2405E_PROVIDERMETADATA_MISSING_AUTHENDPOINT = "CWWKS2405E";
     public static final String CWWKS2407E_ERROR_VERIFYING_RESPONSE = "CWWKS2407E";
     public static final String CWWKS2410E_CANNOT_FIND_STATE = "CWWKS2410E";
+    public static final String CWWKS2414E_CALLBACK_URL_INCLUDES_ERROR_PARAMETER = "CWWKS2414E";
     public static final String CWWKS2423E_OIDC_CLIENT_INVALID_RESPONSE_TYPE = "CWWKS2423E";
 
     public static final String CWWKS2416E_FAILED_TO_REACH_ENDPOINT = "CWWKS2416E";

@@ -55,9 +55,40 @@ public class BaseCallbackServlet extends HttpServlet {
 
         if (context != null) {
             Optional<String> originalRequest = context.getStoredValue(request, response, OpenIdConstant.ORIGINAL_REQUEST);
-            String originalRequestString = originalRequest.get();
-            response.sendRedirect(originalRequestString);
+            if (originalRequest.isPresent()) {
+                String originalRequestString = originalRequest.get();
+                response.sendRedirect(originalRequestString);
+            }
         }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        ServletOutputStream ps = response.getOutputStream();
+
+        ServletLogger.printLine(ps, "Class: " + this.getClass().getName());
+        ServletLogger.printLine(ps, "Super Class: " + this.getClass().getSuperclass().getName());
+
+        ServletLogger.printLine(ps, "got here post callback");
+
+        RequestLogger requestLogger = new RequestLogger(request, ServletMessageConstants.CALLBACK + ServletMessageConstants.REQUEST);
+        requestLogger.printRequest(ps);
+
+        OpenIdContextLogger contextLogger = new OpenIdContextLogger(request, response, ServletMessageConstants.CALLBACK + ServletMessageConstants.OPENID_CONTEXT, context);
+        contextLogger.logContext(ps);
+
+        WSSubjectLogger subjectLogger = new WSSubjectLogger(request, ServletMessageConstants.CALLBACK + ServletMessageConstants.WSSUBJECT);
+        subjectLogger.printProgrammaticApiValues(ps);
+
+        if (context != null) {
+            Optional<String> originalRequest = context.getStoredValue(request, response, OpenIdConstant.ORIGINAL_REQUEST);
+            if (originalRequest.isPresent()) {
+                String originalRequestString = originalRequest.get();
+                response.sendRedirect(originalRequestString);
+            }
+        }
+
     }
 
 }

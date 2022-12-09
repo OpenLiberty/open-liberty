@@ -32,6 +32,7 @@ import oidc.client.base.servlets.BaseServlet;
                                          //                                         redirectToOriginalResourceExpression = "${openIdConfig.redirectToOriginalResource}", // overrides specified value
                                          responseType = "${openIdConfig.responseType}",
                                          scopeExpression = "${openIdConfig.scopeExpression}",
+                                         responseMode = "${openIdConfig.responseMode}",
                                          jwksReadTimeoutExpression = "${openIdConfig.jwksReadTimeoutExpression}",
                                          providerMetadata = @OpenIdProviderMetadata(authorizationEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/authorize",
                                                                                     tokenEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/token",
