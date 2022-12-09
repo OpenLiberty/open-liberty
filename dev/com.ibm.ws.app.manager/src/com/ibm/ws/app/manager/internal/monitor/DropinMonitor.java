@@ -300,7 +300,7 @@ public class DropinMonitor {
     private void tidyUpMonitoredDirectory(boolean createdDir, File dirToCleanup) {
         if (createdDir && dirToCleanup != null) {
             File[] fileListing = dirToCleanup.listFiles();
-            if (fileListing == null || fileListing.length == 0) {
+            if (fileListing != null && fileListing.length == 0) {
                 if (!!!dirToCleanup.delete()) {
                     Tr.error(_tc, "MONITOR_DIR_CLEANUP_FAIL", dirToCleanup);
                 } else if (_tc.isDebugEnabled()) {
