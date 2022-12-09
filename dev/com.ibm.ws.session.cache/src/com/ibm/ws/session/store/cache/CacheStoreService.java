@@ -13,7 +13,6 @@ package com.ibm.ws.session.store.cache;
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -74,7 +73,6 @@ public class CacheStoreService implements Introspector, SessionStoreService {
     private static final String CONFIG_KEY_URI = "uri";
     private static final String CONFIG_KEY_LIBRARY_REF = "libraryRef";
     private static final String CONFIG_KEY_PROPERTIES = "properties";
-    private static final String HAZELCAST_PROVIDER = "com.hazelcast.cache.HazelcastCachingProvider";
 
     Map<String, Object> configurationProperties;
     private static final int BASE_PREFIX_LENGTH = CONFIG_KEY_PROPERTIES.length();
@@ -183,24 +181,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                     if (trace && tc.isDebugEnabled()) {
                         Tr.debug(this, tc, "uri attribute value = ", uriValue);
                     }
-                    final URI configuredURI;
-                    if (uriValue != null)
-                    {
-                        if (HAZELCAST_PROVIDER.equals(cachingProviderClassName)) {
-                            vendorProperties.setProperty("hazelcast.config.location", uriValue);
-                            configuredURI = null;
-                        }
-                        else {
-                            try {
-                                configuredURI = new URI(uriValue);
-                            } catch (URISyntaxException e) {
-                                throw new IllegalArgumentException(Tr.formatMessage(tc, "INCORRECT_URI_SYNTAX", e), e);
-                            }
-                        }
-                    }
-                    else {
-                        configuredURI = null;
-                    }
+
 
                     for (Map.Entry<String, Object> entry : configurationProperties.entrySet()) {
                         String key = entry.getKey();
@@ -218,7 +199,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                     tcCachingProvider = "CachingProvider" + Integer.toHexString(System.identityHashCode(cachingProvider));
 
                     cacheConfigUtil = new CacheConfigUtil();
-                    URI uri = cacheConfigUtil.preConfigureCacheManager(configuredURI, cachingProvider, vendorProperties);
+                    URI uri = cacheConfigUtil.preConfigureCacheManager(uriValue, cachingProvider, vendorProperties);
 
                     if (trace && tc.isDebugEnabled()) {
                         CacheHashMap.tcReturn("Caching", "getCachingProvider", tcCachingProvider, cachingProvider);
