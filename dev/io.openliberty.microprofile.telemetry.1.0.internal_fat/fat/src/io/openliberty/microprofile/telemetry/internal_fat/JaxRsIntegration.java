@@ -24,25 +24,19 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
-import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
-
-import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxpropagation.JaxEndpoints;
-import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxpropagation.InMemorySpanExporterProvider;
-
+import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.InMemorySpanExporterProvider;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.JaxRsEndpoints;
 import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;
 
 @RunWith(FATRunner.class)
-public class JaxIntegration extends FATServletClient {
+public class JaxRsIntegration extends FATServletClient {
 
     public static final String SERVER_NAME = "Telemetry10Jax";
     public static final String APP_NAME = "JaxPropagation";
-
-    private static int[] dontRetryOnFail = {500}; //The server will return a 500 response code if an Assert fails during the test. Passing 500 in as an allowed response code will prevent wasting time  and more importantly prevent extra spans from confusing anyone trying to debug.
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -50,35 +44,57 @@ public class JaxIntegration extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addPackage(JaxEndpoints.class.getPackage())
+                        .addPackage(JaxRsEndpoints.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
                         .addAsResource(new StringAsset("otel.sdk.disabled=false\notel.traces.exporter=in-memory\notel.bsp.schedule.delay=100"),
-                                                       "META-INF/microprofile-config.properties");
+                                       "META-INF/microprofile-config.properties");
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
         server.startServer();
     }
 
     @Test
-    public void testIntegrationWithJaxClient() throws Exception {
-        HttpRequest pokeJax = new HttpRequest(server, "/" + APP_NAME + "/endpoints/jaxclient");
-        assertEquals("Test Passed", pokeJax.run(java.lang.String.class));
+    public void testIntegrationWithJaxRsClient() throws Exception {
+        HttpRequest pokeJax = new HttpRequest(server, "/" + APP_NAME + "/endpoints/jaxrsclient");
+        assertEquals("Test Passed", pokeJax.run(String.class));
 
         Thread.sleep(1000);
 
         HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans");
-        assertEquals("Test Passed", readspans.run(java.lang.String.class));
+        assertEquals("Test Passed", readspans.run(String.class));
+    }
+
+    @Test
+    public void testIntegrationWithJaxRsClientAsync() throws Exception {
+        HttpRequest pokeJax = new HttpRequest(server, "/" + APP_NAME + "/endpoints/jaxrsclientasync");
+        assertEquals("Test Passed", pokeJax.run(String.class));
+
+        Thread.sleep(1000);
+
+        HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans");
+        assertEquals("Test Passed", readspans.run(String.class));
     }
 
     @Test
     public void testIntegrationWithMpClient() throws Exception {
-        HttpRequest pokeMp = new HttpRequest(server, "/" + APP_NAME + "/endpoints/jaxclient");
-        assertEquals("Test Passed", pokeMp.run(java.lang.String.class));
+        HttpRequest pokeMp = new HttpRequest(server, "/" + APP_NAME + "/endpoints/jaxrsclient");
+        assertEquals("Test Passed", pokeMp.run(String.class));
 
         Thread.sleep(1000);
 
         HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans");
-        assertEquals("Test Passed", readspans.run(java.lang.String.class));
+        assertEquals("Test Passed", readspans.run(String.class));
+    }
+
+    @Test
+    public void testIntegrationWithMpClientAsync() throws Exception {
+        HttpRequest pokeMp = new HttpRequest(server, "/" + APP_NAME + "/endpoints/mpclientasync");
+        assertEquals("Test Passed", pokeMp.run(String.class));
+
+        Thread.sleep(1000);
+
+        HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans");
+        assertEquals("Test Passed", readspans.run(String.class));
     }
 
     @AfterClass

@@ -31,7 +31,8 @@ src: src, resources
   io.openliberty.microprofile.telemetry.internal.cdi.SPIMetaData,\
   io.openliberty.microprofile.telemetry.internal.cdi.OpenTelemetryProducer,\
   io.openliberty.microprofile.telemetry.internal.rest.TelemetryClientFilter,\
-  io.openliberty.microprofile.telemetry.internal.rest.TelemetryContainerFilter
+  io.openliberty.microprofile.telemetry.internal.rest.TelemetryContainerFilter,\
+  io.openliberty.microprofile.telemetry.internal.rest.TelemetryClientAsyncTaskWrapper
 
 -dsannotations-inherit: true
 
@@ -73,4 +74,5 @@ Private-Package: \
     io.openliberty.io.opentelemetry.internal;version=latest,\
     io.openliberty.mpTelemetry.1.0.thirdparty;version=latest,\
     io.openliberty.org.eclipse.microprofile.config.3.0,\
+    io.openliberty.org.jboss.resteasy.common;version=latest,\
     com.ibm.websphere.org.osgi.core
