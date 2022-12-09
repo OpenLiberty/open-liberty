@@ -306,7 +306,10 @@ public class LaunchArguments {
      */
     private boolean isValidTimeoutValue(String timeoutString) {
         try {
-            Integer.parseInt(timeoutString);
+            int x = Integer.parseInt(timeoutString);
+            if (x < 0) {
+                return false;
+            }
         } catch (NumberFormatException nfe) {
             return false;
         }
