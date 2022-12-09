@@ -18,6 +18,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runners.model.FrameworkField;
 import org.junit.runners.model.FrameworkMethod;
@@ -36,8 +38,6 @@ public class TestServletProcessor {
 
     public static List<FrameworkMethod> getServletTests(TestClass testClass) {
         final String m = "getServletTests";
-
-        List<FrameworkMethod> testMethods = new ArrayList<FrameworkMethod>();
 
         Set<FrameworkField> servers = new HashSet<FrameworkField>();
         servers.addAll(testClass.getAnnotatedFields(TestServlet.class));
@@ -59,18 +59,38 @@ public class TestServletProcessor {
             if (serverField.getAnnotation(TestServlets.class) != null)
                 testServlets.addAll(Arrays.asList(serverField.getAnnotation(TestServlets.class).value()));
 
+            List<FrameworkMethod> testMethods = new ArrayList<FrameworkMethod>();
+            List<FrameworkMethod> beforeMethods = new ArrayList<FrameworkMethod>();
+            List<FrameworkMethod> afterMethods = new ArrayList<FrameworkMethod>();
+
             // For each @TestServlet for this server, add all @Test methods
             for (TestServlet anno : testServlets) {
                 int initialSize = testMethods.size();
                 for (Method method : getTestServletMethods(anno)) {
                     if (method.isAnnotationPresent(Test.class)) {
                         testMethods.add(new SyntheticServletTest(anno.servlet(), serverField, getQueryPath(anno), method));
+                    } else if (method.isAnnotationPresent(Before.class)) {
+                        beforeMethods.add(new SyntheticServletTest(anno.servlet(), serverField, getQueryPath(anno), method));
+                    } else if (method.isAnnotationPresent(After.class)) {
+                        afterMethods.add(new SyntheticServletTest(anno.servlet(), serverField, getQueryPath(anno), method));
                     }
                 }
                 Log.info(c, m, "Added " + (testMethods.size() - initialSize) + " test methods from " + anno.servlet());
             }
+
+            List<FrameworkMethod> orderedTestMethods = new ArrayList<FrameworkMethod>();
+            for (int i = 0; i < testMethods.size(); i++) {
+                for (FrameworkMethod fm : beforeMethods)
+                    orderedTestMethods.add(fm);
+
+                orderedTestMethods.add(testMethods.get(i));
+
+                for (FrameworkMethod fm : afterMethods)
+                    orderedTestMethods.add(fm);
+            }
+            return orderedTestMethods;
         }
-        return testMethods;
+        return new ArrayList<FrameworkMethod>();
     }
 
     private static String getQueryPath(TestServlet anno) {

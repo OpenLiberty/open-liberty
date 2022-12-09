@@ -65,8 +65,8 @@ public class OrderColumnUniTestServlet extends JPADBTestServlet {
         properties.put("EntityType", "Annotated");
         properties.put("listFieldName", "uo2mNames");
 
-        executeDDL("JPA_ORDERCOLUMN_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
+        executeDDL("JPA20_ORDERCOLUMN_DEFAULT_DELETE_${dbvendor}.ddl");
     }
 
     @Test
@@ -79,8 +79,8 @@ public class OrderColumnUniTestServlet extends JPADBTestServlet {
         properties.put("EntityType", "Annotated");
         properties.put("listFieldName", "uo2mNames");
 
-        executeDDL("JPA_ORDERCOLUMN_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
+        executeDDL("JPA20_ORDERCOLUMN_DEFAULT_DELETE_${dbvendor}.ddl");
     }
 
     @Test
@@ -93,8 +93,8 @@ public class OrderColumnUniTestServlet extends JPADBTestServlet {
         properties.put("EntityType", "Annotated");
         properties.put("listFieldName", "uo2mNames");
 
-        executeDDL("JPA_ORDERCOLUMN_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
+        executeDDL("JPA20_ORDERCOLUMN_DEFAULT_DELETE_${dbvendor}.ddl");
     }
 
     @Test
@@ -107,8 +107,8 @@ public class OrderColumnUniTestServlet extends JPADBTestServlet {
         properties.put("EntityType", "XML");
         properties.put("listFieldName", "uo2mNames");
 
-        executeDDL("JPA_ORDERCOLUMN_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
+        executeDDL("JPA20_ORDERCOLUMN_DEFAULT_DELETE_${dbvendor}.ddl");
     }
 
     @Test
@@ -121,8 +121,8 @@ public class OrderColumnUniTestServlet extends JPADBTestServlet {
         properties.put("EntityType", "XML");
         properties.put("listFieldName", "uo2mNames");
 
-        executeDDL("JPA_ORDERCOLUMN_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
+        executeDDL("JPA20_ORDERCOLUMN_DEFAULT_DELETE_${dbvendor}.ddl");
     }
 
     @Test
@@ -135,8 +135,8 @@ public class OrderColumnUniTestServlet extends JPADBTestServlet {
         properties.put("EntityType", "XML");
         properties.put("listFieldName", "uo2mNames");
 
-        executeDDL("JPA_ORDERCOLUMN_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
+        executeDDL("JPA20_ORDERCOLUMN_DEFAULT_DELETE_${dbvendor}.ddl");
     }
 
     @Test
@@ -149,8 +149,8 @@ public class OrderColumnUniTestServlet extends JPADBTestServlet {
         properties.put("EntityType", "Annotated");
         properties.put("listFieldName", "um2mNames");
 
-        executeDDL("JPA_ORDERCOLUMN_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
+        executeDDL("JPA20_ORDERCOLUMN_DEFAULT_DELETE_${dbvendor}.ddl");
     }
 
     @Test
@@ -163,8 +163,8 @@ public class OrderColumnUniTestServlet extends JPADBTestServlet {
         properties.put("EntityType", "Annotated");
         properties.put("listFieldName", "um2mNames");
 
-        executeDDL("JPA_ORDERCOLUMN_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
+        executeDDL("JPA20_ORDERCOLUMN_DEFAULT_DELETE_${dbvendor}.ddl");
     }
 
     @Test
@@ -177,8 +177,8 @@ public class OrderColumnUniTestServlet extends JPADBTestServlet {
         properties.put("EntityType", "Annotated");
         properties.put("listFieldName", "um2mNames");
 
-        executeDDL("JPA_ORDERCOLUMN_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
+        executeDDL("JPA20_ORDERCOLUMN_DEFAULT_DELETE_${dbvendor}.ddl");
     }
 
     @Test
@@ -191,8 +191,8 @@ public class OrderColumnUniTestServlet extends JPADBTestServlet {
         properties.put("EntityType", "XML");
         properties.put("listFieldName", "um2mNames");
 
-        executeDDL("JPA_ORDERCOLUMN_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
+        executeDDL("JPA20_ORDERCOLUMN_DEFAULT_DELETE_${dbvendor}.ddl");
     }
 
     @Test
@@ -205,8 +205,8 @@ public class OrderColumnUniTestServlet extends JPADBTestServlet {
         properties.put("EntityType", "XML");
         properties.put("listFieldName", "um2mNames");
 
-        executeDDL("JPA_ORDERCOLUMN_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
+        executeDDL("JPA20_ORDERCOLUMN_DEFAULT_DELETE_${dbvendor}.ddl");
     }
 
     @Test
@@ -219,8 +219,8 @@ public class OrderColumnUniTestServlet extends JPADBTestServlet {
         properties.put("EntityType", "XML");
         properties.put("listFieldName", "um2mNames");
 
-        executeDDL("JPA_ORDERCOLUMN_DELETE_${dbvendor}.ddl");
         executeTest(testName, testMethod, testResource, properties);
+        executeDDL("JPA20_ORDERCOLUMN_DEFAULT_DELETE_${dbvendor}.ddl");
     }
 
 }
