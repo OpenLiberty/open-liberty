@@ -1,6 +1,16 @@
-package io.openliberty.microprofile.openapi31.internal.services.impl;
-
-import java.util.Arrays;
+/*******************************************************************************
+ * Copyright (c) 2022 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package io.openliberty.microprofile.openapi31.internal.services.impl;import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Function;
@@ -28,7 +38,7 @@ public class ConfigFieldProvider31Impl implements ConfigFieldProvider {
         SCAN_EXCLUDE_PACKAGES("scanExcludePackages", OASConfig.SCAN_EXCLUDE_PACKAGES, OpenApiConfig::scanExcludePackages, ConfigField::serializeSet),
         SCAN_EXCLUDE_CLASSES("scanExcludeClasses", OASConfig.SCAN_EXCLUDE_CLASSES, OpenApiConfig::scanExcludeClasses, ConfigField::serializeSet),
         SCAN_BEAN_VALIDATION("scanBeanValidation", OASConfig.SCAN_BEANVALIDATION, c -> Boolean.toString(c.scanBeanValidation())),
-        SERVERS("servers", OASConfig.SERVERS, c -> ConfigField.serializeSet(c.servers())),
+        SERVERS("servers", OASConfig.SERVERS, c -> String.join(",", c.servers())),
         // pathServers handled in writeConfig
         // operationServers handled in writeConfig
         SCAN_DEPENDENCIES_DISABLE("scanDependenciesDisable", OpenApiConstants.SMALLRYE_SCAN_DEPENDENCIES_DISABLE, c -> Boolean.toString(c.scanDependenciesDisable())),
