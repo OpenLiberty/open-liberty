@@ -33,8 +33,5 @@ tested.features:\
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	com.ibm.ws.componenttest.2.0;version=latest,\
 	io.openliberty.io.opentelemetry.internal;version=latest,\
-<<<<<<< HEAD
-        io.openliberty.org.eclipse.microprofile.rest.client.3.0;version=latest
-=======
+	io.openliberty.org.eclipse.microprofile.rest.client.3.0;version=latest,\
 	io.openliberty.jakarta.annotation.2.1;version=latest
->>>>>>> 4aaac27a7f (Test injection of OpenTelemetry bean)

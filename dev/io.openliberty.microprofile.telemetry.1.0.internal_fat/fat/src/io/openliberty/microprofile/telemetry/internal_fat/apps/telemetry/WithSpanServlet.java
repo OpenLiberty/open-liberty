@@ -106,8 +106,6 @@ public class WithSpanServlet extends FATServlet {
         @WithSpan
         public String methodAnnotatedWithParameter(@SpanAttribute("testParameter") String testParameter) {
             Span span = Span.current();
-
-            System.out.println(span.getSpanContext().getTraceFlags());
             ReadableSpan readableSpan = (ReadableSpan) span;
             return readableSpan.getAttribute(AttributeKey.stringKey("testParameter"));
         }

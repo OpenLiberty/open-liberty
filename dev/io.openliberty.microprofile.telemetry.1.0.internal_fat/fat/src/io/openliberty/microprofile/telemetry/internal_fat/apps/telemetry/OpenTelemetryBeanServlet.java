@@ -34,6 +34,7 @@ public class OpenTelemetryBeanServlet extends FATServlet {
     OpenTelemetry openTelemetry;
 
     private static final String SPAN_NAME = "MySpanName";
+    private static final String INVALID_SPAN_ID = "0000000000000000";
 
     @Test
     public void testOpenTelemetryBean() {
@@ -41,7 +42,7 @@ public class OpenTelemetryBeanServlet extends FATServlet {
         Tracer tracer = openTelemetry.getTracer("instrumentation-test", "1.0.0");
         assertNotNull(tracer);
         Span span = tracer.spanBuilder(SPAN_NAME).startSpan();
-        assertThat(span.getSpanContext().getSpanId(), not(equalTo("0000000000000000")));
+        assertThat(span.getSpanContext().getSpanId(), not(equalTo(INVALID_SPAN_ID)));
     }
 
 }
