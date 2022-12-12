@@ -17,9 +17,6 @@ import org.jose4j.jwt.NumericDate;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 
-/**
- *
- */
 public class TokenValidator {
 
     private String issuer;
@@ -34,75 +31,45 @@ public class TokenValidator {
 
     private final long clockSkewInSeconds = 120; // default value in seconds
 
-    /**
-     * @param clientConfig
-     */
     public TokenValidator(OidcClientConfig clientConfig) {
         this.oidcConfig = clientConfig;
     }
 
-    /**
-     * @param issuer
-     * @return
-     */
     public TokenValidator issuer(String issuer) {
         this.issuer = issuer;
         return this;
     }
 
-    /**
-     * @param subject
-     */
     public TokenValidator subject(String subject) {
         this.subject = subject;
         return this;
     }
 
-    /**
-     * @param audience
-     */
     public TokenValidator audiences(List<String> audience) {
         this.audiences = new ArrayList<String>(audience);
         return this;
     }
 
-    /**
-     * @param claimValue
-     */
     public TokenValidator azp(String azp) {
         this.azp = azp;
         return this;
     }
 
-    /**
-     * @param issuedAt
-     */
     public TokenValidator iat(NumericDate iat) {
         this.iat = iat;
         return this;
     }
 
-    /**
-     * @param expirationTime
-     * @return
-     */
     public TokenValidator exp(NumericDate exp) {
         this.exp = exp;
         return this;
     }
 
-    /**
-     * @param notBefore
-     * @return
-     */
     public TokenValidator nbf(NumericDate notBefore) {
         this.notBefore = notBefore;
         return this;
     }
 
-    /**
-     *
-     */
     public void validate() throws TokenValidationException {
         validateIssuer();
         validateSubject();
@@ -114,9 +81,6 @@ public class TokenValidator {
 
     }
 
-    /**
-     *
-     */
     protected void validateNotBefore() throws TokenValidationException {
         if (this.notBefore != null) {
             long now = System.currentTimeMillis();
@@ -126,9 +90,6 @@ public class TokenValidator {
         }
     }
 
-    /**
-     *
-     */
     protected void validateIssuedAt() throws TokenValidationException {
         long now = System.currentTimeMillis();
         if (now + (this.clockSkewInSeconds * 1000) < this.iat.getValueInMillis()) {
@@ -136,10 +97,6 @@ public class TokenValidator {
         }
     }
 
-    /**
-     * @throws TokenValidationException
-     *
-     */
     protected void validateExpiration() throws TokenValidationException {
         long now = System.currentTimeMillis();
         if (now - (this.clockSkewInSeconds * 1000) > this.exp.getValueInMillis()) {
@@ -147,27 +104,20 @@ public class TokenValidator {
         }
     }
 
-    /**
-     *
-     */
     protected void validateAZP() throws TokenValidationException {
         if (this.azp != null) {
             if (!(oidcConfig.getClientId().equals(this.azp))) {
-                throw new TokenValidationException(oidcConfig.getClientId(), "azp is [ " + this.azp + " ], expecting  [ " + oidcConfig.getClientId() + " ]");
+                throw new TokenClaimMismatchException(oidcConfig.getClientId(), azp, "azp", oidcConfig.getClientId());
             }
         }
     }
 
-    /**
-     * @throws TokenValidationException
-     *
-     */
     protected void validateAudiences() throws TokenValidationException {
         if (this.audiences != null && !(this.audiences.isEmpty())) {
             if (this.audiences.size() == 1) {
                 // validate aud claim against client id
                 if (!(oidcConfig.getClientId().equals(this.audiences.get(0)))) {
-                    throw new TokenValidationException(oidcConfig.getClientId(), "audience is [ " + this.audiences.get(0) + " ], expecting [ " + oidcConfig.getClientId() + " ]");
+                    throw new TokenClaimMismatchException(oidcConfig.getClientId(), audiences.get(0), "aud", oidcConfig.getClientId());
                 }
             } else if (this.azp == null) {
                 // if more than one audience, then azp claim is a must
@@ -177,10 +127,6 @@ public class TokenValidator {
         }
     }
 
-    /**
-     * @throws TokenValidationException
-     *
-     */
     protected void validateSubject() throws TokenValidationException {
         if (this.subject != null) {
             if (this.subject.isEmpty()) {
@@ -189,20 +135,12 @@ public class TokenValidator {
         }
     }
 
-    /**
-     * @throws TokenValidationException
-     *
-     */
     protected void validateIssuer() throws TokenValidationException {
         if (!issuerconfigured.equals(this.issuer)) {
-            throw new TokenValidationException(oidcConfig.getClientId(), "issuer is [ " + this.issuer + " ], expecting  [ " + oidcConfig.getProviderMetadata().getIssuer() + " ]");
+            throw new TokenClaimMismatchException(oidcConfig.getClientId(), issuer, "iss", issuerconfigured);
         }
     }
 
-    /**
-     * @param issuerFromDiscovery
-     * @return
-     */
     public TokenValidator issuerconfigured(String issuerFromProviderMetadata) {
         this.issuerconfigured = issuerFromProviderMetadata;
         return this;

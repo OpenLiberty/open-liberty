@@ -10,26 +10,29 @@
  *******************************************************************************/
 package io.openliberty.security.common.jwt.exceptions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-public class SignatureAlgorithmDoesNotMatchHeaderException extends Exception {
+public class SignatureAlgorithmNotInAllowedList extends Exception {
 
-    private static final TraceComponent tc = Tr.register(SignatureAlgorithmDoesNotMatchHeaderException.class);
+    private static final TraceComponent tc = Tr.register(SignatureAlgorithmNotInAllowedList.class);
 
-    private static final long serialVersionUID = -4376636239462726717L;
+    private static final long serialVersionUID = 5850783893619480595L;
 
-    private final String signatureAlgorithm;
     private final String sigAlgInHeader;
+    private final List<String> signatureAlgorithmsAllowed;
 
-    public SignatureAlgorithmDoesNotMatchHeaderException(String signatureAlgorithm, String sigAlgInHeader) {
-        this.signatureAlgorithm = signatureAlgorithm;
+    public SignatureAlgorithmNotInAllowedList(String sigAlgInHeader, List<String> signatureAlgorithmsAllowed) {
         this.sigAlgInHeader = sigAlgInHeader;
+        this.signatureAlgorithmsAllowed = new ArrayList<>(signatureAlgorithmsAllowed);
     }
 
     @Override
     public String getMessage() {
-        return Tr.formatMessage(tc, "EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER", sigAlgInHeader, signatureAlgorithm);
+        return Tr.formatMessage(tc, "SIG_ALG_IN_HEADER_NOT_ALLOWED", sigAlgInHeader, signatureAlgorithmsAllowed);
     }
 
 }

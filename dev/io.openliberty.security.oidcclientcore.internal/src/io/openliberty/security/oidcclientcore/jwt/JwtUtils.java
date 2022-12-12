@@ -43,7 +43,7 @@ public class JwtUtils {
         Key jwtVerificationKey = getJwsVerificationKey(jws, clientConfig);
 
         io.openliberty.security.common.jwt.jws.JwsSignatureVerifier.Builder verifierBuilder = new JwsSignatureVerifier.Builder();
-        JwsSignatureVerifier signatureVerifier = verifierBuilder.key(jwtVerificationKey).signatureAlgorithm(jws.getAlgorithmHeaderValue()).build();
+        JwsSignatureVerifier signatureVerifier = verifierBuilder.key(jwtVerificationKey).signatureAlgorithmsSupported(MetadataUtils.getIdTokenSigningAlgorithmsSupported(clientConfig)).build();
         return signatureVerifier;
     }
 
