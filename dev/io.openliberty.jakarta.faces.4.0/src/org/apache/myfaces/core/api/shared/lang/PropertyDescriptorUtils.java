@@ -138,10 +138,8 @@ public class PropertyDescriptorUtils
             for (int i = 0; i < propertyDescriptors.length; i++)
             {
                 PropertyDescriptor propertyDescriptor = propertyDescriptors[i];
-                Method readMethod = propertyDescriptor.getReadMethod();
-
                 map.put(propertyDescriptor.getName(),
-                        new PropertyDescriptorWrapper(target, propertyDescriptor, readMethod));
+                        new PropertyDescriptorWrapper(target, propertyDescriptor));
             }
 
             return map;
@@ -184,6 +182,11 @@ public class PropertyDescriptorUtils
     public static LambdaPropertyDescriptor createLambdaPropertyDescriptor(Class<?> target, PropertyDescriptor pd,
             MethodHandles.Lookup lookup) throws Throwable
     {
+        if (pd.getPropertyType() == null)
+        {
+            return null;
+        }
+
         LambdaPropertyDescriptor lpd = new LambdaPropertyDescriptor(target, pd);
 
         Method readMethod = pd.getReadMethod();
@@ -209,7 +212,7 @@ public class PropertyDescriptorUtils
         return lpd;
     }
     
-    public static Map<String, LambdaPropertyDescriptor> getLambdaPropertyDescriptors(Class<?> target) throws Throwable
+    public static Map<String, PropertyDescriptorWrapper> getLambdaPropertyDescriptors(Class<?> target) throws Throwable
     {
         PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(target).getPropertyDescriptors();
         if (propertyDescriptors == null || propertyDescriptors.length == 0)
@@ -217,14 +220,18 @@ public class PropertyDescriptorUtils
             return Collections.emptyMap();
         }
 
-        Map<String, LambdaPropertyDescriptor> properties = new ConcurrentHashMap<>(propertyDescriptors.length);
+        Map<String, PropertyDescriptorWrapper> properties = new ConcurrentHashMap<>(propertyDescriptors.length);
 
         MethodHandles.Lookup lookup = (MethodHandles.Lookup)
                 privateLookupIn.invoke(null, target, MethodHandles.lookup());
         for (PropertyDescriptor pd : Introspector.getBeanInfo(target).getPropertyDescriptors())
         {
-            LambdaPropertyDescriptor lpd = createLambdaPropertyDescriptor(target, pd, lookup);
-            properties.put(pd.getName(), lpd);
+            PropertyDescriptorWrapper wrapped = createLambdaPropertyDescriptor(target, pd, lookup);
+            if (wrapped == null)
+            {
+                wrapped = new PropertyDescriptorWrapper(target, pd);
+            }
+            properties.put(pd.getName(), wrapped);
         }
 
         return properties;

@@ -31,6 +31,8 @@ import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
 import jakarta.faces.application.Resource;
 import jakarta.faces.context.FacesContext;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import org.apache.myfaces.core.api.shared.lang.Assert;
 import org.apache.myfaces.core.api.shared.lang.LambdaPropertyDescriptor;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
@@ -646,7 +648,11 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
         {
             if (propertyDescriptor instanceof LambdaPropertyDescriptor)
             {
-                return ((LambdaPropertyDescriptor) propertyDescriptor).getReadFunction().apply(_component);
+                Function<Object, Object> readFunction = ((LambdaPropertyDescriptor) propertyDescriptor).getReadFunction();
+                if (readFunction != null)
+                {
+                    return readFunction.apply(_component);
+                }
             }
 
             return readMethod.invoke(_component, EMPTY_ARGS);
@@ -679,9 +685,16 @@ class _ComponentAttributesMap implements Map<String, Object>, Serializable
 
         try
         {
+            BiConsumer<Object, Object> writeFunction = null;
             if (propertyDescriptor instanceof LambdaPropertyDescriptor)
             {
                 ((LambdaPropertyDescriptor) propertyDescriptor).getWriteFunction().accept(_component, value);
+                writeFunction = ((LambdaPropertyDescriptor) propertyDescriptor).getWriteFunction();
+            }
+
+            if (writeFunction != null)
+            {
+                writeFunction.accept(_component, value);
             }
             else
             {

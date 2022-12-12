@@ -36,12 +36,6 @@ public class PropertyDescriptorWrapper implements FacesWrapper<PropertyDescripto
         this.readMethodRef = new SoftReference<>(wrapped.getReadMethod());
     }
 
-    public PropertyDescriptorWrapper(Class<?> beanClass, PropertyDescriptor wrapped, Method readMethod)
-    {
-        this.wrapped = wrapped;
-        this.readMethodRef = new SoftReference<>(readMethod);
-    }
-
     public Class<?> getPropertyType()
     {
         return wrapped.getPropertyType();
