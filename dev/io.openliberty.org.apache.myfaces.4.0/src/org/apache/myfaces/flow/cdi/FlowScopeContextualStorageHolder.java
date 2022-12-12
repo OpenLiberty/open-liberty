@@ -26,13 +26,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.Destroyed;
+import jakarta.enterprise.context.Initialized;
 import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.event.Event;
 import jakarta.enterprise.inject.Typed;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.flow.Flow;
 import jakarta.faces.flow.FlowHandler;
+import jakarta.faces.flow.FlowScoped;
 import jakarta.faces.lifecycle.ClientWindow;
+import jakarta.inject.Inject;
 import org.apache.myfaces.cdi.util.ContextualInstanceInfo;
 import org.apache.myfaces.cdi.util.ContextualStorage;
 import org.apache.myfaces.config.webparameters.MyfacesConfig;
@@ -53,6 +58,14 @@ public class FlowScopeContextualStorageHolder
         extends AbstractContextualStorageHolder<ContextualStorage>
         implements Serializable
 {
+    @Inject
+    @Initialized(FlowScoped.class)
+    private Event<Flow> flowInitializedEvent;
+
+    @Inject
+    @Destroyed(FlowScoped.class)
+    private Event<Flow> flowDestroyedEvent;
+
     /**
      * key: client window id + flow id
      * value: the {@link ContextualStorage} which holds all the
@@ -173,6 +186,8 @@ public class FlowScopeContextualStorageHolder
         activeFlowKeys.add(0, flowMapKey);
         activeFlowMapKeys.put(baseKey, activeFlowKeys);
         refreshClientWindow(facesContext);
+
+        flowInitializedEvent.fire(flow);
     }
     
     public void destroyCurrentFlowScope(FacesContext facesContext)
@@ -195,6 +210,8 @@ public class FlowScopeContextualStorageHolder
         {
             activeFlowKeys.remove(flowMapKey);
         }
+
+        flowDestroyedEvent.fire(flow);
     }
 
     @Override

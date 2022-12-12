@@ -50,6 +50,7 @@ import jakarta.faces.application.ProjectStage;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.application.StateManager;
 import jakarta.faces.application.ViewHandler;
+import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.component.search.SearchExpressionHandler;
 import jakarta.faces.component.search.SearchKeywordResolver;
 import jakarta.faces.context.ExternalContext;
@@ -58,6 +59,8 @@ import jakarta.faces.event.ActionListener;
 import jakarta.faces.event.ComponentSystemEvent;
 import jakarta.faces.event.PhaseListener;
 import jakarta.faces.event.PostConstructApplicationEvent;
+import jakarta.faces.event.PostConstructViewMapEvent;
+import jakarta.faces.event.PreDestroyViewMapEvent;
 import jakarta.faces.event.SystemEvent;
 import jakarta.faces.flow.Flow;
 import jakarta.faces.flow.FlowHandler;
@@ -120,6 +123,7 @@ import org.apache.myfaces.application.viewstate.StateUtils;
 import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.util.WebConfigParamUtils;
 import org.apache.myfaces.cdi.util.BeanEntry;
+import org.apache.myfaces.cdi.view.ViewScopeEventListener;
 import org.apache.myfaces.component.search.SearchExpressionContextFactoryImpl;
 import org.apache.myfaces.config.element.Component;
 import org.apache.myfaces.config.element.FaceletsTemplateMapping;
@@ -697,6 +701,10 @@ public class FacesConfigurator
                 log.log(Level.SEVERE, "System event listener could not be initialized, reason:", e);
             }
         }
+        
+        ViewScopeEventListener viewScopeEventListener = new ViewScopeEventListener();
+        application.subscribeToEvent(PostConstructViewMapEvent.class, UIViewRoot.class, viewScopeEventListener);
+        application.subscribeToEvent(PreDestroyViewMapEvent.class, UIViewRoot.class, viewScopeEventListener);
 
         for (Map.Entry<String, Component> entry : dispenser.getComponentsByType().entrySet())
         {

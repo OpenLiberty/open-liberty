@@ -42,6 +42,9 @@ public class ViewScopeExtension implements Extension
         // can take it into account, and use it later when necessary.
         AnnotatedType bean = beanManager.createAnnotatedType(ViewScopeContextualStorageHolder.class);
         event.addAnnotatedType(bean, bean.getJavaClass().getName());
+
+        bean = beanManager.createAnnotatedType(ViewScopeEventListener.Bridge.class);
+        event.addAnnotatedType(bean, bean.getJavaClass().getName());
     }
     
     void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)
