@@ -128,6 +128,10 @@ error.kernelDefFile=CWWKE0023E: The specified kernel definition ({0}) does not e
 error.kernelDefFile.explanation=The specified kernel definition could not be found.
 error.kernelDefFile.useraction=Ensure that the kernel definition resource exists and can be read by the current user.
 
+error.badOptionValue=CWWKE0024E: The {0} value for the {1} option is not valid.
+error.badOptionValue.explanation=The specified value is not appropriate for the specified option.
+error.badOptionValue.useraction=Run the `server help` command for a description of the options.  If the value is a number, ensure it is in the valid range.
+
 error.specifiedLocation=CWWKE0025E: The value of {0} must refer to a directory. The specified value \
  references an existing file resource. Value: {1}
 error.specifiedLocation.explanation=The supplied location refers to an existing file instead of a directory.
@@ -141,6 +145,10 @@ warning.singleServer=CWWKE0027W: Only one server may be specified on the command
   subsequent names will be ignored (server={0}, ignored={1}).
 warning.singleServer.explanation=You may specify only one server on the command line. The first server name has been processed; the remaining names have been ignored.
 warning.singleServer.useraction=No action is required. Specify only one server to avoid this warning.
+
+error.optionNotApplicableToCommand=CWWKE0028E: The {0} option is not applicable for the command.
+error.optionNotApplicableToCommand.explanation=The specified option is not allowed for the specified command.
+error.optionNotApplicableToCommand.useraction=Run the `server <command> help` command to get information about valid options for the command.
   
 error.serverAlreadyRunning=CWWKE0029E: An instance of server {0} is already running.
 error.serverAlreadyRunning.explanation=You are trying to start a server that is already running.
@@ -387,6 +395,10 @@ audit.system.exit.useraction=If stopping the server was unexpected, determine wh
 audit.jvm.shutdown=CWWKE0085I: The server {0} is stopping because the JVM is exiting.
 audit.jvm.shutdown.explanation=The server intercepted a request to stop the JVM and will attempt to stop in an orderly manner. The JVM might be exiting because the operating system sent a terminating signal to the server process.
 audit.jvm.shutdown.useraction=If stopping the server was unexpected, determine if a terminating signal was sent to the server process.
+
+error.optionRequiresEquals=CWWKE0086E: The {0} option must include an equals sign (=) before the specified value. 
+error.optionRequiresEquals.explanation=The specified option must be followed by an equals sign (=) and a value.
+error.optionRequiresEquals.useraction=The option must be specified in the following format: --option=value.
 
 warning.serverStartedCommandPortDisabled=CWWKE0087W: Server start was initiated for server {0}, but it is not possible to tell if startup was completed because the server command port is disabled.
 warning.serverStartedCommandPortDisabled.explanation=The server command port is required for communication with a running server.  The command port was explicitly disabled for this server, therefore it is not possible to tell when the server has completed startup.
@@ -710,7 +722,7 @@ warning.earlyRelease=CWWKE0953W: This version of {0} is an unsupported early rel
 warning.earlyRelease.explanation=New features that are not fully tested are made available in early releases to elicit feedback before they are included in a supported release.
 warning.earlyRelease.useraction=Do not use an early release version on production systems, since early release versions are not supported.
 
-error.invalidPhaseName=CWWKE0954E: The "{0}" checkpoint phase specified is empty or unknown.
+error.invalidPhaseName=CWWKE0954E: The specified ({0}) checkpoint phase is empty or unknown.
 error.invalidPhaseName.explanation=An unknown phase was specified as the value of the checkpoint option.
 error.invalidPhaseName.useraction=Review the documentation to determine valid phase names. Reissue the command using a valid checkpoint phase.
 
@@ -737,10 +749,6 @@ error.checkpoint.workarea.restore.useraction=Ensure the user has sufficient perm
 info.checkpoint.restore.failed=CWWKE0957I: Restoring the checkpoint server process failed. Check the {0} log to determine why the checkpoint process was not restored. Launching the server without using the checkpoint image.
 info.checkpoint.restore.failed.explanation=An error occurred restoring a checkpoint server process.  The server launched without using the checkpoint image.
 info.checkpoint.restore.failed.useraction=Check the logs to determine why the checkpoint process was not restored.
-
-error.checkpoint.failed=CWWKE0958E: The server checkpoint request failed. The following output is from the CRIU {0} file that contains details on why the checkpoint failed.
-error.checkpoint.failed.explanation=A checkpoint request for the server failed. No valid checkpoint process image for the server was created.
-error.checkpoint.failed.useraction=To determine why the checkpoint failed, inspect the log files in the checkpoint directory that is located in the server logs directory.
 
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.
