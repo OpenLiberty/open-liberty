@@ -376,6 +376,10 @@ public abstract class AbstractJSPExtensionProcessor extends com.ibm.ws.webcontai
                 while ((t = rootCause.getCause()) != null) {
                     rootCause = t;
                 }
+                //log it only if JSPG0077E
+                if (e.getMessage().contains("JSPG0077E")) {
+                   logger.logp(Level.SEVERE, CLASS_NAME, "getServletWrapper", rootCause.getLocalizedMessage());
+                }
                 // Defect 211450
                 JSPErrorReport jser = new JSPErrorReport(rootCause.getLocalizedMessage(), rootCause);
                 jser.setStackTrace(rootCause.getStackTrace());
