@@ -115,9 +115,20 @@ public class MBeanHandler implements RESTHandler {
 
     private void objectName(RESTRequest request, RESTResponse response) {
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+	System.out.println("******\nName is : " + objectName + "\n*******\n");
+	System.out.println("URI from request is: " + request.getURI());
+	System.out.println("Path is : " + request.getPath());
+
+	String prefix = APIConstants.JMX_CONNECTOR_API_ROOT_PATH + APIConstants.PATH_MBEANS + "/";
+	String uri = request.getURI();
+	int start = uri.indexOf(prefix) + prefix.length();
+	System.out.println("start is '" + start + "'");
+	String codedName = request.getURI().substring(start);
+	System.out.println("Coded name is '" + codedName + "'");
 
         //Get the object for ObjectName
-        ObjectName objectNameObj = RESTHelper.objectNameConverter(objectName, true, null);
+        //ObjectName objectNameObj = RESTHelper.objectNameConverter(objectName, true, null);
+        ObjectName objectNameObj = RESTHelper.objectNameConverter(codedName, true, null);
 
         //Fetch the MBeanInfo
         MBeanInfo mbeanInfo = MBeanServerHelper.getMBeanInfo(objectNameObj);
