@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+import io.openliberty.microprofile.telemetry.internal.helper.AgentDetection;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
@@ -191,7 +192,7 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
     @Override
     public void filter(final ContainerRequestContext request) {
         Context parentContext = Context.current();
-        if (instrumenter.shouldStart(parentContext, request)) {
+        if ((!AgentDetection.isAgentActive()) && instrumenter.shouldStart(parentContext, request)) {
             request.setProperty(REST_RESOURCE_CLASS, resourceInfo.getResourceClass());
             request.setProperty(REST_RESOURCE_METHOD, resourceInfo.getResourceMethod());
 
@@ -300,11 +301,6 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
         @Override
         public Integer statusCode(final ContainerRequestContext request, final ContainerResponseContext response, @Nullable Throwable error) {
             return response.getStatus();
-        }
-
-        @Override
-        public String serverName(final ContainerRequestContext request) {
-            return request.getUriInfo().getRequestUri().getHost();
         }
 
         @Override

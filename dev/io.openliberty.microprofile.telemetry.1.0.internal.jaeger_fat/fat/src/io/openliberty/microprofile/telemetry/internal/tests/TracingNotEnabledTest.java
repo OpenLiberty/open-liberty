@@ -11,6 +11,7 @@
 package io.openliberty.microprofile.telemetry.internal.tests;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.microprofile.telemetry.internal.utils.TestConstants.NULL_TRACE_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
@@ -100,7 +101,7 @@ public class TracingNotEnabledTest {
         Log.info(c, "testBasic", "TraceId is " + traceId);
 
         // We still expect a blank traceId when tracing is disabled
-        assertThat(traceId, equalTo("00000000000000000000000000000000"));
+        assertThat(traceId, equalTo(NULL_TRACE_ID));
 
         // Wait 12 seconds to give a chance for any traces to arrive
         // With BSP_SCHEDULE_DELAY, traces should be sent after 100ms,

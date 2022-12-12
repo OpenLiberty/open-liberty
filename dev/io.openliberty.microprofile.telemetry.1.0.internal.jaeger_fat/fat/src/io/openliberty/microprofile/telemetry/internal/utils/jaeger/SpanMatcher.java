@@ -12,6 +12,7 @@ package io.openliberty.microprofile.telemetry.internal.utils.jaeger;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -28,6 +29,7 @@ import io.jaegertracing.api_v2.Model.Span;
 import io.jaegertracing.api_v2.Model.SpanRef;
 import io.jaegertracing.api_v2.Model.SpanRefType;
 import io.jaegertracing.api_v2.Model.ValueType;
+import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.api.trace.StatusCode;
 
 /**
@@ -44,6 +46,9 @@ public class SpanMatcher extends TypeSafeDiagnosingMatcher<Span> {
     ByteString expectedTraceId = null;
     ByteString expectedParentSpanId = null;
     Boolean expectHasParent = null;
+    String expectedName = null;
+    String expectedServiceName = null;
+    List<KeyValue> expectedProcessTags = new ArrayList<>();
 
     /*
      * Describes what we're looking for
@@ -51,6 +56,11 @@ public class SpanMatcher extends TypeSafeDiagnosingMatcher<Span> {
     @Override
     public void describeTo(Description desc) {
         desc.appendText("Span");
+
+        if (expectedName != null) {
+            desc.appendText("\n  with name: ");
+            desc.appendText(expectedName);
+        }
 
         if (expectedTraceId != null) {
             desc.appendText("\n  with traceId: ");
@@ -84,6 +94,16 @@ public class SpanMatcher extends TypeSafeDiagnosingMatcher<Span> {
             desc.appendText("\n  with exception logs: ");
             desc.appendValue(expectedExceptions);
         }
+
+        if (expectedServiceName != null) {
+            desc.appendText("\n  with service name: ");
+            desc.appendText(expectedServiceName);
+        }
+
+        if (!expectedProcessTags.isEmpty()) {
+            desc.appendText("\n  with process tags: ");
+            desc.appendValue(expectedProcessTags);
+        }
     }
 
     /*
@@ -94,6 +114,10 @@ public class SpanMatcher extends TypeSafeDiagnosingMatcher<Span> {
         desc.appendValue(span);
 
         if (expectedTraceId != null && !expectedTraceId.equals(span.getTraceId())) {
+            return false;
+        }
+
+        if (expectedName != null && !expectedName.equals(span.getOperationName())) {
             return false;
         }
 
@@ -138,6 +162,26 @@ public class SpanMatcher extends TypeSafeDiagnosingMatcher<Span> {
                                             .findAny();
             if (!matchingLog.isPresent()) {
                 return false;
+            }
+        }
+
+        if (expectedServiceName != null) {
+            if (!span.hasProcess()) {
+                return false;
+            }
+            if (!expectedServiceName.equals(span.getProcess().getServiceName())) {
+                return false;
+            }
+        }
+
+        if (!expectedProcessTags.isEmpty()) {
+            if (!span.hasProcess()) {
+                return false;
+            }
+            for (KeyValue tag : expectedProcessTags) {
+                if (!span.getProcess().getTagsList().contains(tag)) {
+                    return false;
+                }
             }
         }
 
@@ -203,6 +247,11 @@ public class SpanMatcher extends TypeSafeDiagnosingMatcher<Span> {
         return this;
     }
 
+    public SpanMatcher withName(String name) {
+        expectedName = name;
+        return this;
+    }
+
     public SpanMatcher withNoParent() {
         expectHasParent = false;
         return this;
@@ -216,6 +265,10 @@ public class SpanMatcher extends TypeSafeDiagnosingMatcher<Span> {
     public SpanMatcher withParentSpanId(ByteString spanId) {
         expectedParentSpanId = spanId;
         return this;
+    }
+
+    public SpanMatcher withKind(SpanKind kind) {
+        return withTag("span.kind", kind.name().toLowerCase());
     }
 
     public SpanMatcher withTag(String key, String value) {
@@ -234,8 +287,23 @@ public class SpanMatcher extends TypeSafeDiagnosingMatcher<Span> {
         return this;
     }
 
+    public SpanMatcher withServiceName(String serviceName) {
+        expectedServiceName = serviceName;
+        return this;
+    }
+
+    public SpanMatcher withProcessTag(String key, String value) {
+        KeyValue tag = KeyValue.newBuilder().setKey(key).setVStr(value).build();
+        expectedProcessTags.add(tag);
+        return this;
+    }
+
     public static SpanMatcher span() {
         return new SpanMatcher();
+    }
+
+    public static SpanMatcher hasName(String name) {
+        return span().withName(name);
     }
 
     public static SpanMatcher hasTag(String key, String value) {
@@ -268,6 +336,18 @@ public class SpanMatcher extends TypeSafeDiagnosingMatcher<Span> {
 
     public static SpanMatcher hasStatus(StatusCode status) {
         return span().withStatus(status);
+    }
+
+    public static SpanMatcher hasKind(SpanKind kind) {
+        return span().withKind(kind);
+    }
+
+    public static SpanMatcher hasServiceName(String serviceName) {
+        return span().withServiceName(serviceName);
+    }
+
+    public static SpanMatcher hasProcessTag(String key, String value) {
+        return span().withProcessTag(key, value);
     }
 
 }
