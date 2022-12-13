@@ -79,6 +79,19 @@ public class MetadataUtils {
     }
 
     /**
+     * Provide the Jakarta JsonObject from the Discovery endpoint.
+     *
+     * @param oidcClientConfig
+     * @return
+     * @throws OidcClientConfigurationException
+     * @throws OidcDiscoveryException
+     */
+    public static JSONObject getProviderDiscoveryMetaData(OidcClientConfig oidcClientConfig) throws OidcClientConfigurationException, OidcDiscoveryException {
+        return oidcMetadataService.getProviderDiscoveryMetadata(oidcClientConfig);
+
+    }
+
+    /**
      * Returns a parameterized value from the OP's discovery document.
      *
      * @throws OidcDiscoveryException Thrown if the value cannot be found in the discovery document or if its value is empty.

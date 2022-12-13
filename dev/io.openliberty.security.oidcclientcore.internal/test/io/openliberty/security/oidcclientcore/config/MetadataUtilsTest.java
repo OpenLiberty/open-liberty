@@ -12,6 +12,7 @@ package io.openliberty.security.oidcclientcore.config;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -198,6 +199,50 @@ public class MetadataUtilsTest extends CommonTestClass {
         for (int i = 0; i < algsSupported.size(); i++) {
             assertTrue("Result is missing " + algsSupported.get(i) + ".", resultAsList.contains(algsSupported.get(i)));
         }
+
+    }
+
+    public void test_getProviderMetadata_providerMetadataHasValue() throws Exception {
+        JSONObject discoveryData = new JSONObject();
+        discoveryData.put(OidcDiscoveryConstants.METADATA_KEY_ISSUER, sampleStringValue);
+        JSONObject result = MetadataUtils.getProviderDiscoveryMetaData(oidcClientConfig);
+
+        assertNotNull("Should have returned providerMetadata JSONObject", result);
+        assertTrue("Expected " + OidcDiscoveryConstants.METADATA_KEY_ISSUER + " key in JSONObject", result.containsKey(OidcDiscoveryConstants.METADATA_KEY_ISSUER));
+        assertEquals(sampleStringValue, result.get(OidcDiscoveryConstants.METADATA_KEY_ISSUER));
+
+    }
+
+    @Test
+    public void test_getProviderMetadata_providerMetadataNull() throws Exception {
+        JSONObject discoveryData = null;
+        mockery.checking(new Expectations() {
+            {
+                one(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
+                will(returnValue(discoveryData));
+            }
+        });
+        JSONObject result = MetadataUtils.getProviderDiscoveryMetaData(oidcClientConfig);
+
+        assertNull("Should not have returned providerMetadata JSONObject", result);
+
+    }
+
+    @Test
+    public void test_getProviderMetadata_providerMetadataIsEmpty() throws Exception {
+        JSONObject discoveryData = new JSONObject();
+        mockery.checking(new Expectations() {
+            {
+                one(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
+                will(returnValue(discoveryData));
+            }
+        });
+
+        JSONObject result = MetadataUtils.getProviderDiscoveryMetaData(oidcClientConfig);
+
+        assertNotNull("Should have returned providerMetadata JSONObject", result);
+        assertTrue("Expected empty JSONObject", result.isEmpty());
+
     }
 
 }

@@ -278,6 +278,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException" })
     @Test
     public void ConfigurationTests_noProviderURI_withProviderMetadata() throws Exception {
 
