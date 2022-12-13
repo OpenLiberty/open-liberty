@@ -28,7 +28,9 @@ src: \
     test-applications/ScopeOpenIdProfile.war/src,\
     test-applications/ScopeOpenIdEmail.war/src,\
     test-applications/ScopeOpenIdProfileEmail.war/src,\
-    test-applications/ScopeOpenIdProfileEmailWithEL.war/src
+    test-applications/ScopeOpenIdProfileEmailWithEL.war/src,\
+    test-applications/ResponseModeWithMockAuthEndpoint.war/src,\
+    test-applications/Authorization.war/src
     
 -dependson: \
     build.changeDetector,\

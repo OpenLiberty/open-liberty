@@ -204,6 +204,7 @@ public class Constants {
     public static final String HTTP_ERROR_UNAUTHORIZED = "HTTP Error 401";
     public static final String HTTP_ERROR_MESSAGE = "HTTP Error Message";
     public static final String FORBIDDEN = "Forbidden";
+    public static final String FOUND_MSG = "Found";
     public static final String NOT_FOUND_MSG = "Not Found";
     public static final String NOT_FOUND_ERROR = "Error 404:";
     public static final String OK_MESSAGE = "OK";
@@ -226,6 +227,7 @@ public class Constants {
     public static final String RESPONSE_HEADER_CONTENT_TYPE = "Content-Type";
     public static final String RESPONSE_HEADER_CACHE_CONTROL = "Cache-Control";
     public static final String RESPONSE_HEADER_PRAGMA = "Pragma";
+    public static final String RESPONSE_HEADER_LOCATION = "Location";
 
     /* ********************** Cookies *********************** */
     public static final String JSESSION_ID_COOKIE = "JSESSIONID";

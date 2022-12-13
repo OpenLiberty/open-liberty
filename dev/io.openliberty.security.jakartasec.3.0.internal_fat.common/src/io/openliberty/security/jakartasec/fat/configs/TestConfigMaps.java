@@ -275,6 +275,30 @@ public class TestConfigMaps {
         return updatedMap;
     }
 
+    public static Map<String, Object> getResponseModeQuery() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.RESPONSE_MODE, Constants.QUERY_RESPONSE_MODE);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getResponseModeFragment() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.RESPONSE_MODE, Constants.FRAGMENT_RESPONSE_MODE);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getResponseModeFormPost() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.RESPONSE_MODE, Constants.FORM_POST_RESPONSE_MODE);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getResponseModeError() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.RESPONSE_MODE, "error");
+        return updatedMap;
+    }
+
     public static Map<String, Object> getOP2() throws Exception {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
@@ -440,6 +464,14 @@ public class TestConfigMaps {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
         updatedMap.put(Constants.IDENTITY_TOKEN_EXPIRY_EXPRESSION, String.valueOf(false));
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getAuthorizationEndpoint(String rpBase, String authApp) throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.AUTHORIZATION_ENDPOINT, rpBase + "/Authorization/" + authApp);
         return updatedMap;
 
     }

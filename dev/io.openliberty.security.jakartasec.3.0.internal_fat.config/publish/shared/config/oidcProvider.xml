@@ -60,6 +60,8 @@
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeELUppercaseScopes/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeELUnknownScope/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeELDuplicateScope/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/responseModeQuery/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/responseModeFormPost/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/useSessionTrueELTrue/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/useSessionTrueELFalse/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/useSessionFalseELTrue/Callback,
