@@ -142,9 +142,12 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     private QueryInfo completeQueryInfo(EntityInfo entityInfo, QueryInfo queryInfo) {
 
         queryInfo.entityInfo = entityInfo;
-        boolean needsKeysetQueries = KeysetAwarePage.class.equals(queryInfo.method.getReturnType())
-                                     || KeysetAwarePage.class.equals(queryInfo.returnTypeParam);
-        boolean countPages = needsKeysetQueries
+        boolean isKeysetAwarePage = KeysetAwarePage.class.equals(queryInfo.method.getReturnType())
+                                    || KeysetAwarePage.class.equals(queryInfo.returnTypeParam);
+        boolean needsKeysetQueries = isKeysetAwarePage
+                                     || KeysetAwareSlice.class.equals(queryInfo.method.getReturnType())
+                                     || KeysetAwareSlice.class.equals(queryInfo.returnTypeParam);
+        boolean countPages = isKeysetAwarePage
                              || Page.class.equals(queryInfo.method.getReturnType())
                              || Page.class.equals(queryInfo.returnTypeParam);
         StringBuilder q = null;
@@ -764,7 +767,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     private void generateRepositoryQueryOrderBy(QueryInfo queryInfo, int orderBy, StringBuilder q) {
         String methodName = queryInfo.method.getName();
         boolean needsKeysetQueries = KeysetAwarePage.class.equals(queryInfo.method.getReturnType())
-                                     || KeysetAwarePage.class.equals(queryInfo.returnTypeParam);
+                                     || KeysetAwareSlice.class.equals(queryInfo.method.getReturnType())
+                                     || KeysetAwarePage.class.equals(queryInfo.returnTypeParam)
+                                     || KeysetAwareSlice.class.equals(queryInfo.returnTypeParam);
         StringBuilder o = needsKeysetQueries ? new StringBuilder(100) : q; // forward order
         StringBuilder r = needsKeysetQueries ? new StringBuilder(100).append(" ORDER BY ") : null; // reverse order
         List<Sort> keyset = needsKeysetQueries ? new ArrayList<>() : null;
