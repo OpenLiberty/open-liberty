@@ -16,6 +16,7 @@ import static org.junit.Assert.fail;
 import static test.jakarta.data.web.Assertions.assertArrayEquals;
 import static test.jakarta.data.web.Assertions.assertIterableEquals;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -26,12 +27,10 @@ import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeSet;
@@ -282,22 +281,13 @@ public class DataTestServlet extends FATServlet {
                                              .map(p -> p.firstName)
                                              .collect(Collectors.toList()));
 
-        // Async find with Consumer
-        LinkedBlockingQueue<String> names = new LinkedBlockingQueue<>();
-        personnel.findByLastNameOrderByFirstNameDesc("TestAsynchronous", name -> names.add(name));
-
-        assertEquals("Brian", names.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        assertEquals("Betty", names.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        assertEquals("Ben", names.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        assertEquals("Alexander", names.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-
         // Async find as CompletableFuture<Stream<String>>
         CompletableFuture<Stream<String>> futureStream = personnel.firstNames("TestAsynchronous");
         assertIterableEquals(List.of("Alexander", "Ben", "Betty", "Brian"),
                              futureStream.get(TIMEOUT_MINUTES, TimeUnit.MINUTES).collect(Collectors.toList()));
 
         // Async find as CompletionStage<String[]>
-        names.clear();
+        LinkedBlockingQueue<String> names = new LinkedBlockingQueue<>();
         personnel.lastNames().thenAccept(lastNames -> {
             for (String lastName : lastNames)
                 names.add(lastName);
@@ -305,22 +295,6 @@ public class DataTestServlet extends FATServlet {
         assertEquals("Test-Asynchronous", names.poll());
         assertEquals("TestAsynchronous", names.poll());
         assertEquals(null, names.poll());
-
-        // Paginated async find with Consumer and CompletableFuture to track completion
-        Queue<Long> ids = new LinkedList<Long>();
-        CompletableFuture<Void> allFound = personnel.findByOrderBySsnDesc(p -> ids.add(p.ssn), Pageable.ofSize(4));
-
-        assertEquals(null, allFound.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        assertEquals(Long.valueOf(p10.ssn), ids.poll());
-        assertEquals(Long.valueOf(p9.ssn), ids.poll());
-        assertEquals(Long.valueOf(p8.ssn), ids.poll());
-        assertEquals(Long.valueOf(p7.ssn), ids.poll());
-        assertEquals(Long.valueOf(p6.ssn), ids.poll());
-        assertEquals(Long.valueOf(p5.ssn), ids.poll());
-        assertEquals(Long.valueOf(p4.ssn), ids.poll());
-        assertEquals(Long.valueOf(p3.ssn), ids.poll());
-        assertEquals(Long.valueOf(p2.ssn), ids.poll());
-        assertEquals(Long.valueOf(p1.ssn), ids.poll());
 
         // Async find single item
         CompletableFuture<Person> future = personnel.findBySsn(p4.ssn);
@@ -331,30 +305,27 @@ public class DataTestServlet extends FATServlet {
         assertEquals(p4.firstName, p.firstName);
         assertEquals(p4.lastName, p.lastName);
 
-        // Async find with Collector, without pagination
+        // Async count
 
-        // Have a collector reduce the results to a count of names.
-        // The database could have done this instead, but it makes a nice, simple example.
-        CompletableFuture<Long> nameCount = personnel.findByFirstNameStartsWith("A", Collectors.counting());
+        CompletableFuture<Long> nameCount = personnel.countByFirstNameStartsWith("A");
 
         assertEquals(Long.valueOf(6), nameCount.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
 
-        // Async find with Collector, with pagination
+        // Find with Streamable and various Collectors
+
+        Streamable<String> aNames = personnel.namesThatStartWith("A");
 
         // Have a collector reduce the results to a count of names.
         // The database could have done this instead, but it makes a nice, simple example.
-        CompletableFuture<Long> countOfANames = personnel.namesThatStartWith("A", Pageable.ofSize(3), Collectors.counting());
 
-        assertEquals(Long.valueOf(6), countOfANames.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Long.valueOf(6), aNames.stream().collect(Collectors.counting()));
 
         // Have a collector reduce the results to the length of the longest name found.
         Collector<String, ?, Long> maxLengthFinder = Collectors.collectingAndThen(
                                                                                   Collectors.maxBy(Comparator.<String, Integer> comparing(n -> n.length())),
                                                                                   n -> n.isPresent() ? n.get().length() : -1L);
 
-        CompletableFuture<Long> maxLengthOfAnyAName = personnel.namesThatStartWith("A", Pageable.ofSize(3), maxLengthFinder);
-
-        assertEquals(Long.valueOf(9), maxLengthOfAnyAName.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Long.valueOf(9), aNames.stream().collect(maxLengthFinder));
 
         // Have a collector reduce the results to an average name length,
         final int COUNT = 0, SUM = 1;
@@ -369,14 +340,30 @@ public class DataTestServlet extends FATServlet {
                                                                  },
                                                                  len -> len[COUNT] == 0 ? 0 : (len[SUM] / len[COUNT]));
 
-        CompletableFuture<Long> avgLengthOfBNames = personnel.namesThatStartWith("B", Pageable.ofSize(3), lengthAverager);
+        Streamable<String> bNames = personnel.namesThatStartWith("B");
 
-        assertEquals(Long.valueOf(4), avgLengthOfBNames.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Long.valueOf(4), bNames.stream().collect(lengthAverager));
 
         assertEquals(Boolean.TRUE, personnel.setSurnameAsync("TestAsynchronously", 1002003008L).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
 
+        // Async delete with void return type
+        personnel.deleteByFirstName("Andrew");
+
+        long timeout_ns = Duration.ofMinutes(TIMEOUT_MINUTES).toNanos();
+        boolean found = true;
+        for (long start = System.nanoTime(); System.nanoTime() - start < timeout_ns && found; Thread.sleep(200))
+            found = personnel.namesThatStartWith("And").stream().findFirst().isPresent();
+        assertEquals(false, found);
+
+        // Async delete with CompletableFuture<Void> return type
+        CompletableFuture<Void> cf = personnel.deleteBySsn(1002003008L);
+        assertEquals(null, cf.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+
+        found = personnel.namesThatStartWith("Bob").stream().findFirst().isPresent();
+        assertEquals(false, found);
+
         deleted = personnel.removeAll();
-        assertEquals(Long.valueOf(10), deleted.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Long.valueOf(8), deleted.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
     }
 
     /**
