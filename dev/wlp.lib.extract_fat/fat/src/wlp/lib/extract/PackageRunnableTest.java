@@ -90,10 +90,11 @@ public class PackageRunnableTest {
         // Verify that /lib/extract exits, and the manifest.mf is valid
         validateWLPLibExtractAndManifest();
 
-        // Save off the output directory so we can save a copy of the .jar if its bad
-        outputAutoFVTDirectory = new File("output/servers/", serverName);
-        Log.info(c, method, "outputAutoFVTDirectory: " + outputAutoFVTDirectory.getAbsolutePath());
-
+        /*
+         * // Save off the output directory so we can save a copy of the .jar if its bad
+         * outputAutoFVTDirectory = new File("output/servers/", serverName);
+         * Log.info(c, method, "outputAutoFVTDirectory: " + outputAutoFVTDirectory.getAbsolutePath());
+         */
     }
 
     @BeforeClass
@@ -404,20 +405,7 @@ public class PackageRunnableTest {
                 }
             } else {
                 // stop normally so shutdown hook is called
-                while (server.isStarted() && retry < STOP_RETRY_COUNT) {
-                    Log.info(c, method, "Server is stopping via the 'server stop' command, thus the shutdown hook should run.  Retry = " + retry);
-                    stopServer(extractLoc);
-                    Thread.sleep(1000);
-                    retry++;
-                }
-
-                retry = 0;
-                while (proc.isAlive() && retry < STOP_RETRY_COUNT) {
-                    Log.info(c, method, "Server is stopping via the proc.destroy() method.  Retry = " + retry);
-                    proc.destroy();
-                    Thread.sleep(1000);
-                    retry++;
-                }
+                stopServer(extractLoc);
             }
 
             if (os != null) {
@@ -438,19 +426,20 @@ public class PackageRunnableTest {
                 Log.info(c, method, "Destroying the process as it was not stopped via the previous attempts.");
                 proc.destroy();
             }
-
-            // Manually copy the logs since the framework does not do this given the extract locations.
-            int loc = extractDirectory.getAbsolutePath().lastIndexOf(File.separator);
-            String folder = extractDirectory.getAbsolutePath().substring(loc);
-            File pathWithFolder = new File(outputAutoFVTDirectory.getAbsolutePath() + File.separator + folder);
-            Log.info(c, method, "Saving logs to " + pathWithFolder.getAbsolutePath());
-            pathWithFolder.mkdirs();
-            Log.info(c, method, "Copying directory from " +
-                                extractLoc + File.separator + "usr" + File.separator + "servers" + File.separator + serverName + " to " +
-                                pathWithFolder.getAbsolutePath());
-
-            File srcDir = new File(extractLoc + File.separator + "usr" + File.separator + "servers" + File.separator + serverName);
-            copyDirectory(srcDir, pathWithFolder.getAbsoluteFile());
+/*
+ * // Manually copy the logs since the framework does not do this given the extract locations.
+ * int loc = extractDirectory.getAbsolutePath().lastIndexOf(File.separator);
+ * String folder = extractDirectory.getAbsolutePath().substring(loc);
+ * File pathWithFolder = new File(outputAutoFVTDirectory.getAbsolutePath() + File.separator + folder);
+ * Log.info(c, method, "Saving logs to " + pathWithFolder.getAbsolutePath());
+ * pathWithFolder.mkdirs();
+ * Log.info(c, method, "Copying directory from " +
+ * extractLoc + File.separator + "usr" + File.separator + "servers" + File.separator + serverName + " to " +
+ * pathWithFolder.getAbsolutePath());
+ *
+ * File srcDir = new File(extractLoc + File.separator + "usr" + File.separator + "servers" + File.separator + serverName);
+ * copyDirectory(srcDir, pathWithFolder.getAbsoluteFile());
+ */
         }
         return extractLoc;
     }
@@ -510,6 +499,12 @@ public class PackageRunnableTest {
             count++;
         }
 
+        // make sure we close out the OutputStream in case we timeout looking for the msg above! when
+        // this happens the server framework cant delete the extractAndExecuteMain.log file.
+        if (os != null) {
+            os.close();
+        }
+
         assertTrue("Server did not start successfully in time.", found);
 
         outputReader.setIs(null);
@@ -518,10 +513,6 @@ public class PackageRunnableTest {
         if (extractAndRunDir.exists()) {
             deleteDir(extractAndRunDir);
             Log.info(c, "extractAndExecuteMain", "WLP installation directory was removed.");
-        }
-
-        if (os != null) {
-            os.close();
         }
 
         Log.info(c, "extractAndExecuteMain", "Waiting 30 seconds...to make sure all Liberty thread exiting.");
@@ -603,25 +594,20 @@ public class PackageRunnableTest {
     }
 
     /**
-     * Stops the server at the specified location
+     * Stops the server at the specified location via the server framework
      *
      * @param extractLocation
      * @throws Exception
      */
     private void stopServer(String extractLocation) throws Exception {
-        // build the stop command for Unix platforms
-        String cmd = extractLocation + File.separator + "bin" + File.separator + "server stop " + serverName + " --force";
+        String method = "stopServer";
 
-        // modify cmd if windows based
-        if (System.getProperty("os.name").startsWith("Win")) {
-            if (System.getenv("WLP_JAR_CYGWIN") != null) {
-                cmd = "bash -c  " + '"' + cmd.replace('\\', '/') + '"';
-            } else {
-                cmd = "cmd /k " + cmd;
-            }
-        }
+        Log.info(c, method, "Getting existing liberty server");
+        LibertyServer server = LibertyServerFactory.getExistingLibertyServer(extractLocation + File.separator + "usr" + File.separator + "servers" + File.separator
+                                                                             + serverName);
+        Log.info(c, method, "Attempting to stop server = " + server.getServerName() + " with status = " + server.isStarted());
 
-        Runtime.getRuntime().exec(cmd); // stop server
+        server.stopServer();
     }
 
     /**
