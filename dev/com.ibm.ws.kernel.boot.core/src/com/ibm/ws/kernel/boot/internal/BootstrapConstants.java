@@ -261,11 +261,8 @@ public final class BootstrapConstants {
     /** OSGi property to request clean, boolean value **/
     public static final String OSGI_CLEAN = "osgi.clean";
 
-    /** The number of seconds to wait for the server process to start */
+    /** The number of milliseconds to wait for the server process to start */
     public static final String SERVER_START_WAIT_TIME = "server.start.wait.time";
-
-    /** The DEFAULT number of seconds to wait for the server process to stop */
-    public static final String SERVER_STOP_WAIT_TIME_DEFAULT = "30";
 
     /** The key for the SSL client command-line option "--autoAcceptSigner" **/
     public static final String AUTO_ACCEPT_SIGNER = "autoAcceptSignerCertificate";
