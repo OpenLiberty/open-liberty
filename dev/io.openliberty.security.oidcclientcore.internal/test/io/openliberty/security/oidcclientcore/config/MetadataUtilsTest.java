@@ -144,19 +144,22 @@ public class MetadataUtilsTest extends CommonTestClass {
     @Test
     public void test_getUserInfoSigningAlgorithmsSupported_discoveryMissingEntry() throws Exception {
         JSONObject discoveryData = new JSONObject();
+        // When userinfo alg data is missing, we'll fall back to using the ID token alg data
+        JSONArray algsSupported = new JSONArray();
+        algsSupported.add("ES256");
+        discoveryData.put(OidcDiscoveryConstants.METADATA_KEY_ID_TOKEN_SIGNING_ALG_VALUES_SUPPORTED, algsSupported);
         mockery.checking(new Expectations() {
             {
-                one(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
+                allowing(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
                 will(returnValue(discoveryData));
+                one(oidcClientConfig).getProviderMetadata();
+                will(returnValue(null));
             }
         });
-        try {
-            String[] result = MetadataUtils.getUserInfoSigningAlgorithmsSupported(oidcClientConfig);
-            fail("Should have thrown an exception but got: [" + Arrays.toString(result) + "].");
-        } catch (OidcDiscoveryException e) {
-            verifyException(e, CWWKS2403E_DISCOVERY_EXCEPTION + ".*" + CWWKS2405E_DISCOVERY_METADATA_MISSING_VALUE + ".*"
-                               + OidcDiscoveryConstants.METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED);
-        }
+        String[] result = MetadataUtils.getUserInfoSigningAlgorithmsSupported(oidcClientConfig);
+        assertNotNull("Signing algorithm list should not have been null but was.", result);
+        assertEquals("Signing algorithm list did not have the expected number of entries: " + Arrays.toString(result), 1, result.length);
+        assertEquals(algsSupported.get(0), result[0]);
     }
 
     @Test

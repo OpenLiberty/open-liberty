@@ -23,6 +23,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.javaeesec.identitystore.ELHelper;
 
+import io.openliberty.security.jakartasec.el.ELUtils;
 import io.openliberty.security.oidcclientcore.client.ClaimsMappingConfig;
 import io.openliberty.security.oidcclientcore.client.LogoutConfig;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
@@ -97,7 +98,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
      * instance.
      *
      * @param oidcMechanismDefinition The {@link OpenIdAuthenticationMechanismDefinition} to wrap.
-     * @param baseURL                 The baseURL is an optional variable for the redirectURL and is constructed using information the incoming HTTP request.
+     * @param baseURL The baseURL is an optional variable for the redirectURL and is constructed using information the incoming HTTP request.
      */
     @Sensitive
     public OpenIdAuthenticationMechanismDefinitionWrapper(OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition, String baseURL) {
@@ -141,11 +142,11 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
      */
 
     private String evaluateProviderURI(boolean immediateOnly) {
-        return evaluateStringAttribute("providerURI", oidcMechanismDefinition.providerURI(), EMPTY_DEFAULT, immediateOnly);
+        return ELUtils.evaluateStringAttribute("providerURI", oidcMechanismDefinition.providerURI(), EMPTY_DEFAULT, immediateOnly);
     }
 
     private String evaluateClientId(boolean immediateOnly) {
-        return evaluateStringAttribute("clientId", oidcMechanismDefinition.clientId(), EMPTY_DEFAULT, immediateOnly);
+        return ELUtils.evaluateStringAttribute("clientId", oidcMechanismDefinition.clientId(), EMPTY_DEFAULT, immediateOnly);
     }
 
     @SuppressWarnings("static-access")
@@ -181,12 +182,12 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
     private String evaluateRedirectURI(boolean immediateOnly) {
         try {
             elHelper.addValue(JakartaSec30Constants.BASE_URL_VARIABLE, constructedBaseURL, false);
-            String redirectUri = evaluateStringAttribute("redirectURI", oidcMechanismDefinition.redirectURI(), JakartaSec30Constants.BASE_URL_DEFAULT, immediateOnly);
+            String redirectUri = ELUtils.evaluateStringAttribute("redirectURI", oidcMechanismDefinition.redirectURI(), JakartaSec30Constants.BASE_URL_DEFAULT, immediateOnly);
 
             // re-process the result of redirectUri in-case it returns another el expression containing ${baseURL}
             // we don't normally do this, but this is a special case found in jakarta security 3.0 tck requirements
             if (redirectUri != null && redirectUri.contains(JakartaSec30Constants.BASE_URL_VARIABLE)) {
-                redirectUri = evaluateStringAttribute("redirectURI", redirectUri, JakartaSec30Constants.BASE_URL_DEFAULT, immediateOnly);
+                redirectUri = ELUtils.evaluateStringAttribute("redirectURI", redirectUri, JakartaSec30Constants.BASE_URL_DEFAULT, immediateOnly);
             }
             return redirectUri;
         } finally {
@@ -195,8 +196,8 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
     }
 
     private Boolean evaluateRedirectToOriginalResource(boolean immediateOnly) {
-        return evaluateBooleanAttribute("redirectToOriginalResourceExpression", oidcMechanismDefinition.redirectToOriginalResource(), false,
-                                        oidcMechanismDefinition.redirectToOriginalResourceExpression(), immediateOnly);
+        return ELUtils.evaluateBooleanAttribute("redirectToOriginalResourceExpression", oidcMechanismDefinition.redirectToOriginalResource(), false,
+                                                oidcMechanismDefinition.redirectToOriginalResourceExpression(), immediateOnly);
     }
 
     @SuppressWarnings("static-access")
@@ -220,11 +221,11 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
     }
 
     private String evaluateResponseType(boolean immediateOnly) {
-        return evaluateStringAttribute("responseType", oidcMechanismDefinition.responseType(), OpenIdConstant.CODE, immediateOnly);
+        return ELUtils.evaluateStringAttribute("responseType", oidcMechanismDefinition.responseType(), OpenIdConstant.CODE, immediateOnly);
     }
 
     private String evaluateResponseMode(boolean immediateOnly) {
-        return evaluateStringAttribute("responseMode", oidcMechanismDefinition.responseMode(), EMPTY_DEFAULT, immediateOnly);
+        return ELUtils.evaluateStringAttribute("responseMode", oidcMechanismDefinition.responseMode(), EMPTY_DEFAULT, immediateOnly);
     }
 
     @SuppressWarnings("static-access")
@@ -272,13 +273,13 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
     }
 
     private Boolean evaluateUseNonce(boolean immediateOnly) {
-        return evaluateBooleanAttribute("useNonceExpression", oidcMechanismDefinition.useNonce(), true,
-                                        oidcMechanismDefinition.useNonceExpression(), immediateOnly);
+        return ELUtils.evaluateBooleanAttribute("useNonceExpression", oidcMechanismDefinition.useNonce(), true,
+                                                oidcMechanismDefinition.useNonceExpression(), immediateOnly);
     }
 
     private Boolean evaluateUseSession(boolean immediateOnly) {
-        return evaluateBooleanAttribute("useSessionExpression", oidcMechanismDefinition.useSession(), true,
-                                        oidcMechanismDefinition.useSessionExpression(), immediateOnly);
+        return ELUtils.evaluateBooleanAttribute("useSessionExpression", oidcMechanismDefinition.useSession(), true,
+                                                oidcMechanismDefinition.useSessionExpression(), immediateOnly);
     }
 
     @SuppressWarnings("static-access")
@@ -303,80 +304,23 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
     }
 
     private Integer evaluateJwksConnectTimeout(boolean immediateOnly) {
-        return evaluateIntegerAttribute("jwksConnectTimeoutExpression", oidcMechanismDefinition.jwksConnectTimeout(), 500,
-                                        oidcMechanismDefinition.jwksConnectTimeoutExpression(), immediateOnly);
+        return ELUtils.evaluateIntegerAttribute("jwksConnectTimeoutExpression", oidcMechanismDefinition.jwksConnectTimeout(), 500,
+                                                oidcMechanismDefinition.jwksConnectTimeoutExpression(), immediateOnly);
     }
 
     private Integer evaluateJwksReadTimeout(boolean immediateOnly) {
-        return evaluateIntegerAttribute("jwksReadTimeoutExpression", oidcMechanismDefinition.jwksReadTimeout(), 500,
-                                        oidcMechanismDefinition.jwksReadTimeoutExpression(), immediateOnly);
+        return ELUtils.evaluateIntegerAttribute("jwksReadTimeoutExpression", oidcMechanismDefinition.jwksReadTimeout(), 500,
+                                                oidcMechanismDefinition.jwksReadTimeoutExpression(), immediateOnly);
     }
 
     private Boolean evaluateTokenAutoRefresh(boolean immediateOnly) {
-        return evaluateBooleanAttribute("tokenAutoRefreshExpression", oidcMechanismDefinition.tokenAutoRefresh(), false,
-                                        oidcMechanismDefinition.tokenAutoRefreshExpression(), immediateOnly);
+        return ELUtils.evaluateBooleanAttribute("tokenAutoRefreshExpression", oidcMechanismDefinition.tokenAutoRefresh(), false,
+                                                oidcMechanismDefinition.tokenAutoRefreshExpression(), immediateOnly);
     }
 
     private Integer evaluateTokenMinValidity(boolean immediateOnly) {
-        return evaluateIntegerAttribute("tokenMinValidityExpression", oidcMechanismDefinition.tokenMinValidity(), 10000,
-                                        oidcMechanismDefinition.tokenMinValidityExpression(), immediateOnly);
-    }
-
-    @SuppressWarnings("static-access")
-    @FFDCIgnore(IllegalArgumentException.class)
-    private String evaluateStringAttribute(String attributeName, String attribute, String attributeDefault, boolean immediateOnly) {
-        try {
-            return elHelper.processString(attributeName, attribute, immediateOnly);
-        } catch (IllegalArgumentException e) {
-            if (immediateOnly && elHelper.isDeferredExpression(attribute)) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, attributeName, "Returning null since " + attributeName + " is a deferred expression and this is called on initialization.");
-                }
-                return null;
-            }
-
-            issueWarningMessage(attributeName, attribute, attributeDefault);
-
-            return attributeDefault;
-        }
-    }
-
-    @SuppressWarnings("static-access")
-    @FFDCIgnore(IllegalArgumentException.class)
-    private Boolean evaluateBooleanAttribute(String attributeName, boolean attribute, boolean attributeDefault, String attributeExpression, boolean immediateOnly) {
-        try {
-            return elHelper.processBoolean(attributeName, attributeExpression, attribute, immediateOnly);
-        } catch (IllegalArgumentException e) {
-            if (immediateOnly && elHelper.isDeferredExpression(attributeExpression)) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, attributeName, "Returning null since " + attributeName + " is a deferred expression and this is called on initialization.");
-                }
-                return null;
-            }
-
-            issueWarningMessage(attributeName, attributeExpression == null ? attribute : attributeExpression, attributeDefault);
-
-            return attributeDefault;
-        }
-    }
-
-    @SuppressWarnings("static-access")
-    @FFDCIgnore(IllegalArgumentException.class)
-    private Integer evaluateIntegerAttribute(String attributeName, int attribute, int attributeDefault, String attributeExpression, boolean immediateOnly) {
-        try {
-            return elHelper.processInt(attributeName, attributeExpression, attribute, immediateOnly);
-        } catch (IllegalArgumentException e) {
-            if (immediateOnly && elHelper.isDeferredExpression(attributeExpression)) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, attributeName, "Returning null since " + attributeName + " is a deferred expression and this is called on initialization.");
-                }
-                return null;
-            }
-
-            issueWarningMessage(attributeName, attributeExpression == null ? attribute : attributeExpression, attributeDefault);
-
-            return attributeDefault;
-        }
+        return ELUtils.evaluateIntegerAttribute("tokenMinValidityExpression", oidcMechanismDefinition.tokenMinValidity(), 10000,
+                                                oidcMechanismDefinition.tokenMinValidityExpression(), immediateOnly);
     }
 
     private void issueWarningMessage(String attributeName, Object valueProvided, Object attributeDefault) {
@@ -523,8 +467,8 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
      * the ElHelper's project.
      *
      * @param promptExpression The EL expression .
-     * @param prompt           The non-EL value.
-     * @param immediateOnly    Return null if the value is a deferred EL expression.
+     * @param prompt The non-EL value.
+     * @param immediateOnly Return null if the value is a deferred EL expression.
      *
      * @return The validated useFor types.
      */
@@ -594,8 +538,8 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
      * the ElHelper's project.
      *
      * @param displayExpression The EL expression.
-     * @param display           The non-EL value.
-     * @param immediateOnly     Return null if the value is a deferred EL expression.
+     * @param display The non-EL value.
+     * @param immediateOnly Return null if the value is a deferred EL expression.
      *
      * @return The validated useFor types.
      */

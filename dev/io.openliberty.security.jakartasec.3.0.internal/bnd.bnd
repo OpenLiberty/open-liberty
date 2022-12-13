@@ -28,6 +28,7 @@ Private-Package: io.openliberty.security.jakartasec.internal.resources.*
 Export-Package: \
     io.openliberty.security.jakartasec,\
     io.openliberty.security.jakartasec.credential,\
+    io.openliberty.security.jakartasec.el,\
     io.openliberty.security.jakartasec.identitystore,\
     io.openliberty.security.jakartasec.tokens
 
