@@ -84,6 +84,8 @@ import jakarta.faces.render.RendererWrapper;
 import jakarta.faces.validator.FacesValidator;
 import jakarta.faces.validator.Validator;
 import jakarta.faces.view.ViewDeclarationLanguage;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -1581,9 +1583,16 @@ public class ApplicationImpl extends Application
                     if (!pd.getPropertyType().isPrimitive())
                     {
                         Object defaultValue;
+
+                        Function<Object, Object> readFunction = null;
                         if (pd instanceof LambdaPropertyDescriptor)
                         {
-                            defaultValue = ((LambdaPropertyDescriptor) pd).getReadFunction().apply(converter);
+                            readFunction = ((LambdaPropertyDescriptor) pd).getReadFunction();
+                        }
+
+                        if (readFunction != null)
+                        {
+                            defaultValue = readFunction.apply(converter);
                         }
                         else
                         {
@@ -1597,9 +1606,16 @@ public class ApplicationImpl extends Application
                     }
 
                     Object convertedValue = ClassUtils.convertToType(property.getDefaultValue(), pd.getPropertyType());
+
+                    BiConsumer<Object, Object> writeFunction = null;
                     if (pd instanceof LambdaPropertyDescriptor)
                     {
-                        ((LambdaPropertyDescriptor) pd).getWriteFunction().accept(converter, convertedValue);
+                        writeFunction = ((LambdaPropertyDescriptor) pd).getWriteFunction();
+                    }
+
+                    if (writeFunction != null)
+                    {
+                        writeFunction.accept(converter, convertedValue);
                     }
                     else
                     {

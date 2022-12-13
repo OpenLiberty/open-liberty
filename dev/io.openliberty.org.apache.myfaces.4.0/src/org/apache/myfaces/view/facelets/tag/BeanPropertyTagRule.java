@@ -41,21 +41,21 @@ public final class BeanPropertyTagRule extends MetaRule
     @Override
     public Metadata applyRule(String name, TagAttribute attribute, MetadataTarget meta)
     {
+        BiConsumer<Object, Object> writeFunction = null;
         if (meta instanceof LambdaMetadataTargetImpl)
         {
-            BiConsumer<Object, Object> f = ((LambdaMetadataTargetImpl) meta).getWriteFunction(name);
+            writeFunction = ((LambdaMetadataTargetImpl) meta).getWriteFunction(name);
+        }
 
-            // if the property is writable
-            if (f != null)
+        if (writeFunction != null)
+        {
+            if (attribute.isLiteral())
             {
-                if (attribute.isLiteral())
-                {
-                    return new LiteralPropertyMetadata(meta.getPropertyType(name), f, attribute);
-                }
-                else
-                {
-                    return new DynamicPropertyMetadata(meta.getPropertyType(name), f, attribute);
-                }
+                return new LiteralPropertyMetadata(meta.getPropertyType(name), writeFunction, attribute);
+            }
+            else
+            {
+                return new DynamicPropertyMetadata(meta.getPropertyType(name), writeFunction, attribute);
             }
         }
         else

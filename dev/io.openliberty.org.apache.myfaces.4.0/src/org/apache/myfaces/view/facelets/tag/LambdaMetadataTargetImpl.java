@@ -105,16 +105,10 @@ public class LambdaMetadataTargetImpl extends MetadataTarget
  
     public LambdaPropertyDescriptor getLambdaProperty(String name)
     {
-        PropertyDescriptorWrapper wrapper = propertyDescriptors.get(name);
-
-        if (wrapper instanceof LambdaPropertyDescriptor)
-        {
-            return (LambdaPropertyDescriptor) wrapper;
-        }
-        else
-        {
-            return null;
-        }
+        PropertyDescriptorWrapper pdw = propertyDescriptors.get(name);
+        return pdw instanceof LambdaPropertyDescriptor
+                ? (LambdaPropertyDescriptor) pdw
+                : null;
     }
 
     public Function<Object, Object> getReadFunction(String name)

@@ -28,6 +28,8 @@ import jakarta.el.ELException;
 import jakarta.el.PropertyNotFoundException;
 import jakarta.el.PropertyNotWritableException;
 import jakarta.faces.context.FacesContext;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import org.apache.myfaces.core.api.shared.lang.LambdaPropertyDescriptor;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorUtils;
 import org.apache.myfaces.core.api.shared.lang.PropertyDescriptorWrapper;
@@ -70,11 +72,18 @@ public class LambdaBeanELResolver extends BeanELResolver
         try
         {
             PropertyDescriptorWrapper pd = getPropertyDescriptor(base, property);
+
+            Function<Object, Object> readFunction = null;
             if (pd instanceof LambdaPropertyDescriptor)
             {
-                return ((LambdaPropertyDescriptor) pd).getReadFunction().apply(base);
+                readFunction = ((LambdaPropertyDescriptor) pd).getReadFunction();
             }
 
+            if (readFunction != null)
+            {
+                return readFunction.apply(base);
+            }
+            
             return pd.getWrapped().getReadMethod().invoke(base);
         }
         catch (Exception e)
@@ -104,9 +113,15 @@ public class LambdaBeanELResolver extends BeanELResolver
 
         try
         {
+            BiConsumer<Object, Object> writeFunction = null;
             if (pd instanceof LambdaPropertyDescriptor)
             {
-                ((LambdaPropertyDescriptor) pd).getWriteFunction().accept(base, value);
+                writeFunction = ((LambdaPropertyDescriptor) pd).getWriteFunction();
+            }
+
+            if (writeFunction != null)
+            {
+                writeFunction.accept(base, value);
             }
             else
             {
