@@ -235,9 +235,10 @@ public class LaunchArguments {
                                     }
                                 }
                                 String saveValue = value;
+
                                 value = KernelUtils.parseDuration(value, TimeUnit.SECONDS);
 
-                                if (!isValidTimeoutValue(value)) {
+                                if (saveValue.startsWith("-") || !isValidTimeoutValue(value)) {
                                     System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.badOptionValue"), saveValue, arg));
                                     returnValue = ReturnCode.BAD_ARGUMENT;
                                     break;
