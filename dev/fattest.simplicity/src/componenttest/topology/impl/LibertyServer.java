@@ -4855,9 +4855,6 @@ public class LibertyServer implements LogMonitorClient {
     public RemoteFile getConsoleLogFile() throws Exception {
         // Find the currently configured/in-use console log file.
         final RemoteFile remoteFile;
-        if (consoleAbsPath == null) {
-            return null;
-        }
         if (machineOS == OperatingSystem.ZOS) {
             remoteFile = new RemoteFile(machine, consoleAbsPath, Charset.forName(EBCDIC_CHARSET_NAME));
         } else {
