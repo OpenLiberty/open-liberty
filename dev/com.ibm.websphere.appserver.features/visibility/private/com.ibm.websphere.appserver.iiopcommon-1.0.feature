@@ -59,7 +59,8 @@ IBM-Process-Types: server, \
 -features=com.ibm.websphere.appserver.channelfw-1.0
 -bundles=com.ibm.ws.org.apache.yoko.corba.spec.1.5, \
  com.ibm.ws.org.apache.yoko.osgi.1.5, \
- com.ibm.ws.org.apache.servicemix.bundles.bcel.5.2, \
+ io.openliberty.org.apache.bcel, \
+ com.ibm.ws.org.apache.commons.lang3, \
  com.ibm.ws.org.apache.yoko.rmi.impl.1.5, \
  com.ibm.ws.org.apache.yoko.core.1.5, \
  com.ibm.ws.org.apache.yoko.util.1.5, \
