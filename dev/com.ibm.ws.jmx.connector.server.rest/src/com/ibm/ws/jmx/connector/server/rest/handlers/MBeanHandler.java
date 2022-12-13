@@ -14,6 +14,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanInfo;
@@ -113,22 +117,35 @@ public class MBeanHandler implements RESTHandler {
         OutputHelper.writeObjectInstanceOutput(response, instanceWrapper, converter);
     }
 
+    public static String deMunge(String objectName, String uri) {
+        //String decodedURI = URLDecoder.decode(uri, StandardCharsets.UTF_8);
+        String decodedURI = RESTHelper.URLDecoder(uri, JSONConverter.getConverter());
+        String regexPattern = "\\Q" + objectName.replaceAll("/", "\\\\E/+\\\\Q") + "\\E";
+        Pattern pattern = Pattern.compile(regexPattern);
+        Matcher matcher = pattern.matcher(decodedURI);
+        boolean matchFound = matcher.find();
+        if (matchFound) {
+        // The group is in fact what we want, it is the new version of objectName
+        //log("Match found: " + matcher.group());
+            return matcher.group();
+        } else {
+        //log("Match not found");
+            throw new RuntimeException("Wibble");
+        }
+    }
+
     private void objectName(RESTRequest request, RESTResponse response) {
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
 	System.out.println("******\nName is : " + objectName + "\n*******\n");
 	System.out.println("URI from request is: " + request.getURI());
 	System.out.println("Path is : " + request.getPath());
 
-	String prefix = APIConstants.JMX_CONNECTOR_API_ROOT_PATH + APIConstants.PATH_MBEANS + "/";
-	String uri = request.getURI();
-	int start = uri.indexOf(prefix) + prefix.length();
-	System.out.println("start is '" + start + "'");
-	String codedName = request.getURI().substring(start);
-	System.out.println("Coded name is '" + codedName + "'");
+	if (objectName.indexOf('/') != -1) {
+		objectName = deMunge(objectName, request.getURI());
+	}
 
         //Get the object for ObjectName
-        //ObjectName objectNameObj = RESTHelper.objectNameConverter(objectName, true, null);
-        ObjectName objectNameObj = RESTHelper.objectNameConverter(codedName, true, null);
+        ObjectName objectNameObj = RESTHelper.objectNameConverter(objectName, true, null);
 
         //Fetch the MBeanInfo
         MBeanInfo mbeanInfo = MBeanServerHelper.getMBeanInfo(objectNameObj);

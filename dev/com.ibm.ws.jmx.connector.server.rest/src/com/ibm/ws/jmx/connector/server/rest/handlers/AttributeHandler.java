@@ -112,6 +112,9 @@ public class AttributeHandler implements RESTHandler {
 
     private void getAttributes(RESTRequest request, RESTResponse response) {
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+        if (objectName.indexOf('/') != -1) {
+                objectName = MBeanHandler.deMunge(objectName, request.getURI());
+        }
         List<String> queryAttributes = RESTHelper.getQueryParams(request, APIConstants.PARAM_ATTRIBUTE);
 
         if (RESTHelper.containsSingleRoutingContext(request)) {
@@ -149,6 +152,9 @@ public class AttributeHandler implements RESTHandler {
         RESTHelper.ensureConsumesJson(request);
 
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+        if (objectName.indexOf('/') != -1) {
+                objectName = MBeanHandler.deMunge(objectName, request.getURI());
+        }
         InputStream is = RESTHelper.getInputStream(request);
 
         //Fetch a converter
@@ -175,6 +181,9 @@ public class AttributeHandler implements RESTHandler {
 
     private void getAttribute(RESTRequest request, RESTResponse response) {
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+        if (objectName.indexOf('/') != -1) {
+                objectName = MBeanHandler.deMunge(objectName, request.getURI());
+        }
         String attributeName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_ATTRIBUTE);
 
         if (RESTHelper.containsSingleRoutingContext(request)) {
@@ -199,6 +208,9 @@ public class AttributeHandler implements RESTHandler {
         RESTHelper.ensureConsumesJson(request);
 
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+        if (objectName.indexOf('/') != -1) {
+                objectName = MBeanHandler.deMunge(objectName, request.getURI());
+        }
         String attributeName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_ATTRIBUTE);
         InputStream is = RESTHelper.getInputStream(request);
 
