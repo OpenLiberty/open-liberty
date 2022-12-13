@@ -263,4 +263,4 @@ option-desc.stop.timeout=\
 \t                                                                     \n\
 \tThe default timeout value is 30 seconds. If the server consistently  \n\
 \ttakes longer than 30 seconds to stop, consider increasing the timeout\n\
-\tvalue by using the --timeout option.                        \n\
+\tvalue by using the --timeout option.                                 \n
