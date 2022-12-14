@@ -43,6 +43,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 import io.openliberty.org.apache.faces40.fat.layoutattribute.Item;
 import io.openliberty.org.apache.faces40.fat.layoutattribute.ShoppingCenterBean;
+import io.openliberty.org.apache.myfaces40.fat.FATSuite;
 
 /**
  * Tests for the <h:selectManyCheckBox/> and <h:selectOneRadio/> layout="list" attribute which is a new feature for Faces 4.0.
@@ -67,7 +68,7 @@ public class LayoutAttributeTests {
 
     //Data structures
     private enum Forms {
-        DEAFULT("testNoLayoutNoBorder=true"),
+        DEFAULT("testNoLayoutNoBorder=true"),
         WITH_LAYOUT("testWithLayoutNoBorder=true"),
         WITH_LAYOUT_WITH_BORDER("testWithLayoutWithBorder=true");
 
@@ -115,11 +116,10 @@ public class LayoutAttributeTests {
     @Test
     public void testSelectManyCheckBoxDefault() throws Exception {
         //Test default layout and border
-        testURL = createURL(SELECT_MANY_CHECKBOX_PAGE, Forms.DEAFULT, null, null);
+        testURL = createURL(SELECT_MANY_CHECKBOX_PAGE, Forms.DEFAULT, null, null);
         try (WebClient webClient = new WebClient()) {
             HtmlPage page = (HtmlPage) webClient.getPage(testURL);
-            Log.info(c, name.getMethodName(), page.asXml()); //used for debugging
-            writeOutputToFile(page.asXml(), name.getMethodName() + ".html");
+            FATSuite.logOutputForDebugging(server, page.asXml(), name.getMethodName() + ".html");
 
             assertCorrectLayout(page, HtmlCheckBoxInput.class, items.get(0), true, false, null);
         }
@@ -132,8 +132,7 @@ public class LayoutAttributeTests {
         try (WebClient webClient = new WebClient()) {
             // Drive a request to the page.
             HtmlPage page = (HtmlPage) webClient.getPage(testURL);
-            Log.info(c, name.getMethodName(), page.asXml()); //used for debugging
-            writeOutputToFile(page.asXml(), name.getMethodName() + ".list.html");
+            FATSuite.logOutputForDebugging(server, page.asXml(), name.getMethodName() + ".list.html");
 
             assertCorrectLayout(page, HtmlCheckBoxInput.class, items.get(1), false, false, null);
         }
@@ -143,8 +142,7 @@ public class LayoutAttributeTests {
         try (WebClient webClient = new WebClient()) {
             // Drive a request to the page.
             HtmlPage page = (HtmlPage) webClient.getPage(testURL);
-            Log.info(c, name.getMethodName(), page.asXml()); //used for debugging
-            writeOutputToFile(page.asXml(), name.getMethodName() + ".pageDirection.html");
+            FATSuite.logOutputForDebugging(server, page.asXml(), name.getMethodName() + ".pageDirection.html");
 
             assertCorrectLayout(page, HtmlCheckBoxInput.class, items.get(2), true, false, null);
         }
@@ -154,8 +152,7 @@ public class LayoutAttributeTests {
         try (WebClient webClient = new WebClient()) {
             // Drive a request to the page.
             HtmlPage page = (HtmlPage) webClient.getPage(testURL);
-            Log.info(c, name.getMethodName(), page.asXml()); //used for debugging
-            writeOutputToFile(page.asXml(), name.getMethodName() + ".invalid.html");
+            FATSuite.logOutputForDebugging(server, page.asXml(), name.getMethodName() + ".invalid.html");
 
             server.setTraceMarkToEndOfDefaultTrace();
             assertCorrectLayout(page, HtmlCheckBoxInput.class, items.get(3), true, false, null);
@@ -172,8 +169,7 @@ public class LayoutAttributeTests {
         try (WebClient webClient = new WebClient()) {
             // Drive a request to the page.
             HtmlPage page = (HtmlPage) webClient.getPage(testURL);
-            Log.info(c, name.getMethodName(), page.asXml()); //used for debugging
-            writeOutputToFile(page.asXml(), name.getMethodName() + ".list.html");
+            FATSuite.logOutputForDebugging(server, page.asXml(), name.getMethodName() + ".list.html");
 
             assertCorrectLayout(page, HtmlCheckBoxInput.class, items.get(4), false, false, 5);
         }
@@ -183,8 +179,7 @@ public class LayoutAttributeTests {
         try (WebClient webClient = new WebClient()) {
             // Drive a request to the page.
             HtmlPage page = (HtmlPage) webClient.getPage(testURL);
-            Log.info(c, name.getMethodName(), page.asXml()); //used for debugging
-            writeOutputToFile(page.asXml(), name.getMethodName() + ".pageDirection.html");
+            FATSuite.logOutputForDebugging(server, page.asXml(), name.getMethodName() + ".pageDirection.html");
 
             assertCorrectLayout(page, HtmlCheckBoxInput.class, items.get(5), true, true, 10);
         }
@@ -194,8 +189,7 @@ public class LayoutAttributeTests {
         try (WebClient webClient = new WebClient()) {
             // Drive a request to the page.
             HtmlPage page = (HtmlPage) webClient.getPage(testURL);
-            Log.info(c, name.getMethodName(), page.asXml()); //used for debugging
-            writeOutputToFile(page.asXml(), name.getMethodName() + ".invalid.html");
+            FATSuite.logOutputForDebugging(server, page.asXml(), name.getMethodName() + ".invalid.html");
 
             server.setTraceMarkToEndOfDefaultTrace();
             assertCorrectLayout(page, HtmlCheckBoxInput.class, items.get(6), true, true, 15);
@@ -207,12 +201,11 @@ public class LayoutAttributeTests {
     @Test
     public void testSelectOneRadioDefault() throws Exception {
         //Test default layout and border
-        testURL = createURL(SELECT_ONE_RADIO_PAGE, Forms.DEAFULT, null, null);
+        testURL = createURL(SELECT_ONE_RADIO_PAGE, Forms.DEFAULT, null, null);
         try (WebClient webClient = new WebClient()) {
             // Drive a request to the page.
             HtmlPage page = (HtmlPage) webClient.getPage(testURL);
-            Log.info(c, name.getMethodName(), page.asXml()); //used for debugging
-            writeOutputToFile(page.asXml(), name.getMethodName() + ".html");
+            FATSuite.logOutputForDebugging(server, page.asXml(), name.getMethodName() + ".html");
 
             assertCorrectLayout(page, HtmlRadioButtonInput.class, items.get(0), true, false, null);
         }
@@ -225,8 +218,7 @@ public class LayoutAttributeTests {
         try (WebClient webClient = new WebClient()) {
             // Drive a request to the page.
             HtmlPage page = (HtmlPage) webClient.getPage(testURL);
-            Log.info(c, name.getMethodName(), page.asXml()); //used for debugging
-            writeOutputToFile(page.asXml(), name.getMethodName() + ".list.html");
+            FATSuite.logOutputForDebugging(server, page.asXml(), name.getMethodName() + ".list.html");
 
             assertCorrectLayout(page, HtmlRadioButtonInput.class, items.get(1), false, false, null);
         }
@@ -236,8 +228,7 @@ public class LayoutAttributeTests {
         try (WebClient webClient = new WebClient()) {
             // Drive a request to the page.
             HtmlPage page = (HtmlPage) webClient.getPage(testURL);
-            Log.info(c, name.getMethodName(), page.asXml()); //used for debugging
-            writeOutputToFile(page.asXml(), name.getMethodName() + ".pageDirection.html");
+            FATSuite.logOutputForDebugging(server, page.asXml(), name.getMethodName() + ".pageDirection.html");
 
             assertCorrectLayout(page, HtmlRadioButtonInput.class, items.get(2), true, false, null);
         }
@@ -247,8 +238,7 @@ public class LayoutAttributeTests {
         try (WebClient webClient = new WebClient()) {
             // Drive a request to the page.
             HtmlPage page = (HtmlPage) webClient.getPage(testURL);
-            Log.info(c, name.getMethodName(), page.asXml()); //used for debugging
-            writeOutputToFile(page.asXml(), name.getMethodName() + ".invalid.html");
+            FATSuite.logOutputForDebugging(server, page.asXml(), name.getMethodName() + ".invalid.html");
 
             server.setTraceMarkToEndOfDefaultTrace();
             assertCorrectLayout(page, HtmlRadioButtonInput.class, items.get(3), true, false, null);
@@ -264,10 +254,8 @@ public class LayoutAttributeTests {
         try (WebClient webClient = new WebClient()) {
             // Drive a request to the page.
             HtmlPage page = (HtmlPage) webClient.getPage(testURL);
-            Log.info(c, name.getMethodName(), page.asXml()); //used for debugging
-            writeOutputToFile(page.asXml(), name.getMethodName() + ".list.html");
+            FATSuite.logOutputForDebugging(server, page.asXml(), name.getMethodName() + ".list.html");
 
-            //FIXME boarders are created here!
             assertCorrectLayout(page, HtmlRadioButtonInput.class, items.get(4), false, false, 5);
         }
 
@@ -276,8 +264,7 @@ public class LayoutAttributeTests {
         try (WebClient webClient = new WebClient()) {
             // Drive a request to the page.
             HtmlPage page = (HtmlPage) webClient.getPage(testURL);
-            Log.info(c, name.getMethodName(), page.asXml()); //used for debugging
-            writeOutputToFile(page.asXml(), name.getMethodName() + ".pageDirection.html");
+            FATSuite.logOutputForDebugging(server, page.asXml(), name.getMethodName() + ".pageDirection.html");
 
             assertCorrectLayout(page, HtmlRadioButtonInput.class, items.get(5), true, true, 10);
         }
@@ -287,8 +274,7 @@ public class LayoutAttributeTests {
         try (WebClient webClient = new WebClient()) {
             // Drive a request to the page.
             HtmlPage page = (HtmlPage) webClient.getPage(testURL);
-            Log.info(c, name.getMethodName(), page.asXml()); //used for debugging
-            writeOutputToFile(page.asXml(), name.getMethodName() + ".invalid.html");
+            FATSuite.logOutputForDebugging(server, page.asXml(), name.getMethodName() + ".invalid.html");
 
             server.setTraceMarkToEndOfDefaultTrace();
             assertCorrectLayout(page, HtmlRadioButtonInput.class, items.get(6), true, true, 15);
@@ -363,20 +349,5 @@ public class LayoutAttributeTests {
         assertEquals("Element with ID form:input:" + formId + " should have a value of " + testItem.getId() + " but was " + page.getElementById(formId).getAttribute("value"),
                      testItem.getId(),
                      Long.parseLong(page.getElementById(formId).getAttribute("value")));
-    }
-
-    private boolean writeOutputToFile(String xmlContent, String fileName) {
-        //Re-enable for easier debugging
-//        File outputDir = new File(server.getLogsRoot(), "output");
-//        File outputFile = new File(outputDir, fileName);
-//        outputDir.mkdirs();
-//
-//        Log.info(c, "writeOutputToFile", outputFile.getAbsolutePath());
-//        try (FileOutputStream fos = new FileOutputStream(outputFile, true)) {
-//            fos.write(xmlContent.getBytes());
-//        } catch (Exception e) {
-//            return false;
-//        }
-        return true;
     }
 }
