@@ -923,13 +923,11 @@ serverUmask()
   fi
 }
 
-##  kill process associated with pid passed in as argument.
+##  Silently kill the process associated with pid passed in as argument.
+##  No output if the pid does not exist.
 ##
-##
-killIfRunning() {
-    if ps --pid ${1} > /dev/null 2>&1 ; then
-        kill ${1}
-    fi        
+killSilent() {
+  kill ${1} > /dev/null 2>&1
 }
 ##
 ## javaCmd: Execute a java-based command.  Arguments are:
@@ -1048,7 +1046,7 @@ javaCmd()
     TAIL_PID=$!
     # trap on the signals here to ensure the background tail process ends.
     trap "exit" INT TERM
-    trap "killIfRunning $TAIL_PID" EXIT
+    trap "killSilent $TAIL_PID" EXIT
     "${JAVA_CMD}" "$@" >> "${CHECKPOINT_CONSOLE_LOG}" 2>&1 < /dev/null
     rc=$?
     if [ $rc -eq 20 ]; then
@@ -1387,8 +1385,9 @@ criuRestore()
     mkdirs "${X_PID_DIR}"
     rmIfExist "${X_PID_FILE}"
     criu restore --skip-file-rwx-check --cpu-cap=none --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
-      --shell-job --verbosity=${CRIU_LOG_LEVEL} --log-file ${X_LOG_DIR}/checkpoint/restore.log --pidfile ${X_PID_FILE} \
-      --restore-detached ${CRIU_EXTRA_ARGS}
+      --shell-job --verbosity=${CRIU_LOG_LEVEL} --log-file ${X_LOG_DIR}/checkpoint/restore.log ${CRIU_EXTRA_ARGS} \
+      --pidfile ${X_PID_FILE} \
+      --restore-detached
     rc=$?
     PID=`cat ${X_PID_FILE}`
     if [ $rc = 0 ]; then
@@ -1412,7 +1411,7 @@ criuRestore()
     TAIL_PID=$!
     # trap on the signals here to ensure the background tail process ends
     trap "exit" INT TERM
-    trap "killIfRunning $TAIL_PID" EXIT
+    trap "killSilent $TAIL_PID" EXIT
 
     criu restore --skip-file-rwx-check --cpu-cap=none --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
       --shell-job --verbosity=${CRIU_LOG_LEVEL} --log-file ${X_LOG_DIR}/checkpoint/restore.log ${CRIU_EXTRA_ARGS}
