@@ -55,6 +55,8 @@ public class MetricsConfig {
     // Cached WAB service configurations for Private MicroProfile Metrics
     private final WABConfigManager privateWabConfigMgr;
 
+    private ComponentContext componentCtx;
+
     public MetricsConfig() {
         // Initialize WAB configuration managers for public URLs
         publicWabConfigMgr = new WABConfigManager(PUBLIC_MP_METRICS_VAR_NAME, MP_METRICS_ENDPOINT_URL);
@@ -64,6 +66,9 @@ public class MetricsConfig {
 
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> properties) {
+
+        componentCtx = context;
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Activate MetricsConfig", properties);
         }
@@ -105,6 +110,12 @@ public class MetricsConfig {
                 publicWabConfigMgr.processEnableAuthentication(context, true);
             }
         }
+    }
+
+    public synchronized void disableMetricsEndpoint() {
+        Tr.info(tc, "noPrometheusRegistry.info.CWMMC0008I");
+        publicWabConfigMgr.processEnableAuthentication(componentCtx, false);
+        privateWabConfigMgr.processEnableAuthentication(componentCtx, false);
     }
 
     private boolean valueChanged(Object oldValue, Object newValue) {
