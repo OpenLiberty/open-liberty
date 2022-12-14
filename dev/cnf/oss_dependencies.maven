@@ -152,6 +152,7 @@ io.smallrye.common:smallrye-common-function:1.6.0
 io.smallrye.config:smallrye-config-common:2.5.1
 io.smallrye.config:smallrye-config-core:2.5.1
 io.smallrye.config:smallrye-config:2.5.1
+io.smallrye:jandex:3.0.5
 io.smallrye:smallrye-graphql-api:1.0.26
 io.smallrye:smallrye-graphql-cdi:1.0.26
 io.smallrye:smallrye-graphql-client-api:1.0.26
