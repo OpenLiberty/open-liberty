@@ -41,6 +41,6 @@ Export-Package: \
     io.openliberty.jakarta.validation.3.0;version=latest,\
     com.ibm.websphere.org.osgi.service.component;version=latest,\
     io.openliberty.com.fasterxml.jackson;version=latest,\
-    com.ibm.ws.org.jboss.jandex;version=latest,\
+    io.openliberty.io.smallrye.jandex3;version=latest,\
     com.ibm.ws.org.jboss.logging;version=latest,\
     io.openliberty.org.eclipse.microprofile.config.3.0;version=latest
