@@ -98,11 +98,11 @@ public class MetadataUtils {
         return value;
     }
 
-    public static String[] getStringArrayValueFromProviderDiscoveryMetadata(OidcClientConfig oidcClientConfig, Function<OidcProviderMetadata, String[]> metadataMethodToCall,
-                                                                            String discoveryMetadataKey) throws OidcDiscoveryException, OidcClientConfigurationException {
+    public static String[] getStringArrayValueFromProviderOrDiscoveryMetadata(OidcClientConfig oidcClientConfig, Function<OidcProviderMetadata, String[]> metadataMethodToCall,
+                                                                              String discoveryMetadataKey) throws OidcDiscoveryException, OidcClientConfigurationException {
         if (metadataMethodToCall != null) {
             String[] value = getValueFromProviderMetadata(oidcClientConfig, metadataMethodToCall, discoveryMetadataKey);
-            if (value != null) {
+            if (value != null && value.length > 0) {
                 return value;
             }
         }
@@ -156,17 +156,17 @@ public class MetadataUtils {
     }
 
     public static String[] getIdTokenSigningAlgorithmsSupported(OidcClientConfig oidcClientConfig) throws OidcDiscoveryException, OidcClientConfigurationException {
-        return getStringArrayValueFromProviderDiscoveryMetadata(oidcClientConfig,
-                                                                metadata -> metadata.getIdTokenSigningAlgorithmsSupported(),
-                                                                OidcDiscoveryConstants.METADATA_KEY_ID_TOKEN_SIGNING_ALG_VALUES_SUPPORTED);
+        return getStringArrayValueFromProviderOrDiscoveryMetadata(oidcClientConfig,
+                                                                  metadata -> metadata.getIdTokenSigningAlgorithmsSupported(),
+                                                                  OidcDiscoveryConstants.METADATA_KEY_ID_TOKEN_SIGNING_ALG_VALUES_SUPPORTED);
     }
 
     @FFDCIgnore(Exception.class)
     public static String[] getUserInfoSigningAlgorithmsSupported(OidcClientConfig oidcClientConfig) throws OidcDiscoveryException, OidcClientConfigurationException {
         try {
-            return getStringArrayValueFromProviderDiscoveryMetadata(oidcClientConfig,
-                                                                    null,
-                                                                    OidcDiscoveryConstants.METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED);
+            return getStringArrayValueFromProviderOrDiscoveryMetadata(oidcClientConfig,
+                                                                      null,
+                                                                      OidcDiscoveryConstants.METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED);
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Caught an exception getting " + OidcDiscoveryConstants.METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED + ": " + e);
