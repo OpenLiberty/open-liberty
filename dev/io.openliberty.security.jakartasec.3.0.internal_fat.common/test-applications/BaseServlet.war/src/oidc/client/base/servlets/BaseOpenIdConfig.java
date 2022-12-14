@@ -118,6 +118,15 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         return value;
     }
 
+    public boolean getUseNonceExpression() {
+
+        boolean value = true;
+        if (config.containsKey(Constants.USE_NONCE_EXPRESSION)) {
+            value = getBooleanValue(Constants.USE_NONCE_EXPRESSION);
+        }
+        return value;
+    }
+
     public boolean getTokenAutoRefreshExpression() {
 
         boolean value = false;

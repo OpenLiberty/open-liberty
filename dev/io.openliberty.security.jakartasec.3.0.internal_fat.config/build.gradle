@@ -51,6 +51,7 @@ autoFVT.doLast {
       from project(':io.openliberty.security.jakartasec.3.0.internal_fat.common').file('publish/shared/config')
       into new File(autoFvtDir, 'publish/shared/config')
       exclude 'oidcProvider.xml'
+      exclude 'oidcProvider_useNonce.xml'
       include '**/*.xml'
    }
  
@@ -88,6 +89,7 @@ autoFVT.doLast {
 	'jakartasec-3.0_fat.config.rp.ELOverride',
 	'jakartasec-3.0_fat.config.rp.scope',
 	'jakartasec-3.0_fat.config.rp.responseMode',
+	'jakartasec-3.0_fat.config.rp.useNonce',
 	'jakartasec-3.0_fat.config.rp.userinfo.jwt.jwt',
 	'jakartasec-3.0_fat.config.rp.userinfo.jwt.opaque',
 	'jakartasec-3.0_fat.config.rp.userinfo.json.jwt',
