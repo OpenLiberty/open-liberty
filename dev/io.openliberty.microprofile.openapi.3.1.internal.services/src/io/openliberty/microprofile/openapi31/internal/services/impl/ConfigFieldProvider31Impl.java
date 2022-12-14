@@ -10,7 +10,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.openapi31.internal.services.impl;import java.util.Arrays;
+package io.openliberty.microprofile.openapi31.internal.services.impl;
+
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Function;
@@ -22,6 +24,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import io.openliberty.microprofile.openapi20.internal.services.ConfigField;
 import io.openliberty.microprofile.openapi20.internal.services.ConfigFieldProvider;
 import io.smallrye.openapi.api.OpenApiConfig;
+import io.smallrye.openapi.api.OpenApiConfig.DuplicateOperationIdBehavior;
 import io.smallrye.openapi.api.OpenApiConfig.OperationIdStrategy;
 import io.smallrye.openapi.api.constants.OpenApiConstants;
 
@@ -66,6 +69,8 @@ public class ConfigFieldProvider31Impl implements ConfigFieldProvider {
         ALLOW_NAKED_PATH_PARAMETER("allowNakedPathParameter", "allowNakedPathParameter", OpenApiConfig::allowNakedPathParameter, Optional::toString),
         SCAN_PROFILES("getScanProfiles", OpenApiConstants.SCAN_PROFILES, OpenApiConfig::getScanProfiles, ConfigField::serializeSet),
         SCAN_EXCLUDE_PROFILES("getScanExcludeProfiles", OpenApiConstants.SCAN_EXCLUDE_PROFILES, OpenApiConfig::getScanExcludeProfiles, ConfigField::serializeSet),
+        DUPLICATE_OPERATION_ID_BEHAVIOR("getDuplicateOperationIdBehavior", OpenApiConstants.DUPLICATE_OPERATION_ID_BEHAVIOR, OpenApiConfig::getDuplicateOperationIdBehavior, DuplicateOperationIdBehavior::name),
+        REMOVE_UNUSED_SCHEMAS("removeUnusedSchemas", OpenApiConstants.SMALLRYE_REMOVE_UNUSED_SCHEMAS, c -> Boolean.toString(c.removeUnusedSchemas()));
         ;
 
         Function<OpenApiConfig, String> function;
@@ -107,6 +112,16 @@ public class ConfigFieldProvider31Impl implements ConfigFieldProvider {
     @Override
     public Collection<ConfigField> getConfigFields() {
         return Arrays.asList(ConfigField31.values());
+    }
+
+    @Override
+    public String getPathServers(OpenApiConfig config, String path) {
+        return String.join(",", config.pathServers(path));
+    }
+
+    @Override
+    public String getOperationServers(OpenApiConfig config, String operationId) {
+        return String.join(",", config.operationServers(operationId));
     }
 
 }

@@ -55,15 +55,15 @@ public class ConfigSerializer {
             }
         }
         for (String pathName : getPathNames(model)) {
-            Set<String> value = config.pathServers(pathName);
+            String value = configFieldProvider.getPathServers(config, pathName);
             if (value != null && !value.isEmpty()) {
-                result.put("pathServer." + pathName, ConfigField.serializeSet(value));
+                result.put("pathServer." + pathName, value);
             }
         }
         for (String operationId : getOperationIds(model)) {
-            Set<String> value = config.operationServers(operationId);
+            String value = configFieldProvider.getOperationServers(config, operationId);
             if (value != null && !value.isEmpty()) {
-                result.put("operationServer." + operationId, ConfigField.serializeSet(value));
+                result.put("operationServer." + operationId, value);
             }
         }
         return result;
