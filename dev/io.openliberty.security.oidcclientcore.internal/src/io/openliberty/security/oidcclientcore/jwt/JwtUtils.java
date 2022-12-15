@@ -37,13 +37,13 @@ public class JwtUtils {
 
     public static final TraceComponent tc = Tr.register(JwtUtils.class);
 
-    public static JwsSignatureVerifier createJwsSignatureVerifier(JwtContext jwtContext, OidcClientConfig clientConfig) throws Exception {
+    public static JwsSignatureVerifier createJwsSignatureVerifier(JwtContext jwtContext, OidcClientConfig clientConfig, String... signatureAlgorithmsSupported) throws Exception {
         JsonWebStructure jws = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
 
         Key jwtVerificationKey = getJwsVerificationKey(jws, clientConfig);
 
         io.openliberty.security.common.jwt.jws.JwsSignatureVerifier.Builder verifierBuilder = new JwsSignatureVerifier.Builder();
-        JwsSignatureVerifier signatureVerifier = verifierBuilder.key(jwtVerificationKey).signatureAlgorithmsSupported(MetadataUtils.getIdTokenSigningAlgorithmsSupported(clientConfig)).build();
+        JwsSignatureVerifier signatureVerifier = verifierBuilder.key(jwtVerificationKey).signatureAlgorithmsSupported(signatureAlgorithmsSupported).build();
         return signatureVerifier;
     }
 

@@ -19,6 +19,7 @@ public class OidcDiscoveryConstants {
     public static final String METADATA_KEY_ENDSESSION_ENDPOINT = "end_session_endpoint";
     public static final String METADATA_KEY_ISSUER = "issuer";
     public static final String METADATA_KEY_ID_TOKEN_SIGNING_ALG_VALUES_SUPPORTED = "id_token_signing_alg_values_supported";
+    public static final String METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED = "userinfo_signing_alg_values_supported";
 
     public static final String WELL_KNOWN_SUFFIX = ".well-known/openid-configuration";
 

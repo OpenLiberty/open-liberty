@@ -45,6 +45,9 @@ import com.ibm.ws.security.test.common.jwt.utils.JwtUnitTestUtils;
 import io.openliberty.security.common.jwt.exceptions.SignatureAlgorithmNotInAllowedList;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
+import io.openliberty.security.oidcclientcore.config.MetadataUtils;
+import io.openliberty.security.oidcclientcore.config.OidcMetadataService;
+import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoEndpointNotHttpsException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseNot200Exception;
@@ -75,6 +78,7 @@ public class UserInfoRequestorTest extends CommonTestClass {
     private final HttpGet httpGet = mockery.mock(HttpGet.class);
     private final StatusLine statusLine = mockery.mock(StatusLine.class);
     private final OidcProviderMetadata providerMetadata = mockery.mock(OidcProviderMetadata.class);
+    private final OidcMetadataService oidcMetadataService = mockery.mock(OidcMetadataService.class);
 
     private List<NameValuePair> params;
     private Map<String, Object> userInfoResponseMap;
@@ -91,10 +95,16 @@ public class UserInfoRequestorTest extends CommonTestClass {
         userInfoResponseMap = new HashMap<String, Object>();
         userInfoResponseMap.put(HttpConstants.RESPONSEMAP_CODE, httpResponse);
         userInfoResponseMap.put(HttpConstants.RESPONSEMAP_METHOD, httpGet);
+
+        MetadataUtils metadataUtils = new MetadataUtils();
+        metadataUtils.setOidcMetadataService(oidcMetadataService);
     }
 
     @After
     public void tearDown() {
+        MetadataUtils metadataUtils = new MetadataUtils();
+        metadataUtils.unsetOidcMetadataService(oidcMetadataService);
+
         mockery.assertIsSatisfied();
         outputMgr.resetStreams();
     }
@@ -314,6 +324,8 @@ public class UserInfoRequestorTest extends CommonTestClass {
     @Test
     public void test_extractClaimsFromJwtResponse_emptyClaims() throws Exception {
         UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(oidcClientConfig, userInfoEndpoint, accessToken).build();
+        JSONObject discoveryData = new JSONObject();
+        discoveryData.put(OidcDiscoveryConstants.METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED, getUserInfoSigningAlgsSupported("HS256"));
         mockery.checking(new Expectations() {
             {
                 allowing(oidcClientConfig).getProviderMetadata();
@@ -328,8 +340,8 @@ public class UserInfoRequestorTest extends CommonTestClass {
                 will(returnValue(500));
                 one(oidcClientConfig).getJwksReadTimeout();
                 will(returnValue(500));
-                one(providerMetadata).getIdTokenSigningAlgorithmsSupported();
-                will(returnValue("HS256"));
+                one(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
+                will(returnValue(discoveryData));
             }
         });
 
@@ -344,6 +356,8 @@ public class UserInfoRequestorTest extends CommonTestClass {
     @Test
     public void test_extractClaimsFromJwtResponse_signatureAlgorithmNotAllowed() throws Exception {
         UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(oidcClientConfig, userInfoEndpoint, accessToken).build();
+        JSONObject discoveryData = new JSONObject();
+        discoveryData.put(OidcDiscoveryConstants.METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED, getUserInfoSigningAlgsSupported("RS256"));
         mockery.checking(new Expectations() {
             {
                 allowing(oidcClientConfig).getProviderMetadata();
@@ -358,8 +372,8 @@ public class UserInfoRequestorTest extends CommonTestClass {
                 will(returnValue(500));
                 one(oidcClientConfig).getJwksReadTimeout();
                 will(returnValue(500));
-                one(providerMetadata).getIdTokenSigningAlgorithmsSupported();
-                will(returnValue("RS256"));
+                one(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
+                will(returnValue(discoveryData));
             }
         });
 
@@ -377,6 +391,8 @@ public class UserInfoRequestorTest extends CommonTestClass {
     @Test
     public void test_extractClaimsFromJwtResponse_withClaims() throws Exception {
         UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(oidcClientConfig, userInfoEndpoint, accessToken).build();
+        JSONObject discoveryData = new JSONObject();
+        discoveryData.put(OidcDiscoveryConstants.METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED, getUserInfoSigningAlgsSupported("HS256"));
         mockery.checking(new Expectations() {
             {
                 allowing(oidcClientConfig).getProviderMetadata();
@@ -391,8 +407,8 @@ public class UserInfoRequestorTest extends CommonTestClass {
                 will(returnValue(500));
                 one(oidcClientConfig).getJwksReadTimeout();
                 will(returnValue(500));
-                one(providerMetadata).getIdTokenSigningAlgorithmsSupported();
-                will(returnValue("HS256"));
+                one(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
+                will(returnValue(discoveryData));
             }
         });
 
@@ -432,6 +448,14 @@ public class UserInfoRequestorTest extends CommonTestClass {
         assertEquals("Expected sub claim to be " + claims.get("sub") + ", but was " + sub + ".", claims.get("sub"), sub);
         assertEquals("Expected iss claim to be " + claims.get("iss") + ", but was " + iss + ".", claims.get("iss"), iss);
         assertEquals("Expected name claim to be " + claims.get("name") + ", but was " + name + ".", claims.get("name"), name);
+    }
+
+    private JSONArray getUserInfoSigningAlgsSupported(String... algs) {
+        JSONArray algsSupported = new JSONArray();
+        for (String alg : algs) {
+            algsSupported.add(alg);
+        }
+        return algsSupported;
     }
 
 }

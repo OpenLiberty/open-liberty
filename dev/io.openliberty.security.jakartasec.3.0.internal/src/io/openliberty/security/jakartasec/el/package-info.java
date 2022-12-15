@@ -8,29 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.security.oidcclientcore.client;
-
 /**
- *
+ * @version 1.0.0
  */
-public interface OidcProviderMetadata {
-
-    String getAuthorizationEndpoint();
-
-    String getTokenEndpoint();
-
-    String getUserinfoEndpoint();
-
-    String getEndSessionEndpoint();
-
-    String getJwksURI();
-
-    String getIssuer();
-
-    String getSubjectTypeSupported();
-
-    String[] getIdTokenSigningAlgorithmsSupported();
-
-    String getResponseTypeSupported();
-
-}
+@org.osgi.annotation.versioning.Version("1.0.0")
+package io.openliberty.security.jakartasec.el;
