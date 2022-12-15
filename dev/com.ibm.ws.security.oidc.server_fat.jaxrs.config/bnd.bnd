@@ -11,7 +11,8 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-tested.features: appsecurity-4.0, expressionlanguage-4.0, cdi-3.0, pages-3.0, restfulwsclient-3.0, restfulws-3.0, jsonp-2.0
+tested.features: appsecurity-4.0, expressionlanguage-4.0, cdi-3.0, pages-3.0, restfulwsclient-3.0, restfulws-3.0, jsonp-2.0,\
+                 appsecurity-5.0, pages-3.1, restfulws-3.1
 
 src: \
   fat/src

@@ -43,7 +43,7 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
  */
 @SuppressWarnings("restriction")
 @SkipIfSysProp("skip.tests=true")
-@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
+@SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class JCacheDynamicUpdateTest extends BaseTestCase {

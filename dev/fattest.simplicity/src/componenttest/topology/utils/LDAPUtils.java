@@ -523,40 +523,38 @@ public class LDAPUtils {
      */
     private static void logLdapServerInfo() {
         final String METHOD_NAME = "logLDAPServerInfo";
-        Log.info(c, METHOD_NAME, "USE_LOCAL_LDAP_SERVER=" + USE_LOCAL_LDAP_SERVER);
+        Log.info(c, METHOD_NAME, "USE_LOCAL_LDAP_SERVER=" + USE_LOCAL_LDAP_SERVER + '\n' +
 
-        Log.info(c, METHOD_NAME, "Active Directory WAS SVT LDAP Servers");
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_2_NAME=" + LDAP_SERVER_2_NAME);
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_2_PORT=" + LDAP_SERVER_2_PORT + '\n');
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_2_SSL_PORT=" + LDAP_SERVER_2_SSL_PORT + '\n');
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_6_NAME=" + LDAP_SERVER_6_NAME);
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_6_PORT=" + LDAP_SERVER_6_PORT + '\n');
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_6_SSL_PORT=" + LDAP_SERVER_6_SSL_PORT + '\n');
+        "Active Directory WAS SVT LDAP Servers\n" +
+        "\tLDAP_SERVER_2_NAME=" + LDAP_SERVER_2_NAME + '\n' +
+        "\tLDAP_SERVER_2_PORT=" + LDAP_SERVER_2_PORT + '\n' +
+        "\tLDAP_SERVER_2_SSL_PORT=" + LDAP_SERVER_2_SSL_PORT + '\n' +
+        "\tLDAP_SERVER_6_NAME=" + LDAP_SERVER_6_NAME + '\n' +
+        "\tLDAP_SERVER_6_PORT=" + LDAP_SERVER_6_PORT + '\n' +
+        "\tLDAP_SERVER_6_SSL_PORT=" + LDAP_SERVER_6_SSL_PORT + "\n\n" +
 
-        Log.info(c, METHOD_NAME, "IBM Continuous Delivery LDAP Servers");
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_1_NAME=" + LDAP_SERVER_1_NAME);
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_1_PORT=" + LDAP_SERVER_1_PORT + '\n');
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_5_NAME=" + LDAP_SERVER_5_NAME);
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_5_PORT=" + LDAP_SERVER_5_PORT + '\n');
+        "IBM Continuous Delivery LDAP Servers\n" +
+        "\tLDAP_SERVER_1_NAME=" + LDAP_SERVER_1_NAME + '\n' +
+        "\tLDAP_SERVER_1_PORT=" + LDAP_SERVER_1_PORT + '\n' +
+        "\tLDAP_SERVER_5_NAME=" + LDAP_SERVER_5_NAME + '\n' +
+        "\tLDAP_SERVER_5_PORT=" + LDAP_SERVER_5_PORT + "\n\n" +
 
-        Log.info(c, METHOD_NAME, "IBM WAS Security FVT LDAP Servers");
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_4_NAME=" + LDAP_SERVER_4_NAME);
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_4_PORT=" + LDAP_SERVER_4_PORT);
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_4_SSL_PORT=" + LDAP_SERVER_4_SSL_PORT + '\n');
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_7_NAME=" + LDAP_SERVER_7_NAME);
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_7_PORT=" + LDAP_SERVER_7_PORT);
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_7_SSL_PORT=" + LDAP_SERVER_7_SSL_PORT + '\n');
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_8_NAME=" + LDAP_SERVER_8_NAME);
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_8_PORT=" + LDAP_SERVER_8_PORT);
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_8_SSL_PORT=" + LDAP_SERVER_8_SSL_PORT + '\n');
+        "IBM WAS Security FVT LDAP Servers\n" +
+        "\tLDAP_SERVER_4_NAME=" + LDAP_SERVER_4_NAME + '\n' +
+        "\tLDAP_SERVER_4_PORT=" + LDAP_SERVER_4_PORT + '\n' +
+        "\tLDAP_SERVER_4_SSL_PORT=" + LDAP_SERVER_4_SSL_PORT + '\n' +
+        "\tLDAP_SERVER_7_NAME=" + LDAP_SERVER_7_NAME + '\n' +
+        "\tLDAP_SERVER_7_PORT=" + LDAP_SERVER_7_PORT + '\n' +
+        "\tLDAP_SERVER_7_SSL_PORT=" + LDAP_SERVER_7_SSL_PORT + '\n' +
+        "\tLDAP_SERVER_8_NAME=" + LDAP_SERVER_8_NAME + '\n' +
+        "\tLDAP_SERVER_8_PORT=" + LDAP_SERVER_8_PORT + '\n' +
+        "\tLDAP_SERVER_8_SSL_PORT=" + LDAP_SERVER_8_SSL_PORT + "\n\n" +
 
-        Log.info(c, METHOD_NAME, "IBM WAS Security LDAP Servers");
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_10_NAME=" + LDAP_SERVER_10_NAME);
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_10_PORT=" + LDAP_SERVER_10_PORT + '\n');
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_12_NAME=" + LDAP_SERVER_12_NAME);
-        Log.info(c, METHOD_NAME, "           LDAP_SERVER_12_PORT=" + LDAP_SERVER_12_PORT + '\n');
-
-        Log.info(c, METHOD_NAME, "Oracle WAS SVT LDAP Servers -- removed");
+        "IBM WAS Security LDAP Servers\n" +
+        "\tLDAP_SERVER_10_NAME=" + LDAP_SERVER_10_NAME + '\n' +
+        "\tLDAP_SERVER_10_PORT=" + LDAP_SERVER_10_PORT + '\n' +
+        "\tLDAP_SERVER_12_NAME=" + LDAP_SERVER_12_NAME + '\n' +
+        "\tLDAP_SERVER_12_PORT=" + LDAP_SERVER_12_PORT);
 
     }
 

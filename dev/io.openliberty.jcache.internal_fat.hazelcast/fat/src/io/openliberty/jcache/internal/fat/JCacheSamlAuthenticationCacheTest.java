@@ -51,6 +51,7 @@ import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.jcache.internal.fat.docker.KeycloakContainer;
@@ -93,6 +94,9 @@ public class JCacheSamlAuthenticationCacheTest extends BaseTestCase {
         if (JakartaEE9Action.isActive()) {
             JakartaEE9Action.transformApp(Paths.get(server1.getServerRoot() + "/apps/samlclient.war"));
             JakartaEE9Action.transformApp(Paths.get(server2.getServerRoot() + "/apps/samlclient.war"));
+        } else if (JakartaEE10Action.isActive()) {
+            JakartaEE10Action.transformApp(Paths.get(server1.getServerRoot() + "/apps/samlclient.war"));
+            JakartaEE10Action.transformApp(Paths.get(server2.getServerRoot() + "/apps/samlclient.war"));
         }
     }
 

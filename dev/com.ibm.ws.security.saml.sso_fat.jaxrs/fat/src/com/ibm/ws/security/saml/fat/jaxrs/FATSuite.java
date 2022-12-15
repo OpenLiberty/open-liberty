@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE10RepeatAction;
 import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction;
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.saml.fat.jaxrs.IDPInitiated.RSSamlIDPInitiatedAPITests;
@@ -52,7 +53,8 @@ public class FATSuite {
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
             .andWith(new SecurityTestRepeatAction().onlyOnWindows().fullFATOnly())
-            .andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().fullFATOnly());
+            .andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().fullFATOnly())
+            .andWith(new SecurityTestFeatureEE10RepeatAction().notOnWindows().fullFATOnly());
 
     @BeforeClass
     public static void setup() throws Exception {

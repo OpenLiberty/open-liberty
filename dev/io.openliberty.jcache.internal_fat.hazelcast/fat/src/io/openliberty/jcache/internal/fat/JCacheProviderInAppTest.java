@@ -36,6 +36,7 @@ import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
@@ -45,7 +46,7 @@ import componenttest.topology.impl.LibertyServer;
  * can load and is not regressed by our JCache feature.
  */
 @SkipIfSysProp("skip.tests=true")
-@SkipForRepeat(JakartaEE9Action.ID) // No value gained
+@SkipForRepeat({ JakartaEE9Action.ID, JakartaEE10Action.ID }) // No value gained
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class JCacheProviderInAppTest extends BaseTestCase {
