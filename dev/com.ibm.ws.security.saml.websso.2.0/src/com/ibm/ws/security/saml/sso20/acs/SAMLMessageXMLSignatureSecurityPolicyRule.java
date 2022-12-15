@@ -54,7 +54,7 @@ import net.shibboleth.utilities.java.support.resolver.ResolverException;
  * If an optional {@link Validator} for {@link Signature} objects is supplied, this validator will be used to validate
  * the XML Signature element prior to the actual cryptographic validation of the signature. This might for example be
  * used to enforce certain signature profile requirements or to detect signatures upon which it would be unsafe to
- * attempt cryptographic processing. When using the single argument constructuor form, the validator will default to {@link SAMLSignatureProfileValidator}.
+ * attempt cryptographic processing. When using the single argument constructor form, the validator will default to {@link SAMLSignatureProfileValidator}.
  * </p>
  */
 
