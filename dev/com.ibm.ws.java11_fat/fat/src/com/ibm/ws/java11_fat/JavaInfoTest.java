@@ -86,8 +86,8 @@ public class JavaInfoTest extends FATServletClient {
     @Test
     public void testMajorVersion() {
         int major = JavaInfo.majorVersion();
-        assertTrue("Java major version was not within a known range (7-19): " + major,
-                   major >= 7 && major < 20);
+        assertTrue("Java major version was not within a known range (7+): " + major,
+                   major >= 7);
 
         assertEquals(major, fatJavaInfo.majorVersion());
     }
