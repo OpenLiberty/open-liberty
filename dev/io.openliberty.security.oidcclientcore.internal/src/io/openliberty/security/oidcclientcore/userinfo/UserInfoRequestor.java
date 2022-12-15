@@ -13,6 +13,7 @@
 package io.openliberty.security.oidcclientcore.userinfo;
 
 import java.io.IOException;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtContext;
+import org.jose4j.jwx.JsonWebStructure;
 
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
@@ -36,6 +38,8 @@ import io.openliberty.security.common.jwt.jws.JwsSignatureVerifier;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.config.MetadataUtils;
 import io.openliberty.security.oidcclientcore.config.OidcMetadataService;
+import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
+import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoEndpointNotHttpsException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseNot200Exception;
@@ -136,15 +140,52 @@ public class UserInfoRequestor {
     public JSONObject extractClaimsFromJwtResponse(String responseString) throws Exception {
         JwtContext jwtContext = JwtParsingUtils.parseJwtWithoutValidation(responseString);
         if (jwtContext != null) {
-            // Validate the JWS signature only; extract the claims so they can be verified elsewhere
-            String[] signingAlgsSupported = MetadataUtils.getUserInfoSigningAlgorithmsSupported(oidcClientConfig);
-            JwsSignatureVerifier signatureVerifier = JwtUtils.createJwsSignatureVerifier(jwtContext, oidcClientConfig, signingAlgsSupported);
-            JwtClaims claims = signatureVerifier.validateJwsSignature(jwtContext);
+            JwtClaims claims = validateJwsSignatureAndGetClaims(jwtContext);
             if (claims != null) {
                 return JSONObject.parse(claims.toJson());
             }
         }
         return null;
+    }
+
+    /**
+     * Validates the JWS signature only and extracts the claims so they can be verified elsewhere.
+     */
+    JwtClaims validateJwsSignatureAndGetClaims(JwtContext jwtContext) throws Exception {
+        io.openliberty.security.common.jwt.jws.JwsSignatureVerifier.Builder verifierBuilder = verifyJwsAlgHeaderOnly(jwtContext);
+
+        JsonWebStructure jws = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
+        Key jwtVerificationKey = JwtUtils.getJwsVerificationKey(jws, oidcClientConfig);
+
+        JwsSignatureVerifier signatureVerifier = verifierBuilder.key(jwtVerificationKey).build();
+        return signatureVerifier.validateJwsSignature(jwtContext);
+    }
+
+    /**
+     * Validates the "alg" header in the JWT to ensure the token is signed with one of the allowed algorithms. This allows us to
+     * avoid doing the work to fetch the signing key for the token if the algorithm isn't supported.
+     */
+    io.openliberty.security.common.jwt.jws.JwsSignatureVerifier.Builder verifyJwsAlgHeaderOnly(JwtContext jwtContext) throws Exception {
+        String[] signingAlgsAllowed = getSigningAlgorithmsAllowed();
+
+        io.openliberty.security.common.jwt.jws.JwsSignatureVerifier.Builder verifierBuilder = new JwsSignatureVerifier.Builder();
+        verifierBuilder = verifierBuilder.signatureAlgorithmsSupported(signingAlgsAllowed);
+        verifierBuilder.build().verifyAlgHeaderOnly(jwtContext);;
+        return verifierBuilder;
+    }
+
+    @FFDCIgnore(OidcClientConfigurationException.class)
+    String[] getSigningAlgorithmsAllowed() {
+        String[] signingAlgsAllowed = null;
+        try {
+            signingAlgsAllowed = MetadataUtils.getUserInfoSigningAlgorithmsSupported(oidcClientConfig);
+        } catch (OidcDiscoveryException | OidcClientConfigurationException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught exception getting user info signing algorithm supported. Defaulting to RS256. Exception was: " + e.getMessage());
+            }
+            signingAlgsAllowed = new String[] { "RS256" };
+        }
+        return signingAlgsAllowed;
     }
 
     private Map<String, Object> getFromUserInfoEndpoint() throws HttpException, IOException {

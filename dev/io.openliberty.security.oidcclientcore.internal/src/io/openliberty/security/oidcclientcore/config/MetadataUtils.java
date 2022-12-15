@@ -23,7 +23,6 @@ import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
@@ -176,18 +175,10 @@ public class MetadataUtils {
                                                                   OidcDiscoveryConstants.METADATA_KEY_ID_TOKEN_SIGNING_ALG_VALUES_SUPPORTED);
     }
 
-    @FFDCIgnore(Exception.class)
     public static String[] getUserInfoSigningAlgorithmsSupported(OidcClientConfig oidcClientConfig) throws OidcDiscoveryException, OidcClientConfigurationException {
-        try {
-            return getStringArrayValueFromProviderOrDiscoveryMetadata(oidcClientConfig,
-                                                                      null,
-                                                                      OidcDiscoveryConstants.METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED);
-        } catch (Exception e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught an exception getting " + OidcDiscoveryConstants.METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED + ": " + e);
-            }
-            return getIdTokenSigningAlgorithmsSupported(oidcClientConfig);
-        }
+        return getStringArrayValueFromProviderOrDiscoveryMetadata(oidcClientConfig,
+                                                                  null,
+                                                                  OidcDiscoveryConstants.METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED);
     }
 
 }

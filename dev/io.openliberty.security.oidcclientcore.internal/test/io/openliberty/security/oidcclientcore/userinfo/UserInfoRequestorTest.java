@@ -362,18 +362,6 @@ public class UserInfoRequestorTest extends CommonTestClass {
         discoveryData.put(OidcDiscoveryConstants.METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED, getUserInfoSigningAlgsSupported("RS256"));
         mockery.checking(new Expectations() {
             {
-                allowing(oidcClientConfig).getProviderMetadata();
-                will(returnValue(providerMetadata));
-                one(providerMetadata).getJwksURI();
-                will(returnValue(jwksUri));
-                one(oidcClientConfig).getClientId();
-                will(returnValue(clientId));
-                one(oidcClientConfig).getClientSecret();
-                will(returnValue(clientSecret));
-                one(oidcClientConfig).getJwksConnectTimeout();
-                will(returnValue(500));
-                one(oidcClientConfig).getJwksReadTimeout();
-                will(returnValue(500));
                 one(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
                 will(returnValue(discoveryData));
             }

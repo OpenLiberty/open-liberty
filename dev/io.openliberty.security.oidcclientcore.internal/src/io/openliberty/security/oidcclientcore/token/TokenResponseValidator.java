@@ -34,6 +34,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.security.common.jwt.JwtParsingUtils;
+import io.openliberty.security.common.jwt.jws.JwsSignatureVerifier;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestParameters;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.config.MetadataUtils;
@@ -137,16 +138,45 @@ public class TokenResponseValidator {
     }
 
     JwtClaims validateIdTokenFormat(String idtoken, JwtContext jwtcontext, String clientSecret, String issuerconfigured) throws Exception {
+        String[] signingAlgsAllowed = verifyJwsAlgHeaderOnly(jwtcontext);
+
         JsonWebStructure jws = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtcontext);
         Key verificationKey = JwtUtils.getJwsVerificationKey(jws, clientConfig);
 
         JwtConsumerBuilder builder = new JwtConsumerBuilder();
-        builder.setJwsAlgorithmConstraints(new AlgorithmConstraints(ConstraintType.WHITELIST, MetadataUtils.getIdTokenSigningAlgorithmsSupported(clientConfig)));
+        builder.setJwsAlgorithmConstraints(new AlgorithmConstraints(ConstraintType.WHITELIST, signingAlgsAllowed));
         builder.setRequireExpirationTime().setAllowedClockSkewInSeconds(120).setExpectedAudience(clientConfig.getClientId()).setExpectedIssuer(false,
                                                                                                                                                issuerconfigured).setRequireSubject().setSkipDefaultAudienceValidation().setVerificationKey(verificationKey).setRelaxVerificationKeyValidation();
 
         JwtConsumer jwtConsumer = builder.build();
         return JwtParsingUtils.parseJwtWithValidation(idtoken, jwtConsumer);
+    }
+
+    /**
+     * Validates the "alg" header in the JWT to ensure the token is signed with one of the allowed algorithms. This allows us to
+     * avoid doing the work to fetch the signing key for the token if the algorithm isn't supported.
+     */
+    String[] verifyJwsAlgHeaderOnly(JwtContext jwtContext) throws Exception {
+        String[] signingAlgsAllowed = getSigningAlgorithmsAllowed();
+
+        io.openliberty.security.common.jwt.jws.JwsSignatureVerifier.Builder verifierBuilder = new JwsSignatureVerifier.Builder();
+        verifierBuilder = verifierBuilder.signatureAlgorithmsSupported(signingAlgsAllowed);
+        verifierBuilder.build().verifyAlgHeaderOnly(jwtContext);;
+        return signingAlgsAllowed;
+    }
+
+    @FFDCIgnore(OidcClientConfigurationException.class)
+    String[] getSigningAlgorithmsAllowed() {
+        String[] signingAlgsAllowed = null;
+        try {
+            signingAlgsAllowed = MetadataUtils.getIdTokenSigningAlgorithmsSupported(clientConfig);
+        } catch (OidcDiscoveryException | OidcClientConfigurationException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught exception getting ID token signing algorithm supported. Defaulting to RS256. Exception was: " + e.getMessage());
+            }
+            signingAlgsAllowed = new String[] { "RS256" };
+        }
+        return signingAlgsAllowed;
     }
 
     public String getStateParameter() {
