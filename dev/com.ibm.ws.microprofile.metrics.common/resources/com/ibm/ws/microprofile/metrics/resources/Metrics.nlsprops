@@ -60,9 +60,9 @@ internal.error.CWMMC0006E.explanation=The application server experienced an inte
 internal.error.CWMMC0006E.useraction=Gather a set of traces and open a new issue against your application server.
 
 #User configured mpMetrics to use user-defined library for Micrometer binaries without Prometheus Registry JAR
-noPrometheusRegistry.info.CWMMC0008I=CWMMC0008I: The /metrics endpoint is not available as there is no Prometheus Registry available.
-noPrometheusRegistry.info.CWMMC0008I.explanation=Either the MP Config "mp.metrics.prometheus.enabled" was set to "false" or the MicroProfile Metrics feature is loading Micrometer libraries defined through the libraryRef attribute and this referenced Library does not contain a Micrometer Prometheus Registry.
-noPrometheusRegistry.info.CWMMC0008I.useraction=If the disabling or unavailability  of the Prometheus Registry was not intentional then take one or both of the following steps. Configure the MP Config value for "mp.metrics.prometheus.enabled" to be "true". Modify the contents of the library referenced by the libraryRef attribute to contain a Micrometer Prometheus Registry JAR.
+noPrometheusRegistry.info.CWMMC0008I=CWMMC0008I: The /metrics endpoint is not available because no Prometheus Registry is available.
+noPrometheusRegistry.info.CWMMC0008I.explanation=The mp.metrics.prometheus.enabled MP Config might be set to false. Alternatively, the MicroProfile Metrics feature might be loading Micrometer libraries that are defined through the libraryRef attribute, but a referenced Library does not contain a Micrometer Prometheus Registry.
+noPrometheusRegistry.info.CWMMC0008I.useraction=If the unavailability of the Prometheus Registry is not intentional, complete one or both of the following steps. Set the value for the mp.metrics.prometheus.enabled MP Config property to true. Modify the contents of the library referenced by the libraryRef attribute to contain a Micrometer Prometheus Registry JAR.
 
 #Memory usedHeap message
 memory.usedHeap.description=Displays the amount of used heap memory in bytes.
