@@ -34,10 +34,6 @@
 #                     value the switch will not be passed in. 
 #                     If unset, the unprivileged switch is passed in unless the current user is root
 #
-# CRIU_EXTRA_ARGS   - Pass extra arguments to `criu restore`. Extra arguments are
-#                     appended to the end of the list of arguments and can therefore
-#                     override existing arguments, if desired.
-#
 # CRIU_RESTORE_DISABLE_RECOVERY - 
 #              When restoring a server from a checkpoint it is possible
 #              that CRIU will fail to restore the process.  By default
