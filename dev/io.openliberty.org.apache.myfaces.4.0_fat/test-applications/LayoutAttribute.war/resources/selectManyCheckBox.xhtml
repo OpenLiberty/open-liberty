@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<html xmlns:f="jakarta.faces.core" xmlns:h="jakarta.faces.html"
+	xmlns:c="jakarta.tags.core">
+<h:body>
+
+	<!-- Use h:selectManyCheckbox with default settings -->
+	<c:if test="#{param.testNoLayoutNoBorder}">
+		<h:form id="form">
+			<h:selectManyCheckbox id="input">
+				<f:selectItemGroups value="#{shoppingCenterBean.shops}"
+					var="shop" itemLabel="#{shop.name}">
+					<f:selectItems value="#{shop.items}" var="item"
+						itemValue="#{item.id}" itemLabel="#{item.name}: $#{item.price}" />
+				</f:selectItemGroups>
+			</h:selectManyCheckbox>
+		</h:form>
+	</c:if>
+	
+	<!-- Use h:selectManyCheckbox with param for layout attribute -->
+	<c:if test="#{param.testWithLayoutNoBorder}">
+		<h:form id="form">
+			<h:selectManyCheckbox id="input" layout="#{param.layout}">
+				<f:selectItemGroups value="#{shoppingCenterBean.shops}"
+					var="shop" itemLabel="#{shop.name}">
+					<f:selectItems value="#{shop.items}" var="item"
+						itemValue="#{item.id}" itemLabel="#{item.name}: $#{item.price}" />
+				</f:selectItemGroups>
+			</h:selectManyCheckbox>
+		</h:form>
+	</c:if>
+	
+	<!-- Use h:selectManyCheckbox with param for layout and border attributes -->
+	<c:if test="#{param.testWithLayoutWithBorder}">
+		<h:form id="form">
+			<h:selectManyCheckbox id="input" layout="#{param.layout}" border="#{param.border}">
+				<f:selectItemGroups value="#{shoppingCenterBean.shops}"
+					var="shop" itemLabel="#{shop.name}">
+					<f:selectItems value="#{shop.items}" var="item"
+						itemValue="#{item.id}" itemLabel="#{item.name}: $#{item.price}" />
+				</f:selectItemGroups>
+			</h:selectManyCheckbox>
+		</h:form>
+	</c:if>
+
+</h:body>
+</html>

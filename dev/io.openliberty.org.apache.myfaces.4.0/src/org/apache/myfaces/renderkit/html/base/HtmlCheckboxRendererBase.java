@@ -141,7 +141,14 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         ResponseWriter writer = facesContext.getResponseWriter();
 
         writer.startElement(usingTable != null ? HTML.TABLE_ELEM : HTML.UL_ELEM, selectMany);
-        HtmlRendererUtils.renderHTMLAttributes(writer, selectMany, HTML.SELECT_TABLE_PASSTHROUGH_ATTRIBUTES);
+		//TODO Committing back to myfaces under PR: https://github.com/apache/myfaces/pull/419
+        if(usingTable != null) 
+		{
+        	HtmlRendererUtils.renderHTMLAttributes(writer, selectMany, HTML.SELECT_TABLE_PASSTHROUGH_ATTRIBUTES);	
+        } else 
+		{
+        	HtmlRendererUtils.renderHTMLAttributes(writer, selectMany, HTML.UL_PASSTHROUGH_ATTRIBUTES);
+        }
         
         Map<String, List<ClientBehavior>> behaviors = null;
         if (selectMany instanceof ClientBehaviorHolder)

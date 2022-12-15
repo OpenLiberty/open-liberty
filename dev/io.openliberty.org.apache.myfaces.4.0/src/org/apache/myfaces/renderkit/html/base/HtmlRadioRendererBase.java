@@ -164,8 +164,14 @@ public class HtmlRadioRendererBase extends HtmlRenderer
         {
             // Render as single component
             writer.startElement(usingTable != null ? HTML.TABLE_ELEM : HTML.UL_ELEM, selectOne);
-            HtmlRendererUtils.renderHTMLAttributes(writer, selectOne,
-                                                   HTML.SELECT_TABLE_PASSTHROUGH_ATTRIBUTES);
+            //TODO Committing back to myfaces under PR: https://github.com/apache/myfaces/pull/419
+            if(usingTable != null) 
+            {
+            	HtmlRendererUtils.renderHTMLAttributes(writer, selectOne, HTML.SELECT_TABLE_PASSTHROUGH_ATTRIBUTES);	
+            } else 
+            {
+            	HtmlRendererUtils.renderHTMLAttributes(writer, selectOne, HTML.UL_PASSTHROUGH_ATTRIBUTES);
+            }
 
             if (behaviors != null && !behaviors.isEmpty())
             {
