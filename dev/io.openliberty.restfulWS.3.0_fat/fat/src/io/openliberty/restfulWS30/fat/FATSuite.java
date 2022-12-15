@@ -28,6 +28,8 @@ import componenttest.rules.repeater.RepeatTests;
                 JakartaPackageTest.class,
                 JsonbTest.class,
                 ManagedBeansTest.class,
+                ResponseRelativePathTest.class,
+                RestfulWsPrototypeTest.class,
                 ValidatorTest.class,
                 WebXmlAppTest.class,
                 WebXmlNoAppTest.class,
