@@ -307,16 +307,24 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
 
     @FFDCIgnore(ClassNotFoundException.class)
     private void checkPrometheusRegistryAvailable(ClassLoader classLoader) {
-        // Check if Prometheus Meter Registry is in class path
+        /*
+         * Check if Prometheus Meter Registry is disabled or if it is not available on
+         * class path. The "mp.metrics.prometheus.enabled" if not defined, is resolved
+         * to true on the SmallRye Metrics implementation.
+         */
+        if (!Boolean.parseBoolean(ConfigProvider.getConfig()
+                .getOptionalValue("mp.metrics.prometheus.enabled", String.class).orElse("true"))) {
+            Tr.info(tc, "disabled.info.CWMMC0009I");
+            metricsConfig.disableMetricsEndpoint();
+            return;
+        }
         try {
             Class.forName(FQ_PROMETHEUSCONFIG_PATH, false, classLoader);
-            if (!Boolean.parseBoolean(ConfigProvider.getConfig()
-                    .getOptionalValue("mp.metrics.prometheus.enabled", String.class).orElse("true"))) {
-                metricsConfig.disableMetricsEndpoint();
-            }
         } catch (ClassNotFoundException e) {
+            Tr.info(tc, "noPrometheusRegistry.info.CWMMC0008I");
             metricsConfig.disableMetricsEndpoint();
         } catch (Exception e) {
+            Tr.info(tc, "noPrometheusRegistry.info.CWMMC0008I");
             metricsConfig.disableMetricsEndpoint();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Unexpected exception encountered " + e);

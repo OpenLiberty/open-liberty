@@ -113,7 +113,6 @@ public class MetricsConfig {
     }
 
     public synchronized void disableMetricsEndpoint() {
-        Tr.info(tc, "noPrometheusRegistry.info.CWMMC0008I");
         publicWabConfigMgr.processEnableAuthentication(componentCtx, false);
         privateWabConfigMgr.processEnableAuthentication(componentCtx, false);
     }
