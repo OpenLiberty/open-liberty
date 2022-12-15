@@ -17,6 +17,7 @@
 	<include location="${shared.config.dir}/OPMisc.xml" />
 	<include location="${shared.config.dir}/oauthRoles_1.xml" />
 	<include location="${shared.config.dir}/oidcProvider.xml" />
+	<include location="${shared.config.dir}/oidcProvider_useNonce.xml" />
  
 	<sslDefault sslRef="ssl_allSigAlg" />
 </server>

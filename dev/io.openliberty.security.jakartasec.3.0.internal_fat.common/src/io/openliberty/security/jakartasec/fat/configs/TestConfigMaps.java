@@ -299,6 +299,18 @@ public class TestConfigMaps {
         return updatedMap;
     }
 
+    public static Map<String, Object> getUseNonceExpressionTrue() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.USE_NONCE_EXPRESSION, String.valueOf(true));
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getUseNonceExpressionFalse() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.USE_NONCE_EXPRESSION, String.valueOf(false));
+        return updatedMap;
+    }
+
     public static Map<String, Object> getOP2() throws Exception {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
