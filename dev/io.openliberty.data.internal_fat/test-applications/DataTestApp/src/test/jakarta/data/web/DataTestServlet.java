@@ -1831,13 +1831,14 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of("Copper", "Lumber"),
                              tariffs.findByLeviedAgainst("Canada").map(o -> o.leviedOn).sorted().collect(Collectors.toList()));
 
-        // Iterator with paging:
+        // Iterator with offset pagination:
         Iterator<Tariff> it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", Pageable.ofSize(3));
 
         Tariff t;
         assertEquals(true, it.hasNext());
         assertNotNull(t = it.next());
         assertEquals(t8.leviedAgainst, t.leviedAgainst);
+        Long t8key = t.key;
 
         assertEquals(true, it.hasNext());
         assertNotNull(t = it.next());
@@ -1857,11 +1858,59 @@ public class DataTestServlet extends FATServlet {
 
         assertNotNull(t = it.next());
         assertEquals(t2.leviedAgainst, t.leviedAgainst);
+        Long t2key = t.key;
 
         assertNotNull(t = it.next());
         assertEquals(t1.leviedAgainst, t.leviedAgainst);
 
         assertEquals(false, it.hasNext());
+        assertEquals(false, it.hasNext());
+
+        // Iterator with keyset pagination:
+        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", Pageable.ofSize(2).afterKeyset(t8key));
+
+        assertNotNull(t = it.next());
+        assertEquals(t6.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t5.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t4.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t3.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t2.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t1.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(false, it.hasNext());
+
+        // Iterator with keyset pagination obtaining pages in reverse direction
+        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", Pageable.ofSize(2).beforeKeyset(t2key));
+
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t4.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t3.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t6.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t5.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t8.leviedAgainst, t.leviedAgainst);
+
         assertEquals(false, it.hasNext());
 
         // Paginated iterator with no results:

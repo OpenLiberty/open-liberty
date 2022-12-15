@@ -146,7 +146,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                     || KeysetAwarePage.class.equals(queryInfo.returnTypeParam);
         boolean needsKeysetQueries = isKeysetAwarePage
                                      || KeysetAwareSlice.class.equals(queryInfo.method.getReturnType())
-                                     || KeysetAwareSlice.class.equals(queryInfo.returnTypeParam);
+                                     || KeysetAwareSlice.class.equals(queryInfo.returnTypeParam)
+                                     || Iterator.class.equals(queryInfo.method.getReturnType())
+                                     || Iterator.class.equals(queryInfo.returnTypeParam);
         boolean countPages = isKeysetAwarePage
                              || Page.class.equals(queryInfo.method.getReturnType())
                              || Page.class.equals(queryInfo.returnTypeParam);
@@ -768,8 +770,10 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         String methodName = queryInfo.method.getName();
         boolean needsKeysetQueries = KeysetAwarePage.class.equals(queryInfo.method.getReturnType())
                                      || KeysetAwareSlice.class.equals(queryInfo.method.getReturnType())
+                                     || Iterator.class.equals(queryInfo.method.getReturnType())
                                      || KeysetAwarePage.class.equals(queryInfo.returnTypeParam)
-                                     || KeysetAwareSlice.class.equals(queryInfo.returnTypeParam);
+                                     || KeysetAwareSlice.class.equals(queryInfo.returnTypeParam)
+                                     || Iterator.class.equals(queryInfo.returnTypeParam);
         StringBuilder o = needsKeysetQueries ? new StringBuilder(100) : q; // forward order
         StringBuilder r = needsKeysetQueries ? new StringBuilder(100).append(" ORDER BY ") : null; // reverse order
         List<Sort> keyset = needsKeysetQueries ? new ArrayList<>() : null;

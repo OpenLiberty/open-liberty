@@ -18,14 +18,20 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import jakarta.data.exceptions.DataException;
+import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Sort;
 import jakarta.persistence.Query;
 
 /**
  */
 class QueryInfo {
+    private final TraceComponent tc = Tr.register(QueryInfo.class);
+
     static enum Type {
         COUNT, DELETE, EXISTS, MERGE, SELECT, UPDATE
     }
@@ -133,6 +139,55 @@ class QueryInfo {
         this.method = method;
         this.returnArrayType = returnArrayType;
         this.returnTypeParam = returnTypeParam;
+    }
+
+    /**
+     * Obtains keyset cursor values for the specified entity.
+     *
+     * @param entity the entity.
+     * @return keyset cursor values, ordering according to the sort criteria.
+     */
+    @Trivial
+    Object[] getKeysetValues(Object entity) {
+        ArrayList<Object> keyValues = new ArrayList<>();
+        for (Sort keyInfo : keyset)
+            try {
+                Member accessor = entityInfo.attributeAccessors.get(keyInfo.property());
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "getKeysetValues for " + entity, accessor);
+                if (accessor instanceof Method)
+                    keyValues.add(((Method) accessor).invoke(entity));
+                else
+                    keyValues.add(((Field) accessor).get(entity));
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException x) {
+                throw new DataException(x.getCause());
+            }
+        return keyValues.toArray();
+    }
+
+    /**
+     * Sets query parameters from keyset values.
+     *
+     * @param query        the query
+     * @param keysetCursor keyset values
+     */
+    void setKeysetParameters(Query query, Pageable.Cursor keysetCursor) {
+        if (paramNames.isEmpty() || paramNames.get(0) == null) // positional parameters
+            for (int i = 0; i < keysetCursor.size(); i++) {
+                Object value = keysetCursor.getKeysetElement(i);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "set keyset parameter ?" + (paramCount + i + 1) + ' ' + (value == null ? null : value.getClass().getSimpleName()));
+                // TODO detect if user provides a wrong-sized keyset? Or let JPA error surface?
+                query.setParameter(paramCount + i + 1, value);
+            }
+        else // named parameters
+            for (int i = 0; i < keysetCursor.size(); i++) {
+                Object value = keysetCursor.getKeysetElement(i);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "set keyset parameter :keyset" + (i + 1) + ' ' + (value == null ? null : value.getClass().getSimpleName()));
+                // TODO detect if user provides a wrong-sized keyset? Or let JPA error surface?
+                query.setParameter("keyset" + (paramCount + i + 1), value);
+            }
     }
 
     /**
