@@ -140,7 +140,7 @@ public class JSFCompELTests {
     @Test
     public void testELResolverOrderAndComponentSystemEvent() throws Exception {
         String[] expectedInResponse = {
-                                        "The order and number of ELResolvers from the CompositeELResolver are correct!",
+                                        "The order and number of ELResolvers are correct!",
                                         "Invoked JSF 2.2 new methods in ComponentSystemEvent, isAppropriateListener() and processListener()"
         };
         this.verifyResponse(contextRoot, "ComponentEventListener.xhtml", expectedInResponse);
