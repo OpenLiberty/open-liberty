@@ -21,6 +21,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE9Action;
@@ -34,7 +35,7 @@ import io.openliberty.jaxrs.fat.globalhandler.simple.SimpleGlobalHandlerClientTe
  * with JAX-RS/Restful-WS.
  */
 @RunWith(FATRunner.class)
-//@SkipForRepeat({ EE8FeatureReplacementAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID })
+@SkipForRepeat({ EmptyAction.ID, EE8FeatureReplacementAction.ID, JakartaEE9Action.ID})
 public class SimpleGlobalHandlerTest extends FATServletClient {
 
     private static final String appName = "SimpleGlobalHandler";
