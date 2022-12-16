@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -114,6 +114,7 @@ public class MBeanAttributeRouterHandler implements RESTHandler {
      */
     private void getRoutedAttributes(RESTRequest request, RESTResponse response) {
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+        objectName = RESTHelper.repairSlashes(objectName, request);
         List<String> queryAttributes = RESTHelper.getQueryParams(request, APIConstants.PARAM_ATTRIBUTE);
 
         getRoutingHelper().getAttributes(request, response, objectName, queryAttributes, true);
@@ -126,6 +127,7 @@ public class MBeanAttributeRouterHandler implements RESTHandler {
      */
     private void getRoutedAttribute(RESTRequest request, RESTResponse response) {
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+        objectName = RESTHelper.repairSlashes(objectName, request);
         String attribute = RESTHelper.getRequiredParam(request, APIConstants.PARAM_ATTRIBUTE);
 
         getRoutingHelper().getAttribute(request, response, objectName, attribute, true);

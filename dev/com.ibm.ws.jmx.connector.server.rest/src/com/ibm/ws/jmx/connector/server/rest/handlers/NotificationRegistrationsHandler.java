@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -123,6 +123,7 @@ public class NotificationRegistrationsHandler implements RESTHandler {
         RESTHelper.ensureConsumesJson(request);
 
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+        objectName = RESTHelper.repairSlashes(objectName, request);
         String clientIDString = RESTHelper.getRequiredParam(request, APIConstants.PARAM_CLIENTID);
 
         int clientID = -1;
@@ -162,6 +163,7 @@ public class NotificationRegistrationsHandler implements RESTHandler {
 
     private void clientNotificationDelete(RESTRequest request, RESTResponse response) {
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+        objectName = RESTHelper.repairSlashes(objectName, request);
         String clientIDString = RESTHelper.getRequiredParam(request, APIConstants.PARAM_CLIENTID);
 
         int clientID = -1;
@@ -200,6 +202,7 @@ public class NotificationRegistrationsHandler implements RESTHandler {
 
     private void fetchFilters(RESTRequest request, RESTResponse response) {
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+        objectName = RESTHelper.repairSlashes(objectName, request);
         String clientIDString = RESTHelper.getRequiredParam(request, APIConstants.PARAM_CLIENTID);
 
         int clientID = -1;
