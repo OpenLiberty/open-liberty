@@ -73,8 +73,19 @@ import org.junit.runners.Suite.SuiteClasses;
                 FATTestIDS_allIbmGroups.class,
                 CustomCertificateMapperInBellTest.class,
                 CustomCertificateMapperInFeatureTest.class,
-                URAPIs_ADWildCardTest.class
-
+                URAPIs_ADWildCardTest.class,
+                LDAPRegressionTest.class,
+                ReadTimeoutTest.class,
+                RacfSdbmLdapTest.class,
+                LdapFailoverTest.class,
+                RacfSdbmLdapWithBasicTest.class,
+                ADNestedGroupsWithRange.class,
+                JNDIOutputTest.class,
+                LDAPMemberAttributeScopeTest.class,
+                OperationalAttributeTest.class,
+                LoginPropertyTest.class,
+                LdapRdnTest.class,
+                EncodeSpecialCharactersTest.class
 })
 public class FATSuite extends CommonLocalLDAPServerSuite {
 
