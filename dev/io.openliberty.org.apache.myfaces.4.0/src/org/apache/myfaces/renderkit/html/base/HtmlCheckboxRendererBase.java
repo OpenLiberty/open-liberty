@@ -303,7 +303,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         {
             Object itemValue = selectItem.getValue(); // TODO : Check here for getSubmittedValue. 
                                                       // Look at RendererUtils.getValue
-            String itemStrValue = RendererUtils.getConvertedStringValue(
+            String itemStrValue = org.apache.myfaces.core.api.shared.SharedRendererUtils.getConvertedStringValue(
                     facesContext, selectMany, converter, itemValue);
             
             boolean checked = lookupSet.contains(itemStrValue);

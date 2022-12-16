@@ -342,7 +342,7 @@ public class HtmlRadioRendererBase extends HtmlRenderer
         } 
         else 
         {
-            String itemStrValue = RendererUtils.getConvertedStringValue(
+            String itemStrValue = org.apache.myfaces.core.api.shared.SharedRendererUtils.getConvertedStringValue(
                     facesContext, selectOne, converter, selectItem.getValue());
             boolean itemChecked = (itemStrValue == null) ? 
                     itemStrValue == currentValue : 
