@@ -25,6 +25,9 @@ import java.util.logging.Logger;
 
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.context.ResponseWriter;
+import jakarta.faces.component.UINamingContainer;
+import jakarta.faces.component.NamingContainer;
+import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.render.RenderKitFactory;
 import jakarta.faces.render.ResponseStateManager;
@@ -121,7 +124,17 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
 
         responseWriter.startElement(HTML.INPUT_ELEM, null);
         responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
-        responseWriter.writeAttribute(HTML.NAME_ATTR, ResponseStateManager.VIEW_STATE_PARAM, null);
+        
+        UIViewRoot uiViewRoot = facesContext.getViewRoot();
+        if (uiViewRoot instanceof NamingContainer) // MYFACES-4533
+        {
+            String id = uiViewRoot.getContainerClientId(facesContext) + UINamingContainer.getSeparatorChar(facesContext);
+            responseWriter.writeAttribute(HTML.NAME_ATTR, id + ResponseStateManager.VIEW_STATE_PARAM, null);
+        }
+        else
+        {
+            responseWriter.writeAttribute(HTML.NAME_ATTR, ResponseStateManager.VIEW_STATE_PARAM, null);
+        }
         if (myfacesConfig.isRenderViewStateId())
         {
             // responseWriter.writeAttribute(HTML.ID_ATTR, STANDARD_STATE_SAVING_PARAM, null);
