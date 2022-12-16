@@ -21,6 +21,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
 import jakarta.data.repository.KeysetAwarePage;
+import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.Limit;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Page;
@@ -78,7 +79,7 @@ public interface Primes {
 
     List<Prime> findByNumberBetween(long min, long max, Sort... orderBy);
 
-    KeysetAwarePage<Prime> findByNumberBetweenAndEvenFalse(long min, long max, Pageable pagination);
+    KeysetAwareSlice<Prime> findByNumberBetweenAndEvenFalse(long min, long max, Pageable pagination);
 
     Page<Prime> findByNumberBetweenAndSumOfBitsNotNull(long min, long max, Pageable pagination);
 

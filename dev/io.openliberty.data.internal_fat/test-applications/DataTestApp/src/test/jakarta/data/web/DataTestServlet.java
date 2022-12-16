@@ -16,6 +16,7 @@ import static org.junit.Assert.fail;
 import static test.jakarta.data.web.Assertions.assertArrayEquals;
 import static test.jakarta.data.web.Assertions.assertIterableEquals;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -26,12 +27,10 @@ import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeSet;
@@ -57,6 +56,7 @@ import jakarta.data.exceptions.EmptyResultException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.repository.KeysetAwarePage;
+import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.Limit;
 import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
@@ -282,22 +282,13 @@ public class DataTestServlet extends FATServlet {
                                              .map(p -> p.firstName)
                                              .collect(Collectors.toList()));
 
-        // Async find with Consumer
-        LinkedBlockingQueue<String> names = new LinkedBlockingQueue<>();
-        personnel.findByLastNameOrderByFirstNameDesc("TestAsynchronous", name -> names.add(name));
-
-        assertEquals("Brian", names.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        assertEquals("Betty", names.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        assertEquals("Ben", names.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        assertEquals("Alexander", names.poll(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-
         // Async find as CompletableFuture<Stream<String>>
         CompletableFuture<Stream<String>> futureStream = personnel.firstNames("TestAsynchronous");
         assertIterableEquals(List.of("Alexander", "Ben", "Betty", "Brian"),
                              futureStream.get(TIMEOUT_MINUTES, TimeUnit.MINUTES).collect(Collectors.toList()));
 
         // Async find as CompletionStage<String[]>
-        names.clear();
+        LinkedBlockingQueue<String> names = new LinkedBlockingQueue<>();
         personnel.lastNames().thenAccept(lastNames -> {
             for (String lastName : lastNames)
                 names.add(lastName);
@@ -305,22 +296,6 @@ public class DataTestServlet extends FATServlet {
         assertEquals("Test-Asynchronous", names.poll());
         assertEquals("TestAsynchronous", names.poll());
         assertEquals(null, names.poll());
-
-        // Paginated async find with Consumer and CompletableFuture to track completion
-        Queue<Long> ids = new LinkedList<Long>();
-        CompletableFuture<Void> allFound = personnel.findByOrderBySsnDesc(p -> ids.add(p.ssn), Pageable.ofSize(4));
-
-        assertEquals(null, allFound.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-        assertEquals(Long.valueOf(p10.ssn), ids.poll());
-        assertEquals(Long.valueOf(p9.ssn), ids.poll());
-        assertEquals(Long.valueOf(p8.ssn), ids.poll());
-        assertEquals(Long.valueOf(p7.ssn), ids.poll());
-        assertEquals(Long.valueOf(p6.ssn), ids.poll());
-        assertEquals(Long.valueOf(p5.ssn), ids.poll());
-        assertEquals(Long.valueOf(p4.ssn), ids.poll());
-        assertEquals(Long.valueOf(p3.ssn), ids.poll());
-        assertEquals(Long.valueOf(p2.ssn), ids.poll());
-        assertEquals(Long.valueOf(p1.ssn), ids.poll());
 
         // Async find single item
         CompletableFuture<Person> future = personnel.findBySsn(p4.ssn);
@@ -331,30 +306,27 @@ public class DataTestServlet extends FATServlet {
         assertEquals(p4.firstName, p.firstName);
         assertEquals(p4.lastName, p.lastName);
 
-        // Async find with Collector, without pagination
+        // Async count
 
-        // Have a collector reduce the results to a count of names.
-        // The database could have done this instead, but it makes a nice, simple example.
-        CompletableFuture<Long> nameCount = personnel.findByFirstNameStartsWith("A", Collectors.counting());
+        CompletableFuture<Long> nameCount = personnel.countByFirstNameStartsWith("A");
 
         assertEquals(Long.valueOf(6), nameCount.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
 
-        // Async find with Collector, with pagination
+        // Find with Streamable and various Collectors
+
+        Streamable<String> aNames = personnel.namesThatStartWith("A");
 
         // Have a collector reduce the results to a count of names.
         // The database could have done this instead, but it makes a nice, simple example.
-        CompletableFuture<Long> countOfANames = personnel.namesThatStartWith("A", Pageable.ofSize(3), Collectors.counting());
 
-        assertEquals(Long.valueOf(6), countOfANames.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Long.valueOf(6), aNames.stream().collect(Collectors.counting()));
 
         // Have a collector reduce the results to the length of the longest name found.
         Collector<String, ?, Long> maxLengthFinder = Collectors.collectingAndThen(
                                                                                   Collectors.maxBy(Comparator.<String, Integer> comparing(n -> n.length())),
                                                                                   n -> n.isPresent() ? n.get().length() : -1L);
 
-        CompletableFuture<Long> maxLengthOfAnyAName = personnel.namesThatStartWith("A", Pageable.ofSize(3), maxLengthFinder);
-
-        assertEquals(Long.valueOf(9), maxLengthOfAnyAName.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Long.valueOf(9), aNames.stream().collect(maxLengthFinder));
 
         // Have a collector reduce the results to an average name length,
         final int COUNT = 0, SUM = 1;
@@ -369,14 +341,30 @@ public class DataTestServlet extends FATServlet {
                                                                  },
                                                                  len -> len[COUNT] == 0 ? 0 : (len[SUM] / len[COUNT]));
 
-        CompletableFuture<Long> avgLengthOfBNames = personnel.namesThatStartWith("B", Pageable.ofSize(3), lengthAverager);
+        Streamable<String> bNames = personnel.namesThatStartWith("B");
 
-        assertEquals(Long.valueOf(4), avgLengthOfBNames.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Long.valueOf(4), bNames.stream().collect(lengthAverager));
 
         assertEquals(Boolean.TRUE, personnel.setSurnameAsync("TestAsynchronously", 1002003008L).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
 
+        // Async delete with void return type
+        personnel.deleteByFirstName("Andrew");
+
+        long timeout_ns = Duration.ofMinutes(TIMEOUT_MINUTES).toNanos();
+        boolean found = true;
+        for (long start = System.nanoTime(); System.nanoTime() - start < timeout_ns && found; Thread.sleep(200))
+            found = personnel.namesThatStartWith("And").stream().findFirst().isPresent();
+        assertEquals(false, found);
+
+        // Async delete with CompletableFuture<Void> return type
+        CompletableFuture<Void> cf = personnel.deleteBySsn(1002003008L);
+        assertEquals(null, cf.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+
+        found = personnel.namesThatStartWith("Bob").stream().findFirst().isPresent();
+        assertEquals(false, found);
+
         deleted = personnel.removeAll();
-        assertEquals(Long.valueOf(10), deleted.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Long.valueOf(8), deleted.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
     }
 
     /**
@@ -943,14 +931,14 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testIgnoreCaseInKeysetPagination() {
         Pageable pagination = Pageable.ofSize(3).sortBy(Sort.asc("sumOfBits"), Sort.descIgnoreCase("name"));
-        KeysetAwarePage<Prime> page1 = primes.findByNumberBetweenAndEvenFalse(4000L, 4020L, pagination);
+        KeysetAwareSlice<Prime> page1 = primes.findByNumberBetweenAndEvenFalse(4000L, 4020L, pagination);
         assertIterableEquals(List.of("four thousand one", "four thousand three", "Four Thousand Thirteen"),
                              page1
                                              .stream()
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
 
-        KeysetAwarePage<Prime> page2 = primes.findByNumberBetweenAndEvenFalse(4000L, 4020L, page1.nextPageable());
+        KeysetAwareSlice<Prime> page2 = primes.findByNumberBetweenAndEvenFalse(4000L, 4020L, page1.nextPageable());
         assertIterableEquals(List.of("four thousand seven", "four thousand nineteen"),
                              page2
                                              .stream()
@@ -1223,7 +1211,7 @@ public class DataTestServlet extends FATServlet {
                                  new Package(150, 48.0f, 45.0f, 50.0f, "package#150"), // page 5
                                  new Package(151, 48.0f, 45.0f, 41.0f, "package#151")));
 
-        KeysetAwarePage<Package> page;
+        KeysetAwareSlice<Package> page;
 
         // Page 1
         page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(10.0f, Pageable.ofSize(3));
@@ -1377,7 +1365,7 @@ public class DataTestServlet extends FATServlet {
         packages.saveAll(List.of(new Package(440, 40.0f, 44.0f, 40.0f, "package#440"), // page1
                                  new Package(441, 41.0f, 41.0f, 41.0f, "package#441"))); // will be deleted
 
-        KeysetAwarePage<Package> page;
+        KeysetAwareSlice<Package> page;
 
         // Page 1
         page = packages.findByHeightGreaterThan(4.0f, Pageable.ofSize(1));
@@ -1486,7 +1474,7 @@ public class DataTestServlet extends FATServlet {
                                  new Package(236, 36.0f, 50.0f, 93.0f, "package#236"), // page 3
                                  new Package(240, 40.0f, 21.0f, 42.0f, "package#240")));
 
-        KeysetAwarePage<Package> page;
+        KeysetAwareSlice<Package> page;
 
         // Page 3
         page = packages.findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(20.0f, Pageable.ofSize(3).page(3).beforeKeyset(40.0f, 94.0f, 42.0f, 240));
@@ -1672,7 +1660,7 @@ public class DataTestServlet extends FATServlet {
                                  // will add 315, 66.0f, 31.0f, 37.0f, "package#315"
                                  new Package(310, 55.0f, 10.0f, 31.0f, "package#310")));
 
-        KeysetAwarePage<Package> page;
+        KeysetAwareSlice<Package> page;
 
         // Page 3
         page = packages.findByHeightGreaterThan(20.0f, Pageable.ofPage(3).size(3).beforeKeyset(10.0f, 31.0f, 310));
@@ -1843,13 +1831,14 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of("Copper", "Lumber"),
                              tariffs.findByLeviedAgainst("Canada").map(o -> o.leviedOn).sorted().collect(Collectors.toList()));
 
-        // Iterator with paging:
+        // Iterator with offset pagination:
         Iterator<Tariff> it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", Pageable.ofSize(3));
 
         Tariff t;
         assertEquals(true, it.hasNext());
         assertNotNull(t = it.next());
         assertEquals(t8.leviedAgainst, t.leviedAgainst);
+        Long t8key = t.key;
 
         assertEquals(true, it.hasNext());
         assertNotNull(t = it.next());
@@ -1869,11 +1858,59 @@ public class DataTestServlet extends FATServlet {
 
         assertNotNull(t = it.next());
         assertEquals(t2.leviedAgainst, t.leviedAgainst);
+        Long t2key = t.key;
 
         assertNotNull(t = it.next());
         assertEquals(t1.leviedAgainst, t.leviedAgainst);
 
         assertEquals(false, it.hasNext());
+        assertEquals(false, it.hasNext());
+
+        // Iterator with keyset pagination:
+        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", Pageable.ofSize(2).afterKeyset(t8key));
+
+        assertNotNull(t = it.next());
+        assertEquals(t6.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t5.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t4.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t3.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t2.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t1.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(false, it.hasNext());
+
+        // Iterator with keyset pagination obtaining pages in reverse direction
+        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", Pageable.ofSize(2).beforeKeyset(t2key));
+
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t4.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t3.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t6.leviedAgainst, t.leviedAgainst);
+
+        assertEquals(true, it.hasNext());
+        assertNotNull(t = it.next());
+        assertEquals(t5.leviedAgainst, t.leviedAgainst);
+
+        assertNotNull(t = it.next());
+        assertEquals(t8.leviedAgainst, t.leviedAgainst);
+
         assertEquals(false, it.hasNext());
 
         // Paginated iterator with no results:
