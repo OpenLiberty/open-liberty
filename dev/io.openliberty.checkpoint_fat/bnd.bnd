@@ -35,7 +35,8 @@ src: \
 	test-applications/webEARapp/src,\
 	test-applications/mphealth/src,\
 	test-applications/facesApp/src,\
-	test-applications/jsonb/src
+	test-applications/jsonb/src,\
+	test-applications/jsonp/src
 
 fat.project: true
 
@@ -127,6 +128,7 @@ tested.features: \
 	io.openliberty.org.eclipse.microprofile.health.3.1;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
-	org.eclipse:yasson;version='1.0.8'
+	org.eclipse:yasson;version='1.0.8',\
+	com.ibm.websphere.javaee.jsonp.1.1;version=latest
 
 -sub: *.bnd
