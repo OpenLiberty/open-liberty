@@ -64,7 +64,6 @@ public class OpenTelemetryProducer {
         HashMap<String, String> telemetryProperties = getTelemetryProperties();
         //Builds tracer provider if user has enabled tracing aspects with config properties
         if (!checkDisabled(telemetryProperties)) {
-
             OpenTelemetry openTelemetry = AccessController.doPrivileged((PrivilegedAction<OpenTelemetry>) () -> {
                 return AutoConfiguredOpenTelemetrySdk.builder()
                                 .addPropertiesSupplier(() -> telemetryProperties)
@@ -131,19 +130,19 @@ public class OpenTelemetryProducer {
         HashMap<String, String> telemetryProperties = new HashMap<>();
         for (String propertyName : config.getPropertyNames()) {
             if (propertyName.startsWith("otel.") || propertyName.startsWith("OTEL_")) {
-                //Do not set metrics or logs exporter
-                if ((!propertyName.equals(ENV_METRICS_EXPORTER_PROPERTY)) && (!propertyName.equals(CONFIG_METRICS_EXPORTER_PROPERTY))
-                    && (!propertyName.equals(ENV_LOGS_EXPORTER_PROPERTY)) && (!propertyName.equals(CONFIG_LOGS_EXPORTER_PROPERTY))) {
-                    config.getOptionalValue(propertyName, String.class).ifPresent(
-                                                                                  value -> telemetryProperties.put(propertyName, value));
+                config.getOptionalValue(propertyName, String.class).ifPresent(
+                                                                              value -> telemetryProperties.put(propertyName, value));
 
-                }
-                //Metrics and logs are disabled by default
-                telemetryProperties.put(CONFIG_METRICS_EXPORTER_PROPERTY, "none");
-                telemetryProperties.put(CONFIG_LOGS_EXPORTER_PROPERTY, "none");
             }
         }
+        //Metrics and logs are disabled by default
+        telemetryProperties.put(CONFIG_METRICS_EXPORTER_PROPERTY, "none");
+        telemetryProperties.put(CONFIG_LOGS_EXPORTER_PROPERTY, "none");
+        telemetryProperties.put(ENV_METRICS_EXPORTER_PROPERTY, "none");
+        telemetryProperties.put(ENV_LOGS_EXPORTER_PROPERTY, "none");
+
         return telemetryProperties;
+
     }
 
     @Produces
