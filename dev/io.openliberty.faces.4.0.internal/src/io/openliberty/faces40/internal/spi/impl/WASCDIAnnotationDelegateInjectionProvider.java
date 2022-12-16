@@ -8,13 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jsf.spi.impl;
-
-import jakarta.faces.context.ExternalContext;
+package io.openliberty.faces40.internal.spi.impl;
 
 import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.InjectionProvider;
 import org.apache.myfaces.spi.InjectionProviderException;
+
+import jakarta.faces.context.ExternalContext;
 
 /**
  * Delegation pattern to avoid direct instantiation
@@ -29,7 +29,7 @@ public class WASCDIAnnotationDelegateInjectionProvider extends InjectionProvider
         try
         {
             Class clazz = ClassUtils.simpleClassForName(
-                            "com.ibm.ws.jsf.cdi.WASCDIAnnotationInjectionProvider");
+                            "io.openliberty.faces40.internal.cdi.WASCDIAnnotationInjectionProvider");
             delegate = (InjectionProvider) clazz.getConstructor(ExternalContext.class).newInstance(externalContext);
         } catch (RuntimeException re) {
             throw re;

@@ -163,7 +163,8 @@ public class JSFServerTest {
      */
     @Test
     public void testWASMyFacesAnnotationProvider() throws Exception {
-        String msgToSearchFor = "com.ibm.ws.jsf.config.annotation.WASMyFacesAnnotationProvider <init> ENTRY";
+        String msgToSearchFor = JakartaEE10Action
+                        .isActive() ? "io.openliberty.faces40.internal.config.annotation.WASMyFacesAnnotationProvider" : "com.ibm.ws.jsf.config.annotation.WASMyFacesAnnotationProvider <init> ENTRY";
 
         // Check the trace.log to see if the WASMyFacesAnnotationProvider has any entry trace.
         String isWASMyFacesAnnotationProviderBeingUsed = jsfTestServer1.waitForStringInTrace(msgToSearchFor);

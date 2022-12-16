@@ -12,4 +12,4 @@
  * @version 1.0.0
  */
 @org.osgi.annotation.versioning.Version("1.0.0")
-package com.ibm.ws.jsf.config.annotation;
+package io.openliberty.faces40.internal.cdi;

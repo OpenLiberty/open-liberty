@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jsf.config.resource;
+package io.openliberty.faces40.internal.config.resource;
 
 import java.io.IOException;
 import java.net.URL;

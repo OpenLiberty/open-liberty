@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jsf.extprocessor;
+package io.openliberty.faces40.internal.extprocessor;
 
 import java.net.URL;
 import java.util.Collections;
@@ -18,9 +18,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import jakarta.faces.application.Application;
-import jakarta.servlet.ServletContextListener;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -41,10 +38,13 @@ import com.ibm.wsspi.webcontainer.servlet.IServletConfig;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 
+import jakarta.faces.application.Application;
+import jakarta.servlet.ServletContextListener;
+
 public class JSFExtensionFactory implements ExtensionFactory {
     // Log instance for this class
-    protected static final Logger log = Logger.getLogger("com.ibm.ws.jsf");
-    private static final String CLASS_NAME = "com.ibm.ws.jsf.extprocessor.JSFExtensionFactory";
+    private static final String CLASS_NAME = JSFExtensionFactory.class.getName();
+    protected static final Logger log = Logger.getLogger(CLASS_NAME);
 
     private static final String FACES_SERVLET_RESOURCE = "jakarta/faces/webapp/FacesServlet.class";
     private static final String SUN_CONFIGURE_LISTENER_CLASSNAME = "com.sun.faces.config.ConfigureListener";

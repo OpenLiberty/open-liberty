@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jsf.config.annotation;
+package io.openliberty.faces40.internal.config.annotation;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -21,24 +21,23 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jakarta.faces.context.ExternalContext;
-import jakarta.servlet.ServletContext;
-
-import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.spi.AnnotationProvider;
+import org.apache.myfaces.util.lang.ClassUtils;
 
-import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
-
+import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.webcontainer.facade.ServletContextFacade;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 
+import jakarta.faces.context.ExternalContext;
+import jakarta.servlet.ServletContext;
+
 public class WASMyFacesAnnotationProvider extends AnnotationProvider {
     private static final String CLASS_NAME = WASMyFacesAnnotationProvider.class.getName();
-    private static final Logger logger = Logger.getLogger(WASMyFacesAnnotationProvider.class.getName());
+    private static final Logger logger = Logger.getLogger(CLASS_NAME);
 
     private final AnnotationProvider defaultProvider;
 
