@@ -60,6 +60,7 @@ import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.Limit;
 import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
+import jakarta.data.repository.Slice;
 import jakarta.data.repository.Sort;
 import jakarta.data.repository.Streamable;
 import jakarta.inject.Inject;
@@ -3044,6 +3045,82 @@ public class DataTestServlet extends FATServlet {
         } catch (NonUniqueResultException x) {
             // expected
         }
+    }
+
+    /**
+     * Repository method that returns a Slice with the sort criteria provided as Sort parameters
+     */
+    @Test
+    public void testSliceWithSortCriteriaAsSortParameters() {
+        Slice<Prime> slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("I", 50L,
+                                                                                Pageable.ofSize(5),
+                                                                                Sort.asc("sumOfBits"), Sort.desc("number"));
+        assertEquals(1L, slice.number());
+        assertEquals(5, slice.numberOfElements());
+        assertEquals(1L, slice.pageable().page());
+        assertEquals(5, slice.pageable().size());
+
+        assertIterableEquals(List.of(2L, 17L, 3L, 41L, 37L),
+                             slice.stream().map(p -> p.number).collect(Collectors.toList()));
+
+        slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("I", 50L,
+                                                                   slice.nextPageable(),
+                                                                   Sort.asc("sumOfBits"), Sort.desc("number"));
+        assertEquals(2L, slice.number());
+        assertEquals(5, slice.numberOfElements());
+        assertEquals(2L, slice.pageable().page());
+        assertEquals(5, slice.pageable().size());
+
+        assertIterableEquals(List.of(13L, 11L, 7L, 43L, 23L),
+                             slice.stream().map(p -> p.number).collect(Collectors.toList()));
+
+        slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("I", 50L,
+                                                                   slice.nextPageable(),
+                                                                   Sort.asc("sumOfBits"), Sort.desc("number"));
+        assertEquals(3L, slice.number());
+        assertEquals(2, slice.numberOfElements());
+        assertEquals(3L, slice.pageable().page());
+        assertEquals(5, slice.pageable().size());
+
+        assertIterableEquals(List.of(47L, 31L),
+                             slice.stream().map(p -> p.number).collect(Collectors.toList()));
+
+        assertEquals(null, slice.nextPageable());
+    }
+
+    /**
+     * Repository method that returns a Slice with the sort criteria provided by the OrderBy annotation.
+     */
+    @Test
+    public void testSliceWithSortCriteriaInOrderByAnnotation() {
+        Slice<Prime> slice = primes.findByRomanNumeralStartsWithAndNumberLessThan("X", 50L, Pageable.ofSize(4));
+        assertEquals(1L, slice.number());
+        assertEquals(4, slice.numberOfElements());
+        assertEquals(1L, slice.pageable().page());
+        assertEquals(4, slice.pageable().size());
+
+        assertIterableEquals(List.of("forty-seven", "thirty-one", "forty-three", "twenty-nine"),
+                             slice.stream().map(p -> p.name).collect(Collectors.toList()));
+
+        slice = primes.findByRomanNumeralStartsWithAndNumberLessThan("X", 50L, slice.nextPageable());
+        assertEquals(2L, slice.number());
+        assertEquals(4, slice.numberOfElements());
+        assertEquals(2L, slice.pageable().page());
+        assertEquals(4, slice.pageable().size());
+
+        assertIterableEquals(List.of("twenty-three", "eleven", "forty-one", "nineteen"),
+                             slice.stream().map(p -> p.name).collect(Collectors.toList()));
+
+        slice = primes.findByRomanNumeralStartsWithAndNumberLessThan("X", 50L, slice.nextPageable());
+        assertEquals(3L, slice.number());
+        assertEquals(3, slice.numberOfElements());
+        assertEquals(3L, slice.pageable().page());
+        assertEquals(4, slice.pageable().size());
+
+        assertIterableEquals(List.of("thirteen", "thirty-seven", "seventeen"),
+                             slice.stream().map(p -> p.name).collect(Collectors.toList()));
+
+        assertEquals(null, slice.nextPageable());
     }
 
     /**
