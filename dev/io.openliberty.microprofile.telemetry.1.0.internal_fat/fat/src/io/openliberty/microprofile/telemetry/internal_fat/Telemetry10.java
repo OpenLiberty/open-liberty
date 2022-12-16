@@ -45,7 +45,8 @@ public class Telemetry10 extends FATServletClient {
                     @TestServlet(servlet = OpenTelemetryBeanServlet.class, contextRoot = APP_NAME),
                     @TestServlet(servlet = BaggageServlet.class, contextRoot = APP_NAME),
                     @TestServlet(servlet = SpanCurrentServlet.class, contextRoot = APP_NAME),
-                    @TestServlet(servlet = WithSpanServlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = MetricsDisabledServlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = WithSpanServlet.class, contextRoot = APP_NAME)
     })
     public static LibertyServer server;
 
@@ -56,9 +57,11 @@ public class Telemetry10 extends FATServletClient {
                         .addClasses(Telemetry10Servlet.class,
                                     OpenTelemetryBeanServlet.class,
                                     PatchTestApp.class,
+                                    OpenTelemetryBeanServlet.class,
                                     BaggageServlet.class,
-                                    WithSpanServlet.class,
-                                    SpanCurrentServlet.class);
+                                    MetricsDisabledServlet.class,
+                                    SpanCurrentServlet.class,
+                                    WithSpanServlet.class)
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
         server.startServer();
