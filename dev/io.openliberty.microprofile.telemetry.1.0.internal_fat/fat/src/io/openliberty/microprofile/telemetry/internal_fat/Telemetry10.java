@@ -61,7 +61,7 @@ public class Telemetry10 extends FATServletClient {
                                     BaggageServlet.class,
                                     MetricsDisabledServlet.class,
                                     SpanCurrentServlet.class,
-                                    WithSpanServlet.class)
+                                    WithSpanServlet.class);
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
         server.startServer();
