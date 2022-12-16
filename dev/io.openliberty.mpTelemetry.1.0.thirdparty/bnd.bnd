@@ -26,9 +26,11 @@ Private-Package: \
   io.opentelemetry.api.common; version=${openTelemetryVersion},\
   io.opentelemetry.api.trace; version=${openTelemetryVersion},\
   io.opentelemetry.context; version=${openTelemetryVersion},\
+  io.opentelemetry.context.propagation; version=${openTelemetryVersion},\
   io.opentelemetry.sdk.trace;version=${openTelemetryVersion},\
   io.opentelemetry.sdk.trace.export;version=${openTelemetryVersion},\
   io.opentelemetry.sdk.trace.data;version=${openTelemetryVersion},\
+  io.opentelemetry.sdk.trace.samplers;version=${openTelemetryVersion},\
   io.opentelemetry.sdk.common;version=${openTelemetryVersion},\
   io.opentelemetry.sdk.autoconfigure.spi.traces;version=${openTelemetryVersion},\
   io.opentelemetry.sdk.autoconfigure.spi;version=${openTelemetryVersion},\
