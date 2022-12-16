@@ -10,6 +10,7 @@
  *******************************************************************************/
 package io.openliberty.org.apache.myfaces40.fat.tests;
 
+import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
@@ -40,6 +41,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 import io.openliberty.org.apache.myfaces40.fat.FATSuite;
@@ -166,6 +168,7 @@ public class MultipleInputFileTest {
     }
 
     @Test
+    @Mode(FULL)
     public void testNoMultiple_WithAjax_SingleFile() throws Exception {
         URL url = HttpUtils.createURL(server, "/" + APP_NAME + "/MutipleInputFile.xhtml" + "?" + Form.NO_MULTIPLE_WITH_AJAX.testParam);
 
@@ -180,6 +183,7 @@ public class MultipleInputFileTest {
     }
 
     @Test
+    @Mode(FULL)
     public void testNoMultiple_WithAjax_MultipleFiles() throws Exception {
         URL url = HttpUtils.createURL(server, "/" + APP_NAME + "/MutipleInputFile.xhtml" + "?" + Form.NO_MULTIPLE_WITH_AJAX.testParam);
 
@@ -194,6 +198,7 @@ public class MultipleInputFileTest {
     }
 
     @Test
+    @Mode(FULL)
     public void testWithMultiple_WithAjax_SingleFile() throws Exception {
         URL url = HttpUtils.createURL(server, "/" + APP_NAME + "/MutipleInputFile.xhtml" + "?" + Form.WITH_MULTIPLE_WITH_AJAX.testParam);
 
@@ -208,6 +213,7 @@ public class MultipleInputFileTest {
     }
 
     @Test
+    @Mode(FULL)
     public void testWithMultiple_WithAjax_MultipleFiles() throws Exception {
         URL url = HttpUtils.createURL(server, "/" + APP_NAME + "/MutipleInputFile.xhtml" + "?" + Form.WITH_MULTIPLE_WITH_AJAX.testParam);
 
@@ -225,9 +231,7 @@ public class MultipleInputFileTest {
      * Asserts that a single file selection results in the correct messages output.
      * This test will assert the correct result for both single, and multiple form inputs.
      *
-     * @param webClient - The web client used to generate the page
      * @param page - The html page
-     * @param usingAjax - true is using Ajax, false otherwise.
      * @param field - is the form input using single, or multiple inputs
      * @throws Exception - Thrown if we were not able to execute the assertion testing
      */
@@ -260,10 +264,7 @@ public class MultipleInputFileTest {
     /**
      * Asserts that a multiple file selection results in the correct messages output.
      *
-     * @param webClient - The web client used to generate the page
      * @param page - The html page
-     * @param usingAjax - true is using Ajax, false otherwise.
-     * @param field - is the form input using single, or multiple inputs
      * @throws Exception - Thrown if we were not able to execute the assertion testing
      */
     private void assertMultipleSelection(HtmlPage page) throws Exception {
@@ -298,10 +299,9 @@ public class MultipleInputFileTest {
     }
 
     /**
-     * @param webClient
-     * @param page
-     * @param usingAjax
-     * @param field - is the form input using single, or multiple inputs
+     * Asserts that a multiple file selection results in a single output.
+     *
+     * @param page - The html page
      * @throws IOException
      */
     private void assertMultipleSelectionProducesSingleResult(HtmlPage page) throws IOException {
