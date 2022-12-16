@@ -85,6 +85,8 @@ public interface Primes {
 
     List<Prime> findByNumberBetween(long min, long max, Sort... orderBy);
 
+    KeysetAwarePage<Prime> findByNumberBetweenAndBinaryNotNull(long min, long max, Sort... orderBy); // Lacks Pageable
+
     KeysetAwareSlice<Prime> findByNumberBetweenAndEvenFalse(long min, long max, Pageable pagination);
 
     Page<Prime> findByNumberBetweenAndSumOfBitsNotNull(long min, long max, Pageable pagination);

@@ -1888,6 +1888,34 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * A repository might define a method that returns a keyset-aware page without specifying a Pageable,
+     * specifying the sort criteria separately.
+     */
+    @Test
+    public void testKeysetWithoutPageable() {
+        // This is not a recommended pattern. Testing to see how it is handled.
+        KeysetAwarePage<Prime> page = primes.findByNumberBetweenAndBinaryNotNull(30L, 40L, Sort.asc("number"));
+        assertEquals(31L, page.content().get(0).number);
+
+        // Obtain Pageable for previous entries from the KeysetAwarePage
+        Pageable pagination = page.previousPageable().size(5);
+        page = primes.findByNumberBetween(0L, 40L, pagination);
+        assertIterableEquals(List.of(13L, 17L, 19L, 23L, 29L),
+                             page.stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+
+        pagination = page.previousPageable();
+        page = primes.findByNumberBetween(0L, 40L, pagination);
+        assertIterableEquals(List.of(2L, 3L, 5L, 7L, 11L),
+                             page.stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+
+        assertEquals(null, page.previousPageable());
+    }
+
+    /**
      * Add, find, and remove entities with a mapped superclass.
      * Also tests automatically paginated iterator and list.
      */
