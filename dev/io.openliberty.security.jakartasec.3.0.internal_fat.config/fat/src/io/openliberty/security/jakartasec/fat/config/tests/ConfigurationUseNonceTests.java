@@ -82,7 +82,7 @@ public class ConfigurationUseNonceTests extends CommonAnnotatedSecurityTests {
         updateTrackers(opServer, rpServer, false);
 
         List<String> waitForMsgs = null;
-        opServer.startServerUsingExpandedConfiguration("server_orig.xml", waitForMsgs);
+        opServer.startServerUsingExpandedConfiguration("server_useNonce.xml", waitForMsgs);
         SecurityFatHttpUtils.saveServerPorts(opServer, Constants.BVT_SERVER_1_PORT_NAME_ROOT);
         opHttpBase = "http://localhost:" + opServer.getBvtPort();
         opHttpsBase = "https://localhost:" + opServer.getBvtSecurePort();
@@ -158,7 +158,7 @@ public class ConfigurationUseNonceTests extends CommonAnnotatedSecurityTests {
         // follow redirect from login page to the auth endpoint
         response = actions.invokeUrl(_testName, webClient, WebResponseUtils.getResponseHeaderField(response, Constants.RESPONSE_HEADER_LOCATION));
 
-        String authEndpointNonceRegex = "https:\\/\\/localhost:" + opServer.getBvtSecurePort() + "\\/oidc\\/endpoint\\/OP2\\/authorize\\?.*" + NONCE_REGEX;
+        String authEndpointNonceRegex = "https:\\/\\/localhost:" + opServer.getBvtSecurePort() + "\\/oidc\\/endpoint\\/OP1\\/authorize\\?.*" + NONCE_REGEX;
 
         // validates:
         // - 302 response
