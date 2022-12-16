@@ -124,6 +124,8 @@ public interface Primes {
 
     Iterator<Prime> findByNumberNotGreaterThan(long max, Pageable pagination);
 
+    Iterator<Prime> findByNumberNotGreaterThan(long max, Sort... order);
+
     Stream<Prime> findFirst2147483648ByNumberGreaterThan(long min); // Exceeds Integer.MAX_VALUE by 1
 
     @OrderBy(value = "name", descending = true)

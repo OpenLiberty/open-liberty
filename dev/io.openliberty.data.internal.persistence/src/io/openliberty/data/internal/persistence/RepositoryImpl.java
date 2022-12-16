@@ -1195,6 +1195,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                     } catch (NoSuchMethodException x) {
                                         throw new UnsupportedOperationException(type + " lacks public zero parameter constructor.");
                                     }
+                                } else if (Iterator.class.equals(type)) {
+                                    returnValue = results.iterator();
                                 } else if (results.isEmpty()) {
                                     returnValue = nullIfOptional(returnType);
                                 } else { // single result of other type

@@ -1283,6 +1283,34 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Iterator with Sort only and no pagination.
+     */
+    @Test
+    public void testIteratorWithoutPagination() {
+        Iterator<Prime> it = primes.findByNumberNotGreaterThan(41L, Sort.desc("sumOfBits"), Sort.desc("romanNumeral"));
+
+        assertEquals("XXXI", it.next().romanNumeral);
+
+        assertEquals("XXIX", it.next().romanNumeral);
+        assertEquals("XXIII", it.next().romanNumeral);
+
+        assertEquals("XXXVII", it.next().romanNumeral);
+        assertEquals("XLI", it.next().romanNumeral);
+        assertEquals("XIX", it.next().romanNumeral);
+        assertEquals("XIII", it.next().romanNumeral);
+        assertEquals("XI", it.next().romanNumeral);
+        assertEquals("VII", it.next().romanNumeral);
+
+        assertEquals("XVII", it.next().romanNumeral);
+        assertEquals("V", it.next().romanNumeral);
+        assertEquals("III", it.next().romanNumeral);
+
+        assertEquals("II", it.next().romanNumeral);
+
+        assertEquals(false, it.hasNext());
+    }
+
+    /**
      * Access pages in a forward direction while entities are being added and removed,
      * using a keyset to avoid duplicates.
      */
