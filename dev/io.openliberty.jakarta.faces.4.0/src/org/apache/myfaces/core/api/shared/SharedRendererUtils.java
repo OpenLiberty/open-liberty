@@ -24,9 +24,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.SortedSet;
@@ -34,6 +36,7 @@ import java.util.TreeSet;
 
 import jakarta.el.ValueExpression;
 import jakarta.faces.FacesException;
+import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIOutput;
 import jakarta.faces.component.UISelectMany;
 import jakarta.faces.context.FacesContext;
@@ -117,7 +120,9 @@ public class SharedRendererUtils
 
         ValueExpression expression = component.getValueExpression("value");
         Object targetForConvertedValues = null;
-        
+
+        Boolean isCollectionCase = false;
+
         // if the component has an attached converter, use it
         Converter converter = component.getConverter();
         // at this point the valueType attribute is handled in shared.
@@ -168,6 +173,7 @@ public class SharedRendererUtils
             }
             else if (Collection.class.isAssignableFrom(modelType) || Object.class.equals(modelType))
             {
+                isCollectionCase = true;
                 if (converter == null)
                 {
                     // try to get the by-type-converter from the type of the SelectItems
@@ -313,6 +319,36 @@ public class SharedRendererUtils
             }
             else
             {
+                if (isCollectionCase) // Added to Address Spec1422IT 
+                {
+                    Map<String, Object> availableItems = new HashMap<>();
+
+                    SelectItemsIterator iterator = new SelectItemsIterator(component, facesContext);
+
+                    while (iterator.hasNext())
+                    {
+                        SelectItem item = iterator.next();
+
+                        if (item instanceof SelectItemGroup)
+                        {
+                            for (SelectItem itemFromGroup : ((SelectItemGroup) item).getSelectItems()) 
+                            {
+                                String keyString = getConvertedStringValue(
+                                    facesContext, component, converter, itemFromGroup); // converter retreived earlier
+                                availableItems.put(keyString, itemFromGroup.getValue());
+                            }
+                        }
+                        else
+                        {
+                            String keyString = getConvertedStringValue(facesContext, component, converter, item);
+                            availableItems.put(keyString, item.getValue());
+                        }
+                    }
+                    if (availableItems.size() > 0)
+                    {
+                        value = availableItems.get(submittedValue[i]);
+                    }
+                } 
                 ((Collection) targetForConvertedValues).add(value);
             }
         }
@@ -437,7 +473,12 @@ public class SharedRendererUtils
             }
             else
             {
-                Class<?> selectItemsType = item.getValue().getClass();
+                Object value = item.getValue();
+                if(value == null)
+                {
+                    return null;
+                }
+                Class<?> selectItemsType = value.getClass();
                 
                 // optimization: no conversion for String values
                 if (String.class.equals(selectItemsType))
@@ -464,5 +505,43 @@ public class SharedRendererUtils
     private static void log(FacesContext context, String msg, Exception e)
     {
         context.getExternalContext().log(msg, e);
+    }
+
+        /**
+     * Convenient utility method that returns the currently given value as String,
+     * using the given converter.
+     * Especially usefull for dealing with primitive types.
+     */
+    public static String getConvertedStringValue(FacesContext context,
+            UIComponent component, Converter converter, Object value)
+    {
+        if (converter == null)
+        {
+            if (value == null)
+            {
+                return "";
+            }
+            else if (value instanceof String)
+            {
+                return (String) value;
+            }
+            else
+            {
+                return value.toString();
+            }
+        }
+
+        return converter.getAsString(context, component, value);
+    }
+
+    /**
+     * Convenient utility method that returns the currently given SelectItem value
+     * as String, using the given converter.
+     * Especially usefull for dealing with primitive types.
+     */
+    public static String getConvertedStringValue(FacesContext context,
+            UIComponent component, Converter converter, SelectItem selectItem)
+    {
+        return getConvertedStringValue(context, component, converter, selectItem.getValue());
     }
 }
