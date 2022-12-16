@@ -32,6 +32,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.PatchTe
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.SpanCurrentServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.Telemetry10Servlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.WithSpanServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.MetricsDisabledServlet;
 
 @RunWith(FATRunner.class)
 public class Telemetry10 extends FATServletClient {
