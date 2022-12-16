@@ -57,7 +57,6 @@ public class Telemetry10 extends FATServletClient {
                         .addClasses(Telemetry10Servlet.class,
                                     OpenTelemetryBeanServlet.class,
                                     PatchTestApp.class,
-                                    OpenTelemetryBeanServlet.class,
                                     BaggageServlet.class,
                                     MetricsDisabledServlet.class,
                                     SpanCurrentServlet.class,
