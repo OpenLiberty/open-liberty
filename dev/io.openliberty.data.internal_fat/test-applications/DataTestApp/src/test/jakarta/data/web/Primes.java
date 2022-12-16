@@ -12,6 +12,7 @@ package test.jakarta.data.web;
 
 import java.util.Collection;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -72,6 +73,11 @@ public interface Primes {
 
     List<Prime> findByNameIgnoreCaseStartsWithAndNumberLessThanOrderByNumberAsc(String pattern, long max);
 
+    @OrderBy("even")
+    @OrderBy("sumOfBits")
+    @OrderBy("number")
+    Iterator<Prime> findByNameStartsWithAndNumberLessThanOrNameContainsAndNumberLessThan(String prefix, long max1, String contains, long max2, Pageable pagination);
+
     Prime findByNumberBetween(long min, long max);
 
     @OrderBy("number")
@@ -115,6 +121,8 @@ public interface Primes {
 
     @Asynchronous
     CompletionStage<KeysetAwarePage<Prime>> findByNumberLessThanOrderByNumberDesc(long max, Pageable pagination);
+
+    Iterator<Prime> findByNumberNotGreaterThan(long max, Pageable pagination);
 
     Stream<Prime> findFirst2147483648ByNumberGreaterThan(long min); // Exceeds Integer.MAX_VALUE by 1
 

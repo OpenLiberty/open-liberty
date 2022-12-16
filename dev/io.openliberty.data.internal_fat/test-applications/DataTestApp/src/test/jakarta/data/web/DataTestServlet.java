@@ -1188,6 +1188,101 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Supply a Pageable with a keyset cursor to a repository method that returns an Iterator.
+     * Specify the sort criteria statically via the OrderBy annotation.
+     */
+    @Test
+    public void testIteratorWithKeysetPagination_OrderBy() {
+        Pageable p = Pageable.ofSize(5).afterKeyset(false, 2, 3);
+        Iterator<Prime> it = primes.findByNameStartsWithAndNumberLessThanOrNameContainsAndNumberLessThan("t", 50L, "n", 50L, p);
+
+        assertEquals("seventeen", it.next().name);
+        assertEquals("seven", it.next().name);
+        assertEquals("eleven", it.next().name);
+        assertEquals("thirteen", it.next().name);
+        assertEquals("nineteen", it.next().name);
+
+        assertEquals("thirty-seven", it.next().name);
+        assertEquals("forty-one", it.next().name);
+        assertEquals("twenty-three", it.next().name);
+        assertEquals("twenty-nine", it.next().name);
+        assertEquals("thirty-one", it.next().name);
+
+        assertEquals("forty-seven", it.next().name);
+        assertEquals("two", it.next().name);
+        assertEquals(false, it.hasNext());
+
+        p = Pageable.ofSize(4).beforeKeyset(true, 1, 2);
+        it = primes.findByNameStartsWithAndNumberLessThanOrNameContainsAndNumberLessThan("t", 45L, "n", 45L, p);
+
+        assertEquals("forty-one", it.next().name);
+        assertEquals("twenty-three", it.next().name);
+        assertEquals("twenty-nine", it.next().name);
+        assertEquals("thirty-one", it.next().name);
+
+        assertEquals("eleven", it.next().name);
+        assertEquals("thirteen", it.next().name);
+        assertEquals("nineteen", it.next().name);
+        assertEquals("thirty-seven", it.next().name);
+
+        assertEquals("three", it.next().name);
+        assertEquals("seventeen", it.next().name);
+        assertEquals("seven", it.next().name);
+        assertEquals(false, it.hasNext());
+    }
+
+    /**
+     * Supply a Pageable with a keyset cursor to a repository method that returns an Iterator.
+     * Specify the sort criteria dynamically via Sort.
+     */
+    @Test
+    public void testIteratorWithKeysetPagination_Sorts() {
+        Pageable p = Pageable.ofSize(6) //
+                        .sortBy(Sort.asc("sumOfBits"), Sort.asc("name")) //
+                        .afterKeyset(1, "a prime number");
+        Iterator<Prime> it = primes.findByNumberNotGreaterThan(40L, p);
+
+        assertEquals("two", it.next().name);
+        assertEquals("five", it.next().name);
+        assertEquals("seventeen", it.next().name);
+        assertEquals("three", it.next().name);
+        assertEquals("eleven", it.next().name);
+        assertEquals("nineteen", it.next().name);
+
+        assertEquals("seven", it.next().name);
+        assertEquals("thirteen", it.next().name);
+        assertEquals("thirty-seven", it.next().name);
+        assertEquals("twenty-nine", it.next().name);
+        assertEquals("twenty-three", it.next().name);
+        assertEquals("thirty-one", it.next().name);
+
+        assertEquals(false, it.hasNext());
+
+        p = Pageable.ofSize(4) //
+                        .sortBy(Sort.asc("sumOfBits"), Sort.asc("name")) //
+                        .beforeKeyset(5, "forty-seven");
+        it = primes.findByNumberNotGreaterThan(50L, p);
+
+        assertEquals("thirty-seven", it.next().name);
+        assertEquals("forty-three", it.next().name);
+        assertEquals("twenty-nine", it.next().name);
+        assertEquals("twenty-three", it.next().name);
+
+        assertEquals("forty-one", it.next().name);
+        assertEquals("nineteen", it.next().name);
+        assertEquals("seven", it.next().name);
+        assertEquals("thirteen", it.next().name);
+
+        assertEquals("five", it.next().name);
+        assertEquals("seventeen", it.next().name);
+        assertEquals("three", it.next().name);
+        assertEquals("eleven", it.next().name);
+
+        assertEquals("two", it.next().name);
+        assertEquals(false, it.hasNext());
+    }
+
+    /**
      * Access pages in a forward direction while entities are being added and removed,
      * using a keyset to avoid duplicates.
      */
