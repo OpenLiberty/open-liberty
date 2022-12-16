@@ -21,8 +21,6 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
-import com.ibm.ws.security.fat.common.expectations.ResponseMessageExpectation;
-import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseUrlExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
@@ -260,9 +258,8 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         Page response = actions.invokeUrl(_testName, webClient, url);
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
+        expectations.addUnauthorizedStatusCodeAndMessageForCurrentAction();
         expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, url, "Did not fail to land on " + url));
-        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorize message."));
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2401E_INVALID_CLIENT_CONFIG, "Did not receive an error message stating that the client config is invalid"));
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2404W_PROVIDERURI_MISSING, "Did not receive an error message stating that the providerURI is missing."));
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2400E_AUTHORIZATION_REQ_FAILED, "Did not receive an error message stating that the authorization request failed."));
@@ -383,8 +380,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
-        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorize message."));
+        expectations.addUnauthorizedStatusCodeAndMessageForCurrentAction();
 
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1406E_INVALID_CLIENT_CREDENTIAL, "Did not receive an error message stating that the client credential was invalid."));
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2416E_FAILED_TO_REACH_ENDPOINT, "Did not receive an error message stating that we couldn't react the token endpoint."));
@@ -412,8 +408,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
-        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorize message."));
+        expectations.addUnauthorizedStatusCodeAndMessageForCurrentAction();
 
         expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWOAU0038E_CLIENT_COULD_NOT_BE_VERIFIED, "Did not receive an error message stating that the client could not be verified."));
 
@@ -452,7 +447,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         Page response = actions.invokeUrl(_testName, webClient, url);
 
         Expectations expectations = new Expectations();
-        expectations.addSuccessStatusCodes();
+        expectations.addSuccessCodeForCurrentAction();
         expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
                                                                                           + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
         expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, MessageConstants.CWOAU0062E_REDIRECT_URI_INVALID, "Did not receive an error message stating that the redirect URI is not valid."));
@@ -481,8 +476,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(Constants.NOT_FOUND_STATUS));
-        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.NOT_FOUND_MSG, "Did not receive the Not Found message."));
+        expectations.addNotFoundStatusCodeAndMessageForCurrentAction();
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.SRVE0190E_FILE_NOT_FOUND, "Did not receive an error message stating that the redirect URI resource was not found in the RP."));
 
         validationUtils.validateResult(response, expectations);
@@ -507,7 +501,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         Page response = actions.invokeUrl(_testName, webClient, url);
 
         Expectations expectations = new Expectations();
-        expectations.addSuccessStatusCodes();
+        expectations.addSuccessCodeForCurrentAction();
         expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
                                                                                           + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
         expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, MessageConstants.CWOAU0062E_REDIRECT_URI_INVALID, "Did not receive an error message stating that the redirect URI is not valid."));
@@ -535,7 +529,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         Page response = actions.invokeUrl(_testName, webClient, url);
 
         Expectations expectations = new Expectations();
-        expectations.addSuccessStatusCodes();
+        expectations.addSuccessCodeForCurrentAction();
         expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
                                                                                           + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
         expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, MessageConstants.CWOAU0033E_REQ_RUNTIME_PARAM_MISSING, "Did not receive an error message stating that the required redirectURI was missing."));
@@ -607,7 +601,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         Page response = actions.invokeUrl(_testName, webClient, url);
 
         Expectations expectations = new Expectations();
-        expectations.addSuccessStatusCodes();
+        expectations.addSuccessCodeForCurrentAction();
         expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
                                                                                           + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
         expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, MessageConstants.CWOAU0062E_REDIRECT_URI_INVALID, "Did not receive an error message stating that the redirect URI is not valid."));
@@ -687,8 +681,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         Page response = actions.invokeUrl(_testName, webClient, url);
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
-        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorized message."));
+        expectations.addUnauthorizedStatusCodeAndMessageForCurrentAction();
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2423E_OIDC_CLIENT_INVALID_RESPONSE_TYPE, "Did not receive an error message stating that the response type is not valid."));
 
         validationUtils.validateResult(response, expectations);
@@ -713,8 +706,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         Page response = actions.invokeUrl(_testName, webClient, url);
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
-        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorized message."));
+        expectations.addUnauthorizedStatusCodeAndMessageForCurrentAction();
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2423E_OIDC_CLIENT_INVALID_RESPONSE_TYPE, "Did not receive an error message stating that the response type is not valid."));
 
         validationUtils.validateResult(response, expectations);
@@ -739,8 +731,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         Page response = actions.invokeUrl(_testName, webClient, url);
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
-        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorized message."));
+        expectations.addUnauthorizedStatusCodeAndMessageForCurrentAction();
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2423E_OIDC_CLIENT_INVALID_RESPONSE_TYPE, "Did not receive an error message stating that the response type is not valid."));
 
         validationUtils.validateResult(response, expectations);
@@ -765,8 +756,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         Page response = actions.invokeUrl(_testName, webClient, url);
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
-        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorized message."));
+        expectations.addUnauthorizedStatusCodeAndMessageForCurrentAction();
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2423E_OIDC_CLIENT_INVALID_RESPONSE_TYPE, "Did not receive an error message stating that the response type is not valid."));
 
         validationUtils.validateResult(response, expectations);
@@ -791,8 +781,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         Page response = actions.invokeUrl(_testName, webClient, url);
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
-        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorized message."));
+        expectations.addUnauthorizedStatusCodeAndMessageForCurrentAction();
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2423E_OIDC_CLIENT_INVALID_RESPONSE_TYPE, "Did not receive an error message stating that the response type is not valid."));
 
         validationUtils.validateResult(response, expectations);
@@ -817,8 +806,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         Page response = actions.invokeUrl(_testName, webClient, url);
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
-        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorized message."));
+        expectations.addUnauthorizedStatusCodeAndMessageForCurrentAction();
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2423E_OIDC_CLIENT_INVALID_RESPONSE_TYPE, "Did not receive an error message stating that the response type is not valid."));
 
         validationUtils.validateResult(response, expectations);
@@ -843,8 +831,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
         Page response = actions.invokeUrl(_testName, webClient, url);
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
-        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorized message."));
+        expectations.addUnauthorizedStatusCodeAndMessageForCurrentAction();
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2423E_OIDC_CLIENT_INVALID_RESPONSE_TYPE, "Did not receive an error message stating that the response type is not valid."));
 
         validationUtils.validateResult(response, expectations);

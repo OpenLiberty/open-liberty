@@ -26,8 +26,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseHeaderExpectation;
-import com.ibm.ws.security.fat.common.expectations.ResponseMessageExpectation;
-import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.web.WebResponseUtils;
@@ -177,8 +175,7 @@ public class ConfigurationResponseModeTests extends CommonAnnotatedSecurityTests
 
         // validate 302 response, redirect uri, and that the code and state params were included as query params
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(Constants.REDIRECT_STATUS));
-        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.FOUND_MSG, "Did not receive the Found message."));
+        expectations.addFoundStatusCodeAndMessageForCurrentAction();
         expectations.addExpectation(new ResponseHeaderExpectation(null, Constants.STRING_MATCHES, Constants.RESPONSE_HEADER_LOCATION, "https:\\/\\/localhost:"
                                                                                                                                       + rpServer.getBvtSecurePort()
                                                                                                                                       + "\\/responseModeQuery\\/Callback\\?code=.+&state=.+", "Did not get the code and state params as query params."));
@@ -225,8 +222,7 @@ public class ConfigurationResponseModeTests extends CommonAnnotatedSecurityTests
 
         // validate 302 response, redirect uri, and that the code and state params were included as fragment params
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(Constants.REDIRECT_STATUS));
-        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.FOUND_MSG, "Did not receive the Found message."));
+        expectations.addFoundStatusCodeAndMessageForCurrentAction();
         expectations.addExpectation(new ResponseHeaderExpectation(null, Constants.STRING_MATCHES, Constants.RESPONSE_HEADER_LOCATION, "https:\\/\\/localhost:"
                                                                                                                                       + rpServer.getBvtSecurePort()
                                                                                                                                       + "\\/responseModeFragment\\/Callback#code=.+&state=.+", "Did not get the code and state params as fragment params."));
@@ -319,8 +315,7 @@ public class ConfigurationResponseModeTests extends CommonAnnotatedSecurityTests
 
         // validate 302 response, redirect uri, and that the error and state params were included as query params
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(Constants.REDIRECT_STATUS));
-        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.FOUND_MSG, "Did not receive the Found message."));
+        expectations.addFoundStatusCodeAndMessageForCurrentAction();
         expectations.addExpectation(new ResponseHeaderExpectation(null, Constants.STRING_MATCHES, Constants.RESPONSE_HEADER_LOCATION, "https:\\/\\/localhost:"
                                                                                                                                       + rpServer.getBvtSecurePort()
                                                                                                                                       + "\\/responseModeError\\/Callback\\?error=.+&error_description=.+&state=.+", "Did not get the error, error_description, and state params as query params."));
@@ -331,8 +326,7 @@ public class ConfigurationResponseModeTests extends CommonAnnotatedSecurityTests
 
         // validate 401 response and error param detected messages
         expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
-        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorize message."));
+        expectations.addUnauthorizedStatusCodeAndMessageForCurrentAction();
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2407E_ERROR_VERIFYING_RESPONSE, "Did not receive an error message stating that the client encountered an error verifying the authentication response."));
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2414E_CALLBACK_URL_INCLUDES_ERROR_PARAMETER, "Did not receive an error message stating that the callback url includes an error param."));
         validationUtils.validateResult(response, expectations);

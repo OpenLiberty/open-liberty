@@ -25,8 +25,6 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
-import com.ibm.ws.security.fat.common.expectations.ResponseMessageExpectation;
-import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseUrlExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
@@ -167,8 +165,7 @@ public class ConfigurationUseNonceTests extends CommonAnnotatedSecurityTests {
         // - if useNonce = true, then a nonce was included in the req to the auth endpoint
         // - if useNonce = false, then a nonce was not included in the req to the auth endpoint
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(Constants.REDIRECT_STATUS));
-        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.FOUND_MSG, "Did not receive the Found message."));
+        expectations.addFoundStatusCodeAndMessageForCurrentAction();
         if (useNonce) {
             expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_MATCHES, authEndpointNonceRegex, "Did not find nonce in authorization endpoint request."));
         } else {
@@ -328,8 +325,7 @@ public class ConfigurationUseNonceTests extends CommonAnnotatedSecurityTests {
         response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
-        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorize message."));
+        expectations.addUnauthorizedStatusCodeAndMessageForCurrentAction();
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2504E_CREDENTIAL_VALIDATION_ERROR, "Did not receive an error stating that an error occurred while validaitng the client credentials."));
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2415E_TOKEN_VALIDATION_EXCEPTION, "Did not receive an error stating that an error occured while validating the id token."));
 
