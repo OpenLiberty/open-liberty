@@ -82,7 +82,7 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
         updateTrackers(opServer, rpServer, false);
 
         List<String> waitForMsgs = null;
-        opServer.startServerUsingExpandedConfiguration("server_orig.xml", waitForMsgs);
+        opServer.startServerUsingExpandedConfiguration("server_scope.xml", waitForMsgs);
         SecurityFatHttpUtils.saveServerPorts(opServer, Constants.BVT_SERVER_1_PORT_NAME_ROOT);
         opHttpBase = "http://localhost:" + opServer.getBvtPort();
         opHttpsBase = "https://localhost:" + opServer.getBvtSecurePort();
