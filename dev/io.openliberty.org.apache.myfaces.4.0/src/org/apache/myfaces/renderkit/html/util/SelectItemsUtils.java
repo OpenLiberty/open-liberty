@@ -93,7 +93,7 @@ public class SelectItemsUtils
             }
             else
             {
-                String itemStrValue = org.apache.myfaces.renderkit.RendererUtils
+                String itemStrValue = org.apache.myfaces.core.api.shared.SharedRendererUtils
                         .getConvertedStringValue(context, component, converter,
                                 selectItem);
                 boolean selected = lookupSet.contains(itemStrValue); 
@@ -169,9 +169,9 @@ public class SelectItemsUtils
 
                 boolean escape = AttributeUtils.getBooleanAttribute(component, ComponentAttrs.ESCAPE_ATTR, false);
                 //default is to escape
-                //In JSF 1.2, when a SelectItem is created by default 
+                //In Faces 1.2, when a SelectItem is created by default 
                 //selectItem.isEscape() returns true (this property
-                //is not available on JSF 1.1).
+                //is not available on Faces 1.1).
                 //so, if we found a escape property on the component
                 //set to true, escape every item, but if not
                 //check if isEscape() = true first.

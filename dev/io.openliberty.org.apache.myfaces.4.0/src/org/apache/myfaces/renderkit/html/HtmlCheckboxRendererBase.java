@@ -141,7 +141,14 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         ResponseWriter writer = facesContext.getResponseWriter();
 
         writer.startElement(usingTable != null ? HTML.TABLE_ELEM : HTML.UL_ELEM, selectMany);
-        HtmlRendererUtils.renderHTMLAttributes(writer, selectMany, HTML.SELECT_TABLE_PASSTHROUGH_ATTRIBUTES);
+        if(usingTable != null) 
+        {
+            HtmlRendererUtils.renderHTMLAttributes(writer, selectMany, HTML.SELECT_TABLE_PASSTHROUGH_ATTRIBUTES);
+        }
+        else 
+        {
+            HtmlRendererUtils.renderHTMLAttributes(writer, selectMany, HTML.UL_PASSTHROUGH_ATTRIBUTES);
+        }
         
         Map<String, List<ClientBehavior>> behaviors = null;
         if (selectMany instanceof ClientBehaviorHolder)
@@ -233,14 +240,22 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
             {
                 writer.write(selectItem.getLabel());
             }
-            writer.endElement(usingTable != null ? HTML.TD_ELEM : HTML.LI_ELEM);
+
+            if (usingTable != null)
+            {
+                writer.endElement(HTML.TD_ELEM);
+            }
 
             if (usingTable == Boolean.TRUE)
             {
                 writer.endElement(HTML.TR_ELEM);
                 writer.startElement(HTML.TR_ELEM, null);
             }
-            writer.startElement(usingTable != null ? HTML.TD_ELEM : HTML.LI_ELEM, null);
+
+            if (usingTable != null)
+            {
+                writer.startElement(HTML.TD_ELEM, null);
+            }
 
             writer.startElement(usingTable != null ? HTML.TABLE_ELEM : HTML.UL_ELEM, null);
             if (usingTable != null)
@@ -288,7 +303,7 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
         {
             Object itemValue = selectItem.getValue(); // TODO : Check here for getSubmittedValue. 
                                                       // Look at RendererUtils.getValue
-            String itemStrValue = RendererUtils.getConvertedStringValue(
+            String itemStrValue =  org.apache.myfaces.core.api.shared.SharedRendererUtils.getConvertedStringValue(
                     facesContext, selectMany, converter, itemValue);
             
             boolean checked = lookupSet.contains(itemStrValue);
@@ -374,10 +389,8 @@ public class HtmlCheckboxRendererBase extends HtmlRenderer
             writer.writeAttribute(HTML.DISABLED_ATTR, HTML.DISABLED_ATTR, null);
         }
 
-        if ((value != null) && (value.length() > 0))
-        {
-            writer.writeAttribute(HTML.VALUE_ATTR, value, null);
-        }
+        value = value == null ? "" : value;
+        writer.writeAttribute(HTML.VALUE_ATTR, value, null);
 
         Map<String, List<ClientBehavior>> behaviors = null;
         if (uiComponent instanceof UISelectBoolean)

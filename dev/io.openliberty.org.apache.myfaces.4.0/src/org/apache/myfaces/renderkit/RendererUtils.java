@@ -620,44 +620,6 @@ public final class RendererUtils
                 context, component, converter, uiSelectMany, selectedValues, true);
     }
 
-    /**
-     * Convenient utility method that returns the currently given value as String,
-     * using the given converter.
-     * Especially usefull for dealing with primitive types.
-     */
-    public static String getConvertedStringValue(FacesContext context,
-            UIComponent component, Converter converter, Object value)
-    {
-        if (converter == null)
-        {
-            if (value == null)
-            {
-                return "";
-            }
-            else if (value instanceof String)
-            {
-                return (String) value;
-            }
-            else
-            {
-                return value.toString();
-            }
-        }
-
-        return converter.getAsString(context, component, value);
-    }
-
-    /**
-     * Convenient utility method that returns the currently given SelectItem value
-     * as String, using the given converter.
-     * Especially usefull for dealing with primitive types.
-     */
-    public static String getConvertedStringValue(FacesContext context,
-            UIComponent component, Converter converter, SelectItem selectItem)
-    {
-        return getConvertedStringValue(context, component, converter, selectItem.getValue());
-    }
-
     private static Set internalSubmittedOrSelectedValuesAsSet(
             FacesContext context, UIComponent component, Converter converter,
             UISelectMany uiSelectMany, Object values,
@@ -679,7 +641,7 @@ public final class RendererUtils
             HashSet set = new HashSet(HashMapUtils.calcCapacity(ar.length));
             for (int i = 0; i < ar.length; i++)
             {
-                set.add(getConvertedStringValue(context, component, converter,
+                set.add(SharedRendererUtils.getConvertedStringValue(context, component, converter,
                         ar[i]));
             }
             return set;
@@ -691,7 +653,8 @@ public final class RendererUtils
             HashSet set = new HashSet(HashMapUtils.calcCapacity(len));
             for (int i = 0; i < len; i++)
             {
-                set.add(getConvertedStringValue(context, component, converter, Array.get(values, i)));
+                set.add(
+                    SharedRendererUtils.getConvertedStringValue(context, component, converter, Array.get(values, i)));
             }
             return set;
         }
@@ -706,7 +669,7 @@ public final class RendererUtils
             HashSet set = new HashSet(HashMapUtils.calcCapacity(col.size()));
             for (Iterator i = col.iterator(); i.hasNext();)
             {
-                set.add(getConvertedStringValue(context, component, converter, i.next()));
+                set.add(SharedRendererUtils.getConvertedStringValue(context, component, converter, i.next()));
             }
 
             return set;
