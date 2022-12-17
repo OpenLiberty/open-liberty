@@ -9,7 +9,9 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 
-Bundle-Name: ui
-Bundle-SymbolicName: com.ibm.ws.ui
-Bundle-Description: Provides the Admin Center toolbox and catalog
+Bundle-Name: ui servlet filter
+Bundle-SymbolicName: com.ibm.ws.ui.servlet.filter
+Bundle-Description: Provides the Admin Center servlet filter
 
+Export-Package: \
+  com.ibm.ws.ui.servlet.filter

@@ -10,6 +10,9 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/transform.props
 
-Bundle-Name: ui Jakarta
-Bundle-SymbolicName: com.ibm.ws.ui.jakarta
-Bundle-Description: Provides the Admin Center toolbox and catalog; Jakarta Enabled
+Bundle-Name: ui servlet filter Jakarta
+Bundle-SymbolicName: com.ibm.ws.ui.servlet.filter.jakarta
+Bundle-Description: Provides the Admin Center servlet filter; Jakarta Enabled
+
+Export-Package: \
+  com.ibm.ws.ui.servlet.filter
