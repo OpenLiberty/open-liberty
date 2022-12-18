@@ -1,0 +1,6 @@
+/dropins/
+BasicPlcyBA.wsdl
+NoWssecWebSvc.wsdl
+UsrTokenPWDigestNonceCreatedSvc.wsdl
+UsrTokenPWDigestWebSvc.wsdl
+/*.jceks

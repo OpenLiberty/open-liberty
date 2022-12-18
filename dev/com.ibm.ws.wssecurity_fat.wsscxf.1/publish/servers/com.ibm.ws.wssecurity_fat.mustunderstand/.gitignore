@@ -1,0 +1,10 @@
+/dropins/
+dsig-receiver.ks
+dsig-sender.ks
+key.jks
+sslServerTrust.jks
+x509ClientDefault.jks
+x509ClientSecond.jks
+x509ServerDefault.jks
+x509ServerSecond.jks
+/*.jceks
