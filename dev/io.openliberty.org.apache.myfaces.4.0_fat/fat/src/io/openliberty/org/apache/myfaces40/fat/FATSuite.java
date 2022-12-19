@@ -23,6 +23,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.org.apache.myfaces40.fat.tests.AcceptInputFileTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.ExtensionlessMappingTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.ExternalContextAddResponseCookieTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.Faces40ThirdPartyApiTests;
@@ -37,6 +38,7 @@ import io.openliberty.org.apache.myfaces40.fat.tests.UIViewRootGetDoctypeTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                AcceptInputFileTest.class,
                 SimpleTest.class,
                 ExternalContextAddResponseCookieTest.class,
                 FacesConfigTest.class,
