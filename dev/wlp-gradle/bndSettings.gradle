@@ -76,6 +76,7 @@ import aQute.bnd.build.Workspace
 import aQute.bnd.osgi.Constants
 import aQute.bnd.gradle.BndPlugin
 
+System.out.println("")
 Workspace.setDriver(Constants.BNDDRIVER_GRADLE)
 Workspace.addGestalt(Constants.GESTALT_BATCH, null)
 Workspace workspace = new Workspace(rootDir, bnd_cnf).setOffline(startParameter.offline)
