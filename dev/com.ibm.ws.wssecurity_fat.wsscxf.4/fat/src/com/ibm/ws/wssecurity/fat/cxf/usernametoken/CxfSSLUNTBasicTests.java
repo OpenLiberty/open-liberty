@@ -254,7 +254,7 @@ public class CxfSSLUNTBasicTests extends SSLTestCommon {
      *
      */
     //issue 23060
-    @Test
+    //@Test 12/2022 comment out temporarily until issue 23735 is resolved
     public void testUntCxfSSLManagedDisableMustUnderstand() throws Exception {
 
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_disable_mustunderstand.xml");
