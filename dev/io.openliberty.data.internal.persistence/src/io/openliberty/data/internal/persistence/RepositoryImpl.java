@@ -53,7 +53,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import jakarta.data.Delete;
 import jakarta.data.Inheritance;
-import jakarta.data.Result;
 import jakarta.data.Select;
 import jakarta.data.Select.Aggregate;
 import jakarta.data.Update;
@@ -901,30 +900,22 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     private StringBuilder generateSelect(QueryInfo queryInfo) {
         StringBuilder q = new StringBuilder(200);
         // TODO entityClass now includes inheritance subtypes and much of the following was already computed.
-        Result result = queryInfo.method.getAnnotation(Result.class);
         Select select = queryInfo.method.getAnnotation(Select.class);
-        Class<?> type = result == null ? null : result.value();
         String[] cols = select == null ? null : select.value();
         boolean distinct = select != null && select.distinct();
         String function = select == null ? null : toFunctionName(select.function());
 
-        if (type == null) {
-            Class<?> returnType = queryInfo.method.getReturnType();
-            if (!Iterable.class.isAssignableFrom(returnType)) {
-                Class<?> arrayType = returnType.getComponentType();
-                returnType = arrayType == null ? returnType : arrayType;
-                if (!returnType.isPrimitive()
-                    && !returnType.isInterface()
-                    && !returnType.isAssignableFrom(queryInfo.entityInfo.type)
-                    && !returnType.getName().startsWith("java"))
-                    type = returnType;
-            }
-        }
+        Class<?> type = queryInfo.returnArrayType != null ? queryInfo.returnArrayType //
+                        : queryInfo.returnTypeParam != null ? queryInfo.returnTypeParam //
+                                        : queryInfo.method.getReturnType();
 
         q.append("SELECT ");
 
-        if (type == null ||
-            queryInfo.entityInfo.inheritance && queryInfo.entityInfo.type.isAssignableFrom(type))
+        if (type.isAssignableFrom(queryInfo.entityInfo.type)
+            || type.isInterface()
+            || type.isPrimitive()
+            || type.getName().startsWith("java")
+            || queryInfo.entityInfo.inheritance && queryInfo.entityInfo.type.isAssignableFrom(type)) {
             if (cols == null || cols.length == 0) {
                 q.append(distinct ? "DISTINCT o" : "o");
             } else {
@@ -932,7 +923,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     generateSelectExpression(q, i == 0, function, distinct, cols[i]);
                 }
             }
-        else {
+        } else {
             q.append("NEW ").append(type.getName()).append('(');
             boolean first = true;
             if (cols == null || cols.length == 0)
