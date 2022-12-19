@@ -1058,7 +1058,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         }
 
                         if (pagination != null)
-                            if (sortList == null)
+                            if (sortList == null || sortList.isEmpty())
                                 sortList = pagination.sorts();
                             else if (sortList != null && !pagination.sorts().isEmpty())
                                 throw new DataException("Repository method signature cannot specify Sort parameters if Pageable also has Sort parameters."); // TODO

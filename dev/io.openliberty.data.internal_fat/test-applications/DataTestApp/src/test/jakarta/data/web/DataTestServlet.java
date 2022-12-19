@@ -3124,6 +3124,34 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Repository method that returns a Slice with the sort criteria provided in the Pageable
+     */
+    @Test
+    public void testSliceWithSortCriteriaInPageable() {
+        Slice<Prime> slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("II", 50L,
+                                                                                Pageable.ofSize(6).sortBy(Sort.desc("number")));
+        assertEquals(1L, slice.number());
+        assertEquals(6, slice.numberOfElements());
+        assertEquals(1L, slice.pageable().page());
+        assertEquals(6, slice.pageable().size());
+
+        assertIterableEquals(List.of(47L, 43L, 37L, 23L, 17L, 13L),
+                             slice.stream().map(p -> p.number).collect(Collectors.toList()));
+
+        slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("II", 50L,
+                                                                   slice.nextPageable());
+        assertEquals(2L, slice.number());
+        assertEquals(3, slice.numberOfElements());
+        assertEquals(2L, slice.pageable().page());
+        assertEquals(6, slice.pageable().size());
+
+        assertIterableEquals(List.of(7L, 3L, 2L),
+                             slice.stream().map(p -> p.number).collect(Collectors.toList()));
+
+        assertEquals(null, slice.nextPageable());
+    }
+
+    /**
      * Repository method that returns a stream and uses it as a parallel stream.
      */
     @Test
