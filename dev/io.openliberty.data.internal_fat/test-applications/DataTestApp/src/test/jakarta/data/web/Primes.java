@@ -12,6 +12,7 @@ package test.jakarta.data.web;
 
 import java.util.Collection;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,6 +29,7 @@ import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Slice;
 import jakarta.data.repository.Sort;
 import jakarta.data.repository.Streamable;
 import jakarta.enterprise.concurrent.Asynchronous;
@@ -72,12 +74,19 @@ public interface Primes {
 
     List<Prime> findByNameIgnoreCaseStartsWithAndNumberLessThanOrderByNumberAsc(String pattern, long max);
 
+    @OrderBy("even")
+    @OrderBy("sumOfBits")
+    @OrderBy("number")
+    Iterator<Prime> findByNameStartsWithAndNumberLessThanOrNameContainsAndNumberLessThan(String prefix, long max1, String contains, long max2, Pageable pagination);
+
     Prime findByNumberBetween(long min, long max);
 
     @OrderBy("number")
     KeysetAwarePage<Prime> findByNumberBetween(long min, long max, Pageable pagination);
 
     List<Prime> findByNumberBetween(long min, long max, Sort... orderBy);
+
+    KeysetAwarePage<Prime> findByNumberBetweenAndBinaryNotNull(long min, long max, Sort... orderBy); // Lacks Pageable
 
     KeysetAwareSlice<Prime> findByNumberBetweenAndEvenFalse(long min, long max, Pageable pagination);
 
@@ -115,6 +124,16 @@ public interface Primes {
 
     @Asynchronous
     CompletionStage<KeysetAwarePage<Prime>> findByNumberLessThanOrderByNumberDesc(long max, Pageable pagination);
+
+    Iterator<Prime> findByNumberNotGreaterThan(long max, Pageable pagination);
+
+    Iterator<Prime> findByNumberNotGreaterThan(long max, Sort... order);
+
+    Slice<Prime> findByRomanNumeralEndsWithAndNumberLessThan(String ending, long max, Pageable pagination, Sort... orderBy);
+
+    @OrderBy(value = "sumOfBits", descending = true)
+    @OrderBy("name")
+    Slice<Prime> findByRomanNumeralStartsWithAndNumberLessThan(String prefix, long max, Pageable pagination);
 
     Stream<Prime> findFirst2147483648ByNumberGreaterThan(long min); // Exceeds Integer.MAX_VALUE by 1
 
