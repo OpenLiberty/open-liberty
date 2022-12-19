@@ -1,6 +1,6 @@
 <!-- This xml file was empty for these testcase until EE10. 
-Prior to EE10 an empty Beans.xml file meant "annotated" mode.  
-In EE10 and beyond and empty beans.xml means "all" mode. Another option would have been to leave 
+Prior to EE10 an empty Beans.xml file meant "all" mode.  
+In EE10 and beyond and empty beans.xml means "annotated" mode. Another option would have been to leave 
 this file empty and add @Dependent to each of the bean classes.-->
 
 <beans xmlns="http://xmlns.jcp.org/xml/ns/javaee"
