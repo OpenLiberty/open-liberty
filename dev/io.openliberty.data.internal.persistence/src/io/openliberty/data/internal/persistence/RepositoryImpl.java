@@ -310,30 +310,39 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      *
      * @param limit limit that was specified by the application.
      * @return offset value.
-     * @throws UnsupportedOperationException if the starting point for the limited range is not positive or would overflow Integer.MAX_VALUE.
+     * @throws DataException with chained IllegalArgumentException if the starting point for
+     *                           the limited range is not positive or would overflow Integer.MAX_VALUE.
      */
     static int computeOffset(Limit range) {
         long startIndex = range.startAt() - 1;
         if (startIndex >= 0 && startIndex <= Integer.MAX_VALUE)
             return (int) startIndex;
         else
-            throw new UnsupportedOperationException("The starting point for " + range + " is not within 1 to Integer.MAX_VALUE (2147483647)."); // TODO
+            throw new DataException(new IllegalArgumentException("The starting point for " + range + " is not within 1 to Integer.MAX_VALUE (2147483647).")); // TODO
     }
 
     /**
      * Compute the zero-based offset for the start of a page.
      *
-     * @param pageNumber  requested page number.
-     * @param maxPageSize maximum size of pages.
+     * @param pagination requested pagination.
      * @return offset for the specified page.
-     * @throws UnsupportedOperationException if the offset exceeds Integer.MAX_VALUE.
+     * @throws DataException with chained IllegalArgumentException if the offset exceeds Integer.MAX_VALUE
+     *                           or the Pageable requests keyset pagination.
      */
-    static int computeOffset(long pageNumber, int maxPageSize) {
-        long pageIndex = pageNumber - 1; // zero-based
+    static int computeOffset(Pageable pagination) {
+        if (pagination.mode() != Pageable.Mode.OFFSET)
+            throw new DataException(new IllegalArgumentException("Keyset pagination mode " + pagination.mode() +
+                                                                 " can only be used with repository methods with the following return types: " +
+                                                                 KeysetAwarePage.class.getName() + ", " + KeysetAwareSlice.class.getName() +
+                                                                 ", " + Iterator.class.getName() +
+                                                                 ". For offset pagination, use a Pageable without a keyset.")); // TODO NLS
+        int maxPageSize = pagination.size();
+        long pageIndex = pagination.page() - 1; // zero-based
         if (Integer.MAX_VALUE / maxPageSize >= pageIndex)
             return (int) (pageIndex * maxPageSize);
         else
-            throw new UnsupportedOperationException("The offset for " + pageNumber + " pages of size " + maxPageSize + " exceeds Integer.MAX_VALUE (2147483647)."); // TODO
+            throw new DataException(new IllegalArgumentException("The offset for " + pagination.page() + " pages of size " + maxPageSize +
+                                                                 " exceeds Integer.MAX_VALUE (2147483647).")); // TODO
     }
 
     /**
@@ -899,7 +908,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
     private StringBuilder generateSelect(QueryInfo queryInfo) {
         StringBuilder q = new StringBuilder(200);
-        // TODO entityClass now includes inheritance subtypes and much of the following was already computed.
+
         Select select = queryInfo.method.getAnnotation(Select.class);
         String[] cols = select == null ? null : select.value();
         boolean distinct = select != null && select.distinct();
@@ -1057,11 +1066,14 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                 Collections.addAll(sortList == null ? (sortList = new ArrayList<>()) : sortList, (Sort[]) param);
                         }
 
-                        if (pagination != null)
+                        if (pagination != null) {
+                            if (limit != null)
+                                throw new DataException("Repository method " + method + " cannot have both Limit and Pageable as parameters."); // TODO
                             if (sortList == null || sortList.isEmpty())
                                 sortList = pagination.sorts();
                             else if (sortList != null && !pagination.sorts().isEmpty())
-                                throw new DataException("Repository method signature cannot specify Sort parameters if Pageable also has Sort parameters."); // TODO
+                                throw new DataException("Repository method " + method + " cannot specify Sort parameters if Pageable also has Sort parameters."); // TODO
+                        }
 
                         if (sortList != null && !sortList.isEmpty()) {
                             boolean forward = pagination == null || pagination.mode() != Pageable.Mode.CURSOR_PREVIOUS;
@@ -1069,7 +1081,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             StringBuilder o = null; // ORDER BY clause based on Sorts
                             for (Sort sort : sortList)
                                 if (sort == null)
-                                    throw new NullPointerException("Sort: null");
+                                    throw new DataException(new IllegalArgumentException("Sort: null"));
                                 else {
                                     o = o == null ? new StringBuilder(100).append(" ORDER BY ") : o.append(", ");
                                     o.append(sort.ignoreCase() ? "LOWER(o." : "o.").append(sort.property());
@@ -1099,11 +1111,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             Tr.debug(this, tc, "results to be returned as " + type.getName());
 
                         if (pagination != null && Iterator.class.equals(type))
-                            returnValue = new PaginatedIterator<E>(queryInfo, pagination, args); // TODO keyset pagination
+                            returnValue = new PaginatedIterator<E>(queryInfo, pagination, args);
                         else if (KeysetAwareSlice.class.equals(type) || KeysetAwarePage.class.equals(type))
-                            returnValue = new KeysetAwarePageImpl<E>(queryInfo, pagination, args);
+                            returnValue = new KeysetAwarePageImpl<E>(queryInfo, limit == null ? pagination : toPageable(limit), args);
                         else if (Slice.class.equals(type) || Page.class.equals(type) || pagination != null && Streamable.class.equals(type))
-                            returnValue = new PageImpl<E>(queryInfo, pagination, args); // TODO Limit with Page as return type
+                            returnValue = new PageImpl<E>(queryInfo, limit == null ? pagination : toPageable(limit), args);
                         else {
                             em = queryInfo.entityInfo.persister.createEntityManager();
 
@@ -1115,10 +1127,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                                             : queryInfo.maxResults;
 
                             int startAt = limit != null ? computeOffset(limit) //
-                                            : pagination != null && pagination.mode() == Pageable.Mode.OFFSET //
-                                                            ? computeOffset(pagination.page(), maxResults) //
+                                            : pagination != null ? computeOffset(pagination) //
                                                             : 0;
-                            // TODO keyset pagination without returning KeysetAwareSlice/Page - raise error?
+
                             if (maxResults > 0)
                                 query.setMaxResults(maxResults);
                             if (startAt > 0)
@@ -1461,6 +1472,20 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             return Long.parseLong((String) o);
         else
             throw new IllegalArgumentException("Not representable as a long value: " + o.getClass().getName());
+    }
+
+    /**
+     * Converts a Limit to a Pageable if possible.
+     *
+     * @param limit Limit.
+     * @return Pageable.
+     * @throws DataException with chained IllegalArgumentException if the Limit is a range with a starting point above 1.
+     */
+    private static final Pageable toPageable(Limit limit) {
+        if (limit.startAt() != 1L)
+            throw new DataException(new IllegalArgumentException("Limit with starting point " + limit.startAt() +
+                                                                 ", which is greater than 1, cannot be used to request pages or slices."));
+        return Pageable.ofSize((int) limit.maxResults()); // TODO remove cast once spec is updated
     }
 
     private static final Object toReturnValue(int i, Class<?> returnType, QueryInfo queryInfo) {
