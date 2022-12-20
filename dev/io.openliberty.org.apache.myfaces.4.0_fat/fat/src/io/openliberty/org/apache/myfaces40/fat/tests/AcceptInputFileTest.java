@@ -23,6 +23,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.IntStream;
 
 import org.junit.AfterClass;
@@ -148,8 +149,9 @@ public class AcceptInputFileTest {
 
             //Create file(s) and add it to the input attribute
             List<String> expectedMessages = new ArrayList<>();
+            Random rand = new Random();
             IntStream.range(0, files).forEach(i -> {
-                int size = (int) (Math.random() * 100);
+                int size = rand.nextInt(999) + 1;
                 try {
                     File file = generateTempFile("file", fileExt, size);
                     String expectedMessage = "field: " + fieldName + ", name: " + file.getName() + //
