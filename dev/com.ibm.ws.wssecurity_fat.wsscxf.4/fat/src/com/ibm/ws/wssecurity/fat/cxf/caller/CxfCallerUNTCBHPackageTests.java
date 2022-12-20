@@ -94,8 +94,6 @@ public class CxfCallerUNTCBHPackageTests {
             Log.info(thisClass, "setUp", "the test is: EE7 to run with existing Import Package version (e.g., \"[1.6,2)\") bundled in the jar ");
         }
 
-        errMsgVersion = "wss4j";
-
         ShrinkHelper.defaultDropinApp(server, "callerclient", "com.ibm.ws.wssecurity.fat.callerclient",
                                       "test.libertyfat.caller.contract", "test.libertyfat.caller.types");
         ShrinkHelper.defaultDropinApp(server, "callertoken", "test.libertyfat.caller");
@@ -156,8 +154,8 @@ public class CxfCallerUNTCBHPackageTests {
                         "FatBAC02Service", //String strServiceName,
                         "UrnCallerToken02", //String strServicePort
                         "test2", // Expecting User ID
-                        "", // Password; original "test2"; null password as intended
-                        errMsgVersion);
+                        "" // Password; original "test2"; null password as intended
+            );
         } catch (Exception e) {
             Log.info(thisClass, thisMethod, "In test method testCxfCallerHttpsPolicy, exception occurred as expected: " + e);
             String result = server.waitForStringInLog("java.lang.IncompatibleClassChangeError: org/apache/ws/security/WSPasswordCallback");
@@ -208,101 +206,7 @@ public class CxfCallerUNTCBHPackageTests {
                        callerUNTClientUrl,
                        "",
                        untID,
-                       untPassword,
-                       null);
-
-        return;
-    }
-
-    protected void testRoutine(
-                               String thisMethod,
-                               String callerPolicy,
-                               String testMode, // Positive, positive-1, negative or negative-1... etc
-                               String portNumber,
-                               String portNumberSecure,
-                               String strServiceName,
-                               String strServicePort,
-                               String untID,
-                               String untPassword,
-                               String errMsgVersion) throws Exception {
-        testSubRoutine(
-                       thisMethod,
-                       callerPolicy,
-                       testMode, // Positive, positive-1, negative or negative-1... etc
-                       portNumber,
-                       portNumberSecure,
-                       strServiceName,
-                       strServicePort,
-                       callerUNTClientUrl,
-                       "",
-                       untID,
-                       untPassword,
-                       errMsgVersion);
-
-        return;
-    }
-
-    /**
-     * TestDescription:
-     *
-     * This test invokes a jax-ws cxf web service.
-     * It needs to have caller key set to sign and encrypt the SOAPBody
-     * The request is request in https.
-     * Though this test is not enforced it yet.
-     *
-     */
-
-    protected void testBadRoutine(
-                                  String thisMethod,
-                                  String callerPolicy,
-                                  String testMode, // Positive, positive-1, negative or negative-1... etc
-                                  String portNumber,
-                                  String portNumberSecure,
-                                  String strServiceName,
-                                  String strServicePort,
-                                  String untID,
-                                  String untPassword) throws Exception {
-        testSubRoutine(
-                       thisMethod,
-                       callerPolicy,
-                       testMode, // Positive, positive-1, negative or negative-1... etc
-                       portNumber,
-                       portNumberSecure,
-                       strServiceName,
-                       strServicePort,
-                       callerBadUNTClientUrl,
-                       "Bad",
-                       untID,
-                       untPassword,
-                       null);
-
-        return;
-    }
-
-    protected void testBadRoutine(
-                                  String thisMethod,
-                                  String callerPolicy,
-                                  String testMode, // Positive, positive-1, negative or negative-1... etc
-                                  String portNumber,
-                                  String portNumberSecure,
-                                  String strServiceName,
-                                  String strServicePort,
-                                  String untID,
-                                  String untPassword,
-                                  String errMsgVersion) throws Exception {
-        testSubRoutine(
-                       thisMethod,
-                       callerPolicy,
-                       testMode, // Positive, positive-1, negative or negative-1... etc
-                       portNumber,
-                       portNumberSecure,
-                       strServiceName,
-                       strServicePort,
-                       callerBadUNTClientUrl,
-                       "Bad",
-                       untID,
-                       untPassword,
-                       errMsgVersion);
+                       untPassword);
 
         return;
     }
@@ -327,8 +231,7 @@ public class CxfCallerUNTCBHPackageTests {
                                   String strClientUrl,
                                   String strBadOrGood,
                                   String untID,
-                                  String untPassword,
-                                  String errMsgVersion) throws Exception {
+                                  String untPassword) throws Exception {
         try {
 
             WebRequest request = null;
@@ -352,8 +255,6 @@ public class CxfCallerUNTCBHPackageTests {
             request.setParameter("methodFull", methodFull);
             request.setParameter("untID", untID);
             request.setParameter("untPassword", untPassword);
-
-            request.setParameter("errorMsgVersion", errMsgVersion);
 
             // Invoke the client
             Log.info(thisClass, thisMethod, "In testSubRoutine, before wc.getResponse(request)");

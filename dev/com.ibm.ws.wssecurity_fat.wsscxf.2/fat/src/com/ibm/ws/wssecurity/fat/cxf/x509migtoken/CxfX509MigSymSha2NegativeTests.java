@@ -94,7 +94,7 @@ public class CxfX509MigSymSha2NegativeTests {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_badsha2_wss4j.xml");
         }
-        errMsgVersion = "wss4j";
+        //errMsgVersion = "wss4j";
 
         ShrinkHelper.defaultDropinApp(server, "x509migclient", "com.ibm.ws.wssecurity.fat.x509migclient", "test.libertyfat.x509mig.contract", "test.libertyfat.x509mig.types");
         ShrinkHelper.defaultDropinApp(server, "x509migbadclient", "com.ibm.ws.wssecurity.fat.x509migbadclient", "test.libertyfat.x509mig.contract",
@@ -152,8 +152,8 @@ public class CxfX509MigSymSha2NegativeTests {
                         portNumber, //String portNumber,
                         "", //String portNumberSecure
                         "FatBAX01Service", //String strServiceName,
-                        "UrnX509Token01", //String strServicePort
-                        errMsgVersion //CxfX509MigSvcClient
+                        "UrnX509Token01" //String strServicePort
+            //errMsgVersion //CxfX509MigSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -187,8 +187,8 @@ public class CxfX509MigSymSha2NegativeTests {
                         portNumber, //String portNumber,
                         portNumberSecure, //String portNumberSecure
                         "FatBAX01Service", //String strServiceName,
-                        "UrnX509Token01", //String strServicePort
-                        errMsgVersion //CxfX509MigSvcClient
+                        "UrnX509Token01" //String strServicePort
+            //errMsgVersion //CxfX509MigSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -222,8 +222,8 @@ public class CxfX509MigSymSha2NegativeTests {
                         portNumber, //String portNumber,
                         "", //String portNumberSecure
                         "FatBAX03Service", //String strServiceName,
-                        "UrnX509Token03", //String strServicePort
-                        errMsgVersion //CxfX509MigSvcClient
+                        "UrnX509Token03" //String strServicePort
+            //errMsgVersion //CxfX509MigSvcClient
             );
         } catch (Exception e) {
             throw e;
@@ -259,36 +259,37 @@ public class CxfX509MigSymSha2NegativeTests {
                        strServiceName,
                        strServicePort,
                        x509MigSymClientUrl,
-                       "",
-                       null);
+                       "");
+        //null);
 
         return;
     }
 
-    protected void testRoutine(
-                               String thisMethod,
-                               String x509Policy,
-                               String testMode, // Positive, positive-1, negative or negative-1... etc
-                               String portNumber,
-                               String portNumberSecure,
-                               String strServiceName,
-                               String strServicePort,
-                               String errMsgVersion) throws Exception { //2/2021
-        testSubRoutine(
-                       thisMethod,
-                       x509Policy,
-                       testMode, // Positive, positive-1, negative or negative-1... etc
-                       portNumber,
-                       portNumberSecure,
-                       strServiceName,
-                       strServicePort,
-                       x509MigSymClientUrl,
-                       "",
-                       errMsgVersion);
-
-        return;
-    }
-
+/*
+ * protected void testRoutine(
+ * String thisMethod,
+ * String x509Policy,
+ * String testMode, // Positive, positive-1, negative or negative-1... etc
+ * String portNumber,
+ * String portNumberSecure,
+ * String strServiceName,
+ * String strServicePort,
+ * String errMsgVersion) throws Exception { //2/2021
+ * testSubRoutine(
+ * thisMethod,
+ * x509Policy,
+ * testMode, // Positive, positive-1, negative or negative-1... etc
+ * portNumber,
+ * portNumberSecure,
+ * strServiceName,
+ * strServicePort,
+ * x509MigSymClientUrl,
+ * "",
+ * errMsgVersion);
+ * 
+ * return;
+ * }
+ */
     /**
      * TestDescription:
      *
@@ -307,8 +308,8 @@ public class CxfX509MigSymSha2NegativeTests {
                                   String strServiceName,
                                   String strServicePort,
                                   String strClientUrl,
-                                  String strBadOrGood,
-                                  String errMsgVersion) throws Exception {
+                                  String strBadOrGood) throws Exception {
+        //String errMsgVersion) throws Exception {
         try {
 
             WebRequest request = null;
@@ -331,7 +332,7 @@ public class CxfX509MigSymSha2NegativeTests {
             request.setParameter("servicePort", strServicePort);
             request.setParameter("methodFull", methodFull);
 
-            request.setParameter("errorMsgVersion", errMsgVersion);
+            //request.setParameter("errorMsgVersion", errMsgVersion);
 
             Log.info(thisClass, methodFull, "The request is: " + request);
 
@@ -373,9 +374,13 @@ public class CxfX509MigSymSha2NegativeTests {
             e.printStackTrace(System.out);
         }
 
-        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+        Log.info(thisClass, "tearDown", "deleting usr/extension/lib/com.ibm.ws.wssecurity.example.cbh.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/com.ibm.ws.wssecurity.example.cbh.jar");
+        Log.info(thisClass, "tearDown", "deleting usr/extension/lib/features/wsseccbh-1.0.mf");
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-1.0.mf");
-        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+        Log.info(thisClass, "tearDown", "deleting usr/extension/lib/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+        Log.info(thisClass, "tearDown", "deleting usr/extension/lib/features/wsseccbh-2.0.mf");
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-2.0.mf");
 
     }

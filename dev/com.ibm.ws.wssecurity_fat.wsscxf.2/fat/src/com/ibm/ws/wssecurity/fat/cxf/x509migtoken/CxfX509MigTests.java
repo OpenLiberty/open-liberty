@@ -52,8 +52,6 @@ public class CxfX509MigTests {
 
     static private final Class<?> thisClass = CxfX509MigTests.class;
 
-    private static String errMsgVersion = "";
-
     static boolean debugOnHttp = true;
 
     private static String portNumber = "";
@@ -93,7 +91,6 @@ public class CxfX509MigTests {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         }
-        errMsgVersion = "wss4j";
 
         ShrinkHelper.defaultDropinApp(server, "x509migclient", "com.ibm.ws.wssecurity.fat.x509migclient", "test.libertyfat.x509mig.contract", "test.libertyfat.x509mig.types");
         ShrinkHelper.defaultDropinApp(server, "x509migbadclient", "com.ibm.ws.wssecurity.fat.x509migbadclient", "test.libertyfat.x509mig.contract",
@@ -933,8 +930,7 @@ public class CxfX509MigTests {
                         portNumber, //String portNumber,
                         "", //String portNumberSecure
                         "FatBAX11Service", //String strServiceName,
-                        "UrnX509Token11", //String strServicePort
-                        errMsgVersion //CxfX509MigSvcClient
+                        "UrnX509Token11" //String strServicePort
             );
         } catch (Exception e) {
             throw e;
@@ -1087,8 +1083,7 @@ public class CxfX509MigTests {
                         portNumber, //String portNumber,
                         portNumberSecure, //String portNumberSecure
                         "FatBAX11Service", //String strServiceName,
-                        "UrnX509Token11", //String strServicePort
-                        errMsgVersion //CxfX509MigSvcClient
+                        "UrnX509Token11" //String strServicePort
             );
         } catch (Exception e) {
             throw e;
@@ -1286,8 +1281,7 @@ public class CxfX509MigTests {
                         portNumber, //String portNumber,
                         "", //String portNumberSecure
                         "FatBAX13Service", //String strServiceName,
-                        "UrnX509Token13", //String strServicePort
-                        errMsgVersion //CxfX509MigBadSvcClient
+                        "UrnX509Token13" //String strServicePort
             );
         } catch (Exception e) {
             throw e;
@@ -1848,8 +1842,7 @@ public class CxfX509MigTests {
                         portNumber, //String portNumber,
                         "", //String portNumberSecure
                         "FatBAX16Service", //String strServiceName,
-                        "UrnX509Token16", //String strServicePort
-                        errMsgVersion //CxfX509MigBadSvcClient
+                        "UrnX509Token16" //String strServicePort
             );
         } catch (Exception e) {
             throw e;
@@ -2193,8 +2186,7 @@ public class CxfX509MigTests {
                         portNumber, //String portNumber,
                         "", //String portNumberSecure
                         "FatBAX17Service", //String strServiceName,
-                        "UrnX509Token17", //String strServicePort
-                        errMsgVersion //CxfX509MigSvcClient
+                        "UrnX509Token17" //String strServicePort
             );
         } catch (Exception e) {
             throw e;
@@ -2917,8 +2909,7 @@ public class CxfX509MigTests {
                            portNumber, //String portNumber,
                            "", //String portNumberSecure
                            "FatBAX02Service", //String strServiceName,
-                           "UrnX509Token02", //String strServicePort
-                           errMsgVersion //CxfX509MigBadSvcClient
+                           "UrnX509Token02" //String strServicePort
             );
         } catch (Exception e) {
             throw e;
@@ -2981,8 +2972,7 @@ public class CxfX509MigTests {
                            portNumber, //String portNumber,
                            "", //String portNumberSecure
                            "FatBAX08Service", //String strServiceName,
-                           "UrnX509Token08", //String strServicePort
-                           errMsgVersion //CxfX509MigBadSvcClient
+                           "UrnX509Token08" //String strServicePort
             );
         } catch (Exception e) {
             throw e;
@@ -3012,8 +3002,7 @@ public class CxfX509MigTests {
                            portNumber, //String portNumber,
                            portNumberSecure, //String portNumberSecure
                            "FatBAX10Service", //String strServiceName,
-                           "UrnX509Token10", //String strServicePort
-                           errMsgVersion //CxfX509MigBadSvcClient
+                           "UrnX509Token10" //String strServicePort
             );
         } catch (Exception e) {
             throw e;
@@ -3102,8 +3091,7 @@ public class CxfX509MigTests {
                            portNumber, //String portNumber,
                            portNumberSecure, //String portNumberSecure
                            "FatBAX13Service", //String strServiceName,
-                           "UrnX509Token13", //String strServicePort
-                           errMsgVersion //CxfX509MigBadSvcClient
+                           "UrnX509Token13" //String strServicePort
             );
         } catch (Exception e) {
             throw e;
@@ -3191,8 +3179,7 @@ public class CxfX509MigTests {
                            portNumber, //String portNumber,
                            portNumberSecure, //String portNumberSecure
                            "FatBAX16Service", //String strServiceName,
-                           "UrnX509Token16", //String strServicePort
-                           errMsgVersion //CxfX509MigBadSvcClient
+                           "UrnX509Token16" //String strServicePort
             );
         } catch (Exception e) {
             throw e;
@@ -3329,8 +3316,7 @@ public class CxfX509MigTests {
                            portNumber, //String portNumber,
                            "", //String portNumberSecure
                            "FatBAX21Service", //String strServiceName,
-                           "UrnX509Token21", //String strServicePort
-                           errMsgVersion //CxfX509MigBadSvcClient
+                           "UrnX509Token21" //String strServicePort
             );
         } catch (Exception e) {
             throw e;
@@ -3398,31 +3384,7 @@ public class CxfX509MigTests {
                        portNumberSecure,
                        strServiceName,
                        strServicePort,
-                       x509MigClientUrl,
-                       null);
-
-        return;
-    }
-
-    protected void testRoutine(
-                               String thisMethod,
-                               String x509Policy,
-                               String testMode, // Positive, positive-1, negative or negative-1... etc
-                               String portNumber,
-                               String portNumberSecure,
-                               String strServiceName,
-                               String strServicePort,
-                               String errMsgVersion) throws Exception {
-        testSubRoutine(
-                       thisMethod,
-                       x509Policy,
-                       testMode, // Positive, positive-1, negative or negative-1... etc
-                       portNumber,
-                       portNumberSecure,
-                       strServiceName,
-                       strServicePort,
-                       x509MigClientUrl,
-                       errMsgVersion);
+                       x509MigClientUrl);
 
         return;
     }
@@ -3564,8 +3526,7 @@ public class CxfX509MigTests {
                            portNumber, //String portNumber,
                            "", //String portNumberSecure
                            "FatBAX32Service", //String strServiceName,
-                           "UrnX509Token32", //String strServicePort
-                           errMsgVersion //CxfX509MigBadSvcClient
+                           "UrnX509Token32" //String strServicePort
             );
         } catch (Exception e) {
             throw e;
@@ -3617,8 +3578,7 @@ public class CxfX509MigTests {
                            portNumber, //String portNumber,
                            "", //String portNumberSecure
                            "FatBAX34Service", //String strServiceName,
-                           "UrnX509Token34", //String strServicePort
-                           errMsgVersion //CxfX509MigBadSvcClient
+                           "UrnX509Token34" //String strServicePort
             );
         } catch (Exception e) {
             throw e;
@@ -3652,31 +3612,7 @@ public class CxfX509MigTests {
                        portNumberSecure,
                        strServiceName,
                        strServicePort,
-                       x509MigBadClientUrl,
-                       null);
-
-        return;
-    }
-
-    protected void testBadRoutine(
-                                  String thisMethod,
-                                  String x509Policy,
-                                  String testMode, // Positive, positive-1, negative or negative-1... etc
-                                  String portNumber,
-                                  String portNumberSecure,
-                                  String strServiceName,
-                                  String strServicePort,
-                                  String errMsgVersion) throws Exception {
-        testSubRoutine(
-                       thisMethod,
-                       x509Policy,
-                       testMode, // Positive, positive-1, negative or negative-1... etc
-                       portNumber,
-                       portNumberSecure,
-                       strServiceName,
-                       strServicePort,
-                       x509MigBadClientUrl,
-                       errMsgVersion);
+                       x509MigBadClientUrl);
 
         return;
     }
@@ -3698,8 +3634,7 @@ public class CxfX509MigTests {
                                   String portNumberSecure,
                                   String strServiceName,
                                   String strServicePort,
-                                  String strClientUrl,
-                                  String errMsgVersion) throws Exception {
+                                  String strClientUrl) throws Exception {
         try {
 
             WebRequest request = null;
@@ -3721,7 +3656,6 @@ public class CxfX509MigTests {
             request.setParameter("serviceName", strServiceName);
             request.setParameter("servicePort", strServicePort);
             request.setParameter("methodFull", methodFull);
-            request.setParameter("errorMsgVersion", errMsgVersion);
 
             // Invoke the client
             response = wc.getResponse(request);
@@ -3754,12 +3688,14 @@ public class CxfX509MigTests {
         } catch (Exception e) {
             e.printStackTrace(System.out);
         }
-        //orig from CL:
-        //SharedTools.unInstallCallbackHandler(server);
 
-        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbh.jar");
+        Log.info(thisClass, "tearDown", "deleting usr/extension/lib/com.ibm.ws.wssecurity.example.cbh.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/com.ibm.ws.wssecurity.example.cbh.jar");
+        Log.info(thisClass, "tearDown", "deleting usr/extension/lib/features/wsseccbh-1.0.mf");
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-1.0.mf");
-        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/bundles/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+        Log.info(thisClass, "tearDown", "deleting usr/extension/lib/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+        server.deleteFileFromLibertyInstallRoot("usr/extension/lib/com.ibm.ws.wssecurity.example.cbhwss4j.jar");
+        Log.info(thisClass, "tearDown", "deleting usr/extension/lib/features/wsseccbh-2.0.mf");
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/features/wsseccbh-2.0.mf");
 
     }

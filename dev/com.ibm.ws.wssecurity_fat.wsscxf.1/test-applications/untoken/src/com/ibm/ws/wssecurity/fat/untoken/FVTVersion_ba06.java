@@ -65,7 +65,7 @@ public class FVTVersion_ba06 implements javax.xml.ws.Provider<SOAPMessage> {
             StringReader respMsg;
             if (muheader_exists) {
                 //default behavior, mustunderstand="1"
-                respMsg = new StringReader("<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><provider><message>WSSECFVT FVTVersion_ba06_mustUnderstand_in_header_expected</message></provider></SOAP-ENV:Body></SOAP-ENV:Envelope>");
+                respMsg = new StringReader("<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><provider><message>WSSECFVT FVTVersion_ba06</message></provider></SOAP-ENV:Body></SOAP-ENV:Envelope>");
             } else {
                 // if we set ws-security.must-understand="false" explicitly in server.xml , then this header should not exist
                 respMsg = new StringReader("<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><provider><message>WSSECFVT FVTVersion_ba06_NO_mustUnderstand_in_header_expected</message></provider></SOAP-ENV:Body></SOAP-ENV:Envelope>");

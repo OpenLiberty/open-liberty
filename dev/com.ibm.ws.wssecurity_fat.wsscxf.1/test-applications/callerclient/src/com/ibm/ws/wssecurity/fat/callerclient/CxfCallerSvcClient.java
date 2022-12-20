@@ -71,8 +71,6 @@ public class CxfCallerSvcClient extends HttpServlet {
 
     String untID = "";
     String untPassword = "";
-    String errMsgVersion = "";
-    String errMsgVersionInX509 = "";
 
     private StringReader reqMsg = null;
     static boolean unlimitCryptoKeyLength = false;
@@ -115,8 +113,7 @@ public class CxfCallerSvcClient extends HttpServlet {
                            " untPassword:" + untPassword +
                            " serviceName:" + serviceName +
                            " servicePort:" + servicePort +
-                           " servername:" + serverName +
-                           "errorMsgVersion:" + errMsgVersion); 
+                           " servername:" + serverName); 
 
         // This piece of code is a work-around for a bug defect 89493
 /*
@@ -147,11 +144,7 @@ public class CxfCallerSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testCxfCallerHttpsPolicy")) {
                 service = new FatBAC02Service(wsdlURL, serviceName);
                 strExpect = "Liberty Fat Caller bac02(" + untID + ")";
-
-                //issue 23060
-                if (errMsgVersion.equals("wss4j")) {
-                    strSubErrMsg = "Unexpected number of certificates: 0";
-                } 
+                strSubErrMsg = "Unexpected number of certificates: 0";
 
             } else if (thisMethod.equals("testCxfCallerNoPolicy")) {
                 service = new FatBAC03Service(wsdlURL, serviceName);
@@ -159,21 +152,12 @@ public class CxfCallerSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testCxfCallerHttpsNoUntPolicy")) {
                 service = new FatBAC04Service(wsdlURL, serviceName);
                 strExpect = "Liberty Fat Caller bac04(" + untID + ")";
-                //strSubErrMsg = "There is no Username token in the message to process caller.";
-
-                //issue 23060
-                if (errMsgVersion.equals("wss4j")) {
-                    strSubErrMsg = "UsernameToken is missing";
-                } 
+                strSubErrMsg = "UsernameToken is missing";
 
                 // msg is There is no username token in the message to process the caller
                 //    in nlsprops
-                if (!thisMethod.equals(methodFull)) { // Test this test in x509 Caller
-                    //strSubErrMsg = "There is no Asymmetric signature token exists in the message";
-                    //issue 23060
-                    if (errMsgVersionInX509.equals("wss4j")) {
-                        strSubErrMsg = "Unexpected number of certificates: 0";
-                    } 
+                if (!thisMethod.equals(methodFull)) { // Test this test in x509 Caller   
+                    strSubErrMsg = "Unexpected number of certificates: 0";   
                 }
             } else if (thisMethod.equals("testCxfCallerX509TokenPolicy")) {
                 service = new FatBAC05Service(wsdlURL, serviceName);
@@ -187,7 +171,7 @@ public class CxfCallerSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testCxfCallerSymmetricEndorsingTLSPolicy")) {
                 service = new FatBAC08Service(wsdlURL, serviceName);
                 strExpect = "Liberty Fat Caller bac08(" + untID + ")";
-            }
+            } 
             if (service == null) {
                 throw new Exception("thisMethod '" + thisMethod + "' did not get a Service. Test cases error.");
             }
@@ -260,9 +244,9 @@ public class CxfCallerSvcClient extends HttpServlet {
                 requestContext.put("ws-security.username", untID);
                 requestContext.put("ws-security.password", untPassword);
             }
-
+            
             SOAPMessage soapResp = dispSOAPMsg.invoke(soapReq);
-
+            
             String answer = soapResp.getSOAPBody().getTextContent();
             System.out.println(thisMethod + ":answer:" + answer);
 
@@ -356,8 +340,6 @@ public class CxfCallerSvcClient extends HttpServlet {
             methodFull = request.getParameter("methodFull");
             serviceName = new QName(SERVICE_NS, rawServiceName);
             servicePort = new QName(SERVICE_NS, request.getParameter("servicePort"));
-            errMsgVersion = request.getParameter("errorMsgVersion");
-            errMsgVersionInX509 = request.getParameter("errorMsgVersionInX509");
 
             untID = request.getParameter("untID");
             if (untID == null)

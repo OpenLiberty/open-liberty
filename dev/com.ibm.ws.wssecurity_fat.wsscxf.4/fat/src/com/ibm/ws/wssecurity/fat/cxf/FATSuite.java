@@ -16,6 +16,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+//comment out temporarily
+//import com.ibm.ws.wssecurity.fat.cxf.caller.CxfCallerUNTCBHPackageTests;
 import com.ibm.ws.wssecurity.fat.cxf.caller.CxfCallerUNTTests;
 import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CxfSSLUNTBasicTests;
 import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CxfSSLUNTNonceTests;
