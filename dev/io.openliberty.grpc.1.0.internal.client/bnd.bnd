@@ -87,6 +87,7 @@ instrument.disabled: true
   io.netty:netty-resolver;version=${nettyVersion},\
   io.netty:netty-transport;version=${nettyVersion},\
   io.grpc:grpc-netty;version=${grpcVersion},\
+  io.netty:netty-transport-native-unix-common;version=${nettyVersion},\
   io.openliberty.grpc.1.0.internal.common;version=latest,\
   io.openliberty.io.grpc.1.0;version=latest,\
   org.osgi.service.component.annotations;version=latest
