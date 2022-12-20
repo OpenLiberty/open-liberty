@@ -32,7 +32,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf23.fat.JSFUtils;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -79,7 +78,6 @@ public class JSF23SelectOneRadioGroupTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testSelectOneRadioGroup_AjaxRequest() throws Exception {
         try (WebClient webClient = new WebClient(BrowserVersion.CHROME)) {
             // Use a synchronizing ajax controller to allow proper ajax updating
@@ -702,7 +700,6 @@ public class JSF23SelectOneRadioGroupTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testSelectOneRadioGroup_uiRepeat() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
