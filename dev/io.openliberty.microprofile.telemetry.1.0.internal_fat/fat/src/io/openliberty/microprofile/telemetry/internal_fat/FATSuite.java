@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,6 +24,7 @@ import componenttest.annotation.MinimumJavaLevel;
                 Telemetry10.class,
                 JaxRsIntegration.class,
                 TelemetryBeanTest.class,
+                TelemetryMultiAppTest.class,
                 TelemetrySpiTest.class,
                 TelemetryConfigEnvTest.class,
                 TelemetryConfigServerVarTest.class,
@@ -31,6 +32,7 @@ import componenttest.annotation.MinimumJavaLevel;
                 TelemetryConfigEnvOnlyTest.class,
                 TelemetryConfigNullTest.class,
 })
+
 public class FATSuite {
 
 }

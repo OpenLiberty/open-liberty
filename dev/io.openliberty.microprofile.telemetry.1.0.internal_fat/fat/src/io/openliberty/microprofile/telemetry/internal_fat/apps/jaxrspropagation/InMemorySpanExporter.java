@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2016-2023 Contributors to the Eclipse Foundation
  *
  *  See the NOTICE file(s) distributed with this work for additional
  *  information regarding copyright ownership.
@@ -22,16 +22,12 @@
 package io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation;
 
 import static java.util.Comparator.comparingLong;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.LinkedList;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -47,7 +43,8 @@ public class InMemorySpanExporter implements SpanExporter {
     Logger logger = Logger.getLogger("io.openliberty.microprofile.telemetry.internal_fat.apps.jaxpropagation.InMemorySpanExporter");
 
     private boolean isStopped = false;
-    private final List<SpanData> finishedSpanItems = new CopyOnWriteArrayList<>();
+    // Static to allow multi-app testing
+    private static final List<SpanData> finishedSpanItems = new CopyOnWriteArrayList<>();
 
     /**
      * Careful when retrieving the list of finished spans. There is a chance when the response is already sent to the
@@ -58,14 +55,14 @@ public class InMemorySpanExporter implements SpanExporter {
     public List<SpanData> getFinishedSpanItems(int spanCount) {
         assertSpanCount(spanCount);
         return finishedSpanItems.stream().sorted(comparingLong(SpanData::getStartEpochNanos))
-                .collect(Collectors.toList());
+                        .collect(Collectors.toList());
     }
 
     public void assertSpanCount(int spanCount) {
         int retries = 120;
         while (retries > 0 && finishedSpanItems.size() != spanCount) {
             try {
-                retries --;
+                retries--;
                 Thread.sleep(100);
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -88,13 +85,13 @@ public class InMemorySpanExporter implements SpanExporter {
 
         List<SpanData> lSpans = new ArrayList<SpanData>(spans);
         Iterator<SpanData> iter = lSpans.listIterator();
-        while(iter.hasNext()){
-            if(iter.next().getName().contains("readspans")){
+        while (iter.hasNext()) {
+            if (iter.next().getName().contains("readspans")) {
                 iter.remove();
             }
         }
 
-        if (! lSpans.isEmpty()) { //this will be empty after a call to readSpans
+        if (!lSpans.isEmpty()) { //this will be empty after a call to readSpans
             StringBuilder sb = new StringBuilder();
             sb.append("----------------- list of spans (filtered but unordered, ordering will be based on the start time) ---------- ");
             for (SpanData spanData : lSpans) {
@@ -104,7 +101,7 @@ public class InMemorySpanExporter implements SpanExporter {
         }
 
         finishedSpanItems.addAll(lSpans);
-        
+
         return CompletableResultCode.ofSuccess();
     }
 
@@ -121,4 +118,3 @@ public class InMemorySpanExporter implements SpanExporter {
         return CompletableResultCode.ofSuccess();
     }
 }
-
