@@ -23,11 +23,17 @@ import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 import jakarta.security.enterprise.identitystore.openid.Claims;
 
 public class ClaimsImpl implements Claims, Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    private static final TraceComponent tc = Tr.register(ClaimsImpl.class);
+
     private final Map<String, Object> claims = Collections.synchronizedMap(new HashMap<>());
 
     public ClaimsImpl(Map<String, Object> claimsMap) {
@@ -57,8 +63,8 @@ public class ClaimsImpl implements Claims, Serializable {
 
             return Optional.empty();
         } catch (ClassCastException | DateTimeException e) {
-            // TODO: Determine if a translated message is needed.
-            throw new IllegalArgumentException(e.getMessage());
+            String msg = Tr.formatMessage(tc, "JAKARTASEC_CLAIMS_PROCESSING_ERROR", new Object[] { name, claims.get(name), "NumericDate", e.toString() });
+            throw new IllegalArgumentException(msg, e);
         }
     }
 
@@ -79,8 +85,8 @@ public class ClaimsImpl implements Claims, Serializable {
             result = new ArrayList<String>();
             result.addAll((List<String>) value);
         } else {
-            // TODO: Determine if a translated message is needed.
-            throw new IllegalArgumentException();
+            String msg = Tr.formatMessage(tc, "JAKARTASEC_CLAIMS_PROCESSING_ERROR", new Object[] { name, claims.get(name), "ArrayString", "Type is not String or List" });
+            throw new IllegalArgumentException(msg);
         }
 
         return result;
@@ -97,8 +103,8 @@ public class ClaimsImpl implements Claims, Serializable {
 
             return OptionalInt.empty();
         } catch (ClassCastException e) {
-            // TODO: Determine if a translated message is needed.
-            throw new IllegalArgumentException(e.getMessage());
+            String msg = Tr.formatMessage(tc, "JAKARTASEC_CLAIMS_PROCESSING_ERROR", new Object[] { name, claims.get(name), "Integer", e.toString() });
+            throw new IllegalArgumentException(msg, e);
         }
     }
 
@@ -113,8 +119,8 @@ public class ClaimsImpl implements Claims, Serializable {
 
             return OptionalLong.empty();
         } catch (ClassCastException e) {
-            // TODO: Determine if a translated message is needed.
-            throw new IllegalArgumentException(e.getMessage());
+            String msg = Tr.formatMessage(tc, "JAKARTASEC_CLAIMS_PROCESSING_ERROR", new Object[] { name, claims.get(name), "Long", e.toString() });
+            throw new IllegalArgumentException(msg, e);
         }
     }
 
@@ -129,8 +135,8 @@ public class ClaimsImpl implements Claims, Serializable {
 
             return OptionalDouble.empty();
         } catch (ClassCastException e) {
-            // TODO: Determine if a translated message is needed.
-            throw new IllegalArgumentException(e.getMessage());
+            String msg = Tr.formatMessage(tc, "JAKARTASEC_CLAIMS_PROCESSING_ERROR", new Object[] { name, claims.get(name), "Double", e.toString() });
+            throw new IllegalArgumentException(msg, e);
         }
     }
 
@@ -148,12 +154,12 @@ public class ClaimsImpl implements Claims, Serializable {
                 Claims nestedClaims = new ClaimsImpl((Map<String, Object>) value);
                 result = Optional.of(nestedClaims);
             } catch (Exception e) {
-                // TODO: Determine if a translated message is needed.
-                throw new IllegalArgumentException();
+                String msg = Tr.formatMessage(tc, "JAKARTASEC_CLAIMS_PROCESSING_ERROR", new Object[] { name, value, "Nested", e.toString() });
+                throw new IllegalArgumentException(msg, e);
             }
         } else {
-            // TODO: Determine if a translated message is needed.
-            throw new IllegalArgumentException();
+            String msg = Tr.formatMessage(tc, "JAKARTASEC_CLAIMS_PROCESSING_ERROR", new Object[] { name, value, "Nested", "Type is not Map" });
+            throw new IllegalArgumentException(msg);
         }
 
         return result;
@@ -166,8 +172,8 @@ public class ClaimsImpl implements Claims, Serializable {
                 return (T) claims.get(name);
             }
         } catch (ClassCastException e) {
-            // TODO: Determine if a translated message is needed.
-            throw new IllegalArgumentException();
+            String msg = Tr.formatMessage(tc, "JAKARTASEC_CLAIMS_PROCESSING_ERROR", new Object[] { name, claims.get(name), "Generic Type", e.toString() });
+            throw new IllegalArgumentException(msg, e);
         }
 
         return null;
