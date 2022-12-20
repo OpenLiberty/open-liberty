@@ -2084,7 +2084,7 @@
     <dependency>
       <groupId>org.eclipse.angus</groupId>
       <artifactId>angus-activation</artifactId>
-      <version>1.0.0-M1</version>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.angus</groupId>

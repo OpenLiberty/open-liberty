@@ -36,10 +36,10 @@ app-resources= \
   META-INF/services/jakarta.activation.spi.MimeTypeRegistryProvider
 
 Include-Resource: \
-  @${repo;jakarta.activation:jakarta.activation-api;${jakarta-activation-version}}!/META-INF/mailcap.default, \
-  @${repo;jakarta.activation:jakarta.activation-api;${jakarta-activation-version}}!/META-INF/mimetypes.default, \
-  @${repo;jakarta.activation:jakarta.activation-api;${jakarta-activation-version}}!/!(META-INF/maven/*|module-info.class), \
-  @${repo;org.eclipse.angus:angus-activation;${angus-activation-version}}!/!(META-INF/maven/*|module-info.class)
+  @${repo;jakarta.activation:jakarta.activation-api;${jakarta-activation-version};EXACT}!/META-INF/mailcap.default, \
+  @${repo;jakarta.activation:jakarta.activation-api;${jakarta-activation-version};EXACT}!/META-INF/mimetypes.default, \
+  @${repo;jakarta.activation:jakarta.activation-api;${jakarta-activation-version};EXACT}!/!(META-INF/maven/*|module-info.class), \
+  @${repo;org.eclipse.angus:angus-activation;${angus-activation-version};EXACT}!/!(META-INF/maven/*|module-info.class)
 
 Service-Component: \
   io.openliberty.jakarta.activation_2_1_${replace;${bVersion};\\.;_}.ResourceProvider; \
@@ -51,6 +51,6 @@ Service-Component: \
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-    jakarta.activation:jakarta.activation-api;version=${jakarta-activation-version}, \
-    org.eclipse.angus:angus-activation;version=${angus-activation-version}, \
-	io.openliberty.org.glassfish.hk2.osgi-resource-locator;version=1.0.3
+    jakarta.activation:jakarta.activation-api;version=${jakarta-activation-version};strategy=exact, \
+    org.eclipse.angus:angus-activation;version=${angus-activation-version};strategy=exact, \
+	io.openliberty.org.glassfish.hk2.osgi-resource-locator;version=latest
