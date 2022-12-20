@@ -31,7 +31,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
@@ -79,13 +78,6 @@ public class JSF22FlowsTests {
         JSF22FacesFlowsWar.addAsLibraries(JSF22FacesFlowsJar);
 
         ShrinkHelper.exportDropinAppToServer(jsfFacesFlowsServer, JSF22FacesFlowsWar);
-
-        if (isEE10) {
-            // For Faces 4.0, CDI @Named is used since @ManagedBean is no longer available.
-            ServerConfiguration config = jsfFacesFlowsServer.getServerConfiguration();
-            config.getFeatureManager().getFeatures().add("cdi-4.0");
-            jsfFacesFlowsServer.updateServerConfiguration(config);
-        }
 
         jsfFacesFlowsServer.startServer(JSF22FlowsTests.class.getSimpleName() + ".log");
     }
