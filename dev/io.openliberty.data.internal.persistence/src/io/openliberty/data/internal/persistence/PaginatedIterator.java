@@ -52,7 +52,7 @@ public class PaginatedIterator<T> implements Iterator<T> {
 
         Pageable.Cursor keysetCursor = pagination.cursor();
         int maxPageSize = pagination.size();
-        int startAt = keysetCursor == null ? RepositoryImpl.computeOffset(pagination.page(), maxPageSize) : 0;
+        int startAt = keysetCursor == null ? RepositoryImpl.computeOffset(pagination) : 0;
         String jpql = keysetCursor == null ? queryInfo.jpql : //
                         pagination.mode() == Pageable.Mode.CURSOR_NEXT ? queryInfo.jpqlAfterKeyset : //
                                         queryInfo.jpqlBeforeKeyset;

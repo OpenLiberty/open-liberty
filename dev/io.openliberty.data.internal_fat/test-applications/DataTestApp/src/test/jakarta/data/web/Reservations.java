@@ -27,7 +27,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import jakarta.data.Result;
 import jakarta.data.Select;
 import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.Limit;
@@ -84,14 +83,8 @@ public interface Reservations extends CrudRepository<Reservation, Long> {
     LongStream findByStopOrStartOrStartOrStart(OffsetDateTime stop, OffsetDateTime start1, OffsetDateTime start2, OffsetDateTime start3);
 
     // Use a stream of record as the return type
-    @Result(ReservedTimeSlot.class)
     @Select({ "start", "stop" })
     Stream<ReservedTimeSlot> findByStopOrStopOrStop(OffsetDateTime stop1, OffsetDateTime stop2, OffsetDateTime stop3);
-
-    // Possibly better way of doing the above?
-    // @Result(ReservedTimeSlot.class)
-    // @Select({ "start", "stop" })
-    // Stream<ReservedTimeSlot> findByStopOrStopOrStart(OffsetDateTime stop1, OffsetDateTime stop2, OffsetDateTime stop3);
 
     Page<Reservation> findByHostStartsWith(String hostPrefix, Pageable pagination, Sort sort);
 

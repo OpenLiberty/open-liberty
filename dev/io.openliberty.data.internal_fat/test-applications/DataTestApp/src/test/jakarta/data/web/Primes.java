@@ -82,6 +82,9 @@ public interface Primes {
     Prime findByNumberBetween(long min, long max);
 
     @OrderBy("number")
+    KeysetAwarePage<Prime> findByNumberBetween(long min, long max, Limit limit);
+
+    @OrderBy("number")
     KeysetAwarePage<Prime> findByNumberBetween(long min, long max, Pageable pagination);
 
     List<Prime> findByNumberBetween(long min, long max, Sort... orderBy);
@@ -128,6 +131,8 @@ public interface Primes {
     Iterator<Prime> findByNumberNotGreaterThan(long max, Pageable pagination);
 
     Iterator<Prime> findByNumberNotGreaterThan(long max, Sort... order);
+
+    Slice<Prime> findByRomanNumeralEndsWithAndNumberLessThan(String ending, long max, Limit limit, Sort... orderBy);
 
     Slice<Prime> findByRomanNumeralEndsWithAndNumberLessThan(String ending, long max, Pageable pagination, Sort... orderBy);
 
