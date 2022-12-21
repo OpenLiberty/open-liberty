@@ -4,3 +4,4 @@
        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd"
        version="1.1"
        bean-discovery-mode="none" />
+<!-- Note: discovery-mode=none so that we don't scan for beans at all. All beans should be provided by RuntimeExtRegularMetadata -->
