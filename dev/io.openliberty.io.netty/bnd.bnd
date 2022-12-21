@@ -11,7 +11,7 @@
 
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-nettyVersion=4.1.77.Final
+nettyVersion=4.1.86.Final
 
 Bundle-Name: Netty as an OSGi bundle
 Bundle-SymbolicName: io.openliberty.io.netty
@@ -58,5 +58,6 @@ instrument.disabled: true
   io.netty:netty-handler;version=${nettyVersion},\
   io.netty:netty-handler-proxy;version=${nettyVersion},\
   io.netty:netty-resolver;version=${nettyVersion},\
-  io.netty:netty-transport;version=${nettyVersion}
+  io.netty:netty-transport;version=${nettyVersion},\
+  io.netty:netty-transport-native-unix-common;version=${nettyVersion}
   
