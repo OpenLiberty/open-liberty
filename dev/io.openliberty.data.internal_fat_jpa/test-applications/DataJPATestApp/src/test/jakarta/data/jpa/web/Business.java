@@ -10,6 +10,7 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -26,15 +27,22 @@ public class Business {
     @Id
     public int id;
 
+    @Embedded
+    public Location location;
+
     public Business() {
     }
 
-    Business(String name) {
+    Business(float latitude, float longitude, String city, String state, int zip,
+             int houseNum, String streetName, String streetDir, String name) {
         this.name = name;
+        this.location = new Location(latitude, longitude, //
+                        new Address(city, state, zip, houseNum, //
+                                        new Street(streetName, streetDir)));
     }
 
     @Override
     public String toString() {
-        return "Business id=" + id + "; name=" + name;
+        return "Business id=" + id + " " + name + " @ " + location;
     }
 }
