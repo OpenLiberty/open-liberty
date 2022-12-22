@@ -17,4 +17,8 @@ public class JakartaOIDCConstants {
 
     public static final String COOKIE_NAME_OIDC_CLIENT_CORE_PREFIX = "WASJakartaOIDC_";
 
+    public static final String ID_TOKEN_HINT = "id_token_hint";
+    public static final String CLIENT_ID = "post_logout_redirect_uri";
+    public static final String POST_LOGOUT_REDIRECT_URI = "post_logout_redirect_uri";
+
 }
