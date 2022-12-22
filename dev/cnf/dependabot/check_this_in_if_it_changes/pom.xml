@@ -1907,11 +1907,6 @@
       <version>2.2.3</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.servicemix.bundles</groupId>
-      <artifactId>org.apache.servicemix.bundles.bcel</artifactId>
-      <version>5.2_3</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.sshd</groupId>
       <artifactId>sshd-common</artifactId>
       <version>2.5.1</version>
