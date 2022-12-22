@@ -387,8 +387,6 @@ public class CxfSymSampleTests {
         } catch (Exception e) {
             e.printStackTrace(System.out);
         }
-        //orig from CL
-        //SharedTools.unInstallCallbackHandler(server);
 
         Log.info(thisClass, "tearDown", "deleting usr/extension/lib/com.ibm.ws.wssecurity.example.cbh.jar");
         server.deleteFileFromLibertyInstallRoot("usr/extension/lib/com.ibm.ws.wssecurity.example.cbh.jar");

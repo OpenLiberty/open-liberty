@@ -47,9 +47,8 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        String thisMethod = "setup";
+
         String copyFromFile = "";
-        String repeatAction = null;
 
         //issue 23060, 23418
         copyFromFile = System.getProperty("user.dir") +

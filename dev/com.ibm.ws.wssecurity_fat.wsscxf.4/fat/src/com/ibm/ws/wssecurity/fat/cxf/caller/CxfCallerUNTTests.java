@@ -84,7 +84,7 @@ public class CxfCallerUNTTests {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         }
-        errMsgVersion = "wss4j";
+
         //issue 23599
         ShrinkHelper.defaultDropinApp(server, "callerclient", "com.ibm.ws.wssecurity.fat.callerclient",
                                       "test.libertyfat.caller.contract", "test.libertyfat.caller.types");
@@ -173,8 +173,8 @@ public class CxfCallerUNTTests {
                         "FatBAC02Service", //String strServiceName,
                         "UrnCallerToken02", //String strServicePort
                         "test2", // Expecting User ID
-                        "test2", // Password
-                        errMsgVersion);
+                        "test2" // Password
+            );
         } catch (Exception e) {
             throw e;
         }
@@ -235,8 +235,8 @@ public class CxfCallerUNTTests {
                         "FatBAC04Service", //String strServiceName,
                         "UrnCallerToken04", //String strServicePort
                         "test4", // Expecting User ID
-                        "test4", // Password
-                        errMsgVersion);
+                        "test4" // Password
+            );
         } catch (Exception e) {
             throw e;
         }

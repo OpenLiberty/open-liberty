@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,9 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.ws.Service;
 import javax.xml.ws.ServiceMode;
 import javax.xml.ws.WebServiceProvider;
+
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 @WebServiceProvider(targetNamespace = "http://wssec.basicssl.cxf.fats",
                     serviceName = "FVTVersionBAService", portName = "UrnBasicPlcyBA",
@@ -56,7 +59,26 @@ public class FVTVersion_ba01 implements javax.xml.ws.Provider<SOAPMessage> {
             System.out.println("Incoming Client Request as a SOAPMessage:");
             request.writeTo(System.out);
 
-            StringReader respMsg = new StringReader("<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><provider><message>WSSECFVT FVTVersion_ba01</message></provider></SOAP-ENV:Body></SOAP-ENV:Envelope>");
+            //issue 23060
+            //Retrieve mustUnderstand variable if exists from the request message soap header
+            Node n = request.getSOAPHeader().getFirstChild();
+            NamedNodeMap nmap = n.getAttributes();
+            Node mu = null;
+            if (nmap != null) {
+                mu = nmap.item(0);
+            }
+            String muheader = "soapenv:mustUnderstand=\"1\"";
+            boolean muheader_exists = true;
+            muheader_exists = muheader.equalsIgnoreCase(mu.toString());
+            StringReader respMsg;
+            if (muheader_exists) {
+                //default behavior, mustunderstand="1"
+                respMsg = new StringReader("<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><provider><message>WSSECFVT FVTVersion_ba01</message></provider></SOAP-ENV:Body></SOAP-ENV:Envelope>");
+            } else {
+                // if we set ws-security.must-understand="false" explicitly in server.xml , then this header should not exist
+                respMsg = new StringReader("<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Body><provider><message>WSSECFVT FVTVersion_ba01_NO_mustUnderstand_in_header_expected</message></provider></SOAP-ENV:Body></SOAP-ENV:Envelope>");
+            }
+
             Source src = new StreamSource(respMsg);
             MessageFactory factory = MessageFactory.newInstance();
             response = factory.createMessage();

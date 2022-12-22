@@ -52,9 +52,6 @@ public class CxfCallerX509AsymTests {
 
     static private final Class<?> thisClass = CxfCallerX509AsymTests.class;
 
-    private static String errMsgVersion = "";
-    private static String errMsgVersionInX509 = "";
-
     static boolean debugOnHttp = true;
 
     private static String portNumber = "";
@@ -92,8 +89,6 @@ public class CxfCallerX509AsymTests {
             server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/wsseccbh-2.0.mf");
             copyServerXml(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_wss4j.xml");
         }
-        errMsgVersion = "wss4j";
-        errMsgVersionInX509 = "wss4j";
 
         ShrinkHelper.defaultDropinApp(server, "callerclient", "com.ibm.ws.wssecurity.fat.callerclient", "test.libertyfat.caller.contract", "test.libertyfat.caller.types");
         ShrinkHelper.defaultDropinApp(server, "callertoken", "test.libertyfat.caller");
@@ -212,8 +207,8 @@ public class CxfCallerX509AsymTests {
                         "FatBAC01Service", //String strServiceName,
                         "UrnCallerToken01", //String strServicePort
                         "test3", // Expecting User ID
-                        "test3", // Password for UserNameToken
-                        errMsgVersionInX509);
+                        "test3" // Password for UserNameToken
+            );
         } catch (Exception e) {
             throw e;
         }
@@ -243,8 +238,8 @@ public class CxfCallerX509AsymTests {
                         "FatBAC02Service", //String strServiceName,
                         "UrnCallerToken02", //String strServicePort
                         "test2", // Expecting User ID
-                        "test2", // Password
-                        errMsgVersion);
+                        "test2" // Password
+            );
         } catch (Exception e) {
             throw e;
         }
@@ -305,9 +300,8 @@ public class CxfCallerX509AsymTests {
                         "FatBAC04Service", //String strServiceName,
                         "UrnCallerToken04", //String strServicePort
                         "test4", // Expecting User ID
-                        "test4", // Password
-                        errMsgVersion,
-                        errMsgVersionInX509);
+                        "test4" // Password
+            );
         } catch (Exception e) {
             throw e;
         }
@@ -347,70 +341,7 @@ public class CxfCallerX509AsymTests {
                        callerUNTClientUrl,
                        "",
                        untID,
-                       untPassword,
-                       null, //2/2021
-                       null);//2/2021
-
-        return;
-    }
-
-    protected void testRoutine(
-                               String thisMethod,
-                               String callerPolicy,
-                               String testMode, // Positive, positive-1, negative or negative-1... etc
-                               String portNumber,
-                               String portNumberSecure,
-                               String strServiceName,
-                               String strServicePort,
-                               String untID,
-                               String untPassword,
-                               String errMsgVersion) throws Exception {
-
-        testSubRoutine(
-                       thisMethod,
-                       callerPolicy,
-                       testMode, // Positive, positive-1, negative or negative-1... etc
-                       portNumber,
-                       portNumberSecure,
-                       strServiceName,
-                       strServicePort,
-                       callerUNTClientUrl,
-                       "",
-                       untID,
-                       untPassword,
-                       errMsgVersion,
-                       null);
-
-        return;
-    }
-
-    protected void testRoutine(
-                               String thisMethod,
-                               String callerPolicy,
-                               String testMode, // Positive, positive-1, negative or negative-1... etc
-                               String portNumber,
-                               String portNumberSecure,
-                               String strServiceName,
-                               String strServicePort,
-                               String untID,
-                               String untPassword,
-                               String errMsgVersion,
-                               String errMsgVersionInX509) throws Exception {
-
-        testSubRoutine(
-                       thisMethod,
-                       callerPolicy,
-                       testMode, // Positive, positive-1, negative or negative-1... etc
-                       portNumber,
-                       portNumberSecure,
-                       strServiceName,
-                       strServicePort,
-                       callerUNTClientUrl,
-                       "",
-                       untID,
-                       untPassword,
-                       errMsgVersion, //2/2021
-                       errMsgVersionInX509); //2/2021
+                       untPassword);
 
         return;
     }
@@ -445,69 +376,7 @@ public class CxfCallerX509AsymTests {
                        callerBadUNTClientUrl,
                        "Bad",
                        untID,
-                       untPassword,
-                       null,
-                       null);
-
-        return;
-    }
-
-    protected void testBadRoutine(
-                                  String thisMethod,
-                                  String callerPolicy,
-                                  String testMode, // Positive, positive-1, negative or negative-1... etc
-                                  String portNumber,
-                                  String portNumberSecure,
-                                  String strServiceName,
-                                  String strServicePort,
-                                  String untID,
-                                  String untPassword,
-                                  String errMsgVersionInX509) throws Exception {
-        testSubRoutine(
-                       thisMethod,
-                       callerPolicy,
-                       testMode, // Positive, positive-1, negative or negative-1... etc
-                       portNumber,
-                       portNumberSecure,
-                       strServiceName,
-                       strServicePort,
-                       callerBadUNTClientUrl,
-                       "Bad",
-                       untID,
-                       untPassword,
-                       null,
-                       errMsgVersionInX509);
-
-        return;
-    }
-
-    protected void testBadRoutine(
-                                  String thisMethod,
-                                  String callerPolicy,
-                                  String testMode, // Positive, positive-1, negative or negative-1... etc
-                                  String portNumber,
-                                  String portNumberSecure,
-                                  String strServiceName,
-                                  String strServicePort,
-                                  String untID,
-                                  String untPassword,
-                                  String errMsgVersion,
-                                  String errMsgVersionInX509) throws Exception {
-
-        testSubRoutine(
-                       thisMethod,
-                       callerPolicy,
-                       testMode, // Positive, positive-1, negative or negative-1... etc
-                       portNumber,
-                       portNumberSecure,
-                       strServiceName,
-                       strServicePort,
-                       callerBadUNTClientUrl,
-                       "Bad",
-                       untID,
-                       untPassword,
-                       errMsgVersion,
-                       null); //2/2021
+                       untPassword);
 
         return;
     }
@@ -532,9 +401,7 @@ public class CxfCallerX509AsymTests {
                                   String strClientUrl,
                                   String strBadOrGood,
                                   String untID,
-                                  String untPassword,
-                                  String errMsgVersion,
-                                  String errMsgVersionInX509) throws Exception {
+                                  String untPassword) throws Exception {
 
         try {
 
@@ -559,9 +426,6 @@ public class CxfCallerX509AsymTests {
             request.setParameter("methodFull", methodFull);
             request.setParameter("untID", untID);
             request.setParameter("untPassword", untPassword);
-
-            request.setParameter("errorMsgVersion", errMsgVersion);
-            request.setParameter("errorMsgVersionInX509", errMsgVersionInX509);
 
             // Invoke the client
             response = wc.getResponse(request);
