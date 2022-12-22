@@ -144,11 +144,14 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
         int k = 0;
         for (Sort keyInfo : queryInfo.keyset)
             try {
-                Member accessor = queryInfo.entityInfo.attributeAccessors.get(keyInfo.property());
-                if (accessor instanceof Method)
-                    keyValues[k++] = ((Method) accessor).invoke(entity);
-                else
-                    keyValues[k++] = ((Field) accessor).get(entity);
+                List<Member> accessors = queryInfo.entityInfo.attributeAccessors.get(keyInfo.property());
+                Object value = entity;
+                for (Member accessor : accessors)
+                    if (accessor instanceof Method)
+                        value = ((Method) accessor).invoke(value);
+                    else
+                        value = ((Field) accessor).get(value);
+                keyValues[k++] = value;
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException x) {
                 throw new DataException(x.getCause());
             }

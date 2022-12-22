@@ -13,6 +13,7 @@ package io.openliberty.data.internal.persistence;
 import java.lang.reflect.Member;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -25,8 +26,8 @@ import jakarta.data.Inheritance;
 /**
  */
 class EntityInfo {
-    // properly cased/qualified JPQL attribute name --> accessor method or field
-    final Map<String, Member> attributeAccessors; // TODO accessors won't be correct for embeddable
+    // properly cased/qualified JPQL attribute name --> accessor methods or fields (multiple in the case of embeddable)
+    final Map<String, List<Member>> attributeAccessors;
     // upper case attribute name --> properly cased/qualified JPQL attribute name
     final LinkedHashMap<String, String> attributeNames;
     final Set<String> collectionAttributeNames;
@@ -38,7 +39,7 @@ class EntityInfo {
     final Class<?> type;
 
     EntityInfo(String entityName, Class<?> entityClass,
-               Map<String, Member> attributeAccessors,
+               Map<String, List<Member>> attributeAccessors,
                LinkedHashMap<String, String> attributeNames,
                Set<String> collectionAttributeNames,
                String keyAttributeName,
