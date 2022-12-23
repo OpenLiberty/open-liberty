@@ -18,8 +18,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 import org.osgi.framework.BundleContext;
@@ -177,27 +179,57 @@ class EntityDefiner implements Runnable {
                 entityType.getName();//TODO
                 LinkedHashMap<String, String> attributeNames = new LinkedHashMap<>();
                 Set<String> collectionAttributeNames = new HashSet<String>();
-                HashMap<String, Member> attributeAccessors = new HashMap<>();
+                HashMap<String, List<Member>> attributeAccessors = new HashMap<>();
+                Queue<Attribute<?, ?>> embeddables = new LinkedList<>();
+                Queue<String> embeddablePrefixes = new LinkedList<>();
+                Queue<List<Member>> embeddableAccessors = new LinkedList<>();
                 for (Attribute<?, ?> attr : entityType.getAttributes()) {
                     String attributeName = attr.getName();
                     PersistentAttributeType attributeType = attr.getPersistentAttributeType();
-
                     if (PersistentAttributeType.EMBEDDED.equals(attributeType)) {
-                        // TODO this only covers one level of embedded attributes, which is fine for now because this isn't a real implementation
-                        EmbeddableType<?> embeddable = model.embeddable(attr.getJavaType());
-                        for (Attribute<?, ?> embAttr : embeddable.getAttributes()) {
-                            String embeddableAttributeName = embAttr.getName();
-                            String fullAttributeName = attributeName + '.' + embeddableAttributeName;
-                            attributeNames.put(embeddableAttributeName.toUpperCase(), fullAttributeName);
-                            attributeAccessors.put(fullAttributeName, attr.getJavaMember());
-                            if (PersistentAttributeType.ELEMENT_COLLECTION.equals(embAttr.getPersistentAttributeType()))
-                                collectionAttributeNames.add(fullAttributeName);
-                        }
+                        embeddables.add(attr);
+                        embeddablePrefixes.add(attributeName);
+                        embeddableAccessors.add(Collections.singletonList(attr.getJavaMember()));
                     } else {
                         attributeNames.put(attributeName.toUpperCase(), attributeName);
-                        attributeAccessors.put(attributeName, attr.getJavaMember());
+                        attributeAccessors.put(attributeName, Collections.singletonList(attr.getJavaMember()));
                         if (PersistentAttributeType.ELEMENT_COLLECTION.equals(attributeType))
                             collectionAttributeNames.add(attributeName);
+                    }
+                }
+
+                for (Attribute<?, ?> attr; (attr = embeddables.poll()) != null;) {
+                    String prefix = embeddablePrefixes.poll();
+                    List<Member> accessors = embeddableAccessors.poll();
+                    EmbeddableType<?> embeddable = model.embeddable(attr.getJavaType());
+                    for (Attribute<?, ?> embAttr : embeddable.getAttributes()) {
+                        String embeddableAttributeName = embAttr.getName();
+                        String fullAttributeName = prefix + '.' + embeddableAttributeName;
+                        List<Member> embAccessors = new LinkedList<>(accessors);
+                        embAccessors.add(embAttr.getJavaMember());
+
+                        PersistentAttributeType attributeType = embAttr.getPersistentAttributeType();
+                        if (PersistentAttributeType.EMBEDDED.equals(attributeType)) {
+                            embeddables.add(embAttr);
+                            embeddablePrefixes.add(fullAttributeName);
+                            embeddableAccessors.add(embAccessors);
+                        } else {
+                            // Allow the simple attribute name if it doesn't overlap
+                            embeddableAttributeName = embeddableAttributeName.toUpperCase();
+                            attributeNames.putIfAbsent(embeddableAttributeName, fullAttributeName);
+
+                            // Allow a qualified name such as @OrderBy("address.street.name")
+                            embeddableAttributeName = fullAttributeName.toUpperCase();
+                            attributeNames.putIfAbsent(embeddableAttributeName, fullAttributeName);
+
+                            // Allow a qualified name such as findByAddress_Street_Name
+                            embeddableAttributeName = embeddableAttributeName.replace('.', '_');
+                            attributeNames.putIfAbsent(embeddableAttributeName, fullAttributeName);
+
+                            attributeAccessors.put(fullAttributeName, embAccessors);
+                            if (PersistentAttributeType.ELEMENT_COLLECTION.equals(attributeType))
+                                collectionAttributeNames.add(fullAttributeName);
+                        }
                     }
                 }
 

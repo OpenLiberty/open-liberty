@@ -152,13 +152,16 @@ class QueryInfo {
         ArrayList<Object> keyValues = new ArrayList<>();
         for (Sort keyInfo : keyset)
             try {
-                Member accessor = entityInfo.attributeAccessors.get(keyInfo.property());
+                List<Member> accessors = entityInfo.attributeAccessors.get(keyInfo.property());
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "getKeysetValues for " + entity, accessor);
-                if (accessor instanceof Method)
-                    keyValues.add(((Method) accessor).invoke(entity));
-                else
-                    keyValues.add(((Field) accessor).get(entity));
+                    Tr.debug(this, tc, "getKeysetValues for " + entity, accessors);
+                Object value = entity;
+                for (Member accessor : accessors)
+                    if (accessor instanceof Method)
+                        value = ((Method) accessor).invoke(value);
+                    else
+                        value = ((Field) accessor).get(value);
+                keyValues.add(value);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException x) {
                 throw new DataException(x.getCause());
             }

@@ -271,14 +271,15 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             List<Sort> keyset = needsKeysetQueries ? new ArrayList<>(orderBy.length) : null;
 
             for (int i = 0; i < orderBy.length; i++) {
-                o.append(i == 0 ? " ORDER BY " : ", ").append(orderBy[i].ignoreCase() ? "LOWER(o." : "o.").append(orderBy[i].value());
+                String name = entityInfo.getAttributeName(orderBy[i].value());
+                o.append(i == 0 ? " ORDER BY " : ", ").append(orderBy[i].ignoreCase() ? "LOWER(o." : "o.").append(name);
                 if (orderBy[i].ignoreCase())
                     o.append(")");
                 if (orderBy[i].descending())
                     o.append(" DESC");
 
                 if (needsKeysetQueries) {
-                    r.append(i == 0 ? " ORDER BY " : ", ").append(orderBy[i].ignoreCase() ? "LOWER(o." : "o.").append(orderBy[i].value());
+                    r.append(i == 0 ? " ORDER BY " : ", ").append(orderBy[i].ignoreCase() ? "LOWER(o." : "o.").append(name);
                     if (orderBy[i].ignoreCase())
                         r.append(")");
                     if (!orderBy[i].descending())
@@ -286,11 +287,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
                     keyset.add(orderBy[i].ignoreCase() ? //
                                     orderBy[i].descending() ? //
-                                                    Sort.descIgnoreCase(orderBy[i].value()) : //
-                                                    Sort.ascIgnoreCase(orderBy[i].value()) : //
+                                                    Sort.descIgnoreCase(name) : //
+                                                    Sort.ascIgnoreCase(name) : //
                                     orderBy[i].descending() ? //
-                                                    Sort.desc(orderBy[i].value()) : //
-                                                    Sort.asc(orderBy[i].value()));
+                                                    Sort.desc(name) : //
+                                                    Sort.asc(name));
                 }
             }
 
