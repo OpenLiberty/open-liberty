@@ -31,7 +31,10 @@ import com.ibm.ws.cdi.visibility.tests.vistest.ejbAsEjbLib.EjbAsEjbLibTestingBea
 import com.ibm.ws.cdi.visibility.tests.vistest.ejbAsWarLib.EjbAsWarLibTestingBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.ejbLib.EjbLibTestingBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.ejbWarLib.EjbWarLibTestingBean;
+import com.ibm.ws.cdi.visibility.tests.vistest.framework.TestingBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.privateLib.PrivateLibTestingBean;
+import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InRuntimeExtRegular;
+import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InRuntimeExtSeeApp;
 import com.ibm.ws.cdi.visibility.tests.vistest.war.WarTestingBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.warAppClientLib.WarAppClientLibTestingBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.warLib.WarLibTestingBean;
@@ -100,6 +103,16 @@ public class VisibilityTestServlet extends FATServlet {
     @Inject
     private Instance<PrivateLibTestingBean> privateLibTestingInstance;
 
+    // Using a qualifier to look this up so that we don't have to have the runtime extension export this package as API
+    @Inject
+    @InRuntimeExtRegular
+    private Instance<TestingBean> runtimeExtRegularTestingInstance;
+
+    // Using a qualifier to look this up so that we don't have to have the runtime extension export this package as API
+    @Inject
+    @InRuntimeExtSeeApp
+    private Instance<TestingBean> runtimeExtSeeAppTestingInstance;
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String location = req.getParameter("location");
@@ -140,6 +153,10 @@ public class VisibilityTestServlet extends FATServlet {
                 result = commonLibTestingInstance.get().doTest();
             } else if (location.equals("InPrivateLib")) {
                 result = privateLibTestingInstance.get().doTest();
+            } else if (location.equals("InRuntimeExtRegular")) {
+                result = runtimeExtRegularTestingInstance.get().doTest();
+            } else if (location.equals("InRuntimeExtSeeApp")) {
+                result = runtimeExtSeeAppTestingInstance.get().doTest();
             } else {
                 result = "ERROR: unrecognised qualifier\n";
             }

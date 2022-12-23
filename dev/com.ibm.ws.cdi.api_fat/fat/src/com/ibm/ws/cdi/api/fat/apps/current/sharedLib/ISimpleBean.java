@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,24 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.api.fat.apps.current;
-
-import javax.enterprise.context.Dependent;
-
-import com.ibm.ws.cdi.api.fat.apps.current.sharedLib.ISimpleBean;
+package com.ibm.ws.cdi.api.fat.apps.current.sharedLib;
 
 /**
  *
  */
-@Dependent
-public class SimpleBean implements ISimpleBean {
+public interface ISimpleBean {
 
-    public static final String MSG = "bean exists";
-
-    /** {@inheritDoc} */
-    @Override
-    public String test() {
-        return MSG;
-    }
+    String test();
 
 }

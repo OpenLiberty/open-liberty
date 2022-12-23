@@ -36,6 +36,8 @@ import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InEjbLib;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InEjbWarLib;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InNonLib;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InPrivateLib;
+import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InRuntimeExtRegular;
+import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InRuntimeExtSeeApp;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InWar;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InWar2;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InWarAppClientLib;
@@ -124,6 +126,12 @@ public class VisTester {
 
         class InPrivateLibQualifier extends AnnotationLiteral<InPrivateLib> implements InPrivateLib {};
         qualifiers.add(new InPrivateLibQualifier());
+
+        class InRuntimeExtRegularQualifier extends AnnotationLiteral<InRuntimeExtRegular> implements InRuntimeExtRegular {};
+        qualifiers.add(new InRuntimeExtRegularQualifier());
+
+        class InRuntimeExtSeeAppQualifier extends AnnotationLiteral<InRuntimeExtSeeApp> implements InRuntimeExtSeeApp {};
+        qualifiers.add(new InRuntimeExtSeeAppQualifier());
 
         QUALIFIERS = Collections.unmodifiableSet(qualifiers);
     }
