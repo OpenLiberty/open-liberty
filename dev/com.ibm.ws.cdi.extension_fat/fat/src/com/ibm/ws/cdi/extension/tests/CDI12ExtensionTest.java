@@ -27,6 +27,9 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.beansxml.BeansAsset.CDIVersion;
 import com.ibm.websphere.simplicity.beansxml.BeansAsset.DiscoveryMode;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.cdi.extension.apps.enablementSharedLib.DummyBean;
+import com.ibm.ws.cdi.extension.apps.enablementWar.EnablementSharedLibServlet;
+import com.ibm.ws.cdi.extension.apps.enablementWar.EnablementTestServlet;
 import com.ibm.ws.cdi.extension.apps.helloworld.HelloWorldExtensionBean;
 import com.ibm.ws.cdi.extension.apps.helloworld.HelloWorldExtensionTestServlet;
 import com.ibm.ws.cdi.extension.apps.multipleWar.NoBeansTestServlet;
@@ -35,19 +38,26 @@ import com.ibm.ws.cdi.extension.apps.multipleWar.war1.WAR1MyBean;
 import com.ibm.ws.cdi.extension.apps.multipleWar.war1.WAR1TestServlet;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 
 /**
  * Test the runtime extension to function correctly
  */
 @RunWith(FATRunner.class)
-public class CDI12ExtensionTest {
+public class CDI12ExtensionTest extends FATServletClient {
 
     public static final String SERVER_NAME = "cdi12RuntimeExtensionServer";
 
+    @TestServlets({
+                    @TestServlet(contextRoot = "enablement", servlet = EnablementTestServlet.class),
+                    @TestServlet(contextRoot = "enablementSharedLib", servlet = EnablementSharedLibServlet.class)
+    })
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
@@ -60,6 +70,9 @@ public class CDI12ExtensionTest {
         System.out.println("Install the user feature bundle... cdi.helloworld.extension");
         CDIExtensionRepeatActions.installUserExtension(server, CDIExtensionRepeatActions.HELLOWORLD_EXTENSION_BUNDLE_ID);
         CDIExtensionRepeatActions.installSystemFeature(server, CDIExtensionRepeatActions.CDI_INTERNALS_BUNDLE_ID);
+
+        // multipleWar2.ear
+        // ----------------
 
         JavaArchive multipleWarEmbeddedJar = ShrinkWrap.create(JavaArchive.class, "multipleWarEmbeddedJar.jar");
         multipleWarEmbeddedJar.addClass(EmbeddedJarMyEjb.class);
@@ -80,6 +93,11 @@ public class CDI12ExtensionTest {
         multipleWars.addAsModule(multipleWar);
         multipleWars.addAsModule(multipleWarNoBeans);
 
+        ShrinkHelper.exportDropinAppToServer(server, multipleWars, DeployOptions.SERVER_ONLY);
+
+        // helloWorldExtension.ear
+        // -----------------------
+
         WebArchive helloWorldExtensionTest = ShrinkWrap.create(WebArchive.class, "helloWorldExtensionTest.war");
         helloWorldExtensionTest.addClass(HelloWorldExtensionTestServlet.class);
         helloWorldExtensionTest.addClass(HelloWorldExtensionBean.class);
@@ -92,11 +110,21 @@ public class CDI12ExtensionTest {
         helloWorldExtension.addAsModule(helloWorldExtensionTest);
         helloWorldExtension.addAsManifestResource(HelloWorldExtensionTestServlet.class.getPackage(), "permissions.xml", "permissions.xml");
 
-        /**
-         * Install the user feature and the bundle
-         */
-        ShrinkHelper.exportDropinAppToServer(server, multipleWars, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportDropinAppToServer(server, helloWorldExtension, DeployOptions.SERVER_ONLY);
+
+        // enablement.war
+        // --------------
+
+        WebArchive enablementWar = ShrinkWrap.create(WebArchive.class, "enablement.war")
+                                             .addClasses(EnablementSharedLibServlet.class, EnablementTestServlet.class);
+        CDIArchiveHelper.addBeansXML(enablementWar, DiscoveryMode.ANNOTATED);
+
+        JavaArchive enablementSharedLib = ShrinkWrap.create(JavaArchive.class, "enablementSharedLib.jar")
+                                                    .addClass(DummyBean.class);
+        CDIArchiveHelper.addBeansXML(enablementSharedLib, DiscoveryMode.ANNOTATED);
+
+        ShrinkHelper.exportAppToServer(server, enablementWar, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportToServer(server, "", enablementSharedLib, DeployOptions.SERVER_ONLY);
 
         server.startServer(true);
         server.waitForStringInLogUsingMark("CWWKZ0001I.*Application helloWorldExension started");
@@ -127,7 +155,9 @@ public class CDI12ExtensionTest {
     @Test
     public void testCDINotEnabled() throws Exception {
 
+        // Check CDI is enabled in module which has beans
         HttpUtils.findStringInUrl(server, "/multipleWar3", "MyEjb myWar1Bean");
+        // Check CDI not enabled in module in same ear which can see no beans, except those in runtime extensions
         HttpUtils.findStringInUrl(server, "/multipleWarNoBeans", "ContextNotActiveException");
     }
 

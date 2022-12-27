@@ -440,7 +440,7 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         // save
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.emptySet());
+        server.waitForConfigUpdateInLogUsingMark(Collections.emptySet(), "CWWKZ0009I"); //CWWKZ0009I: The application concurrent has stopped successfully.
 
         // Start the application by putting it back
         config.getApplications().add(concurrentApp);

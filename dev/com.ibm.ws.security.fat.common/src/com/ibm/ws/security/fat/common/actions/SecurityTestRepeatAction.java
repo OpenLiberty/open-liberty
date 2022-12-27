@@ -77,7 +77,6 @@ public class SecurityTestRepeatAction implements RepeatTestAction {
 
     @Override
     public void setup() throws Exception {
-        nameExtension = "default";
     }
 
     public SecurityTestRepeatAction onlyOnWindows() {

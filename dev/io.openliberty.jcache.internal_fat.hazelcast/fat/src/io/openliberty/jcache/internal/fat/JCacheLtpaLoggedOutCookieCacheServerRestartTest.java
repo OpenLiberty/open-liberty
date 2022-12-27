@@ -38,7 +38,7 @@ import componenttest.topology.impl.LibertyServer;
  * This won't work in hazelcast because hazelcast runs the cache on the Liberty server.
  */
 @SkipIfSysProp("skip.tests=true")
-@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
+@SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
 @SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)

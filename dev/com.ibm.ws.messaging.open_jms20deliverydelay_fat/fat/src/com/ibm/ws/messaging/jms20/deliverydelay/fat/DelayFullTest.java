@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -469,34 +469,30 @@ public class DelayFullTest {
     }
 
     private void verifyRemovedFeature(LibertyServer server, String fragment) throws Exception {
-        String changedMessageFromLog = server.waitForStringInLogUsingMark(
-            "CWWKF0013I.*" + fragment + ".*",
-            server.getMatchingLogFile("trace.log"));
-        assertNotNull(
-            "Could not find the feature removed message in the trace file",
-            changedMessageFromLog);
+    	//CWWKF0013I: The server removed the following features: [wasJmsServer-1.0].
+        String changedMessageFromLog = server.waitForStringInLogUsingMark("CWWKF0013I.*" + fragment + ".*", server.getMatchingLogFile("trace.log"));
+        assertNotNull("Could not find the \"CWWKF0013I:.*"+fragment+"\" feature removed message in the trace file",changedMessageFromLog);
 
         verifyFeatureUpdate(server);
     }
 
     private void verifyAddedFeature(LibertyServer server, String fragment) throws Exception {
-        String changedMessageFromLog = server.waitForStringInLogUsingMark(
-            "CWWKF0012I.*" + fragment + ".*",
-            server.getMatchingLogFile("trace.log"));
-        assertNotNull(
-            "Could not find the feature added message in the trace file",
-            changedMessageFromLog);
+    	// CWWKF0012I: The server installed the following features: [wasJmsServer-1.0].
+        String changedMessageFromLog = server.waitForStringInLogUsingMark("CWWKF0012I.*" + fragment + ".*", server.getMatchingLogFile("trace.log"));
+        assertNotNull("Could not find the \"CWWKF0012I:.*"+fragment+"\" feature added message in the trace file",changedMessageFromLog);
 
         verifyFeatureUpdate(server);
+        
+        // Also wait for the jms server to restart
+        // CWSID0108I: JMS server has started.
+        String jmsServerStartedMessageFromLog = server.waitForStringInLogUsingMark("CWWKF0012I.*" + fragment + ".*",server.getMatchingLogFile("trace.log"));
+        assertNotNull("Could not find the \"CWSID0108I: JMS server has started.\"message in the trace file",jmsServerStartedMessageFromLog);
     }
 
     private void verifyFeatureUpdate(LibertyServer server) throws Exception {
-        String changedMessageFromLog = server.waitForStringInLogUsingMark(
-            "CWWKF0008I.*",
-            server.getMatchingLogFile("trace.log"));
-        assertNotNull(
-            "Could not find the feature update completed message in the trace file",
-            changedMessageFromLog);
+    	//CWWKF0008I: Feature update completed in ?.??? seconds.
+        String changedMessageFromLog = server.waitForStringInLogUsingMark("CWWKF0008I.*",server.getMatchingLogFile("trace.log"));
+        assertNotNull("Could not find the CWWKF0008I feature update completed message in the trace file", changedMessageFromLog);
     }
 
     /**
@@ -529,6 +525,7 @@ public class DelayFullTest {
 
         int appCount = clientServer.waitForMultipleStringsInLog(3, "CWWKT0016I.*DeliveryDelay.*");
         Log.info(DelayFullTest.class, "CheckApplicationStart", "No. of times App started - " + appCount);
+        if (appCount != 3)clientServer.dumpServer("testDDRemoveAddServerFeature");
         assertTrue( "Could not find the application ready message in the log file", (appCount == 3) );
 
         boolean testResult2 = runInServlet("testReceiveMessage");

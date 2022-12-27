@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,14 +25,16 @@ import com.ibm.ws.wssecurity.fat.cxf.samltoken1.TwoServerTests.CxfSSLSAMLBasic2S
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
+//import com.ibm.ws.wssecurity.fat.utils.common.RepeatWithEE7cbh20;
 
 @RunWith(Suite.class)
 @SuiteClasses({
 
-	   //Lite
+	   //Lite for EE9/EE10  
+	   //Full mode also run small subset EE7 tests
 	   CxfSSLSAMLBasic2ServerTests.class,
       
-       //Full
+       //Full mode runs only EE7cbh1 as well as Lite
        CxfSSLSAMLBasic1ServerTests.class,
        CxfSAMLWSSTemplates2ServerTests.class,
        CxfSAMLWSSTemplates1ServerTests.class,
@@ -47,8 +49,9 @@ import componenttest.rules.repeater.RepeatTests;
  */
 public class FATSuite {
 
-    //The following run EE7 and EE8 full fat and EE9 lite fat
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("usr:wsseccbh-1.0").addFeature("usr:wsseccbh-2.0")).andWith(FeatureReplacementAction.EE10_FEATURES().removeFeature("usr:wsseccbh-1.0").addFeature("usr:wsseccbh-2.0"));
+    //issue 23060
+    //EE7cbh2 rule is not used for this FAT project, to avoid the extended test execution time
+    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(FeatureReplacementAction.EE9_FEATURES()).andWith(FeatureReplacementAction.EE10_FEATURES());
 
 }

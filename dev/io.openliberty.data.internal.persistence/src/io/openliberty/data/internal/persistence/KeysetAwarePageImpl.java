@@ -15,7 +15,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.AbstractList;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -61,7 +60,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
 
         int maxPageSize = this.pagination.size();
         int firstResult = this.pagination.mode() == Pageable.Mode.OFFSET //
-                        ? RepositoryImpl.computeOffset(this.pagination.page(), maxPageSize) //
+                        ? RepositoryImpl.computeOffset(this.pagination) //
                         : 0;
 
         EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
@@ -75,20 +74,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
             queryInfo.setParameters(query, args);
 
             if (keysetCursor != null)
-                if (queryInfo.paramNames.isEmpty() || queryInfo.paramNames.get(0) == null) // positional parameters
-                    for (int i = 0; i < keysetCursor.size(); i++) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "set keyset parameter ?" + (queryInfo.paramCount + i + 1));
-                        // TODO detect if user provides a wrong-sized keyset? Or let JPA error surface?
-                        query.setParameter(queryInfo.paramCount + i + 1, keysetCursor.getKeysetElement(i));
-                    }
-                else // named parameters
-                    for (int i = 0; i < keysetCursor.size(); i++) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "set keyset parameter :keyset" + (i + 1));
-                        // TODO detect if user provides a wrong-sized keyset? Or let JPA error surface?
-                        query.setParameter("keyset" + (queryInfo.paramCount + i + 1), keysetCursor.getKeysetElement(i));
-                    }
+                queryInfo.setKeysetParameters(query, keysetCursor);
 
             query.setFirstResult(firstResult);
             query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1)); // extra position is for knowing whether to expect another page
@@ -158,11 +144,14 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
         int k = 0;
         for (Sort keyInfo : queryInfo.keyset)
             try {
-                Member accessor = queryInfo.entityInfo.attributeAccessors.get(keyInfo.property());
-                if (accessor instanceof Method)
-                    keyValues[k++] = ((Method) accessor).invoke(entity);
-                else
-                    keyValues[k++] = ((Field) accessor).get(entity);
+                List<Member> accessors = queryInfo.entityInfo.attributeAccessors.get(keyInfo.property());
+                Object value = entity;
+                for (Member accessor : accessors)
+                    if (accessor instanceof Method)
+                        value = ((Method) accessor).invoke(value);
+                    else
+                        value = ((Field) accessor).get(value);
+                keyValues[k++] = value;
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException x) {
                 throw new DataException(x.getCause());
             }
@@ -220,22 +209,8 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
         if (results.size() < minToHaveNextPage)
             return null;
 
-        Object entity = results.get(Math.min(results.size(), pagination.size()) - 1);
-
-        ArrayList<Object> keyValues = new ArrayList<>();
-        for (Sort keyInfo : queryInfo.keyset)
-            try {
-                Member accessor = queryInfo.entityInfo.attributeAccessors.get(keyInfo.property());
-                if (accessor instanceof Method)
-                    keyValues.add(((Method) accessor).invoke(entity));
-                else
-                    keyValues.add(((Field) accessor).get(entity));
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException x) {
-                throw new DataException(x.getCause());
-            }
-
         Pageable p = pagination.page() == Long.MAX_VALUE ? pagination : pagination.page(pagination.page() + 1);
-        return p.afterKeyset(keyValues.toArray());
+        return p.afterKeyset(queryInfo.getKeysetValues(results.get(Math.min(results.size(), pagination.size()) - 1)));
     }
 
     @Override
@@ -245,23 +220,9 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
         if (results.size() < minToHavePreviousPage)
             return null;
 
-        Object entity = results.get(0);
-
-        ArrayList<Object> keyValues = new ArrayList<>();
-        for (Sort keyInfo : queryInfo.keyset)
-            try {
-                Member accessor = queryInfo.entityInfo.attributeAccessors.get(keyInfo.property());
-                if (accessor instanceof Method)
-                    keyValues.add(((Method) accessor).invoke(entity));
-                else
-                    keyValues.add(((Field) accessor).get(entity));
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException x) {
-                throw new DataException(x.getCause());
-            }
-
         // Decrement page number by 1 unless it would go below 1.
         Pageable p = pagination.page() == 1 ? pagination : pagination.page(pagination.page() - 1);
-        return p.beforeKeyset(keyValues.toArray());
+        return p.beforeKeyset(queryInfo.getKeysetValues(results.get(0)));
     }
 
     @Override

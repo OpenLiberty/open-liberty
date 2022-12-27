@@ -53,7 +53,7 @@ public class PageImpl<T> implements Page<T> {
             queryInfo.setParameters(query, args);
 
             int maxPageSize = pagination.size();
-            query.setFirstResult(RepositoryImpl.computeOffset(pagination.page(), maxPageSize));
+            query.setFirstResult(RepositoryImpl.computeOffset(pagination));
             query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1));
 
             results = query.getResultList();

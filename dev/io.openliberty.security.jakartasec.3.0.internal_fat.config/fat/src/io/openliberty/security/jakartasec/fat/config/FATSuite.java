@@ -21,6 +21,7 @@ import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationELValues
 import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationResponseModeTests;
 import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationScopeTests;
 import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationTests;
+import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationUseNonceTests;
 import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationUserInfoTests;
 
 @RunWith(Suite.class)
@@ -30,6 +31,7 @@ import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationUserInfo
                 ConfigurationClaimsDefinitionTests.class,
                 ConfigurationScopeTests.class,
                 ConfigurationResponseModeTests.class,
+                ConfigurationUseNonceTests.class,
                 // LogoutDefinition tests are handled in a separate FAT project as the test use sleeps to wait for tokens to expire and that causes the tests to take quite some time to run
                 ConfigurationELValuesOverrideTests.class,
                 ConfigurationELValuesOverrideWithoutHttpSessionTests.class,

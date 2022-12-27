@@ -27,12 +27,9 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.utils.HttpUtils;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.HttpUtils;
 
 /**
  * Tests that the correct MyFaces packages are accessible when an application is configured to use third-party APIs
@@ -75,7 +72,7 @@ public class Faces40ThirdPartyApiTests {
         try (WebClient webClient = new WebClient()) {
 
             URL url = HttpUtils.createURL(faces40_thirdPartyAPIServer, "/" + contextRoot + "/Faces40ThirdPartyAPI.xhtml");
-            
+
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
             Log.info(clazz, name.getMethodName(), page.asXml());

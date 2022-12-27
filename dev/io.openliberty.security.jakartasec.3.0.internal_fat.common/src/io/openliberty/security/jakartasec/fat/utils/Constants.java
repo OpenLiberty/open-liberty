@@ -28,6 +28,8 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String PROVIDER_SECURE_BASE = "providerSecureBase";
     public static final String CLIENT_BASE = "clientBase";
     public static final String CLIENT_SECURE_BASE = "clientSecureBase";
+    public static final String USE_NONCE = "useNonce";
+    public static final String USE_NONCE_EXPRESSION = "useNonceExpression";
     public static final String USE_SESSION = "useSession";
     public static final String USE_SESSION_EXPRESSION = "useSessionExpression";
     public static final String RESPONSE_TYPE = "responseType";

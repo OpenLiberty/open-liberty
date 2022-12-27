@@ -32,6 +32,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.PatchTe
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.SpanCurrentServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.Telemetry10Servlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.WithSpanServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.MetricsDisabledServlet;
 
 @RunWith(FATRunner.class)
 public class Telemetry10 extends FATServletClient {
@@ -45,7 +46,8 @@ public class Telemetry10 extends FATServletClient {
                     @TestServlet(servlet = OpenTelemetryBeanServlet.class, contextRoot = APP_NAME),
                     @TestServlet(servlet = BaggageServlet.class, contextRoot = APP_NAME),
                     @TestServlet(servlet = SpanCurrentServlet.class, contextRoot = APP_NAME),
-                    @TestServlet(servlet = WithSpanServlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = MetricsDisabledServlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = WithSpanServlet.class, contextRoot = APP_NAME)
     })
     public static LibertyServer server;
 
@@ -57,8 +59,9 @@ public class Telemetry10 extends FATServletClient {
                                     OpenTelemetryBeanServlet.class,
                                     PatchTestApp.class,
                                     BaggageServlet.class,
-                                    WithSpanServlet.class,
-                                    SpanCurrentServlet.class);
+                                    MetricsDisabledServlet.class,
+                                    SpanCurrentServlet.class,
+                                    WithSpanServlet.class);
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
         server.startServer();

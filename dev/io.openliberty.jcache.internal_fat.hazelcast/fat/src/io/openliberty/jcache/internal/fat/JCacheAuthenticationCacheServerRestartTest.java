@@ -35,7 +35,7 @@ import componenttest.topology.impl.LibertyServer;
 /**
  * Contains distributed JCache authentication cache tests for server restart.
  */
-@SkipForRepeat(SkipForRepeat.EE9_FEATURES)
+@SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
 @SkipIfSysProp("skip.tests=true")
 @SuppressWarnings("restriction")
 @RunWith(FATRunner.class)

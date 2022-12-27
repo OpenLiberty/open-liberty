@@ -17,6 +17,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.jpa.tests.eclipselink.query.tests.AbstractFATSuite;
+import com.ibm.ws.jpa.tests.eclipselink.query.tests.jpa31.TestJPA31_Web;
 import com.ibm.ws.jpa.tests.eclipselink.query.tests.olgh.TestOLGH17837_Web;
 
 import componenttest.rules.repeater.RepeatTests;
@@ -24,6 +25,7 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({
                 TestOLGH17837_Web.class,
+                TestJPA31_Web.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite extends AbstractFATSuite {

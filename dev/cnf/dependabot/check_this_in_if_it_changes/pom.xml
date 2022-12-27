@@ -524,52 +524,57 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-buffer</artifactId>
-      <version>4.1.77.Final</version>
+      <version>4.1.86.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-http2</artifactId>
-      <version>4.1.77.Final</version>
+      <version>4.1.86.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-http</artifactId>
-      <version>4.1.77.Final</version>
+      <version>4.1.86.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-socks</artifactId>
-      <version>4.1.77.Final</version>
+      <version>4.1.86.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec</artifactId>
-      <version>4.1.77.Final</version>
+      <version>4.1.86.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-common</artifactId>
-      <version>4.1.77.Final</version>
+      <version>4.1.86.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-handler-proxy</artifactId>
-      <version>4.1.77.Final</version>
+      <version>4.1.86.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-handler</artifactId>
-      <version>4.1.77.Final</version>
+      <version>4.1.86.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-resolver</artifactId>
-      <version>4.1.77.Final</version>
+      <version>4.1.86.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport-native-unix-common</artifactId>
+      <version>4.1.86.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport</artifactId>
-      <version>4.1.77.Final</version>
+      <version>4.1.86.Final</version>
     </dependency>
     <dependency>
       <groupId>io.opentelemetry.instrumentation</groupId>
@@ -1902,11 +1907,6 @@
       <version>2.2.3</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.servicemix.bundles</groupId>
-      <artifactId>org.apache.servicemix.bundles.bcel</artifactId>
-      <version>5.2_3</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.sshd</groupId>
       <artifactId>sshd-common</artifactId>
       <version>2.5.1</version>
@@ -2084,7 +2084,7 @@
     <dependency>
       <groupId>org.eclipse.angus</groupId>
       <artifactId>angus-activation</artifactId>
-      <version>1.0.0-M1</version>
+      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.angus</groupId>
@@ -2874,7 +2874,7 @@
     <dependency>
       <groupId>org.glassfish.web</groupId>
       <artifactId>jakarta.servlet.jsp.jstl</artifactId>
-      <version>3.0.0</version>
+      <version>3.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish</groupId>

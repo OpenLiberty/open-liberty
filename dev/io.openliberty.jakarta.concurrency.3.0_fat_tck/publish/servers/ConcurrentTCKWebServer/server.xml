@@ -74,7 +74,7 @@
     <jspEngine jdkSourceLevel="18"/>
 
     <!-- Security role(s) needed for TCK tests -->
-    <orb id="defaultOrb" orbSSLInitTimeout="60"/>
+    <orb id="defaultOrb" orbSSLInitTimeout="90"/>
 
     <basicRegistry id="basic" realm="default">
         <user name="javajoe" password="javajoe"/>

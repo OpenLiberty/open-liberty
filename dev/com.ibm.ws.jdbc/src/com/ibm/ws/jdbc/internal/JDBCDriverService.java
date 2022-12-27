@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1001,6 +1001,9 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
             else if (paramType.equals(Character.class)) // special case: Character
                 param = Character.valueOf(value.charAt(0));
 
+            else if(paramType.equals(char[].class)) // special case: char array
+                param = value.toCharArray();
+		
             else // the generic case: any object with a single parameter String constructor
                 param = paramType.getConstructor(String.class).newInstance(value);
         }

@@ -13,12 +13,14 @@ package io.openliberty.security.jakartasec;
 import static io.openliberty.security.jakartasec.JakartaSec30Constants.EMPTY_DEFAULT;
 import static junit.framework.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdProviderMetadata;
 
 /**
@@ -168,17 +170,98 @@ public class OpenIdProviderMetadataWrapperTest {
         OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(null);
         OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
 
-        assertEquals(TestOpenIdProviderMetadataDefinition.ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED_DEFAULT, wrapper.getIdTokenSigningAlgorithmsSupported());
+        String[] expectedValue = new String[] { OpenIdConstant.DEFAULT_JWT_SIGNED_ALGORITHM };
+        assertEquals(Arrays.toString(expectedValue), Arrays.toString(wrapper.getIdTokenSigningAlgorithmsSupported()));
     }
 
     @Test
-    public void testGetIdTokenSigningAlgorithmsSupported_EL() {
-        overrides.put(TestOpenIdProviderMetadataDefinition.ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED, STRING_EL_EXPRESSION);
+    public void testGetIdTokenSigningAlgorithmsSupported_simpleString() {
+        String input = "simple string";
+        overrides.put(TestOpenIdProviderMetadataDefinition.ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED, input);
 
         OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(overrides);
         OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
 
-        assertEquals(EVALUATED_EL_EXPRESSION_STRING_RESULT, wrapper.getIdTokenSigningAlgorithmsSupported());
+        assertEquals("Input: \"" + input + "\".", Arrays.toString(new String[] { input }), Arrays.toString(wrapper.getIdTokenSigningAlgorithmsSupported()));
+    }
+
+    @Test
+    public void testGetIdTokenSigningAlgorithmsSupported_simpleStringWithCommas() {
+        String input = "string, with, commas";
+        overrides.put(TestOpenIdProviderMetadataDefinition.ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED, input);
+
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(overrides);
+        OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
+
+        assertEquals("Input: \"" + input + "\".", Arrays.toString(new String[] { "string", "with", "commas" }), Arrays.toString(wrapper.getIdTokenSigningAlgorithmsSupported()));
+    }
+
+    @Test
+    public void testGetIdTokenSigningAlgorithmsSupported_EL() {
+        String input = "${'one'.concat(',two')}";
+        overrides.put(TestOpenIdProviderMetadataDefinition.ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED, input);
+
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(overrides);
+        OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
+
+        assertEquals("Input: \"" + input + "\".", Arrays.toString(new String[] { "one", "two" }), Arrays.toString(wrapper.getIdTokenSigningAlgorithmsSupported()));
+    }
+
+    @Test
+    public void testGetIdTokenSigningAlgorithmsSupported_EL_composite() {
+        String input = "one ${','} two";
+        overrides.put(TestOpenIdProviderMetadataDefinition.ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED, input);
+
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(overrides);
+        OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
+
+        assertEquals("Input: \"" + input + "\".", Arrays.toString(new String[] { "one", "two" }), Arrays.toString(wrapper.getIdTokenSigningAlgorithmsSupported()));
+    }
+
+    @Test
+    public void testGetIdTokenSigningAlgorithmsSupported_ELwithSpaces() {
+        String input = "${'one'.concat(', two')}";
+        overrides.put(TestOpenIdProviderMetadataDefinition.ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED, input);
+
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(overrides);
+        OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
+
+        assertEquals("Input: \"" + input + "\".", Arrays.toString(new String[] { "one", "two" }), Arrays.toString(wrapper.getIdTokenSigningAlgorithmsSupported()));
+    }
+
+    @Test
+    public void testGetIdTokenSigningAlgorithmsSupported_EL_deferred() {
+        String input = "#{'one'.concat(',two')}";
+        overrides.put(TestOpenIdProviderMetadataDefinition.ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED, input);
+
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(overrides);
+        OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
+
+        assertEquals("Input: \"" + input + "\".", Arrays.toString(new String[] { "one", "two" }), Arrays.toString(wrapper.getIdTokenSigningAlgorithmsSupported()));
+    }
+
+    @Test
+    public void testGetIdTokenSigningAlgorithmsSupported_commasWithOneEL() {
+        String input = "string, el, ${'blah'}, commas";
+        overrides.put(TestOpenIdProviderMetadataDefinition.ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED, input);
+
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(overrides);
+        OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
+
+        assertEquals("Input: \"" + input + "\".", Arrays.toString(new String[] { "string", "el", "blah", "commas" }),
+                     Arrays.toString(wrapper.getIdTokenSigningAlgorithmsSupported()));
+    }
+
+    @Test
+    public void testGetIdTokenSigningAlgorithmsSupported_commasWithOneEL_deferred() {
+        String input = "string, el, #{'blah'}, commas";
+        overrides.put(TestOpenIdProviderMetadataDefinition.ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED, input);
+
+        OpenIdProviderMetadata providerMetadata = TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(overrides);
+        OpenIdProviderMetadataWrapper wrapper = new OpenIdProviderMetadataWrapper(providerMetadata);
+
+        assertEquals("Input: \"" + input + "\".", Arrays.toString(new String[] { "string", "el", "blah", "commas" }),
+                     Arrays.toString(wrapper.getIdTokenSigningAlgorithmsSupported()));
     }
 
     @Test

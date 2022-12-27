@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServerWrapper;
 
@@ -243,7 +244,7 @@ public class BasicSAMLTests extends SAMLCommonTest {
      */
 
     @ExpectedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
-    @AllowedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException" }, repeatAction = { EmptyAction.ID,JakartaEE9Action.ID })
+    @AllowedFFDC(value = { "org.opensaml.messaging.handler.MessageHandlerException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID })
     @Test
     public void basicSAMLTests_noIdAssertNoUser_IDPSignMisMatch_IDPEncrypt() throws Exception {
 
@@ -1022,11 +1023,18 @@ public class BasicSAMLTests extends SAMLCommonTest {
     @Mode(TestMode.LITE)
     @Test
     public void basicSAMLTests_chainedCert_noMetaData_intermediateInKeyStore() throws Exception {
-        if (System.getProperty("os.name").contains("Mac")) {
-            Log.info(thisClass, _testName, "Aborting the test due to issues with the IBM JDK on Mac. See Defect 249821.");
-            // Defect 249821: IBM JDKs on Mac have trouble with this test because some underlying open source code is making a call
-            // to CertPathBuilder.getInstance("PKIX") instead of using the CertPathBuilder.getInstance(String, String) or
-            // CertPathBuilder.getInstance(String, Provider) method to specify a particular provider.
+        
+        String javaVersion = System.getProperty("java.version");
+        String vendorName = System.getProperty("java.vendor");
+        
+        Log.info(thisClass, _testName, "java version = " + javaVersion);
+        Log.info(thisClass, _testName, "java vendor = " + vendorName);
+        boolean jdk_issue_with_certpath_api = false;
+        if(javaVersion.contains("1.8.0") && vendorName.contains("Oracle")) {
+            jdk_issue_with_certpath_api = true; 
+        }
+        if (jdk_issue_with_certpath_api) {
+            Log.info(thisClass, _testName, "Aborting the test due to issues with the " + vendorName + ", version :  " + javaVersion + ". See Defect 291667.");
             return;
         }
 
@@ -1057,14 +1065,20 @@ public class BasicSAMLTests extends SAMLCommonTest {
      * @throws Exception
      */
     @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
-    // re-enable when 195531 is fixed
     @Test
     public void basicSAMLTests_chainedCert_noMetaData_rootInKeyStore() throws Exception {
-        if (System.getProperty("os.name").contains("Mac")) {
-            Log.info(thisClass, _testName, "Aborting the test due to issues with the IBM JDK on Mac. See Defect 249821.");
-            // Defect 249821: IBM JDKs on Mac have trouble with this test because some underlying open source code is making a call
-            // to CertPathBuilder.getInstance("PKIX") instead of using the CertPathBuilder.getInstance(String, String) or
-            // CertPathBuilder.getInstance(String, Provider) method to specify a particular provider.
+        
+        String javaVersion = System.getProperty("java.version");
+        String vendorName = System.getProperty("java.vendor");
+        
+        Log.info(thisClass, _testName, "java version = " + javaVersion);
+        Log.info(thisClass, _testName, "java vendor = " + vendorName);
+        boolean jdk_issue_with_certpath_api = false;
+        if(javaVersion.contains("1.8.0") && vendorName.contains("Oracle")) {
+            jdk_issue_with_certpath_api = true; 
+        }
+        if (jdk_issue_with_certpath_api) {
+            Log.info(thisClass, _testName, "Aborting the test due to issues with the " + vendorName + ", version :  " + javaVersion + ". See Defect 291667.");
             return;
         }
 

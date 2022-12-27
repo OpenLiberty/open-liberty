@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ public class LocalLdapServer {
     private static final Class<?> c = LocalLdapServer.class;
     private static final String APACHE_DS_HOME = PrivHelper.getProperty("apache.ds.home");
     private static final String OS_NAME = PrivHelper.getProperty("os.name");
+    private static final int STOP_RETRY_COUNT = 35;
 
     /**
      * Sets the name of the instance
@@ -145,6 +146,16 @@ public class LocalLdapServer {
         // Stop the ldap instance started.
         Log.info(c, method, "Stopping the " + instanceName + " instance of Apache DS");
         localLdapInstance.destroy();
+        int retry = 0;
+        while (localLdapInstance.isAlive() && retry < STOP_RETRY_COUNT) {
+            Log.info(c, method, instanceName + " instance of Apache DS is stopping via the proc.destroy() method.  Retry = " + retry);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            retry++;
+        }
         Log.exiting(c, method);
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>com.ibm.ws.org.apache.servicemix.bundles.bcel</name>
+	<name>io.openliberty.org.apache.bcel</name>
 	<comment></comment>
 	<projects>
 	</projects>

@@ -30,7 +30,11 @@ src: \
     test-applications/ScopeOpenIdProfileEmail.war/src,\
     test-applications/ScopeOpenIdProfileEmailWithEL.war/src,\
     test-applications/ResponseModeWithMockAuthEndpoint.war/src,\
-    test-applications/Authorization.war/src
+    test-applications/Authorization.war/src,\
+    test-applications/UseNonceTrue.war/src,\
+    test-applications/UseNonceFalse.war/src,\
+    test-applications/UseNonceTrueWithEL.war/src,\
+    test-applications/UseNonceFalseWithEL.war/src
     
 -dependson: \
     build.changeDetector,\

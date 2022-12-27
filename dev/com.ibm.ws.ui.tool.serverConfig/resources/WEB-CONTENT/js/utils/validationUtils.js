@@ -103,10 +103,11 @@
 
         $.ajax({
             url: uri,
-            type: "get",
+            type: "GET",
             dataType: "json",
             contentType: "application/json",
             crossDomain: true,
+            data: "format=json",
             headers: {          
                 Accept: "application/json",
                 "Access-Control-Allow-Origin":"*"
@@ -120,8 +121,9 @@
                 var result = successCallback(data);
                 deferred.resolve(result);
             },
-            error: function(xhr) {
+            error: function(xhr, status, error) {
                 var result = failureCallback(xhr);
+                console.warn("status="+ status + ", error=" + error);
                 deferred.resolve(result);
             }
         });

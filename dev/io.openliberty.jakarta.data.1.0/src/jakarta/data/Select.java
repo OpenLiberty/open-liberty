@@ -67,7 +67,8 @@ public @interface Select {
     /**
      * Limits the entity attributes to the names listed.
      * The order in which the attributes are listed is preserved,
-     * enabling them to be supplied as constructor arguments per {@link Result#type}.<p>
+     * enabling them to be supplied as constructor arguments for an instance
+     * of the identified type.<p>
      *
      * An example of returning a single attribute,
      *

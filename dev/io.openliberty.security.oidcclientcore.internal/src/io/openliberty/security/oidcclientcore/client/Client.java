@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jose4j.jwt.JwtClaims;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
@@ -32,6 +34,8 @@ import io.openliberty.security.oidcclientcore.token.TokenResponseValidator;
 import io.openliberty.security.oidcclientcore.token.TokenValidationException;
 
 public class Client {
+
+    public static final TraceComponent tc = Tr.register(Client.class);
 
     private final OidcClientConfig oidcClientConfig;
     private static JWKSet jwkSet = null;
@@ -105,10 +109,9 @@ public class Client {
         try {
             return logoutHandler.logout();
         } catch (ServletException e) {
-            // TODO Auto-generated catch block
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            //TODO add debug?
-            //e.printStackTrace();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Logout failed with a ServletException exception on " + idTokenString, e);
+            }
             return new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 
         }

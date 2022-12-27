@@ -13,17 +13,15 @@ package test.jakarta.data.web;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.function.Consumer;
-import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 import jakarta.data.Delete;
 import jakarta.data.Select;
 import jakarta.data.Update;
 import jakarta.data.Where;
-import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Streamable;
 import jakarta.enterprise.concurrent.Asynchronous;
 
 /**
@@ -40,18 +38,16 @@ public interface Personnel {
     CompletionStage<Integer> changeSurnames(String oldSurname, String newSurname, List<Long> ssnList);
 
     @Asynchronous
-    CompletableFuture<Long> findByFirstNameStartsWith(String beginningOfFirstName,
-                                                      Collector<Person, ?, Long> collector);
+    CompletableFuture<Long> countByFirstNameStartsWith(String beginningOfFirstName);
+
+    @Asynchronous
+    void deleteByFirstName(String firstName);
+
+    @Asynchronous
+    CompletableFuture<Void> deleteBySsn(long ssn);
 
     @Asynchronous
     CompletionStage<List<Person>> findByLastNameOrderByFirstName(String lastName);
-
-    @Asynchronous
-    @Select("firstName")
-    void findByLastNameOrderByFirstNameDesc(String lastName, Consumer<String> callback);
-
-    @Asynchronous
-    CompletableFuture<Void> findByOrderBySsnDesc(Consumer<Person> callback, Pageable pagination);
 
     @Asynchronous
     CompletableFuture<Person> findBySsn(long ssn);
@@ -64,12 +60,9 @@ public interface Personnel {
     @Query("SELECT DISTINCT o.lastName FROM Person o ORDER BY o.lastName")
     CompletionStage<String[]> lastNames();
 
-    @Asynchronous
     @Select("firstName")
     @Where("o.firstName LIKE CONCAT(?1, '%')")
-    CompletableFuture<Long> namesThatStartWith(String beginningOfFirstName,
-                                               Pageable pagination,
-                                               Collector<String, ?, Long> collector);
+    Streamable<String> namesThatStartWith(String beginningOfFirstName);
 
     // An alternative to the above would be to make the Collector class a parameter
     // of the Paginated annotation, although this would rule out easily accessing the

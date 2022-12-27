@@ -12,14 +12,18 @@ package com.ibm.ws.cdi.api.fat.apps.current;
 
 import javax.enterprise.context.Dependent;
 
+import com.ibm.ws.cdi.api.fat.apps.current.sharedLib.ISimpleBean;
+
 /**
  *
  */
 @Dependent
-public class SimpleBean {
+public class SimpleBean implements ISimpleBean {
 
     public static final String MSG = "bean exists";
 
+    /** {@inheritDoc} */
+    @Override
     public String test() {
         return MSG;
     }

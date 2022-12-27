@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import org.junit.rules.TestName;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -56,14 +57,25 @@ public abstract class AbstractWABTests {
 
     private static final Class<?> c = AbstractWABTests.class;
 
-    private static boolean isJakarta9;
+    private static boolean isJakarta9OrLater;
 
     @Rule
     public TestName name = new TestName();
 
     @BeforeClass
     public static void setUp() throws Exception {
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEE10Action.isActive()) {
+            /* transform any wab bundles with javax.servlet classes to jakartaee-9 equivalents */
+            Log.info(c, "setUp", "Transforming product bundles to Jakarta-EE-10: ");
+            for (String bundle : PRODUCT_BUNDLES) {
+
+                Path bundleFile = Paths.get("publish", "productbundles", bundle + ".jar");
+                Path newBundleFile = Paths.get("publish", "productbundles", bundle + ".jakarta.jar");
+                JakartaEE10Action.transformApp(bundleFile, newBundleFile);
+                Log.info(c, "setUp", "Transformed bundle " + bundleFile + " to " + newBundleFile);
+            }
+            isJakarta9OrLater = true;
+        } else if (JakartaEE9Action.isActive()) {
             /* transform any wab bundles with javax.servlet classes to jakartaee-9 equivalents */
             Log.info(c, "setUp", "Transforming product bundles to Jakarta-EE-9: ");
             for (String bundle : PRODUCT_BUNDLES) {
@@ -73,9 +85,9 @@ public abstract class AbstractWABTests {
                 JakartaEE9Action.transformApp(bundleFile, newBundleFile);
                 Log.info(c, "setUp", "Transformed bundle " + bundleFile + " to " + newBundleFile);
             }
-            isJakarta9 = true;
+            isJakarta9OrLater = true;
         } else {
-            isJakarta9 = false;
+            isJakarta9OrLater = false;
         }
 
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.app.manager.wab.installer");
@@ -93,13 +105,13 @@ public abstract class AbstractWABTests {
             Log.info(c, "setUp", "Installing product properties file for: " + product);
             server.installProductExtension(product);
 
-            String feature = product + (isJakarta9 ? "_jakarta" : "");
+            String feature = product + (isJakarta9OrLater ? "_jakarta" : "");
             Log.info(c, "setUp", "Installing product feature: " + feature);
             server.installProductFeature(product, feature);
 
             Log.info(c, "setUp", "Installing product bundles: " + product);
 
-            String extensionIfJakarta = (isJakarta9 ? ".jakarta" : "");
+            String extensionIfJakarta = (isJakarta9OrLater ? ".jakarta" : "");
             server.installProductBundle(product, product);
             server.installProductBundle(product, BUNDLE_TEST_WAB1 + extensionIfJakarta);
             server.installProductBundle(product, BUNDLE_TEST_WAB2 + extensionIfJakarta);
