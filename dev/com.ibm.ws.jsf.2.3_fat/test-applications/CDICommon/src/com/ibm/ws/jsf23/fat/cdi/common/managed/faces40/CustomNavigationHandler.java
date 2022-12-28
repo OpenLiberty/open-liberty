@@ -10,18 +10,24 @@
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat.cdi.common.managed.faces40;
 
+import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.CDI;
 import javax.faces.application.NavigationHandler;
 import javax.faces.application.ViewHandler;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
+import com.ibm.ws.jsf23.fat.cdi.common.beans.faces40.NavigationHandlerBean;
 import com.ibm.ws.jsf23.fat.cdi.common.beans.injected.FieldBean;
 import com.ibm.ws.jsf23.fat.cdi.common.beans.injected.ManagedBeanType;
 import com.ibm.ws.jsf23.fat.cdi.common.beans.injected.MethodBean;
-import com.ibm.ws.jsf23.fat.cdi.common.beans.jsf23.NavigationHandlerBean;
 
 /**
  * Custom navigation handler that tests field and method injection. No constructor injection.
@@ -68,7 +74,14 @@ public class CustomNavigationHandler extends NavigationHandler {
 
                 nextPage = "/NavigationHandlerPass.xhtml";
 
-                NavigationHandlerBean testBean = (NavigationHandlerBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("navigationHandlerBean");
+                // Look up the navigationHandlerBean using CDI
+                BeanManager bm = CDI.current().getBeanManager();
+                Set<?> navigationHandlerBeans = bm.getBeans("navigationHandlerBean");
+                Bean<?> bean = (Bean<?>) navigationHandlerBeans.iterator().next();
+                CreationalContext<?> ctx = bm.createCreationalContext(bean);
+
+                NavigationHandlerBean testBean = (NavigationHandlerBean) bm
+                                .getReference(bean, NavigationHandlerBean.class, ctx);
 
                 if (testBean != null) {
 
