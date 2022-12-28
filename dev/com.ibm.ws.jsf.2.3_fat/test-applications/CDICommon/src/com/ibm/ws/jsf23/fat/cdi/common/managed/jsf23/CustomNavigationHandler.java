@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jsf23.fat.cdi.common.managed;
+package com.ibm.ws.jsf23.fat.cdi.common.managed.jsf23;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
