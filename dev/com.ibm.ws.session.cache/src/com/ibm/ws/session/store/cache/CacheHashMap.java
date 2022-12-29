@@ -904,6 +904,7 @@ public class CacheHashMap extends BackedHashMap {
             FFDCFilter.processException(ex, "com.ibm.ws.session.store.cache.CacheHashMap.overQualLastAccessTimeUpdate", "859", this, new Object[] { sess });
             Tr.error(tc, "ERROR_CACHE_ACCESS", id);
             Tr.error(tc, "INTERNAL_SERVER_ERROR", ex);
+            updateCount = 0;
             // throw new RuntimeException(Tr.formatMessage(tc, "INTERNAL_SERVER_ERROR"));
         }
 
