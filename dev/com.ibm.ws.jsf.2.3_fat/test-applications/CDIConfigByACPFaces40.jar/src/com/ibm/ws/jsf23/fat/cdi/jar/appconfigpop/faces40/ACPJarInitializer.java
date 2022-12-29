@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jsf23.fat.cdi.jar.appconfigpop;
+package com.ibm.ws.jsf23.fat.cdi.jar.appconfigpop.faces40;
 
 import javax.faces.application.ApplicationConfigurationPopulator;
 
