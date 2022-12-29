@@ -34,7 +34,8 @@
 	<classpathentry kind="src" path="test-applications/CDIInjectionTests.war/src"/>
 	<classpathentry kind="src" path="test-applications/CDICommon/src"/>
 	<classpathentry kind="src" path="test-applications/CDIConfigByACP.war/src"/>
-	<classpathentry kind="src" path="test-applications/CDIConfigByACP.jar/src"/>
+	<classpathentry kind="src" path="test-applications/CDIConfigByACPJSF23.jar/src"/>
+	<classpathentry kind="src" path="test-applications/CDIConfigByACPFaces40.jar/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="output" path="bin"/>
