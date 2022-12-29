@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.osgi.framework.VersionRange;
@@ -28,6 +27,7 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -75,7 +75,6 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
     private ClassLoadingService classLoadingService;
     private volatile Library sharedLib = null;
     private static boolean isSuccesfulActivation = true;
-    private static AtomicBoolean isActivated = new AtomicBoolean();
     private MetricsConfig metricsConfig;
 
     /**
@@ -89,12 +88,17 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
         return isSuccesfulActivation;
     }
 
+    @Modified
+    protected void modified(ComponentContext context, Map<String, Object> properties) {
+        /*
+         * Configuration update to the Metrics configuration should not affect any
+         * change in this service-component/class
+         */
+        Tr.info(tc, "configurationChange.info.CWMMC0007I");
+    }
+
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> properties) throws Exception {
-
-        if (isActivated.get())
-            return;
-
         File smallRyeMetricsJarFile;
         try {
             smallRyeMetricsJarFile = resolveSmallRyeMetricsJar();
@@ -173,7 +177,6 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
              * throw new Exception("Unable to initialize MicroProfile Metrics 5.0 feature");
              */
         }
-        isActivated.set(true);
     }
 
     @Override

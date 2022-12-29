@@ -59,6 +59,11 @@ internal.error.CWMMC0006E=CWMMC0006E: An internal error occurred.
 internal.error.CWMMC0006E.explanation=The application server experienced an internal error.
 internal.error.CWMMC0006E.useraction=Gather a set of traces and open a new issue against your application server.
 
+#Information regarding libraryRef attribute taking effect only after server restart
+configurationChange.info.CWMMC0007I=CWMMC0007I: A configuration change was detected for the MicroProfile Metrics feature. If a change was made to the libraryRef attribute, a server restart is required for the change to take effect.
+configurationChange.info.CWMMC0007I.explanation=MicroProfile Metrics requires a server restart to change libraries referenced by libraryRef.
+configurationChange.info.CWMMC0007I.useraction=If the libraryRef attribute was modified, restart the server for the change to take effect.
+
 #User configured mpMetrics to use user-defined library for Micrometer binaries without Prometheus Registry JAR
 noPrometheusRegistry.info.CWMMC0008I=CWMMC0008I: The /metrics endpoint is not available because no Prometheus Registry is available.
 noPrometheusRegistry.info.CWMMC0008I.explanation=The MicroProfile Metrics feature is loading Micrometer libraries that are defined through the libraryRef attribute, but the referenced Library does not contain a Micrometer Prometheus Registry.
