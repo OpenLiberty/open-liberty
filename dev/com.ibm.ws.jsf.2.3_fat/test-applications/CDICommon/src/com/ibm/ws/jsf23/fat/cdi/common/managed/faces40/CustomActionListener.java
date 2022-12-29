@@ -11,19 +11,24 @@
 package com.ibm.ws.jsf23.fat.cdi.common.managed.faces40;
 
 import java.io.IOException;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.CDI;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
 import javax.inject.Inject;
 
+import com.ibm.ws.jsf23.fat.cdi.common.beans.faces40.ActionListenerBean;
 import com.ibm.ws.jsf23.fat.cdi.common.beans.injected.FieldBean;
 import com.ibm.ws.jsf23.fat.cdi.common.beans.injected.ManagedBeanType;
 import com.ibm.ws.jsf23.fat.cdi.common.beans.injected.MethodBean;
-import com.ibm.ws.jsf23.fat.cdi.common.beans.jsf23.ActionListenerBean;
 
 /**
  * Custom action listener that tests field and method injection. No constructor injection.
@@ -63,7 +68,14 @@ public class CustomActionListener implements ActionListener {
      */
     @Override
     public void processAction(ActionEvent actionEvent) throws AbortProcessingException {
-        ActionListenerBean testBean = (ActionListenerBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("actionListenerBean");
+        // Look up the ActionListenerBean using CDI
+        BeanManager bm = CDI.current().getBeanManager();
+        Set<?> actionListenerBeans = bm.getBeans("actionListenerBean");
+        Bean<?> bean = (Bean<?>) actionListenerBeans.iterator().next();
+        CreationalContext<?> ctx = bm.createCreationalContext(bean);
+
+        ActionListenerBean testBean = (ActionListenerBean) bm
+                        .getReference(bean, ActionListenerBean.class, ctx);
 
         if (testBean != null) {
 
