@@ -8,19 +8,25 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jsf.ee;
+package io.openliberty.faces40.internal.ee;
 
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.myfaces.webapp.MyFacesContainerInitializer;
+import org.apache.myfaces.webapp.StartupServletContextListener;
+
+import com.ibm.ws.jsf.shared.JSFConstants;
+import com.ibm.ws.jsf.shared.JSFConstants.JSFImplEnabled;
 
 import jakarta.faces.application.ResourceDependencies;
 import jakarta.faces.application.ResourceDependency;
 import jakarta.faces.component.FacesComponent;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.behavior.FacesBehavior;
-import jakarta.faces.convert.FacesConverter;
 import jakarta.faces.convert.Converter;
+import jakarta.faces.convert.FacesConverter;
 import jakarta.faces.event.ListenerFor;
 import jakarta.faces.event.ListenersFor;
 import jakarta.faces.event.NamedEvent;
@@ -34,12 +40,6 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.HandlesTypes;
-
-import org.apache.myfaces.webapp.MyFacesContainerInitializer;
-import org.apache.myfaces.webapp.StartupServletContextListener;
-
-import com.ibm.ws.jsf.shared.JSFConstants;
-import com.ibm.ws.jsf.shared.JSFConstants.JSFImplEnabled;
 
 /**
  *
@@ -63,8 +63,8 @@ import com.ibm.ws.jsf.shared.JSFConstants.JSFImplEnabled;
         Validator.class
     })
 public class WASMyFacesContainerInitializer extends MyFacesContainerInitializer {
-
-    private static final Logger log = Logger.getLogger(WASMyFacesContainerInitializer.class.getName());
+    private static final String CLASS_NAME = WASMyFacesContainerInitializer.class.getName();
+    private static final Logger log = Logger.getLogger(CLASS_NAME);
 
     @Override
     public void onStartup(Set<Class<?>> clazzes, ServletContext servletContext) throws ServletException {

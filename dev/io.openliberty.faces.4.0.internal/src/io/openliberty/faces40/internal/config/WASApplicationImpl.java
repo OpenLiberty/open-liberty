@@ -8,23 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jsf.config;
+package io.openliberty.faces40.internal.config;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.myfaces.cdi.util.CDIUtils;
+import org.apache.myfaces.util.ExternalSpecifications;
+
+import com.ibm.websphere.ras.annotation.Trivial;
+
+import io.openliberty.faces40.internal.extprocessor.JSFExtensionFactory;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationWrapper;
 import jakarta.faces.application.ViewHandler;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
-
-import org.apache.myfaces.util.ExternalSpecifications;
-import org.apache.myfaces.application.ApplicationFactoryImpl;
-import org.apache.myfaces.cdi.util.CDIUtils;
-
-import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.jsf.extprocessor.JSFExtensionFactory;
 
 /**
  * WAS custom application implementation that initializes CDIJSFViewHandler per application
@@ -32,7 +31,8 @@ import com.ibm.ws.jsf.extprocessor.JSFExtensionFactory;
  */
 public class WASApplicationImpl extends ApplicationWrapper
 {
-    private static final Logger log = Logger.getLogger(WASApplicationImpl.class.getName());
+    private static final String CLASS_NAME = WASApplicationImpl.class.getName();
+    private static final Logger log = Logger.getLogger(CLASS_NAME);
 
     private Application application;
 

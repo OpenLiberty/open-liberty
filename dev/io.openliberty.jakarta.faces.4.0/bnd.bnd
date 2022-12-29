@@ -25,12 +25,12 @@ Export-Package: jakarta.faces.*; version=${Implementation-Version}, \
 
 
 DynamicImport-Package: \
-  com.ibm.ws.jsf.spi, \
+  io.openliberty.faces40.internal.spi, \
   com.ibm.ws.managedobject, \
   org.apache.myfaces.cdi.util, \
   org.apache.myfaces.spi
 
-# Use this format once we have an offical release and not an RC2
+# Use this format once we have an official release and not an RC2
 # @${repo;org.apache.myfaces.core.api;${Implementation-Version};EXACT}!/jakarta/faces, \
 # @${repo;org.apache.myfaces.core.api;${Implementation-Version};EXACT}!/META-INF/**
 # Determine if we need the jakarta/faces entry here.

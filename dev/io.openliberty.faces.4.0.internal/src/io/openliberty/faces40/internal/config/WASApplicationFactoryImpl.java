@@ -8,24 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jsf.config;
+package io.openliberty.faces40.internal.config;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import io.openliberty.faces40.internal.extprocessor.JSFExtensionFactory;
 import jakarta.faces.application.Application;
 import jakarta.faces.application.ApplicationFactory;
-
-import org.apache.myfaces.application.ApplicationFactoryImpl;
-import com.ibm.ws.jsf.config.WASApplicationImpl;
-import com.ibm.ws.jsf.extprocessor.JSFExtensionFactory;
 
 /**
  * WAS custom application factory that initializes CDIJSFELResolver per application
  */
 public class WASApplicationFactoryImpl extends ApplicationFactory
-{
-    private static final Logger log = Logger.getLogger(WASApplicationFactoryImpl.class.getName());
+{    
+    private static final String CLASS_NAME = WASApplicationFactoryImpl.class.getName();
+    private static final Logger log = Logger.getLogger(CLASS_NAME);
 
     private ApplicationFactory _applicationFactory;
     private Application _application;

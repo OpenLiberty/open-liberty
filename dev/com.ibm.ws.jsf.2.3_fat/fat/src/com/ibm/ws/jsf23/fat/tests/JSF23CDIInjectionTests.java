@@ -175,7 +175,8 @@ public class JSF23CDIInjectionTests extends CDITestBase {
      */
     @Test
     public void testInjectionProvider() throws Exception {
-        String msgToSearchFor1 = "Using InjectionProvider com.ibm.ws.jsf.spi.impl.WASCDIAnnotationDelegateInjectionProvider";
+        String msgToSearchFor1 = JakartaEE10Action
+                        .isActive() ? "Using InjectionProvider io.openliberty.faces40.internal.spi.impl.WASCDIAnnotationDelegateInjectionProvider" : "Using InjectionProvider com.ibm.ws.jsf.spi.impl.WASCDIAnnotationDelegateInjectionProvider";
 
         // The Message that is output by MyFaces was changed in https://issues.apache.org/jira/browse/MYFACES-4334
         // for MyFaces 2.3.7 and newer versions. The original message was "MyFaces CDI support enabled".
