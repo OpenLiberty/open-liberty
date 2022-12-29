@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jsf23.fat.cdi.common.managed;
+package com.ibm.ws.jsf23.fat.cdi.common.managed.faces40;
 
 import java.io.IOException;
 
