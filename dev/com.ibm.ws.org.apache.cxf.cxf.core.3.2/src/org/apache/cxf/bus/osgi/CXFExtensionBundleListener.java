@@ -21,7 +21,6 @@ package org.apache.cxf.bus.osgi;
 import java.io.IOException;
 import java.net.URL;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
@@ -45,6 +44,8 @@ import org.osgi.framework.BundleEvent;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.SynchronousBundleListener;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore; // Liberty Change
+
 public class CXFExtensionBundleListener implements SynchronousBundleListener {
     private static final Logger LOG = LogUtils.getL7dLogger(CXFActivator.class);
     private long id;
@@ -66,10 +67,10 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
                 String bundleName = bundle.toString();
                 if(!bundleName.startsWith("com.ibm.ws.org.apache.cxf") && !bundleName.startsWith("com.ibm.ws.wssecurity")) {
                     // don't register non-cxf bundles
-                }       
+                }
                 else
                     register(bundle);
-                //    
+                //
             }
         }
     }
@@ -143,24 +144,51 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
             serviceObject = o;
             obj = o;
         }
+
+        @FFDCIgnore(Throwable.class) // Liberty Change Start
         public Object load(ClassLoader cl, Bus b) {
-            if (interfaceName == null && bundle.getBundleContext() != null) {
-                ServiceReference<?> ref = bundle.getBundleContext().getServiceReference(className);
-                if (ref != null && ref.getBundle().getBundleId() == bundle.getBundleId()) {
-                    Object o = bundle.getBundleContext().getService(ref);
-                    serviceObject = o;
-                    obj = o;
-                    return obj;
+
+            if (System.getSecurityManager() != null) { // only if Java2Security is enabled
+                try {
+                    BundleContext bc = AccessController.doPrivileged(new PrivilegedExceptionAction<BundleContext>() {
+                        @Override
+                        public BundleContext run() throws Exception {
+                            return bundle.getBundleContext();
+                        }
+                    });
+
+                    if (interfaceName == null && bc != null) {
+                        ServiceReference<?> ref = bc.getServiceReference(className);
+                        if (ref != null && ref.getBundle().getBundleId() == bundle.getBundleId()) {
+                            Object o = bc.getService(ref);
+                            serviceObject = o;
+                            obj = o;
+                            return obj;
+                        }
+                    }
+                } catch (Throwable ex) {
+                    LOG.finest("Failed to get BundleContext due to error: " + ex);
                 }
-            }
+            } else {
+                if (interfaceName == null && bundle.getBundleContext() != null) {
+                    ServiceReference<?> ref = bundle.getBundleContext().getServiceReference(className);
+                    if (ref != null && ref.getBundle().getBundleId() == bundle.getBundleId()) {
+                        Object o = bundle.getBundleContext().getService(ref);
+                        serviceObject = o;
+                        obj = o;
+                        return obj;
+                    }
+                }
+            } // Liberty Change End
+
             return super.load(cl, b);
         }
         protected Class<?> tryClass(String name, ClassLoader cl) {
             Class<?> c = null;
-            
+
             Throwable origExc = null;
             try {
-                try { 
+                try {
                 	//Start Liberty Change
                     c = AccessController.doPrivileged(new PrivilegedExceptionAction<Class<?>>() {
                         @Override
