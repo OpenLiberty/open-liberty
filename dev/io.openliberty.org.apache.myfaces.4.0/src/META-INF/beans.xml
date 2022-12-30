@@ -13,7 +13,6 @@
   bean-discovery-mode="none">
   <scan>
 
-    <exclude name="com.ibm.ws.faces.**" />
     <exclude name="org.apache.myfaces.**"/>
 
   </scan>
