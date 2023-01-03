@@ -105,7 +105,7 @@ public abstract class JPADBTestServlet extends JPATestServlet {
         DatabaseVendor vendor = DatabaseVendor.resolveDBProduct(dbProductName, dbProductVersion);
         scriptName = scriptName.replace("${dbvendor}", vendor.toString());
 
-        System.out.println("*****");
+        System.out.println("*** start execution: " + scriptName + " ***");
 
         final StringBuilder sb = new StringBuilder();
 
@@ -123,7 +123,7 @@ public abstract class JPADBTestServlet extends JPATestServlet {
 //        System.out.println("DBMeta DDL Exec Result: ");
 //        System.out.println(sb);
 
-        System.out.println("*****");
+        System.out.println("*** end execution ***");
     }
 
     /**

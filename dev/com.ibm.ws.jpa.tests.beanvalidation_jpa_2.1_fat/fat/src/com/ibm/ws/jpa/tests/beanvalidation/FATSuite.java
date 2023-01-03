@@ -19,6 +19,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.jpa.tests.beanvalidation.tests.AbstractFATSuite;
 import com.ibm.ws.jpa.tests.beanvalidation.tests.BeanValidation_EJB;
 import com.ibm.ws.jpa.tests.beanvalidation.tests.BeanValidation_Web;
+import com.ibm.ws.jpa.tests.beanvalidation.tests.ValidateJPAFeatureTest;
 
 import componenttest.rules.repeater.RepeatTests;
 
@@ -26,6 +27,7 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 BeanValidation_EJB.class,
                 BeanValidation_Web.class,
+                ValidateJPAFeatureTest.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite extends AbstractFATSuite {
