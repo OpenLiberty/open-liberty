@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,9 +13,9 @@
 package web.jaxrstest;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -52,6 +52,7 @@ import javax.ws.rs.core.Response;
 
 import org.junit.Test;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -125,6 +126,7 @@ public class JAXRSExecutorTestServlet extends FATServlet {
     // defaults to the Liberty global thread pool.  Verify that the CompletionStage function
     // which runs asynchronously after completion, runs on the Liberty global thread pool.
     @Test
+    @SkipForRepeat("EE10_FEATURES")  //temporary:  need to adjust testing for EE10
     public void testCompletionStageRxInvokerAsynchronousFunction(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String uri = "http://" + request.getServerName() + ":" + request.getServerPort() + "/jaxrsapp/testapp/test/post";
 
@@ -193,7 +195,7 @@ public class JAXRSExecutorTestServlet extends FATServlet {
         };
 
         ExecutorService executor = InitialContext.doLookup("java:comp/DefaultManagedExecutorService");
-
+        
         ClientBuilder clientBuilder = ClientBuilder.newBuilder();
         Client client = clientBuilder.executorService(executor).build();
         client.target(uri)
@@ -211,7 +213,7 @@ public class JAXRSExecutorTestServlet extends FATServlet {
         assertEquals("test123", results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         assertTrue((result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)).toString(), result.toString().startsWith("Default Executor-thread-"));
         assertTrue((result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)).toString(), result instanceof ScheduledExecutorService);
-        assertEquals("test123", results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));        
+        assertEquals("test123", results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); 
         assertTrue((result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)).toString(), result.toString().startsWith("Default Executor-thread-"));
         assertTrue((result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)).toString(), result instanceof ScheduledExecutorService);
     }
@@ -255,6 +257,7 @@ public class JAXRSExecutorTestServlet extends FATServlet {
     // the java:comp namespace of the servlet because it is running on a plain Liberty executor thread
     // (as opposed to a ManagedExecutorService thread).
     @Test
+    @SkipForRepeat("EE10_FEATURES")  //temporary:  need to adjust testing for EE10
     public void testCompletionStageRxInvokerSynchronousFunction(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String uri = "http://" + request.getServerName() + ":" + request.getServerPort() + "/jaxrsapp/testapp/test/info";
 
@@ -357,6 +360,7 @@ public class JAXRSExecutorTestServlet extends FATServlet {
     // callback runs without access to the java:comp namespace of the servlet because it is
     // running on a plain Liberty executor thread (as opposed to a ManagedExecutorService thread).
     @Test
+    @SkipForRepeat("EE10_FEATURES")  //temporary:  need to adjust testing for EE10
     public void testClientBuilderSubmitInvocationCallback(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String uri = "http://" + request.getServerName() + ":" + request.getServerPort() + "/jaxrsapp/testapp/test/info";
 

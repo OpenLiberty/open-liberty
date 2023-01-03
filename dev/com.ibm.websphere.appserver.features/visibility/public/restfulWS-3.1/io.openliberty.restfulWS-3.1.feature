@@ -9,6 +9,7 @@ IBM-ShortName: restfulWS-3.1
 WLP-AlsoKnownAs: jaxrs-3.1
 Subsystem-Name: Jakarta RESTful Web Services 3.1
 -features=\
+  io.openliberty.jakarta.concurrency-3.0, \
   io.openliberty.restfulWSClient-3.1, \
   com.ibm.websphere.appserver.eeCompatible-10.0
 -bundles=\

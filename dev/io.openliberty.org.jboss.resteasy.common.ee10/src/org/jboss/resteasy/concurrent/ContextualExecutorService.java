@@ -19,22 +19,25 @@
 
 package org.jboss.resteasy.concurrent;
 
-import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture; //Liberty change
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier; //Liberty change
 
 import org.jboss.resteasy.resteasy_jaxrs.i18n.Messages;
+
+import io.openliberty.restfulWS.client.AsyncClientExecutorService; //Liberty change
+import jakarta.enterprise.concurrent.ManagedExecutorService; //Liberty change
 
 /**
  * An {@linkplain ExecutorService executor} which wraps runnables and callables to capture the context of the current
@@ -203,4 +206,17 @@ public class ContextualExecutorService implements ExecutorService {
         return delegate;
     }
 
+  //Liberty change start
+    public <T> CompletableFuture<T> supplyAsync(Supplier<T> supplier) {
+        ExecutorService executor = getDelegate();
+        if (executor instanceof ManagedExecutorService) {
+            return ((ManagedExecutorService)executor).supplyAsync(supplier);
+        }
+        if (executor instanceof AsyncClientExecutorService) {
+            return ((AsyncClientExecutorService)executor).supplyAsync(supplier);
+        }
+        return CompletableFuture.supplyAsync(supplier, this);
+    }
+  //Liberty change end
+    
 }

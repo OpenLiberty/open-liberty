@@ -14,6 +14,32 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.function.Function;
+import java.util.function.Supplier; //Liberty change
+
+import org.jboss.resteasy.client.exception.WebApplicationExceptionWrapper;
+import org.jboss.resteasy.client.jaxrs.ClientHttpEngine;
+import org.jboss.resteasy.client.jaxrs.ResteasyClient;
+import org.jboss.resteasy.client.jaxrs.engines.AsyncClientHttpEngine;
+import org.jboss.resteasy.client.jaxrs.engines.AsyncClientHttpEngine.ResultExtractor;
+import org.jboss.resteasy.client.jaxrs.engines.ReactiveClientHttpEngine;
+import org.jboss.resteasy.client.jaxrs.i18n.LogMessages;
+import org.jboss.resteasy.client.jaxrs.internal.proxy.ClientInvoker;
+import org.jboss.resteasy.concurrent.ContextualExecutorService;
+import org.jboss.resteasy.core.ResteasyContext;
+import org.jboss.resteasy.core.ResteasyContext.CloseableContext;
+import org.jboss.resteasy.core.interception.jaxrs.AbstractWriterInterceptorContext;
+import org.jboss.resteasy.core.interception.jaxrs.ClientWriterInterceptorContext;
+import org.jboss.resteasy.plugins.providers.sse.EventInput;
+import org.jboss.resteasy.specimpl.MultivaluedTreeMap;
+import org.jboss.resteasy.spi.util.Types;
+import org.jboss.resteasy.tracing.RESTEasyTracingLogger;
+import org.jboss.resteasy.util.DelegatingOutputStream;
+import org.reactivestreams.Publisher;
+
+import com.ibm.websphere.ras.annotation.Sensitive;
+
+import io.openliberty.restfulWS.client.AsyncClientExecutorService; //Liberty change
+import jakarta.enterprise.concurrent.ManagedExecutorService; //Liberty change
 
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.ClientErrorException;
@@ -43,28 +69,6 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Variant;
 import jakarta.ws.rs.ext.Providers;
 import jakarta.ws.rs.ext.WriterInterceptor;
-
-import org.jboss.resteasy.client.exception.WebApplicationExceptionWrapper;
-import org.jboss.resteasy.client.jaxrs.ClientHttpEngine;
-import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.engines.AsyncClientHttpEngine;
-import org.jboss.resteasy.client.jaxrs.engines.AsyncClientHttpEngine.ResultExtractor;
-import org.jboss.resteasy.client.jaxrs.engines.ReactiveClientHttpEngine;
-import org.jboss.resteasy.client.jaxrs.i18n.LogMessages;
-import org.jboss.resteasy.client.jaxrs.i18n.Messages;
-import org.jboss.resteasy.client.jaxrs.internal.proxy.ClientInvoker;
-import org.jboss.resteasy.core.ResteasyContext;
-import org.jboss.resteasy.core.ResteasyContext.CloseableContext;
-import org.jboss.resteasy.core.interception.jaxrs.AbstractWriterInterceptorContext;
-import org.jboss.resteasy.core.interception.jaxrs.ClientWriterInterceptorContext;
-import org.jboss.resteasy.plugins.providers.sse.EventInput;
-import org.jboss.resteasy.specimpl.MultivaluedTreeMap;
-import org.jboss.resteasy.spi.util.Types;
-import org.jboss.resteasy.tracing.RESTEasyTracingLogger;
-import org.jboss.resteasy.util.DelegatingOutputStream;
-import org.reactivestreams.Publisher;
-
-import com.ibm.websphere.ras.annotation.Sensitive;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -777,7 +781,7 @@ public class ClientInvocation implements Invocation
 
    private <T> CompletionStage<T> submitRequest(final ResultExtractor<T> extractor, final boolean buffered) {
       final ClientRequestContextImpl requestContext = new ClientRequestContextImpl(this);
-      return CompletableFuture.supplyAsync(() -> {
+      return supplyAsync(() -> { //Liberty change
                  try (CloseableContext ctx = pushProvidersContext()) {
                     ClientResponse aborted = filterRequest(requestContext);
                     if (aborted != null) {
@@ -798,10 +802,25 @@ public class ClientInvocation implements Invocation
               });
    }
 
+ //Liberty change start
+   private <T> CompletableFuture<T> supplyAsync(Supplier<T> supplier, ExecutorService executor) {
+       if (executor instanceof ContextualExecutorService) {
+           return ((ContextualExecutorService)executor).supplyAsync(supplier);
+       }
+       if (executor instanceof ManagedExecutorService) {
+           return ((ManagedExecutorService)executor).supplyAsync(supplier);
+       }
+       if (executor instanceof AsyncClientExecutorService) {
+           return ((AsyncClientExecutorService)executor).supplyAsync(supplier);
+       }
+       return CompletableFuture.supplyAsync(supplier, executor);
+   }
+ //Liberty change end
+   
    private <T> CompletableFuture<T> executorSubmit(ExecutorService executor, final InvocationCallback<T> callback,
          final ResultExtractor<T> extractor)
    {
-      return CompletableFuture.supplyAsync(() -> {
+      return supplyAsync(() -> { //Liberty change
           // FIXME: why does this have no context?
          // ensure the future and the callback see the same result
          ClientResponse response = null;

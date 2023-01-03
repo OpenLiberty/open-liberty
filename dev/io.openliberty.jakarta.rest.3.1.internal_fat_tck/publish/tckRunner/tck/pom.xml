@@ -179,6 +179,13 @@
         </dependency>
         <dependency>
             <groupId>io.openliberty</groupId>
+            <artifactId>io.openliberty.jakarta.concurrency.3.0</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.jakarta.concurrency.3.0_}</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>io.openliberty</groupId>
             <artifactId>io.openliberty.jakarta.jsonb.3.0</artifactId>
             <version>1</version>
             <scope>system</scope>
