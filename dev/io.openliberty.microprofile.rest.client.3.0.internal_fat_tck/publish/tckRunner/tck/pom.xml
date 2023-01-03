@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    Copyright (c) 2021 IBM Corporation and others. All rights reserved.
+    Copyright (c) 2021, 2023 IBM Corporation and others. All rights reserved.
     This program and the accompanying materials are made available under the 
     terms of the Eclipse Public License 2.0 which accompanies this distribution, 
     and is available at 
         http://www.eclipse.org/legal/epl-2.0/
     
-    SPDX-License-Identifier: EPL-2.0 
-    Contributors: 
-        IBM Corporation - initial API and implementation
+    SPDX-License-Identifier: EPL-2.0
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -20,7 +18,10 @@
 
     <properties>
         <microprofile.rest.client.version>3.0.1</microprofile.rest.client.version>
-        <arquillian.version>1.7.0.Alpha13</arquillian.version>
+        <arquillian.version>1.7.0.Alpha14</arquillian.version>
+        <testng.version>7.7.1</testng.version>
+        <slf4j.version>2.0.6</slf4j.version>
+        <arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
 
         <!-- the below is used in arquillian.xml -->
         <wlp>${wlp}</wlp>
@@ -234,7 +235,19 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>7.4.0</version>
+            <version>${testng.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -255,7 +268,7 @@
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed-jakarta</artifactId>
-            <version>2.1.1</version>
+            <version>${arquillian.liberty.managed.jakarta.version}</version>
             <scope>test</scope>
         </dependency>
 

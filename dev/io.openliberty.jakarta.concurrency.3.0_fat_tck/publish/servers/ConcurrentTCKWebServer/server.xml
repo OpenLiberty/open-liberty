@@ -52,7 +52,7 @@
     <!-- Include derby in gloabl library to make it available to all dropin apps -->
     <library id="global">
                <fileset dir="${shared.resource.dir}/derby" includes="*.jar"/>
-               <fileset dir="${shared.resource.dir}/testng/6.14.3" includes="*.jar"/>
+               <fileset dir="${shared.resource.dir}/testng/7.7.1" includes="*.jar"/>
                <fileset dir="${shared.resource.dir}/sigtest/1.6" includes="*.jar"/>
     </library>
 

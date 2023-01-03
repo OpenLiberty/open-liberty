@@ -25,7 +25,7 @@ dependencies {
   kafkaClient 'org.xerial.snappy:snappy-java:1.1.7.2'
   kafkaClient project(':com.ibm.ws.org.slf4j.api')
   kafkaClient project(':com.ibm.ws.org.slf4j.jdk14')
-  requiredLibs 'org.testng:testng:6.14.3'
+  requiredLibs 'org.testng:testng:7.7.1'
   requiredLibs project(':com.ibm.websphere.org.reactivestreams.reactive-streams.1.0')
   requiredLibs project(':com.ibm.ws.microprofile.reactive.messaging.kafka')
   requiredLibs project(':com.ibm.ws.microprofile.reactive.messaging.kafka.adapter')
