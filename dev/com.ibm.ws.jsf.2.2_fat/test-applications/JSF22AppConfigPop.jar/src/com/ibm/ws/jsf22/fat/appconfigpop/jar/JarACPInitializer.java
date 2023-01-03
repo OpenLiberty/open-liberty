@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  2015  IBM Corporation and others.
+ * Copyright (c) 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,12 +15,11 @@ import javax.faces.application.ApplicationConfigurationPopulator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-
 /**
  * This is a callback to do configuration via an empty DOM root which respresents faces.config.xml. Existing configuration options can be added, but cannot overwrite existing ones.
- * 
+ *
  * This callback tests the presence of META-INF/services/javax.faces.application.ApplicationConfigurationPopulator in a jar in a war file.
- * 
+ *
  */
 public class JarACPInitializer extends ApplicationConfigurationPopulator {
 
@@ -39,7 +38,6 @@ public class JarACPInitializer extends ApplicationConfigurationPopulator {
         Element l = document.createElementNS(ns, "lifecycle");
         l.appendChild(createNode(document, "phase-listener", "com.ibm.ws.jsf22.fat.appconfigpop.jar.PhaseTracker"));
         document.getChildNodes().item(0).appendChild(l);
-
     }
 
     private Element createNode(Document doc, String element, String value) {
@@ -47,7 +45,5 @@ public class JarACPInitializer extends ApplicationConfigurationPopulator {
         Element e = doc.createElementNS(ns, element);
         e.appendChild(doc.createTextNode(value));
         return e;
-
     }
-
 }
