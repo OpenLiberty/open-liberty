@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.transaction.test;
+package suite;
 
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -19,10 +19,12 @@ import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
+import tests.DualServerPeerLockingTest;
+import tests.DualServerPeerLockingTest1;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                DualServerPeerLockingTest.class,
+                DualServerPeerLockingTest1.class,
 })
 public class FATSuite extends TxTestContainerSuite {
     @ClassRule
