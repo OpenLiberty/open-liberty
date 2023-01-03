@@ -45,8 +45,8 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -111,9 +111,11 @@ public class JSPTests {
         //      No matching public static method named [nonStaticMethod] found on
         //      class [com.ibm.ws.jsp23.fat.testjsp23.beans.EL30StaticFieldsAndMethodsBean]
         // SRVE8094W and SRVE8115W...Response already committed...
-        //      Caused by testEL30ReservedWords();
+        //      Caused by testEL30ReservedWords()
+        // JSPG0077E: End of file reached while processing scripting element xxxxxxx
+        //      Caused by test0077()
         if (server != null && server.isStarted()) {
-            server.stopServer("SRVE0315E", "SRVE0777E", "SRVE8094W", "SRVE8115W");
+            server.stopServer("SRVE0315E", "SRVE0777E", "SRVE8094W", "SRVE8115W", "JSPG0077E");
         }
     }
 
@@ -261,7 +263,7 @@ public class JSPTests {
      */
     @Test
     @ExpectedFFDC("javax.el.PropertyNotWritableException")
-    
+
     @Mode(TestMode.FULL)
     public void testEL30AssignmentOperatorException() throws Exception {
         WebConversation wc = new WebConversation();
@@ -373,7 +375,7 @@ public class JSPTests {
      * @throws Exception
      */
     @Test
-    
+
     public void testEL22Operators() throws Exception {
         // Each entry in the array is an expected output in the response
         String[] expectedInResponse = {
@@ -445,7 +447,7 @@ public class JSPTests {
      * @throws Exception
      */
     @Test
-    
+
     public void testEL30LambdaExpressions() throws Exception {
         // Each entry in the array is an expected output in the response
         String[] expectedInResponse = {
@@ -525,7 +527,7 @@ public class JSPTests {
      */
     @Test
     @Mode(TestMode.FULL)
-    
+
     public void testOperatorPrecedence() throws Exception {
         String[] expectedInResponse = { "<b>Test 1:</b> EL 3.0 [] and . operators left-to-right (Expected:true): true",
                                         "<b>Test 2:</b> EL 3.0 [] and . operators left-to-right (Expected:true): true",
@@ -564,7 +566,7 @@ public class JSPTests {
      *                       if something goes wrong
      */
     @Test
-    
+
     public void testEL30CoercionRules() throws Exception {
         String[] expectedInResponse = { "Testing Coercion of a Value X to Type Y.",
                                         "Test if X is null and Y is not a primitive type and also not a String, return null (Expected:true): true" };
@@ -774,7 +776,7 @@ public class JSPTests {
      */
     @Mode(TestMode.FULL)
     @Test
-    
+
     public void testPI44611() throws Exception {
         this.verifyStringInResponse(PI44611_APP_NAME, "PI44611.jsp", "Test passed!");
     }
@@ -787,7 +789,7 @@ public class JSPTests {
      */
     @Mode(TestMode.FULL)
     @Test
-    
+
     public void testPI59436() throws Exception {
         this.verifyStringInResponse(PI59436_APP_NAME, "PI59436.jsp", "Test passed.");
     }
@@ -903,6 +905,41 @@ public class JSPTests {
         this.verifyStringInResponse(OLGH20509_APP_NAME2, "index.jsp", "Test Passed!");
         Thread.sleep(5100L);
         this.verifyStringInResponse(OLGH20509_APP_NAME2, "index.jsp", "Test Passed!");
+    }
+
+    /**
+     * Test for JSPG0077E
+     *
+     * @throws Exception
+     *                       if something goes wrong
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    @AllowedFFDC("java.security.PrivilegedActionException")
+    @AllowedFFDC("com.ibm.ws.jsp.JspCoreException")
+    public void test0077() throws Exception {
+        String e77 = "JSPG0077E";
+        server.setMarkToEndOfLog();
+
+        WebConversation wc = new WebConversation();
+        wc.setExceptionsThrownOnErrorStatus(false);
+
+        String url = JSPUtils.createHttpUrlString(server, TestServlet_APP_NAME, "error0077.jsp");
+        LOG.info("url: " + url);
+
+        WebRequest request = new GetMethodWebRequest(url);
+        WebResponse response = wc.getResponse(request);
+        LOG.info("Response: " + response.getText());
+        //error0077.jsp contains a JSP syntax error, therefore verify the following:
+        //   response code is 500
+        //   response text includes the JSPG0077E message
+        //   messages.log has the JSPG0077E message
+        assertEquals("Expected " + 500 + " status code was not returned!",
+                     500, response.getResponseCode());
+        assertTrue("Response should contain " + e77 + ".",
+                   response.getText().contains(e77));
+        assertTrue("Log should contain " + e77 + ".",
+                   null != server.waitForStringInLogUsingMark(e77));
     }
 
     private void runEDR(String url, boolean makeConcurrentRequests) throws Exception {
