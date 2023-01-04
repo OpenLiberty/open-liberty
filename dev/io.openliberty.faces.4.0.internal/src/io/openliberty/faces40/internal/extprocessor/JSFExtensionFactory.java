@@ -27,11 +27,11 @@ import com.ibm.ws.jsf.shared.JSFConstants.JSFImplEnabled;
 import com.ibm.ws.jsf.shared.cdi.CDIJSFInitializer;
 import com.ibm.ws.jsf.shared.extprocessor.JSFExtensionProcessor;
 import com.ibm.ws.jsf.shared.util.FacesMessages;
-import com.ibm.ws.jsf.shared.util.JspURIMatcher;
 import com.ibm.ws.jsf.shared.util.WSFacesUtil;
 import com.ibm.ws.serialization.SerializationService;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.wsspi.webcontainer.annotation.AnnotationHelperManager;
 import com.ibm.wsspi.webcontainer.extension.ExtensionFactory;
 import com.ibm.wsspi.webcontainer.extension.ExtensionProcessor;
 import com.ibm.wsspi.webcontainer.servlet.IServletConfig;
@@ -138,6 +138,22 @@ public class JSFExtensionFactory implements ExtensionFactory {
         //set a context attribute for later queries on which JSF impl is in use.
         webapp.setAttribute(JSFConstants.JSF_IMPL_ENABLED_PARAM, jsfImplEnabled);
 
+        /*
+         * In previous version of Faces/JSF this was done in the AbstractJSPExtensionFactory.createExtensionProcessor.
+         * In Faces 4.0 the Pages/JSP feature is no longer enabled as Pages/JSP support was removed from the Faces 4.0 Specification.
+         * If an AnnotationHandlerManager is not added here then when the WASCDIAnnotationInjectionProvider tries to get an instance
+         * of an AnnotationHelperManager null is returned.
+         *
+         * The WASMyFacesContainerInitializer will do this for applications that have a FacesServlet defined dynamically
+         * and we'll create the AnnotationHelperManager here for applications that define a FacesServlet.
+         */
+        AnnotationHelperManager aHM =  new AnnotationHelperManager(webapp);
+        AnnotationHelperManager.addInstance(webapp, aHM);
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && log.isLoggable(Level.FINE)) {
+            log.logp(Level.FINE,"JSFExtensionFactory","createExtensionProcessor", "Added AnnotationHelperManager of: " + aHM);
+            log.logp(Level.FINE,"JSFExtensionFactory","createExtensionProcessor", "with IServletContext of: " + webapp);
+        }
+
         if (log.isLoggable(Level.FINE)) {
             log.logp(Level.FINE, CLASS_NAME, "createExtensionProcessor", "Exit createExtensionProcessor(): JSF is enabled for webapp: [" + applicationName
                                                                          + "] using implementation=[" + jsfImplEnabled + "]");
@@ -188,8 +204,7 @@ public class JSFExtensionFactory implements ExtensionFactory {
             if (log.isLoggable(Level.FINE)) {
                 log.logp(Level.FINE, CLASS_NAME, "initFaces", "Webapp [" + applicationName + "] overrode default Faces Servlet. WebSphere Myfaces JSF config will be ignored.");
             }
-            //handleJSPUpdateCheck only done in custom/sunRI case
-            handleJSPUpdateCheck(webapp); //233952
+
             // Webapp is using a third party JSF runtime so do not load either the MyFaces startupServletContextListener or the Sun configureListener.
             //It could still be loaded from the Webapp so just do nothing here.
             jsfImplEnabled = JSFImplEnabled.Custom;
@@ -198,7 +213,6 @@ public class JSFExtensionFactory implements ExtensionFactory {
                 log.logp(Level.FINE, CLASS_NAME, "initFaces", "FacesServlet URL path=[" + webappFacesServlet.getPath() + "]");
             }
         } else if (usingDefaultSunRIJar) {
-            handleJSPUpdateCheck(webapp); //233952
             //Webapp is using the IBM-supplied Sun RI 1.2 bundle
             //programmatically add the listener if it is not already registered through the web.xml
             jsfImplEnabled = JSFImplEnabled.SunRI;
@@ -327,20 +341,8 @@ public class JSFExtensionFactory implements ExtensionFactory {
                 return true;
             }
         }
+
         return false;
-    }
-
-    private void handleJSPUpdateCheck(IServletContext webapp) {
-        // begin 233952: JSP_UPATE_CHECK fails for non-jsp requests.
-        //      1) only create FacesConfig if webmodule did not override FacesServlet.
-        //      2) If JSP_UPDATE_CHECK, obtain the URI mappings associated with JSP container.
-        String jspUpdateCheckEnabled = webapp.getInitParameter(JSFConstants.JSP_UPDATE_CHECK);
-        if (jspUpdateCheckEnabled != null && jspUpdateCheckEnabled.equalsIgnoreCase("TRUE")) {
-            JspURIMatcher matcher = new JspURIMatcher(webapp);
-            webapp.setAttribute(JSFConstants.JSP_URI_MATCHER, matcher);
-        }
-
-        // end 233952: JSP_UPATE_CHECK fails for non-jsp requests.
     }
 
     public static void initializeCDIJSFELContextListenerAndELResolver(Application application){

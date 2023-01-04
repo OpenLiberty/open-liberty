@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jsf.shared.util;
+package com.ibm.ws.jsf.jsp.shared.util;
 
 import java.util.Collection;
 import java.util.Iterator;

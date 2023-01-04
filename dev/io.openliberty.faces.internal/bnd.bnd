@@ -82,4 +82,5 @@ Export-Package: \
   com.ibm.websphere.appserver.spi.kernel.service,\
   com.ibm.websphere.org.osgi.core;version=latest,\
   com.ibm.websphere.org.osgi.service.component;version=latest,\
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.jsf.jsp.shared;version=latest
