@@ -44,6 +44,12 @@ public class PageImpl<T> implements Page<T> {
         this.pagination = pagination == null ? Pageable.ofSize(100) : pagination;
         this.args = args;
 
+        // PageableRepository.findAll(Pageable) requires NullPointerException when Pageable is null.
+        // TODO Should this apply in general?
+        if (pagination == null && queryInfo.paramCount == 0 && queryInfo.method.getParameterCount() == 1
+            && Pageable.class.equals(queryInfo.method.getParameterTypes()[0]))
+            throw new NullPointerException("Pageable: null");
+
         EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
         try {
             @SuppressWarnings("unchecked")

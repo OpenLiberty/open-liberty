@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,13 +15,14 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import jakarta.data.repository.Pageable;
+import jakarta.data.repository.ReactiveRepository;
 import jakarta.data.repository.Repository;
 
 /**
  *
  */
 @Repository
-public interface Tariffs {
+public interface Tariffs extends ReactiveRepository<Tariff, Long> {
 
     int deleteByLeviedBy(String country);
 

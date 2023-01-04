@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,11 +13,11 @@ package test.jakarta.data.web;
 import java.util.List;
 
 import jakarta.data.Where;
-import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Pageable;
+import jakarta.data.repository.PageableRepository;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
@@ -26,7 +26,7 @@ import jakarta.data.repository.Repository;
  *
  */
 @Repository
-public interface Packages extends CrudRepository<Package, Integer> {
+public interface Packages extends PageableRepository<Package, Integer> {
     List<Package> findByHeightBetween(float minHeight, float maxHeight);
 
     @OrderBy(value = "width", descending = true)
