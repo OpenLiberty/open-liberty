@@ -113,27 +113,31 @@ public class DerivedIdentityTestLogic extends AbstractTestLogic {
         }
 
         // Fetch JPA Resources
+//        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
+//        if (jpaCleanupResource == null) {
+//            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
+//            return;
+//        }
         JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
         if (jpaResource == null) {
             Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
             return;
         }
 
-        EntityManager em = jpaResource.getEm();
-
         // Execute Test Case
         try {
             System.out.println("DerivedIdentityTestLogic.testScenario01(): Begin");
+            //cleanupDatabase(jpaCleanupResource);
 
             // Clear persistence context
             System.out.println("Clearing persistence context...");
-            em.clear();
+            jpaResource.getEm().clear();
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
             if (jpaResource.getTj().isApplicationManaged()) {
                 System.out.println("Joining entitymanager to JTA transaction...");
-                em.joinTransaction();
+                jpaResource.getEm().joinTransaction();
             }
 
             HashMap<DerivedIdentityEntityEnum, Object> parentEntitiesMap = new HashMap<DerivedIdentityEntityEnum, Object>();
@@ -146,88 +150,126 @@ public class DerivedIdentityTestLogic extends AbstractTestLogic {
             System.out.println("########################################################################################");
 
             // Parent Entities
-            parentEntitiesMap.put(DerivedIdentityEntityEnum.Entity0001,
-                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0001, (byte) 01, byte.class, em));
-            parentEntitiesMap.put(DerivedIdentityEntityEnum.Entity0002,
-                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0002, (byte) 02, byte.class, em));
-            parentEntitiesMap.put(DerivedIdentityEntityEnum.Entity0003,
-                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0003, '3', char.class, em));
-            parentEntitiesMap.put(DerivedIdentityEntityEnum.Entity0004,
-                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0004, '4', char.class, em));
+            parentEntitiesMap.put(
+                                  DerivedIdentityEntityEnum.Entity0001,
+                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0001, (byte) 01, byte.class, jpaResource.getEm()));
+            parentEntitiesMap.put(
+                                  DerivedIdentityEntityEnum.Entity0002,
+                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0002, (byte) 02, byte.class, jpaResource.getEm()));
+            parentEntitiesMap.put(
+                                  DerivedIdentityEntityEnum.Entity0003,
+                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0003, '3', char.class, jpaResource.getEm()));
+            parentEntitiesMap.put(
+                                  DerivedIdentityEntityEnum.Entity0004,
+                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0004, '4', char.class, jpaResource.getEm()));
 //            parentEntitiesMap.put(
 //            		DerivedIdentityEntityEnum.Entity0004,
 //            		createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0004, '4', char.class, jpaResource.getEm()));
-            parentEntitiesMap.put(DerivedIdentityEntityEnum.Entity0005,
-                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0005, "ENTITY0005_ID", String.class, em));
-            parentEntitiesMap.put(DerivedIdentityEntityEnum.Entity0006,
-                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0006, 6600.0066D, double.class, em));
-            parentEntitiesMap.put(DerivedIdentityEntityEnum.Entity0007,
-                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0007, 7700.0077D, double.class, em));
-            parentEntitiesMap.put(DerivedIdentityEntityEnum.Entity0008,
-                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0008, 8800.0088F, float.class, em));
-            parentEntitiesMap.put(DerivedIdentityEntityEnum.Entity0009,
-                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0009, 9900.0099F, float.class, em));
-            parentEntitiesMap.put(DerivedIdentityEntityEnum.Entity0010,
-                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0010, 10, int.class, em));
-            parentEntitiesMap.put(DerivedIdentityEntityEnum.Entity0011,
-                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0011, 11, int.class, em));
-            parentEntitiesMap.put(DerivedIdentityEntityEnum.Entity0012,
-                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0012, 12L, long.class, em));
-            parentEntitiesMap.put(DerivedIdentityEntityEnum.Entity0013,
-                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0013, 13L, long.class, em));
-            parentEntitiesMap.put(DerivedIdentityEntityEnum.Entity0014,
-                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0014, (short) 14, short.class, em));
-            parentEntitiesMap.put(DerivedIdentityEntityEnum.Entity0015,
-                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0015, (short) 15, short.class, em));
-            parentEntitiesMap.put(DerivedIdentityEntityEnum.Entity0016,
-                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0016, new BigDecimal("1600.161616"), BigDecimal.class, em));
-            parentEntitiesMap.put(DerivedIdentityEntityEnum.Entity0017,
-                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0017, new BigInteger("17000017"), BigInteger.class, em));
-            parentEntitiesMap.put(DerivedIdentityEntityEnum.Entity0018,
+            parentEntitiesMap.put(
+                                  DerivedIdentityEntityEnum.Entity0005,
+                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0005, "ENTITY0005_ID", String.class, jpaResource.getEm()));
+            parentEntitiesMap.put(
+                                  DerivedIdentityEntityEnum.Entity0006,
+                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0006, 6600.0066D, double.class, jpaResource.getEm()));
+            parentEntitiesMap.put(
+                                  DerivedIdentityEntityEnum.Entity0007,
+                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0007, 7700.0077D, double.class, jpaResource.getEm()));
+            parentEntitiesMap.put(
+                                  DerivedIdentityEntityEnum.Entity0008,
+                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0008, 8800.0088F, float.class, jpaResource.getEm()));
+            parentEntitiesMap.put(
+                                  DerivedIdentityEntityEnum.Entity0009,
+                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0009, 9900.0099F, float.class, jpaResource.getEm()));
+            parentEntitiesMap.put(
+                                  DerivedIdentityEntityEnum.Entity0010,
+                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0010, 10, int.class, jpaResource.getEm()));
+            parentEntitiesMap.put(
+                                  DerivedIdentityEntityEnum.Entity0011,
+                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0011, 11, int.class, jpaResource.getEm()));
+            parentEntitiesMap.put(
+                                  DerivedIdentityEntityEnum.Entity0012,
+                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0012, 12L, long.class, jpaResource.getEm()));
+            parentEntitiesMap.put(
+                                  DerivedIdentityEntityEnum.Entity0013,
+                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0013, 13L, long.class, jpaResource.getEm()));
+            parentEntitiesMap.put(
+                                  DerivedIdentityEntityEnum.Entity0014,
+                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0014, (short) 14, short.class, jpaResource.getEm()));
+            parentEntitiesMap.put(
+                                  DerivedIdentityEntityEnum.Entity0015,
+                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0015, (short) 15, short.class, jpaResource.getEm()));
+            parentEntitiesMap.put(
+                                  DerivedIdentityEntityEnum.Entity0016,
+                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0016, new BigDecimal("1600.161616"), BigDecimal.class, jpaResource.getEm()));
+            parentEntitiesMap.put(
+                                  DerivedIdentityEntityEnum.Entity0017,
+                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0017, new BigInteger("17000017"), BigInteger.class, jpaResource.getEm()));
+            parentEntitiesMap.put(
+                                  DerivedIdentityEntityEnum.Entity0018,
                                   createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0018, new java.util.Date(50, 18, 18, 0, 0, 0 /* 18,18,18 */), java.util.Date.class,
-                                                         em));
-            parentEntitiesMap.put(DerivedIdentityEntityEnum.Entity0019,
-                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0019, new java.sql.Date(50, 19, 19), java.sql.Date.class, em));
+                                                         jpaResource.getEm()));
+            parentEntitiesMap.put(
+                                  DerivedIdentityEntityEnum.Entity0019,
+                                  createDIEEParentEntity(DerivedIdentityEntityEnum.Entity0019, new java.sql.Date(50, 19, 19), java.sql.Date.class, jpaResource.getEm()));
 
             // Child Entities
-            childEntitiesMap.put(DerivedIdentityEntityEnum.Entity0401,
-                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0401, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0001), em));
-            childEntitiesMap.put(DerivedIdentityEntityEnum.Entity0402,
-                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0402, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0002), em));
-            childEntitiesMap.put(DerivedIdentityEntityEnum.Entity0403,
-                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0403, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0003), em));
-            childEntitiesMap.put(DerivedIdentityEntityEnum.Entity0404,
-                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0404, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0004), em));
-            childEntitiesMap.put(DerivedIdentityEntityEnum.Entity0405,
-                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0405, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0005), em));
-            childEntitiesMap.put(DerivedIdentityEntityEnum.Entity0406,
-                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0406, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0006), em));
-            childEntitiesMap.put(DerivedIdentityEntityEnum.Entity0407,
-                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0407, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0007), em));
-            childEntitiesMap.put(DerivedIdentityEntityEnum.Entity0408,
-                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0408, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0008), em));
-            childEntitiesMap.put(DerivedIdentityEntityEnum.Entity0409,
-                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0409, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0009), em));
-            childEntitiesMap.put(DerivedIdentityEntityEnum.Entity0410,
-                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0410, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0010), em));
-            childEntitiesMap.put(DerivedIdentityEntityEnum.Entity0411,
-                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0411, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0011), em));
-            childEntitiesMap.put(DerivedIdentityEntityEnum.Entity0412,
-                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0412, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0012), em));
-            childEntitiesMap.put(DerivedIdentityEntityEnum.Entity0413,
-                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0413, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0013), em));
-            childEntitiesMap.put(DerivedIdentityEntityEnum.Entity0414,
-                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0414, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0014), em));
-            childEntitiesMap.put(DerivedIdentityEntityEnum.Entity0415,
-                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0415, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0015), em));
-            childEntitiesMap.put(DerivedIdentityEntityEnum.Entity0416,
-                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0416, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0016), em));
-            childEntitiesMap.put(DerivedIdentityEntityEnum.Entity0417,
-                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0417, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0017), em));
-            childEntitiesMap.put(DerivedIdentityEntityEnum.Entity0418,
-                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0418, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0018), em));
-            childEntitiesMap.put(DerivedIdentityEntityEnum.Entity0419,
-                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0419, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0019), em));
+            childEntitiesMap.put(
+                                 DerivedIdentityEntityEnum.Entity0401,
+                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0401, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0001), jpaResource.getEm()));
+            childEntitiesMap.put(
+                                 DerivedIdentityEntityEnum.Entity0402,
+                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0402, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0002), jpaResource.getEm()));
+            childEntitiesMap.put(
+                                 DerivedIdentityEntityEnum.Entity0403,
+                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0403, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0003), jpaResource.getEm()));
+            childEntitiesMap.put(
+                                 DerivedIdentityEntityEnum.Entity0404,
+                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0404, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0004), jpaResource.getEm()));
+            childEntitiesMap.put(
+                                 DerivedIdentityEntityEnum.Entity0405,
+                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0405, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0005), jpaResource.getEm()));
+            childEntitiesMap.put(
+                                 DerivedIdentityEntityEnum.Entity0406,
+                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0406, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0006), jpaResource.getEm()));
+            childEntitiesMap.put(
+                                 DerivedIdentityEntityEnum.Entity0407,
+                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0407, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0007), jpaResource.getEm()));
+            childEntitiesMap.put(
+                                 DerivedIdentityEntityEnum.Entity0408,
+                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0408, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0008), jpaResource.getEm()));
+            childEntitiesMap.put(
+                                 DerivedIdentityEntityEnum.Entity0409,
+                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0409, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0009), jpaResource.getEm()));
+            childEntitiesMap.put(
+                                 DerivedIdentityEntityEnum.Entity0410,
+                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0410, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0010), jpaResource.getEm()));
+            childEntitiesMap.put(
+                                 DerivedIdentityEntityEnum.Entity0411,
+                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0411, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0011), jpaResource.getEm()));
+            childEntitiesMap.put(
+                                 DerivedIdentityEntityEnum.Entity0412,
+                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0412, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0012), jpaResource.getEm()));
+            childEntitiesMap.put(
+                                 DerivedIdentityEntityEnum.Entity0413,
+                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0413, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0013), jpaResource.getEm()));
+            childEntitiesMap.put(
+                                 DerivedIdentityEntityEnum.Entity0414,
+                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0414, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0014), jpaResource.getEm()));
+            childEntitiesMap.put(
+                                 DerivedIdentityEntityEnum.Entity0415,
+                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0415, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0015), jpaResource.getEm()));
+            childEntitiesMap.put(
+                                 DerivedIdentityEntityEnum.Entity0416,
+                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0416, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0016), jpaResource.getEm()));
+            childEntitiesMap.put(
+                                 DerivedIdentityEntityEnum.Entity0417,
+                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0417, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0017), jpaResource.getEm()));
+            childEntitiesMap.put(
+                                 DerivedIdentityEntityEnum.Entity0418,
+                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0418, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0018), jpaResource.getEm()));
+            childEntitiesMap.put(
+                                 DerivedIdentityEntityEnum.Entity0419,
+                                 createDIEEChildEntity(DerivedIdentityEntityEnum.Entity0419, parentEntitiesMap.get(DerivedIdentityEntityEnum.Entity0019), jpaResource.getEm()));
 
             System.out.println("Committing transaction...");
             jpaResource.getTj().commitTransaction();
@@ -240,25 +282,25 @@ public class DerivedIdentityTestLogic extends AbstractTestLogic {
 
             // Clear persistence context
             System.out.println("Clearing persistence context...");
-            em.clear();
+            jpaResource.getEm().clear();
 
             System.out.println("Beginning new transaction...");
             jpaResource.getTj().beginTransaction();
             if (jpaResource.getTj().isApplicationManaged()) {
                 System.out.println("Joining entitymanager to JTA transaction...");
-                em.joinTransaction();
+                jpaResource.getEm().joinTransaction();
             }
 
             // Verify Parent Entities ( 19 * 7 = 133 points)
             for (DerivedIdentityEntityEnum diee : parentEntitiesMap.keySet()) {
                 Object origEntity = parentEntitiesMap.get(diee);
-                assertParentEntityPersistenceState(diee, origEntity, em);
+                assertParentEntityPersistenceState(diee, origEntity, jpaResource.getEm());
             }
 
             // Verify Child Entities ( 19 * 7 = 133 points)
             for (DerivedIdentityEntityEnum diee : childEntitiesMap.keySet()) {
                 Object origEntity = childEntitiesMap.get(diee);
-                assertChildEntityPersistenceState(diee, origEntity, em);
+                assertChildEntityPersistenceState(diee, origEntity, jpaResource.getEm());
             }
 
             System.out.println("Ending test.");
@@ -316,7 +358,9 @@ public class DerivedIdentityTestLogic extends AbstractTestLogic {
     /*
      * Total Points: 7
      */
-    private void assertParentEntityPersistenceState(DerivedIdentityEntityEnum diee, Object original,
+    private void assertParentEntityPersistenceState(
+                                                    DerivedIdentityEntityEnum diee,
+                                                    Object original,
                                                     EntityManager em) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, SecurityException, NoSuchMethodException {
         System.out.println("Testing " + diee.getEntityName() + " ...");
         Class entityType = resolveEntityClass(diee);
@@ -358,7 +402,9 @@ public class DerivedIdentityTestLogic extends AbstractTestLogic {
     /*
      * Total Points: 7
      */
-    private void assertChildEntityPersistenceState(DerivedIdentityEntityEnum diee, Object original,
+    private void assertChildEntityPersistenceState(
+                                                   DerivedIdentityEntityEnum diee,
+                                                   Object original,
                                                    EntityManager em) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, SecurityException, NoSuchMethodException {
         System.out.println("Testing " + diee.getEntityName() + " ...");
 
@@ -407,6 +453,37 @@ public class DerivedIdentityTestLogic extends AbstractTestLogic {
                           getStr3Method.invoke(original).equals(getStr3Method.invoke(emFind)));
     }
 
+    public void testTemplate(TestExecutionContext testExecCtx, TestExecutionResources testExecResources,
+                             Object managedComponentObject) {
+        // Verify parameters
+        if (testExecCtx == null || testExecResources == null) {
+            Assert.fail("testTemplate: Missing context and/or resources.  Cannot execute the test.");
+            return;
+        }
+
+        // Fetch JPA Resources
+        JPAResource jpaCleanupResource = testExecResources.getJpaResourceMap().get("cleanup");
+        if (jpaCleanupResource == null) {
+            Assert.fail("Missing JPAResource 'cleanup').  Cannot execute the test.");
+            return;
+        }
+        JPAResource jpaResource = testExecResources.getJpaResourceMap().get("test-jpa-resource");
+        if (jpaResource == null) {
+            Assert.fail("Missing JPAResource 'test-jpa-resource').  Cannot execute the test.");
+            return;
+        }
+
+        // Execute Test Case
+        try {
+            System.out.println("DerivedIdentityTestLogic.testTemplate(): Begin");
+            //cleanupDatabase(jpaCleanupResource);
+
+            System.out.println("Ending test.");
+        } finally {
+            System.out.println("DerivedIdentityTestLogic.testTemplate(): End");
+        }
+    }
+
     private Method getMethod(Class cls, String methodName, List<Class> argsTypes) {
         if (cls == null || methodName == null || methodName.isEmpty()) {
             return null;
@@ -438,4 +515,11 @@ public class DerivedIdentityTestLogic extends AbstractTestLogic {
 
         return null;
     }
+
+//    private void cleanupDatabase(JPAResource jpaResource) {
+//        // Cleanup the database for executing the test
+//        System.out.println("Cleaning up database before executing test...");
+//        cleanupDatabase(jpaResource.getEm(), jpaResource.getTj(), DerivedIdentityEntityEnum.values());
+//        System.out.println("Database cleanup complete.\n");
+//    }
 }
