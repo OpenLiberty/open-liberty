@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.stream.StreamSupport;
 /**
  * Method signatures copied from the Jakarta Data git repo.
  */
+@FunctionalInterface
 public interface Streamable<T> extends Iterable<T> {
     public default Stream<T> stream() {
         return StreamSupport.stream(this.spliterator(),

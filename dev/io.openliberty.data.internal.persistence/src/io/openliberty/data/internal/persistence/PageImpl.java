@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,10 @@
 package io.openliberty.data.internal.persistence;
 
 import java.util.AbstractList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.RandomAccess;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import com.ibm.websphere.ras.Tr;
@@ -94,17 +92,6 @@ public class PageImpl<T> implements Page<T> {
         int size = results.size();
         int max = pagination.size();
         return size > max ? new ResultList(max) : results;
-    }
-
-    @Override
-    public <C extends Collection<T>> C getContent(Supplier<C> collectionFactory) {
-        C collection = collectionFactory.get();
-        int size = results.size();
-        int max = pagination.size();
-        size = size > max ? max : size;
-        for (int i = 0; i < size; i++)
-            collection.add(results.get(i));
-        return collection;
     }
 
     @Override
