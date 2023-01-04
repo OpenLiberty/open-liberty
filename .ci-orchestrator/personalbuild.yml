@@ -26,6 +26,10 @@ triggers:
     defaultValue: true
     steps:
     - stepName: compile
+  - name: spawn.fullfat.buckets
+    defaultValue: ""
+    steps:
+    - stepName: pr-changes
 
 steps:
 - stepName: pr-changes
@@ -56,6 +60,7 @@ steps:
     disable.run.createDoc: ${pr-changes:disable.run.createDoc}
     skip.open.liberty.build.if.possible: ${pr-changes:skip.open.liberty.build.if.possible}
     skip.open.liberty.fats.if.possible: ${pr-changes:skip.open.liberty.fats.if.possible}
+    spawn.fullfat.buckets: ${pr-changes:spawn.fullfat.buckets}
   includeProperties:
   - file: compilePersonal.properties
   - file: compile.properties
