@@ -53,9 +53,11 @@ public class EntityLocking20WebTestServlet extends JPADBTestServlet {
         testResourcesList.put("test-jpa-resource", testResource);
         testResourcesList.put("test-jpa-2-resource", "test-client-b-resource");
 
-        executeDDL("JPA20_ENTITYLOCKING_DEFAULT_DELETE_${dbvendor}.ddl");
-        executeDDL("JPA20_ENTITYLOCKING_DEFAULT_POPULATE_${dbvendor}.ddl");
-        executeTest(testName, testMethod, testResourcesList, null);
+        Map<String, java.io.Serializable> props = new HashMap<String, java.io.Serializable>();
+
+        executeDDL("JPA_ENTITYLOCKING_DELETE_${dbvendor}.ddl");
+        executeDDL("JPA_ENTITYLOCKING_POPULATE_${dbvendor}.ddl");
+        executeTest(testName, testMethod, testResourcesList, props);
     }
 
     @Test
@@ -68,9 +70,11 @@ public class EntityLocking20WebTestServlet extends JPADBTestServlet {
         testResourcesList.put("test-jpa-resource", testResource);
         testResourcesList.put("test-jpa-2-resource", "test-client-b-resource");
 
-        executeDDL("JPA20_ENTITYLOCKING_DEFAULT_DELETE_${dbvendor}.ddl");
-        executeDDL("JPA20_ENTITYLOCKING_DEFAULT_POPULATE_${dbvendor}.ddl");
-        executeTest(testName, testMethod, testResourcesList, null);
+        Map<String, java.io.Serializable> props = new HashMap<String, java.io.Serializable>();
+
+        executeDDL("JPA_ENTITYLOCKING_DELETE_${dbvendor}.ddl");
+        executeDDL("JPA_ENTITYLOCKING_POPULATE_${dbvendor}.ddl");
+        executeTest(testName, testMethod, testResourcesList, props);
     }
 
     @Test
@@ -83,9 +87,11 @@ public class EntityLocking20WebTestServlet extends JPADBTestServlet {
         testResourcesList.put("test-jpa-resource", testResource);
         testResourcesList.put("test-jpa-2-resource", "test-client-b-resource");
 
-        executeDDL("JPA20_ENTITYLOCKING_DEFAULT_DELETE_${dbvendor}.ddl");
-        executeDDL("JPA20_ENTITYLOCKING_DEFAULT_POPULATE_${dbvendor}.ddl");
-        executeTest(testName, testMethod, testResourcesList, null);
+        Map<String, java.io.Serializable> props = new HashMap<String, java.io.Serializable>();
+
+        executeDDL("JPA_ENTITYLOCKING_DELETE_${dbvendor}.ddl");
+        executeDDL("JPA_ENTITYLOCKING_POPULATE_${dbvendor}.ddl");
+        executeTest(testName, testMethod, testResourcesList, props);
     }
 
     @Test
@@ -98,9 +104,11 @@ public class EntityLocking20WebTestServlet extends JPADBTestServlet {
         testResourcesList.put("test-jpa-resource", testResource);
         testResourcesList.put("test-jpa-2-resource", "test-client-b-resource");
 
-        executeDDL("JPA20_ENTITYLOCKING_DEFAULT_DELETE_${dbvendor}.ddl");
-        executeDDL("JPA20_ENTITYLOCKING_DEFAULT_POPULATE_${dbvendor}.ddl");
-        executeTest(testName, testMethod, testResourcesList, null);
+        Map<String, java.io.Serializable> props = new HashMap<String, java.io.Serializable>();
+
+        executeDDL("JPA_ENTITYLOCKING_DELETE_${dbvendor}.ddl");
+        executeDDL("JPA_ENTITYLOCKING_POPULATE_${dbvendor}.ddl");
+        executeTest(testName, testMethod, testResourcesList, props);
     }
 
     @Test
@@ -113,9 +121,11 @@ public class EntityLocking20WebTestServlet extends JPADBTestServlet {
         testResourcesList.put("test-jpa-resource", testResource);
         testResourcesList.put("test-jpa-2-resource", "test-client-b-resource");
 
-        executeDDL("JPA20_ENTITYLOCKING_DEFAULT_DELETE_${dbvendor}.ddl");
-        executeDDL("JPA20_ENTITYLOCKING_DEFAULT_POPULATE_${dbvendor}.ddl");
-        executeTest(testName, testMethod, testResourcesList, null);
+        Map<String, java.io.Serializable> props = new HashMap<String, java.io.Serializable>();
+
+        executeDDL("JPA_ENTITYLOCKING_DELETE_${dbvendor}.ddl");
+        executeDDL("JPA_ENTITYLOCKING_POPULATE_${dbvendor}.ddl");
+        executeTest(testName, testMethod, testResourcesList, props);
     }
 
     @Test
@@ -128,9 +138,11 @@ public class EntityLocking20WebTestServlet extends JPADBTestServlet {
         testResourcesList.put("test-jpa-resource", testResource);
         testResourcesList.put("test-jpa-2-resource", "test-client-b-resource");
 
-        executeDDL("JPA20_ENTITYLOCKING_DEFAULT_DELETE_${dbvendor}.ddl");
-        executeDDL("JPA20_ENTITYLOCKING_DEFAULT_POPULATE_${dbvendor}.ddl");
-        executeTest(testName, testMethod, testResourcesList, null);
+        Map<String, java.io.Serializable> props = new HashMap<String, java.io.Serializable>();
+
+        executeDDL("JPA_ENTITYLOCKING_DELETE_${dbvendor}.ddl");
+        executeDDL("JPA_ENTITYLOCKING_POPULATE_${dbvendor}.ddl");
+        executeTest(testName, testMethod, testResourcesList, props);
     }
 
     @Test
@@ -143,9 +155,11 @@ public class EntityLocking20WebTestServlet extends JPADBTestServlet {
         testResourcesList.put("test-jpa-resource", testResource);
         testResourcesList.put("test-jpa-2-resource", "test-client-b-resource");
 
-        executeDDL("JPA20_ENTITYLOCKING_DEFAULT_DELETE_${dbvendor}.ddl");
-        executeDDL("JPA20_ENTITYLOCKING_DEFAULT_POPULATE_${dbvendor}.ddl");
-        executeTest(testName, testMethod, testResourcesList, null);
+        Map<String, java.io.Serializable> props = new HashMap<String, java.io.Serializable>();
+
+        executeDDL("JPA_ENTITYLOCKING_DELETE_${dbvendor}.ddl");
+        executeDDL("JPA_ENTITYLOCKING_POPULATE_${dbvendor}.ddl");
+        executeTest(testName, testMethod, testResourcesList, props);
     }
 
     @Test
@@ -158,9 +172,11 @@ public class EntityLocking20WebTestServlet extends JPADBTestServlet {
         testResourcesList.put("test-jpa-resource", testResource);
         testResourcesList.put("test-jpa-2-resource", "test-client-b-resource");
 
-        executeDDL("JPA20_ENTITYLOCKING_DEFAULT_DELETE_${dbvendor}.ddl");
-        executeDDL("JPA20_ENTITYLOCKING_DEFAULT_POPULATE_${dbvendor}.ddl");
-        executeTest(testName, testMethod, testResourcesList, null);
+        Map<String, java.io.Serializable> props = new HashMap<String, java.io.Serializable>();
+
+        executeDDL("JPA_ENTITYLOCKING_DELETE_${dbvendor}.ddl");
+        executeDDL("JPA_ENTITYLOCKING_POPULATE_${dbvendor}.ddl");
+        executeTest(testName, testMethod, testResourcesList, props);
     }
 
     @Test
@@ -169,9 +185,14 @@ public class EntityLocking20WebTestServlet extends JPADBTestServlet {
         final String testMethod = "testPessimisticReadLock001";
         final String testResource = "test-jpa-resource-amjta";
 
-        executeDDL("JPA20_ENTITYLOCKING_DEFAULT_DELETE_${dbvendor}.ddl");
-        executeDDL("JPA20_ENTITYLOCKING_DEFAULT_POPULATE_${dbvendor}.ddl");
-        executeTest(testName, testMethod, testResource);
+        Map<String, String> testResourcesList = new HashMap<String, String>();
+        testResourcesList.put("test-jpa-resource", testResource);
+
+        Map<String, java.io.Serializable> props = new HashMap<String, java.io.Serializable>();
+
+        executeDDL("JPA_ENTITYLOCKING_DELETE_${dbvendor}.ddl");
+        executeDDL("JPA_ENTITYLOCKING_POPULATE_${dbvendor}.ddl");
+        executeTest(testName, testMethod, testResourcesList, props);
     }
 
     @Test
@@ -180,9 +201,14 @@ public class EntityLocking20WebTestServlet extends JPADBTestServlet {
         final String testMethod = "testPessimisticWriteLock001";
         final String testResource = "test-jpa-resource-amjta";
 
-        executeDDL("JPA20_ENTITYLOCKING_DEFAULT_DELETE_${dbvendor}.ddl");
-        executeDDL("JPA20_ENTITYLOCKING_DEFAULT_POPULATE_${dbvendor}.ddl");
-        executeTest(testName, testMethod, testResource);
+        Map<String, String> testResourcesList = new HashMap<String, String>();
+        testResourcesList.put("test-jpa-resource", testResource);
+
+        Map<String, java.io.Serializable> props = new HashMap<String, java.io.Serializable>();
+
+        executeDDL("JPA_ENTITYLOCKING_DELETE_${dbvendor}.ddl");
+        executeDDL("JPA_ENTITYLOCKING_POPULATE_${dbvendor}.ddl");
+        executeTest(testName, testMethod, testResourcesList, props);
     }
 
     @Test
@@ -191,8 +217,13 @@ public class EntityLocking20WebTestServlet extends JPADBTestServlet {
         final String testMethod = "testPessimisticForceIncrementLock001";
         final String testResource = "test-jpa-resource-amjta";
 
-        executeDDL("JPA20_ENTITYLOCKING_DEFAULT_DELETE_${dbvendor}.ddl");
-        executeDDL("JPA20_ENTITYLOCKING_DEFAULT_POPULATE_${dbvendor}.ddl");
-        executeTest(testName, testMethod, testResource);
+        Map<String, String> testResourcesList = new HashMap<String, String>();
+        testResourcesList.put("test-jpa-resource", testResource);
+
+        Map<String, java.io.Serializable> props = new HashMap<String, java.io.Serializable>();
+
+        executeDDL("JPA_ENTITYLOCKING_DELETE_${dbvendor}.ddl");
+        executeDDL("JPA_ENTITYLOCKING_POPULATE_${dbvendor}.ddl");
+        executeTest(testName, testMethod, testResourcesList, props);
     }
 }

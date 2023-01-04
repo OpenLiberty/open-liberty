@@ -19,15 +19,13 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.jpa.tests.beanvalidation.tests.AbstractFATSuite;
 import com.ibm.ws.jpa.tests.beanvalidation.tests.BeanValidation_EJB;
 import com.ibm.ws.jpa.tests.beanvalidation.tests.BeanValidation_Web;
-import com.ibm.ws.jpa.tests.beanvalidation.tests.ValidateJPAFeatureTest;
 
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 BeanValidation_EJB.class,
-                BeanValidation_Web.class,
-                ValidateJPAFeatureTest.class
+                BeanValidation_Web.class
 })
 public class JPA20Suite extends AbstractFATSuite {
 

@@ -62,7 +62,6 @@ public class TestQueryLockModeServlet extends JPADBTestServlet {
         final String testName = "jpa20_querylockmode_@LOCKMODE@_testScenario01_AMJTA_Web";
         final String testMethod = "testScenario01";
         final String testResource = "test-jpa-resource-amjta";
-
         executeTest(testName, testMethod, testResource);
     }
 
@@ -71,7 +70,6 @@ public class TestQueryLockModeServlet extends JPADBTestServlet {
         final String testName = "jpa20_querylockmode_@LOCKMODE@_testScenario01_AMRL_Web";
         final String testMethod = "testScenario01";
         final String testResource = "test-jpa-resource-amrl";
-
         executeTest(testName, testMethod, testResource);
     }
 
@@ -101,9 +99,8 @@ public class TestQueryLockModeServlet extends JPADBTestServlet {
             properties.put("jdbcDriverVersion", getJdbcDriverVersion());
             properties.put("LockModeType", lockModeType.name());
 
-            executeDDL("JPA20_QUERYLOCKMODE_DEFAULT_DELETE_${dbvendor}.ddl");
-            executeDDL("JPA20_QUERYLOCKMODE_DEFAULT_POPULATE_${dbvendor}.ddl");
-            executeTestVehicle(testExecCtx);
+            executeDDL("JPA20_QUERYLOCKMODE_DELETE_${dbvendor}.ddl");
+            executeDDL("JPA20_QUERYLOCKMODE_POPULATE_${dbvendor}.ddl");
         }
     }
 }

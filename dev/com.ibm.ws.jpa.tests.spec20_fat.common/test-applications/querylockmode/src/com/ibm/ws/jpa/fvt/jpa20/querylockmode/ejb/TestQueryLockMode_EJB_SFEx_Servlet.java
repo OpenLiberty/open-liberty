@@ -63,8 +63,8 @@ public class TestQueryLockMode_EJB_SFEx_Servlet extends EJBDBTestVehicleServlet 
             properties.put("jdbcDriverVersion", getJdbcDriverVersion());
             properties.put("LockModeType", lockModeType.name());
 
-            executeDDL("JPA20_QUERYLOCKMODE_DEFAULT_DELETE_${dbvendor}.ddl");
-            executeDDL("JPA20_QUERYLOCKMODE_DEFAULT_POPULATE_${dbvendor}.ddl");
+            executeDDL("JPA20_QUERYLOCKMODE_DELETE_${dbvendor}.ddl");
+            executeDDL("JPA20_QUERYLOCKMODE_POPULATE_${dbvendor}.ddl");
             executeTestVehicle(testExecCtx, ejbJNDIName);
         }
     }
