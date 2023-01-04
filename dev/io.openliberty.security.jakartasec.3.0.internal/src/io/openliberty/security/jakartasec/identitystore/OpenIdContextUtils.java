@@ -12,13 +12,19 @@ package io.openliberty.security.jakartasec.identitystore;
 
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.security.auth.Subject;
 
+import com.ibm.json.java.JSONObject;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.context.SubjectManager;
 
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 import jakarta.security.enterprise.identitystore.openid.OpenIdContext;
 
 public class OpenIdContextUtils {
@@ -50,6 +56,22 @@ public class OpenIdContextUtils {
 
         }
         return sessionSubject;
+    }
+
+    public static JsonObject convertJsonObject(JSONObject toCovertJson) {
+        if (toCovertJson == null) {
+            return null;
+        }
+
+        Map<String, Object> map = new HashMap<>();
+        Set<String> keys = toCovertJson.keySet();
+        for (String key : keys) {
+            map.put(key, toCovertJson.get(key));
+        }
+
+        JsonObjectBuilder buildJakartaJson = Json.createObjectBuilder(map);
+
+        return buildJakartaJson.build();
     }
 
 }

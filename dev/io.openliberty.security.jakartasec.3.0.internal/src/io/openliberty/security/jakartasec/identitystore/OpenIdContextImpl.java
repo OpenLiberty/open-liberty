@@ -51,7 +51,7 @@ public class OpenIdContextImpl implements OpenIdContext {
     private OpenIdClaims userinfoClaims;
     private transient JsonObject userinfoClaimsAsJson = null;
     private transient JsonObject providerMetadata;
-    private String state; // TODO: Determine if storage values can be obtained without relying on state.
+    private String state;
     private boolean useSession;
     private String clientId;
 
@@ -308,7 +308,13 @@ public class OpenIdContextImpl implements OpenIdContext {
          * Read the providerMetadata JSON string back and use it to construct a Json
          * instance.
          */
-        providerMetadata = Json.createReader(new StringReader((String) input.readObject())).readObject();
+
+        boolean providerMetadataExists = input.readBoolean();
+        if (providerMetadataExists) {
+            providerMetadata = Json.createReader(new StringReader((String) input.readObject())).readObject();
+        } else {
+            providerMetadata = null;
+        }
 
     }
 
@@ -322,7 +328,15 @@ public class OpenIdContextImpl implements OpenIdContext {
          * Since the JsonObject class is not serializable, we are going to copy the
          * JSON string instead.
          */
-        output.writeObject(providerMetadata.toString());
+        if (providerMetadata == null) {
+            /*
+             * No providerMetadata to write
+             */
+            output.writeBoolean(false);
+        } else {
+            output.writeBoolean(true);
+            output.writeObject(providerMetadata.toString());
+        }
     }
 
 }
