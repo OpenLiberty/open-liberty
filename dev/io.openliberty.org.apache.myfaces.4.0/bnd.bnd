@@ -67,7 +67,6 @@ Export-Package: \
   !org.apache.myfaces.renderkit.html, \
   !org.apache.myfaces.renderkit.html.base, \
   !org.apache.myfaces.renderkit.html.util, \
-  com.ibm.ws.faces.taglibconfig, \
   org.apache.myfaces.application;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.application.viewstate;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.cdi.model;thread-context=true;version=${Implementation-Version}, \
@@ -147,4 +146,4 @@ Import-Package: \
   com.ibm.websphere.org.osgi.service.component;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\
-  io.openliberty.jakarta.annotation.2.1;version=latest,\
+  io.openliberty.jakarta.annotation.2.1;version=latest
