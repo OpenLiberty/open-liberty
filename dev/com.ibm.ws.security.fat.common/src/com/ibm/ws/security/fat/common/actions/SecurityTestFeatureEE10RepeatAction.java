@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,15 +30,18 @@ public class SecurityTestFeatureEE10RepeatAction extends JakartaEE10Action {
 
     public SecurityTestFeatureEE10RepeatAction() {
 
+        super();
         complexId = JakartaEE10Action.ID;
         Log.info(thisClass, "instance", complexId);
         testRunMode = TestModeFilter.FRAMEWORK_TEST_MODE;
         notAllowedOnWindows = false;
         withID(complexId);
+
     }
 
     public SecurityTestFeatureEE10RepeatAction(String inNameExtension) {
 
+        super();
         complexId = JakartaEE10Action.ID + "_" + inNameExtension;
         Log.info(thisClass, "instance", complexId);
         testRunMode = TestModeFilter.FRAMEWORK_TEST_MODE;
@@ -53,6 +56,7 @@ public class SecurityTestFeatureEE10RepeatAction extends JakartaEE10Action {
 
     @Override
     public boolean isEnabled() {
+
         Log.info(thisClass, "isEnabled", "testRunMode: " + testRunMode);
         Log.info(thisClass, "isEnabled", "complexId: " + complexId);
         Log.info(thisClass, "isEnabled", "Overall test mode: " + TestModeFilter.FRAMEWORK_TEST_MODE);
@@ -62,6 +66,13 @@ public class SecurityTestFeatureEE10RepeatAction extends JakartaEE10Action {
                     " is not valid for current mode " + TestModeFilter.FRAMEWORK_TEST_MODE);
             return false;
         }
+
+        // preform standard checks
+        if (!super.isEnabled()) {
+            return false;
+        }
+
+        // Some Security projects restrict some tests from running in certain modes on windows
         OperatingSystem currentOS = null;
         try {
             currentOS = Machine.getLocalMachine().getOperatingSystem();
@@ -73,7 +84,6 @@ public class SecurityTestFeatureEE10RepeatAction extends JakartaEE10Action {
             Log.info(thisClass, "isEnabled", "Skipping action '" + toString() + "' because the tests are disabled on Windows");
             return false;
         }
-
         return true;
     }
 
