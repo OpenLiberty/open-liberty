@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jsf22.fat.resources.beans;
+package com.ibm.ws.jsf22.fat.resources.beans.faces40;
 
 import javax.faces.application.Resource;
 import javax.faces.application.ResourceHandler;
