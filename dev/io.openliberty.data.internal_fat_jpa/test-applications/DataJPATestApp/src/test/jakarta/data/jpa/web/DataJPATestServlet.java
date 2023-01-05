@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,9 @@ public class DataJPATestServlet extends FATServlet {
 
     @Inject
     Businesses businesses;
+
+    @Inject
+    Employees employees;
 
     @Resource
     private UserTransaction tran;
@@ -143,6 +146,35 @@ public class DataJPATestServlet extends FATServlet {
         assertIterableEquals(List.of("Silver Lake Foods", "Crenlo", "Geotek"),
                              Stream.of(found)
                                              .map(b -> b.name)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Repository methods for an entity where the id is on the embeddable.
+     */
+    @Test
+    public void testIdOnEmbeddable() {
+        // Clear out data before test
+        employees.deleteByLastName("TestIdOnEmbeddable");
+
+        employees.save(new Employee("Irene", "TestIdOnEmbeddable", (short) 2636, 'A'));
+        employees.save(new Employee("Isabella", "TestIdOnEmbeddable", (short) 8171, 'B'));
+        employees.save(new Employee("Ivan", "TestIdOnEmbeddable", (short) 4948, 'A'));
+        employees.save(new Employee("Isaac", "TestIdOnEmbeddable", (short) 5310, 'C'));
+
+        assertEquals("Ivan", employees.findById(4948).firstName);
+
+        assertEquals("Irene", employees.findByBadgeNumber(2636).firstName);
+
+        assertIterableEquals(List.of((short) 4948, (short) 5310, (short) 8171),
+                             employees.findByFirstNameLike("I_a%")
+                                             .map(emp -> emp.badge.number)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of((short) 8171, (short) 5310, (short) 4948, (short) 2636),
+                             employees.findByFirstNameStartsWithOrderByIdDesc("I")
+                                             .stream()
+                                             .map(emp -> emp.badge.number)
                                              .collect(Collectors.toList()));
     }
 }

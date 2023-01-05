@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
 import jakarta.data.Inheritance;
+import jakarta.data.exceptions.MappingException;
 
 /**
  */
@@ -32,8 +33,6 @@ class EntityInfo {
     final LinkedHashMap<String, String> attributeNames;
     final Set<String> collectionAttributeNames;
     final boolean inheritance;
-    final Member keyAccessor;
-    final String keyName;
     final String name;
     final PersistenceServiceUnit persister;
     final Class<?> type;
@@ -42,16 +41,12 @@ class EntityInfo {
                Map<String, List<Member>> attributeAccessors,
                LinkedHashMap<String, String> attributeNames,
                Set<String> collectionAttributeNames,
-               String keyAttributeName,
-               Member keyAccessor,
                PersistenceServiceUnit persister) {
         this.name = entityName;
         this.type = entityClass;
         this.attributeAccessors = attributeAccessors;
         this.attributeNames = attributeNames;
         this.collectionAttributeNames = collectionAttributeNames;
-        this.keyName = keyAttributeName;
-        this.keyAccessor = keyAccessor;
         this.persister = persister;
 
         inheritance = entityClass.getAnnotation(Inheritance.class) != null ||
@@ -63,9 +58,14 @@ class EntityInfo {
         // TODO update per outcome of #44
         String attributeName = attributeNames.get(name.toUpperCase());
         if (attributeName == null)
-            attributeName = "Id".equals(name) ? keyName : //
-                            "All".equals(name) ? null : // Special case for CrudRepository.deleteAll and CrudRepository.findAll
-                                            name;
+            if ("All".equals(name))
+                attributeName = null; // Special case for CrudRepository.deleteAll and CrudRepository.findAll
+            else if ("ID".equals(name.toUpperCase()))
+                throw new MappingException("Entity class " + type.getName() + " does not have a property named " + name +
+                                           " or which is designated as the @Id.");
+            else
+                throw new MappingException("Entity class " + type.getName() + " does not have a property named " + name + "."); // TODO NLS
+
         return attributeName;
     }
 

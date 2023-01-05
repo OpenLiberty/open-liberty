@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import jakarta.data.IdNotFoundException;
 import jakarta.data.Template;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -69,10 +68,8 @@ public class TemplateImpl implements Template {
                 throw new IllegalArgumentException("Unrecognized entity class " + entityClass.getName());
             EntityInfo entityInfo = future.join();
 
-            if (entityInfo.keyName == null)
-                throw new IdNotFoundException("Entity " + entityClass + " lacks a primary key column.");
-
-            String jpql = "DELETE FROM " + entityInfo.name + " o WHERE o." + entityInfo.keyName + "=?1";
+            String keyName = entityInfo.getAttributeName("id");
+            String jpql = "DELETE FROM " + entityInfo.name + " o WHERE o." + keyName + "=?1";
 
             if (requiresNewTransaction = Status.STATUS_NO_TRANSACTION == provider.tranMgr.getStatus()) {
                 suspendedLTC = provider.localTranCurrent.suspend();
@@ -142,12 +139,10 @@ public class TemplateImpl implements Template {
                 throw new IllegalArgumentException("Unrecognized entity class " + entityClass.getName());
             EntityInfo entityInfo = future.join();
 
-            if (entityInfo.keyName == null)
-                throw new IdNotFoundException("Entity " + entityClass + " lacks a primary key column.");
+            String keyName = entityInfo.getAttributeName("id");
+            String jpql = "SELECT o FROM " + entityInfo.name + " o WHERE o." + keyName + "=?1";
 
             em = entityInfo.persister.createEntityManager();
-
-            String jpql = "SELECT o FROM " + entityInfo.name + " o WHERE o." + entityInfo.keyName + "=?1";
 
             TypedQuery<T> query = em.createQuery(jpql, entityClass);
             query.setParameter(1, id);
