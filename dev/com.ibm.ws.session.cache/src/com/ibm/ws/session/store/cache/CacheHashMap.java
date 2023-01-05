@@ -454,6 +454,7 @@ public class CacheHashMap extends BackedHashMap {
 
                             FFDCFilter.processException(x, getClass().getName(), "91", sess,
                                                         new Object[] { hideValues ? "byte[" + b.length + "]" : TypeConversion.limitedBytesToString(b) });
+                            Tr.error(tc, "sessionAttributeCache attributeKey = ", attributeKey);
                             throw x;
                         }
                         if (value != null) {
@@ -503,6 +504,7 @@ public class CacheHashMap extends BackedHashMap {
 
             // we are not synchronized here - were not in old code either
             Hashtable tht = null;
+            synchronized (session) {
             if (_smc.writeAllProperties()) {
                 Map<?, ?> ht = session.getSwappableData();
                 propsToWrite = (Set<String>) ht.keySet();
@@ -583,7 +585,8 @@ public class CacheHashMap extends BackedHashMap {
                     }
                 }
             }
-
+            }
+            
             // see if any properties were REMOVED.
             // if so, process them
 
