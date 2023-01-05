@@ -84,33 +84,23 @@ public class JsMainAdminServiceImpl implements JsMainAdminService {
     
     private final RuntimeSecurityService runtimeSecurityService;
     private final ConfigurationAdmin configAdmin;
-    private BundleContext bundleContext;
+    private final BundleContext bundleContext;
 
     @Activate
     public JsMainAdminServiceImpl( @Reference RuntimeSecurityService runtimeSecurityService,
-                                   @Reference ConfigurationAdmin configAdmin) {
+                                   @Reference ConfigurationAdmin configAdmin,
+                                   BundleContext bundleContext ) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, "JsMainAdminServiceImpl", new Object[] { this, runtimeSecurityService, configAdmin });
+            SibTr.entry(tc, "JsMainAdminServiceImpl", new Object[] { this, runtimeSecurityService, configAdmin, bundleContext });
         
         this.runtimeSecurityService = runtimeSecurityService;
         this.configAdmin = configAdmin;
+        this.bundleContext = bundleContext;
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.exit(tc, "JsMainAdminServiceImpl");
     }
 
-    @Activate
-    public void activate(BundleContext bundleContext) {
-        final String methodName = "activate";
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, methodName, new Object[] { this, bundleContext });
-
-        this.bundleContext = bundleContext;
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, methodName);           
-    }
-    
     /**
      * Sets ME state to STARTING, then creates and initialises the messaging engine.
      */
