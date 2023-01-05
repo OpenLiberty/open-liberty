@@ -10,16 +10,9 @@
  *******************************************************************************/
 package tests;
 
-import static org.junit.Assert.fail;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ProgramOutput;
-import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.transaction.fat.util.FATUtils;
-
-import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(FATRunner.class)
