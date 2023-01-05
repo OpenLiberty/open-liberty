@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  2015, 2019  IBM Corporation and others.
+ * Copyright (c) 2015, 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jsf22.fat.viewscopedjsf;
+package com.ibm.ws.jsf22.fat.viewscopedjsf.bean.jsf22;
 
 import java.io.Serializable;
 import java.util.logging.Logger;
@@ -22,12 +22,12 @@ import javax.faces.event.ActionEvent;
 
 /**
  * A bean that is used to increment and decrement a value.
- * 
+ *
  * This bean acts both as a listener as well as a regular bean.
- * 
- * 
+ *
+ *
  * There is also a method to cause an error.
- * 
+ *
  * @author Paul Nicolucci
  */
 @ManagedBean(name = "ViewScopedBean1")
@@ -39,7 +39,7 @@ public class ViewScopedBean1 implements Serializable {
 
     /**
      * Return the value of the counter.
-     * 
+     *
      * @return The value
      */
     public Integer getValue() {
@@ -62,7 +62,7 @@ public class ViewScopedBean1 implements Serializable {
 
     /**
      * Increment the value of the counter.
-     * 
+     *
      * @param e
      */
     public void increment(ActionEvent e) {
@@ -71,7 +71,7 @@ public class ViewScopedBean1 implements Serializable {
 
     /**
      * Decrement the value of the counter.
-     * 
+     *
      * @param e
      */
     public void decrement(ActionEvent e) {

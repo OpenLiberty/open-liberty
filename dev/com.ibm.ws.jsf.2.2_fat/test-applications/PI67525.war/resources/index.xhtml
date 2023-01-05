@@ -11,17 +11,17 @@
  -->
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-<h:head>
-	<meta charset="UTF-8" />
-	<title>PI67525</title>
-</h:head>
-<h:body>
-	<h1>Upload check</h1>
-	<h:form id="form" enctype="multipart/form-data">
-		<h:messages />
-		<h:inputFile value="#{uploadBean.uploadFile}" required="true" />
-		<h:commandButton id="execute" value="TEST" action="#{uploadBean.execute()}" />
-	</h:form>
-</h:body>
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <meta charset="UTF-8" />
+        <title>PI67525</title>
+    </h:head>
+    <h:body>
+        <h1>Upload check</h1>
+        <h:form id="form" enctype="multipart/form-data">
+            <h:messages />
+            <h:inputFile value="#{uploadBean.uploadFile}" required="true" />
+            <h:commandButton id="execute" value="TEST" action="#{uploadBean.execute()}" />
+        </h:form>
+    </h:body>
 </html>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  2015  IBM Corporation and others.
+ * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,20 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jsf22.fat.tests.PI50108;
+package com.ibm.ws.jsf22.fat.tests.PI50108.bean.jsf22;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.html.HtmlDataTable;
 
-@ManagedBean(name="viewScopeTestBean")
+@ManagedBean(name = "viewScopeTestBean")
 @ViewScoped
 public class ViewScopeTestBean implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private List<String> stringCollection;
 
     public List<String> getStringCollection() {
@@ -43,7 +45,7 @@ public class ViewScopeTestBean implements Serializable {
     }
 
     @PostConstruct
-    public void init(){
+    public void init() {
         System.out.println("Post Construct fired!!");
         stringCollection = new ArrayList<String>();
         stringCollection.add("a");
@@ -52,7 +54,7 @@ public class ViewScopeTestBean implements Serializable {
 
     }
 
-    public void action(){
+    public void action() {
         System.out.println("Clicked!!");
 
     }
