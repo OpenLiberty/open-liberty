@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jsf22.fat.backwards.utilities;
+package com.ibm.ws.jsf22.fat.backwards.utilities.faces40;
 
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
