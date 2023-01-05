@@ -90,9 +90,7 @@ public class ProxyServicesImpl implements ProxyServices {
         // This implementation requires no cleanup
     }
 
-    //TODO: this method was removed from the Weld 5 API - https://github.com/OpenLiberty/open-liberty/issues/19911
-    //@Override
-    public ClassLoader getClassLoader(final Class<?> proxiedBeanType) {
+    private ClassLoader getClassLoader(final Class<?> proxiedBeanType) {
         return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
             @Override
             public ClassLoader run() {
