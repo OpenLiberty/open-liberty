@@ -36,7 +36,8 @@ src: \
 	test-applications/mphealth/src,\
 	test-applications/facesApp/src,\
 	test-applications/jsonb/src,\
-	test-applications/jsonp/src
+	test-applications/jsonp/src,\
+	test-applications/managedBeans/src
 
 fat.project: true
 
