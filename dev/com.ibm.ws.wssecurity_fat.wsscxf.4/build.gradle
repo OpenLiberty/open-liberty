@@ -64,6 +64,23 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/bundles')
     }
   }  
+     
+/* Copy jsse.jar required for the servers */
+  
+  servers = [
+    'com.ibm.ws.wssecurity_fat.ssl',
+    'com.ibm.ws.wssecurity_fat.wsstemplates',
+    'com.ibm.ws.wssecurity_fat.wsstemplateswithep'  
+  ]
+
+  servers.each { server ->
+    copy { 
+      from project.file('lib')
+      include "jsse.jar"
+      into new File(autoFvtDir, 'lib/')
+    }
+  }
+
       
 /* Copy securitykeys/key.jks, and sslServerTrust.jks to these servers */
 

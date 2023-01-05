@@ -158,7 +158,7 @@ autoFVT.doLast {
   }
 
 
-/* Copy *.war to this server */
+/* Copy jsse.jar required for this server */
   
   servers = [
     'com.ibm.ws.wssecurity_fat.pwdigest'
