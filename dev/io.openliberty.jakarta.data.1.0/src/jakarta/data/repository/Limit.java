@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,8 +19,10 @@ public class Limit {
     private Limit(long startAt, long maxResults) {
         start = startAt;
         max = maxResults;
-        if (start < 1 || max < 1)
-            throw new IllegalArgumentException();
+        if (start < 1)
+            throw new IllegalArgumentException("startAt: " + start);
+        if (max < 1)
+            throw new IllegalArgumentException("maxResults: " + max);
     }
 
     public long maxResults() {
@@ -32,6 +34,9 @@ public class Limit {
     }
 
     public static Limit range(long startAt, long endAt) {
+        if (startAt >= endAt)
+            throw new IllegalArgumentException("startAt: " + startAt + ", endAt: " + endAt);
+
         return new Limit(startAt, 1 + (endAt - startAt));
     }
 

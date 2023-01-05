@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2206,6 +2206,19 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * PageableRepository.findAll(Pageable) must raise NullPointerException.
+     */
+    @Test
+    public void testNullPagination() {
+        try {
+            Page<Package> page = packages.findAll(null);
+            fail("PageableRepository.findAll(Pageable) must raise NullPointerException. Instead: " + page);
+        } catch (NullPointerException x) {
+            // expected
+        }
+    }
+
+    /**
      * Test Null and NotNull on repository methods.
      */
     @Test
@@ -2973,8 +2986,13 @@ public class DataTestServlet extends FATServlet {
 
         packages.delete(p3);
 
-        assertIterableEquals(List.of(990001, 990002, 990004, 990005, 990006),
-                             packages.findAll().map(pack -> pack.id).sorted().collect(Collectors.toList()));
+        Page<Package> page = packages.findAll(Pageable.ofSize(3).sortBy(Sort.desc("id")));
+        assertIterableEquals(List.of(990006, 990005, 990004),
+                             page.stream().map(pack -> pack.id).collect(Collectors.toList()));
+
+        page = packages.findAll(page.nextPageable());
+        assertIterableEquals(List.of(990002, 990001),
+                             page.stream().map(pack -> pack.id).collect(Collectors.toList()));
 
         packages.deleteAll(List.of(p1, p6));
 
