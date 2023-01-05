@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  2015  IBM Corporation and others.
+ * Copyright (c) 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,9 +17,9 @@ import org.w3c.dom.Element;
 
 /**
  * This is a callback to do configuration via an empty DOM root which respresents faces.config.xml. Existing configuration options can be added, but cannot overwrite existing ones.
- * 
+ *
  * This callback tests the presence of META-INF/services/javax.faces.application.ApplicationConfigurationPopulator in the war file.
- * 
+ *
  */
 public class ACPInitializer extends ApplicationConfigurationPopulator {
 
@@ -72,7 +72,6 @@ public class ACPInitializer extends ApplicationConfigurationPopulator {
         nr.appendChild(nc);
 
         document.getChildNodes().item(0).appendChild(nr);
-
     }
 
     private Element createNode(Document doc, String element, String value) {
@@ -80,7 +79,5 @@ public class ACPInitializer extends ApplicationConfigurationPopulator {
         Element e = doc.createElementNS(ns, element);
         e.appendChild(doc.createTextNode(value));
         return e;
-
     }
-
 }
