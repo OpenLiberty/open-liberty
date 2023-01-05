@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.sib.admin.internal;
 
+import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
+
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -23,6 +25,9 @@ import java.util.Vector;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.messaging.mbean.MessagingEngineMBean;
@@ -30,6 +35,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.audit.context.AuditManager;
 import com.ibm.websphere.sib.exception.SINotSupportedException;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.messaging.lifecycle.Singleton;
 import com.ibm.ws.messaging.security.RuntimeSecurityService;
 import com.ibm.ws.sib.admin.AliasDestination;
 import com.ibm.ws.sib.admin.BaseDestination;
@@ -52,7 +58,11 @@ import com.ibm.ws.sib.utils.ras.SibTr;
  * The main sib service class that is responsible for initailizing starting
  * stopping and destroying messaging runtime service
  */
-public final class JsMainImpl implements JsMain {
+@Component (
+		service= {JsMainImpl.class, JsMain.class, Singleton.class},
+		configurationPolicy=IGNORE,
+        property={"type=com.ibm.ws.sib.admin.internal.JsMain", "service.vendor=IBM"})
+public final class JsMainImpl implements JsMain, Singleton {
 
     private static final String CLASS_NAME = "com.ibm.ws.sib.admin.internal.JsMainImpl";
 
@@ -129,80 +139,19 @@ public final class JsMainImpl implements JsMain {
         }
     }
 
-    // Constructor for liberty release
-    public JsMainImpl(BundleContext bContext, RuntimeSecurityService runtimeSecurityService) throws IllegalStateException {
-        String methodName = "JSMainImpl";
+    @Activate
+    public JsMainImpl(BundleContext bContext, @Reference RuntimeSecurityService runtimeSecurityService) throws IllegalStateException {
+        String methodName = "<init>";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) 
             SibTr.entry(tc, methodName, new Object[] {this, bContext, runtimeSecurityService, services});
         
         this.bContext = bContext;
         this.runtimeSecurityService = runtimeSecurityService; 
         
-        com.ibm.ws.sib.admin.JsAdminService adminService = JsMainAdminComponentImpl.getJsAdminService();
-        adminService.setAdminMain(this);
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             SibTr.exit(tc, methodName);
         }
     }
-
-    /**
-     * Is this JVM running on the zOS platform?
-     * 
-     * @return boolean true if the platform is zOS, otherwise false
-     */
-    /*
-     * public boolean isZOSPlatform() {
-     * 
-     * String thisMethodName = CLASS_NAME + ".isZOSPlatform()";
-     * 
-     * if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-     * SibTr.entry(tc, thisMethodName); }
-     * 
-     * if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-     * SibTr.exit(tc, thisMethodName, new Boolean(_platform_zOS)); }
-     * 
-     * return _platform_zOS; }
-     */
-
-    /**
-     * Is this JVM running in a zOS Control Region Adjunct (CRA)?
-     * 
-     * @return boolean true if in the zOS CRA, otherwise false
-     */
-    /*
-     * public boolean isZOSCRA() {
-     * 
-     * String thisMethodName = CLASS_NAME + ".isZOSCRA()";
-     * 
-     * if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-     * SibTr.entry(tc, thisMethodName); }
-     * 
-     * if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-     * SibTr.exit(tc, thisMethodName, new Boolean(_platform_zOS_CRA)); }
-     * 
-     * return _platform_zOS_CRA; }
-     */
-
-    /**
-     * Is this JVM running in a zOS Servant Region (SR)?
-     * 
-     * @return boolean true if in the zOS SR, otherwise false
-     * @throws Exception
-     */
-    /*
-     * public boolean isZOSServant() {
-     * 
-     * String thisMethodName = CLASS_NAME + ".isZOSServant()";
-     * 
-     * if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-     * SibTr.entry(tc, thisMethodName); }
-     * 
-     * if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-     * SibTr.exit(tc, thisMethodName, new Boolean(_platform_zOS_servant)); }
-     * 
-     * return _platform_zOS_servant; }
-     */
 
     /*
      * (non-Javadoc)
@@ -443,8 +392,6 @@ public final class JsMainImpl implements JsMain {
             }
         }
         _messagingEngines = null;
-        
-        JsMainAdminComponentImpl.getJsAdminService().reset();
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             SibTr.exit(tc, thisMethodName);

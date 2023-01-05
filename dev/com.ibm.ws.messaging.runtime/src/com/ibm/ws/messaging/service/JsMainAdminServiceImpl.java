@@ -75,7 +75,7 @@ public class JsMainAdminServiceImpl implements JsMainAdminService {
 
     private String _state = ME_STATE.STOPPED.toString();
 
-    private JsMainImpl _jsMainImpl = null;
+    private final JsMainImpl jsMainImpl;
 
     private volatile Map<String, Object> properties;
 
@@ -87,18 +87,21 @@ public class JsMainAdminServiceImpl implements JsMainAdminService {
     private final BundleContext bundleContext;
 
     @Activate
-    public JsMainAdminServiceImpl( @Reference RuntimeSecurityService runtimeSecurityService,
-                                   @Reference ConfigurationAdmin configAdmin,
-                                   BundleContext bundleContext ) {
+    public JsMainAdminServiceImpl( 
+    		@Reference RuntimeSecurityService runtimeSecurityService,
+            @Reference ConfigurationAdmin configAdmin,
+            @Reference JsMainImpl jsMainImpl,
+            BundleContext bundleContext ) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, "JsMainAdminServiceImpl", new Object[] { this, runtimeSecurityService, configAdmin, bundleContext });
+            SibTr.entry(tc, "<init>", new Object[] { this, runtimeSecurityService, configAdmin, jsMainImpl, bundleContext });
         
         this.runtimeSecurityService = runtimeSecurityService;
         this.configAdmin = configAdmin;
+        this.jsMainImpl = jsMainImpl;
         this.bundleContext = bundleContext;
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, "JsMainAdminServiceImpl");
+            SibTr.exit(tc, "<init>");
     }
 
     /**
@@ -121,9 +124,8 @@ public class JsMainAdminServiceImpl implements JsMainAdminService {
             // Initialize the config object.
             initialize(properties, configAdmin);
 
-            _jsMainImpl = new JsMainImpl(bundleContext, runtimeSecurityService);
-            _jsMainImpl.initialize(jsMEConfig);
-            _jsMainImpl.start();
+            jsMainImpl.initialize(jsMEConfig);
+            jsMainImpl.start();
 
             // If its here it means all the components have started hence set
             // the state to STARTED
@@ -886,7 +888,7 @@ public class JsMainAdminServiceImpl implements JsMainAdminService {
         // Check if the highMessageThreshold is different.If yes then invoke reloadEngine() 
         if (jsMEConfig.getMessagingEngine().getHighMessageThreshold() != newConfig.getMessagingEngine().getHighMessageThreshold()) {
             try {
-                _jsMainImpl.reloadEngine(newConfig.getMessagingEngine().getHighMessageThreshold());
+                jsMainImpl.reloadEngine(newConfig.getMessagingEngine().getHighMessageThreshold());
             } catch (Exception e) {
                 SibTr.exception(tc, e);
                 FFDCFilter.processException(e, this.getClass().getName(), "972", this);
@@ -897,7 +899,7 @@ public class JsMainAdminServiceImpl implements JsMainAdminService {
             String key = (String) dit.next();
             // deleted SIBDestination can be got from the old jsMEConfig
             try {
-                _jsMainImpl.deleteDestinationLocalization(jsMEConfig
+                jsMainImpl.deleteDestinationLocalization(jsMEConfig
                                 .getMessagingEngine().getDestinationList().get(
                                                                                (key)));
             } catch (Exception e) {
@@ -910,7 +912,7 @@ public class JsMainAdminServiceImpl implements JsMainAdminService {
             String key = (String) nit.next();
             // New SIBDestination can be got from the new jsMEConfig
             try {
-                _jsMainImpl.createDestinationLocalization(newConfig
+                jsMainImpl.createDestinationLocalization(newConfig
                                 .getMessagingEngine().getDestinationList().get(
                                                                                (key)));
             } catch (Exception e) {
@@ -923,7 +925,7 @@ public class JsMainAdminServiceImpl implements JsMainAdminService {
             String key = (String) mmit.next();
             // Modified SIBDestination can be got from the new jsMEConfig
             try {
-                _jsMainImpl.alterDestinationLocalization(newConfig
+                jsMainImpl.alterDestinationLocalization(newConfig
                                 .getMessagingEngine().getDestinationList().get(
                                                                                (key)));
             } catch (Exception e) {
@@ -944,8 +946,8 @@ public class JsMainAdminServiceImpl implements JsMainAdminService {
             SibTr.exit(tc, methodName, this);
         
         try {
-            _jsMainImpl.stop();
-            _jsMainImpl.destroy();
+            jsMainImpl.stop();
+            jsMainImpl.destroy();
             SibTr.info(tc, "ME_STOPPED_SIAS0121");
         } catch (Exception e) {
             SibTr.exception(tc, e);
