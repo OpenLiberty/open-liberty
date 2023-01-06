@@ -43,9 +43,8 @@ public class DerivedIdentityEJBSFTestServlet extends EJBDBTestVehicleServlet {
         final String testMethod = "testScenario01";
         final String testResource = "test-jpa-resource-amjta";
 
-        executeDDL("JPA20_DERIVEDIDENTITY_DELETE_${dbvendor}.ddl");
-
         executeTest(testName, testMethod, testResource);
+        executeDDL("JPA20_DERIVEDIDENTITY_DEFAULT_DELETE_${dbvendor}.ddl");
     }
 
     @Test
@@ -54,9 +53,8 @@ public class DerivedIdentityEJBSFTestServlet extends EJBDBTestVehicleServlet {
         final String testMethod = "testScenario01";
         final String testResource = "test-jpa-resource-amrl";
 
-        executeDDL("JPA20_DERIVEDIDENTITY_DELETE_${dbvendor}.ddl");
-
         executeTest(testName, testMethod, testResource);
+        executeDDL("JPA20_DERIVEDIDENTITY_DEFAULT_DELETE_${dbvendor}.ddl");
     }
 
     @Test
@@ -65,9 +63,8 @@ public class DerivedIdentityEJBSFTestServlet extends EJBDBTestVehicleServlet {
         final String testMethod = "testScenario01";
         final String testResource = "test-jpa-resource-cmts";
 
-        executeDDL("JPA20_DERIVEDIDENTITY_DELETE_${dbvendor}.ddl");
-
         executeTest(testName, testMethod, testResource);
+        executeDDL("JPA20_DERIVEDIDENTITY_DEFAULT_DELETE_${dbvendor}.ddl");
     }
 
 }
