@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -333,6 +333,7 @@ public class JSF22FlowsTests extends FATServletClient {
     }
 
     @Test
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) // Fixed in MYFACES-4542, targeted in next release after 4.0.0-RC3 
     public void JSF22Flows_TestDeclarativeNestedFlows_MyFaces() throws Exception {
         // Navigate to the index
         testNestedFlows("declarativeNested1", "declarativeNested2", "declarativeNested", MYFACES_APP);
