@@ -74,6 +74,31 @@ disabled.info.CWMMC0009I=CWMMC0009I: The /metrics endpoint is not available beca
 disabled.info.CWMMC0009I.explanation=The mp.metrics.prometheus.enabled MicroProfile Config property is set to false.
 disabled.info.CWMMC0009I.useraction=If the disabling of the Prometheus Registry is not intentional, remove the configuration of mp.metrics.prometheus.enabled MicroProfile Config property or explicitly set the property to true.
 
+#Embedded SmallRye Metrics or Micrometer JAR not found in the lib directory
+fileNotFound.error.CWMMC0010E=CWMMC0010E: MicroProfile Metrics was unable to initialize. The required JAR file {0} was not found in the <wlp_home>/lib directory.
+fileNotFound.error.CWMMC0010E.explanation=The JAR file was not found in the <wlp_home>/lib directory. The file may have been deleted or renamed.
+fileNotFound.error.CWMMC0010E.useraction=The server may be corrupt if the JAR file is not present in the <wlp_home>/lib directory. Re-deploy the application server installation.
+
+#Bundle add-on class loader was null
+nullBundleAddOnClassLoader.error.CWMMC0011E=CWMMC0011E: MicroProfile Metrics was unable to initialize. The MicroProfile Metrics runtime was unable to create a required class loader.
+nullBundleAddOnClassLoader.error.CWMMC0011E.explanation=An internal error occured while creating a required class loader.
+nullBundleAddOnClassLoader.error.CWMMC0011E.useraction=Review the FFDC logs and exception text to identify the problem.
+
+#SmallRye Metrics classes not found when loading through reflection
+missingSmallRyeClasses.error.CWMMC0012E=CWMMC0012E: MicroProfile Metrics was unable to initialize. A class from SmallRye Metrics could not be loaded.
+missingSmallRyeClasses.error.CWMMC0012E.explanation=A class or classes from the packaged SmallRye Metrics JAR from the <wlp_home>/lib directory could not be loaded or is missing.
+missingSmallRyeClasses.error.CWMMC0012E.useraction=Review the FFDC logs and exception text to identify the missing class and verify that it exists in the <wlp_home>/lib/io.openliberty.io.smallrye.metrics JAR.
+
+#Configured Micrometer Library is missing dependencies
+missingDependencyClasses.error.CWMMC0013E=CWMMC0013E: MicroProfile Metrics was unable to initialize. A required class for a user provided Micrometer Library is missing.
+missingDependencyClasses.error.CWMMC0013E.explanation=The MicroProfile Metrics feature is loading Micrometer libraries that are defined through the libraryRef attribute. This must also contain all dependencies.
+missingDependencyClasses.error.CWMMC0013E.useraction=Provide the necessary dependencies with the Micrometer Libraries.
+
+#MicroProfile Metrics 5.0 has been configured to use a libraryRef attribute
+libraryRefConfigured.info.CWMMC0014I=CWMMC0014I: MicroProfile Metrics feature has been configured to use the following libraryRef: [{0}]
+libraryRefConfigured.info.CWMMC0014I.explanation=MicroProfile Metrics feature has been configured to use a libraryRef. This referenced library must contain the Micrometer core library, target Micrometer libraries and dependencies.
+libraryRefConfigured.info.CWMMC0014I.useraction=No action required.
+
 #Memory usedHeap message
 memory.usedHeap.description=Displays the amount of used heap memory in bytes.
 
