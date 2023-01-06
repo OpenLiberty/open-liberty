@@ -115,9 +115,12 @@ public class PureAnnA01Test extends PureAnnA01Base {
     @Test
     public void testPureA01_RunAsSpecified_AllowAccessGoodRunAsPasswordInServerXml() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());
+        String waitForMessage = "CWWKT0016I.*/securityejb/";
+        List<String> msgs = new ArrayList<String>();
+        msgs.add(waitForMessage);
 
         try {
-            testHelper.reconfigureServer(Constants.GOOD_RUNAS_PWD_SERVER_XML, getName().getMethodName(), Constants.DO_NOT_RESTART_SERVER);
+            testHelper.reconfigureServer(Constants.GOOD_RUNAS_PWD_SERVER_XML, getName().getMethodName(), msgs, Constants.DO_NOT_RESTART_SERVER);
             String queryString = "/SimpleServlet?testInstance=ejb01&testMethod=runAsSpecified";
             String response = generateResponseFromServlet(queryString, Constants.MANAGER_USER, Constants.MANAGER_PWD);
             verifyResponseWithoutDeprecated(response, Constants.RUN_AS_USER_PRINCIPAL, Constants.IS_MANAGER_FALSE, Constants.IS_EMPLOYEE_TRUE);
