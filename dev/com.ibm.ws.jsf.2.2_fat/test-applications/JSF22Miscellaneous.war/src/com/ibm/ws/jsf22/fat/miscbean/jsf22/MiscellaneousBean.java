@@ -17,7 +17,7 @@
  * @author Jim Lawwill
  *
  */
-package com.ibm.ws.jsf22.fat.miscbean;
+package com.ibm.ws.jsf22.fat.miscbean.jsf22;
 
 import java.io.Serializable;
 import java.util.Set;
