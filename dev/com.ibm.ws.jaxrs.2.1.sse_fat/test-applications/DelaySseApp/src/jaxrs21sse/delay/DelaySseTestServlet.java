@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
 package jaxrs21sse.delay;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -49,7 +49,7 @@ public class DelaySseTestServlet extends FATServlet {
                     msg += failure + "\n";
                 }
             }
-            assertNotNull("Detected failures in the SSE resource: " + msg, msg);
+            assertNull("Detected failures in the SSE resource: " + msg, msg);
         } finally {
             resourceFailures.clear();
         }
