@@ -1,24 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.token;
-
-import java.security.Key;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jose4j.jwa.AlgorithmConstraints;
-import org.jose4j.jwa.AlgorithmConstraints.ConstraintType;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.consumer.InvalidJwtException;
@@ -79,7 +72,7 @@ public class TokenResponseValidator {
         }
         try {
             String issuerconfigured = validateIdTokenClaimsAndGetIssuer(jwtClaims, clientSecret);
-            return validateIdTokenFormat(idtoken, jwtcontext, clientSecret, issuerconfigured);
+            return validateIdTokenFormat(jwtcontext, issuerconfigured);
         } catch (TokenValidationException e) {
             throw e;
         } catch (Exception e) {
@@ -137,32 +130,19 @@ public class TokenResponseValidator {
         return issuerconfigured;
     }
 
-    JwtClaims validateIdTokenFormat(String idtoken, JwtContext jwtcontext, String clientSecret, String issuerconfigured) throws Exception {
-        String[] signingAlgsAllowed = verifyJwsAlgHeaderOnly(jwtcontext);
+    JwtClaims validateIdTokenFormat(JwtContext jwtContext, String issuerConfigured) throws Exception {
+        io.openliberty.security.common.jwt.jws.JwsSignatureVerifier.Builder verifierBuilder = JwtUtils.verifyJwsAlgHeaderAndCreateJwsSignatureVerifierBuilder(jwtContext,
+                                                                                                                                                              clientConfig,
+                                                                                                                                                              getSigningAlgorithmsAllowed());
+        JwsSignatureVerifier signatureVerifier = verifierBuilder.build();
 
-        JsonWebStructure jws = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtcontext);
-        Key verificationKey = JwtUtils.getJwsVerificationKey(jws, clientConfig);
+        JsonWebStructure jws = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
 
-        JwtConsumerBuilder builder = new JwtConsumerBuilder();
-        builder.setJwsAlgorithmConstraints(new AlgorithmConstraints(ConstraintType.WHITELIST, signingAlgsAllowed));
-        builder.setRequireExpirationTime().setAllowedClockSkewInSeconds(120).setExpectedAudience(clientConfig.getClientId()).setExpectedIssuer(false,
-                                                                                                                                               issuerconfigured).setRequireSubject().setSkipDefaultAudienceValidation().setVerificationKey(verificationKey).setRelaxVerificationKeyValidation();
+        JwtConsumerBuilder builder = signatureVerifier.createJwtConsumerBuilderWithConstraints(jws.getAlgorithmHeaderValue());
+        builder.setRequireExpirationTime().setAllowedClockSkewInSeconds(120).setExpectedAudience(clientConfig.getClientId()).setExpectedIssuer(issuerConfigured).setRequireSubject();
 
         JwtConsumer jwtConsumer = builder.build();
-        return JwtParsingUtils.parseJwtWithValidation(idtoken, jwtConsumer);
-    }
-
-    /**
-     * Validates the "alg" header in the JWT to ensure the token is signed with one of the allowed algorithms. This allows us to
-     * avoid doing the work to fetch the signing key for the token if the algorithm isn't supported.
-     */
-    String[] verifyJwsAlgHeaderOnly(JwtContext jwtContext) throws Exception {
-        String[] signingAlgsAllowed = getSigningAlgorithmsAllowed();
-
-        io.openliberty.security.common.jwt.jws.JwsSignatureVerifier.Builder verifierBuilder = new JwsSignatureVerifier.Builder();
-        verifierBuilder = verifierBuilder.signatureAlgorithmsSupported(signingAlgsAllowed);
-        verifierBuilder.build().verifyAlgHeaderOnly(jwtContext);;
-        return signingAlgsAllowed;
+        return JwtParsingUtils.parseJwtWithValidation(jwtContext.getJwt(), jwtConsumer);
     }
 
     @FFDCIgnore(OidcClientConfigurationException.class)

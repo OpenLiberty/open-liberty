@@ -1,19 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.userinfo;
 
 import java.io.IOException;
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +22,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtContext;
-import org.jose4j.jwx.JsonWebStructure;
 
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
@@ -152,26 +147,11 @@ public class UserInfoRequestor {
      * Validates the JWS signature only and extracts the claims so they can be verified elsewhere.
      */
     JwtClaims validateJwsSignatureAndGetClaims(JwtContext jwtContext) throws Exception {
-        io.openliberty.security.common.jwt.jws.JwsSignatureVerifier.Builder verifierBuilder = verifyJwsAlgHeaderOnly(jwtContext);
-
-        JsonWebStructure jws = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
-        Key jwtVerificationKey = JwtUtils.getJwsVerificationKey(jws, oidcClientConfig);
-
-        JwsSignatureVerifier signatureVerifier = verifierBuilder.key(jwtVerificationKey).build();
+        io.openliberty.security.common.jwt.jws.JwsSignatureVerifier.Builder verifierBuilder = JwtUtils.verifyJwsAlgHeaderAndCreateJwsSignatureVerifierBuilder(jwtContext,
+                                                                                                                                                              oidcClientConfig,
+                                                                                                                                                              getSigningAlgorithmsAllowed());
+        JwsSignatureVerifier signatureVerifier = verifierBuilder.build();
         return signatureVerifier.validateJwsSignature(jwtContext);
-    }
-
-    /**
-     * Validates the "alg" header in the JWT to ensure the token is signed with one of the allowed algorithms. This allows us to
-     * avoid doing the work to fetch the signing key for the token if the algorithm isn't supported.
-     */
-    io.openliberty.security.common.jwt.jws.JwsSignatureVerifier.Builder verifyJwsAlgHeaderOnly(JwtContext jwtContext) throws Exception {
-        String[] signingAlgsAllowed = getSigningAlgorithmsAllowed();
-
-        io.openliberty.security.common.jwt.jws.JwsSignatureVerifier.Builder verifierBuilder = new JwsSignatureVerifier.Builder();
-        verifierBuilder = verifierBuilder.signatureAlgorithmsSupported(signingAlgsAllowed);
-        verifierBuilder.build().verifyAlgHeaderOnly(jwtContext);;
-        return verifierBuilder;
     }
 
     @FFDCIgnore(OidcClientConfigurationException.class)
