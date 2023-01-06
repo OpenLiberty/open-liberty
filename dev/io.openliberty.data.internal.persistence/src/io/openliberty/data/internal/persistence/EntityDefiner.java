@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,12 +44,14 @@ import jakarta.data.Generated;
 import jakarta.data.Id;
 import jakarta.data.Inheritance;
 import jakarta.data.MappedSuperclass;
+import jakarta.data.exceptions.MappingException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.Attribute;
 import jakarta.persistence.metamodel.Attribute.PersistentAttributeType;
 import jakarta.persistence.metamodel.EmbeddableType;
 import jakarta.persistence.metamodel.EntityType;
 import jakarta.persistence.metamodel.Metamodel;
+import jakarta.persistence.metamodel.SingularAttribute;
 
 /**
  * Runs asynchronously to supply orm.xml for entities that aren't already Jakarta Persistence entities
@@ -90,7 +92,7 @@ class EntityDefiner implements Runnable {
         }
 
         if (id == null)
-            throw new IllegalArgumentException(entityClass + " lacks public field with @Id or of the form *ID");
+            throw new MappingException(entityClass + " lacks public field with @Id or of the form *ID"); // TODO
         return id;
     }
 
@@ -123,12 +125,7 @@ class EntityDefiner implements Runnable {
 
             List<Class<?>> embeddableTypes = new ArrayList<>();
 
-            Map<Class<?>, String> keyAttributeNames = new HashMap<>();
-
             for (Class<?> c : entities) {
-                String keyAttributeName = getID(c);
-                keyAttributeNames.put(c, keyAttributeName);
-
                 if (c.getAnnotation(jakarta.persistence.Entity.class) == null) {
                     Entity entity = c.getAnnotation(Entity.class);
                     StringBuilder xml = new StringBuilder(500).append(" <entity class=\"" + c.getName() + "\">").append(EOLN);
@@ -148,7 +145,7 @@ class EntityDefiner implements Runnable {
                     if (discriminatorColumn != null)
                         xml.append("  <discriminator-column name=\"").append(discriminatorColumn.value()).append("\"/>").append(EOLN);
 
-                    writeAttributes(xml, c, keyAttributeName, embeddableTypes);
+                    writeAttributes(xml, c, getID(c), embeddableTypes);
 
                     xml.append(" </entity>").append(EOLN);
 
@@ -183,6 +180,7 @@ class EntityDefiner implements Runnable {
                 Queue<Attribute<?, ?>> embeddables = new LinkedList<>();
                 Queue<String> embeddablePrefixes = new LinkedList<>();
                 Queue<List<Member>> embeddableAccessors = new LinkedList<>();
+
                 for (Attribute<?, ?> attr : entityType.getAttributes()) {
                     String attributeName = attr.getName();
                     PersistentAttributeType attributeType = attr.getPersistentAttributeType();
@@ -192,6 +190,8 @@ class EntityDefiner implements Runnable {
                         embeddableAccessors.add(Collections.singletonList(attr.getJavaMember()));
                     } else {
                         attributeNames.put(attributeName.toUpperCase(), attributeName);
+                        if (attr instanceof SingularAttribute && ((SingularAttribute<?, ?>) attr).isId())
+                            attributeNames.put("ID", attributeName);
                         attributeAccessors.put(attributeName, Collections.singletonList(attr.getJavaMember()));
                         if (PersistentAttributeType.ELEMENT_COLLECTION.equals(attributeType))
                             collectionAttributeNames.add(attributeName);
@@ -220,11 +220,18 @@ class EntityDefiner implements Runnable {
 
                             // Allow a qualified name such as @OrderBy("address.street.name")
                             embeddableAttributeName = fullAttributeName.toUpperCase();
-                            attributeNames.putIfAbsent(embeddableAttributeName, fullAttributeName);
+                            attributeNames.put(embeddableAttributeName, fullAttributeName);
 
-                            // Allow a qualified name such as findByAddress_Street_Name
-                            embeddableAttributeName = embeddableAttributeName.replace('.', '_');
-                            attributeNames.putIfAbsent(embeddableAttributeName, fullAttributeName);
+                            // Allow a qualified name such as findByAddress_Street_Name if it doesn't overlap
+                            String embeddableAttributeName_ = embeddableAttributeName.replace('.', '_');
+                            attributeNames.putIfAbsent(embeddableAttributeName_, fullAttributeName);
+
+                            // Allow a qualified name such as findByAddressStreetName if it doesn't overlap
+                            String embeddableAttributeNameUndelimited = embeddableAttributeName.replace(".", "");
+                            attributeNames.putIfAbsent(embeddableAttributeNameUndelimited, fullAttributeName);
+
+                            if (embAttr instanceof SingularAttribute && ((SingularAttribute<?, ?>) embAttr).isId())
+                                attributeNames.put("ID", fullAttributeName);
 
                             attributeAccessors.put(fullAttributeName, embAccessors);
                             if (PersistentAttributeType.ELEMENT_COLLECTION.equals(attributeType))
@@ -245,23 +252,11 @@ class EntityDefiner implements Runnable {
 
                 Class<?> entityClass = entityType.getJavaType();
 
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "attribute names for " + entityClass, attributeNames);
-
-                String keyAttributeName = keyAttributeNames.get(entityClass);
-                Attribute<?, ?> keyAttribute = entityType.getAttribute(keyAttributeNames.get(entityType.getJavaType()));
-                Member keyAccessor = keyAttribute.getJavaMember();
-
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "accessor for id " + keyAttribute, keyAccessor);
-
                 EntityInfo entityInfo = new EntityInfo(entityType.getName(), //
                                 entityClass, //
                                 attributeAccessors, //
                                 attributeNames, //
                                 collectionAttributeNames, //
-                                keyAttributeNames.get(entityClass), //
-                                keyAccessor, //
                                 punit);
 
                 provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).complete(entityInfo);

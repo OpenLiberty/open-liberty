@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -302,6 +302,12 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         }
 
         queryInfo.jpql = q == null ? queryInfo.jpql : q.toString();
+
+        if (queryInfo.type == null)
+            throw new MappingException("Repository method name " + queryInfo.method.getName() +
+                                       " does not map to a valid query. Some examples of valid method names are:" +
+                                       " save(entity), findById(id), findByPriceLessThanEqual(maxPrice), deleteById(id)," +
+                                       " existsById(id), countByPriceBetween(min, max), updateByIdSetPrice(id, newPrice)"); // TODO NLS
 
         return queryInfo;
     }
