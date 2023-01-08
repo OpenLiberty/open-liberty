@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -344,13 +344,7 @@ public class DBRotationTest extends FATServletClient {
             }
 
             // Check that server1 is dead
-            try {
-                FATUtils.runWithRetries(50, 5000, () -> isDead(longLeaseLogFailServer1));
-            } catch (Exception e) {
-                // server was not stopped
-                FATUtils.stopServers(longLeaseLogFailServer1);
-                fail(longLeaseLogFailServer1.getServerName() + " did not stop");
-            }
+            assertNotNull(longLeaseLogFailServer1.getServerName() + " did not shutdown", longLeaseLogFailServer1.waitForStringInLog("CWWKE0036I", LOG_SEARCH_TIMEOUT));
 
             // The server has been halted but its status variable won't have been reset because we crashed it. In order to
             // setup the server for a restart, set the server state manually.
@@ -359,7 +353,6 @@ public class DBRotationTest extends FATServletClient {
         Log.info(c, method, "test complete");
     }
 
-    @Test
     public void testLogFailureNoShutdown() throws Exception {
         final String method = "testLogFailureNoShutdown";
         if (TxTestContainerSuite.databaseContainerType != DatabaseContainerType.Derby) { // Embedded Derby cannot support tests with concurrent server startup
@@ -408,3 +401,4 @@ public class DBRotationTest extends FATServletClient {
         throw new Exception(msg);
     }
 }
+
