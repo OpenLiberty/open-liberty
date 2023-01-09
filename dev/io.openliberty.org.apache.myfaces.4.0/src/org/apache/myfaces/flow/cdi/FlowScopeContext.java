@@ -152,24 +152,20 @@ public class FlowScopeContext implements Context
             }
         }
         
-        List<String> activeFlowMapKeys = getStorageHolder(facesContext).getActiveFlowMapKeys(facesContext);
-        for (String flowMapKey : activeFlowMapKeys)
+        ContextualStorage storage = getContextualStorage(facesContext, true,
+                getCurrentClientWindowFlowId(facesContext));
+        Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
+        ContextualInstanceInfo<?> contextualInstanceInfo = contextMap.get(storage.getBeanKey(bean));
+        if (contextualInstanceInfo != null)
         {
-            ContextualStorage storage = getContextualStorage(facesContext, false, flowMapKey);
-            if (storage == null)
+            @SuppressWarnings("unchecked")
+            final T instance = (T) contextualInstanceInfo.getContextualInstance();
+            if (instance != null)
             {
-                continue;
+                return instance;
             }
-
-            Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
-            ContextualInstanceInfo<?> contextualInstanceInfo = contextMap.get(storage.getBeanKey(bean));
-            if (contextualInstanceInfo == null)
-            {
-                continue;
-            }
-
-            return (T) contextualInstanceInfo.getContextualInstance();
         }
+        
         return null;
     }
 
@@ -239,24 +235,6 @@ public class FlowScopeContext implements Context
             }
 
             return storage.createContextualInstance(bean, creationalContext);
-        }
-
-        List<String> activeFlowMapKeys = getStorageHolder(facesContext).getActiveFlowMapKeys(facesContext);
-        for (String flowMapKey : activeFlowMapKeys)
-        {
-            ContextualStorage storage = getContextualStorage(facesContext, true, flowMapKey);
-
-            Map<Object, ContextualInstanceInfo<?>> contextMap = storage.getStorage();
-            ContextualInstanceInfo<?> contextualInstanceInfo = contextMap.get(storage.getBeanKey(bean));
-            if (contextualInstanceInfo != null)
-            {
-                @SuppressWarnings("unchecked")
-                final T instance = (T) contextualInstanceInfo.getContextualInstance();
-                if (instance != null)
-                {
-                    return instance;
-                }
-            }
         }
         
         ContextualStorage storage = getContextualStorage(facesContext, true,
