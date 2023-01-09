@@ -12,7 +12,7 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
-import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
+import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
 import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ArchivePath;
@@ -50,6 +50,8 @@ public class BellsTest extends FATServletClient {
     @TestServlet(servlet = TestServletA.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
+    public TestMethod testMethod;
+
     @ClassRule
     public static RepeatTests repeatTest = MicroProfileActions.repeat(SERVER_NAME, TestMode.FULL, //
                                                                       MicroProfileActions.MP41, // first test in LITE mode
@@ -65,19 +67,21 @@ public class BellsTest extends FATServletClient {
 
     @Before
     public void setUp() throws Exception {
-        String name = getTestMethodNameOnly(testName);
-        switch (name) {
-            case "testBellsCheckpointAtDeployment":
+        testMethod = getTestMethod(TestMethod.class, testName);
+        switch (testMethod) {
+            case testBellsCheckpointAtDeployment:
                 server.setCheckpoint(CheckpointPhase.DEPLOYMENT, false, null);
                 break;
-            case "testBellsCheckpointAtApplication":
+            case testBellsCheckpointAtApplication:
                 server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
                 break;
-            default:
+            case testHttpServletRequest:
                 server.setCheckpoint(CheckpointPhase.APPLICATIONS, true, null);
                 break;
+            default:
+                break;
         }
-        server.startServer(name + ".log");
+        server.startServer(getTestMethod(TestMethod.class, testName) + ".log");
     }
 
     @Test
@@ -114,6 +118,13 @@ public class BellsTest extends FATServletClient {
     @After
     public void tearDown() throws Exception {
         server.stopServer();
+    }
+
+    static enum TestMethod {
+        testBellsCheckpointAtDeployment,
+        testBellsCheckpointAtApplication,
+        testHttpServletRequest,
+        unknown
     }
 
 }
