@@ -23,12 +23,12 @@ import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.TxShrinkHelper;
-import com.ibm.ws.transaction.test.tests.DualServerDynamicTestBase;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.topology.impl.LibertyServer;
 import servlets.Simple2PCCloudServlet;
+import tests.DualServerDynamicTestBase;
 
 /**
  *
