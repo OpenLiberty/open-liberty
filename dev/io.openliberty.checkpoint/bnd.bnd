@@ -24,6 +24,7 @@ WS-TraceGroup: checkpoint
 
 -buildpath: \
 	com.ibm.websphere.org.osgi.core,\
+	com.ibm.ws.kernel.boot.common;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.org.apache.felix.gogo.runtime;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\

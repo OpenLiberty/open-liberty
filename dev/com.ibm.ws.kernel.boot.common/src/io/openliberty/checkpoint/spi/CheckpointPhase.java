@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
-
-import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  * Phase which a checkpoint of the running process is being taken.
@@ -219,7 +217,6 @@ public enum CheckpointPhase {
         return System.getProperty("io.openliberty.checkpoint.debug") != null;
     }
 
-    @Trivial
     /**
      * Print debug message to system out. The normal trace in liberty is not available
      * this low.

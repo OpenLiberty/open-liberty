@@ -30,6 +30,7 @@ publish.wlp.jar.disabled: true
 -buildpath: \
 	org.eclipse.osgi;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.kernel.boot.common;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.ws.kernel.boot.nested;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\

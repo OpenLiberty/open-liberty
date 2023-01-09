@@ -63,4 +63,4 @@ Export-Package: \
   com.ibm.ws.org.jboss.logging;version=latest,\
   com.ibm.ws.logging;version=latest,\
   com.ibm.ws.container.service;version=latest,\
-  com.ibm.ws.kernel.boot.core;version=latest
+  com.ibm.ws.kernel.boot.common;version=latest

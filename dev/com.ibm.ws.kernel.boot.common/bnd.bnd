@@ -16,7 +16,8 @@ bVersion=1.0
 -removeheaders = Import-Package
 
 Export-Package: \
- com.ibm.ws.kernel.boot.classloader
+ com.ibm.ws.kernel.boot.classloader, \
+ io.openliberty.checkpoint.spi
 
 instrument.disabled: true
 
