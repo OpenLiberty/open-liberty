@@ -363,8 +363,9 @@ public class RESTHelper {
     public static String repairSlashes(String objectName, RESTRequest request) {
         if (objectName.indexOf('/') == -1) {
             return objectName;
-        }        
-        String decodedURI = RESTHelper.URLDecoder(request.getURI(), JSONConverter.getConverter());
+        }
+        JSONConverter converter = JSONConverter.getConverter();
+        String decodedURI = RESTHelper.URLDecoder(request.getURI(), converter);
         String regexPattern = "\\Q" + objectName.replaceAll("/", "\\\\E/+\\\\Q") + "\\E";
         Pattern pattern = Pattern.compile(regexPattern);
         Matcher matcher = pattern.matcher(decodedURI);
@@ -372,11 +373,13 @@ public class RESTHelper {
         if (matchFound) {
             // The group is in fact what we want, it is the new version of objectName
             return matcher.group();
-        } else {
-            // This shouldn't happen. Could throw an exception or just return the
-            // original objectName and log.
-            // TODO
-            throw new RuntimeException("Wibble");
+        } 
+        // This shouldn't happen. The regex should at least match the original object
+        // name in the URI. It's unsafe to continue as there is no obvious way to
+        // guarantee that the correct object name has been retrieved
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Couldn't match objectName " + objectName + " in decoded uri " + decodedURI + " from request URI " + request.getURI());
         }
+        throw ErrorHelper.createRESTHandlerJsonException(new IOException("Couldn't find object name in request URI"), converter, APIConstants.STATUS_INTERNAL_SERVER_ERROR);
     }
 }
