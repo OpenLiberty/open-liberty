@@ -66,7 +66,8 @@ import componenttest.topology.impl.LibertyServer;
                 SlowAppStartTest.class,
                 JsonbTest.class,
                 JsonpTest.class,
-                ManagedBeansTest.class
+                ManagedBeansTest.class,
+                BellsTest.class
 })
 
 public class FATSuite {
