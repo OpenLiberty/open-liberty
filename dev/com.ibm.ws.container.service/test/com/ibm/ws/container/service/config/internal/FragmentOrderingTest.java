@@ -33,8 +33,7 @@ import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
 public class FragmentOrderingTest {
-
-// https://github.com/jakartaee/servlet/blob/master/spec/src/main/asciidoc/servlet-spec-body.adoc
+// https://github.com/jakartaee/servlet/blob/6.0.0/spec/src/main/asciidoc/servlet-spec-body.adoc
 //   8.2.2. Ordering of web.xml and web-fragment.xml
 //
 
