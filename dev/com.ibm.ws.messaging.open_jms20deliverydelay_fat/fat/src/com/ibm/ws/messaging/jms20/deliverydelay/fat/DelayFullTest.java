@@ -45,6 +45,7 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -82,13 +83,17 @@ public class DelayFullTest {
     };
 
     private static void transformConfigurations() throws Exception {
-        if ( !JakartaEE9Action.isActive() ) {
+        if ( !JakartaEE9Action.isActive() && !JakartaEE10Action.isActive()) {
             return;
         }
 
         for ( String config : EE9_TRANSFORMED_CONFIGS ) {
             Path configPath = Paths.get("lib/LibertyFATTestFiles", config);
-            JakartaEE9Action.transformApp(configPath);
+            if (JakartaEE9Action.isActive()) {
+                JakartaEE9Action.transformApp(configPath);
+            } else if (JakartaEE10Action.isActive()) {
+                JakartaEE10Action.transformApp(configPath);
+            }
         }
     }
 
@@ -463,11 +468,11 @@ public class DelayFullTest {
     }
     
     private String getServerFeature() {
-        return ( JakartaEE9Action.isActive() ? "messagingServer-3.0" : "wasJmsServer-1.0" );
+        return ( JakartaEE10Action.isActive() || JakartaEE9Action.isActive() ? "messagingServer-3.0" : "wasJmsServer-1.0" );
     }
 
     private String getServerMessageFragment() {
-        return ( JakartaEE9Action.isActive() ? "messagingServer" : "wasJmsServer" );
+        return ( JakartaEE10Action.isActive() || JakartaEE9Action.isActive() ? "messagingServer" : "wasJmsServer" );
     }
 
     private void verifyRemovedFeature(LibertyServer server, String fragment) throws Exception {

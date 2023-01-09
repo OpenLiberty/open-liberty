@@ -33,7 +33,9 @@ tested.features:\
   messagingServer-3.0,\
   messagingClient-3.0,\
   messagingSecurity-3.0,\
-  mdb-4.0
+  mdb-4.0,\
+  connectors-2.1,\
+  pages-3.1
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}

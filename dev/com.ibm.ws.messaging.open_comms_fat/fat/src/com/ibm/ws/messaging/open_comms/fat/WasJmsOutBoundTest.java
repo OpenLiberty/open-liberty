@@ -1,5 +1,5 @@
 /* ============================================================================
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,15 +29,11 @@ import org.junit.BeforeClass;
 @Mode(TestMode.LITE)
 @RunWith(FATRunner.class)
 public class WasJmsOutBoundTest extends FATBase {
-  static {
-    server_ = LibertyServerFactory.getLibertyServer("com.ibm.ws.messaging.open_comms.WJOServer");
-    client_ = LibertyServerFactory.getLibertyServer("com.ibm.ws.messaging.open_comms.WJOClient");
-  }
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
     Util.TRACE_ENTRY();
-    setup();
+    setup("com.ibm.ws.messaging.open_comms.WJOServer", "com.ibm.ws.messaging.open_comms.WJOClient");
     Util.TRACE_EXIT();
   }
 

@@ -1,5 +1,5 @@
 /* ============================================================================
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@
 package com.ibm.ws.messaging.open_comms.fat;
 
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import static org.junit.Assert.assertNotNull;
@@ -57,8 +58,11 @@ public class FATBase extends FATServletClient {
     return successFlag;
   }
 
-  protected static void setup() throws Exception {
+  protected static void setup(String serverName, String clientName) throws Exception {
     Util.TRACE_ENTRY("server_="+server_+",client_="+client_);
+
+    server_ = LibertyServerFactory.getLibertyServer(serverName);
+    client_ = LibertyServerFactory.getLibertyServer(clientName);
 
     setServerProps(server_,new String[]{"fat.test.debug",System.getProperty("fat.test.debug")});
     setServerProps(client_,new String[]{"fat.test.debug",System.getProperty("fat.test.debug")});

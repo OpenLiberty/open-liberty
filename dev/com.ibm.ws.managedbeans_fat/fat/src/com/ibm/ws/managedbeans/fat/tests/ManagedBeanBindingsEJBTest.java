@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -49,7 +50,8 @@ public class ManagedBeanBindingsEJBTest extends FATServletClient {
     @ClassRule
     public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("ManagedBeansBindingsEjbServer"))
                     .andWith(FeatureReplacementAction.EE8_FEATURES().forServers("ManagedBeansBindingsEjbServer"))
-                    .andWith(new JakartaEE9Action().fullFATOnly().forServers("ManagedBeansBindingsEjbServer"));
+                    .andWith(new JakartaEE9Action().fullFATOnly().forServers("ManagedBeansBindingsEjbServer"))
+                    .andWith(new JakartaEE10Action().forServers("ManagedBeansBindingsEjbServer"));
 
     @BeforeClass
     public static void setUp() throws Exception {
