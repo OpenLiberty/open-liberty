@@ -53,7 +53,7 @@ public class BellsTest extends FATServletClient {
     public TestMethod testMethod;
 
     @ClassRule
-    public static RepeatTests repeatTest = MicroProfileActions.repeat(SERVER_NAME, TestMode.FULL, //
+    public static RepeatTests repeatTest = MicroProfileActions.repeat(SERVER_NAME, TestMode.FULL,
                                                                       MicroProfileActions.MP41, // first test in LITE mode
                                                                       // rest are FULL mode
                                                                       MicroProfileActions.MP50, MicroProfileActions.MP60);
@@ -88,13 +88,13 @@ public class BellsTest extends FATServletClient {
     public void testBellsCheckpointAtDeployment() throws Exception {
         assertTrue("Expected message for bell service registration not found", !server.findStringsInLogs("CWWKL0050I").isEmpty());
         server.checkpointRestore();
-        assertTrue("Bell service should have been implemented during restore", !server.findStringsInLogs("Inside Servlet Container Initializer...").isEmpty());
+        assertTrue("Bell service should have been consumed during restore", !server.findStringsInLogs("Inside Servlet Container Initializer...").isEmpty());
     }
 
     @Test
     public void testBellsCheckpointAtApplication() throws Exception {
         assertTrue("Expected message for bell service registration not found", !server.findStringsInLogs("CWWKL0050I").isEmpty());
-        assertTrue("Bell service should have been implemented during checkpoint", !server.findStringsInLogs("Inside Servlet Container Initializer...").isEmpty());
+        assertTrue("Bell service should have been consumed during checkpoint", !server.findStringsInLogs("Inside Servlet Container Initializer...").isEmpty());
         server.checkpointRestore();
 
     }
