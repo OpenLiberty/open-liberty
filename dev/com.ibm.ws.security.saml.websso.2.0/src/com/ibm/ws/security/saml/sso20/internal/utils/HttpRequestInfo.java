@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -260,6 +260,9 @@ public class HttpRequestInfo implements Serializable {
             if (encodedUrl != null && !encodedUrl.isEmpty()) {
                 this.requestURLWithFragments = URLDecoder.decode(encodedUrl, Constants.UTF8);
             } else {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc,  "OLGH23567, url with encoded query string = ", this.requestURL);
+                }
                 this.requestURLWithFragments = getRequestUrlWithDecodedQueryString();
             }
 
@@ -269,7 +272,7 @@ public class HttpRequestInfo implements Serializable {
         }
 
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Original RequestUrl:" + this.reqUrl + "\n  requestURLWithFragments:" + this.requestURLWithFragments);
+            Tr.debug(tc, "OLGH23567, Original RequestUrl:" + this.reqUrl + "\n  requestURLWithFragments:" + this.requestURLWithFragments);
         }
     }
 
@@ -317,7 +320,7 @@ public class HttpRequestInfo implements Serializable {
     }
 
     /**
-     * Encodes each parameter in the provided query. Expects the query argument to be the query string of a URL with parameters
+     * Encodes/Decodes each parameter in the provided query. Expects the query argument to be the query string of a URL with parameters
      * in the format: param=value(&param2=value2)*
      *
      * @param query

@@ -83,6 +83,7 @@ public class MsgCtxUtilTest {
     @BeforeClass
     public static void setUp() {
         //outputMgr.trace("*=all");
+        outputMgr.trace("*=all=disabled");
     }
 
     @Before
