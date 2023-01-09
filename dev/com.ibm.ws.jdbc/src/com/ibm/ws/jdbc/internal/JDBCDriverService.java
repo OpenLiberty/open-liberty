@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -21,7 +23,6 @@ import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.SQLNonTransientException;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,7 +33,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Properties;
 import java.util.ServiceLoader;
@@ -1001,6 +1001,9 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
             else if (paramType.equals(Character.class)) // special case: Character
                 param = Character.valueOf(value.charAt(0));
 
+            else if(paramType.equals(char[].class)) // special case: char array
+                param = value.toCharArray();
+		
             else // the generic case: any object with a single parameter String constructor
                 param = paramType.getConstructor(String.class).newInstance(value);
         }
@@ -1114,16 +1117,10 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
     private static Object coerceType(Class<?> desiredType, Object val) {
         if (desiredType.isAssignableFrom(val.getClass()))
             return val;
-        
-        if (val instanceof Number) {
-            Number num = (Number) val;
-            if (desiredType == long.class || desiredType == Long.class)
-                return num.longValue();
-            if (desiredType == int.class || desiredType == Integer.class)
-                return num.intValue();
-            if (desiredType == short.class || desiredType == Short.class)
-                return num.shortValue();
-        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "coerceType", val.getClass().getName() + " -> " + desiredType.getName());
+
         if (val instanceof String) {
             String str = (String) val;
             if (desiredType == long.class || desiredType == Long.class)
@@ -1132,6 +1129,18 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 return Integer.valueOf(str);
             if (desiredType == short.class || desiredType == Short.class)
                 return Short.valueOf(str);
+        } else {
+            if (desiredType == String.class)
+                return val.toString();
+            if (val instanceof Number) {
+                Number num = (Number) val;
+                if (desiredType == long.class || desiredType == Long.class)
+                    return num.longValue();
+                if (desiredType == int.class || desiredType == Integer.class)
+                    return num.intValue();
+                if (desiredType == short.class || desiredType == Short.class)
+                    return num.shortValue();
+            }
         }
         
         return val;

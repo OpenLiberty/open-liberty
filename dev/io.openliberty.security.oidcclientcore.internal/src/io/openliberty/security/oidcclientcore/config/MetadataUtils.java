@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -17,9 +19,11 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferencePolicy;
 
+import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
@@ -52,6 +56,17 @@ public class MetadataUtils {
      */
     public static <T> T getValueFromProviderOrDiscoveryMetadata(OidcClientConfig oidcClientConfig, Function<OidcProviderMetadata, T> metadataMethodToCall,
                                                                 String discoveryMetadataKey) throws OidcDiscoveryException, OidcClientConfigurationException {
+        T value = getValueFromProviderMetadata(oidcClientConfig, metadataMethodToCall, discoveryMetadataKey);
+        if (value != null) {
+            return value;
+        }
+        return getValueFromDiscoveryMetadata(oidcClientConfig, discoveryMetadataKey);
+    }
+
+    /**
+     * Returns a parameterized value from the configured OidcProviderMetadata, if present.
+     */
+    public static <T> T getValueFromProviderMetadata(OidcClientConfig oidcClientConfig, Function<OidcProviderMetadata, T> metadataMethodToCall, String discoveryMetadataKey) {
         OidcProviderMetadata providerMetadata = oidcClientConfig.getProviderMetadata();
         if (providerMetadata != null) {
             T value = metadataMethodToCall.apply(providerMetadata);
@@ -62,7 +77,20 @@ public class MetadataUtils {
                 return value;
             }
         }
-        return getValueFromDiscoveryMetadata(oidcClientConfig, discoveryMetadataKey);
+        return null;
+    }
+
+    /**
+     * Provide the Jakarta JsonObject from the Discovery endpoint.
+     *
+     * @param oidcClientConfig
+     * @return
+     * @throws OidcClientConfigurationException
+     * @throws OidcDiscoveryException
+     */
+    public static JSONObject getProviderDiscoveryMetaData(OidcClientConfig oidcClientConfig) throws OidcClientConfigurationException, OidcDiscoveryException {
+        return oidcMetadataService.getProviderDiscoveryMetadata(oidcClientConfig);
+
     }
 
     /**
@@ -83,6 +111,27 @@ public class MetadataUtils {
             throw new OidcDiscoveryException(oidcClientConfig.getClientId(), oidcClientConfig.getProviderURI(), nlsMessage);
         }
         return value;
+    }
+
+    public static String[] getStringArrayValueFromProviderOrDiscoveryMetadata(OidcClientConfig oidcClientConfig, Function<OidcProviderMetadata, String[]> metadataMethodToCall,
+                                                                              String discoveryMetadataKey) throws OidcDiscoveryException, OidcClientConfigurationException {
+        if (metadataMethodToCall != null) {
+            String[] value = getValueFromProviderMetadata(oidcClientConfig, metadataMethodToCall, discoveryMetadataKey);
+            if (value != null && value.length > 0) {
+                return value;
+            }
+        }
+        return getAndConvertJsonArrayFromDiscoveryData(oidcClientConfig, discoveryMetadataKey);
+    }
+
+    static String[] getAndConvertJsonArrayFromDiscoveryData(OidcClientConfig oidcClientConfig,
+                                                            String discoveryMetadataKey) throws OidcDiscoveryException, OidcClientConfigurationException {
+        JSONArray valueFromDiscovery = getValueFromDiscoveryMetadata(oidcClientConfig, discoveryMetadataKey);
+        String[] values = new String[valueFromDiscovery.size()];
+        for (int i = 0; i < valueFromDiscovery.size(); i++) {
+            values[i] = (String) valueFromDiscovery.get(i);
+        }
+        return values;
     }
 
     public static String getAuthorizationEndpoint(OidcClientConfig oidcClientConfig) throws OidcDiscoveryException, OidcClientConfigurationException {
@@ -121,10 +170,24 @@ public class MetadataUtils {
                                                        OidcDiscoveryConstants.METADATA_KEY_ISSUER);
     }
 
-    public static String getIdTokenSigningAlgorithmsSupported(OidcClientConfig oidcClientConfig) throws OidcDiscoveryException, OidcClientConfigurationException {
-        return getValueFromProviderOrDiscoveryMetadata(oidcClientConfig,
-                                                       metadata -> metadata.getIdTokenSigningAlgorithmsSupported(),
-                                                       OidcDiscoveryConstants.METADATA_KEY_ID_TOKEN_SIGNING_ALG_VALUES_SUPPORTED);
+    public static String[] getIdTokenSigningAlgorithmsSupported(OidcClientConfig oidcClientConfig) throws OidcDiscoveryException, OidcClientConfigurationException {
+        return getStringArrayValueFromProviderOrDiscoveryMetadata(oidcClientConfig,
+                                                                  metadata -> metadata.getIdTokenSigningAlgorithmsSupported(),
+                                                                  OidcDiscoveryConstants.METADATA_KEY_ID_TOKEN_SIGNING_ALG_VALUES_SUPPORTED);
+    }
+
+    @FFDCIgnore(Exception.class)
+    public static String[] getUserInfoSigningAlgorithmsSupported(OidcClientConfig oidcClientConfig) throws OidcDiscoveryException, OidcClientConfigurationException {
+        try {
+            return getStringArrayValueFromProviderOrDiscoveryMetadata(oidcClientConfig,
+                                                                      null,
+                                                                      OidcDiscoveryConstants.METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED);
+        } catch (Exception e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught an exception getting " + OidcDiscoveryConstants.METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED + ": " + e);
+            }
+            return getIdTokenSigningAlgorithmsSupported(oidcClientConfig);
+        }
     }
 
 }

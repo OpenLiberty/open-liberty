@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -36,6 +38,8 @@ import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InEjbLib;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InEjbWarLib;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InNonLib;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InPrivateLib;
+import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InRuntimeExtRegular;
+import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InRuntimeExtSeeApp;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InWar;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InWar2;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InWarAppClientLib;
@@ -124,6 +128,12 @@ public class VisTester {
 
         class InPrivateLibQualifier extends AnnotationLiteral<InPrivateLib> implements InPrivateLib {};
         qualifiers.add(new InPrivateLibQualifier());
+
+        class InRuntimeExtRegularQualifier extends AnnotationLiteral<InRuntimeExtRegular> implements InRuntimeExtRegular {};
+        qualifiers.add(new InRuntimeExtRegularQualifier());
+
+        class InRuntimeExtSeeAppQualifier extends AnnotationLiteral<InRuntimeExtSeeApp> implements InRuntimeExtSeeApp {};
+        qualifiers.add(new InRuntimeExtSeeAppQualifier());
 
         QUALIFIERS = Collections.unmodifiableSet(qualifiers);
     }

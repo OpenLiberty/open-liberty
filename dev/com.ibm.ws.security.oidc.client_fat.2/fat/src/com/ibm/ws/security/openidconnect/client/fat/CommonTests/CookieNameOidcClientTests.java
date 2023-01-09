@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -30,6 +32,7 @@ import com.meterware.httpunit.WebConversation;
 
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 
 /**
  * This is the test class that contains common code for all of the
@@ -127,8 +130,9 @@ public class CookieNameOidcClientTests extends CommonTest {
             i++;
         }
         boolean foundExpiredCookie = false;
-        if (cookieLine != null && (cookieLine.contains("Expires=") && cookieLine.contains("16:00"))) {
-            foundExpiredCookie = true;
+        if (cookieLine != null) {
+            foundExpiredCookie = JakartaEE10Action.isActive() ? cookieLine.contains("max-age=0") : 
+            	(cookieLine.contains("Expires=") && cookieLine.contains("16:00"));
         }
         Assert.assertTrue("did not find expected expired cookie", foundExpiredCookie);
     }

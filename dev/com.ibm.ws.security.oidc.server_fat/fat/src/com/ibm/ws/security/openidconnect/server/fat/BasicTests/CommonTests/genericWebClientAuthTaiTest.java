@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -26,6 +28,7 @@ import com.meterware.httpunit.WebConversation;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -48,7 +51,7 @@ public class genericWebClientAuthTaiTest extends CommonTest {
     // Copy OidcTAI files into their proper locations in the build.image
     static protected void copyTaiFiles(String serverDir) throws Exception {
     	LibertyServer aTestServer = LibertyServerFactory.getLibertyServer(serverDir);
-    	if (JakartaEE9Action.isActive()) {
+    	if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
     		aTestServer.copyFileToLibertyInstallRoot("lib", "lib/com.ibm.ws.security.tai_2.0.jar");
     		aTestServer.copyFileToLibertyInstallRoot("lib", "lib/com.ibm.ws.security.tai.sample_2.0.jar");
     		aTestServer.copyFileToLibertyInstallRoot("lib/features", "lib/features/oidcTai-2.0.mf");

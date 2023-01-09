@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -29,6 +31,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServerWrapper;
 
@@ -902,7 +905,7 @@ public class SAMLMisc1ConfigTests extends SAMLConfigCommonTests {
      * time (not having to reconfig multiple times) we'll do all of this in one
      * test)
      */
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException", "org.opensaml.xmlsec.signature.support.SignatureException"  }, repeatAction = {EmptyAction.ID,JakartaEE9Action.ID})
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException", "org.opensaml.xmlsec.signature.support.SignatureException"  }, repeatAction = {EmptyAction.ID,JakartaEE9Action.ID,JakartaEE10Action.ID})
     // @Mode(TestMode.LITE)
     @Test
     public void test_config_errorPageURL() throws Exception {
@@ -972,7 +975,7 @@ public class SAMLMisc1ConfigTests extends SAMLConfigCommonTests {
      * value (non existant url) Test shows that we get a decent
      */
     @ExpectedFFDC(value = {"com.ibm.ws.security.saml.error.SamlException"})
-    @ExpectedFFDC(value = {"org.opensaml.messaging.handler.MessageHandlerException"}, repeatAction = {EmptyAction.ID,JakartaEE9Action.ID})
+    @ExpectedFFDC(value = {"org.opensaml.messaging.handler.MessageHandlerException"}, repeatAction = {EmptyAction.ID,JakartaEE9Action.ID,JakartaEE10Action.ID})
     @AllowedFFDC(value = {"com.ibm.ws.jsp.webcontainerext.JSPErrorReport"})
     // @Mode(TestMode.LITE)
     @Test

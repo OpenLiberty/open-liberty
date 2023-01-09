@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -12,13 +14,19 @@ package io.openliberty.security.jakartasec.identitystore;
 
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.security.auth.Subject;
 
+import com.ibm.json.java.JSONObject;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.context.SubjectManager;
 
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 import jakarta.security.enterprise.identitystore.openid.OpenIdContext;
 
 public class OpenIdContextUtils {
@@ -50,6 +58,22 @@ public class OpenIdContextUtils {
 
         }
         return sessionSubject;
+    }
+
+    public static JsonObject convertJsonObject(JSONObject toCovertJson) {
+        if (toCovertJson == null) {
+            return null;
+        }
+
+        Map<String, Object> map = new HashMap<>();
+        Set<String> keys = toCovertJson.keySet();
+        for (String key : keys) {
+            map.put(key, toCovertJson.get(key));
+        }
+
+        JsonObjectBuilder buildJakartaJson = Json.createObjectBuilder(map);
+
+        return buildJakartaJson.build();
     }
 
 }

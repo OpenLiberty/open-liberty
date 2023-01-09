@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -46,6 +48,11 @@ public class TestConstants {
      * Environment variable to set the maximum time to wait before sending a batch of traces to the trace server
      */
     public static final String ENV_OTEL_BSP_SCHEDULE_DELAY = "OTEL_BSP_SCHEDULE_DELAY";
+
+    /**
+     * The TraceID value returned when there is no active trace
+     */
+    public static final String NULL_TRACE_ID = "00000000000000000000000000000000";
 
     /*
      * Private constructor, no instances

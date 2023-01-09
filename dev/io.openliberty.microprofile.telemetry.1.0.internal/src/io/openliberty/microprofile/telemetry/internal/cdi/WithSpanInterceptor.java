@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -12,6 +14,8 @@ package io.openliberty.microprofile.telemetry.internal.cdi;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -102,12 +106,14 @@ public class WithSpanInterceptor {
     private static final class MethodRequestSpanNameExtractor implements SpanNameExtractor<MethodRequest> {
         @Override
         public String extract(final MethodRequest methodRequest) {
-            WithSpan annotation = methodRequest.getMethod().getDeclaredAnnotation(WithSpan.class);
-            String spanName = annotation.value();
-            if (spanName.isEmpty()) {
-                spanName = SpanNames.fromMethod(methodRequest.getMethod());
-            }
-            return spanName;
+            return AccessController.doPrivileged((PrivilegedAction<String>) () -> {
+                WithSpan annotation = methodRequest.getMethod().getDeclaredAnnotation(WithSpan.class);
+                String spanName = annotation.value();
+                if (spanName.isEmpty()) {
+                    spanName = SpanNames.fromMethod(methodRequest.getMethod());
+                }
+                return spanName;
+            });
         }
     }
 

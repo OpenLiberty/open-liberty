@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -20,6 +22,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.microprofile.config.Config;
 
+import io.openliberty.microprofile.telemetry.internal.helper.AgentDetection;
+import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.trace.Span;
@@ -40,6 +44,10 @@ public class OpenTelemetryProducer {
     private static final String INSTRUMENTATION_NAME = "io.openliberty.microprofile.telemetry";
     private static final String ENV_DISABLE_PROPERTY = "OTEL_SDK_DISABLED";
     private static final String CONFIG_DISABLE_PROPERTY = "otel.sdk.disabled";
+    private static final String ENV_METRICS_EXPORTER_PROPERTY = "OTEL_METRICS_EXPORTER";
+    private static final String CONFIG_METRICS_EXPORTER_PROPERTY = "otel.metrics.exporter";
+    private static final String ENV_LOGS_EXPORTER_PROPERTY = "OTEL_LOGS_EXPORTER";
+    private static final String CONFIG_LOGS_EXPORTER_PROPERTY = "otel.logs.exporter";
 
     @Inject
     Config config;
@@ -48,10 +56,16 @@ public class OpenTelemetryProducer {
     @ApplicationScoped
     @Produces
     public OpenTelemetry getOpenTelemetry() {
+
+        if (AgentDetection.isAgentActive()) {
+            // If we're using the agent, it will have set GlobalOpenTelemetry and we must use its instance
+            // all config is handled by the agent in this case
+            return GlobalOpenTelemetry.get();
+        }
+
         HashMap<String, String> telemetryProperties = getTelemetryProperties();
         //Builds tracer provider if user has enabled tracing aspects with config properties
         if (!checkDisabled(telemetryProperties)) {
-
             OpenTelemetry openTelemetry = AccessController.doPrivileged((PrivilegedAction<OpenTelemetry>) () -> {
                 return AutoConfiguredOpenTelemetrySdk.builder()
                                 .addPropertiesSupplier(() -> telemetryProperties)
@@ -76,6 +90,11 @@ public class OpenTelemetryProducer {
     }
 
     public void disposeOpenTelemetry(@Disposes OpenTelemetry openTelemetry) {
+
+        if (AgentDetection.isAgentActive()) {
+            return;
+        }
+
         if (openTelemetry instanceof OpenTelemetrySdk) {
             OpenTelemetrySdk sdk = (OpenTelemetrySdk) openTelemetry;
             List<CompletableResultCode> results = new ArrayList<>();
@@ -115,9 +134,17 @@ public class OpenTelemetryProducer {
             if (propertyName.startsWith("otel.") || propertyName.startsWith("OTEL_")) {
                 config.getOptionalValue(propertyName, String.class).ifPresent(
                                                                               value -> telemetryProperties.put(propertyName, value));
+
             }
         }
+        //Metrics and logs are disabled by default
+        telemetryProperties.put(CONFIG_METRICS_EXPORTER_PROPERTY, "none");
+        telemetryProperties.put(CONFIG_LOGS_EXPORTER_PROPERTY, "none");
+        telemetryProperties.put(ENV_METRICS_EXPORTER_PROPERTY, "none");
+        telemetryProperties.put(ENV_LOGS_EXPORTER_PROPERTY, "none");
+
         return telemetryProperties;
+
     }
 
     @Produces

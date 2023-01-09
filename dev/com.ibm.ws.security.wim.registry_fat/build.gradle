@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -39,6 +41,7 @@ autoFVT.doLast {
     'com.ibm.ws.security.wim.registry.fat.WIMURRegression',
     'com.ibm.ws.security.wim.registry.fat.MultiValuedOutputPropMapping',
     'com.ibm.ws.security.wim.registry.fat.FederateStandaloneCur',
+    'com.ibm.ws.security.wim.registry.fat.FederateStandaloneCurBell',
     'com.ibm.ws.security.wim.registry.fat.UserEnumeration'
   ]
   servers.each { server ->
@@ -49,7 +52,7 @@ autoFVT.doLast {
     }
   }
   
-    /*
+  /*
    * Copy sample custom UserRegistry feature to this test bucket.
    */
   copy { 
@@ -62,7 +65,7 @@ autoFVT.doLast {
     rename 'com.ibm.ws.security.registry_test.custom.jar', 'com.ibm.ws.security.registry_test.custom_1.0.jar'
   }
   
-    /*
+  /*
    * Copy sample CustomRepositoryDelay user feature to this test bucket.
    */
   copy { 
@@ -73,7 +76,5 @@ autoFVT.doLast {
     from new File(project(':com.ibm.ws.security.wim.repository_test.custom.delay').buildDir, 'com.ibm.ws.security.wim.repository_test.custom.delay.jar')
     into new File(autoFvtDir, 'publish/bundles')
     rename 'com.ibm.ws.security.wim.repository_test.custom.delay.jar', 'com.ibm.ws.security.wim.repository_test.custom.delay_1.0.jar'
-    
   }
-  
 }

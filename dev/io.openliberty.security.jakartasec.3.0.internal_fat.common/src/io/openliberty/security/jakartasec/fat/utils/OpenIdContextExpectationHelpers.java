@@ -1,16 +1,21 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.security.jakartasec.fat.utils;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
@@ -162,6 +167,33 @@ public class OpenIdContextExpectationHelpers {
 
     }
 
+    public static void getOpenIdContextAccessTokenScopeExpectations(String action, Expectations expectations, String requester, String[] scopes) throws Exception {
+        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, buildAccessTokenScopeString(requester,
+                                                                                                                             scopes), "The access token scope claim returned by the server does not match what is configured by the client."));
+    }
+
+    public static void getOpenIdContextMockUserInfoExpectations(String action, Expectations expectations, String requester, String[] scopes) throws Exception {
+        Set<String> scopeSet = new HashSet<>(Arrays.asList(scopes));
+
+        // relates to JsonUserInfoScopeServlet - only uses a subset of the profile scope claims for brevity
+        String profileScopeCheckType = scopeSet.contains(OpenIdConstant.PROFILE_SCOPE) ? Constants.STRING_DOES_NOT_CONTAIN : Constants.STRING_CONTAINS;
+        expectations.addExpectation(new ResponseFullExpectation(null, profileScopeCheckType, buildUserInfoClaimString(requester, OpenIdConstant.NAME,
+                                                                                                                      ServletMessageConstants.OPTIONAL_EMPTY), "The userinfo name claim was not as expected."));
+        expectations.addExpectation(new ResponseFullExpectation(null, profileScopeCheckType, buildUserInfoClaimString(requester, OpenIdConstant.PREFERRED_USERNAME,
+                                                                                                                      ServletMessageConstants.OPTIONAL_EMPTY), "The userinfo preferred_username claim was not as expected."));
+        expectations.addExpectation(new ResponseFullExpectation(null, profileScopeCheckType, buildUserInfoClaimString(requester, OpenIdConstant.BIRTHDATE,
+                                                                                                                      ServletMessageConstants.OPTIONAL_EMPTY), "The userinfo birthdate claim was not as expected."));
+        expectations.addExpectation(new ResponseFullExpectation(null, profileScopeCheckType, buildUserInfoClaimString(requester, OpenIdConstant.LOCALE,
+                                                                                                                      ServletMessageConstants.OPTIONAL_EMPTY), "The userinfo locale claim was not as expected."));
+
+        String emailScopeCheckType = scopeSet.contains(OpenIdConstant.EMAIL_SCOPE) ? Constants.STRING_DOES_NOT_CONTAIN : Constants.STRING_CONTAINS;
+        expectations.addExpectation(new ResponseFullExpectation(null, emailScopeCheckType, buildUserInfoClaimString(requester, OpenIdConstant.EMAIL,
+                                                                                                                    ServletMessageConstants.OPTIONAL_EMPTY), "The userinfo email claim was not as expected."));
+        expectations.addExpectation(new ResponseFullExpectation(null, emailScopeCheckType, buildUserInfoClaimString(requester, OpenIdConstant.EMAIL_VERIFIED,
+                                                                                                                    ServletMessageConstants.OPTIONAL_EMPTY), "The userinfo email_verified claim was not as expected."));
+
+    }
+
     public static String buildNonceString(String requester) throws Exception {
 
         return requester + ServletMessageConstants.ID_TOKEN + ServletMessageConstants.CLAIM + ServletMessageConstants.KEY + PayloadConstants.PAYLOAD_NONCE;
@@ -173,5 +205,15 @@ public class OpenIdContextExpectationHelpers {
 
     public static String buildContextString(String requester) throws Exception {
         return requester + ServletMessageConstants.OPENID_CONTEXT + ServletMessageConstants.OPENID_CONTEXT;
+    }
+
+    public static String buildAccessTokenScopeString(String requester, String... scopes) throws Exception {
+        return requester + ServletMessageConstants.ACCESS_TOKEN + ServletMessageConstants.CLAIM
+               + ServletMessageConstants.KEY + Constants.SCOPE + " "
+               + ServletMessageConstants.VALUE + "[" + String.join(", ", scopes) + "]";
+    }
+
+    public static String buildUserInfoClaimString(String requester, String claim, String value) throws Exception {
+        return requester + ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + claim + " " + ServletMessageConstants.VALUE + value;
     }
 }

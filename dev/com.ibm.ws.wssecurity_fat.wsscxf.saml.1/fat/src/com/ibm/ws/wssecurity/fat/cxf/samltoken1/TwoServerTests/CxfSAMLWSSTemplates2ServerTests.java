@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -54,7 +56,8 @@ import componenttest.topology.impl.LibertyServerWrapper;
 public class CxfSAMLWSSTemplates2ServerTests extends CxfSAMLWSSTemplatesTests {
 
     private static final Class<?> thisClass = CxfSAMLWSSTemplates2ServerTests.class;
-
+    protected static String repeatAction = "";
+    
     @BeforeClass
     public static void setupBeforeTest() throws Exception {
 
@@ -103,10 +106,8 @@ public class CxfSAMLWSSTemplates2ServerTests extends CxfSAMLWSSTemplatesTests {
         testSettings.setIdpUserPwd("security");
         testSettings.setSpTargetApp(testSAMLServer.getHttpString() + "/samlwsstemplatesclient/CxfWssSAMLTemplatesSvcClient");
         testSettings.setSamlTokenValidationData(testSettings.getIdpUserName(), testSettings.getSamlTokenValidationData().getIssuer(), testSettings.getSamlTokenValidationData().getInResponseTo(), testSettings.getSamlTokenValidationData().getMessageID(), testSettings.getSamlTokenValidationData().getEncryptionKeyUser(), testSettings.getSamlTokenValidationData().getRecipient(), testSettings.getSamlTokenValidationData().getEncryptAlg());
-
-        //issue 18363
-        setFeatureVersion("EE7");
         
+       
     }
 
 }

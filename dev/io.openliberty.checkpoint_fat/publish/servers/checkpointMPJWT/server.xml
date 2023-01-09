@@ -1,9 +1,11 @@
 <!--
     Copyright (c) 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
-    are made available under the terms of the Eclipse Public License v1.0
+    are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
-    http://www.eclipse.org/legal/epl-v10.html
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
    
     Contributors:
         IBM Corporation - initial API and implementation
@@ -24,7 +26,7 @@
     <webApplication location="mpjwt.war" context-root="/" />
     <variable id = "issuer" name = "issuer" value ="client1" />
     <variable id = "audience" name = "audience" value ="audience1" />
-    <variable id = "clockSkew" name = "clockSkew" value ="300000" />
+    <variable id = "clockSkew" name = "clockSkew" value ="500000" />
     <mpJwt id="myMpJwt" tokenHeader="Authorization" issuer="${issuer}" audiences="${audience}" publickeyAlgorithm="RS256" cookieName="Bearer" clockSkew="${clockSkew}" />
             
 </server>

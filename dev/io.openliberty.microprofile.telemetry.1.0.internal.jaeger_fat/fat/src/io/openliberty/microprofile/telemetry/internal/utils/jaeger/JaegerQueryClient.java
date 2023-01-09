@@ -1,17 +1,22 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.utils.jaeger;
 
+import static java.lang.Byte.toUnsignedInt;
+import static java.lang.Integer.toHexString;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.hamcrest.Matcher;
 
@@ -32,6 +38,8 @@ import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.jaegertracing.api_v2.Model.Span;
 import io.jaegertracing.api_v2.Query.FindTracesRequest;
+import io.jaegertracing.api_v2.Query.GetServicesRequest;
+import io.jaegertracing.api_v2.Query.GetServicesResponse;
 import io.jaegertracing.api_v2.Query.GetTraceRequest;
 import io.jaegertracing.api_v2.Query.SpansResponseChunk;
 import io.jaegertracing.api_v2.Query.TraceQueryParameters;
@@ -122,6 +130,18 @@ public class JaegerQueryClient implements AutoCloseable {
     }
 
     /**
+     * Retrieve all service names
+     */
+    public List<String> getServices() {
+        GetServicesRequest req = GetServicesRequest.getDefaultInstance();
+        GetServicesResponse resp = getRawClient().getServices(req);
+        List<ByteString> services = resp.getServicesList().asByteStringList();
+        return services.stream()
+                       .map(ByteString::toStringUtf8)
+                       .collect(Collectors.toList());
+    }
+
+    /**
      * Wait until the list of spans matching the given traceId meets the waitCondition
      * <p>
      * This should be used when waiting for the expected spans from the server to appear in Jaeger.
@@ -146,6 +166,7 @@ public class JaegerQueryClient implements AutoCloseable {
 
                 if (timeout.isExpired()) {
                     // Time is up, assert the match so we get an error if it doesn't match
+                    Log.info(c, "waitForSpansForTraceId", "Spans did not match: " + result);
                     assertThat("Spans not found within timeout", result, waitCondition);
                     return result;
                 }
@@ -191,6 +212,28 @@ public class JaegerQueryClient implements AutoCloseable {
             bytes[i / 2] = b;
         }
         return ByteString.copyFrom(bytes);
+    }
+
+    /**
+     * Convert a byteString into a string of lowercase hex characters
+     * <p>
+     * This is the reverse of {@link #convertTraceId(String)}
+     *
+     * @param byteString the {@code ByteString} to convert
+     * @return the bytes as a hex string
+     */
+    public static String convertByteString(ByteString byteString) {
+        ByteBuffer bytes = byteString.asReadOnlyByteBuffer();
+        StringBuilder result = new StringBuilder();
+        while (bytes.hasRemaining()) {
+            byte b = bytes.get();
+            String hex = toHexString(toUnsignedInt(b));
+            if (hex.length() == 1) {
+                result.append("0");
+            }
+            result.append(hex);
+        }
+        return result.toString();
     }
 
     /**

@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -123,6 +125,22 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
         }
     }
 
+    public static class skipIfJwtUserInfo extends MySkipRule {
+        @Override
+        public Boolean callSpecificCheck() {
+            String instance = RepeatTestFilter.getRepeatActionsAsString();
+            Log.info(thisClass, "skipIfJwtUserInfo", instance);
+
+            if (instance.contains(Constants.USERINFO_JWT)) {
+                Log.info(thisClass, "skipIfJwtUserInfo", "Test case is using a userinfo endpoint that returns data in JWT format - skip test");
+                testSkipped();
+                return true;
+            }
+            Log.info(thisClass, "skipIfJwtUserInfo", "Test case is using a userinfo endpoint that returns data in JSON format - run test");
+            return false;
+        }
+    }
+
     @BeforeClass
     public static void setUp() throws Exception {
 
@@ -176,7 +194,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
         swh = new ShrinkWrapHelpers(opHttpBase, opHttpsBase, rpHttpBase, rpHttpsBase);
 
         // deploy the userinfo endpoint apps
-        swh.defaultDropinApp(rpServer, "UserInfo.war", "userinfo.servlets");
+        swh.dropinAppWithJose4j(rpServer, "UserInfo.war", "userinfo.servlets");
 
         // deploy the userinfo test apps
         // apps where the callerNameClaim and callerGroupsClaim are the default
@@ -399,6 +417,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJwtUserInfo.class)
     @Test
     public void ConfigurationUserInfoTests_defaultNameClaimOtherGroupClaims_UserinfoGoodSubGoodGroups() throws Exception {
 
@@ -450,6 +469,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJwtUserInfo.class)
     @Test
     public void ConfigurationUserInfoTests_defaultNameClaimOtherGroupClaims_UserinfoBadSubGoodGroups() throws Exception {
 
@@ -467,6 +487,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJwtUserInfo.class)
     @Test
     public void ConfigurationUserInfoTests_otherNameClaimDefaultGroupClaims_UserinfoGoodSubGoodGroups() throws Exception {
 
@@ -486,6 +507,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJwtUserInfo.class)
     @Test
     public void ConfigurationUserInfoTests_otherNameClaimDefaultGroupClaims_UserinfoGoodSubBadGroups() throws Exception {
 
@@ -506,6 +528,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJwtUserInfo.class)
     @Test
     public void ConfigurationUserInfoTests_otherNameClaimDefaultGroupClaims_UserinfoBadSubGoodGroups() throws Exception {
 

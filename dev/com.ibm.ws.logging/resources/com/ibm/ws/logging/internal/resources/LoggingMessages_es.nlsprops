@@ -1,9 +1,11 @@
 ###############################################################################
 # Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -156,13 +158,13 @@ JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: Se ha especificado un car\u00e1cter no
 JSON_FIELDS_INVALID_CHARACHTER.explanation= Solo se aceptan letras, n\u00fameros y el signo : en la propiedad de correlaci\u00f3n de nombre del campo de registro de JSON
 JSON_FIELDS_INVALID_CHARACHTER.useraction= Cambie el valor de la propiedad de correlaci\u00f3n de nombre del campo de registro de JSON para eliminar los caracteres no v\u00e1lidos
 
-LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3012W: La propiedad del tiempo de inicio del reinicio del registro se ha formateado incorrectamente. Como resultado, el valor se establece en un valor predeterminado de '00:00', que representa la medianoche.
+LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3015W: La propiedad del tiempo de inicio del reinicio del registro se ha formateado incorrectamente. Como resultado, el valor se establece en un valor predeterminado de '00:00', que representa la medianoche.
 LOG_ROLLOVER_START_TIME_FORMAT_WARNING.explanation=La propiedad de hora de inicio del reinicio debe tener el formato HH:MM, con 00:00 que representa la medianoche.
 LOG_ROLLOVER_START_TIME_FORMAT_WARNING.useraction=Aseg\u00farese de que el valor de la propiedad de hora de inicio del reinicio se haya formateado correctamente en la anotaci\u00f3n HH:MM de 24 horas, donde 00:00 representa la medianoche.
 
 LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING=TRAS3013W: El intervalo de inicio del reinicio no puede tener una duraci\u00f3n menor que 1 minuto. Si se especifica un valor menor que 1 minuto, el intervalo del reinicio del registro se establece en un valor predeterminado de 1 d\u00eda.
-LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.explanation=TRAS3013W: El intervalo de inicio del reinicio no puede tener una duraci\u00f3n menor que 1 minuto.
-LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=TRAS3013W: Especifique un intervalo de reinicio del registro que sea igual o mayor que 1 minuto.
+LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.explanation=El intervalo de inicio del reinicio no puede tener una duraci\u00f3n menor que 1 minuto.
+LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=Especifique un intervalo de reinicio del registro que sea igual o mayor que 1 minuto.
 
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Falta el nombre de cabecera de uno o m\u00e1s de los campos accessLogging logFormat: {0}.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=El registro de JSON utiliza el atributo logFormat de accessLogging para seleccionar qu\u00e9 campos de mensaje http_access.log message deben incluirse. Debe suministrarse un nombre de cabecera cuando se utilizan los campo %i o %o en el atributo accessLogging logFormat.

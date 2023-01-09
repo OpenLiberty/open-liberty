@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -42,8 +44,12 @@ import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.ws.security.test.common.CommonTestClass;
 import com.ibm.ws.security.test.common.jwt.utils.JwtUnitTestUtils;
 
+import io.openliberty.security.common.jwt.exceptions.SignatureAlgorithmNotInAllowedList;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
+import io.openliberty.security.oidcclientcore.config.MetadataUtils;
+import io.openliberty.security.oidcclientcore.config.OidcMetadataService;
+import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoEndpointNotHttpsException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseNot200Exception;
@@ -74,6 +80,7 @@ public class UserInfoRequestorTest extends CommonTestClass {
     private final HttpGet httpGet = mockery.mock(HttpGet.class);
     private final StatusLine statusLine = mockery.mock(StatusLine.class);
     private final OidcProviderMetadata providerMetadata = mockery.mock(OidcProviderMetadata.class);
+    private final OidcMetadataService oidcMetadataService = mockery.mock(OidcMetadataService.class);
 
     private List<NameValuePair> params;
     private Map<String, Object> userInfoResponseMap;
@@ -90,10 +97,16 @@ public class UserInfoRequestorTest extends CommonTestClass {
         userInfoResponseMap = new HashMap<String, Object>();
         userInfoResponseMap.put(HttpConstants.RESPONSEMAP_CODE, httpResponse);
         userInfoResponseMap.put(HttpConstants.RESPONSEMAP_METHOD, httpGet);
+
+        MetadataUtils metadataUtils = new MetadataUtils();
+        metadataUtils.setOidcMetadataService(oidcMetadataService);
     }
 
     @After
     public void tearDown() {
+        MetadataUtils metadataUtils = new MetadataUtils();
+        metadataUtils.unsetOidcMetadataService(oidcMetadataService);
+
         mockery.assertIsSatisfied();
         outputMgr.resetStreams();
     }
@@ -313,9 +326,11 @@ public class UserInfoRequestorTest extends CommonTestClass {
     @Test
     public void test_extractClaimsFromJwtResponse_emptyClaims() throws Exception {
         UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(oidcClientConfig, userInfoEndpoint, accessToken).build();
+        JSONObject discoveryData = new JSONObject();
+        discoveryData.put(OidcDiscoveryConstants.METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED, getUserInfoSigningAlgsSupported("HS256"));
         mockery.checking(new Expectations() {
             {
-                one(oidcClientConfig).getProviderMetadata();
+                allowing(oidcClientConfig).getProviderMetadata();
                 will(returnValue(providerMetadata));
                 one(providerMetadata).getJwksURI();
                 will(returnValue(jwksUri));
@@ -327,6 +342,8 @@ public class UserInfoRequestorTest extends CommonTestClass {
                 will(returnValue(500));
                 one(oidcClientConfig).getJwksReadTimeout();
                 will(returnValue(500));
+                one(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
+                will(returnValue(discoveryData));
             }
         });
 
@@ -339,11 +356,13 @@ public class UserInfoRequestorTest extends CommonTestClass {
     }
 
     @Test
-    public void test_extractClaimsFromJwtResponse_withClaims() throws Exception {
+    public void test_extractClaimsFromJwtResponse_signatureAlgorithmNotAllowed() throws Exception {
         UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(oidcClientConfig, userInfoEndpoint, accessToken).build();
+        JSONObject discoveryData = new JSONObject();
+        discoveryData.put(OidcDiscoveryConstants.METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED, getUserInfoSigningAlgsSupported("RS256"));
         mockery.checking(new Expectations() {
             {
-                one(oidcClientConfig).getProviderMetadata();
+                allowing(oidcClientConfig).getProviderMetadata();
                 will(returnValue(providerMetadata));
                 one(providerMetadata).getJwksURI();
                 will(returnValue(jwksUri));
@@ -355,6 +374,43 @@ public class UserInfoRequestorTest extends CommonTestClass {
                 will(returnValue(500));
                 one(oidcClientConfig).getJwksReadTimeout();
                 will(returnValue(500));
+                one(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
+                will(returnValue(discoveryData));
+            }
+        });
+
+        JSONObject claims = new JSONObject();
+        String jwtResponse = JwtUnitTestUtils.getHS256Jws(claims, clientSecretString);
+
+        try {
+            JSONObject extractedClaims = userInfoRequestor.extractClaimsFromJwtResponse(jwtResponse);
+            fail("Should have thrown an exception but got claims: " + extractedClaims);
+        } catch (SignatureAlgorithmNotInAllowedList e) {
+            verifyException(e, "CWWKS2521E");
+        }
+    }
+
+    @Test
+    public void test_extractClaimsFromJwtResponse_withClaims() throws Exception {
+        UserInfoRequestor userInfoRequestor = new UserInfoRequestor.Builder(oidcClientConfig, userInfoEndpoint, accessToken).build();
+        JSONObject discoveryData = new JSONObject();
+        discoveryData.put(OidcDiscoveryConstants.METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED, getUserInfoSigningAlgsSupported("HS256"));
+        mockery.checking(new Expectations() {
+            {
+                allowing(oidcClientConfig).getProviderMetadata();
+                will(returnValue(providerMetadata));
+                one(providerMetadata).getJwksURI();
+                will(returnValue(jwksUri));
+                one(oidcClientConfig).getClientId();
+                will(returnValue(clientId));
+                one(oidcClientConfig).getClientSecret();
+                will(returnValue(clientSecret));
+                one(oidcClientConfig).getJwksConnectTimeout();
+                will(returnValue(500));
+                one(oidcClientConfig).getJwksReadTimeout();
+                will(returnValue(500));
+                one(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
+                will(returnValue(discoveryData));
             }
         });
 
@@ -394,6 +450,14 @@ public class UserInfoRequestorTest extends CommonTestClass {
         assertEquals("Expected sub claim to be " + claims.get("sub") + ", but was " + sub + ".", claims.get("sub"), sub);
         assertEquals("Expected iss claim to be " + claims.get("iss") + ", but was " + iss + ".", claims.get("iss"), iss);
         assertEquals("Expected name claim to be " + claims.get("name") + ", but was " + name + ".", claims.get("name"), name);
+    }
+
+    private JSONArray getUserInfoSigningAlgsSupported(String... algs) {
+        JSONArray algsSupported = new JSONArray();
+        for (String alg : algs) {
+            algsSupported.add(alg);
+        }
+        return algsSupported;
     }
 
 }

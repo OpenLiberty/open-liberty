@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2013, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -204,6 +206,7 @@ public class Constants {
     public static final String HTTP_ERROR_UNAUTHORIZED = "HTTP Error 401";
     public static final String HTTP_ERROR_MESSAGE = "HTTP Error Message";
     public static final String FORBIDDEN = "Forbidden";
+    public static final String FOUND_MSG = "Found";
     public static final String NOT_FOUND_MSG = "Not Found";
     public static final String NOT_FOUND_ERROR = "Error 404:";
     public static final String OK_MESSAGE = "OK";
@@ -226,6 +229,7 @@ public class Constants {
     public static final String RESPONSE_HEADER_CONTENT_TYPE = "Content-Type";
     public static final String RESPONSE_HEADER_CACHE_CONTROL = "Cache-Control";
     public static final String RESPONSE_HEADER_PRAGMA = "Pragma";
+    public static final String RESPONSE_HEADER_LOCATION = "Location";
 
     /* ********************** Cookies *********************** */
     public static final String JSESSION_ID_COOKIE = "JSESSIONID";

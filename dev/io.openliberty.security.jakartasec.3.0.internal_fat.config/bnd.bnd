@@ -1,9 +1,11 @@
 #*******************************************************************************
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -23,7 +25,18 @@ src: \
     test-applications/MaximumAnnotationUsingEL.war/src,\
     test-applications/UseSessionTrue.war/src,\
     test-applications/UseSessionFalse.war/src,\
-    test-applications/UserInfo.war/src
+    test-applications/UserInfo.war/src,\
+    test-applications/ScopeOpenId.war/src,\
+    test-applications/ScopeOpenIdProfile.war/src,\
+    test-applications/ScopeOpenIdEmail.war/src,\
+    test-applications/ScopeOpenIdProfileEmail.war/src,\
+    test-applications/ScopeOpenIdProfileEmailWithEL.war/src,\
+    test-applications/ResponseModeWithMockAuthEndpoint.war/src,\
+    test-applications/Authorization.war/src,\
+    test-applications/UseNonceTrue.war/src,\
+    test-applications/UseNonceFalse.war/src,\
+    test-applications/UseNonceTrueWithEL.war/src,\
+    test-applications/UseNonceFalseWithEL.war/src
     
 -dependson: \
     build.changeDetector,\
@@ -53,7 +66,8 @@ javac.target: 11
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	jakarta.inject.jakarta.inject-api;version=latest,\
 	io.openliberty.jakarta.servlet.5.0,\
-	io.openliberty.jakarta.jsonp.2.1;version=latest
+	io.openliberty.jakarta.jsonp.2.1;version=latest,\
+	com.ibm.ws.org.jose4j;version=latest
 
 Bundle-Name: Jakarta Sec 3.0 Config Fats
 Bundle-Description: Configuration FAT for Jakarta EE10 Security 3.0

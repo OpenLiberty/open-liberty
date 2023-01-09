@@ -1,15 +1,18 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.rest;
 
+import static io.openliberty.microprofile.telemetry.internal.helper.AgentDetection.isAgentActive;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
@@ -76,7 +79,7 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
             @Override
             public Void run() {
                 Context parentContext = Context.current();
-                if (instrumenter.shouldStart(parentContext, request)) {
+                if ((!isAgentActive()) && instrumenter.shouldStart(parentContext, request)) {
                     Context spanContext = instrumenter.start(parentContext, request);
                     Scope scope = spanContext.makeCurrent();
                     request.setProperty(configString + "context", spanContext);

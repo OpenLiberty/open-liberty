@@ -1,0 +1,17 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: visTest-3.0
+Subsystem-Version: 1.0.0
+Subsystem-Content: 
+  visTest.framework-jakarta;version="[1.0, 1.1)",
+  visTest.runtimeExtRegular-jakarta;version="[1.0, 1.1)",
+  visTest.runtimeExtSeeApp-jakarta;version="[1.0, 1.1)"
+Subsystem-Type: osgi.subsystem.feature
+
+X-Comment: This is an autofeature because there's a hardcoded limitation on what features you can list in a client.xml
+IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=io.openliberty.cdi-3.0)(osgi.identity=io.openliberty.cdi-4.0)))"
+
+IBM-API-Package: 
+  com.ibm.ws.cdi.visibility.tests.vistest.framework,
+  com.ibm.ws.cdi.visibility.tests.vistest.qualifiers
+IBM-Feature-Version: 2
+IBM-Process-Types: client,server

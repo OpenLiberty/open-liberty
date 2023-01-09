@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -18,6 +20,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -54,6 +57,12 @@ import com.ibm.websphere.ras.TraceComponent;
 public class CacheConfigUtil {
 
     private static final TraceComponent tc = Tr.register(CacheConfigUtil.class);
+    private static final String HAZELCAST_PROVIDER = "com.hazelcast.cache.HazelcastCachingProvider";
+    private static final String HAZELCAST_MEMBER_PROVIDER = "com.hazelcast.cache.HazelcastMemberCachingProvider";
+    private static final String HAZELCAST_SERVER_IMPL_PROVIDER = "com.hazelcast.cache.impl.HazelcastServerCachingProvider";
+    private static final String HAZELCAST_CLIENT_PROVIDER = "com.hazelcast.client.cache.HazelcastClientCachingProvider";
+    private static final String HAZELCAST_CLIENT_IMPL_PROVIDER = "com.hazelcast.client.cache.impl.HazelcastClientCachingProvider";
+
     private static final String INFINISPAN_EMBEDDED_PROVIDER = "org.infinispan.jcache.embedded.JCachingProvider";
     private static final String INFINISPAN_REMOTE_PROVIDER = "org.infinispan.jcache.remote.JCachingProvider";
 
@@ -77,7 +86,7 @@ public class CacheConfigUtil {
      * configuration for use when getting the {@link CacheManager} from the
      * {@link CachingProvider}.
      *
-     * @param configuredUri   The configured URI.
+     * @param uriValue        The configured URI.
      * @param cachingProvider The {@link CachingProvider} that will be used to get
      *                            the {@link CacheManager} from.
      * @param properties      The configured properties. These may be updated.
@@ -86,10 +95,30 @@ public class CacheConfigUtil {
      * @throws IOException If there was an error generating or updating the
      *                         configuration.
      */
-    public URI preConfigureCacheManager(URI configuredUri, CachingProvider cachingProvider, Properties properties) throws IOException {
+    public URI preConfigureCacheManager(String uriValue, CachingProvider cachingProvider, Properties properties) throws IOException {
 
         URI uriToReturn = null;
+        final URI configuredUri;
+        if (uriValue != null) {
+            try {
+                configuredUri = new URI(uriValue);
+            } catch (URISyntaxException e) {
+                throw new IllegalArgumentException(Tr.formatMessage(tc, "INCORRECT_URI_SYNTAX", e), e);
+            }
+        } else {
+            configuredUri = null;
+        }
+
         switch (cachingProvider.getClass().getName()) {
+
+            case HAZELCAST_PROVIDER:
+            case HAZELCAST_MEMBER_PROVIDER:
+            case HAZELCAST_SERVER_IMPL_PROVIDER:
+            case HAZELCAST_CLIENT_PROVIDER:
+            case HAZELCAST_CLIENT_IMPL_PROVIDER:
+                if (uriValue != null)
+                    properties.setProperty("hazelcast.config.location", uriValue);
+                break;
 
             case INFINISPAN_EMBEDDED_PROVIDER:
                 /*

@@ -1,9 +1,11 @@
 ###############################################################################
 # Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -156,13 +158,13 @@ JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: A fost livrat un caracter invalid \u00
 JSON_FIELDS_INVALID_CHARACHTER.explanation= Sunt acceptate doar litere, cifre \u015fi : \u00een proprietatea de mapare c\u00e2mp de jurnalizare JSON.
 JSON_FIELDS_INVALID_CHARACHTER.useraction= Modifica\u0163i valoarea propriet\u0103\u0163ii de mapare c\u00e2mp de jurnalizare JSON pentru a \u00eenl\u0103tura caracterele invalide.
 
-LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3012W: Proprietatea pentru timpul de pornire a reutiliz\u0103rii istoricului are un format incorect. Ca urmare, valoarea este setat\u0103 la valoarea implicit\u0103 '00:00', care reprezint\u0103 miezul nop\u021bii.
+LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3015W: Proprietatea pentru timpul de pornire a reutiliz\u0103rii istoricului are un format incorect. Ca urmare, valoarea este setat\u0103 la valoarea implicit\u0103 '00:00', care reprezint\u0103 miezul nop\u021bii.
 LOG_ROLLOVER_START_TIME_FORMAT_WARNING.explanation=Proprietatea pentru timpul de pornire a reutiliz\u0103rii trebuie s\u0103 aib\u0103 formatul HH:MM, cu 00:00 reprezent\u00e2nd miezul nop\u021bii.
 LOG_ROLLOVER_START_TIME_FORMAT_WARNING.useraction=Asigura\u021bi-v\u0103 c\u0103 valoarea propriet\u0103\u021bii pentru timpul de pornire a reutiliz\u0103rii are formatul corespunz\u0103tor HH:MM, cu nota\u021bia pentru 24 de ore, unde 00:00 reprezint\u0103 miezul nop\u021bii.
 
 LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING=TRAS3013W: Intervalul de reutilizare a istoricului nu poate fi mai mic de 1 minut. Dac\u0103 este specificat\u0103 o valoare mai mic\u0103 dec\u00e2t 1 minut, intervalul de reutilizare a istoricului este setat la valoarea implicit\u0103 de 1 zi.
-LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.explanation=TRAS3013W: Intervalul de reutilizare a istoricului nu poate fi mai mic de 1 minut.
-LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=TRAS3013W: Specifica\u021bi un interval de reutilizare a istoricului care este egal sau mai mare dec\u00e2t 1 minut.
+LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.explanation=Intervalul de reutilizare a istoricului nu poate fi mai mic de 1 minut.
+LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=Specifica\u021bi un interval de reutilizare a istoricului care este egal sau mai mare dec\u00e2t 1 minut.
 
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Numele de antet lipse\u015fte pentru unul sau mai multe c\u00e2mpuri accessLogging logFormat: {0}.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=Jurnalizarea JSON utilizeaz\u0103 atributul logFormat de la accessLogging pentru a selecta ce c\u00e2mpuri de mesaj http_access.log s\u0103 includ\u0103. Un nume de antet trebuie furnizat c\u00e2nd utiliza\u0163i c\u00e2mpurile %i sau %o \u00een atributul accessLogging logFormat.

@@ -1,15 +1,20 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.security.jakartasec.identitystore;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.StringReader;
 import java.util.Optional;
 
@@ -46,9 +51,9 @@ public class OpenIdContextImpl implements OpenIdContext {
     private AccessToken accessToken;
     private IdentityToken identityToken;
     private OpenIdClaims userinfoClaims;
-    private JsonObject userinfoClaimsAsJson = null;
-    private JsonObject providerMetadata; // TODO: Store JSON String instead for serialization
-    private String state; // TODO: Determine if storage values can be obtained without relying on state.
+    private transient JsonObject userinfoClaimsAsJson = null;
+    private transient JsonObject providerMetadata;
+    private String state;
     private boolean useSession;
     private String clientId;
 
@@ -292,6 +297,47 @@ public class OpenIdContextImpl implements OpenIdContext {
             return new SessionBasedStorage(request);
         } else {
             return new CookieBasedStorage(request, response);
+        }
+    }
+
+    private void readObject(ObjectInputStream input) throws ClassNotFoundException, IOException {
+        /*
+         * Read all non-transient fields.
+         */
+        input.defaultReadObject();
+
+        /*
+         * Read the providerMetadata JSON string back and use it to construct a Json
+         * instance.
+         */
+
+        boolean providerMetadataExists = input.readBoolean();
+        if (providerMetadataExists) {
+            providerMetadata = Json.createReader(new StringReader((String) input.readObject())).readObject();
+        } else {
+            providerMetadata = null;
+        }
+
+    }
+
+    private void writeObject(ObjectOutputStream output) throws IOException {
+        /*
+         * Write all non-transient fields.
+         */
+        output.defaultWriteObject();
+
+        /*
+         * Since the JsonObject class is not serializable, we are going to copy the
+         * JSON string instead.
+         */
+        if (providerMetadata == null) {
+            /*
+             * No providerMetadata to write
+             */
+            output.writeBoolean(false);
+        } else {
+            output.writeBoolean(true);
+            output.writeObject(providerMetadata.toString());
         }
     }
 

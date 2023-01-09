@@ -18,7 +18,7 @@
 [![Website](https://img.shields.io/badge/website-live-purple.svg)](https://openliberty.io/)
 [![Stack Overflow](https://img.shields.io/badge/find-answers-blue.svg)](https://stackoverflow.com/questions/tagged/open-liberty)
 [![Groups.io](https://img.shields.io/badge/ask-groups.io-orange.svg)](https://groups.io/g/openliberty)
-[![License](https://img.shields.io/badge/License-EPL%201.0-green.svg)](https://opensource.org/licenses/EPL-1.0)
+[![License](https://img.shields.io/badge/License-EPL%202.0-green.svg)](https://opensource.org/licenses/EPL-2.0)
 [![Twitter](https://img.shields.io/twitter/follow/openlibertyio.svg?style=social&label=Follow)](https://twitter.com/OpenLibertyIO)
 
 # Summary
@@ -102,5 +102,5 @@ Our [CONTRIBUTING](https://github.com/OpenLiberty/open-liberty/blob/release/CONT
 
 ## License
 
-Usage is provided under the [EPL 1.0 license](https://opensource.org/licenses/EPL-1.0) See LICENSE for the full details.
+Usage is provided under the [EPL 2.0 license](https://opensource.org/licenses/EPL-2.0) See LICENSE for the full details.
 

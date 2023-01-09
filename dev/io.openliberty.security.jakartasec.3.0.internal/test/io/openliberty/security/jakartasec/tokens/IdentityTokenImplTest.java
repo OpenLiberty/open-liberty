@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -29,7 +31,7 @@ public class IdentityTokenImplTest {
 
     private static final String JWT_ID_TOKEN_STRING = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKYWNrc29uIiwiYXRfaGFzaCI6ImJrR0NWcy1EcndMMGMycEtoN0ZVNGciLCJyZWFsbU5hbWUiOiJCYXNpY1JlZ2lzdHJ5IiwidW5pcXVlU2VjdXJpdHlOYW1lIjoiSmFja3NvbiIsInNpZCI6InFTTzBXeWs0VVNjMWFCYlMyUVlmIiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6OTQ0My9vaWRjL2VuZHBvaW50L09QIiwiYXVkIjoib2lkY2NsaWVudCIsImV4cCI6MTY2MTIwNzIwOCwiaWF0IjoxNjYxMjAwMDA4fQ.a4PRKYeG18vsmBOukcjmNve10KnVSBGVgwh2RqXkNbY";
     protected static final String SUBJECT_IN_ID_TOKEN = "Jackson";
-    protected static final Long TOKEN_MIN_VALIDITY_10_MILLIS = Long.valueOf(10000);
+    public static final Long TOKEN_MIN_VALIDITY_10_MILLIS = Long.valueOf(10000);
 
     private Map<String, Object> idTokenClaimsMap;
     private IdentityToken identityToken;
@@ -40,7 +42,7 @@ public class IdentityTokenImplTest {
         identityToken = new IdentityTokenImpl(JWT_ID_TOKEN_STRING, idTokenClaimsMap, TOKEN_MIN_VALIDITY_10_MILLIS);
     }
 
-    protected static Map<String, Object> createClaimsMap(String tokenString) throws UnsupportedEncodingException, InvalidJwtException {
+    public static Map<String, Object> createClaimsMap(String tokenString) throws UnsupportedEncodingException, InvalidJwtException {
         String[] parts = tokenString.split(("\\."));
         String claimsAsJsonString = new String(Base64.getDecoder().decode(parts[1]), "UTF-8");
         return org.jose4j.jwt.JwtClaims.parse(claimsAsJsonString).getClaimsMap();

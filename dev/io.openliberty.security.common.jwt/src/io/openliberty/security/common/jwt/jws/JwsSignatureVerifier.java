@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -11,7 +13,11 @@
 package io.openliberty.security.common.jwt.jws;
 
 import java.security.Key;
+import java.util.Arrays;
+import java.util.List;
 
+import org.jose4j.jwa.AlgorithmConstraints;
+import org.jose4j.jwa.AlgorithmConstraints.ConstraintType;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.InvalidJwtException;
@@ -27,6 +33,7 @@ import io.openliberty.security.common.jwt.JwtParsingUtils;
 import io.openliberty.security.common.jwt.exceptions.EncodedSignatureEmptyException;
 import io.openliberty.security.common.jwt.exceptions.JwtContextMissingJoseObjects;
 import io.openliberty.security.common.jwt.exceptions.SignatureAlgorithmDoesNotMatchHeaderException;
+import io.openliberty.security.common.jwt.exceptions.SignatureAlgorithmNotInAllowedList;
 
 public class JwsSignatureVerifier {
 
@@ -34,29 +41,24 @@ public class JwsSignatureVerifier {
 
     private final Key key;
     private final String signatureAlgorithm;
+    private final List<String> signatureAlgorithmsSupported;
 
     private JwsSignatureVerifier(Builder builder) {
         this.key = builder.key;
-        this.signatureAlgorithm = (builder.signatureAlgorithm != null) ? builder.signatureAlgorithm : "RS256";
+        this.signatureAlgorithm = (builder.signatureAlgorithm != null) ? builder.signatureAlgorithm : null;
+        this.signatureAlgorithmsSupported = builder.signatureAlgorithmsSupported;
     }
 
-    public Key getKey() {
-        return key;
-    }
-
-    public String getSignatureAlgorithm() {
-        return signatureAlgorithm;
-    }
-
-    public JwtClaims validateJwsSignature(JwtContext jwtContext) throws EncodedSignatureEmptyException, SignatureAlgorithmDoesNotMatchHeaderException, InvalidJwtException, JwtContextMissingJoseObjects {
+    public JwtClaims validateJwsSignature(JwtContext jwtContext) throws EncodedSignatureEmptyException, SignatureAlgorithmDoesNotMatchHeaderException, InvalidJwtException, JwtContextMissingJoseObjects, SignatureAlgorithmNotInAllowedList {
         JsonWebStructure jws = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
         return validateJwsSignature((JsonWebSignature) jws, jwtContext.getJwt());
     }
 
-    JwtClaims validateJwsSignature(JsonWebSignature signature, String jwtString) throws EncodedSignatureEmptyException, SignatureAlgorithmDoesNotMatchHeaderException, InvalidJwtException {
+    JwtClaims validateJwsSignature(JsonWebSignature signature, String jwtString) throws EncodedSignatureEmptyException, SignatureAlgorithmDoesNotMatchHeaderException, InvalidJwtException, SignatureAlgorithmNotInAllowedList {
         verifySignAlgOnly(signature);
 
         JwtConsumerBuilder builder = new JwtConsumerBuilder();
+        setJwsAlgorithmConstraints(builder);
         builder.setSkipDefaultAudienceValidation();
         if ("none".equals(signatureAlgorithm)) {
             // Signature algorithm is set to "none"; don't check the signature
@@ -71,7 +73,20 @@ public class JwsSignatureVerifier {
         return validatedJwtContext.getJwtClaims();
     }
 
-    void verifySignAlgOnly(JsonWebSignature signature) throws EncodedSignatureEmptyException, SignatureAlgorithmDoesNotMatchHeaderException {
+    void setJwsAlgorithmConstraints(JwtConsumerBuilder builder) {
+        String[] algorithmsAllowed;
+        if (signatureAlgorithm != null) {
+            algorithmsAllowed = new String[] { signatureAlgorithm };
+        } else if (signatureAlgorithmsSupported != null && !signatureAlgorithmsSupported.isEmpty()) {
+            algorithmsAllowed = signatureAlgorithmsSupported.toArray(new String[signatureAlgorithmsSupported.size()]);
+        } else {
+            // Fall back to only allowing RS256
+            algorithmsAllowed = new String[] { "RS256" };
+        }
+        builder.setJwsAlgorithmConstraints(new AlgorithmConstraints(ConstraintType.WHITELIST, algorithmsAllowed));
+    }
+
+    void verifySignAlgOnly(JsonWebSignature signature) throws EncodedSignatureEmptyException, SignatureAlgorithmDoesNotMatchHeaderException, SignatureAlgorithmNotInAllowedList {
         String algHeader = signature.getAlgorithmHeaderValue();
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Signing algorithm from header: " + algHeader);
@@ -82,8 +97,11 @@ public class JwsSignatureVerifier {
         if (signature.getEncodedSignature().isEmpty()) {
             throw new EncodedSignatureEmptyException();
         }
-        if (!(signatureAlgorithm.equals(algHeader))) {
+        if (signatureAlgorithm != null && !(signatureAlgorithm.equals(algHeader))) {
             throw new SignatureAlgorithmDoesNotMatchHeaderException(signatureAlgorithm, algHeader);
+        }
+        if (signatureAlgorithm == null && (signatureAlgorithmsSupported != null && !signatureAlgorithmsSupported.contains(algHeader))) {
+            throw new SignatureAlgorithmNotInAllowedList(algHeader, signatureAlgorithmsSupported);
         }
     }
 
@@ -91,6 +109,7 @@ public class JwsSignatureVerifier {
 
         private Key key = null;
         private String signatureAlgorithm = null;
+        private List<String> signatureAlgorithmsSupported = null;
 
         public Builder key(Key key) {
             this.key = key;
@@ -99,6 +118,11 @@ public class JwsSignatureVerifier {
 
         public Builder signatureAlgorithm(String signatureAlgorithm) {
             this.signatureAlgorithm = signatureAlgorithm;
+            return this;
+        }
+
+        public Builder signatureAlgorithmsSupported(String... signatureAlgorithmsSupported) {
+            this.signatureAlgorithmsSupported = Arrays.asList(signatureAlgorithmsSupported);
             return this;
         }
 

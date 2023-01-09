@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -54,7 +56,7 @@ import net.shibboleth.utilities.java.support.resolver.ResolverException;
  * If an optional {@link Validator} for {@link Signature} objects is supplied, this validator will be used to validate
  * the XML Signature element prior to the actual cryptographic validation of the signature. This might for example be
  * used to enforce certain signature profile requirements or to detect signatures upon which it would be unsafe to
- * attempt cryptographic processing. When using the single argument constructuor form, the validator will default to {@link SAMLSignatureProfileValidator}.
+ * attempt cryptographic processing. When using the single argument constructor form, the validator will default to {@link SAMLSignatureProfileValidator}.
  * </p>
  */
 

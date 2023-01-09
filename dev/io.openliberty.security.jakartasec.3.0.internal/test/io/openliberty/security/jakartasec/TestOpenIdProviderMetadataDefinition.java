@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -30,7 +32,6 @@ public class TestOpenIdProviderMetadataDefinition {
     protected static String ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED = "idTokenSigningAlgorithmsSupported";
     protected static String RESPONSE_TYPE_SUPPORTED = "responseTypeSupported";
     protected static String SUBJECT_TYPE_SUPPORTED_DEFAULT = JakartaSec30Constants.SUBJECT_TYPE_SUPPORTED_DEFAULT;
-    protected static String ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED_DEFAULT = OpenIdConstant.DEFAULT_JWT_SIGNED_ALGORITHM;
     protected static String RESPONSE_TYPE_SUPPORTED_DEFAULT = JakartaSec30Constants.RESPONSE_TYPE_SUPPORTED_DEFAULT;
 
     protected static OpenIdProviderMetadata getInstanceofAnnotation(final Map<String, Object> overrides) {
@@ -79,7 +80,7 @@ public class TestOpenIdProviderMetadataDefinition {
             @Override
             public String idTokenSigningAlgorithmsSupported() {
                 return (overrides != null
-                        && overrides.containsKey(ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED)) ? (String) overrides.get(ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED) : ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED_DEFAULT;
+                        && overrides.containsKey(ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED)) ? (String) overrides.get(ID_TOKEN_SIGNING_ALGORITHMS_SUPPORTED) : OpenIdConstant.DEFAULT_JWT_SIGNED_ALGORITHM;
             }
 
             @Override

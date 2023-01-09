@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+import io.openliberty.microprofile.telemetry.internal.helper.AgentDetection;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
@@ -191,7 +194,7 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
     @Override
     public void filter(final ContainerRequestContext request) {
         Context parentContext = Context.current();
-        if (instrumenter.shouldStart(parentContext, request)) {
+        if ((!AgentDetection.isAgentActive()) && instrumenter.shouldStart(parentContext, request)) {
             request.setProperty(REST_RESOURCE_CLASS, resourceInfo.getResourceClass());
             request.setProperty(REST_RESOURCE_METHOD, resourceInfo.getResourceMethod());
 
@@ -300,11 +303,6 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
         @Override
         public Integer statusCode(final ContainerRequestContext request, final ContainerResponseContext response, @Nullable Throwable error) {
             return response.getStatus();
-        }
-
-        @Override
-        public String serverName(final ContainerRequestContext request) {
-            return request.getUriInfo().getRequestUri().getHost();
         }
 
         @Override

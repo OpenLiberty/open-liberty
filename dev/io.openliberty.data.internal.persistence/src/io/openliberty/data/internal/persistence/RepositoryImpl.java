@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -37,7 +39,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.BaseStream;
 import java.util.stream.Collector;
@@ -54,7 +55,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import jakarta.data.Delete;
 import jakarta.data.Inheritance;
-import jakarta.data.Result;
 import jakarta.data.Select;
 import jakarta.data.Select.Aggregate;
 import jakarta.data.Update;
@@ -143,9 +143,14 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     private QueryInfo completeQueryInfo(EntityInfo entityInfo, QueryInfo queryInfo) {
 
         queryInfo.entityInfo = entityInfo;
-        boolean needsKeysetQueries = KeysetAwarePage.class.equals(queryInfo.method.getReturnType())
-                                     || KeysetAwarePage.class.equals(queryInfo.returnTypeParam);
-        boolean countPages = needsKeysetQueries
+        boolean isKeysetAwarePage = KeysetAwarePage.class.equals(queryInfo.method.getReturnType())
+                                    || KeysetAwarePage.class.equals(queryInfo.returnTypeParam);
+        boolean needsKeysetQueries = isKeysetAwarePage
+                                     || KeysetAwareSlice.class.equals(queryInfo.method.getReturnType())
+                                     || KeysetAwareSlice.class.equals(queryInfo.returnTypeParam)
+                                     || Iterator.class.equals(queryInfo.method.getReturnType())
+                                     || Iterator.class.equals(queryInfo.returnTypeParam);
+        boolean countPages = isKeysetAwarePage
                              || Page.class.equals(queryInfo.method.getReturnType())
                              || Page.class.equals(queryInfo.returnTypeParam);
         StringBuilder q = null;
@@ -268,14 +273,15 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             List<Sort> keyset = needsKeysetQueries ? new ArrayList<>(orderBy.length) : null;
 
             for (int i = 0; i < orderBy.length; i++) {
-                o.append(i == 0 ? " ORDER BY " : ", ").append(orderBy[i].ignoreCase() ? "LOWER(o." : "o.").append(orderBy[i].value());
+                String name = entityInfo.getAttributeName(orderBy[i].value());
+                o.append(i == 0 ? " ORDER BY " : ", ").append(orderBy[i].ignoreCase() ? "LOWER(o." : "o.").append(name);
                 if (orderBy[i].ignoreCase())
                     o.append(")");
                 if (orderBy[i].descending())
                     o.append(" DESC");
 
                 if (needsKeysetQueries) {
-                    r.append(i == 0 ? " ORDER BY " : ", ").append(orderBy[i].ignoreCase() ? "LOWER(o." : "o.").append(orderBy[i].value());
+                    r.append(i == 0 ? " ORDER BY " : ", ").append(orderBy[i].ignoreCase() ? "LOWER(o." : "o.").append(name);
                     if (orderBy[i].ignoreCase())
                         r.append(")");
                     if (!orderBy[i].descending())
@@ -283,11 +289,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
                     keyset.add(orderBy[i].ignoreCase() ? //
                                     orderBy[i].descending() ? //
-                                                    Sort.descIgnoreCase(orderBy[i].value()) : //
-                                                    Sort.ascIgnoreCase(orderBy[i].value()) : //
+                                                    Sort.descIgnoreCase(name) : //
+                                                    Sort.ascIgnoreCase(name) : //
                                     orderBy[i].descending() ? //
-                                                    Sort.desc(orderBy[i].value()) : //
-                                                    Sort.asc(orderBy[i].value()));
+                                                    Sort.desc(name) : //
+                                                    Sort.asc(name));
                 }
             }
 
@@ -299,6 +305,12 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
         queryInfo.jpql = q == null ? queryInfo.jpql : q.toString();
 
+        if (queryInfo.type == null)
+            throw new MappingException("Repository method name " + queryInfo.method.getName() +
+                                       " does not map to a valid query. Some examples of valid method names are:" +
+                                       " save(entity), findById(id), findByPriceLessThanEqual(maxPrice), deleteById(id)," +
+                                       " existsById(id), countByPriceBetween(min, max), updateByIdSetPrice(id, newPrice)"); // TODO NLS
+
         return queryInfo;
     }
 
@@ -307,30 +319,39 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      *
      * @param limit limit that was specified by the application.
      * @return offset value.
-     * @throws UnsupportedOperationException if the starting point for the limited range is not positive or would overflow Integer.MAX_VALUE.
+     * @throws DataException with chained IllegalArgumentException if the starting point for
+     *                           the limited range is not positive or would overflow Integer.MAX_VALUE.
      */
     static int computeOffset(Limit range) {
         long startIndex = range.startAt() - 1;
         if (startIndex >= 0 && startIndex <= Integer.MAX_VALUE)
             return (int) startIndex;
         else
-            throw new UnsupportedOperationException("The starting point for " + range + " is not within 1 to Integer.MAX_VALUE (2147483647)."); // TODO
+            throw new DataException(new IllegalArgumentException("The starting point for " + range + " is not within 1 to Integer.MAX_VALUE (2147483647).")); // TODO
     }
 
     /**
      * Compute the zero-based offset for the start of a page.
      *
-     * @param pageNumber  requested page number.
-     * @param maxPageSize maximum size of pages.
+     * @param pagination requested pagination.
      * @return offset for the specified page.
-     * @throws UnsupportedOperationException if the offset exceeds Integer.MAX_VALUE.
+     * @throws DataException with chained IllegalArgumentException if the offset exceeds Integer.MAX_VALUE
+     *                           or the Pageable requests keyset pagination.
      */
-    static int computeOffset(long pageNumber, int maxPageSize) {
-        long pageIndex = pageNumber - 1; // zero-based
+    static int computeOffset(Pageable pagination) {
+        if (pagination.mode() != Pageable.Mode.OFFSET)
+            throw new DataException(new IllegalArgumentException("Keyset pagination mode " + pagination.mode() +
+                                                                 " can only be used with repository methods with the following return types: " +
+                                                                 KeysetAwarePage.class.getName() + ", " + KeysetAwareSlice.class.getName() +
+                                                                 ", " + Iterator.class.getName() +
+                                                                 ". For offset pagination, use a Pageable without a keyset.")); // TODO NLS
+        int maxPageSize = pagination.size();
+        long pageIndex = pagination.page() - 1; // zero-based
         if (Integer.MAX_VALUE / maxPageSize >= pageIndex)
             return (int) (pageIndex * maxPageSize);
         else
-            throw new UnsupportedOperationException("The offset for " + pageNumber + " pages of size " + maxPageSize + " exceeds Integer.MAX_VALUE (2147483647)."); // TODO
+            throw new DataException(new IllegalArgumentException("The offset for " + pagination.page() + " pages of size " + maxPageSize +
+                                                                 " exceeds Integer.MAX_VALUE (2147483647).")); // TODO
     }
 
     /**
@@ -765,7 +786,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     private void generateRepositoryQueryOrderBy(QueryInfo queryInfo, int orderBy, StringBuilder q) {
         String methodName = queryInfo.method.getName();
         boolean needsKeysetQueries = KeysetAwarePage.class.equals(queryInfo.method.getReturnType())
-                                     || KeysetAwarePage.class.equals(queryInfo.returnTypeParam);
+                                     || KeysetAwareSlice.class.equals(queryInfo.method.getReturnType())
+                                     || Iterator.class.equals(queryInfo.method.getReturnType())
+                                     || KeysetAwarePage.class.equals(queryInfo.returnTypeParam)
+                                     || KeysetAwareSlice.class.equals(queryInfo.returnTypeParam)
+                                     || Iterator.class.equals(queryInfo.returnTypeParam);
         StringBuilder o = needsKeysetQueries ? new StringBuilder(100) : q; // forward order
         StringBuilder r = needsKeysetQueries ? new StringBuilder(100).append(" ORDER BY ") : null; // reverse order
         List<Sort> keyset = needsKeysetQueries ? new ArrayList<>() : null;
@@ -892,31 +917,23 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
     private StringBuilder generateSelect(QueryInfo queryInfo) {
         StringBuilder q = new StringBuilder(200);
-        // TODO entityClass now includes inheritance subtypes and much of the following was already computed.
-        Result result = queryInfo.method.getAnnotation(Result.class);
+
         Select select = queryInfo.method.getAnnotation(Select.class);
-        Class<?> type = result == null ? null : result.value();
         String[] cols = select == null ? null : select.value();
         boolean distinct = select != null && select.distinct();
         String function = select == null ? null : toFunctionName(select.function());
 
-        if (type == null) {
-            Class<?> returnType = queryInfo.method.getReturnType();
-            if (!Iterable.class.isAssignableFrom(returnType)) {
-                Class<?> arrayType = returnType.getComponentType();
-                returnType = arrayType == null ? returnType : arrayType;
-                if (!returnType.isPrimitive()
-                    && !returnType.isInterface()
-                    && !returnType.isAssignableFrom(queryInfo.entityInfo.type)
-                    && !returnType.getName().startsWith("java"))
-                    type = returnType;
-            }
-        }
+        Class<?> type = queryInfo.returnArrayType != null ? queryInfo.returnArrayType //
+                        : queryInfo.returnTypeParam != null ? queryInfo.returnTypeParam //
+                                        : queryInfo.method.getReturnType();
 
         q.append("SELECT ");
 
-        if (type == null ||
-            queryInfo.entityInfo.inheritance && queryInfo.entityInfo.type.isAssignableFrom(type))
+        if (type.isAssignableFrom(queryInfo.entityInfo.type)
+            || type.isInterface()
+            || type.isPrimitive()
+            || type.getName().startsWith("java")
+            || queryInfo.entityInfo.inheritance && queryInfo.entityInfo.type.isAssignableFrom(type)) {
             if (cols == null || cols.length == 0) {
                 q.append(distinct ? "DISTINCT o" : "o");
             } else {
@@ -924,7 +941,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     generateSelectExpression(q, i == 0, function, distinct, cols[i]);
                 }
             }
-        else {
+        } else {
             q.append("NEW ").append(type.getName()).append('(');
             boolean first = true;
             if (cols == null || cols.length == 0)
@@ -1039,8 +1056,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         break;
                     }
                     case SELECT: {
-                        Collector<Object, Object, Object> collector = null;
-                        Consumer<Object> consumer = null;
                         Limit limit = null;
                         Pageable pagination = null;
                         List<Sort> sortList = null;
@@ -1050,11 +1065,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         // Collector is added here for experimentation.
                         for (int i = queryInfo.paramCount; i < (args == null ? 0 : args.length); i++) {
                             Object param = args[i];
-                            if (param instanceof Collector)
-                                collector = (Collector<Object, Object, Object>) param;
-                            else if (param instanceof Consumer)
-                                consumer = (Consumer<Object>) param;
-                            else if (param instanceof Limit)
+                            if (param instanceof Limit)
                                 limit = (Limit) param;
                             else if (param instanceof Pageable)
                                 pagination = (Pageable) param;
@@ -1064,11 +1075,14 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                 Collections.addAll(sortList == null ? (sortList = new ArrayList<>()) : sortList, (Sort[]) param);
                         }
 
-                        if (pagination != null)
-                            if (sortList == null)
+                        if (pagination != null) {
+                            if (limit != null)
+                                throw new DataException("Repository method " + method + " cannot have both Limit and Pageable as parameters."); // TODO
+                            if (sortList == null || sortList.isEmpty())
                                 sortList = pagination.sorts();
                             else if (sortList != null && !pagination.sorts().isEmpty())
-                                throw new DataException("Repository method signature cannot specify Sort parameters if Pageable also has Sort parameters."); // TODO
+                                throw new DataException("Repository method " + method + " cannot specify Sort parameters if Pageable also has Sort parameters."); // TODO
+                        }
 
                         if (sortList != null && !sortList.isEmpty()) {
                             boolean forward = pagination == null || pagination.mode() != Pageable.Mode.CURSOR_PREVIOUS;
@@ -1076,7 +1090,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             StringBuilder o = null; // ORDER BY clause based on Sorts
                             for (Sort sort : sortList)
                                 if (sort == null)
-                                    throw new NullPointerException("Sort: null");
+                                    throw new DataException(new IllegalArgumentException("Sort: null"));
                                 else {
                                     o = o == null ? new StringBuilder(100).append(" ORDER BY ") : o.append(", ");
                                     o.append(sort.ignoreCase() ? "LOWER(o." : "o.").append(sort.property());
@@ -1096,11 +1110,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                                                      (void.class.equals(returnType) || CompletableFuture.class.equals(returnType)
                                                                       || CompletionStage.class.equals(returnType));
 
-                        if (asyncCompatibleResultForPagination && collector != null)
-                            return runAndCollect(queryInfo, pagination, collector, args);
-                        else if (asyncCompatibleResultForPagination && consumer != null)
-                            return runWithConsumer(queryInfo, pagination, consumer, args);
-
                         Class<?> type = queryInfo.returnTypeParam != null && (Optional.class.equals(returnType)
                                                                               || CompletableFuture.class.equals(returnType)
                                                                               || CompletionStage.class.equals(returnType)) //
@@ -1111,11 +1120,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             Tr.debug(this, tc, "results to be returned as " + type.getName());
 
                         if (pagination != null && Iterator.class.equals(type))
-                            returnValue = new PaginatedIterator<E>(queryInfo, pagination, args); // TODO keyset pagination
+                            returnValue = new PaginatedIterator<E>(queryInfo, pagination, args);
                         else if (KeysetAwareSlice.class.equals(type) || KeysetAwarePage.class.equals(type))
-                            returnValue = new KeysetAwarePageImpl<E>(queryInfo, pagination, args);
+                            returnValue = new KeysetAwarePageImpl<E>(queryInfo, limit == null ? pagination : toPageable(limit), args);
                         else if (Slice.class.equals(type) || Page.class.equals(type) || pagination != null && Streamable.class.equals(type))
-                            returnValue = new PageImpl<E>(queryInfo, pagination, args); // TODO Limit with Page as return type
+                            returnValue = new PageImpl<E>(queryInfo, limit == null ? pagination : toPageable(limit), args);
                         else {
                             em = queryInfo.entityInfo.persister.createEntityManager();
 
@@ -1127,25 +1136,15 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                                             : queryInfo.maxResults;
 
                             int startAt = limit != null ? computeOffset(limit) //
-                                            : pagination != null && pagination.mode() == Pageable.Mode.OFFSET //
-                                                            ? computeOffset(pagination.page(), maxResults) //
+                                            : pagination != null ? computeOffset(pagination) //
                                                             : 0;
-                            // TODO keyset pagination without returning KeysetAwareSlice/Page - raise error?
+
                             if (maxResults > 0)
                                 query.setMaxResults(maxResults);
                             if (startAt > 0)
                                 query.setFirstResult(startAt);
 
-                            if (collector != null) { // Does not provide much value over directly returning Stream
-                                try (Stream<?> stream = query.getResultStream()) {
-                                    returnValue = stream.collect(collector);
-                                }
-                            } else if (consumer != null) { // Does not provide much value over directly returning Stream
-                                try (Stream<?> stream = query.getResultStream()) {
-                                    stream.forEach(consumer::accept);
-                                    returnValue = null;
-                                }
-                            } else if (BaseStream.class.isAssignableFrom(type)) {
+                            if (BaseStream.class.isAssignableFrom(type)) {
                                 Stream<?> stream = query.getResultStream();
                                 if (Stream.class.equals(type))
                                     returnValue = stream;
@@ -1207,6 +1206,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                     } catch (NoSuchMethodException x) {
                                         throw new UnsupportedOperationException(type + " lacks public zero parameter constructor.");
                                     }
+                                } else if (Iterator.class.equals(type)) {
+                                    returnValue = results.iterator();
                                 } else if (results.isEmpty()) {
                                     returnValue = nullIfOptional(returnType);
                                 } else { // single result of other type
@@ -1399,107 +1400,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     }
 
     /**
-     * This is an experiment with allowing a collector to perform reduction
-     * on the contents of each page as the page is read in. This avoids having
-     * all pages loaded at once and gives the application a completion stage
-     * with a final result that can be awaited, or to which dependent stages
-     * can be added to run once the final result is ready.
-     *
-     * @param queryInfo
-     * @param pagination
-     * @param collector
-     * @param args
-     * @return completion stage that is already completed if only being used to
-     *         supply the result to an Asynchronous method. If the database supports
-     *         asynchronous patterns, it could be a not-yet-completed completion stage
-     *         that is controlled by the database's async support.
-     */
-    private CompletableFuture<Object> runAndCollect(QueryInfo queryInfo, Pageable pagination,
-                                                    Collector<Object, Object, Object> collector,
-                                                    Object[] args) throws Exception {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-
-        Object r = collector.supplier().get();
-        BiConsumer<Object, Object> accumulator = collector.accumulator();
-
-        // TODO it would be possible to process multiple pages in parallel if we wanted to and if the collector supports it
-        EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
-        try {
-            @SuppressWarnings("unchecked")
-            TypedQuery<E> query = (TypedQuery<E>) em.createQuery(queryInfo.jpql, queryInfo.entityInfo.type);
-            queryInfo.setParameters(query, args);
-
-            List<E> page;
-            int maxPageSize;
-            do {
-                // TODO Keyset pagination
-                maxPageSize = pagination.size();
-                query.setFirstResult(computeOffset(pagination.page(), maxPageSize));
-                query.setMaxResults(maxPageSize);
-                pagination = pagination.next();
-
-                page = query.getResultList();
-
-                for (Object item : page)
-                    accumulator.accept(r, item);
-
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "Processed page with " + page.size() + " results");
-            } while (pagination != null && page.size() == maxPageSize);
-        } finally {
-            em.close();
-        }
-
-        return void.class.equals(queryInfo.method.getReturnType()) ? null : CompletableFuture.completedFuture(collector.finisher().apply(r));
-    }
-
-    /**
-     * Copies the Jakarta NoSQL pattern of invoking a Consumer with the value of each result.
-     *
-     * @param queryInfo
-     * @param pagination
-     * @param consumer
-     * @param args
-     * @return completion stage that is already completed if only being used to
-     *         run as an Asynchronous method. If the database supports
-     *         asynchronous patterns, it could be a not-yet-completed completion stage
-     *         that is controlled by the database's async support.
-     */
-    private CompletableFuture<Void> runWithConsumer(QueryInfo queryInfo, Pageable pagination, Consumer<Object> consumer, Object[] args) throws Exception {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-
-        // TODO it would be possible to process multiple pages in parallel if we wanted to and if the consumer supports it
-        EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
-        try {
-            @SuppressWarnings("unchecked")
-            TypedQuery<E> query = (TypedQuery<E>) em.createQuery(queryInfo.jpql, queryInfo.entityInfo.type);
-            queryInfo.setParameters(query, args);
-
-            List<E> page;
-            int maxPageSize;
-            do {
-                // TODO Keyset pagination
-                maxPageSize = pagination.size();
-                query.setFirstResult(computeOffset(pagination.page(), maxPageSize));
-                query.setMaxResults(maxPageSize);
-                pagination = pagination.next();
-
-                page = query.getResultList();
-
-                for (Object item : page)
-                    consumer.accept(item);
-
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "Processed page with " + page.size() + " results");
-            } while (pagination != null && page.size() == maxPageSize);
-        } finally {
-            em.close();
-        }
-
-        return void.class.equals(queryInfo.method.getReturnType()) ? null : CompletableFuture.completedFuture(null);
-    }
-
-    /**
      * Converts to the specified type, raising an error if the conversion cannot be made.
      *
      * @param type type to convert to.
@@ -1581,6 +1481,20 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             return Long.parseLong((String) o);
         else
             throw new IllegalArgumentException("Not representable as a long value: " + o.getClass().getName());
+    }
+
+    /**
+     * Converts a Limit to a Pageable if possible.
+     *
+     * @param limit Limit.
+     * @return Pageable.
+     * @throws DataException with chained IllegalArgumentException if the Limit is a range with a starting point above 1.
+     */
+    private static final Pageable toPageable(Limit limit) {
+        if (limit.startAt() != 1L)
+            throw new DataException(new IllegalArgumentException("Limit with starting point " + limit.startAt() +
+                                                                 ", which is greater than 1, cannot be used to request pages or slices."));
+        return Pageable.ofSize((int) limit.maxResults()); // TODO remove cast once spec is updated
     }
 
     private static final Object toReturnValue(int i, Class<?> returnType, QueryInfo queryInfo) {

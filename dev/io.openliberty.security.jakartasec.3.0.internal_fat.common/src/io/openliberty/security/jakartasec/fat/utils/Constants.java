@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -19,12 +21,17 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String REDIRECT_URI = "redirectURI";
     public static final String RECIRECT_TO_ORIGINAL_RESOURCE = "redirectToOriginalResource";
     public static final String RECIRECT_TO_ORIGINAL_RESOURCE_EXPRESSION = "redirectToOriginalResourceExpression";
+    public static final String SCOPE = "scope";
+    public static final String SCOPE_EXPRESSION = "scopeExpression";
+    public static final String RESPONSE_MODE = "responseMode";
     public static final String CLIENT_ID = "clientId";
     public static final String CLIENT_SECRET = "clientSecret";
     public static final String PROVIDER_BASE = "providerBase";
     public static final String PROVIDER_SECURE_BASE = "providerSecureBase";
     public static final String CLIENT_BASE = "clientBase";
     public static final String CLIENT_SECURE_BASE = "clientSecureBase";
+    public static final String USE_NONCE = "useNonce";
+    public static final String USE_NONCE_EXPRESSION = "useNonceExpression";
     public static final String USE_SESSION = "useSession";
     public static final String USE_SESSION_EXPRESSION = "useSessionExpression";
     public static final String RESPONSE_TYPE = "responseType";
@@ -46,6 +53,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String TOKEN_AUTO_REFRESH = "tokenAutoRefresh";
     public static final String TOKEN_AUTO_REFRESH_EXPRESSION = "tokenAutoRefreshExpression";
 
+    public static final String AUTHORIZATION_ENDPOINT = "authorizationEndpoint";
     public static final String USERINFOENDPOINT = "userinfoEndpoint";
     public static final String IDTOKENSIGNINGALGORITHMSSUPPORTED = "idTokenSigningAlgorithmsSupported";
     public static final String JWKSCONNECTTIMEOUTEXPRESSION = "jwksConnectTimeoutExpression";
@@ -70,6 +78,11 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String CODE_IDTOKEN_FLOW = "code id_token";
     public static final String CODE_TOKEN_FLOW = "code token";
     public static final String CODE_IDTOKEN_TOKEN_FLOW = "code id_token token";
+
+    // response modes
+    public static final String QUERY_RESPONSE_MODE = "query";
+    public static final String FRAGMENT_RESPONSE_MODE = "fragment";
+    public static final String FORM_POST_RESPONSE_MODE = "form_post";
 
     // Display
     public static final String PAGE_DISPLAY = "page";

@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -96,6 +98,25 @@ public class ShrinkWrapHelpers {
         war.add(new FileAsset(new File("test-applications/" + newWar + "/resources/META-INF/ibm-application-bnd.xml")), "META-INF/ibm-application-bnd.xml");
         ShrinkHelper.exportDropinAppToServer(server, war);
 
+    }
+
+    public void dropinAppWithJose4j(LibertyServer server, String appName, String... packages) throws Exception {
+        Log.info(thisClass, "dropinAppWithJose4j", "starting update with jose4j");
+        WebArchive war = ShrinkHelper.buildDefaultApp(appName, packages);
+        addUtilClassesToApp(war);
+        addProviderConfigToApp(war);
+        addJose4j(war);
+        ShrinkHelper.exportDropinAppToServer(server, war);
+    }
+
+    public WebArchive addJose4j(WebArchive war) throws Exception {
+        Log.info(thisClass, "addJose4j", "starting update with jose4j");
+        try {
+            war.addAsLibrary(new File("lib/com.ibm.ws.org.jose4j.jar"));
+        } catch (Exception e) {
+            Log.info(thisClass, "addJose4j", e.getMessage());
+        }
+        return war;
     }
 
     public void dropinApp(LibertyServer server, String newWar, String sourceWar, String... packages) throws Exception {

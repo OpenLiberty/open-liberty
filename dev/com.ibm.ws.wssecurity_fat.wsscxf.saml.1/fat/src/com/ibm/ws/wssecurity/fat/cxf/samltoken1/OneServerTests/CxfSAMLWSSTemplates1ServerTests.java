@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -54,6 +56,7 @@ import componenttest.topology.impl.LibertyServerWrapper;
 public class CxfSAMLWSSTemplates1ServerTests extends CxfSAMLWSSTemplatesTests {
 
 	private static final Class<?> thisClass = CxfSAMLWSSTemplates1ServerTests.class;
+	protected static String repeatAction = "";
 	
     //	protected static String audienceRestrictError = "put real message here" ;
     //	protected static String clockSkewError = "put real message here" ;
@@ -65,8 +68,8 @@ public class CxfSAMLWSSTemplates1ServerTests extends CxfSAMLWSSTemplatesTests {
     @BeforeClass
     public static void setupBeforeTest() throws Exception {
 
-        //		flowType = SAMLConstants.SOLICITED_SP_INITIATED ;
-        flowType = chooseRandomFlow();
+    	//issue 23060 - FAT can't use chooseRandomFlow()
+        flowType = SAMLConstants.SOLICITED_SP_INITIATED ;
         idpSupportedType = SAMLConstants.SHIBBOLETH_TYPE;
 
         msgUtils.printClassName(thisClass.toString());
@@ -95,8 +98,6 @@ public class CxfSAMLWSSTemplates1ServerTests extends CxfSAMLWSSTemplatesTests {
         testSettings.setSpTargetApp(testSAMLServer.getHttpString() + "/samlwsstemplatesclient/CxfWssSAMLTemplatesSvcClient");
         testSettings.setSamlTokenValidationData(testSettings.getIdpUserName(), testSettings.getSamlTokenValidationData().getIssuer(), testSettings.getSamlTokenValidationData().getInResponseTo(), testSettings.getSamlTokenValidationData().getMessageID(), testSettings.getSamlTokenValidationData().getEncryptionKeyUser(), testSettings.getSamlTokenValidationData().getRecipient(), testSettings.getSamlTokenValidationData().getEncryptAlg());
 
-        //issue 18363
-        setFeatureVersion("EE7");
 
     }
 

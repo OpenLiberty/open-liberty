@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -11,11 +13,8 @@
 
 package com.ibm.ws.wssecurity.fat.utils.common;
 
-import java.io.File;
 import java.security.Security;
 import java.util.HashMap;
-
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -107,30 +106,8 @@ public class SharedTools {
         return noUpdateMsg;
     }
 
-    public static void installCallbackHandler(LibertyServer server) throws Exception {
-
-        String cbh = "com.ibm.ws.wssecurity.example.cbh_1.0.0";
-        String cbhFullName = "." + File.separator + "publish" + File.separator + "bundles" + File.separator + cbh + ".jar";
-        Log.info(thisClass, "installCallbackHandler", "Looking for file: " + cbhFullName);
-        File f = new File(cbhFullName);
-        if (f.exists()) {
-            Log.info(thisClass, "installCallbackHandler", "Installing callback handler: " + cbh);
-            server.installUserBundle(cbh);
-            server.installUserFeature("wsseccbh-1.0");
-        }
-    }
-
-    public static void unInstallCallbackHandler(LibertyServer server) throws Exception {
-
-        String cbh = "com.ibm.ws.wssecurity.example.cbh_1.0.0";
-        String cbhFullName = "." + File.separator + "publish" + File.separator + "bundles" + File.separator + cbh + ".jar";
-        Log.info(thisClass, "uninstallCallbackHandler", "Looking for file: " + cbhFullName);
-        File f = new File(cbhFullName);
-        if (f.exists()) {
-            Log.info(thisClass, "unInstallCallbackHandler", "Un-Installing callback handler: " + cbh);
-            server.uninstallUserFeature("wsseccbh-1.0");
-            server.uninstallUserBundle(cbh);
-        }
-    }
+    //issue 23730 12/2022 removed installCallbackHandler() and unInstallCallbackHandler() from SharedTools.java
+    //since they are no longer applicable in OL wsscxf FAT where ShrinkHelper with bnd.bnd to handle CBH installation
+    //and server.deleteFileFromLibertyInstallRoot() to handle CBH uninstallation
 
 }

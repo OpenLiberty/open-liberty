@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -67,6 +69,15 @@ public class MinimumBaseOpenIdConfig {
                 return value;
             }
         }
+    }
+
+    public String[] getStringArrayValue(String key, String delimiter) {
+        String value = config.getProperty(key);
+        String[] returnValue = {};
+        if (value != null && !value.isEmpty() && !value.contains(Constants.EMPTY_VALUE)) {
+            returnValue = value.split(delimiter);
+        }
+        return returnValue;
     }
 
     public boolean getBooleanValue(String key) {

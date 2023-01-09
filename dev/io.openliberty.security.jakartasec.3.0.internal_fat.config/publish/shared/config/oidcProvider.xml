@@ -1,9 +1,11 @@
 <!--
     Copyright (c) 2022 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
-    are made available under the terms of the Eclipse Public License v1.0
+    are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
-    http://www.eclipse.org/legal/epl-v10.html
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
 
     Contributors:
         IBM Corporation - initial API and implementation
@@ -44,6 +46,24 @@
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ELRedirectURIConcatInSingleEvalExpression/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ELRedirectURITwoEvalExpressions/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ELRedirectURIDoesNotContainBaseURL/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ScopeOpenId/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ScopeOpenIdProfile/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ScopeOpenIdEmail/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ScopeOpenIdProfileEmail/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeOpenIdProfileEmailELOpenId/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeOpenIdProfileEmailELOpenId/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeOpenIdProfileEmailELOpenIdProfile/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeOpenIdProfileEmailELOpenIdEmail/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeOpenIdProfileEmailELOpenIdProfileEmail/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeELNoOpenId/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeELEmpty/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeELNoScopesInCommonExceptOpenId/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeELMoreScopesThanConfiguredOnServer/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeELUppercaseScopes/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeELUnknownScope/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeELDuplicateScope/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/responseModeQuery/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/responseModeFormPost/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/useSessionTrueELTrue/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/useSessionTrueELFalse/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/useSessionFalseELTrue/Callback,
@@ -66,7 +86,7 @@
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServlet9/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServlet10/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServlet11/Callback"
-				scope="ALL_SCOPES"
+				scope="openid profile email"
 				enabled="true"
 			>
 			</client>

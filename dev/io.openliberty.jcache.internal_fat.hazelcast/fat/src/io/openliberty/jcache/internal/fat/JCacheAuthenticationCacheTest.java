@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -30,6 +32,7 @@ import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
@@ -62,6 +65,9 @@ public class JCacheAuthenticationCacheTest extends BaseTestCase {
         if (JakartaEE9Action.isActive()) {
             JakartaEE9Action.transformApp(Paths.get(server1.getServerRoot() + "/apps/basicauth.war"));
             JakartaEE9Action.transformApp(Paths.get(server2.getServerRoot() + "/apps/basicauth.war"));
+        } else if (JakartaEE10Action.isActive()) {
+            JakartaEE10Action.transformApp(Paths.get(server1.getServerRoot() + "/apps/basicauth.war"));
+            JakartaEE10Action.transformApp(Paths.get(server2.getServerRoot() + "/apps/basicauth.war"));
         }
     }
 

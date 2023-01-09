@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2021 IBM Corporation and others.
+ * Copyright (c) 2006, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -102,18 +104,20 @@ public class InjectionMIXTest {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer("J2CA8501E", "CNTR0168W", "CNTR0338W", "CWNEN0013W", "CNTR0020E");
-
-        // Remove the appSecurity feature that was added by the CDI repeat actions
-        if (RepeatWithCDI.isActive() || RepeatWithEE9CDI.isActive()) {
-            File publishConfigFile = new File("publish/servers/ejbcontainer.injection.ra.fat.MsgEndpointServer/server.xml");
-            ServerConfiguration config = ServerConfigurationFactory.fromFile(publishConfigFile);
-            Set<String> features = config.getFeatureManager().getFeatures();
-            for (String feature : features) {
-                if (feature.toLowerCase().startsWith("appsecurity-")) {
-                    features.remove(feature);
-                    ServerConfigurationFactory.toFile(publishConfigFile, config);
-                    break;
+        try {
+            server.stopServer("J2CA8501E", "CNTR0168W", "CNTR0338W", "CWNEN0013W", "CNTR0020E");
+        } finally {
+            // Remove the appSecurity feature that was added by the CDI repeat actions
+            if (RepeatWithCDI.isActive() || RepeatWithEE9CDI.isActive()) {
+                File publishConfigFile = new File("publish/servers/ejbcontainer.injection.ra.fat.MsgEndpointServer/server.xml");
+                ServerConfiguration config = ServerConfigurationFactory.fromFile(publishConfigFile);
+                Set<String> features = config.getFeatureManager().getFeatures();
+                for (String feature : features) {
+                    if (feature.toLowerCase().startsWith("appsecurity-")) {
+                        features.remove(feature);
+                        ServerConfigurationFactory.toFile(publishConfigFile, config);
+                        break;
+                    }
                 }
             }
         }

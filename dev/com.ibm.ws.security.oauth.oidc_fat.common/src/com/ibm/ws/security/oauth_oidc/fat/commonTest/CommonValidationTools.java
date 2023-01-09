@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -290,8 +292,8 @@ public class CommonValidationTools {
                 }
             }
 
-            Log.info(thisClass, thisMethod, "checkType is: " + expected.getCheckType());
-            Log.info(thisClass, thisMethod, "Checking for: " + expected.getValidationValue());
+            Log.info(thisClass, thisMethod, "checkType is: " + expected.getCheckType() + " " +
+                "Checking for: " + expected.getValidationValue());
 
             String fullResponseContent = AutomationTools.getFullResponseContentForFailureMessage(response, expected.getWhere());
 
@@ -330,7 +332,6 @@ public class CommonValidationTools {
                     }
                 }
             }
-            Log.info(thisClass, thisMethod, "Checked Value: " + expected.getValidationValue());
             return;
         } catch (Exception e) {
             e.printStackTrace();
@@ -1013,6 +1014,12 @@ public class CommonValidationTools {
                 } else {
                     for (String line : responseLines) {
                         if (line != null && line.contains(searchKey)) {
+                            if (!searchKey.endsWith(":")) {
+                                char nextChar = line.charAt(line.indexOf(searchKey) + searchKey.length());
+                                if (nextChar != ':' && nextChar != '=' && nextChar != ' ') {
+                                    continue;
+                                }
+                            }
                             String part1 = line.substring(line.indexOf(searchKey) + searchKey.length() + 1, line.length());
                             String[] splitLine = part1.split(",");
                             if (splitLine != null) {
@@ -2215,8 +2222,8 @@ public class CommonValidationTools {
 
     public String removeQuote(String str) {
 
-        if (str == null || str == "") {
-            return null;
+        if (str == null || str.equals("")) {
+            return str;
         }
 
         char char1 = str.charAt(0);

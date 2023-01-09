@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -46,12 +48,14 @@ public class TokenResponseValidator {
     public static final TraceComponent tc = Tr.register(TokenResponseValidator.class);
 
     OidcClientConfig clientConfig;
-    private HttpServletRequest request;
-    private HttpServletResponse response;
+    private final HttpServletRequest request;
+    private final HttpServletResponse response;
     private Storage storage;
 
-    public TokenResponseValidator(OidcClientConfig oidcClientConfig) {
+    public TokenResponseValidator(OidcClientConfig oidcClientConfig, HttpServletRequest request, HttpServletResponse response) {
         this.clientConfig = oidcClientConfig;
+        this.request = request;
+        this.response = response;
     }
 
     @FFDCIgnore({ TokenValidationException.class, Exception.class })
@@ -148,20 +152,6 @@ public class TokenResponseValidator {
     public String getStateParameter() {
         return request.getParameter(AuthorizationRequestParameters.STATE);
         //TODO: maybe throw an exception right here if this state is not valid
-    }
-
-    /**
-     * @param request
-     */
-    public void setRequest(HttpServletRequest request) {
-        this.request = request;
-    }
-
-    /**
-     * @param response
-     */
-    public void setResponse(HttpServletResponse response) {
-        this.response = response;
     }
 
 }

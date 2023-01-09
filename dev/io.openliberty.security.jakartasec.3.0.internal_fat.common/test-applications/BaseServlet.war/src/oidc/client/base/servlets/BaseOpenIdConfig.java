@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -59,6 +61,26 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         return value;
     }
 
+    public String[] getScopeExpression() {
+
+        String[] value = { Constants.OPENID_SCOPE, Constants.PROFILE_SCOPE, Constants.EMAIL_SCOPE };
+        if (config.containsKey(Constants.SCOPE_EXPRESSION)) {
+            value = getStringArrayValue(Constants.SCOPE_EXPRESSION, " ");
+        }
+
+        return value;
+    }
+
+    public String getResponseMode() {
+
+        String value = Constants.QUERY_RESPONSE_MODE;
+        if (config.containsKey(Constants.RESPONSE_MODE)) {
+            value = getStringValue(Constants.RESPONSE_MODE);
+        }
+
+        return value;
+    }
+
     public String getClientId() {
 
         String value = "client_1";
@@ -94,6 +116,15 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         String value = Constants.CODE_FLOW;
         if (config.containsKey(Constants.RESPONSE_TYPE)) {
             value = getStringValue(Constants.RESPONSE_TYPE);
+        }
+        return value;
+    }
+
+    public boolean getUseNonceExpression() {
+
+        boolean value = true;
+        if (config.containsKey(Constants.USE_NONCE_EXPRESSION)) {
+            value = getBooleanValue(Constants.USE_NONCE_EXPRESSION);
         }
         return value;
     }
@@ -172,6 +203,16 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         boolean value = false;
         if (config.containsKey(Constants.IDENTITY_TOKEN_EXPIRY_EXPRESSION)) {
             value = getBooleanValue(Constants.IDENTITY_TOKEN_EXPIRY_EXPRESSION);
+        }
+
+        return value;
+    }
+
+    public String getAuthorizationEndpoint() {
+
+        String value = "";
+        if (config.containsKey(Constants.AUTHORIZATION_ENDPOINT)) {
+            value = getStringValue(Constants.AUTHORIZATION_ENDPOINT);
         }
 
         return value;

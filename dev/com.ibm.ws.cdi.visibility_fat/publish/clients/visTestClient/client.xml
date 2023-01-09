@@ -17,10 +17,6 @@
     
     <library id="visTestCommonLib">
        <fileset includes="visTestCommonLib.jar"/>
-       <fileset includes="visTestFramework.jar"/>
     </library>
-    
-    <!--Java2 security-->
-    <javaPermission codebase="${client.config.dir}/visTestFramework.jar" className="java.security.AllPermission"  name="*" actions="*" />
     
 </client>

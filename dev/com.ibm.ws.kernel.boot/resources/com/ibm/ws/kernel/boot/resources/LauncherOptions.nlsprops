@@ -1,9 +1,11 @@
 ###############################################################################
 # Copyright (c) 2010 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -250,4 +252,17 @@ option-desc.stop.force=\
 \texisting requests are allowed to complete. The --force option has no \n\
 \teffect if server stop was already invoked. If you use the --force    \n\
 \toption, you might see unexpected exceptions in the messages.log file \n\
-\tthat occur after the server stop command was received by the server.
+\tthat occur after the server stop command was received by the server. \n
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.timeout=\
+\ \ \ \ --timeout
+option-desc.stop.timeout=\
+\tSets the maximum amount of time the \"server stop\" command waits for\n\
+\tconfirmation that the server has stopped.  Specify a positive integer\n\
+\tfollowed by a unit of time, which can include minutes (m) and        \n\
+\tseconds (s). For example, specify 2.5 minutes as --timeout=2m30s     \n\
+\tor --timeout=150s.                                                   \n\
+\t                                                                     \n\
+\tThe default timeout value is 30 seconds. If the server consistently  \n\
+\ttakes longer than 30 seconds to stop, consider increasing the timeout\n\
+\tvalue by using the --timeout option.                                 \n

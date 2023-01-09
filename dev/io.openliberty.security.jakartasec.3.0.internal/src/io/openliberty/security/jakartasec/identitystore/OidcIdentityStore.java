@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -33,6 +35,9 @@ import io.openliberty.security.jakartasec.tokens.RefreshTokenImpl;
 import io.openliberty.security.oidcclientcore.client.ClaimsMappingConfig;
 import io.openliberty.security.oidcclientcore.client.Client;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
+import io.openliberty.security.oidcclientcore.config.MetadataUtils;
+import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
+import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.token.TokenResponse;
 import io.openliberty.security.oidcclientcore.userinfo.UserInfoHandler;
 import jakarta.json.JsonObject;
@@ -81,7 +86,7 @@ public class OidcIdentityStore implements IdentityStore {
                     CredentialValidationResult credentialValidationResult = createCredentialValidationResult(client.getOidcClientConfig(), accessToken, idTokenClaims,
                                                                                                              userInfoClaims);
 
-                    JsonObject providerMetadata = getProviderMetadataAsJsonObject();
+                    JsonObject providerMetadata = getProviderMetadataAsJsonObject(client.getOidcClientConfig());
 
                     OpenIdContext openIdContext = createOpenIdContext(credentialValidationResult.getCallerUniqueId(), tokenResponse, accessToken, identityToken, userInfoClaims,
                                                                       providerMetadata, request.getParameter(OpenIdConstant.STATE), oidcClientConfig.isUseSession(),
@@ -249,8 +254,17 @@ public class OidcIdentityStore implements IdentityStore {
         return new CredentialValidationResult(issuer, caller, null, caller, groups);
     }
 
-    private JsonObject getProviderMetadataAsJsonObject() {
-        // TODO Auto-generated method stub
+    private JsonObject getProviderMetadataAsJsonObject(OidcClientConfig oidcClientConfig) {
+        try {
+
+            return OpenIdContextUtils.convertJsonObject(MetadataUtils.getProviderDiscoveryMetaData(oidcClientConfig));
+
+        } catch (OidcClientConfigurationException | OidcDiscoveryException oe) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getProviderMetadataAsJsonObject", "getProviderDiscoveryMetaData threw an exception, the providerMetadata JsonObject will be null.", oe);
+            }
+        }
+
         return null;
     }
 

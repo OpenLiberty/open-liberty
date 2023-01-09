@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -13,10 +15,11 @@ package test.jakarta.data.web;
 import java.util.List;
 
 import jakarta.data.Where;
-import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.KeysetAwarePage;
+import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Pageable;
+import jakarta.data.repository.PageableRepository;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
@@ -25,15 +28,15 @@ import jakarta.data.repository.Repository;
  *
  */
 @Repository
-public interface Packages extends CrudRepository<Package, Integer> {
+public interface Packages extends PageableRepository<Package, Integer> {
     List<Package> findByHeightBetween(float minHeight, float maxHeight);
 
     @OrderBy(value = "width", descending = true)
     @OrderBy(value = "height")
     @OrderBy(value = "id", descending = true)
-    KeysetAwarePage<Package> findByHeightGreaterThan(float minHeight, Pageable pagination);
+    KeysetAwareSlice<Package> findByHeightGreaterThan(float minHeight, Pageable pagination);
 
-    KeysetAwarePage<Package> findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(float minHeight, Pageable pagination);
+    KeysetAwareSlice<Package> findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(float minHeight, Pageable pagination);
 
     boolean updateByIdAddHeightMultiplyLengthDivideWidth(int id, float heightToAdd, float lengthMultiplier, float widthDivisor);
 

@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -27,9 +29,12 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.BaggageServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.OpenTelemetryBeanServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.PatchTestApp;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.SpanCurrentServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.Telemetry10Servlet;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.WithSpanServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.MetricsDisabledServlet;
 
 @RunWith(FATRunner.class)
 public class Telemetry10 extends FATServletClient {
@@ -39,10 +44,12 @@ public class Telemetry10 extends FATServletClient {
 
     @Server(SERVER_NAME)
     @TestServlets({
-
                     @TestServlet(servlet = Telemetry10Servlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = OpenTelemetryBeanServlet.class, contextRoot = APP_NAME),
                     @TestServlet(servlet = BaggageServlet.class, contextRoot = APP_NAME),
-                    @TestServlet(servlet = SpanCurrentServlet.class, contextRoot = APP_NAME)
+                    @TestServlet(servlet = SpanCurrentServlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = MetricsDisabledServlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = WithSpanServlet.class, contextRoot = APP_NAME)
     })
     public static LibertyServer server;
 
@@ -51,9 +58,12 @@ public class Telemetry10 extends FATServletClient {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addAsResource(Telemetry10Servlet.class.getResource("microprofile-config.properties"), "META-INF/microprofile-config.properties")
                         .addClasses(Telemetry10Servlet.class,
+                                    OpenTelemetryBeanServlet.class,
                                     PatchTestApp.class,
                                     BaggageServlet.class,
-                                    SpanCurrentServlet.class);
+                                    MetricsDisabledServlet.class,
+                                    SpanCurrentServlet.class,
+                                    WithSpanServlet.class);
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
         server.startServer();

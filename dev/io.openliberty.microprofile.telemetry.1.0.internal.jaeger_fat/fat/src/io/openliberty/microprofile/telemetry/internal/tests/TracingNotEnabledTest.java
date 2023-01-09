@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -11,6 +13,7 @@
 package io.openliberty.microprofile.telemetry.internal.tests;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.microprofile.telemetry.internal.utils.TestConstants.NULL_TRACE_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
@@ -100,7 +103,7 @@ public class TracingNotEnabledTest {
         Log.info(c, "testBasic", "TraceId is " + traceId);
 
         // We still expect a blank traceId when tracing is disabled
-        assertThat(traceId, equalTo("00000000000000000000000000000000"));
+        assertThat(traceId, equalTo(NULL_TRACE_ID));
 
         // Wait 12 seconds to give a chance for any traces to arrive
         // With BSP_SCHEDULE_DELAY, traces should be sent after 100ms,

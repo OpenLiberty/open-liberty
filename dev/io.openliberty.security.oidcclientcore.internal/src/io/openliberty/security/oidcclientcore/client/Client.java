@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -16,6 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jose4j.jwt.JwtClaims;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
@@ -32,6 +36,8 @@ import io.openliberty.security.oidcclientcore.token.TokenResponseValidator;
 import io.openliberty.security.oidcclientcore.token.TokenValidationException;
 
 public class Client {
+
+    public static final TraceComponent tc = Tr.register(Client.class);
 
     private final OidcClientConfig oidcClientConfig;
     private static JWKSet jwkSet = null;
@@ -56,9 +62,7 @@ public class Client {
     }
 
     public JwtClaims validate(TokenResponse tokenResponse, HttpServletRequest request, HttpServletResponse response) throws TokenValidationException {
-        TokenResponseValidator tokenResponseValidator = new TokenResponseValidator(this.oidcClientConfig);
-        tokenResponseValidator.setRequest(request);
-        tokenResponseValidator.setResponse(response);
+        TokenResponseValidator tokenResponseValidator = new TokenResponseValidator(this.oidcClientConfig, request, response);
         return tokenResponseValidator.validate(tokenResponse);
     }
 
@@ -107,10 +111,9 @@ public class Client {
         try {
             return logoutHandler.logout();
         } catch (ServletException e) {
-            // TODO Auto-generated catch block
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            //TODO add debug?
-            //e.printStackTrace();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Logout failed with a ServletException exception on " + idTokenString, e);
+            }
             return new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 
         }

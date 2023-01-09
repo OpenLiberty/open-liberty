@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -40,8 +42,9 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.LDAPFatUtils;
 
 /**
- * This test will test federating a stand-alone Custom UserRegistry (CUR) to federated
- * registries, while maintaining the same behavior as the CUR had stand-alone.
+ * This test will test federating a stand-alone Custom UserRegistry (CUR) loaded via
+ * a user feature to federated registries, while maintaining the same behavior as the
+ * CUR had stand-alone.
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
@@ -241,7 +244,7 @@ public class FederateStandaloneCurTest {
      * @throws Exception If the test fails for some unforeseen reason.
      */
     @Test
-    public void standaloneCustomUserRegistry() throws Exception {
+    public void customUserRegistry_userfeature_standalone() throws Exception {
         ServerConfiguration config = updateLibertyConfiguration(false);
         updateConfigDynamically(libertyServer, config, true);
 
@@ -254,7 +257,7 @@ public class FederateStandaloneCurTest {
      * @throws Exception If the test fails for some unforeseen reason.
      */
     @Test
-    public void federatedCustomUserRegistry() throws Exception {
+    public void customUserRegistry_userfeature_federated() throws Exception {
         ServerConfiguration config = updateLibertyConfiguration(true);
         updateConfigDynamically(libertyServer, config, true);
 
@@ -268,7 +271,7 @@ public class FederateStandaloneCurTest {
      * {@link UserRegistry#getType()} and {@link UserRegistry#getRealm()} values.
      *
      * @param realm The value expected to be returned from {@link UserRegistry#getRealm()} call.
-     * @param type The value expected to be returned from the {@link UserRegistry#getType()} call.
+     * @param type  The value expected to be returned from the {@link UserRegistry#getType()} call.
      * @throws Exception If the test fails for some unforeseen reason.
      */
     private static void doAssertions(String realm, String type) throws Exception {

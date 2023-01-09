@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -11,7 +13,13 @@
 package io.openliberty.security.oidcclientcore.config;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.jmock.Expectations;
 import org.junit.After;
@@ -20,6 +28,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 import com.ibm.ws.security.test.common.CommonTestClass;
 
@@ -133,6 +142,109 @@ public class MetadataUtilsTest extends CommonTestClass {
         } catch (OidcDiscoveryException e) {
             verifyException(e, CWWKS2403E_DISCOVERY_EXCEPTION + ".*" + CWWKS2405E_DISCOVERY_METADATA_MISSING_VALUE + ".*" + OidcDiscoveryConstants.METADATA_KEY_TOKEN_ENDPOINT);
         }
+    }
+
+    @Test
+    public void test_getUserInfoSigningAlgorithmsSupported_discoveryMissingEntry() throws Exception {
+        JSONObject discoveryData = new JSONObject();
+        // When userinfo alg data is missing, we'll fall back to using the ID token alg data
+        JSONArray algsSupported = new JSONArray();
+        algsSupported.add("ES256");
+        discoveryData.put(OidcDiscoveryConstants.METADATA_KEY_ID_TOKEN_SIGNING_ALG_VALUES_SUPPORTED, algsSupported);
+        mockery.checking(new Expectations() {
+            {
+                allowing(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
+                will(returnValue(discoveryData));
+                one(oidcClientConfig).getProviderMetadata();
+                will(returnValue(null));
+            }
+        });
+        String[] result = MetadataUtils.getUserInfoSigningAlgorithmsSupported(oidcClientConfig);
+        assertNotNull("Signing algorithm list should not have been null but was.", result);
+        assertEquals("Signing algorithm list did not have the expected number of entries: " + Arrays.toString(result), 1, result.length);
+        assertEquals(algsSupported.get(0), result[0]);
+    }
+
+    @Test
+    public void test_getUserInfoSigningAlgorithmsSupported_emptyArray() throws Exception {
+        JSONObject discoveryData = new JSONObject();
+        discoveryData.put(OidcDiscoveryConstants.METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED, new JSONArray());
+        mockery.checking(new Expectations() {
+            {
+                one(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
+                will(returnValue(discoveryData));
+            }
+        });
+        String[] result = MetadataUtils.getUserInfoSigningAlgorithmsSupported(oidcClientConfig);
+        assertNotNull("Signing algorithm list should not have been null but was.", result);
+        assertEquals("Signing algorithm list should have been empty but was " + Arrays.toString(result), 0, result.length);
+    }
+
+    @Test
+    public void test_getUserInfoSigningAlgorithmsSupported() throws Exception {
+        JSONObject discoveryData = new JSONObject();
+        JSONArray algsSupported = new JSONArray();
+        algsSupported.add("HS256");
+        algsSupported.add("RS256");
+        algsSupported.add("ES256");
+        discoveryData.put(OidcDiscoveryConstants.METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED, algsSupported);
+        mockery.checking(new Expectations() {
+            {
+                one(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
+                will(returnValue(discoveryData));
+            }
+        });
+        String[] result = MetadataUtils.getUserInfoSigningAlgorithmsSupported(oidcClientConfig);
+        assertNotNull("Signing algorithm list should not have been null but was.", result);
+        assertEquals("Signing algorithm list did not have the expected number of entries: " + Arrays.toString(result), 3, result.length);
+        List<String> resultAsList = Arrays.asList(result);
+        for (int i = 0; i < algsSupported.size(); i++) {
+            assertTrue("Result is missing " + algsSupported.get(i) + ".", resultAsList.contains(algsSupported.get(i)));
+        }
+
+    }
+
+    public void test_getProviderMetadata_providerMetadataHasValue() throws Exception {
+        JSONObject discoveryData = new JSONObject();
+        discoveryData.put(OidcDiscoveryConstants.METADATA_KEY_ISSUER, sampleStringValue);
+        JSONObject result = MetadataUtils.getProviderDiscoveryMetaData(oidcClientConfig);
+
+        assertNotNull("Should have returned providerMetadata JSONObject", result);
+        assertTrue("Expected " + OidcDiscoveryConstants.METADATA_KEY_ISSUER + " key in JSONObject", result.containsKey(OidcDiscoveryConstants.METADATA_KEY_ISSUER));
+        assertEquals(sampleStringValue, result.get(OidcDiscoveryConstants.METADATA_KEY_ISSUER));
+
+    }
+
+    @Test
+    public void test_getProviderMetadata_providerMetadataNull() throws Exception {
+        JSONObject discoveryData = null;
+        mockery.checking(new Expectations() {
+            {
+                one(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
+                will(returnValue(discoveryData));
+            }
+        });
+        JSONObject result = MetadataUtils.getProviderDiscoveryMetaData(oidcClientConfig);
+
+        assertNull("Should not have returned providerMetadata JSONObject", result);
+
+    }
+
+    @Test
+    public void test_getProviderMetadata_providerMetadataIsEmpty() throws Exception {
+        JSONObject discoveryData = new JSONObject();
+        mockery.checking(new Expectations() {
+            {
+                one(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
+                will(returnValue(discoveryData));
+            }
+        });
+
+        JSONObject result = MetadataUtils.getProviderDiscoveryMetaData(oidcClientConfig);
+
+        assertNotNull("Should have returned providerMetadata JSONObject", result);
+        assertTrue("Expected empty JSONObject", result.isEmpty());
+
     }
 
 }

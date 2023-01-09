@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -27,6 +29,7 @@ import com.ibm.ws.com.unboundid.InMemoryLDAPServer;
 import com.ibm.ws.com.unboundid.InMemoryTDSLDAPServer;
 
 import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
@@ -49,14 +52,16 @@ public class FATSuite {
     private static InMemoryLDAPServer tdsLdapServer, adLdapServer;
 
     /**
-     * Repeat tests for Jakarta EE 9.
+     * Repeat tests for Jakarta EE 9 and 10.
      *
-     * Wee need to replace appSecurity-1.0 with appSecurity-4.0. The appSecurity-3.0 and 4.0 features
+     * We need to replace appSecurity-1.0 with appSecurity-4.0. The appSecurity-3.0 4.0 and 5.0 features
      * no longer include ldapRegistry-3.0, so we need to add that as well.
      */
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new EmptyAction())
-                    .andWith(new JakartaEE9Action().addFeature("appSecurity-4.0").removeFeature("appSecurity-1.0").alwaysAddFeature("ldapRegistry-3.0"));
+                    .andWith(new JakartaEE9Action().addFeature("appSecurity-4.0").removeFeature("appSecurity-1.0").alwaysAddFeature("ldapRegistry-3.0")
+                             .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                    .andWith(new JakartaEE10Action().addFeature("appSecurity-5.0").removeFeature("appSecurity-1.0").alwaysAddFeature("ldapRegistry-3.0"));
 
     @BeforeClass
     public static void setup() throws Exception {

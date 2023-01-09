@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+; * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -41,13 +43,13 @@ import componenttest.topology.impl.LibertyServerWrapper;
  * 2.0 token in the HTTP POST request.
  */
 
-//@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
 @LibertyServerWrapper
 @RunWith(FATRunner.class)
 public class CxfSSLSAMLBasic2ServerTests extends CxfSSLSAMLBasicTests {
 
     private static final Class<?> thisClass = CxfSSLSAMLBasic2ServerTests.class;
-
+    protected static String repeatAction = "";
+    
     @BeforeClass
     public static void setupBeforeTest() throws Exception {
 
@@ -56,7 +58,6 @@ public class CxfSSLSAMLBasic2ServerTests extends CxfSSLSAMLBasicTests {
         msgUtils.printClassName(thisClass.toString());
         Log.info(thisClass, "setupBeforeTest", "Prep for test");
 
-        setFeatureVersion("EE7");
         // add any additional messages that you want the "start" to wait for
         // we should wait for any providers that this test requires
         List<String> extraMsgs = new ArrayList<String>();

@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -167,6 +169,26 @@ public class JavaEESecTestBase {
             }
         }
         return null;
+    }
+
+    protected void checkHeader(HttpResponse response, String headerKey, String headerValue) {
+        String methodName = "getHeader";
+        Log.info(logClass, methodName, response.toString() + ", headerKey=" + headerKey);
+        Header[] headers = response.getHeaders(headerKey);
+        if (headers == null) {
+            fail("Header: {" + headerKey + "} is missing from the response.");
+        }
+        for (Header header : headers) {
+            Log.info(logClass, methodName, "Header: " + header);
+            if (header.getName().equals(headerKey)) {
+                if (header.getValue().equals(headerValue)) {
+                    return;
+                } else {
+                    fail("Found Header: {" + headerKey + "} but the value: {" + header.getValue() + "}, does not match: {" + headerValue + "}.");
+                }
+            }
+        }
+        fail("Header: {" + headerKey + "} not found in header list: " + Arrays.toString(response.getAllHeaders()));
     }
 
     protected String accessWithCookie(DefaultHttpClient httpClient, String url, String cookieName, String cookie, int expectedStatusCode) {
@@ -617,6 +639,31 @@ public class JavaEESecTestBase {
             } else {
                 return null;
             }
+        } catch (IOException e) {
+            fail("Caught unexpected exception: " + e);
+            return null;
+        }
+    }
+
+    protected HttpResponse accessPageWithChallenge(HttpClient client, String location, int expectedStatusCode) {
+        String methodName = "accessPageWithChallenge";
+        Log.info(logClass, methodName, "location =  " + location + " expectedStatusCode =" + expectedStatusCode);
+
+        try {
+            HttpResponse response;
+            // Get method on form login page
+            HttpGet getMethod = new HttpGet(location);
+            response = client.execute(getMethod);
+            Log.info(logClass, methodName, "getMethod status:  " + response.getStatusLine());
+
+            assertEquals("Expected " + expectedStatusCode + " was not returned",
+                         expectedStatusCode, response.getStatusLine().getStatusCode());
+
+            String content = EntityUtils.toString(response.getEntity());
+            Log.info(logClass, methodName, "Servlet full response content: \n" + content);
+
+            EntityUtils.consume(response.getEntity());
+            return response;
         } catch (IOException e) {
             fail("Caught unexpected exception: " + e);
             return null;

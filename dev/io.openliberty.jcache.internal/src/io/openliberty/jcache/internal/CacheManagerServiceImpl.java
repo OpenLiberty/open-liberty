@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2021, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -14,7 +16,6 @@ import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ScheduledExecutorService;
@@ -54,7 +55,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     private static final int TOTAL_PREFIX_LENGTH = BASE_PREFIX_LENGTH + 3; // 3 is the length of .0.
 
     private Properties properties = null;
-    private URI configuredUri = null;
+    private String uriValue = null;
     private CacheManager cacheManager = null;
 
     private CachingProviderService cachingProviderService = null;
@@ -81,19 +82,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
         /*
          * Get the URI.
          */
-        String uriValue = (String) config.get(KEY_URI);
-        if (uriValue != null)
-            try {
-                this.configuredUri = new URI(uriValue);
-            } catch (URISyntaxException e) {
-                /*
-                 * Catch incorrectly formatted httpSessionCache uri values from server.xml file
-                 */
-                throw new IllegalArgumentException(Tr.formatMessage(tc, "CWLJC0007_URI_INVALID_SYNTAX", e), e);
-            }
-        else {
-            this.configuredUri = null;
-        }
+        this.uriValue = (String) config.get(KEY_URI);
 
         /*
          * Get the configured vendor properties.
@@ -181,7 +170,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
                          * Perform some custom configuration updates for the CacheManager.
                          */
                         cacheConfigUtil = new CacheConfigUtil();
-                        URI uri = cacheConfigUtil.preConfigureCacheManager(configuredUri, cachingProvider, properties);
+                        URI uri = cacheConfigUtil.preConfigureCacheManager(uriValue, cachingProvider, properties);
 
                         /*
                          * Get the CacheManager instance. We don't provide the ClassLoader to the
@@ -285,7 +274,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
 
     @Override
     public String toString() {
-        return super.toString() + "{id=" + id + ", configuredUri=" + configuredUri + ", cacheManager=" + cacheManager + "}";
+        return super.toString() + "{id=" + id + ", uriValue=" + uriValue + ", cacheManager=" + cacheManager + "}";
     }
 
     /**

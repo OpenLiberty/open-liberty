@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -118,7 +120,7 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionM
             ClassLoader loader = repositoryInterface.getClassLoader();
             DataProvider provider = svc.getProvider(entityClass, loader, null);
 
-            EntityGroupKey entityGroupKey = new EntityGroupKey("DefaultDataStore", loader, provider); // TODO configuration of different providers in Jakarta Data
+            EntityGroupKey entityGroupKey = new EntityGroupKey("defaultDatabaseStore", loader, provider); // TODO configuration of different providers in Jakarta Data
             List<Class<?>> entityClasses = entityGroups.get(entityGroupKey);
             if (entityClasses == null)
                 entityGroups.put(entityGroupKey, entityClasses = new ArrayList<>());
@@ -135,7 +137,7 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionM
                 ClassLoader loader = entityClass.getClassLoader();
                 DataProvider provider = svc.getProvider(entityClass, loader, null);
 
-                EntityGroupKey entityGroupKey = new EntityGroupKey(anno.provider(), loader, provider);
+                EntityGroupKey entityGroupKey = new EntityGroupKey("defaultDatabaseStore", loader, provider); // TODO temporarily hard coded
                 List<Class<?>> entityClasses = entityGroups.get(entityGroupKey);
                 if (entityClasses == null)
                     entityGroups.put(entityGroupKey, entityClasses = new ArrayList<>());

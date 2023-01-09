@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
@@ -19,9 +21,11 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWOAU0056E_REDIRECT_URI_NOT_REGISTERED = "CWOAU0056E";
     public static final String CWOAU0061E_COULD_NOT_FIND_CLIENT = "CWOAU0061E";
     public static final String CWOAU0062E_REDIRECT_URI_INVALID = "CWOAU0062E";
+    public static final String CWOAU0064E_SCOPE_MISMATCH = "CWOAU0064E";
 
     public static final String CWWKS1406E_INVALID_CLIENT_CREDENTIAL = "CWWKS1406E";
     public static final String CWWKS1608E_MULTIPLE_RESPONSE_TYPE_ERROR = "CWWKS1608E";
+    public static final String CWWKS1619E_OPENID_SCOPE_MISSING = "CWWKS1619E";
     public static final String CWWKS1652A_AUTH_SEND_FAILURE = "CWWKS1652A";
 
     public static final String CWWKS1925E_MULTIPLE_ANNOTATIONS = "CWWKS1925E";
@@ -35,11 +39,14 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS2405E_PROVIDERMETADATA_MISSING_AUTHENDPOINT = "CWWKS2405E";
     public static final String CWWKS2407E_ERROR_VERIFYING_RESPONSE = "CWWKS2407E";
     public static final String CWWKS2410E_CANNOT_FIND_STATE = "CWWKS2410E";
+    public static final String CWWKS2414E_CALLBACK_URL_INCLUDES_ERROR_PARAMETER = "CWWKS2414E";
+    public static final String CWWKS2415E_TOKEN_VALIDATION_EXCEPTION = "CWWKS2415E";
     public static final String CWWKS2423E_OIDC_CLIENT_INVALID_RESPONSE_TYPE = "CWWKS2423E";
 
     public static final String CWWKS2416E_FAILED_TO_REACH_ENDPOINT = "CWWKS2416E";
 
     public static final String CWWKS2500W_MISSING_CLIENTID_EL = "CWWKS2500W";
+    public static final String CWWKS2504E_CREDENTIAL_VALIDATION_ERROR = "CWWKS2504E";
 
     public static final String CWWKS9104A_NO_ACCESS_FOR_USER = "CWWKS9104A";
 
