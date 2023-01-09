@@ -31,9 +31,7 @@ IBM-API-Package: javax.decorator;  type="spec", \
  org.jboss.weld.serialization.spi; type="internal", \
  org.jboss.weld.context;type="third-party", \
  org.jboss.weld.context.api;type="third-party", \
- org.jboss.weld.context.beanstore;type="third-party", \
- org.jboss.weld.context.bound;type="third-party", \
- org.jboss.weld.context.conversation;type="third-party"
+ org.jboss.weld.context.bound;type="third-party"
 IBM-SPI-Package: io.openliberty.cdi.spi;type="ibm-spi"
 IBM-ShortName: cdi-2.0
 Subsystem-Name: Contexts and Dependency Injection 2.0
