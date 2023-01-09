@@ -83,9 +83,9 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
      * the extension class during the call-back mechanism as part of the
      * {@link CDIExtensionMetadataSince} service. Throwing an exception during
      * activation will prompt OSGI to re-activate over and over. Depending on the
-     * failure that occurs during activation, this is a flag to used to "stop" any
+     * failure that occurs during activation, this is a flag used to "stop" any
      * further initialization of the MP Metrics feature as well as prevent any
-     * "dramatic" console/outputs.
+     * "dramatic" console outputs.
      *
      * @return boolean did SmallryeMetricsCDIMetadata activate properly
      */
