@@ -28,11 +28,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
  */
 public enum CheckpointPhase {
     /**
-     * Phase of startup after all feature bundles have been started and before
-     * starting any configured applications
-     */
-    FEATURES,
-    /**
      * Phase of startup after all configured applications have been started
      * or have timed out starting. No ports are opened yet
      */

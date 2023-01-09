@@ -58,7 +58,7 @@ public class SlowAppStartTest {
 
     @Test
     public void testAtDeployment() throws Exception {
-        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.FEATURES, false, null));
+        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.DEPLOYMENT, false, null));
         server.startServer();
         String initSleeping = server.waitForStringInLogUsingMark(TEST_INIT_SLEEPING, 100);
         assertNull("Unexpected message.", initSleeping);

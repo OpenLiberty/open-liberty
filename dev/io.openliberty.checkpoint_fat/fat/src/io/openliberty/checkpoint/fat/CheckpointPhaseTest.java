@@ -66,13 +66,6 @@ public class CheckpointPhaseTest {
     }
 
     @Test
-    public void testAtFeatures() throws Exception {
-        server.setCheckpoint(CheckpointPhase.FEATURES);
-        server.startServer();
-        HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
-    }
-
-    @Test
     public void testAtApplicationsMultRestore() throws Exception {
         server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, (s) -> {
             assertNotNull("App code should have run.", server.waitForStringInLogUsingMark("TESTING - contextInitialized", 100));
