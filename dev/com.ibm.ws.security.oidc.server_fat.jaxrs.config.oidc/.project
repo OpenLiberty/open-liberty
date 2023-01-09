@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>com.ibm.ws.security.oidc.server_fat.jaxrs.config</name>
+	<name>com.ibm.ws.security.oidc.server_fat.jaxrs.config.oidc</name>
 	<comment></comment>
 	<projects>
 	</projects>
