@@ -14,9 +14,7 @@ package io.openliberty.checkpoint.spi;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -67,14 +65,6 @@ public enum CheckpointPhase {
      */
     public static final String CONDITION_PROCESS_RUNNING_ID = "io.openliberty.process.running";
 
-    private static Map<String, CheckpointPhase> phases;
-    static {
-        phases = new HashMap<String, CheckpointPhase>();
-        for (CheckpointPhase p : CheckpointPhase.values()) {
-            phases.put(p.toString(), p);
-        }
-    }
-
     /**
      *
      */
@@ -88,17 +78,6 @@ public enum CheckpointPhase {
             restored = true;
             noMoreAddHooks = true;
         }
-    }
-
-    /**
-     * Convert a String to a Phase
-     *
-     * @param p The string value
-     * @return The matching phase or null if there is no match. String comparison
-     *         is case insensitive.
-     */
-    public static CheckpointPhase getPhase(String p) {
-        return phases.get(p.trim().toUpperCase());
     }
 
     private volatile boolean restored = false;
@@ -121,9 +100,13 @@ public enum CheckpointPhase {
             return;
         }
         debug(() -> "phase set to: " + p);
-        CheckpointPhase phase = p == null ? null : phases.get(p.trim().toUpperCase());
-        if (phase == null) {
-            phase = INACTIVE;
+        CheckpointPhase phase = INACTIVE;
+        if (p != null) {
+            try {
+                phase = CheckpointPhase.valueOf(p.trim().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                // ignore, will default to INACTIVE
+            }
         }
         THE_PHASE = phase;
     }
