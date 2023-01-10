@@ -25,3 +25,6 @@ Private-Package: \
 -dsannotations: \
  test.checkpoint.config.bundle.TestCheckpointHook, \
  test.checkpoint.config.bundle.TestStaticHookRegister
+
+Include-Resource:\
+ OSGI-INF/metatype/metatype.xml=test-bundles/test.checkpoint.config.bundle/resources/OSGI-INF/metatype/metatype.xml
