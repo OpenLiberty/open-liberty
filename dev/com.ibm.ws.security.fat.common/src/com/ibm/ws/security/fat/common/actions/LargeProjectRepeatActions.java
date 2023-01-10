@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -63,10 +63,18 @@ public class LargeProjectRepeatActions {
             if (JavaInfo.forCurrentVM().majorVersion() > 8) {
                 if (TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.LITE) {
                     Log.info(thisClass, "createLargeProjectRepeats", "Enabling the EE9 test instance (Not on Windows, Java > 8, Lite Mode)");
-                    rTests = addRepeat(rTests, new JakartaEE9Action().alwaysAddFeature(addEE9Feature));
+                    if (addEE9Feature == null) {
+                        rTests = addRepeat(rTests, new JakartaEE9Action());
+                    } else {
+                        rTests = addRepeat(rTests, new JakartaEE9Action().alwaysAddFeature(addEE9Feature));
+                    }
                 } else {
                     Log.info(thisClass, "createLargeProjectRepeats", "Enabling the EE10 test instance (Not on Windows, Java > 8, FULL Mode)");
-                    rTests = addRepeat(rTests, new JakartaEE10Action().alwaysAddFeature(addEE10Feature));
+                    if (addEE10Feature == null) {
+                        rTests = addRepeat(rTests, new JakartaEE10Action());
+                    } else {
+                        rTests = addRepeat(rTests, new JakartaEE10Action().alwaysAddFeature(addEE10Feature));
+                    }
                 }
             } else {
                 Log.info(thisClass, "createLargeProjectRepeats", "Enabling the default EE7/EE8 test instance (Not on Windows, Java = 8, any Mode)");
