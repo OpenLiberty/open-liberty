@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.microprofile.config.Config;
@@ -69,7 +70,7 @@ public class OpenTelemetryProducer {
         if (!checkDisabled(telemetryProperties)) {
             OpenTelemetry openTelemetry = AccessController.doPrivileged((PrivilegedAction<OpenTelemetry>) () -> {
                 return AutoConfiguredOpenTelemetrySdk.builder()
-                                .addPropertiesSupplier(() -> telemetryProperties)
+                                .addPropertiesCustomizer(x -> telemetryProperties) //Overrides OpenTelemetry's property order
                                 .setServiceClassLoader(Thread.currentThread().getContextClassLoader())
                                 .setResultAsGlobal(false)
                                 .registerShutdownHook(false)
@@ -133,9 +134,7 @@ public class OpenTelemetryProducer {
         HashMap<String, String> telemetryProperties = new HashMap<>();
         for (String propertyName : config.getPropertyNames()) {
             if (propertyName.startsWith("otel.")) {
-                System.out.println(propertyName);
-                System.out.println(config.getValue(propertyName, String.class));
-                telemetryProperties.put(propertyName,config.getValue(propertyName, String.class))
+                telemetryProperties.put(propertyName,config.getValue(propertyName, String.class));
             }
         }
         //Metrics and logs are disabled by default
@@ -143,7 +142,6 @@ public class OpenTelemetryProducer {
         telemetryProperties.put(CONFIG_LOGS_EXPORTER_PROPERTY, "none");
         telemetryProperties.put(ENV_METRICS_EXPORTER_PROPERTY, "none");
         telemetryProperties.put(ENV_LOGS_EXPORTER_PROPERTY, "none");
-        System.out.println(telemetryProperties);
         return telemetryProperties;
 
     }

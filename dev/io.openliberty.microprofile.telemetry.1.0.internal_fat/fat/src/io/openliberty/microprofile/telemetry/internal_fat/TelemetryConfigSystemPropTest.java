@@ -55,6 +55,7 @@ public class TelemetryConfigSystemPropTest extends FATServletClient {
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
         server.addEnvVar("OTEL_SERVICE_NAME", "overrideThisEnvVar");
+        server.addEnvVar("OTEL_SDK_DISABLED", "true");
         server.startServer();
     }
 

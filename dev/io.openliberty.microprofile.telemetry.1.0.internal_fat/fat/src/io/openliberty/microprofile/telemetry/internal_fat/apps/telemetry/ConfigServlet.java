@@ -14,6 +14,9 @@ package io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
 
 import org.junit.Test;
 
@@ -38,12 +41,14 @@ public class ConfigServlet extends FATServlet {
     @Inject
     OpenTelemetry openTelemetry;
 
-    //Tests otel.service.name and otel.sdk.disabled
+    private static final String INVALID_SPAN_ID = "0000000000000000";
+
     //Scenario 1 (Telemetry10): appProperties in server.xml should override all other properties and variables
     //Scenario 2 (Telemetry10ConfigServerVar): variables in server.xml should override all other properties and variables
     //Scenario 3 (Telemetry10ConfigSystemProp): properties in bootstrap.properties should override all other properties and variables
     //Scenario 4 (Telemetry10ConfigEnv) environment variables should override all other properties and variables
 
+    //Tests otel.service.name is overrideDone instead of overrideThis*Property
     @Test
     public void testServiceNameConfig() {
         Tracer tracer = openTelemetry.getTracer("config-test", "1.0.0");
@@ -52,13 +57,13 @@ public class ConfigServlet extends FATServlet {
         assertThat(openTelemetry.toString(), containsString("service.name=\"overrideDone\""));
     }
 
-    //Tests 
+    //Tests otel.sdk.disabled is false
     @Test
     public void testSDKDisabledConfig() {
         Tracer tracer = openTelemetry.getTracer("config-test", "1.0.0");
         Span span = tracer.spanBuilder("testSpan").startSpan();
+        assertThat(span.getSpanContext().getSpanId(), not(equalTo(INVALID_SPAN_ID)));
         span.end();
-        System.out.println(span);
     }
 
 }
