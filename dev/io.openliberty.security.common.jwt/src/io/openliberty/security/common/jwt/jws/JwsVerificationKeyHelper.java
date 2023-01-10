@@ -44,6 +44,7 @@ public class JwsVerificationKeyHelper {
 
     static {
         Set<String> supportedAlgorithms = new HashSet<>();
+        supportedAlgorithms.add("none");
         supportedAlgorithms.add("RS256");
         supportedAlgorithms.add("RS384");
         supportedAlgorithms.add("RS512");
@@ -71,7 +72,13 @@ public class JwsVerificationKeyHelper {
 
     public Key getVerificationKey(JsonWebStructure jws) throws Exception {
         String signatureAlgorithmFromJws = getSignatureAlgorithmFromJws(jws);
-        if (signatureAlgorithmFromJws != null && signatureAlgorithmFromJws.startsWith("HS")) {
+        if (signatureAlgorithmFromJws == null) {
+            // TODO
+        }
+        if (signatureAlgorithmFromJws.equalsIgnoreCase("none")) {
+            return null;
+        }
+        if (signatureAlgorithmFromJws.startsWith("HS")) {
             return getSharedKey();
         }
         return retrievePublicKey(jws, signatureAlgorithmFromJws);

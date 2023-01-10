@@ -16,16 +16,13 @@ import java.net.SocketTimeoutException;
 import java.security.Key;
 
 import org.apache.http.conn.ConnectTimeoutException;
-import org.jose4j.jwt.consumer.JwtContext;
 import org.jose4j.jwx.JsonWebStructure;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import io.openliberty.security.common.jwt.JwtParsingUtils;
 import io.openliberty.security.common.jwt.jwk.RemoteJwkData;
-import io.openliberty.security.common.jwt.jws.JwsSignatureVerifier;
 import io.openliberty.security.common.jwt.jws.JwsVerificationKeyHelper;
 import io.openliberty.security.oidcclientcore.client.Client;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
@@ -38,16 +35,6 @@ import io.openliberty.security.oidcclientcore.exceptions.VerificationKeyExceptio
 public class JwtUtils {
 
     public static final TraceComponent tc = Tr.register(JwtUtils.class);
-
-    public static JwsSignatureVerifier createJwsSignatureVerifier(JwtContext jwtContext, OidcClientConfig clientConfig, String... signatureAlgorithmsSupported) throws Exception {
-        JsonWebStructure jws = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
-
-        Key jwtVerificationKey = getJwsVerificationKey(jws, clientConfig);
-
-        io.openliberty.security.common.jwt.jws.JwsSignatureVerifier.Builder verifierBuilder = new JwsSignatureVerifier.Builder();
-        JwsSignatureVerifier signatureVerifier = verifierBuilder.key(jwtVerificationKey).signatureAlgorithmsSupported(signatureAlgorithmsSupported).build();
-        return signatureVerifier;
-    }
 
     @FFDCIgnore({ ConnectTimeoutException.class, SocketTimeoutException.class })
     public static Key getJwsVerificationKey(JsonWebStructure jws, OidcClientConfig clientConfig) throws Exception {
