@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -23,11 +23,10 @@ Private-Package: \
 
 instrument.disabled: true
 
-Include-Resource: \
-  @${repo;com.sun.activation:jakarta.activation;2.0.0}!/META-INF/mailcap.default, \
-  @${repo;com.sun.activation:jakarta.activation;2.0.0}!/META-INF/mimetypes.default
+-includeresource: \
+  @${repo;com.sun.activation:jakarta.activation;2.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-    com.sun.activation:jakarta.activation;version=2.0.0
+    com.sun.activation:jakarta.activation;version=2.0.0;strategy=exact
