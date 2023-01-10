@@ -345,3 +345,13 @@ tool.userfeature.install.location.invalid=CWWKF1036E: The {0} user feature canno
 tool.userfeature.install.location.invalid.explanation= The user feature is not a core feature therefore cannot be installed to core.
 tool.userfeature.install.location.invalid.useraction= Install the user feature to usr. 
 
+FEATURES_ADDED_DELTA=CWWKF1037I: The server added features {0} to the existing feature set.
+FEATURES_ADDED_DELTA.explanation=The server has installed a set of new features in addition to previously installed features.
+FEATURES_ADDED_DELTA.useraction=No action is required.
+
+FEATURES_ADDED_CLIENT_DELTA=CWWKF1038I: The client added features {0} to the existing feature set. 
+FEATURES_ADDED_CLIENT_DELTA.explanation=The client has installed a set of new features in addition to previously installed features.
+FEATURES_ADDED_CLIENT_DELTA.useraction=No action is required. 
+
+
+

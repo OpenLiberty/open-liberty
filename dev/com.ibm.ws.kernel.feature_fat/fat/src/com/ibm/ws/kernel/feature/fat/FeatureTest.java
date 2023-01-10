@@ -598,11 +598,20 @@ public class FeatureTest {
     public void testInitialFeaturesAddedMessage() throws Exception {
         final String METHOD_NAME = "testInitialFeaturesAddedMessage";
 
+        final String FEATURES_ADDED_MESSAGE_PREFIX = "CWWKF1037I";
         Log.entering(c, METHOD_NAME);
 
+        // Make sure feature A is available
+        server.copyFileToLibertyInstallRoot(FEATURE_PATH, "featureA-1.0.mf");
+        server.copyFileToLibertyInstallRoot("lib", "bundle1_1.0.0.jar");
+
         // Start with no features being installed.
+        server.setServerConfigurationFile("server_no_features.xml");
+        server.startServer(METHOD_NAME + "-noFeatures.log");
+        server.stopServer();
+
         server.setServerConfigurationFile("server_add_featureX.xml");
-        server.startServer(METHOD_NAME + ".log");
+        server.startServer(METHOD_NAME + "-initialFeatures.log", false, false);
 
         // Get the install feature message for the initial set up of updated features
         String output = server.waitForStringInLogUsingMark(installFeatureMsgPrefix);
@@ -611,17 +620,38 @@ public class FeatureTest {
         assertTrue("featureX-1.0 was not installed and should have been: " + output, output.contains("featureX-1.0"));
         assertTrue("featureY-1.0 was not installed and should have been: " + output, output.contains("featureY-1.0"));
         assertTrue("featureZ-1.0 was not installed and should have been: " + output, output.contains("featureZ-1.0"));
-
+        assertTrue("timedExit-1.0 was not installed and should have been: " + output, output.contains("timedexit-1.0"));
+        assertTrue("Added Features message should not be found when no features were previously installed", server.findStringsInLogs(FEATURES_ADDED_MESSAGE_PREFIX).isEmpty());
         // now test with warm start
         server.stopServer();
 
-        server.startServer(METHOD_NAME + "-2.log");
+        // clean start
+        server.startServer(METHOD_NAME + "-noChange.log", true, false);
         output = server.waitForStringInLogUsingMark(installFeatureMsgPrefix);
         assertNotNull("We haven't found the " + installFeatureMsgPrefix + " in the logs.", output);
         assertTrue("featureX-1.0 was not installed and should have been: " + output, output.contains("featureX-1.0"));
         assertTrue("featureY-1.0 was not installed and should have been: " + output, output.contains("featureY-1.0"));
         assertTrue("featureZ-1.0 was not installed and should have been: " + output, output.contains("featureZ-1.0"));
-
+        assertTrue("Added Features message should not be found on clean start", server.findStringsInLogs(FEATURES_ADDED_MESSAGE_PREFIX).isEmpty());
         Log.exiting(c, METHOD_NAME);
+
+        server.stopServer();
+
+        // Clean start
+        server.setServerConfigurationFile("server_add_featureXA.xml");
+        server.startServer(METHOD_NAME + "-addFeatureA.log", false, false);
+        output = server.waitForStringInLogUsingMark(installFeatureMsgPrefix);
+        assertNotNull("We haven't found the " + installFeatureMsgPrefix + " in the logs.", output);
+        assertTrue("featureA-1.0 was not installed and should have been: " + output, output.contains("featureA-1.0"));
+        assertTrue("featureX-1.0 was not installed and should have been: " + output, output.contains("featureX-1.0"));
+        assertTrue("featureY-1.0 was not installed and should have been: " + output, output.contains("featureY-1.0"));
+        assertTrue("featureZ-1.0 was not installed and should have been: " + output, output.contains("featureZ-1.0"));
+
+        output = server.waitForStringInLogUsingMark(FEATURES_ADDED_MESSAGE_PREFIX);
+        assertTrue("Added Features message should have featureA-1.0 " + output, output.contains("featureA-1.0"));
+        assertFalse("Added Features message should not contain featureX-1.0 " + output, output.contains("featureX-1.0"));
+
+        server.stopServer();
+
     }
 }
