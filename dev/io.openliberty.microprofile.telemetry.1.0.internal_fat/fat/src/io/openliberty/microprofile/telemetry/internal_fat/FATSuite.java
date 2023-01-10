@@ -25,6 +25,9 @@ import componenttest.annotation.MinimumJavaLevel;
                 JaxRsIntegration.class,
                 TelemetryBeanTest.class,
                 TelemetrySpiTest.class,
+                TelemetryConfigEnvTest.class,
+                TelemetryConfigServerVarTest.class,
+                TelemetryConfigSystemPropTest.class,
 })
 public class FATSuite {
 
