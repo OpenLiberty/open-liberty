@@ -135,7 +135,7 @@ public class OpenTelemetryProducer {
             if (propertyName.startsWith("otel.")) {
                 System.out.println(propertyName);
                 System.out.println(config.getValue(propertyName, String.class));
-                
+                telemetryProperties.put(propertyName,config.getValue(propertyName, String.class))
             }
         }
         //Metrics and logs are disabled by default
