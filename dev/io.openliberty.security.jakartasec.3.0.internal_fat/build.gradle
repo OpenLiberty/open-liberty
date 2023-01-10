@@ -40,6 +40,8 @@ dependencies {
 
 }
 
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
+autoFVT.dependsOn ':io.openliberty.security.jakartasec.3.0.internal_fat.common:assemble'
 autoFVT.doLast {
   
    copy {

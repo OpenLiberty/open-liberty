@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,8 +17,11 @@ import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.net.UnknownHostException;
+import java.util.List;
 
+import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.impl.LibertyServer;
@@ -48,6 +51,72 @@ public class SecurityFatHttpUtils extends HttpUtils {
         Log.info(SecurityFatHttpUtils.class, "getHttpConnection", "Connecting to " + url.toExternalForm() + " expecting http response in " + timeout + " seconds.");
         con.connect();
         return con;
+    }
+
+    public static HttpURLConnection getHttpConnectionWithAnyResponseCode(String path, HTTPRequestMethod method, List<NameValuePair> requestParms) throws Exception {
+        int timeout = DEFAULT_TIMEOUT;
+        String urlString = path;
+        String builtParms = buildParmString(requestParms);
+        if ((HTTPRequestMethod.DELETE.equals(method) || HTTPRequestMethod.PUT.equals(method)) && builtParms != null) {
+            urlString = urlString + "?" + builtParms;
+        }
+        URL url = new URL(urlString);
+        HttpURLConnection con = getHttpConnection(url, timeout, method);
+        Log.info(SecurityFatHttpUtils.class, "getHttpConnection", "Connecting to " + url.toExternalForm() + " expecting http response in " + timeout + " seconds.");
+        con.connect();
+        Log.info(thisClass, "getHttpConnectionWithAnyResponseCode", "HttpURLConnection successfully completed con.connect");
+        Log.info(thisClass, "getHttpConnectionWithAnyResponseCode", "Response (Status):  " + con.getResponseCode());
+        Log.info(thisClass, "getHttpConnectionWithAnyResponseCode", "Response (Message):  " + con.getResponseMessage());
+        return con;
+    }
+
+    protected HttpURLConnection prepareConnection(String rawUrl, HTTPRequestMethod method) throws Exception {
+        String thisMethod = "HttpURLConnection";
+        URL url = AutomationTools.getNewUrl(rawUrl);
+        Log.info(thisClass, thisMethod, "HttpURLConnection URL is set to: " + url);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        Log.info(thisClass, thisMethod, "HttpURLConnection successfully opened the connection to URL " + url);
+        connection.setRequestMethod(method.toString());
+        Log.info(thisClass, thisMethod, "HttpURLConnection set request method to " + method);
+        connection.setConnectTimeout(120000); // 2 minutes
+        Log.info(thisClass, thisMethod, "HttpURLConnection set connect timeout to 2 min " + method);
+        connection.setReadTimeout(120000); // 2 minutes
+        Log.info(thisClass, thisMethod, "HttpURLConnection set read timeout to 2 min " + method);
+        // connection.setInstanceFollowRedirects(true); // allow redirect
+        // Log.info(thisClass, thisMethod,
+        // "HttpURLConnection setInstanceFollowRedirects is set to true");
+        connection.setDoInput(true);
+        if (method != HTTPRequestMethod.GET) {
+            connection.setDoOutput(true);
+        }
+        if (method == HTTPRequestMethod.PUT) {
+            connection.addRequestProperty("Content-Type", "application/json");
+        }
+        return connection;
+    }
+
+    protected static String buildParmString(List<NameValuePair> parms) throws Exception {
+
+        String thisMethod = "buildParmString";
+        if (parms != null) {
+            StringBuilder result = new StringBuilder();
+            boolean firstParm = true;
+            for (NameValuePair parm : parms) {
+                if (firstParm) {
+                    firstParm = false;
+                } else {
+                    result.append("&");
+                }
+                Log.info(thisClass, thisMethod, "Setting request parameter:  key: " + parm.getName() + " value: " + parm.getValue());
+                result.append(URLEncoder.encode(parm.getName(), "UTF-8"));
+                result.append("=");
+                result.append(URLEncoder.encode(parm.getValue(), "UTF-8"));
+            }
+            return result.toString();
+        } else {
+            return null;
+        }
+
     }
 
     public static URL createURL(LibertyServer server, String path) throws MalformedURLException {

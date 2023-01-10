@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,13 @@ public class TestConfigMaps {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
         updatedMap.put(Constants.PROVIDER_URI, opBase + "/oidc/endpoint/" + provider);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getProviderDiscUri(String rpBase, String provider) throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.PROVIDER_URI, rpBase + "/Discovery");
         return updatedMap;
     }
 
@@ -376,6 +383,40 @@ public class TestConfigMaps {
 
     }
 
+    public static Map<String, Object> getIdTokenSigningAlgValuesSupported(String... algs) {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        String value = Constants.EMPTY_VALUE;
+        if (algs != null) {
+            value = null;
+            for (String alg : algs) {
+                if (value == null) {
+                    value = alg;
+                } else {
+                    value = value + "," + alg;
+                }
+            }
+        }
+        updatedMap.put(Constants.IDTOKENSIGNINGALGORITHMSSUPPORTED, value);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getJwksConnectTimeoutExpression(int jwksConnectTimeout) {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        String value = Integer.toString(jwksConnectTimeout);
+        updatedMap.put(Constants.JWKSCONNECTTIMEOUTEXPRESSION, value);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getJwksReadTimeoutExpression(int jwksReadTimeout) {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        String value = Integer.toString(jwksReadTimeout);
+        updatedMap.put(Constants.JWKSREADTIMEOUTEXPRESSION, value);
+        return updatedMap;
+    }
+
     /****************** ClaimDefinitions ********************/
     public static Map<String, Object> getBadCallerNameClaim() throws Exception {
 
@@ -490,11 +531,30 @@ public class TestConfigMaps {
 
     }
 
+    public static Map<String, Object> getGoodUserInfo(String rpBase, String opBase, String provider) throws Exception {
+
+        String userinfoApp = opBase + "oidc/endpoint/" + provider + "/userinfo";
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        Log.info(thisClass, "", "userinfoApp: " + userinfoApp);
+        updatedMap.put(Constants.USERINFOENDPOINT, userinfoApp);
+        return updatedMap;
+
+    }
+
     public static Map<String, Object> getUserInfo(String rpBase, String userinfoApp) throws Exception {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
         Log.info(thisClass, "", "userinfoApp: " + userinfoApp);
         updatedMap.put(Constants.USERINFOENDPOINT, rpBase + "/UserInfo/" + userinfoApp);
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getUserInfoSplash(String rpBase, String opBase) throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        Log.info(thisClass, "", "userinfoApp: " + opBase);
+        updatedMap.put(Constants.USERINFOENDPOINT, opBase);
         return updatedMap;
 
     }
@@ -508,6 +568,7 @@ public class TestConfigMaps {
 
     }
 
+    /********************* helper methods *************************/
     public static Map<String, Object> mergeMaps(Map<String, Object> updatedMap, Map<String, Object> newMap) throws Exception {
 
         if (updatedMap == null) {

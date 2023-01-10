@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2022 IBM Corporation and others.
+    Copyright (c) 2022, 2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -85,12 +85,29 @@
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServlet8/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServlet9/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServlet10/Callback,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServlet11/Callback"
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServlet11/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServlet12/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServlet13/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServletRS384/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServletRS512/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServletES256/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServletES384/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServletES512/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServletHS256/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServletHS384/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServletHS512/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServlet20/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServlet21/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServletDiscUserInfoRS384_ignored/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServletDiscUserInfoRS384_used/Callback"
 				scope="openid profile email"
 				enabled="true"
 			>
 			</client>
 		</localStore>
 	</oauthProvider>		
+	
+<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
 			
 </server>

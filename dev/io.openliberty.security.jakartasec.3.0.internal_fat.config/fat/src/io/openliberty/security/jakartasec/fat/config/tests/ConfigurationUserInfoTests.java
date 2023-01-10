@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,9 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec.fat.config.tests;
 
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +27,7 @@ import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
@@ -31,15 +35,18 @@ import com.ibm.ws.security.fat.common.expectations.ResponseMessageExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseUrlExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
+import com.ibm.ws.security.fat.common.expectations.ServerTraceExpectation;
 import com.ibm.ws.security.fat.common.utils.ConditionalIgnoreRule;
 import com.ibm.ws.security.fat.common.utils.MySkipRule;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
+import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.HttpUtils.HTTPRequestMethod;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurityTests;
 import io.openliberty.security.jakartasec.fat.configs.TestConfigMaps;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
@@ -49,6 +56,9 @@ import io.openliberty.security.jakartasec.fat.utils.ServletMessageConstants;
 import io.openliberty.security.jakartasec.fat.utils.ServletRequestExpectationHelpers;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 import io.openliberty.security.jakartasec.fat.utils.WsSubjectExpectationHelpers;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 
 /**
  * Tests  @OpenIdProviderMetadata userinfo in @OpenIdAuthenticationMechanismDefinition.  Tests will create and use multiple test applications that set the userinfo endpoint
@@ -87,18 +97,20 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
     protected static String Caller = "caller";
     protected static String Groups = "groups";
     protected static String BothDefault = "bothDefault";
+    protected static String SigAlg = "sigAlg";
 
     protected static String app = "GenericOIDCAuthMechanism";
 
     protected static String userinfoResponseFormat = Constants.JWT_TOKEN_FORMAT;
 
     @ClassRule
+//    public static RepeatTests repeat = createMultipleTokenTypeRepeats(Constants.USERINFO_JWT);
     public static RepeatTests repeat = createMultipleTokenTypeRepeats(Constants.USERINFO_JWT, Constants.USERINFO_JSONOBJECT);
 
     @Rule
     public static final TestRule conditIgnoreRule = new ConditionalIgnoreRule();
 
-    // we dont' need to run some tests 4 times, we'll pick on of the 4 repeats an only run those tests during that one repeat
+    // we dont' need to run some tests 4 times, we'll pick one of the 4 repeats and only run those tests during that one repeat
     // an example of a test where the access_token and userinfo response type doesn't matter would be an invalid userinfo endpoint
     public static class skipIfNotJwtUserInfoAndJwtToken extends MySkipRule {
         @Override
@@ -125,18 +137,18 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
         }
     }
 
-    public static class skipIfJwtUserInfo extends MySkipRule {
+    public static class skipIfJsonUserInfo extends MySkipRule {
         @Override
         public Boolean callSpecificCheck() {
             String instance = RepeatTestFilter.getRepeatActionsAsString();
-            Log.info(thisClass, "skipIfJwtUserInfo", instance);
+            Log.info(thisClass, "skipIfJsonUserInfo", instance);
 
-            if (instance.contains(Constants.USERINFO_JWT)) {
-                Log.info(thisClass, "skipIfJwtUserInfo", "Test case is using a userinfo endpoint that returns data in JWT format - skip test");
+            if (instance.contains(Constants.USERINFO_JSONOBJECT)) {
+                Log.info(thisClass, "skipIfJsonUserInfo", "Test case is using a userinfo endpoint that returns data in JSON format - skip test");
                 testSkipped();
                 return true;
             }
-            Log.info(thisClass, "skipIfJwtUserInfo", "Test case is using a userinfo endpoint that returns data in JSON format - run test");
+            Log.info(thisClass, "skipIfJsonUserInfo", "Test case is using a userinfo endpoint that returns data in JWT format - run test");
             return false;
         }
     }
@@ -195,47 +207,48 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
 
         // deploy the userinfo endpoint apps
         swh.dropinAppWithJose4j(rpServer, "UserInfo.war", "userinfo.servlets");
+        swh.dropinAppWithJose4j(rpServer, "Discovery.war", "discovery.servlets");
 
         // deploy the userinfo test apps
         // apps where the callerNameClaim and callerGroupsClaim are the default
         swh.deployConfigurableTestApps(rpServer, "UserinfoTestServlet1.war", "GenericOIDCAuthMechanism.war",
-                                       buildUpdatedConfigMap("UserinfoTestServlet1", "OP1", BothDefault, CallerNameClaimDefault, CallerGroupsClaimDefault,
+                                       buildUpdatedConfigMap("UserinfoTestServlet1", "OP1", new String[] { Caller, Groups }, CallerNameClaimDefault, CallerGroupsClaimDefault,
                                                              UserinfoSubValid, UserinfoGroupsValid),
                                        "oidc.client.generic.servlets", "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "UserinfoTestServlet2.war", "GenericOIDCAuthMechanism.war",
-                                       buildUpdatedConfigMap("UserinfoTestServlet2", "OP1", Groups, CallerNameClaimDefault, CallerGroupsClaimDefault,
+                                       buildUpdatedConfigMap("UserinfoTestServlet2", "OP1", new String[] { Groups }, CallerNameClaimDefault, CallerGroupsClaimDefault,
                                                              UserinfoSubValid, !UserinfoGroupsValid),
                                        "oidc.client.generic.servlets", "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "UserinfoTestServlet3.war", "GenericOIDCAuthMechanism.war",
-                                       buildUpdatedConfigMap("UserinfoTestServlet3", "OP1", Caller, CallerNameClaimDefault, CallerGroupsClaimDefault,
+                                       buildUpdatedConfigMap("UserinfoTestServlet3", "OP1", new String[] { Caller }, CallerNameClaimDefault, CallerGroupsClaimDefault,
                                                              !UserinfoSubValid, UserinfoGroupsValid),
                                        "oidc.client.generic.servlets", "oidc.client.base.*");
 
         // apps where the token created by the OP does not contain the claim specified by either the callerNameClaim or callerGroupsClaim - we'll
         // then try to get the claims from the userinfo content.
         swh.deployConfigurableTestApps(rpServer, "UserinfoTestServlet4.war", "GenericOIDCAuthMechanism.war",
-                                       buildUpdatedConfigMap("UserinfoTestServlet4", "OP1", Groups, CallerNameClaimDefault, !CallerGroupsClaimDefault,
+                                       buildUpdatedConfigMap("UserinfoTestServlet4", "OP1", new String[] { Groups }, CallerNameClaimDefault, !CallerGroupsClaimDefault,
                                                              UserinfoSubValid, UserinfoGroupsValid),
                                        "oidc.client.generic.servlets", "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "UserinfoTestServlet5.war", "GenericOIDCAuthMechanism.war",
-                                       buildUpdatedConfigMap("UserinfoTestServlet5", "OP1", Groups, CallerNameClaimDefault, !CallerGroupsClaimDefault,
+                                       buildUpdatedConfigMap("UserinfoTestServlet5", "OP1", new String[] { Groups }, CallerNameClaimDefault, !CallerGroupsClaimDefault,
                                                              UserinfoSubValid, !UserinfoGroupsValid),
                                        "oidc.client.generic.servlets", "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "UserinfoTestServlet6.war", "GenericOIDCAuthMechanism.war",
-                                       buildUpdatedConfigMap("UserinfoTestServlet6", "OP1", Groups, CallerNameClaimDefault, !CallerGroupsClaimDefault,
+                                       buildUpdatedConfigMap("UserinfoTestServlet6", "OP1", new String[] { Groups }, CallerNameClaimDefault, !CallerGroupsClaimDefault,
                                                              !UserinfoSubValid, UserinfoGroupsValid),
                                        "oidc.client.generic.servlets", "oidc.client.base.*");
 
         swh.deployConfigurableTestApps(rpServer, "UserinfoTestServlet7.war", "GenericOIDCAuthMechanism.war",
-                                       buildUpdatedConfigMap("UserinfoTestServlet7", "OP1", Caller, !CallerNameClaimDefault, CallerGroupsClaimDefault,
+                                       buildUpdatedConfigMap("UserinfoTestServlet7", "OP1", new String[] { Caller }, !CallerNameClaimDefault, CallerGroupsClaimDefault,
                                                              UserinfoSubValid, UserinfoGroupsValid),
                                        "oidc.client.generic.servlets", "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "UserinfoTestServlet8.war", "GenericOIDCAuthMechanism.war",
-                                       buildUpdatedConfigMap("UserinfoTestServlet8", "OP1", Caller, !CallerNameClaimDefault, CallerGroupsClaimDefault,
+                                       buildUpdatedConfigMap("UserinfoTestServlet8", "OP1", new String[] { Caller }, !CallerNameClaimDefault, CallerGroupsClaimDefault,
                                                              UserinfoSubValid, !UserinfoGroupsValid),
                                        "oidc.client.generic.servlets", "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "UserinfoTestServlet9.war", "GenericOIDCAuthMechanism.war",
-                                       buildUpdatedConfigMap("UserinfoTestServlet9", "OP1", Caller, !CallerNameClaimDefault, CallerGroupsClaimDefault,
+                                       buildUpdatedConfigMap("UserinfoTestServlet9", "OP1", new String[] { Caller }, !CallerNameClaimDefault, CallerGroupsClaimDefault,
                                                              !UserinfoSubValid, UserinfoGroupsValid),
                                        "oidc.client.generic.servlets", "oidc.client.base.*");
 
@@ -246,6 +259,98 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
         swh.deployConfigurableTestApps(rpServer, "UserinfoTestServlet11.war", "GenericOIDCAuthMechanism.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "UserinfoTestServlet11", "allValues.openIdConfig.properties", TestConfigMaps.getUserInfoEmpty()),
                                        "oidc.client.generic.servlets", "oidc.client.base.*");
+
+        swh.deployConfigurableTestApps(rpServer, "UserinfoTestServlet12.war", "GenericOIDCAuthMechanism.war",
+                                       buildUpdatedConfigMap(opServer, rpServer, "UserinfoTestServlet12", "allValues.openIdConfig.properties",
+                                                             TestConfigMaps.getGoodUserInfo(rpHttpsBase, opHttpsBase, "OP1")),
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
+
+        swh.deployConfigurableTestApps(rpServer, "UserinfoTestServlet13.war", "GenericOIDCAuthMechanism.war",
+                                       buildUpdatedConfigMap(opServer, rpServer, "UserinfoTestServlet13", "allValues.openIdConfig.properties",
+                                                             TestConfigMaps.getUserInfoSplash(rpHttpsBase, opHttpsBase)),
+                                       "oidc.client.generic.servlets", "oidc.client.base.*");
+
+        if (RepeatTestFilter.getRepeatActionsAsString().contains(Constants.USERINFO_JWT)) {
+            swh.deployConfigurableTestApps(rpServer, "UserinfoTestServletRS384.war", "GenericOIDCAuthMechanism.war",
+                                           buildUpdatedConfigMap("UserinfoTestServletRS384", "OP1", new String[] { Constants.SIGALG_RS384 }, CallerNameClaimDefault,
+                                                                 CallerGroupsClaimDefault,
+                                                                 UserinfoSubValid, UserinfoGroupsValid),
+                                           "oidc.client.generic.servlets", "oidc.client.base.*");
+
+            swh.deployConfigurableTestApps(rpServer, "UserinfoTestServletRS512.war", "GenericOIDCAuthMechanism.war",
+                                           buildUpdatedConfigMap("UserinfoTestServletRS512", "OP1", new String[] { Constants.SIGALG_RS512 }, CallerNameClaimDefault,
+                                                                 CallerGroupsClaimDefault,
+                                                                 UserinfoSubValid, UserinfoGroupsValid),
+                                           "oidc.client.generic.servlets", "oidc.client.base.*");
+
+//            swh.deployConfigurableTestApps(rpServer, "UserinfoTestServletES256.war", "GenericOIDCAuthMechanism.war",
+//                                           buildUpdatedConfigMap("UserinfoTestServletES256", "OP1", new String[] { Constants.SIGALG_ES256 }, CallerNameClaimDefault,
+//                                                                 CallerGroupsClaimDefault,
+//                                                                 UserinfoSubValid, UserinfoGroupsValid),
+//                                           "oidc.client.generic.servlets", "oidc.client.base.*");
+//
+//            swh.deployConfigurableTestApps(rpServer, "UserinfoTestServletES384.war", "GenericOIDCAuthMechanism.war",
+//                                           buildUpdatedConfigMap("UserinfoTestServletES384", "OP1", new String[] { Constants.SIGALG_ES384 }, CallerNameClaimDefault,
+//                                                                 CallerGroupsClaimDefault,
+//                                                                 UserinfoSubValid, UserinfoGroupsValid),
+//                                           "oidc.client.generic.servlets", "oidc.client.base.*");
+//
+//            swh.deployConfigurableTestApps(rpServer, "UserinfoTestServletES512.war", "GenericOIDCAuthMechanism.war",
+//                                           buildUpdatedConfigMap("UserinfoTestServletES512", "OP1", new String[] { Constants.SIGALG_ES512 }, CallerNameClaimDefault,
+//                                                                 CallerGroupsClaimDefault,
+//                                                                 UserinfoSubValid, UserinfoGroupsValid),
+//                                           "oidc.client.generic.servlets", "oidc.client.base.*");
+//
+            swh.deployConfigurableTestApps(rpServer, "UserinfoTestServletHS256.war", "GenericOIDCAuthMechanism.war",
+                                           buildUpdatedConfigMap("UserinfoTestServletHS256", "OP1", new String[] { Constants.SIGALG_HS256 }, CallerNameClaimDefault,
+                                                                 CallerGroupsClaimDefault,
+                                                                 UserinfoSubValid, UserinfoGroupsValid),
+                                           "oidc.client.generic.servlets", "oidc.client.base.*");
+
+            swh.deployConfigurableTestApps(rpServer, "UserinfoTestServletHS384.war", "GenericOIDCAuthMechanism.war",
+                                           buildUpdatedConfigMap("UserinfoTestServletHS384", "OP1", new String[] { Constants.SIGALG_HS384 }, CallerNameClaimDefault,
+                                                                 CallerGroupsClaimDefault,
+                                                                 UserinfoSubValid, UserinfoGroupsValid),
+                                           "oidc.client.generic.servlets", "oidc.client.base.*");
+
+            swh.deployConfigurableTestApps(rpServer, "UserinfoTestServletHS512.war", "GenericOIDCAuthMechanism.war",
+                                           buildUpdatedConfigMap("UserinfoTestServletHS512", "OP1", new String[] { Constants.SIGALG_HS512 }, CallerNameClaimDefault,
+                                                                 CallerGroupsClaimDefault,
+                                                                 UserinfoSubValid, UserinfoGroupsValid),
+                                           "oidc.client.generic.servlets", "oidc.client.base.*");
+
+            // the sigAlg userinfo apps build/return the default content, so for the tests that have caller or group annotation values that don't match
+            // what the OP returns, we'll get the proper info in the userinfo response, but, the sig alg will be wrong, so we shouldn't use this info
+            swh.deployConfigurableTestApps(rpServer, "UserinfoTestServlet20.war", "GenericOIDCAuthMechanism.war",
+                                           buildUpdatedConfigMap("UserinfoTestServlet20", "OP1", new String[] { Caller, Constants.SIGALG_RS384 }, !CallerNameClaimDefault,
+                                                                 CallerGroupsClaimDefault,
+                                                                 UserinfoSubValid, UserinfoGroupsValid),
+                                           "oidc.client.generic.servlets", "oidc.client.base.*");
+
+            swh.deployConfigurableTestApps(rpServer, "UserinfoTestServlet21.war", "GenericOIDCAuthMechanism.war",
+                                           buildUpdatedConfigMap("UserinfoTestServlet21", "OP1", new String[] { Groups, Constants.SIGALG_RS512 }, CallerNameClaimDefault,
+                                                                 !CallerGroupsClaimDefault,
+                                                                 UserinfoSubValid, UserinfoGroupsValid),
+                                           "oidc.client.generic.servlets", "oidc.client.base.*");
+
+        }
+
+        // create an app where the provider points to our test discovery endpoint
+        swh.deployConfigurableTestApps(rpServer, "UserinfoTestServletDiscUserInfoRS384_ignored.war", "UserinfoAnnotation.war",
+                                       buildUpdatedConfigMap("UserinfoTestServletDiscUserInfoRS384_ignored", "OP1_RS384_Discovery", new String[] { Constants.SIGALG_RS256 },
+                                                             CallerNameClaimDefault,
+                                                             CallerGroupsClaimDefault,
+                                                             UserinfoSubValid, UserinfoGroupsValid),
+                                       "userinfo.annotation.servlets", "oidc.client.base.*");
+
+        // create an app where the provider points to our test discovery endpoint
+        swh.deployConfigurableTestApps(rpServer, "UserinfoTestServletDiscUserInfoRS384_used.war", "UserinfoAnnotation.war",
+                                       buildUpdatedConfigMap("UserinfoTestServletDiscUserInfoRS384_used", "OP1_RS384_Discovery", new String[] { Constants.SIGALG_RS256, Caller },
+                                                             !CallerNameClaimDefault,
+                                                             CallerGroupsClaimDefault,
+                                                             UserinfoSubValid, UserinfoGroupsValid),
+                                       "userinfo.annotation.servlets", "oidc.client.base.*");
+
     }
 
     /**
@@ -262,12 +367,17 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      * @return - return the map of config el vars to set
      * @throws Exception
      */
-    public static Map<String, Object> buildUpdatedConfigMap(String app, String provider, String whatAreWeTesting, boolean isCallerNameClaimDefault,
+    public static Map<String, Object> buildUpdatedConfigMap(String app, String provider, String[] whatAreWeTesting, boolean isCallerNameClaimDefault,
                                                             boolean isCallerGroupsClaimDefault,
                                                             boolean isUserinfoSubValid, boolean isUserinfoGroupsValid) throws Exception {
 
         // init the map with the provider info that the app should use
-        Map<String, Object> testPropMap = TestConfigMaps.getProviderUri(opHttpsBase, provider);
+        Map<String, Object> testPropMap = null;
+        if (provider.contains("Discovery")) {
+            testPropMap = TestConfigMaps.getProviderDiscUri(rpHttpsBase, provider);
+        } else {
+            testPropMap = TestConfigMaps.getProviderUri(opHttpsBase, provider);
+        }
 
         //***********************************************************************************************************
         // set values that will cause the runtime to need to use the userinfo values
@@ -282,10 +392,10 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
         }
         //***********************************************************************************************************
 
-        Log.info(thisClass, "buildUpdatedConfigMap", "whatAreWeTesting: " + whatAreWeTesting);
+        Log.info(thisClass, "buildUpdatedConfigMap", "whatAreWeTesting: " + whatAreWeTesting.toString());
 
         // set the userinfo config setting that will return the appropriate userinfo content
-        if (whatAreWeTesting.equals(Caller)) {
+        if (isInList(whatAreWeTesting, new String[] { Caller }) && !isInList(whatAreWeTesting, new String[] { Groups })) {
             if (isCallerNameClaimDefault) {
                 if (isUserinfoSubValid) {
                     testPropMap = TestConfigMaps.mergeMaps(testPropMap,
@@ -306,7 +416,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
                 }
             }
         }
-        if (whatAreWeTesting.equals(Groups)) {
+        if (isInList(whatAreWeTesting, new String[] { Groups }) && !isInList(whatAreWeTesting, new String[] { Caller })) {
             if (isCallerGroupsClaimDefault) {
                 if (isUserinfoGroupsValid) {
                     testPropMap = TestConfigMaps.mergeMaps(testPropMap,
@@ -329,8 +439,27 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
                 }
             }
         }
-        if (whatAreWeTesting.equals(BothDefault)) {
+        if (isInList(whatAreWeTesting, new String[] { Caller }) && isInList(whatAreWeTesting, new String[] { Groups })) {
             testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getUserInfo(rpHttpsBase, userinfoResponseFormat + TestConfigMaps.AllDefault));
+        }
+
+        if (isInList(whatAreWeTesting, Constants.ALL_TEST_SIGALGS)) {
+            // we won't modify the signature alg that the client is using, we'll configure a userinfo endpoint app that will create a response
+            // using the alg that we specify
+            String sigAlg = null;
+            // only expecting one sig alg in the list of things to process - once we find a valid sigalg, stop and use that
+            for (String req : whatAreWeTesting) {
+                if (Arrays.asList(Constants.ALL_TEST_SIGALGS).contains(req)) {
+                    sigAlg = req;
+                    break;
+                }
+            }
+            if (sigAlg.equals(Constants.SIGALG_RS256)) {
+                Log.info(thisClass, "buildUpdatedConfigMap", "Using the default signature algorithm, so use the default userinfo app, or the value that is set previously.");
+            } else {
+                testPropMap = TestConfigMaps.mergeMaps(testPropMap,
+                                                       TestConfigMaps.getUserInfo(rpHttpsBase, userinfoResponseFormat + sigAlg + TestConfigMaps.AllDefault));
+            }
         }
 
         Map<String, Object> updatedMap = buildUpdatedConfigMap(opServer, rpServer, app, "allValues.openIdConfig.properties", testPropMap);
@@ -338,6 +467,25 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
         return updatedMap;
 
     }
+
+    private static boolean isInList(String[] request, String[] checkAgainst) {
+
+        for (String req : request) {
+            Log.info(thisClass, "isInList", "req: " + req + " checkAgainst: " + checkAgainst.toString());
+            if (Arrays.asList(checkAgainst).contains(req)) {
+                Log.info(thisClass, "isInList", "true");
+                return true;
+            }
+        }
+        Log.info(thisClass, "isInList", "false");
+        return false;
+
+    }
+//    private static boolean isASigAlg(String whatAreWeTesting) {
+//
+//        return Arrays.asList(Constants.ALL_TEST_SIGALGS).contains(whatAreWeTesting);
+//
+//    }
 
     /**
      * Common test method that runs the standard end to end test, but also checks that the subject in the access_token/id_token is not set (because we used a unique callerNameClaim
@@ -360,6 +508,116 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
         validationUtils.validateResult(response, expectations);
 
         return response;
+    }
+
+    public void extraUserinfoSigMismatchValidation(Page response) throws Exception {
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectation(new ServerTraceExpectation(rpServer, MessageConstants.CWWKS2418W_USERINFO_PROBLEM, "Did not receive a message in the trace stating that there was a problem with the response from the userinfo endpoint."));
+        expectations.addExpectation(new ServerTraceExpectation(rpServer, MessageConstants.CWWKS2521E_SIGNATURE_NOT_ALLOWED, "Did not receive a message in the trace stating that the signature algorithm was not one that was allowed."));
+
+        validationUtils.validateResult(response, expectations);
+
+    }
+
+    /**
+     * Run the discovery endpooint and load the response into a json object. Update that object by adding the "userinfo_signing_alg_values_supported" attribute (which is
+     * architected, but not included by the Liberty OP). Send the updated data to the test discovery endpoint where it'll be saved and then returned when the RP/client invokes
+     * discovery.
+     *
+     * @param provider - the provider whose discovery endpoint should be invoked
+     * @param alg - the algorithm that we'll say userinfo supports
+     * @throws Exception
+     */
+    protected void setNextDiscoveryResponse(String provider, String alg) throws Exception {
+
+        // get discovery info for provider
+        Page response = invokeDiscovery(provider);
+
+        // parse discovery response
+        JsonObject origDiscData = loadJsonDataFromResponse(response);
+
+        // add userinfo sig alg to discovery data
+        JsonObject updatedDiscData = buildNewDiscoveryData(origDiscData, alg);
+
+        // rebuild json data
+        String updatedDiscDataString = updatedDiscData.toString();
+
+        // push json data to test discovery endpoint
+        updateDiscDataInTestApp(updatedDiscDataString);
+    }
+
+    /**
+     * Invoke the providers discovery endpoint
+     *
+     * @param provider - the provider whose discovery endpoint should be invoked
+     * @return - the discovery response
+     * @throws Exception
+     */
+    protected Page invokeDiscovery(String provider) throws Exception {
+
+        WebClient webClient = getAndSaveWebClient();
+        String url = opHttpsBase + "/oidc/endpoint/" + provider + "/.well-known/openid-configuration";
+        Page response = actions.invokeUrl(_testName, webClient, url);
+
+        return response;
+    }
+
+    /**
+     * Parse the discovery response into a json object
+     *
+     * @param response - the response from the discovery endpoint
+     * @return - the json object containing the discovery data
+     * @throws Exception
+     */
+    protected JsonObject loadJsonDataFromResponse(Page response) throws Exception {
+
+        JsonObject obj = null;
+        try {
+            String responseText = WebResponseUtils.getResponseText(response);
+            Log.info(thisClass, "loadJsonDataFromResponse", responseText);
+            obj = Json.createReader(new StringReader(responseText)).readObject();
+        } catch (Exception e) {
+            Log.error(thisClass, "loadJsonDataFromResponse", e);
+        }
+
+        return obj;
+    }
+
+    /**
+     * Update the discovery data (in json format) with "userinfo_signing_alg_values_supported" set to the alg requested
+     *
+     * @param discResponse - the json formatted discovery response
+     * @param alg - the algorithm that "userinfo_signing_alg_values_supported" will be set to
+     * @return - the updated json discovery data
+     * @throws Exception
+     */
+    protected JsonObject buildNewDiscoveryData(JsonObject discResponse, String alg) throws Exception {
+
+        JsonObjectBuilder updatedDiscData = Json.createObjectBuilder(discResponse);
+
+//        updatedDiscData.add("userinfo_signing_alg_values_supported", alg);
+        updatedDiscData.add("userinfo_signing_alg_values_supported", Json.createArrayBuilder().add(alg).build());
+
+        JsonObject updatedresponse = updatedDiscData.build();
+        return updatedresponse;
+    }
+
+    /**
+     * Invoke the test discovery endpoint to save the updated discovery data
+     *
+     * @param discData - the updated discovery data to save in the test discovery endpoint
+     * @throws Exception
+     */
+    protected void updateDiscDataInTestApp(String discData) throws Exception {
+
+        String url = rpHttpBase + "/Discovery/.well-known/openid-configuration";
+
+        List<NameValuePair> requestParms = new ArrayList<NameValuePair>();
+        requestParms.add(new NameValuePair("UpdatedDiscoveryData", discData));
+
+        SecurityFatHttpUtils.getHttpConnectionWithAnyResponseCode(url, HTTPRequestMethod.PUT, requestParms);
+
     }
 
     /****************************************************************************************************************/
@@ -417,7 +675,6 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
-    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJwtUserInfo.class)
     @Test
     public void ConfigurationUserInfoTests_defaultNameClaimOtherGroupClaims_UserinfoGoodSubGoodGroups() throws Exception {
 
@@ -469,7 +726,6 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
-    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJwtUserInfo.class)
     @Test
     public void ConfigurationUserInfoTests_defaultNameClaimOtherGroupClaims_UserinfoBadSubGoodGroups() throws Exception {
 
@@ -487,7 +743,6 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
-    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJwtUserInfo.class)
     @Test
     public void ConfigurationUserInfoTests_otherNameClaimDefaultGroupClaims_UserinfoGoodSubGoodGroups() throws Exception {
 
@@ -507,7 +762,6 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
-    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJwtUserInfo.class)
     @Test
     public void ConfigurationUserInfoTests_otherNameClaimDefaultGroupClaims_UserinfoGoodSubBadGroups() throws Exception {
 
@@ -528,7 +782,6 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
-    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJwtUserInfo.class)
     @Test
     public void ConfigurationUserInfoTests_otherNameClaimDefaultGroupClaims_UserinfoBadSubGoodGroups() throws Exception {
 
@@ -586,4 +839,206 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest("UserinfoTestServlet11", app);
     }
 
+    @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfNotJwtUserInfoAndJwtToken.class)
+    public void ConfigurationUserInfoTests_goodUserinfoEndpoint() throws Exception {
+
+        runGoodEndToEndTest("UserinfoTestServlet12", app);
+    }
+
+    @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfNotJwtUserInfoAndJwtToken.class)
+    public void ConfigurationUserInfoTests_splashUserinfoEndpoint() throws Exception {
+
+        runGoodEndToEndTest("UserinfoTestServlet13", app);
+    }
+
+    @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
+    public void ConfigurationUserInfoTests_invalidRS384JWTUserinfoResponse() throws Exception {
+
+        Page response = runGoodEndToEndTest("UserinfoTestServletRS384", app);
+
+        extraUserinfoSigMismatchValidation(response);
+
+    }
+
+    @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
+    public void ConfigurationUserInfoTests_invalidRS512JWTUserinfoResponse() throws Exception {
+
+        Page response = runGoodEndToEndTest("UserinfoTestServletRS512", app);
+
+        extraUserinfoSigMismatchValidation(response);
+
+    }
+
+    // TODO - enabled once the userinfo app can handle signing with ES algs
+//    @Test
+//    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
+//    public void ConfigurationUserInfoTests_invalidES256JWTUserinfoResponse() throws Exception {
+//
+//        Page response = runGoodEndToEndTest("UserinfoTestServletES256", app);
+//
+//        extraUserinfoSigMismatchValidation(response);
+//
+//    }
+//
+//    @Test
+//    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
+//    public void ConfigurationUserInfoTests_invalidES384JWTUserinfoResponse() throws Exception {
+//
+//        Page response = runGoodEndToEndTest("UserinfoTestServletES384", app);
+//
+//        extraUserinfoSigMismatchValidation(response);
+//
+//    }
+//
+//    @Test
+//    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
+//    public void ConfigurationUserInfoTests_invalidES512JWTUserinfoResponse() throws Exception {
+//
+//        Page response = runGoodEndToEndTest("UserinfoTestServletES512", app);
+//
+//        extraUserinfoSigMismatchValidation(response);
+//
+//    }
+
+    @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
+    public void ConfigurationUserInfoTests_invalidHS256JWTUserinfoResponse() throws Exception {
+
+        Page response = runGoodEndToEndTest("UserinfoTestServletHS256", app);
+
+        extraUserinfoSigMismatchValidation(response);
+
+    }
+
+    @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
+    public void ConfigurationUserInfoTests_invalidHS384JWTUserinfoResponse() throws Exception {
+
+        Page response = runGoodEndToEndTest("UserinfoTestServletHS384", app);
+
+        extraUserinfoSigMismatchValidation(response);
+
+    }
+
+    @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
+    public void ConfigurationUserInfoTests_invalidHS512JWTUserinfoResponse() throws Exception {
+
+        Page response = runGoodEndToEndTest("UserinfoTestServletHS512", app);
+
+        extraUserinfoSigMismatchValidation(response);
+
+    }
+
+    @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
+    public void ConfigurationUserInfoTests_otherNameClaimDefaultGroupClaims_UserinfoGoodSubGoodGroups_userinfoSigAlgMismatch() throws Exception {
+
+        String appRoot = "UserinfoTestServlet20";
+
+        WebClient webClient = getAndSaveWebClient();
+
+        String url = rpHttpsBase + "/" + appRoot + "/" + app;
+
+        Page response = invokeAppReturnLoginPage(webClient, url);
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
+        // Possible TODO - expect a message in the messages.log explaining the reason for the 401
+
+        response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
+
+        validationUtils.validateResult(response, expectations);
+
+        extraUserinfoSigMismatchValidation(response);
+
+    }
+
+    @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
+    public void ConfigurationUserInfoTests_defaultNameClaimOtherGroupClaims_UserinfoGoodSubGoodGroups_userinfoSigAlgMismatch() throws Exception {
+
+        String appRoot = "UserinfoTestServlet21";
+
+        WebClient webClient = getAndSaveWebClient();
+
+        String url = rpHttpsBase + "/" + appRoot + "/" + app;
+
+        Page response = invokeAppReturnLoginPage(webClient, url);
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectation(new ResponseStatusExpectation(Constants.FORBIDDEN_STATUS));
+        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, url, "Did not fail to land on " + url));
+        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.FORBIDDEN, "Did not receive the forbidden message."));
+        expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, Constants.AUTHORIZATION_ERROR, "Did not receive the authorization failed message."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS9104A_NO_ACCESS_FOR_USER, "Did not receive an error message stating that a user is not granted access to a resource."));
+
+        response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
+
+        validationUtils.validateResult(response, expectations);
+
+        extraUserinfoSigMismatchValidation(response);
+
+    }
+
+    /**
+     * Test that we'll ignore the userinfo_signing_alg_values_supported value in the discovery data when we don't need to use userinfo data (because we can get the information that
+     * we need from the id or access tokens)
+     * The test will use a "test" discovery endpoint that will set "userinfo_signing_alg_values_supported" to "RS384" (the Liberty OP does not set
+     * "userinfo_signing_alg_values_supported" in its discovery data).
+     * The test "userinfo" endpoint will return a jwt signed with RS256 - since we can get the information that we need from the id/access token, we don't need to use the userinfo
+     * data.
+     *
+     * @throws Exception
+     */
+    @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
+    public void ConfigurationUserInfoTests_UserInfoNameClaimAndGroupClaimNotNeeded_userInfoSigAlgMismatchWithDiscoveryUserInfoValue() throws Exception {
+
+        setNextDiscoveryResponse("OP1", "RS384");
+        runGoodEndToEndTest("UserinfoTestServletDiscUserInfoRS384_ignored", "UserinfoAnnotation");
+
+    }
+
+    /**
+     * Test that we'll not be granted access to the test app when the "userinfo_signing_alg_values_supported" value in the discovery data is set to RS384 and we do need to use the
+     * userinfo data (because we can not get the information that we need from the id or access tokens)
+     * The test will use a "test" discovery endpoint that will set "userinfo_signing_alg_values_supported" to "RS384" (the Liberty OP does not set
+     * "userinfo_signing_alg_values_supported" in its discovery data).
+     * The test "userinfo" endpoint will return a jwt signed with RS256 - since we can not get the information that we need from the id/access token, we will need to use the
+     * userinfo
+     * data, but the signature will not match what discovery says we require.
+     *
+     * @throws Exception
+     */
+    @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
+    public void ConfigurationUserInfoTests_UserInfoNameClaimAndGroupClaimNeeded_userInfoSigAlgMismatchWithDiscoveryUserInfoValue() throws Exception {
+
+        setNextDiscoveryResponse("OP1", "RS384");
+
+        String appRoot = "UserinfoTestServletDiscUserInfoRS384_used";
+
+        WebClient webClient = getAndSaveWebClient();
+
+        String url = rpHttpsBase + "/" + appRoot + "/UserinfoAnnotation";;
+
+        Page response = invokeAppReturnLoginPage(webClient, url);
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
+        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_DOES_NOT_CONTAIN, url, "Did not fail to land on " + url));
+        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the unauthorized message."));
+
+        response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
+
+        validationUtils.validateResult(response, expectations);
+
+        extraUserinfoSigMismatchValidation(response);
+
+    }
 }
