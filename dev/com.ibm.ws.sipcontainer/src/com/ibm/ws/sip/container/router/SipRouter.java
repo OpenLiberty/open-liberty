@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003 IBM Corporation and others.
+ * Copyright (c) 2003,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1608,6 +1608,8 @@ public class SipRouter {
 		String sessId = m_transactionUserTable.getTransactionUserIdAccordingToTopVia(resp);
 		String fromTag =	resp.getFromHeader().getTag();
 		String toTag =		resp.getToHeader().getTag();
+		String pbigbi = null;
+		String respTuwgbi = null;
 		if (fromTag != null && toTag != null && sessId != null){
 			TUKey key = ThreadLocalStorage.getTUKey();
 			key.setup(fromTag, toTag, sessId, true);
@@ -1625,7 +1627,9 @@ public class SipRouter {
 					try {
 						// verify that the 2 responses with the same to-tag are on different branches
 						// (2 responses with same to-tag on the same branch are possible, for instance in the case of 180 and 200)
-						if (!pbi.getBranchId().equals(respTuw.getBranch().getBranchId())){
+						pbigbi = pbi.getBranchId();
+						respTuwgbi = respTuw.getBranch().getBranchId();
+						if (!pbigbi.equals(respTuwgbi)){
 							if (c_logger.isErrorEnabled()) {
 								c_logger.error("error.same.to.tag");
 								if (c_logger.isTraceDebugEnabled()){
@@ -1650,6 +1654,23 @@ public class SipRouter {
 							c_logger.traceDebug(this, "detectDuplicatedToTag", "illegal argument error: "+e.getMessage(), e);
 						}
 						return;
+					}catch (NullPointerException e ) {
+						//These println statements are for debugging a rare(?) NPE. Remove them once cause of NPE is known.  
+						System.out.println("SipRouter NPE Debug: pbi " + ((pbi != null)?"is not null":"is null") );
+						if (pbi != null) {
+							System.out.println("SipRouter NPE Debug: pbi.getBranchId " + ((pbigbi != null)?pbigbi:"is null") );
+						}
+						System.out.println("SipRouter NPE Debug: respTuw " + ((respTuw != null)?"is not null":"is null") );
+						if (respTuw != null) {
+							System.out.println("SipRouter NPE Debug: respTuw.getBranch " + ((respTuw.getBranch() != null)?"is not null":"is null") );
+							if (respTuw.getBranch() != null) {
+								System.out.println("SipRouter NPE Debug: respTuw.getBranch().getBranchId() " + ((respTuwgbi != null)?respTuwgbi:"is null") );
+							}
+						} 
+						if (c_logger.isTraceDebugEnabled()) {
+							c_logger.traceDebug(this, "detectDuplicatedToTag", "NullPointerException: "+e.getMessage(), e);
+						}
+						return;					    	
 					}
 				}
 			}
