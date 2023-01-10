@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -13,6 +15,7 @@ package io.openliberty.security.jakartasec.identitystore;
 import static jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant.SUBJECT_IDENTIFIER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
@@ -46,149 +49,183 @@ import jakarta.security.enterprise.identitystore.openid.RefreshToken;
  */
 public class OpenIdContextImplSerializationTest {
 
-	private static final String SERIALIZED_FILE_VERS_1 = "test-resources/testdata/ser-files/OpenIdContextImpl_1.ser";
+    // ProviderMetadata set
+    private static final String SERIALIZED_FILE_VERS_1 = "test-resources/testdata/ser-files/OpenIdContextImpl_1.ser";
 
-	private static final String ISSUER = "https://localhost:9443/oidc/endpoint/OP/authorize";
+    // ProviderMetadata not set (set to null)
+    private static final String SERIALIZED_FILE_VERS_2 = "test-resources/testdata/ser-files/OpenIdContextImpl_2.ser";
 
-	private static final String TOKEN_STRING = "tokenString";
+    private static final String ISSUER = "https://localhost:9443/oidc/endpoint/OP/authorize";
 
-	@Test
-	public void testOpenIdContextSerialization_Ver1() throws Exception {
-		/*
-		 * Deserialize the object from the serialized file.
-		 */
-		OpenIdContextImpl object = null;
-		try (ObjectInputStream input = new ObjectInputStream(new FileInputStream(SERIALIZED_FILE_VERS_1))) {
-			object = (OpenIdContextImpl) input.readObject();
-		}
-		assertNotNull("OpenIdContextImpl instance could not be read from the serialized file.", object);
+    private static final String TOKEN_STRING = "tokenString";
 
-		/*
-		 * Check the AccessToken
-		 */
-		AccessTokenImpl accessToken = (AccessTokenImpl) object.getAccessToken();
-		assertNotNull("AccessTokenImpl was null from OpenIdContextImpl.", accessToken);
-		AccessTokenImplSerializationTest.verifyAccessTokenContents(accessToken);
+    /**
+     * Test serialization with the providerMetadata populated
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testOpenIdContextSerialization_Ver1() throws Exception {
+        /*
+         * Deserialize the object from the serialized file.
+         */
+        OpenIdContextImpl object = null;
+        try (ObjectInputStream input = new ObjectInputStream(new FileInputStream(SERIALIZED_FILE_VERS_1))) {
+            object = (OpenIdContextImpl) input.readObject();
+        }
 
-		/*
-		 * Check the OpenIdClaims
-		 */
-		OpenIdClaimsImpl claims = (OpenIdClaimsImpl) object.getClaims();
-		assertNotNull("OpenIdClaimsImpl instance could not be read from the serialized file.", claims);
-		assertEquals("Incorrect subject on OpenIdClaimsImpl", AccessTokenImplTest.SUBJECT_IN_ACCESS_TOKEN,
-				claims.getSubject());
+        verifyObjectIdContextImpl(object, true);
+    }
 
-		/*
-		 * getClaimsJson is not serialized, but we should recreate it from the
-		 * OpenIdClaims.
-		 */
-		JsonObject claimsJson = object.getClaimsJson();
-		assertNotNull("OpenIdClaimsImpl as Json could not be read from the serialized file.", claimsJson);
-		assertEquals("Incorrect subject on OpenIdClaimsImpl", AccessTokenImplTest.SUBJECT_IN_ACCESS_TOKEN,
-				claimsJson.getString(OpenIdConstant.SUBJECT_IDENTIFIER));
+    /**
+     * Test serialization with providerMetadata not set
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testOpenIdContextSerialization_Ver2() throws Exception {
+        /*
+         * Deserialize the object from the serialized file.
+         */
+        OpenIdContextImpl object = null;
+        try (ObjectInputStream input = new ObjectInputStream(new FileInputStream(SERIALIZED_FILE_VERS_2))) {
+            object = (OpenIdContextImpl) input.readObject();
+        }
 
-		/*
-		 * Check the IdentityToken
-		 */
-		IdentityTokenImpl identityToken = (IdentityTokenImpl) object.getIdentityToken();
-		assertNotNull("IdentityTokenImpl was null from OpenIdContextImpl.", accessToken);
-		IdentityTokenImplSerializationTest.verifyIdentityTokenContents(identityToken);
+        verifyObjectIdContextImpl(object, false);
+    }
 
-		/*
-		 * Check the rest of the fields
-		 */
-		assertEquals("The getClientId() method returned an unexpected value.", OpenIdContextImplTest.clientID,
-				object.getClientId());
+    /**
+     * Walk though all the expected values after deserialization.
+     *
+     * @param object
+     * @param hasProviderMetadata
+     */
+    private void verifyObjectIdContextImpl(OpenIdContextImpl object, boolean hasProviderMetadata) {
+        assertNotNull("OpenIdContextImpl instance could not be read from the serialized file.", object);
 
-		Optional<Long> expiresIn = object.getExpiresIn();
-		assertTrue("Should have exiresIn set", expiresIn.isPresent());
-		assertNotNull("expiresIn should not be null", expiresIn.get());
-		assertEquals("The getExpiresIn() method returned an unexpected value.", AccessTokenImplTest.ONE_HOUR,
-				expiresIn.get());
+        /*
+         * Check the AccessToken
+         */
+        AccessTokenImpl accessToken = (AccessTokenImpl) object.getAccessToken();
+        assertNotNull("AccessTokenImpl was null from OpenIdContextImpl.", accessToken);
+        AccessTokenImplSerializationTest.verifyAccessTokenContents(accessToken);
 
-		JsonObject providerMetatdata = object.getProviderMetadata();
-		assertNotNull("providerMetatdata was null from OpenIdContextImpl.", providerMetatdata);
-		assertEquals("Incorrect providerMetatdata", ISSUER, providerMetatdata.getString(OpenIdConstant.ISSUER));
+        /*
+         * Check the OpenIdClaims
+         */
+        OpenIdClaimsImpl claims = (OpenIdClaimsImpl) object.getClaims();
+        assertNotNull("OpenIdClaimsImpl instance could not be read from the serialized file.", claims);
+        assertEquals("Incorrect subject on OpenIdClaimsImpl", AccessTokenImplTest.SUBJECT_IN_ACCESS_TOKEN,
+                     claims.getSubject());
 
-		Optional<RefreshToken> refreshToken = object.getRefreshToken();
-		assertTrue("Should have a refreshToken", refreshToken.isPresent());
-		assertNotNull("RefreshToken should not be null", refreshToken.get());
-		assertEquals("The refreshToken has an unexpected value", TOKEN_STRING, refreshToken.get().getToken());
+        /*
+         * getClaimsJson is not serialized, but we should recreate it from the
+         * OpenIdClaims.
+         */
+        JsonObject claimsJson = object.getClaimsJson();
+        assertNotNull("OpenIdClaimsImpl as Json could not be read from the serialized file.", claimsJson);
+        assertEquals("Incorrect subject on OpenIdClaimsImpl", AccessTokenImplTest.SUBJECT_IN_ACCESS_TOKEN,
+                     claimsJson.getString(OpenIdConstant.SUBJECT_IDENTIFIER));
 
-		assertEquals("The getState() method returned an unexpected value.", OpenIdContextImplTest.STATE,
-				object.getState());
+        /*
+         * Check the IdentityToken
+         */
+        IdentityTokenImpl identityToken = (IdentityTokenImpl) object.getIdentityToken();
+        assertNotNull("IdentityTokenImpl was null from OpenIdContextImpl.", accessToken);
+        IdentityTokenImplSerializationTest.verifyIdentityTokenContents(identityToken);
 
-		assertEquals("The getSubject() method returned an unexpected value",
-				AccessTokenImplTest.SUBJECT_IN_ACCESS_TOKEN, object.getSubject());
+        /*
+         * Check the rest of the fields
+         */
+        assertEquals("The getClientId() method returned an unexpected value.", OpenIdContextImplTest.clientID,
+                     object.getClientId());
 
-		assertEquals("The getTokenType() method returned an unexpected value", OpenIdContextImplTest.TOKEN_TYPE_BEARER,
-				object.getTokenType());
+        Optional<Long> expiresIn = object.getExpiresIn();
+        assertTrue("Should have exiresIn set", expiresIn.isPresent());
+        assertNotNull("expiresIn should not be null", expiresIn.get());
+        assertEquals("The getExpiresIn() method returned an unexpected value.", AccessTokenImplTest.ONE_HOUR,
+                     expiresIn.get());
 
-	}
+        JsonObject providerMetatdata = object.getProviderMetadata();
+        if (hasProviderMetadata) {
+            assertNotNull("providerMetatdata was null from OpenIdContextImpl.", providerMetatdata);
+            assertEquals("Incorrect providerMetatdata", ISSUER, providerMetatdata.getString(OpenIdConstant.ISSUER));
+        } else {
+            assertNull("providerMetatdata was not null from OpenIdContextImpl.", providerMetatdata);
+        }
 
-	/**
-	 * Method used to create and serialize the OpenIdContextImpl for testing.
-	 *
-	 * If OpenIdContextImpl changes, previously serialized versions of
-	 * OpenIdContextImpl must remain deserializable. Use this method to create a new
-	 * OpenIdContextImpl_x.ser file, replacing the x with the current version + 1.
-	 * Then write a test that deserializes that version and all previous
-	 * OpenIdContextImpl_x.ser files.
-	 *
-	 * You will then need to wait for an hour to successfully run the unit test so
-	 * the "isExpired" is marked as true for the AccessToken
-	 */
-	public static void main(String[] args) throws Exception {
-		System.out.println("Create a serialized OpenIdContext file");
-		final String filename = "test-resources/testdata/ser-files/OpenIdContextImpl_x.ser"; // change x to a version
-																								// number now, or after
-																								// creation
+        Optional<RefreshToken> refreshToken = object.getRefreshToken();
+        assertTrue("Should have a refreshToken", refreshToken.isPresent());
+        assertNotNull("RefreshToken should not be null", refreshToken.get());
+        assertEquals("The refreshToken has an unexpected value", TOKEN_STRING, refreshToken.get().getToken());
 
-		/*
-		 * Create supporting objects
-		 */
-		Map<String, Object> accessTokenClaimsMap = AccessTokenImplTest
-				.createClaimsMap(AccessTokenImplSerializationTest.JWT_ACCESS_TOKEN_STRING);
+        assertEquals("The getState() method returned an unexpected value.", OpenIdContextImplTest.STATE,
+                     object.getState());
 
-		AccessToken jwtAccessTokenToWrite = new AccessTokenImpl(
-				AccessTokenImplSerializationTest.JWT_ACCESS_TOKEN_STRING, accessTokenClaimsMap,
-				AccessTokenImplTest.A_MINUTE_AGO, AccessTokenImplTest.ONE_HOUR,
-				AccessTokenImplTest.TOKEN_MIN_VALIDITY_10_MILLIS);
+        assertEquals("The getSubject() method returned an unexpected value",
+                     AccessTokenImplTest.SUBJECT_IN_ACCESS_TOKEN, object.getSubject());
 
-		Map<String, Object> idTokenClaimsMap = IdentityTokenImplTest
-				.createClaimsMap(IdentityTokenImplSerializationTest.JWT_ID_TOKEN_STRING);
+        assertEquals("The getTokenType() method returned an unexpected value", OpenIdContextImplTest.TOKEN_TYPE_BEARER,
+                     object.getTokenType());
+    }
 
-		IdentityToken identityTokenToWrite = new IdentityTokenImpl(
-				IdentityTokenImplSerializationTest.JWT_ID_TOKEN_STRING, idTokenClaimsMap,
-				IdentityTokenImplTest.TOKEN_MIN_VALIDITY_10_MILLIS);
+    /**
+     * Method used to create and serialize the OpenIdContextImpl for testing.
+     *
+     * If OpenIdContextImpl changes, previously serialized versions of
+     * OpenIdContextImpl must remain deserializable. Use this method to create a new
+     * OpenIdContextImpl_x.ser file, replacing the x with the current version + 1.
+     * Then write a test that deserializes that version and all previous
+     * OpenIdContextImpl_x.ser files.
+     *
+     * You will then need to wait for an hour to successfully run the unit test so
+     * the "isExpired" is marked as true for the AccessToken
+     */
+    public static void main(String[] args) throws Exception {
+        System.out.println("Create a serialized OpenIdContext file");
+        final String filename = "test-resources/testdata/ser-files/OpenIdContextImpl_1.ser"; // change x to a version
+                                                                                             // number now, or after
+                                                                                             // creation
 
-		OpenIdClaims openIdClaimsToWrite = OpenIdClaimsImplTest.createOpenIdClaimsWithStringClaim(SUBJECT_IDENTIFIER,
-				AccessTokenImplTest.SUBJECT_IN_ACCESS_TOKEN);
+        /*
+         * Create supporting objects
+         */
+        Map<String, Object> accessTokenClaimsMap = AccessTokenImplTest.createClaimsMap(AccessTokenImplSerializationTest.JWT_ACCESS_TOKEN_STRING);
 
-		JsonObject providerMetadata = Json.createObjectBuilder().add(OpenIdConstant.ISSUER, ISSUER).build();
+        AccessToken jwtAccessTokenToWrite = new AccessTokenImpl(AccessTokenImplSerializationTest.JWT_ACCESS_TOKEN_STRING, accessTokenClaimsMap, AccessTokenImplTest.A_MINUTE_AGO, AccessTokenImplTest.ONE_HOUR, AccessTokenImplTest.TOKEN_MIN_VALIDITY_10_MILLIS);
 
-		RefreshToken refreshToken = new RefreshTokenImpl(TOKEN_STRING);
+        Map<String, Object> idTokenClaimsMap = IdentityTokenImplTest.createClaimsMap(IdentityTokenImplSerializationTest.JWT_ID_TOKEN_STRING);
 
-		/*
-		 * Create OpenIdContextImpl
-		 */
-		OpenIdContextImpl openIdContextToWrite = new OpenIdContextImpl(AccessTokenImplTest.SUBJECT_IN_ACCESS_TOKEN,
-				OpenIdContextImplTest.TOKEN_TYPE_BEARER, jwtAccessTokenToWrite, identityTokenToWrite,
-				openIdClaimsToWrite, providerMetadata, OpenIdContextImplTest.STATE, true,
-				OpenIdContextImplTest.clientID);
+        IdentityToken identityTokenToWrite = new IdentityTokenImpl(IdentityTokenImplSerializationTest.JWT_ID_TOKEN_STRING, idTokenClaimsMap, IdentityTokenImplTest.TOKEN_MIN_VALIDITY_10_MILLIS);
 
-		/*
-		 * Set additional items
-		 */
-		openIdContextToWrite.setRefreshToken(refreshToken);
+        OpenIdClaims openIdClaimsToWrite = OpenIdClaimsImplTest.createOpenIdClaimsWithStringClaim(SUBJECT_IDENTIFIER,
+                                                                                                  AccessTokenImplTest.SUBJECT_IN_ACCESS_TOKEN);
 
-		openIdContextToWrite.setExpiresIn(AccessTokenImplTest.ONE_HOUR);
+        /*
+         * Optionally swap providerMetadata for null, to verify we handle a null providerMetadata correctly
+         */
+        JsonObject providerMetadata = Json.createObjectBuilder().add(OpenIdConstant.ISSUER, ISSUER).build();
 
-		/*
-		 * Serialize the object to a file.
-		 */
-		try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(filename))) {
-			output.writeObject(openIdContextToWrite);
-		}
-	}
+        RefreshToken refreshToken = new RefreshTokenImpl(TOKEN_STRING);
+
+        /*
+         * Create OpenIdContextImpl
+         */
+        OpenIdContextImpl openIdContextToWrite = new OpenIdContextImpl(AccessTokenImplTest.SUBJECT_IN_ACCESS_TOKEN, OpenIdContextImplTest.TOKEN_TYPE_BEARER, jwtAccessTokenToWrite, identityTokenToWrite, openIdClaimsToWrite, providerMetadata, OpenIdContextImplTest.STATE, true, OpenIdContextImplTest.clientID);
+
+        /*
+         * Set additional items
+         */
+        openIdContextToWrite.setRefreshToken(refreshToken);
+
+        openIdContextToWrite.setExpiresIn(AccessTokenImplTest.ONE_HOUR);
+
+        /*
+         * Serialize the object to a file.
+         */
+        try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(filename))) {
+            output.writeObject(openIdContextToWrite);
+        }
+    }
 };

@@ -1,18 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
-/* 
- * This is where all application ZIP and WARs will be built.
- */
-def appBuildDir = "${buildDir}/test-application"
 
 dependencies { 
   requiredLibs project(':io.openliberty.org.apache.commons.logging'),
@@ -29,8 +26,8 @@ dependencies {
     project(':com.ibm.ws.security.registry_test.servlet'),
     project(':com.ibm.ws.security.wim.core'),
     project(':com.ibm.ws.security.wim_test.servlet'),
-    project(':com.ibm.ws.webcontainer.security_test.servlets'),
-    project(':com.ibm.ws.security.wim.adapter.ldap_fat.1')
+    project(':com.ibm.ws.webcontainer.security_test.servlets').
+    project(':com.ibm.ws.security.wim.adapter.ldap_fat')
 }
 
 autoFVT.dependsOn ':com.ibm.ws.security.registry_test.custom:assemble'
@@ -40,15 +37,16 @@ autoFVT.dependsOn ':com.ibm.ws.security.wim.repository_test.custom:assemble'
 autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:assemble'
 
 autoFVT.doFirst {
-/*
-     * Copy common publish files.
+     /*
+     * Copy common publish files. We need to copy them first and into the main directory
+     * rather than autoFVT or other artifacts don't copy correctly.
      */
     copy {
-      from project(':com.ibm.ws.security.wim.adapter.ldap_fat.1').file('publish')
+      from project(':com.ibm.ws.security.wim.adapter.ldap_fat').file('publish')
       into new File('publish')
     }
-    }
-    
+}
+
 autoFVT.doLast {
   /*
    * Copy the local ApacheDS LDAP instances. 
@@ -58,8 +56,6 @@ autoFVT.doLast {
     into autoFvtDir
     include 'apacheds-2.0.0-M15/**'
   }
-
-    
   
   /*
    * Copy sample CustomRepository user feature to this test bucket.

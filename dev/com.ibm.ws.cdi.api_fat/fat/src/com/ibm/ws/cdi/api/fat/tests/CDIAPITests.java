@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2015, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -39,6 +41,7 @@ import com.ibm.ws.cdi.api.fat.apps.current.CDICurrentTestServlet;
 import com.ibm.ws.cdi.api.fat.apps.current.SimpleBean;
 import com.ibm.ws.cdi.api.fat.apps.current.extension.CDICurrentTestBean;
 import com.ibm.ws.cdi.api.fat.apps.current.extension.MyDeploymentVerifier;
+import com.ibm.ws.cdi.api.fat.apps.current.sharedLib.SharedLibBean;
 import com.ibm.ws.cdi.api.fat.apps.injectInjectionPoint.InjectInjectionPointServlet;
 import com.ibm.ws.cdi.api.fat.apps.injectInjectionPointBeansXML.InjectInjectionPointBeansXMLServlet;
 import com.ibm.ws.cdi.api.fat.apps.injectInjectionPointParam.InjectInjectionPointAsParamServlet;
@@ -88,7 +91,9 @@ public class CDIAPITests extends FATServletClient {
     @Server(SERVER_NAME)
     @TestServlets({
                     @TestServlet(servlet = AlterableContextTestServlet.class, contextRoot = ALTERABLE_CONTEXT_APP_NAME), //FULL
-                    @TestServlet(servlet = InjectInjectionPointAsParamServlet.class, contextRoot = INJECT_IP_AS_PARAM_APP_NAME) }) //FULL
+                    @TestServlet(servlet = InjectInjectionPointAsParamServlet.class, contextRoot = INJECT_IP_AS_PARAM_APP_NAME), //FULL
+                    @TestServlet(servlet = CDICurrentTestServlet.class, contextRoot = CDI_CURRENT_APP_NAME),
+    })
     public static LibertyServer server;
 
     @BeforeClass
@@ -103,7 +108,11 @@ public class CDIAPITests extends FATServletClient {
                                              .addClass(SimpleBean.class.getName())
                                              .addAsLibrary(cdiCurrentTest);
 
-        ShrinkHelper.exportDropinAppToServer(server, cdiCurrentWar, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(server, cdiCurrentWar, DeployOptions.SERVER_ONLY);
+
+        JavaArchive cdiCurrentSharedLib = ShrinkWrap.create(JavaArchive.class, "cdiCurrentSharedLib.jar")
+                                                    .addPackage(SharedLibBean.class.getPackage());
+        ShrinkHelper.exportToServer(server, "", cdiCurrentSharedLib, DeployOptions.SERVER_ONLY);
 
         if (TestModeFilter.shouldRun(TestMode.FULL)) {
             JavaArchive alterableContextExtension = ShrinkWrap.create(JavaArchive.class, "alterableContextExtension.jar");
@@ -149,12 +158,6 @@ public class CDIAPITests extends FATServletClient {
         server.restartApplication(CDI_CURRENT_APP_NAME);
 
         runTest(server, CDI_CURRENT_APP_NAME, "testCDICurrent");
-    }
-
-    @Test
-    @Mode(TestMode.LITE)
-    public void testCDICurrentViaMES() throws Exception {
-        runTest(server, CDI_CURRENT_APP_NAME, "testCDICurrentViaMES");
     }
 
     @Test

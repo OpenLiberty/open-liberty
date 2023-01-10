@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -67,7 +69,8 @@ public @interface Select {
     /**
      * Limits the entity attributes to the names listed.
      * The order in which the attributes are listed is preserved,
-     * enabling them to be supplied as constructor arguments per {@link Result#type}.<p>
+     * enabling them to be supplied as constructor arguments for an instance
+     * of the identified type.<p>
      *
      * An example of returning a single attribute,
      *

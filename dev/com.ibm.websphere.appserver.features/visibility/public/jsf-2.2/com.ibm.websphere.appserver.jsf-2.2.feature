@@ -43,6 +43,7 @@ Subsystem-Name: JavaServer Faces 2.2
  com.ibm.ws.org.apache.commons.collections, \
  com.ibm.ws.jsf.2.2, \
  com.ibm.ws.jsf.shared, \
+ com.ibm.ws.jsf.jsp.shared, \
  com.ibm.ws.org.apache.commons.discovery.0.2, \
  io.openliberty.org.apache.commons.codec, \
  io.openliberty.org.apache.commons.logging, \

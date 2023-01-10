@@ -25,6 +25,6 @@ After we obtain the signed CLA, you are welcome to open a pull request, and the 
 
 ## Coding Standards
 Please ensure you follow the coding standards used throughout the existing code base. Some basic rules include:
-* all files must have a Copyright including EPL license in the header.
+* all files must have a Copyright including EPL license in the header following [this format.](https://www.eclipse.org/legal/epl-2.0/faq.php#h.q72cnghf29k0) 
 * all PRs must have a passing build.
 * all PRs must be reviewed and approved from another org member.

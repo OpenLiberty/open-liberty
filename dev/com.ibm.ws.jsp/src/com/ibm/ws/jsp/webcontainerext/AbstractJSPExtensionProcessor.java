@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 1997, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -375,6 +377,10 @@ public abstract class AbstractJSPExtensionProcessor extends com.ibm.ws.webcontai
                 Throwable rootCause = e;
                 while ((t = rootCause.getCause()) != null) {
                     rootCause = t;
+                }
+                //log it only if JSPG0077E
+                if (e.getMessage().contains("JSPG0077E")) {
+                   logger.logp(Level.SEVERE, CLASS_NAME, "getServletWrapper", rootCause.getLocalizedMessage());
                 }
                 // Defect 211450
                 JSPErrorReport jser = new JSPErrorReport(rootCause.getLocalizedMessage(), rootCause);

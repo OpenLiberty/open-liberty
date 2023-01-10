@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -21,15 +23,20 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.Application;
+import com.ibm.websphere.simplicity.config.ClassloaderElement;
+import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.fvt.criteriaquery.ejb.TestCriteriaQuery_EJB_SFEx_Servlet;
 import com.ibm.ws.jpa.fvt.criteriaquery.ejb.TestCriteriaQuery_EJB_SF_Servlet;
 import com.ibm.ws.jpa.fvt.criteriaquery.ejb.TestCriteriaQuery_EJB_SL_Servlet;
+import com.ibm.ws.testtooling.database.DatabaseVendor;
+import com.ibm.ws.testtooling.jpaprovider.JPAPersistenceProvider;
 import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
@@ -46,6 +53,10 @@ import componenttest.topology.utils.PrivHelper;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class JPA20CriteriaQuery_EJB extends JPAFATServletClient {
+
+    @Rule
+    public static SkipDatabaseRule skipDBRule = new SkipDatabaseRule();
+
     private final static String CONTEXT_ROOT = "criteriaqueryEjb";
     private final static String RESOURCE_ROOT = "test-applications/criteriaquery/";
     private final static String appFolder = "ejb";
@@ -59,9 +70,9 @@ public class JPA20CriteriaQuery_EJB extends JPAFATServletClient {
     private static long timestart = 0;
 
     static {
-        dropSet.add("JPA_CRITERIAQUERY_DROP_${dbvendor}.ddl");
-        createSet.add("JPA_CRITERIAQUERY_CREATE_${dbvendor}.ddl");
-        populateSet.add("JPA_CRITERIAQUERY_POPULATE_${dbvendor}.ddl");
+        dropSet.add("JPA20_CRITERIAQUERY_${provider}_DROP_${dbvendor}.ddl");
+        createSet.add("JPA20_CRITERIAQUERY_${provider}_CREATE_${dbvendor}.ddl");
+        populateSet.add("JPA20_CRITERIAQUERY_${provider}_POPULATE_${dbvendor}.ddl");
     }
 
     @Server("JPA20CriteriaQueryServer")
@@ -80,6 +91,18 @@ public class JPA20CriteriaQuery_EJB extends JPAFATServletClient {
         bannerStart(JPA20CriteriaQuery_EJB.class);
         timestart = System.currentTimeMillis();
 
+        int appStartTimeout = server.getAppStartTimeout();
+        if (appStartTimeout < (120 * 1000)) {
+            server.setAppStartTimeout(120 * 1000);
+        }
+
+        int configUpdateTimeout = server.getConfigUpdateTimeout();
+        if (configUpdateTimeout < (120 * 1000)) {
+            server.setConfigUpdateTimeout(120 * 1000);
+        }
+
+        server.addEnvVar("repeat_phase", AbstractFATSuite.repeatPhase);
+
         //Get driver name
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
@@ -92,25 +115,30 @@ public class JPA20CriteriaQuery_EJB extends JPAFATServletClient {
 
         final Set<String> ddlSet = new HashSet<String>();
 
+        System.out.println(JPA20CriteriaQuery_EJB.class.getName() + " Setting up database tables...");
+
+        JPAPersistenceProvider provider = AbstractFATSuite.provider;
         ddlSet.clear();
         for (String ddlName : dropSet) {
-            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+            ddlSet.add(ddlName.replace("${provider}", provider.name()).replace("${dbvendor}", getDbVendor().name()));
         }
         executeDDL(server, ddlSet, true);
 
         ddlSet.clear();
         for (String ddlName : createSet) {
-            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+            ddlSet.add(ddlName.replace("${provider}", provider.name()).replace("${dbvendor}", getDbVendor().name()));
         }
         executeDDL(server, ddlSet, false);
 
         ddlSet.clear();
         for (String ddlName : populateSet) {
-            ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+            ddlSet.add(ddlName.replace("${provider}", provider.name()).replace("${dbvendor}", getDbVendor().name()));
         }
         executeDDL(server, ddlSet, false);
 
         setupTestApplication();
+
+        skipDBRule.setDatabase(getDbVendor().name());
     }
 
     private static void setupTestApplication() throws Exception {
@@ -126,12 +154,20 @@ public class JPA20CriteriaQuery_EJB extends JPAFATServletClient {
 
         final JavaArchive testApiJar = buildTestAPIJar();
 
+        /*
+         * Hibernate 5.2 (JPA 2.1) contains a bug that requires a dialect property to be set
+         * for Oracle platform detection: https://hibernate.atlassian.net/browse/HHH-13184
+         */
+        if (AbstractFATSuite.repeatPhase != null && AbstractFATSuite.repeatPhase.contains("21")
+            && DatabaseVendor.ORACLE.equals(getDbVendor())) {
+            ejbApp.move("/META-INF/persistence-oracle-21.xml", "/META-INF/persistence.xml");
+        }
+
         final EnterpriseArchive app = ShrinkWrap.create(EnterpriseArchive.class, appNameEar);
         app.addAsModule(ejbApp);
         app.addAsModule(webApp);
         app.addAsLibrary(testApiJar);
         ShrinkHelper.addDirectory(app, RESOURCE_ROOT + appFolder, new org.jboss.shrinkwrap.api.Filter<ArchivePath>() {
-
             @Override
             public boolean include(ArchivePath arg0) {
                 if (arg0.get().startsWith("/META-INF/")) {
@@ -139,7 +175,6 @@ public class JPA20CriteriaQuery_EJB extends JPAFATServletClient {
                 }
                 return false;
             }
-
         });
 
         ShrinkHelper.exportToServer(server, "apps", app);
@@ -147,6 +182,19 @@ public class JPA20CriteriaQuery_EJB extends JPAFATServletClient {
         Application appRecord = new Application();
         appRecord.setLocation(appNameEar);
         appRecord.setName(appName);
+
+        // setup the thirdparty classloader for Hibernate and OpenJPA
+        if (AbstractFATSuite.repeatPhase != null && AbstractFATSuite.repeatPhase.contains("hibernate")) {
+            ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+            ClassloaderElement loader = new ClassloaderElement();
+            loader.getCommonLibraryRefs().add("HibernateLib");
+            cel.add(loader);
+        } else if (AbstractFATSuite.repeatPhase != null && AbstractFATSuite.repeatPhase.contains("openjpa")) {
+            ConfigElementList<ClassloaderElement> cel = appRecord.getClassloaders();
+            ClassloaderElement loader = new ClassloaderElement();
+            loader.getCommonLibraryRefs().add("OpenJPALib");
+            cel.add(loader);
+        }
 
         server.setMarkToEndOfLog();
         ServerConfiguration sc = server.getServerConfiguration();
@@ -164,9 +212,10 @@ public class JPA20CriteriaQuery_EJB extends JPAFATServletClient {
         try {
             // Clean up database
             try {
+                JPAPersistenceProvider provider = AbstractFATSuite.provider;
                 final Set<String> ddlSet = new HashSet<String>();
                 for (String ddlName : dropSet) {
-                    ddlSet.add(ddlName.replace("${dbvendor}", getDbVendor().name()));
+                    ddlSet.add(ddlName.replace("${provider}", provider.name().toUpperCase()).replace("${dbvendor}", getDbVendor().name()));
                 }
                 executeDDL(server, ddlSet, true);
             } catch (Throwable t) {

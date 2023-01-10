@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2020, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -101,8 +103,6 @@ public class CxfX509MigSvcClient extends HttpServlet {
     String methodFull = null;
     SOAPMessage soapReq = null;
 
-    String errMsgVersion = "";
-
     private StringReader reqMsg = null;
     static boolean unlimitCryptoKeyLength = false;
 
@@ -142,8 +142,7 @@ public class CxfX509MigSvcClient extends HttpServlet {
                            " methodFull:" + methodFull +
                            " serviceName:" + serviceName +
                            " servicePort:" + servicePort +
-                           " servername:" + serverName +
-                           " errorMsgVersion:" + errMsgVersion); //2/2021
+                           " servername:" + serverName);
 
         // This piece of code is a work-around for a bug defect 89493
 /*
@@ -174,20 +173,14 @@ public class CxfX509MigSvcClient extends HttpServlet {
             if (thisMethod.equals("testCxfX509KeyIdMigSymService")) {
                 service = new FatBAX01Service(wsdlURL, serviceName);
                 strExpect = "LIBERTYFAT X509 bax01";
-                //issue 23060
-                if (errMsgVersion.equals("wss4j")) {
-                    strSubErrMsg = "An error was discovered processing the <wsse:Security> header";
-                }
+                strSubErrMsg = "An error was discovered processing the <wsse:Security> header";
             } else if (thisMethod.equals("testCxfX509AsymIssuerSerialMigService")) {
                 service = new FatBAX02Service(wsdlURL, serviceName);
                 strExpect = "LIBERTYFAT X509 bax02";
             } else if (thisMethod.equals("testCxfX509IssuerSerialMigSymService")) {
                 service = new FatBAX03Service(wsdlURL, serviceName);
                 strExpect = "LIBERTYFAT X509 bax03";
-                //issue 23060
-                if (errMsgVersion.equals("wss4j")) {
-                    strSubErrMsg = "An error was discovered processing the <wsse:Security> header";
-                }
+                strSubErrMsg = "An error was discovered processing the <wsse:Security> header";
             } else if (thisMethod.equals("testCxfX509ThumbprintMigSymService")) {
                 service = new FatBAX04Service(wsdlURL, serviceName);
                 strExpect = "LIBERTYFAT X509 bax04";
@@ -213,10 +206,7 @@ public class CxfX509MigSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testCxfX509TransportEndorsingSP11MigService")) {
                 service = new FatBAX11Service(wsdlURL, serviceName);
                 strExpect = "LIBERTYFAT X509 bax11";
-                //issue 23060
-                if (errMsgVersion.equals("wss4j")) {
-                    strSubErrMsg = "Assertion of type {http://schemas.xmlsoap.org/ws/2005/07/securitypolicy}HttpsToken could not be asserted: Not an HTTPs connection";
-                }
+                strSubErrMsg = "Assertion of type {http://schemas.xmlsoap.org/ws/2005/07/securitypolicy}HttpsToken could not be asserted: Not an HTTPs connection";
             } else if (thisMethod.equals("testCxfX509TransportSignedEndorsingMigService")) {
                 service = new FatBAX12Service(wsdlURL, serviceName);
                 strExpect = "LIBERTYFAT X509 bax12";
@@ -243,10 +233,7 @@ public class CxfX509MigSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testCxfX509AsymmetricSignatureReplayMigService")) {
                 service = new FatBAX17Service(wsdlURL, serviceName);
                 strExpect = "LIBERTYFAT X509 bax17";
-                //issue 23060
-                if (errMsgVersion.equals("wss4j")) {
-                    strSubErrMsg = "BSP:R3227: A SECURITY_HEADER MUST NOT contain more than one TIMESTAMP";
-                }
+                strSubErrMsg = "BSP:R3227: A SECURITY_HEADER MUST NOT contain more than one TIMESTAMP";
             } else if (thisMethod.equals("testCxfX509AsymmetricSignatureSP11MigService")) {
                 service = new FatBAX18Service(wsdlURL, serviceName);
                 strExpect = "LIBERTYFAT X509 bax18";
@@ -290,10 +277,7 @@ public class CxfX509MigSvcClient extends HttpServlet {
             } else if (thisMethod.equals("testBasic192Service")) {
                 service = new FatBAX31Service(wsdlURL, serviceName);
                 strExpect = "LIBERTYFAT X509 bax31";
-                //issue 23060
-                if (errMsgVersion.equals("wss4j")) {
-                    strSubErrMsg = "BSP:R5620: Any ED_ENCRYPTION_METHOD Algorithm attribute MUST have a value of \"http://www.w3.org/2001/04/xmlenc#tripledes-cbc\", \"http://www.w3.org/2001/04/xmlenc#aes128-cbc\" or \"http://www.w3.org/2001/04/xmlenc#aes256-cbc\"";
-                }
+                strSubErrMsg = "BSP:R5620: Any ED_ENCRYPTION_METHOD Algorithm attribute MUST have a value of \"http://www.w3.org/2001/04/xmlenc#tripledes-cbc\", \"http://www.w3.org/2001/04/xmlenc#aes128-cbc\" or \"http://www.w3.org/2001/04/xmlenc#aes256-cbc\"";
             } else if (thisMethod.equals("testTripleDesService")) {
                 service = new FatBAX32Service(wsdlURL, serviceName);
                 strExpect = "LIBERTYFAT X509 bax32";
@@ -463,9 +447,7 @@ public class CxfX509MigSvcClient extends HttpServlet {
             methodFull = request.getParameter("methodFull");
             serviceName = new QName(SERVICE_NS, rawServiceName);
             servicePort = new QName(SERVICE_NS, request.getParameter("servicePort"));
-            //2/2021
-            errMsgVersion = request.getParameter("errorMsgVersion");
-
+            
             if (httpSecurePortNum == null || httpSecurePortNum.length() == 0) {
                 httpProtocal = "http:";
                 thePort = httpPortNum;

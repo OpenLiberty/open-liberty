@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -53,13 +55,13 @@ import jakarta.data.Entities;
 import jakarta.data.Template;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
-import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.Limit;
 import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
+import jakarta.data.repository.Slice;
 import jakarta.data.repository.Sort;
 import jakarta.data.repository.Streamable;
 import jakarta.inject.Inject;
@@ -1188,6 +1190,129 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Supply a Pageable with a keyset cursor to a repository method that returns an Iterator.
+     * Specify the sort criteria statically via the OrderBy annotation.
+     */
+    @Test
+    public void testIteratorWithKeysetPagination_OrderBy() {
+        Pageable p = Pageable.ofSize(5).afterKeyset(false, 2, 3);
+        Iterator<Prime> it = primes.findByNameStartsWithAndNumberLessThanOrNameContainsAndNumberLessThan("t", 50L, "n", 50L, p);
+
+        assertEquals("seventeen", it.next().name);
+        assertEquals("seven", it.next().name);
+        assertEquals("eleven", it.next().name);
+        assertEquals("thirteen", it.next().name);
+        assertEquals("nineteen", it.next().name);
+
+        assertEquals("thirty-seven", it.next().name);
+        assertEquals("forty-one", it.next().name);
+        assertEquals("twenty-three", it.next().name);
+        assertEquals("twenty-nine", it.next().name);
+        assertEquals("thirty-one", it.next().name);
+
+        assertEquals("forty-seven", it.next().name);
+        assertEquals("two", it.next().name);
+        assertEquals(false, it.hasNext());
+
+        p = Pageable.ofSize(4).beforeKeyset(true, 1, 2);
+        it = primes.findByNameStartsWithAndNumberLessThanOrNameContainsAndNumberLessThan("t", 45L, "n", 45L, p);
+
+        assertEquals("forty-one", it.next().name);
+        assertEquals("twenty-three", it.next().name);
+        assertEquals("twenty-nine", it.next().name);
+        assertEquals("thirty-one", it.next().name);
+
+        assertEquals("eleven", it.next().name);
+        assertEquals("thirteen", it.next().name);
+        assertEquals("nineteen", it.next().name);
+        assertEquals("thirty-seven", it.next().name);
+
+        assertEquals("three", it.next().name);
+        assertEquals("seventeen", it.next().name);
+        assertEquals("seven", it.next().name);
+        assertEquals(false, it.hasNext());
+    }
+
+    /**
+     * Supply a Pageable with a keyset cursor to a repository method that returns an Iterator.
+     * Specify the sort criteria dynamically via Sort.
+     */
+    @Test
+    public void testIteratorWithKeysetPagination_Sorts() {
+        Pageable p = Pageable.ofSize(6) //
+                        .sortBy(Sort.asc("sumOfBits"), Sort.asc("name")) //
+                        .afterKeyset(1, "a prime number");
+        Iterator<Prime> it = primes.findByNumberNotGreaterThan(40L, p);
+
+        assertEquals("two", it.next().name);
+        assertEquals("five", it.next().name);
+        assertEquals("seventeen", it.next().name);
+        assertEquals("three", it.next().name);
+        assertEquals("eleven", it.next().name);
+        assertEquals("nineteen", it.next().name);
+
+        assertEquals("seven", it.next().name);
+        assertEquals("thirteen", it.next().name);
+        assertEquals("thirty-seven", it.next().name);
+        assertEquals("twenty-nine", it.next().name);
+        assertEquals("twenty-three", it.next().name);
+        assertEquals("thirty-one", it.next().name);
+
+        assertEquals(false, it.hasNext());
+
+        p = Pageable.ofSize(4) //
+                        .sortBy(Sort.asc("sumOfBits"), Sort.asc("name")) //
+                        .beforeKeyset(5, "forty-seven");
+        it = primes.findByNumberNotGreaterThan(50L, p);
+
+        assertEquals("thirty-seven", it.next().name);
+        assertEquals("forty-three", it.next().name);
+        assertEquals("twenty-nine", it.next().name);
+        assertEquals("twenty-three", it.next().name);
+
+        assertEquals("forty-one", it.next().name);
+        assertEquals("nineteen", it.next().name);
+        assertEquals("seven", it.next().name);
+        assertEquals("thirteen", it.next().name);
+
+        assertEquals("five", it.next().name);
+        assertEquals("seventeen", it.next().name);
+        assertEquals("three", it.next().name);
+        assertEquals("eleven", it.next().name);
+
+        assertEquals("two", it.next().name);
+        assertEquals(false, it.hasNext());
+    }
+
+    /**
+     * Iterator with Sort only and no pagination.
+     */
+    @Test
+    public void testIteratorWithoutPagination() {
+        Iterator<Prime> it = primes.findByNumberNotGreaterThan(41L, Sort.desc("sumOfBits"), Sort.desc("romanNumeral"));
+
+        assertEquals("XXXI", it.next().romanNumeral);
+
+        assertEquals("XXIX", it.next().romanNumeral);
+        assertEquals("XXIII", it.next().romanNumeral);
+
+        assertEquals("XXXVII", it.next().romanNumeral);
+        assertEquals("XLI", it.next().romanNumeral);
+        assertEquals("XIX", it.next().romanNumeral);
+        assertEquals("XIII", it.next().romanNumeral);
+        assertEquals("XI", it.next().romanNumeral);
+        assertEquals("VII", it.next().romanNumeral);
+
+        assertEquals("XVII", it.next().romanNumeral);
+        assertEquals("V", it.next().romanNumeral);
+        assertEquals("III", it.next().romanNumeral);
+
+        assertEquals("II", it.next().romanNumeral);
+
+        assertEquals(false, it.hasNext());
+    }
+
+    /**
      * Access pages in a forward direction while entities are being added and removed,
      * using a keyset to avoid duplicates.
      */
@@ -1765,6 +1890,73 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * A repository might define a method that returns a keyset-aware page with a Limit parameter.
+     */
+    @Test
+    public void testKeysetWithLimit() {
+        // This is not a recommended pattern. Testing to see how it is handled.
+        KeysetAwarePage<Prime> page = primes.findByNumberBetween(15L, 45L, Limit.of(5L));
+
+        assertEquals(1L, page.number());
+        assertEquals(5L, page.numberOfElements());
+        assertEquals(5L, page.pageable().size());
+        assertEquals(1L, page.pageable().page());
+        assertEquals(2L, page.totalPages());
+        assertEquals(8L, page.totalElements());
+
+        assertIterableEquals(List.of(17L, 19L, 23L, 29L, 31L),
+                             page.stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(Collections.EMPTY_LIST,
+                             primes.findByNumberBetween(15L, 45L, page.previousPageable()));
+
+        page = primes.findByNumberBetween(15L, 45L, page.nextPageable());
+
+        assertEquals(2L, page.number());
+        assertEquals(3L, page.numberOfElements());
+        assertEquals(5L, page.pageable().size());
+        assertEquals(2L, page.pageable().page());
+        assertEquals(2L, page.totalPages());
+        assertEquals(8L, page.totalElements());
+        assertEquals(null, page.nextPageable());
+
+        assertIterableEquals(List.of(37L, 41L, 43L),
+                             page.stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * A repository might define a method that returns a keyset-aware page without specifying a Pageable,
+     * specifying the sort criteria separately.
+     */
+    @Test
+    public void testKeysetWithoutPageable() {
+        // This is not a recommended pattern. Testing to see how it is handled.
+        KeysetAwarePage<Prime> page = primes.findByNumberBetweenAndBinaryNotNull(30L, 40L, Sort.asc("number"));
+        assertEquals(31L, page.content().get(0).number);
+
+        // Obtain Pageable for previous entries from the KeysetAwarePage
+        Pageable pagination = page.previousPageable().size(5);
+        page = primes.findByNumberBetween(0L, 40L, pagination);
+        assertIterableEquals(List.of(13L, 17L, 19L, 23L, 29L),
+                             page.stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+
+        pagination = page.previousPageable();
+        page = primes.findByNumberBetween(0L, 40L, pagination);
+        assertIterableEquals(List.of(2L, 3L, 5L, 7L, 11L),
+                             page.stream()
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+
+        assertEquals(null, page.previousPageable());
+    }
+
+    /**
      * Add, find, and remove entities with a mapped superclass.
      * Also tests automatically paginated iterator and list.
      */
@@ -2016,6 +2208,19 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * PageableRepository.findAll(Pageable) must raise NullPointerException.
+     */
+    @Test
+    public void testNullPagination() {
+        try {
+            Page<Package> page = packages.findAll(null);
+            fail("PageableRepository.findAll(Pageable) must raise NullPointerException. Instead: " + page);
+        } catch (NullPointerException x) {
+            // expected
+        }
+    }
+
+    /**
      * Test Null and NotNull on repository methods.
      */
     @Test
@@ -2042,14 +2247,17 @@ public class DataTestServlet extends FATServlet {
         try {
             Streamable<Prime> found = primes.findByNumberLessThanEqualOrderByNumberDesc(9L, range);
             fail("Expected an error because starting position of range exceeds Integer.MAX_VALUE. Found: " + found);
-        } catch (UnsupportedOperationException x) {
-            // expected
+        } catch (DataException x) {
+            if (x.getCause() instanceof IllegalArgumentException)
+                ; // expected
+            else
+                throw x;
         }
 
         try {
             Stream<Prime> found = primes.findFirst2147483648ByNumberGreaterThan(1L);
             fail("Expected an error because limit exceeds Integer.MAX_VALUE. Found: " + found);
-        } catch (MappingException x) {
+        } catch (DataException x) {
             boolean expected = false;
             for (Throwable cause = x; !expected && cause != null; cause = cause.getCause())
                 expected = cause instanceof UnsupportedOperationException;
@@ -2060,15 +2268,21 @@ public class DataTestServlet extends FATServlet {
         try {
             KeysetAwarePage<Prime> found = primes.findByNumberBetween(5L, 15L, Pageable.ofSize(Integer.MAX_VALUE / 30).page(33));
             fail("Expected an error because when offset for pagination exceeds Integer.MAX_VALUE. Found: " + found);
-        } catch (UnsupportedOperationException x) {
-            // expected
+        } catch (DataException x) {
+            if (x.getCause() instanceof IllegalArgumentException)
+                ; // expected
+            else
+                throw x;
         }
 
         try {
             Page<Prime> found = primes.findByNumberLessThanEqualOrderByNumberDesc(52L, Pageable.ofSize(Integer.MAX_VALUE / 20).page(22));
             fail("Expected an error because when offset for pagination exceeds Integer.MAX_VALUE. Found: " + found);
-        } catch (UnsupportedOperationException x) {
-            // expected
+        } catch (DataException x) {
+            if (x.getCause() instanceof IllegalArgumentException)
+                ; // expected
+            else
+                throw x;
         }
     }
 
@@ -2774,8 +2988,13 @@ public class DataTestServlet extends FATServlet {
 
         packages.delete(p3);
 
-        assertIterableEquals(List.of(990001, 990002, 990004, 990005, 990006),
-                             packages.findAll().map(pack -> pack.id).sorted().collect(Collectors.toList()));
+        Page<Package> page = packages.findAll(Pageable.ofSize(3).sortBy(Sort.desc("id")));
+        assertIterableEquals(List.of(990006, 990005, 990004),
+                             page.stream().map(pack -> pack.id).collect(Collectors.toList()));
+
+        page = packages.findAll(page.nextPageable());
+        assertIterableEquals(List.of(990002, 990001),
+                             page.stream().map(pack -> pack.id).collect(Collectors.toList()));
 
         packages.deleteAll(List.of(p1, p6));
 
@@ -2893,6 +3112,154 @@ public class DataTestServlet extends FATServlet {
         } catch (NonUniqueResultException x) {
             // expected
         }
+    }
+
+    /**
+     * A repository might define a method that returns a Slice with a Limit parameter.
+     */
+    @Test
+    public void testSliceWithLimit() {
+        // This is not a recommended pattern. Testing to see how it is handled.
+        Slice<Prime> slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("II", 50L, Limit.of(4L), Sort.desc("number"));
+
+        assertEquals(1L, slice.number());
+        assertEquals(4L, slice.numberOfElements());
+        assertEquals(4L, slice.pageable().size());
+        assertEquals(1L, slice.pageable().page());
+
+        assertIterableEquals(List.of("XLVII", "XLIII", "XXXVII", "XXIII"),
+                             slice.stream()
+                                             .map(p -> p.romanNumeral)
+                                             .collect(Collectors.toList()));
+
+        slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("II", 50L, slice.nextPageable(), Sort.desc("number"));
+
+        assertEquals(2L, slice.number());
+        assertEquals(4L, slice.numberOfElements());
+        assertEquals(4L, slice.pageable().size());
+        assertEquals(2L, slice.pageable().page());
+
+        assertIterableEquals(List.of("XVII", "XIII", "VII", "III"),
+                             slice.stream()
+                                             .map(p -> p.romanNumeral)
+                                             .collect(Collectors.toList()));
+
+        slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("II", 50L, slice.nextPageable(), Sort.desc("number"));
+
+        assertEquals(3L, slice.number());
+        assertEquals(1L, slice.numberOfElements());
+        assertEquals(4L, slice.pageable().size());
+        assertEquals(3L, slice.pageable().page());
+        assertEquals(null, slice.nextPageable());
+
+        assertIterableEquals(List.of("II"),
+                             slice.stream()
+                                             .map(p -> p.romanNumeral)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Repository method that returns a Slice with the sort criteria provided as Sort parameters
+     */
+    @Test
+    public void testSliceWithSortCriteriaAsSortParameters() {
+        Slice<Prime> slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("I", 50L,
+                                                                                Pageable.ofSize(5),
+                                                                                Sort.asc("sumOfBits"), Sort.desc("number"));
+        assertEquals(1L, slice.number());
+        assertEquals(5, slice.numberOfElements());
+        assertEquals(1L, slice.pageable().page());
+        assertEquals(5, slice.pageable().size());
+
+        assertIterableEquals(List.of(2L, 17L, 3L, 41L, 37L),
+                             slice.stream().map(p -> p.number).collect(Collectors.toList()));
+
+        slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("I", 50L,
+                                                                   slice.nextPageable(),
+                                                                   Sort.asc("sumOfBits"), Sort.desc("number"));
+        assertEquals(2L, slice.number());
+        assertEquals(5, slice.numberOfElements());
+        assertEquals(2L, slice.pageable().page());
+        assertEquals(5, slice.pageable().size());
+
+        assertIterableEquals(List.of(13L, 11L, 7L, 43L, 23L),
+                             slice.stream().map(p -> p.number).collect(Collectors.toList()));
+
+        slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("I", 50L,
+                                                                   slice.nextPageable(),
+                                                                   Sort.asc("sumOfBits"), Sort.desc("number"));
+        assertEquals(3L, slice.number());
+        assertEquals(2, slice.numberOfElements());
+        assertEquals(3L, slice.pageable().page());
+        assertEquals(5, slice.pageable().size());
+
+        assertIterableEquals(List.of(47L, 31L),
+                             slice.stream().map(p -> p.number).collect(Collectors.toList()));
+
+        assertEquals(null, slice.nextPageable());
+    }
+
+    /**
+     * Repository method that returns a Slice with the sort criteria provided by the OrderBy annotation.
+     */
+    @Test
+    public void testSliceWithSortCriteriaInOrderByAnnotation() {
+        Slice<Prime> slice = primes.findByRomanNumeralStartsWithAndNumberLessThan("X", 50L, Pageable.ofSize(4));
+        assertEquals(1L, slice.number());
+        assertEquals(4, slice.numberOfElements());
+        assertEquals(1L, slice.pageable().page());
+        assertEquals(4, slice.pageable().size());
+
+        assertIterableEquals(List.of("forty-seven", "thirty-one", "forty-three", "twenty-nine"),
+                             slice.stream().map(p -> p.name).collect(Collectors.toList()));
+
+        slice = primes.findByRomanNumeralStartsWithAndNumberLessThan("X", 50L, slice.nextPageable());
+        assertEquals(2L, slice.number());
+        assertEquals(4, slice.numberOfElements());
+        assertEquals(2L, slice.pageable().page());
+        assertEquals(4, slice.pageable().size());
+
+        assertIterableEquals(List.of("twenty-three", "eleven", "forty-one", "nineteen"),
+                             slice.stream().map(p -> p.name).collect(Collectors.toList()));
+
+        slice = primes.findByRomanNumeralStartsWithAndNumberLessThan("X", 50L, slice.nextPageable());
+        assertEquals(3L, slice.number());
+        assertEquals(3, slice.numberOfElements());
+        assertEquals(3L, slice.pageable().page());
+        assertEquals(4, slice.pageable().size());
+
+        assertIterableEquals(List.of("thirteen", "thirty-seven", "seventeen"),
+                             slice.stream().map(p -> p.name).collect(Collectors.toList()));
+
+        assertEquals(null, slice.nextPageable());
+    }
+
+    /**
+     * Repository method that returns a Slice with the sort criteria provided in the Pageable
+     */
+    @Test
+    public void testSliceWithSortCriteriaInPageable() {
+        Slice<Prime> slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("II", 50L,
+                                                                                Pageable.ofSize(6).sortBy(Sort.desc("number")));
+        assertEquals(1L, slice.number());
+        assertEquals(6, slice.numberOfElements());
+        assertEquals(1L, slice.pageable().page());
+        assertEquals(6, slice.pageable().size());
+
+        assertIterableEquals(List.of(47L, 43L, 37L, 23L, 17L, 13L),
+                             slice.stream().map(p -> p.number).collect(Collectors.toList()));
+
+        slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("II", 50L,
+                                                                   slice.nextPageable());
+        assertEquals(2L, slice.number());
+        assertEquals(3, slice.numberOfElements());
+        assertEquals(2L, slice.pageable().page());
+        assertEquals(6, slice.pageable().size());
+
+        assertIterableEquals(List.of(7L, 3L, 2L),
+                             slice.stream().map(p -> p.number).collect(Collectors.toList()));
+
+        assertEquals(null, slice.nextPageable());
     }
 
     /**

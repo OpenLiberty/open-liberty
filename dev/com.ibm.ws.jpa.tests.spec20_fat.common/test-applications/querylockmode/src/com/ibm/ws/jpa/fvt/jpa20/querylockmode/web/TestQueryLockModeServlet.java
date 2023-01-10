@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2019 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -62,6 +64,7 @@ public class TestQueryLockModeServlet extends JPADBTestServlet {
         final String testName = "jpa20_querylockmode_@LOCKMODE@_testScenario01_AMJTA_Web";
         final String testMethod = "testScenario01";
         final String testResource = "test-jpa-resource-amjta";
+
         executeTest(testName, testMethod, testResource);
     }
 
@@ -70,6 +73,7 @@ public class TestQueryLockModeServlet extends JPADBTestServlet {
         final String testName = "jpa20_querylockmode_@LOCKMODE@_testScenario01_AMRL_Web";
         final String testMethod = "testScenario01";
         final String testResource = "test-jpa-resource-amrl";
+
         executeTest(testName, testMethod, testResource);
     }
 
@@ -99,8 +103,9 @@ public class TestQueryLockModeServlet extends JPADBTestServlet {
             properties.put("jdbcDriverVersion", getJdbcDriverVersion());
             properties.put("LockModeType", lockModeType.name());
 
-            executeDDL("JPA20_QUERYLOCKMODE_DELETE_${dbvendor}.ddl");
-            executeDDL("JPA20_QUERYLOCKMODE_POPULATE_${dbvendor}.ddl");
+            executeDDL("JPA20_QUERYLOCKMODE_DEFAULT_DELETE_${dbvendor}.ddl");
+            executeDDL("JPA20_QUERYLOCKMODE_DEFAULT_POPULATE_${dbvendor}.ddl");
+            executeTestVehicle(testExecCtx);
         }
     }
 }

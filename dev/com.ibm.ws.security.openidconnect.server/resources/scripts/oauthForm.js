@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -49,6 +51,12 @@ function createForm(data) {
 	}
 	if (data.extendedProperties.acr_values) {
 		form.appendChild(createInput("acr_values", data.extendedProperties.acr_values));
+	}
+	if(data.extendedProperties.code_challenge) {
+	    form.appendChild(createInput("code_challenge", data.extendedProperties.code_challenge));
+	}
+    if(data.extendedProperties.code_challenge_method) {
+	    form.appendChild(createInput("code_challenge_method", data.extendedProperties.code_challenge_method));
 	}
 	form.appendChild(createInput("prompt", (data.prompt != undefined) ? data.prompt : "none"));
 

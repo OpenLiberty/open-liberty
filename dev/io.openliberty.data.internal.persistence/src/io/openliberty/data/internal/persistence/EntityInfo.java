@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -13,6 +15,7 @@ package io.openliberty.data.internal.persistence;
 import java.lang.reflect.Member;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -21,36 +24,31 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
 import jakarta.data.Inheritance;
+import jakarta.data.exceptions.MappingException;
 
 /**
  */
 class EntityInfo {
-    // properly cased/qualified JPQL attribute name --> accessor method or field
-    final Map<String, Member> attributeAccessors; // TODO accessors won't be correct for embeddable
+    // properly cased/qualified JPQL attribute name --> accessor methods or fields (multiple in the case of embeddable)
+    final Map<String, List<Member>> attributeAccessors;
     // upper case attribute name --> properly cased/qualified JPQL attribute name
     final LinkedHashMap<String, String> attributeNames;
     final Set<String> collectionAttributeNames;
     final boolean inheritance;
-    final Member keyAccessor;
-    final String keyName;
     final String name;
     final PersistenceServiceUnit persister;
     final Class<?> type;
 
     EntityInfo(String entityName, Class<?> entityClass,
-               Map<String, Member> attributeAccessors,
+               Map<String, List<Member>> attributeAccessors,
                LinkedHashMap<String, String> attributeNames,
                Set<String> collectionAttributeNames,
-               String keyAttributeName,
-               Member keyAccessor,
                PersistenceServiceUnit persister) {
         this.name = entityName;
         this.type = entityClass;
         this.attributeAccessors = attributeAccessors;
         this.attributeNames = attributeNames;
         this.collectionAttributeNames = collectionAttributeNames;
-        this.keyName = keyAttributeName;
-        this.keyAccessor = keyAccessor;
         this.persister = persister;
 
         inheritance = entityClass.getAnnotation(Inheritance.class) != null ||
@@ -62,9 +60,14 @@ class EntityInfo {
         // TODO update per outcome of #44
         String attributeName = attributeNames.get(name.toUpperCase());
         if (attributeName == null)
-            attributeName = "Id".equals(name) ? keyName : //
-                            "All".equals(name) ? null : // Special case for CrudRepository.deleteAll and CrudRepository.findAll
-                                            name;
+            if ("All".equals(name))
+                attributeName = null; // Special case for CrudRepository.deleteAll and CrudRepository.findAll
+            else if ("ID".equals(name.toUpperCase()))
+                throw new MappingException("Entity class " + type.getName() + " does not have a property named " + name +
+                                           " or which is designated as the @Id.");
+            else
+                throw new MappingException("Entity class " + type.getName() + " does not have a property named " + name + "."); // TODO NLS
+
         return attributeName;
     }
 

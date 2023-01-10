@@ -1,17 +1,21 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.security.internal;
 
+import java.security.AccessController;
 import java.security.Identity;
 import java.security.Principal;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -92,8 +96,20 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
     private EJBAuthorizationHelper eah = this;
 
     private boolean waitedForSecurity = false;
-    // wait time in seconds
-    private final int securityWaitTime = 30;
+    
+    private static final String securityWaitTimeProperty = "io.openliberty.ejb.security.startWaitTime";
+    
+    // wait time in seconds, default 0
+    private static final int securityWaitTime = AccessController.doPrivileged(new PrivilegedAction<Integer>() {
+        @Override
+        public Integer run() {
+            int waitTime = Integer.getInteger(securityWaitTimeProperty, 0);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "EJBSecurityCollaborator securityWaitTime set to " + waitTime + " seconds");
+            }
+            return waitTime;
+        }
+    });
 
     /**
      * Zero length constructor required by DS.

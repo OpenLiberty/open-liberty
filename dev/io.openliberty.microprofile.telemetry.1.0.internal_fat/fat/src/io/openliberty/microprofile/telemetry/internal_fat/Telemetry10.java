@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -32,6 +34,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.PatchTe
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.SpanCurrentServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.Telemetry10Servlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.WithSpanServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.MetricsDisabledServlet;
 
 @RunWith(FATRunner.class)
 public class Telemetry10 extends FATServletClient {
@@ -45,7 +48,8 @@ public class Telemetry10 extends FATServletClient {
                     @TestServlet(servlet = OpenTelemetryBeanServlet.class, contextRoot = APP_NAME),
                     @TestServlet(servlet = BaggageServlet.class, contextRoot = APP_NAME),
                     @TestServlet(servlet = SpanCurrentServlet.class, contextRoot = APP_NAME),
-                    @TestServlet(servlet = WithSpanServlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = MetricsDisabledServlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = WithSpanServlet.class, contextRoot = APP_NAME)
     })
     public static LibertyServer server;
 
@@ -57,8 +61,9 @@ public class Telemetry10 extends FATServletClient {
                                     OpenTelemetryBeanServlet.class,
                                     PatchTestApp.class,
                                     BaggageServlet.class,
-                                    WithSpanServlet.class,
-                                    SpanCurrentServlet.class);
+                                    MetricsDisabledServlet.class,
+                                    SpanCurrentServlet.class,
+                                    WithSpanServlet.class);
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
         server.startServer();

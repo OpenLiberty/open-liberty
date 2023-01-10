@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -99,7 +101,11 @@ public class ProcessControlHelper {
                     stopRc = scc.stopServer(launchArgs.getOption("force") != null);
                 } else {
                     // we can't communicate to the server...
-                    stopRc = ReturnCode.ERROR_SERVER_STOP;
+                    stopRc = waitForCommandFile(scc, new Integer(BootstrapConstants.SERVER_STOP_WAIT_TIME_DEFAULT));
+
+                    if (stopRc == ReturnCode.OK) {
+                        stopRc = scc.stopServer(launchArgs.getOption("force") != null);
+                    }
                 }
             } else {
                 // nope: lock not held, we're already stopped
@@ -149,6 +155,31 @@ public class ProcessControlHelper {
             try {
                 State processRunning = ps.isPossiblyRunning();
                 if ((processRunning == State.NO) || (processRunning == State.UNDETERMINED)) {
+                    return ReturnCode.OK;
+                }
+
+                long timeNow = System.currentTimeMillis();
+                if ((timeNow) > expireTime) {
+                    break;
+                }
+                Thread.sleep(BootstrapConstants.POLL_INTERVAL_MS);
+            } catch (Exception e) {
+                Debug.printStackTrace(e);
+                break;
+            }
+        } while (true);
+
+        return ReturnCode.ERROR_SERVER_STOP;
+    }
+
+    private ReturnCode waitForCommandFile(ServerCommandClient scc, int timeout) {
+        final long timeoutMillis = timeout * 1000;
+        final long startTime = System.currentTimeMillis();
+        final long expireTime = startTime + timeoutMillis;
+
+        do {
+            try {
+                if (scc.isValid()) {
                     return ReturnCode.OK;
                 }
 
@@ -465,8 +496,8 @@ public class ProcessControlHelper {
      * Run the relevant command for dumping the system
      *
      * @param javaDumpActions the java dump actions to take place
-     * @param systemDump whether this is a full dump (true) or just javadump (false)
-     * @param dumpTimestamp the timestamp on the server dump packager of the full dump
+     * @param systemDump      whether this is a full dump (true) or just javadump (false)
+     * @param dumpTimestamp   the timestamp on the server dump packager of the full dump
      * @return the return code from attempting to run the dump
      */
     private ReturnCode createDumps(Set<JavaDumpAction> javaDumpActions, boolean introspect, String dumpTimestamp) {

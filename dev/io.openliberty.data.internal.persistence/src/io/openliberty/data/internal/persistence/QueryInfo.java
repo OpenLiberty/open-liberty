@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -23,6 +25,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import jakarta.data.exceptions.DataException;
+import jakarta.data.exceptions.MappingException;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Sort;
 import jakarta.persistence.Query;
@@ -152,13 +155,16 @@ class QueryInfo {
         ArrayList<Object> keyValues = new ArrayList<>();
         for (Sort keyInfo : keyset)
             try {
-                Member accessor = entityInfo.attributeAccessors.get(keyInfo.property());
+                List<Member> accessors = entityInfo.attributeAccessors.get(keyInfo.property());
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "getKeysetValues for " + entity, accessor);
-                if (accessor instanceof Method)
-                    keyValues.add(((Method) accessor).invoke(entity));
-                else
-                    keyValues.add(((Field) accessor).get(entity));
+                    Tr.debug(this, tc, "getKeysetValues for " + entity, accessors);
+                Object value = entity;
+                for (Member accessor : accessors)
+                    if (accessor instanceof Method)
+                        value = ((Method) accessor).invoke(value);
+                    else
+                        value = ((Field) accessor).get(value);
+                keyValues.add(value);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException x) {
                 throw new DataException(x.getCause());
             }
@@ -200,7 +206,7 @@ class QueryInfo {
     void setParameters(Query query, Object... args) throws Exception {
         for (int i = 0, count = paramNames.size(); i < paramCount; i++) {
             Object arg = paramsNeedConversionToId ? //
-                            toEntityId(args[i], entityInfo.keyAccessor) : //
+                            toEntityId(args[i]) : //
                             args[i];
             String paramName = count > i ? paramNames.get(i) : null;
             if (paramName == null)
@@ -214,36 +220,43 @@ class QueryInfo {
      * Converts a repository method parameter that is an entity or iterable of entities
      * into an entity id or list of entity ids.
      *
-     * @param value       value of the repository method parameter.
-     * @param keyAccessor accessor method or field for the entity id.
+     * @param value value of the repository method parameter.
      * @return entity id or list of entity ids.
      */
-    private static final Object toEntityId(Object value, Member keyAccessor) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        Class<?> entityClass = keyAccessor.getDeclaringClass();
+    private Object toEntityId(Object value) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        List<Member> keyAccessors = entityInfo.attributeAccessors.get(entityInfo.getAttributeName("id"));
+
         if (value instanceof Iterable) {
             List<Object> list = new ArrayList<>();
-            if (keyAccessor instanceof Method) {
-                Method keyAccessorMethod = (Method) keyAccessor;
-                for (Object p : (Iterable<?>) value)
-                    if (entityClass.isInstance(p))
-                        list.add(keyAccessorMethod.invoke(p));
-                    else
-                        list.add(p);
-            } else { // Field
-                Field keyAccessorField = (Field) keyAccessor;
-                for (Object p : (Iterable<?>) value)
-                    if (entityClass.isInstance(p))
-                        list.add(keyAccessorField.get(p));
-                    else
-                        list.add(p);
+            for (Object v : (Iterable<?>) value) {
+                for (Member keyAccessor : keyAccessors) {
+                    Class<?> type = keyAccessor.getDeclaringClass();
+                    if (type.isInstance(v)) {
+                        if (keyAccessor instanceof Method)
+                            v = ((Method) keyAccessor).invoke(v);
+                        else // Field
+                            v = ((Field) keyAccessor).get(v);
+                    } else {
+                        throw new MappingException("Value of type " + v.getClass().getName() + " is incompatible with attribute type " + type.getName()); // TODO NLS
+                    }
+                }
+                list.add(v);
             }
             value = list;
-        } else if (entityClass.isInstance(value)) { // single entity
-            if (keyAccessor instanceof Method)
-                value = ((Method) keyAccessor).invoke(value);
-            else // Field
-                value = ((Field) keyAccessor).get(value);
+        } else { // single value
+            for (Member keyAccessor : keyAccessors) {
+                Class<?> type = keyAccessor.getDeclaringClass();
+                if (type.isInstance(value)) {
+                    if (keyAccessor instanceof Method)
+                        value = ((Method) keyAccessor).invoke(value);
+                    else // Field
+                        value = ((Field) keyAccessor).get(value);
+                } else {
+                    throw new MappingException("Value of type " + value.getClass().getName() + " is incompatible with attribute type " + type.getName()); // TODO NLS
+                }
+            }
         }
+
         return value;
     }
 

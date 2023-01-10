@@ -1,9 +1,11 @@
 <!--
-    Copyright (c) 2018,2020 IBM Corporation and others.
+    Copyright (c) 2018,2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
-    are made available under the terms of the Eclipse Public License v1.0
+    are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
-    http://www.eclipse.org/legal/epl-v10.html
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
    
     Contributors:
         IBM Corporation - initial API and implementation
@@ -29,7 +31,7 @@
     <dataSource id="DefaultDataSource" ibm.internal.nonship.function="true">
       <connectionManager autoCloseConnections="true"/>
       <jdbcDriver javax.sql.DataSource="jdbc.driver.proxy.ProxyDataSource" libraryRef="ibm.internal.simulate.no.library.do.not.ship" ibm.internal.nonship.function="true"/> <!-- TODO remove libraryRef -->
-      <properties databaseName="memory:ds1"/>
+      <properties databaseName="memory:ds1" portNumber="-1"/>
     </dataSource>
 
     <dataSource id="DerbyDataSource" jndiName="jdbc/derby" ibm.internal.nonship.function="true">

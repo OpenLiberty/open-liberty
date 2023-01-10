@@ -1,9 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -16,13 +18,11 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.AbstractList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.RandomAccess;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import com.ibm.websphere.ras.Tr;
@@ -60,7 +60,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
 
         int maxPageSize = this.pagination.size();
         int firstResult = this.pagination.mode() == Pageable.Mode.OFFSET //
-                        ? RepositoryImpl.computeOffset(this.pagination.page(), maxPageSize) //
+                        ? RepositoryImpl.computeOffset(this.pagination) //
                         : 0;
 
         EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
@@ -123,17 +123,6 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     }
 
     @Override
-    public <C extends Collection<T>> C getContent(Supplier<C> collectionFactory) {
-        C collection = collectionFactory.get();
-        int size = results.size();
-        int max = pagination.size();
-        size = size > max ? max : size;
-        for (int i = 0; i < size; i++)
-            collection.add(results.get(i));
-        return collection;
-    }
-
-    @Override
     public Pageable.Cursor getKeysetCursor(int index) {
         if (index < 0 || index >= pagination.size())
             throw new IllegalArgumentException("index: " + index);
@@ -144,11 +133,14 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
         int k = 0;
         for (Sort keyInfo : queryInfo.keyset)
             try {
-                Member accessor = queryInfo.entityInfo.attributeAccessors.get(keyInfo.property());
-                if (accessor instanceof Method)
-                    keyValues[k++] = ((Method) accessor).invoke(entity);
-                else
-                    keyValues[k++] = ((Field) accessor).get(entity);
+                List<Member> accessors = queryInfo.entityInfo.attributeAccessors.get(keyInfo.property());
+                Object value = entity;
+                for (Member accessor : accessors)
+                    if (accessor instanceof Method)
+                        value = ((Method) accessor).invoke(value);
+                    else
+                        value = ((Field) accessor).get(value);
+                keyValues[k++] = value;
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException x) {
                 throw new DataException(x.getCause());
             }

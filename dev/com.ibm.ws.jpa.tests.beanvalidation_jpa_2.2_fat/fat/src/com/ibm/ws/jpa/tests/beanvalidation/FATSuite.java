@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -21,6 +23,7 @@ import com.ibm.ws.jpa.tests.beanvalidation.tests.BeanValidation20_EJB;
 import com.ibm.ws.jpa.tests.beanvalidation.tests.BeanValidation20_Web;
 import com.ibm.ws.jpa.tests.beanvalidation.tests.BeanValidation_EJB;
 import com.ibm.ws.jpa.tests.beanvalidation.tests.BeanValidation_Web;
+import com.ibm.ws.jpa.tests.beanvalidation.tests.ValidateJPAFeatureTest;
 
 import componenttest.rules.repeater.RepeatTests;
 
@@ -30,6 +33,7 @@ import componenttest.rules.repeater.RepeatTests;
                 BeanValidation_Web.class,
                 BeanValidation20_EJB.class,
                 BeanValidation20_Web.class,
+                ValidateJPAFeatureTest.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite extends AbstractFATSuite {

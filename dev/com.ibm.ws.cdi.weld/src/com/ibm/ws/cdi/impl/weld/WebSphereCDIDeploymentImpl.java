@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2015, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -181,7 +183,7 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
     }
 
     /**
-     * Get all BDAs relating only to this application. i.e. not Shared Libs or internal Runtime Extensions
+     * Get all BDAs which belong to this application. i.e. not internal Runtime Extensions
      *
      * @return all application BDAs
      */
@@ -298,9 +300,13 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
      * Create the ordered list for the bdas - extension bdas first and then followed by the application bdas
      *
      */
+    @Trivial
     public void initializeOrderedBeanDeploymentArchives() {
         orderedBDAs.addAll(extensionBDAs.values());
         orderedBDAs.addAll(applicationBDAs);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "initializeOrderedBeanDeploymentArchives", orderedBDAs);
+        }
     }
 
     /** {@inheritDoc} */
@@ -592,8 +598,7 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
         deploymentDBAs.put(bda.getId(), bda);
         extensionClassLoaders.add(bda.getClassLoader());
         ArchiveType type = bda.getType();
-        if (type != ArchiveType.SHARED_LIB &&
-            type != ArchiveType.RUNTIME_EXTENSION) {
+        if (type != ArchiveType.RUNTIME_EXTENSION) {
             applicationBDAs.add(bda);
         }
     }
@@ -648,7 +653,8 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
         //first we need to initialize the injection service and collect the reference contexts and the injection classes
         for (WebSphereBeanDeploymentArchive bda : getApplicationBDAs()) {
             // Don't initialize child libraries, instead aggregate for the whole module
-            if (bda.getType() != ArchiveType.MANIFEST_CLASSPATH && bda.getType() != ArchiveType.WEB_INF_LIB) {
+            // No reference context for shared libs either
+            if (bda.getType() != ArchiveType.MANIFEST_CLASSPATH && bda.getType() != ArchiveType.WEB_INF_LIB && bda.getType() != ArchiveType.SHARED_LIB) {
                 ReferenceContext referenceContext = bda.initializeInjectionServices();
                 cdiReferenceContexts.add(referenceContext);
             }

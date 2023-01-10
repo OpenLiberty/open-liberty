@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -365,7 +367,8 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
 
     private AuthenticationStatus validateCredentials(OidcTokensCredential credential, HttpMessageContext httpMessageContext) throws AuthenticationException {
         int rspStatus;
-        String issuer = JavaEESecConstants.DEFAULT_REALM; // TODO: Set to "iss" claim from the identity token.
+        String issuer = getIssuerFromIdentityToken();
+
         Subject clientSubject = httpMessageContext.getClientSubject();
         AuthenticationStatus status = utils.handleAuthenticate(getCDI(), issuer, credential, clientSubject, httpMessageContext);
 
@@ -388,6 +391,46 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         httpMessageContext.getResponse().setStatus(rspStatus);
 
         return status;
+    }
+
+    /**
+     * Attempt to get the Issuer from the IdentityToken. If it can't be found, the default realm is returned.
+     *
+     * @return
+     */
+    private String getIssuerFromIdentityToken() {
+        OpenIdContext openIdContext = OpenIdContextUtils.getOpenIdContextFromSubject();
+        String issuer = JavaEESecConstants.DEFAULT_REALM;
+        if (openIdContext == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "The openIdContext is null, can't get the issuer, will be set to the default realm: " + issuer);
+            }
+        } else {
+            IdentityToken idToken = openIdContext.getIdentityToken();
+            if (idToken == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "The IdentityToken is null, can't get the issuer, will be set to the default realm: " + issuer);
+                }
+            } else {
+                Map<String, Object> claims = idToken.getClaims();
+                if (claims == null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "The claims map on the IdentityToken is null, can't get the issuer, will be set to the default realm: " + issuer);
+                    }
+                } else {
+                    String issuerFromMap = (String) claims.get(OpenIdConstant.ISSUER_IDENTIFIER);
+                    if (issuerFromMap == null) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc,
+                                     OpenIdConstant.ISSUER_IDENTIFIER + " returned null from the claims map, can't get the issuer, will be set to the default realm: " + issuer);
+                        }
+                    } else {
+                        issuer = issuerFromMap;
+                    }
+                }
+            }
+        }
+        return issuer;
     }
 
     private void setOpenIdContextInSubject(Subject clientSubject, OpenIdContext openIdContext) {
@@ -441,7 +484,9 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         OpenIdContext openIdContext = OpenIdContextUtils.getOpenIdContextFromSubject();
 
         if (openIdContext == null) {
-            // TODO add debug. should not be here.
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "The openIdContext from OpenIdContextUtils.getOpenIdContextFromSubject is null, the ProviderAuthenticationResult is set to failure");
+            }
             return new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
         IdentityToken idToken = openIdContext.getIdentityToken();
