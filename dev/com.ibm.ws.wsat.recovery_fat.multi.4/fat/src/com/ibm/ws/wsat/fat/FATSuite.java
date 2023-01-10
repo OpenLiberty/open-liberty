@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,9 +26,9 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT().useCachedServers())
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().useCachedServers())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().useCachedServers())
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().useCachedServers())
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT())
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly())
                     ;
 }
