@@ -14,6 +14,7 @@ package io.openliberty.data.internal.persistence;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -75,21 +76,89 @@ class EntityDefiner implements Runnable {
         this.entities = entities;
     }
 
+    /**
+     * It's more likely for a name ending with "Id" or "ID"
+     * to be an id than a name ending with "id",
+     * unless the name is "id".
+     *
+     * Precedence is:
+     * Select the field/parameter/method that is annotated with @Id, (1)
+     * or lacking that is named Id, or ID, or id, (2)
+     * or lacking that has a name that ends with Id (3), ID (4), or id (5).
+     *
+     * @param entityClass entity class.
+     * @return name of id property.
+     * @throws MappingException if the id property cannot be inferred.
+     */
     private static String getID(Class<?> entityClass) {
-        // For now, choosing "id" or any field that ends with id
+        int precedence = 10;
         String id = null;
-        String upperID = null;
-        for (Field field : entityClass.getFields()) {
-            if (field.getAnnotation(Id.class) != null)
-                return field.getName();
 
-            String name = field.getName().toUpperCase();
-            if ("ID".equals(name))
-                id = field.getName();
-            else if ((id == null || id.length() != 2) && name.endsWith("ID"))
-                if (upperID == null || name.compareTo(upperID) < 0) {
-                    upperID = name;
-                    id = field.getName();
+        for (Field field : entityClass.getFields()) {
+            String name = field.getName();
+
+            if (field.getAnnotation(Id.class) != null)
+                return name;
+
+            if (precedence > 2)
+                if (name.length() > 2) {
+                    if (precedence > 3) {
+                        char i = name.charAt(name.length() - 2);
+                        if (i == 'I') {
+                            char d = name.charAt(name.length() - 1);
+                            if (d == 'd') {
+                                id = name;
+                                precedence = 3;
+                            } else if (d == 'D' && precedence > 4) {
+                                id = name;
+                                precedence = 4;
+                            }
+                        } else if (i == 'i' && precedence > 5 && name.charAt(name.length() - 1) == 'd') {
+                            id = name;
+                            precedence = 5;
+                        }
+                    }
+                } else if (name.equalsIgnoreCase("ID")) {
+                    id = name;
+                    precedence = 2;
+                }
+        }
+
+        // TODO record parameters
+
+        for (Method method : entityClass.getMethods()) {
+            String name = method.getName();
+            if (name.startsWith("get"))
+                name = name.substring(3);
+            else if (name.startsWith("is"))
+                name = name.substring(2);
+            else
+                continue;
+
+            if (method.getAnnotation(Id.class) != null)
+                return name;
+
+            if (precedence > 2)
+                if (name.length() > 2) {
+                    if (precedence > 3) {
+                        char i = name.charAt(name.length() - 2);
+                        if (i == 'I') {
+                            char d = name.charAt(name.length() - 1);
+                            if (d == 'd') {
+                                id = name;
+                                precedence = 3;
+                            } else if (d == 'D' && precedence > 4) {
+                                id = name;
+                                precedence = 4;
+                            }
+                        } else if (i == 'i' && precedence > 5 && name.charAt(name.length() - 1) == 'd') {
+                            id = name;
+                            precedence = 5;
+                        }
+                    }
+                } else if (name.equalsIgnoreCase("ID")) {
+                    id = name;
+                    precedence = 2;
                 }
         }
 

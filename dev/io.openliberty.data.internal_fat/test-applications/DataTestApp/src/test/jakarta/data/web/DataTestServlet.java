@@ -117,6 +117,9 @@ public class DataTestServlet extends FATServlet {
     @Inject
     Template template;
 
+    @Inject
+    Things things;
+
     @Resource
     private UserTransaction tran;
 
@@ -3004,6 +3007,81 @@ public class DataTestServlet extends FATServlet {
         packages.deleteAll();
 
         assertEquals(0, packages.count());
+    }
+
+    /**
+     * Experiment with reserved keywords in entity property names.
+     */
+    @Test
+    public void testReservedKeywordsInEntityPropertyNames() {
+        // clear out old data before test
+        things.deleteAll();
+
+        things.save(new Thing(1, "apple", true, false, "Honeycrisp", "a type of apple", 1, "Keepsake x MN 1627", "September", 20, 210550L));
+        things.save(new Thing(2, "apple", true, false, "Haralson", "a type of apple", 1, "Malinda x Wealthy", "September/October", 5, 143005L));
+        things.save(new Thing(3, "apple", true, false, "Fireside", "a type of apple", 1, "McIntosh x Longfield", "October", 3, 321004L));
+        things.save(new Thing(4, "apple", true, false, "Honeygold", "a type of apple", 1, "Golden Delicious x Haralson", "September", 10, 100201L));
+        things.save(new Thing(5, "A101", false, false, "IBM", "050-2 A101 conference room", 2, "2nd floor conference room", "capacity 20", 16, 163L));
+        things.save(new Thing(6, "android", false, true, null, "a robot that looks like a person", 3, "not alive", "not alive", 4, 40661L));
+
+        Thing thing = things.findById(2);
+        assertEquals("Haralson", thing.brand);
+
+        // "like" is allowed at end of entity property name because the capitalization differs.
+        assertIterableEquals(List.of("Fireside", "Haralson", "Honeycrisp", "Honeygold"),
+                             things.findByAlike(true)
+                                             .map(o -> o.brand)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        // "Like" is used as a reserved keyword here.
+        assertIterableEquals(List.of("A101"),
+                             things.findByALike("A%")
+                                             .map(o -> o.a)
+                                             .collect(Collectors.toList()));
+
+        // "Or" in middle of entity property name is possible to to use of @Query.
+        assertIterableEquals(List.of("Honeycrisp"),
+                             things.forPurchaseOrder(20)
+                                             .map(o -> o.brand)
+                                             .collect(Collectors.toList()));
+
+        // "Or" is allowed at the beginning of an entity property name because "find...By" immediately precedes it.
+        assertIterableEquals(List.of("Honeygold"),
+                             things.findByOrderNumber(100201L)
+                                             .map(o -> o.brand)
+                                             .collect(Collectors.toList()));
+
+        // "And" is allowed at the beginning of an entity property name because "find...By" immediately precedes it.
+        assertIterableEquals(List.of("android"),
+                             things.findByAndroid(true)
+                                             .map(o -> o.a)
+                                             .collect(Collectors.toList()));
+
+        // "and" is allowed at end of entity property name "brand" because the capitalization differs.
+        // "Not" is allowed at the beginning of an entity property name "Notes" because the reserved word "Not" never appears prior to the property name.
+        // "And" is allowed at the beginning of an entity property name because "And" or "Or" immediately precedes it.
+        assertIterableEquals(List.of(2L, 3L, 5L, 6L),
+                             things.findByBrandOrNotesContainsOrAndroid("IBM", "October", true)
+                                             .map(o -> o.thingId)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        // "or" is allowed at end of entity property name "floor" because the capitalization differs.
+        // "In" is allowed at the beginning of an entity property name "Info" because the reserved word "In" never appears prior to the property name.
+        // "Or" is allowed at the beginning of an entity property name because "And" or "Or" immediately precedes it.
+        assertIterableEquals(List.of("2nd floor conference room", "Golden Delicious x Haralson"),
+                             things.findByFloorNotAndInfoLikeAndOrderNumberLessThan(3, "%o%", 300000L)
+                                             .map(o -> o.info)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
+
+        // TODO is "Desc" allowed in an entity property name in the OrderBy clause?
+        assertIterableEquals(List.of("A101", "android", "apple"),
+                             things.findByIdGreaterThan(3L)
+                                             .map(o -> o.a)
+                                             .sorted()
+                                             .collect(Collectors.toList()));
     }
 
     /**
