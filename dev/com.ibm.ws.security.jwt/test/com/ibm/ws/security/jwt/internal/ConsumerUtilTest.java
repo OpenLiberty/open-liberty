@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,7 +27,9 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,6 +38,7 @@ import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
+import org.jose4j.json.JsonUtil;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
@@ -55,6 +58,7 @@ import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.websphere.security.jwt.InvalidClaimException;
 import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.websphere.security.jwt.KeyException;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.common.random.RandomUtils;
 import com.ibm.ws.security.common.time.TimeUtils;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
@@ -78,6 +82,8 @@ public class ConsumerUtilTest {
     private static final String ENTRY4 = "entry4";
     private static final String HS256 = "HS256";
     private static final String RS256 = "RS256";
+    private static final String RSA_OAEP = "RSA-OAEP";
+    private static final String RSA_OAEP_256 = "RSA-OAEP-256";
     private static final String URL = "http://localhost:80/context/sub";
     private static final String trustedAlias = "myAlias";
     private static final String trustStoreRef = "myTrustStore";
@@ -102,6 +108,9 @@ public class ConsumerUtilTest {
     private static final String MSG_JWT_TRUSTED_ISSUERS_NULL = "CWWKS6052E";
     private static final String MSG_JWS_REQUIRED_BUT_TOKEN_NOT_JWS = "CWWKS6063E";
     private static final String MSG_JWE_REQUIRED_BUT_TOKEN_NOT_JWE = "CWWKS6064E";
+    private static final String MSG_JWT_TOKEN_AGED = "CWWKS6067E";
+    private static final String MSG_JWE_MISSING_ALG_HEADER = "CWWKS6068E";
+    private static final String MSG_JWE_ALGORITHM_MISMATCH = "CWWKS6069E";
 
     private static final String JOSE_EXCEPTION = "org.jose4j.lang.JoseException";
     private static final String PARSE_EXCEPTION = "org.jose4j.json.internal.json_simple.parser.ParseException";
@@ -150,10 +159,12 @@ public class ConsumerUtilTest {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         outputMgr.captureStreams();
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
     }
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
+        System.clearProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY);
         outputMgr.dumpStreams();
         outputMgr.resetStreams();
         outputMgr.restoreStreams();
@@ -783,12 +794,107 @@ public class ConsumerUtilTest {
                 {
                     allowing(jwtConfig).getKeyManagementKeyAlias();
                     will(returnValue("myAlias"));
+                    allowing(jwtConfig).getKeyManagementKeyAlgorithm();
+                    will(returnValue(null));
                 }
             });
             consumerUtil.checkJwtFormatAgainstConfigRequirements(tokenString, jwtConfig, NO_MP_CONFIG_PROPERTIES);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
+    }
+
+    @Test
+    public void test_checkJwtFormatAgainstConfigRequirements_jweRequired_jweString_keyManagementKeyAlgorithm_algHeader_missing() {
+        try {
+            String requiredAlg = RSA_OAEP;
+            String headerString = "test";
+
+            try {
+                checkJweAgainstConfig(headerString, requiredAlg, NO_MP_CONFIG_PROPERTIES);
+                fail("Should have thrown Exception but did not.");
+            } catch (Exception e) {
+                validateException(e, MSG_JWE_MISSING_ALG_HEADER + ".+" + requiredAlg);
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_checkJwtFormatAgainstConfigRequirements_jweRequired_jweString_mpConfigProps_algHeader_missing() {
+        try {
+            String requiredAlg = RSA_OAEP;
+            MpConfigProperties mpConfigProps = createMpConfigPropsWithDecryptKeyAlgorithm(requiredAlg);
+            String headerString = "test";
+
+            try {
+                checkJweAgainstConfig(headerString, null, mpConfigProps);
+                fail("Should have thrown Exception but did not.");
+            } catch (Exception e) {
+                validateException(e, MSG_JWE_MISSING_ALG_HEADER + ".+" + requiredAlg);
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_checkJwtFormatAgainstConfigRequirements_jweRequired_jweString_mpConfigProps_algHeader_matches() {
+        try {
+            String requiredAlg = RSA_OAEP;
+            String headerAlg = RSA_OAEP;
+            MpConfigProperties mpConfigProps = createMpConfigPropsWithDecryptKeyAlgorithm(requiredAlg);
+            String headerString = createEncodedHeaderWithAlgParameter(headerAlg);
+
+            checkJweAgainstConfig(headerString, null, mpConfigProps);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void test_checkJwtFormatAgainstConfigRequirements_jweRequired_jweString_mpConfigProps_algHeader_mismatch() {
+        try {
+            String requiredAlg = RSA_OAEP_256;
+            String headerAlg = RSA_OAEP;
+            MpConfigProperties mpConfigProps = createMpConfigPropsWithDecryptKeyAlgorithm(requiredAlg);
+            String headerString = createEncodedHeaderWithAlgParameter(headerAlg);
+
+            try {
+                checkJweAgainstConfig(headerString, null, mpConfigProps);
+                fail("Should have thrown Exception but did not.");
+            } catch (Exception e) {
+                validateException(e, MSG_JWE_ALGORITHM_MISMATCH + ".+" + headerAlg + ".+" + requiredAlg);
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    private MpConfigProperties createMpConfigPropsWithDecryptKeyAlgorithm(String decryptKeyAlgorithm) {
+        MpConfigProperties mpConfigProps = new MpConfigProperties();
+        mpConfigProps.put(MpConfigProperties.DECRYPT_KEY_ALGORITHM, decryptKeyAlgorithm);
+        return mpConfigProps;
+    }
+
+    private String createEncodedHeaderWithAlgParameter(String alg) {
+        Map<String, Object> headersMap = new HashMap<String, Object>();
+        headersMap.put("alg", alg);
+        return new String(new Base64().encodeAsString(JsonUtil.toJson(headersMap).getBytes()));
+    }
+
+    private void checkJweAgainstConfig(String headerString, String keyManagementKeyAlgorithm, MpConfigProperties mpConfigProps) throws InvalidTokenException {
+        final String tokenString = headerString + ".test.test.test.test";
+        mockery.checking(new Expectations() {
+            {
+                allowing(jwtConfig).getKeyManagementKeyAlias();
+                will(returnValue("myAlias"));
+                allowing(jwtConfig).getKeyManagementKeyAlgorithm();
+                will(returnValue(keyManagementKeyAlgorithm));
+            }
+        });
+        consumerUtil.checkJwtFormatAgainstConfigRequirements(tokenString, jwtConfig, mpConfigProps);
     }
 
     /*************************************
@@ -2040,6 +2146,58 @@ public class ConsumerUtilTest {
                 String iatString = convertDateToLiteralRegexString(iatDate);
                 String expString = convertDateToLiteralRegexString(expDate);
                 validateException(e, MSG_JWT_IAT_AFTER_EXP + ".+\\[" + iatString + "\\].+\\[" + expString + "\\]");
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Method under test:
+     * {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Timeline: iat --
+     * token age -- [Clock skew start] -- Current time -- [Clock skew end] -- exp
+     */
+    @Test
+    public void testValidateIatAndExp_iatPast_outsideClockSkew_agePast_outsideClockSkew_expFuture() {
+        try {
+            // Randomly select clock skew setting to make sure no clock skew and
+            // some small clock skew don't affect result
+            long clockSkewMillis = getRandomClockSkew();
+
+            final NumericDate iatDate = createDate(PAST_OUTSIDE_CLOCK_SKEW);
+            final NumericDate expDate = createDate(FUTURE_OUTSIDE_CLOCK_SKEW);
+            setIatAndExpClaimExpectations(iatDate, expDate);
+
+            try {
+                consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis, 1000);
+                fail("Should have thrown InvalidClaimException but did not.");
+            } catch (InvalidClaimException e) {
+                String iatString = convertDateToLiteralRegexString(iatDate);
+                validateException(e, MSG_JWT_TOKEN_AGED + ".+" + iatString + ".+" + (clockSkewMillis / 1000) + " sec");
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Method under test:
+     * {@link ConsumerUtil#validateIatAndExp(JwtClaims, long)} Timeline: iat --
+     * [Clock skew start] -- token age -- Current time -- [Clock skew end] -- exp
+     */
+    @Test
+    public void testValidateIatAndExp_iatPast_agePast_withinClockSkew_expFuture() {
+        try {
+            long clockSkewMillis = STANDARD_CLOCK_SKEW_MS;
+
+            final NumericDate iatDate = createDate(PAST_OUTSIDE_CLOCK_SKEW);
+            final NumericDate expDate = createDate(FUTURE_OUTSIDE_CLOCK_SKEW);
+            setIatAndExpClaimExpectations(iatDate, expDate);
+
+            try {
+                consumerUtil.validateIatAndExp(jwtClaims, clockSkewMillis, ONE_HOUR_MS + STANDARD_CLOCK_SKEW_MS);
+            } catch (Throwable t) {
+                outputMgr.failWithThrowable(testName.getMethodName(), t);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
