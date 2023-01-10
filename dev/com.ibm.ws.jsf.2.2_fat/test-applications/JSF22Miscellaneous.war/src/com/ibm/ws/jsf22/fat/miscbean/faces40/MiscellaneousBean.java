@@ -1,9 +1,11 @@
 /*
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -11,7 +13,7 @@
 /**
  * A simple managed bean that will be used to test very simple bean functionality.
  *   This bean tests some of the new functions in JSF 2.2
- * 
+ *
  * @author Jim Lawwill
  *
  */
@@ -21,21 +23,20 @@ import java.io.Serializable;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
+import javax.el.ELManager;
 import javax.el.ExpressionFactory;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.application.Application;
 import javax.faces.application.ViewHandler;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.PartialViewContext;
 import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ComponentSystemEventListener;
 import javax.faces.event.FacesListener;
-import javax.servlet.ServletContext;
-import javax.servlet.jsp.JspFactory;
+import javax.inject.Named;
 
-@ManagedBean
+@Named
 @SessionScoped
 public class MiscellaneousBean implements Serializable {
 
@@ -62,7 +63,7 @@ public class MiscellaneousBean implements Serializable {
         ExternalContext externalContext = facesContext.getExternalContext();
 
         // From the JSF 2.2 spec, you'll see this line:
-        //   12.1.3 add this text to the javax.faces.STATE_SAVING_METHOD spec. When examining the value, 
+        //   12.1.3 add this text to the javax.faces.STATE_SAVING_METHOD spec. When examining the value,
         //   the runtime must ignore the case.
         //
         // So, in this test, we are sending the "isSavingStateInClient" value back to the client.
@@ -106,7 +107,7 @@ public class MiscellaneousBean implements Serializable {
         output += "getProtectedViewsUnmodifiable = " + numProtectedViews;
         output += "\n";
 
-        //  Return the state of compontentSystemEventWorked.   This tests the new APIs 
+        //  Return the state of compontentSystemEventWorked.   This tests the new APIs
         //    listed here --->  http://java.net/jira/browse/JAVASERVERFACES_SPEC_PUBLIC-997
         output += "componentSystemEventChangesWorked = " + componentSystemEventWorked;
         output += "\n";
@@ -121,14 +122,14 @@ public class MiscellaneousBean implements Serializable {
         componentSystemEventWorked = true;
 
         MyFaceListener listener1 = new MyFaceListener();
-        //  This is a FacesListener that is NOT an instanceOf ComponentSystemEventListener, 
+        //  This is a FacesListener that is NOT an instanceOf ComponentSystemEventListener,
         //    so it should return false
         if (event.isAppropriateListener(listener1) == true) {
             componentSystemEventWorked = false;
             return;
         }
 
-        //  This is a FacesListener that is an instanceOf ComponentSystemEventListener, 
+        //  This is a FacesListener that is an instanceOf ComponentSystemEventListener,
         //    so it should return true
         MyComponentSystemEventListener listener2 = new MyComponentSystemEventListener();
         if (event.isAppropriateListener(listener2) == false) {
@@ -142,24 +143,27 @@ public class MiscellaneousBean implements Serializable {
     }
 
     /*
-     * Check the ExpressionFactory objects returned from both the JSP and 
+     * Check the ExpressionFactory objects returned from both the JSP and
      * JSF impls - according to the EE7 spec, they should be the same.
+     *
+     * For Faces 4.0, the specification was updated to say:
+     * "The implementation must return the ExpressionFactory from the Expression Language container by calling jakarta.el.ELManager.getExpressionFactory()."
+     *
+     * This update was made for Faces 4.0 because Pages is no longer supported in Faces 4.0.
      */
     @PostConstruct
     public void init() {
-        ServletContext servletContext = (ServletContext) FacesContext
-                        .getCurrentInstance().getExternalContext().getContext();
-        ExpressionFactory el1 = JspFactory.getDefaultFactory().getJspApplicationContext(servletContext).getExpressionFactory();
+        ExpressionFactory el1 = ELManager.getExpressionFactory();
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExpressionFactory el2 = facesContext.getApplication().getExpressionFactory();
         if (el1.toString().equals(el2.toString())) {
             this.setResults(el1 + " == " + el2 + "; ExpressionFactory-instance test passed");
-        }
-        else
+        } else
             this.setResults(el1 + " != " + el2 + "; ExpressionFactory-instance test failed!");
     }
 
-    public class MyFaceListener implements FacesListener {}
+    public class MyFaceListener implements FacesListener {
+    }
 
     public class MyComponentSystemEventListener implements ComponentSystemEventListener {
 

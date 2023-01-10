@@ -14,33 +14,29 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
           "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-  <head>
-    <title>View-Scoped Managed Bean test 1</title>
-  </head>
-<body>
-<f:view>
-    <h1>View-Scoped Managed Bean Test 1</h1>
-    <h:form id="viewScope" prependId="false">
-        <br/>
-        email input: <h:inputText styleClass="inputText" id="text1"
-				value="#{emailBean.email}" 
-                    validator="#{viewScopedBean.validateUserUpdate}"></h:inputText> 
-        <br/>
-       
-         <h:commandButton type="submit" value="Submit"
-				action="#{viewScopedBean.updateEmail}"
-				styleClass="commandButton" id="button2"></h:commandButton>
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <head>
+        <title>View-Scoped Managed Bean test 1</title>
+    </head>
+    <body>
+        <f:view>
+            <h1>View-Scoped Managed Bean Test 1</h1>
+            <h:form id="viewScope" prependId="false">
+                <br/>
+                email input: <h:inputText styleClass="inputText" id="text1"
+                    value="#{emailBean.email}"
+                    validator="#{viewScopedBean.validateUserUpdate}"></h:inputText>
+                <br/>
 
-        <br/>
-        
-        <h:outputText id="out1" value="#{viewScopedBean.str1}"></h:outputText>
-    </h:form>
-</f:view>
-</body>
+                <h:commandButton type="submit" value="Submit"
+                    action="#{viewScopedBean.updateEmail}"
+                    styleClass="commandButton" id="button2"></h:commandButton>
+
+                <br/>
+
+                <h:outputText id="out1" value="#{viewScopedBean.str1}"></h:outputText>
+            </h:form>
+        </f:view>
+    </body>
 </html>
-
-
-
-
