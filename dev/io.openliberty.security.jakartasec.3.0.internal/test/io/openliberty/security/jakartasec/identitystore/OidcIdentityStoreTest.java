@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.jmock.Expectations;
@@ -38,10 +39,14 @@ import org.junit.Test;
 
 import com.ibm.ws.security.test.common.CommonTestClass;
 
+import io.openliberty.security.jakartasec.ClaimsDefinitionWrapper;
+import io.openliberty.security.jakartasec.TestClaimsDefinition;
 import io.openliberty.security.jakartasec.tokens.OpenIdClaimsImpl;
 import io.openliberty.security.oidcclientcore.client.ClaimsMappingConfig;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.token.TokenResponse;
+import jakarta.security.enterprise.authentication.mechanism.http.openid.ClaimsDefinition;
+import jakarta.security.enterprise.identitystore.CredentialValidationResult;
 import jakarta.security.enterprise.identitystore.openid.AccessToken;
 import jakarta.security.enterprise.identitystore.openid.OpenIdClaims;
 import test.common.SharedOutputManager;
@@ -80,7 +85,84 @@ public class OidcIdentityStoreTest extends CommonTestClass {
         outputMgr.restoreStreams();
     }
 
-    // TODO - createSuccessfulCredentialValidationResult
+    @Test
+    public void test_createCredentialValidationResult() throws MalformedClaimException {
+        String callerName = "longtimeListenerFirstTimeCaller";
+        Map<String, Object> overrides = new HashMap<String, Object>();
+        overrides.put(TestClaimsDefinition.CALLER_NAME_CLAIM, callerName);
+
+        String groupName = "longtimeListenerFirstTimeGroup";
+        overrides.put(TestClaimsDefinition.CALLER_GROUPS_CLAIM, groupName);
+
+        ClaimsDefinition claimsDefinition = TestClaimsDefinition.getInstanceofAnnotation(overrides);
+        ClaimsDefinitionWrapper wrapper = new ClaimsDefinitionWrapper(claimsDefinition);
+
+        List<String> testSet = new ArrayList<String>();
+        testSet.add(groupName);
+
+        mockery.checking(new Expectations() {
+            {
+                allowing(accessToken).isJWT();
+                will(returnValue(true));
+                allowing(accessToken).getClaim("iss");
+                will(returnValue("IamTheIssuer"));
+                allowing(config).getClaimsMappingConfig();
+                will(returnValue(wrapper));
+                allowing(accessToken).getClaim(callerName);
+                will(returnValue(callerName));
+                allowing(accessToken).getClaim(groupName);
+                will(returnValue(testSet));
+            }
+        });
+
+        CredentialValidationResult result = identityStore.createCredentialValidationResult(config, accessToken, idTokenClaims, userInfoClaims);
+
+        assertNotNull("CredentialValidationResult should be returned", result);
+        assertEquals("Caller name incorrect", callerName, result.getCallerUniqueId());
+        assertNotNull("Groups name should be returned", result.getCallerGroups());
+        assertFalse("Groups set should not be empty", result.getCallerGroups().isEmpty());
+        assertEquals("Groups set should have a single entry", 1, result.getCallerGroups().size());
+        assertEquals("Wrong groups name returned", groupName, result.getCallerGroups().iterator().next());
+    }
+
+    @Test
+    public void test_createCredentialValidationResult_nullCaller() throws MalformedClaimException {
+
+        Map<String, Object> overrides = new HashMap<String, Object>();
+
+        String groupName = "longtimeListenerFirstTimeGroup";
+        overrides.put(TestClaimsDefinition.CALLER_GROUPS_CLAIM, groupName);
+
+        ClaimsDefinition claimsDefinition = TestClaimsDefinition.getInstanceofAnnotation(overrides);
+        ClaimsDefinitionWrapper wrapper = new ClaimsDefinitionWrapper(claimsDefinition);
+
+        List<String> testSet = new ArrayList<String>();
+        testSet.add(groupName);
+
+        mockery.checking(new Expectations() {
+            {
+                allowing(accessToken).isJWT();
+                will(returnValue(true));
+                allowing(accessToken).getClaim("iss");
+                will(returnValue("IamTheIssuer"));
+                allowing(config).getClaimsMappingConfig();
+                will(returnValue(wrapper));
+                allowing(accessToken).getClaim("callerName");
+                will(returnValue(null));
+                allowing(accessToken).getClaim("preferred_username");
+                will(returnValue(null));
+                allowing(idTokenClaims).getClaimValue("preferred_username", String.class);
+                will(returnValue(null));
+                allowing(userInfoClaims).getStringClaim("preferred_username");
+                will(returnValue(Optional.ofNullable(null)));
+            }
+        });
+
+        CredentialValidationResult result = identityStore.createCredentialValidationResult(config, accessToken, idTokenClaims, userInfoClaims);
+
+        assertNotNull("CredentialValidationResult should be returned", result);
+        assertEquals("Credential should be invalid as the callerName was null", CredentialValidationResult.INVALID_RESULT, result);
+    }
 
     @Test
     public void test_getCallerName_noClaimsMapping() throws MalformedClaimException {
@@ -94,7 +176,28 @@ public class OidcIdentityStoreTest extends CommonTestClass {
         assertNull("Result should have been null but was [" + result + "].", result);
     }
 
-    // TODO - getCallerName
+    @Test
+    public void test_getCallerName_FromClaimsConfig() throws MalformedClaimException {
+        String callerName = "longtimeListenerFirstTimeCaller";
+        Map<String, Object> overrides = new HashMap<String, Object>();
+        overrides.put(TestClaimsDefinition.CALLER_NAME_CLAIM, callerName);
+
+        ClaimsDefinition claimsDefinition = TestClaimsDefinition.getInstanceofAnnotation(overrides);
+        ClaimsDefinitionWrapper wrapper = new ClaimsDefinitionWrapper(claimsDefinition);
+
+        mockery.checking(new Expectations() {
+            {
+                one(config).getClaimsMappingConfig();
+                will(returnValue(wrapper));
+                allowing(accessToken).isJWT();
+                allowing(idTokenClaims).getClaimValue(callerName, String.class);
+                will(returnValue(callerName));
+            }
+        });
+        String result = identityStore.getCallerName(config, accessToken, idTokenClaims, userInfoClaims);
+        assertNotNull("Caller name should be returned", result);
+        assertEquals("Wrong caller name returned", callerName, result);
+    }
 
     @Test
     public void test_getCallerGroups_noClaimsMapping() throws MalformedClaimException {
@@ -108,7 +211,33 @@ public class OidcIdentityStoreTest extends CommonTestClass {
         assertNull("Result should have been null but was [" + result + "].", result);
     }
 
-    // TODO - getCallerGroups
+    @Test
+    public void test_getCallerGroup_FromClaimsConfig() throws MalformedClaimException {
+        String groupName = "longtimeListenerFirstTimeGroup";
+        Map<String, Object> overrides = new HashMap<String, Object>();
+        overrides.put(TestClaimsDefinition.CALLER_GROUPS_CLAIM, groupName);
+
+        ClaimsDefinition claimsDefinition = TestClaimsDefinition.getInstanceofAnnotation(overrides);
+        ClaimsDefinitionWrapper wrapper = new ClaimsDefinitionWrapper(claimsDefinition);
+
+        List<String> testSet = new ArrayList<String>();
+        testSet.add(groupName);
+
+        mockery.checking(new Expectations() {
+            {
+                one(config).getClaimsMappingConfig();
+                will(returnValue(wrapper));
+                allowing(accessToken).isJWT();
+                allowing(idTokenClaims).getClaimValue(groupName, List.class);
+                will(returnValue(testSet));
+            }
+        });
+        Set<String> result = identityStore.getCallerGroups(config, accessToken, idTokenClaims, userInfoClaims);
+        assertNotNull("Groups name should be returned", result);
+        assertFalse("Groups set should not be empty", result.isEmpty());
+        assertEquals("Groups set should have a single entry", 1, result.size());
+        assertEquals("Wrong groups name returned", groupName, result.iterator().next());
+    }
 
     @Test
     public void test_getCallerNameClaim_noClaimsMapping() {
@@ -293,9 +422,55 @@ public class OidcIdentityStoreTest extends CommonTestClass {
         assertEquals(value, result);
     }
 
-    // TODO - getClaimFromAccessToken
+    @SuppressWarnings("rawtypes")
+    @Test
+    public void test_getClaimValueFromAccessToken() throws MalformedClaimException {
+        String claim = "myClaim";
+        Map<String, Object> userInfoClaimsMap = new HashMap<String, Object>();
+        List<String> value = List.of("one", "two", "three");
+        userInfoClaimsMap.put(claim, value);
+        OpenIdClaims userInfoClaims = new OpenIdClaimsImpl(userInfoClaimsMap);
 
-    // TODO - getClaimFromIdToken
+        List<String> valueFromAccessToken = List.of("four", "five", "six");
+
+        mockery.checking(new Expectations() {
+            {
+                one(accessToken).isJWT();
+                will(returnValue(true));
+                one(accessToken).getClaim(claim);
+                will(returnValue(valueFromAccessToken));
+            }
+        });
+
+        List result = identityStore.getClaimValueFromTokens(claim, accessToken, idTokenClaims, userInfoClaims, List.class);
+        assertEquals("Incorrect list returned on getClaimValueFromTokens", valueFromAccessToken, result);
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Test
+    public void test_getClaimValueFromIdToken() throws MalformedClaimException {
+        String claim = "myClaim";
+        Map<String, Object> userInfoClaimsMap = new HashMap<String, Object>();
+        List<String> value = List.of("one", "two", "three");
+        userInfoClaimsMap.put(claim, value);
+        OpenIdClaims userInfoClaims = new OpenIdClaimsImpl(userInfoClaimsMap);
+
+        List<String> valueFromIdToken = List.of("four", "five", "six");
+
+        mockery.checking(new Expectations() {
+            {
+                one(accessToken).isJWT();
+                will(returnValue(true));
+                one(accessToken).getClaim(claim);
+                will(returnValue(List.of()));
+                one(idTokenClaims).getClaimValue(claim, List.class);
+                will(returnValue(valueFromIdToken));
+            }
+        });
+
+        List result = identityStore.getClaimValueFromTokens(claim, accessToken, idTokenClaims, userInfoClaims, List.class);
+        assertEquals("Incorrect list returned on getClaimValueFromTokens", valueFromIdToken, result);
+    }
 
     @Test
     public void test_getClaimFromUserInfo_nullClaims() {
