@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -341,7 +341,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
         Page response1 = runGoodEndToEndTest(webClient, appName, baseAppName);
 
         // now logged in - wait for token to expire
-        actions.testLogAndSleep(20);
+        actions.testLogAndSleep(35);
         String url = rpHttpsBase + "/" + appName + "/" + baseAppName;
         Page response2 = invokeAppGetToAppWithRefreshedToken(webClient, url); // get to app not because either id or access token is good, but because the token was refreshed.
 
@@ -355,7 +355,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
         validationUtils.validateResult(response2, expectations);
 
         // now logged in - wait for token to expire
-        actions.testLogAndSleep(20);
+        actions.testLogAndSleep(35);
         Page response3 = null;
         response3 = invokeAppGetToAppWithRefreshedToken(webClient, url); // get to app not because either id or access token is good, but because the token was refreshed, or we re-using a refreshed token
         if (refreshedSecondTime) {
