@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,12 +19,12 @@ import jakarta.security.enterprise.authentication.mechanism.http.openid.ClaimsDe
 
 public class TestClaimsDefinition {
 
-    protected static String CALLER_NAME_CLAIM = "callerNameClaim";
-    protected static String CALLER_GROUPS_CLAIM = "callerGroupsClaim";
+    public static String CALLER_NAME_CLAIM = "callerNameClaim";
+    public static String CALLER_GROUPS_CLAIM = "callerGroupsClaim";
     protected static String CALLER_NAME_CLAIM_DEFAULT = "preferred_username";
     protected static String CALLER_GROUPS_CLAIM_DEFAULT = "groups";
 
-    protected static ClaimsDefinition getInstanceofAnnotation(final Map<String, Object> overrides) {
+    public static ClaimsDefinition getInstanceofAnnotation(final Map<String, Object> overrides) {
         ClaimsDefinition annotation = new ClaimsDefinition() {
 
             @Override
