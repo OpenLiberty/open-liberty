@@ -34,4 +34,4 @@ tested.features:\
   io.openliberty.org.apache.commons.logging;version=latest, \
   com.ibm.ws.org.slf4j.api;version=latest, \
   com.ibm.ws.org.slf4j.jdk14;version=latest, \
-  com.ibm.ws.com.icegreen:greenmail;strategy=exact;version=2.0.0.fd826131f671b0d3230b0d0e1638d8c4
+  com.icegreen.greenmail;version=2.0.0.alpha-1
