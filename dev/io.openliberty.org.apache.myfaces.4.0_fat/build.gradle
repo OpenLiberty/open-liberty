@@ -39,7 +39,15 @@ dependencies {
     requiredLibs project(':io.openliberty.org.apache.commons.logging')
     requiredLibs project(':io.openliberty.org.apache.xercesImpl')
     requiredLibs 'xml-apis:xml-apis:1.4.01'
-//  mojarra40 'org.glassfish:jakarta.faces:4.0.0'
+    requiredLibs('org.eclipse.jetty:jetty-io:9.2.15.v20160210') { force = true }
+    requiredLibs('org.eclipse.jetty:jetty-websocket:8.2.0.v20160908') { force = true }
+    requiredLibs('org.eclipse.jetty.websocket:websocket-client:9.2.15.v20160210') { force = true }
+    requiredLibs('org.eclipse.jetty.websocket:websocket-api:9.2.15.v20160210') { force = true }
+    requiredLibs('org.eclipse.jetty.websocket:websocket-common:9.2.15.v20160210') { force = true }
+    requiredLibs('org.eclipse.jetty:jetty-websocket:8.2.0.v20160908') { force = true }
+    requiredLibs('org.eclipse.jetty:jetty-util:9.2.15.v20160210') { force = true }
+    requiredLibs('org.eclipse.jetty:jetty-http:9.4.9.v20180320') { force = true }
+    requiredLibs('org.eclipse.birt.runtime:org.w3c.css.sac:1.3.1.v200903091627') { force = true }//  mojarra40 'org.glassfish:jakarta.faces:4.0.0'
 //  mojarra40 'org.glassfish:jakarta.faces:4.1.0-SNAPSHOT'
 }
 
