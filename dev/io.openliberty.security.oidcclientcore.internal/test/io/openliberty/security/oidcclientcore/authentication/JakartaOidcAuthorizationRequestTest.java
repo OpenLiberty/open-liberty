@@ -209,7 +209,6 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
             {
                 one(config).getExtraParameters();
                 will(returnValue(extraParams));
-                one(authzParameters).addParameter(key, "");
             }
         });
         authzRequest.addExtraParameters(authzParameters);
@@ -276,6 +275,20 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
                 one(config).getExtraParameters();
                 will(returnValue(extraParams));
                 one(authzParameters).addParameter(key, value);
+            }
+        });
+        authzRequest.addExtraParameters(authzParameters);
+    }
+
+    @Test
+    public void test_addConditionalParameters_noEqualsSign() throws OidcDiscoveryException {
+        String key = "some_parameter";
+        String value = "value";
+        final String[] extraParams = new String[] { key + value };
+        mockery.checking(new Expectations() {
+            {
+                one(config).getExtraParameters();
+                will(returnValue(extraParams));
             }
         });
         authzRequest.addExtraParameters(authzParameters);

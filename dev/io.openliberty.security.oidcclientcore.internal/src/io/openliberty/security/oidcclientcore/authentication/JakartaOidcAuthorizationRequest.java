@@ -219,11 +219,14 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
         }
         for (String extraParamAndValue : extraParametersArray) {
             String[] keyAndValue = extraParamAndValue.split("=", 2);
-            String key = keyAndValue[0];
-            String value = "";
-            if (keyAndValue.length > 1) {
-                value = keyAndValue[1];
+            if (keyAndValue.length < 2) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "addExtraParameters", "skipping extra param '" + extraParamAndValue + "' because it is not in the format key=value");
+                }
+                continue;
             }
+            String key = keyAndValue[0];
+            String value = keyAndValue[1];
             authzParameters.addParameter(key, value);
         }
     }
