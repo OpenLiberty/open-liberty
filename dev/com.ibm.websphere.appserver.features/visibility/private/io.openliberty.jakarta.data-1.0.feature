@@ -10,6 +10,6 @@ singleton=true
   io.openliberty.noShip-1.0
 -bundles=\
   io.openliberty.jakarta.data.1.0; location:="dev/api/spec/,lib/"
-kind=noship
-edition=full
+kind=beta
+edition=base
 WLP-Activation-Type: parallel
