@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,8 +14,19 @@ package io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation
 
 import static io.opentelemetry.api.trace.SpanKind.CLIENT;
 import static io.opentelemetry.api.trace.SpanKind.SERVER;
+import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.HTTP_METHOD;
+import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.HTTP_SCHEME;
+import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.HTTP_STATUS_CODE;
+import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.HTTP_URL;
+import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.NET_HOST_NAME;
+import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.NET_HOST_PORT;
+import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.NET_PEER_NAME;
+import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.NET_PEER_PORT;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 import java.net.URI;
 import java.util.List;
@@ -30,8 +41,10 @@ import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.HttpMethod;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -41,70 +54,91 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
-   /*
-    * MP Telemetry needs to integrate with restfulWS and mpRestClient. Whenever a request is made or received by one of these features, MP Telemetry should create a span. Trace ID information should be sent via the HTTP headers so that the traces from both the client and server can be joined up. Baggage information should also be sent via the HTTP headers so that contextual information from the first service can be included in trace messages in the second service.
-    * 
-    * We need to test:
-    *     
-    *     Creation of Spans in
-    *          JAX-RS Client {1}
-    *          JAX-RS Server {2}
-    *          MP Rest Client {3}
-    *     
-    *     Propagation of Spans from
-    *          JAX-RS Server to JAX-RS Client {4}
-    *          JAX-RS Server to MP Client {5}
-    *          JAX-RS Server to JAX-RS Client Async {6}
-    *          JAX-RS Server to MP Client Async {7}
-    *
-    *     Baggage is correctly Propagated:
-    *          from JAX-RS Client to JAX-RS Server {8}
-    *          from MP Client to JAX-RS Server {9}
-    *          from JAX-RS Client async to JAX-RS Server {10}
-    *          from MP Client async to JAX-RS Server {11}
-    *
-    *     Correct application of Semantic convention attributes (TODO)
-    *         TCK RestClientSpanTest only checks HTTP_STATUS, HTTP_METHOD, HTTP_SCHEME, HTTP_TARGET, HTTP_URL, see if there are any others which should be present
-    *         There are constants defined for each of the attributes in the spec
-    * 
-    * There are several different standards (selected via configuration) for propagating spanIds and baggage. We need to test:
-    * 
-    *     W3C tracer (default for trace)
-    *     W3C baggage (default for baggage)
-    *     B3 (TODO)
-    *     Jaeger (TODO)
-    */
+/*
+ * MP Telemetry needs to integrate with restfulWS and mpRestClient. Whenever a request is made or received by one of these features, MP Telemetry should create a span. Trace ID information should be sent via the HTTP headers so that the traces from both the client and server can be joined up. Baggage information should also be sent via the HTTP headers so that contextual information from the first service can be included in trace messages in the second service.
+ *
+ * We need to test:
+ *
+ *     Creation of Spans in
+ *          JAX-RS Client {1}
+ *          JAX-RS Server {2}
+ *          MP Rest Client {3}
+ *
+ *     Propagation of Spans from
+ *          JAX-RS Server to JAX-RS Client {4}
+ *          JAX-RS Server to MP Client {5}
+ *          JAX-RS Server to JAX-RS Client Async {6}
+ *          JAX-RS Server to MP Client Async {7}
+ *
+ *     Baggage is correctly Propagated:
+ *          from JAX-RS Client to JAX-RS Server {8}
+ *          from MP Client to JAX-RS Server {9}
+ *          from JAX-RS Client async to JAX-RS Server {10}
+ *          from MP Client async to JAX-RS Server {11}
+ *
+ *     Correct application of Semantic convention attributes
+ *         TCK RestClientSpanTest only checks HTTP_STATUS, HTTP_METHOD, HTTP_SCHEME, HTTP_TARGET, HTTP_URL, see if there are any others which should be present
+ *         There are constants defined for each of the attributes in the spec
+ *
+ * There are several different standards (selected via configuration) for propagating spanIds and baggage. We need to test:
+ *
+ *     W3C tracer (default for trace)
+ *     W3C baggage (default for baggage)
+ *     B3 (TODO)
+ *     Jaeger (TODO)
+ */
 
 @ApplicationPath("")
 @Path("endpoints")
 public class JaxRsEndpoints extends Application {
 
     @Inject
-    InMemorySpanExporter spanExporter;
+    private InMemorySpanExporter spanExporter;
 
-    //Gets a list of spans created by open telementry when a tes twas running and confirms the spans are what we expected and IDs are propagated correctly
+    @Inject
+    private HttpServletRequest request;
+
+    //Gets a list of spans created by open telemetry when a test was running and confirms the spans are what we expected and IDs are propagated correctly
     //spanExporter.reset() should be called at the start of each new test.
     @GET
     @Path("/readspans")
-    public Response readSpans() {
+    public Response readSpans(@Context UriInfo uriInfo) {
         List<SpanData> spanData = spanExporter.getFinishedSpanItems(3);
 
         SpanData firstURL = spanData.get(0);
         SpanData httpGet = spanData.get(1);
         SpanData secondURL = spanData.get(2);
 
-        assertEquals(firstURL.getKind(), SERVER);
-        assertEquals(httpGet.getKind(), CLIENT);
-        assertEquals(secondURL.getKind(), SERVER);
+        assertEquals(SERVER, firstURL.getKind());
+        assertEquals(CLIENT, httpGet.getKind());
+        assertEquals(SERVER, secondURL.getKind());
 
-        assertEquals(httpGet.getParentSpanId(), firstURL.getSpanId());
-        assertEquals(secondURL.getParentSpanId(), httpGet.getSpanId());
+        assertEquals(firstURL.getSpanId(), httpGet.getParentSpanId());
+        assertEquals(httpGet.getSpanId(), secondURL.getParentSpanId());
+
+        assertEquals(HTTP_OK, firstURL.getAttributes().get(HTTP_STATUS_CODE).intValue());
+        assertEquals(HttpMethod.GET, firstURL.getAttributes().get(HTTP_METHOD));
+        assertEquals("http", firstURL.getAttributes().get(HTTP_SCHEME));
+        assertThat(httpGet.getAttributes().get(HTTP_URL), containsString("endpoints")); //There are many different URLs that will end up here. But all should contain "endpoints"
+
+        // The request used to call /readspans should have the same hostname and port as the test request
+        URI requestUri = uriInfo.getRequestUri();
+        assertEquals(requestUri.getHost(), firstURL.getAttributes().get(NET_HOST_NAME));
+        assertEquals(Long.valueOf(requestUri.getPort()), firstURL.getAttributes().get(NET_HOST_PORT));
+
+        assertEquals(CLIENT, httpGet.getKind());
+        assertEquals("HTTP GET", httpGet.getName());
+        assertEquals(HTTP_OK, httpGet.getAttributes().get(HTTP_STATUS_CODE).intValue());
+        assertEquals(HttpMethod.GET, httpGet.getAttributes().get(HTTP_METHOD));
+        assertEquals(requestUri.getHost(), httpGet.getAttributes().get(NET_PEER_NAME));
+        assertEquals(Long.valueOf(requestUri.getPort()), httpGet.getAttributes().get(NET_PEER_PORT));
+        assertThat(httpGet.getAttributes().get(HTTP_URL), containsString("endpoints"));
 
         return Response.ok("Test Passed").build();
     }
 
     //This URL is called by the test framework to trigger testing both JAX-RS server and JAX-RS client
-    //Tests {2} automatically as this method triggers span creation. 
+    //Tests {2} automatically as this method triggers span creation.
     @GET
     @Path("/jaxrsclient")
     public Response getJax(@Context UriInfo uriInfo) {
@@ -182,7 +216,7 @@ public class JaxRsEndpoints extends Application {
     ////// MP code below //////
 
     //This URL is called by the test framework to trigger testing mpclient
-    //Tests {1} automatically as this method triggers span creation. 
+    //Tests {1} automatically as this method triggers span creation.
     @GET
     @Path("/mpclient")
     public Response getMP(@Context UriInfo uriInfo) {
@@ -236,9 +270,8 @@ public class JaxRsEndpoints extends Application {
 
     }
 
-
     //This URL is called by the test framework to trigger testing mpclient with async
-    //Tests {1} automatically as this method triggers span creation. 
+    //Tests {1} automatically as this method triggers span creation.
     @GET
     @Path("/mpclientasync")
     public Response getMPAsync(@Context UriInfo uriInfo) {
