@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -67,10 +67,10 @@ public class JSF22LocalizationTesterTests {
                                                  "com/ibm/ws/jsf22/fat/localprops/messages.properties");
         JSF22LocalizationTesterWar.addAsResource(new File("test-applications/JSF22LocalizationTester.war/src/com/ibm/ws/jsf22/fat/localprops/messages_zh_CN.properties"),
                                                  "com/ibm/ws/jsf22/fat/localprops/messages_zh_CN.properties");
-        JSF22LocalizationTesterWar.addAsResource(new File("test-applications/JSF22LocalizationTester.war/src/com/ibm/ws/jsf22/fat/localprops/resources_zh_CN.properties"),
-                                                 "com/ibm/ws/jsf22/fat/localprops/resources_zh_CN.properties");
-        JSF22LocalizationTesterWar.addAsResource(new File("test-applications/JSF22LocalizationTester.war/src/com/ibm/ws/jsf22/fat/localprops/resources.properties"),
-                                                 "com/ibm/ws/jsf22/fat/localprops/resources.properties");
+        JSF22LocalizationTesterWar.addAsResource(new File("test-applications/JSF22LocalizationTester.war/src/com/ibm/ws/jsf22/fat/localprops/jsf22_localization_resources_zh_CN.properties"),
+                                                 "com/ibm/ws/jsf22/fat/localprops/jsf22_localization_resources_zh_CN.properties");
+        JSF22LocalizationTesterWar.addAsResource(new File("test-applications/JSF22LocalizationTester.war/src/com/ibm/ws/jsf22/fat/localprops/jsf22_localization_resources.properties"),
+                                                 "com/ibm/ws/jsf22/fat/localprops/jsf22_localization_resources.properties");
 
         ShrinkHelper.exportDropinAppToServer(jsfTestServer2, JSF22LocalizationTesterWar);
 
@@ -109,6 +109,8 @@ public class JSF22LocalizationTesterTests {
                 Assert.fail("JSF22LocalizationTester_TestLocalAndGlobalResources.xhtml did not render properly.");
             }
 
+            assertTrue(page.asXml().contains("country_flag.jpg.xhtml?ln=images&amp;loc=en"));
+
             assertTrue(page.asText().contains("Testing"));
         }
     }
@@ -132,6 +134,8 @@ public class JSF22LocalizationTesterTests {
             if (page == null) {
                 Assert.fail("JSF22LocalizationTester_TestCalculateLocale, default.xhtml did not render properly.");
             }
+
+            assertTrue(page.asXml().contains("country_flag.jpg.xhtml?ln=images&amp;loc=en"));
 
             assertTrue(page.asText().contains("Happy learning JSF 2.2"));
         }
