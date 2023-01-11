@@ -34,6 +34,9 @@ import io.opentelemetry.instrumentation.api.instrumenter.http.HttpServerAttribut
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpServerAttributesGetter;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanNameExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanStatusExtractor;
+import io.opentelemetry.instrumentation.api.instrumenter.net.NetServerAttributesExtractor;
+import io.opentelemetry.instrumentation.api.instrumenter.net.NetServerAttributesGetter;
+import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 import jakarta.annotation.Nullable;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
@@ -58,6 +61,7 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
     private static final String SPAN_SCOPE = "otel.span.server.scope";
 
     private static final ServerAttributesExtractor serverAttributesExtractor = new ServerAttributesExtractor();
+    private static final NetServerAttributesGetterImpl netServerAttributesGetter = new NetServerAttributesGetterImpl();
 
     private static final ConcurrentHashMap<RestRouteKey, String> routes = new ConcurrentHashMap<>();
 
@@ -188,6 +192,7 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
         this.instrumenter = builder
                         .setSpanStatusExtractor(HttpSpanStatusExtractor.create(serverAttributesExtractor))
                         .addAttributesExtractor(HttpServerAttributesExtractor.create(serverAttributesExtractor))
+                        .addAttributesExtractor(NetServerAttributesExtractor.create(netServerAttributesGetter))
                         .buildServerInstrumenter(new ContainerRequestContextTextMapGetter());
     }
 
@@ -242,6 +247,25 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
             return carrier.getHeaders().getOrDefault(key, singletonList(null)).get(0);
         }
+    }
+
+    private static class NetServerAttributesGetterImpl implements NetServerAttributesGetter<ContainerRequestContext> {
+
+        @Override
+        public String transport(ContainerRequestContext request) {
+            return SemanticAttributes.NetTransportValues.IP_TCP;
+        }
+
+        @Override
+        public String hostName(ContainerRequestContext request) {
+            return request.getUriInfo().getBaseUri().getHost();
+        }
+
+        @Override
+        public Integer hostPort(ContainerRequestContext request) {
+            return request.getUriInfo().getBaseUri().getPort();
+        }
+
     }
 
     private static class ServerAttributesExtractor implements HttpServerAttributesGetter<ContainerRequestContext, ContainerResponseContext> {
