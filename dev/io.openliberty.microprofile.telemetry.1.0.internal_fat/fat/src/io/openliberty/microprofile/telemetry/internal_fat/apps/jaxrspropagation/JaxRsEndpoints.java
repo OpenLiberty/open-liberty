@@ -41,6 +41,40 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
+   /*
+    * MP Telemetry needs to integrate with restfulWS and mpRestClient. Whenever a request is made or received by one of these features, MP Telemetry should create a span. Trace ID information should be sent via the HTTP headers so that the traces from both the client and server can be joined up. Baggage information should also be sent via the HTTP headers so that contextual information from the first service can be included in trace messages in the second service.
+    * 
+    * We need to test:
+    *     
+    *     Creation of Spans in
+    *          JAX-RS Client {1}
+    *          JAX-RS Server {2}
+    *          MP Rest Client {3}
+    *     
+    *     Propagation of Spans from
+    *          JAX-RS Server to JAX-RS Client {4}
+    *          JAX-RS Server to MP Client {5}
+    *          JAX-RS Server to JAX-RS Client Async {6}
+    *          JAX-RS Server to MP Client Async {7}
+    *
+    *     Baggage is correctly Propagated:
+    *          from JAX-RS Client to JAX-RS Server {8}
+    *          from MP Client to JAX-RS Server {9}
+    *          from JAX-RS Client async to JAX-RS Server {10}
+    *          from MP Client async to JAX-RS Server {11}
+    *
+    *     Correct application of Semantic convention attributes (TODO)
+    *         TCK RestClientSpanTest only checks HTTP_STATUS, HTTP_METHOD, HTTP_SCHEME, HTTP_TARGET, HTTP_URL, see if there are any others which should be present
+    *         There are constants defined for each of the attributes in the spec
+    * 
+    * There are several different standards (selected via configuration) for propagating spanIds and baggage. We need to test:
+    * 
+    *     W3C tracer (default for trace)
+    *     W3C baggage (default for baggage)
+    *     B3 (TODO)
+    *     Jaeger (TODO)
+    */
+
 @ApplicationPath("")
 @Path("endpoints")
 public class JaxRsEndpoints extends Application {
@@ -48,6 +82,8 @@ public class JaxRsEndpoints extends Application {
     @Inject
     InMemorySpanExporter spanExporter;
 
+    //Gets a list of spans created by open telementry when a tes twas running and confirms the spans are what we expected and IDs are propagated correctly
+    //spanExporter.reset() should be called at the start of each new test.
     @GET
     @Path("/readspans")
     public Response readSpans() {
@@ -67,6 +103,8 @@ public class JaxRsEndpoints extends Application {
         return Response.ok("Test Passed").build();
     }
 
+    //This URL is called by the test framework to trigger testing both JAX-RS server and JAX-RS client
+    //Tests {2} automatically as this method triggers span creation. 
     @GET
     @Path("/jaxrsclient")
     public Response getJax(@Context UriInfo uriInfo) {
@@ -95,6 +133,8 @@ public class JaxRsEndpoints extends Application {
         return Response.ok(result).build();
     }
 
+    //This URL is called by the test framework to trigger testing for calling JAX-RS client in Asnyc.
+    //Tests {2} automatically as this method triggers span creation.
     @GET
     @Path("/jaxrsclientasync")
     public Response getJaxAsync(@Context UriInfo uriInfo) {
@@ -128,17 +168,21 @@ public class JaxRsEndpoints extends Application {
         }
     }
 
+    //A method to be called by JAX Clients
+    //Tests {1} Automatically as this method triggers span creation. Tests {4} and {6} (depending on which method called by the framework calls this one) as span propagation is automatic.
     @GET
     @Path("/jaxrstwo")
     public Response getJaxRsTwo() {
         assertNotNull(Span.current());
         Baggage baggage = Baggage.current();
-        assertEquals("bar", baggage.getEntryValue("foo"));
+        assertEquals("bar", baggage.getEntryValue("foo")); //Assert that Baggage is propagated from Jax Server to Jax Client. Tests {8} and {10} (depending on which entry method calls this one)
         return Response.ok("Test Passed").build();
     }
 
     ////// MP code below //////
 
+    //This URL is called by the test framework to trigger testing mpclient
+    //Tests {1} automatically as this method triggers span creation. 
     @GET
     @Path("/mpclient")
     public Response getMP(@Context UriInfo uriInfo) {
@@ -171,12 +215,14 @@ public class JaxRsEndpoints extends Application {
         return Response.ok(result).build();
     }
 
+    //This method is called via mpClient from the entry methods.
+    //Tests {3} automatically as this method triggers span creation. Tests {5} and {7} (depending on which method called by the framework calls this one) as span propagation is automatic.
     @GET
     @Path("/mptwo")
     public Response getMPTwo() {
         assertNotNull(Span.current());
         Baggage baggage = Baggage.current();
-        assertEquals("bar", baggage.getEntryValue("foo"));
+        assertEquals("bar", baggage.getEntryValue("foo")); //Assert that Baggage is propagated from Jax Server to MPClient. Tests {9} or {11} depending on which method called by the framework calls this one
 
         return Response.ok("Test Passed").build();
     }
@@ -190,6 +236,9 @@ public class JaxRsEndpoints extends Application {
 
     }
 
+
+    //This URL is called by the test framework to trigger testing mpclient with async
+    //Tests {1} automatically as this method triggers span creation. 
     @GET
     @Path("/mpclientasync")
     public Response getMPAsync(@Context UriInfo uriInfo) {
