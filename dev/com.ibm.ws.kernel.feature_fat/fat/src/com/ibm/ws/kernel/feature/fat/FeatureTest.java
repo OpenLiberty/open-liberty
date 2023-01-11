@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -609,6 +609,7 @@ public class FeatureTest {
         server.setServerConfigurationFile("server_no_features.xml");
         server.startServer(METHOD_NAME + "-noFeatures.log");
         server.stopServer();
+        server.postStopServerArchive();
 
         server.setServerConfigurationFile("server_add_featureX.xml");
         server.startServer(METHOD_NAME + "-initialFeatures.log", false, false);
@@ -621,9 +622,16 @@ public class FeatureTest {
         assertTrue("featureY-1.0 was not installed and should have been: " + output, output.contains("featureY-1.0"));
         assertTrue("featureZ-1.0 was not installed and should have been: " + output, output.contains("featureZ-1.0"));
         assertTrue("timedExit-1.0 was not installed and should have been: " + output, output.contains("timedexit-1.0"));
-        assertTrue("Added Features message should not be found when no features were previously installed", server.findStringsInLogs(FEATURES_ADDED_MESSAGE_PREFIX).isEmpty());
+
+        output = server.waitForStringInLogUsingMark(FEATURES_ADDED_MESSAGE_PREFIX);
+        assertTrue("Added Features message should have featureX-1.0 " + output, output.contains("featureX-1.0"));
+        assertTrue("Added Features message should have featureY-1.0 " + output, output.contains("featureY-1.0"));
+        assertTrue("Added Features message should have featureZ-1.0 " + output, output.contains("featureZ-1.0"));
+        assertFalse("Added Features message should not contain timedexit-1.0 " + output, output.contains("timedexit-1.0"));
+
         // now test with warm start
         server.stopServer();
+        server.postStopServerArchive();
 
         // clean start
         server.startServer(METHOD_NAME + "-noChange.log", true, false);
@@ -636,6 +644,7 @@ public class FeatureTest {
         Log.exiting(c, METHOD_NAME);
 
         server.stopServer();
+        server.postStopServerArchive();
 
         // Clean start
         server.setServerConfigurationFile("server_add_featureXA.xml");
