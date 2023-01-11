@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
 package io.openliberty.security.oidcclientcore.token;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Arrays;
@@ -41,6 +42,9 @@ import io.openliberty.security.oidcclientcore.config.OidcMetadataService;
 import io.openliberty.security.oidcclientcore.discovery.OidcDiscoveryConstants;
 import test.common.SharedOutputManager;
 
+/**
+ *
+ */
 public class TokenResponseValidatorTest extends CommonTestClass {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
@@ -89,7 +93,75 @@ public class TokenResponseValidatorTest extends CommonTestClass {
 
     // TODO - getJwtContextForIdToken
 
-    // TODO - getJwtClaimsFromIdTokenContext
+    /**
+     * Make sure we do the correct error message for a null jwtContext
+     */
+    @Test
+    public void test_getJwtClaimsFromIdTokenContext_NullContext() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(oidcClientConfig).getClientId();
+                    will(returnValue("oidcclientid"));
+                }
+            });
+
+            validator.getJwtClaimsFromIdTokenContext(null);
+
+        } catch (TokenValidationException e) {
+            String error = e.getMessage();
+            assertTrue("message", error.contains("CWWKS2425E"));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Make sure we do the correct error message for a valid jwtContext with a null jwtClaims
+     */
+    @Test
+    public void test_getJwtClaimsFromIdTokenContext_emptyClaims() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(oidcClientConfig).getClientId();
+                    will(returnValue("oidcclientid"));
+                }
+            });
+            String jws = JwtUnitTestUtils.getHS256Jws(new JSONObject(), SECRET);
+            JwtContext jwtContext = JwtParsingUtils.parseJwtWithoutValidation(jws);
+
+            validator.getJwtClaimsFromIdTokenContext(jwtContext);
+
+        } catch (TokenValidationException e) {
+            String error = e.getMessage();
+            assertTrue("message", error.contains("CWWKS2425E"));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * No error message for an existing jwtContext with jwtClaims
+     */
+    @Test
+    public void test_getJwtClaimsFromIdTokenContext() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(oidcClientConfig).getClientId();
+                    will(returnValue("oidcclientid"));
+                }
+            });
+            JwtContext jwtContext = createMinimumValidJwtContext();
+
+            JwtClaims claims = validator.getJwtClaimsFromIdTokenContext(jwtContext);
+            assertEquals("Did not return the expected claims.", jwtContext.getJwtClaims().getClaimsMap(), claims.getClaimsMap());
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
 
     // TODO - validateIdTokenClaimsAndGetIssuer
 

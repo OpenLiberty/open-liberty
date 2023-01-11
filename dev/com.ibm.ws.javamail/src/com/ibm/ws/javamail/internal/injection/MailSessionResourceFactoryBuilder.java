@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015,2021
+ * Copyright (c) 2015,2022
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -103,9 +103,6 @@ public class MailSessionResourceFactoryBuilder implements ResourceFactoryBuilder
 
         MailSessionResourceFactory mss = new MailSessionResourceFactory();
         mss.processProperties(mailSessionSvcProps);
-
-        // MailSessionService does not use the Resource, pass null
-        mss.createResource(null);
 
         return mss;
     }

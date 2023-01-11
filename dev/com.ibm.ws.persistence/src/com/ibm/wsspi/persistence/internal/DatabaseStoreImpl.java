@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -322,12 +322,14 @@ public class DatabaseStoreImpl implements DatabaseStore {
                 throw new IllegalStateException();
             }
 
-            if ((Boolean) this.properties.get("createTables"))
-                if (entitySet.equals(SpecialEntitySet.PERSISTENT_EXECUTOR) && entityClassNames.length == 1)
-                    ; // ignore table creation for extra PersistenceServiceUnit that persistent executor creates to allow TRANSACTION_READ_UNCOMMITTED
-                      // TODO is there a better way to accomplish this?
-                else
-                    createTables(persistenceServiceUnit);
+            // ignore table creation for extra PersistenceServiceUnit that persistent executor creates to allow TRANSACTION_READ_UNCOMMITTED
+            // TODO is there a better way to accomplish this?
+            if (!(entitySet.equals(SpecialEntitySet.PERSISTENT_EXECUTOR) && entityClassNames.length == 1)) {
+                boolean createTables = (Boolean) this.properties.get("createTables");
+                boolean dropTables = (Boolean) this.properties.get("dropTables");
+                if (createTables || dropTables)
+                    dropAndOrCreateTables(persistenceServiceUnit, createTables, dropTables);
+            }
 
             if (deactivated) {
                 if (trace && tc.isEntryEnabled())
@@ -694,12 +696,13 @@ public class DatabaseStoreImpl implements DatabaseStore {
     }
 
     /**
-     * Automatic table creation.
+     * Automatic table creation and/or deletion. If both creation and deletion are requested,
+     * deletion is performed first.
      *
      * @param persistenceServiceUnit persistence service unit
      * @throws Exception if an error occurs creating tables.
      */
-    private void createTables(PersistenceServiceUnit persistenceServiceUnit) throws Exception {
+    private void dropAndOrCreateTables(PersistenceServiceUnit persistenceServiceUnit, boolean createTables, boolean dropTables) throws Exception {
         // Run under a new transaction and commit right away
         LocalTransactionCurrent localTranCurrent = this.localTranCurrent;
         LocalTransactionCoordinator suspendedLTC = localTranCurrent.suspend();
@@ -712,7 +715,14 @@ public class DatabaseStoreImpl implements DatabaseStore {
                 if (psuIsPUSI) {
                     ((PersistenceServiceUnitImpl) persistenceServiceUnit).setTransactionManager(tranMgr);
                 }
-                persistenceServiceUnit.createTables();
+                if (createTables) {
+                    if (dropTables)
+                        persistenceServiceUnit.dropAndCreateTables();
+                    else
+                        persistenceServiceUnit.createTables();
+                } else if (dropTables) {
+                    persistenceServiceUnit.dropTables();
+                }
             } finally {
                 // resume
                 if (psuIsPUSI) {

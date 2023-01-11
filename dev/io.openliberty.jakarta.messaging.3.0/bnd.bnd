@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -10,9 +10,21 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;jakarta.jms:jakarta.jms-api;3.0.0;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: io.openliberty.jakarta.messaging.3.0; singleton:=true
+Bundle-Description: Jakarta Messaging 3.0 Specification
+Bundle-Name: Jakarta Messaging API
+Specification-Version: 3.0
+
+Export-Package: jakarta.jms.*;
+
+publish.wlp.jar.suffix: dev/api/spec
 
 -includeresource: \
-   @${repo;jakarta.jms:jakarta.jms-api;3.0.0;EXACT}!/!META-INF/maven/*
+  @${repo;jakarta.jms:jakarta.jms-api;3.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
 
--buildpath: jakarta.jms:jakarta.jms-api;version=3.0.0;strategy=exact
+-buildpath: \
+  jakarta.jms:jakarta.jms-api;version=3.0.0;strategy=exact
+
