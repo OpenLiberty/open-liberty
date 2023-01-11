@@ -25,6 +25,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -37,6 +39,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.SpanCur
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.Telemetry10Servlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.WithSpanServlet;
 
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class TelemetryConfigEnvTest extends FATServletClient {
 
@@ -56,6 +59,7 @@ public class TelemetryConfigEnvTest extends FATServletClient {
                         .addClasses(ConfigServlet.class);
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
+        //These variables take priority
         server.addEnvVar("OTEL_SERVICE_NAME", "overrideDone");
         server.addEnvVar("OTEL_SDK_DISABLED", "false");
         server.startServer();
@@ -63,6 +67,6 @@ public class TelemetryConfigEnvTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWNEN0047W.*ConfigServlet");
+        server.stopServer();
     }
 }

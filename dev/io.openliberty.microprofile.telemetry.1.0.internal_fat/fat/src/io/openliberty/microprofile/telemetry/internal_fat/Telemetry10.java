@@ -69,6 +69,7 @@ public class Telemetry10 extends FATServletClient {
                                     ConfigServlet.class);
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
+        //Set for testing purposes. The properties in the server.xml should override these variables.
         server.addEnvVar("OTEL_SERVICE_NAME", "overrideThisEnvVar");
         server.addEnvVar("OTEL_SDK_DISABLED", "true");
         server.startServer();

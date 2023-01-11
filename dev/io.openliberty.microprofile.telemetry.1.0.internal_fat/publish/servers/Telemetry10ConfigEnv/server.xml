@@ -9,7 +9,7 @@
 	</featureManager>
 
 	<application id="TelemetryApp" name="TelemetryApp" type="war" location="TelemetryApp.war">
-    	   <classloader apiTypeVisibility="+third-party"/>
-    </application>
-    
+		<classloader apiTypeVisibility="+third-party"/>
+	</application>
+
 </server>
