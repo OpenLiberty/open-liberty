@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -218,7 +218,7 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
             return;
         }
         for (String extraParamAndValue : extraParametersArray) {
-            String[] keyAndValue = extraParamAndValue.split("=");
+            String[] keyAndValue = extraParamAndValue.split("=", 2);
             String key = keyAndValue[0];
             String value = "";
             if (keyAndValue.length > 1) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -261,6 +261,21 @@ public class JakartaOidcAuthorizationRequestTest extends CommonTestClass {
                 one(authzParameters).addParameter(key1, value1);
                 one(authzParameters).addParameter(key2, value2);
                 one(authzParameters).addParameter(key3, value3);
+            }
+        });
+        authzRequest.addExtraParameters(authzParameters);
+    }
+
+    @Test
+    public void test_addConditionalParameters_twoEqualsSigns() throws OidcDiscoveryException {
+        String key = "some_parameter";
+        String value = "value=1";
+        final String[] extraParams = new String[] { key + "=" + value };
+        mockery.checking(new Expectations() {
+            {
+                one(config).getExtraParameters();
+                will(returnValue(extraParams));
+                one(authzParameters).addParameter(key, value);
             }
         });
         authzRequest.addExtraParameters(authzParameters);
