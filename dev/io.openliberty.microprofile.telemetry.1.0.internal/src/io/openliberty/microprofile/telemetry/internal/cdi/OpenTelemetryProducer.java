@@ -132,7 +132,8 @@ public class OpenTelemetryProducer {
         HashMap<String, String> telemetryProperties = new HashMap<>();
         for (String propertyName : config.getPropertyNames()) {
             if (propertyName.startsWith("otel.")) {
-                telemetryProperties.put(propertyName,config.getValue(propertyName, String.class));
+               config.getOptionalValue(propertyName, String.class).ifPresent(
+                                                                            value -> telemetryProperties.put(propertyName, value));
             }
         }
         //Metrics and logs are disabled by default

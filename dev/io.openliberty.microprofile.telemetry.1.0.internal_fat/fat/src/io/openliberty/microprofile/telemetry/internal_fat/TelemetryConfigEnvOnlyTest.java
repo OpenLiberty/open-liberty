@@ -41,9 +41,9 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.WithSpa
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-public class TelemetryConfigServerVarTest extends FATServletClient {
+public class TelemetryConfigEnvOnlyTest extends FATServletClient {
 
-    public static final String SERVER_NAME = "Telemetry10ConfigServerVar";
+    public static final String SERVER_NAME = "Telemetry10ConfigEnv";
     public static final String APP_NAME = "TelemetryApp";
 
     @Server(SERVER_NAME)
@@ -55,13 +55,13 @@ public class TelemetryConfigServerVarTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addAsResource(ConfigServlet.class.getResource("microprofile-config.properties"), "META-INF/microprofile-config.properties")
                         .addClasses(ConfigServlet.class);
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
-        //Set for testing purposes. The variables in the server.xml should override these variables.
-        server.addEnvVar("OTEL_SERVICE_NAME", "overrideThisEnvVar");
-        server.addEnvVar("OTEL_SDK_DISABLED", "true");
+
+        // This tests that we do pick up config properties which are _only_ defined in the environment, using a format which MP Config only accepts for environment variables.
+        server.addEnvVar("otel_service_name", "overrideDone");
+        server.addEnvVar("otel_sdk_disabled", "false");
         server.startServer();
     }
 

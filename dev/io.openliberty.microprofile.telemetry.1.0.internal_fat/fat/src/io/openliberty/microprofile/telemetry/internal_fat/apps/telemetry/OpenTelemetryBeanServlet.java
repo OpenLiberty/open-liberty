@@ -24,7 +24,6 @@ import componenttest.app.FATServlet;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
-import io.opentelemetry.sdk.trace.ReadableSpan;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
@@ -45,6 +44,7 @@ public class OpenTelemetryBeanServlet extends FATServlet {
         Tracer tracer = openTelemetry.getTracer("instrumentation-test", "1.0.0");
         assertNotNull(tracer);
         Span span = tracer.spanBuilder(SPAN_NAME).startSpan();
+        assertThat(span.getSpanContext().getSpanId(), not(equalTo(INVALID_SPAN_ID)));
     }
 
 }

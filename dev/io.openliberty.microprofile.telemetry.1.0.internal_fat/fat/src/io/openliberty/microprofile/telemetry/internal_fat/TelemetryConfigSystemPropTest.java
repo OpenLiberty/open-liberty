@@ -26,6 +26,8 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.BaggageServlet;
@@ -37,6 +39,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.SpanCur
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.Telemetry10Servlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.WithSpanServlet;
 
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class TelemetryConfigSystemPropTest extends FATServletClient {
 
@@ -56,6 +59,7 @@ public class TelemetryConfigSystemPropTest extends FATServletClient {
                         .addClasses(ConfigServlet.class);
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
+        // These should be overridden by the values in bootstrap.properties
         server.addEnvVar("OTEL_SERVICE_NAME", "overrideThisEnvVar");
         server.addEnvVar("OTEL_SDK_DISABLED", "true");
         server.startServer();
@@ -63,6 +67,6 @@ public class TelemetryConfigSystemPropTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWNEN0047W.*ConfigServlet");
+        server.stopServer();
     }
 }
