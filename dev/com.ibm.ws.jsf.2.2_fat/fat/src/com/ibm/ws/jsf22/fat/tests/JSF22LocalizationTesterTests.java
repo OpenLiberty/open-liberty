@@ -28,7 +28,6 @@ import org.junit.runner.RunWith;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
@@ -73,13 +72,6 @@ public class JSF22LocalizationTesterTests {
                                                  "com/ibm/ws/jsf22/fat/localprops/jsf22_localization_resources.properties");
 
         ShrinkHelper.exportDropinAppToServer(jsfTestServer2, JSF22LocalizationTesterWar);
-
-        if (isEE10) {
-            // For Faces 4.0, CDI @Named is used since @ManagedBean is no longer available.
-            ServerConfiguration config = jsfTestServer2.getServerConfiguration();
-            config.getFeatureManager().getFeatures().add("cdi-4.0");
-            jsfTestServer2.updateServerConfiguration(config);
-        }
 
         jsfTestServer2.startServer(JSF22LocalizationTesterTests.class.getSimpleName() + ".log");
 
