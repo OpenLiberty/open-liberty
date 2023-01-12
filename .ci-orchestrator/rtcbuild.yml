@@ -1,5 +1,5 @@
 type: pipeline_definition
-product: OpenLiberty
+product: Liberty
 name: OpenLiberty Personal Build RTC
 description: A build run against OpenLiberty Pull Requests
 triggers:
