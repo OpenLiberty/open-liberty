@@ -32,6 +32,7 @@ tested.features:\
   jdbc-4.2,\
   mdb-4.0,\
   servlet-4.0, servlet-5.0, servlet-6.0,\
+  concurrent-2.0, concurrent-3.0,\
   xmlbinding-4.0
 
 # To define a global minimum java level for the FAT, use the following property.
