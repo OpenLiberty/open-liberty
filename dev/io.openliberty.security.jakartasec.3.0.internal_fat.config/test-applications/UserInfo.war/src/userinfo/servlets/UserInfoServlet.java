@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -61,10 +61,8 @@ public class UserInfoServlet extends HttpServlet {
 
     // override this method to handle hs256, rs256, or rs512
     String createJwtResponse(String accessToken) throws Exception {
-        // default SigAlg is RS256
         return getRS256Jws(accessToken);
-//        return getHS256Jws(clientSecret, accessToken);
-//        return getRS512Jws(accessToken);
+
     }
 
     void writeResponse(HttpServletResponse response, String returnString, String format) throws IOException {
@@ -221,11 +219,8 @@ public class UserInfoServlet extends HttpServlet {
         String key = inKey.replaceAll("\n", "");
         int beginIndex = key.indexOf(beginStr) + beginStr.length();
         int endIndex = key.indexOf(endStr);
-//        Log.info(thisClass, thisMethod, "begin: " + beginIndex);
-//        Log.info(thisClass, thisMethod, "end: " + endIndex);
         String base64 = key.substring(beginIndex, endIndex).trim();
 
-//        String base64 = key.replaceAll(endStr, "").replaceAll(beginStr, "").replaceAll("\n", "");
         System.out.println("chc - theKey: " + base64);
         byte[] decode = Base64.getDecoder().decode(base64);
 
@@ -240,47 +235,6 @@ public class UserInfoServlet extends HttpServlet {
 
     }
 
-//    private String getRSSigned(String input, String inKey, String instance) throws Exception {
-////      return getSigned(input, key, instance, "RSA");
-//      String key = inKey.replaceAll("\n", "");
-//      int beginIndex = key.indexOf(BEGIN_PRIV_KEY) + BEGIN_PRIV_KEY.length();
-//      int endIndex = key.indexOf(BEGIN_PRIV_KEY);
-//      String base64 = key.substring(beginIndex, endIndex).trim();
-//
-//      System.out.println("chc - theKey: " + base64);
-//      byte[] decode = Base64.getDecoder().decode(base64);
-//
-//      PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decode);
-//      KeyFactory kf = KeyFactory.getInstance("RSA");
-//
-//      Signature privateSignature = Signature.getInstance(instance);
-//      privateSignature.initSign(kf.generatePrivate(spec));
-//      privateSignature.update(input.getBytes("UTF-8"));
-//      byte[] s = privateSignature.sign();
-//      return Base64.getEncoder().encodeToString(s);
-//  }
-//
-//  private String getESSigned(String input, String inKey, String instance) throws Exception {
-////      return getSigned(input, key, instance, "EC");
-//
-//      String key = inKey.replaceAll("\n", "");
-//      int beginIndex = key.indexOf(BEGIN_EC_PRIV_KEY) + BEGIN_EC_PRIV_KEY.length();
-//      int endIndex = key.indexOf(BEGIN_EC_PRIV_KEY);
-//      String base64 = key.substring(beginIndex, endIndex).trim();
-//
-//      System.out.println("chc - theKey: " + base64);
-//      byte[] decode = Base64.getDecoder().decode(base64);
-//
-//      ECGenParameterSpec spec = new ECGenParameterSpec("secp256k1");
-//      KeyFactory kf = KeyFactory.getInstance("EC");
-//
-//      Signature privateSignature = Signature.getInstance(instance);
-//      privateSignature.initSign(kf.generatePrivate((KeySpec) spec));
-//      privateSignature.update(input.getBytes("UTF-8"));
-//      byte[] s = privateSignature.sign();
-//      return Base64.getEncoder().encodeToString(s);
-//
-//  }
     public String readKeyFromFile(String theFile) throws Exception {
         return new String(Files.readAllBytes(Paths.get(theFile)));
     }
