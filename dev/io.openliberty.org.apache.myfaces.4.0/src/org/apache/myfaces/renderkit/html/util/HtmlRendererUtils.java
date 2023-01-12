@@ -19,6 +19,7 @@
 package org.apache.myfaces.renderkit.html.util;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -43,6 +44,7 @@ import jakarta.faces.component.UISelectBoolean;
 import jakarta.faces.component.UISelectMany;
 import jakarta.faces.component.UISelectOne;
 import jakarta.faces.component.UIViewRoot;
+import jakarta.faces.component.ValueHolder;
 import jakarta.faces.component.behavior.ClientBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorContext;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
@@ -211,8 +213,27 @@ public final class HtmlRendererUtils
         
         if (paramValuesMap.containsKey(clientId))
         {
-            String[] reqValues = (String[]) paramValuesMap.get(clientId);
-            ((EditableValueHolder) component).setSubmittedValue(reqValues);
+            ArrayList<String> reqValues = new ArrayList<String>(Arrays.asList((String[]) paramValuesMap.get(clientId)));
+
+            List<SelectItemInfo> selections = SelectItemsUtils.getSelectItemInfoList(
+                (UISelectMany) component, facesContext);
+
+            // if disabled value is submitted, do not use it
+            for(SelectItemInfo itemInfo: selections)
+            {
+                if(itemInfo.getItem().isDisabled())
+                {
+                    String result = SharedRendererUtils.getConvertedStringValue(
+                        facesContext,component,((ValueHolder) component).getConverter(), itemInfo.getItem().getValue());
+                    if(reqValues.contains(result))
+                    {
+                        reqValues.remove(result);
+                    }
+                }
+            }
+            // submitted value needs to be of type String[]
+            String[] submittedValue = (String[]) reqValues.toArray(new String[reqValues.size()]);
+            ((EditableValueHolder) component).setSubmittedValue(submittedValue);
         }
         else
         {
@@ -278,8 +299,26 @@ public final class HtmlRendererUtils
         String clientId = component.getClientId(facesContext);
         if (paramMap.containsKey(clientId))
         {
+            String submittedValue = (String) paramMap.get(clientId); 
+            List<SelectItemInfo> selections = SelectItemsUtils.getSelectItemInfoList(
+                (UISelectOne) component, facesContext);
+
+            // if disabled value is submitted, do not use it
+            for(SelectItemInfo itemInfo: selections)
+            {
+                if(itemInfo.getItem().isDisabled())
+                {
+                    Object selectItemValue = itemInfo.getItem().getValue();
+                    String convertedValue = SharedRendererUtils.getConvertedStringValue(
+                        facesContext,component,((ValueHolder) component).getConverter(), selectItemValue);
+                    if(convertedValue.equals(selectItemValue))
+                    {   // disabled value matches submitted value
+                        submittedValue = RendererUtils.EMPTY_STRING;
+                    }
+                }
+            }
             //request parameter found, set submitted value
-            ((EditableValueHolder) component).setSubmittedValue(paramMap.get(clientId));
+            ((EditableValueHolder) component).setSubmittedValue(submittedValue);
         }
         else
         {
