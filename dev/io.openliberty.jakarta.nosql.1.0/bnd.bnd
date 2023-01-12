@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -34,17 +34,18 @@ Export-Package: \
   jakarta.nosql.mapping.keyvalue;version="1.0.0",\
   jakarta.nosql.query;version="1.0.0"
 
-Include-Resource: \
-  @${repo;jakarta.nosql.communication:communication-core;1.0.0.b4;EXACT}!/!META-INF/maven/*,\
-  @${repo;jakarta.nosql.communication:communication-column;1.0.0.b4;EXACT}!/!META-INF/maven/*,\
-  @${repo;jakarta.nosql.communication:communication-document;1.0.0.b4;EXACT}!/!META-INF/maven/*,\
-  @${repo;jakarta.nosql.communication:communication-key-value;1.0.0.b4;EXACT}!/!META-INF/maven/*,\
-  @${repo;jakarta.nosql.communication:communication-query;1.0.0.b4;EXACT}!/!META-INF/maven/*,\
-  @${repo;jakarta.nosql.mapping:mapping-core;1.0.0.b4;EXACT}!/!META-INF/maven/*,\
-  @${repo;jakarta.nosql.mapping:mapping-column;1.0.0.b4;EXACT}!/!META-INF/maven/*,\
-  @${repo;jakarta.nosql.mapping:mapping-document;1.0.0.b4;EXACT}!/!META-INF/maven/*,\
-  @${repo;jakarta.nosql.mapping:mapping-key-value;1.0.0.b4;EXACT}!/!META-INF/maven/*
+-includeresource: \
+  @${repo;jakarta.nosql.communication:communication-core;1.0.0.b4;EXACT}!/!(META-INF/maven/*|module-info.class),\
+  @${repo;jakarta.nosql.communication:communication-column;1.0.0.b4;EXACT}!/!(META-INF/maven/*|module-info.class),\
+  @${repo;jakarta.nosql.communication:communication-document;1.0.0.b4;EXACT}!/!(META-INF/maven/*|module-info.class),\
+  @${repo;jakarta.nosql.communication:communication-key-value;1.0.0.b4;EXACT}!/!(META-INF/maven/*|module-info.class),\
+  @${repo;jakarta.nosql.communication:communication-query;1.0.0.b4;EXACT}!/!(META-INF/maven/*|module-info.class),\
+  @${repo;jakarta.nosql.mapping:mapping-core;1.0.0.b4;EXACT}!/!(META-INF/maven/*|module-info.class),\
+  @${repo;jakarta.nosql.mapping:mapping-column;1.0.0.b4;EXACT}!/!(META-INF/maven/*|module-info.class),\
+  @${repo;jakarta.nosql.mapping:mapping-document;1.0.0.b4;EXACT}!/!(META-INF/maven/*|module-info.class),\
+  @${repo;jakarta.nosql.mapping:mapping-key-value;1.0.0.b4;EXACT}!/!(META-INF/maven/*|module-info.class),\
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
+

@@ -478,7 +478,7 @@ org.eclipse.microprofile.health:microprofile-health-api:4.0.1
 org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:1.0
 org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:1.2
 org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:2.0
-org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:2.1-RC6
+org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:2.1
 org.eclipse.microprofile.lra:microprofile-lra-api:1.0-M2
 org.eclipse.microprofile.metrics:microprofile-metrics-api:1.0
 org.eclipse.microprofile.metrics:microprofile-metrics-api:1.1.1

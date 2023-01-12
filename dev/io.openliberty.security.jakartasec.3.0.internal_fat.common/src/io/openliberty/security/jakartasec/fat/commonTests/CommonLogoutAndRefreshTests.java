@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -64,7 +64,7 @@ public class CommonLogoutAndRefreshTests extends CommonAnnotatedSecurityTests {
         Page response1 = runGoodEndToEndTest(webClient, appName, baseAppName);
 
         // now logged in - wait for token to expire
-        actions.testLogAndSleep(25);
+        actions.testLogAndSleep(35);
         String url = rpHttpsBase + "/" + appName + "/" + baseAppName;
         Page response2 = invokeAppGetToApp(webClient, url); // get to app not because either id or access token is good, but because the token was refreshed.
 
@@ -99,7 +99,7 @@ public class CommonLogoutAndRefreshTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest(webClient, appName, baseAppName);
 
         // now logged in - wait for token to expire
-        actions.testLogAndSleep(25);
+        actions.testLogAndSleep(35);
         String url = rpHttpsBase + "/" + appName + "/" + baseAppName;
         invokeAppReturnLogoutPage(webClient, url);
 
@@ -132,7 +132,7 @@ public class CommonLogoutAndRefreshTests extends CommonAnnotatedSecurityTests {
         Page response1 = runGoodEndToEndTest(webClient, appName, baseAppName);
 
         // now logged in - wait for token to expire
-        actions.testLogAndSleep(25);
+        actions.testLogAndSleep(35);
         String url = rpHttpsBase + "/" + appName + "/" + baseAppName;
         Page response2 = invokeAppGetToApp(webClient, url);
 
@@ -164,7 +164,7 @@ public class CommonLogoutAndRefreshTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest(webClient, appName, baseAppName);
 
         // now logged in - wait for token to expire
-        actions.testLogAndSleep(25);
+        actions.testLogAndSleep(35);
         String url = rpHttpsBase + "/" + appName + "/" + baseAppName;
         invokeAppGetToSplashPage(webClient, url);
 

@@ -42,9 +42,9 @@ Subsystem-Name: Jakarta Server Faces 4.0
   io.openliberty.facesProvider-4.0.0.MyFaces, \
   com.ibm.websphere.appserver.eeCompatible-10.0, \
   io.openliberty.jakarta.validation-3.0, \
-  io.openliberty.jakarta.cdi-4.0, \
   io.openliberty.jakarta.faces-4.0, \
-  io.openliberty.expressionLanguage-5.0
+  io.openliberty.expressionLanguage-5.0, \
+  io.openliberty.cdi-4.0
 -bundles=io.openliberty.org.apache.myfaces.4.0, \
  com.ibm.ws.jsf.shared.jakarta, \
  io.openliberty.faces.4.0.internal, \

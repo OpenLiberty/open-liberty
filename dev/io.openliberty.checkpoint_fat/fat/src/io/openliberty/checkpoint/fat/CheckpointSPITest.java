@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,7 @@ package io.openliberty.checkpoint.fat;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.After;
@@ -128,6 +129,21 @@ public class CheckpointSPITest {
         findLogMessage("Static single prepare method", STATIC_MULTI_RESTORE, "SUCCESS", 500);
     }
 
+    @Test
+    public void testProtectedString() throws Exception {
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
+        String firstRestore = server.waitForStringInLogUsingMark("TESTING - ProtectedString restore password: ", 500);
+        assertNotNull("No restored ProtectedString found.", firstRestore);
+        server.stopServer();
+
+        server.checkpointRestore();
+        String secondRestore = server.waitForStringInLogUsingMark("TESTING - ProtectedString restore password: ", 500);
+        assertNotNull("No restored ProtectedString found.", secondRestore);
+
+        // the two trace strings must be different
+        assertFalse("ProtectedString traces strings must be different: " + firstRestore + " - " + secondRestore, firstRestore.equals(secondRestore));
+    }
+
     @Before
     public void beforeEachTest() throws Exception {
         TestMethod testMethod = getTestMethod(TestMethod.class, testName);
@@ -203,6 +219,9 @@ public class CheckpointSPITest {
                     findLogMessage("Static single prepare method", STATIC_SINGLE_PREPARE, "SUCCESS", 500);
                     findLogMessage("Static single prepare method", STATIC_MULTI_PREPARE, "SUCCESS", 500);
                     break;
+                case testProtectedString:
+                    findLogMessage("ProtectedString should be *****", "TESTING - ProtectedString prepare password: ", "*****", 500);
+                    break;
                 default:
                     Log.info(getClass(), testName.getMethodName(), "No configuration required: " + testMethod);
                     break;
@@ -229,6 +248,7 @@ public class CheckpointSPITest {
         testFailedCheckpoint,
         testFailedRestore,
         testStaticHook,
+        testProtectedString,
         unknown
     }
 

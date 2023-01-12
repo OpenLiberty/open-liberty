@@ -31,7 +31,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
@@ -66,13 +65,6 @@ public class JSFSimpleHtmlUnit {
                                       "com.ibm.ws.jsf22.fat.simple.cforeach",
                                       isEE10 ? "com.ibm.ws.jsf22.fat.simple.cforeach.faces40" : "com.ibm.ws.jsf22.fat.simple.cforeach.jsf22",
                                       isEE10 ? "com.ibm.ws.jsf22.fat.simple.externalContext.faces40" : "com.ibm.ws.jsf22.fat.simple.externalContext.jsf22");
-
-        if (isEE10) {
-            // For Faces 4.0, CDI @Named is used since @ManagedBean is no longer available.
-            ServerConfiguration config = jsfTestServer1.getServerConfiguration();
-            config.getFeatureManager().getFeatures().add("cdi-4.0");
-            jsfTestServer1.updateServerConfiguration(config);
-        }
 
         jsfTestServer1.startServer(JSFSimpleHtmlUnit.class.getSimpleName() + ".log");
     }

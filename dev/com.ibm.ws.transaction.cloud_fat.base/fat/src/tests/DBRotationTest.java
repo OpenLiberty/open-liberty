@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -99,11 +99,6 @@ public class DBRotationTest extends FATServletClient {
         TxShrinkHelper.defaultApp(longLeaseCompeteServer1, APP_NAME, APP_PATH, "servlets.*");
         TxShrinkHelper.defaultApp(longLeaseLogFailServer1, APP_NAME, APP_PATH, "servlets.*");
         TxShrinkHelper.defaultApp(noShutdownServer1, APP_NAME, APP_PATH, "servlets.*");
-
-        // In log fail tests, server1 will get many FFDCs which we should disregard
-        // Do this here because FFDCs are also checked before tests run
-        longLeaseLogFailServer1.setFFDCChecking(false);
-        noShutdownServer1.setFFDCChecking(false);
     }
 
     public static void setUp(LibertyServer server) throws Exception {
@@ -319,6 +314,7 @@ public class DBRotationTest extends FATServletClient {
         final String method = "testLogFailure";
         if (TxTestContainerSuite.databaseContainerType != DatabaseContainerType.Derby) { // Embedded Derby cannot support tests with concurrent server startup
 
+            longLeaseLogFailServer1.setFFDCChecking(false);
             server2.setHttpDefaultPort(cloud2ServerPort);
             try {
                 FATUtils.startServers(runner, longLeaseLogFailServer1, server2);
@@ -353,10 +349,11 @@ public class DBRotationTest extends FATServletClient {
         Log.info(c, method, "test complete");
     }
 
+    @Test
     public void testLogFailureNoShutdown() throws Exception {
         final String method = "testLogFailureNoShutdown";
         if (TxTestContainerSuite.databaseContainerType != DatabaseContainerType.Derby) { // Embedded Derby cannot support tests with concurrent server startup
-
+            noShutdownServer1.setFFDCChecking(false);
             server2.setHttpDefaultPort(cloud2ServerPort);
             try {
                 FATUtils.startServers(runner, noShutdownServer1, server2);
@@ -401,4 +398,3 @@ public class DBRotationTest extends FATServletClient {
         throw new Exception(msg);
     }
 }
-

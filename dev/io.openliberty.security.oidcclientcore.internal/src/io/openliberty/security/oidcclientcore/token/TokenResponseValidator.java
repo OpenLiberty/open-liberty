@@ -41,7 +41,7 @@ public class TokenResponseValidator {
 
     public static final TraceComponent tc = Tr.register(TokenResponseValidator.class);
 
-    OidcClientConfig clientConfig;
+    private final OidcClientConfig clientConfig;
     private final HttpServletRequest request;
     private final HttpServletResponse response;
     private Storage storage;
@@ -96,9 +96,9 @@ public class TokenResponseValidator {
         if (jwtContext != null) {
             jwtClaims = jwtContext.getJwtClaims();
         }
-        if (jwtContext == null || jwtClaims == null) {
-            // TODO - NLS message
-            throw new TokenValidationException(this.clientConfig.getClientId(), "not a valid token to continue the flow");
+        if (jwtClaims == null || jwtClaims.getClaimsMap().isEmpty()) {
+            String msg = Tr.formatMessage(tc, "TOKEN_MISSING_CLAIMS", new Object[] { this.clientConfig.getClientId() });
+            throw new TokenValidationException(this.clientConfig.getClientId(), msg);
         }
         return jwtClaims;
     }

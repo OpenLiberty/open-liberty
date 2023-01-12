@@ -32,7 +32,7 @@ Import-Package: \
 DynamicImport-Package: \
   org.glassfish.jaxb.*
 
-Include-Resource:\
+-includeresource: \
   @${repo;jakarta.xml.bind:jakarta.xml.bind-api;4.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 instrument.disabled: true
@@ -40,6 +40,5 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	jakarta.xml.bind:jakarta.xml.bind-api;strategy=exact;version='4.0.0',\
-	io.openliberty.org.glassfish.hk2.osgi-resource-locator,\
-	com.ibm.ws.logging
+	jakarta.xml.bind:jakarta.xml.bind-api;strategy=exact;version=4.0.0,\
+	io.openliberty.org.glassfish.hk2.osgi-resource-locator;version=latest
