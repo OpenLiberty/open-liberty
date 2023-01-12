@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.userinfo;
 
@@ -332,16 +329,10 @@ public class UserInfoRequestorTest extends CommonTestClass {
             {
                 allowing(oidcClientConfig).getProviderMetadata();
                 will(returnValue(providerMetadata));
-                one(providerMetadata).getJwksURI();
-                will(returnValue(jwksUri));
                 one(oidcClientConfig).getClientId();
                 will(returnValue(clientId));
                 one(oidcClientConfig).getClientSecret();
                 will(returnValue(clientSecret));
-                one(oidcClientConfig).getJwksConnectTimeout();
-                will(returnValue(500));
-                one(oidcClientConfig).getJwksReadTimeout();
-                will(returnValue(500));
                 one(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
                 will(returnValue(discoveryData));
             }
@@ -362,18 +353,6 @@ public class UserInfoRequestorTest extends CommonTestClass {
         discoveryData.put(OidcDiscoveryConstants.METADATA_KEY_USER_INFO_SIGNING_ALG_VALUES_SUPPORTED, getUserInfoSigningAlgsSupported("RS256"));
         mockery.checking(new Expectations() {
             {
-                allowing(oidcClientConfig).getProviderMetadata();
-                will(returnValue(providerMetadata));
-                one(providerMetadata).getJwksURI();
-                will(returnValue(jwksUri));
-                one(oidcClientConfig).getClientId();
-                will(returnValue(clientId));
-                one(oidcClientConfig).getClientSecret();
-                will(returnValue(clientSecret));
-                one(oidcClientConfig).getJwksConnectTimeout();
-                will(returnValue(500));
-                one(oidcClientConfig).getJwksReadTimeout();
-                will(returnValue(500));
                 one(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
                 will(returnValue(discoveryData));
             }
@@ -386,7 +365,7 @@ public class UserInfoRequestorTest extends CommonTestClass {
             JSONObject extractedClaims = userInfoRequestor.extractClaimsFromJwtResponse(jwtResponse);
             fail("Should have thrown an exception but got claims: " + extractedClaims);
         } catch (SignatureAlgorithmNotInAllowedList e) {
-            verifyException(e, "CWWKS2521E");
+            verifyException(e, "CWWKS2520E");
         }
     }
 
@@ -399,16 +378,10 @@ public class UserInfoRequestorTest extends CommonTestClass {
             {
                 allowing(oidcClientConfig).getProviderMetadata();
                 will(returnValue(providerMetadata));
-                one(providerMetadata).getJwksURI();
-                will(returnValue(jwksUri));
                 one(oidcClientConfig).getClientId();
                 will(returnValue(clientId));
                 one(oidcClientConfig).getClientSecret();
                 will(returnValue(clientSecret));
-                one(oidcClientConfig).getJwksConnectTimeout();
-                will(returnValue(500));
-                one(oidcClientConfig).getJwksReadTimeout();
-                will(returnValue(500));
                 one(oidcMetadataService).getProviderDiscoveryMetadata(oidcClientConfig);
                 will(returnValue(discoveryData));
             }

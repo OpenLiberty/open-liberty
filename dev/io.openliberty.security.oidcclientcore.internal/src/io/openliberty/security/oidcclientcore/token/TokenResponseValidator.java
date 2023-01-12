@@ -1,24 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.token;
-
-import java.security.Key;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jose4j.jwa.AlgorithmConstraints;
-import org.jose4j.jwa.AlgorithmConstraints.ConstraintType;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.consumer.InvalidJwtException;
@@ -34,6 +27,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.security.common.jwt.JwtParsingUtils;
+import io.openliberty.security.common.jwt.jws.JwsSignatureVerifier;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestParameters;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.config.MetadataUtils;
@@ -47,7 +41,7 @@ public class TokenResponseValidator {
 
     public static final TraceComponent tc = Tr.register(TokenResponseValidator.class);
 
-    OidcClientConfig clientConfig;
+    private final OidcClientConfig clientConfig;
     private final HttpServletRequest request;
     private final HttpServletResponse response;
     private Storage storage;
@@ -78,7 +72,7 @@ public class TokenResponseValidator {
         }
         try {
             String issuerconfigured = validateIdTokenClaimsAndGetIssuer(jwtClaims, clientSecret);
-            return validateIdTokenFormat(idtoken, jwtcontext, clientSecret, issuerconfigured);
+            return validateIdTokenFormat(jwtcontext, issuerconfigured);
         } catch (TokenValidationException e) {
             throw e;
         } catch (Exception e) {
@@ -102,9 +96,9 @@ public class TokenResponseValidator {
         if (jwtContext != null) {
             jwtClaims = jwtContext.getJwtClaims();
         }
-        if (jwtContext == null || jwtClaims == null) {
-            // TODO - NLS message
-            throw new TokenValidationException(this.clientConfig.getClientId(), "not a valid token to continue the flow");
+        if (jwtClaims == null || jwtClaims.getClaimsMap().isEmpty()) {
+            String msg = Tr.formatMessage(tc, "TOKEN_MISSING_CLAIMS", new Object[] { this.clientConfig.getClientId() });
+            throw new TokenValidationException(this.clientConfig.getClientId(), msg);
         }
         return jwtClaims;
     }
@@ -136,17 +130,33 @@ public class TokenResponseValidator {
         return issuerconfigured;
     }
 
-    JwtClaims validateIdTokenFormat(String idtoken, JwtContext jwtcontext, String clientSecret, String issuerconfigured) throws Exception {
-        JsonWebStructure jws = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtcontext);
-        Key verificationKey = JwtUtils.getJwsVerificationKey(jws, clientConfig);
+    JwtClaims validateIdTokenFormat(JwtContext jwtContext, String issuerConfigured) throws Exception {
+        io.openliberty.security.common.jwt.jws.JwsSignatureVerifier.Builder verifierBuilder = JwtUtils.verifyJwsAlgHeaderAndCreateJwsSignatureVerifierBuilder(jwtContext,
+                                                                                                                                                              clientConfig,
+                                                                                                                                                              getSigningAlgorithmsAllowed());
+        JwsSignatureVerifier signatureVerifier = verifierBuilder.build();
 
-        JwtConsumerBuilder builder = new JwtConsumerBuilder();
-        builder.setJwsAlgorithmConstraints(new AlgorithmConstraints(ConstraintType.WHITELIST, MetadataUtils.getIdTokenSigningAlgorithmsSupported(clientConfig)));
-        builder.setRequireExpirationTime().setAllowedClockSkewInSeconds(120).setExpectedAudience(clientConfig.getClientId()).setExpectedIssuer(false,
-                                                                                                                                               issuerconfigured).setRequireSubject().setSkipDefaultAudienceValidation().setVerificationKey(verificationKey).setRelaxVerificationKeyValidation();
+        JsonWebStructure jws = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
+
+        JwtConsumerBuilder builder = signatureVerifier.createJwtConsumerBuilderWithConstraints(jws.getAlgorithmHeaderValue());
+        builder.setRequireExpirationTime().setAllowedClockSkewInSeconds(120).setExpectedAudience(clientConfig.getClientId()).setExpectedIssuer(issuerConfigured).setRequireSubject();
 
         JwtConsumer jwtConsumer = builder.build();
-        return JwtParsingUtils.parseJwtWithValidation(idtoken, jwtConsumer);
+        return JwtParsingUtils.parseJwtWithValidation(jwtContext.getJwt(), jwtConsumer);
+    }
+
+    @FFDCIgnore(OidcClientConfigurationException.class)
+    String[] getSigningAlgorithmsAllowed() {
+        String[] signingAlgsAllowed = null;
+        try {
+            signingAlgsAllowed = MetadataUtils.getIdTokenSigningAlgorithmsSupported(clientConfig);
+        } catch (OidcDiscoveryException | OidcClientConfigurationException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught exception getting ID token signing algorithm supported. Defaulting to RS256. Exception was: " + e.getMessage());
+            }
+            signingAlgsAllowed = new String[] { "RS256" };
+        }
+        return signingAlgsAllowed;
     }
 
     public String getStateParameter() {

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.userinfo;
 
@@ -36,6 +33,8 @@ import io.openliberty.security.common.jwt.jws.JwsSignatureVerifier;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import io.openliberty.security.oidcclientcore.config.MetadataUtils;
 import io.openliberty.security.oidcclientcore.config.OidcMetadataService;
+import io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException;
+import io.openliberty.security.oidcclientcore.exceptions.OidcDiscoveryException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoEndpointNotHttpsException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseException;
 import io.openliberty.security.oidcclientcore.exceptions.UserInfoResponseNot200Exception;
@@ -136,15 +135,37 @@ public class UserInfoRequestor {
     public JSONObject extractClaimsFromJwtResponse(String responseString) throws Exception {
         JwtContext jwtContext = JwtParsingUtils.parseJwtWithoutValidation(responseString);
         if (jwtContext != null) {
-            // Validate the JWS signature only; extract the claims so they can be verified elsewhere
-            String[] signingAlgsSupported = MetadataUtils.getUserInfoSigningAlgorithmsSupported(oidcClientConfig);
-            JwsSignatureVerifier signatureVerifier = JwtUtils.createJwsSignatureVerifier(jwtContext, oidcClientConfig, signingAlgsSupported);
-            JwtClaims claims = signatureVerifier.validateJwsSignature(jwtContext);
+            JwtClaims claims = validateJwsSignatureAndGetClaims(jwtContext);
             if (claims != null) {
                 return JSONObject.parse(claims.toJson());
             }
         }
         return null;
+    }
+
+    /**
+     * Validates the JWS signature only and extracts the claims so they can be verified elsewhere.
+     */
+    JwtClaims validateJwsSignatureAndGetClaims(JwtContext jwtContext) throws Exception {
+        io.openliberty.security.common.jwt.jws.JwsSignatureVerifier.Builder verifierBuilder = JwtUtils.verifyJwsAlgHeaderAndCreateJwsSignatureVerifierBuilder(jwtContext,
+                                                                                                                                                              oidcClientConfig,
+                                                                                                                                                              getSigningAlgorithmsAllowed());
+        JwsSignatureVerifier signatureVerifier = verifierBuilder.build();
+        return signatureVerifier.validateJwsSignature(jwtContext);
+    }
+
+    @FFDCIgnore(OidcClientConfigurationException.class)
+    String[] getSigningAlgorithmsAllowed() {
+        String[] signingAlgsAllowed = null;
+        try {
+            signingAlgsAllowed = MetadataUtils.getUserInfoSigningAlgorithmsSupported(oidcClientConfig);
+        } catch (OidcDiscoveryException | OidcClientConfigurationException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Caught exception getting user info signing algorithm supported. Defaulting to RS256. Exception was: " + e.getMessage());
+            }
+            signingAlgsAllowed = new String[] { "RS256" };
+        }
+        return signingAlgsAllowed;
     }
 
     private Map<String, Object> getFromUserInfoEndpoint() throws HttpException, IOException {

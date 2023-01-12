@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -121,3 +121,7 @@ OIDC_CLIENT_INVALID_RESPONSE_TYPE.useraction=Specify one of the valid response t
 TOKEN_CLAIM_VALUE_MISMATCH=CWWKS2424E: The [{0}] value for the [{1}] claim in the token does not match the [{2}] expected value.
 TOKEN_CLAIM_VALUE_MISMATCH.explanation=The claim value is incorrect or malformed. The configuration for the OpenID Connect client might be incorrect, or the token was created with incorrect values.
 TOKEN_CLAIM_VALUE_MISMATCH.useraction=Ensure the attribute in the OpenID Connect client configuration that is related to the claim that is specified in the message is configured correctly.
+
+TOKEN_MISSING_CLAIMS=CWWKS2425E: The {0} OpenID Connect client token is invalid. The jwtClaims value on the JwtContext object is null or empty.
+TOKEN_MISSING_CLAIMS.explanation=Information is missing from the token and validation of the token cannot be completed.
+TOKEN_MISSING_CLAIMS.useraction=Review the log for any earlier errors for details on the failure. Check the format and content of the token that is returned from the OpenID Connect provider.

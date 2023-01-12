@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2009, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,10 +15,20 @@ package com.ibm.websphere.ras;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
+
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  * The ProtectedString class wraps a String to protect sensitive strings from
@@ -41,16 +51,34 @@ import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
  */
 public final class ProtectedString implements Traceable, FFDCSelfIntrospectable {
     /**
-     * Salt to be used when hashing - different for each class loader used so
+     * Salt to be used when hashing - different for each instance of this class so
      * that a dictionary attack will not work. (A dictionary attack is one where
      * you duplicate the code in this class and then hash every word in a
      * dictionary to see if that password appears in the trace or ffdc file)
      */
     private static final byte[] SALT;
+    private static AtomicReference<List<ProtectedString>> checkpointStrings = new AtomicReference<>();
     static {
-        SecureRandom sr = new SecureRandom();
+        final SecureRandom sr = new SecureRandom();
         SALT = new byte[12];
         sr.nextBytes(SALT);
+
+        if (!CheckpointPhase.getPhase().restored()) {
+            CheckpointHook resaltHook = new CheckpointHook() {
+                public void restore() {
+                    // restore from checkpoint needs to re-salt;
+                    sr.nextBytes(SALT);
+                    // force strings from checkpoint to re-calculate
+                    checkpointStrings.getAndSet(null).forEach(ps -> {
+                        ps._traceableString = null;
+                    });
+                }
+            };
+            if (CheckpointPhase.getPhase().addSingleThreadedHook(resaltHook)) {
+                // use copy on write list because we only care about restore time reads performance
+                checkpointStrings.set(new CopyOnWriteArrayList<>());
+            }
+        }
     }
 
     /** A password object that holds null */
@@ -142,7 +170,10 @@ public final class ProtectedString implements Traceable, FFDCSelfIntrospectable 
      */
     @Override
     public String toTraceString() {
-        if (_traceableString == null) {
+        // Using local variable for the result so the CheckpointHook restore does not
+        // override our result after we set it (very unlikely, but being very safe here)
+        String result = _traceableString;
+        if (result == null) {
             if (_password != null) {
                 try {
                     MessageDigest digester = MessageDigest.getInstance("SHA-512");
@@ -162,17 +193,24 @@ public final class ProtectedString implements Traceable, FFDCSelfIntrospectable 
                         int i = b & 0x0F;
                         sb.append(Integer.toHexString(i));
                     }
-                    _traceableString = sb.toString();
+                    result = sb.toString();
                 } catch (NoSuchAlgorithmException nsae) {
                     // No FFDC Code needed - fall back on the toString implementation
-                    _traceableString = toString();
+                    result = toString();
                 }
             } else {
-                _traceableString = ""; /* not just null :-) */
+                result = ""; /* not just null :-) */
+            }
+            _traceableString = result;
+            if (!CheckpointPhase.getPhase().restored()) {
+                List<ProtectedString> current = checkpointStrings.get();
+                if (current != null) {
+                    current.add(this);
+                }
             }
         }
 
-        return _traceableString;
+        return result;
     }
 
     /**

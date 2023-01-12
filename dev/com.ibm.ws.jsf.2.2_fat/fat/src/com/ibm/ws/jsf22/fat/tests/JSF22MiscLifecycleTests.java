@@ -33,7 +33,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlHiddenInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
@@ -68,13 +67,6 @@ public class JSF22MiscLifecycleTests {
         ShrinkHelper.defaultDropinApp(jsfTestServer1, "JSF22ActionListener.war",
                                       isEE10 ? "com.ibm.ws.jsf22.fat.actionlistener.bean.faces40" : "com.ibm.ws.jsf22.fat.actionlistener.bean.jsf22",
                                       "com.ibm.ws.jsf22.fat.actionlistener.listener");
-
-        if (isEE10) {
-            // For Faces 4.0, CDI @Named is used since @ManagedBean is no longer available.
-            ServerConfiguration config = jsfTestServer1.getServerConfiguration();
-            config.getFeatureManager().getFeatures().add("cdi-4.0");
-            jsfTestServer1.updateServerConfiguration(config);
-        }
 
         jsfTestServer1.startServer(JSF22MiscLifecycleTests.class.getSimpleName() + ".log");
     }

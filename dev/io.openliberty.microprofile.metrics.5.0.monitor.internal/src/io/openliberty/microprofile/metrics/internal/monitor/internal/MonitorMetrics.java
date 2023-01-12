@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -62,6 +62,18 @@ public class MonitorMetrics {
 
     public void createMetrics(SharedMetricRegistries sharedMetricRegistry, String[][] data) {
         MetricRegistry metricRegistry = sharedMetricRegistry.getOrCreate(MetricRegistry.VENDOR_SCOPE);
+        
+        /*
+         * metricRegistry is null due to failed initialization of the MP Metrics runtime.
+         * Fail silently.
+         */
+        if (metricRegistry == null) {
+            if (tc.isDebugEnabled() || tc.isAnyTracingEnabled()) {
+                Tr.debug(tc, "MetricRegistry obtained from SharedMetricRegistries was null. No metrics will be registered.");
+            }
+            return;
+        }
+        
         Set<MetricID> metricIDSet = null;
 
         for (String[] metricData : data) {

@@ -64,7 +64,9 @@ class EntityInfo {
                 attributeName = null; // Special case for CrudRepository.deleteAll and CrudRepository.findAll
             else if ("ID".equals(name.toUpperCase()))
                 throw new MappingException("Entity class " + type.getName() + " does not have a property named " + name +
-                                           " or which is designated as the @Id.");
+                                           " or which is designated as the @Id."); // TODO NLS
+            else if (name.length() == 0)
+                throw new MappingException("Error parsing method name or entity property name is missing."); // TODO NLS
             else
                 throw new MappingException("Entity class " + type.getName() + " does not have a property named " + name + "."); // TODO NLS
 

@@ -30,7 +30,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 // import com.ibm.ws.fat.Props;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
@@ -64,13 +63,6 @@ public class JSF22InputFileTests {
 
         ShrinkHelper.defaultDropinApp(jsfTestServer2, "JSF22InputFile.war",
                                       isEE10 ? "com.ibm.ws.jsf22.fat.input.faces40" : "com.ibm.ws.jsf22.fat.input.jsf22");
-
-        if (isEE10) {
-            // For Faces 4.0, CDI @Named is used since @ManagedBean is no longer available.
-            ServerConfiguration config = jsfTestServer2.getServerConfiguration();
-            config.getFeatureManager().getFeatures().add("cdi-4.0");
-            jsfTestServer2.updateServerConfiguration(config);
-        }
 
         jsfTestServer2.startServer(JSF22InputFileTests.class.getSimpleName() + ".log");
     }

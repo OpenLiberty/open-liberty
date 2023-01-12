@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -63,13 +63,6 @@ public class CheckpointPhaseTest {
     public static void setUpClass() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "app2");
         FATSuite.copyAppsAppToDropins(server, APP_NAME);
-    }
-
-    @Test
-    public void testAtFeatures() throws Exception {
-        server.setCheckpoint(CheckpointPhase.FEATURES);
-        server.startServer();
-        HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
     }
 
     @Test

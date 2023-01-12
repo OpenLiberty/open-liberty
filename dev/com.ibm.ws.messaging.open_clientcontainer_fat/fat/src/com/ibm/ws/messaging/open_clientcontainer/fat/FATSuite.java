@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -31,5 +32,5 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite { 
 	
 	@ClassRule
-	public static RepeatTests repeater = RepeatTests.withoutModification().andWith(new JakartaEE9Action().removeFeature("jaxws-2.2"));
+	public static RepeatTests repeater = RepeatTests.withoutModification().andWith(new JakartaEE9Action().removeFeature("jaxws-2.2")).andWith(new JakartaEE10Action());
 }

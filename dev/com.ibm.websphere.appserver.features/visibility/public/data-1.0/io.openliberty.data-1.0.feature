@@ -17,6 +17,6 @@ Subsystem-Name: Jakarta Data 1.0
   io.openliberty.jakarta.data-1.0
 -bundles=\
   io.openliberty.data.internal
-kind=noship
-edition=full
+kind=beta
+edition=base
 WLP-Activation-Type: parallel

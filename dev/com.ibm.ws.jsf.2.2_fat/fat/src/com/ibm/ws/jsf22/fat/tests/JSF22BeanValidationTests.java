@@ -26,7 +26,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
@@ -63,13 +62,6 @@ public class JSF22BeanValidationTests {
 
         ShrinkHelper.defaultDropinApp(jsf22beanvalServer, "BeanValidationTests.war",
                                       isEE10 ? "com.ibm.ws.jsf22.fat.beanvalidation.faces40" : "com.ibm.ws.jsf22.fat.beanvalidation.jsf22");
-
-        if (isEE10) {
-            // For Faces 4.0, CDI @Named is used since @ManagedBean is no longer available.
-            ServerConfiguration config = jsf22beanvalServer.getServerConfiguration();
-            config.getFeatureManager().getFeatures().add("cdi-4.0");
-            jsf22beanvalServer.updateServerConfiguration(config);
-        }
 
         jsf22beanvalServer.startServer(JSF22BeanValidationTests.class.getSimpleName() + ".log");
     }

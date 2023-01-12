@@ -765,8 +765,10 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         queryInfo.hasWhere = true;
         q.append(" WHERE (");
         for (int and = start, or = start, iNext = start, i = start; queryInfo.hasWhere && i >= start && iNext < endBefore; i = iNext) {
-            and = and == -1 || and > i ? and : methodName.indexOf("And", i);
-            or = or == -1 || or > i ? or : methodName.indexOf("Or", i);
+            // The extra character (+1) below allows for entity property names that begin with Or or And.
+            // For example, findByOrg and findByPriceBetweenAndOrderNumber
+            and = and == -1 || and > i + 1 ? and : methodName.indexOf("And", i + 1);
+            or = or == -1 || or > i + 1 ? or : methodName.indexOf("Or", i + 1);
             iNext = Math.min(and, or);
             if (iNext < 0)
                 iNext = Math.max(and, or);

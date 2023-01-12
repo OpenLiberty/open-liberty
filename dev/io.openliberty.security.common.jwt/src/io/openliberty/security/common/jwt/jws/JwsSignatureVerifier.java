@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.security.common.jwt.jws;
 
@@ -24,16 +21,14 @@ import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.jwt.consumer.JwtContext;
-import org.jose4j.jwx.JsonWebStructure;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.security.common.jwt.JwtParsingUtils;
-import io.openliberty.security.common.jwt.exceptions.EncodedSignatureEmptyException;
 import io.openliberty.security.common.jwt.exceptions.JwtContextMissingJoseObjects;
-import io.openliberty.security.common.jwt.exceptions.SignatureAlgorithmDoesNotMatchHeaderException;
 import io.openliberty.security.common.jwt.exceptions.SignatureAlgorithmNotInAllowedList;
+import io.openliberty.security.common.jwt.exceptions.SigningKeyNotSpecifiedException;
 
 public class JwsSignatureVerifier {
 
@@ -45,64 +40,73 @@ public class JwsSignatureVerifier {
 
     private JwsSignatureVerifier(Builder builder) {
         this.key = builder.key;
-        this.signatureAlgorithm = (builder.signatureAlgorithm != null) ? builder.signatureAlgorithm : null;
+        this.signatureAlgorithm = builder.signatureAlgorithm;
         this.signatureAlgorithmsSupported = builder.signatureAlgorithmsSupported;
     }
 
-    public JwtClaims validateJwsSignature(JwtContext jwtContext) throws EncodedSignatureEmptyException, SignatureAlgorithmDoesNotMatchHeaderException, InvalidJwtException, JwtContextMissingJoseObjects, SignatureAlgorithmNotInAllowedList {
-        JsonWebStructure jws = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
-        return validateJwsSignature((JsonWebSignature) jws, jwtContext.getJwt());
+    public List<String> getSignatureAlgorithmsSupported() {
+        if (signatureAlgorithm != null) {
+            return Arrays.asList(signatureAlgorithm);
+        }
+        if (signatureAlgorithmsSupported != null) {
+            return signatureAlgorithmsSupported;
+        }
+        // Default to RS256
+        return Arrays.asList("RS256");
     }
 
-    JwtClaims validateJwsSignature(JsonWebSignature signature, String jwtString) throws EncodedSignatureEmptyException, SignatureAlgorithmDoesNotMatchHeaderException, InvalidJwtException, SignatureAlgorithmNotInAllowedList {
-        verifySignAlgOnly(signature);
+    /**
+     * Verifies the "alg" header in the JWT to ensure the token is signed with one of the allowed algorithms. This allows us to
+     * avoid doing the work to fetch the signing key for the token if the algorithm isn't supported.
+     */
+    public static String verifyJwsAlgHeaderOnly(JwtContext jwtContext, List<String> signingAlgorithmsAllowed) throws JwtContextMissingJoseObjects, SignatureAlgorithmNotInAllowedList {
+        JsonWebSignature jws = (JsonWebSignature) JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
+        String algHeader = jws.getAlgorithmHeaderValue();
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Signing algorithm from header: " + algHeader);
+        }
+        if (!signingAlgorithmsAllowed.contains(algHeader)) {
+            throw new SignatureAlgorithmNotInAllowedList(algHeader, signingAlgorithmsAllowed);
+        }
+        return algHeader;
+    }
 
+    /**
+     * Verifies the "alg" header in the JWT to ensure the token is signed with one of the allowed algorithms, and validates the
+     * signature of the token.
+     */
+    public JwtClaims validateJwsSignature(JwtContext jwtContext) throws JwtContextMissingJoseObjects, SignatureAlgorithmNotInAllowedList, SigningKeyNotSpecifiedException, InvalidJwtException {
+        String algHeader = verifyJwsAlgHeaderOnly(jwtContext, getSignatureAlgorithmsSupported());
+
+        JwtConsumerBuilder builder = createJwtConsumerBuilderWithConstraints(algHeader);
+
+        JwtConsumer jwtConsumer = builder.build();
+        JwtContext validatedJwtContext = jwtConsumer.process(jwtContext.getJwt());
+        return validatedJwtContext.getJwtClaims();
+    }
+
+    public JwtConsumerBuilder createJwtConsumerBuilderWithConstraints(String algHeader) throws SigningKeyNotSpecifiedException {
         JwtConsumerBuilder builder = new JwtConsumerBuilder();
         setJwsAlgorithmConstraints(builder);
         builder.setSkipDefaultAudienceValidation();
-        if ("none".equals(signatureAlgorithm)) {
+        if ("none".equals(algHeader)) {
             // Signature algorithm is set to "none"; don't check the signature
             builder.setDisableRequireSignature()
                     .setSkipSignatureVerification();
         } else {
+            if (key == null) {
+                throw new SigningKeyNotSpecifiedException(algHeader);
+            }
             builder.setVerificationKey(key)
                     .setRelaxVerificationKeyValidation();
         }
-        JwtConsumer jwtConsumer = builder.build();
-        JwtContext validatedJwtContext = jwtConsumer.process(jwtString);
-        return validatedJwtContext.getJwtClaims();
+        return builder;
     }
 
-    void setJwsAlgorithmConstraints(JwtConsumerBuilder builder) {
-        String[] algorithmsAllowed;
-        if (signatureAlgorithm != null) {
-            algorithmsAllowed = new String[] { signatureAlgorithm };
-        } else if (signatureAlgorithmsSupported != null && !signatureAlgorithmsSupported.isEmpty()) {
-            algorithmsAllowed = signatureAlgorithmsSupported.toArray(new String[signatureAlgorithmsSupported.size()]);
-        } else {
-            // Fall back to only allowing RS256
-            algorithmsAllowed = new String[] { "RS256" };
-        }
-        builder.setJwsAlgorithmConstraints(new AlgorithmConstraints(ConstraintType.WHITELIST, algorithmsAllowed));
-    }
-
-    void verifySignAlgOnly(JsonWebSignature signature) throws EncodedSignatureEmptyException, SignatureAlgorithmDoesNotMatchHeaderException, SignatureAlgorithmNotInAllowedList {
-        String algHeader = signature.getAlgorithmHeaderValue();
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Signing algorithm from header: " + algHeader);
-        }
-        if ("none".equals(signatureAlgorithm)) {
-            return;
-        }
-        if (signature.getEncodedSignature().isEmpty()) {
-            throw new EncodedSignatureEmptyException();
-        }
-        if (signatureAlgorithm != null && !(signatureAlgorithm.equals(algHeader))) {
-            throw new SignatureAlgorithmDoesNotMatchHeaderException(signatureAlgorithm, algHeader);
-        }
-        if (signatureAlgorithm == null && (signatureAlgorithmsSupported != null && !signatureAlgorithmsSupported.contains(algHeader))) {
-            throw new SignatureAlgorithmNotInAllowedList(algHeader, signatureAlgorithmsSupported);
-        }
+    private void setJwsAlgorithmConstraints(JwtConsumerBuilder builder) {
+        List<String> signatureAlgorithmsSupported = getSignatureAlgorithmsSupported();
+        String[] algsAsArray = signatureAlgorithmsSupported.toArray(new String[signatureAlgorithmsSupported.size()]);
+        builder.setJwsAlgorithmConstraints(new AlgorithmConstraints(ConstraintType.WHITELIST, algsAsArray));
     }
 
     public static class Builder {

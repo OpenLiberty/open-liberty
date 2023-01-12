@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -472,8 +472,8 @@ public class ConsumerUtil {
                 }
             }
             /**
-             * If keyManagementKeyAlgorithm is not null, do the following check if
-             * keyManagementKeyAlgorithm is null (i.e. MP JWT < 2.1) skip the check
+             * If keyManagementKeyAlgorithm is not null, do the following check.
+             * If keyManagementKeyAlgorithm is null (i.e. MP JWT < 2.1) skip the check.
              */
             if (keyManagementKeyAlgorithm != null) {
                 String tokenAlg = (String) jweHeaderParameters.getClaimValue("alg");
@@ -482,25 +482,19 @@ public class ConsumerUtil {
         }
     }
 
-    // To validate KeyManagementKeyAlgorithm
     void validateKeyManagementKeyAlgorithm(String keyManagementKeyAlgorithm, String tokenAlg)
             throws InvalidTokenException {
         if (tokenAlg == null) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Decrypt key algorithm was not found in the JWT");
+                Tr.debug(tc, "Decrypt key algorithm was not found in the JWE");
             }
-            // New message needed
-            String msg = Tr.formatMessage(tc, "JWT_MISSING_ALG_HEADER", new Object[] { keyManagementKeyAlgorithm });
+
+            String msg = Tr.formatMessage(tc, "JWE_MISSING_ALG_HEADER", new Object[] { keyManagementKeyAlgorithm });
             throw new InvalidTokenException(msg);
         }
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "JWT is signed with algorithm: ", tokenAlg);
-            Tr.debug(tc, "JWT is required to be signed with algorithm: ", keyManagementKeyAlgorithm);
-        }
+
         if (!keyManagementKeyAlgorithm.equals(tokenAlg)) {
-            // New message needed
-            String msg = Tr.formatMessage(tc, "JWT_ALGORITHM_MISMATCH",
-                    new Object[] { tokenAlg, keyManagementKeyAlgorithm });
+            String msg = Tr.formatMessage(tc, "JWE_ALGORITHM_MISMATCH", new Object[] { tokenAlg, keyManagementKeyAlgorithm });
             throw new InvalidTokenException(msg);
         }
     }
@@ -750,9 +744,9 @@ public class ConsumerUtil {
         NumericDate currentTimeMinusSkew = NumericDate.fromMilliseconds(now - clockSkewInMilliseconds);
 
         if (issueAtClaimPlusTokenAge.isBefore(currentTimeMinusSkew)) {
-            String msg = Tr.formatMessage(tc, "JWT_TOKEN_AGE_AFTER_CURRENT_TIME",
-                    new Object[] { createDateString(issueAtClaim), createDateString(currentTimePlusSkew),
-                            (clockSkewInMilliseconds / 1000) });
+            String msg = Tr.formatMessage(tc, "JWT_TOKEN_AGED",
+                    new Object[] { createDateString(issueAtClaim), createDateString(currentTimeMinusSkew),
+                            (clockSkewInMilliseconds / 1000), (tokenAgeInMilliSeconds / 1000) });
             throw new InvalidClaimException(msg);
         }
 

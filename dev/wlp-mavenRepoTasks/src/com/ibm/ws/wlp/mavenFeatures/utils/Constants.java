@@ -49,8 +49,8 @@ public class Constants {
 
 
 	public static final String LICENSE_DISTRIBUTION_REPO = "repo";
-	public static final String LICENSE_NAME_EPL = "Eclipse Public License";
-	public static final String LICENSE_URL_EPL = "https://www.eclipse.org/legal/epl-v10.html";
+	public static final String LICENSE_NAME_EPL = "Eclipse Public License 2.0";
+	public static final String LICENSE_URL_EPL = "https://www.eclipse.org/legal/epl-2.0/";
 	public static final String LICENSE_NAME_FEATURE_TERMS = "Additional Features Terms & Conditions";
 	public static final String LICENSE_URL_FEATURE_TERMS_PREFIX = "https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/downloads/wlp/";
 	public static final String LICENSE_URL_FEATURE_TERMS_SUFFIX = "/lafiles/featureTerms/";

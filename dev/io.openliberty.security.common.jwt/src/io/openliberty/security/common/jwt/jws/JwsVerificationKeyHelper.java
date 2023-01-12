@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.security.common.jwt.jws;
 
@@ -44,6 +41,7 @@ public class JwsVerificationKeyHelper {
 
     static {
         Set<String> supportedAlgorithms = new HashSet<>();
+        supportedAlgorithms.add("none");
         supportedAlgorithms.add("RS256");
         supportedAlgorithms.add("RS384");
         supportedAlgorithms.add("RS512");
@@ -69,9 +67,19 @@ public class JwsVerificationKeyHelper {
         this.jwkSet = builder.jwkSet;
     }
 
+    public RemoteJwkData getRemoteJwkData() {
+        return remoteJwkData;
+    }
+
     public Key getVerificationKey(JsonWebStructure jws) throws Exception {
         String signatureAlgorithmFromJws = getSignatureAlgorithmFromJws(jws);
-        if (signatureAlgorithmFromJws != null && signatureAlgorithmFromJws.startsWith("HS")) {
+        if (signatureAlgorithmFromJws == null) {
+            // TODO
+        }
+        if (signatureAlgorithmFromJws.equalsIgnoreCase("none")) {
+            return null;
+        }
+        if (signatureAlgorithmFromJws.startsWith("HS")) {
             return getSharedKey();
         }
         return retrievePublicKey(jws, signatureAlgorithmFromJws);
