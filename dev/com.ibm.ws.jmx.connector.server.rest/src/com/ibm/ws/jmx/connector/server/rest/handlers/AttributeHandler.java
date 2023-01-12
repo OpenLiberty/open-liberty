@@ -114,6 +114,7 @@ public class AttributeHandler implements RESTHandler {
 
     private void getAttributes(RESTRequest request, RESTResponse response) {
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+        System.err.println(" E 1234E: In AttributeHandler.getAttributes, got objectName " + objectName + " and uri " + request.getURI());
         objectName = RESTHelper.repairSlashes(objectName, request);
         List<String> queryAttributes = RESTHelper.getQueryParams(request, APIConstants.PARAM_ATTRIBUTE);
 
@@ -152,6 +153,7 @@ public class AttributeHandler implements RESTHandler {
         RESTHelper.ensureConsumesJson(request);
 
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+        System.err.println(" E 1234E: In AttributeHandler.setAttributes, got objectName " + objectName + " and uri " + request.getURI());
         objectName = RESTHelper.repairSlashes(objectName, request);
         InputStream is = RESTHelper.getInputStream(request);
 
@@ -179,6 +181,7 @@ public class AttributeHandler implements RESTHandler {
 
     private void getAttribute(RESTRequest request, RESTResponse response) {
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+        System.err.println(" E 1234E: In AttributeHandler.getAttribute, got objectName " + objectName + " and uri " + request.getURI());
         objectName = RESTHelper.repairSlashes(objectName, request);
         String attributeName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_ATTRIBUTE);
 
@@ -204,6 +207,7 @@ public class AttributeHandler implements RESTHandler {
         RESTHelper.ensureConsumesJson(request);
 
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+        System.err.println(" E 1234E: In AttributeHandler.setAttribute, got objectName " + objectName + " and uri " + request.getURI());
         objectName = RESTHelper.repairSlashes(objectName, request);
         String attributeName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_ATTRIBUTE);
         InputStream is = RESTHelper.getInputStream(request);

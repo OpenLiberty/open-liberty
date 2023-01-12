@@ -116,6 +116,7 @@ public class MBeanAttributeRouterHandler implements RESTHandler {
      */
     private void getRoutedAttributes(RESTRequest request, RESTResponse response) {
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+        System.err.println(" E 1234E: In MBeanAttributeRouterHandler.getRoutedAttributes, got objectName " + objectName + " and uri " + request.getURI());
         objectName = RESTHelper.repairSlashes(objectName, request);
         List<String> queryAttributes = RESTHelper.getQueryParams(request, APIConstants.PARAM_ATTRIBUTE);
 
@@ -129,6 +130,7 @@ public class MBeanAttributeRouterHandler implements RESTHandler {
      */
     private void getRoutedAttribute(RESTRequest request, RESTResponse response) {
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+        System.err.println(" E 1234E: In MBeanAttributeRouterHandler.getRoutedAttribute, got objectName " + objectName + " and uri " + request.getURI());
         objectName = RESTHelper.repairSlashes(objectName, request);
         String attribute = RESTHelper.getRequiredParam(request, APIConstants.PARAM_ATTRIBUTE);
 

@@ -117,6 +117,7 @@ public class MBeanHandler implements RESTHandler {
 
     private void objectName(RESTRequest request, RESTResponse response) {
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+        System.err.println(" E 1234E: In MBeanHandler.objectName, got objectName " + objectName + " and uri " + request.getURI());
         objectName = RESTHelper.repairSlashes(objectName, request);
 
         //Get the object for ObjectName

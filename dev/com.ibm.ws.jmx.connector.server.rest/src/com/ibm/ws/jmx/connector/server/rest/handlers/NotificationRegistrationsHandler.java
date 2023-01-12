@@ -125,6 +125,7 @@ public class NotificationRegistrationsHandler implements RESTHandler {
         RESTHelper.ensureConsumesJson(request);
 
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+        System.err.println(" E 1234E: In MBeanOperationHandler.clientNotificationUpdate got objectName " + objectName + " and uri " + request.getURI());
         objectName = RESTHelper.repairSlashes(objectName, request);
         String clientIDString = RESTHelper.getRequiredParam(request, APIConstants.PARAM_CLIENTID);
 
@@ -165,6 +166,7 @@ public class NotificationRegistrationsHandler implements RESTHandler {
 
     private void clientNotificationDelete(RESTRequest request, RESTResponse response) {
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+        System.err.println(" E 1234E: In MBeanOperationHandler.clientNotificationDelete, got objectName " + objectName + " and uri " + request.getURI());
         objectName = RESTHelper.repairSlashes(objectName, request);
         String clientIDString = RESTHelper.getRequiredParam(request, APIConstants.PARAM_CLIENTID);
 
@@ -204,6 +206,7 @@ public class NotificationRegistrationsHandler implements RESTHandler {
 
     private void fetchFilters(RESTRequest request, RESTResponse response) {
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+        System.err.println(" E 1234E: In MBeanOperationHandler.fetchFilters got objectName " + objectName + " and uri " + request.getURI());
         objectName = RESTHelper.repairSlashes(objectName, request);
         String clientIDString = RESTHelper.getRequiredParam(request, APIConstants.PARAM_CLIENTID);
 

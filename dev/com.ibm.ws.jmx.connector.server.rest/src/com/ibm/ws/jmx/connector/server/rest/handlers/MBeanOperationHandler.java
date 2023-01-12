@@ -71,6 +71,7 @@ public class MBeanOperationHandler implements RESTHandler {
         RESTHelper.ensureConsumesJson(request);
 
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+        System.err.println(" E 1234E: In MBeanOperationHandler.invocation got objectName " + objectName + " and uri " + request.getURI());
         objectName = RESTHelper.repairSlashes(objectName, request);
         String operation = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OPERATION);
         InputStream is = RESTHelper.getInputStream(request);
