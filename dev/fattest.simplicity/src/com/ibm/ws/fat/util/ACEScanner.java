@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -65,56 +65,58 @@ public class ACEScanner {
     }
 
     public void run() {
-        try {
-            Log.info(c, "run", "Processing log file: " + INPUT_FILE);
+        Log.info(c, "run", "Processing log file: " + INPUT_FILE);
 
-            // Find all the unique ACEs and store them in a map
-            BufferedReader infile = new BufferedReader(new FileReader(INPUT_FILE));
-            String curLine;
-            while ((curLine = infile.readLine()) != null) {
-                // short-cut check for possible line beginnings for ACE's
-                if (!curLine.startsWith("[WARNING") &&
-                    !curLine.startsWith("ERROR") &&
-                    !curLine.startsWith("[err]"))
-                    continue;
+        if (null != INPUT_FILE) {
+            try {
+                // Find all the unique ACEs and store them in a map
+                BufferedReader infile = new BufferedReader(new FileReader(INPUT_FILE));
+                String curLine;
+                while ((curLine = infile.readLine()) != null) {
+                    // short-cut check for possible line beginnings for ACE's
+                    if (!curLine.startsWith("[WARNING") &&
+                        !curLine.startsWith("ERROR") &&
+                        !curLine.startsWith("[err]"))
+                        continue;
 
-                if (curLine.startsWith(JAVA_2_SEC_RETHROW) ||
-                    curLine.startsWith(JAVA_2_SEC_SYSERR) ||
-                    JAVA_2_SEC_NORETHROW.matcher(curLine).matches()) {
-                    if (DEBUG)
-                        Log.info(c, "run", "starting to process: " + curLine);
-                    processACEStack(infile);
+                    if (curLine.startsWith(JAVA_2_SEC_RETHROW) ||
+                        curLine.startsWith(JAVA_2_SEC_SYSERR) ||
+                        JAVA_2_SEC_NORETHROW.matcher(curLine).matches()) {
+                        if (DEBUG)
+                            Log.info(c, "run", "starting to process: " + curLine);
+                        processACEStack(infile);
+                    }
                 }
+                infile.close();
+
+                if (exceptionMap.size() == 0) {
+                    Log.info(c, "run", "No AccessControlExceptions found in logs, so no report will be generated.");
+                    return;
+                } else {
+                    Log.info(c, "run", "Found " + exceptionMap.size() + " unique AccessControlExceptions in logs");
+                }
+
+                // Write the ACE report
+                String tstamp = new SimpleDateFormat("HH-mm-ss-SSS").format(new Date(System.currentTimeMillis()));
+                PrintWriter outfile = new PrintWriter(new FileOutputStream("ACE-report-" + tstamp + ".log"));
+
+                outfile.write("Begin AccessControlException report for for log file:\n");
+                outfile.write(INPUT_FILE + "\n\n");
+                outfile.write("============================================================\n\n");
+                outfile.write("Found " + totalACECount + " total AccessControlExceptions in logs.\n");
+                outfile.write("Found " + exceptionMap.size() + " unique occurrances.\n\n");
+                outfile.write("============================================================\n\n\n");
+
+                for (String stack : exceptionMap.values()) {
+                    outfile.write(stack);
+                    outfile.write("\n");
+                }
+
+                outfile.write("\n\nEnd of AccessControlException report.");
+                outfile.close();
+            } catch (IOException e) {
+                Log.error(c, "run", e);
             }
-            infile.close();
-
-            if (exceptionMap.size() == 0) {
-                Log.info(c, "run", "No AccessControlExceptions found in logs, so no report will be generated.");
-                return;
-            } else {
-                Log.info(c, "run", "Found " + exceptionMap.size() + " unique AccessControlExceptions in logs");
-            }
-
-            // Write the ACE report
-            String tstamp = new SimpleDateFormat("HH-mm-ss-SSS").format(new Date(System.currentTimeMillis()));
-            PrintWriter outfile = new PrintWriter(new FileOutputStream("ACE-report-" + tstamp + ".log"));
-
-            outfile.write("Begin AccessControlException report for for log file:\n");
-            outfile.write(INPUT_FILE + "\n\n");
-            outfile.write("============================================================\n\n");
-            outfile.write("Found " + totalACECount + " total AccessControlExceptions in logs.\n");
-            outfile.write("Found " + exceptionMap.size() + " unique occurrances.\n\n");
-            outfile.write("============================================================\n\n\n");
-
-            for (String stack : exceptionMap.values()) {
-                outfile.write(stack);
-                outfile.write("\n");
-            }
-
-            outfile.write("\n\nEnd of AccessControlException report.");
-            outfile.close();
-        } catch (IOException e) {
-            Log.error(c, "run", e);
         }
     }
 
