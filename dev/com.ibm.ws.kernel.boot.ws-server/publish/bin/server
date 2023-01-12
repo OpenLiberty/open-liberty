@@ -2,10 +2,13 @@
 ###############################################################################
 # WebSphere Application Server liberty launch script
 #
-# Copyright IBM Corp. 2011, 2022
-# The source code for this program is not published or other-
-# wise divested of its trade secrets, irrespective of what has
-# been deposited with the U.S. Copyright Office.
+# Copyright (c) 2011, 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 # 
 # ----------------------------------------------------------------------------
 #
@@ -971,7 +974,7 @@ javaCmd()
   
   if [ $ACTION = "checkpoint" ]; then
     if [ -z "$CHECKPOINT_AT" ]; then
-      CHECKPOINT_AT="features"
+      CHECKPOINT_AT="deployment"
     fi
     REMAINING_ARGS="$REMAINING_ARGS --internal-checkpoint-at=$CHECKPOINT_AT"
 
