@@ -5,7 +5,7 @@
 USER_NAME=kyleaure
 
 #TODO need to provide version of docker image.  Increment if doing a new release
-VERSION=2019-CU10-ubuntu-16.04
+VERSION=2019-CU18-ubuntu-20.04
 
 #TODO need to provide name of the final image
 IMAGE_NAME=sqlserver-ssl
