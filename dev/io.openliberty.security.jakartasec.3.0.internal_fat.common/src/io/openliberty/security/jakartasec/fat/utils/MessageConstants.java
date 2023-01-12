@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -52,7 +52,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS2500W_MISSING_CLIENTID_EL = "CWWKS2500W";
     public static final String CWWKS2504E_CREDENTIAL_VALIDATION_ERROR = "CWWKS2504E";
 
-    public static final String CWWKS2521E_SIGNATURE_NOT_ALLOWED = "CWWKS2521E";
+    public static final String CWWKS2520E_SIGNATURE_NOT_ALLOWED = "CWWKS2520E";
 
     public static final String CWWKS9104A_NO_ACCESS_FOR_USER = "CWWKS9104A";
 

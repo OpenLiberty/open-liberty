@@ -17,9 +17,7 @@ import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
@@ -29,13 +27,14 @@ import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseMessageExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
-import com.ibm.ws.security.fat.common.utils.ConditionalIgnoreRule;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -46,17 +45,17 @@ import io.openliberty.security.jakartasec.fat.utils.MessageConstants;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 
 /**
- * Tests  @OpenIdProviderMetadata userinfo in @OpenIdAuthenticationMechanismDefinition.  Tests will create and use multiple test applications that set the userinfo endpoint
- * via EL variables.  The userinfo endpoint apps that the test apps will use create userinfo responses in the form of JWT tokens or Json.  These responses will show that the runtime
- * can process userinfo in either form.
- * The JWTs will contain various settins for the sub and groupIds claims or will define unique claims that match the callerNameClaim and callerGroupsClaim of @ClaimsDefinition.
- * These tests will show that the runtime will find the unique claims in userinfo after not finding those claims defined in @ClaimsDefinition in the access or id tokens.
+ *
+ * Tests  @OpenIdProviderMetadata idTokenSigningAlgorithmsSupported in @OpenIdAuthenticationMechanismDefinition and jwksConnectTimeout/jwksConnectTimeoutExpression, jwksReadTimeout/jwksReadTimeoutExpression in @OpenIdProviderMetadata.
+ * Tests will show that when we use the same signature algorithm in the OP and the annotation that we'll have access to the app.  When there is a mismatch, we won't have access and will have messages recording the mismatch in the server logs.
+ * Tests will also show that the jwks timeouts will be used and when we we have timeouts that we will not be allowed access to the app and that there will be appropriate error messages in the server logs.
  */
 /**
  * Tests appSecurity-5.0
  */
 @SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
 
     protected static Class<?> thisClass = ConfigurationSigningTests.class;
@@ -64,15 +63,10 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
     @Server("jakartasec-3.0_fat.config.op")
     public static LibertyServer opServer;
 
-    @Server("jakartasec-3.0_fat.config.rp.signing.jwt.jwt")
-    public static LibertyServer rpJwtJwtServer;
-    @Server("jakartasec-3.0_fat.config.rp.signing.json.jwt")
-    public static LibertyServer rpJsonJwtServer;
-    @Server("jakartasec-3.0_fat.config.rp.signing.jwt.opaque")
-    public static LibertyServer rpJwtOpaqueServer;
-    @Server("jakartasec-3.0_fat.config.rp.signing.json.opaque")
-    public static LibertyServer rpJsonOpaqueServer;
-//    @Server("jakartasec-3.0_fat.config.rp.signing")
+    @Server("jakartasec-3.0_fat.config.rp.signing.jwt")
+    public static LibertyServer rpJwtServer;
+    @Server("jakartasec-3.0_fat.config.rp.signing.opaque")
+    public static LibertyServer rpOpaqueServer;
     public static LibertyServer rpServer;
     protected static ShrinkWrapHelpers swh = null;
 
@@ -92,40 +86,8 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
     protected static String userinfoResponseFormat = Constants.JWT_TOKEN_FORMAT;
 
     @ClassRule
-//  public static RepeatTests repeat = createMultipleTokenTypeRepeats(Constants.USERINFO_JWT, Constants.USERINFO_JSONOBJECT);
-    public static RepeatTests repeat = createMultipleTokenTypeRepeats(Constants.USERINFO_JWT);
-//    public static RepeatTests repeat = addRepeat(null, new SecurityTestRepeatAction("userinfoJwt_jwt"));
+    public static RepeatTests repeat = createTokenTypeRepeats();
 
-    @Rule
-    public static final TestRule conditIgnoreRule = new ConditionalIgnoreRule();
-
-//    // we dont' need to run some tests 4 times, we'll pick on of the 4 repeats an only run those tests during that one repeat
-//    // an example of a test where the access_token and userinfo response type doesn't matter would be an invalid userinfo endpoint
-//    public static class skipIfNotJwtUserInfoAndJwtToken extends MySkipRule {
-//        @Override
-//        public Boolean callSpecificCheck() {
-//
-//            Log.info(thisClass, "skipIfNotJwtUserInfoAndJwtToken", "here");
-//
-//            String instance = RepeatTestFilter.getRepeatActionsAsString();
-//            Log.info(thisClass, "skipIfNotJwtUserInfoAndJwtToken", instance);
-//
-//            if (instance.contains(Constants.USERINFO_JSONOBJECT)) {
-//                Log.info(thisClass, "skipIfNotJwtUserInfoAndJwtToken", "Test case is using a userinfo endpoint that returns data in json format - skip test");
-//                testSkipped();
-//                return true;
-//            }
-//            if (instance.contains(Constants.OPAQUE_TOKEN_FORMAT)) {
-//                Log.info(thisClass, "skipIfNotJwtUserInfoAndJwtToken", "Test case is using an opaque access_token - skip test");
-//                testSkipped();
-//                return true;
-//            }
-//            Log.info(thisClass, "skipIfNotJwtUserInfoAndJwtToken",
-//                     "Test case is using a jwt access_token and userinfo should return a jwt response - run test");
-//            return false;
-//        }
-//    }
-//
     @BeforeClass
     public static void setUp() throws Exception {
 
@@ -133,21 +95,11 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         setTokenTypeInBootstrap(opServer);
 
         // due to the way we create the test apps on the fly, we need a unique rp server instance for each repeat.
-        if (RepeatTestFilter.getRepeatActionsAsString().contains(Constants.USERINFO_JSONOBJECT)) {
-            userinfoResponseFormat = "Json";
-            if (RepeatTestFilter.getRepeatActionsAsString().contains(Constants.JWT_TOKEN_FORMAT)) {
-                rpServer = rpJsonJwtServer;
-            } else {
-                rpServer = rpJsonOpaqueServer;
-            }
-        } else {
-            userinfoResponseFormat = "Jwt";
-            if (RepeatTestFilter.getRepeatActionsAsString().contains(Constants.JWT_TOKEN_FORMAT)) {
-                rpServer = rpJwtJwtServer;
-            } else {
-                rpServer = rpJwtOpaqueServer;
-            }
 
+        if (RepeatTestFilter.getRepeatActionsAsString().contains(Constants.JWT_TOKEN_FORMAT)) {
+            rpServer = rpJwtServer;
+        } else {
+            rpServer = rpOpaqueServer;
         }
         // Add servers to server trackers that will be used to clean servers up and prevent servers
         // from being restored at the end of each test (so far, the tests are not reconfiguring the servers)
@@ -266,6 +218,13 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Deploy a test application based on the Signing test app - We'll build the name of the app to create based on the provider, (default) timeouts and signature algorithms
+     *
+     * @param provider - the provider that the app will use
+     * @param clientSigAlgs - the signature algorithms that the app/client will allow
+     * @throws Exception
+     */
     public static void deployAnApp(String provider, String... clientSigAlgs) throws Exception {
 
         String appName = buildAppName(provider, ignoreTimeoutValue, ignoreTimeoutValue, clientSigAlgs);
@@ -274,6 +233,13 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Deploy a test application based on the Signing test app - We'll build the name of the app to create based on the provider, timeouts and signature algorithms
+     *
+     * @param provider - the provider that the app will use
+     * @param clientSigAlgs - the signature algorithms that the app/client will allow
+     * @throws Exception
+     */
     public static void deployAnApp(String provider, int jwksConnTimeout, int jwksReadTimeout, String... clientSigAlgs) throws Exception {
 
         String appName = buildAppName(provider, jwksConnTimeout, jwksReadTimeout, clientSigAlgs);
@@ -284,15 +250,11 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
 
     /**
      * Build a map of EL var settings to put into the openIdConfig.properties file in the app.
-     * We'll set callerNameClaims or callerGroupsClaim if requested, Then we'll set the userinfoEndpoint url value based on the parms
+     * We'll set connection timeouts for jwks connection and read as well as the signature alg to use
      *
      * @param app - the app that we're building
      * @param provider - the OP provider that app uses - used to set endpoint urls
-     * @param whatAreWeTesting - flag indicating if the app will be testing name/sub or groups (helps set the app)
-     * @param isCallerNameClaimDefault - flag indicating if we'll be setting a unique callerNameClaim value
-     * @param isCallerGroupsClaimDefault - flag indicating if we'll be setting a unique callerGroupsClaim value
-     * @param isUserinfoSubValid - flag indicating if we need a userinfo app that will set invalid content in the sub or callerNameClaim
-     * @param isUserinfoGroupsValid - flag indicating if we need a userinfo app that will set invalid content in the groups or callerGroupsClaim
+     * @param alg - the list of signature algorithms that the annotation in the app will be set to
      * @return - return the map of config el vars to set
      * @throws Exception
      */
@@ -319,10 +281,28 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Build the test app name based on the signature alg and ignored jwks timeouts - set the provider value that the test code will use to verify the tokens created
+     *
+     * @param provider - the provider that we'll be using
+     * @param clientSigAlgs - the list of signature algorithms that the app supports
+     * @return - the name of the app to use based on the values passed in
+     * @throws Exception
+     */
     public String buildAppNameAndUpdateIssuer(String provider, String... clientSigAlgs) throws Exception {
         return buildAppNameAndUpdateIssuer(provider, ignoreTimeoutValue, ignoreTimeoutValue, clientSigAlgs);
     }
 
+    /**
+     * Build the test app name based on the signature alg and the jwks timeout values passed in - set the provider value that the test code will use to verify the tokens created
+     *
+     * @param provider - the provider that we'll be using
+     * @param jwksConnTimeout - the jwks connection timeout value
+     * @param jwksReadTimeout - the jwks Read timeout value
+     * @param clientSigAlgs - the list of signature algorithms that the app supports
+     * @return - the name of the app to use based on the values passed in
+     * @throws Exception
+     */
     public String buildAppNameAndUpdateIssuer(String provider, int jwksConnTimeout, int jwksReadTimeout, String... clientSigAlgs) throws Exception {
 
         rspValues.setIssuer(opHttpsBase + "/oidc/endpoint/" + provider);
@@ -330,6 +310,16 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         return buildAppName(provider, jwksConnTimeout, jwksReadTimeout, clientSigAlgs);
     }
 
+    /**
+     * Build the test app name based on the signature alg and the jwks timeout values passed in
+     *
+     * @param provider - the provider that we'll be using
+     * @param jwksConnTimeout - the jwks connection timeout value
+     * @param jwksReadTimeout - the jwks Read timeout value
+     * @param clientSigAlgs - the list of signature algorithms that the app supports
+     * @return - the name of the app to use based on the values passed in
+     * @throws Exception
+     */
     public static String buildAppName(String provider, int jwksConnTimeout, int jwksReadTimeout, String... clientSigAlgs) throws Exception {
 
         String providerSigAlg = Constants.SIGALG_RS256;
@@ -362,6 +352,14 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         return appName;
     }
 
+    /**
+     * Generic code to run a signature algorithm mismatch type test - when the login page is filled in and submitted, we'll expect a 401 and failure messages in the log
+     *
+     * @param appRoot - the application root to invoke
+     * @param app - the application servlet name to invoke
+     * @return - return the final page in case the caller needs to perform additional checks
+     * @throws Exception
+     */
     public Page runSigningMismatchTest(String appRoot, String app) throws Exception {
 
         WebClient webClient = getAndSaveWebClient();
@@ -385,6 +383,16 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Generic code to run a jwks timeout type test - when the login page is filled in and submitted, we'll expect a 401 and failure messages in the log indicating that there are
+     * failures
+     *
+     * @param appRoot - the application root to invoke
+     * @param app - the application servlet name to invoke
+     * @param readTimeout - flag indicating that the calling test expects a read timeout - additional messages will be logged
+     * @return - return the final page in case the caller needs to perform additional checks
+     * @throws Exception
+     */
     public Page runSigningShortTimeoutTest(String appRoot, String app, boolean readTimeout) throws Exception {
 
         WebClient webClient = getAndSaveWebClient();
@@ -416,6 +424,12 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
     /* Tests */
     /****************************************************************************************************************/
 
+    /**
+     * Test with an OP that specifies RS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to RS256
+     * Test shows that the token received from the OP can be processed
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithRS256_clientExpectsRS256() throws Exception {
 
@@ -423,6 +437,13 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies RS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to HS256
+     * Test shows that the token received from the OP is not considered valid (401 status code) and signature mismatch error messages are recorded
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationSigningTests_providerSignsWithRS256_clientExpectsHS256() throws Exception {
 
@@ -430,6 +451,12 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runSigningMismatchTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies RS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to none
+     * Test shows that the token received from the OP is not considered valid (401 status code) and signature mismatch error messages are recorded
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithRS256_clientExpectsNone() throws Exception {
 
@@ -437,6 +464,12 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runSigningMismatchTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies RS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to HS512
+     * Test shows that the token received from the OP is not considered valid (401 status code) and signature mismatch error messages are recorded
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithRS256_clientExpectsHS512() throws Exception {
 
@@ -444,6 +477,12 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runSigningMismatchTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies RS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to "RS256, HS256"
+     * Test shows that the token received from the OP can be processed
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithRS256_clientAllowssRS256HS256() throws Exception {
 
@@ -451,6 +490,13 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies RS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to "RS256, none"
+     * Test shows that the token received from the OP can be processed
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationSigningTests_providerSignsWithRS256_clientAllowssRS256None() throws Exception {
 
@@ -458,6 +504,12 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies RS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to "HS256, none"
+     * Test shows that the token received from the OP is not considered valid (401 status code) and signature mismatch error messages are recorded
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithRS256_clientAllowssHS256None() throws Exception {
 
@@ -465,6 +517,12 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runSigningMismatchTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies RS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to "RS256, HS256, none"
+     * Test shows that the token received from the OP can be processed
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithRS256_clientAllowssRS256HS256None() throws Exception {
 
@@ -472,6 +530,12 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies HS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to RS256
+     * Test shows that the token received from the OP is not considered valid (401 status code) and signature mismatch error messages are recorded
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithHS256_clientExpectsRS256() throws Exception {
 
@@ -479,6 +543,12 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runSigningMismatchTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies HS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to HS256
+     * Test shows that the token received from the OP can be processed
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithHS256_clientExpectsHS256() throws Exception {
 
@@ -486,6 +556,12 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies HS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to none
+     * Test shows that the token received from the OP is not considered valid (401 status code) and signature mismatch error messages are recorded
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithHS256_clientExpectsNone() throws Exception {
 
@@ -493,6 +569,12 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runSigningMismatchTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies HS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to RS384
+     * Test shows that the token received from the OP is not considered valid (401 status code) and signature mismatch error messages are recorded
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithHS256_clientExpectsRS384() throws Exception {
 
@@ -500,6 +582,12 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runSigningMismatchTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies HS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to "RS256, HS256"
+     * Test shows that the token received from the OP can be processed
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithHS256_clientAllowssRS256HS256() throws Exception {
 
@@ -507,6 +595,13 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies HS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to "RS256, none"
+     * Test shows that the token received from the OP is not considered valid (401 status code) and signature mismatch error messages are recorded
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationSigningTests_providerSignsWithHS256_clientAllowssRS256None() throws Exception {
 
@@ -514,6 +609,12 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runSigningMismatchTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies HS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to "HS256, none"
+     * Test shows that the token received from the OP can be processed
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithHS256_clientAllowssHS256None() throws Exception {
 
@@ -521,6 +622,12 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies HS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to "RS256, HS256, none"
+     * Test shows that the token received from the OP can be processed
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithHS256_clientAllowssRS256HS256None() throws Exception {
 
@@ -528,6 +635,12 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies none and the annotation in the app has idTokenSigningAlgorithmsSupported set to RS256
+     * Test shows that the token received from the OP is not considered valid (401 status code) and signature mismatch error messages are recorded
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithNone_clientExpectsRS256() throws Exception {
 
@@ -535,6 +648,12 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runSigningMismatchTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies none and the annotation in the app has idTokenSigningAlgorithmsSupported set to HS256
+     * Test shows that the token received from the OP is not considered valid (401 status code) and signature mismatch error messages are recorded
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithNone_clientExpectsHS256() throws Exception {
 
@@ -542,6 +661,13 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runSigningMismatchTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies none and the annotation in the app has idTokenSigningAlgorithmsSupported set to none
+     * Test shows that the token received from the OP can be processed
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationSigningTests_providerSignsWithNone_clientExpectsNone() throws Exception {
 
@@ -549,6 +675,12 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies none and the annotation in the app has idTokenSigningAlgorithmsSupported set to ES256
+     * Test shows that the token received from the OP is not considered valid (401 status code) and signature mismatch error messages are recorded
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithNone_clientExpectsES256() throws Exception {
 
@@ -556,6 +688,12 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runSigningMismatchTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies none and the annotation in the app has idTokenSigningAlgorithmsSupported set to "RS256, HS256"
+     * Test shows that the token received from the OP is not considered valid (401 status code) and signature mismatch error messages are recorded
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithNone_clientAllowssRS256HS256() throws Exception {
 
@@ -563,6 +701,12 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runSigningMismatchTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies none and the annotation in the app has idTokenSigningAlgorithmsSupported set to "RS256, none"
+     * Test shows that the token received from the OP can be processed
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithNone_clientAllowssRS256None() throws Exception {
 
@@ -570,6 +714,12 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies none and the annotation in the app has idTokenSigningAlgorithmsSupported set to "HS256, none"
+     * Test shows that the token received from the OP can be processed
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithNone_clientAllowssHS256None() throws Exception {
 
@@ -577,6 +727,12 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies none and the annotation in the app has idTokenSigningAlgorithmsSupported set to "RS256, HS256, none"
+     * Test shows that the token received from the OP can be processed
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithNone_clientAllowssRS256HS256None() throws Exception {
 
@@ -584,6 +740,13 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies RS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to "RS256" the jwksConnectTimeout and jwksConnectTimeout values
+     * are set to the default value of 500.
+     * Test shows that we receive access and id tokens and that they are valid
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithRS256_clientExpectsRS256_defaultJwksTimeoutValuesSpecified() throws Exception {
 
@@ -591,6 +754,13 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies RS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to "RS256" the jwksConnectTimeout and jwksConnectTimeout values
+     * are set to infinite (0/no timeout).
+     * Test shows that we receive access and id tokens and that they are valid
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithRS256_clientExpectsRS256_infiniteJwksTimeoutValues() throws Exception {
 
@@ -598,6 +768,13 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest(appName, app);
     }
 
+    /**
+     * Test with an OP that specifies RS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to "RS256" the jwksConnectTimeout is set to a very short value
+     * (forcing a timeout).
+     * Test shows that we'll get an ssl exception/connection failure and will fail to access the protected app
+     *
+     * @throws Exception
+     */
     @AllowedFFDC({ "javax.net.ssl.SSLException" })
     @ExpectedFFDC({ "org.apache.http.conn.ConnectTimeoutException" })
     @Test
@@ -606,6 +783,13 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runSigningShortTimeoutTest("SigningShortJwksConnectionTimeout", "SigningShortConnectionTimeout", false);
     }
 
+    /**
+     * Test with an OP that specifies RS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to "RS256" the jwksConnectTimeoutExpression is set to a very
+     * short value (forcing a timeout).
+     * Test shows that we'll get an ssl exception/connection failure and will fail to access the protected app
+     *
+     * @throws Exception
+     */
     @AllowedFFDC({ "javax.net.ssl.SSLException" })
     @ExpectedFFDC({ "org.apache.http.conn.ConnectTimeoutException" })
     @Test
@@ -615,14 +799,28 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runSigningShortTimeoutTest(appName, app, false);
     }
 
+    /**
+     * Test with an OP that specifies RS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to "RS256" the jwksConnectTimeout is set to the default value
+     * and jwksConnectTimeoutExpression is set to a very short value (forcing a timeout).
+     * Test shows that we'll get an ssl exception/connection failure and will fail to access the protected app (showing that the el value overrides)
+     *
+     * @throws Exception
+     */
     @AllowedFFDC({ "javax.net.ssl.SSLException" })
     @ExpectedFFDC({ "org.apache.http.conn.ConnectTimeoutException" })
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationSigningTests_providerSignsWithRS256_clientExpectsRS256_shortJwksConnectionTimeout_withELOverride() throws Exception {
 
         runSigningShortTimeoutTest("SigningShortJwksConnectionTimeoutELOverride", "SigningShortConnectionTimeout", false);
     }
 
+    /**
+     * Test with an OP that specifies RS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to "RS256" the jwksConnectTimeout is set to a negative value .
+     * Test shows that we'll be able to access the app, but, we'll see a message about the negative value in the server message log.
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithRS256_clientExpectsRS256_negativeJwksConnectionTimeoutValue() throws Exception {
 
@@ -637,6 +835,13 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with an OP that specifies RS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to "RS256" the jwksReadTimeout is set to a very short value
+     * (forcing a timeout).
+     * Test shows that we'll get a timeout exception failure and will fail to access the protected app
+     *
+     * @throws Exception
+     */
     @ExpectedFFDC({ "java.net.SocketTimeoutException" })
     @Test
     public void ConfigurationSigningTests_providerSignsWithRS256_clientExpectsRS256_shortJwksReadTimeout_withoutEL() throws Exception {
@@ -644,6 +849,13 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runSigningShortTimeoutTest("SigningShortJwksReadTimeout", "SigningShortReadTimeout", true);
     }
 
+    /**
+     * Test with an OP that specifies RS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to "RS256" the jwksReadTimeoutExpression is set to a very short
+     * value (forcing a timeout).
+     * Test shows that we'll get a timeout exception failure and will fail to access the protected app
+     *
+     * @throws Exception
+     */
     @ExpectedFFDC({ "java.net.SocketTimeoutException" })
     @Test
     public void ConfigurationSigningTests_providerSignsWithRS256_clientExpectsRS256_shortJwksReadTimeout_withEL() throws Exception {
@@ -652,13 +864,27 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runSigningShortTimeoutTest(appName, app, true);
     }
 
+    /**
+     * Test with an OP that specifies RS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to "RS256" the jwksReadTimeout is set to the default value and
+     * jwksReadTimeoutExpression is set to a very short value (forcing a timeout).
+     * Test shows that we'll get a timeout exception failure and will fail to access the protected app (showing that the el value overrides)
+     *
+     * @throws Exception
+     */
     @ExpectedFFDC({ "java.net.SocketTimeoutException" })
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationSigningTests_providerSignsWithRS256_clientExpectsRS256_shortJwksReadTimeout_withELOverride() throws Exception {
 
         runSigningShortTimeoutTest("SigningShortJwksReadTimeoutELOverride", "SigningShortReadTimeout", true);
     }
 
+    /**
+     * Test with an OP that specifies RS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to "RS256" the jwksReadTimeout is set to a negative value .
+     * Test shows that we'll be able to access the app, but, we'll see a message about the negative value in the server message log.
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithRS256_clientExpectsRS256_negativeJwksReadTimeoutValue() throws Exception {
 
@@ -673,6 +899,12 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with an OP that specifies RS256 and the annotation in the app has idTokenSigningAlgorithmsSupported set to an empty string ("")
+     * Test shows that the token received from the OP can be processed since the default value is used
+     *
+     * @throws Exception
+     */
     @Test
     public void ConfigurationSigningTests_providerSignsWithRS256_clientExpectsRS256BySettingEmptyString() throws Exception {
 
@@ -710,6 +942,7 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
      * @throws Exception
      */
     @Test
+    @Mode(TestMode.LITE)
     public void ConfigurationSigningTests_providerSignsWithRS256_clientExpectsRS256BySettingComplex3() throws Exception {
 
         runGoodEndToEndTest("ComplexSigning3", "ComplexSigning3");

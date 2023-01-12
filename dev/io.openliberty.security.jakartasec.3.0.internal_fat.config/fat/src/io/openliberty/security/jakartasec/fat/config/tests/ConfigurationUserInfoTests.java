@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -43,6 +43,8 @@ import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -62,7 +64,7 @@ import jakarta.json.JsonObjectBuilder;
 
 /**
  * Tests  @OpenIdProviderMetadata userinfo in @OpenIdAuthenticationMechanismDefinition.  Tests will create and use multiple test applications that set the userinfo endpoint
- * via EL variables.  The userinfo endpoint apps that the test apps will use create userinfo responses in the form of JWT tokens or Json.  These responses will show that the runtime
+ * via EL variables.  The userinfo endpoint apps that the test will use create userinfo responses in the form of JWT tokens or Json.  These responses will show that the runtime
  * can process userinfo in either form.
  * The JWTs will contain various settins for the sub and groupIds claims or will define unique claims that match the callerNameClaim and callerGroupsClaim of @ClaimsDefinition.
  * These tests will show that the runtime will find the unique claims in userinfo after not finding those claims defined in @ClaimsDefinition in the access or id tokens.
@@ -72,6 +74,7 @@ import jakarta.json.JsonObjectBuilder;
  */
 @SuppressWarnings("restriction")
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
 
     protected static Class<?> thisClass = ConfigurationUserInfoTests.class;
@@ -104,7 +107,6 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
     protected static String userinfoResponseFormat = Constants.JWT_TOKEN_FORMAT;
 
     @ClassRule
-//    public static RepeatTests repeat = createMultipleTokenTypeRepeats(Constants.USERINFO_JWT);
     public static RepeatTests repeat = createMultipleTokenTypeRepeats(Constants.USERINFO_JWT, Constants.USERINFO_JSONOBJECT);
 
     @Rule
@@ -115,8 +117,6 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
     public static class skipIfNotJwtUserInfoAndJwtToken extends MySkipRule {
         @Override
         public Boolean callSpecificCheck() {
-
-            Log.info(thisClass, "skipIfNotJwtUserInfoAndJwtToken", "here");
 
             String instance = RepeatTestFilter.getRepeatActionsAsString();
             Log.info(thisClass, "skipIfNotJwtUserInfoAndJwtToken", instance);
@@ -481,20 +481,14 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
         return false;
 
     }
-//    private static boolean isASigAlg(String whatAreWeTesting) {
-//
-//        return Arrays.asList(Constants.ALL_TEST_SIGALGS).contains(whatAreWeTesting);
-//
-//    }
 
     /**
      * Common test method that runs the standard end to end test, but also checks that the subject in the access_token/id_token is not set (because we used a unique callerNameClaim
-     * that we won't
-     * get from the OP. The test app will be accessed using the sub provided from userinfo.
+     * that we won't get from the OP. The test app will be accessed using the sub provided from userinfo.
      *
-     * @param appRoot
-     * @param app
-     * @return
+     * @param appRoot - the app root to invoke
+     * @param app - the servlet name to invoke
+     * @return - return the page that we landed on (in case the caller needs to do further checking)
      * @throws Exception
      */
     public Page runGoodEndToEndTestWithSubOverride(String appRoot, String app) throws Exception {
@@ -510,11 +504,17 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
         return response;
     }
 
+    /**
+     * Check for the proper error messages in the trace (not messages log) for cases where we expect a signature algorithm mismatch
+     *
+     * @param response - the response to check
+     * @throws Exception
+     */
     public void extraUserinfoSigMismatchValidation(Page response) throws Exception {
 
         Expectations expectations = new Expectations();
         expectations.addExpectation(new ServerTraceExpectation(rpServer, MessageConstants.CWWKS2418W_USERINFO_PROBLEM, "Did not receive a message in the trace stating that there was a problem with the response from the userinfo endpoint."));
-        expectations.addExpectation(new ServerTraceExpectation(rpServer, MessageConstants.CWWKS2521E_SIGNATURE_NOT_ALLOWED, "Did not receive a message in the trace stating that the signature algorithm was not one that was allowed."));
+        expectations.addExpectation(new ServerTraceExpectation(rpServer, MessageConstants.CWWKS2520E_SIGNATURE_NOT_ALLOWED, "Did not receive a message in the trace stating that the signature algorithm was not one that was allowed."));
 
         validationUtils.validateResult(response, expectations);
 
@@ -596,7 +596,6 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
 
         JsonObjectBuilder updatedDiscData = Json.createObjectBuilder(discResponse);
 
-//        updatedDiscData.add("userinfo_signing_alg_values_supported", alg);
         updatedDiscData.add("userinfo_signing_alg_values_supported", Json.createArrayBuilder().add(alg).build());
 
         JsonObject updatedresponse = updatedDiscData.build();
@@ -632,6 +631,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationUserInfoTests_defaultNameAndGroupClaims_UserinfoGoodSubGoodGroups() throws Exception {
 
@@ -675,6 +675,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationUserInfoTests_defaultNameClaimOtherGroupClaims_UserinfoGoodSubGoodGroups() throws Exception {
 
@@ -782,6 +783,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationUserInfoTests_otherNameClaimDefaultGroupClaims_UserinfoBadSubGoodGroups() throws Exception {
 
@@ -819,6 +821,12 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test that we'll get a failure in the server log indicating that the userinfo endpoint was not valid - the request to access the app will succeed because the request can be
+     * validated without the need of the userinfo response.
+     *
+     * @throws Exception
+     */
     @Test
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfNotJwtUserInfoAndJwtToken.class)
     public void ConfigurationUserInfoTests_invalidUserinfoEndpoint() throws Exception {
@@ -832,6 +840,11 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test that we'll use the default userinfo if the configured userinfo endpoint is ""
+     *
+     * @throws Exception
+     */
     @Test
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfNotJwtUserInfoAndJwtToken.class)
     public void ConfigurationUserInfoTests_emptyUserinfoEndpoint() throws Exception {
@@ -839,6 +852,12 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest("UserinfoTestServlet11", app);
     }
 
+    /**
+     * Test with a valid userinfo endpoint configured (when run, returns a jwt userinfo response signed with RS256)
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
     @Test
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfNotJwtUserInfoAndJwtToken.class)
     public void ConfigurationUserInfoTests_goodUserinfoEndpoint() throws Exception {
@@ -846,6 +865,12 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest("UserinfoTestServlet12", app);
     }
 
+    /**
+     * Test that with the userinfo endpoint set to the Open Liberty splash page, instead of a valid userinfo endpoint, we'll be able to access the app because the request can be
+     * validated without the need of the userinfo response.
+     *
+     * @throws Exception
+     */
     @Test
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfNotJwtUserInfoAndJwtToken.class)
     public void ConfigurationUserInfoTests_splashUserinfoEndpoint() throws Exception {
@@ -853,6 +878,12 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest("UserinfoTestServlet13", app);
     }
 
+    /**
+     * Tset that with the userinfo endpoint returning a jwt signed with RS384 instead of RS256 we'll still be able to access the app because we don't need the information from
+     * userinfo
+     *
+     * @throws Exception
+     */
     @Test
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
     public void ConfigurationUserInfoTests_invalidRS384JWTUserinfoResponse() throws Exception {
@@ -863,6 +894,12 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Tset that with the userinfo endpoint returning a jwt signed with RS512 instead of RS256 we'll still be able to access the app because we don't need the information from
+     * userinfo
+     *
+     * @throws Exception
+     */
     @Test
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
     public void ConfigurationUserInfoTests_invalidRS512JWTUserinfoResponse() throws Exception {
@@ -904,6 +941,13 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
 //
 //    }
 
+    /**
+     * Tset that with the userinfo endpoint returning a jwt signed with HS256 instead of RS256 we'll still be able to access the app because we don't need the information from
+     * userinfo
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
     @Test
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
     public void ConfigurationUserInfoTests_invalidHS256JWTUserinfoResponse() throws Exception {
@@ -914,6 +958,12 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Tset that with the userinfo endpoint returning a jwt signed with HS384 instead of RS256 we'll still be able to access the app because we don't need the information from
+     * userinfo
+     *
+     * @throws Exception
+     */
     @Test
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
     public void ConfigurationUserInfoTests_invalidHS384JWTUserinfoResponse() throws Exception {
@@ -924,6 +974,12 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Tset that with the userinfo endpoint returning a jwt signed with HS512 instead of RS256 we'll still be able to access the app because we don't need the information from
+     * userinfo
+     *
+     * @throws Exception
+     */
     @Test
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
     public void ConfigurationUserInfoTests_invalidHS512JWTUserinfoResponse() throws Exception {
@@ -934,6 +990,14 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Tset that with the userinfo endpoint returning a jwt signed with RS384 instead of RS256. We're not setting the callerNameClaim in the annotation and the Liberty OP does not
+     * return the default callerNameClaim. This means that we won't be able to set the subject from the access or id token - we'll need to use information from userdata, but, the
+     * userinfo response is in a jwt signed with a different signature algorithm. We'll get a 401 status code.
+     *
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
     @Test
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
     public void ConfigurationUserInfoTests_otherNameClaimDefaultGroupClaims_UserinfoGoodSubGoodGroups_userinfoSigAlgMismatch() throws Exception {
@@ -948,7 +1012,6 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
 
         Expectations expectations = new Expectations();
         expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
-        // Possible TODO - expect a message in the messages.log explaining the reason for the 401
 
         response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
 
@@ -958,6 +1021,13 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Tset that with the userinfo endpoint returning a jwt signed with RS384 instead of RS256. We're not setting the callerGroupClaim in the annotation and the Liberty OP does not
+     * return the default callerGroupClaim. This means that we won't be able to set the groups from the access or id token - we'll need to use information from userdata, but, the
+     * userinfo response is in a jwt signed with a different signature algorithm. We'll get a 401 status code.
+     *
+     * @throws Exception
+     */
     @Test
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
     public void ConfigurationUserInfoTests_defaultNameClaimOtherGroupClaims_UserinfoGoodSubGoodGroups_userinfoSigAlgMismatch() throws Exception {
@@ -1015,6 +1085,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
     public void ConfigurationUserInfoTests_UserInfoNameClaimAndGroupClaimNeeded_userInfoSigAlgMismatchWithDiscoveryUserInfoValue() throws Exception {
