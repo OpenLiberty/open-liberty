@@ -79,66 +79,6 @@ enum Condition {
         }
     }
 
-    static Condition of(jakarta.data.repository.Condition c) {
-        switch (c) {
-            case Between:
-                return BETWEEN;
-            case Contains:
-                return CONTAINS;
-            case Empty:
-                return EMPTY;
-            case EndsWith:
-                return ENDS_WITH;
-            case Equal:
-                return EQUALS;
-            case False:
-                return FALSE;
-            case GreaterThan:
-                return GREATER_THAN;
-            case GreaterThanEqual:
-                return GREATER_THAN_EQUAL;
-            case In:
-                return IN;
-            case LessThan:
-                return LESS_THAN;
-            case LessThanEqual:
-                return LESS_THAN_EQUAL;
-            case Like:
-                return LIKE;
-            case Not:
-                return NOT_EQUALS;
-            case NotEmpty:
-                return NOT_EMPTY;
-            case NotNull:
-                return NOT_NULL;
-            case Null:
-                return NULL;
-            case StartsWith:
-                return STARTS_WITH;
-            case True:
-                return TRUE;
-            default:
-                return null; // requires negation
-        }
-    }
-
-    static Condition ofNegated(jakarta.data.repository.Condition c) {
-        switch (c) {
-            case NotContains:
-                return CONTAINS;
-            case NotEndsWith:
-                return ENDS_WITH;
-            case NotIn:
-                return IN;
-            case NotLike:
-                return LIKE;
-            case NotStartsWith:
-                return STARTS_WITH;
-            default:
-                throw new MappingException("Unknown condition: " + c); // TODO
-        }
-    }
-
     /**
      * Confirm that collections are supported for this condition,
      * based on whether case insensitive comparison is requested.

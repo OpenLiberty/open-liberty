@@ -266,7 +266,7 @@ class QueryInfo {
         return new StringBuilder("QueryInfo@").append(Integer.toHexString(hashCode())) //
                         .append(':').append(method) //
                         .append("; ").append(jpql) //
-                        .append("; ").append(paramCount).append(" parameters") //
+                        .append("; ").append(paramCount == Integer.MIN_VALUE ? "no" : paramCount).append(" parameters") //
                         .toString();
     }
 

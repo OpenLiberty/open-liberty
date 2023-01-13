@@ -59,7 +59,9 @@ import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
+import jakarta.data.repository.Count;
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Exists;
 import jakarta.data.repository.Filter;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
@@ -87,6 +89,13 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
     private static final Set<Class<?>> SPECIAL_PARAM_TYPES = new HashSet<>(Arrays.asList //
     (Collector.class, Consumer.class, Limit.class, Pageable.class, Sort.class, Sort[].class));
+
+    private static final Set<jakarta.data.repository.Condition> SUPPORTS_COLLECTIONS = Set.of(jakarta.data.repository.Condition.Equal,
+                                                                                              jakarta.data.repository.Condition.Contains,
+                                                                                              jakarta.data.repository.Condition.Empty,
+                                                                                              jakarta.data.repository.Condition.Not,
+                                                                                              jakarta.data.repository.Condition.NotContains,
+                                                                                              jakarta.data.repository.Condition.NotEmpty);
 
     AtomicBoolean isDisposed = new AtomicBoolean();
     private final PersistenceDataProvider provider;
@@ -172,24 +181,12 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             if (lower)
                 q.append("LOWER(");
             if (params.length > i) {
-                try {
-                    if (numArgs == 1 && params.length > 1) { // IN (:param1, :param2, :param3)
-                        for (int p = 0; p < params.length; p++) {
-                            q.append(p == 0 ? "(" : ", ").append(params[p]);
-                            if (++queryInfo.paramCount == 1)
-                                queryInfo.paramNames = new ArrayList<>();
-                            queryInfo.paramNames.add(params[p]);
-                        }
-                        q.append(')');
-                    } else {
-                        q.append(':').append(params[i]); // TODO if this is null, could use values[i]
-                        if (++queryInfo.paramCount == 1)
-                            queryInfo.paramNames = new ArrayList<>();
-                        queryInfo.paramNames.add(params[i]);
-                    }
-                } catch (UnsupportedOperationException x) {
-                    throw new MappingException("Cannot mix positional and named parameters on repository method " +
-                                               queryInfo.method.getDeclaringClass().getName() + '.' + queryInfo.method.getName(), x); // TODO NLS
+                if (numArgs == 1 && params.length > 1) { // IN (:param1, :param2, :param3)
+                    for (int p = 0; p < params.length; p++)
+                        q.append(p == 0 ? "(" : ", ").append(params[p]);
+                    q.append(')');
+                } else {
+                    q.append(':').append(params[i]); // TODO if this is null, could use values[i]
                 }
             } else if (values.length > i) {
                 if (numArgs == 1 && values.length > 1) { // IN ('value1', 'value2', 'value3')
@@ -214,6 +211,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         q.append("'");
                 }
             } else { // positional parameter
+                if (queryInfo.paramCount == Integer.MIN_VALUE)
+                    queryInfo.paramCount = 0;
                 q.append('?').append(++queryInfo.paramCount);
             }
             if (lower)
@@ -266,8 +265,22 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     queryInfo.paramCount = 0;
                 else
                     q.append(whereClause);
-                // } else if queryInfo.method.getAnnotation(Count.class) != null // TODO
-                // } else if queryInfo.method.getAnnotation(Exists.class) != null // TODO
+            } else if (queryInfo.method.getAnnotation(Count.class) != null) {
+                queryInfo.type = QueryInfo.Type.COUNT;
+                q = new StringBuilder(23 + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
+                                .append("SELECT COUNT(o) FROM ").append(queryInfo.entityInfo.name).append(" o");
+                if (whereClause == null)
+                    queryInfo.paramCount = 0;
+                else
+                    q.append(whereClause);
+            } else if (queryInfo.method.getAnnotation(Exists.class) != null) {
+                queryInfo.type = QueryInfo.Type.EXISTS;
+                q = new StringBuilder(62 + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
+                                .append("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM ").append(queryInfo.entityInfo.name).append(" o");
+                if (whereClause == null)
+                    queryInfo.paramCount = 0;
+                else
+                    q.append(whereClause);
             } else if (whereClause != null) {
                 queryInfo.type = QueryInfo.Type.SELECT;
                 q = generateSelectClause(queryInfo).append(whereClause);
@@ -1024,9 +1037,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      */
     private StringBuilder generateUpdateClause(QueryInfo queryInfo, Update[] updates) {
 
-        if (!queryInfo.hasWhere)
-            queryInfo.paramCount = 0;
-
         StringBuilder q = new StringBuilder(400).append("UPDATE ").append(queryInfo.entityInfo.name).append(" o SET");
 
         boolean first = true;
@@ -1060,10 +1070,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             String param = update.param();
             String[] values = update.value();
             if (param.length() > 0) { // named parameter
-                if (++queryInfo.paramCount == 1)
-                    queryInfo.paramNames = new ArrayList<>();
-                queryInfo.paramNames.add(param);
-
                 q.append(':').append(param);
             } else if (values.length == 1) { // single value
                 char c = values[0].length() == 0 ? ' ' : values[0].charAt(0);
@@ -1086,16 +1092,13 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 }
                 q.append(')');
             } else { // positional parameter
+                if (queryInfo.paramCount == Integer.MIN_VALUE)
+                    queryInfo.paramCount = 0;
                 q.append('?').append(++queryInfo.paramCount);
             }
 
             first = false;
         }
-
-        int namedParamCount = queryInfo.paramNames.size();
-        if (namedParamCount > 0 && queryInfo.paramCount != namedParamCount)
-            throw new MappingException("Cannot mix positional and named parameters on repository method " +
-                                       queryInfo.method.getDeclaringClass().getName() + '.' + queryInfo.method.getName()); // TODO NLS
 
         return q;
     }
@@ -1135,8 +1138,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     private StringBuilder generateWhereClause(QueryInfo queryInfo, Filter[] filters) {
         StringBuilder q = new StringBuilder(250).append(" WHERE (");
 
-        queryInfo.paramCount = 0;
-
         boolean first = true;
         for (Filter filter : filters) {
             if (first)
@@ -1146,10 +1147,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
             String attribute = filter.by();
             boolean ignoreCase = filter.ignoreCase();
-            Condition condition = Condition.of(filter.op());
-            boolean negated = condition == null;
+            jakarta.data.repository.Condition condition = filter.op();
+            jakarta.data.repository.Condition negatedFrom = condition.negatedFrom();
+            boolean negated = negatedFrom != null;
             if (negated)
-                condition = Condition.ofNegated(filter.op());
+                condition = negatedFrom;
 
             if (attribute.length() == 0)
                 throw new MappingException("Entity property name is missing."); // TODO possibly combine with unknown entity property name
@@ -1164,26 +1166,46 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
             boolean isCollection = queryInfo.entityInfo.collectionAttributeNames.contains(name);
             if (isCollection)
-                condition.verifyCollectionsSupported(name, ignoreCase);
+                verifyCollectionsSupported(name, ignoreCase, condition);
 
-            switch (condition) {
-                case STARTS_WITH:
+            switch (filter.op()) {
+                case Equal:
+                    q.append(attributeExpr).append(negated ? Condition.NOT_EQUALS.operator : Condition.EQUALS.operator);
+                    appendParamOrValue(q, queryInfo, filter);
+                    break;
+                case GreaterThan:
+                    q.append(attributeExpr).append(Condition.GREATER_THAN.operator);
+                    appendParamOrValue(q, queryInfo, filter);
+                    break;
+                case GreaterThanEqual:
+                    q.append(attributeExpr).append(Condition.GREATER_THAN_EQUAL.operator);
+                    appendParamOrValue(q, queryInfo, filter);
+                    break;
+                case LessThan:
+                    q.append(attributeExpr).append(Condition.LESS_THAN.operator);
+                    appendParamOrValue(q, queryInfo, filter);
+                    break;
+                case LessThanEqual:
+                    q.append(attributeExpr).append(Condition.LESS_THAN_EQUAL.operator);
+                    appendParamOrValue(q, queryInfo, filter);
+                    break;
+                case StartsWith:
                     q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT(");
                     appendParamOrValue(q, queryInfo, filter).append(", '%')");
                     break;
-                case ENDS_WITH:
+                case EndsWith:
                     q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ");
                     appendParamOrValue(q, queryInfo, filter).append(")");
                     break;
-                case LIKE:
+                case Like:
                     q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE ");
                     appendParamOrValue(q, queryInfo, filter);
                     break;
-                case BETWEEN:
+                case Between:
                     q.append(attributeExpr).append(negated ? " NOT " : " ").append("BETWEEN ");
                     appendParamOrValue(q, queryInfo, filter);
                     break;
-                case CONTAINS:
+                case Contains:
                     if (isCollection) {
                         q.append(' ');
                         appendParamOrValue(q, queryInfo, filter).append(negated ? " NOT " : " ").append("MEMBER OF ").append(attributeExpr);
@@ -1192,24 +1214,29 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         appendParamOrValue(q, queryInfo, filter).append(", '%')");
                     }
                     break;
-                case NULL:
-                case NOT_NULL:
-                case TRUE:
-                case FALSE:
-                    q.append(attributeExpr).append(condition.operator);
-                    break;
-                case EMPTY:
-                    q.append(attributeExpr).append(isCollection ? Condition.EMPTY.operator : Condition.NULL.operator);
-                    break;
-                case NOT_EMPTY:
-                    q.append(attributeExpr).append(isCollection ? Condition.NOT_EMPTY.operator : Condition.NOT_NULL.operator);
-                    break;
-                case IN:
+                case In:
                     if (ignoreCase)
                         throw new MappingException(new UnsupportedOperationException("Repository keyword IgnoreCase cannot be combined with the In keyword.")); // TODO
-                default:
-                    q.append(attributeExpr).append(negated ? " NOT " : "").append(condition.operator);
+                    q.append(attributeExpr).append(negated ? " NOT " : "").append(Condition.IN.operator);
                     appendParamOrValue(q, queryInfo, filter);
+                    break;
+                case Null:
+                    q.append(attributeExpr).append(negated ? Condition.NOT_NULL.operator : Condition.NULL.operator);
+                    break;
+                case True:
+                    q.append(attributeExpr).append(Condition.TRUE.operator);
+                    break;
+                case False:
+                    q.append(attributeExpr).append(Condition.FALSE.operator);
+                    break;
+                case Empty:
+                    if (isCollection)
+                        q.append(attributeExpr).append(negated ? Condition.NOT_EMPTY.operator : Condition.EMPTY.operator);
+                    else
+                        q.append(attributeExpr).append(negated ? Condition.NOT_NULL.operator : Condition.NULL.operator);
+                    break;
+                default:
+                    throw new MappingException(new UnsupportedOperationException(condition.name())); // should be unreachable
             }
         }
 
@@ -1763,5 +1790,23 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             throw new UnsupportedOperationException("Return update count as " + returnType);
 
         return result;
+    }
+
+    /**
+     * Confirm that collections are supported for this condition,
+     * based on whether case insensitive comparison is requested.
+     *
+     * @param attributeName entity attribute to which the condition is to be applied.
+     * @param ignoreCase    indicates if the condition is to be performed ignoring case.
+     * @param condition     the type of condition.
+     * @throws MappingException with chained UnsupportedOperationException if not supported.
+     */
+    @Trivial
+    private static void verifyCollectionsSupported(String attributeName, boolean ignoreCase, jakarta.data.repository.Condition condition) {
+        if (!SUPPORTS_COLLECTIONS.contains(condition) || ignoreCase)
+            throw new MappingException(new UnsupportedOperationException("Repository keyword " +
+                                                                         (ignoreCase ? "IgnoreCase" : condition.name()) +
+                                                                         " which is applied to entity property " + attributeName +
+                                                                         " is not supported for collection properties.")); // TODO
     }
 }

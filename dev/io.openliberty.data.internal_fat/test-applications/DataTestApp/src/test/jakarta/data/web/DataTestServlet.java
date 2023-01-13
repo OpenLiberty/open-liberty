@@ -513,7 +513,7 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Count the number of matching elements in the database.
+     * Count the number of matching entries in the database using query by method name.
      */
     @Test
     public void testCount() throws ExecutionException, InterruptedException, TimeoutException {
@@ -525,6 +525,20 @@ public class DataTestServlet extends FATServlet {
         assertEquals(Integer.valueOf(3), primes.countNumberBetween(40, 50));
 
         assertEquals(Short.valueOf((short) 14), primes.countByNumberBetweenAndEvenNot(0, 50, true).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+    }
+
+    /**
+     * Count the number of matching entries in the database using annotatively defined queries.
+     */
+    @Test
+    public void testCountAnnotation() throws ExecutionException, InterruptedException, TimeoutException {
+
+        assertEquals(6, primes.howManyIn(17L, 37L));
+        assertEquals(0, primes.howManyIn(24L, 28L));
+
+        assertEquals(Long.valueOf(5), primes.howManyLessThan20StartingAfter(5));
+        assertEquals(Long.valueOf(0), primes.howManyLessThan20StartingAfter(19));
+        assertEquals(Long.valueOf(0), primes.howManyLessThan20StartingAfter(21));
     }
 
     /**
@@ -726,7 +740,7 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Identify whether elements exist in the database.
+     * Identify whether elements exist in the database using query by method name.
      */
     @Test
     public void testExists() {
@@ -735,6 +749,28 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(Boolean.TRUE, primes.existsNumberBetween(Long.valueOf(14), Long.valueOf(18)));
         assertEquals(Boolean.FALSE, primes.existsNumberBetween(Long.valueOf(24), Long.valueOf(28)));
+    }
+
+    /**
+     * Identify whether elements exist in the database using an annotatively defined query.
+     */
+    @Test
+    public void testExistsAnnotation() {
+        assertEquals(true, primes.anyLessThanEndingWithBitPattern(25L, "1101"));
+        assertEquals(false, primes.anyLessThanEndingWithBitPattern(25L, "1111"));
+        assertEquals(false, primes.anyLessThanEndingWithBitPattern(12L, "1101"));
+    }
+
+    /**
+     * Define a query with Filter annotations.
+     */
+    @Test
+    public void testFilterAnnotation() {
+        assertIterableEquals(List.of(37L, 17L, 7L, 5L), // 11 has no V in the roman numeral and 47 is too big
+                             primes.inRangeHavingVNumeralAndSubstringOfName(5L, 45L, "ve"));
+
+        assertIterableEquals(List.of(),
+                             primes.inRangeHavingVNumeralAndSubstringOfName(1L, 18L, "nine"));
     }
 
     /**
