@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,8 +20,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.List;
 
-import org.eclipse.microprofile.config.Config;
-
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
@@ -33,7 +31,7 @@ import io.opentelemetry.instrumentation.api.instrumenter.http.HttpClientAttribut
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanNameExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanStatusExtractor;
 import jakarta.annotation.Nullable;
-import jakarta.inject.Inject;
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.ws.rs.client.ClientRequestContext;
 import jakarta.ws.rs.client.ClientRequestFilter;
 import jakarta.ws.rs.client.ClientResponseContext;
@@ -47,34 +45,32 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
 
     private final String configString = "otel.span.client.";
 
-    @Inject
-    Config config;
+    // RestEasy sometimes creates and injects client filters using CDI and sometimes doesn't so we need to work around that
+    // See: https://github.com/OpenLiberty/open-liberty/issues/23758
+    public void init() {
+        synchronized (this) {
+            if (instrumenter != null) {
+                return;
+            }
 
-    @Inject
-    OpenTelemetry openTelemetry;
+            OpenTelemetry openTelemetry = CDI.current().select(OpenTelemetry.class).get();
+            ClientAttributesExtractor clientAttributesExtractor = new ClientAttributesExtractor();
 
-    // RESTEasy requires no-arg constructor for CDI injection: https://issues.redhat.com/browse/RESTEASY-1538
-    public TelemetryClientFilter() {
-    }
+            InstrumenterBuilder<ClientRequestContext, ClientResponseContext> builder = Instrumenter.builder(openTelemetry,
+                                                                                                            "Client filter",
+                                                                                                            HttpSpanNameExtractor.create(clientAttributesExtractor));
 
-    @jakarta.annotation.PostConstruct
-    public void PostConstruct() {
-
-        ClientAttributesExtractor clientAttributesExtractor = new ClientAttributesExtractor();
-
-        InstrumenterBuilder<ClientRequestContext, ClientResponseContext> builder = Instrumenter.builder(
-                                                                                                        openTelemetry,
-                                                                                                        "Client filter",
-                                                                                                        HttpSpanNameExtractor.create(clientAttributesExtractor));
-
-        this.instrumenter = builder
-                        .setSpanStatusExtractor(HttpSpanStatusExtractor.create(clientAttributesExtractor))
-                        .addAttributesExtractor(HttpClientAttributesExtractor.create(clientAttributesExtractor))
-                        .buildClientInstrumenter(new ClientRequestContextTextMapSetter());
+            this.instrumenter = builder
+                            .setSpanStatusExtractor(HttpSpanStatusExtractor.create(clientAttributesExtractor))
+                            .addAttributesExtractor(HttpClientAttributesExtractor.create(clientAttributesExtractor))
+                            .buildClientInstrumenter(new ClientRequestContextTextMapSetter());
+        }
     }
 
     @Override
     public void filter(final ClientRequestContext request) {
+        init();
+
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
             @Override
             public Void run() {
@@ -93,6 +89,8 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
 
     @Override
     public void filter(final ClientRequestContext request, final ClientResponseContext response) {
+        init();
+
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
             @Override
             public Void run() {
