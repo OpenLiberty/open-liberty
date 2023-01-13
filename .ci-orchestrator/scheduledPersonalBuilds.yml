@@ -1,10 +1,10 @@
 type: pipeline_definition
 product: Liberty
-name: OpenLiberty Personal Build
-description: A build run against OpenLiberty Pull Requests
+name: Open Liberty Personal Build
+description: A build run against Open Liberty Pull Requests
 triggers:
 - type: schedule
-  triggerName: "OpenLiberty Personal product only change"
+  triggerName: "Open Liberty Personal product only change"
   triggerRank: 50
   triggerMonitored: false
   triggerThreshold: 100
@@ -32,7 +32,7 @@ triggers:
     - stepName: pr-changes
     
 - type: schedule
-  triggerName: "OpenLiberty Personal unittest only change"
+  triggerName: "Open Liberty Personal unittest only change"
   triggerRank: 50
   triggerMonitored: false
   triggerThreshold: 100
@@ -60,7 +60,7 @@ triggers:
     - stepName: pr-changes
     
 - type: schedule
-  triggerName: "OpenLiberty Personal FAT only change"
+  triggerName: "Open Liberty Personal FAT only change"
   triggerRank: 50
   triggerMonitored: false
   triggerThreshold: 100
@@ -88,7 +88,7 @@ triggers:
     - stepName: pr-changes
     
 - type: schedule
-  triggerName: "OpenLiberty Personal BVT only change"
+  triggerName: "Open Liberty Personal BVT only change"
   triggerRank: 50
   triggerMonitored: false
   triggerThreshold: 100
@@ -116,7 +116,7 @@ triggers:
     - stepName: pr-changes
     
 - type: schedule
-  triggerName: "OpenLiberty Personal infrastructure only change"
+  triggerName: "Open Liberty Personal infrastructure only change"
   triggerRank: 50
   triggerMonitored: false
   triggerThreshold: 100
