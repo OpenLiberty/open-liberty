@@ -19,7 +19,7 @@
  */
 // Original file source: https://github.com/eclipse/microprofile-telemetry/blob/main/tracing/tck/src/main/java/org/eclipse/microprofile/telemetry/tracing/tck/exporter/InMemorySpanExporter.java
 
-package io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation;
+package io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter;
 
 import static java.util.Comparator.comparingLong;
 
@@ -40,7 +40,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class InMemorySpanExporter implements SpanExporter {
-    Logger logger = Logger.getLogger("io.openliberty.microprofile.telemetry.internal_fat.apps.jaxpropagation.InMemorySpanExporter");
+    private static final Logger LOGGER = Logger.getLogger(InMemorySpanExporter.class.getName());
 
     private boolean isStopped = false;
     // Static to allow multi-app testing
@@ -72,13 +72,13 @@ public class InMemorySpanExporter implements SpanExporter {
     }
 
     public void reset() {
-        logger.info("reset method called");
+        LOGGER.info("reset method called");
         finishedSpanItems.clear();
     }
 
     @Override
     public CompletableResultCode export(Collection<SpanData> spans) {
-        logger.info("export method called");
+        LOGGER.info("export method called");
         if (isStopped) {
             return CompletableResultCode.ofFailure();
         }
@@ -97,7 +97,7 @@ public class InMemorySpanExporter implements SpanExporter {
             for (SpanData spanData : lSpans) {
                 sb.append(System.lineSeparator() + spanData.toString() + System.lineSeparator());
             }
-            logger.info(sb.toString());
+            LOGGER.info(sb.toString());
         }
 
         finishedSpanItems.addAll(lSpans);
@@ -112,7 +112,7 @@ public class InMemorySpanExporter implements SpanExporter {
 
     @Override
     public CompletableResultCode shutdown() {
-        logger.info("shutdown method called");
+        LOGGER.info("shutdown method called");
         finishedSpanItems.clear();
         isStopped = true;
         return CompletableResultCode.ofSuccess();
