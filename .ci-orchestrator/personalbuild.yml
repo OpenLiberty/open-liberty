@@ -1,7 +1,7 @@
 type: pipeline_definition
 product: Liberty
-name: OpenLiberty Personal Build
-description: A build run against OpenLiberty Pull Requests
+name: Open Liberty Personal Build
+description: A build run against Open Liberty Pull Requests
 triggers:
 - type: github
   triggerName: "ol-pbbeta"
