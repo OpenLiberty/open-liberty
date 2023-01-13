@@ -1,11 +1,9 @@
 ###############################################################################
 # Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -31,3 +29,7 @@ FEATURE_UNREGISTERED.useraction=Aucune action de l'utilisateur n'est requise
 METRICS_UNHANDLED_JAXRS_EXCEPTION=CWPMI2005W: L'associateur d'exception MicroProfile Metrics a d\u00e9tect\u00e9 et traite une exception non g\u00e9r\u00e9e depuis l'application JAX-RS.
 METRICS_UNHANDLED_JAXRS_EXCEPTION.explanation=L'application reposant sur JAX-RS a rencontr\u00e9 une exception qui n'est pas trait\u00e9e dans l'application. Le code MicroProfile traite cette exception en consignant la trace de pile d'exceptions et en renvoyant la r\u00e9ponse 500 (erreur de serveur interne).
 METRICS_UNHANDLED_JAXRS_EXCEPTION.useraction=Ce comportement peut \u00eatre acceptable. Pour traiter l'exception autrement, ajoutez une interface ExceptionMapper qui g\u00e8re l'exception et la mappe \u00e0 une r\u00e9ponse diff\u00e9rente.
+
+METRICS_UNHANDLED_RESTFULWS_EXCEPTION=CWPMI2006W: L'associateur d'exception MicroProfile Metrics a d\u00e9tect\u00e9 et est en train de traiter une exception non trait\u00e9e provenant de l'application de service Web RESTful.
+METRICS_UNHANDLED_RESTFULWS_EXCEPTION.explanation=L'application bas\u00e9e sur le service Web RESTful a rencontr\u00e9 une exception qu'elle ne traite pas. Le code MicroProfile traite cette exception en consignant la trace de pile d'exceptions et en renvoyant la r\u00e9ponse 500 (erreur de serveur interne).
+METRICS_UNHANDLED_RESTFULWS_EXCEPTION.useraction=Ce comportement peut \u00eatre acceptable. Pour traiter l'exception autrement, ajoutez une interface ExceptionMapper qui g\u00e8re l'exception et la mappe \u00e0 une r\u00e9ponse diff\u00e9rente.

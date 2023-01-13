@@ -8,11 +8,9 @@
 ###############################################################################
 # Copyright (c) 2009, 2011 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -61,6 +59,21 @@ internal.error.CWMMC0006E=CWMMC0006E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u01
 internal.error.CWMMC0006E.explanation=Na serwerze aplikacji wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny.
 internal.error.CWMMC0006E.useraction=Zbierz zestaw danych \u015bledzenia i otw\u00f3rz nowy problem dotycz\u0105cy serwera aplikacji.
 
+#Information regarding libraryRef attribute taking effect only after server restart
+configurationChange.info.CWMMC0007I=CWMMC0007I: Wykryto zmian\u0119 konfiguracji dla opcji MicroProfile Metrics. W przypadku zmiany atrybutu libraryRef wymagane jest zrestartowanie serwera, aby zmiana sta\u0142a si\u0119 aktywna.
+configurationChange.info.CWMMC0007I.explanation=Funkcja MicroProfile Metrics wymaga zrestartowania serwera w celu zmiany bibliotek przywo\u0142ywanych przez libraryRef.
+configurationChange.info.CWMMC0007I.useraction=Je\u015bli atrybut libraryRef zosta\u0142 zmodyfikowany, zrestartuj serwer, aby zmiany sta\u0142y si\u0119 aktywne.
+
+#User configured mpMetrics to use user-defined library for Micrometer binaries without Prometheus Registry JAR
+noPrometheusRegistry.info.CWMMC0008I=CWMMC0008I: Punkt ko\u0144cowy /metrics nie jest dost\u0119pny, poniewa\u017c \u017caden rejestr Prometheus nie jest dost\u0119pny.
+noPrometheusRegistry.info.CWMMC0008I.explanation=Funkcja MicroProfile Metrics \u0142aduje biblioteki Micrometer, kt\u00f3re s\u0105 zdefiniowane z u\u017cyciem atrybutu libraryRef, ale przywo\u0142ywana biblioteka nie zawiera rejestru Micrometer Prometheus.
+noPrometheusRegistry.info.CWMMC0008I.useraction=Je\u015bli niedost\u0119pno\u015b\u0107 rejestru Prometheus nie jest zamierzona, zmodyfikuj zawarto\u015b\u0107 biblioteki, do kt\u00f3rej odwo\u0142uje si\u0119 atrybut libraryRef, tak aby zawiera\u0142a plik JAR rejestru Micrometer Prometheus.
+
+#Prometheus Registry was disabled through the mp.metrics.prometheus.enabled MicroProfile Config property
+disabled.info.CWMMC0009I=CWMMC0009I: Punkt ko\u0144cowy /metrics nie jest dost\u0119pny, poniewa\u017c rejestr Prometheus jest wy\u0142\u0105czony.
+disabled.info.CWMMC0009I.explanation=W\u0142a\u015bciwo\u015b\u0107 mp.metrics.prometheus.enabled konfiguracji MicroProfile jest ustawiona na warto\u015b\u0107 false (fa\u0142sz).
+disabled.info.CWMMC0009I.useraction=Je\u015bli wy\u0142\u0105czenie rejestru Prometheus nie jest zamierzone, nale\u017cy usun\u0105\u0107 w\u0142a\u015bciwo\u015b\u0107 konfiguracji MicroProfile mp.metrics.prometheus.enabled lub jawnie ustawi\u0107 w\u0142a\u015bciwo\u015b\u0107 na warto\u015b\u0107 true (prawda).
+
 #Memory usedHeap message
 memory.usedHeap.description=Wy\u015bwietla ilo\u015b\u0107 u\u017cywanej pami\u0119ci sterty (w bajtach).
 
@@ -95,7 +108,8 @@ classloader.totalUnloadedClass.count.description=Wy\u015bwietla \u0142\u0105czn\
 cpu.availableProcessors.description=Wy\u015bwietla liczb\u0119 procesor\u00f3w dost\u0119pnych dla wirtualnej maszyny j\u0119zyka Java. Ta warto\u015b\u0107 mo\u017ce si\u0119 zmienia\u0107 w trakcie konkretnego wywo\u0142ania maszyny wirtualnej.
 
 #Cpu systemLoadAverage message
-cpu.systemLoadAverage.description=Wy\u015bwietla \u015brednie obci\u0105\u017cenie systemu w ci\u0105gu ostatniej minuty. \u015arednie obci\u0105\u017cenie systemu jest sum\u0105 liczby jednostek, kt\u00f3re mo\u017cna uruchomi\u0107, w kolejce do dost\u0119pnych procesor\u00f3w oraz liczby jednostek, kt\u00f3re mo\u017cna uruchomi\u0107, dzia\u0142aj\u0105cych na dost\u0119pnych procesorach u\u015brednion\u0105 w danym okresie. Metoda obliczania \u015bredniego obci\u0105\u017cenia jest zale\u017cna od systemu operacyjnego, ale zwykle jest to t\u0142umiona \u015brednia zale\u017cna od czasu. Je\u015bli \u015brednie obci\u0105\u017cenie nie jest dost\u0119pne, wy\u015bwietlana jest warto\u015b\u0107 ujemna. Ten atrybut jest zaprojektowany w taki spos\u00f3b, aby zapewnia\u0107 wskaz\u00f3wki na temat obci\u0105\u017cenia systemu i zapytania mog\u0105 by\u0107 do niego kierowane bardzo cz\u0119sto. \u015arednie obci\u0105\u017cenie mo\u017ce by\u0107 niedost\u0119pne na niekt\u00f3rych platformach, na kt\u00f3rych zaimplementowanie tej metody wymaga du\u017cej ilo\u015bci zasob\u00f3w.
+cpu.systemLoadAverage.description=Wy\u015bwietla \u015brednie obci\u0105\u017cenie systemu w ci\u0105gu ostatniej minuty. \u015arednie obci\u0105\u017cenie systemu jest sum\u0105 liczby jednostek, kt\u00f3re mo\u017cna uruchomi\u0107, w kolejce do dost\u0119pnych procesor\u00f3w oraz liczby jednostek, kt\u00f3re mo\u017cna uruchomi\u0107, dzia\u0142aj\u0105cych na dost\u0119pnych procesorach u\u015brednion\u0105 w danym okresie. Metoda obliczania \u015bredniego obci\u0105\u017cenia jest zale\u017cna od systemu operacyjnego, ale zwykle jest to t\u0142umiona \u015brednia zale\u017cna od czasu. Je\u015bli \u015brednie obci\u0105\u017cenie nie jest dost\u0119pne, wy\u015bwietlana jest warto\u015b\u0107 ujemna. Ten atrybut jest zaprojektowany w taki spos\u00f3b, aby zapewnia\u0107 wskaz\u00f3wki na temat obci\u0105\u017cenia systemu i zapytania mog\u0105 by\u0107 do niego kierowane bardzo cz\u0119sto. \u015arednie obci\u0105\u017cenie mo\u017ce by\u0107 niedost\u0119pne na niekt\u00f3rych \
+    platformach, na kt\u00f3rych zaimplementowanie tej metody wymaga du\u017cej ilo\u015bci zasob\u00f3w.
 
 #Cpu processCpuLoad message
 cpu.processCpuLoad.description=Wy\u015bwietla u\u017cycie procesora przez proces wirtualnej maszyny j\u0119zyka Java w ostatnim czasie.
@@ -148,6 +162,7 @@ grpc.client.responseTime.total.description=\u0141\u0105czny czas odpowiedzi uko\
 
 REST.request.description=Liczba wywo\u0142a\u0144 i \u0142\u0105czny czas odpowiedzi tej metody zasobu RESTful od momentu uruchomienia serwera. Metryka nie b\u0119dzie rejestrowa\u0142a czasu obs\u0142ugi ani liczby \u017c\u0105da\u0144 REST powoduj\u0105cych nieodwzorowany wyj\u0105tek. S\u0142u\u017cy r\u00f3wnie\u017c do rejestrowania najd\u0142u\u017cszego czasu trwania w poprzedniej pe\u0142nej minucie i najkr\u00f3tszego czasu trwania w poprzedniej pe\u0142nej minucie.
 REST.request.unmappedException.description=\u0141\u0105czna liczba nieodwzorowanych wyj\u0105tk\u00f3w, kt\u00f3re wywo\u0142a\u0142a ta metoda zasobu RESTful od momentu uruchomienia serwera.
+
 requestTiming.requestCount.description=Liczba \u017c\u0105da\u0144 serwlet\u00f3w od uruchomienia serwera.
 requestTiming.activeRequestCount.description=Liczba obecnie realizowanych \u017c\u0105da\u0144 serwlet\u00f3w.
 requestTiming.slowRequestCount.description=Liczba obecnie realizowanych, ale wolno dzia\u0142aj\u0105cych \u017c\u0105da\u0144 serwlet\u00f3w.
