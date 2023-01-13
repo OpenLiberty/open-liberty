@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -263,7 +263,11 @@ class QueryInfo {
     @Override
     @Trivial
     public String toString() {
-        return new StringBuilder("QueryInfo@").append(Integer.toHexString(hashCode())).append(':').append(method).toString();
+        return new StringBuilder("QueryInfo@").append(Integer.toHexString(hashCode())) //
+                        .append(':').append(method) //
+                        .append("; ").append(jpql) //
+                        .append("; ").append(paramCount).append(" parameters") //
+                        .toString();
     }
 
     /**
