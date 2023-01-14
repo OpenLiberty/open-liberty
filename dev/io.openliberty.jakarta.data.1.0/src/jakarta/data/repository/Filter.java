@@ -34,6 +34,8 @@ public @interface Filter {
     // unless the value starts with a number or single quote
     String[] value() default {};
 
+    Type with() default Type.AND;
+
     /**
      * Enables multiple {@link Filter}
      * annotations on the same type.
@@ -42,5 +44,10 @@ public @interface Filter {
     @Target(ElementType.METHOD)
     public @interface List {
         Filter[] value();
+    }
+
+    public enum Type {
+        AND,
+        OR
     }
 }
