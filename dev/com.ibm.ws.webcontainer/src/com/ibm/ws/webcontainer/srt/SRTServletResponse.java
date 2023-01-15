@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -46,6 +46,7 @@ import com.ibm.ws.webcontainer.core.Response;
 import com.ibm.ws.webcontainer.servlet.IServletWrapperInternal;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.ws.webcontainer.webapp.WebAppDispatcherContext;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
 import com.ibm.wsspi.webcontainer.WebContainerConstants;
 import com.ibm.wsspi.webcontainer.WebContainerRequestState;
@@ -60,6 +61,7 @@ import com.ibm.wsspi.webcontainer.util.EncodingUtils;
 import com.ibm.wsspi.webcontainer.util.IOutputStreamObserver;
 import com.ibm.wsspi.webcontainer.util.IResponseOutput;
 import com.ibm.wsspi.webcontainer.util.WrappingEnumeration;
+import com.ibm.ws.webcontainer.osgi.response.IResponseImpl;
 import com.ibm.ws.webcontainer.osgi.response.WCOutputStream;
 /**
  * The Servlet Runtime Response object
@@ -387,6 +389,14 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
             logger.logp(Level.FINE, CLASS_NAME,"containsHeader", " name --> " + name + " response --> " + String.valueOf(_response.containsHeader(name)));
         }
         return _response.containsHeader(name);
+    }
+
+    private boolean containsHeader(HttpHeaderKeys headerKey) {
+        // 311717
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
+            logger.logp(Level.FINE, CLASS_NAME,"containsHeader", " headerKey --> " + headerKey.getName() + " response --> " + String.valueOf(_response.containsHeader(headerKey.getName())));
+        }
+        return _response instanceof IResponseImpl ? ((IResponseImpl)_response).containsHeader(headerKey) : _response.containsHeader(headerKey.getName());
     }
 
     public boolean containsHeader(byte[] name) {
@@ -962,7 +972,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
 
             // PQ59244 - disallow content length header if content is encoded
             // LIBERTY
-            if (containsHeader(HEADER_CONTENT_ENCODING) && containsHeader(HEADER_CONTENT_LENGTH)) {
+            if (containsHeader(HttpHeaderKeys.HDR_CONTENT_ENCODING) && containsHeader(HttpHeaderKeys.HDR_CONTENT_LENGTH)) {
 
                 if (keepContentLength){
                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {

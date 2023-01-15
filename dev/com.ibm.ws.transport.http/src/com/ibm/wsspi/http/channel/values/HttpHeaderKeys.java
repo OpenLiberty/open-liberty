@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2021 IBM Corporation and others.
+ * Copyright (c) 2004, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -226,6 +226,11 @@ public class HttpHeaderKeys extends HeaderKeys {
     public static final HttpHeaderKeys HDR_$WSFO = new HttpHeaderKeys("$WSFO");
 
     public static final HttpHeaderKeys HDR_HSTS = new HttpHeaderKeys("Strict-Transport-Security");
+
+    public static final HttpHeaderKeys HDR_AUTHORIZATION_ENCODING = new HttpHeaderKeys("Authorization-Encoding");
+
+    public static final HttpHeaderKeys HDR_ORIGIN = new HttpHeaderKeys("Origin");
+
     /** Max value of header keys that will be kept in key storage */
     public static final int ORD_MAX = 1024;
 
@@ -296,9 +301,9 @@ public class HttpHeaderKeys extends HeaderKeys {
      *
      * @param name
      * @param offset
-     *            - starting point in that name
+     *                   - starting point in that name
      * @param length
-     *            - length to use from that starting point
+     *                   - length to use from that starting point
      * @return HttpHeaderKeys
      */
     public static HttpHeaderKeys match(String name, int offset, int length) {
@@ -314,9 +319,9 @@ public class HttpHeaderKeys extends HeaderKeys {
      *
      * @param name
      * @param offset
-     *            - starting point in that name
+     *                   - starting point in that name
      * @param length
-     *            - length to use from that offset
+     *                   - length to use from that offset
      * @return HttpHeaderKeys
      */
     public static HttpHeaderKeys match(byte[] name, int offset, int length) {
@@ -331,14 +336,14 @@ public class HttpHeaderKeys extends HeaderKeys {
      *
      * @param name
      * @param offset
-     *            - starting point in that input name
+     *                   - starting point in that input name
      * @param length
-     *            - length to use from that offset
+     *                   - length to use from that offset
      * @return HttpHeaderKeys
      * @throws NullPointerException
-     *             if input name is null
+     *                                      if input name is null
      * @throws IllegalArgumentException
-     *             if the input name contains CR or LF chars
+     *                                      if the input name contains CR or LF chars
      */
     public static HttpHeaderKeys find(byte[] name, int offset, int length) {
         HttpHeaderKeys key = (HttpHeaderKeys) myMatcher.match(name, offset, length);
@@ -369,9 +374,9 @@ public class HttpHeaderKeys extends HeaderKeys {
      * @param name
      * @return HttpHeaderKeys
      * @throws NullPointerException
-     *             if input name is null
+     *                                      if input name is null
      * @throws IllegalArgumentException
-     *             if the input name contains CR or LF chars
+     *                                      if the input name contains CR or LF chars
      */
     public static HttpHeaderKeys find(String name) {
         HttpHeaderKeys key = (HttpHeaderKeys) myMatcher.match(name, 0, name.length());
@@ -402,9 +407,9 @@ public class HttpHeaderKeys extends HeaderKeys {
      * @param name
      * @return HttpHeaderKeys
      * @throws NullPointerException
-     *             if input name is null
+     *                                      if input name is null
      * @throws IllegalArgumentException
-     *             if the input name contains CR or LF chars
+     *                                      if the input name contains CR or LF chars
      */
     public static HttpHeaderKeys find(byte[] name) {
         return find(name, 0, name.length);

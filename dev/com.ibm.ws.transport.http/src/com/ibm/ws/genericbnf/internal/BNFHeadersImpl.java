@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2022 IBM Corporation and others.
+ * Copyright (c) 2004, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -2044,6 +2044,85 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     }
 
     /**
+     * @see com.ibm.wsspi.genericbnf.HeaderStorage#setHeaderIfAbsent(HeaderKeys, String)
+     */
+    @Override
+    public HeaderField setHeaderIfAbsent(HeaderKeys key, String value) {
+        if (null == key || null == value) {
+            throw new IllegalArgumentException("Null input provided");
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setHeaderIfAbsent(h,s): " + key.getName());
+        }
+
+        // if this header already exists with a value that is not null, then return it.
+        HeaderElement elem = findHeader(key);
+        if (elem != null && elem.asString() != null) {
+            return elem;
+        }
+
+        if (this.bHeaderValidation) {
+            if (getCharacterValidation()) //PI45266
+                value = getValidatedCharacters(value); //PI57228
+            else
+                checkHeaderValue(value);
+        }
+        // check validity of the new value first
+        if (key.useFilters()) {
+            // if this header already exists, then wipe out existing values and
+            // make sure the new one is allowed.
+            if (null != elem) {
+                filterRemove(key, null);
+            }
+            if (!filterAdd(key, GenericUtils.getEnglishBytes(value))) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "New value disallowed: " + value);
+                }
+                // we can't reset every value so clean it out
+                if (null != elem) {
+                    removeHdrInstances(elem, FILTER_NO);
+                }
+                return null;
+            }
+            if (null != elem) {
+                elem = findHeader(key);
+            }
+        }
+        if (null != elem) {
+            // delete all secondary instances first
+            if (null != elem.nextInstance) {
+                HeaderElement temp = elem.nextInstance;
+                while (null != temp) {
+                    temp.remove();
+                    temp = temp.nextInstance;
+                }
+            }
+            if (HeaderStorage.NOTSET != this.headerChangeLimit) {
+                // parse buffer reuse is enabled, see if we can use existing obj
+                if (value.length() <= elem.getValueLength()) {
+                    this.headerChangeCount++;
+                    elem.setStringValue(value);
+                } else {
+                    elem.remove();
+                    elem = null;
+                }
+            } else {
+                // parse buffer reuse is disabled
+                elem.setStringValue(value);
+            }
+        }
+        if (null == elem) {
+            // either it didn't exist or we chose not to re-use the object
+            elem = getElement(key);
+            elem.setStringValue(value);
+            addHeader(elem, FILTER_NO);
+        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Replacing header " + key.getName() + " [" + elem.getDebugValue() + "]");
+        }
+        return null;
+    }
+
+    /**
      * @see com.ibm.wsspi.genericbnf.HeaderStorage#setHeader(String, String)
      */
     @Override
@@ -2239,16 +2318,14 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     private HeaderElement findHeader(HeaderKeys key, int instance) {
         final int ord = key.getOrdinal();
 
-        if (ord <= HttpHeaderKeys.ORD_MAX && !storage.containsKey(ord)) {
-            return null;
-        }
-
         HeaderElement elem = null;
 
-        //If the ordinal created for this key is larger than 1024, the header key
-        //storage has been capped. As such, search the internal header storage
-        //to see if we have a header with this name already added.
-        if (ord > HttpHeaderKeys.ORD_MAX) {
+        if (ord <= HttpHeaderKeys.ORD_MAX) {
+            elem = storage.get(ord);
+        } else {
+            //If the ordinal created for this key is larger than 1024, the header key
+            //storage has been capped. As such, search the internal header storage
+            //to see if we have a header with this name already added.
             HeaderElement headerCand = storage.get(ord);
             // check to see if the ordinal matches and skip the loop below.
             if (headerCand != null && headerCand.getKey().getName().equalsIgnoreCase(key.getName())) {
@@ -2261,8 +2338,6 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                     }
                 }
             }
-        } else {
-            elem = storage.get(ord);
         }
 
         int i = -1;
@@ -2286,16 +2361,14 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     private HeaderElement findHeader(HeaderKeys key) {
         final int ord = key.getOrdinal();
 
-        if (ord <= HttpHeaderKeys.ORD_MAX && !storage.containsKey(ord)) {
-            return null;
-        }
-
         HeaderElement elem = null;
 
-        //If the ordinal created for this key is larger than 1024, the header key
-        //storage has been capped. As such, search the internal header storage
-        //to see if we have a header with this name already added.
-        if (ord > HttpHeaderKeys.ORD_MAX) {
+        if (ord <= HttpHeaderKeys.ORD_MAX) {
+            elem = storage.get(ord);
+        } else {
+            //If the ordinal created for this key is larger than 1024, the header key
+            //storage has been capped. As such, search the internal header storage
+            //to see if we have a header with this name already added.
             HeaderElement headerCand = storage.get(ord);
             // check to see if the ordinal matches and skip the loop below.
             if (headerCand != null && headerCand.getKey().getName().equalsIgnoreCase(key.getName())) {
@@ -2308,8 +2381,6 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                     }
                 }
             }
-        } else {
-            elem = storage.get(ord);
         }
 
         while (null != elem && elem.wasRemoved()) {

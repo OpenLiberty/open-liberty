@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2022 IBM Corporation and others.
+ * Copyright (c) 2010, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,6 @@ import com.ibm.websphere.servlet.request.extended.IRequestExtended;
 import com.ibm.websphere.servlet.response.IResponse;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.util.ThreadPool;
 import com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants;
 import com.ibm.ws.webcontainer.util.IteratorEnumerator;
@@ -45,7 +44,6 @@ import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.VersionValues;
 import com.ibm.wsspi.http.ee7.HttpInboundConnectionExtended;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
-import com.ibm.wsspi.http.HttpInboundConnection; 
 
 import io.openliberty.http.ext.HttpRequestExt;
 
@@ -281,7 +279,7 @@ public class IRequestImpl implements IRequestExtended
     return this.request.getHeader(headerName);
   }
 
-  private String getHeader(HttpHeaderKeys key)
+  public String getHeader(HttpHeaderKeys key)
   {
     return ((HttpRequestExt)this.request).getHeader(key);
   }
@@ -885,10 +883,10 @@ public class IRequestImpl implements IRequestExtended
                       Tr.debug(tc, " isTrusted --> true ssl --> " + isSSL);
                   return isSSL;
               }
-              String FORWARDED_PROTO_header =  getHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO);
-              if (FORWARDED_PROTO_header != null && !useForwarded) {
+              if (!useForwarded) {
+                  String FORWARDED_PROTO_header = getHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO);
                   // router may set this header for all protocols so check specifically for regular ssl (https) and websocket ssl (wss)
-                  if ((FORWARDED_PROTO_header.equalsIgnoreCase("https"))||(FORWARDED_PROTO_header.equalsIgnoreCase("wss"))) {
+                  if (FORWARDED_PROTO_header != null && (FORWARDED_PROTO_header.equalsIgnoreCase("https") || FORWARDED_PROTO_header.equalsIgnoreCase("wss"))) {
                       isSSL = true;
                       if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                           Tr.debug(tc, " isTrusted --> true --> containsHeader --> X-Forwarded-Proto  --> "+FORWARDED_PROTO_header+" ssl --> " + isSSL);
