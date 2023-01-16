@@ -32,6 +32,7 @@ tested.features:\
   jdbc-4.2,\
   mdb-4.0,\
   servlet-4.0, servlet-5.0, servlet-6.0,\
+  concurrent-2.0, concurrent-3.0,\
   xmlbinding-4.0
 
 # To define a global minimum java level for the FAT, use the following property.
@@ -52,6 +53,7 @@ tested.features:\
 	com.ibm.ws.logging,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	fattest.simplicity;version=latest,\
 	io.openliberty.org.testcontainers;version=latest,\
 	com.ibm.ws.transaction.test.util;version=latest,\

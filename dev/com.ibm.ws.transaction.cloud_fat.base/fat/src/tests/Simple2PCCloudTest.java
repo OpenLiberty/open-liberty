@@ -334,4 +334,42 @@ public class Simple2PCCloudTest extends FATServletClient {
         // Lastly, clean up XA resource files
         server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
     }
+
+    /**
+     * The purpose of this test is to verify the fix for issue 23669, where logs can be prematurely
+     * deleted in the presence of running transactions.
+     *
+     * The Cloud001 server is started a little transactional work is done through the normalTran servlet, then a thread
+     * is spawned to start a transaction, the thread sleeps, no resources are enlisted. The server is meantime shutdown.
+     *
+     * As described in issue 23669, the result is an FFDC resulting from an attempt to delete an open recovery log file.
+     *
+     * @throws Exception
+     */
+//    @Test
+//    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
+    public void testLongRunningTranAtShutdown() throws Exception {
+        final String method = "testLongRunningTranAtShutdown";
+        StringBuilder sb = null;
+        // Start Server1
+        FATUtils.startServers(server1);
+        try {
+            sb = runTestWithResponse(server1, SERVLET_NAME, "normalTran");
+        } catch (Throwable e) {
+        }
+        Log.info(this.getClass(), method, "normalTran returned: " + sb);
+
+        try {
+            sb = runTestWithResponse(server1, SERVLET_NAME, "longRunningTran");
+        } catch (Throwable e) {
+        }
+        Log.info(this.getClass(), method, "longRunningTran returned: " + sb);
+
+        // Stop server1
+        // "WTRN0075W", "WTRN0076W", "CWWKE0701E" error messages are expected/allowed
+        FATUtils.stopServers(new String[] { "CWWKE0701E" }, server1);
+
+        // Lastly, clean up XA resource file
+        server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
+    }
 }
