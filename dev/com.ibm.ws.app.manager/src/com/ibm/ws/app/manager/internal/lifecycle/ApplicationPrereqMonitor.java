@@ -15,7 +15,6 @@ import static java.util.stream.Collectors.toSet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +40,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.application.lifecycle.ApplicationPrereq;
 import com.ibm.wsspi.logging.Introspector;
 
@@ -51,6 +51,13 @@ import com.ibm.wsspi.logging.Introspector;
            configurationPid = "com.ibm.ws.app.prereqmonitor",
            configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class ApplicationPrereqMonitor implements ConfigurationListener, Introspector {
+    private static class ConfigurationOutOfDateException extends RuntimeException {
+        public ConfigurationOutOfDateException(Throwable cause) {
+            super(cause);
+        }
+
+    }
+
     public static final TraceComponent tc = Tr.register(ApplicationPrereqMonitor.class);
     private static final AtomicInteger counter = new AtomicInteger(0);
     private final int version = counter.incrementAndGet();
@@ -86,29 +93,43 @@ public class ApplicationPrereqMonitor implements ConfigurationListener, Introspe
         }
     }
 
+    /**
+     * Convert the provided service pid to a configuration id.
+     * This assumes that the service pid is valid at the point this is called.
+     * If not, a string indicating an error will be returned, and a suitable
+     * FFDC will be generated.
+     */
     @Trivial
+    @FFDCIgnore(IllegalStateException.class)
     private String servicePidToConfigId(String servicePid) {
-        Configuration[] configs;
-        try {
-            configs = this.configurationAdmin.listConfigurations("(" + Constants.SERVICE_PID + "=" + servicePid + ")");
 
-            if (configs == null) {
-                // This is not strictly an error given that we may be processing a pid from a deleted application
-                Tr.debug(tc, "No configs found matching servicePid=" + servicePid);
-                return "PID not found: " + servicePid;
-            }
+        try {
+            Configuration[] configs = this.configurationAdmin.listConfigurations("(" + Constants.SERVICE_PID + "=" + servicePid + ")");
+
+            if (configs == null)
+                // We may be processing a pid from a deleted application
+                throw new IllegalStateException("No configs found matching servicePid=" + servicePid);
             if (configs.length > 1)
                 throw new IllegalStateException("Non unique servicePid=" + servicePid + " matched configs=" + Arrays.toString(configs));
 
+            // even if we get to here, the config we successfully retrieved may have been deleted
+            // which will result in an IllegalStateException
+            String id = (String) configs[0].getProperties().get("id");
+            return id;
+
         } catch (IOException | InvalidSyntaxException | IllegalStateException e) {
-            // AutoFFDC.
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-            return "Error listing prereqs:" + sw;
+            // Do not AutoFFDC this (see the @FFDCIgnore above)
+            try {
+                throw new ConfigurationOutOfDateException(e);
+            } catch (ConfigurationOutOfDateException cod) {
+                // AutoFFDC this instead
+            }
+            // The config received is not reliable,
+            // so don't use it for error detection.
+            configModified = true;
+            return "Error converting servicePid: " + servicePid;
         }
 
-        String id = (String) configs[0].getProperties().get("id");
-        return id;
     }
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
