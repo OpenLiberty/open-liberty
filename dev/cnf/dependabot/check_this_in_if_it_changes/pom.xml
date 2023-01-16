@@ -1959,7 +1959,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-el-api</artifactId>
-      <version>10.1.2</version>
+      <version>10.1.5</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
@@ -1969,7 +1969,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jasper-el</artifactId>
-      <version>10.1.2</version>
+      <version>10.1.5</version>
     </dependency>
     <dependency>
       <groupId>org.apache.wink</groupId>
