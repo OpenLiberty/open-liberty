@@ -22,6 +22,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Filter {
+    Type as() default Type.AND;
+
     String by();
 
     boolean ignoreCase() default false;
@@ -33,8 +35,6 @@ public @interface Filter {
     // Single quotes are automatically added to the beginning and end of values
     // unless the value starts with a number or single quote
     String[] value() default {};
-
-    Type with() default Type.AND;
 
     /**
      * Enables multiple {@link Filter}
