@@ -972,6 +972,6 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest("ComplexSigning5", "ComplexSigning5");
     }
 
-    // userinfo response validation is also affected by the setting of idTokenSigningAlgorithmsSupported - those tests are located in the userinfo test class.
+    // userinfo response validation is also affected by signature settings and those tests are located in the ConfigurationUserInfoTests class
 
 }

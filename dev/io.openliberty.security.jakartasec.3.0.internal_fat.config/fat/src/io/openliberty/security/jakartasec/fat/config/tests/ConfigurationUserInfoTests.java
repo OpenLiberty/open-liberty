@@ -13,8 +13,8 @@
 package io.openliberty.security.jakartasec.fat.config.tests;
 
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +27,6 @@ import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
@@ -262,12 +261,12 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
 
         swh.deployConfigurableTestApps(rpServer, "UserinfoTestServlet12.war", "GenericOIDCAuthMechanism.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "UserinfoTestServlet12", "allValues.openIdConfig.properties",
-                                                             TestConfigMaps.getGoodUserInfo(rpHttpsBase, opHttpsBase, "OP1")),
+                                                             TestConfigMaps.getGoodUserInfo(opHttpsBase, "OP1")),
                                        "oidc.client.generic.servlets", "oidc.client.base.*");
 
         swh.deployConfigurableTestApps(rpServer, "UserinfoTestServlet13.war", "GenericOIDCAuthMechanism.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "UserinfoTestServlet13", "allValues.openIdConfig.properties",
-                                                             TestConfigMaps.getUserInfoSplash(rpHttpsBase, opHttpsBase)),
+                                                             TestConfigMaps.getUserInfoSplash(opHttpsBase)),
                                        "oidc.client.generic.servlets", "oidc.client.base.*");
 
         if (RepeatTestFilter.getRepeatActionsAsString().contains(Constants.USERINFO_JWT)) {
@@ -392,7 +391,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
         }
         //***********************************************************************************************************
 
-        Log.info(thisClass, "buildUpdatedConfigMap", "whatAreWeTesting: " + whatAreWeTesting.toString());
+        Log.info(thisClass, "buildUpdatedConfigMap", "whatAreWeTesting: " + Arrays.toString(whatAreWeTesting));
 
         // set the userinfo config setting that will return the appropriate userinfo content
         if (isInList(whatAreWeTesting, new String[] { Caller }) && !isInList(whatAreWeTesting, new String[] { Groups })) {
@@ -542,7 +541,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
 
         // rebuild json data
         String updatedDiscDataString = updatedDiscData.toString();
-
+        Log.info(thisClass, "setNextDiscoveryResponse", "Updated discovery data string: " + updatedDiscDataString);
         // push json data to test discovery endpoint
         updateDiscDataInTestApp(updatedDiscDataString);
     }
@@ -612,10 +611,11 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
 
         String url = rpHttpBase + "/Discovery/.well-known/openid-configuration";
 
-        List<NameValuePair> requestParms = new ArrayList<NameValuePair>();
-        requestParms.add(new NameValuePair("UpdatedDiscoveryData", discData));
+        Map<String, List<String>> requestParms = new HashMap<String, List<String>>();
+        requestParms.put("UpdatedDiscoveryData", Arrays.asList(discData));
 
-        SecurityFatHttpUtils.getHttpConnectionWithAnyResponseCode(url, HTTPRequestMethod.PUT, requestParms);
+        SecurityFatHttpUtils httpUtils = new SecurityFatHttpUtils();
+        httpUtils.getHttpConnectionWithAnyResponseCode(url, HTTPRequestMethod.PUT, requestParms);
 
     }
 
@@ -884,7 +884,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
-    @Test
+    // Don't need all combinations @Test
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
     public void ConfigurationUserInfoTests_invalidRS384JWTUserinfoResponse() throws Exception {
 
@@ -900,6 +900,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
     public void ConfigurationUserInfoTests_invalidRS512JWTUserinfoResponse() throws Exception {
@@ -947,8 +948,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
-    @Mode(TestMode.LITE)
-    @Test
+    // Don't need all combinations @Test
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
     public void ConfigurationUserInfoTests_invalidHS256JWTUserinfoResponse() throws Exception {
 
@@ -964,6 +964,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
     public void ConfigurationUserInfoTests_invalidHS384JWTUserinfoResponse() throws Exception {
@@ -980,7 +981,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
-    @Test
+    // Don't need all combinations @Test
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfJsonUserInfo.class)
     public void ConfigurationUserInfoTests_invalidHS512JWTUserinfoResponse() throws Exception {
 

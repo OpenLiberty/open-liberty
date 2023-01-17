@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -531,7 +531,7 @@ public class TestConfigMaps {
 
     }
 
-    public static Map<String, Object> getGoodUserInfo(String rpBase, String opBase, String provider) throws Exception {
+    public static Map<String, Object> getGoodUserInfo(String opBase, String provider) throws Exception {
 
         String userinfoApp = opBase + "oidc/endpoint/" + provider + "/userinfo";
         Map<String, Object> updatedMap = new HashMap<String, Object>();
@@ -550,7 +550,7 @@ public class TestConfigMaps {
 
     }
 
-    public static Map<String, Object> getUserInfoSplash(String rpBase, String opBase) throws Exception {
+    public static Map<String, Object> getUserInfoSplash(String opBase) throws Exception {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
         Log.info(thisClass, "", "userinfoApp: " + opBase);

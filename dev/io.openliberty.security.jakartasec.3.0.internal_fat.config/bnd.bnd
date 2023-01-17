@@ -84,7 +84,6 @@ javac.target: 11
     org.glassfish:javax.json;version=1.0,\
     com.ibm.json4j;version=latest,\
 	com.ibm.ws.org.jose4j;version=latest,\
-	com.ibm.websphere.javaee.jsonp.1.1;version=latest,\
 	org.eclipse.parsson:parsson;version=1.1.0,\
 	javax.json-api
 

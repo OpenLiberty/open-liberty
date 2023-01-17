@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,12 +17,12 @@ import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.Map;
 
-import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.web.WebRequestUtils;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -33,6 +33,8 @@ import componenttest.topology.utils.HttpUtils;
 public class SecurityFatHttpUtils extends HttpUtils {
 
     protected static Class<?> thisClass = SecurityFatHttpUtils.class;
+
+    public WebRequestUtils webReqUtils = new WebRequestUtils();
 
     /**
      * This method creates a connection to a webpage and then returns the connection, it doesn't care what the response code is.
@@ -53,10 +55,11 @@ public class SecurityFatHttpUtils extends HttpUtils {
         return con;
     }
 
-    public static HttpURLConnection getHttpConnectionWithAnyResponseCode(String path, HTTPRequestMethod method, List<NameValuePair> requestParms) throws Exception {
+    public HttpURLConnection getHttpConnectionWithAnyResponseCode(String path, HTTPRequestMethod method, Map<String, List<String>> requestParms) throws Exception {
         int timeout = DEFAULT_TIMEOUT;
         String urlString = path;
-        String builtParms = buildParmString(requestParms);
+        String builtParms = webReqUtils.buildUrlQueryString(requestParms);
+        Log.info(thisClass, "getHttpConnectionWithAnyResponseCode", "builtParms: " + builtParms);
         if ((HTTPRequestMethod.DELETE.equals(method) || HTTPRequestMethod.PUT.equals(method)) && builtParms != null) {
             urlString = urlString + "?" + builtParms;
         }
@@ -93,30 +96,6 @@ public class SecurityFatHttpUtils extends HttpUtils {
             connection.addRequestProperty("Content-Type", "application/json");
         }
         return connection;
-    }
-
-    protected static String buildParmString(List<NameValuePair> parms) throws Exception {
-
-        String thisMethod = "buildParmString";
-        if (parms != null) {
-            StringBuilder result = new StringBuilder();
-            boolean firstParm = true;
-            for (NameValuePair parm : parms) {
-                if (firstParm) {
-                    firstParm = false;
-                } else {
-                    result.append("&");
-                }
-                Log.info(thisClass, thisMethod, "Setting request parameter:  key: " + parm.getName() + " value: " + parm.getValue());
-                result.append(URLEncoder.encode(parm.getName(), "UTF-8"));
-                result.append("=");
-                result.append(URLEncoder.encode(parm.getValue(), "UTF-8"));
-            }
-            return result.toString();
-        } else {
-            return null;
-        }
-
     }
 
     public static URL createURL(LibertyServer server, String path) throws MalformedURLException {
