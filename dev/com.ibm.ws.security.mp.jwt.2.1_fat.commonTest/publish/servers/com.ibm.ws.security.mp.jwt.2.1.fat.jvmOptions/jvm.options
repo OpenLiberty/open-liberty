@@ -1,0 +1,27 @@
+#*******************************************************************************
+# Copyright (c) 2022, 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-Dmp.jwt.verify.publickey=xxx_publicKeyName_xxx
+-Dmp.jwt.verify.publickey.location=xxx_publicKeyLoc_xxx
+-Dmp.jwt.verify.issuer=xxx_issuer_xxx
+-Dmp.jwt.token.header=xxx_header_xxx
+-Dmp.jwt.token.cookie=xxx_cookie_xxx
+-Dmp.jwt.verify.audiences=xxx_audience_xxx
+-Dmp.jwt.verify.publickey.algorithm=xxx_algorithm_xxx
+-Dmp.jwt.decrypt.key.location=xxx_decryptKeyLoc_xxx
+# 2.1 config options
+-Dmp.jwt.verify.token.age=xxx_tokenAge_xxx
+-Dmp.jwt.verify.clock.skew=xxx_clockSkew_xxx
+-Dmp.jwt.decrypt.key.algorithm=xxx_decryptKeyAlg_xxx
+
+# beta fence for mpJwt 2.1 testing
+-Dcom.ibm.ws.beta.edition=true
