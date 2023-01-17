@@ -19,9 +19,12 @@ import java.io.ObjectOutput;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -848,8 +851,11 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "getAllHeaderNames");
         }
-        List<String> vals = new ArrayList<String>();
-        if (0 != this.numberOfHeaders) {
+        List<String> vals;
+        if (0 == this.numberOfHeaders) {
+            vals = Collections.emptyList();
+        } else {
+            vals = new ArrayList<>(numberOfHeaders);
             HeaderElement elem = this.hdrSequence;
             while (null != elem) {
                 if (!elem.wasRemoved() && !vals.contains(elem.getName())) {
@@ -860,6 +866,36 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "getAllHeaderNames: size=" + vals.size());
+        }
+        return vals;
+    }
+
+    /**
+     * This method is the same as getAllHeaderNames, but returns a Set instead.
+     * This was done in order to avoid calling contains on every header name.
+     * 
+     * @see com.ibm.wsspi.genericbnf.HeaderStorage#getAllHeaderNamesSet()
+     */
+    @Override
+    public Set<String> getAllHeaderNamesSet() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "getAllHeaderNamesSet");
+        }
+        Set<String> vals;
+        if (0 == this.numberOfHeaders) {
+            vals = Collections.emptySet();
+        } else {
+            vals = new LinkedHashSet<>(numberOfHeaders);
+            HeaderElement elem = this.hdrSequence;
+            while (null != elem) {
+                if (!elem.wasRemoved()) {
+                    vals.add(elem.getName());
+                }
+                elem = elem.nextSequence;
+            }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "getAllHeaderNamesSet: size=" + vals.size());
         }
         return vals;
     }

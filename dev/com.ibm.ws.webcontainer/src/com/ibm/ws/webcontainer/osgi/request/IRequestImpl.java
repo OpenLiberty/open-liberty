@@ -19,9 +19,11 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.servlet.http.Cookie;
@@ -34,7 +36,6 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.util.ThreadPool;
 import com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants;
-import com.ibm.ws.webcontainer.util.IteratorEnumerator;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.HttpInboundConnection;
@@ -292,18 +293,16 @@ public class IRequestImpl implements IRequestExtended
       return null;
   }
 
-  @SuppressWarnings("unchecked")
-  public Enumeration getHeaderNames()
+  public Enumeration<String> getHeaderNames()
   {
-    List<String> names = this.request.getHeaderNames();
-    return new IteratorEnumerator(names.iterator());
+    Set<String> names = ((HttpRequestExt)this.request).getHeaderNamesSet();
+    return Collections.enumeration(names);
   }
 
-  @SuppressWarnings("unchecked")
-  public Enumeration getHeaders(String headerName)
+  public Enumeration<String> getHeaders(String headerName)
   {
     List<String> values = this.request.getHeaders(headerName);
-    return new IteratorEnumerator(values.iterator());
+    return Collections.enumeration(values);
   }
 
   public InputStream getInputStream() throws IOException

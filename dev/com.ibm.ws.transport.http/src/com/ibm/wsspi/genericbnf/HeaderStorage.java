@@ -15,6 +15,7 @@ package com.ibm.wsspi.genericbnf;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This interface is for the storage of headers that are in the Augmented BNF
@@ -112,6 +113,15 @@ public interface HeaderStorage {
      * @return List<String>
      */
     List<String> getAllHeaderNames();
+
+    /**
+     * Query a set of all the unique header names found in this particular
+     * message.
+     * This set is never null but may be empty.
+     *
+     * @return Set<String>
+     */
+    Set<String> getAllHeaderNamesSet();
 
     /**
      * Create a new instance of this header with the given byte[] value.
