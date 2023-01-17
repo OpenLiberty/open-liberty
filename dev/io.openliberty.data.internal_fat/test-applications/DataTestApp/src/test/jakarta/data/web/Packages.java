@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,7 +14,6 @@ package test.jakarta.data.web;
 
 import java.util.List;
 
-import jakarta.data.Where;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.OrderBy;
@@ -45,7 +44,7 @@ public interface Packages extends PageableRepository<Package, Integer> {
     long updateByLengthLessThanEqualAndHeightBetweenMultiplyLengthMultiplyWidthSetHeight(float maxLength, float minHeight, float maxHeight,
                                                                                          float lengthMultiplier, float widthMultiplier, float newHeight);
 
-    @Where("o.height < :min OR o.height > :max")
+    @Query("SELECT o from Package o WHERE (o.height < :min OR o.height > :max)") // TODO @Filter with Or
     KeysetAwarePage<Package> whereHeightNotWithin(@Param("min") float minToExclude,
                                                   @Param("max") float maxToExclude,
                                                   Pageable pagination);

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -53,28 +53,31 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import jakarta.data.Delete;
 import jakarta.data.Inheritance;
-import jakarta.data.Select;
-import jakarta.data.Select.Aggregate;
-import jakarta.data.Update;
-import jakarta.data.Where;
 import jakarta.data.exceptions.DataConnectionException;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
+import jakarta.data.repository.Count;
+import jakarta.data.repository.Delete;
+import jakarta.data.repository.Exists;
+import jakarta.data.repository.Filter;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.Limit;
+import jakarta.data.repository.Operation;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
+import jakarta.data.repository.Select;
+import jakarta.data.repository.Select.Aggregate;
 import jakarta.data.repository.Slice;
 import jakarta.data.repository.Sort;
 import jakarta.data.repository.Streamable;
+import jakarta.data.repository.Update;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceException;
@@ -86,6 +89,13 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
     private static final Set<Class<?>> SPECIAL_PARAM_TYPES = new HashSet<>(Arrays.asList //
     (Collector.class, Consumer.class, Limit.class, Pageable.class, Sort.class, Sort[].class));
+
+    private static final Set<jakarta.data.repository.Condition> SUPPORTS_COLLECTIONS = Set.of(jakarta.data.repository.Condition.Equal,
+                                                                                              jakarta.data.repository.Condition.Contains,
+                                                                                              jakarta.data.repository.Condition.Empty,
+                                                                                              jakarta.data.repository.Condition.Not,
+                                                                                              jakarta.data.repository.Condition.NotContains,
+                                                                                              jakarta.data.repository.Condition.NotEmpty);
 
     AtomicBoolean isDisposed = new AtomicBoolean();
     private final PersistenceDataProvider provider;
@@ -134,6 +144,84 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     }
 
     /**
+     * Appends JQPL for a repository method parameter. Either of the form ?1 or LOWER(?1)
+     *
+     * @param q     builder for the JPQL query.
+     * @param lower indicates if the query parameter should be compared in lower case.
+     * @param num   parameter number.
+     * @return the same builder for the JPQL query.
+     */
+    @Trivial
+    private static StringBuilder appendParam(StringBuilder q, boolean lower, int num) {
+        q.append(lower ? "LOWER(?" : '?').append(num);
+        return lower ? q.append(')') : q;
+    }
+
+    /**
+     * Appends JQPL for parameters/values, of one of the following forms, depending on the filter.
+     * <li> ?1 or LOWER(?1)
+     * <li> :name or LOWER(:name)
+     * <li> 'value' or LOWER('value')
+     * In the case of Between, does this for both arguments, with AND between them.
+     *
+     * @param q     builder for the JPQL query.
+     * @param lower indicates if the query parameter should be compared in lower case.
+     * @param num   parameter number.
+     * @return the same builder for the JPQL query.
+     */
+    @Trivial
+    private static StringBuilder appendParamOrValue(StringBuilder q, QueryInfo queryInfo, Filter filter) {
+        boolean lower = filter.ignoreCase();
+        String[] params = filter.param();
+        String[] values = filter.value();
+        int numArgs = filter.op() == jakarta.data.repository.Condition.Between ? 2 : 1;
+        for (int i = 0; i < numArgs; i++) {
+            if (i > 0)
+                q.append(" AND "); // BETWEEN ?1 AND ?2
+            if (lower)
+                q.append("LOWER(");
+            if (params.length > i) {
+                if (numArgs == 1 && params.length > 1) { // IN (:param1, :param2, :param3)
+                    for (int p = 0; p < params.length; p++)
+                        q.append(p == 0 ? "(" : ", ").append(params[p]);
+                    q.append(')');
+                } else {
+                    q.append(':').append(params[i]); // TODO if this is null, could use values[i]
+                }
+            } else if (values.length > i) {
+                if (numArgs == 1 && values.length > 1) { // IN ('value1', 'value2', 'value3')
+                    for (int v = 0; v < values.length; v++) {
+                        q.append(v == 0 ? "(" : ", ");
+                        char c = values[v].length() == 0 ? ' ' : values[v].charAt(0);
+                        boolean enquote = (c < '0' || c > '9') && c != '\'';
+                        if (enquote)
+                            q.append("'");
+                        q.append(values[v]);
+                        if (enquote)
+                            q.append("'");
+                    }
+                    q.append(')');
+                } else {
+                    char c = values[i].length() == 0 ? ' ' : values[i].charAt(0);
+                    boolean enquote = (c < '0' || c > '9') && c != '\'';
+                    if (enquote)
+                        q.append("'");
+                    q.append(values[i]);
+                    if (enquote)
+                        q.append("'");
+                }
+            } else { // positional parameter
+                if (queryInfo.paramCount == Integer.MIN_VALUE)
+                    queryInfo.paramCount = 0;
+                q.append('?').append(++queryInfo.paramCount);
+            }
+            if (lower)
+                q.append(")");
+        }
+        return q;
+    }
+
+    /**
      * Gathers the information that is needed to perform the query that the repository method represents.
      *
      * @param entityInfo entity information
@@ -160,52 +248,65 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         // @Query annotation
         Query query = queryInfo.method.getAnnotation(Query.class);
         if (query == null) {
-            // @Delete/@Update/@Where/@OrderBy annotations
-            Update update = queryInfo.method.getAnnotation(Update.class);
-            Where where = queryInfo.method.getAnnotation(Where.class);
-            if (update == null) {
-                if (queryInfo.method.getAnnotation(Delete.class) == null) {
-                    if (queryInfo.hasWhere = (where != null)) {
-                        queryInfo.type = QueryInfo.Type.SELECT;
-                        q = generateSelect(queryInfo).append(" WHERE (").append(where.value()).append(')');
-                        if (countPages)
-                            generateCount(queryInfo, " WHERE (", where.value(), ")");
-                    }
-                } else {
-                    queryInfo.type = QueryInfo.Type.DELETE;
-                    q = new StringBuilder(200).append("DELETE FROM ").append(entityInfo.name).append(" o");
-                    if (queryInfo.hasWhere = (where != null))
-                        q.append(" WHERE ").append(where.value());
-                }
-            } else {
+            Filter[] filters = queryInfo.method.getAnnotationsByType(Filter.class);
+            StringBuilder whereClause = (queryInfo.hasWhere = filters.length > 0) ? generateWhereClause(queryInfo, filters) : null;
+
+            Update[] updates = queryInfo.method.getAnnotationsByType(Update.class);
+            if (updates.length > 0) {
                 queryInfo.type = QueryInfo.Type.UPDATE;
-                q = new StringBuilder(200).append("UPDATE ").append(entityInfo.name).append(" o SET ").append(update.value());
-                if (queryInfo.hasWhere = (where != null))
-                    q.append(" WHERE ").append(where.value());
-            }
+                q = generateUpdateClause(queryInfo, updates);
+                if (whereClause != null)
+                    q.append(whereClause);
+            } else if (queryInfo.method.getAnnotation(Delete.class) != null) {
+                queryInfo.type = QueryInfo.Type.DELETE;
+                q = new StringBuilder(14 + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
+                                .append("DELETE FROM ").append(entityInfo.name).append(" o");
+                if (whereClause == null)
+                    queryInfo.paramCount = 0;
+                else
+                    q.append(whereClause);
+            } else if (queryInfo.method.getAnnotation(Count.class) != null) {
+                queryInfo.type = QueryInfo.Type.COUNT;
+                q = new StringBuilder(23 + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
+                                .append("SELECT COUNT(o) FROM ").append(queryInfo.entityInfo.name).append(" o");
+                if (whereClause == null)
+                    queryInfo.paramCount = 0;
+                else
+                    q.append(whereClause);
+            } else if (queryInfo.method.getAnnotation(Exists.class) != null) {
+                queryInfo.type = QueryInfo.Type.EXISTS;
+                q = new StringBuilder(62 + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
+                                .append("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM ").append(queryInfo.entityInfo.name).append(" o");
+                if (whereClause == null)
+                    queryInfo.paramCount = 0;
+                else
+                    q.append(whereClause);
+            } else if (whereClause != null) {
+                queryInfo.type = QueryInfo.Type.SELECT;
+                q = generateSelectClause(queryInfo).append(whereClause);
+                if (countPages && queryInfo.type == QueryInfo.Type.SELECT)
+                    generateCount(queryInfo, whereClause.toString());
+            } else if (queryInfo.method.getName().startsWith("save")) {
+                queryInfo.type = QueryInfo.Type.MERGE;
+                Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
+                if (paramTypes.length == 0)
+                    throw new UnsupportedOperationException(queryInfo.method.getName() + " without any parameters");
+                queryInfo.saveParamType = paramTypes[0];
+            } else {
+                // Repository method name pattern queries
+                q = generateMethodNameQuery(queryInfo, countPages);//keyset queries before orderby
 
-            if (q == null)
-                if (queryInfo.method.getName().startsWith("save")) {
-                    queryInfo.type = QueryInfo.Type.MERGE;
-                    Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
-                    if (paramTypes.length == 0)
-                        throw new UnsupportedOperationException(queryInfo.method.getName() + " without any parameters");
-                    queryInfo.saveParamType = paramTypes[0];
-                } else {
-                    // Repository method name pattern queries
-                    q = generateRepositoryQuery(queryInfo, countPages);//keyset queries before orderby
-
-                    // @Select annotation only
-                    if (q == null) {
-                        Select select = queryInfo.method.getAnnotation(Select.class);
-                        if (select != null) {
-                            queryInfo.type = QueryInfo.Type.SELECT;
-                            q = generateSelect(queryInfo);
-                            if (countPages)
-                                generateCount(queryInfo);
-                        }
+                // @Select annotation only
+                if (q == null) {
+                    Select select = queryInfo.method.getAnnotation(Select.class);
+                    if (select != null) {
+                        queryInfo.type = QueryInfo.Type.SELECT;
+                        q = generateSelectClause(queryInfo);
+                        if (countPages)
+                            generateCount(queryInfo, null);
                     }
                 }
+            }
         } else { // @Query annotation
             queryInfo.jpql = query.value();
 
@@ -261,9 +362,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             queryInfo.type = queryInfo.type == null ? QueryInfo.Type.SELECT : queryInfo.type;
             if (q == null)
                 if (queryInfo.jpql == null) {
-                    q = generateSelect(queryInfo);
+                    q = generateSelectClause(queryInfo);
                     if (countPages)
-                        generateCount(queryInfo);
+                        generateCount(queryInfo, null);
                 } else {
                     q = new StringBuilder(queryInfo.jpql);
                 }
@@ -421,168 +522,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     }
 
     /**
-     * Generates a query to select the COUNT of all entities matching the
-     * supplied WHERE condition(s), or all entities if no WHERE conditions.
-     * Populates the jpqlCount of the query information with the result.
-     *
-     * @param queryInfo query information.
-     * @param where     text to append together that makes up the WHERE clause
-     */
-    private void generateCount(QueryInfo queryInfo, String... where) {
-        int len = 50;
-        if (where != null)
-            for (String w : where)
-                len += w.length();
-
-        StringBuilder q = new StringBuilder(len).append("SELECT COUNT(o) FROM ").append(queryInfo.entityInfo.name).append(" o");
-
-        if (where != null)
-            for (String w : where)
-                q.append(w);
-
-        queryInfo.jpqlCount = q.toString();
-    }
-
-    /**
-     * Generates the before/after keyset queries and populates them into the query information.
-     * Example conditions to add for forward keyset of (lastName, firstName, ssn):
-     * AND ((o.lastName > ?5)
-     * _ OR (o.lastName = ?5 AND o.firstName > ?6)
-     * _ OR (o.lastName = ?5 AND o.firstName = ?6 AND o.ssn > ?7) )
-     *
-     * @param queryInfo query information
-     * @param keyset    key names and direction
-     * @param q         query up to the WHERE clause, if present
-     * @param o         ORDER BY clause in forward direction. Null if forward direction is not needed.
-     * @param r         ORDER BY clause in reverse direction. Null if reverse direction is not needed.
-     */
-    private void generateKeysetQueries(QueryInfo queryInfo, List<Sort> keyset, StringBuilder q, StringBuilder o, StringBuilder r) {
-        int numKeys = keyset.size();
-        String paramPrefix = queryInfo.paramNames.isEmpty() || queryInfo.paramNames.get(0) == null ? "?" : ":keyset";
-        StringBuilder a = o == null ? null : new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (");
-        StringBuilder b = r == null ? null : new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (");
-        for (int i = 0; i < numKeys; i++) {
-            if (a != null)
-                a.append(i == 0 ? "(" : " OR (");
-            if (b != null)
-                b.append(i == 0 ? "(" : " OR (");
-            for (int k = 0; k <= i; k++) {
-                Sort keyInfo = keyset.get(k);
-                String name = keyInfo.property();
-                boolean asc = keyInfo.isAscending();
-                boolean lower = keyInfo.ignoreCase();
-                if (a != null)
-                    if (lower) {
-                        a.append(k == 0 ? "LOWER(o." : " AND LOWER(o.").append(name).append(')');
-                        a.append(k < i ? '=' : (asc ? '>' : '<'));
-                        a.append("LOWER(").append(paramPrefix).append(queryInfo.paramCount + 1 + k).append(')');
-                    } else {
-                        a.append(k == 0 ? "o." : " AND o.").append(name);
-                        a.append(k < i ? '=' : (asc ? '>' : '<'));
-                        a.append(paramPrefix).append(queryInfo.paramCount + 1 + k);
-                    }
-                if (b != null)
-                    if (lower) {
-                        b.append(k == 0 ? "LOWER(o." : " AND LOWER(o.").append(name).append(')');
-                        b.append(k < i ? '=' : (asc ? '<' : '>'));
-                        b.append("LOWER(").append(paramPrefix).append(queryInfo.paramCount + 1 + k).append(')');
-                    } else {
-                        b.append(k == 0 ? "o." : " AND o.").append(name);
-                        b.append(k < i ? '=' : (asc ? '<' : '>'));
-                        b.append(paramPrefix).append(queryInfo.paramCount + 1 + k);
-                    }
-            }
-            if (a != null)
-                a.append(')');
-            if (b != null)
-                b.append(')');
-        }
-        if (a != null)
-            queryInfo.jpqlAfterKeyset = new StringBuilder(q).append(a).append(')').append(o).toString();
-        if (b != null)
-            queryInfo.jpqlBeforeKeyset = new StringBuilder(q).append(b).append(')').append(r).toString();
-        queryInfo.keyset = keyset;
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "forward & reverse keyset queries", queryInfo.jpqlAfterKeyset, queryInfo.jpqlBeforeKeyset);
-    }
-
-    private StringBuilder generateRepositoryQuery(QueryInfo queryInfo, boolean countPages) {
-        String methodName = queryInfo.method.getName();
-        StringBuilder q = null;
-        if (methodName.startsWith("find")) {
-            int by = methodName.indexOf("By", 4);
-            int c = by < 0 ? 4 : by + 2;
-            if (by > 4) {
-                if ("findAllById".equals(methodName) && Iterable.class.equals(queryInfo.method.getParameterTypes()[0]))
-                    methodName = "findAllByIdIn"; // CrudRepository.findAllById(Iterable)
-                else
-                    parseFindBy(queryInfo, methodName.substring(4, by));
-            }
-            int orderBy = methodName.lastIndexOf("OrderBy");
-            q = generateSelect(queryInfo);
-            if (orderBy > c || orderBy == -1 && methodName.length() > c) {
-                int where = q.length();
-                generateRepositoryQueryConditions(queryInfo, methodName, c, orderBy > 0 ? orderBy : methodName.length(), q);
-                if (countPages)
-                    generateCount(queryInfo, q.substring(where));
-            }
-            if (orderBy >= c)
-                generateRepositoryQueryOrderBy(queryInfo, orderBy, q);
-            queryInfo.type = QueryInfo.Type.SELECT;
-        } else if (methodName.startsWith("delete")) {
-            int by = methodName.indexOf("By", 6);
-            int c = by < 0 ? 6 : by + 2;
-            if (by > 6) {
-                if ("deleteAllById".equals(methodName) && Iterable.class.equals(queryInfo.method.getParameterTypes()[0]))
-                    methodName = "deleteAllByIdIn"; // CrudRepository.deleteAllById(Iterable)
-            } else if (methodName.length() == 6) {
-                Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
-                if (paramTypes.length == 1 && Object.class.equals(paramTypes[0])) {
-                    methodName = "deleteById"; // CrudRepository.delete(entity)
-                    queryInfo.paramsNeedConversionToId = true;
-                    c = 8;
-                }
-            } else if (methodName.length() == 9 && methodName.endsWith("All")) {
-                Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
-                if (paramTypes.length == 1 && Iterable.class.equals(paramTypes[0])) {
-                    methodName = "deleteByIdIn"; // CrudRepository.deleteAll(Iterable)
-                    queryInfo.paramsNeedConversionToId = true;
-                    c = 8;
-                }
-            }
-            q = new StringBuilder(150).append("DELETE FROM ").append(queryInfo.entityInfo.name).append(" o");
-            if (methodName.length() > c)
-                generateRepositoryQueryConditions(queryInfo, methodName, c, methodName.length(), q);
-            queryInfo.type = QueryInfo.Type.DELETE;
-        } else if (methodName.startsWith("update")) {
-            int by = methodName.indexOf("By", 6);
-            int c = by < 0 ? 6 : by + 2;
-            q = generateRepositoryUpdateQuery(queryInfo, methodName, c);
-            queryInfo.type = QueryInfo.Type.UPDATE;
-        } else if (methodName.startsWith("count")) {
-            int by = methodName.indexOf("By", 5);
-            int c = by < 0 ? 5 : by + 2;
-            q = new StringBuilder(150).append("SELECT COUNT(o) FROM ").append(queryInfo.entityInfo.name).append(" o");
-            if (methodName.length() > c)
-                generateRepositoryQueryConditions(queryInfo, methodName, c, methodName.length(), q);
-            queryInfo.type = QueryInfo.Type.COUNT;
-        } else if (methodName.startsWith("exists")) {
-            int by = methodName.indexOf("By", 6);
-            int c = by < 0 ? 6 : by + 2;
-            q = new StringBuilder(200).append("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM ").append(queryInfo.entityInfo.name).append(" o");
-            if (methodName.length() > c)
-                generateRepositoryQueryConditions(queryInfo, methodName, c, methodName.length(), q);
-            queryInfo.type = QueryInfo.Type.EXISTS;
-        }
-
-        return q;
-    }
-
-    /**
      * Generates JPQL for a *By condition such as MyColumn[IgnoreCase][Not]Like
      */
-    private void generateRepositoryQueryCondition(QueryInfo queryInfo, String methodName, int start, int endBefore, StringBuilder q) {
+    private void generateCondition(QueryInfo queryInfo, String methodName, int start, int endBefore, StringBuilder q) {
         int length = endBefore - start;
 
         Condition condition = Condition.EQUALS;
@@ -682,15 +624,13 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             return;
         }
 
-        StringBuilder a = new StringBuilder();
+        StringBuilder attributeExpr = new StringBuilder();
         if (upper)
-            a.append("UPPER(o.").append(name).append(')');
+            attributeExpr.append("UPPER(o.").append(name).append(')');
         else if (lower || ignoreCase)
-            a.append("LOWER(o.").append(name).append(')');
+            attributeExpr.append("LOWER(o.").append(name).append(')');
         else
-            a.append("o.").append(name);
-
-        String attributeExpr = a.toString();
+            attributeExpr.append("o.").append(name);
 
         boolean isCollection = queryInfo.entityInfo.collectionAttributeNames.contains(name);
         if (isCollection)
@@ -744,48 +684,163 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     }
 
     /**
-     * Appends JQPL for a repository method parameter. Either of the form ?1 or LOWER(?1)
+     * Generates a query to select the COUNT of all entities matching the
+     * supplied WHERE condition(s), or all entities if no WHERE conditions.
+     * Populates the jpqlCount of the query information with the result.
      *
-     * @param q     builder for the JPQL query.
-     * @param lower indicates if the query parameter should be compared in lower case.
-     * @param num   parameter number.
-     * @return the same builder for the JPQL query.
+     * @param queryInfo query information.
+     * @param where     the WHERE clause
      */
-    @Trivial
-    private static StringBuilder appendParam(StringBuilder q, boolean lower, int num) {
-        q.append(lower ? "LOWER(?" : '?').append(num);
-        return lower ? q.append(')') : q;
+    private void generateCount(QueryInfo queryInfo, String where) {
+        StringBuilder q = new StringBuilder(23 + queryInfo.entityInfo.name.length() + (where == null ? 0 : where.length())) //
+                        .append("SELECT COUNT(o) FROM ").append(queryInfo.entityInfo.name).append(" o");
+
+        if (where != null)
+            q.append(where);
+
+        queryInfo.jpqlCount = q.toString();
     }
 
     /**
-     * Generates the JPQL WHERE clause for all findBy, deleteBy, or updateBy conditions such as MyColumn[IgnoreCase][Not]Like
+     * Generates the before/after keyset queries and populates them into the query information.
+     * Example conditions to add for forward keyset of (lastName, firstName, ssn):
+     * AND ((o.lastName > ?5)
+     * _ OR (o.lastName = ?5 AND o.firstName > ?6)
+     * _ OR (o.lastName = ?5 AND o.firstName = ?6 AND o.ssn > ?7) )
+     *
+     * @param queryInfo query information
+     * @param keyset    key names and direction
+     * @param q         query up to the WHERE clause, if present
+     * @param o         ORDER BY clause in forward direction. Null if forward direction is not needed.
+     * @param r         ORDER BY clause in reverse direction. Null if reverse direction is not needed.
      */
-    private void generateRepositoryQueryConditions(QueryInfo queryInfo, String methodName, int start, int endBefore, StringBuilder q) {
-        queryInfo.paramCount = 0;
-        queryInfo.hasWhere = true;
-        q.append(" WHERE (");
-        for (int and = start, or = start, iNext = start, i = start; queryInfo.hasWhere && i >= start && iNext < endBefore; i = iNext) {
-            // The extra character (+1) below allows for entity property names that begin with Or or And.
-            // For example, findByOrg and findByPriceBetweenAndOrderNumber
-            and = and == -1 || and > i + 1 ? and : methodName.indexOf("And", i + 1);
-            or = or == -1 || or > i + 1 ? or : methodName.indexOf("Or", i + 1);
-            iNext = Math.min(and, or);
-            if (iNext < 0)
-                iNext = Math.max(and, or);
-            generateRepositoryQueryCondition(queryInfo, methodName, i, iNext < 0 || iNext >= endBefore ? endBefore : iNext, q);
-            if (iNext > 0 && iNext < endBefore) {
-                q.append(iNext == and ? " AND " : " OR ");
-                iNext += (iNext == and ? 3 : 2);
+    private void generateKeysetQueries(QueryInfo queryInfo, List<Sort> keyset, StringBuilder q, StringBuilder o, StringBuilder r) {
+        int numKeys = keyset.size();
+        String paramPrefix = queryInfo.paramNames.isEmpty() || queryInfo.paramNames.get(0) == null ? "?" : ":keyset";
+        StringBuilder a = o == null ? null : new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (");
+        StringBuilder b = r == null ? null : new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (");
+        for (int i = 0; i < numKeys; i++) {
+            if (a != null)
+                a.append(i == 0 ? "(" : " OR (");
+            if (b != null)
+                b.append(i == 0 ? "(" : " OR (");
+            for (int k = 0; k <= i; k++) {
+                Sort keyInfo = keyset.get(k);
+                String name = keyInfo.property();
+                boolean asc = keyInfo.isAscending();
+                boolean lower = keyInfo.ignoreCase();
+                if (a != null)
+                    if (lower) {
+                        a.append(k == 0 ? "LOWER(o." : " AND LOWER(o.").append(name).append(')');
+                        a.append(k < i ? '=' : (asc ? '>' : '<'));
+                        a.append("LOWER(").append(paramPrefix).append(queryInfo.paramCount + 1 + k).append(')');
+                    } else {
+                        a.append(k == 0 ? "o." : " AND o.").append(name);
+                        a.append(k < i ? '=' : (asc ? '>' : '<'));
+                        a.append(paramPrefix).append(queryInfo.paramCount + 1 + k);
+                    }
+                if (b != null)
+                    if (lower) {
+                        b.append(k == 0 ? "LOWER(o." : " AND LOWER(o.").append(name).append(')');
+                        b.append(k < i ? '=' : (asc ? '<' : '>'));
+                        b.append("LOWER(").append(paramPrefix).append(queryInfo.paramCount + 1 + k).append(')');
+                    } else {
+                        b.append(k == 0 ? "o." : " AND o.").append(name);
+                        b.append(k < i ? '=' : (asc ? '<' : '>'));
+                        b.append(paramPrefix).append(queryInfo.paramCount + 1 + k);
+                    }
             }
+            if (a != null)
+                a.append(')');
+            if (b != null)
+                b.append(')');
         }
-        if (queryInfo.hasWhere)
-            q.append(')');
+        if (a != null)
+            queryInfo.jpqlAfterKeyset = new StringBuilder(q).append(a).append(')').append(o).toString();
+        if (b != null)
+            queryInfo.jpqlBeforeKeyset = new StringBuilder(q).append(b).append(')').append(r).toString();
+        queryInfo.keyset = keyset;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "forward & reverse keyset queries", queryInfo.jpqlAfterKeyset, queryInfo.jpqlBeforeKeyset);
+    }
+
+    private StringBuilder generateMethodNameQuery(QueryInfo queryInfo, boolean countPages) {
+        String methodName = queryInfo.method.getName();
+        StringBuilder q = null;
+        if (methodName.startsWith("find")) {
+            int by = methodName.indexOf("By", 4);
+            int c = by < 0 ? 4 : by + 2;
+            if (by > 4) {
+                if ("findAllById".equals(methodName) && Iterable.class.equals(queryInfo.method.getParameterTypes()[0]))
+                    methodName = "findAllByIdIn"; // CrudRepository.findAllById(Iterable)
+                else
+                    parseFindBy(queryInfo, methodName.substring(4, by));
+            }
+            int orderBy = methodName.lastIndexOf("OrderBy");
+            q = generateSelectClause(queryInfo);
+            if (orderBy > c || orderBy == -1 && methodName.length() > c) {
+                int where = q.length();
+                generateWhereClause(queryInfo, methodName, c, orderBy > 0 ? orderBy : methodName.length(), q);
+                if (countPages)
+                    generateCount(queryInfo, q.substring(where));
+            }
+            if (orderBy >= c)
+                generateOrderBy(queryInfo, orderBy, q);
+            queryInfo.type = QueryInfo.Type.SELECT;
+        } else if (methodName.startsWith("delete")) {
+            int by = methodName.indexOf("By", 6);
+            int c = by < 0 ? 6 : by + 2;
+            if (by > 6) {
+                if ("deleteAllById".equals(methodName) && Iterable.class.equals(queryInfo.method.getParameterTypes()[0]))
+                    methodName = "deleteAllByIdIn"; // CrudRepository.deleteAllById(Iterable)
+            } else if (methodName.length() == 6) {
+                Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
+                if (paramTypes.length == 1 && Object.class.equals(paramTypes[0])) {
+                    methodName = "deleteById"; // CrudRepository.delete(entity)
+                    queryInfo.paramsNeedConversionToId = true;
+                    c = 8;
+                }
+            } else if (methodName.length() == 9 && methodName.endsWith("All")) {
+                Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
+                if (paramTypes.length == 1 && Iterable.class.equals(paramTypes[0])) {
+                    methodName = "deleteByIdIn"; // CrudRepository.deleteAll(Iterable)
+                    queryInfo.paramsNeedConversionToId = true;
+                    c = 8;
+                }
+            }
+            q = new StringBuilder(150).append("DELETE FROM ").append(queryInfo.entityInfo.name).append(" o");
+            if (methodName.length() > c)
+                generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
+            queryInfo.type = QueryInfo.Type.DELETE;
+        } else if (methodName.startsWith("update")) {
+            int by = methodName.indexOf("By", 6);
+            int c = by < 0 ? 6 : by + 2;
+            q = generateUpdateClause(queryInfo, methodName, c);
+            queryInfo.type = QueryInfo.Type.UPDATE;
+        } else if (methodName.startsWith("count")) {
+            int by = methodName.indexOf("By", 5);
+            int c = by < 0 ? 5 : by + 2;
+            q = new StringBuilder(150).append("SELECT COUNT(o) FROM ").append(queryInfo.entityInfo.name).append(" o");
+            if (methodName.length() > c)
+                generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
+            queryInfo.type = QueryInfo.Type.COUNT;
+        } else if (methodName.startsWith("exists")) {
+            int by = methodName.indexOf("By", 6);
+            int c = by < 0 ? 6 : by + 2;
+            q = new StringBuilder(200).append("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM ").append(queryInfo.entityInfo.name).append(" o");
+            if (methodName.length() > c)
+                generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
+            queryInfo.type = QueryInfo.Type.EXISTS;
+        }
+
+        return q;
     }
 
     /**
      * Generates the JPQL ORDER BY clause for a repository findBy method such as findByLastNameLikeOrderByLastNameAscFirstNameDesc
      */
-    private void generateRepositoryQueryOrderBy(QueryInfo queryInfo, int orderBy, StringBuilder q) {
+    private void generateOrderBy(QueryInfo queryInfo, int orderBy, StringBuilder q) {
         String methodName = queryInfo.method.getName();
         boolean needsKeysetQueries = KeysetAwarePage.class.equals(queryInfo.method.getReturnType())
                                      || KeysetAwareSlice.class.equals(queryInfo.method.getReturnType())
@@ -847,77 +902,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         }
     }
 
-    /**
-     * Generates JPQL for a repository updateBy method such as updateByProductIdSetProductNameMultiplyPrice
-     */
-    private StringBuilder generateRepositoryUpdateQuery(QueryInfo queryInfo, String methodName, int c) {
-        int set = methodName.indexOf("Set", c);
-        int add = methodName.indexOf("Add", c);
-        int mul = methodName.indexOf("Multiply", c);
-        int div = methodName.indexOf("Divide", c);
-        int uFirst = Integer.MAX_VALUE;
-        if (set > 0 && set < uFirst)
-            uFirst = set;
-        if (add > 0 && add < uFirst)
-            uFirst = add;
-        if (mul > 0 && mul < uFirst)
-            uFirst = mul;
-        if (div > 0 && div < uFirst)
-            uFirst = div;
-        if (uFirst == Integer.MAX_VALUE)
-            throw new IllegalArgumentException(methodName); // updateBy that lacks updates
-
-        // Compute the WHERE clause first due to its parameters being ordered first in the repository method signature
-        StringBuilder where = new StringBuilder(150);
-        generateRepositoryQueryConditions(queryInfo, methodName, c, uFirst, where);
-
-        StringBuilder q = new StringBuilder(250);
-        q.append("UPDATE ").append(queryInfo.entityInfo.name).append(" o SET");
-
-        for (int u = uFirst; u > 0;) {
-            boolean first = u == uFirst;
-            String op;
-            if (u == set) {
-                op = null;
-                set = methodName.indexOf("Set", u += 3);
-            } else if (u == add) {
-                op = "+";
-                add = methodName.indexOf("Add", u += 3);
-            } else if (u == div) {
-                op = "/";
-                div = methodName.indexOf("Divide", u += 6);
-            } else if (u == mul) {
-                op = "*";
-                mul = methodName.indexOf("Multiply", u += 8);
-            } else {
-                throw new IllegalStateException(methodName); // internal error
-            }
-
-            int next = Integer.MAX_VALUE;
-            if (set > u && set < next)
-                next = set;
-            if (add > u && add < next)
-                next = add;
-            if (mul > u && mul < next)
-                next = mul;
-            if (div > u && div < next)
-                next = div;
-
-            String attribute = next == Integer.MAX_VALUE ? methodName.substring(u) : methodName.substring(u, next);
-            String name = queryInfo.entityInfo.getAttributeName(attribute);
-            q.append(first ? " o." : ", o.").append(name == null ? attribute : name).append("=");
-
-            if (op != null)
-                q.append("o.").append(name == null ? attribute : name).append(op);
-            q.append('?').append(++queryInfo.paramCount);
-
-            u = next == Integer.MAX_VALUE ? -1 : next;
-        }
-
-        return q.append(where);
-    }
-
-    private StringBuilder generateSelect(QueryInfo queryInfo) {
+    private StringBuilder generateSelectClause(QueryInfo queryInfo) {
         StringBuilder q = new StringBuilder(200);
 
         Select select = queryInfo.method.getAnnotation(Select.class);
@@ -971,6 +956,296 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         q.append(attributeName);
         if (function != null)
             q.append(')');
+    }
+
+    /**
+     * Generates the JPQL UPDATE clause for a repository updateBy method such as updateByProductIdSetProductNameMultiplyPrice
+     */
+    private StringBuilder generateUpdateClause(QueryInfo queryInfo, String methodName, int c) {
+        int set = methodName.indexOf("Set", c);
+        int add = methodName.indexOf("Add", c);
+        int mul = methodName.indexOf("Multiply", c);
+        int div = methodName.indexOf("Divide", c);
+        int uFirst = Integer.MAX_VALUE;
+        if (set > 0 && set < uFirst)
+            uFirst = set;
+        if (add > 0 && add < uFirst)
+            uFirst = add;
+        if (mul > 0 && mul < uFirst)
+            uFirst = mul;
+        if (div > 0 && div < uFirst)
+            uFirst = div;
+        if (uFirst == Integer.MAX_VALUE)
+            throw new IllegalArgumentException(methodName); // updateBy that lacks updates
+
+        // Compute the WHERE clause first due to its parameters being ordered first in the repository method signature
+        StringBuilder where = new StringBuilder(150);
+        generateWhereClause(queryInfo, methodName, c, uFirst, where);
+
+        StringBuilder q = new StringBuilder(250);
+        q.append("UPDATE ").append(queryInfo.entityInfo.name).append(" o SET");
+
+        for (int u = uFirst; u > 0;) {
+            boolean first = u == uFirst;
+            String op;
+            if (u == set) {
+                op = null;
+                set = methodName.indexOf("Set", u += 3);
+            } else if (u == add) {
+                op = "+";
+                add = methodName.indexOf("Add", u += 3);
+            } else if (u == div) {
+                op = "/";
+                div = methodName.indexOf("Divide", u += 6);
+            } else if (u == mul) {
+                op = "*";
+                mul = methodName.indexOf("Multiply", u += 8);
+            } else {
+                throw new IllegalStateException(methodName); // internal error
+            }
+
+            int next = Integer.MAX_VALUE;
+            if (set > u && set < next)
+                next = set;
+            if (add > u && add < next)
+                next = add;
+            if (mul > u && mul < next)
+                next = mul;
+            if (div > u && div < next)
+                next = div;
+
+            String attribute = next == Integer.MAX_VALUE ? methodName.substring(u) : methodName.substring(u, next);
+            String name = queryInfo.entityInfo.getAttributeName(attribute);
+            q.append(first ? " o." : ", o.").append(name).append("=");
+
+            if (op != null)
+                q.append("o.").append(name).append(op);
+            q.append('?').append(++queryInfo.paramCount);
+
+            u = next == Integer.MAX_VALUE ? -1 : next;
+        }
+
+        return q.append(where);
+    }
+
+    /**
+     * Generates the JPQL UPDATE clause from @Update annotations.
+     *
+     * @param queryInfo query information
+     * @param updates   Update annotations
+     * @return the JPQL UPDATE clause
+     */
+    private StringBuilder generateUpdateClause(QueryInfo queryInfo, Update[] updates) {
+
+        StringBuilder q = new StringBuilder(400).append("UPDATE ").append(queryInfo.entityInfo.name).append(" o SET");
+
+        boolean first = true;
+        for (Update update : updates) {
+            String attribute = update.attr();
+            String name = queryInfo.entityInfo.getAttributeName(attribute);
+
+            q.append(first ? " o." : ", o.").append(name).append("=");
+
+            Operation op = update.op();
+            if (op != Operation.Assign) {
+                q.append("o.").append(name);
+                switch (op) {
+                    case Add:
+                        q.append('+');
+                        break;
+                    case Multiply:
+                        q.append('*');
+                        break;
+                    case Subtract:
+                        q.append('-');
+                        break;
+                    case Divide:
+                        q.append('/');
+                        break;
+                    default:
+                        throw new UnsupportedOperationException(op.name());
+                }
+            }
+
+            String param = update.param();
+            String[] values = update.value();
+            if (param.length() > 0) { // named parameter
+                q.append(':').append(param);
+            } else if (values.length == 1) { // single value
+                char c = values[0].length() == 0 ? ' ' : values[0].charAt(0);
+                boolean enquote = (c < '0' || c > '9') && c != '\'';
+                if (enquote)
+                    q.append("'");
+                q.append(values[0]);
+                if (enquote)
+                    q.append("'");
+            } else if (values.length > 1) { // multiple value list // TODO should we even allow this if there is no way to supply a single value list?
+                for (int v = 0; v < values.length; v++) {
+                    q.append(v == 0 ? "(" : ", ");
+                    char c = values[v].length() == 0 ? ' ' : values[v].charAt(0);
+                    boolean enquote = (c < '0' || c > '9') && c != '\'';
+                    if (enquote)
+                        q.append("'");
+                    q.append(values[v]);
+                    if (enquote)
+                        q.append("'");
+                }
+                q.append(')');
+            } else { // positional parameter
+                if (queryInfo.paramCount == Integer.MIN_VALUE)
+                    queryInfo.paramCount = 0;
+                q.append('?').append(++queryInfo.paramCount);
+            }
+
+            first = false;
+        }
+
+        return q;
+    }
+
+    /**
+     * Generates the JPQL WHERE clause for all findBy, deleteBy, or updateBy conditions such as MyColumn[IgnoreCase][Not]Like
+     */
+    private void generateWhereClause(QueryInfo queryInfo, String methodName, int start, int endBefore, StringBuilder q) {
+        queryInfo.paramCount = 0;
+        queryInfo.hasWhere = true;
+        q.append(" WHERE (");
+        for (int and = start, or = start, iNext = start, i = start; queryInfo.hasWhere && i >= start && iNext < endBefore; i = iNext) {
+            // The extra character (+1) below allows for entity property names that begin with Or or And.
+            // For example, findByOrg and findByPriceBetweenAndOrderNumber
+            and = and == -1 || and > i + 1 ? and : methodName.indexOf("And", i + 1);
+            or = or == -1 || or > i + 1 ? or : methodName.indexOf("Or", i + 1);
+            iNext = Math.min(and, or);
+            if (iNext < 0)
+                iNext = Math.max(and, or);
+            generateCondition(queryInfo, methodName, i, iNext < 0 || iNext >= endBefore ? endBefore : iNext, q);
+            if (iNext > 0 && iNext < endBefore) {
+                q.append(iNext == and ? " AND " : " OR ");
+                iNext += (iNext == and ? 3 : 2);
+            }
+        }
+        if (queryInfo.hasWhere)
+            q.append(')');
+    }
+
+    /**
+     * Generates the JPQL WHERE clause based on conditions in the Filter annotations
+     *
+     * @param queryInfo query information
+     * @param filters   Filter annotations
+     * @return the JPQL WHERE clause
+     */
+    private StringBuilder generateWhereClause(QueryInfo queryInfo, Filter[] filters) {
+        StringBuilder q = new StringBuilder(250).append(" WHERE (");
+
+        boolean first = true;
+        for (Filter filter : filters) {
+            if (first)
+                first = false;
+            else
+                q.append(" AND ");
+
+            String attribute = filter.by();
+            boolean ignoreCase = filter.ignoreCase();
+            jakarta.data.repository.Condition condition = filter.op();
+            jakarta.data.repository.Condition negatedFrom = condition.negatedFrom();
+            boolean negated = negatedFrom != null;
+            if (negated)
+                condition = negatedFrom;
+
+            if (attribute.length() == 0)
+                throw new MappingException("Entity property name is missing."); // TODO possibly combine with unknown entity property name
+
+            String name = queryInfo.entityInfo.getAttributeName(attribute);
+
+            StringBuilder attributeExpr = new StringBuilder();
+            if (ignoreCase)
+                attributeExpr.append("LOWER(o.").append(name).append(')');
+            else
+                attributeExpr.append("o.").append(name);
+
+            boolean isCollection = queryInfo.entityInfo.collectionAttributeNames.contains(name);
+            if (isCollection)
+                verifyCollectionsSupported(name, ignoreCase, condition);
+
+            switch (filter.op()) {
+                case Equal:
+                    q.append(attributeExpr).append(negated ? Condition.NOT_EQUALS.operator : Condition.EQUALS.operator);
+                    appendParamOrValue(q, queryInfo, filter);
+                    break;
+                case GreaterThan:
+                    q.append(attributeExpr).append(Condition.GREATER_THAN.operator);
+                    appendParamOrValue(q, queryInfo, filter);
+                    break;
+                case GreaterThanEqual:
+                    q.append(attributeExpr).append(Condition.GREATER_THAN_EQUAL.operator);
+                    appendParamOrValue(q, queryInfo, filter);
+                    break;
+                case LessThan:
+                    q.append(attributeExpr).append(Condition.LESS_THAN.operator);
+                    appendParamOrValue(q, queryInfo, filter);
+                    break;
+                case LessThanEqual:
+                    q.append(attributeExpr).append(Condition.LESS_THAN_EQUAL.operator);
+                    appendParamOrValue(q, queryInfo, filter);
+                    break;
+                case StartsWith:
+                    q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT(");
+                    appendParamOrValue(q, queryInfo, filter).append(", '%')");
+                    break;
+                case EndsWith:
+                    q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ");
+                    appendParamOrValue(q, queryInfo, filter).append(")");
+                    break;
+                case Like:
+                    q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE ");
+                    appendParamOrValue(q, queryInfo, filter);
+                    break;
+                case Between:
+                    q.append(attributeExpr).append(negated ? " NOT " : " ").append("BETWEEN ");
+                    appendParamOrValue(q, queryInfo, filter);
+                    break;
+                case Contains:
+                    if (isCollection) {
+                        q.append(' ');
+                        appendParamOrValue(q, queryInfo, filter).append(negated ? " NOT " : " ").append("MEMBER OF ").append(attributeExpr);
+                    } else {
+                        q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ");
+                        appendParamOrValue(q, queryInfo, filter).append(", '%')");
+                    }
+                    break;
+                case In:
+                    if (ignoreCase)
+                        throw new MappingException(new UnsupportedOperationException("Repository keyword IgnoreCase cannot be combined with the In keyword.")); // TODO
+                    q.append(attributeExpr).append(negated ? " NOT " : "").append(Condition.IN.operator);
+                    appendParamOrValue(q, queryInfo, filter);
+                    break;
+                case Null:
+                    q.append(attributeExpr).append(negated ? Condition.NOT_NULL.operator : Condition.NULL.operator);
+                    break;
+                case True:
+                    q.append(attributeExpr).append(Condition.TRUE.operator);
+                    break;
+                case False:
+                    q.append(attributeExpr).append(Condition.FALSE.operator);
+                    break;
+                case Empty:
+                    if (isCollection)
+                        q.append(attributeExpr).append(negated ? Condition.NOT_EMPTY.operator : Condition.EMPTY.operator);
+                    else
+                        q.append(attributeExpr).append(negated ? Condition.NOT_NULL.operator : Condition.NULL.operator);
+                    break;
+                default:
+                    throw new MappingException(new UnsupportedOperationException(condition.name())); // should be unreachable
+            }
+        }
+
+        int namedParamCount = queryInfo.paramNames.size();
+        if (namedParamCount > 0 && queryInfo.paramCount != namedParamCount)
+            throw new MappingException("Cannot mix positional and named parameters on repository method " +
+                                       queryInfo.method.getDeclaringClass().getName() + '.' + queryInfo.method.getName()); // TODO NLS
+
+        return q.append(')');
     }
 
     @FFDCIgnore(Throwable.class)
@@ -1515,5 +1790,23 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             throw new UnsupportedOperationException("Return update count as " + returnType);
 
         return result;
+    }
+
+    /**
+     * Confirm that collections are supported for this condition,
+     * based on whether case insensitive comparison is requested.
+     *
+     * @param attributeName entity attribute to which the condition is to be applied.
+     * @param ignoreCase    indicates if the condition is to be performed ignoring case.
+     * @param condition     the type of condition.
+     * @throws MappingException with chained UnsupportedOperationException if not supported.
+     */
+    @Trivial
+    private static void verifyCollectionsSupported(String attributeName, boolean ignoreCase, jakarta.data.repository.Condition condition) {
+        if (!SUPPORTS_COLLECTIONS.contains(condition) || ignoreCase)
+            throw new MappingException(new UnsupportedOperationException("Repository keyword " +
+                                                                         (ignoreCase ? "IgnoreCase" : condition.name()) +
+                                                                         " which is applied to entity property " + attributeName +
+                                                                         " is not supported for collection properties.")); // TODO
     }
 }

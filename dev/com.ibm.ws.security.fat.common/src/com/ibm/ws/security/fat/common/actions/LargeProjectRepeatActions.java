@@ -5,6 +5,8 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
+ * SPDX-License-Identifier: EPL-2.0
+ *
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
@@ -39,6 +41,10 @@ public class LargeProjectRepeatActions {
      * @return repeat test instances
      */
     public static RepeatTests createEE9OrEE10Repeats() {
+        return createEE9OrEE10Repeats(null, null);
+    }
+
+    public static RepeatTests createEE9OrEE10Repeats(String addEE9Feature, String addEE10Feature) {
 
         RepeatTests rTests = null;
 
@@ -57,10 +63,18 @@ public class LargeProjectRepeatActions {
             if (JavaInfo.forCurrentVM().majorVersion() > 8) {
                 if (TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.LITE) {
                     Log.info(thisClass, "createLargeProjectRepeats", "Enabling the EE9 test instance (Not on Windows, Java > 8, Lite Mode)");
-                    rTests = addRepeat(rTests, new JakartaEE9Action());
+                    if (addEE9Feature == null) {
+                        rTests = addRepeat(rTests, new JakartaEE9Action());
+                    } else {
+                        rTests = addRepeat(rTests, new JakartaEE9Action().alwaysAddFeature(addEE9Feature));
+                    }
                 } else {
                     Log.info(thisClass, "createLargeProjectRepeats", "Enabling the EE10 test instance (Not on Windows, Java > 8, FULL Mode)");
-                    rTests = addRepeat(rTests, new JakartaEE10Action());
+                    if (addEE10Feature == null) {
+                        rTests = addRepeat(rTests, new JakartaEE10Action());
+                    } else {
+                        rTests = addRepeat(rTests, new JakartaEE10Action().alwaysAddFeature(addEE10Feature));
+                    }
                 }
             } else {
                 Log.info(thisClass, "createLargeProjectRepeats", "Enabling the default EE7/EE8 test instance (Not on Windows, Java = 8, any Mode)");

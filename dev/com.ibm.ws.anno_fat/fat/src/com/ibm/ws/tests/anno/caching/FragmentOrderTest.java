@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2020 IBM Corporation and others.
+ * Copyright (c) 2018,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -59,6 +59,7 @@ public class FragmentOrderTest extends AnnoCachingTest {
         	displayWebXmlFromExpandedApp(altWebXml);
     		copyEntryWithinZip("/WEB-INF/" + altWebXml, "/WEB-INF/web.xml", tempWarPath);
     		replaceEarFromExpandedEar(tempExpandedEarPath, getApplicationPath());
+    		Thread.sleep(1000);  // Give time for the update to be noticed.  Some systems cannot notice an update in under a second
     	}
 
         if ( startType == ServerStartType.CLEAN ) {

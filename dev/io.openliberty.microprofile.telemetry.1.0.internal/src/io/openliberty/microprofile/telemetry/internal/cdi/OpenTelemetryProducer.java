@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -68,7 +68,7 @@ public class OpenTelemetryProducer {
         if (!checkDisabled(telemetryProperties)) {
             OpenTelemetry openTelemetry = AccessController.doPrivileged((PrivilegedAction<OpenTelemetry>) () -> {
                 return AutoConfiguredOpenTelemetrySdk.builder()
-                                .addPropertiesSupplier(() -> telemetryProperties)
+                                .addPropertiesCustomizer(x -> telemetryProperties) //Overrides OpenTelemetry's property order
                                 .setServiceClassLoader(Thread.currentThread().getContextClassLoader())
                                 .setResultAsGlobal(false)
                                 .registerShutdownHook(false)
@@ -131,10 +131,9 @@ public class OpenTelemetryProducer {
     private HashMap<String, String> getTelemetryProperties() {
         HashMap<String, String> telemetryProperties = new HashMap<>();
         for (String propertyName : config.getPropertyNames()) {
-            if (propertyName.startsWith("otel.") || propertyName.startsWith("OTEL_")) {
-                config.getOptionalValue(propertyName, String.class).ifPresent(
-                                                                              value -> telemetryProperties.put(propertyName, value));
-
+            if (propertyName.startsWith("otel.")) {
+               config.getOptionalValue(propertyName, String.class).ifPresent(
+                                                                            value -> telemetryProperties.put(propertyName, value));
             }
         }
         //Metrics and logs are disabled by default
@@ -142,9 +141,7 @@ public class OpenTelemetryProducer {
         telemetryProperties.put(CONFIG_LOGS_EXPORTER_PROPERTY, "none");
         telemetryProperties.put(ENV_METRICS_EXPORTER_PROPERTY, "none");
         telemetryProperties.put(ENV_LOGS_EXPORTER_PROPERTY, "none");
-
         return telemetryProperties;
-
     }
 
     @Produces

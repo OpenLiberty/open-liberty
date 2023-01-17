@@ -15,6 +15,7 @@ bVersion=1.0
 
 src: \
     fat/src,\
+    test-applications/AcceptInputFileTest.war/src,\
     test-applications/ExternalContextAddResponseCookie.war/src,\
     test-applications/FacesContextGetLifecycle.war/src,\
     test-applications/LayoutAttribute.war/src,\
@@ -36,5 +37,7 @@ javac.target: 11
 	net.sourceforge.htmlunit:htmlunit;version='2.44.0',\
 	io.openliberty.org.apache.commons.codec;version=latest,\
 	io.openliberty.org.apache.xercesImpl;version=latest,\
+	io.openliberty.jakarta.servlet.6.0;version=latest,\
+	xml-apis:xml-apis;version='1.4.01',\
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
 	io.openliberty.jakarta.annotation.2.1;version=latest

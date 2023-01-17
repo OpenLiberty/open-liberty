@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,12 +29,13 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.BaggageServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.ConfigServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.MetricsDisabledServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.OpenTelemetryBeanServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.PatchTestApp;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.SpanCurrentServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.Telemetry10Servlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.WithSpanServlet;
-import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.MetricsDisabledServlet;
 
 @RunWith(FATRunner.class)
 public class Telemetry10 extends FATServletClient {
@@ -49,7 +50,8 @@ public class Telemetry10 extends FATServletClient {
                     @TestServlet(servlet = BaggageServlet.class, contextRoot = APP_NAME),
                     @TestServlet(servlet = SpanCurrentServlet.class, contextRoot = APP_NAME),
                     @TestServlet(servlet = MetricsDisabledServlet.class, contextRoot = APP_NAME),
-                    @TestServlet(servlet = WithSpanServlet.class, contextRoot = APP_NAME)
+                    @TestServlet(servlet = WithSpanServlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = ConfigServlet.class, contextRoot = APP_NAME),
     })
     public static LibertyServer server;
 
@@ -63,9 +65,13 @@ public class Telemetry10 extends FATServletClient {
                                     BaggageServlet.class,
                                     MetricsDisabledServlet.class,
                                     SpanCurrentServlet.class,
-                                    WithSpanServlet.class);
+                                    WithSpanServlet.class,
+                                    ConfigServlet.class);
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
+        //Set for testing purposes. The properties in the server.xml should override these variables.
+        server.addEnvVar("OTEL_SERVICE_NAME", "overrideThisEnvVar");
+        server.addEnvVar("OTEL_SDK_DISABLED", "true");
         server.startServer();
     }
 
