@@ -25,6 +25,7 @@ alphaOpenTelemetryVersion=1.19.0.alpha
 Private-Package: \
   io.opentelemetry.api; version=${openTelemetryVersion},\
   io.opentelemetry.api.baggage; version=${openTelemetryVersion},\
+  io.opentelemetry.api.baggage.propagation; version=${openTelemetryVersion},\
   io.opentelemetry.api.common; version=${openTelemetryVersion},\
   io.opentelemetry.api.trace; version=${openTelemetryVersion},\
   io.opentelemetry.context; version=${openTelemetryVersion},\
