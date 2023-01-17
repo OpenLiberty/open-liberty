@@ -38,6 +38,4 @@ javac.target: 11
 	io.openliberty.org.apache.commons.codec;version=latest,\
 	io.openliberty.org.apache.xercesImpl;version=latest,\
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
-	xml-apis:xml-apis;version='1.4.01',\
-	io.openliberty.jakarta.servlet.6.0;version=latest,\
 	io.openliberty.jakarta.annotation.2.1;version=latest
