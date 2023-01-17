@@ -46,8 +46,8 @@ public interface Packages extends PageableRepository<Package, Integer> {
     long updateByLengthLessThanEqualAndHeightBetweenMultiplyLengthMultiplyWidthSetHeight(float maxLength, float minHeight, float maxHeight,
                                                                                          float lengthMultiplier, float widthMultiplier, float newHeight);
 
-    @Filter(by = "height", op = Condition.LessThan, param = "min", with = Filter.Type.OR)
-    @Filter(by = "height", op = Condition.GreaterThan, param = "max")
+    @Filter(by = "height", op = Condition.LessThan, param = "min")
+    @Filter(as = Filter.Type.OR, by = "height", op = Condition.GreaterThan, param = "max")
     KeysetAwarePage<Package> whereHeightNotWithin(@Param("min") float minToExclude,
                                                   @Param("max") float maxToExclude,
                                                   Pageable pagination);

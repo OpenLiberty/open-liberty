@@ -1133,11 +1133,12 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     private StringBuilder generateWhereClause(QueryInfo queryInfo, Filter[] filters) {
         StringBuilder q = new StringBuilder(250).append(" WHERE (");
 
-        Filter.Type and_or = null;
+        boolean first = true;
         for (Filter filter : filters) {
-            if (and_or != null)
-                q.append(' ').append(and_or.name()).append(' '); // AND / OR between conditions
-            and_or = filter.with();
+            if (first)
+                first = false;
+            else
+                q.append(' ').append(filter.as().name()).append(' '); // AND / OR between conditions
 
             String attribute = filter.by();
             boolean ignoreCase = filter.ignoreCase();

@@ -2405,6 +2405,18 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository method that has both AND and OR keywords.
+     * The AND keywords should take precedence over OR and be computed first.
+     */
+    @Test
+    public void testPrecedenceOfAndOverOr() {
+        assertIterableEquals(List.of(41L, 37L, 31L, 11L, 7L),
+                             primes.lessThanWithSuffixOrBetweenWithSuffix(40L, "even", 30L, 50L, "one")
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
      * Use the provided methods of a Repository<T, K> interface that is a copy of Jakarta NoSQL's.
      */
     @Test
