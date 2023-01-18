@@ -900,7 +900,8 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                                                 topLevelComponent,
                                                 component,
                                                 wrapper.getWrappedEventName(),
-                                                eventName));
+                                                eventName,
+                                                null));
                                 }
                                 else
                                 {

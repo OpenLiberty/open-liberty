@@ -22,8 +22,10 @@ import java.io.IOException;
 import java.util.Collection;
 
 import jakarta.el.MethodExpression;
+import jakarta.el.ValueExpression;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.component.UIComponent;
+import static jakarta.faces.component.UINamingContainer.getSeparatorChar;
 import jakarta.faces.component.UniqueIdVendor;
 import jakarta.faces.component.behavior.AjaxBehavior;
 import jakarta.faces.component.behavior.ClientBehaviorHolder;
@@ -371,28 +373,40 @@ public class AjaxHandler extends TagHandler implements
             ajaxBehavior.addAjaxBehaviorListener(abl);
         }
 
-        // map @this in a composite to @composite
+        // remap @this to the composite targets
         if (parent instanceof ClientBehaviorRedirectEventComponentWrapper)
         {
-            UIComponent composite = ((ClientBehaviorRedirectEventComponentWrapper) parent).getComposite();
-            if (composite != null)
+            ValueExpression targets = ((ClientBehaviorRedirectEventComponentWrapper) parent).getTargets();
+            if (targets != null)
             {
-                Collection<String> execute = ajaxBehavior.getExecute();              
-                if (execute != null && execute.contains("@this"))
+                String targetClientIds = (String) targets.getValue(context.getELContext());
+                if (targetClientIds != null)
                 {
-                    Collection<String> newExecute = new ArrayList<>(execute);
-                    newExecute.remove("@this");
-                    newExecute.add("@composite");
-                    ajaxBehavior.setExecute(newExecute);
-                }
+                    String separatorChar = String.valueOf(getSeparatorChar(context));
 
-                Collection<String> render = ajaxBehavior.getRender();              
-                if (render != null && render.contains("@this"))
-                {
-                    Collection<String> newRender = new ArrayList<>(render);
-                    newRender.remove("@this");
-                    newRender.add("@composite");
-                    ajaxBehavior.setRender(newRender);
+                    Collection<String> execute = ajaxBehavior.getExecute();              
+                    if (execute.isEmpty() || execute.contains("@this"))
+                    {
+                        Collection<String> newExecute = new ArrayList<>(execute);
+                        newExecute.remove("@this");
+                        for (String id : targetClientIds.trim().split(" +"))
+                        {
+                            newExecute.add("@this" + separatorChar + id);
+                        }
+                        ajaxBehavior.setExecute(newExecute);
+                    }
+
+                    Collection<String> render = ajaxBehavior.getRender();              
+                    if (render.isEmpty() || render.contains("@this"))
+                    {
+                        Collection<String> newRender = new ArrayList<>(render);
+                        newRender.remove("@this");
+                        for (String id : targetClientIds.trim().split(" +"))
+                        {
+                            newRender.add("@this" + separatorChar + id);
+                        }
+                        ajaxBehavior.setRender(newRender);
+                    }
                 }
             }
         }

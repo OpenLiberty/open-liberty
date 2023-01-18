@@ -66,15 +66,17 @@ public class ClientBehaviorRedirectEventComponentWrapper extends UIComponent
     private final UIComponent _delegate;
     private final String _sourceEvent; //cc:clientBehavior "name"
     private final String _targetEvent; //cc:clientBehavior "event"
+    private final ValueExpression targets;
 
     public ClientBehaviorRedirectEventComponentWrapper(UIComponent composite, UIComponent delegate,
-            String sourceEvent, String targetEvent)
+            String sourceEvent, String targetEvent, ValueExpression targets)
     {
         super();
         _composite = composite;
         _delegate = delegate;
         _sourceEvent = sourceEvent;
         _targetEvent = targetEvent;
+        this.targets = targets;
     }
 
     @Override
@@ -496,5 +498,11 @@ public class ClientBehaviorRedirectEventComponentWrapper extends UIComponent
     public UIComponent getDelegate()
     {
         return _delegate;
+    }
+
+
+    public ValueExpression getTargets()
+    {
+        return targets;
     }
 }

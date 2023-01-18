@@ -80,7 +80,8 @@ public class ClientBehaviorAttachedObjectTargetImpl implements ClientBehaviorAtt
                                 topLevelComponent,
                                 innerComponent,
                                 getName(),
-                                getEvent()));
+                                getEvent(),
+                                _targets));
                     }
                     else
                     {
@@ -112,7 +113,8 @@ public class ClientBehaviorAttachedObjectTargetImpl implements ClientBehaviorAtt
                                 topLevelComponent,
                                 innerComponent, 
                                 getName(), 
-                                getEvent()));
+                                getEvent(),
+                                _targets));
                         return targetsList;
                     }
                     else
