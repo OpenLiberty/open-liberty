@@ -28,6 +28,9 @@
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.cache.shared.default" value="false"/>
 
+            <!-- Eclipselink property required for DB2zOS testing -->
+            <property name="eclipselink.target-database-properties" value="UseNationalCharacterVaryingTypeForString=true"/>
+
             <!-- Hibernate 5.2 (JPA 2.1) contains a bug that requires this property to be set
             for Oracle platform detection: https://hibernate.atlassian.net/browse/HHH-13184 -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle12cDialect"/>
@@ -43,6 +46,9 @@
             <!-- Eclipselink Support Properties -->
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.cache.shared.default" value="false"/>
+
+            <!-- Eclipselink property required for DB2zOS testing -->
+            <property name="eclipselink.target-database-properties" value="UseNationalCharacterVaryingTypeForString=true"/>
 
             <!-- Hibernate 5.2 (JPA 2.1) contains a bug that requires this property to be set
             for Oracle platform detection: https://hibernate.atlassian.net/browse/HHH-13184 -->

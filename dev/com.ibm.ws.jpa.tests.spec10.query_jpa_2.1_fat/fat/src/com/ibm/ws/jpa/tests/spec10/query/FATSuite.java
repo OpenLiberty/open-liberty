@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -41,6 +41,8 @@ import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH19998_EJB;
 import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH19998_Web;
 import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH20890_EJB;
 import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH20890_Web;
+import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH23677_EJB;
+import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH23677_Web;
 import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH8014_EJB;
 import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH8014_Web;
 
@@ -68,6 +70,8 @@ import componenttest.rules.repeater.RepeatTests;
                 TestOLGH19998_Web.class,
                 TestOLGH20890_EJB.class,
                 TestOLGH20890_Web.class,
+                TestOLGH23677_EJB.class,
+                TestOLGH23677_Web.class,
                 TestSVLQuery_Web.class,
                 TestSVLQuery_Bulkupdate_Web.class,
                 TestSVLLoopAnoQuery_Web.class,
