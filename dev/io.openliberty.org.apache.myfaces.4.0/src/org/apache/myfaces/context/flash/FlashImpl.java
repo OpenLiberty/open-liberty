@@ -45,6 +45,7 @@ import jakarta.faces.event.PostPutFlashValueEvent;
 import jakarta.faces.event.PreClearFlashEvent;
 import jakarta.faces.event.PreRemoveFlashValueEvent;
 import jakarta.faces.lifecycle.ClientWindow;
+import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.util.ExternalSpecifications;
 
 import org.apache.myfaces.util.lang.StringUtils;
@@ -166,11 +167,13 @@ public class FlashImpl extends Flash implements ReleasableFlash
     // ~ private fields and constructor ---------------------------------------
 
     private boolean _flashScopeDisabled;
+    private boolean _clientWindowUrlModeEnabled;
     
     public FlashImpl(ExternalContext externalContext)
     {
         // Read whether flash scope is disabled.
         _flashScopeDisabled = MyfacesConfig.getCurrentInstance(externalContext).isFlashScopeDisabled();
+        _clientWindowUrlModeEnabled = FacesConfigurator.isUrlWindowMode(externalContext);
     }
     
     // ~ methods from jakarta.faces.context.Flash -------------------------------
@@ -750,7 +753,9 @@ public class FlashImpl extends Flash implements ReleasableFlash
         ExternalContext externalContext = facesContext.getExternalContext();
         String tokenValue = (String) externalContext.getRequestMap().get(FLASH_RENDER_MAP_TOKEN);
         ClientWindow clientWindow = externalContext.getClientWindow();
-        if (clientWindow != null)
+
+        // MYFACES-4543 skip this ClientWindow logic on URL mode as the flash will be lost without initial redirect
+        if (clientWindow != null && !_clientWindowUrlModeEnabled)
         {
             if (facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext))
             {
@@ -795,7 +800,8 @@ public class FlashImpl extends Flash implements ReleasableFlash
         ExternalContext externalContext = facesContext.getExternalContext();
         String tokenValue = null;
         ClientWindow clientWindow = externalContext.getClientWindow();
-        if (clientWindow != null)
+        // MYFACES-4543 skip this ClientWindow logic on URL mode as the flash will be lost without initial redirect
+        if (clientWindow != null && !_clientWindowUrlModeEnabled)
         {
             if (facesContext.getApplication().getStateManager().isSavingStateInClient(facesContext))
             {
@@ -1155,7 +1161,8 @@ public class FlashImpl extends Flash implements ReleasableFlash
         {
             ExternalContext externalContext = facesContext.getExternalContext();
             ClientWindow clientWindow = externalContext.getClientWindow();
-            if (clientWindow != null)
+            // MYFACES-4543 skip this ClientWindow logic on URL mode as the flash will be lost without initial redirect
+            if (clientWindow != null && !_clientWindowUrlModeEnabled)
             {
                 if (token != null)
                 {

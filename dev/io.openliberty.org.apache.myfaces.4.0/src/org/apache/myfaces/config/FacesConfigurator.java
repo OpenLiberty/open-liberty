@@ -1452,7 +1452,7 @@ public class FacesConfigurator
     
     public static void enableDefaultWindowMode(FacesContext facesContext)
     {
-        if (!isEnableDefaultWindowMode(facesContext))
+        if (!isEnableDefaultWindowMode(facesContext.getExternalContext()))
         {
             String windowMode = WebConfigParamUtils.getStringInitParameter(
                     facesContext.getExternalContext(), 
@@ -1466,7 +1466,7 @@ public class FacesConfigurator
                     ClientWindowFactoryImpl.INIT_PARAM_DEFAULT_WINDOW_MODE, 
                     ClientWindowFactoryImpl.WINDOW_MODE_URL);
                 
-                log.info("The current configuration requires client window enabled, setting it to '"+
+                log.info("The current configuration requires ClientWindow enabled, setting it to '"+
                     defaultWindowMode+ '\'');
                 
                 facesContext.getExternalContext().getApplicationMap().put(
@@ -1475,10 +1475,17 @@ public class FacesConfigurator
         }
     }
     
-    public static boolean isEnableDefaultWindowMode(FacesContext facesContext)
+    public static boolean isEnableDefaultWindowMode(ExternalContext externalContext)
     {
-        return Boolean.TRUE.equals(facesContext.getExternalContext().
+        return Boolean.TRUE.equals(externalContext.
             getApplicationMap().get(ENABLE_DEFAULT_WINDOW_MODE));
+    }
+
+    public static boolean isUrlWindowMode(ExternalContext externalContext)
+    {
+        return isEnableDefaultWindowMode(externalContext)
+                || ClientWindowFactoryImpl.WINDOW_MODE_URL.equals(
+                        externalContext.getInitParameter(ClientWindow.CLIENT_WINDOW_MODE_PARAM_NAME));
     }
 
     public void configureProtectedViews()
