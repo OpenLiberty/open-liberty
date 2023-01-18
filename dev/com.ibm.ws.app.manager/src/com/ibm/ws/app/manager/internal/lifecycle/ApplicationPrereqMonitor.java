@@ -52,10 +52,11 @@ import com.ibm.wsspi.logging.Introspector;
            configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class ApplicationPrereqMonitor implements ConfigurationListener, Introspector {
     private static class ConfigurationOutOfDateException extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+
         public ConfigurationOutOfDateException(Throwable cause) {
             super(cause);
         }
-
     }
 
     public static final TraceComponent tc = Tr.register(ApplicationPrereqMonitor.class);
