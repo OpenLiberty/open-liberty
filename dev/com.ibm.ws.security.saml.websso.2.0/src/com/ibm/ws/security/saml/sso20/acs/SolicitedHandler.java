@@ -78,6 +78,9 @@ public class SolicitedHandler {
                 }
                 throw new SamlException(e); // let the SamlException handle the Exception
             }
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "SAML WEBSSO - SP Solicited flow (ACS) starting");
+            }
             BasicMessageContext<?, ?> msgCtx = WebSSOConsumer.getInstance().handleSAMLResponse(request,
                                                                                                   response,
                                                                                                   ssoService,
@@ -108,6 +111,9 @@ public class SolicitedHandler {
                             //"SAML20_NO_SAML_RESPONSE",
                             "Cannot process the request because SAML Response from the IdP is missing", null, // cause
                             new Object[] {});
+        }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "SAML WEBSSO - SP Solicited flow (ACS) ends");
         }
     }
 

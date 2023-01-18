@@ -71,6 +71,9 @@ public class UnsolicitedHandler {
      * @throws SamlException
      */
     public void handleRequest(String externalRelayState) throws SamlException {
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "SAML WEBSSO - IDP init or SP Unsolicited flow (ACS) starting");
+        }
         // 1) get the request from cookie/cache first
         // IF useRelayStateForTarget is FALSE:
         //    * use targetPageUrl
@@ -156,6 +159,9 @@ public class UnsolicitedHandler {
                             //"SAML20_NO_SAML_RESPONSE",
                             "Cannot process the request because SAML Response from the IdP is missing", null, // cause
                             new Object[] {});
+        }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "SAML WEBSSO - IDP init or SP Unsolicited flow (ACS) ends");
         }
     }
 
