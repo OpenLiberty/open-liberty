@@ -36,6 +36,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.util.ThreadPool;
 import com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants;
+import com.ibm.ws.webcontainer.util.ListEnumeration;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.HttpInboundConnection;
@@ -302,7 +303,7 @@ public class IRequestImpl implements IRequestExtended
   public Enumeration<String> getHeaders(String headerName)
   {
     List<String> values = this.request.getHeaders(headerName);
-    return Collections.enumeration(values);
+    return values.size() == 0 ? Collections.emptyEnumeration() : new ListEnumeration<String>(values);
   }
 
   public InputStream getInputStream() throws IOException

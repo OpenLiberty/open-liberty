@@ -873,7 +873,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     /**
      * This method is the same as getAllHeaderNames, but returns a Set instead.
      * This was done in order to avoid calling contains on every header name.
-     * 
+     *
      * @see com.ibm.wsspi.genericbnf.HeaderStorage#getAllHeaderNamesSet()
      */
     @Override
@@ -1016,13 +1016,24 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (null == header) {
             throw new IllegalArgumentException("Null input provided");
         }
-        List<HeaderField> list = new ArrayList<HeaderField>();
+        List<HeaderField> list;
         HeaderElement elem = findHeader(findKey(header));
-        while (null != elem) {
-            if (!elem.wasRemoved()) {
-                list.add(elem);
+        if (null == elem) {
+            list = Collections.emptyList();
+        } else if (elem.nextInstance == null) {
+            if (elem.wasRemoved()) {
+                list = Collections.emptyList();
+            } else {
+                list = Collections.singletonList(elem);
             }
-            elem = elem.nextInstance;
+        } else {
+            list = new ArrayList<HeaderField>();
+            do {
+                if (!elem.wasRemoved()) {
+                    list.add(elem);
+                }
+                elem = elem.nextInstance;
+            } while (null != elem);
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "getHeaders(s): " + header + " " + list.size());
