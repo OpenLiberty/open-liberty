@@ -1094,6 +1094,9 @@ color: #999999;
 
 /* DIALOGS - COMMON */
 
+.modal-dialog-config-val {
+	max-width: 650px;
+}
 .modal-content {
 	border: none;
 	border-radius: 0;
@@ -1808,7 +1811,7 @@ border-radius: 3px;
 .keyValueTableItemActionIconDisabled, .keyValueTableItemActionIconDisabled:hover {
 	cursor: not-allowed;
 	pointer-events: none;
-	background-color: #8b8b8b;
+	background-color: #717171;
 }
 
 #testAuthAliasParameter .has-error {
@@ -1828,7 +1831,8 @@ border-radius: 3px;
 	cursor: not-allowed;
 }
 
-#testPasswordInputTitle {
+#testPasswordInputTitle,
+#testPasswordInputTitleNoResRef {
 	margin-top: 15px;
 }
 
@@ -1843,7 +1847,7 @@ border-radius: 3px;
 
 #dialogValidateConnectionElement .validationTypeDescription {
 	font-size: 16px;
-	padding: 2px 0 5px 0;
+	padding: 2px 0 10px 0;
 	outline-offset: -3px !important;
 	white-space: normal;
 }
