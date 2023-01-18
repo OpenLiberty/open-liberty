@@ -22,7 +22,6 @@ import org.apache.myfaces.util.token.TokenGenerator;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.lifecycle.ClientWindow;
 import jakarta.faces.lifecycle.ClientWindowFactory;
-import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.config.FacesConfigurator;
 import org.apache.myfaces.util.WebConfigParamUtils;
 
@@ -33,10 +32,6 @@ import org.apache.myfaces.util.WebConfigParamUtils;
  */
 public class ClientWindowFactoryImpl extends ClientWindowFactory
 {
-    @JSFWebConfigParam(since="2.2",defaultValue="url")
-    public static final String INIT_PARAM_DEFAULT_WINDOW_MODE = 
-        "org.apache.myfaces.DEFAULT_WINDOW_MODE";
-
     public static final String WINDOW_MODE_NONE = "none";
     public static final String WINDOW_MODE_URL = "url";
     public static final String WINDOW_MODE_URL_REDIRECT = "url-redirect";
@@ -87,14 +82,10 @@ public class ClientWindowFactoryImpl extends ClientWindowFactory
         {
             if (FacesConfigurator.isEnableDefaultWindowMode(context.getExternalContext()))
             {
-                String defaultWindowMode = WebConfigParamUtils.getStringInitParameter(
-                        context.getExternalContext(), 
-                        INIT_PARAM_DEFAULT_WINDOW_MODE, 
-                        WINDOW_MODE_URL);
                 windowMode = WebConfigParamUtils.getStringInitParameter(
                         context.getExternalContext(), 
                         ClientWindow.CLIENT_WINDOW_MODE_PARAM_NAME, 
-                        defaultWindowMode);
+                        WINDOW_MODE_URL);
             }
             else
             {

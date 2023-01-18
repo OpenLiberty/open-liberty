@@ -1463,12 +1463,12 @@ public class FacesConfigurator
                 //No window mode set, force window mode to url
                 String defaultWindowMode = WebConfigParamUtils.getStringInitParameter(
                     facesContext.getExternalContext(), 
-                    ClientWindowFactoryImpl.INIT_PARAM_DEFAULT_WINDOW_MODE, 
+                    ClientWindow.CLIENT_WINDOW_MODE_PARAM_NAME, 
                     ClientWindowFactoryImpl.WINDOW_MODE_URL);
-                
+
                 log.info("The current configuration requires ClientWindow enabled, setting it to '"+
                     defaultWindowMode+ '\'');
-                
+
                 facesContext.getExternalContext().getApplicationMap().put(
                     ENABLE_DEFAULT_WINDOW_MODE, Boolean.TRUE);
             }
