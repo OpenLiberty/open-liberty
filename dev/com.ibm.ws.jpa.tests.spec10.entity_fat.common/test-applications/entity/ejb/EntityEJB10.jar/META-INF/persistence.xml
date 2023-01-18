@@ -13,6 +13,9 @@
             <!-- Eclipselink Support Properties -->
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.cache.shared.default" value="false"/>
+
+            <!-- Eclipselink property required for DB2zOS testing -->
+            <property name="eclipselink.target-database-properties" value="UseNationalCharacterVaryingTypeForString=true"/>
         </properties>
     </persistence-unit>
 
@@ -25,6 +28,9 @@
             <!-- Eclipselink Support Properties -->
             <property name="eclipselink.logging.parameters" value="true"/>
             <property name="eclipselink.cache.shared.default" value="false"/>
+
+            <!-- Eclipselink property required for DB2zOS testing -->
+            <property name="eclipselink.target-database-properties" value="UseNationalCharacterVaryingTypeForString=true"/>
         </properties>
     </persistence-unit>
 </persistence>
