@@ -121,7 +121,10 @@ if (!myfaces._impl.core._EvalHandlers) {
                 return _T.resolveNonce(document.currentScript);
             }
 
-            var scripts = document.querySelectorAll("script[src], link[src]");
+            var _Lang = myfaces._impl._util._Lang;
+            var scripts = _Lang.objToArray(document.getElementsByTagName("script"))
+                .concat(_Lang.objToArray(document.getElementsByTagName("link")));
+
             var faces_js = null;
 
             //we search all scripts
@@ -933,9 +936,6 @@ if (!myfaces._impl.core._Runtime) {
         * does not alter the user agent, which they normally dont!
         *
         * the exception is the ie detection which relies on specific quirks in ie
-        *
-        * TODO check if the browser detection still is needed
-        * for 2.3 since our baseline will be IE11 most likely not
         */
        var n = navigator;
        var dua = n.userAgent,
@@ -2310,6 +2310,22 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
         }
         return str.slice(0, i + 1);
     },
+
+    /**
+     * a fuzzy match where one item is subset of the other or vice versa
+     * @param str1
+     * @param str2
+     * @returns {boolean}
+     */
+    match: function(str1, str2) {
+        //Sometimes we have to deal with paths in hrefs so
+        //one of the itmes either is an exact match or a substring
+        str1 = this.trim(str1 || "");
+        str2 = this.trim(str2 || "");
+
+        return str1.indexOf(str2) != -1 || str2.indexOf(str1) != -1;
+    },
+
     /**
      * Backported from dojo
      * a failsafe string determination method
@@ -2432,14 +2448,14 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      *      <li>param scope (optional) the scope to apply the closure to  </li>
      * </ul>
      */
-    arrForEach:function (arr, func /*startPos, scope*/) {
+    arrForEach:function (arr, func, startPos, scope) {
         if (!arr || !arr.length) return;
-        var startPos = Number(arguments[2]) || 0;
-        var thisObj = arguments[3];
+        var start = startPos || 0;
+        var thisObj = scope || arr;
         //check for an existing foreach mapping on array prototypes
         //IE9 still does not pass array objects as result for dom ops
         arr = this.objToArray(arr);
-        (startPos) ? arr.slice(startPos).forEach(func, thisObj) : arr.forEach(func, thisObj);
+        (start) ? arr.slice(start).forEach(func, thisObj) : arr.forEach(func, thisObj);
     },
     /**
      * foreach implementation utilizing the
@@ -2458,8 +2474,10 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      */
     arrFilter:function (arr, func, startPos, scope) {
         if (!arr || !arr.length) return [];
+        var start = startPos || 0;
+        var thisObj = scope || arr;
         arr = this.objToArray(arr);
-        return (startPos || 0) ? arr.slice(startPos).filter(func, scope || arr) : arr.filter(func, scope || arr);
+        return ((start) ? arr.slice(start).filter(func, thisObj) : arr.filter(func, thisObj));
     },
     /**
      * adds a EcmaScript optimized indexOf to our mix,
@@ -2817,17 +2835,19 @@ _MF_CLS(_PFX_CORE+"Object", Object, {
     /*optional functionality can be provided
      * for ie6 but is turned off by default*/
     _initDefaultFinalizableFields: function() {
-        var isIE = this._RT.browser.isIE;
-        if(!isIE || isIE > 7) return;
-        for (var key in this) {
-            //per default we reset everything which is not preinitalized
-            if (null == this[key] && key != "_resettableContent" && key.indexOf("_mf") != 0 && key.indexOf("_") == 0) {
-                this._resettableContent[key] = true;
-            }
-        }
     },
 
-
+    /**
+     * ie6 cleanup
+     * This method disposes all properties manually in case of ie6
+     * hence reduces the chance of running into a gc problem tremendously
+     * on other browsers this method does nothing
+     */
+    _finalize: function() {
+        // not needed anymore but to preserve
+        // the connection to quirks mode
+        // we keep it as empty implementation
+    },
 
     attr: function(name, value) {
        return this._Lang.attr(this, name, value);
@@ -2854,12 +2874,9 @@ _MF_CLS(_PFX_CORE+"Object", Object, {
 (function() {
     /*some mobile browsers do not have a window object*/
     var target = window ||document;
-    var _RT = myfaces._impl.core._Runtime;
-    _RT._MF_OBJECT = target._MF_OBJECT;
+    target._MF_OBJECT = myfaces._impl.core.Object;
 
-     target._MF_OBJECT = myfaces._impl.core.Object;
 })();
-
 /* Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -3249,9 +3266,11 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                         //we have to move this into an inner if because chrome otherwise chokes
                         //due to changing the and order instead of relying on left to right
                         //if jsf.js is already registered we do not replace it anymore
-                        if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=jakarta.faces") == -1) || (src.indexOf("/faces.js") == -1
-                            && src.indexOf("/faces-development.js") == -1)) {
-
+                        if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=javax.faces") == -1) ||
+                            (src.indexOf("/jsf.js") == -1
+                            && (src.indexOf("/jsf-uncompressed.js") == -1)
+                            && (src.indexOf("/jsf-development.js") == -1)
+                            )) {
                             finalScripts = evalCollectedScripts(finalScripts);
                             _RT.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8", false, nonce ? {nonce: nonce} : null );
                         }
@@ -4050,7 +4069,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
     findByTagName : function(fragment, tagName) {
         this._assertStdParams(fragment, tagName, "findByTagName", ["fragment", "tagName"]);
         var _Lang = this._Lang,
-                nodeType = fragment.nodeType;
+            nodeType = fragment.nodeType;
         if (nodeType != 1 && nodeType != 9 && nodeType != 11) return null;
 
         //remapping to save a few bytes
@@ -4117,8 +4136,8 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
         //we use the reject mechanism to prevent a deep scan reject means any
         //child elements will be omitted from the scan
         var FILTER_ACCEPT = NodeFilter.FILTER_ACCEPT,
-                FILTER_SKIP = NodeFilter.FILTER_SKIP,
-                FILTER_REJECT = NodeFilter.FILTER_REJECT;
+            FILTER_SKIP = NodeFilter.FILTER_SKIP,
+            FILTER_REJECT = NodeFilter.FILTER_REJECT;
 
         var walkerFilter = function (node) {
             var retCode = (filter(node)) ? FILTER_ACCEPT : FILTER_SKIP;
@@ -4215,7 +4234,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             //https://issues.apache.org/jira/browse/MYFACES-2793
 
             return (_Lang.equalsIgnoreCase(elem.tagName, "form")) ? elem :
-                    ( this.html5FormDetection(elem) || this.getParent(elem, "form"));
+                ( this.html5FormDetection(elem) || this.getParent(elem, "form"));
         });
 
         if (finalElem) {
@@ -4263,13 +4282,13 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
 
         if (!item) {
             throw this._Lang.makeException(new Error(), null, null, this._nameSpace, "getParent",
-                    this._Lang.getMessage("ERR_MUST_BE_PROVIDED1", null, "_Dom.getParent", "item {DomNode}"));
+                this._Lang.getMessage("ERR_MUST_BE_PROVIDED1", null, "_Dom.getParent", "item {DomNode}"));
         }
 
         var _Lang = this._Lang;
         var searchClosure = function(parentItem) {
             return parentItem && parentItem.tagName
-                    && _Lang.equalsIgnoreCase(parentItem.tagName, tagName);
+                && _Lang.equalsIgnoreCase(parentItem.tagName, tagName);
         };
         try {
             return this.getFilteredParent(item, searchClosure);
@@ -4416,7 +4435,9 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
 
         //we filter out only those evalNodes which do not match
         var _RT = this._RT;
+        var _Lang = this._Lang;
         var _T = this;
+
         var doubleExistsFilter = function(item)  {
             switch((item.tagName || "").toLowerCase()) {
                 case "script":
@@ -4425,9 +4446,9 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                     var scripts = document.head.getElementsByTagName("script");
 
                     for(var cnt = 0; cnt < scripts.length; cnt++) {
-                        if(src && scripts[cnt].getAttribute("src") == src) {
+                        if(src && _Lang.match(scripts[cnt].getAttribute("src"), src)) {
                             return false;
-                        } else if(!src && scripts[cnt].innerText == content) {
+                        } else if(!src && _Lang.match(scripts[cnt].innerText, content)) {
                             return false;
                         }
                     }
@@ -4436,7 +4457,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                     var content = item.innerText;
                     var styles = document.head.getElementsByTagName("style");
                     for(var cnt = 0; cnt < styles.length; cnt++) {
-                        if(content && styles[cnt].innerText == content) {
+                        if(content && _Lang.match(styles[cnt].innerText, content)) {
                             return false;
                         }
                     }
@@ -4446,9 +4467,9 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                     var content = item.innerText;
                     var links = document.head.getElementsByTagName("link");
                     for(var cnt = 0; cnt < links.length; cnt++) {
-                        if(href && links[cnt].getAttribute("href") == href) {
+                        if(href && _Lang.match(links[cnt].getAttribute("href"), href)) {
                             return false;
-                        } else if(!href && links[cnt].innerText == content) {
+                        } else if(!href && _Lang.match(links[cnt].innerText, content)) {
                             return false;
                         }
                     }
@@ -5413,9 +5434,9 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
         } catch (e) {
             this._stdErrorHandler(this._xhr, this._context, e);
         }
-		//add for xhr level2 support
-		//}  finally {
-            //W3C spec onloadend must be called no matter if success or not
+        //add for xhr level2 support
+        //}  finally {
+        //W3C spec onloadend must be called no matter if success or not
         //    this.ondone();
         //}
     },
@@ -5440,10 +5461,10 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
             errorText = _Lang.getMessage("ERR_REQ_FAILED_UNKNOWN", null);
         } finally {
             var _Impl = this.attr("impl");
-            _Impl.sendError(xhr, context, _Impl.HTTPERROR,
-                    _Impl.HTTPERROR, errorText,"","myfaces._impl.xhrCore._AjaxRequest","onerror");
+                _Impl.sendError(xhr, context, _Impl.HTTPERROR,
+                _Impl.HTTPERROR, errorText,"","myfaces._impl.xhrCore._AjaxRequest","onerror");
             //add for xhr level2 support
-			//since chrome does not call properly the onloadend we have to do it manually
+            //since chrome does not call properly the onloadend we have to do it manually
             //to eliminate xhr level1 for the compile profile modern
             //W3C spec onloadend must be called no matter if success or not
             //this.ondone();
@@ -7129,7 +7150,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         //this is not documented behavior but can be determined by running
         //mojarra under blackbox conditions
         //i assume it does the same as our formId_submit=1 so leaving it out
-        //wont hurt but for the sake of compatibility we are going to add it
+        //won´t hurt but for the sake of compatibility we are going to add it
         passThrgh[form.id] = form.id;
 
         /* faces2.2 only: options.delay || */
@@ -7249,6 +7270,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
      * @param srcStr
      * @param form
      * @param elementId
+     * @param namingContainerId the naming container namingContainerId
      */
     _transformList:function (passThrgh, target, srcStr, form, elementId, namingContainerId) {
         var _Lang = this._Lang;
