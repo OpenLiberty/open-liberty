@@ -22,7 +22,6 @@
       <feature>jndi-1.0</feature>
       <feature>cdi-1.2</feature>
       <feature>ejb-3.2</feature>
-      <feature>concurrent-1.0</feature>
     </featureManager>
 
     <sslDefault outboundSSLRef="mySSLConfig" />
