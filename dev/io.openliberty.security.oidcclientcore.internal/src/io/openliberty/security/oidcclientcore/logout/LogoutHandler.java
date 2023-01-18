@@ -73,7 +73,7 @@ public class LogoutHandler {
         String redirectUrl = logoutConfig.getRedirectURI();
 
         if (logoutConfig.isNotifyProvider() && endSessionEndPoint != null) {
-            RPInitiatedLogoutStrategy rpInitiatedLogoutStrategy = new RPInitiatedLogoutStrategy(req, oidcClientConfig, endSessionEndPoint, idTokenString);
+            RPInitiatedLogoutStrategy rpInitiatedLogoutStrategy = new RPInitiatedLogoutStrategy(oidcClientConfig, endSessionEndPoint, idTokenString);
             return rpInitiatedLogoutStrategy.logout();
         } else if (!logoutConfig.isNotifyProvider() && redirectUrl != null && !redirectUrl.isEmpty()) {
             CustomLogoutStrategy customLogoutStrategy = new CustomLogoutStrategy(redirectUrl);
