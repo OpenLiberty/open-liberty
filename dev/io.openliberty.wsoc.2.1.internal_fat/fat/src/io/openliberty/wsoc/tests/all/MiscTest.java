@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.wsoc.tests.all;
 
@@ -45,6 +42,19 @@ public class MiscTest {
         String[] output1 = { expectedURI }; // timeout value 
 
         wsocTest.runEchoTest(new ClientHelper.BasicClientEP(input), uri, output1);
+    }
+
+    public void testVerifyDefaultConfigurator() throws Exception {
+
+        // Checks are performed within client endpoint because wsoc Impl uses HashMap which doesn't guarentee order.
+        // Also avoids sending the properties to the client
+        String uri = "/basic21/testEchoConfigurator";
+
+        String[] input1 = { "echoValue" };
+        String[] output1 = { "echoValue" };
+
+        wsocTest.runEchoTest(new ClientHelper.BasicClientEP(input1), uri, output1);
+
     }
 
 }
