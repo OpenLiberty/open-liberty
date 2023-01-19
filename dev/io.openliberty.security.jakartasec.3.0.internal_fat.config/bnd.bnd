@@ -45,7 +45,7 @@ src: \
     test-applications/SigningShortJwksConnectionTimeout.war/src,\
     test-applications/SigningShortJwksReadTimeoutELOverride.war/src,\
     test-applications/SigningShortJwksReadTimeout.war/src,\
-    test-applications/UserInfoAnnotation.war/src,\
+    test-applications/UserinfoAnnotation.war/src,\
     test-applications/UseNonceTrue.war/src,\
     test-applications/UseNonceFalse.war/src,\
     test-applications/UseNonceTrueWithEL.war/src,\
