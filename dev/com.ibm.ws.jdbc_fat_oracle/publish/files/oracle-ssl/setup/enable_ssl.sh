@@ -104,7 +104,7 @@ SID_LIST_LISTENER =
   (SID_LIST =
     (SID_DESC =
       (SID_NAME = PLSExtProc)
-      (ORACLE_HOME = /opt/oracle/product/18c/dbhomeXE)
+      (ORACLE_HOME = $ORACLE_HOME)
       (PROGRAM = extproc)
     )
   )

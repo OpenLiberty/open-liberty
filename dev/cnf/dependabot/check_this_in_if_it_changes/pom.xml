@@ -229,27 +229,27 @@
     <dependency>
       <groupId>com.oracle.database.jdbc.debug</groupId>
       <artifactId>ojdbc8_g</artifactId>
-      <version>21.1.0.0</version>
+      <version>21.8.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.oracle.database.jdbc</groupId>
       <artifactId>ucp</artifactId>
-      <version>21.1.0.0</version>
+      <version>21.8.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.oracle.database.security</groupId>
       <artifactId>oraclepki</artifactId>
-      <version>21.1.0.0</version>
+      <version>21.8.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.oracle.database.security</groupId>
       <artifactId>osdt_cert</artifactId>
-      <version>21.1.0.0</version>
+      <version>21.8.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.oracle.database.security</groupId>
       <artifactId>osdt_core</artifactId>
-      <version>21.1.0.0</version>
+      <version>21.8.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.sebastian-daschner</groupId>

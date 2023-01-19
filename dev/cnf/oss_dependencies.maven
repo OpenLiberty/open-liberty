@@ -41,11 +41,11 @@ com.icegreen:greenmail:1.5.10
 com.jcraft:jsch:0.1.54
 com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8
 com.nimbusds:nimbus-jose-jwt:4.23
-com.oracle.database.jdbc.debug:ojdbc8_g:21.1.0.0
-com.oracle.database.jdbc:ucp:21.1.0.0
-com.oracle.database.security:oraclepki:21.1.0.0
-com.oracle.database.security:osdt_cert:21.1.0.0
-com.oracle.database.security:osdt_core:21.1.0.0
+com.oracle.database.jdbc.debug:ojdbc8_g:21.8.0.0
+com.oracle.database.jdbc:ucp:21.8.0.0
+com.oracle.database.security:oraclepki:21.8.0.0
+com.oracle.database.security:osdt_cert:21.8.0.0
+com.oracle.database.security:osdt_core:21.8.0.0
 com.sebastian-daschner:jaxrs-analyzer:0.9
 com.squareup.okhttp3:okhttp:4.10.0
 com.squareup.okio:okio-jvm:3.0.0
