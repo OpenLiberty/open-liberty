@@ -100,8 +100,8 @@ public class OpenTelemetryProducer {
     }
 
     //Uses application name if the user has not given configured service.name resource attribute
-    private String getServiceName() {
-        String appName = config.getOptionalValue(SERVICE_NAME_PROPERTY, String.class).orElse(null);
+    private String getServiceName(ConfigProperties c) {
+        String appName = c.getString(SERVICE_NAME_PROPERTY);
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         if (appName == null) {
             if (cmd != null) {
@@ -114,7 +114,7 @@ public class OpenTelemetryProducer {
     //Adds the service name to the resource attributes
     private Resource customizeResource(Resource resource, ConfigProperties c) {
         ResourceBuilder builder = resource.toBuilder();
-        builder.put(ResourceAttributes.SERVICE_NAME, getServiceName());
+        builder.put(ResourceAttributes.SERVICE_NAME, getServiceName(c));
         return builder.build();
     }
 
@@ -161,9 +161,9 @@ public class OpenTelemetryProducer {
         HashMap<String, String> telemetryProperties = new HashMap<>();
         for (String propertyName : config.getPropertyNames()) {
             if (propertyName.startsWith("otel.")) {
-               config.getOptionalValue(propertyName, String.class).ifPresent(
-                                                                            value -> telemetryProperties.put(propertyName, value));
-            }    
+                config.getOptionalValue(propertyName, String.class).ifPresent(
+                                                                              value -> telemetryProperties.put(propertyName, value));
+            }
         }
         //Metrics and logs are disabled by default
         telemetryProperties.put(CONFIG_METRICS_EXPORTER_PROPERTY, "none");
