@@ -28,5 +28,6 @@ public class FATSuite {
     @ClassRule
     public static RepeatTests r = 
         RepeatTests.withoutModification()
-                   .andWith(new JakartaEE10Action());
+                   .andWith(new JakartaEE10Action())
+                   .andWith(new JakartaEE10Action().removeFeature("concurrent-1.0").removeFeature("concurrent-3.0").withID(JakartaEE10Action.ID + "_w/o_concurrent_feature"));
 }

@@ -52,7 +52,6 @@ import javax.ws.rs.core.Response;
 
 import org.junit.Test;
 
-import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -63,6 +62,16 @@ public class JAXRSExecutorTestServlet extends FATServlet {
 
     @Resource(name = "java:comp/env/concurrent/scheduledExecutorRef", lookup = "concurrent/scheduledExecutor")
     private ManagedScheduledExecutorService scheduledExecutor;
+    
+    private static boolean ee10;
+    static {
+       try {
+           Class.forName("org.jboss.resteasy.plugins.providers.multipart.ResteasyEntityPartBuilder");
+           ee10 = true;
+       } catch(Throwable t) {
+           ee10 = false;
+       }
+    }
 
     // Use JAX-RS client submit with an invocation callback, where the client builder is supplied with
     // a ManagedExecutorService. Verify that the callback runs with access to the java:comp namespace
@@ -126,7 +135,6 @@ public class JAXRSExecutorTestServlet extends FATServlet {
     // defaults to the Liberty global thread pool.  Verify that the CompletionStage function
     // which runs asynchronously after completion, runs on the Liberty global thread pool.
     @Test
-    @SkipForRepeat("EE10_FEATURES")  //temporary:  need to adjust testing for EE10
     public void testCompletionStageRxInvokerAsynchronousFunction(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String uri = "http://" + request.getServerName() + ":" + request.getServerPort() + "/jaxrsapp/testapp/test/post";
 
@@ -161,7 +169,13 @@ public class JAXRSExecutorTestServlet extends FATServlet {
         } else {
             assertTrue(resultString, executionThreadName.startsWith("Default Executor-thread-"));
         }
-        assertTrue(resultString, results[2] instanceof NamingException);
+        // In EE10 the thread holds the proper context so the java:comp lookup is successful.
+        if (ee10) {
+            assertTrue("Not expected ManagedScheduledExecutorService", (results[2] instanceof ManagedScheduledExecutorService));
+        } else {
+            assertTrue(resultString, results[2] instanceof NamingException);
+        }
+
     }
 
     // Use JAX-RS client rx invoker, where the client builder is supplied with one ManagedExecutorService,
@@ -257,7 +271,6 @@ public class JAXRSExecutorTestServlet extends FATServlet {
     // the java:comp namespace of the servlet because it is running on a plain Liberty executor thread
     // (as opposed to a ManagedExecutorService thread).
     @Test
-    @SkipForRepeat("EE10_FEATURES")  //temporary:  need to adjust testing for EE10
     public void testCompletionStageRxInvokerSynchronousFunction(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String uri = "http://" + request.getServerName() + ":" + request.getServerPort() + "/jaxrsapp/testapp/test/info";
 
@@ -291,8 +304,15 @@ public class JAXRSExecutorTestServlet extends FATServlet {
         if (submitterThreadName.equals(executionThreadName)) {
             System.out.println("*** Unable to properly complete test because CompletionStage ran on submitter thread.");
             assertTrue(resultString, results[2] instanceof ScheduledExecutorService);
-        } else
-            assertTrue(resultString, results[2] instanceof NamingException);
+        } else { 
+            // In EE10 the thread holds the proper context so the java:comp lookup is successful.
+            if (ee10) {
+                assertTrue("Not expected ManagedScheduledExecutorService", (results[2] instanceof ManagedScheduledExecutorService));
+            } else {
+                assertTrue(resultString, results[2] instanceof NamingException);
+            }
+        }
+
     }
 
     // Use JAX-RS client rx invoker, where the client builder is supplied with a ManagedExecutorService.
@@ -360,7 +380,6 @@ public class JAXRSExecutorTestServlet extends FATServlet {
     // callback runs without access to the java:comp namespace of the servlet because it is
     // running on a plain Liberty executor thread (as opposed to a ManagedExecutorService thread).
     @Test
-    @SkipForRepeat("EE10_FEATURES")  //temporary:  need to adjust testing for EE10
     public void testClientBuilderSubmitInvocationCallback(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String uri = "http://" + request.getServerName() + ":" + request.getServerPort() + "/jaxrsapp/testapp/test/info";
 
@@ -401,12 +420,17 @@ public class JAXRSExecutorTestServlet extends FATServlet {
         assertTrue(callbackThreadName, callbackThreadName.startsWith("Default Executor-thread-"));
 
         assertNotNull(r = result.poll());
-        if (r instanceof NamingException)
-            ; // test passes, servlet's java:comp should be unavailable to callback thread
-        else if (r instanceof Throwable)
-            throw new Exception("Unxpected failure for InvocationCallback lookup attempt. See cause.", (Throwable) r);
-        else
-            fail("Should not be able to look up servlet's java:comp from InvocationCallback thread: " + r);
+        // In EE10 the thread holds the proper context so the java:comp lookup is successful.
+        if (ee10) {
+            assertTrue("Not expected ManagedScheduledExecutorService", (r instanceof ManagedScheduledExecutorService));
+        } else {
+            if (r instanceof NamingException)
+                ; // test passes, servlet's java:comp should be unavailable to callback thread
+            else if (r instanceof Throwable)
+                throw new Exception("Unxpected failure for InvocationCallback lookup attempt. See cause.", (Throwable) r);
+            else
+                fail("Should not be able to look up servlet's java:comp from InvocationCallback thread: " + r.getClass().getName());            
+        }
     }
 
     @Test
