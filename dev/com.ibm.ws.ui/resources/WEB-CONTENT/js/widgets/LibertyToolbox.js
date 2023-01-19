@@ -338,7 +338,7 @@ define(["js/toolbox/toolbox",
           '<label for="secondarySearchBoxInput" class="dijitOffScreen">' + i18n.TOOLBOX_SEARCH + '</label>' +
           '<input id="secondarySearchBoxInput" tabindex="0" class="textBox searchBoxInput" data-dojo-type="js/widgets/TextBox" type="text" ' +
           'data-dojo-props="intermediateChanges:true" widgetid="secondarySearchBoxInput"></input> ' +
-          '<a id="deleteSearchInputHref" class="deleteSearchInputHref" tabindex="0"><img class="deleteSearchInputImg" id="searchBoxInputClear" title="'+i18n.TOOLBOX_CLEAR_SEARCH+'" style="right:' +
+          '<a id="deleteSearchInputHref" class="deleteSearchInputHref" role="button" tabindex="0"><img class="deleteSearchInputImg" id="searchBoxInputClear" title="'+i18n.TOOLBOX_CLEAR_SEARCH+'" style="right:' +
           searchImageRight + ';' + '"' + ' src="'+imgUtils.getIcon('delete')+'" ' +
           'alt="' + i18n.TOOLBOX_CLEAR_SEARCH + '" role="button" ' +
           '></img></a></div>');
@@ -347,7 +347,7 @@ define(["js/toolbox/toolbox",
       console.log("secondarySearchBoxHeadingDom ", secondarySearchBoxHeadingDom);
 
       var cancelSearchStr = '<div style="float:right;width:auto;">' +
-      '<a id="cancelFilterHref" tabindex="0" class="cancelFilterHref"><img class="cancelFilterImg" id="cancelFiltering" title="'+i18n.TOOLBOX_END_SEARCH+'" src="'+imgUtils.getIcon('cancel')+'" ' +
+      '<a id="cancelFilterHref" role="button" tabindex="0" class="cancelFilterHref"><img class="cancelFilterImg" id="cancelFiltering" title="'+i18n.TOOLBOX_END_SEARCH+'" src="'+imgUtils.getIcon('cancel')+'" ' +
       'alt="' + i18n.TOOLBOX_END_SEARCH + '" ' +
       '></img></a>';
       var cancelSearchDom = DomConstruct.toDom(cancelSearchStr);
