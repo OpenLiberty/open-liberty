@@ -1,11 +1,9 @@
 ###############################################################################
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -44,3 +42,7 @@ CREDENTIAL_VALIDATION_ERROR.useraction=Wi\u0119cej informacji na ten temat zawie
 JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS=CWWKS2505W: Obiekt JSON roszczenia w komponencie bean OpenIdContext nie mo\u017ce doda\u0107 warto\u015bci podmiotu dla klienta {0}, poniewa\u017c w obiekcie OpenIdClaims nie ma warto\u015bci podmiotu. 
 JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS.explanation=Obiekt OpenIdClaims w komponencie bean OpenIdContext nie zawiera wymaganej warto\u015bci podmiotu. Z tego powodu nie mo\u017cna ustawi\u0107 warto\u015bci podmiotu obiektu JSON roszcze\u0144.  
 JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS.useraction=Przejrzyj dzienniki pod k\u0105tem wcze\u015bniejszych b\u0142\u0119d\u00f3w zwi\u0105zanych z uwierzytelnianiem OpenID.
+
+JAKARTASEC_CLAIMS_PROCESSING_ERROR=CWWKS2506E: Warto\u015b\u0107 klucza Claims klienta OpenID Connect {0} nie jest poprawna. Warto\u015b\u0107 to {1}, a oczekiwany typ to {2}. B\u0142\u0105d: {3}.
+JAKARTASEC_CLAIMS_PROCESSING_ERROR.explanation=Klient OpenID Connect napotka\u0142 b\u0142\u0105d podczas weryfikowania oczekiwanego typu p\u00f3l w obiekcie OpenID Claims. Cz\u0119sto b\u0142\u0105d wynika z tego, \u017ce rzeczywisty typ zwracanej warto\u015bci nie jest zgodny z oczekiwanym typem.
+JAKARTASEC_CLAIMS_PROCESSING_ERROR.useraction=Wi\u0119cej informacji na ten temat zawiera opis b\u0142\u0119du w komunikacie.

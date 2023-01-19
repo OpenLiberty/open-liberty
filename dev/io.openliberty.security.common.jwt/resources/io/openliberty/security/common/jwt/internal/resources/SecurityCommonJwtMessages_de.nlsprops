@@ -1,11 +1,9 @@
 ###############################################################################
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -17,5 +15,12 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: TODO
+# Message prefix block: CWWKS2520 - CWWKS2549
 
+EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER=CWWKS2520E: Der Signaturalgorithmus {0} im JWT-Header stimmt nicht mit dem erwarteten Signaturalgorithmus {1} \u00fcberein.
+EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.explanation=Das Token muss mit dem in der Nachricht angegebenen Algorithmus signiert werden.
+EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.useraction=Stellen Sie sicher, dass das Token mit dem erwarteten Algorithmus signiert ist, oder aktualisieren Sie die Konfiguration f\u00fcr die Komponente, die das Token empf\u00e4ngt, so, dass der in der Nachricht angegebene Algorithmus verwendet wird.
+
+SIG_ALG_IN_HEADER_NOT_ALLOWED=CWWKS2521E: Der Signaturalgorithmus {0} im JWT-Header ist nicht zul\u00e4ssig: {1}.
+SIG_ALG_IN_HEADER_NOT_ALLOWED.explanation=Das Token muss mit einem der Algorithmen signiert werden, die in der Nachricht angegeben sind.
+SIG_ALG_IN_HEADER_NOT_ALLOWED.useraction=Stellen Sie sicher, dass das Token mit einem der zul\u00e4ssigen Algorithmen signiert ist, oder aktualisieren Sie die Konfiguration f\u00fcr die Komponente, die das Token empf\u00e4ngt, damit der in der Nachricht angegebene Algorithmus zugelassen wird.

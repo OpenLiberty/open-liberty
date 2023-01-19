@@ -1,11 +1,9 @@
 ###############################################################################
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -17,5 +15,12 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: TODO
+# Message prefix block: CWWKS2520 - CWWKS2549
 
+EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER=CWWKS2520E: JWT \u6a19\u982d\u4e2d\u7684 {0} \u7c3d\u7ae0\u6f14\u7b97\u6cd5\u4e0d\u7b26\u5408 {1} \u9810\u671f\u7684\u7c3d\u7ae0\u6f14\u7b97\u6cd5\u3002
+EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.explanation=\u5fc5\u9808\u4f7f\u7528\u8a0a\u606f\u4e2d\u6307\u5b9a\u7684\u6f14\u7b97\u6cd5\u4f86\u7c3d\u7f72\u8a18\u865f\u3002
+EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.useraction=\u8acb\u78ba\u5b9a\u8a18\u865f\u662f\u4ee5\u9810\u671f\u7684\u6f14\u7b97\u6cd5\u7c3d\u7f72\uff0c\u6216\u66f4\u65b0\u7528\u65bc\u63a5\u6536\u8a18\u865f\u4e4b\u5143\u4ef6\u7684\u914d\u7f6e\uff0c\u4ee5\u4f7f\u7528\u8a0a\u606f\u4e2d\u6307\u5b9a\u7684\u6f14\u7b97\u6cd5\u3002
+
+SIG_ALG_IN_HEADER_NOT_ALLOWED=CWWKS2521E: JWT \u6a19\u982d\u4e2d\u7684 {0} \u7c3d\u7ae0\u6f14\u7b97\u6cd5\u4e0d\u662f\u5176\u4e2d\u4e00\u500b\u5bb9\u8a31\u7684\u7c3d\u7ae0\u6f14\u7b97\u6cd5\uff1a{1}\u3002
+SIG_ALG_IN_HEADER_NOT_ALLOWED.explanation=\u5fc5\u9808\u4f7f\u7528\u8a0a\u606f\u4e2d\u6307\u5b9a\u7684\u5176\u4e2d\u4e00\u500b\u6f14\u7b97\u6cd5\u4f86\u7c3d\u7f72\u8a18\u865f\u3002
+SIG_ALG_IN_HEADER_NOT_ALLOWED.useraction=\u8acb\u78ba\u5b9a\u5df2\u4f7f\u7528\u5176\u4e2d\u4e00\u500b\u5bb9\u8a31\u7684\u6f14\u7b97\u6cd5\u7c3d\u7f72\u8a18\u865f\uff0c\u6216\u66f4\u65b0\u7528\u65bc\u63a5\u6536\u8a18\u865f\u4e4b\u5143\u4ef6\u7684\u914d\u7f6e\uff0c\u4ee5\u5bb9\u8a31\u4f7f\u7528\u8a0a\u606f\u4e2d\u6307\u5b9a\u7684\u6f14\u7b97\u6cd5\u3002
