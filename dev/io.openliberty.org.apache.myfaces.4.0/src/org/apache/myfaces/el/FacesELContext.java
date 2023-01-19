@@ -24,6 +24,8 @@ import jakarta.el.FunctionMapper;
 import jakarta.el.VariableMapper;
 import jakarta.faces.context.FacesContext;
 
+import org.apache.myfaces.view.facelets.el.DefaultVariableMapper;
+
 /**
  * ELContext used for Faces.
  * 
@@ -44,6 +46,11 @@ public class FacesELContext extends ELContext
     @Override
     public VariableMapper getVariableMapper()
     {
+        if (variableMapper == null)
+        {
+            variableMapper = new DefaultVariableMapper();
+        }
+
         return variableMapper;
     }
 
