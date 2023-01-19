@@ -2,6 +2,8 @@
 # Please check these changes into GitHub.
 confluentinc/cp-kafka:7.1.1
 elastic/logstash:7.16.3
+gvenzl/oracle-xe:21.3.0-full-faststart
+gvenzl/oracle-xe:21.3.0-slim-faststart
 infinispan/server:10.0.1.Final
 infinispan/server:13.0.10.Final
 jaegertracing/all-in-one:1.39
@@ -13,10 +15,8 @@ kyleaure/db2-krb5:2.0
 kyleaure/db2-ssl:3.0
 kyleaure/db2:1.0
 kyleaure/krb5-server:1.0
-kyleaure/oracle-18.4.0-expanded:1.0.full
-kyleaure/oracle-18.4.0-expanded:1.0.full.krb5
-kyleaure/oracle-18.4.0-expanded:1.0.full.ssl
-kyleaure/oracle-18.4.0-expanded:1.0.slim
+kyleaure/oracle-21.3.0-faststart:1.0.full.krb5
+kyleaure/oracle-21.3.0-faststart:1.0.full.ssl
 kyleaure/postgres-krb5:1.0
 kyleaure/postgres-ssl:1.0
 kyleaure/postgres-test-table:3.0
