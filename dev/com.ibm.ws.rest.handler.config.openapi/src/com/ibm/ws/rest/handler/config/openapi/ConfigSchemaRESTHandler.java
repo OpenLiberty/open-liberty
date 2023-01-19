@@ -24,7 +24,6 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.microprofile.openapi.Constants;
 import com.ibm.ws.microprofile.openapi.impl.core.util.Json;
 import com.ibm.ws.microprofile.openapi.impl.core.util.Yaml;
@@ -60,14 +59,6 @@ public class ConfigSchemaRESTHandler implements RESTHandler {
             }
             response.setResponseHeader("Accept", "GET");
             response.sendError(405); // Method Not Allowed
-            return;
-        }
-
-        // Delete once feature 18696 is GA.
-        // Remove com.ibm.ws.kernel.boot from bnd buildpath once the Beta check is no longer needed.
-        if (!ProductInfo.getBetaEdition() && request.getContextPath().contains("/ibm/api")) {
-            response.setResponseHeader("Accept", "GET");
-            response.sendError(404); // Not Found
             return;
         }
 
