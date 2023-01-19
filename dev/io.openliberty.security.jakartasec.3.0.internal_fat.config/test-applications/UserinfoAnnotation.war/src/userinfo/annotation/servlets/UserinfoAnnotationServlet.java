@@ -26,9 +26,6 @@ import oidc.client.base.servlets.BaseServlet;
                                          clientId = "${openIdConfig.clientId}", clientSecret = "${openIdConfig.clientSecret}", redirectURI = "${openIdConfig.redirectURI}",
                                          claimsDefinition = @ClaimsDefinition(callerNameClaim = "${openIdConfig.callerNameClaim}",
                                                                               callerGroupsClaim = "${openIdConfig.callerGroupsClaim}"),
-                                         //                                         useSessionExpression = "${openIdConfig.useSessionExpression}",
-                                         //                                         redirectToOriginalResource = false,
-                                         //                                         redirectToOriginalResourceExpression = "${openIdConfig.redirectToOriginalResource}", // overrides specified value
                                          responseType = "${openIdConfig.responseType}",
                                          scopeExpression = "${openIdConfig.scopeExpression}",
                                          responseMode = "${openIdConfig.responseMode}",
