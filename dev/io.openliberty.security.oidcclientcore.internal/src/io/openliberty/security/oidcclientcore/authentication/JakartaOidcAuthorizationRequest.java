@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -198,15 +198,15 @@ public class JakartaOidcAuthorizationRequest extends AuthorizationRequest {
             authzParameters.addParameter(AuthorizationRequestParameters.NONCE, nonceValue);
         }
         String prompt = config.getPromptParameter();
-        if (prompt != null) {
+        if (prompt != null && !prompt.isEmpty()) {
             authzParameters.addParameter(AuthorizationRequestParameters.PROMPT, prompt);
         }
         String responseMode = config.getResponseMode();
-        if (responseMode != null) {
+        if (responseMode != null && !responseMode.isEmpty()) {
             authzParameters.addParameter(AuthorizationRequestParameters.RESPONSE_MODE, responseMode);
         }
         String display = config.getDisplayParameter();
-        if (display != null) {
+        if (display != null && !display.isEmpty()) {
             authzParameters.addParameter(AuthorizationRequestParameters.DISPLAY, display);
         }
         addExtraParameters(authzParameters);
