@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,7 +30,7 @@ public class TestGetType {
 
     /**
      * Get the expression type (class) from the composite component attributes map
-     * 
+     *
      * @param attrs a Map containing all the composite component attributes
      * @return a String that contains the attribute and the type
      */

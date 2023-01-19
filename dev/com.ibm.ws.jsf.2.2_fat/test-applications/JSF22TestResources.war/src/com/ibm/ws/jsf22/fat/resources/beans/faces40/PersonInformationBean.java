@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,21 +12,25 @@
  */
 package com.ibm.ws.jsf22.fat.resources.beans.faces40;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import java.io.Serializable;
+
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
 /**
  * Bean used to test the new web app resources directory
  */
-@ManagedBean
+@Named
 @SessionScoped
-public class PersonInformationBean {
+public class PersonInformationBean implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private String firstName;
     private String lastName;
     private String favoriteAnimal;
 
-    public PersonInformationBean() {}
+    public PersonInformationBean() {
+    }
 
     public String getFirstName() {
         return firstName;
