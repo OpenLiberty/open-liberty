@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -178,6 +178,7 @@ public class SSOCookieHelperImplTest {
                 will(returnValue(new StringBuffer(TEST_URL_STRING)));
                 allowing(config).getSameSiteCookie();
                 will(returnValue("Disabled"));
+                one(config).isUseContextRootForSSOCookiePath();
             }
         });
         Subject subject = new Subject();
@@ -203,6 +204,7 @@ public class SSOCookieHelperImplTest {
                 will(returnValue(new StringBuffer(TEST_URL_STRING)));
                 allowing(config).getSameSiteCookie();
                 will(returnValue("Disabled"));
+                one(config).isUseContextRootForSSOCookiePath();
             }
         });
         Cookie ssoCookie = ssoCookieHelper.createCookie(req, cookieValue);
@@ -229,6 +231,7 @@ public class SSOCookieHelperImplTest {
                 will(returnValue(new StringBuffer(TEST_URL_STRING)));
                 allowing(config).getSameSiteCookie();
                 will(returnValue("Disabled"));
+                one(config).isUseContextRootForSSOCookiePath();
             }
         });
         Cookie ssoCookie = ssoCookieHelper.createCookie(req, cookieValue);
@@ -497,6 +500,7 @@ public class SSOCookieHelperImplTest {
                 one(req).getRequestURL();
                 will(returnValue(sb));
                 one(config).getHttpOnlyCookies();
+                one(config).isUseContextRootForSSOCookiePath();
             }
         });
         ssoCookieHelper.createLogoutCookies(req, resp);
@@ -522,6 +526,7 @@ public class SSOCookieHelperImplTest {
                 one(req).getRequestURL();
                 will(returnValue(sb));
                 one(config).getHttpOnlyCookies();
+                one(config).isUseContextRootForSSOCookiePath();
             }
         });
         ssoCookieHelper.createLogoutCookies(req, resp);

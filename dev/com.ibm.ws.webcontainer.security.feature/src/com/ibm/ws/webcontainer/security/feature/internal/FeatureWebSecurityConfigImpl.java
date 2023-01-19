@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -49,6 +49,7 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean includePathInWASReqURL = false;
     private final Boolean trackLoggedOutSSOCookies = false;
     private final Boolean useOnlyCustomCookieName = false;
+    private final Boolean useContextRootForSSOCookiePath = false;
 
     FeatureWebSecurityConfigImpl(Map<String, Object> newProperties) {
         //nothing to do, values are hard-coded
@@ -410,5 +411,14 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
             return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getSameSiteCookie();
         else
             return null;
+    }
+
+    @Override
+    public boolean isUseContextRootForSSOCookiePath() {
+        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (globalConfig != null)
+            return globalConfig.isUseContextRootForSSOCookiePath();
+        else
+            return useContextRootForSSOCookiePath;
     }
 }
