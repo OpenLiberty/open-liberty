@@ -30,6 +30,9 @@ import io.opentelemetry.instrumentation.api.instrumenter.http.HttpClientAttribut
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpClientAttributesGetter;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanNameExtractor;
 import io.opentelemetry.instrumentation.api.instrumenter.http.HttpSpanStatusExtractor;
+import io.opentelemetry.instrumentation.api.instrumenter.net.NetClientAttributesExtractor;
+import io.opentelemetry.instrumentation.api.instrumenter.net.NetClientAttributesGetter;
+import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 import jakarta.annotation.Nullable;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.ws.rs.client.ClientRequestContext;
@@ -45,6 +48,9 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
 
     private final String configString = "otel.span.client.";
 
+    private static final NetClientAttributesGetterImpl NET_CLIENT_ATTRIBUTES_GETTER = new NetClientAttributesGetterImpl();
+    private static final HttpClientAttributesGetterImpl HTTP_CLIENT_ATTRIBUTES_GETTER = new HttpClientAttributesGetterImpl();
+
     // RestEasy sometimes creates and injects client filters using CDI and sometimes doesn't so we need to work around that
     // See: https://github.com/OpenLiberty/open-liberty/issues/23758
     public void init() {
@@ -54,15 +60,14 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
             }
 
             OpenTelemetry openTelemetry = CDI.current().select(OpenTelemetry.class).get();
-            ClientAttributesExtractor clientAttributesExtractor = new ClientAttributesExtractor();
-
             InstrumenterBuilder<ClientRequestContext, ClientResponseContext> builder = Instrumenter.builder(openTelemetry,
                                                                                                             "Client filter",
-                                                                                                            HttpSpanNameExtractor.create(clientAttributesExtractor));
+                                                                                                            HttpSpanNameExtractor.create(HTTP_CLIENT_ATTRIBUTES_GETTER));
 
             this.instrumenter = builder
-                            .setSpanStatusExtractor(HttpSpanStatusExtractor.create(clientAttributesExtractor))
-                            .addAttributesExtractor(HttpClientAttributesExtractor.create(clientAttributesExtractor))
+                            .setSpanStatusExtractor(HttpSpanStatusExtractor.create(HTTP_CLIENT_ATTRIBUTES_GETTER))
+                            .addAttributesExtractor(HttpClientAttributesExtractor.create(HTTP_CLIENT_ATTRIBUTES_GETTER))
+                            .addAttributesExtractor(NetClientAttributesExtractor.create(NET_CLIENT_ATTRIBUTES_GETTER))
                             .buildClientInstrumenter(new ClientRequestContextTextMapSetter());
         }
     }
@@ -122,7 +127,25 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
         }
     }
 
-    private static class ClientAttributesExtractor implements HttpClientAttributesGetter<ClientRequestContext, ClientResponseContext> {
+    private static class NetClientAttributesGetterImpl implements NetClientAttributesGetter<ClientRequestContext, ClientResponseContext> {
+
+        @Override
+        public String transport(ClientRequestContext request, ClientResponseContext response) {
+            return SemanticAttributes.NetTransportValues.IP_TCP;
+        }
+
+        @Override
+        public String peerName(ClientRequestContext request) {
+            return request.getUri().getHost();
+        }
+
+        @Override
+        public Integer peerPort(ClientRequestContext request) {
+            return request.getUri().getPort();
+        }
+    }
+
+    private static class HttpClientAttributesGetterImpl implements HttpClientAttributesGetter<ClientRequestContext, ClientResponseContext> {
 
         @Override
         public String flavor(final ClientRequestContext request, final ClientResponseContext response) {
