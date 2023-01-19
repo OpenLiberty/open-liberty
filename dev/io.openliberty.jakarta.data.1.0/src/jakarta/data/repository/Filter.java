@@ -22,6 +22,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Filter {
+    Type as() default Type.AND;
+
     String by();
 
     boolean ignoreCase() default false;
@@ -42,5 +44,10 @@ public @interface Filter {
     @Target(ElementType.METHOD)
     public @interface List {
         Filter[] value();
+    }
+
+    public enum Type {
+        AND,
+        OR
     }
 }

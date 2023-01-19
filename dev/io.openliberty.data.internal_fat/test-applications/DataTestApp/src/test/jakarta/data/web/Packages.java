@@ -14,6 +14,8 @@ package test.jakarta.data.web;
 
 import java.util.List;
 
+import jakarta.data.repository.Condition;
+import jakarta.data.repository.Filter;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.OrderBy;
@@ -44,7 +46,8 @@ public interface Packages extends PageableRepository<Package, Integer> {
     long updateByLengthLessThanEqualAndHeightBetweenMultiplyLengthMultiplyWidthSetHeight(float maxLength, float minHeight, float maxHeight,
                                                                                          float lengthMultiplier, float widthMultiplier, float newHeight);
 
-    @Query("SELECT o from Package o WHERE (o.height < :min OR o.height > :max)") // TODO @Filter with Or
+    @Filter(by = "height", op = Condition.LessThan, param = "min")
+    @Filter(as = Filter.Type.OR, by = "height", op = Condition.GreaterThan, param = "max")
     KeysetAwarePage<Package> whereHeightNotWithin(@Param("min") float minToExclude,
                                                   @Param("max") float maxToExclude,
                                                   Pageable pagination);

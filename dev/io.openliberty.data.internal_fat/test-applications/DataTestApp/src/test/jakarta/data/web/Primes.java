@@ -46,7 +46,6 @@ import jakarta.enterprise.concurrent.Asynchronous;
  */
 @Repository
 public interface Primes {
-
     @Exists
     @Filter(by = "binary", op = Condition.EndsWith, param = "bits")
     @Filter(by = "number", op = Condition.LessThan, param = "max")
@@ -180,6 +179,14 @@ public interface Primes {
     @OrderBy(value = "number", descending = true)
     @Select("number")
     List<Long> inRangeHavingVNumeralAndSubstringOfName(long min, long max, String nameSuffix);
+
+    @Filter(by = "number", op = Condition.LessThan)
+    @Filter(by = "name", op = Condition.EndsWith)
+    @Filter(as = Filter.Type.OR, by = "number", op = Condition.Between)
+    @Filter(by = "name", op = Condition.EndsWith)
+    @OrderBy(value = "number", descending = true)
+    Stream<Prime> lessThanWithSuffixOrBetweenWithSuffix(long numLessThan, String firstSuffix,
+                                                        long lowerLimit, long upperLimit, String secondSuffix);
 
     @Query("SELECT MIN(o.number), MAX(o.number), SUM(o.number), COUNT(o.number), AVG(o.number) FROM Prime o WHERE o.number < ?1")
     Deque<Double> minMaxSumCountAverageDeque(long numBelow);

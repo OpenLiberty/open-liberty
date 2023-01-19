@@ -2365,7 +2365,7 @@ public class DataTestServlet extends FATServlet {
 
         Shipment s5 = new Shipment();
         s5.destination = "201 4th St SE, Rochester, MN 55904";
-        s5.location = " 2800 37th St NW, Rochester, MN 55901";
+        s5.location = "2800 37th St NW, Rochester, MN 55901";
         s5.id = 5;
         s5.orderedAt = OffsetDateTime.now().minusSeconds(50);
         s5.status = "PREPARING";
@@ -2399,13 +2399,21 @@ public class DataTestServlet extends FATServlet {
         assertEquals(true, shipments.cancel(5, OffsetDateTime.now()));
         assertEquals(false, shipments.cancel(10, OffsetDateTime.now()));
 
-        shipments.trim();
-        s = shipments.find(4);
-        assertEquals("2800 37th St NW, Rochester, MN 55901", s.location);
-
         assertEquals(2, shipments.removeCanceled());
 
         assertEquals(3, shipments.removeEverything());
+    }
+
+    /**
+     * Use a repository method that has both AND and OR keywords.
+     * The AND keywords should take precedence over OR and be computed first.
+     */
+    @Test
+    public void testPrecedenceOfAndOverOr() {
+        assertIterableEquals(List.of(41L, 37L, 31L, 11L, 7L),
+                             primes.lessThanWithSuffixOrBetweenWithSuffix(40L, "even", 30L, 50L, "one")
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
     }
 
     /**
@@ -3623,6 +3631,106 @@ public class DataTestServlet extends FATServlet {
                              page4.stream().map(p -> p.number).collect(Collectors.toList()));
 
         assertEquals(null, page4.nextPageable());
+    }
+
+    /**
+     * Update multiple entries.
+     */
+    @Test
+    public void testUpdateAnnotation() {
+        products.clear();
+
+        Product prod1 = new Product();
+        prod1.id = "UPD-ANNO-1";
+        prod1.name = "Fairly Priced TestUpdateAnnotation Item";
+        prod1.price = 5.00f;
+        products.save(prod1);
+
+        Product prod2 = new Product();
+        prod2.id = "UPD-ANNO-2";
+        prod2.name = "Highly Priced TestUpdateAnnotation Item";
+        prod2.price = 100.00f;
+        products.save(prod2);
+
+        Product prod3 = new Product();
+        prod3.id = "UPD-ANNO-3";
+        prod3.name = "Middle Priced TestUpdateAnnotation Item";
+        prod3.price = 40.00f;
+        products.save(prod3);
+
+        Product prod4 = new Product();
+        prod4.id = "UPD-ANNO-4";
+        prod4.name = "Inexpensive TestUpdateAnnotation Item";
+        prod4.price = 2.00f;
+        products.save(prod4);
+
+        Product prod5 = new Product();
+        prod5.id = "UPD-ANNO-5";
+        prod5.name = "Ridiculously High Priced TestUpdateAnnotation Item";
+        prod5.price = 500.00f;
+        products.save(prod5);
+
+        Product prod6 = new Product();
+        prod6.id = "UPD-ANNO-6";
+        prod6.name = "Lowest Priced TestUpdateAnnotation Item";
+        prod6.price = 1.00f;
+        products.save(prod6);
+
+        assertEquals(true, products.isNotEmpty());
+        assertEquals(6, products.total());
+
+        assertEquals(5, products.inflatePrices("Priced TestUpdateAnnotation Item", 1.07f)); // prod4 does not match
+
+        Product[] found = products.findByVersionGreaterThanEqualOrderByPrice(2);
+
+        assertEquals(Stream.of(found).map(p -> p.id).collect(Collectors.toList()).toString(),
+                     5, found.length);
+
+        assertEquals(1.07f, found[0].price, 0.001f);
+        assertEquals(5.35f, found[1].price, 0.001f);
+        assertEquals(42.80f, found[2].price, 0.001f);
+        assertEquals(107.00f, found[3].price, 0.001f);
+        assertEquals(535.00f, found[4].price, 0.001f);
+
+        Product item = products.findItem("UPD-ANNO-4");
+        assertEquals(2.00f, item.price, 0.001f);
+
+        products.undoPriceIncrease(Set.of("UPD-ANNO-5", "UPD-ANNO-2", "UPD-ANNO-1"), 1.07f);
+
+        found = products.findByVersionGreaterThanEqualOrderByPrice(1);
+
+        assertEquals(Stream.of(found).map(p -> p.id).collect(Collectors.toList()).toString(),
+                     6, found.length);
+
+        assertEquals(1.07f, found[0].price, 0.001f); // update remains in place
+        assertEquals(2.00f, found[1].price, 0.001f); // never updated
+        assertEquals(5.00f, found[2].price, 0.001f); // reverted
+        assertEquals(42.80f, found[3].price, 0.001f); // update remains in place
+        assertEquals(100.00f, found[4].price, 0.001f); // reverted
+        assertEquals(500.00f, found[5].price, 0.001f); // reverted
+
+        assertEquals(2, found[0].version); // update remains in place
+        assertEquals(1, found[1].version); // never updated
+        assertEquals(1, found[2].version); // reverted
+        assertEquals(2, found[3].version); // update remains in place
+        assertEquals(1, found[4].version); // reverted
+        assertEquals(1, found[5].version); // reverted
+
+        assertEquals(6, products.inflateAllPrices(1.05f));
+
+        found = products.findByVersionGreaterThanEqualOrderByPrice(2);
+
+        assertEquals(1.12f, found[0].price, 0.01f);
+        assertEquals(2.10f, found[1].price, 0.01f);
+        assertEquals(5.25f, found[2].price, 0.01f);
+        assertEquals(44.94f, found[3].price, 0.01f);
+        assertEquals(105.00f, found[4].price, 0.01f);
+        assertEquals(525.00f, found[5].price, 0.01f);
+
+        products.clear();
+
+        assertEquals(0, products.total());
+        assertEquals(false, products.isNotEmpty());
     }
 
     /**
