@@ -1808,30 +1808,42 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
                 removeHeader(name);
             }
             else {
-                if (name.equalsIgnoreCase(WebContainerConstants.HEADER_CONTENT_TYPE)) {
+                if (!name.equalsIgnoreCase(WebContainerConstants.HEADER_CONTENT_TYPE)) {
+                    _response.setHeader(name, s);
+                } else {
                     // need to specially handle the content-type header
-                    String value = s.toLowerCase();
-                    int index = value.indexOf("charset=");
+                    // avoid the toLowerCase, substrings and concatenation if it already contains lower case charset=
+                    int index = s.indexOf("charset=");
                     if (index != -1) {
                         _encoding = s.substring(index + 8);
-                        s = s.substring(0, index) + "charset=" + _encoding;
-                    }
-                    else {
-                        if (dispatchContext.isAutoRequestEncoding()) {  //306998.15
-                            // only set default charset if auto response encoding is true.
-                            // otherwise cts test will fail.
-                            if (s.endsWith(";")) {
-                                s = s + "charset=" + getCharacterEncoding();
-                            }
-                            else {
-                                s = s + ";charset=" + getCharacterEncoding();
+                    } else {
+                        String value = s.toLowerCase();
+                        index = value.indexOf("charset=");
+                        if (index != -1) {
+                            _encoding = s.substring(index + 8);
+                            s = s.substring(0, index) + "charset=" + _encoding;
+                        }
+                        else {
+                            if (dispatchContext.isAutoRequestEncoding()) {  //306998.15
+                                // only set default charset if auto response encoding is true.
+                                // otherwise cts test will fail.
+                                if (s.endsWith(";")) {
+                                    s = s + "charset=" + getCharacterEncoding();
+                                }
+                                else {
+                                    s = s + ";charset=" + getCharacterEncoding();
+                                }
                             }
                         }
                     }
-                    _contentType = s;
-                }
 
-                _response.setHeader(name, s);
+                    _contentType = s;
+                    if (_response instanceof IResponseImpl) {
+                        ((IResponseImpl)_response).setHeader(HttpHeaderKeys.HDR_CONTENT_TYPE, s);
+                    } else {
+                        _response.setHeader(name, s);
+                    }
+                }
             }
         }
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15

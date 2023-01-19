@@ -1254,7 +1254,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * @return boolean (false means the key is not allowed -- incorrect value for example)
      */
     @SuppressWarnings("unused")
-    protected boolean filterAdd(HeaderKeys key, byte[] value) {
+    protected boolean filterAdd(HeaderKeys key, byte[] value, boolean isWASPrivateHeader) {
         return true;
     }
 
@@ -1965,7 +1965,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             if (null != elem) {
                 filterRemove(key, null);
             }
-            if (!filterAdd(key, value)) {
+            if (!filterAdd(key, value, false)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "New value disallowed: "
                                  + GenericUtils.getEnglishString(value));
@@ -2005,7 +2005,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             // extract the bits we need from the larger array
             byte[] temp = new byte[length];
             System.arraycopy(value, offset, temp, 0, length);
-            if (!filterAdd(key, temp)) {
+            if (!filterAdd(key, temp, false)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "New value disallowed: "
                                  + GenericUtils.getEnglishString(temp));
@@ -2045,7 +2045,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             if (null != elem) {
                 filterRemove(key, null);
             }
-            if (!filterAdd(key, GenericUtils.getEnglishBytes(value))) {
+            if (!filterAdd(key, GenericUtils.getEnglishBytes(value), false)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "New value disallowed: " + value);
                 }
@@ -2121,7 +2121,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             if (null != elem) {
                 filterRemove(key, null);
             }
-            if (!filterAdd(key, GenericUtils.getEnglishBytes(value))) {
+            if (!filterAdd(key, GenericUtils.getEnglishBytes(value), false)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "New value disallowed: " + value);
                 }
@@ -2257,16 +2257,17 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                          + "] with value [" + elem.getDebugValue() + "]");
         }
 
-        if (getRemoteIp() && name.toLowerCase().startsWith("x-forwarded") && !forwardHeaderErrorState) {
-            processForwardedHeader(elem, true);
-        }
-
-        else if (getRemoteIp() && name.toLowerCase().startsWith("forwarded") && !forwardHeaderErrorState) {
-            processForwardedHeader(elem, false);
+        if (getRemoteIp() && !forwardHeaderErrorState) {
+            String lowerCaseName = name.toLowerCase();
+            if (lowerCaseName.startsWith("x-forwarded")) {
+                processForwardedHeader(elem, true);
+            } else if (lowerCaseName.startsWith("forwarded")) {
+                processForwardedHeader(elem, false);
+            }
         }
 
         if (bFilter) {
-            if (key.useFilters() && !filterAdd(key, elem.asBytes())) {
+            if (key.useFilters() && !filterAdd(key, elem.asBytes(), false)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "filter disallowed: " + elem.getDebugValue());
                 }
@@ -2277,7 +2278,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "checking to see if private header is allowed: " + name);
             }
-            if (!filterAdd(key, elem.asBytes())) {
+            if (!filterAdd(key, elem.asBytes(), true)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, name + " is not trusted for this host; not adding header");
                 }

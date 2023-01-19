@@ -427,7 +427,7 @@ public class HttpHeaderKeys extends HeaderKeys {
         if (headerName == null) {
             return false;
         }
-        return sensitiveHeaderList.contains(headerName);
+        return headerName.length() > 0 && headerName.charAt(0) == '$' && sensitiveHeaderList.contains(headerName);
     }
 
     /** private headers defined as sensitive */
@@ -447,7 +447,7 @@ public class HttpHeaderKeys extends HeaderKeys {
         if (headerName == null) {
             return false;
         }
-        return privateHeaderList.contains(headerName);
+        return headerName.length() > 0 && headerName.charAt(0) == '$' && privateHeaderList.contains(headerName);
     }
 
     private static int generateNextOrdinal() {
