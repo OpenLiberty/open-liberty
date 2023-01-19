@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,10 +13,16 @@
 
 package io.openliberty.jpa.tests.jpa31.web;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+
+import javax.sql.DataSource;
 
 import org.junit.Test;
 
@@ -59,6 +65,9 @@ public class TestNewQueryTimeFunctionsServlet extends JPADBTestServlet {
     @Resource
     private UserTransaction tx;
 
+    @Resource(lookup = "jdbc/JPA_NJTA_DS")
+    private DataSource dsRl;
+
     private LocalDateTime startLDT = null;
     private LocalTime startLT = null;
     private boolean startLDTBeforeNoon = false;
@@ -93,6 +102,34 @@ public class TestNewQueryTimeFunctionsServlet extends JPADBTestServlet {
                 iem.persist(new QueryDateTimeEntity(10000)); // For getting a LocalTime from the database, which may not be hosted on the same system.
             } finally {
                 iem.getTransaction().commit();
+            }
+
+            // For debugging, read the database with raw jdbc and print out the contents.
+            System.out.println("Dumping the contents of table QueryDateTimeEntity via JDBC:");
+            try (Connection conn = dsRl.getConnection()) {
+                Statement stmt = conn.createStatement();
+                String sql = "SELECT * from QueryDateTimeEntity";
+                ResultSet rs = stmt.executeQuery(sql);
+
+                final ResultSetMetaData rsmd = rs.getMetaData();
+                final int colCount = rsmd.getColumnCount();
+                int index = 0;
+                while (rs.next()) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(++index).append(": ");
+
+                    for (int col = 1; col <= colCount; col++) {
+                        if (col != 1) {
+                            sb.append(", ");
+                        }
+                        sb.append(rsmd.getColumnName(col)).append(" = ").append(rs.getObject(col)).append(" (").append(rsmd.getColumnClassName(col)).append(")");
+                    }
+
+                    System.out.println(sb);
+                }
+
+            } catch (Throwable t) {
+                t.printStackTrace();
             }
         }
     }
@@ -169,6 +206,10 @@ public class TestNewQueryTimeFunctionsServlet extends JPADBTestServlet {
         // This one is tricky, because the time of the test's execution affects the expected query output.
         // Also, this is dependent on the test machine and database being in the same timezone and having
         // decently synchronized clocks.  Best if the database is on the same machine as the liberty server.
+
+        final int graceTime = 60; // the min amount of time before midnight or noon to run this test, otherwise wait until that time mark
+                                  // has passed.  This is to avoid reasonable race conditions for slow test systems.
+
         try {
             LocalTime now = getDatabaseServerLocalTime(); // LocalTime.now();
             if (now == null) {
@@ -181,8 +222,8 @@ public class TestNewQueryTimeFunctionsServlet extends JPADBTestServlet {
 
             int secToTwelve = twelveZeroSecondOfDay - nowSecondOfDay;
             int secToMidnight = secondsPerDay - nowSecondOfDay;
-            if ((secToTwelve > 0 && secToTwelve < 60) && (secToMidnight < 60)) {
-                // If the current time is within 60 seconds of either of the time markers, then it's better to wait until current time
+            if ((secToTwelve > 0 && secToTwelve < graceTime) && (secToMidnight < graceTime)) {
+                // If the current time is within (graceTime) seconds of either of the time markers, then it's better to wait until current time
                 // elapses past the time marker.  This is to eliminate race conditions.  30 seconds window for slow test systems.
                 long waitTime = (secToTwelve > secToTwelve) ? (long) (secToTwelve + 1) * 1000 : (long) (secToMidnight + 1) * 1000;
                 Thread.sleep(waitTime);
