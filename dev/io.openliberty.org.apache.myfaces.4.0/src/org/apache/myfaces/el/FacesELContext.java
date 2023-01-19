@@ -18,12 +18,8 @@
  */
 package org.apache.myfaces.el;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import jakarta.el.ELContext;
 import jakarta.el.ELResolver;
-import jakarta.el.EvaluationListener;
 import jakarta.el.FunctionMapper;
 import jakarta.el.VariableMapper;
 import jakarta.faces.context.FacesContext;
@@ -35,106 +31,41 @@ import jakarta.faces.context.FacesContext;
  */
 public class FacesELContext extends ELContext
 {
-    private ELResolver _elResolver;
-    private FunctionMapper _functionMapper;
-    private VariableMapper _variableMapper;
-
-    // overwrite to optimize access and reduce created objects
-    private List<EvaluationListener> listeners;
+    private ELResolver elResolver;
+    private FunctionMapper functionMapper;
+    private VariableMapper variableMapper;
 
     public FacesELContext(ELResolver elResolver, FacesContext facesContext)
     {
-        this._elResolver = elResolver;
+        this.elResolver = elResolver;
         putContext(FacesContext.class, facesContext);
     }
 
     @Override
     public VariableMapper getVariableMapper()
     {
-        return _variableMapper;
+        return variableMapper;
     }
 
-    public void setVariableMapper(VariableMapper varMapper)
+    public void setVariableMapper(VariableMapper variableMapper)
     {
-        _variableMapper = varMapper;
+        this.variableMapper = variableMapper;
     }
 
     @Override
     public FunctionMapper getFunctionMapper()
     {
-        return _functionMapper;
+        return functionMapper;
     }
 
     public void setFunctionMapper(FunctionMapper functionMapper)
     {
-        _functionMapper = functionMapper;
+        this.functionMapper = functionMapper;
     }
 
     @Override
     public ELResolver getELResolver()
     {
-        return _elResolver;
-    }
-
-    @Override
-    public void addEvaluationListener(EvaluationListener listener)
-    {
-        if (listeners == null)
-        {
-            listeners = new ArrayList<>();
-        }
-
-        listeners.add(listener);
-    }
-
-    @Override
-    public List<EvaluationListener> getEvaluationListeners()
-    {
-        return listeners == null ? Collections.emptyList() : listeners;
-    }
-
-    @Override
-    public void notifyBeforeEvaluation(String expression)
-    {
-        if (listeners == null)
-        {
-            return;
-        }
-
-        for (int i = 0; i < listeners.size(); i++)
-        {
-            EvaluationListener listener = listeners.get(i);
-            listener.beforeEvaluation(this, expression);
-        }
-    }
-
-    @Override
-    public void notifyAfterEvaluation(String expression)
-    {
-        if (listeners == null)
-        {
-            return;
-        }
-
-        for (int i = 0; i < listeners.size(); i++)
-        {
-            EvaluationListener listener = listeners.get(i);
-            listener.afterEvaluation(this, expression);
-        }
-    }
-
-    @Override
-    public void notifyPropertyResolved(Object base, Object property)
-    {
-        if (listeners == null)
-        {
-            return;
-        }
-
-        for (int i = 0; i < listeners.size(); i++)
-        {
-            EvaluationListener listener = listeners.get(i);
-            listener.propertyResolved(this, base, property);
-        }
+        return elResolver;
     }
 }
