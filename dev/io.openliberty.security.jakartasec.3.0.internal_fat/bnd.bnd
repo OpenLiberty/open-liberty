@@ -25,7 +25,9 @@ src: \
     test-applications/SimplestAnnotatedWithELAltRole.war/src,\
     test-applications/MultipleServletsDifferentProviders.war/src,\
     test-applications/MultipleServletsDifferentRoles.war/src,\
-    test-applications/MultipleServletsSimilarAnnotations.war/src
+    test-applications/MultipleServletsSimilarAnnotations.war/src,\
+    test-applications/IdentityStore.war/src,\
+    test-applications/MultipleIdentityStore.war/src
     
 -dependson: \
     build.changeDetector,\
@@ -55,5 +57,5 @@ javac.target: 11
 	com.ibm.ws.org.slf4j.api;version=latest,\
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	jakarta.inject.jakarta.inject-api;version=latest,\
-	io.openliberty.jakarta.servlet.5.0
-
+	io.openliberty.jakarta.servlet.5.0,\
+	com.ibm.websphere.javaee.security.1.0
