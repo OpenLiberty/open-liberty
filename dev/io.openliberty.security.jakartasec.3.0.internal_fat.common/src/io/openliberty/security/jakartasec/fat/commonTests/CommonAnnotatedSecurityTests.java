@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.StringJoiner;
 
 import org.junit.Before;
 
@@ -52,6 +53,7 @@ import io.openliberty.security.jakartasec.fat.utils.ResponseValues;
 import io.openliberty.security.jakartasec.fat.utils.ServletMessageConstants;
 import io.openliberty.security.jakartasec.fat.utils.ServletRequestExpectationHelpers;
 import io.openliberty.security.jakartasec.fat.utils.WsSubjectExpectationHelpers;
+import jakarta.security.enterprise.authentication.mechanism.http.openid.PromptType;
 
 public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
 
@@ -517,6 +519,16 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
                                                                                                                                                                                                          Integer.toString(rpServer.getBvtSecurePort())).replace("rp_AppName_rp",
                                                                                                                                                                                                                                                                 appName);
 
+        }
+        if (value instanceof PromptType) {
+            newValue = ((PromptType) value).toString();
+        }
+        if (value instanceof PromptType[]) {
+            StringJoiner joiner = new StringJoiner(",");
+            for (PromptType promptType : (PromptType[]) value) {
+                joiner.add(promptType.toString());
+            }
+            newValue = joiner.toString();
         }
         return newValue;
     }

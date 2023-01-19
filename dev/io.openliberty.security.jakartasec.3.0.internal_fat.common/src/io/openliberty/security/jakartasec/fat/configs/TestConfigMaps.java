@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -356,6 +356,22 @@ public class TestConfigMaps {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
         updatedMap.put(Constants.PROMPT_EXPRESSION, PromptType.SELECT_ACCOUNT);
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getPromptExpressionLoginAndConsent() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.PROMPT_EXPRESSION, new PromptType[] { PromptType.LOGIN, PromptType.CONSENT });
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getPromptExpressionDuplicates() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.PROMPT_EXPRESSION, new PromptType[] { PromptType.LOGIN, PromptType.LOGIN });
         return updatedMap;
 
     }
