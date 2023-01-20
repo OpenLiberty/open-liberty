@@ -29,7 +29,8 @@ import oidc.client.base.servlets.BaseServlet;
                                                                               callerGroupsClaim = "${openIdConfig.callerGroupsClaim}"),
                                          jwksReadTimeout = Constants.DEFAULT_JWKS_READ_TIMEOUT,
                                          jwksReadTimeoutExpression = "${openIdConfig.jwksReadTimeoutExpression}",
-                                         providerMetadata = @OpenIdProviderMetadata(idTokenSigningAlgorithmsSupported = "${openIdConfig.idTokenSigningAlgorithmsSupported}"))
+                                         providerMetadata = @OpenIdProviderMetadata(idTokenSigningAlgorithmsSupported = "${openIdConfig.idTokenSigningAlgorithmsSupported}",
+                                                                                    jwksURI = "${openIdConfig.jwksURI}"))
 
 @DeclareRoles("all")
 @ServletSecurity(@HttpConstraint(rolesAllowed = "all"))

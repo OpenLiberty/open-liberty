@@ -85,6 +85,13 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
 
     protected static String userinfoResponseFormat = Constants.JWT_TOKEN_FORMAT;
 
+    public interface JwksUri {
+    }
+
+    public static enum JwksUriType implements JwksUri {
+        NULL, UNKNOWN_HOST, TEST_APP
+    };
+
     @ClassRule
     public static RepeatTests repeat = createTokenTypeRepeats();
 
@@ -129,6 +136,7 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
     public static void deployMyApps() throws Exception {
 
         swh = new ShrinkWrapHelpers(opHttpBase, opHttpsBase, rpHttpBase, rpHttpsBase);
+        swh.defaultDropinApp(rpServer, "JwksEndpoint.war", "jwks.servlets");
 
         // deploy the signing test apps
         // OP that annotations point to uses RS256, client allows 1 - 3 signature Algorithms
@@ -164,29 +172,27 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         // Use EL values
         deployAnApp("OPDefaultJWKS", 500, 500, Constants.SIGALG_RS256); // on slow machines, tests using the default read timeout may have issues, but, we have to test it
         deployAnApp("OPInfiniteJWKS", 0, 0, Constants.SIGALG_RS256);
-        deployAnApp("OPShortJWKS", 0, 1, Constants.SIGALG_RS256);
-        deployAnApp("OPShortJWKS", 1, 0, Constants.SIGALG_RS256);
+        deployAnApp("OPShortJWKS", 0, 1, JwksUriType.TEST_APP, Constants.SIGALG_RS256);
+        deployAnApp("OPShortJWKS", 1, 0, JwksUriType.UNKNOWN_HOST, Constants.SIGALG_RS256);
         deployAnApp("OPNegativeJWKS", 0, -1, Constants.SIGALG_RS256);
         deployAnApp("OPNegativeJWKS", -1, 0, Constants.SIGALG_RS256);
 
         // uses jwksConnectTimeout
         swh.deployConfigurableTestApps(rpServer, "SigningShortJwksConnectionTimeout.war", "SigningShortJwksConnectionTimeout.war",
-                                       buildUpdatedConfigMap(opServer, rpServer, "SigningShortJwksConnectionTimeout", "allValues.openIdConfig.properties",
-                                                             TestConfigMaps.getProviderUri(opHttpsBase, "OPShortJWKS")),
+                                       buildUpdatedConfigMap("SigningShortJwksConnectionTimeout", "OPShortJWKS", ignoreTimeoutValue, ignoreTimeoutValue, JwksUriType.UNKNOWN_HOST),
                                        "signing.shortConnectionTimeout.servlets", "oidc.client.base.*");
         // uses jwksConnectTimeout and jwksConnectTimeoutExpression
         swh.deployConfigurableTestApps(rpServer, "SigningShortJwksConnectionTimeoutELOverride.war", "SigningShortJwksConnectionTimeoutELOverride.war",
-                                       buildUpdatedConfigMap("SigningShortJwksConnectionTimeoutELOverride", "OPShortJWKS", 1, ignoreTimeoutValue),
+                                       buildUpdatedConfigMap("SigningShortJwksConnectionTimeoutELOverride", "OPShortJWKS", 1, ignoreTimeoutValue, JwksUriType.UNKNOWN_HOST),
                                        "signing.shortConnectionTimeoutELOverride.servlets", "oidc.client.base.*");
 
         // uses jwksReadTimeout
         swh.deployConfigurableTestApps(rpServer, "SigningShortJwksReadTimeout.war", "SigningShortJwksReadTimeout.war",
-                                       buildUpdatedConfigMap(opServer, rpServer, "SigningShortJwksReadTimeout", "allValues.openIdConfig.properties",
-                                                             TestConfigMaps.getProviderUri(opHttpsBase, "OPShortJWKS")),
+                                       buildUpdatedConfigMap("SigningShortJwksReadTimeout", "OPShortJWKS", ignoreTimeoutValue, ignoreTimeoutValue, JwksUriType.TEST_APP),
                                        "signing.shortReadTimeout.servlets", "oidc.client.base.*");
         // uses jwksReadTimeout and jwksReadTimeoutExpression
         swh.deployConfigurableTestApps(rpServer, "SigningShortJwksReadTimeoutELOverride.war", "SigningShortJwksReadTimeoutELOverride.war",
-                                       buildUpdatedConfigMap("SigningShortJwksReadTimeoutELOverride", "OPShortJWKS", ignoreTimeoutValue, 1),
+                                       buildUpdatedConfigMap("SigningShortJwksReadTimeoutELOverride", "OPShortJWKS", ignoreTimeoutValue, 1, JwksUriType.TEST_APP),
                                        "signing.shortReadTimeoutELOverride.servlets", "oidc.client.base.*");
 
 //        deployAnApp("OP1", Constants.EMPTY_VALUE); // empty string
@@ -241,10 +247,15 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
      * @throws Exception
      */
     public static void deployAnApp(String provider, int jwksConnTimeout, int jwksReadTimeout, String... clientSigAlgs) throws Exception {
+        deployAnApp(provider, jwksConnTimeout, jwksReadTimeout, JwksUriType.NULL, clientSigAlgs);
+    }
+
+    public static void deployAnApp(String provider, int jwksConnTimeout, int jwksReadTimeout, JwksUriType jwksUriType, String... clientSigAlgs) throws Exception {
 
         String appName = buildAppName(provider, jwksConnTimeout, jwksReadTimeout, clientSigAlgs);
         swh.deployConfigurableTestApps(rpServer, appName + ".war", "Signing.war",
-                                       buildUpdatedConfigMap(appName, provider, jwksConnTimeout, jwksReadTimeout, clientSigAlgs), "signing.servlets", "oidc.client.base.*");
+                                       buildUpdatedConfigMap(appName, provider, jwksConnTimeout, jwksReadTimeout, jwksUriType, clientSigAlgs), "signing.servlets",
+                                       "oidc.client.base.*");
 
     }
 
@@ -265,6 +276,12 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
 
     public static Map<String, Object> buildUpdatedConfigMap(String app, String provider, int jwksConnTimeout, int jwksReadTimeout, String... alg) throws Exception {
 
+        return buildUpdatedConfigMap(app, provider, jwksConnTimeout, jwksReadTimeout, JwksUriType.NULL, alg);
+    }
+
+    public static Map<String, Object> buildUpdatedConfigMap(String app, String provider, int jwksConnTimeout, int jwksReadTimeout, JwksUriType jwksUriType,
+                                                            String... alg) throws Exception {
+
         // init the map with the provider info that the app should use
         Map<String, Object> testPropMap = TestConfigMaps.getProviderUri(opHttpsBase, provider);
         testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getIdTokenSigningAlgValuesSupported(alg));
@@ -273,6 +290,12 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         }
         if (jwksReadTimeout != ignoreTimeoutValue) {
             testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getJwksReadTimeoutExpression(jwksReadTimeout));
+        }
+        if (jwksUriType == JwksUriType.UNKNOWN_HOST) {
+            testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getJwksURI_BadHost(Integer.toString(rpServer.getBvtSecurePort()), provider));
+        }
+        if (jwksUriType == JwksUriType.TEST_APP) {
+            testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getJwksURI_TestAppSleeps5Seconds(rpHttpBase));
         }
 
         Map<String, Object> updatedMap = buildUpdatedConfigMap(opServer, rpServer, app, "allValues.openIdConfig.properties", testPropMap);

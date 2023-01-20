@@ -55,7 +55,8 @@ src: \
     test-applications/ExtraParametersOneParamWithEL.war/src,\
     test-applications/ExtraParametersUsingEL.war/src,\
     test-applications/ExtraParametersSpaceAsKey.war/src,\
-    test-applications/ExtraParametersLeadingSpaceInKey.war/src
+    test-applications/ExtraParametersLeadingSpaceInKey.war/src,\
+    test-applications/JwksEndpoint.war/src
     
 -dependson: \
     build.changeDetector,\

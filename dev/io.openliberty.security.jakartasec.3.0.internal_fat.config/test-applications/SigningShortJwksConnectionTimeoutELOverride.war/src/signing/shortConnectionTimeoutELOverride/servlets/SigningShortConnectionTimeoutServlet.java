@@ -30,7 +30,8 @@ import oidc.client.base.servlets.BaseServlet;
                                          jwksConnectTimeout = Constants.DEFAULT_JWKS_CONN_TIMEOUT,
                                          jwksConnectTimeoutExpression = "${openIdConfig.jwksConnectTimeoutExpression}",
                                          jwksReadTimeoutExpression = "${openIdConfig.jwksReadTimeoutExpression}",
-                                         providerMetadata = @OpenIdProviderMetadata(idTokenSigningAlgorithmsSupported = "${openIdConfig.idTokenSigningAlgorithmsSupported}"))
+                                         providerMetadata = @OpenIdProviderMetadata(idTokenSigningAlgorithmsSupported = "${openIdConfig.idTokenSigningAlgorithmsSupported}",
+                                                                                    jwksURI = "${openIdConfig.jwksURI}"))
 
 @DeclareRoles("all")
 @ServletSecurity(@HttpConstraint(rolesAllowed = "all"))

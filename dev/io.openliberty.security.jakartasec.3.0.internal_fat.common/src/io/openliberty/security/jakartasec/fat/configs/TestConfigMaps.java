@@ -513,6 +513,20 @@ public class TestConfigMaps {
         return updatedMap;
     }
 
+    public static Map<String, Object> getJwksURI_BadHost(String rpPort, String provider) {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.JWKSURI, "https://192.194.99.99:" + rpPort + "/oidc/endpoint/" + provider + "/jwk");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getJwksURI_TestAppSleeps5Seconds(String rpBase) {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.JWKSURI, rpBase + "/JwksEndpoint/JwksSleeps5Seconds");
+        return updatedMap;
+    }
+
     /****************** ClaimDefinitions ********************/
     public static Map<String, Object> getBadCallerNameClaim() throws Exception {
 
