@@ -2248,6 +2248,15 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Test NotBetween in a filter.
+     */
+    @Test
+    public void testNotBetweenFromFilter() {
+        assertIterableEquals(List.of(2L, 3L, 5L, 7L, 41L, 43L, 47L),
+                             primes.notWithinButBelow(10, 40, 50));
+    }
+
+    /**
      * PageableRepository.findAll(Pageable) must raise NullPointerException.
      */
     @Test

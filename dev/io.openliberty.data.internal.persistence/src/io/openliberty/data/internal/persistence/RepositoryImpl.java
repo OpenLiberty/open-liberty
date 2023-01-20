@@ -169,7 +169,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         boolean lower = filter.ignoreCase();
         String[] params = filter.param();
         String[] values = filter.value();
-        int numArgs = filter.op() == Compare.Between ? 2 : 1;
+        int numArgs = filter.op() == Compare.Between || filter.op() == Compare.NotBetween ? 2 : 1;
         for (int i = 0; i < numArgs; i++) {
             if (i > 0)
                 q.append(" AND "); // BETWEEN ?1 AND ?2
@@ -1163,7 +1163,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             if (isCollection)
                 verifyCollectionsSupported(name, ignoreCase, condition);
 
-            switch (filter.op()) {
+            switch (condition) {
                 case Equal:
                     q.append(attributeExpr).append(negated ? Condition.NOT_EQUALS.operator : Condition.EQUALS.operator);
                     appendParamOrValue(q, queryInfo, filter);

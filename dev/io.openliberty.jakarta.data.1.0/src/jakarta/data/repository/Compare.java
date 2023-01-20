@@ -29,6 +29,7 @@ public enum Compare {
     StartsWith(null),
     True(null),
     Not(Equal),
+    NotBetween(Between),
     NotContains(Contains),
     NotEmpty(Empty),
     NotEndsWith(EndsWith),

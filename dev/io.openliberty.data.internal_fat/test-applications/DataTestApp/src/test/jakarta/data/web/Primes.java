@@ -223,6 +223,12 @@ public interface Primes {
     @OrderBy("number")
     Page<Object[]> namesWithHex(long maxNumber, Pageable pagination);
 
+    @Filter(by = "number", op = Compare.NotBetween)
+    @Filter(by = "number", op = Compare.LessThan)
+    @OrderBy("number")
+    @Select("number")
+    List<Long> notWithinButBelow(int rangeMin, int rangeMax, int below);
+
     @Query("SELECT DISTINCT LENGTH(p.romanNumeral) FROM Prime p WHERE p.number <= ?1 ORDER BY LENGTH(p.romanNumeral) DESC")
     Page<Integer> romanNumeralLengths(long maxNumber, Pageable pagination);
 
