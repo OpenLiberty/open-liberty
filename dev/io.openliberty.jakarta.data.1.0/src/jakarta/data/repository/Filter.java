@@ -28,7 +28,7 @@ public @interface Filter {
 
     boolean ignoreCase() default false;
 
-    Condition op() default Condition.Equal;
+    Compare op() default Compare.Equal;
 
     String[] param() default {};
 

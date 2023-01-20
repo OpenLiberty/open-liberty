@@ -17,7 +17,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
-import jakarta.data.repository.Condition;
+import jakarta.data.repository.Compare;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Filter;
 import jakarta.data.repository.Query;
@@ -37,7 +37,7 @@ import jakarta.enterprise.concurrent.Asynchronous;
 public interface Personnel {
     @Asynchronous
     @Filter(by = "lastName")
-    @Filter(by = "ssn", op = Condition.In)
+    @Filter(by = "ssn", op = Compare.In)
     @Update(attr = "lastName")
     CompletionStage<Integer> changeSurnames(String oldSurname, List<Long> ssnList, String newSurname);
 
@@ -64,7 +64,7 @@ public interface Personnel {
     @Query("SELECT DISTINCT o.lastName FROM Person o ORDER BY o.lastName")
     CompletionStage<String[]> lastNames();
 
-    @Filter(by = "firstName", op = Condition.StartsWith)
+    @Filter(by = "firstName", op = Compare.StartsWith)
     @Select("firstName")
     Streamable<String> namesThatStartWith(String beginningOfFirstName);
 
