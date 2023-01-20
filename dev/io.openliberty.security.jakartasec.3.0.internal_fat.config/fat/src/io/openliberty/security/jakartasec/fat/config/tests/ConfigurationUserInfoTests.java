@@ -30,8 +30,6 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
-import com.ibm.ws.security.fat.common.expectations.ResponseMessageExpectation;
-import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseUrlExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerTraceExpectation;
@@ -704,9 +702,8 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
         Page response = invokeAppReturnLoginPage(webClient, url);
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(Constants.FORBIDDEN_STATUS));
+        expectations.addForbiddenStatusCodeAndMessageForCurrentAction();
         expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, url, "Did not fail to land on " + url));
-        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.FORBIDDEN, "Did not receive the forbidden message."));
         expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, Constants.AUTHORIZATION_ERROR, "Did not receive the authorization failed message."));
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS9104A_NO_ACCESS_FOR_USER, "Did not receive an error message stating that a user is not granted access to a resource."));
 
