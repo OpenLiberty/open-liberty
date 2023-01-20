@@ -8,11 +8,9 @@
 ###############################################################################
 # Copyright (c) 2009, 2011 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -61,6 +59,21 @@ internal.error.CWMMC0006E=CWMMC0006E: Es ist ein interner Fehler aufgetreten.
 internal.error.CWMMC0006E.explanation=Im Anwendungsserver ist ein interner Fehler aufgetreten.
 internal.error.CWMMC0006E.useraction=Stellen Sie einen Satz von Traces zusammen und \u00f6ffnen Sie einen neuen Problembericht f\u00fcr Ihren Anwendungsserver.
 
+#Information regarding libraryRef attribute taking effect only after server restart
+configurationChange.info.CWMMC0007I=CWMMC0007I: Es wurde eine Konfigurations\u00e4nderung f\u00fcr das Feature MicroProfile Metrics erkannt. Wenn das Attribut libraryRef ge\u00e4ndert wurde, ist ein Serverneustart erforderlich, damit die \u00c4nderung wirksam wird.
+configurationChange.info.CWMMC0007I.explanation=MicroProfile Metrics erfordert einen Serverneustart, um Bibliotheken zu \u00e4ndern, die von libraryRef referenziert werden.
+configurationChange.info.CWMMC0007I.useraction=Wenn das Attribut 'libraryRef' ge\u00e4ndert wurde, starten Sie den Server erneut, damit die \u00c4nderung wirksam wird.
+
+#User configured mpMetrics to use user-defined library for Micrometer binaries without Prometheus Registry JAR
+noPrometheusRegistry.info.CWMMC0008I=CWMMC0008I: Der Endpunkt '/metrics' ist nicht verf\u00fcgbar, weil keine Prometheus-Registry verf\u00fcgbar ist.
+noPrometheusRegistry.info.CWMMC0008I.explanation=Das Feature MicroProfile Metrics l\u00e4dt Micrometer-Bibliotheken, die \u00fcber das Attribut 'libraryRef' definiert werden. Die referenzierte Bibliothek enth\u00e4lt jedoch keine Micrometer-Prometheus-Registry.
+noPrometheusRegistry.info.CWMMC0008I.useraction=Wenn die Nichtverf\u00fcgbarkeit der Prometheus-Registry nicht beabsichtigt ist, \u00e4ndern Sie den Inhalt der Bibliothek, auf die das Attribut 'libraryRef' verweist, so, dass sie eine Micrometer-Prometheus-Registry-JAR enth\u00e4lt.
+
+#Prometheus Registry was disabled through the mp.metrics.prometheus.enabled MicroProfile Config property
+disabled.info.CWMMC0009I=CWMMC0009I: Der Endpunkt '/metrics' ist nicht verf\u00fcgbar, weil die Prometheus-Registry inaktiviert ist.
+disabled.info.CWMMC0009I.explanation=Die MicroProfile-Config-Eigenschaft 'mp.metrics.prometheus.enabled' ist auf 'false' gesetzt.
+disabled.info.CWMMC0009I.useraction=Wenn die Inaktivierung der Prometheus-Registry nicht beabsichtigt ist, entfernen Sie die Konfiguration der MicroProfile-Konfigurationseigenschaft 'mp.metrics.prometheus.enabled' oder setzen Sie die Eigenschaft explizit auf 'true'.
+
 #Memory usedHeap message
 memory.usedHeap.description=Zeigt die Menge des belegten Heapspeichers in Bytes an.
 
@@ -95,13 +108,15 @@ classloader.totalUnloadedClass.count.description=Zeigt die Gesamtzahl der Klasse
 cpu.availableProcessors.description=Zeigt die Anzahl der Prozessoren an, die der Java Virtual Machine zur Verf\u00fcgung stehen. Dieser Wert kann sich bei einem bestimmten Aufruf der virtuellen Maschine \u00e4ndern.
 
 #Cpu systemLoadAverage message
-cpu.systemLoadAverage.description=Zeigt die durchschnittliche Systembelastung in der letzten Minute an. Die durchschnittliche Systembelastung ist die Summe aus der Anzahl ausf\u00fchrbarer Entit\u00e4ten, die f\u00fcr die verf\u00fcgbaren Prozessoren in eine Warteschlange eingereiht wurden, und der Anzahl ausf\u00fchrbarer Entit\u00e4ten, die von den verf\u00fcgbaren Prozessoren ausgef\u00fchrt wurden, f\u00fcr die \u00fcber eine bestimmte Zeit ein Durchschnittswert ermittelt wurde. Die Art und Weise, wie die durchschnittliche Last berechnet wird, ist betriebssystemspezifisch. In der Regel handelt es sich um einen abgeschw\u00e4chten zeitabh\u00e4ngigen Mittelwert. Wenn keine durchschnittliche Last verf\u00fcgbar ist, wird ein negativer Wert angezeigt. Dieses Attribut soll einen Hinweis zur Systembelastung bereitstellen und kann h\u00e4ufig abgefragt werden. Die durchschnittliche Last ist m\u00f6glicherweise f\u00fcr einige Plattformen, f\u00fcr die die Implementierung dieser Methode kostenintensiv ist, nicht verf\u00fcgbar.
+cpu.systemLoadAverage.description=Zeigt die durchschnittliche Systembelastung in der letzten Minute an. Die durchschnittliche Systembelastung ist die Summe aus der Anzahl ausf\u00fchrbarer Entit\u00e4ten, die f\u00fcr die verf\u00fcgbaren Prozessoren in eine Warteschlange eingereiht wurden, und der Anzahl ausf\u00fchrbarer Entit\u00e4ten, die von den verf\u00fcgbaren Prozessoren ausgef\u00fchrt wurden, f\u00fcr die \u00fcber eine bestimmte Zeit ein Durchschnittswert ermittelt wurde. Die Art und Weise, wie die durchschnittliche Last berechnet wird, ist betriebssystemspezifisch. In der Regel handelt es sich um einen abgeschw\u00e4chten zeitabh\u00e4ngigen Mittelwert. Wenn keine durchschnittliche Last verf\u00fcgbar ist, wird ein negativer Wert angezeigt. Dieses Attribut soll einen Hinweis zur Systembelastung bereitstellen und kann h\u00e4ufig abgefragt werden. Die durchschnittliche Last ist m\u00f6glicherweise f\u00fcr einige Plattformen, f\u00fcr die die Implementierung dieser Methode \
+    kostenintensiv ist, nicht verf\u00fcgbar.
 
 #Cpu processCpuLoad message
 cpu.processCpuLoad.description=Zeigt die k\u00fcrzliche CPU-Auslastung f\u00fcr den Java Virtual Machine-Prozess an.
 
 #Cpu processCpuTime message
 cpu.processCpuTime.description=Zeigt die CPU-Zeit an, die von dem Prozess verwendet wird, in dem die Java Virtual Machine ausgef\u00fchrt wird. 
+
 #Garbage collection count message
 garbageCollectionCount.description=Zeigt die Gesamtzahl der Erfassungen an, die erstellt wurden. Dieses Attribut gibt -1 an, wenn der Zahl der Erfassungen f\u00fcr diesen Collector nicht definiert ist.
 
@@ -126,6 +141,7 @@ connectionpool.waitTime.total.description=Die Gesamtwartezeit f\u00fcr alle Verb
 connectionpool.inUseTime.total.description=Die Gesamtnutzungsdauer aller Verbindungen seit dem Start des Servers.
 connectionpool.usedConnections.total.description=Die Gesamtanzahl der Verbindungsanforderungen seit dem Start des Servers, die warten mussten, weil der Verbindungspool ausgesch\u00f6pft war, oder nicht warten mussten. Alle momentan genutzten Verbindungen sind in dieser Summe nicht enthalten.
 connectionpool.queuedRequests.total.description=Die Gesamtanzahl der Verbindungsanforderungen seit dem Start des Servers, die auf eine Verbindung warten mussten, weil der Verbindungspool ausgesch\u00f6pft war. 
+
 session.create.total.description=Die Anzahl der Sitzungen, die seit der Aktivierung dieser Metrik angemeldet wurden.
 session.liveSessions.description=Die Anzahl der Benutzer, die derzeit angemeldet sind.
 session.activeSessions.description=Die Anzahl gleichzeitig aktiver Sitzungen. (Eine Sitzung ist aktiv, wenn das Produkt momentan eine Anforderung verarbeitet, die diese Benutzersitzung verwendet.)

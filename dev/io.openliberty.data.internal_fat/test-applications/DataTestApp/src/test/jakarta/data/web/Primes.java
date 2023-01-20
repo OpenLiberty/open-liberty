@@ -23,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
-import jakarta.data.repository.Condition;
+import jakarta.data.repository.Compare;
 import jakarta.data.repository.Count;
 import jakarta.data.repository.Exists;
 import jakarta.data.repository.Filter;
@@ -48,8 +48,8 @@ import jakarta.enterprise.concurrent.Asynchronous;
 public interface Primes {
 
     @Exists
-    @Filter(by = "binary", op = Condition.EndsWith, param = "bits")
-    @Filter(by = "number", op = Condition.LessThan, param = "max")
+    @Filter(by = "binary", op = Compare.EndsWith, param = "bits")
+    @Filter(by = "number", op = Compare.LessThan, param = "max")
     boolean anyLessThanEndingWithBitPattern(@Param("max") long upperLimit, @Param("bits") String pattern);
 
     long countByNumberLessThan(long number);
@@ -165,18 +165,18 @@ public interface Primes {
     Boolean existsNumberBetween(Long first, Long last);
 
     @Count
-    @Filter(by = "number", op = Condition.GreaterThanEqual)
-    @Filter(by = "number", op = Condition.LessThanEqual)
+    @Filter(by = "number", op = Compare.GreaterThanEqual)
+    @Filter(by = "number", op = Compare.LessThanEqual)
     long howManyIn(long min, long max);
 
     @Count
-    @Filter(by = "number", op = Condition.GreaterThan)
-    @Filter(by = "number", op = Condition.LessThan, value = "20")
+    @Filter(by = "number", op = Compare.GreaterThan)
+    @Filter(by = "number", op = Compare.LessThan, value = "20")
     Long howManyLessThan20StartingAfter(long min);
 
-    @Filter(by = "number", op = Condition.Between)
-    @Filter(by = "romanNumeral", ignoreCase = true, op = Condition.Like, value = "%v%")
-    @Filter(by = "name", op = Condition.Contains)
+    @Filter(by = "number", op = Compare.Between)
+    @Filter(by = "romanNumeral", ignoreCase = true, op = Compare.Like, value = "%v%")
+    @Filter(by = "name", op = Compare.Contains)
     @OrderBy(value = "number", descending = true)
     @Select("number")
     List<Long> inRangeHavingVNumeralAndSubstringOfName(long min, long max, String nameSuffix);

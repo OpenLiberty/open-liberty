@@ -1,11 +1,9 @@
 ###############################################################################
 # Copyright (c) 2010, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -126,6 +124,10 @@ error.kernelDefFile=CWWKE0023E: Okre\u015blona definicja j\u0105dra ({0}) nie is
 error.kernelDefFile.explanation=Nie mo\u017cna znale\u017a\u0107 okre\u015blonej definicji j\u0105dra.
 error.kernelDefFile.useraction=Sprawd\u017a, czy zas\u00f3b definicji j\u0105dra istnieje oraz czy bie\u017c\u0105cy u\u017cytkownik mo\u017ce go odczyta\u0107.
 
+error.badOptionValue=CWWKE0024E: Warto\u015b\u0107 ({0}) dla opcji ({1}) nie jest poprawna.
+error.badOptionValue.explanation=Podana warto\u015b\u0107 jest nieodpowiednia dla u\u017cytej opcji.
+error.badOptionValue.useraction=Uruchom komend\u0119 `server help`, aby uzyska\u0107 opis opcji.  Je\u015bli warto\u015b\u0107 jest liczb\u0105, upewnij si\u0119, \u017ce jest ona z dozwolonego zakresu warto\u015bci.
+
 error.specifiedLocation=CWWKE0025E: Warto\u015b\u0107 {0} musi odwo\u0142ywa\u0107 si\u0119 do katalogu. Okre\u015blona warto\u015b\u0107 odwo\u0142uje si\u0119 do istniej\u0105cego zasobu plikowego. Warto\u015b\u0107: {1}
 error.specifiedLocation.explanation=Okre\u015blone po\u0142o\u017cenie odwo\u0142uje si\u0119 do istniej\u0105cego pliku zamiast do katalogu.
 error.specifiedLocation.useraction=Zmie\u0144 okre\u015blone po\u0142o\u017cenie tak, aby odwo\u0142ywa\u0142o si\u0119 do katalogu, i wykonaj dzia\u0142anie ponownie.
@@ -137,6 +139,10 @@ warning.noPlatformCache.useraction=Sprawd\u017a i rozwi\u0105\u017c problem b\u0
 warning.singleServer=CWWKE0027W: W wierszu komend mo\u017cna okre\u015bli\u0107 tylko jeden serwer. Kolejne nazwy zostan\u0105 zignorowane (serwer={0}, zignorowane={1}).
 warning.singleServer.explanation=W wierszu komend mo\u017cna okre\u015bli\u0107 tylko jeden serwer. Pierwsza nazwa serwera zosta\u0142a przetworzona. Pozosta\u0142e nazwy zosta\u0142y zignorowane.
 warning.singleServer.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Okre\u015bl tylko jeden serwer, aby unikn\u0105\u0107 wyst\u0119powania tego ostrze\u017cenia.
+
+error.optionNotApplicableToCommand=CWWKE0028E: Opcja ({0}) nie ma zastosowania do komendy.
+error.optionNotApplicableToCommand.explanation=Podana opcja nie jest dozwolona w u\u017cytej komendzie.
+error.optionNotApplicableToCommand.useraction=Uruchom komend\u0119 `server <command> help`, aby uzyska\u0107 informacje na temat poprawnych opcji komendy.
   
 error.serverAlreadyRunning=CWWKE0029E: Instancja serwera {0} jest ju\u017c uruchomiona.
 error.serverAlreadyRunning.explanation=Pr\u00f3bujesz uruchomi\u0107 serwer, kt\u00f3ry ju\u017c dzia\u0142a.
@@ -383,6 +389,10 @@ audit.system.exit.useraction=Je\u015bli zatrzymanie serwera by\u0142o nieoczekiw
 audit.jvm.shutdown=CWWKE0085I: Serwer {0} jest zatrzymywany, poniewa\u017c ko\u0144czone jest dzia\u0142anie maszyny JVM.
 audit.jvm.shutdown.explanation=Serwer przechwyci\u0142 \u017c\u0105danie zatrzymania maszyny JVM i podejmie pr\u00f3b\u0119 zatrzymania w prawid\u0142owy spos\u00f3b. Dzia\u0142anie maszyny JVM mo\u017ce by\u0107 ko\u0144czone, poniewa\u017c system operacyjny wys\u0142a\u0142 sygna\u0142 przerywania do procesu serwera.
 audit.jvm.shutdown.useraction=Je\u015bli zatrzymanie serwera by\u0142o nieoczekiwane, okre\u015bl, czy do procesu serwera zosta\u0142 wys\u0142any sygna\u0142 przerywania.
+
+error.optionRequiresEquals=CWWKE0086E: Opcja {0} musi zawiera\u0107 znak r\u00f3wno\u015bci (=) przed warto\u015bci\u0105. 
+error.optionRequiresEquals.explanation=Po opcji musi nast\u0119powa\u0107 znak r\u00f3wno\u015bci (=) i warto\u015b\u0107.
+error.optionRequiresEquals.useraction=Opcja musi by\u0107 podana w nast\u0119puj\u0105cym formacie: --opcja=warto\u015b\u0107.
 
 warning.serverStartedCommandPortDisabled=CWWKE0087W: Zainicjowano procedur\u0119 uruchamiania serwera {0}, jednak nie mo\u017cna stwierdzi\u0107, czy zosta\u0142a ona zako\u0144czona, poniewa\u017c port komend serwera jest wy\u0142\u0105czony.
 warning.serverStartedCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 jawnie wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna stwierdzi\u0107, kiedy uruchamianie serwera zosta\u0142o zako\u0144czone.
@@ -698,7 +708,7 @@ warning.earlyRelease=CWWKE0953W: Ta wersja produktu {0} jest wersj\u0105 wst\u01
 warning.earlyRelease.explanation=W wersjach wst\u0119pnych udost\u0119pniane s\u0105 nowe, nie do ko\u0144ca przetestowane funkcje, co s\u0142u\u017cy zbieraniu informacji zwrotnych od u\u017cytkownik\u00f3w przed wydaniem tych funkcji w obs\u0142ugiwanej wersji.
 warning.earlyRelease.useraction=Nie nale\u017cy u\u017cywa\u0107 wersji wst\u0119pnych w systemach produkcyjnych, poniewa\u017c takie wersje nie s\u0105 obj\u0119te wsparciem.
 
-error.invalidPhaseName=CWWKE0954E: Okre\u015blona faza punktu kontrolnego "{0}" jest pusta lub nieznana.
+error.invalidPhaseName=CWWKE0954E: Faza podanego punktu kontrolnego ({0}) jest pusta lub nieznana.
 error.invalidPhaseName.explanation=Podano nieznan\u0105 faz\u0119 jako warto\u015b\u0107 opcji punktu kontrolnego.
 error.invalidPhaseName.useraction=Zapoznaj si\u0119 z dokumentacj\u0105, aby okre\u015bli\u0107 poprawne nazwy faz. Ponownie wydaj komend\u0119, u\u017cywaj\u0105c poprawnej fazy punktu kontrolnego.
 
@@ -725,10 +735,6 @@ error.checkpoint.workarea.restore.useraction=Upewnij si\u0119, \u017ce u\u017cyt
 info.checkpoint.restore.failed=CWWKE0957I: Odtwarzanie procesu serwera punktu kontrolnego zako\u0144czy\u0142o si\u0119 niepowodzeniem. Sprawd\u017a dziennik {0}, aby okre\u015bli\u0107, dlaczego proces punktu kontrolnego nie zosta\u0142 odtworzony. Uruchamianie serwera bez korzystania z obrazu punktu kontrolnego.
 info.checkpoint.restore.failed.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas odtwarzania procesu serwera punktu kontrolnego.  Serwer zosta\u0142 uruchomiony bez u\u017cycia obrazu punktu kontrolnego.
 info.checkpoint.restore.failed.useraction=Sprawd\u017a dzienniki, aby okre\u015bli\u0107, dlaczego proces punktu kontrolnego nie zosta\u0142 odtworzony.
-
-error.checkpoint.failed=CWWKE0958E: \u017b\u0105danie punktu kontrolnego serwera si\u0119 nie powiod\u0142o. Nast\u0119puj\u0105ce dane wyj\u015bciowe pochodz\u0105 z pliku CRIU {0}, kt\u00f3ry zawiera szczeg\u00f3\u0142owe informacje o przyczynie niepowodzenia punktu kontrolnego.
-error.checkpoint.failed.explanation=\u017b\u0105danie punktu kontrolnego dla serwera si\u0119 nie powiod\u0142o. Poprawny obraz procesu punktu kontrolnego dla serwera nie zosta\u0142 utworzony.
-error.checkpoint.failed.useraction=Aby okre\u015bli\u0107, dlaczego punkt kontrolny si\u0119 nie powi\u00f3d\u0142, sprawd\u017a pliki dziennik\u00f3w w katalogu punktu kontrolnego, kt\u00f3ry znajduje si\u0119 w katalogu dziennik\u00f3w serwera.
 
 info.serverStarting=Uruchamianie serwera {0}.
 info.serverStarted=Serwer {0} zosta\u0142 uruchomiony.

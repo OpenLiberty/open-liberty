@@ -74,7 +74,6 @@ public class WebProfileEARtest {
 
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
         server.startServer();
-        server.stopServer();
 
         server.checkpointRestore();
         HttpUtils.findStringInUrl(server, "webApp1/EARappServlet", "Hello from EJB");

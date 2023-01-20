@@ -1,11 +1,9 @@
 ###############################################################################
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -88,9 +86,9 @@ TOKEN_REQUEST_ERROR=CWWKS2416E: Le client {0} OpenID Connect a rencontr\u00e9 l'
 TOKEN_REQUEST_ERROR.explanation=Il se peut que des informations soient manquantes pour le client OpenID Connect, que la demande adress\u00e9e au noeud final de jeton ait \u00e9chou\u00e9 ou qu'une autre erreur se soit produite lors du traitement de la r\u00e9ponse du noeud final de jeton.
 TOKEN_REQUEST_ERROR.useraction=Pour plus d'informations, reportez-vous au message d'erreur. V\u00e9rifiez que le fournisseur OpenID Connect a renvoy\u00e9 un code dans la r\u00e9ponse d'authentification.
 
-#
-# CWWKS2417E removed and available
-#
+TOKEN_MISSING_REQUIRED_CLAIM=CWWKS2417E: Il manque au jeton la demande [{0}] requise.
+TOKEN_MISSING_REQUIRED_CLAIM.explanation=La demande sp\u00e9cifi\u00e9e dans le message doit \u00eatre pr\u00e9sente dans le jeton et elle est manquante.
+TOKEN_MISSING_REQUIRED_CLAIM.useraction=V\u00e9rifiez le format et le contenu du jeton renvoy\u00e9 par le fournisseur OpenID Connect.
 
 USERINFO_RESPONSE_ERROR=CWWKS2418W: Le client OpenID Connect a rencontr\u00e9 l''erreur suivante lorsqu''il a envoy\u00e9 une demande \u00e0 l''URL User Info [{0}] du fournisseur OpenID Connect : {1}
 USERINFO_RESPONSE_ERROR.explanation=Il se peut que la r\u00e9ponse User Info du fournisseur OpenID Connect soit mal form\u00e9e ou qu'il manque des informations, ou bien le fournisseur OpenID Connect a rencontr\u00e9 une erreur en traitant la demande.
@@ -113,3 +111,11 @@ JWK_CONNECTION_TIMED_OUT.useraction=Modifiez la propri\u00e9t\u00e9 jwksConnectT
 JWK_READ_TIMED_OUT=CWWKS2422E: Le client OpenID Connect n''est pas parvenu \u00e0 lire les donn\u00e9es de l''URI JWK [{0}] du fournisseur OpenID Connect en {1} millisecondes. Envisagez de modifier la propri\u00e9t\u00e9 jwksReadTimeout dans la configuration du client OpenID Connect.
 JWK_READ_TIMED_OUT.explanation=Le client OpenID Connect ne peut pas lire les donn\u00e9es JWK sur l'URI JWK dans le d\u00e9lai configur\u00e9.
 JWK_READ_TIMED_OUT.useraction=Modifiez la propri\u00e9t\u00e9 jwksReadTimeout dans la configuration du client OpenID Connect. V\u00e9rifiez que le fournisseur OpenID Connect est accessible.
+
+OIDC_CLIENT_INVALID_RESPONSE_TYPE=CWWKS2423E: Le type de r\u00e9ponse non valide suivant est sp\u00e9cifi\u00e9 : ''{0}''. Les types de r\u00e9ponse valides sont [{1}].
+OIDC_CLIENT_INVALID_RESPONSE_TYPE.explanation=Le type de r\u00e9ponse sp\u00e9cifi\u00e9 n'est pas valide. 
+OIDC_CLIENT_INVALID_RESPONSE_TYPE.useraction=Sp\u00e9cifiez l'un des types de r\u00e9ponse valides.
+
+TOKEN_CLAIM_VALUE_MISMATCH=CWWKS2424E: La valeur [{0}] de la demande [{1}] dans le jeton ne correspond pas \u00e0 la valeur attendue [{2}].
+TOKEN_CLAIM_VALUE_MISMATCH.explanation=La valeur de la demande est incorrecte ou mal form\u00e9e. La configuration du client OpenID Connect est peut-\u00eatre incorrecte ou le jeton a \u00e9t\u00e9 cr\u00e9\u00e9 avec des valeurs incorrectes.
+TOKEN_CLAIM_VALUE_MISMATCH.useraction=Assurez-vous que l'attribut de la configuration du client OpenID Connect associ\u00e9 \u00e0 la demande sp\u00e9cifi\u00e9e dans le message soit correctement configur\u00e9.

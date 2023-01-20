@@ -1,11 +1,9 @@
 ###############################################################################
 # Copyright (c) 2010, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -126,6 +124,10 @@ error.kernelDefFile=CWWKE0023E: A megadott kernelmeghat\u00e1roz\u00e1s ({0}) ne
 error.kernelDefFile.explanation=A megadott kernelmeghat\u00e1roz\u00e1s nem tal\u00e1lhat\u00f3.
 error.kernelDefFile.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kernelmeghat\u00e1roz\u00e1s er\u0151forr\u00e1s l\u00e9tezik \u00e9s a jelenlegi felhaszn\u00e1l\u00f3nak van hozz\u00e1 olvas\u00e1si enged\u00e9lye.
 
+error.badOptionValue=CWWKE0024E: A(z) ({0}) \u00e9rt\u00e9k a(z) ({1}) opci\u00f3hoz nem \u00e9rv\u00e9nyes.
+error.badOptionValue.explanation=A megadott \u00e9rt\u00e9k nem megfelel\u0151 a megadott be\u00e1ll\u00edt\u00e1shoz.
+error.badOptionValue.useraction=Futtassa a 'server help' parancsot a be\u00e1ll\u00edt\u00e1sok le\u00edr\u00e1s\u00e1hoz.  Ha az \u00e9rt\u00e9k egy sz\u00e1m, gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy az \u00e9rv\u00e9nyes tartom\u00e1nyba esik.
+
 error.specifiedLocation=CWWKE0025E: A(z) {0} \u00e9rt\u00e9k\u00e9nek egy k\u00f6nyvt\u00e1rra kell hivatkoznia. A megadott \u00e9rt\u00e9k egy megl\u00e9v\u0151 f\u00e1jl er\u0151forr\u00e1sra hivatkozik. \u00c9rt\u00e9k: {1}
 error.specifiedLocation.explanation=A megadott hely egy k\u00f6nyvt\u00e1r helyett egy megl\u00e9v\u0151 f\u00e1jlra hivatkozik.
 error.specifiedLocation.useraction=M\u00f3dos\u00edtsa a megadott helyet egy k\u00f6nyvt\u00e1rra, majd pr\u00f3b\u00e1lja meg \u00fajra v\u00e9grehajtani a m\u0171veletet.
@@ -137,6 +139,10 @@ warning.noPlatformCache.useraction=Vizsg\u00e1lja meg \u00e9s oldja meg a kiv\u0
 warning.singleServer=CWWKE0027W: Csak egyetlen kiszolg\u00e1l\u00f3 adhat\u00f3 meg a parancssorban; a tov\u00e1bbi nevek figyelmen k\u00edv\u00fcl maradnak (kiszolg\u00e1l\u00f3={0}, mell\u0151zve={1}).
 warning.singleServer.explanation=A parancssorban csak egyetlen kiszolg\u00e1l\u00f3t adhat meg. Az els\u0151 kiszolg\u00e1l\u00f3n\u00e9v fel lett dolgozva; a tov\u00e1bbi nevek figyelmen k\u00edv\u00fcl maradtak.
 warning.singleServer.useraction=Nincs teend\u0151. A figyelmeztet\u00e9s elker\u00fcl\u00e9se \u00e9rdek\u00e9ben csak egyetlen kiszolg\u00e1l\u00f3t adjon meg.
+
+error.optionNotApplicableToCommand=CWWKE0028E: A(z) ({0}) param\u00e9ter nem alkalmazhat\u00f3 a parancshoz.
+error.optionNotApplicableToCommand.explanation=A megadott param\u00e9ter nem enged\u00e9lyezett a megadott parancshoz.
+error.optionNotApplicableToCommand.useraction=Futtassa a "server <command> help" parancsot a parancs \u00e9rv\u00e9nyes param\u00e9tereinek inform\u00e1ci\u00f3i\u00e9rt.
   
 error.serverAlreadyRunning=CWWKE0029E: A(z) {0} kiszolg\u00e1l\u00f3 egy p\u00e9ld\u00e1nya m\u00e1r fut.
 error.serverAlreadyRunning.explanation=Olyan kiszolg\u00e1l\u00f3t pr\u00f3b\u00e1l meg ind\u00edtani, amely m\u00e1r fut.
@@ -383,6 +389,10 @@ audit.system.exit.useraction=Ha a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1sa
 audit.jvm.shutdown=CWWKE0085I: A(z) {0} kiszolg\u00e1l\u00f3 le\u00e1ll, mert a JVM le\u00e1ll\u00edt\u00e1s alatt van.
 audit.jvm.shutdown.explanation=A kiszolg\u00e1l\u00f3 elfogta a JVM le\u00e1ll\u00edt\u00e1s\u00e1ra ir\u00e1nyul\u00f3 k\u00e9r\u00e9st, \u00e9s megpr\u00f3b\u00e1lkozik a szab\u00e1lyos le\u00e1ll\u00e1ssal. Lehet, hogy a JVM az\u00e9rt \u00e1ll le, mert az oper\u00e1ci\u00f3s rendszer befejez\u00e9si jelz\u00e9st k\u00fcld\u00f6tt a kiszolg\u00e1l\u00f3folyamatnak.
 audit.jvm.shutdown.useraction=Ha a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1sa nem v\u00e1rt m\u00f3don t\u00f6rt\u00e9nt, akkor hat\u00e1rozza meg, hogy lett-e k\u00fcldve befejez\u00e9si jelz\u00e9s a kiszolg\u00e1l\u00f3folyamatnak.
+
+error.optionRequiresEquals=CWWKE0086E: A(z) {0} be\u00e1ll\u00edt\u00e1snak tartalmaznia kell egy egyenl\u0151s\u00e9gjelet (=) a megadott \u00e9rt\u00e9k el\u0151tt. 
+error.optionRequiresEquals.explanation=A megadott be\u00e1ll\u00edt\u00e1st egy egyenl\u0151s\u00e9gjelnek (=) \u00e9s egy \u00e9rt\u00e9knek kell k\u00f6vetnie.
+error.optionRequiresEquals.useraction=A param\u00e9tert a k\u00f6vetkez\u0151 form\u00e1tumban kell megadni: -- opci\u00f3=\u00e9rt\u00e9k.
 
 warning.serverStartedCommandPortDisabled=CWWKE0087W: A(z) {0} kiszolg\u00e1l\u00f3ra ind\u00edt\u00e1s lett kezdem\u00e9nyezve, de nem \u00e1llap\u00edthat\u00f3 meg, hogy az ind\u00edt\u00e1s befejez\u0151d\u00f6tt-e, mert a kiszolg\u00e1l\u00f3 parancsportja tiltott.
 warning.serverStartedCommandPortDisabled.explanation=A kiszolg\u00e1l\u00f3 parancsportja sz\u00fcks\u00e9ges a kommunik\u00e1ci\u00f3hoz a fut\u00f3 kiszolg\u00e1l\u00f3val.  Az adott kiszolg\u00e1l\u00f3 parancsportja kifejezetten tiltott, ez\u00e9rt nem lehets\u00e9ges meg\u00e1llap\u00edtani, hogy a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa befejez\u0151d\u00f6tt-e.
@@ -698,7 +708,7 @@ warning.earlyRelease=CWWKE0953W: A(z) {0} v\u00e1ltozata egy nem t\u00e1mogatott
 warning.earlyRelease.explanation=A korai kiad\u00e1sokban a nem teljesk\u00f6r\u0171en tesztelt \u00faj szolg\u00e1ltat\u00e1sok el\u00e9rhet\u0151v\u00e9 lettek t\u00e9ve, hogy visszajelz\u00e9s \u00e9rkezzen, miel\u0151tt egy t\u00e1mogatott kiad\u00e1sban szerepeln\u00e9nek.
 warning.earlyRelease.useraction=\u00c9les rendszerben ne haszn\u00e1ljon korai kiad\u00e1s\u00fa v\u00e1ltozatot, mivel a korai kiad\u00e1sv\u00e1ltozatok nem t\u00e1mogatottak.
 
-error.invalidPhaseName=CWWKE0954E: A megadott "{0}" ellen\u0151rz\u00e9si pont f\u00e1zis \u00fcres vagy ismeretlen.
+error.invalidPhaseName=CWWKE0954E: A megadott ({0}) ellen\u0151rz\u00e9si pont f\u00e1zis \u00fcres vagy ismeretlen.
 error.invalidPhaseName.explanation=Az ellen\u0151rz\u00e9si pont param\u00e9ter \u00e9rt\u00e9kek\u00e9nt ismeretlen f\u00e1zis lett megadva.
 error.invalidPhaseName.useraction=Az \u00e9rv\u00e9nyes f\u00e1zisnevek meghat\u00e1roz\u00e1s\u00e1hoz tekintse \u00e1t a dokument\u00e1ci\u00f3t. Adja ki \u00fajra a parancsot \u00e9rv\u00e9nyes ellen\u0151rz\u00e9si pont f\u00e1zis haszn\u00e1lat\u00e1val.
 
@@ -725,10 +735,6 @@ error.checkpoint.workarea.restore.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f
 info.checkpoint.restore.failed=CWWKE0957I: Az ellen\u0151rz\u0151pont kiszolg\u00e1l\u00f3folyamat vissza\u00e1ll\u00edt\u00e1sa meghi\u00fasult. Vizsg\u00e1lja meg a(z) {0} napl\u00f3t, hogy mi\u00e9rt nem ker\u00fclt vissza\u00e1ll\u00edt\u00e1sra az ellen\u0151rz\u0151pont folyamat. A kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa az ellen\u0151rz\u0151pontk\u00e9p haszn\u00e1lata n\u00e9lk\u00fcl.
 info.checkpoint.restore.failed.explanation=Hiba t\u00f6rt\u00e9nt egy ellen\u0151rz\u0151pont kiszolg\u00e1l\u00f3 folyamat vissza\u00e1ll\u00edt\u00e1sakor.  A kiszolg\u00e1l\u00f3 az ellen\u0151rz\u0151pontk\u00e9p haszn\u00e1lata n\u00e9lk\u00fcl indult el.
 info.checkpoint.restore.failed.useraction=N\u00e9zze meg a napl\u00f3kban, hogy mi\u00e9rt nem ker\u00fclt vissza\u00e1ll\u00edt\u00e1sra az ellen\u0151rz\u0151pont folyamat.
-
-error.checkpoint.failed=CWWKE0958E: A kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9s meghi\u00fasult. A k\u00f6vetkez\u0151 kimenet a CRIU {0} f\u00e1jlban tal\u00e1lhat\u00f3, amely az ellen\u0151rz\u00e9si pont meghi\u00fasul\u00e1s\u00e1nak r\u00e9szleteit tartalmazza.
-error.checkpoint.failed.explanation=A kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9se meghi\u00fasult. Nem lett l\u00e9trehozva \u00e9rv\u00e9nyes ellen\u0151rz\u0151 pont folyamatk\u00e9p a kiszolg\u00e1l\u00f3hoz.
-error.checkpoint.failed.useraction=Annak meghat\u00e1roz\u00e1s\u00e1hoz, hogy az ellen\u0151rz\u0151 pont mi\u00e9rt nem siker\u00fclt, vizsg\u00e1lja meg a napl\u00f3f\u00e1jlokat a kiszolg\u00e1l\u00f3 napl\u00f3k\u00f6nyvt\u00e1r\u00e1ban tal\u00e1lhat\u00f3 ellen\u0151rz\u0151 pont k\u00f6nyvt\u00e1rban.
 
 info.serverStarting=A(z) {0} kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa.
 info.serverStarted=A(z) {0} kiszolg\u00e1l\u00f3 elindult.

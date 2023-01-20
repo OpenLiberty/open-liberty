@@ -12,7 +12,7 @@
  *******************************************************************************/
 package jakarta.data.repository;
 
-public enum Condition {
+public enum Compare {
     Between(null),
     Contains(null),
     Empty(null),
@@ -37,9 +37,9 @@ public enum Condition {
     NotNull(Null),
     NotStartsWith(StartsWith);
 
-    private Condition negatedFrom;
+    private Compare negatedFrom;
 
-    private Condition(Condition negatedFrom) {
+    private Compare(Compare negatedFrom) {
         this.negatedFrom = negatedFrom;
     }
 
@@ -50,7 +50,7 @@ public enum Condition {
      * @return the condition that was negated to form this condition.
      *         Null if this condition begins with something other than {@code Not}.
      */
-    public final Condition negatedFrom() {
+    public final Compare negatedFrom() {
         return negatedFrom;
     }
 }

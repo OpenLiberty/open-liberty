@@ -8,11 +8,9 @@
 ###############################################################################
 # Copyright (c) 2009, 2011 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -61,6 +59,21 @@ internal.error.CWMMC0006E=CWMMC0006E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
 internal.error.CWMMC0006E.explanation=Az alkalmaz\u00e1skiszolg\u00e1l\u00f3n bels\u0151 hiba t\u00f6rt\u00e9nt.
 internal.error.CWMMC0006E.useraction=Gy\u0171jtse \u00f6ssze a nyomk\u00f6vet\u00e9seket, \u00e9s nyisson meg egy probl\u00e9majelent\u00e9st az alkalmaz\u00e1skiszolg\u00e1l\u00f3val kapcsolatban.
 
+#Information regarding libraryRef attribute taking effect only after server restart
+configurationChange.info.CWMMC0007I=CWMMC0007I: A MicroProfile Metrics szolg\u00e1ltat\u00e1s konfigur\u00e1ci\u00f3-m\u00f3dos\u00edt\u00e1st \u00e9szlelt. Ha m\u00f3dos\u00edt\u00e1s t\u00f6rt\u00e9nt a libraryRef attrib\u00fatumban, a m\u00f3dos\u00edt\u00e1s \u00e9letbe l\u00e9p\u00e9s\u00e9hez kiszolg\u00e1l\u00f3 \u00fajraind\u00edt\u00e1s sz\u00fcks\u00e9ges.
+configurationChange.info.CWMMC0007I.explanation=A MicroProfile m\u00e9r\u0151sz\u00e1mok egy kiszolg\u00e1l\u00f3 \u00fajraind\u00edt\u00e1s\u00e1t ig\u00e9nyli a libraryRef \u00e1ltal hivatkozott k\u00f6nyvt\u00e1rak m\u00f3dos\u00edt\u00e1s\u00e1hoz.
+configurationChange.info.CWMMC0007I.useraction=Ha a libraryRef attrib\u00fatum m\u00f3dos\u00edtva lett, ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t a m\u00f3dos\u00edt\u00e1s \u00e9rv\u00e9nybe l\u00e9p\u00e9s\u00e9hez.
+
+#User configured mpMetrics to use user-defined library for Micrometer binaries without Prometheus Registry JAR
+noPrometheusRegistry.info.CWMMC0008I=CWMMC0008I: A /metrikus v\u00e9gpont nem \u00e9rhet\u0151 el, mert nincs el\u00e9rhet\u0151 Prometheus nyilv\u00e1ntart\u00e1s.
+noPrometheusRegistry.info.CWMMC0008I.explanation=A MicroProfile Metrics szolg\u00e1ltat\u00e1s a libraryRef attrib\u00fatumon kereszt\u00fcl meghat\u00e1rozott mikrom\u00e9teres k\u00f6nyvt\u00e1rakat t\u00f6lti be, de a hivatkozott k\u00f6nyvt\u00e1r nem tartalmaz mikrom\u00e9teres Prometheus nyilv\u00e1ntart\u00e1st.
+noPrometheusRegistry.info.CWMMC0008I.useraction=Ha a Prometheus nyilv\u00e1ntart\u00e1s hi\u00e1nya nem sz\u00e1nd\u00e9kos, akkor m\u00f3dos\u00edtsa a libraryRef attrib\u00fatum \u00e1ltal hivatkozott k\u00f6nyvt\u00e1r tartalm\u00e1t egy Micrometer Prometheus Registry JAR f\u00e1jl t\u00e1rol\u00e1s\u00e1ra.
+
+#Prometheus Registry was disabled through the mp.metrics.prometheus.enabled MicroProfile Config property
+disabled.info.CWMMC0009I=CWMMC0009I: A /metrikus v\u00e9gpont nem \u00e9rhet\u0151 el, mert a Prometheus nyilv\u00e1ntart\u00e1s le van tiltva.
+disabled.info.CWMMC0009I.explanation=Az mp.metrics.prometeus.enabled MicroProfile konfigur\u00e1ci\u00f3s tulajdons\u00e1g false \u00e9rt\u00e9kre van be\u00e1ll\u00edtva.
+disabled.info.CWMMC0009I.useraction=Ha a Prometheus nyilv\u00e1ntart\u00e1s letilt\u00e1sa nem sz\u00e1nd\u00e9kos, t\u00e1vol\u00edtsa el az mp.metrics.prometheus.enabled MicroProfile Config tulajdons\u00e1got, vagy explicit m\u00f3don \u00e1ll\u00edtsa be a tulajdons\u00e1got true \u00e9rt\u00e9kre.
+
 #Memory usedHeap message
 memory.usedHeap.description=A haszn\u00e1lt kupacmem\u00f3ria mennyis\u00e9g\u00e9t jelen\u00edti meg byte-ban.
 
@@ -95,7 +108,8 @@ classloader.totalUnloadedClass.count.description=Az oszt\u00e1lyok teljes sz\u00
 cpu.availableProcessors.description=A Java virtu\u00e1lis g\u00e9p sz\u00e1m\u00e1ra rendelkez\u00e9sre \u00e1ll\u00f3 processzorok sz\u00e1m\u00e1t jelen\u00edti meg. Ez az \u00e9rt\u00e9k a virtu\u00e1lis g\u00e9p adott h\u00edv\u00e1sa k\u00f6zben v\u00e1ltozhat.
 
 #Cpu systemLoadAverage message
-cpu.systemLoadAverage.description=A rendszer \u00e1tlagos terhel\u00e9s\u00e9t jelen\u00edti meg az utols\u00f3 egy percben. A rendszer \u00e1tlagos terhel\u00e9se az el\u00e9rhet\u0151 processzorokhoz sorba \u00e1ll\u00edtott futtathat\u00f3 entit\u00e1sok sz\u00e1m\u00e1nak \u00e9s az el\u00e9rhet\u0151 processzorokon fut\u00f3 entit\u00e1sok sz\u00e1m\u00e1nak \u00f6sszege adott id\u0151szakra \u00e1tlagolva. Az \u00e1tlagos terhel\u00e9s kisz\u00e1m\u00edt\u00e1s\u00e1nak m\u00f3dja oper\u00e1ci\u00f3s rendszer specifikus, de jellemez\u0151en egy csillap\u00edtatlan id\u0151f\u00fcgg\u0151 \u00e1tlag. Ha az \u00e1tlagos terhel\u00e9s nem \u00e9rhet\u0151 el, akkor negat\u00edv \u00e9rt\u00e9k jelenik meg. Ezt az attrib\u00fatumot arra tervezt\u00e9k, hogy a rendszer terhel\u00e9s\u00e9vel kapcsolatos tippeket biztos\u00edtson, ez\u00e9rt gyakran lek\u00e9rdez\u00e9sre ker\u00fclhet. Lehet, hogy az \u00e1tlagos terhel\u00e9s n\u00e9h\u00e1ny platformon, ahol a met\u00f3dus megval\u00f3s\u00edt\u00e1s k\u00f6lts\u00e9ges, nem lesz el\u00e9rhet\u0151.
+cpu.systemLoadAverage.description=A rendszer \u00e1tlagos terhel\u00e9s\u00e9t jelen\u00edti meg az utols\u00f3 egy percben. A rendszer \u00e1tlagos terhel\u00e9se az el\u00e9rhet\u0151 processzorokhoz sorba \u00e1ll\u00edtott futtathat\u00f3 entit\u00e1sok sz\u00e1m\u00e1nak \u00e9s az el\u00e9rhet\u0151 processzorokon fut\u00f3 entit\u00e1sok sz\u00e1m\u00e1nak \u00f6sszege adott id\u0151szakra \u00e1tlagolva. Az \u00e1tlagos terhel\u00e9s kisz\u00e1m\u00edt\u00e1s\u00e1nak m\u00f3dja oper\u00e1ci\u00f3s rendszer specifikus, de jellemez\u0151en egy csillap\u00edtatlan id\u0151f\u00fcgg\u0151 \u00e1tlag. Ha az \u00e1tlagos terhel\u00e9s nem \u00e9rhet\u0151 el, akkor negat\u00edv \u00e9rt\u00e9k jelenik meg. Ezt az attrib\u00fatumot arra tervezt\u00e9k, hogy a rendszer terhel\u00e9s\u00e9vel kapcsolatos tippeket biztos\u00edtson, ez\u00e9rt gyakran lek\u00e9rdez\u00e9sre ker\u00fclhet. Lehet, hogy az \u00e1tlagos terhel\u00e9s n\u00e9h\u00e1ny platformon, ahol a met\u00f3dus megval\u00f3\
+    s\u00edt\u00e1s k\u00f6lts\u00e9ges, nem lesz el\u00e9rhet\u0151.
 
 #Cpu processCpuLoad message
 cpu.processCpuLoad.description=A Java virtu\u00e1lis g\u00e9p folyamat 'recent cpu usage' \u00e9rt\u00e9k\u00e9t jelen\u00edti meg.
