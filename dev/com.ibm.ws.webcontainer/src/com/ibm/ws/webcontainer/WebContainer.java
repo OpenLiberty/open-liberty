@@ -210,7 +210,7 @@ public abstract class WebContainer extends BaseContainer {
 
     public static boolean appInstallBegun = false;
     
-    private static final Map<VHostCacheKey, String> vhostCache = new ConcurrentHashMap<VHostCacheKey, String>();
+    private static final Map<VHostCacheKey, String> vhostCache = new ConcurrentHashMap<>();
     
     // Servlet 4.0 : Must be static since referenced from static method
     protected static CacheServletWrapperFactory cacheServletWrapperFactory;
@@ -2035,7 +2035,7 @@ public abstract class WebContainer extends BaseContainer {
             if (o.getClass() != VHostCacheKey.class)
                 return false;
             VHostCacheKey that = (VHostCacheKey) o;
-            return this.serverPort == that.serverPort && this.serverName.equals(that.serverName);
+            return this.serverPort == that.serverPort && (this.serverName == null ? that.serverName == null : this.serverName.equals(that.serverName));
         }
 
         @Override
