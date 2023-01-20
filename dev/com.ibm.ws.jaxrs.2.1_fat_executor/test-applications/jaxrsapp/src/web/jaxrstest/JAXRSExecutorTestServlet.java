@@ -66,7 +66,7 @@ public class JAXRSExecutorTestServlet extends FATServlet {
     private static boolean ee10;
     static {
        try {
-           Class.forName("org.jboss.resteasy.plugins.providers.multipart.ResteasyEntityPartBuilder");
+           Class.forName("jakarta.ws.rs.core.EntityPart");
            ee10 = true;
        } catch(Throwable t) {
            ee10 = false;
