@@ -36,8 +36,9 @@ import java.util.function.Supplier; //Liberty change
 
 import org.jboss.resteasy.resteasy_jaxrs.i18n.Messages;
 
+import com.ibm.ws.threading.CompletionStageExecutor;
+
 import io.openliberty.restfulWS.client.AsyncClientExecutorService; //Liberty change
-import jakarta.enterprise.concurrent.ManagedExecutorService; //Liberty change
 
 /**
  * An {@linkplain ExecutorService executor} which wraps runnables and callables to capture the context of the current
@@ -209,9 +210,8 @@ public class ContextualExecutorService implements ExecutorService {
   //Liberty change start
     public <T> CompletableFuture<T> supplyAsync(Supplier<T> supplier) {
         ExecutorService executor = getDelegate();
-        if (executor instanceof ManagedExecutorService) {
-            return ((ManagedExecutorService)executor).supplyAsync(supplier);
-        }
+        if (executor instanceof CompletionStageExecutor)
+            return ((CompletionStageExecutor) executor).supplyAsync(supplier);
         if (executor instanceof AsyncClientExecutorService) {
             return ((AsyncClientExecutorService)executor).supplyAsync(supplier);
         }

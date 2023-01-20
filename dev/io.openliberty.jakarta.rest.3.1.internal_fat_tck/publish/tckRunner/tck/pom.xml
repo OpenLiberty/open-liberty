@@ -179,10 +179,10 @@
         </dependency>
         <dependency>
             <groupId>io.openliberty</groupId>
-            <artifactId>io.openliberty.jakarta.concurrency.3.0</artifactId>
+            <artifactId>com.ibm.ws.threading</artifactId>
             <version>1</version>
             <scope>system</scope>
-            <systemPath>${io.openliberty.jakarta.concurrency.3.0_}</systemPath>
+            <systemPath>${com.ibm.ws.threading_}</systemPath>
         </dependency>
         <dependency>
             <groupId>io.openliberty</groupId>

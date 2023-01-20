@@ -207,7 +207,6 @@ Include-Resource:\
   io.openliberty.jakarta.activation.2.1,\
   io.openliberty.jakarta.servlet.6.0,\
   io.openliberty.jakarta.annotation.2.1,\
-  io.openliberty.jakarta.concurrency.3.0,\
   io.openliberty.jakarta.jsonp.2.1,\
   io.openliberty.jakarta.cdi.4.0,\
   com.ibm.ws.org.apache.commons.io,\
@@ -220,6 +219,7 @@ Include-Resource:\
   com.ibm.ws.container.service;version=latest,\
   com.ibm.ws.container.service.compat;version=latest,\
   com.ibm.ws.logging.core,\
+  com.ibm.ws.threading,\
   io.openliberty.org.jboss.logging35,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\

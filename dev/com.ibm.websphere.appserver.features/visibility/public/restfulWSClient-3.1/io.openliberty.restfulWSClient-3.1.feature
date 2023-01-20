@@ -25,7 +25,6 @@ IBM-ShortName: restfulWSClient-3.1
 WLP-AlsoKnownAs: jaxrsClient-3.1
 Subsystem-Name: Jakarta RESTful Web Services 3.1 Client
 -features=io.openliberty.cdi-4.0, \
-  io.openliberty.jakarta.concurrency-3.0, \
   io.openliberty.jakarta.mail-2.1, \
   io.openliberty.jakarta.validation-3.0, \
   com.ibm.websphere.appserver.globalhandler-1.0, \

@@ -37,9 +37,9 @@ import org.jboss.resteasy.util.DelegatingOutputStream;
 import org.reactivestreams.Publisher;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.threading.CompletionStageExecutor;
 
 import io.openliberty.restfulWS.client.AsyncClientExecutorService; //Liberty change
-import jakarta.enterprise.concurrent.ManagedExecutorService; //Liberty change
 
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.ClientErrorException;
@@ -807,9 +807,8 @@ public class ClientInvocation implements Invocation
        if (executor instanceof ContextualExecutorService) {
            return ((ContextualExecutorService)executor).supplyAsync(supplier);
        }
-       if (executor instanceof ManagedExecutorService) {
-           return ((ManagedExecutorService)executor).supplyAsync(supplier);
-       }
+       if (executor instanceof CompletionStageExecutor)
+           return ((CompletionStageExecutor) executor).supplyAsync(supplier);
        if (executor instanceof AsyncClientExecutorService) {
            return ((AsyncClientExecutorService)executor).supplyAsync(supplier);
        }

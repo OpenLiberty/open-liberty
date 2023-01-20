@@ -26,8 +26,9 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import jakarta.enterprise.concurrent.ManagedExecutorService;
 import org.jboss.resteasy.resteasy_jaxrs.i18n.Messages;
+
+import com.ibm.ws.threading.CompletionStageExecutor;
 
 import io.openliberty.restfulWS.client.internal.ClientAsyncTaskWrapperComponent;
 
@@ -194,9 +195,8 @@ public class AsyncClientExecutorService implements ExecutorService {
     
     public <T> CompletableFuture<T> supplyAsync(Supplier<T> supplier) {
         ExecutorService executor = getDelegate();
-        if (executor instanceof ManagedExecutorService) {
-            return ((ManagedExecutorService)executor).supplyAsync(supplier);
-        }
+        if (executor instanceof CompletionStageExecutor)
+            return ((CompletionStageExecutor) executor).supplyAsync(supplier);
         return CompletableFuture.supplyAsync(supplier, this);
     }
 
