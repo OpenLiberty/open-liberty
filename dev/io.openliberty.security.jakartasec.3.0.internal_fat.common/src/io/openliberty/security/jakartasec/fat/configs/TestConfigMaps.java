@@ -320,6 +320,102 @@ public class TestConfigMaps {
         return updatedMap;
     }
 
+    public static Map<String, Object> getExtraParametersTwoParams() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key1=value1,key2=value2");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersDuplicateKeys() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key1=value1,key1=value2");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersContainsSpaceInKey() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key 1=value1");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersContainsTrailingSpaceInKey() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key1 =value1");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersContainsSpaceInValue() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key1=value 1");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersContainsLeadingSpaceInValue() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key1= value1");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersContainsTrailingSpaceInValue() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key1=value1 ");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersContainsEmptyKey() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "=value1");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersContainsEmptyValue() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key1=");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersContainsSpaceAsValue() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key1= ");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersContainsTwoEqualsSigns() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key1=value1=value2");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersMissingEqualsSign() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key1value1");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersIsEmpty() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersIsAnEqualsSign() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "=");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersContainsSpecialCharacterInKey() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key&1=value1");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersContainsSpecialCharacterInValue() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key1=value&1");
+        return updatedMap;
+    }
+
     public static Map<String, Object> getOP2() throws Exception {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
