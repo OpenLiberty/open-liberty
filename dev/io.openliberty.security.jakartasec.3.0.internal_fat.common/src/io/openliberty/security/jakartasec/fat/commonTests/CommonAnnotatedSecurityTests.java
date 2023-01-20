@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -282,6 +282,22 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
     public Page invokeAppReturnLogoutPage(WebClient webClient, String url) throws Exception {
 
         return invokeApp(webClient, url, CommonExpectations.successfullyReachedOidcLogoutPage());
+
+    }
+
+    /**
+     * Invoke the requested app - and ensure that we landed on the logout page - we'll land on this page when we try to use expired tokens
+     *
+     * @param webClient
+     *            the webClient to use to make the request
+     * @param url
+     *            the test requested url to attempt to access
+     * @return the logout page
+     * @throws Exception
+     */
+    public Page invokeAppReturnPostLogoutPage(WebClient webClient, String url, boolean extraParms) throws Exception {
+
+        return invokeApp(webClient, url, CommonExpectations.successfullyReachedPostLogoutPage(extraParms));
 
     }
 

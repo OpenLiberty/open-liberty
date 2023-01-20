@@ -19,6 +19,7 @@ src: \
     test-applications/BaseServlet.war/src,\
     test-applications/GenericAnnotatedWithConfigInFile.war/src,\
     test-applications/SimpleServlet.war/src,\
+    test-applications/PostLogoutServlet.war/src,\
     test-applications/testmarker/src
 
 test.project: true

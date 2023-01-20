@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -101,6 +101,9 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     public static void deployMyApps() throws Exception {
 
         swh = new ShrinkWrapHelpers(opHttpBase, opHttpsBase, rpHttpBase, rpHttpsBase);
+
+        swh.defaultDropinApp(rpServer, "PostLogoutServlet.war", "oidc.client.postLogout.*", "oidc.client.base.utils");
+
         // deploy the apps that are created at test time from common source
         // Notes about the providers:
         // OP0 - no id or access token lifetime specified
@@ -303,7 +306,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
 
         if (redirectUri != null) {
             if (redirectUri.equals(goodRedirectUri)) {
-                testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getRedirectURIGood_Logout(opHttpsBase, provider));
+                testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getRedirectURIGood_Logout(rpHttpsBase));
             } else {
                 if (redirectUri.equals(badRedirectUri)) {
                     testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getRedirectURIBad_Logout(opHttpsBase));
@@ -844,7 +847,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
      * @throws Exception
      */
     @Test
-    public void BasicLogoutTests_goodRedirectUri_NotifyProvierTrue() throws Exception {
+    public void BasicLogoutTests_goodRedirectUri_NotifyProviderTrue() throws Exception {
 
         genericGoodLogoutTest("GoodRedirectNotifyProviderTrueLogoutServlet", "OP3");
 
@@ -856,7 +859,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
      * @throws Exception
      */
     @Test
-    public void BasicLogoutTests_badRedirectUri_NotifyProvierTrue() throws Exception {
+    public void BasicLogoutTests_badRedirectUri_NotifyProviderTrue() throws Exception {
 
         genericGoodLogoutTest("BadRedirectNotifyProviderTrueLogoutServlet", "OP3");
 
@@ -868,7 +871,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
      * @throws Exception
      */
     @Test
-    public void BasicLogoutTests_EmptyRedirectUri_NotifyProvierTrue() throws Exception {
+    public void BasicLogoutTests_EmptyRedirectUri_NotifyProviderTrue() throws Exception {
 
         genericGoodLogoutTest("EmptyRedirectNotifyProviderTrueLogoutServlet", "OP3");
 
@@ -881,7 +884,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
      * @throws Exception
      */
     @Test
-    public void BasicLogoutTests_goodRedirectUri_NotifyProvierFalse_PromptLogin() throws Exception {
+    public void BasicLogoutTests_goodRedirectUri_NotifyProviderFalse_PromptLogin() throws Exception {
 
         genericGoodLogoutTest("GoodRedirectNotifyProviderFalsePromptLoginLogoutServlet", "OP3");
 
@@ -894,7 +897,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
      * @throws Exception
      */
     @Test
-    public void BasicLogoutTests_goodRedirectUri_NotifyProvierFalse_PromptNone() throws Exception {
+    public void BasicLogoutTests_goodRedirectUri_NotifyProviderFalse_PromptNone() throws Exception {
 
         genericGoodLogoutTest("GoodRedirectNotifyProviderFalsePromptNoneLogoutServlet", "OP3");
 
@@ -907,7 +910,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
      * @throws Exception
      */
     @Test
-    public void BasicLogoutTests_goodRedirectUri_NotifyProvierFalse_PromptConsent() throws Exception {
+    public void BasicLogoutTests_goodRedirectUri_NotifyProviderFalse_PromptConsent() throws Exception {
 
         genericGoodLogoutTest("GoodRedirectNotifyProviderFalsePromptConsentLogoutServlet", "OP3");
 
@@ -920,7 +923,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
      * @throws Exception
      */
     @Test
-    public void BasicLogoutTests_goodRedirectUri_NotifyProvierFalse_PromptSelectAccount() throws Exception {
+    public void BasicLogoutTests_goodRedirectUri_NotifyProviderFalse_PromptSelectAccount() throws Exception {
 
         genericGoodLogoutTest("GoodRedirectNotifyProviderFalsePromptSelectAccountLogoutServlet", "OP3");
 
@@ -933,7 +936,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
      * @throws Exception
      */
     @Test
-    public void BasicLogoutTests_goodRedirectUri_NotifyProvierFalse_PromptEmpty() throws Exception {
+    public void BasicLogoutTests_goodRedirectUri_NotifyProviderFalse_PromptEmpty() throws Exception {
 
         genericGoodLogoutTest("GoodRedirectNotifyProviderFalsePromptEmptyLogoutServlet", "OP3");
 
@@ -946,14 +949,14 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
      * @throws Exception
      */
     @Test
-    public void BasicLogoutTests_badRedirectUri_NotifyProvierFalse() throws Exception {
+    public void BasicLogoutTests_badRedirectUri_NotifyProviderFalse() throws Exception {
 
         genericGoodSplashPage("BadRedirectNotifyProviderFalseLogoutServlet", "OP3");
 
     }
 
     @Test
-    public void BasicLogoutTests_emptyRedirectUri_NotifyProvierFalse() throws Exception {
+    public void BasicLogoutTests_emptyRedirectUri_NotifyProviderFalse() throws Exception {
 
         genericReAuthn(rpServer, "EmptyRedirectNotifyProviderFalseLogoutServlet", "OP3", false);
 
