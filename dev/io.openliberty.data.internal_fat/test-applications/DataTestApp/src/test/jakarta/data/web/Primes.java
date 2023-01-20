@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -180,10 +180,10 @@ public interface Primes {
     @Select("number")
     List<Long> inRangeHavingVNumeralAndSubstringOfName(long min, long max, String nameSuffix);
 
-    @Filter(by = "number", op = Condition.LessThan)
-    @Filter(by = "name", op = Condition.EndsWith)
-    @Filter(as = Filter.Type.OR, by = "number", op = Condition.Between)
-    @Filter(by = "name", op = Condition.EndsWith)
+    @Filter(by = "number", op = Compare.LessThan)
+    @Filter(by = "name", op = Compare.EndsWith)
+    @Filter(as = Filter.Type.OR, by = "number", op = Compare.Between)
+    @Filter(by = "name", op = Compare.EndsWith)
     @OrderBy(value = "number", descending = true)
     Stream<Prime> lessThanWithSuffixOrBetweenWithSuffix(long numLessThan, String firstSuffix,
                                                         long lowerLimit, long upperLimit, String secondSuffix);
