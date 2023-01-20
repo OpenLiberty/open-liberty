@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -212,7 +212,7 @@ public class H2InboundLink extends HttpInboundLink {
 
         // set up the initial connection read window size
         maxReadWindowSize = config.getH2ConnReadWindowSize();
-        connectionReadWindowSize = maxReadWindowSize;
+        connectionReadWindowSize = config.getH2ConnWindowSize();
 
         writeQ = new H2WriteTree();
         writeQ.init(h2MuxTCPWriteContext, h2MuxWriteCallback);

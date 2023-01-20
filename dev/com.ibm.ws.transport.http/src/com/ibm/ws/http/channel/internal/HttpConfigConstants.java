@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -335,6 +335,7 @@ public class HttpConfigConstants {
     public static final String PROPNAME_H2_CONN_CLOSE_TIMEOUT = "H2ConnCloseTimeout";
 
     public static final String PROPNAME_H2_CONN_READ_WINDOW_SIZE = "H2ConnReadWindowSize";
+    public static final String PROPNAME_H2_CONN_WINDOW_SIZE = "H2ConnWindowSize";
 
     //PI81572 - Purge the remaining response body off the wire
     public static final String PROPNAME_PURGE_REMAINING_RESPONSE = "PurgeRemainingResponseBody";

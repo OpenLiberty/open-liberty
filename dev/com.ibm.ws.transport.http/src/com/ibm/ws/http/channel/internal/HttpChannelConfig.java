@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -144,7 +144,9 @@ public class HttpChannelConfig {
     private boolean skipCookiePathQuotes = false;
     /** The amount of time the connection will be left open when HTTP/2 goes into an idle state */
     private long h2ConnectionCloseTimeout = 30;
-    private int h2ConnectionReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // init the connection read window to the spec max
+
+    private int h2ConnectionReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // init the stream default initial window to the spec max
+    private int h2ConnectionWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // init the connection window to the spec max
     /** PI81572 Purge the remaining response body off the wire when clear is called */
     private boolean purgeRemainingResponseBody = true;
 
@@ -543,6 +545,7 @@ public class HttpChannelConfig {
         parseSkipCookiePathQuotes(props); //738893
         parseH2ConnCloseTimeout(props);
         parseH2ConnReadWindowSize(props);
+        parseH2ConnectionWindowSize(props);
         parsePurgeRemainingResponseBody(props); //PI81572
         parseH2ConnectionIdleTimeout(props);
         parseH2MaxConcurrentStreams(props);
@@ -561,7 +564,6 @@ public class HttpChannelConfig {
         parseCookiesSameSiteStrict(props);
         initSameSiteCookiesPatterns();
         parseHeaders(props);
-        
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "parseConfig");
@@ -1574,7 +1576,7 @@ public class HttpChannelConfig {
                 parseHeadersToSet(props);
                 parseHeadersToSetIfMissing(props);
                 logHeadersConfig();
-            }           
+            }
         }
     }
 
@@ -2160,26 +2162,54 @@ public class HttpChannelConfig {
         }
     }
 
+    // Stream level default initial window size for all new streams, goes out in preface settings frame
     private void parseH2ConnReadWindowSize(Map<?, ?> props) {
         Object value = props.get(HttpConfigConstants.PROPNAME_H2_CONN_READ_WINDOW_SIZE);
         if (null != value) {
             try {
-                if ((Long) value > Integer.MAX_VALUE) {
+                if (convertLong(value) > Integer.MAX_VALUE) {
                     throw new ArithmeticException();
                 }
-                this.h2ConnectionReadWindowSize = (Integer) value;
+                this.h2ConnectionReadWindowSize = convertInteger(value);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: H2 Connection Read Window Size is " + getH2ConnReadWindowSize());
+                    Tr.event(tc, "Config: H2 Stream Initial Default Window Size is " + getH2ConnReadWindowSize());
                 }
             } catch (NumberFormatException nfe) {
                 FFDCFilter.processException(nfe, getClass().getName() + ".parseH2ConnReadWindowSize", "1");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: Invalid H2 Connection Read Window Size of " + value);
+                    Tr.event(tc, "Config: Invalid H2 Stream Initial Default Window Size of " + value);
                 }
             } catch (ArithmeticException ae) {
                 FFDCFilter.processException(ae, getClass().getName() + ".parseH2ConnReadWindowSize", "2");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: Invalid H2 Connection Read Window Size: cannot exceed 2^31 - 1.  Value was: " + value);
+                    Tr.event(tc, "Config: Invalid H2 Stream Initial Default Window Size: cannot exceed 2^31 - 1.  Value was: " + value);
+                }
+            }
+        }
+
+    }
+
+    // Connection level window size that goes out in a window update frame just after the preface
+    private void parseH2ConnectionWindowSize(Map<?, ?> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_H2_CONN_WINDOW_SIZE);
+        if (null != value) {
+            try {
+                if (convertLong(value) > Integer.MAX_VALUE || convertLong(value) < 65536) {
+                    throw new ArithmeticException();
+                }
+                this.h2ConnectionWindowSize = convertInteger(value);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: H2 Connection Window Size is " + getH2ConnWindowSize());
+                }
+            } catch (NumberFormatException nfe) {
+                FFDCFilter.processException(nfe, getClass().getName() + ".parseH2ConnWindowSize", "1");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Invalid H2 Connection Window Size of " + value);
+                }
+            } catch (ArithmeticException ae) {
+                FFDCFilter.processException(ae, getClass().getName() + ".parseH2ConnWindowSize", "2");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Invalid H2 Connection Window Size: must be between 2^16 - 1 and 2^31 - 1 inclusive.  Value was: " + value);
                 }
             }
         }
@@ -2790,6 +2820,10 @@ public class HttpChannelConfig {
 
     public int getH2ConnReadWindowSize() {
         return h2ConnectionReadWindowSize;
+    }
+
+    public int getH2ConnWindowSize() {
+        return h2ConnectionWindowSize;
     }
 
     /**
