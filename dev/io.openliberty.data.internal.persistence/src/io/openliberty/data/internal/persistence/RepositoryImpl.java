@@ -270,8 +270,10 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     q.append(whereClause);
             } else if (queryInfo.method.getAnnotation(Exists.class) != null) {
                 queryInfo.type = QueryInfo.Type.EXISTS;
-                q = new StringBuilder(62 + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
-                                .append("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM ").append(queryInfo.entityInfo.name).append(" o");
+                String idAttrName = queryInfo.entityInfo.getAttributeName("ID");
+                q = new StringBuilder(17 + idAttrName.length() + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
+                                .append("SELECT o.").append(idAttrName) //
+                                .append(" FROM ").append(queryInfo.entityInfo.name).append(" o");
                 if (whereClause == null)
                     queryInfo.paramCount = 0;
                 else
@@ -823,7 +825,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         } else if (methodName.startsWith("exists")) {
             int by = methodName.indexOf("By", 6);
             int c = by < 0 ? 6 : by + 2;
-            q = new StringBuilder(200).append("SELECT CASE WHEN COUNT(o) > 0 THEN TRUE ELSE FALSE END FROM ").append(queryInfo.entityInfo.name).append(" o");
+            q = new StringBuilder(200).append("SELECT o.").append(queryInfo.entityInfo.getAttributeName("ID")) //
+                            .append(" FROM ").append(queryInfo.entityInfo.name).append(" o");
             if (methodName.length() > c)
                 generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
             queryInfo.type = QueryInfo.Type.EXISTS;
@@ -1562,10 +1565,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     case EXISTS: {
                         em = queryInfo.entityInfo.persister.createEntityManager();
 
-                        TypedQuery<Boolean> query = em.createQuery(queryInfo.jpql, Boolean.class);
+                        jakarta.persistence.Query query = em.createQuery(queryInfo.jpql);
+                        query.setMaxResults(1);
                         queryInfo.setParameters(query, args);
 
-                        returnValue = query.getSingleResult();
+                        returnValue = !query.getResultList().isEmpty();
 
                         if (Optional.class.equals(returnType)) {
                             returnValue = Optional.of(returnValue);
