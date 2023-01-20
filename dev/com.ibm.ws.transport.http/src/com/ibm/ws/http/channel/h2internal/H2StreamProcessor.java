@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -162,7 +162,7 @@ public class H2StreamProcessor {
     /**
      * Complete the connection preface. At this point, we should have received the client connection preface string.
      * Now we need to make sure that the client sent a settings frame along with the preface, update our settings,
-     * and send an empty settings frame in response to the client preface.
+     * and send a settings frame in response to the client preface.
      *
      * @throws Http2Exception
      */
@@ -170,10 +170,14 @@ public class H2StreamProcessor {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "completeConnectionPreface entry: about to send preface SETTINGS frame");
         }
+        Tr.debug(tc, "completeConnectionPreface MaxStreams is " + this.muxLink.config.getH2MaxConcurrentStreams() + " InitWindowSize is "
+                     + this.muxLink.config.getH2ConnReadWindowSize() + " MaxFrameSize is " + this.muxLink.config.getH2MaxFrameSize());
+
         FrameSettings settings;
         // send out a settings frame with any HTTP2 settings that the user may have changed
-        if (Constants.SPEC_INITIAL_WINDOW_SIZE != this.streamReadWindowSize) {
-            settings = new FrameSettings(0, -1, -1, this.muxLink.config.getH2MaxConcurrentStreams(), (int) this.streamReadWindowSize, this.muxLink.config.getH2MaxFrameSize(), -1, false);
+        // The window size here is the default for any stream that is opened by this server, SETTINGS_INITIAL_WINDOW_SIZE from the spec
+        if (Constants.SPEC_INITIAL_WINDOW_SIZE != this.muxLink.config.getH2ConnReadWindowSize()) {
+            settings = new FrameSettings(0, -1, -1, this.muxLink.config.getH2MaxConcurrentStreams(), this.muxLink.config.getH2ConnReadWindowSize(), this.muxLink.config.getH2MaxFrameSize(), -1, false);
         } else {
             settings = new FrameSettings(0, -1, -1, this.muxLink.config.getH2MaxConcurrentStreams(), -1, this.muxLink.config.getH2MaxFrameSize(), -1, false);
         }
@@ -181,11 +185,22 @@ public class H2StreamProcessor {
         this.frameType = FrameTypes.SETTINGS;
         this.processNextFrame(settings, Direction.WRITING_OUT);
 
-        if (Constants.SPEC_INITIAL_WINDOW_SIZE != muxLink.maxReadWindowSize) {
-            // the user has changed the max connection read window, so we'll update that now
-            FrameWindowUpdate wup = new FrameWindowUpdate(0, (int) muxLink.maxReadWindowSize, false);
+        //if (Constants.SPEC_INITIAL_WINDOW_SIZE != muxLink.maxReadWindowSize) {
+        // the user has changed the max connection read window, so we'll update that now
+        //FrameWindowUpdate wup = new FrameWindowUpdate(0, 12517377, false);
+        //this.processNextFrame(wup, Direction.WRITING_OUT);
+
+        // Check to see if the user configured the connection window size.  If so, send a window update frame to let the client know.
+        // The window size here is to let the client know that at the connection level, we have a different size window than the default
+        if (Constants.SPEC_INITIAL_WINDOW_SIZE != this.muxLink.config.getH2ConnWindowSize()) {
+            // window update sets the difference between what the client has (default) and the new value.  This could be negative
+            // if the new size is smaller than the default, that's ok.
+            int updateSize = this.muxLink.config.getH2ConnWindowSize() - Constants.SPEC_INITIAL_WINDOW_SIZE;
+            FrameWindowUpdate wup = new FrameWindowUpdate(0, updateSize, false);
             this.processNextFrame(wup, Direction.WRITING_OUT);
         }
+
+        //}
     }
 
     /**
