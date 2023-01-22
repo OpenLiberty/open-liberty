@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
@@ -98,11 +97,9 @@ public interface Reservations extends CrudRepository<Reservation, Long> {
     @Select({ "start", "stop" })
     ReservedTimeSlot[] findByLocationAndStartBetweenOrderByStart(String location, OffsetDateTime startAfter, OffsetDateTime startBefore);
 
-    LinkedBlockingQueue<Reservation> findByLowerLocationIn(List<String> locations);
-
     ArrayDeque<Reservation> findByLocationStartsWith(String locationPrefix);
 
-    CopyOnWriteArrayList<Reservation> findByUpperHostEndsWith(String hostPostfix);
+    CopyOnWriteArrayList<Reservation> findByHostIgnoreCaseEndsWith(String hostPostfix);
 
     int updateByHostAndLocationSetLocation(String host, String currentLocation, String newLocation);
 

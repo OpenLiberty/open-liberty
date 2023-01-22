@@ -2849,16 +2849,16 @@ public class DataTestServlet extends FATServlet {
         Reservation found = set.iterator().next();
         assertEquals(10030005L, found.meetingID);
 
-        // EndsWith, Upper
+        // EndsWith, IgnoreCase
         assertIterableEquals(List.of(10030002L, 10030005L, 10030007L),
-                             reservations.findByUpperHostEndsWith("HOST2@EXAMPLE.ORG")
+                             reservations.findByHostIgnoreCaseEndsWith("HOST2@EXAMPLE.ORG")
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .sorted()
                                              .collect(Collectors.toList()));
 
-        assertIterableEquals(Collections.EMPTY_LIST,
-                             reservations.findByUpperHostEndsWith("host2@example.org") // should not match with lower case
+        assertIterableEquals(List.of(10030002L, 10030005L, 10030007L),
+                             reservations.findByHostIgnoreCaseEndsWith("Host2@Example.org") // should match regardless of case
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .sorted()
@@ -2867,14 +2867,6 @@ public class DataTestServlet extends FATServlet {
         // StartsWith
         assertIterableEquals(List.of(10030005L, 10030007L, 10030009L),
                              reservations.findByLocationStartsWith("050-2 B")
-                                             .stream()
-                                             .map(r -> r.meetingID)
-                                             .sorted()
-                                             .collect(Collectors.toList()));
-
-        // Lower
-        assertIterableEquals(List.of(10030001L, 10030004L, 10030006L, 10030008L),
-                             reservations.findByLowerLocationIn(List.of("050-2 g105", "030-2 e314", "050-2 h115", "050-3 H103")) // H103 has upper case and should not match
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .sorted()

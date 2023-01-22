@@ -605,12 +605,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             }
         }
 
-        // TODO expecting that Upper/Lower will be removed in favor of IgnoreCase
-        boolean upper = false;
-        boolean lower = false;
-        if (attribute.length() > 5 && ((upper = attribute.startsWith("Upper")) || (lower = attribute.startsWith("Lower"))))
-            attribute = attribute.substring(5);
-
         String name = queryInfo.entityInfo.getAttributeName(attribute);
         if (name == null) {
             // Special case for CrudRepository.deleteAll and CrudRepository.findAll
@@ -622,9 +616,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         }
 
         StringBuilder attributeExpr = new StringBuilder();
-        if (upper)
-            attributeExpr.append("UPPER(o.").append(name).append(')');
-        else if (lower || ignoreCase)
+        if (ignoreCase)
             attributeExpr.append("LOWER(o.").append(name).append(')');
         else
             attributeExpr.append("o.").append(name);
