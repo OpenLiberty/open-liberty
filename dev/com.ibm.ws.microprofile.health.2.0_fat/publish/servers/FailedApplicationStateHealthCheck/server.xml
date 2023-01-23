@@ -43,4 +43,9 @@
     <javaPermission codebase="${kafkaCodebase}" className="java.net.SocketPermission" name="*" actions="connect"/>
     <javaPermission codebase="${kafkaCodebase}" className="java.lang.RuntimePermission" name="getClassLoader" actions="*"/>
     <javaPermission codebase="${kafkaCodebase}" className="java.io.FilePermission" name="*" actions="read"/>
+    
+    <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="${bvt.prop.HTTP_default}" httpsPort="${bvt.prop.HTTP_default.secure}">
+        <tcpOptions portOpenRetries="60" />                   
+    </httpEndpoint>
+	
 </server>

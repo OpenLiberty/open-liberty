@@ -13,4 +13,8 @@
 
 	<application name="MultipleHealthCheckApp" type="war" location="MultipleHealthCheckApp.war" autoStart="true"></application>
 	
+	<httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="${bvt.prop.HTTP_default}" httpsPort="${bvt.prop.HTTP_default.secure}">
+		<tcpOptions portOpenRetries="60" />                   
+	</httpEndpoint>
+	
 </server>
