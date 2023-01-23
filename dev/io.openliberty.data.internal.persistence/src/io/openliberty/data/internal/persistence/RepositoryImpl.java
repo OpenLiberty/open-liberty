@@ -1138,7 +1138,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             if (first)
                 first = false;
             else
-                q.append(" AND ");
+                q.append(' ').append(filter.as().name()).append(' '); // AND / OR between conditions
 
             String attribute = filter.by();
             boolean ignoreCase = filter.ignoreCase();
