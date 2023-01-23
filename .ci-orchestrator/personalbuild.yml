@@ -87,7 +87,7 @@ steps:
   dependsOn:
     - stepName: compile
       awaitOutputProperties: true
-  timeoutInMinutes: 30
+  timeoutInMinutes: 120
   properties:
     artifact_execution_id: ${compile:execution_id}
     aggregationId: ${compile:execution_id}
