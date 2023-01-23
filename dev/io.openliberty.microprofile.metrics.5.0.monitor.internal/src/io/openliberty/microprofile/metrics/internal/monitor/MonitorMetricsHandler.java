@@ -38,7 +38,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 
 import io.openliberty.microprofile.metrics.internal.monitor.internal.MappingTable;
 import io.openliberty.microprofile.metrics.internal.monitor.internal.MonitorMetrics;
-import io.openliberty.microprofile.metrics50.internal.SharedMetricRegistries;
+import io.openliberty.microprofile.metrics50.SharedMetricRegistries;
 
 @Component(name = "io.openliberty.microprofile.metrics.internal.monitor.MonitorMetricsHandler",
         property = { "service.vendor=IBM" })

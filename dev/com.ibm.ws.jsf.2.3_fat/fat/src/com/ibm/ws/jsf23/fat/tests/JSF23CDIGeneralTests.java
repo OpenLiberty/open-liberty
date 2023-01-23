@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -652,25 +652,15 @@ public class JSF23CDIGeneralTests {
             assertTrue(pageText.contains("Type date, dateStyle long: June 1, 2017"));
             assertTrue(pageText.contains("Type date, dateStyle full: Thursday, June 1, 2017"));
             assertTrue(pageText.contains("Type date, pattern MM-dd-yyyy: 06-01-2017"));
-            assertTrue(pageText.contains("Type time, timeStyle short: 10:30 AM"));
-            assertTrue(pageText.contains("Type time, timeStyle medium: 10:30:45 AM"));
-            assertTrue(pageText.contains("Type time, timeStyle long: 10:30:45 AM GMT"));
-            assertTrue(pageText.contains("Type time, timeStyle full: 10:30:45 AM GMT") ||
-                       pageText.contains("Type time, timeStyle full: 10:30:45 AM Greenwich Mean Time"));
-            assertTrue(pageText.contains("Type both, dateStyle full, timeStyle medium: Thursday, June 1, 2017 10:30:45 AM") ||
-                       pageText.contains("Type both, dateStyle full, timeStyle medium: Thursday, June 1, 2017, 10:30:45 AM"));
+
             assertTrue(pageText.contains("Type localDate, dateStyle short: 6/1/17"));
             assertTrue(pageText.contains("Type localDate, dateStyle medium: Jun 1, 2017"));
             assertTrue(pageText.contains("Type localDate, dateStyle long: June 1, 2017"));
             assertTrue(pageText.contains("Type localDate, dateStyle full: Thursday, June 1, 2017"));
             assertTrue(pageText.contains("Type localDate, pattern MM-dd-yyyy: 06-01-2017"));
-            assertTrue(pageText.contains("Type localTime, timeStyle short: 10:35 AM"));
-            assertTrue(pageText.contains("Type localTime, timeStyle medium: 10:35:45 AM"));
+;
             assertTrue(pageText.contains("Type localTime, pattern HH:mm:ss: 10:35:45"));
-            assertTrue(pageText.contains("Type localDateTime, dateStyle short, timeStyle short: 6/1/17 10:30 AM") ||
-                       pageText.contains("Type localDateTime, dateStyle short, timeStyle short: 6/1/17, 10:30 AM"));
-            assertTrue(pageText.contains("Type localDateTime, dateStyle medium, timeStyle medium: Jun 1, 2017 10:30:45 AM") ||
-                       pageText.contains("Type localDateTime, dateStyle medium, timeStyle medium: Jun 1, 2017, 10:30:45 AM"));
+
             assertTrue(pageText.contains("Type localDateTime, pattern MM-dd-yyyy HH:mm:ss: 06-01-2017 10:30:45"));
             assertTrue(pageText.contains("Type offsetTime: 10:30:45.5-07:00"));
             assertTrue(pageText.contains("Type offsetTime, pattern HH:mm:ss:SSS ZZZZ: 10:30:45:500 GMT-07:00"));
@@ -678,6 +668,30 @@ public class JSF23CDIGeneralTests {
             assertTrue(pageText.contains("Type offsetDateTime, pattern MM-dd-yyyy HH:mm:ss:SSS ZZZZ: 06-01-2017 10:30:45:500 GMT-07:00"));
             assertTrue(pageText.contains("Type zonedDateTime: 2017-06-01T10:30:45.5-07:00[America/Los_Angeles] "));
             assertTrue(pageText.contains("Type zonedDateTime, pattern MM-dd-yyyy HH:mm:ss ZZZZ z: 06-01-2017 10:30:45:500 GMT-07:00 PDT"));
+
+            // JAVA 20 Checks -- https://github.com/OpenLiberty/open-liberty/issues/24009
+            char space = '\u0020';
+            if(componenttest.topology.impl.JavaInfo.JAVA_VERSION >= 20) {
+               space = '\u202F';
+            }
+
+            assertTrue(pageText.contains("Type time, timeStyle short: 10:30" + space + "AM"));
+            assertTrue(pageText.contains("Type time, timeStyle medium: 10:30:45" + space + "AM"));
+            assertTrue(pageText.contains("Type time, timeStyle long: 10:30:45" + space + "AM GMT"));
+            assertTrue(pageText.contains("Type time, timeStyle full: 10:30:45" + space + "AM GMT") ||
+                       pageText.contains("Type time, timeStyle full: 10:30:45" + space + "AM Greenwich Mean Time"));
+            assertTrue(pageText.contains("Type both, dateStyle full, timeStyle medium: Thursday, June 1, 2017 10:30:45" + space + "AM") ||
+                       pageText.contains("Type both, dateStyle full, timeStyle medium: Thursday, June 1, 2017, 10:30:45" + space + "AM"));
+            
+            assertTrue(pageText.contains("Type localTime, timeStyle short: 10:35" + space + "AM"));
+            assertTrue(pageText.contains("Type localTime, timeStyle medium: 10:35:45" + space + "AM"));
+
+            assertTrue(pageText.contains("Type localDateTime, dateStyle short, timeStyle short: 6/1/17 10:30" + space + "AM") ||
+                       pageText.contains("Type localDateTime, dateStyle short, timeStyle short: 6/1/17, 10:30" + space + "AM"));
+            assertTrue(pageText.contains("Type localDateTime, dateStyle medium, timeStyle medium: Jun 1, 2017 10:30:45" + space + "AM") ||
+                       pageText.contains("Type localDateTime, dateStyle medium, timeStyle medium: Jun 1, 2017, 10:30:45" + space + "AM"));
+
+            
         }
     }
 
