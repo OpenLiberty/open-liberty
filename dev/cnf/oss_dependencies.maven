@@ -120,6 +120,7 @@ io.opentelemetry:opentelemetry-api:1.19.0
 io.opentelemetry:opentelemetry-context:1.19.0
 io.opentelemetry:opentelemetry-exporter-common:1.19.0
 io.opentelemetry:opentelemetry-exporter-jaeger:1.19.0
+io.opentelemetry:opentelemetry-exporter-logging:1.19.0
 io.opentelemetry:opentelemetry-exporter-otlp-common:1.19.0
 io.opentelemetry:opentelemetry-exporter-otlp:1.19.0
 io.opentelemetry:opentelemetry-exporter-zipkin:1.19.0
