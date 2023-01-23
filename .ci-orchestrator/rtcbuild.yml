@@ -8,16 +8,52 @@ triggers:
   triggerRank: 20
   triggerMonitored: false
   keyword: "#pb"
+- type: github
+  triggerName: "ol-exclamation-pb"
+  triggerRank: 20
+  triggerMonitored: false
+  keyword: "!pb"
 #- type: github
 #  triggerName: "ol-pb-build"
 #  triggerRank: 20
 #  triggerMonitored: false
 #  keyword: "#build"
+#- type: github
+#  triggerName: "ol-pb-exclamation-build"
+#  triggerRank: 20
+#  triggerMonitored: false
+#  keyword: "!build"
 - type: github
   triggerName: "ol-fullpb"
   triggerRank: 20
   triggerMonitored: false
   keyword: "#fullpb"
+  propertyDefinitions:
+  - name: fat.test.mode
+    defaultValue: full
+    steps:
+    - stepName: fats
+  - name: create.im.repo
+    defaultValue: true
+    steps:
+    - stepName: compile
+  - name: spawn.zos
+    defaultValue: true
+    steps:
+    - stepName: compile
+  - name: spawn.fullfat.buckets
+    defaultValue: ""
+    steps:
+    - stepName: pr-changes
+  - name: fat.buckets.to.run
+    defaultValue: all
+    steps:
+    - stepName: compile
+- type: github
+  triggerName: "ol-exclamation-fullpb"
+  triggerRank: 20
+  triggerMonitored: false
+  keyword: "!fullpb"
   propertyDefinitions:
   - name: fat.test.mode
     defaultValue: full

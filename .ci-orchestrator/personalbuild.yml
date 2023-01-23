@@ -9,10 +9,37 @@ triggers:
   triggerMonitored: false
   keyword: "#pbbeta"
 - type: github
+  triggerName: "ol-exclamation-pbbeta"
+  triggerRank: 50
+  triggerMonitored: false
+  keyword: "!pbbeta"
+- type: github
   triggerName: "ol-fullpbbeta"
   triggerRank: 50
   triggerMonitored: false
   keyword: "#fullpbbeta"
+  propertyDefinitions:
+  - name: fat.test.mode
+    defaultValue: full
+    steps:
+    - stepName: fats
+  - name: create.im.repo
+    defaultValue: true
+    steps:
+    - stepName: compile
+  - name: spawn.zos
+    defaultValue: true
+    steps:
+    - stepName: compile
+  - name: spawn.fullfat.buckets
+    defaultValue: ""
+    steps:
+    - stepName: pr-changes
+- type: github
+  triggerName: "ol-exclamation-fullpbbeta"
+  triggerRank: 50
+  triggerMonitored: false
+  keyword: "!fullpbbeta"
   propertyDefinitions:
   - name: fat.test.mode
     defaultValue: full
