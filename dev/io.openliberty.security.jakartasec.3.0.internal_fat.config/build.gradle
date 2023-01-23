@@ -105,6 +105,7 @@ autoFVT.doLast {
 	'jakartasec-3.0_fat.config.rp.scope',
 	'jakartasec-3.0_fat.config.rp.responseMode',
 	'jakartasec-3.0_fat.config.rp.useNonce',
+	'jakartasec-3.0_fat.config.rp.extraParameters',
 	'jakartasec-3.0_fat.config.rp.userinfo.jwt.jwt',
 	'jakartasec-3.0_fat.config.rp.userinfo.jwt.opaque',
 	'jakartasec-3.0_fat.config.rp.userinfo.json.jwt',

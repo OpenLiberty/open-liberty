@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
@@ -35,6 +36,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 import jsonp.JSONPServlet;
 
 @RunWith(FATRunner.class)
+@SkipIfCheckpointNotSupported
 public class JsonpTest extends FATServletClient {
 
     private static final String SERVER_NAME = "checkpointJsonp";

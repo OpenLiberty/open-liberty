@@ -18,7 +18,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
-import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.InMemorySpanExporter;
+import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.sdk.resources.Resource;

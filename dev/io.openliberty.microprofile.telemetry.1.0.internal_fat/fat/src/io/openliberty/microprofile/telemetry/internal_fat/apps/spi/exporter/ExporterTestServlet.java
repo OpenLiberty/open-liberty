@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.hasEntry;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
-import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.InMemorySpanExporter;
+import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;

@@ -8,11 +8,9 @@
 ###############################################################################
 # Copyright (c) 2009, 2011 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -60,6 +58,21 @@ internal.error.CWMMC0005E.useraction=Str\u00e2nge\u0163i un set de urme \u015fi 
 internal.error.CWMMC0006E=CWMMC0006E: A ap\u0103rut o eroare intern\u0103.
 internal.error.CWMMC0006E.explanation=Serverul de aplica\u0163ii a avut o eroare intern\u0103.
 internal.error.CWMMC0006E.useraction=Str\u00e2nge\u0163i un set de urme \u015fi deschide\u0163i o problem\u0103 nou\u0103 asociat\u0103 serverului dumneavoastr\u0103 de aplica\u0163ii.
+
+#Information regarding libraryRef attribute taking effect only after server restart
+configurationChange.info.CWMMC0007I=CWMMC0007I: A fost detectat\u0103 o modificare de configura\u021bie pentru caracteristica MicroProfile Metrics. Dac\u0103 a fost f\u0103cut\u0103 o modificare la atributul libraryRef, este necesar\u0103 o repornire a serverului pentru ca modificarea s\u0103 devin\u0103 efectiv\u0103.
+configurationChange.info.CWMMC0007I.explanation=MicroProfile Metrics necesit\u0103 o repornire a serverului, pentru a modifica bibliotecile referite de libraryRef.
+configurationChange.info.CWMMC0007I.useraction=Dac\u0103 a fost modificat atributul libraryRef, reporni\u021bi serverul pentru ca modificarea s\u0103 devin\u0103 efectiv\u0103.
+
+#User configured mpMetrics to use user-defined library for Micrometer binaries without Prometheus Registry JAR
+noPrometheusRegistry.info.CWMMC0008I=CWMMC0008I: Punctul final /metrics nu este disponibil, deoarece nu este disponibil niciun registru Prometheus.
+noPrometheusRegistry.info.CWMMC0008I.explanation=Caracteristica MicroProfile Metrics \u00eencarc\u0103 bibliotecile Micrometer care sunt definite prin atributul libraryRef, dar biblioteca referit\u0103 nu con\u021bine un registru Micrometer Prometheus.
+noPrometheusRegistry.info.CWMMC0008I.useraction=Dac\u0103 indisponibilitatea registrului Prometheus nu este inten\u021bionat\u0103, modifica\u021bi con\u021binutul bibliotecii care este referit\u0103 de atributul libraryRef, pentru a con\u021bine un JAR de registru Micrometer Prometheus.
+
+#Prometheus Registry was disabled through the mp.metrics.prometheus.enabled MicroProfile Config property
+disabled.info.CWMMC0009I=CWMMC0009I: Punctul final /metrics nu este disponibil, deoarece registrul Prometheus este dezactivat.
+disabled.info.CWMMC0009I.explanation=Proprietatea MicroProfile Config mp.metrics.prometheus.enabled este setat\u0103 la false.
+disabled.info.CWMMC0009I.useraction=Dac\u0103 dezactivarea registrului Prometheus nu este inten\u021bionat\u0103, elimina\u021bi configura\u021bia propriet\u0103\u021bii MicroProfile Config mp.metrics.prometheus.enabled sau seta\u021bi explicit proprietatea la true.
 
 #Memory usedHeap message
 memory.usedHeap.description=Afi\u015feaz\u0103 cantitatea de memorie heap utilizat\u0103 \u00een octe\u0163i.

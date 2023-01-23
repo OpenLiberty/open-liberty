@@ -1,11 +1,9 @@
 ###############################################################################
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -44,3 +42,7 @@ CREDENTIAL_VALIDATION_ERROR.useraction=Weitere Informationen k\u00f6nnen Sie dem
 JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS=CWWKS2505W: Das JSON-Objekt f\u00fcr Anspr\u00fcche in der OpenIdContext-Bean kann den Betreffwert f\u00fcr Client {0} nicht hinzuf\u00fcgen, weil der Betreffwert im OpenIdClaims-Objekt fehlt. 
 JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS.explanation=Im OpenIdClaims-Objekt in der OpenIdContext-Bean fehlt der erforderliche Betreffwert. Daher kann der Betreffwert des JSON-Objekts f\u00fcr Anspr\u00fcche nicht festgelegt werden.  
 JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS.useraction=Suchen Sie in den Protokollen nach fr\u00fcheren Fehlern im Zusammenhang mit der OpenID-Authentifizierung.
+
+JAKARTASEC_CLAIMS_PROCESSING_ERROR=CWWKS2506E: Der Wert des OpenID Connect-Clientschl\u00fcssels {0} ist falsch. Der Wert ist {1} und der erwartete Typ ist {2}. Der Fehler ist {3}.
+JAKARTASEC_CLAIMS_PROCESSING_ERROR.explanation=Der OpenID Connect-Client hat beim \u00dcberpr\u00fcfen des erwarteten Feldtyps im OpenID-Claims-Objekt einen Fehler festgestellt. Ein h\u00e4ufiger Fehler ist, dass der tats\u00e4chliche Typ des zur\u00fcckgegebenen Werts nicht dem erwarteten Typ entspricht.
+JAKARTASEC_CLAIMS_PROCESSING_ERROR.useraction=Weitere Informationen k\u00f6nnen Sie dem Fehler in der Nachricht entnehmen.

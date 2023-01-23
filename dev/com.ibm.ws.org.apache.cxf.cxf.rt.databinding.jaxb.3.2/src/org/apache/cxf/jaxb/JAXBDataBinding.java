@@ -1028,7 +1028,9 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
             Class<? extends ValidationEventHandler> handlerClass = oldEventHandler == null ? null : oldEventHandler.getClass();
             if (!setEventHandler) {
                 if (handlerClass != DefaultValidationEventHandler.class) {
-                    unm.setEventHandler(null);
+
+                    // Don't add an eventHandler if the unmarshaller doesn't already have one.
+                    // unm.setEventHandler(null);
                 }
             } else {
                 unm.setEventHandler(veventHandler);
@@ -1040,6 +1042,7 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
             }
             if (setEventHandler) {
                 unm.setEventHandler(veventHandler);
+                
             }
             if (unmarshallerProperties != null) {
                 for (Map.Entry<String, Object> propEntry

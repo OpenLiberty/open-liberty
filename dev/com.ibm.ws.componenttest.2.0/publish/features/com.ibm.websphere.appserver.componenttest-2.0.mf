@@ -13,3 +13,4 @@ IBM-API-Package: componenttest.app,
  org.junit,
  org.hamcrest,
  org.hamcrest.core
+WLP-InstantOn-Enabled: true

@@ -39,9 +39,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 import java.util.stream.BaseStream;
-import java.util.stream.Collector;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -59,6 +57,7 @@ import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
+import jakarta.data.repository.Compare;
 import jakarta.data.repository.Count;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Exists;
@@ -88,14 +87,10 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     private static final TraceComponent tc = Tr.register(RepositoryImpl.class);
 
     private static final Set<Class<?>> SPECIAL_PARAM_TYPES = new HashSet<>(Arrays.asList //
-    (Collector.class, Consumer.class, Limit.class, Pageable.class, Sort.class, Sort[].class));
+    (Limit.class, Pageable.class, Sort.class, Sort[].class));
 
-    private static final Set<jakarta.data.repository.Condition> SUPPORTS_COLLECTIONS = Set.of(jakarta.data.repository.Condition.Equal,
-                                                                                              jakarta.data.repository.Condition.Contains,
-                                                                                              jakarta.data.repository.Condition.Empty,
-                                                                                              jakarta.data.repository.Condition.Not,
-                                                                                              jakarta.data.repository.Condition.NotContains,
-                                                                                              jakarta.data.repository.Condition.NotEmpty);
+    private static final Set<Compare> SUPPORTS_COLLECTIONS = Set.of //
+    (Compare.Equal, Compare.Contains, Compare.Empty, Compare.Not, Compare.NotContains, Compare.NotEmpty);
 
     AtomicBoolean isDisposed = new AtomicBoolean();
     private final PersistenceDataProvider provider;
@@ -174,7 +169,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         boolean lower = filter.ignoreCase();
         String[] params = filter.param();
         String[] values = filter.value();
-        int numArgs = filter.op() == jakarta.data.repository.Condition.Between ? 2 : 1;
+        int numArgs = filter.op() == Compare.Between ? 2 : 1;
         for (int i = 0; i < numArgs; i++) {
             if (i > 0)
                 q.append(" AND "); // BETWEEN ?1 AND ?2
@@ -1147,8 +1142,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
             String attribute = filter.by();
             boolean ignoreCase = filter.ignoreCase();
-            jakarta.data.repository.Condition condition = filter.op();
-            jakarta.data.repository.Condition negatedFrom = condition.negatedFrom();
+            Compare condition = filter.op();
+            Compare negatedFrom = condition.negatedFrom();
             boolean negated = negatedFrom != null;
             if (negated)
                 condition = negatedFrom;
@@ -1339,7 +1334,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
                         // Jakarta Data allows the method parameter positions after those used as query parameters
                         // to be used for purposes such as pagination and sorting.
-                        // Collector is added here for experimentation.
                         for (int i = queryInfo.paramCount; i < (args == null ? 0 : args.length); i++) {
                             Object param = args[i];
                             if (param instanceof Limit)
@@ -1802,7 +1796,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      * @throws MappingException with chained UnsupportedOperationException if not supported.
      */
     @Trivial
-    private static void verifyCollectionsSupported(String attributeName, boolean ignoreCase, jakarta.data.repository.Condition condition) {
+    private static void verifyCollectionsSupported(String attributeName, boolean ignoreCase, Compare condition) {
         if (!SUPPORTS_COLLECTIONS.contains(condition) || ignoreCase)
             throw new MappingException(new UnsupportedOperationException("Repository keyword " +
                                                                          (ignoreCase ? "IgnoreCase" : condition.name()) +

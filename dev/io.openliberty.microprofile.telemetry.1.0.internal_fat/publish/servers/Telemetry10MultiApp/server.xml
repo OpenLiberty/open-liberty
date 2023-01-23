@@ -1,0 +1,25 @@
+<server description="Server for testing Telemetry10">
+
+	<include location="../fatTestPorts.xml" />
+
+	<featureManager>
+		<feature>servlet-6.0</feature>
+		<feature>mpTelemetry-1.0</feature>
+		<feature>componentTest-2.0</feature>
+	</featureManager>
+	
+	<library id="exporter" apiTypeVisibility="+third-party">
+		<file name="${server.config.dir}/shared/exporter.jar" />
+	</library>
+
+	<application type="war" location="multiapp1.war">
+		<classloader apiTypeVisibility="+third-party" commonLibraryRef="exporter" />
+	</application>
+
+	<application type="war" location="multiapp2.war" >
+		<classloader apiTypeVisibility="+third-party" commonLibraryRef="exporter" />
+	</application>
+	
+	<logging traceSpecification="TELEMETRY=all:JCDI=all:org.jboss.weld=all"/>
+
+</server>

@@ -704,9 +704,8 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
         Page response = invokeAppReturnLoginPage(webClient, url);
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(Constants.FORBIDDEN_STATUS));
+        expectations.addForbiddenStatusCodeAndMessageForCurrentAction();
         expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, url, "Did not fail to land on " + url));
-        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.FORBIDDEN, "Did not receive the forbidden message."));
         expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, Constants.AUTHORIZATION_ERROR, "Did not receive the authorization failed message."));
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS9104A_NO_ACCESS_FOR_USER, "Did not receive an error message stating that a user is not granted access to a resource."));
 

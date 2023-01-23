@@ -274,11 +274,11 @@ public class DataTestServlet extends FATServlet {
         CompletionStage<List<Person>> updated = personnel.changeSurnames("TestAsynchronous",
                                                                          List.of(1002003009L, 1002003008L, 1002003005L,
                                                                                  1002003003L, 1002003002L, 1002003001L),
-                                                                         "Test-Asynchronous")
+                                                                         "TestAAsynchronous") // use only alphanumeric characters to ensure consistent sorting across databases
                         .thenCompose(updateCount -> {
                             assertEquals(Integer.valueOf(6), updateCount);
 
-                            return personnel.findByLastNameOrderByFirstName("Test-Asynchronous");
+                            return personnel.findByLastNameOrderByFirstName("TestAAsynchronous");
                         });
 
         assertIterableEquals(List.of("Aaron", "Albert", "Alice", "Amy", "Andrew", "Bob"),
@@ -299,7 +299,7 @@ public class DataTestServlet extends FATServlet {
             for (String lastName : lastNames)
                 names.add(lastName);
         }).toCompletableFuture().get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
-        assertEquals("Test-Asynchronous", names.poll());
+        assertEquals("TestAAsynchronous", names.poll());
         assertEquals("TestAsynchronous", names.poll());
         assertEquals(null, names.poll());
 
@@ -3073,7 +3073,7 @@ public class DataTestServlet extends FATServlet {
 
         // "Like" is used as a reserved keyword here.
         assertIterableEquals(List.of("A101"),
-                             things.findByALike("A%")
+                             things.findByALike("A1%") // include second character so that databases that compare independent of case don't match "apple"
                                              .map(o -> o.a)
                                              .collect(Collectors.toList()));
 

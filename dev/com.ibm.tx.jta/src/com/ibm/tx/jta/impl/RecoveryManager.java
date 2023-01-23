@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2022 IBM Corporation and others.
+ * Copyright (c) 2002, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -734,8 +734,9 @@ public class RecoveryManager implements Runnable {
                 Tr.debug(tc, "Should home recovery logs be retained ", _retainHomeLogs);
             if (!_retainHomeLogs) {
                 // Delete the home server's recovery logs.
-                _tranLog.delete();
-                _xaLog.delete();
+                if (_tranLog.delete()) {
+                    _xaLog.delete();
+                }
             }
         }
 
@@ -1644,8 +1645,10 @@ public class RecoveryManager implements Runnable {
                             Tr.debug(tc, "Should peer recovery logs be retained ", _retainPeerLogs);
                         if (!_retainPeerLogs) {
                             // Delete the peer recovery logs.
-                            _tranLog.delete();
-                            _xaLog.delete();
+                            // Don't delete the partner log if the tranlog delete faileded
+                            if (_tranLog.delete()) {
+                                _xaLog.delete();
+                            }
                         }
                     }
                 } else /* @PK31789A */

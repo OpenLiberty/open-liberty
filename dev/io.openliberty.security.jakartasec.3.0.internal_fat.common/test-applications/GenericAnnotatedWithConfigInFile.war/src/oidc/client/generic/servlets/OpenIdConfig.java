@@ -22,4 +22,7 @@ public class OpenIdConfig extends BaseOpenIdConfig {
 
     // override and/or create new get methods
 
+    public String getCallbackServlet() {
+        return "/Callback";
+    }
 }

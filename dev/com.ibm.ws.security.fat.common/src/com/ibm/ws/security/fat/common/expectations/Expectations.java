@@ -19,6 +19,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.Constants;
 
 public class Expectations {
     private static final Class<?> thisClass = Expectations.class;
@@ -97,6 +98,26 @@ public class Expectations {
 
     public void addSuccessCodeForCurrentAction() {
         addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_OK));
+    }
+    
+    public void addFoundStatusCodeAndMessageForCurrentAction() {
+        addExpectation(new ResponseStatusExpectation(Constants.REDIRECT_STATUS));
+        addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.FOUND_MSG, "Did not receive the Found message."));
+    }
+    
+    public void addUnauthorizedStatusCodeAndMessageForCurrentAction() {
+        addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
+        addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorize message."));
+    }
+    
+    public void addForbiddenStatusCodeAndMessageForCurrentAction() {
+        addExpectation(new ResponseStatusExpectation(Constants.FORBIDDEN_STATUS));
+        addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.FORBIDDEN, "Did not receive the Forbidden message."));
+    }
+    
+    public void addNotFoundStatusCodeAndMessageForCurrentAction() {
+        addExpectation(new ResponseStatusExpectation(Constants.NOT_FOUND_STATUS));
+        addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.NOT_FOUND_MSG, "Did not receive the Not Found message."));
     }
 
 }

@@ -30,9 +30,9 @@ instrument.classesExcludes: \
   org/**/*.class
 
 # Use this format once we have an official release and not an RC3
-# @${repo;org.apache.myfaces.core.impl;${Implementation-Version};EXACT}!/jakarta/faces, \
+# @${repo;org.apache.myfaces.core:myfaces-impl;${Implementation-Version};EXACT}!/jakarta/faces, \
 Include-Resource: \
-  @${repo;org.apache.myfaces.core.impl;4.0.0.RC3;EXACT}!/META-INF/**, \
+  @${repo;org.apache.myfaces.core:myfaces-impl;4.0.0.RC3;EXACT}!/META-INF/**, \
   @${repo;io.openliberty.jakarta.faces.4.0}!/META-INF/resources/**, \
   @${repo;io.openliberty.jakarta.faces.4.0}!/META-INF/internal-resources/**, \
   META-INF=@src/META-INF

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2022 IBM Corporation and others.
+ * Copyright (c) 2002, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -102,14 +102,14 @@ public abstract class PartnerLogData {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "logRecoveryEntry", this);
 
+        if (_terminating) { // d172471
+            Tr.warning(tc, "WTRN0084_RESOURCE_ENDING");
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "logRecoveryEntry", "Terminating");
+            throw new IllegalStateException();
+        }
+
         if (!_loggedToDisk) {
-            if (_terminating) // d172471
-            {
-                Tr.warning(tc, "WTRN0084_RESOURCE_ENDING");
-                if (tc.isEntryEnabled())
-                    Tr.exit(tc, "logRecoveryEntry", "Terminating");
-                throw new IllegalStateException();
-            }
 
             if (_serializedLogData == null) {
                 Tr.warning(tc, "WTRN0039_SERIALIZE_FAILED");
