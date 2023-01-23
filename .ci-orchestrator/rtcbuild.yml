@@ -18,11 +18,11 @@ triggers:
 #  triggerRank: 20
 #  triggerMonitored: false
 #  keyword: "#build"
-#- type: github
-#  triggerName: "ol-pb-exclamation-build"
-#  triggerRank: 20
-#  triggerMonitored: false
-#  keyword: "!build"
+- type: github
+  triggerName: "ol-pb-exclamation-build"
+  triggerRank: 20
+  triggerMonitored: false
+  keyword: "!build"
 - type: github
   triggerName: "ol-fullpb"
   triggerRank: 20
