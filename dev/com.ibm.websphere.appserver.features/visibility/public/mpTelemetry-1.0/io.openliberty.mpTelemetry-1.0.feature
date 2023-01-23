@@ -8,6 +8,7 @@ IBM-ShortName: mpTelemetry-1.0
 Subsystem-Name: MicroProfile Telemetry 1.0
 IBM-API-Package: \
   io.opentelemetry.api.baggage;type="third-party",\
+  io.opentelemetry.api.baggage.propagation;type="third-party",\
   io.opentelemetry.api;type="third-party",\
   io.opentelemetry.api.trace;type="third-party",\
   io.opentelemetry.api.common;type="third-party",\

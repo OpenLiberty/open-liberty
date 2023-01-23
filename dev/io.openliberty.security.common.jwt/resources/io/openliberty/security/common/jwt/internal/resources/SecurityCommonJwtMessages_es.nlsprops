@@ -1,0 +1,26 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.common.jwt/resources/io/openliberty/security/common/jwt/internal/resources/SecurityCommonJwtMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security SSO Common
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS2520 - CWWKS2549
+
+EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER=CWWKS2520E: El algoritmo de firma {0} en la cabecera JWT no coincide con el algoritmo de firma esperado {1}.
+EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.explanation=El token tiene que estar firmado con el algoritmo especificado en el mensaje.
+EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.useraction=Aseg\u00farese de que el token est\u00e9 firmado con el algoritmo esperado o actualice la configuraci\u00f3n del componente que recibe el token para que use el algoritmo especificado en el mensaje.
+
+SIG_ALG_IN_HEADER_NOT_ALLOWED=CWWKS2521E: El algoritmo de firma {0} en la cabecera JWT no es uno de los algoritmos de firma permitidos: {1}.
+SIG_ALG_IN_HEADER_NOT_ALLOWED.explanation=El token tiene que estar firmado con uno de los algoritmos especificados en el mensaje.
+SIG_ALG_IN_HEADER_NOT_ALLOWED.useraction=Aseg\u00farese de que el token est\u00e9 firmado con uno de los algoritmos permitidos, o actualice la configuraci\u00f3n del componente que recibe el token para que permita el algoritmo especificado en el mensaje.

@@ -1,11 +1,9 @@
 ###############################################################################
 # Copyright (c) 2010, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -126,6 +124,10 @@ error.kernelDefFile=CWWKE0023E: Nu exist\u0103 defini\u0163ia de kernel specific
 error.kernelDefFile.explanation=Nu s-a putut g\u0103si defini\u0163ia de kernel specificat\u0103.
 error.kernelDefFile.useraction=Asigura\u0163i-v\u0103 c\u0103 exist\u0103 resursa defini\u0163iei de kernel \u015fi poate fi citit\u0103 de utilizatorul curent.
 
+error.badOptionValue=CWWKE0024E: Valoarea ({0}) pentru op\u021biunea ({1}) nu este valid\u0103.
+error.badOptionValue.explanation=Valoarea specificat\u0103 nu este adecvat\u0103 pentru op\u021biunea specificat\u0103.
+error.badOptionValue.useraction=Rula\u021bi comanda `server help` pentru o descriere a op\u021biunilor.  Dac\u0103 valoarea este un num\u0103r, asigura\u021bi-v\u0103 c\u0103 este \u00een intervalul valid.
+
 error.specifiedLocation=CWWKE0025E: Valoarea {0} trebuie s\u0103 fac\u0103 referire la un director. Valoarea specificat\u0103 face referire la o resurs\u0103 de fi\u015fier existent\u0103. Valoare: {1}
 error.specifiedLocation.explanation=Loca\u0163ia furnizat\u0103 face referire la un fi\u015fier existent \u00een loc de un director.
 error.specifiedLocation.useraction=Modifica\u0163i loca\u0163ia specificat\u0103 la un director \u015fi re\u00eencerca\u0163i ac\u0163iunea.
@@ -137,6 +139,10 @@ warning.noPlatformCache.useraction=Verifica\u0163i \u015fi rezolva\u0163i excep\
 warning.singleServer=CWWKE0027W: Un singur server poate fi specificat \u00een linia de comand\u0103; numele urm\u0103toare vor fi ignorate (server={0}, ignored={1}).
 warning.singleServer.explanation=Pute\u0163i specifica un singur server \u00een linia de comand\u0103. Primul nume de server a fost procesat; numele r\u0103mase au fost ignorate.
 warning.singleServer.useraction=Nu este necesar\u0103 nici o ac\u0163iune. Specifica\u0163i un singur server pentru a evita acest avertisment.
+
+error.optionNotApplicableToCommand=CWWKE0028E: Op\u021biunea ({0}) nu este aplicabil\u0103 pentru comand\u0103.
+error.optionNotApplicableToCommand.explanation=Op\u021biunea specificat\u0103 nu este permis\u0103 pentru comanda specificat\u0103.
+error.optionNotApplicableToCommand.useraction=Rula\u021bi comanda `server <command> help` pentru a ob\u021bine informa\u021bii despre op\u021biunile valide pentru comand\u0103.
   
 error.serverAlreadyRunning=CWWKE0029E: O instan\u0163\u0103 a serverului {0} ruleaz\u0103 deja.
 error.serverAlreadyRunning.explanation=\u00cencerca\u0163i s\u0103 porni\u0163i un server ce ruleaz\u0103 deja.
@@ -383,6 +389,10 @@ audit.system.exit.useraction=Dac\u0103 oprirea serverului a fost nea\u015fteptat
 audit.jvm.shutdown=CWWKE0085I: Serverul {0} se opre\u015fte pentru c\u0103 JVM iese.
 audit.jvm.shutdown.explanation=Serverul a interceptat o cerere de a opri JVM \u015fi va \u00eencerca s\u0103 se opreasc\u0103 \u00eentr-o manier\u0103 ordonat\u0103. JVM ar putea s\u0103 ias\u0103 pentru c\u0103 sistemul de operare a trimis un semnal de terminare la procesul serverului.
 audit.jvm.shutdown.useraction=Dac\u0103 oprirea serverului a fost nea\u015fteptat\u0103, determina\u0163i dac\u0103 s-a trimis un semnal de terminare la procesul serverului.
+
+error.optionRequiresEquals=CWWKE0086E: Op\u021biunea {0} trebuie s\u0103 includ\u0103 un semn egal (=) \u00eenainte de valoarea specificat\u0103. 
+error.optionRequiresEquals.explanation=Op\u021biunea specificat\u0103 trebuie s\u0103 fie urmat\u0103 de un semn egal (=) \u0219i o valoare.
+error.optionRequiresEquals.useraction=Op\u021biunea trebuie s\u0103 fie specificat\u0103 \u00een urm\u0103torul format: --op\u021biune=valoare.
 
 warning.serverStartedCommandPortDisabled=CWWKE0087W: Pornirea serverului a fost ini\u0163ializat\u0103 pentru serverul {0}, dar nu  este posibil s\u0103 se spun\u0103 dac\u0103 pornirea a fost finalizat\u0103 deoarece portul de comand\u0103 este dezactivat.
 warning.serverStartedCommandPortDisabled.explanation=Portul de comand\u0103 server este necesar pentru comunica\u0163ia cu un server care ruleaz\u0103.  Portul de comand\u0103 a fost dezactivat \u00een mod explicit pentru acest server, prin urmare nu este posibil de spus c\u00e2nd serverul \u015fi-a finalizat pornirea.
@@ -698,7 +708,7 @@ warning.earlyRelease=CWWKE0953W: Aceast\u0103 versiune de {0} este o versiune de
 warning.earlyRelease.explanation=Noile caracteristici care nu sunt testate complet sunt puse la dispozi\u0163ie \u00een edi\u0163iile timpurii pentru a solicita reac\u0163ii (feedback) \u00eenainte de a fi incluse \u00eentr-o edi\u0163ie suportat\u0103.
 warning.earlyRelease.useraction=Nu utiliza\u0163i o edi\u0163ie timpurie pe sistemele de produc\u0163ie, deoarece versiunile timpurii nu sunt suportate.
 
-error.invalidPhaseName=CWWKE0954E: Faza punctului de control "{0}" specificat este goal\u0103 sau necunoscut\u0103.
+error.invalidPhaseName=CWWKE0954E: Faza de punct de control ({0}) specificat\u0103 este goal\u0103 sau necunoscut\u0103.
 error.invalidPhaseName.explanation=O faz\u0103 necunoscut\u0103 a fost specificat\u0103 ca valoare a op\u021biunii de punct de control.
 error.invalidPhaseName.useraction=Revede\u021bi documenta\u021bia pentru a determina numele de faz\u0103 valide. Relansa\u021bi comanda folosind o faz\u0103 de punct de control valid\u0103.
 
@@ -725,10 +735,6 @@ error.checkpoint.workarea.restore.useraction=Asigura\u021bi-v\u0103 c\u0103 util
 info.checkpoint.restore.failed=CWWKE0957I: Procesul restabilirii serverului de punct de control nu a reu\u0219it. Verifica\u021bi jurnalul {0} pentru a determina din ce cauz\u0103 procesul de punct de control nu a fost restabilit. Lansarea serverului f\u0103r\u0103 a utiliza imaginea punctului de control.
 info.checkpoint.restore.failed.explanation=A ap\u0103rut o eroare la procesul restabilirii unui server de punct de control.  Serverul a fost pornit f\u0103r\u0103 a folosi imaginea punctului de control.
 info.checkpoint.restore.failed.useraction=Verifica\u021bi jurnalele pentru a determina din ce cauz\u0103 procesul punctului de control nu a fost restabilit.
-
-error.checkpoint.failed=CWWKE0958E: Cererea de punct de control server a e\u0219uat. Urm\u0103toarea ie\u0219ire este din fi\u0219ierul CRIU {0} care con\u021bine detalii cu privire la motivul pentru care punctul de control a e\u0219uat.
-error.checkpoint.failed.explanation=O cerere de punct de control server a e\u0219uat. Nu a fost creat\u0103 nicio imagine valid\u0103 de proces de punct de control server.
-error.checkpoint.failed.useraction=Pentru a determina de ce punctul de control a e\u0219uat, inspecta\u021bi fi\u0219ierele istoric din directorul punctului de control, care este situat \u00een directorul pentru istoricele serverului.
 
 info.serverStarting=Se porne\u015fte serverul {0}.
 info.serverStarted=Serverul {0} a pornit.

@@ -23,3 +23,5 @@ Subsystem-Name: Concurrency Utilities for Java EE 1.0
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true
+

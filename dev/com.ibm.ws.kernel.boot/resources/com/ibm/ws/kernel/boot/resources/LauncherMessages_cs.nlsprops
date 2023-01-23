@@ -1,11 +1,9 @@
 ###############################################################################
 # Copyright (c) 2010, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -126,6 +124,10 @@ error.kernelDefFile=CWWKE0023E: Zadan\u00e1 definice j\u00e1dra ({0}) neexistuje
 error.kernelDefFile.explanation=Zadanou definici j\u00e1dra nelze naj\u00edt.
 error.kernelDefFile.useraction=Zkontrolujte, zda existuje prost\u0159edek definice j\u00e1dra a m\u016f\u017ee jej p\u0159e\u010d\u00edst aktu\u00e1ln\u00ed u\u017eivatel.
 
+error.badOptionValue=CWWKE0024E: Hodnota ({0}) pro volbu ({1}) nen\u00ed platn\u00e1.
+error.badOptionValue.explanation=Uveden\u00e1 hodnota nen\u00ed vhodn\u00e1 pro uvedenou volbu.
+error.badOptionValue.useraction=Spu\u0161t\u011bn\u00edm p\u0159\u00edkazu 'server help' z\u00edsk\u00e1te popis voleb.  Je-li hodnota \u010d\u00edslo, ujist\u011bte se, \u017ee je v platn\u00e9m rozsahu.
+
 error.specifiedLocation=CWWKE0025E: Hodnota {0} mus\u00ed odkazovat na adres\u00e1\u0159. Zadan\u00e1 hodnota odkazuje na existuj\u00edc\u00ed prost\u0159edek souboru. Hodnota: {1}
 error.specifiedLocation.explanation=Zadan\u00e9 um\u00edst\u011bn\u00ed odkazuje m\u00edsto adres\u00e1\u0159e na existuj\u00edc\u00ed soubor.
 error.specifiedLocation.useraction=Zm\u011b\u0148te zadan\u00e9 um\u00edst\u011bn\u00ed na adres\u00e1\u0159 a potom akci zopakujte.
@@ -137,6 +139,10 @@ warning.noPlatformCache.useraction=Zkontrolujte a vy\u0159e\u0161te v\u00fdjimku
 warning.singleServer=CWWKE0027W: Na p\u0159\u00edkazov\u00e9m \u0159\u00e1dku lze zadat pouze jeden server. N\u00e1sledn\u00e9 n\u00e1zvy budou ignorov\u00e1ny (server={0}, ignorov\u00e1no={1}).
 warning.singleServer.explanation=Na p\u0159\u00edkazov\u00e9m \u0159\u00e1dku m\u016f\u017eete zadat pouze jeden server. Prvn\u00ed n\u00e1zev serveru byl zpracov\u00e1n, zb\u00fdvaj\u00edc\u00ed n\u00e1zvy byly ignorov\u00e1ny.
 warning.singleServer.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. Abyste p\u0159ede\u0161li tomuto varov\u00e1n\u00ed, zadejte pouze jeden server.
+
+error.optionNotApplicableToCommand=CWWKE0028E: Volba ({0}) nen\u00ed pou\u017eiteln\u00e1 pro p\u0159\u00edkaz.
+error.optionNotApplicableToCommand.explanation=Uveden\u00e1 volba nen\u00ed dovolena pro uveden\u00fd p\u0159\u00edkaz.
+error.optionNotApplicableToCommand.useraction=Spu\u0161t\u011bn\u00edm p\u0159\u00edkazu 'server <command> help' z\u00edsk\u00e1te informace o platn\u00fdch volb\u00e1ch pro p\u0159\u00edkaz.
   
 error.serverAlreadyRunning=CWWKE0029E: Instance serveru {0} ji\u017e b\u011b\u017e\u00ed.
 error.serverAlreadyRunning.explanation=Pokou\u0161\u00edte se spustit server, kter\u00fd je ji\u017e spu\u0161t\u011bn.
@@ -383,6 +389,10 @@ audit.system.exit.useraction=Pokud bylo zastaven\u00ed serveru neo\u010dek\u00e1
 audit.jvm.shutdown=CWWKE0085I: Server {0} se zastavuje, proto\u017ee se ukon\u010duje JVM.
 audit.jvm.shutdown.explanation=Server zachytil po\u017eadavek na zastaven\u00ed JVM a pokus\u00ed se zastavit spo\u0159\u00e1dan\u00fdm zp\u016fsobem. Ukon\u010den\u00ed JVM m\u016f\u017ee b\u00fdt zp\u016fsobeno sign\u00e1lem k ukon\u010den\u00ed, kter\u00fd opera\u010dn\u00ed syst\u00e9m zaslal procesu serveru.
 audit.jvm.shutdown.useraction=Pokud bylo zastaven\u00ed serveru neo\u010dek\u00e1van\u00e9, ur\u010dete, zda byl procesu serveru zasl\u00e1n sign\u00e1l k ukon\u010den\u00ed.
+
+error.optionRequiresEquals=CWWKE0086E: Volba {0} mus\u00ed p\u0159ed uvedenou hodnotou obsahovat znak rovn\u00e1 se (=). 
+error.optionRequiresEquals.explanation=Za uvedenou volbou mus\u00ed n\u00e1sledovat znam\u00e9nko rovn\u00e1 se (=) a hodnota.
+error.optionRequiresEquals.useraction=Volba mus\u00ed b\u00fdt uvedena v n\u00e1sleduj\u00edc\u00edm form\u00e1tu: --volba=hodnota.
 
 warning.serverStartedCommandPortDisabled=CWWKE0087W: Pro server {0} bylo zah\u00e1jeno spu\u0161t\u011bn\u00ed serveru, ale nen\u00ed mo\u017en\u00e9 sd\u011blit, zda bylo toto spu\u0161t\u011bn\u00ed dokon\u010deno, proto\u017ee je p\u0159\u00edkazov\u00fd port serveru vypnut\u00fd.
 warning.serverStartedCommandPortDisabled.explanation=P\u0159\u00edkazov\u00fd port serveru je nezbytn\u00fd pro komunikaci s b\u011b\u017e\u00edc\u00edm serverem. P\u0159\u00edkazov\u00fd port byl pro tento server explicitn\u011b vypnut, proto nen\u00ed mo\u017en\u00e9 sd\u011blit, zda server spu\u0161t\u011bn\u00ed dokon\u010dil.
@@ -698,7 +708,7 @@ warning.earlyRelease=CWWKE0953W: Tato verze {0} je nepodporovanou p\u0159ednostn
 warning.earlyRelease.explanation=V p\u0159ednostn\u00edch vyd\u00e1n\u00edch jsou k dispozici nov\u00e9 funkce, kter\u00e9 nejsou pln\u011b testov\u00e1ny, aby se z\u00edskala zp\u011btn\u00e1 vazba p\u0159ed t\u00edm, ne\u017e jsou zahrnuty do podporovan\u00e9ho vyd\u00e1n\u00ed.
 warning.earlyRelease.useraction=P\u0159ednostn\u011b vyd\u00e1van\u00e9 verze nepou\u017e\u00edvejte v produk\u010dn\u00edch syst\u00e9mech, proto\u017ee pro takov\u00e9 verze nen\u00ed poskytov\u00e1na podpora.
 
-error.invalidPhaseName=CWWKE0954E: Zadan\u00e1 f\u00e1ze kontroln\u00edho bodu "{0}" je pr\u00e1zdn\u00e1 nebo nezn\u00e1m\u00e1.
+error.invalidPhaseName=CWWKE0954E: Uveden\u00e1 f\u00e1ze kontroln\u00edho bodu ({0}) je pr\u00e1zdn\u00e1 nebo nezn\u00e1m\u00e1.
 error.invalidPhaseName.explanation=Jako hodnota volby kontroln\u00edho bodu byla ur\u010dena nezn\u00e1m\u00e1 f\u00e1ze.
 error.invalidPhaseName.useraction=Prohl\u00e9dn\u011bte si dokumentaci a ur\u010dete platn\u00e9 n\u00e1zvy f\u00e1z\u00ed. Zadejte p\u0159\u00edkaz znovu s pou\u017eit\u00edm platn\u00e9 f\u00e1ze kontroln\u00edho bodu.
 
@@ -725,10 +735,6 @@ error.checkpoint.workarea.restore.useraction=Ujist\u011bte se, \u017ee u\u017eiv
 info.checkpoint.restore.failed=CWWKE0957I: Obnova procesu serveru kontroln\u00edch bod\u016f se nezda\u0159ila. Zkontrolujte protokol {0}, abyste ur\u010dili, pro\u010d nebyl proces kontroln\u00edho bodu obnoven. Spu\u0161t\u011bn\u00ed serveru bez pou\u017eit\u00ed obrazu kontroln\u00edho bodu.
 info.checkpoint.restore.failed.explanation=Do\u0161lo k chyb\u011b p\u0159i obnov\u011b procesu serveru kontroln\u00edch bod\u016f.  Server byl spu\u0161t\u011bn bez pou\u017eit\u00ed obrazu kontroln\u00edho bodu.
 info.checkpoint.restore.failed.useraction=Zkontrolujte protokoly, abyste ur\u010dili, pro\u010d nebyl proces kontroln\u00edho bodu obnoven.
-
-error.checkpoint.failed=CWWKE0958E: Po\u017eadavek na kontroln\u00ed bod serveru se nezda\u0159il. N\u00e1sleduj\u00edc\u00ed v\u00fdstup poch\u00e1z\u00ed ze souboru CRU {0}, kter\u00fd obsahuje podrobnosti o p\u0159\u00ed\u010din\u011b nezdaru kontroln\u00edho bodu.
-error.checkpoint.failed.explanation=Po\u017eadavek na kontroln\u00ed bod pro server se nezda\u0159il. Nebyl vytvo\u0159en \u017e\u00e1dn\u00fd platn\u00fd obraz procesu kontroln\u00edho bodu pro server.
-error.checkpoint.failed.useraction=Chcete-li ur\u010dit p\u0159\u00ed\u010dinu nezdaru kontroln\u00edho bodu, zkontrolujte soubory protokolu v adres\u00e1\u0159i kontroln\u00edho bodu, kter\u00fd je um\u00edst\u011bn v adres\u00e1\u0159i protokol\u016f serveru.
 
 info.serverStarting=Spou\u0161t\u011bn\u00ed serveru {0}.
 info.serverStarted=Server {0} byl spu\u0161t\u011bn.

@@ -17,7 +17,7 @@
  * limitations under the License.
  *
  */
-package io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation;
+package io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter;
 
 import io.opentelemetry.sdk.autoconfigure.spi.ConfigProperties;
 import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;

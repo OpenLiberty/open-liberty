@@ -1,11 +1,9 @@
 ###############################################################################
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -88,9 +86,9 @@ TOKEN_REQUEST_ERROR=CWWKS2416E: Il client OpenID Connect {0} ha riscontrato il s
 TOKEN_REQUEST_ERROR.explanation=\u00c8 possibile che il client OpenID Connect non disponga di tutte le informazioni, che la richiesta all'endpoint del token abbia avuto esito negativo o che si sia verificato un altro errore durante l'elaborazione della risposta dell'endpoint del token.
 TOKEN_REQUEST_ERROR.useraction=Per ulteriori informazioni, consultare l'errore nel messaggio. Verificare che il provider OpenID Connect abbia restituito un codice nella risposta di autenticazione.
 
-#
-# CWWKS2417E removed and available
-#
+TOKEN_MISSING_REQUIRED_CLAIM=CWWKS2417E: Al token manca la richiesta [{0}].
+TOKEN_MISSING_REQUIRED_CLAIM.explanation=La richiesta specificata nel messaggio deve essere presente nel token, ma non \u00e8 presente.
+TOKEN_MISSING_REQUIRED_CLAIM.useraction=Controllare il formato e il contenuto del token restituito dal provider OpenID Connect.
 
 USERINFO_RESPONSE_ERROR=CWWKS2418W: Il client OpenID Connect ha rilevato il seguente messaggio di errore quando ha inviato una richiesta all''URL di informazioni utente [{0}] del provider OpenID Connect: {1}
 USERINFO_RESPONSE_ERROR.explanation=La risposta delle informazioni utente dal provider OpenID Connect potrebbe non essere corretta o potrebbe non contenere informazioni oppure il provider OpenID Connect ha rilevato un errore durante la gestione della richiesta.
@@ -113,3 +111,11 @@ JWK_CONNECTION_TIMED_OUT.useraction=Aggiornare la propriet\u00e0 jwksConnectTime
 JWK_READ_TIMED_OUT=CWWKS2422E: Il client OpenID Connect non \u00e8 riuscito a leggere i dati dall''URI JWK[{0}] del provider OpenID Connect entro {1} millisecondi. Valutare l''aggiornamento della propriet\u00e0 jwksReadTimeout nella configurazione del client OpenID Connect.
 JWK_READ_TIMED_OUT.explanation=Il client OpenID Connect non pu\u00f2 leggere i dati JWK dall'URI JWK entro il periodo di tempo configurato.
 JWK_READ_TIMED_OUT.useraction=Aggiornare la propriet\u00e0 jwksReadTimeout nella configurazione del client OpenID Connect. Verificare che il provider OpenID Connect sia raggiungibile.
+
+OIDC_CLIENT_INVALID_RESPONSE_TYPE=CWWKS2423E: \u00c8 specificato il seguente tipo di risposta non valido: ''{0}''. I tipi di risposta validi sono [{1}].
+OIDC_CLIENT_INVALID_RESPONSE_TYPE.explanation=Il tipo di risposta specificato non \u00e8 valido. 
+OIDC_CLIENT_INVALID_RESPONSE_TYPE.useraction=Specificare uno dei tipi di risposta validi.
+
+TOKEN_CLAIM_VALUE_MISMATCH=CWWKS2424E: Il valore [{0}] per la richiesta [{1}] nel token non corrisponde al valore previsto [{2}].
+TOKEN_CLAIM_VALUE_MISMATCH.explanation=Il valore della richiesta non \u00e8 corretto o non \u00e8 conforme. La configurazione per il client OpenID Connect potrebbe non essere corretta oppure il token \u00e8 stato creato con valori non corretti.
+TOKEN_CLAIM_VALUE_MISMATCH.useraction=Accertarsi che l'attributo nella configurazione del client OpenID Connect correlato alla richiesta specificata nel messaggio sia configurato correttamente.

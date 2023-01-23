@@ -15,6 +15,7 @@ bVersion=1.0
 
 src: \
     fat/src,\
+    test-applications/AcceptInputFileTest.war/src,\
     test-applications/ExternalContextAddResponseCookie.war/src,\
     test-applications/FacesContextGetLifecycle.war/src,\
     test-applications/LayoutAttribute.war/src,\

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,6 +22,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.microprofile.config.Config;
 
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+
 import io.openliberty.microprofile.telemetry.internal.helper.AgentDetection;
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.OpenTelemetry;
@@ -30,10 +33,14 @@ import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk;
+import io.opentelemetry.sdk.autoconfigure.spi.ConfigProperties;
 import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.logs.SdkLoggerProvider;
 import io.opentelemetry.sdk.metrics.SdkMeterProvider;
+import io.opentelemetry.sdk.resources.Resource;
+import io.opentelemetry.sdk.resources.ResourceBuilder;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
+import io.opentelemetry.semconv.resource.attributes.ResourceAttributes;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Produces;
@@ -48,6 +55,7 @@ public class OpenTelemetryProducer {
     private static final String CONFIG_METRICS_EXPORTER_PROPERTY = "otel.metrics.exporter";
     private static final String ENV_LOGS_EXPORTER_PROPERTY = "OTEL_LOGS_EXPORTER";
     private static final String CONFIG_LOGS_EXPORTER_PROPERTY = "otel.logs.exporter";
+    private static final String SERVICE_NAME_PROPERTY = "otel.service.name";
 
     @Inject
     Config config;
@@ -64,11 +72,13 @@ public class OpenTelemetryProducer {
         }
 
         HashMap<String, String> telemetryProperties = getTelemetryProperties();
+
         //Builds tracer provider if user has enabled tracing aspects with config properties
         if (!checkDisabled(telemetryProperties)) {
             OpenTelemetry openTelemetry = AccessController.doPrivileged((PrivilegedAction<OpenTelemetry>) () -> {
                 return AutoConfiguredOpenTelemetrySdk.builder()
-                                .addPropertiesSupplier(() -> telemetryProperties)
+                                .addPropertiesCustomizer(x -> telemetryProperties) //Overrides OpenTelemetry's property order
+                                .addResourceCustomizer(this::customizeResource)//Defaults service name to application name
                                 .setServiceClassLoader(Thread.currentThread().getContextClassLoader())
                                 .setResultAsGlobal(false)
                                 .registerShutdownHook(false)
@@ -87,6 +97,25 @@ public class OpenTelemetryProducer {
         //Operations on a Tracer, or on Spans have no side effects and do nothing
         return OpenTelemetry.noop();
 
+    }
+
+    //Uses application name if the user has not given configured service.name resource attribute
+    private String getServiceName(ConfigProperties c) {
+        String appName = c.getString(SERVICE_NAME_PROPERTY);
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        if (appName == null) {
+            if (cmd != null) {
+                appName = cmd.getModuleMetaData().getApplicationMetaData().getName();
+            }
+        }
+        return appName;
+    }
+
+    //Adds the service name to the resource attributes
+    private Resource customizeResource(Resource resource, ConfigProperties c) {
+        ResourceBuilder builder = resource.toBuilder();
+        builder.put(ResourceAttributes.SERVICE_NAME, getServiceName(c));
+        return builder.build();
     }
 
     public void disposeOpenTelemetry(@Disposes OpenTelemetry openTelemetry) {
@@ -131,10 +160,9 @@ public class OpenTelemetryProducer {
     private HashMap<String, String> getTelemetryProperties() {
         HashMap<String, String> telemetryProperties = new HashMap<>();
         for (String propertyName : config.getPropertyNames()) {
-            if (propertyName.startsWith("otel.") || propertyName.startsWith("OTEL_")) {
+            if (propertyName.startsWith("otel.")) {
                 config.getOptionalValue(propertyName, String.class).ifPresent(
                                                                               value -> telemetryProperties.put(propertyName, value));
-
             }
         }
         //Metrics and logs are disabled by default
@@ -142,9 +170,7 @@ public class OpenTelemetryProducer {
         telemetryProperties.put(CONFIG_LOGS_EXPORTER_PROPERTY, "none");
         telemetryProperties.put(ENV_METRICS_EXPORTER_PROPERTY, "none");
         telemetryProperties.put(ENV_LOGS_EXPORTER_PROPERTY, "none");
-
         return telemetryProperties;
-
     }
 
     @Produces

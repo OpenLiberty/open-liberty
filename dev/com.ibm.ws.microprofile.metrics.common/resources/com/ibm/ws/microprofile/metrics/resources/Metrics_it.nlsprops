@@ -8,11 +8,9 @@
 ###############################################################################
 # Copyright (c) 2009, 2011 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -60,6 +58,21 @@ internal.error.CWMMC0005E.useraction=Raccogliere una serie di tracce e aprire un
 internal.error.CWMMC0006E=CWMMC0006E: Si \u00e8 verificato un errore interno.
 internal.error.CWMMC0006E.explanation=Il server delle applicazioni ha rilevato un errore interno.
 internal.error.CWMMC0006E.useraction=Raccogliere una serie di tracce e aprire un nuovo problema rispetto al server delle applicazioni.
+
+#Information regarding libraryRef attribute taking effect only after server restart
+configurationChange.info.CWMMC0007I=CWMMC0007I: \u00c8 stata rilevata una modifica di configurazione per la funzione delle metriche MicroProfile. Se \u00e8 stata apportata una modifica all'attributo libraryRef, \u00e8 necessario un riavvio del server per rendere effettive le modifiche.
+configurationChange.info.CWMMC0007I.explanation=Le metriche MicroProfile richiedono il riavvio del server per modificare le librerie a cui fa riferimento libraryRef.
+configurationChange.info.CWMMC0007I.useraction=Se l'attributo libraryRef \u00e8 stato modificato, riavviare il server per rendere effettive le modifiche.
+
+#User configured mpMetrics to use user-defined library for Micrometer binaries without Prometheus Registry JAR
+noPrometheusRegistry.info.CWMMC0008I=CWMMC0008I: L'endpoint /delle metriche non \u00e8 disponibile perch\u00e9 non \u00e8 disponibile alcun registro Prometheus.
+noPrometheusRegistry.info.CWMMC0008I.explanation=La funzione delle metriche MicroProfile sta caricando le librerie Micrometer definite tramite l'attributo libraryRef, ma la libreria di riferimento non contiene un registro Micrometer Prometheus .
+noPrometheusRegistry.info.CWMMC0008I.useraction=Se la non disponibilit\u00e0 del registro Prometheus non \u00e8 intenzionale, modificare il contenuto della libreria a cui fa riferimento l'attributo libraryRef per contenere un JAR del registro Micrometer Prometheus.
+
+#Prometheus Registry was disabled through the mp.metrics.prometheus.enabled MicroProfile Config property
+disabled.info.CWMMC0009I=CWMMC0009I: L'endpoint /metriche non \u00e8 disponibile perch\u00e9 il registro Prometheus \u00e8 disabilitato.
+disabled.info.CWMMC0009I.explanation=La propriet\u00e0 mp.metrics.prometheus.enabled MicroProfile Config \u00e8 impostata su false.
+disabled.info.CWMMC0009I.useraction=Se la disabilitazione del registro Prometheus non \u00e8 intenzionale, rimuovere la configurazione della propriet\u00e0 di configurazione del MicroProfile mp.metrics.prometheus.enabled o impostare esplicitamente la propriet\u00e0 su true.
 
 #Memory usedHeap message
 memory.usedHeap.description=Visualizza la quantit\u00e0 di memoria heap utilizzata in byte.

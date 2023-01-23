@@ -48,8 +48,7 @@ public class TelemetryBeanTest extends FATServletClient {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addClasses(TelemetryBeanTestServlet.class)
                         .addAsResource(new StringAsset("otel.sdk.disabled=false"),
-                                                       "META-INF/microprofile-config.properties");
-
+                                       "META-INF/microprofile-config.properties");
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
         server.startServer();
     }

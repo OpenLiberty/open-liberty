@@ -1,11 +1,9 @@
 ###############################################################################
 # Copyright (c) 2010 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -16,8 +14,7 @@
 # NLS_MESSAGEFORMAT_VAR
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-briefUsage=Sk\u0142adnia: java [opcje JVM] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
-\t-jar bin/tools/ws-server.jar serverName {0} [opcje]  
+briefUsage=Sk\u0142adnia: java [opcje JVM] -javaagent:bin/tools/ws-javaagent.jar \\        \n\t-jar bin/tools/ws-server.jar serverName {0} [opcje]  
 scriptUsage=Sk\u0142adnia: {0} {1} serverName [opcje] [opcje maszyny JVM]
 
 use.actions=Dzia\u0142ania:
@@ -37,22 +34,15 @@ category-key.misc=R\u00f3\u017cne
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # ServerName
 processName.key=\ \ \ \ nazwaSerwera
-processName.desc=\tUnikalna nazwa serwera. Nazw\u0119 mo\u017cna utworzy\u0107 ze znak\u00f3w\n\
-\talfanumerycznych Unicode (np. A-Za-z0-9), podkre\u015blenia \n\
-\t(_), \u0142\u0105cznika (-), znaku plus (+) i kropki (.). Nazwa serwera\n\
-\tnie mo\u017ce rozpoczyna\u0107 si\u0119 od \u0142\u0105cznika (-) ani kropki (.).
+processName.desc=\tUnikalna nazwa serwera. Nazw\u0119 mo\u017cna utworzy\u0107 ze znak\u00f3w\n\talfanumerycznych Unicode (np. A-Za-z0-9), podkre\u015blenia \n\t(_), \u0142\u0105cznika (-), znaku plus (+) i kropki (.). Nazwa serwera\n\tnie mo\u017ce rozpoczyna\u0107 si\u0119 od \u0142\u0105cznika (-) ani kropki (.).
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # JavaAgent 
 javaAgent.key=\ \ \ \ -javaagent:bin/tools/ws-javaagent.jar
-javaAgent.desc=\tOpcja maszyny JVM umo\u017cliwiaj\u0105ca okre\u015blenie agenta na potrzeby instrumentacji.   \n\
-\t\u015arodowisko wykonawcze u\u017cywa instrumentacji do gromadzenia danych \u015bledzenia \n\
-\ti innych informacji debugowania. Plik bootstrap-agent.jar znajduje si\u0119 w tym \n\
-\tsamym katalogu co plik jar u\u017cywany do uruchomienia \u015brodowiska wykonawczego.
+javaAgent.desc=\tOpcja maszyny JVM umo\u017cliwiaj\u0105ca okre\u015blenie agenta na potrzeby instrumentacji.   \n\t\u015arodowisko wykonawcze u\u017cywa instrumentacji do gromadzenia danych \u015bledzenia \n\ti innych informacji debugowania. Plik bootstrap-agent.jar znajduje si\u0119 w tym \n\tsamym katalogu co plik jar u\u017cywany do uruchomienia \u015brodowiska wykonawczego.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Actions: create, stop, version, package, dump
 action-key.create=\ \ \ \ --create
-action-desc.create=\tUtw\u00f3rz nowy serwer, je\u015bli okre\u015blony serwer nie istnieje. Do okre\u015blenia\n\
-\tszablonu u\u017cywanego przy tworzeniu nowego serwera mo\u017cna u\u017cy\u0107 opcji --template\n\t.
+action-desc.create=\tUtw\u00f3rz nowy serwer, je\u015bli okre\u015blony serwer nie istnieje. Do okre\u015blenia\n\tszablonu u\u017cywanego przy tworzeniu nowego serwera mo\u017cna u\u017cy\u0107 opcji --template\n\t.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.list=\ \ \ \ --list
 action-desc.list=\tWy\u015bwietl list\u0119 zdefiniowanych serwer\u00f3w aplikacji profilu Liberty.
@@ -64,8 +54,7 @@ action-key.run=\ \ \ \ --run
 action-desc.run=\tUruchom okre\u015blony serwer na pierwszym planie w konsoli.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.debug=\ \ \ \ --debug
-action-desc.debug=\tUruchom okre\u015blony serwer na pierwszym planie w konsoli po nawi\u0105zaniu po\u0142\u0105czenia przez debuger\n\
-\tz portem debugowania (warto\u015b\u0107 domy\u015blna: 7777).
+action-desc.debug=\tUruchom okre\u015blony serwer na pierwszym planie w konsoli po nawi\u0105zaniu po\u0142\u0105czenia przez debuger\n\tz portem debugowania (warto\u015b\u0107 domy\u015blna: 7777).
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.status=\ \ \ \ --status
 action-desc.status=\tSprawd\u017a status okre\u015blonego serwera.
@@ -74,32 +63,22 @@ action-key.stop=\ \ \ \ --stop
 action-desc.stop=\tZatrzymaj dzia\u0142aj\u0105c\u0105 instancj\u0119 okre\u015blonego serwera.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.version=\ \ \ \ --version
-action-desc.version=\tWy\u015bwietl informacje o wersji serwera i \
-wyjd\u017a.
+action-desc.version=\tWy\u015bwietl informacje o wersji serwera i wyjd\u017a.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.package=\ \ \ \ --package
-action-desc.package=\tUtw\u00f3rz pakiet serwera w formie archiwum. Mo\u017cna u\u017cy\u0107 opcji --archive.    \n\
-\tOpcji --include mo\u017cna u\u017cy\u0107 z warto\u015bciami \u201eall\u201d, \u201eusr\u201d, \u201eminify\u201d, \n\
-\t\u201ewlp\u201d, \u201erunnable\u201d, \u201eall,runnable\u201d oraz \u201eminify,runnable\u201d. Warto\u015bci \n\
-\t\u201erunnable\u201d i \u201eall,runnable\u201d s\u0105 r\u00f3wnoznaczne. Warto\u015b\u0107 \u201erunnable\u201d \n\
-\tdzia\u0142a tylko z archiwami typu jar. Opcji --server-root mo\u017cna \n\
-\tu\u017cy\u0107 do okre\u015blania folderu g\u0142\u00f3wnego w archiwum pakietu.
+action-desc.package=\tUtw\u00f3rz pakiet serwera w formie archiwum. Mo\u017cna u\u017cy\u0107 opcji --archive.    \n\tOpcji --include mo\u017cna u\u017cy\u0107 z warto\u015bciami \u201eall\u201d, \u201eusr\u201d, \u201eminify\u201d, \n\t\u201ewlp\u201d, \u201erunnable\u201d, \u201eall,runnable\u201d oraz \u201eminify,runnable\u201d. Warto\u015bci \n\t\u201erunnable\u201d i \u201eall,runnable\u201d s\u0105 r\u00f3wnoznaczne. Warto\u015b\u0107 \u201erunnable\u201d \n\tdzia\u0142a tylko z archiwami typu jar. Opcji --server-root mo\u017cna \n\tu\u017cy\u0107 do okre\u015blania folderu g\u0142\u00f3wnego w archiwum pakietu.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.dump=\ \ \ \ --dump
-action-desc.dump=\tZrzu\u0107 informacje diagnostyczne z serwera do archiwum. Mo\u017cna\n\
-\tu\u017cy\u0107 opcji --archive.  Opcji --include mo\u017cna u\u017cy\u0107 z warto\u015bciami\n\
-\t"heap", "system" i "thread".
+action-desc.dump=\tZrzu\u0107 informacje diagnostyczne z serwera do archiwum. Mo\u017cna\n\tu\u017cy\u0107 opcji --archive.  Opcji --include mo\u017cna u\u017cy\u0107 z warto\u015bciami\n\t"heap", "system" i "thread".
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.javadump=\ \ \ \ --javadump
-action-desc.javadump=\tZrzu\u0107 informacje diagnostyczne z maszyny JVM serwera. Opcji --include\n\
-\tmo\u017cna u\u017cy\u0107 z warto\u015bciami "heap" i "system".
+action-desc.javadump=\tZrzu\u0107 informacje diagnostyczne z maszyny JVM serwera. Opcji --include\n\tmo\u017cna u\u017cy\u0107 z warto\u015bciami "heap" i "system".
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.registerWinService=\ \ \ \ --registerWinService
 action-desc.registerWinService=\tZarejestruj serwer okre\u015blony jako program us\u0142ugi Windows.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.startWinService=\ \ \ \ --startWinService
-action-desc.startWinService=\tUruchom serwer okre\u015blony jako program us\u0142ugi Windows.             \n\
-\tNale\u017cy go zarejestrowa\u0107 przed uruchomieniem.
+action-desc.startWinService=\tUruchom serwer okre\u015blony jako program us\u0142ugi Windows.             \n\tNale\u017cy go zarejestrowa\u0107 przed uruchomieniem.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.stopWinService=\ \ \ \ --stopWinService
 action-desc.stopWinService=\tZatrzymaj serwer okre\u015blony jako program us\u0142ugi Windows.
@@ -111,85 +90,39 @@ action-key.help=\ \ \ \ --help
 action-desc.help=\tWydrukuj informacje pomocnicze.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.pause=\ \ \ \ --pause
-action-desc.pause=\tWstrzymaj wszystkie komponenty na serwerze, kt\u00f3re mo\u017cna wstrzyma\u0107. Mo\u017cesz\n\
-\twstrzyma\u0107 podzbi\u00f3r komponent\u00f3w, podaj\u0105c komponenty \n\
-\tza pomoc\u0105 opcji --target.
+action-desc.pause=\tWstrzymaj wszystkie komponenty na serwerze, kt\u00f3re mo\u017cna wstrzyma\u0107. Mo\u017cesz\n\twstrzyma\u0107 podzbi\u00f3r komponent\u00f3w, podaj\u0105c komponenty \n\tza pomoc\u0105 opcji --target.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.resume=\ \ \ \ --resume
-action-desc.resume=\tWzn\u00f3w wszystkie wstrzymane komponenty na serwerze. Mo\u017cesz poda\u0107 \n\
-\topcj\u0119 --target, aby wznowi\u0107 konkretne wstrzymane komponenty.
+action-desc.resume=\tWzn\u00f3w wszystkie wstrzymane komponenty na serwerze. Mo\u017cesz poda\u0107 \n\topcj\u0119 --target, aby wznowi\u0107 konkretne wstrzymane komponenty.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\ \ \ \ --clean
 option-desc.start.clean=\tUsu\u0144 z pami\u0119ci podr\u0119cznej wszystkie informacje odnosz\u0105ce si\u0119 do tej instancji serwera.             
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="\u015bcie\u017cka do docelowego pliku archiwum"
-option-desc.dump.archive=\tOkre\u015bl archiwum docelowe do wygenerowania przez dzia\u0142anie dump.      \n\
-\tElement docelowy mo\u017cna okre\u015bli\u0107 za pomoc\u0105 \u015bcie\u017cki pe\u0142nej lub         \n\
-\twzgl\u0119dnej. Je\u015bli ta opcja zostanie pomini\u0119ta, plik archiwum zostanie \n\
-\tutworzony w katalogu wyj\u015bciowym serwera. Rozszerzenie nazwy pliku\n\
-\tdocelowego mo\u017ce wp\u0142ywa\u0107 na format wygenerowanego archiwum. Domy\u015blnym\n\
-\tformatem archiwum dla dzia\u0142ania pakowania jest pax w systemie z/OS\n\
-\ti zip na wszystkich innych platformach. U\u017cycie formatu jar archiwum\n\
-\tspowoduje wygenerowanie samorozpakowuj\u0105cego pliku jar podobnego\n\
-\tdo oryginalnego archiwum instalatora.
-option-desc.package.archive=\tOkre\u015bl archiwum docelowe do wygenerowania przez dzia\u0142anie package.      \n\
-\tElement docelowy mo\u017cna okre\u015bli\u0107 za pomoc\u0105 \u015bcie\u017cki pe\u0142nej lub         \n\
-\twzgl\u0119dnej. Je\u015bli ta opcja zostanie pomini\u0119ta, plik archiwum zostanie \n\
-\tutworzony w katalogu wyj\u015bciowym serwera. Rozszerzenie nazwy pliku\n\
-\tdocelowego mo\u017ce wp\u0142ywa\u0107 na format wygenerowanego archiwum. Domy\u015blnym\n \tformatem archiwum dla dzia\u0142ania pakowania jest pax w systemie z/OS\n\
-\ti zip na wszystkich innych platformach. U\u017cycie formatu jar archiwum\n\
-\tspowoduje wygenerowanie samorozpakowuj\u0105cego pliku jar podobnego\n\
-\tdo oryginalnego archiwum instalatora. Format jar archiwum \n\
-\tw po\u0142\u0105czeniu z warto\u015bci\u0105 runnable opcji --include generuje plik jar,\n\
-\tkt\u00f3ry mo\u017ce uruchomi\u0107 serwer Liberty z poziomu pliku jar za pomoc\u0105\n\
-\tkomendy java -jar.
+option-desc.dump.archive=\tOkre\u015bl archiwum docelowe do wygenerowania przez dzia\u0142anie dump.      \n\tElement docelowy mo\u017cna okre\u015bli\u0107 za pomoc\u0105 \u015bcie\u017cki pe\u0142nej lub         \n\twzgl\u0119dnej. Je\u015bli ta opcja zostanie pomini\u0119ta, plik archiwum zostanie \n\tutworzony w katalogu wyj\u015bciowym serwera. Rozszerzenie nazwy pliku\n\tdocelowego mo\u017ce wp\u0142ywa\u0107 na format wygenerowanego archiwum. Domy\u015blnym\n\tformatem archiwum dla dzia\u0142ania pakowania jest pax w systemie z/OS\n\ti zip na wszystkich innych platformach. U\u017cycie formatu jar archiwum\n\tspowoduje wygenerowanie samorozpakowuj\u0105cego pliku jar podobnego\n\tdo oryginalnego archiwum instalatora.
+option-desc.package.archive=\tOkre\u015bl archiwum docelowe do wygenerowania przez dzia\u0142anie package.      \n\tElement docelowy mo\u017cna okre\u015bli\u0107 za pomoc\u0105 \u015bcie\u017cki pe\u0142nej lub         \n\twzgl\u0119dnej. Je\u015bli ta opcja zostanie pomini\u0119ta, plik archiwum zostanie \n\tutworzony w katalogu wyj\u015bciowym serwera. Rozszerzenie nazwy pliku\n\tdocelowego mo\u017ce wp\u0142ywa\u0107 na format wygenerowanego archiwum. Domy\u015blnym\n \tformatem archiwum dla dzia\u0142ania pakowania jest pax w systemie z/OS\n\ti zip na wszystkich innych platformach. U\u017cycie formatu jar archiwum\n\tspowoduje wygenerowanie samorozpakowuj\u0105cego pliku jar podobnego\n\tdo oryginalnego archiwum instalatora. Format jar archiwum \n\tw po\u0142\u0105czeniu z warto\u015bci\u0105 runnable opcji --include generuje plik jar,\n\tkt\u00f3ry mo\u017ce uruchomi\u0107 serwer Liberty z poziomu pliku jar za pomoc\u0105\n\tkomendy java -jar.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.include=\ \ \ \ --include=warto\u015b\u0107,warto\u015b\u0107,...
-option-desc.javadump.include=\tLista warto\u015bci rozdzielonych przecinkami. Poprawne warto\u015bci to: heap, system \n\
-\tthread.
-option-desc.package.include=\tLista warto\u015bci rozdzielonych przecinkami. Poprawne warto\u015bci to: all*, usr,   \n\
-\tminify, runnable, wlp. Je\u015bli zostanie podana warto\u015b\u0107 runnable, wynikowy\n\
-\tpakiet b\u0119dzie wykonywalnym plikiem JAR, kt\u00f3ry uruchamia serwer. Opcja\n\
-\tminify powoduje utworzenie najmniejszego mo\u017cliwego obrazu dla serwera.\n Opcja usr \n \ttworzy pakiet, kt\u00f3ry zawiera serwer i aplikacj\u0119, ale nie \n\
-\t\u015brodowisko wykonawcze. Opcja wlp powoduje utworzenie \u015brodowiska \n\
-\twykonawczego, kt\u00f3re nie zawiera konfiguracji serwera. Opcja domy\u015blna \n\
-\tall powoduje utworzenie pakietu serwera, kt\u00f3ry zawiera wszystkie elementy.
+option-desc.javadump.include=\tLista warto\u015bci rozdzielonych przecinkami. Poprawne warto\u015bci to: heap, system \n\tthread.
+option-desc.package.include=\tLista warto\u015bci rozdzielonych przecinkami. Poprawne warto\u015bci to: all*, usr,   \n\tminify, runnable, wlp. Je\u015bli zostanie podana warto\u015b\u0107 runnable, wynikowy\n\tpakiet b\u0119dzie wykonywalnym plikiem JAR, kt\u00f3ry uruchamia serwer. Opcja\n\tminify powoduje utworzenie najmniejszego mo\u017cliwego obrazu dla serwera.\n Opcja usr \n \ttworzy pakiet, kt\u00f3ry zawiera serwer i aplikacj\u0119, ale nie \n\t\u015brodowisko wykonawcze. Opcja wlp powoduje utworzenie \u015brodowiska \n\twykonawczego, kt\u00f3re nie zawiera konfiguracji serwera. Opcja domy\u015blna \n\tall powoduje utworzenie pakietu serwera, kt\u00f3ry zawiera wszystkie elementy.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="nazwaSzablonu"
 option-desc.template=\tOkre\u015bl nazw\u0119 szablonu do u\u017cycia przy tworzeniu nowego serwera. 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.target=\ \ \ \ --target=warto\u015b\u0107,warto\u015b\u0107
-option-desc.target=\tOkre\u015bla rozdzielan\u0105 przecinkami list\u0119 komponent\u00f3w, kt\u00f3re mo\u017cesz\n\
-\twstrzyma\u0107 lub wznowi\u0107.
+option-desc.target=\tOkre\u015bla rozdzielan\u0105 przecinkami list\u0119 komponent\u00f3w, kt\u00f3re mo\u017cesz\n\twstrzyma\u0107 lub wznowi\u0107.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.os=\ \ \ \ --os=warto\u015b\u0107,warto\u015b\u0107,...
-option-desc.os=\tOkre\u015bla systemy operacyjne, kt\u00f3re maj\u0105 by\u0107 obs\u0142ugiwane przez \n\
-\tpakiet serwera. Podaj list\u0119 rozdzielan\u0105 przecinkami. Warto\u015bci\u0105 domy\u015bln\u0105 jest any,     \n\
-\tco wskazuje, \u017ce serwer mo\u017ce by\u0107 wdra\u017cany w dowolnym systemie operacyjnym                     \n\
-\tobs\u0142ugiwanym przez kod \u017ar\u00f3d\u0142owy.                                      \n\
-\tAby wskaza\u0107, \u017ce dany system operacyjny nie ma by\u0107 obs\u0142ugiwany, nale\u017cy\n\
-\tpoprzedzi\u0107 go znakiem minus (-). List\u0119 warto\u015bci odpowiadaj\u0105cych systemom operacyjnym\n\
-\tmo\u017cna znale\u017a\u0107 w serwisie WWW OSGi Alliance pod adresem URL:                  \n\
-\thttp://www.osgi.org/Specifications/Reference#os                      \n\
-\tTa opcja dotyczy tylko operacji pakowania i mo\u017ce by\u0107 u\u017cywana   \n\
-\ttylko z opcj\u0105 --include=minify. Je\u015bli system operacyjny zostanie   \n\
-\twykluczony, nie mo\u017cna b\u0119dzie go p\u00f3\u017aniej doda\u0107, je\u015bli operacja minimalizacji         \n\
-\tarchiwum zostanie powt\u00f3rzona.
+option-desc.os=\tOkre\u015bla systemy operacyjne, kt\u00f3re maj\u0105 by\u0107 obs\u0142ugiwane przez \n\tpakiet serwera. Podaj list\u0119 rozdzielan\u0105 przecinkami. Warto\u015bci\u0105 domy\u015bln\u0105 jest any,     \n\tco wskazuje, \u017ce serwer mo\u017ce by\u0107 wdra\u017cany w dowolnym systemie operacyjnym                     \n\tobs\u0142ugiwanym przez kod \u017ar\u00f3d\u0142owy.                                      \n\tAby wskaza\u0107, \u017ce dany system operacyjny nie ma by\u0107 obs\u0142ugiwany, nale\u017cy\n\tpoprzedzi\u0107 go znakiem minus (-). List\u0119 warto\u015bci odpowiadaj\u0105cych systemom operacyjnym\n\tmo\u017cna znale\u017a\u0107 w serwisie WWW OSGi Alliance pod adresem URL:                  \n\thttp://www.osgi.org/Specifications/Reference#os                      \n\tTa opcja dotyczy tylko operacji pakowania i mo\u017ce by\u0107 u\u017cywana   \n\ttylko z opcj\u0105 --include=minify. Je\u015bli system operacyjny zostanie   \n\twykluczony, nie mo\u017c\
+    na b\u0119dzie go p\u00f3\u017aniej doda\u0107, je\u015bli operacja minimalizacji         \n\tarchiwum zostanie powt\u00f3rzona.
 #------------------------------\n at 72 chars -- leading tab-----------\n\# 
 option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\tWy\u0142\u0105cz generowanie domy\u015blnego has\u0142a magazynu kluczy
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="g\u0142\u00f3wny folder serwera w archiwum"
 option-desc.package.server-root=\tOkre\u015bla nazw\u0119 g\u0142\u00f3wnego folderu serwera w pliku archiwum.\n
-#------------------------------\n\
-\ at 72 chars -- leading tab-----------\n\
-\#
 option-key.force=\ \ \ \ --force
-option-desc.stop.force=\tPomija etap wyciszania przed zamkni\u0119ciem serwera. Normalne zatrzymanie\n\
-\tserwera obejmuje etap wyciszania przed zamkni\u0119ciem. Okres    \n\
-\twyciszania trwa 30 sekund i umo\u017cliwia us\u0142ugom     \n\
-\twykonanie operacji poprzedzaj\u0105cych zamkni\u0119cie; na przyk\u0142ad programy nas\u0142uchuj\u0105ce \u017c\u0105da\u0144 przychodz\u0105cych s\u0105 zatrzymywane,   \n\
-\tale istniej\u0105ce \u017c\u0105dania mog\u0105 zosta\u0107 uko\u0144czone. Opcja -- force nie odnosi \n\
-\tskutku, je\u015bli zatrzymanie serwera zosta\u0142o ju\u017c wywo\u0142ane. W przypadku u\u017cycia opcji -- force    \n\
-\tmog\u0105 pojawi\u0107 si\u0119 nieoczekiwane wyj\u0105tki w pliku messages.log, \n\
-\trejestrowane po odebraniu przez serwer komendy zatrzymania serwera.
+option-desc.stop.force=\tPowoduje pomini\u0119cie etapu wyciszania przed zamkni\u0119ciem serwera. Normalne zatrzymanie \nserwera obejmuje etap wyciszenia, zanim serwer zostanie wy\u0142\u0105czony. Etap wyciszenia, \nokres 30 sekund, umo\u017cliwia us\u0142ugom wykonanie prac przed zamkni\u0119ciem systemu. \nNa przyk\u0142ad zatrzymuj\u0105 programy nas\u0142uchuj\u0105ce, pozwalaj\u0105c \nna doko\u0144czenie ju\u017c wykonywanych \u017c\u0105da\u0144. Opcja --force nie b\u0119dzie dzia\u0142a\u0107, \nje\u015bli zatrzymanie serwera zosta\u0142o ju\u017c wywo\u0142ane. Je\u015bli u\u017cywana jest opcja --force, \nw pliku messages.log mog\u0105 pojawi\u0107 si\u0119 nieoczekiwane wyj\u0105tki \nwyst\u0119puj\u0105ce po odebraniu przez serwer komendy zatrzymania. \n
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.timeout=\ \ \ \ --timeout
+option-desc.stop.timeout=\tUstawia maksymalny czas oczekiwania przez komend\u0119 zatrzymania serwera \n"server stop" na potwierdzenie, \u017ce serwer zosta\u0142 zatrzymany.  Podaj dodatni\u0105 liczb\u0119 ca\u0142kowit\u0105, \npo kt\u00f3rej nast\u0119puje jednostka czasu (m \u2013 minuty albo \ns \u2013 sekundy). Na przyk\u0142ad, aby okre\u015bli\u0107 czas 2,5 minuty, mo\u017cna u\u017cy\u0107 opcji --timeout=2m30s \nlub --timeout=150s.                                                   \n\t                                                                     \n\tDomy\u015blna warto\u015b\u0107 limitu czasu wynosi 30 sekund. Je\u015bli zatrzymanie serwera trwa d\u0142u\u017cej \nni\u017c 30 sekund, nale\u017cy rozwa\u017cy\u0107 wyd\u0142u\u017cenie limitu czasu \nza pomoc\u0105 opcji --timeout.                                 \n

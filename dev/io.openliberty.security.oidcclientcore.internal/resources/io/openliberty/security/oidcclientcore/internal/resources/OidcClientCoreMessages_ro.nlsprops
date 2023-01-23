@@ -1,11 +1,9 @@
 ###############################################################################
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -88,9 +86,9 @@ TOKEN_REQUEST_ERROR=CWWKS2416E: Clientul OpenID Connect {0} a \u00eent\u00e2mpin
 TOKEN_REQUEST_ERROR.explanation=Clientului OpenID Connect ar putea s\u0103 \u00eei lipseasc\u0103 informa\u021bii, cererea la punctul final de jeton a e\u0219uat sau a ap\u0103rut o alt\u0103 eroare \u00een timpul proces\u0103rii r\u0103spunsului de la punctul final de jeton.
 TOKEN_REQUEST_ERROR.useraction=Vede\u0163i eroarea din mesaj pentru informa\u0163ii suplimentare. Verifica\u021bi dac\u0103 furnizorul OpenID Connect a returnat un cod \u00een r\u0103spunsul pentru autentificare.
 
-#
-# CWWKS2417E removed and available
-#
+TOKEN_MISSING_REQUIRED_CLAIM=CWWKS2417E: Jetonul nu are revendicarea [{0}] necesar\u0103.
+TOKEN_MISSING_REQUIRED_CLAIM.explanation=Revendicarea care este specificat\u0103 \u00een mesaj trebuie s\u0103 fie prezent\u0103 \u00een jeton, dar aceasta lipse\u0219te.
+TOKEN_MISSING_REQUIRED_CLAIM.useraction=Verifica\u021bi formatul \u0219i con\u021binutul jetonului care este returnat de la furnizorul OpenID Connect.
 
 USERINFO_RESPONSE_ERROR=CWWKS2418W: Clientul OpenID Connect a primit urm\u0103toarea eroare atunci c\u00e2nd a trimis o cerere c\u0103tre URL-ul de informa\u021bii de utilizator [{0}] al furnizorului OpenID Connect: {1}
 USERINFO_RESPONSE_ERROR.explanation=R\u0103spunsul cu informa\u021bii de utilizator de la furnizorul OpenID Connect ar putea avea un format gre\u0219it sau informa\u021bii lips\u0103 sau furnizorul OpenID Connect a primit o eroare c\u00e2nd a tratat cererea.
@@ -113,3 +111,11 @@ JWK_CONNECTION_TIMED_OUT.useraction=Actualiza\u021bi proprietatea jwksConnectTim
 JWK_READ_TIMED_OUT=CWWKS2422E: Clientul OpenID Connect nu a reu\u0219it s\u0103 citeasc\u0103 date din URI-ul JWK [{0}] al furnizorului OpenID Connect \u00een {1} milisecunde. Lua\u021bi \u00een considerare actualizarea propriet\u0103\u021bii jwksReadTimeout \u00een configura\u021bia de client OpenID Connect.
 JWK_READ_TIMED_OUT.explanation=Clientul OpenID Connect nu poate citi datele JWK din URI-ul JWK \u00een cadrul de timp configurat.
 JWK_READ_TIMED_OUT.useraction=Actualiza\u021bi proprietatea jwksReadTimeout \u00een configura\u021bia de client OpenID Connect. Verifica\u021bi dac\u0103 furnizorul OpenID Connect este accesibil.
+
+OIDC_CLIENT_INVALID_RESPONSE_TYPE=CWWKS2423E: Este specificat urm\u0103torul tip de r\u0103spuns invalid: ''{0}''. Tipurile de r\u0103spuns valide sunt [{1}].
+OIDC_CLIENT_INVALID_RESPONSE_TYPE.explanation=Tipul de r\u0103spuns specificat nu este valid. 
+OIDC_CLIENT_INVALID_RESPONSE_TYPE.useraction=Specifica\u021bi unul dintre tipurile de r\u0103spuns valide.
+
+TOKEN_CLAIM_VALUE_MISMATCH=CWWKS2424E: Valoarea [{0}] pentru revendicarea [{1}] din jeton nu se potrive\u0219te cu valoarea a\u0219teptat\u0103 [{2}].
+TOKEN_CLAIM_VALUE_MISMATCH.explanation=Valoarea revendic\u0103rii este incorect\u0103 sau format\u0103 gre\u0219it. Configura\u021bia pentru clientul OpenID Connect ar putea fi incorect\u0103 sau jetonul a fost creat cu valori incorecte.
+TOKEN_CLAIM_VALUE_MISMATCH.useraction=Asigura\u021bi-v\u0103 c\u0103 este configurat corect atributul din configura\u021bia clientului OpenID Connect care este aferent revendic\u0103rii specificate \u00een mesaj.

@@ -1,11 +1,9 @@
 ###############################################################################
 # Copyright (c) 2020, 2021 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -31,3 +29,7 @@ FEATURE_UNREGISTERED.useraction=No se requiere ninguna acci\u00f3n del usuario.
 METRICS_UNHANDLED_JAXRS_EXCEPTION=CWPMI2005W: El correlacionador de excepciones de m\u00e9tricas MicroProfile ha detectado y est\u00e1 manejando una excepci\u00f3n no manejada de la aplicaci\u00f3n JAX-RS.
 METRICS_UNHANDLED_JAXRS_EXCEPTION.explanation=La aplicaci\u00f3n basada en JAX-RS ha experimentado una excepci\u00f3n que no se ha manejado dentro de la aplicaci\u00f3n. El c\u00f3digo de MicroProfile la maneja registrando el rastreo de pila de excepciones y devolviendo una respuesta de error de servidor interno 500.
 METRICS_UNHANDLED_JAXRS_EXCEPTION.useraction=Este comportamiento podr\u00eda ser aceptable. Para manejar la excepci\u00f3n de forma diferente, a\u00f1ada una interfaz ExceptionMapper que maneje la excepci\u00f3n y la correlacione con una respuesta diferente.
+
+METRICS_UNHANDLED_RESTFULWS_EXCEPTION=CWPMI2006W: El correlacionador de excepciones de MicroProfile Metrics ha detectado y est\u00e1 tratando una excepci\u00f3n no manejada desde la aplicaci\u00f3n de servicios web RESTful.
+METRICS_UNHANDLED_RESTFULWS_EXCEPTION.explanation=Se ha producido una excepci\u00f3n en la aplicaci\u00f3n basada en servicios web RESTful que no se ha manejado en la aplicaci\u00f3n. El c\u00f3digo de MicroProfile la maneja registrando el rastreo de pila de excepciones y devolviendo una respuesta de error de servidor interno 500.
+METRICS_UNHANDLED_RESTFULWS_EXCEPTION.useraction=Este comportamiento podr\u00eda ser aceptable. Para manejar la excepci\u00f3n de forma diferente, a\u00f1ada una interfaz ExceptionMapper que maneje la excepci\u00f3n y la correlacione con una respuesta diferente.

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -271,13 +271,14 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         // Async update
-        CompletionStage<List<Person>> updated = personnel.changeSurnames("TestAsynchronous", "Test-Asynchronous",
+        CompletionStage<List<Person>> updated = personnel.changeSurnames("TestAsynchronous",
                                                                          List.of(1002003009L, 1002003008L, 1002003005L,
-                                                                                 1002003003L, 1002003002L, 1002003001L))
+                                                                                 1002003003L, 1002003002L, 1002003001L),
+                                                                         "TestAAsynchronous") // use only alphanumeric characters to ensure consistent sorting across databases
                         .thenCompose(updateCount -> {
                             assertEquals(Integer.valueOf(6), updateCount);
 
-                            return personnel.findByLastNameOrderByFirstName("Test-Asynchronous");
+                            return personnel.findByLastNameOrderByFirstName("TestAAsynchronous");
                         });
 
         assertIterableEquals(List.of("Aaron", "Albert", "Alice", "Amy", "Andrew", "Bob"),
@@ -298,7 +299,7 @@ public class DataTestServlet extends FATServlet {
             for (String lastName : lastNames)
                 names.add(lastName);
         }).toCompletableFuture().get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
-        assertEquals("Test-Asynchronous", names.poll());
+        assertEquals("TestAAsynchronous", names.poll());
         assertEquals("TestAsynchronous", names.poll());
         assertEquals(null, names.poll());
 
@@ -350,7 +351,7 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(Long.valueOf(4), bNames.stream().collect(lengthAverager));
 
-        assertEquals(Boolean.TRUE, personnel.setSurnameAsync("TestAsynchronously", 1002003008L).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Boolean.TRUE, personnel.setSurnameAsync(1002003008L, "TestAsynchronously").get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
 
         // Async delete with void return type
         personnel.deleteByFirstName("Andrew");
@@ -405,7 +406,7 @@ public class DataTestServlet extends FATServlet {
         tran.begin();
         try {
             // main thread obtains lock on p1
-            assertEquals(1L, personnel.setSurname("Test-AsyncPreventsDeadlock", p1.ssn));
+            assertEquals(1L, personnel.setSurname(p1.ssn, "Test-AsyncPreventsDeadlock"));
 
             CountDownLatch locked2 = new CountDownLatch(1);
 
@@ -415,12 +416,12 @@ public class DataTestServlet extends FATServlet {
                     tran.begin();
                     try {
                         // lock on p2
-                        long updateCount2 = personnel.setSurname("TestAsync-PreventsDeadlock", p2.ssn);
+                        long updateCount2 = personnel.setSurname(p2.ssn, "TestAsync-PreventsDeadlock");
 
                         locked2.countDown();
 
                         // lock on p1
-                        return updateCount2 + personnel.setSurname("TestAsync-PreventsDeadlock", p1.ssn);
+                        return updateCount2 + personnel.setSurname(p1.ssn, "TestAsync-PreventsDeadlock");
                     } finally {
                         tran.rollback();
                     }
@@ -433,7 +434,7 @@ public class DataTestServlet extends FATServlet {
 
             // If this runs on a third thread as expected, it will be blocked until the second thread releases the lock.
             // If it runs inline (unexpected) deadlock will occur.
-            updated2 = personnel.setSurnameAsync("TestAsyncPrevents-Deadlock", p2.ssn);
+            updated2 = personnel.setSurnameAsync(p2.ssn, "TestAsyncPrevents-Deadlock");
 
             try {
                 Boolean wasUpdated = updated2.get(1, TimeUnit.SECONDS);
@@ -512,7 +513,7 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Count the number of matching elements in the database.
+     * Count the number of matching entries in the database using query by method name.
      */
     @Test
     public void testCount() throws ExecutionException, InterruptedException, TimeoutException {
@@ -524,6 +525,20 @@ public class DataTestServlet extends FATServlet {
         assertEquals(Integer.valueOf(3), primes.countNumberBetween(40, 50));
 
         assertEquals(Short.valueOf((short) 14), primes.countByNumberBetweenAndEvenNot(0, 50, true).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+    }
+
+    /**
+     * Count the number of matching entries in the database using annotatively defined queries.
+     */
+    @Test
+    public void testCountAnnotation() throws ExecutionException, InterruptedException, TimeoutException {
+
+        assertEquals(6, primes.howManyIn(17L, 37L));
+        assertEquals(0, primes.howManyIn(24L, 28L));
+
+        assertEquals(Long.valueOf(5), primes.howManyLessThan20StartingAfter(5));
+        assertEquals(Long.valueOf(0), primes.howManyLessThan20StartingAfter(19));
+        assertEquals(Long.valueOf(0), primes.howManyLessThan20StartingAfter(21));
     }
 
     /**
@@ -725,7 +740,7 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Identify whether elements exist in the database.
+     * Identify whether elements exist in the database using query by method name.
      */
     @Test
     public void testExists() {
@@ -734,6 +749,28 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(Boolean.TRUE, primes.existsNumberBetween(Long.valueOf(14), Long.valueOf(18)));
         assertEquals(Boolean.FALSE, primes.existsNumberBetween(Long.valueOf(24), Long.valueOf(28)));
+    }
+
+    /**
+     * Identify whether elements exist in the database using an annotatively defined query.
+     */
+    @Test
+    public void testExistsAnnotation() {
+        assertEquals(true, primes.anyLessThanEndingWithBitPattern(25L, "1101"));
+        assertEquals(false, primes.anyLessThanEndingWithBitPattern(25L, "1111"));
+        assertEquals(false, primes.anyLessThanEndingWithBitPattern(12L, "1101"));
+    }
+
+    /**
+     * Define a query with Filter annotations.
+     */
+    @Test
+    public void testFilterAnnotation() {
+        assertIterableEquals(List.of(37L, 17L, 7L, 5L), // 11 has no V in the roman numeral and 47 is too big
+                             primes.inRangeHavingVNumeralAndSubstringOfName(5L, 45L, "ve"));
+
+        assertIterableEquals(List.of(),
+                             primes.inRangeHavingVNumeralAndSubstringOfName(1L, 18L, "nine"));
     }
 
     /**
@@ -2334,7 +2371,7 @@ public class DataTestServlet extends FATServlet {
         s5.status = "PREPARING";
         shipments.save(s5);
 
-        assertEquals(true, shipments.dispatch(2, "44.036217, -92.488040"));
+        assertEquals(true, shipments.dispatch(2, "44.036217, -92.488040", OffsetDateTime.now()));
         assertEquals("IN_TRANSIT", shipments.getStatus(2));
 
         // @OrderBy "destination"
@@ -2358,9 +2395,9 @@ public class DataTestServlet extends FATServlet {
         s = shipments.find(3);
         assertEquals("44.029468, -92.483191", s.location);
 
-        assertEquals(true, shipments.cancel(4));
-        assertEquals(true, shipments.cancel(5));
-        assertEquals(false, shipments.cancel(10));
+        assertEquals(true, shipments.cancel(4, OffsetDateTime.now()));
+        assertEquals(true, shipments.cancel(5, OffsetDateTime.now()));
+        assertEquals(false, shipments.cancel(10, OffsetDateTime.now()));
 
         shipments.trim();
         s = shipments.find(4);
@@ -3036,7 +3073,7 @@ public class DataTestServlet extends FATServlet {
 
         // "Like" is used as a reserved keyword here.
         assertIterableEquals(List.of("A101"),
-                             things.findByALike("A%")
+                             things.findByALike("A1%") // include second character so that databases that compare independent of case don't match "apple"
                                              .map(o -> o.a)
                                              .collect(Collectors.toList()));
 

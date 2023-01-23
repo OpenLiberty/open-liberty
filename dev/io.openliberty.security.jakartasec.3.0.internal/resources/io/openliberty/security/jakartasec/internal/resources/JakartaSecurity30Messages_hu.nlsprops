@@ -1,11 +1,9 @@
 ###############################################################################
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -44,3 +42,7 @@ CREDENTIAL_VALIDATION_ERROR.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9r
 JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS=CWWKS2505W: Az \u00e1ll\u00edt\u00e1sok JSON objektuma az OpenIdContext komponensben nem adhatja hozz\u00e1 az alany \u00e9rt\u00e9k\u00e9t a(z) {0} \u00fcgyf\u00e9lhez, mert az alany \u00e9rt\u00e9ke hi\u00e1nyzik az OpenIdClaims objektumb\u00f3l. 
 JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS.explanation=Az OpenIdContext komponens OpenIdClaims objektum\u00e1b\u00f3l hi\u00e1nyzik a k\u00f6telez\u0151 alany \u00e9rt\u00e9k. Ez\u00e9rt az \u00e1ll\u00edt\u00e1s JSON objektum alany\u00e1nak \u00e9rt\u00e9ke nem \u00e1ll\u00edthat\u00f3 be.  
 JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS.useraction=Keressen kor\u00e1bbi, OpenID hiteles\u00edt\u00e9shez kapcsol\u00f3d\u00f3 hib\u00e1kat a napl\u00f3k \u00e1ttekint\u00e9s\u00e9vel.
+
+JAKARTASEC_CLAIMS_PROCESSING_ERROR=CWWKS2506E: Az OpenID Connect \u00fcgyf\u00e9l {0} Claims kulcs\u00e9rt\u00e9ke helytelen. Az \u00e9rt\u00e9k {1} \u00e9s a v\u00e1rt t\u00edpus: {2}. A hiba: {3}.
+JAKARTASEC_CLAIMS_PROCESSING_ERROR.explanation=Az OpenID Connect \u00fcgyf\u00e9l hib\u00e1ba \u00fctk\u00f6z\u00f6tt az OpenID Claims objektum elv\u00e1rt t\u00edpus\u00e1nak ellen\u0151rz\u00e9se sor\u00e1n. Gyakori hiba, hogy a visszaadott \u00e9rt\u00e9k t\u00e9nyleges t\u00edpusa nem egyezik a v\u00e1rt t\u00edpussal.
+JAKARTASEC_CLAIMS_PROCESSING_ERROR.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben szerepl\u0151 hib\u00e1t.

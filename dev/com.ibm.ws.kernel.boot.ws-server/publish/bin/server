@@ -1379,11 +1379,16 @@ criuRestore()
     CRIU_EXTRA_ARGS="--unprivileged $CRIU_EXTRA_ARGS"
   fi
 
+  if [ -z "${CRIU_RESTORE_PATH}" ]; then
+    # default to using the criu available on the PATH
+    CRIU_RESTORE_PATH=criu
+  fi
+
   if $BACKGROUND_RESTORE
   then
     mkdirs "${X_PID_DIR}"
     rmIfExist "${X_PID_FILE}"
-    criu restore --skip-file-rwx-check --cpu-cap=none --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
+    $CRIU_RESTORE_PATH restore --skip-file-rwx-check --cpu-cap=none --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
       --shell-job --verbosity=${CRIU_LOG_LEVEL} --log-file ${X_LOG_DIR}/checkpoint/restore.log ${CRIU_EXTRA_ARGS} \
       --pidfile ${X_PID_FILE} \
       --restore-detached
@@ -1412,7 +1417,7 @@ criuRestore()
     trap "exit" INT TERM
     trap "killSilent $TAIL_PID" EXIT
 
-    criu restore --skip-file-rwx-check --cpu-cap=none --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
+    $CRIU_RESTORE_PATH restore --skip-file-rwx-check --cpu-cap=none --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
       --shell-job --verbosity=${CRIU_LOG_LEVEL} --log-file ${X_LOG_DIR}/checkpoint/restore.log ${CRIU_EXTRA_ARGS}
     rc=$?
 
