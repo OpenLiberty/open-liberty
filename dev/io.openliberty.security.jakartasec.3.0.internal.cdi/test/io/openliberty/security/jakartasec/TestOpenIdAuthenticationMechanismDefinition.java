@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -59,6 +59,7 @@ public class TestOpenIdAuthenticationMechanismDefinition {
     public static final String[] SCOPE_DEFAULT = new String[] { OpenIdConstant.OPENID_SCOPE,
                                                                 OpenIdConstant.EMAIL_SCOPE,
                                                                 OpenIdConstant.PROFILE_SCOPE };
+    private static final String PROVIDER_METADATA = "providerMetadata";
 
     public static OpenIdAuthenticationMechanismDefinition getInstanceofAnnotation(final Map<String, Object> overrides) {
         OpenIdAuthenticationMechanismDefinition annotation = new OpenIdAuthenticationMechanismDefinition() {
@@ -75,8 +76,8 @@ public class TestOpenIdAuthenticationMechanismDefinition {
 
             @Override
             public OpenIdProviderMetadata providerMetadata() {
-                // TODO Auto-generated method stub
-                return null;
+                return (overrides != null
+                        && overrides.containsKey(PROVIDER_METADATA)) ? TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation((Map<String, Object>) overrides.get(PROVIDER_METADATA)) : TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(null);
             }
 
             @Override
