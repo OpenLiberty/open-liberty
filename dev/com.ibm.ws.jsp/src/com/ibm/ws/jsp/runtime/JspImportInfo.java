@@ -20,4 +20,6 @@ public interface JspImportInfo {
 
     List<String> getImportPackageList();
 
+    List<String> getImportStaticList();
+
 }

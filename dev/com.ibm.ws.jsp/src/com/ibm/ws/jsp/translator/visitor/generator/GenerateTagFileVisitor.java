@@ -250,6 +250,7 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
             writer.println();
             writer.println("private static java.util.List<String> importPackageList = new java.util.ArrayList<String>();");
             writer.println("private static java.util.List<String> importClassList = new java.util.ArrayList<String>();");
+            writer.println("private static java.util.List<String> importStaticList = new java.util.ArrayList<String>();");
             writer.println();
         }
     }

@@ -221,6 +221,10 @@ public class GenerateJspVisitor extends GenerateVisitor {
         writer.println("public java.util.List<String> getImportPackageList() {");
         writer.println("return importPackageList;");
         writer.println("}");
+        writer.println();
+        writer.println("public java.util.List<String> getImportStaticList() {");
+        writer.println("return importStaticList;");
+        writer.println("}");
     }
 
     protected void generateImportSection(ValidateJspResult validatorResult) {
@@ -304,6 +308,7 @@ public class GenerateJspVisitor extends GenerateVisitor {
             writer.println();
             writer.println("private static java.util.List<String> importPackageList = new java.util.ArrayList<String>();");
             writer.println("private static java.util.List<String> importClassList = new java.util.ArrayList<String>();");
+            writer.println("private static java.util.List<String> importStaticList = new java.util.ArrayList<String>();");
             writer.println();
             
             // Cannot place this in the ImportGenerator since that is only run when the import directive is included in the page
