@@ -350,9 +350,9 @@ org.apache.httpcomponents:httpcore:4.1.2
 org.apache.httpcomponents:httpcore:4.4.13
 org.apache.httpcomponents:httpmime:4.1.2
 org.apache.httpcomponents:httpmime:4.3.1
-org.apache.james:apache-mime4j-core:0.8.6
-org.apache.james:apache-mime4j-dom:0.8.6
-org.apache.james:apache-mime4j-storage:0.8.6
+org.apache.james:apache-mime4j-core:0.8.9
+org.apache.james:apache-mime4j-dom:0.8.9
+org.apache.james:apache-mime4j-storage:0.8.9
 org.apache.johnzon:johnzon-core:1.1.5
 org.apache.johnzon:johnzon-core:1.1.8
 org.apache.johnzon:johnzon-core:1.2.18
