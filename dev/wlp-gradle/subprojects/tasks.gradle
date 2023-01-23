@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -266,9 +266,7 @@ if (bnd.get('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd.get('pub
     options.memberLevel = 'PUBLIC'
     options.noIndex true
     options.use true
-    if (JavaVersion.current().isJava8Compatible()) {
-      options.addStringOption('Xdoclint:none', '-quiet')
-    }
+    options.addBooleanOption('Xdoclint:none', true)
   }
 
   task zipJavadoc(type: Zip) {
