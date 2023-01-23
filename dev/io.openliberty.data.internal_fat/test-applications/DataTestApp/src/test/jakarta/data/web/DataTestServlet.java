@@ -3035,6 +3035,42 @@ public class DataTestServlet extends FATServlet {
         assertEquals(13.8f, p.width, 0.01f);
         assertEquals(19.5f, p.height, 0.01f);
 
+        // divide width and append to description via query by method name
+        assertEquals(true, packages.updateByIdDivideWidthAddDescription(990003, 2, " halved"));
+
+        p = packages.findById(990003).orElseThrow();
+        assertEquals(11.4f, p.length, 0.01f);
+        assertEquals(11.3f, p.width, 0.01f);
+        assertEquals(10.2f, p.height, 0.01f);
+        assertEquals("Tissue box halved", p.description);
+
+        // divide height and append to description via annotatively defined method with positional parameters
+        assertEquals(1, packages.reduceBy(990003, 1.02f, " and slightly shortened"));
+
+        p = packages.findById(990003).orElseThrow();
+        assertEquals(11.4f, p.length, 0.01f);
+        assertEquals(11.3f, p.width, 0.01f);
+        assertEquals(10.0f, p.height, 0.01f);
+        assertEquals("Tissue box halved and slightly shortened", p.description);
+
+        // subtract from height and append to description via annotatively defined method with fixed values
+        assertEquals(true, packages.shorten(990003));
+
+        p = packages.findById(990003).orElseThrow();
+        assertEquals(11.4f, p.length, 0.01f);
+        assertEquals(11.3f, p.width, 0.01f);
+        assertEquals(9.0f, p.height, 0.01f);
+        assertEquals("Tissue box halved and slightly shortened and shortened 1 cm", p.description);
+
+        // subtract from height and append to description via annotatively defined method with named parameters
+        packages.shortenBy(2, " and shortened 2 cm", 990003);
+
+        p = packages.findById(990003).orElseThrow();
+        assertEquals(11.4f, p.length, 0.01f);
+        assertEquals(11.3f, p.width, 0.01f);
+        assertEquals(7.0f, p.height, 0.01f);
+        assertEquals("Tissue box halved and slightly shortened and shortened 1 cm and shortened 2 cm", p.description);
+
         packages.delete(p3);
 
         Page<Package> page = packages.findAll(Pageable.ofSize(3).sortBy(Sort.desc("id")));

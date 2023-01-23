@@ -621,7 +621,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         else
             attributeExpr.append("o.").append(name);
 
-        boolean isCollection = queryInfo.entityInfo.collectionAttributeNames.contains(name);
+        boolean isCollection = Collection.class.equals(queryInfo.entityInfo.attributeTypes.get(name));
         if (isCollection)
             condition.verifyCollectionsSupported(name, ignoreCase);
 
@@ -977,18 +977,18 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
         for (int u = uFirst; u > 0;) {
             boolean first = u == uFirst;
-            String op;
+            char op;
             if (u == set) {
-                op = null;
+                op = '=';
                 set = methodName.indexOf("Set", u += 3);
             } else if (u == add) {
-                op = "+";
+                op = '+';
                 add = methodName.indexOf("Add", u += 3);
             } else if (u == div) {
-                op = "/";
+                op = '/';
                 div = methodName.indexOf("Divide", u += 6);
             } else if (u == mul) {
-                op = "*";
+                op = '*';
                 mul = methodName.indexOf("Multiply", u += 8);
             } else {
                 throw new IllegalStateException(methodName); // internal error
@@ -1008,9 +1008,20 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             String name = queryInfo.entityInfo.getAttributeName(attribute);
             q.append(first ? " o." : ", o.").append(name).append("=");
 
-            if (op != null)
-                q.append("o.").append(name).append(op);
-            q.append('?').append(++queryInfo.paramCount);
+            switch (op) {
+                case '+':
+                    if (CharSequence.class.isAssignableFrom(queryInfo.entityInfo.attributeTypes.get(name))) {
+                        q.append("CONCAT(").append("o.").append(name).append(',').append('?').append(++queryInfo.paramCount).append(')');
+                        break;
+                    }
+                    // else fall through
+                case '*':
+                case '/':
+                    q.append("o.").append(name).append(op);
+                    // fall through
+                case '=':
+                    q.append('?').append(++queryInfo.paramCount);
+            }
 
             u = next == Integer.MAX_VALUE ? -1 : next;
         }
@@ -1036,25 +1047,28 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
             q.append(first ? " o." : ", o.").append(name).append("=");
 
+            boolean withFunction = false;
             Operation op = update.op();
-            if (op != Operation.Assign) {
-                q.append("o.").append(name);
-                switch (op) {
-                    case Add:
-                        q.append('+');
-                        break;
-                    case Multiply:
-                        q.append('*');
-                        break;
-                    case Subtract:
-                        q.append('-');
-                        break;
-                    case Divide:
-                        q.append('/');
-                        break;
-                    default:
-                        throw new UnsupportedOperationException(op.name());
-                }
+            switch (op) {
+                case Assign:
+                    break;
+                case Add:
+                    if (withFunction = CharSequence.class.isAssignableFrom(queryInfo.entityInfo.attributeTypes.get(name)))
+                        q.append("CONCAT(").append("o.").append(name).append(',');
+                    else
+                        q.append("o.").append(name).append('+');
+                    break;
+                case Multiply:
+                    q.append("o.").append(name).append('*');
+                    break;
+                case Subtract:
+                    q.append("o.").append(name).append('-');
+                    break;
+                case Divide:
+                    q.append("o.").append(name).append('/');
+                    break;
+                default:
+                    throw new UnsupportedOperationException(op.name());
             }
 
             String param = update.param();
@@ -1086,6 +1100,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     queryInfo.paramCount = 0;
                 q.append('?').append(++queryInfo.paramCount);
             }
+
+            if (withFunction)
+                q.append(')');
 
             first = false;
         }
@@ -1154,7 +1171,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             else
                 attributeExpr.append("o.").append(name);
 
-            boolean isCollection = queryInfo.entityInfo.collectionAttributeNames.contains(name);
+            boolean isCollection = Collection.class.equals(queryInfo.entityInfo.attributeTypes.get(name));
             if (isCollection)
                 verifyCollectionsSupported(name, ignoreCase, condition);
 

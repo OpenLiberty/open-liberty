@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,13 +19,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -246,8 +244,8 @@ class EntityDefiner implements Runnable {
             for (EntityType<?> entityType : model.getEntities()) {
                 entityType.getName();//TODO
                 LinkedHashMap<String, String> attributeNames = new LinkedHashMap<>();
-                Set<String> collectionAttributeNames = new HashSet<String>();
                 HashMap<String, List<Member>> attributeAccessors = new HashMap<>();
+                HashMap<String, Class<?>> attributeTypes = new HashMap<>();
                 Queue<Attribute<?, ?>> embeddables = new LinkedList<>();
                 Queue<String> embeddablePrefixes = new LinkedList<>();
                 Queue<List<Member>> embeddableAccessors = new LinkedList<>();
@@ -264,8 +262,9 @@ class EntityDefiner implements Runnable {
                         if (attr instanceof SingularAttribute && ((SingularAttribute<?, ?>) attr).isId())
                             attributeNames.put("ID", attributeName);
                         attributeAccessors.put(attributeName, Collections.singletonList(attr.getJavaMember()));
-                        if (PersistentAttributeType.ELEMENT_COLLECTION.equals(attributeType))
-                            collectionAttributeNames.add(attributeName);
+                        attributeTypes.put(attributeName, PersistentAttributeType.ELEMENT_COLLECTION.equals(attributeType) //
+                                        ? Collection.class //
+                                        : attr.getJavaType());
                     }
                 }
 
@@ -305,8 +304,9 @@ class EntityDefiner implements Runnable {
                                 attributeNames.put("ID", fullAttributeName);
 
                             attributeAccessors.put(fullAttributeName, embAccessors);
-                            if (PersistentAttributeType.ELEMENT_COLLECTION.equals(attributeType))
-                                collectionAttributeNames.add(fullAttributeName);
+                            attributeTypes.put(fullAttributeName, PersistentAttributeType.ELEMENT_COLLECTION.equals(attributeType) //
+                                            ? Collection.class //
+                                            : embAttr.getJavaType());
                         }
                     }
                 }
@@ -327,7 +327,7 @@ class EntityDefiner implements Runnable {
                                 entityClass, //
                                 attributeAccessors, //
                                 attributeNames, //
-                                collectionAttributeNames, //
+                                attributeTypes, //
                                 punit);
 
                 provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).complete(entityInfo);
