@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.metrics50.internal;
+package io.openliberty.microprofile.metrics50;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -25,6 +25,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.microprofile.metrics50.helper.Util;
+import io.openliberty.microprofile.metrics50.internal.SmallryeMetricsCDIMetadata;
 import io.openliberty.smallrye.metrics.adapters.SRMetricRegistryAdapter;
 import io.openliberty.smallrye.metrics.adapters.SRSharedMetricRegistriesAdapter;
 
