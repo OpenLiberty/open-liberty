@@ -33,7 +33,7 @@ public class PostProcessBNDPom {
 
     private static String jarPath;
     private static String pomEntryPath;
-    private static List<String> filteredGroups = Arrays.asList("org.springframework", "org.springframework.boot");
+    private static List<String> filteredGroups = Arrays.asList("org.springframework", "org.springframework.boot", "com.ibm.ws.common.encoder");
 
     /**
      * @param args
@@ -95,7 +95,7 @@ public class PostProcessBNDPom {
         List<Dependency> deps = pom.getDependencies();
         for (Iterator iterator = deps.iterator(); iterator.hasNext();) {
             Dependency dependency = (Dependency) iterator.next();
-            if ((dependency.getGroupId().equals("dev")) || (filteredGroups.contains(dependency.getGroupId())))
+            if (dependency.getGroupId().equals("dev") || dependency.getGroupId().equals("test") || (filteredGroups.contains(dependency.getGroupId())))
                 iterator.remove();
         }
 
