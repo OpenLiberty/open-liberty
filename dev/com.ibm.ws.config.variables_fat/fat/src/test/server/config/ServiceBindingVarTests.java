@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -373,13 +373,14 @@ public class ServiceBindingVarTests extends ServletRunner {
             test(mbeanServer);
 
             // Enable mbean again, delete a file and update
-            mbeanServer.deleteFileFromLibertyServerRoot("variables/simple");
 
             mbeanServer.setMarkToEndOfLog();
             serverConfig = mbeanServer.getServerConfiguration();
             serverConfig.getConfig().setUpdateTrigger("mbean");
             mbeanServer.updateServerConfiguration(serverConfig);
             mbeanServer.waitForConfigUpdateInLogUsingMark(Collections.<String> emptySet());
+
+            mbeanServer.deleteFileFromLibertyServerRoot("variables/simple");
 
             params = new Object[] { null, null, Collections.singletonList("variables/simple") };
             mbeanConn.invoke(fileMonitorMBeanName, "notifyFileChanges", params, MBEAN_METHOD_SIGNATURE);

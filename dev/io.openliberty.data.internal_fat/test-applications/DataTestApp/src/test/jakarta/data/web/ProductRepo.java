@@ -15,7 +15,12 @@ package test.jakarta.data.web;
 import java.util.List;
 import java.util.Set;
 
+import jakarta.data.repository.Compare;
+import jakarta.data.repository.Count;
+import jakarta.data.repository.Delete;
+import jakarta.data.repository.Exists;
 import jakarta.data.repository.Filter;
+import jakarta.data.repository.Operation;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
@@ -29,6 +34,9 @@ import jakarta.data.repository.Update;
  */
 @Repository
 public interface ProductRepo {
+    @Delete
+    void clear();
+
     @Query("DELETE FROM Product o WHERE o.id IN ?1")
     int discontinueProducts(Set<String> ids);
 
@@ -43,6 +51,18 @@ public interface ProductRepo {
 
     @Select(function = Aggregate.MAXIMUM, value = "price")
     float highestPrice();
+
+    @Update(attr = "price", op = Operation.Multiply)
+    @Update(attr = "version", op = Operation.Add, value = "1")
+    long inflateAllPrices(float rateOfIncrease);
+
+    @Filter(by = "name", op = Compare.Contains)
+    @Update(attr = "price", op = Operation.Multiply)
+    @Update(attr = "version", op = Operation.Add, value = "1")
+    long inflatePrices(String nameContains, float rateOfIncrease);
+
+    @Exists
+    boolean isNotEmpty();
 
     @Select(function = Aggregate.MINIMUM, value = "price")
     float lowestPrice();
@@ -63,6 +83,14 @@ public interface ProductRepo {
     @Select(function = Aggregate.COUNT, distinct = false, value = { "name", "description", "price" })
     ProductCount stats();
 
+    @Count
+    int total();
+
     @Select(function = Aggregate.SUM, distinct = true, value = "price")
     float totalOfDistinctPrices();
+
+    @Filter(by = "id", op = Compare.In)
+    @Update(attr = "price", op = Operation.Divide)
+    @Update(attr = "version", op = Operation.Subtract, value = "1")
+    long undoPriceIncrease(Iterable<String> productIds, float divisor);
 }

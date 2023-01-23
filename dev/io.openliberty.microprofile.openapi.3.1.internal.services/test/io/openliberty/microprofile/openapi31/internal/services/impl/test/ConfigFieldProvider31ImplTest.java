@@ -36,6 +36,7 @@ public class ConfigFieldProvider31ImplTest {
                                                                              "operationServers",
                                                                              "patternOf",
                                                                              "asCsvSet",
+                                                                             "asCsvList",
                                                                              "doAllowNakedPathParameter");
 
     /**

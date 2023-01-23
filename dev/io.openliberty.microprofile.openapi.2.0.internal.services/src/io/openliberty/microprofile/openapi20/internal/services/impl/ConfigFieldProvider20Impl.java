@@ -108,4 +108,14 @@ public class ConfigFieldProvider20Impl implements ConfigFieldProvider {
         return Arrays.asList(ConfigField20.values());
     }
 
+    @Override
+    public String getPathServers(OpenApiConfig config, String path) {
+        return ConfigField.serializeSet(config.pathServers(path));
+    }
+
+    @Override
+    public String getOperationServers(OpenApiConfig config, String operationId) {
+        return ConfigField.serializeSet(config.operationServers(operationId));
+    }
+
 }

@@ -20,7 +20,6 @@ import jakarta.data.repository.Delete;
 import jakarta.data.repository.Filter;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
-import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Select;
 import jakarta.data.repository.Update;
@@ -67,10 +66,6 @@ public interface Shipments {
     int removeEverything();
 
     void save(Shipment s);
-
-    // TODO @Update on its own instead of this
-    @Query("UPDATE Shipment o SET o.location = TRIM(o.location)")
-    void trim();
 
     @Filter(by = "id")
     @Filter(by = "location")

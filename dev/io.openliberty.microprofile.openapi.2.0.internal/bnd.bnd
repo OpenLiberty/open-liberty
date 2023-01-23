@@ -28,6 +28,7 @@ Import-Package: \
     io.openliberty.microprofile.openapi.internal.resources.validation,\
     javax.xml.bind.annotation;version=!,\
     io.smallrye.openapi.*;version="[2.0,4.0)",\
+    org.jboss.jandex;version="[2.4,4)",\
     *
 
 Export-Package: \
