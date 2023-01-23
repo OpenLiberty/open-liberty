@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.oauth20.util;
 
@@ -90,6 +87,7 @@ public interface OIDCConstants extends OAuth20Constants {
     public static final String OIDC_LOGOUT_AUTO_LOGOUT = "autoLogout";
     public static final String OIDC_LOGOUT_ID_TOKEN_HINT = OIDC_AUTHZ_PARAM_ID_TOKEN_HINT;
     public static final String OIDC_LOGOUT_REDIRECT_URI = "post_logout_redirect_uri";
+    public static final String OIDC_LOGOUT_CLIENT_ID = "client_id";
 
     /* parameters for oidc discovery response */
     public static final String OIDC_DISC_ISSUER = "issuer";
