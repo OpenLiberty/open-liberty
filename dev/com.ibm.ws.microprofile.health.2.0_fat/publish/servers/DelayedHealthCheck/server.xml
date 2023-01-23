@@ -13,5 +13,10 @@
 	<logging traceSpecification="*=info:HEALTH=all:logservice=all=enabled:com.ibm.websphere.org.eclipse.microprofile.health.2.0.*=all=enabled"/>
 
 	<application location="DelayedHealthCheckApp.war"/>
-    <webContainer deferServletLoad="false"/> 
+    <webContainer deferServletLoad="false"/>
+    
+    <httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="${bvt.prop.HTTP_default}" httpsPort="${bvt.prop.HTTP_default.secure}">
+        <tcpOptions portOpenRetries="60" />                   
+    </httpEndpoint>
+     
 </server>
