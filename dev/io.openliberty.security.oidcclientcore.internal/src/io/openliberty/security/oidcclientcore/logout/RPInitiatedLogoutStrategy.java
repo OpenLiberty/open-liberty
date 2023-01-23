@@ -55,12 +55,16 @@ public class RPInitiatedLogoutStrategy {
         if (logoutConfig != null) {
             queryString = appendParameter(queryString, JakartaOIDCConstants.POST_LOGOUT_REDIRECT_URI, logoutConfig.getRedirectURI());
         }
-        queryString = appendParameter(queryString, JakartaOIDCConstants.ID_TOKEN_HINT, idTokenString);
+        // Will look at including the ID token hint later
+//        queryString = appendParameter(queryString, JakartaOIDCConstants.ID_TOKEN_HINT, idTokenString);
+
         String endSessionUrlWithQueryParams = endSessionEndPoint;
-        if (!endSessionEndPoint.contains("?")) {
-            endSessionUrlWithQueryParams += "?";
-        } else {
-            endSessionUrlWithQueryParams += "&";
+        if (!queryString.isEmpty()) {
+            if (!endSessionEndPoint.contains("?")) {
+                endSessionUrlWithQueryParams += "?";
+            } else {
+                endSessionUrlWithQueryParams += "&";
+            }
         }
         endSessionUrlWithQueryParams += queryString;
         return endSessionUrlWithQueryParams;

@@ -99,7 +99,7 @@ public class RPInitiatedLogoutStrategyTest extends CommonTestClass {
         });
         logoutStrategy = new RPInitiatedLogoutStrategy(oidcClientConfig, END_SESSION_ENDPOINT, ID_TOKEN_STRING);
 
-        String expectedResult = END_SESSION_ENDPOINT + "?client_id=" + CLIENT_ID + "&" + JakartaOIDCConstants.ID_TOKEN_HINT + "=" + URLEncoder.encode(ID_TOKEN_STRING, "UTF-8");
+        String expectedResult = END_SESSION_ENDPOINT + "?client_id=" + CLIENT_ID;
 
         String result = logoutStrategy.buildEndSessionUrl();
         assertEquals("End session URL did not match expected value.", expectedResult, result);
@@ -116,7 +116,7 @@ public class RPInitiatedLogoutStrategyTest extends CommonTestClass {
             }
         });
 
-        String expectedResult = END_SESSION_ENDPOINT + "?client_id=" + CLIENT_ID + "&" + JakartaOIDCConstants.ID_TOKEN_HINT + "=" + URLEncoder.encode(ID_TOKEN_STRING, "UTF-8");
+        String expectedResult = END_SESSION_ENDPOINT + "?client_id=" + CLIENT_ID;
 
         String result = logoutStrategy.buildEndSessionUrl();
         assertEquals("End session URL did not match expected value.", expectedResult, result);
@@ -134,8 +134,7 @@ public class RPInitiatedLogoutStrategyTest extends CommonTestClass {
         });
 
         String expectedResult = END_SESSION_ENDPOINT + "?client_id=" + CLIENT_ID + "&" + JakartaOIDCConstants.POST_LOGOUT_REDIRECT_URI + "="
-                                + URLEncoder.encode(POST_LOGOUT_REDIRECT_URI, "UTF-8") + "&" + JakartaOIDCConstants.ID_TOKEN_HINT + "="
-                                + URLEncoder.encode(ID_TOKEN_STRING, "UTF-8");
+                                + URLEncoder.encode(POST_LOGOUT_REDIRECT_URI, "UTF-8");
 
         String result = logoutStrategy.buildEndSessionUrl();
         assertEquals("End session URL did not match expected value.", expectedResult, result);

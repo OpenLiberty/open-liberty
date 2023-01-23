@@ -21,7 +21,6 @@ import com.ibm.ws.security.test.common.CommonTestClass;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.ProviderAuthenticationResult;
 
-import io.openliberty.security.oidcclientcore.JakartaOIDCConstants;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 import test.common.SharedOutputManager;
 
@@ -60,7 +59,7 @@ public class LogoutTests extends CommonTestClass {
                    result.getStatus().equals(AuthResult.REDIRECT_TO_PROVIDER));
         assertEquals("HTTP status code did not match expected value.", 200, result.getHttpStatusCode());
 
-        String expectedRedirectUrl = endSessionEndpoint + "?" + JakartaOIDCConstants.ID_TOKEN_HINT + "=" + idToken;
+        String expectedRedirectUrl = endSessionEndpoint;
         assertEquals("Redirect URL did not match expected value.", expectedRedirectUrl, result.getRedirectUrl());
     }
 
