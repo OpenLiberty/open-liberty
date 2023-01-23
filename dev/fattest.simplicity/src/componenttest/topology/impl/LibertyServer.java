@@ -1857,7 +1857,7 @@ public class LibertyServer implements LogMonitorClient {
      * @return
      */
     private boolean doCheckpoint() {
-        return (checkpointInfo != null) && getCheckpointSupported();
+        return (checkpointInfo != null);
     }
 
     /**
