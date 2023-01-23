@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,7 +14,6 @@ package componenttest.topology.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -1817,11 +1816,6 @@ public class LibertyServer implements LogMonitorClient {
             throw fail;
         }
         assertCheckpointDirAsExpected();
-        //server is stopped at this point so no delay on following log searches
-        if (checkpointInfo.checkpointPhase == CheckpointPhase.FEATURES) {
-            assertNull("'CWWKZ0018I: Starting application...' message found taking FEATURES checkpoint.",
-                       waitForStringInLogUsingMark("CWWKZ0018I:", 0));
-        }
         assertNotNull("'CWWKC0451I: A server checkpoint was requested...' message not found in log.",
                       waitForStringInLogUsingMark("CWWKC0451I:", 0));
     }
@@ -1856,7 +1850,7 @@ public class LibertyServer implements LogMonitorClient {
                    workareaCheckpoint.list(false).length > 1 /* a somewhat arbitrary min count */);
         RemoteFile imgDir = new RemoteFile(machine, cpDir, "image");
         assertTrue("checkpoint image dir has no files",
-                   workareaCheckpoint.list(false).length > 2 /* a somewhat arbitrary min count */);
+                   imgDir.list(false).length > 2 /* a somewhat arbitrary min count */);
     }
 
     /**

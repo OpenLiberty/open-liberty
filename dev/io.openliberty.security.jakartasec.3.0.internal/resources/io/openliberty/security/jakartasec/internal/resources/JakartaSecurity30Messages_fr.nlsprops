@@ -1,11 +1,9 @@
 ###############################################################################
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -44,3 +42,7 @@ CREDENTIAL_VALIDATION_ERROR.useraction=Pour plus d'informations, voir l'erreur d
 JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS=CWWKS2505W: L''objet JSON claims dans le bean OpenIdContext ne peut pas ajouter la valeur de sujet pour le client {0} car celle-ci est manquante dans l''objet OpenIdClaims. 
 JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS.explanation=L'objet OpenIdClaims dans le bean OpenIdContext ne contient pas la valeur de sujet requise. Par cons\u00e9quent, la valeur de sujet de l'objet JSON claims ne peut pas \u00eatre d\u00e9finie.  
 JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS.useraction=Recherchez dans les journaux des erreurs ant\u00e9rieures li\u00e9es \u00e0 l'authentification OpenID.
+
+JAKARTASEC_CLAIMS_PROCESSING_ERROR=CWWKS2506E: La valeur de la cl\u00e9 Claims du client OpenID Connect {0} est incorrecte. La valeur est {1} et le type attendu est {2}. Erreur : {3}.
+JAKARTASEC_CLAIMS_PROCESSING_ERROR.explanation=Le client OpenID Connect a rencontr\u00e9 une erreur en v\u00e9rifiant le type des zones dans l'objet OpenID Claims. Une erreur fr\u00e9quente est que le type r\u00e9el de la valeur renvoy\u00e9e ne correspond pas au type attendu.
+JAKARTASEC_CLAIMS_PROCESSING_ERROR.useraction=Pour plus d'informations, voir l'erreur dans le message.

@@ -1,5 +1,5 @@
 Begin NOTICES AND INFORMATION FOR Open Liberty @LIBERTY_VERSION@
-Copyright 1999-2022 IBM Corporation and others
+Copyright 2022-2023 IBM Corporation and others
 This product includes software developed at
 The Open Liberty @LIBERTY_VERSION@ Project (https://openliberty.io/).
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -11,7 +11,7 @@ CDDL V1
 CPL  
 EPL V2  
 LGPL V2.1 
-MIT  
+MIT
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -68,6 +68,20 @@ JBOSS.RESTEASY.VALIDATOR.PROVIDER.EE, APACHE.TAGLIBS.STANDARD,
 MICROPROFILE.MERTICS, MICROPROFILE.JWT, MICROPROFILE.TELEMETRY,
 SQUAREUP.OKHTTP, MICROPROFILE.LRA.COORDINATOR, JAVAX.VALIDATION
 VALIDATION-API-2.0.1.FINAL.JAR
+JAVAX.BATCH.RUNTIME, ORG.OSGI.SERVICE.COMPONENT, ZIPKIN2,
+JAVAX.ENTERPRISE.INJECT.SPI, MYFACES, CARBON-COMPONENTS,
+SMALLRYE.OPENAPI.JAXRS, ARIES.JMX.CORE.WHITEBOARD, JBOSS.LOGGING,
+KOTLIN-STDLIB, SMALLRYE.OPENAPI3.CORE, JAVAX.SERVLET.SIP,
+ORG.ECLIPSE.MICROPROFILE.METRICS, OPENTRACING, GRPC-JAVA, GUAVA-ANDROID,
+JODA.TIME, OKHTTP3, SMALLRYE CONFIG, ARIES.JMX.API, MONGODB,
+APACHE.SANTUARIO.XMLSEC, ORG.OSGI.SERVICE.HTTP, ORG.OSGI.SERVICE.CM,
+OSGI CORE, FASTERXML JACKSON, JBOSS.RESTEASY.CLIENT.JAXRS,
+APACHE.TAGLIBS.STANDARD, SMALLRYE.COMMON, WELD,
+ORG.ECLIPSE.MICROPROFILE.REACTIVE.MESSAGING, JAKARTA.BATCH,
+JAKARTA.ENTERPRISE.CONCURRENT,
+JBOSS.RESTEASY.PLUGINS.PROVIDERS.MULTIPART, ORG.JBOSS.WELD.CONTEXT,
+MONGO.SSL, SMALLRYE-GRAPHQL, JAVAX.ENTERPRISE.EVENT,
+MICROMETER-REGISTRY-PROMETHEUS, ORG.ECLIPSE.MICROPROFILE.OPENAPI.MODELS
 
 Apache License
 Version 2.0, January 2004
@@ -318,6 +332,25 @@ JAVAEE/ACTIVATION (https://github.com/javaee/activation), JAXB-TOOLS-XJC
 JSF (https://javaee.github.io/javaserverfaces-spec/), JAXWS
 (https://javaee.github.io/metro-jax-ws/), JVNET-MIMEPULL
 (https://mvnrepository.com/artifact/org.jvnet.mimepull/mimepull/1.9.7)
+JAVAX.INTERCEPTOR
+(https://repo1.maven.org/maven2/javax/interceptor/javax.interceptor-api/1.2/javax.interceptor-api-1.2-sources.jar),
+JAKARTA.ENTERPRISE.INJECT.SPI
+(https://repo1.maven.org/maven2/jakarta/enterprise/jakarta.enterprise.cdi-api/3.0.0/jakarta.enterprise.cdi-api-3.0.0-sources.jar),
+SAAJ (https://mvnrepository.com/artifact/com.sun.xml.messaging.saaj),
+JAVAX.XML.WS.SOAP
+(https://mvnrepository.com/artifact/javax.xml.ws/jaxws-api/2.2.3),
+JAVAX.TRANSACTION.XA
+(https://mvnrepository.com/artifact/javax.transaction), MAIL
+(https://jakarta.ee/specifications/mail/2.1/), JAVAX.FACES
+(https://jakarta.ee/specifications/faces/2.3/),
+JAKARTA.SERVLET.JSP.JSTL.CORE
+(https://repo1.maven.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl-api/2.0.0/jakarta.servlet.jsp.jstl-api-2.0.0-sources.jar),
+JAVAX.ENTERPRISE (https://mvnrepository.com/artifact/javax.enterprise),
+JAXWS-TOOLS
+(https://repo1.maven.org/maven2/com/sun/xml/ws/jaxws-tools/2.3.0/jaxws-tools-2.3.0-sources.jar),
+JAVAX.NAMING (https://mvnrepository.com/artifact/javax.naming),
+JAKARTA.ENTERPRISE.EVENT
+(https://github.com/jakartaee/cdi/tree/master/api/src/main/java/jakarta/enterprise/event)
 
 END OF COMMON DEVELOPMENT AND DISTRIBUTION V1 LICENSE NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -487,6 +520,53 @@ ECLIPSE.PERSISTENCE (not required), JAKARTA.MESSAGING
 (https://search.maven.org/artifact/io.openliberty.features/io.openliberty.jakarta.messaging-3.0/22.0.0.11/esa),
 JAKARTA-WEBSOCKET
 (https://mvnrepository.com/artifact/jakarta.websocket/jakarta.websocket-all/2.1.0)
+JAKARTA.PERSISTENCE.API
+(https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.1.0/jakarta.persistence-api-3.1.0-sources.jar),
+JAVAX.PERSISTENCE
+(https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api),
+JAKARTA.RESTFULWS (https://jakarta.ee/specifications/restful-ws/3.1/),
+JAKARTA.JSON
+(https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.0.0-RC3/jakarta.json-api-2.0.0-RC3-sources.jar),
+JAKARTA.ENTERPRISE
+(https://mvnrepository.com/artifact/jakarta.enterprise),
+JAKARTA.CONCURRENCY
+(https://jakarta.ee/specifications/concurrency/3.0/), JAKARTA.ANNOTATION
+(https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/2.1.0/jakarta.annotation-api-2.1.0-sources.jar),
+ANGUS-MAIL
+(https://repo1.maven.org/maven2/org/eclipse/angus/angus-mail/1.0.0/angus-mail-1.0.0-sources.jar),
+JAKARTA.WEBSOCKET
+(https://github.com/jakartaee/websocket/tree/2.1.0-RELEASE),
+JAKARTA.PAGES (https://jakarta.ee/specifications/pages/3.1/), JAVAX.WSDL
+(https://mvnrepository.com/artifact/javax/wsdl), JAKARTA.AUTHENTICATION
+(https://repo1.maven.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0/jakarta.authentication-api-3.0.0-sources.jar),
+JAKARTA.INTERCEPTOR
+(https://jakarta.ee/specifications/interceptors/2.1/), JAKARTA.TAGS
+(https://jakarta.ee/specifications/tags/3.0/), JAKARTA.XML.WS.SOAP
+(https://github.com/jakartaee/jax-ws-api), JAKARTA.PERSISTENCE
+(https://github.com/jakartaee/persistence/tree/3.1-3.1.0-RC1-RELEASE),
+JAKARTA.SERVLET.HTTP
+(https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/5.0.0/jakarta.servlet-api-5.0.0-sources.jar),
+JAKARTA.CONNECTORS
+(https://github.com/jakartaee/connectors/tree/2.1.0-RELEASE),
+JAKARTA.SECURITY
+(https://github.com/jakartaee/security/tree/3.0.0-RELEASE),
+JAKARTA.WEBSOCKET.CLIENT
+(https://repo1.maven.org/maven2/jakarta/websocket/jakarta.websocket-client-api/2.1.0/jakarta.websocket-client-api-2.1.0-sources.jar),
+JAVAX.ACTIVITY
+(https://clojars.org/repo/clojure-interop/javax.activity/1.0.0/javax.activity-1.0.0.jar),
+JAKARTA.CDI
+(https://repo1.maven.org/maven2/jakarta/enterprise/jakarta.enterprise.cdi-api/4.0.0/jakarta.enterprise.cdi-api-4.0.0-sources.jar),
+JAKARTA.JSON.BIND-API
+(https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/3.0.0/jakarta.json.bind-api-3.0.0-sources.jar),
+JAKARTA.SERVLET
+(https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/6.0.0/jakarta.servlet-api-6.0.0-sources.jar),
+JAKARTA TRANSACTION (https://projects.eclipse.org/projects/ee4j.jta),
+JAKARTA.AUTHORIZATION
+(https://repo1.maven.org/maven2/jakarta/authorization/jakarta.authorization-api/2.1.0/jakarta.authorization-api-2.1.0-sources.jar),
+JAKARTA.FACES (https://jakarta.ee/specifications/faces/3.0/),
+JAKARTA.MESSAGING
+(https://github.com/jakartaee/messaging/tree/3.1.0-RELEASE)
+
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -957,7 +1037,8 @@ The Program includes some or all of the following that IBM obtained
 under the MIT License:
 
 SLF4J-API (Copyright (c) 2004-2017 QOS.ch), SLF4J-JDK14 (Copyright (c)
-2004-2017 QOS.ch), SLF4J-JDK14 (Copyright (c) 2004-2011 QOS.ch)
+2004-2017 QOS.ch), SLF4J-JDK14 (Copyright (c) 2004-2011 QOS.ch),
+GRAPHQL-JAVA (Copyright (c) 2015 Andreas Marek and Contributors)
 
 Permission is hereby granted, free of charge, to any person obtaining a 
 copy of this software and associated documentation files (the 
@@ -979,13 +1060,14 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
 
 END OF MIT LICENSE NOTICES AND INFORMATION
-
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 THE REMAINDER OF THIS OPEN LIBERTY @LIBERTY_VERSION@ PROJECT NOTICES FILE CONSISTS OF THE FOLLOWING 
 SECTIONS:
 
 TABLE OF CONTENTS
-SIL OPEN FONT LICENSE 1.1  
+
+SIL OPEN FONT LICENSE 1.1    
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 

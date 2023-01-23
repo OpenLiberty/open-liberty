@@ -33,7 +33,7 @@ function buildAdminCenterDirectLink() {
 }
 function buildHowToSetupAdminCenterButton() {
 	var element = document.getElementById("welcome-section-content");
-	var url = "https://developer.ibm.com/wasdev/downloads/#asset/features-com.ibm.websphere.appserver.adminCenter-1.0";
+	var url = "https://openliberty.io/docs/latest/admin-center.html";
 	var button = buildButton(url, "How to Setup Admin Center");
 	element.appendChild(button);
 }

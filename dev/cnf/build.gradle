@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -540,12 +540,13 @@ task printProjectDependencies() {
     }
 }
 
-task checkForUpdates() {
-  doLast {
-    def xmlParser = new XmlSlurper()
-    int totalArtifacts = 0
-    int possibleUpdates = 0
-    file('oss_dependencies.maven').eachLine { line ->
+void checkForUpdates(boolean microOnly) {
+  def list = ['oss_dependencies.maven', 'oss_source_dependencies.maven']
+  def xmlParser = new XmlSlurper()
+  int totalArtifacts = 0
+  int possibleUpdates = 0
+  for (String fileName : list) { 
+    file(fileName).eachLine { line ->
       line = line.trim()
       if (line.startsWith('#'))
         return;
@@ -553,24 +554,37 @@ task checkForUpdates() {
       def (g,a,v) = line.split(':').collect { it.trim() }
       g = g.replace('.','/')
       //println '### g=' + g + '   a=' + a + '  v=' + v
-      //println '  checking http://central.maven.org/maven2/' + g + '/' + a + '/maven-metadata.xml'
-      def response = new URL('http://central.maven.org/maven2/' + g + '/' + a + '/maven-metadata.xml').text
+      //println '  checking https://repo.maven.apache.org/maven2/' + g + '/' + a + '/maven-metadata.xml'
+      def response = new URL('https://repo.maven.apache.org/maven2/' + g + '/' + a + '/maven-metadata.xml').text
       def mavenMetadata = xmlParser.parseText(response)
       VersionString currentVersion = new VersionString(v)
       VersionString possibleUpdate = currentVersion;
       // Look for a MINOR or MICRO version update (within current MAJOR version)
       mavenMetadata.versioning.versions.version.each { rawVersion ->
-         VersionString version = new VersionString(rawVersion.text())
-         if (currentVersion.major == version.major && version.isNewerThan(possibleUpdate)) {
-           possibleUpdate = version;
-         }
+        VersionString version = new VersionString(rawVersion.text())
+        if (currentVersion.major == version.major && (!microOnly || currentVersion.minor == version.minor) && version.isNewerThan(possibleUpdate)) {
+          possibleUpdate = version;
+        }
       }
       if (!possibleUpdate.raw.equals(currentVersion.raw)) {
         println(sprintf("%-60s --> %s", line, possibleUpdate.raw))
         possibleUpdates++;
       }
     }
-    println 'Found ' + possibleUpdates + ' possible MINOR/MICRO version updates out of ' + totalArtifacts + ' total artifacts.'
+  }
+  String types = microOnly ? 'MICRO' : 'MINOR/MICRO'
+  println 'Found ' + possibleUpdates + ' possible ' + types + ' version updates out of ' + totalArtifacts + ' total artifacts.'
+}
+
+task checkForUpdates() {
+  doLast {
+    checkForUpdates(false)
+  }
+}
+
+task checkForMicroUpdates() {
+  doLast {
+    checkForUpdates(true)
   }
 }
 

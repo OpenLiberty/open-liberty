@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,20 +15,23 @@ package io.openliberty.security.jakartasec;
 import static io.openliberty.security.jakartasec.JakartaSec30Constants.EMPTY_DEFAULT;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
 import io.openliberty.security.oidcclientcore.client.ClaimsMappingConfig;
 import io.openliberty.security.oidcclientcore.client.LogoutConfig;
+import io.openliberty.security.oidcclientcore.client.OidcProviderMetadata;
 import jakarta.security.enterprise.authentication.mechanism.http.OpenIdAuthenticationMechanismDefinition;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.ClaimsDefinition;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.DisplayType;
@@ -83,6 +86,7 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
     private static final String[] SCOPE_DEFAULT = new String[] { OpenIdConstant.OPENID_SCOPE,
                                                                  OpenIdConstant.EMAIL_SCOPE,
                                                                  OpenIdConstant.PROFILE_SCOPE };
+    private static final String PROVIDER_METADATA = "providerMetadata";
 
     private static final String constructedBaseURL = "https:/localhost:9443/myServlet/";
     private Map<String, Object> overrides;
@@ -217,7 +221,35 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
         assertEquals(EVALUATED_EL_EXPRESSION_STRING_RESULT + "/compositeEL/" + "#{'blah'.concat('blah')", wrapper.getProviderURI());
     }
 
-    // TODO: Unit test getProviderMetadata
+    @Test
+    public void testGetProviderMetadata() {
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(null);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        OidcProviderMetadata providerMetaData = wrapper.getProviderMetadata();
+        assertNotNull("ProviderMetadata should not be null", providerMetaData);
+        // Spot check defaults
+        assertEquals(EMPTY_DEFAULT, providerMetaData.getTokenEndpoint());
+        assertEquals(EMPTY_DEFAULT, providerMetaData.getUserinfoEndpoint());
+    }
+
+    @Test
+    public void testGetProviderMetadata_customUserInfo() {
+        Map<String, Object> innerOverride = new HashMap<String, Object>();
+        innerOverride.put(TestOpenIdProviderMetadataDefinition.USERINFO_ENDPOINT, "customUserInfoEndpoint");
+
+        overrides.put(PROVIDER_METADATA, innerOverride);
+
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        OidcProviderMetadata providerMetaData = wrapper.getProviderMetadata();
+        assertNotNull("ProviderMetadata should not be null", providerMetaData);
+        assertEquals("customUserInfoEndpoint", providerMetaData.getUserinfoEndpoint());
+        // Spot check default value
+        assertEquals(EMPTY_DEFAULT, providerMetaData.getTokenEndpoint());
+
+    }
 
     @Test
     public void testGetClientId() {
@@ -366,22 +398,38 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(null);
         OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
-        assertTrue(wrapper.getScope().contains(OpenIdConstant.OPENID_SCOPE));
-        assertTrue(wrapper.getScope().contains(OpenIdConstant.EMAIL_SCOPE));
-        assertTrue(wrapper.getScope().contains(OpenIdConstant.PROFILE_SCOPE));
+        assertTrue("Scope should contain " + OpenIdConstant.OPENID_SCOPE, wrapper.getScope().contains(OpenIdConstant.OPENID_SCOPE));
+        assertTrue("Scope should contain " + OpenIdConstant.EMAIL_SCOPE, wrapper.getScope().contains(OpenIdConstant.EMAIL_SCOPE));
+        assertTrue("Scope should contain " + OpenIdConstant.PROFILE_SCOPE, wrapper.getScope().contains(OpenIdConstant.PROFILE_SCOPE));
     }
 
-    // TODO: Determine an EL expression that evaluates to String[]
     @Test
-    @Ignore("Need to determine an EL expression that evaluates to String[].")
+    public void testGetScope_nonDefault() {
+        overrides.put(SCOPE, new String[] { OpenIdConstant.OPENID_SCOPE, OpenIdConstant.EMAIL_SCOPE });
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertTrue("Scope should contain " + OpenIdConstant.OPENID_SCOPE, wrapper.getScope().contains(OpenIdConstant.OPENID_SCOPE));
+        assertTrue("Scope should contain " + OpenIdConstant.EMAIL_SCOPE, wrapper.getScope().contains(OpenIdConstant.EMAIL_SCOPE));
+        assertFalse("Scope should not contain " + OpenIdConstant.PROFILE_SCOPE, wrapper.getScope().contains(OpenIdConstant.PROFILE_SCOPE));
+    }
+
+    /**
+     * The ScopeExpression is tested in a FAT test so we can use a Bean to replace a
+     * String expression with a String[]. See ConfigurationScopeTests.
+     *
+     * This test will fail to evaluate the invalid extraParametersExpression and return the default scope options.
+     */
+    // @Test
     public void testGetScope_EL() {
-        overrides.put(SCOPE_EXPRESSION, "['phone', 'offline_access'].stream().toArray()");
+        overrides.put(SCOPE_EXPRESSION, INTEGER_EL_EXPRESSION);
 
         OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
         OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
-        assertTrue(wrapper.getScope().contains(OpenIdConstant.PHONE_SCOPE));
-        assertTrue(wrapper.getScope().contains(OpenIdConstant.OFFLINE_ACCESS_SCOPE));
+        assertTrue("Scope should contain " + OpenIdConstant.OPENID_SCOPE, wrapper.getScope().contains(OpenIdConstant.OPENID_SCOPE));
+        assertTrue("Scope should contain " + OpenIdConstant.EMAIL_SCOPE, wrapper.getScope().contains(OpenIdConstant.EMAIL_SCOPE));
+        assertTrue("Scope should contain " + OpenIdConstant.PROFILE_SCOPE, wrapper.getScope().contains(OpenIdConstant.PROFILE_SCOPE));
     }
 
     @Test
@@ -583,9 +631,54 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
         assertEquals(false, wrapper.isUseSession());
     }
 
-    // TODO: Unit test getExtraParameters
+    @Test
+    public void testGetExtraParameters() {
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(null);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
 
-    // TODO: Unit test getExtraParameters with EL expression
+        assertNotNull("Extra parameters was not set and should be an empty array: " + wrapper.getExtraParameters(), wrapper.getExtraParameters());
+        assertEquals("Extra parameters should be an empty array", 0, wrapper.getExtraParameters().length);
+    }
+
+    @Test
+    public void testGetExtraParameters_nonDefault() {
+        String[] extraParams = new String[] { "key1=value", "key2=value2" };
+        overrides.put(EXTRA_PARAMETERS, extraParams);
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertNotNull("Extra parameters should not be null", wrapper.getExtraParameters());
+        assertNotNull("Extra parameters should not be empty", wrapper.getExtraParameters().length);
+        List<String> extraParamList = new ArrayList<String>();
+        for (String param : wrapper.getExtraParameters()) {
+            extraParamList.add(param);
+        }
+
+        for (String expected : extraParams) {
+            assertTrue("Extra parameers are incorrect, missing " + expected, extraParamList.contains(expected));
+        }
+
+    }
+
+    /**
+     * The ExtraParametersExpression is tested in a FAT test so we can use a Bean to replace a
+     * String expression with a String[]. See ConfigurationExtraParametersTests.
+     *
+     * This test will fail to evaluate the invalid extraParametersExpression and return the default of empty String array.
+     */
+    @Test
+    public void testGetExtraParametersExpression_nonDefault() {
+        overrides.put(EXTRA_PARAMETERS_EXPRESSION, INTEGER_EL_EXPRESSION);
+
+        String[] extraParams = new String[] { "key1=value", "key2=value2" };
+        overrides.put(EXTRA_PARAMETERS, extraParams);
+
+        OpenIdAuthenticationMechanismDefinition oidcMechanismDefinition = getInstanceofAnnotation(overrides);
+        OpenIdAuthenticationMechanismDefinitionWrapper wrapper = new OpenIdAuthenticationMechanismDefinitionWrapper(oidcMechanismDefinition, constructedBaseURL);
+
+        assertNotNull("Extra parameters should not be null", wrapper.getExtraParameters());
+        assertEquals("Extra parameter should be empty", 0, wrapper.getExtraParameters().length);
+    }
 
     @Test
     public void testGetJwksConnectTimeout() {
@@ -681,7 +774,8 @@ public class OpenIdAuthenticationMechanismDefinitionWrapperTest {
 
             @Override
             public OpenIdProviderMetadata providerMetadata() {
-                return TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(null);
+                return (overrides != null
+                        && overrides.containsKey(PROVIDER_METADATA)) ? TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation((Map<String, Object>) overrides.get(PROVIDER_METADATA)) : TestOpenIdProviderMetadataDefinition.getInstanceofAnnotation(null);
             }
 
             @Override

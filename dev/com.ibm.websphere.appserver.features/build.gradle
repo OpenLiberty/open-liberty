@@ -203,7 +203,7 @@ task createFeatureResources {
               createFor: kind,
               buildType: kind,
               junit: new File(project.buildDir, 'report/featureChecks.xml')) {
-        defaultEdition(licenseURL: "https://www.eclipse.org/legal/epl-v10.html",
+        defaultEdition(licenseURL: "https://www.eclipse.org/legal/epl-2.0/",
                 licensePath: buildImage.file('lafiles/featureTerms'),
                 version: version,
                 licenseType: "EPL",
@@ -281,7 +281,7 @@ task publishFeatureResources {
               createFor: kind,
               buildType: kind,
               junit: new File(project.buildDir, 'report/featureChecks.xml')) {
-        defaultEdition(licenseURL: "https://www.eclipse.org/legal/epl-v10.html",
+        defaultEdition(licenseURL: "https://www.eclipse.org/legal/epl-2.0/",
                 licensePath: buildImage.file('lafiles/featureTerms'),
                 version: version,
                 licenseType: "EPL",

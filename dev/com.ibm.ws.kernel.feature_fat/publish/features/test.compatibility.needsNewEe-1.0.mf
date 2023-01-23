@@ -9,7 +9,7 @@ IBM-ProductID: io.openliberty
 IBM-ShortName: needsNewEe-1.0
 Subsystem-Content: com.ibm.websphere.appserver.newEe-1.0; type="osgi.subsystem.feature"
 Subsystem-Description: %description
-Subsystem-License: https://www.eclipse.org/legal/epl-v10.html
+Subsystem-License: https://www.eclipse.org/legal/epl-2.0/
 Subsystem-ManifestVersion: 1
 Subsystem-Name:
 Subsystem-SymbolicName: com.ibm.websphere.appserver.needsNewEe-1.0; visibility:=public; singleton:=false

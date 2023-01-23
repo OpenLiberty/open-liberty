@@ -12,18 +12,11 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.internal.lifecycle;
 
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.cm.ConfigurationEvent;
-import org.osgi.service.cm.ConfigurationListener;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -36,9 +29,10 @@ import com.ibm.wsspi.application.lifecycle.ApplicationStartBarrier;
  * Services should implement {@link ApplicationPrereq}
  */
 @Component(
-    configurationPid = "com.ibm.ws.app.startbarrier",
-    configurationPolicy = ConfigurationPolicy.REQUIRE)
+           configurationPid = "com.ibm.ws.app.startbarrier",
+           configurationPolicy = ConfigurationPolicy.REQUIRE)
 public class ApplicationStartBarrierImpl implements ApplicationStartBarrier {
+    @SuppressWarnings("unused")
     private static final TraceComponent tc = Tr.register(ApplicationStartBarrierImpl.class);
 
     @Reference(cardinality = ReferenceCardinality.MULTIPLE)

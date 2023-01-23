@@ -1,11 +1,9 @@
 ###############################################################################
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -17,5 +15,12 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: TODO
+# Message prefix block: CWWKS2520 - CWWKS2549
 
+EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER=CWWKS2520E: L''algoritmo di firma {0} nell''intestazione JWT non corrisponde all''algoritmo di firma previsto {1} .
+EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.explanation=Il token deve essere firmato con l'algoritmo specificato nel messaggio.
+EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.useraction=Assicurarsi che il token sia firmato con l'algoritmo previsto o aggiornare la configurazione per il componente che riceve il token in modo da utilizzare l'algoritmo specificato nel messaggio.
+
+SIG_ALG_IN_HEADER_NOT_ALLOWED=CWWKS2521E: L''algoritmo di firma {0} nell''intestazione JWT non \u00e8 uno degli algoritmi di firma consentiti: {1}.
+SIG_ALG_IN_HEADER_NOT_ALLOWED.explanation=Il token deve essere firmato con uno degli algoritmi specificati nel messaggio.
+SIG_ALG_IN_HEADER_NOT_ALLOWED.useraction=Assicurarsi che il token sia firmato con uno degli algoritmi consentiti o aggiornare la configurazione per il componente che riceve il token per consentire l'algoritmo specificato nel messaggio.

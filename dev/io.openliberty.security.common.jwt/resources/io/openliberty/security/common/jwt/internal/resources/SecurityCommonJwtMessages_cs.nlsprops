@@ -1,11 +1,9 @@
 ###############################################################################
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -17,5 +15,12 @@
 #NLS_MESSAGEFORMAT_VAR
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
-# Message prefix block: TODO
+# Message prefix block: CWWKS2520 - CWWKS2549
 
+EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER=CWWKS2520E: Podpisov\u00fd algoritmus {0} v z\u00e1hlav\u00ed JWT se neshoduje s o\u010dek\u00e1van\u00fdm podpisov\u00fdm algoritmem {1}.
+EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.explanation=Token mus\u00ed b\u00fdt podeps\u00e1n algoritmem, kter\u00fd je uveden ve zpr\u00e1v\u011b.
+EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.useraction=Ujist\u011bte se, \u017ee je token podeps\u00e1n o\u010dek\u00e1van\u00fdm algoritmem, nebo aktualizujte konfiguraci komponenty, kter\u00e1 p\u0159ij\u00edm\u00e1 token, tak, aby pou\u017e\u00edvala algoritmus uveden\u00fd ve zpr\u00e1v\u011b.
+
+SIG_ALG_IN_HEADER_NOT_ALLOWED=CWWKS2521E: Podpisov\u00fd algoritmus {0} v z\u00e1hlav\u00ed JWT nen\u00ed jedn\u00edm z povolen\u00fdch podpisov\u00fdch algoritm\u016f: {1}.
+SIG_ALG_IN_HEADER_NOT_ALLOWED.explanation=Token mus\u00ed b\u00fdt podeps\u00e1n jedn\u00edm z algoritm\u016f, kter\u00e9 jsou uvedeny ve zpr\u00e1v\u011b.
+SIG_ALG_IN_HEADER_NOT_ALLOWED.useraction=Ujist\u011bte se, \u017ee je token podeps\u00e1n jedn\u00edm z povolen\u00fdch algoritm\u016f, nebo aktualizujte konfiguraci komponenty, kter\u00e1 p\u0159ij\u00edm\u00e1 token, tak, aby umo\u017e\u0148ovala algoritmus uveden\u00fd ve zpr\u00e1v\u011b.

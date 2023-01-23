@@ -20,11 +20,11 @@ kyleaure/oracle-21.3.0-faststart:1.0.full.ssl
 kyleaure/postgres-krb5:1.0
 kyleaure/postgres-ssl:1.0
 kyleaure/postgres-test-table:3.0
-kyleaure/sqlserver-ssl:2019-CU10-ubuntu-16.04
+kyleaure/sqlserver-ssl:2019-CU18-ubuntu-20.04
 letsencrypt/pebble-challtestsrv:latest
 letsencrypt/pebble:latest
 mariadb:10.3
-mcr.microsoft.com/mssql/server:2019-CU10-ubuntu-16.04
+mcr.microsoft.com/mssql/server:2019-CU18-ubuntu-20.04
 openzipkin/zipkin-slim:2.23
 postgres:14.1-alpine
 ryanesch/acme-boulder:1.2

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -214,20 +214,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
 
     @Override
     public void notificationCreated(RuntimeUpdateManager updateManager, RuntimeUpdateNotification notification) {
-        if (checkpointAt == CheckpointPhase.FEATURES && RuntimeUpdateNotification.APPLICATIONS_STARTING.equals(notification.getName())) {
-            notification.onCompletion(new CompletionListener<Boolean>() {
-                @Override
-                public void successfulCompletion(Future<Boolean> future, Boolean result) {
-                    if (result) {
-                        checkpointOrExitOnFailure();
-                    }
-                }
-
-                @Override
-                public void failedCompletion(Future<Boolean> future, Throwable t) {
-                }
-            });
-        } else if (jvmRestore.compareAndSet(true, false) && RuntimeUpdateNotification.CONFIG_UPDATES_DELIVERED.equals(notification.getName())) {
+        if (jvmRestore.compareAndSet(true, false) && RuntimeUpdateNotification.CONFIG_UPDATES_DELIVERED.equals(notification.getName())) {
             debug(tc, () -> "Processing config on restore.");
             final CountDownLatch localLatch = new CountDownLatch(1);
             waitForConfig.set(localLatch);

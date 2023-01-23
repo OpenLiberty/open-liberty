@@ -1,11 +1,9 @@
 ###############################################################################
 # Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -118,11 +116,11 @@ MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: Die folgenden Nachrichten werden aus den
 MESSAGES_CONFIGURED_HIDDEN_2.explanation=Als auszublendend konfigurierte Nachrichten werden nicht in die Dateien console.log und messages.log geschrieben. Sie werden in die Datei trace.log geschrieben. 
 MESSAGES_CONFIGURED_HIDDEN_2.useraction=Es ist keine Aktion erforderlich.
 
-MESSAGE_FORMAT_UPDATED=TRAS3002I: Das Ausgabeformat f\u00fcr die Datei messages.log wurde jetzt in ''{0}'' aktualisiert.
+MESSAGE_FORMAT_UPDATED=TRAS3002I: Das Ausgabeformat f\u00fcr die Datei messages.log wurde jetzt in '{0}' aktualisiert.
 MESSAGE_FORMAT_UPDATED.explanation=Das Ausgabeformat f\u00fcr die Datei messages.log wurde jetzt aktualisiert.
 MESSAGE_FORMAT_UPDATED.useraction=Es ist keine Aktion erforderlich. 
 
-CONSOLE_FORMAT_UPDATED=TRAS3003I: Das Konsolenausgabeformat wurde jetzt in ''{0}'' aktualisiert.
+CONSOLE_FORMAT_UPDATED=TRAS3003I: Das Konsolenausgabeformat wurde jetzt in '{0}' aktualisiert.
 CONSOLE_FORMAT_UPDATED.explanation=Das Konsolenausgabeformat wurde jetzt aktualisiert.
 CONSOLE_FORMAT_UPDATED.useraction=Es ist keine Aktion erforderlich. 
 
@@ -158,7 +156,7 @@ JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: Es wurde ein ung\u00fcltiges Zeichen i
 JSON_FIELDS_INVALID_CHARACHTER.explanation= In der Eigenschaft f\u00fcr die Zuordnung von JSON-Protokollierungsfeldnamen k\u00f6nnen Sie nur Buchstaben, Zahlen und : (Doppelpunkt) angeben.
 JSON_FIELDS_INVALID_CHARACHTER.useraction= \u00c4ndern Sie den Wert f\u00fcr die Eigenschaft f\u00fcr die Zuordnung von JSON-Protokollierungsfeldnamen und entfernen Sie die ung\u00fcltigen Zeichen.
 
-LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3015W: Die Eigenschaft f\u00fcr die Startzeit des Protokollrollover ist falsch formatiert. Daher wird der Wert auf den Standardwert '00:00' gesetzt, der Mitternacht darstellt.
+LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3015W: Die Eigenschaft f\u00fcr die Startzeit des Protokoll\u00fcberlaufs ist falsch formatiert. Daher wird der Wert auf den Standardwert '00:00' gesetzt, der Mitternacht darstellt.
 LOG_ROLLOVER_START_TIME_FORMAT_WARNING.explanation=Die Eigenschaft f\u00fcr die Rollover-Startzeit muss das Format HH:MM haben, wobei 00:00 f\u00fcr Mitternacht steht.
 LOG_ROLLOVER_START_TIME_FORMAT_WARNING.useraction=Stellen Sie sicher, dass der Eigenschaftswert f\u00fcr die Rollover-Startzeit ordnungsgem\u00e4\u00df in der 24-Stunden-Notation HH:MM formatiert ist, wobei 00:00 f\u00fcr Mitternacht steht.
 

@@ -46,7 +46,7 @@ public enum DatabaseContainerType {
     Postgres("postgresql.jar", PostgreSQLContainer.class.getCanonicalName(), Properties_postgresql.class, //
              DockerImageName.parse("postgres:14.1-alpine")),
     SQLServer("mssql-jdbc.jar", MSSQLServerContainer.class.getCanonicalName(), Properties_microsoft_sqlserver.class, //
-              DockerImageName.parse("mcr.microsoft.com/mssql/server:2019-CU10-ubuntu-16.04"));
+              DockerImageName.parse("mcr.microsoft.com/mssql/server:2019-CU18-ubuntu-20.04"));
 
     private final String driverName;
     private final Class<DataSourceProperties> dsPropsClass;
