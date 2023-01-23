@@ -46,22 +46,6 @@
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ELRedirectURIConcatInSingleEvalExpression/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ELRedirectURITwoEvalExpressions/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ELRedirectURIDoesNotContainBaseURL/Callback,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ScopeOpenId/Callback,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ScopeOpenIdProfile/Callback,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ScopeOpenIdEmail/Callback,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ScopeOpenIdProfileEmail/Callback,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeOpenIdProfileEmailELOpenId/Callback,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeOpenIdProfileEmailELOpenId/Callback,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeOpenIdProfileEmailELOpenIdProfile/Callback,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeOpenIdProfileEmailELOpenIdEmail/Callback,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeOpenIdProfileEmailELOpenIdProfileEmail/Callback,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeELNoOpenId/Callback,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeELEmpty/Callback,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeELNoScopesInCommonExceptOpenId/Callback,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeELMoreScopesThanConfiguredOnServer/Callback,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeELUppercaseScopes/Callback,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeELUnknownScope/Callback,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/scopeELDuplicateScope/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/responseModeQuery/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/responseModeFormPost/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/useSessionTrueELTrue/Callback,
@@ -86,7 +70,7 @@
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServlet9/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServlet10/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UserinfoTestServlet11/Callback"
-				scope="openid profile email"
+				scope="ALL_SCOPES"
 				enabled="true"
 			>
 			</client>

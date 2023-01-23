@@ -13,14 +13,14 @@
 <server>
 		 		 
 	<openidConnectProvider
-		id="OP2"
+		id="OP1"
 		signatureAlgorithm="RS256"
 		keyAliasName="rs256"
 		keystoreRef="key_allSigAlg"
-		oauthProviderRef="OAuth2" />
+		oauthProviderRef="OAuth1" />
 
 	<oauthProvider
-		id="OAuth2"
+		id="OAuth1"
 		autoAuthorize="true"
 		tokenFormat="${opTokenFormat}"
 	>
@@ -37,7 +37,7 @@
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UseNonceFalseELTrue/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UseNonceFalseELFalse/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/UseNonceELTrueMismatch/Callback"
-				scope="openid profile email"
+				scope="ALL_SCOPES"
 				enabled="true"
 			>
 			</client>

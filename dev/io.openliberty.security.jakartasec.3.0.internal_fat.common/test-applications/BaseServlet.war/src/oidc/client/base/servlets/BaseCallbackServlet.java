@@ -38,41 +38,21 @@ public class BaseCallbackServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        ServletOutputStream ps = response.getOutputStream();
-
-        ServletLogger.printLine(ps, "Class: " + this.getClass().getName());
-        ServletLogger.printLine(ps, "Super Class: " + this.getClass().getSuperclass().getName());
-
-        ServletLogger.printLine(ps, "got here callback");
-
-        RequestLogger requestLogger = new RequestLogger(request, ServletMessageConstants.CALLBACK + ServletMessageConstants.REQUEST);
-        requestLogger.printRequest(ps);
-
-        OpenIdContextLogger contextLogger = new OpenIdContextLogger(request, response, ServletMessageConstants.CALLBACK + ServletMessageConstants.OPENID_CONTEXT, context);
-        contextLogger.logContext(ps);
-
-        WSSubjectLogger subjectLogger = new WSSubjectLogger(request, ServletMessageConstants.CALLBACK + ServletMessageConstants.WSSUBJECT);
-        subjectLogger.printProgrammaticApiValues(ps);
-
-        if (context != null) {
-            Optional<String> originalRequest = context.getStoredValue(request, response, OpenIdConstant.ORIGINAL_REQUEST);
-            if (originalRequest.isPresent()) {
-                String originalRequestString = originalRequest.get();
-                response.sendRedirect(originalRequestString);
-            }
-        }
+        doWorker(request, response, "got here callback");
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doWorker(request, response, "got here post callback");
+    }
 
+    private void doWorker(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
         ServletOutputStream ps = response.getOutputStream();
 
         ServletLogger.printLine(ps, "Class: " + this.getClass().getName());
         ServletLogger.printLine(ps, "Super Class: " + this.getClass().getSuperclass().getName());
 
-        ServletLogger.printLine(ps, "got here post callback");
+        ServletLogger.printLine(ps, message);
 
         RequestLogger requestLogger = new RequestLogger(request, ServletMessageConstants.CALLBACK + ServletMessageConstants.REQUEST);
         requestLogger.printRequest(ps);

@@ -27,8 +27,6 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
-import com.ibm.ws.security.fat.common.expectations.ResponseMessageExpectation;
-import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 
@@ -86,7 +84,7 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
         updateTrackers(opServer, rpServer, false);
 
         List<String> waitForMsgs = null;
-        opServer.startServerUsingExpandedConfiguration("server_orig.xml", waitForMsgs);
+        opServer.startServerUsingExpandedConfiguration("server_scope.xml", waitForMsgs);
         SecurityFatHttpUtils.saveServerPorts(opServer, Constants.BVT_SERVER_1_PORT_NAME_ROOT);
         opHttpBase = "http://localhost:" + opServer.getBvtPort();
         opHttpsBase = "https://localhost:" + opServer.getBvtSecurePort();
@@ -468,8 +466,7 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
         response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
-        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorize message."));
+        expectations.addUnauthorizedStatusCodeAndMessageForCurrentAction();
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2407E_ERROR_VERIFYING_RESPONSE, "Did not receive an error message stating that the client encountered an error verifying the authentication response."));
         expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWOAU0064E_SCOPE_MISMATCH, "Did not receive an error message stating that the scope does not match any of the registered scopes."));
 
@@ -557,8 +554,7 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
         response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
-        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorize message."));
+        expectations.addUnauthorizedStatusCodeAndMessageForCurrentAction();
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2407E_ERROR_VERIFYING_RESPONSE, "Did not receive an error message stating that the client encountered an error verifying the authentication response."));
         expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWOAU0064E_SCOPE_MISMATCH, "Did not receive an error message stating that the scope does not match any of the registered scopes."));
 
@@ -586,8 +582,7 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
         response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
-        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorize message."));
+        expectations.addUnauthorizedStatusCodeAndMessageForCurrentAction();
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2407E_ERROR_VERIFYING_RESPONSE, "Did not receive an error message stating that the client encountered an error verifying the authentication response."));
         expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWOAU0064E_SCOPE_MISMATCH, "Did not receive an error message stating that the scope does not match any of the registered scopes."));
 
