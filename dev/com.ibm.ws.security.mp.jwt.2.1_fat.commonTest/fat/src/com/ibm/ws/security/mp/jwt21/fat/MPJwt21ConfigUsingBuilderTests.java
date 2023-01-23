@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt21.fat;
 
@@ -108,7 +108,7 @@ public class MPJwt21ConfigUsingBuilderTests extends MPJwt21MPConfigTests {
      * @throws Exception
      */
     @Test
-    public void MPJwt12ConfigUsingBuilderTests_Default_TokenAge() throws Exception {
+    public void MPJwt21ConfigUsingBuilderTests_Default_TokenAge() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_orig_2_1.xml");
         // by default the test tooling puts the token in Authorization header using "Bearer"
         genericConfigTest(resourceServer, MPJwt21FatConstants.JWT_BUILDER_DEFAULT_ID, 5, null);
@@ -116,7 +116,7 @@ public class MPJwt21ConfigUsingBuilderTests extends MPJwt21MPConfigTests {
     }
 
     @Test
-    public void MPJwt12ConfigUsingBuilderTests_Long_TokenAge() throws Exception {
+    public void MPJwt21ConfigUsingBuilderTests_Long_TokenAge() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_TokenAge_Long.xml");
         // by default the test tooling puts the token in Authorization header using "Bearer"
         genericConfigTest(resourceServer, MPJwt21FatConstants.JWT_BUILDER_DEFAULT_ID, 5, null);
@@ -124,7 +124,7 @@ public class MPJwt21ConfigUsingBuilderTests extends MPJwt21MPConfigTests {
     }
 
     @Test
-    public void MPJwt12ConfigUsingBuilderTests_Short_TokenAge() throws Exception {
+    public void MPJwt21ConfigUsingBuilderTests_Short_TokenAge() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_TokenAge_Short.xml");
 
         // by default the test tooling puts the token in Authorization header using "Bearer"

@@ -8,17 +8,15 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt21.fat.sharedTests;
 
 import org.junit.runner.RunWith;
 
 import com.ibm.ws.security.fat.common.expectations.Expectations;
-import com.ibm.ws.security.fat.common.mp.jwt.MPJwt12FatConstants;
 import com.ibm.ws.security.fat.common.mp.jwt.MPJwt21FatConstants;
 import com.ibm.ws.security.fat.common.mp.jwt.sharedTests.MPJwt21MPConfigTests;
-import com.ibm.ws.security.fat.common.mp.jwt.utils.MP12ConfigSettings;
 import com.ibm.ws.security.fat.common.mp.jwt.utils.MP21ConfigSettings;
 
 import componenttest.custom.junit.runner.FATRunner;
@@ -51,7 +49,7 @@ public class GenericEnvVarsAndSystemPropertiesTests extends MPJwt21MPConfigTests
 
         setUpAndStartBuilderServer(jwtBuilderServer, "server_using_buildApp.xml", false);
 
-        MP21ConfigSettings mpConfigSettings = new MP21ConfigSettings(MP21ConfigSettings.PublicKeyLocationNotSet, MP21ConfigSettings.PublicKeyNotSet, MP21ConfigSettings.IssuerNotSet, MPJwt12FatConstants.X509_CERT, MP12ConfigSettings.DefaultHeader, MP12ConfigSettings.DefaultCookieName, MP12ConfigSettings.AudiencesNotSet, MP12ConfigSettings.DefaultAlgorithm, MP12ConfigSettings.DecryptKeyLocNotSet, tokenAge, clockSkew, keyManagementKeyAlias);
+        MP21ConfigSettings mpConfigSettings = new MP21ConfigSettings(MP21ConfigSettings.PublicKeyLocationNotSet, MP21ConfigSettings.PublicKeyNotSet, MP21ConfigSettings.IssuerNotSet, MPJwt21FatConstants.X509_CERT, MP21ConfigSettings.DefaultHeader, MP21ConfigSettings.DefaultCookieName, MP21ConfigSettings.AudiencesNotSet, MP21ConfigSettings.DefaultAlgorithm, MP21ConfigSettings.DecryptKeyLocNotSet, tokenAge, clockSkew, keyManagementKeyAlias);
         setUpAndStartRSServerForTests(resourceServer, config, mpConfigSettings, where);
         // don't restore servers between test cases
         skipRestoreServerTracker.addServer(resourceServer);
