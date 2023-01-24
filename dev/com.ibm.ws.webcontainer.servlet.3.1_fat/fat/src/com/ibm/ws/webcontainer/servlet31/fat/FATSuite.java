@@ -1,16 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat;
+
+import java.util.Locale;
 
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -88,14 +90,24 @@ public class FATSuite {
     @ClassRule
     public static RepeatTests repeat;
 
+    private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
+
     static {
         // EE10 requires Java 11.  If we only specify EE10 for lite mode it will cause no tests to run which causes an error.
         // If we are running on Java 8 have EE9 be the lite mode test to run.
         if (JavaInfo.JAVA_VERSION >= 11) {
-            repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
-                            .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
-                            .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
-                            .andWith(FeatureReplacementAction.EE10_FEATURES());
+            //Repeat full fat for all features may exceed 3hrs limit on Fyre Windows and causes random build break.
+            //Skip EE9 on windows platform.
+            if (isWindows) {
+                repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                                .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
+                                .andWith(FeatureReplacementAction.EE10_FEATURES());
+            } else {
+                repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                                .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
+                                .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
+                                .andWith(FeatureReplacementAction.EE10_FEATURES());
+            }
         } else {
             repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
                             .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
