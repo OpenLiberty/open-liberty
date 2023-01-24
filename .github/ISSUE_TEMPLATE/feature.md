@@ -15,8 +15,9 @@ Replace this comment with a high level description of the feature. Include enoug
 
 When available, add links to required feature documents. Use "N/A" to mark particular documents which are not required by the feature.
 
-- Aha: Externally raised RFE ([Aha](https://cloud-platform.ideas.aha.io/))
-  - Link the RFE with this issue
+- Externally raised RFEs 
+  - [Aha](https://cloud-platform.ideas.aha.io/): Link to the Aha RFE idea (also add a link to this issue in the Aha idea)
+  - [OL Feature Request](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=): Link to the OL GH issue (also add a link to this issue in the Feature Request GH issue)
 - UFO: Link to [Upcoming Feature Overview](https://ibm.box.com/v/UFO-Template) document
   - [Upload the feature UFO to Box](https://ibm.ent.box.com/folder/52716090328) and set the link to be publicly accessible, with a long expiration (10 years)
     - Click "Share" > select "People with link" > click "Link Settings" > under "Link Expiration" select "Disable Shared Link on" > set an expiration date ~10 years into the future
@@ -73,8 +74,8 @@ Design preliminaries determine whether a formal design, which will be provided b
    - Refer to [Documenting Open Liberty](https://github.com/OpenLiberty/open-liberty/wiki/Documenting-Open-Liberty).
    - Feature Owner adds label `ID Required`, if non-trivial documentation needs to be created by the ID team.
    - ID adds label `ID Required - Trivial`, if no design will be performed and only trivial ID updates are needed.
-- [ ] Serviceability Requirements Identified. (Owner and [Serviceability focal point](https://github.com/orgs/OpenLiberty/teams/serviceability-approvers))
-- [ ] SVT Requirements Identified. (Owner and [SVT focal point](https://github.com/orgs/OpenLiberty/teams/svt-approvers))
+- [ ] Serviceability requirements identified. (Owner and [Serviceability focal point](https://github.com/orgs/OpenLiberty/teams/serviceability-approvers))
+- [ ] SVT requirements identified. (Owner and [SVT focal point](https://github.com/orgs/OpenLiberty/teams/svt-approvers))
 - [ ] Performance testing requirements identified. (Owner and [Performance focal point](https://github.com/orgs/OpenLiberty/teams/performance-approvers))
 
 ### **Design**
