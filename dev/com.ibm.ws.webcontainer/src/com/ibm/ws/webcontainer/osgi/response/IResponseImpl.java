@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2022 IBM Corporation and others.
+ * Copyright (c) 2010, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -231,14 +231,11 @@ public class IResponseImpl implements IResponse
   public void setContentLanguage(String value)
   {
       //PM25421
-      if (((HttpResponseExt)response).getHeader(HttpHeaderKeys.HDR_CONTENT_LANGUAGE) != null){
+      if (((HttpResponseExt)response).setHeaderIfAbsent(HttpHeaderKeys.HDR_CONTENT_LANGUAGE, value) != null){
           if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())  {
               Tr.debug(tc, "setContentLanguage(String)", "Ignored as the Content-Language already set");
           }
-          return;
       }
-
-      ((HttpResponseExt)this.response).setHeader(HttpHeaderKeys.HDR_CONTENT_LANGUAGE, value);
   }
   
   public void setContentLength(int length) {
