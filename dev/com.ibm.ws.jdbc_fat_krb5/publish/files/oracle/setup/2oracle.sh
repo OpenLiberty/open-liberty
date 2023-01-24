@@ -8,8 +8,13 @@ if [ -z ${ORACLE_HOME} ]; then
     exit 1
 fi
 
+if [ -z ${ORACLE_ADMIN} ]; then
+    echo "No ORACLE_ADMIN variable.  Exiting..."
+    exit 1
+fi
+
 # Step 6A: Configure Kerberos on the Client and on the Database Server
-SQLNETORA="/opt/oracle/oradata/dbconfig/XE/sqlnet.ora"
+SQLNETORA="$ORACLE_ADMIN/sqlnet.ora"
 touch $SQLNETORA
     # Set authentication service we want to use (Kerberos v.5)
     echo "Setup sqlnet.ora authentication servies"
@@ -41,7 +46,7 @@ touch $INITORA
     echo "SQLNET.INBOUND_CONNECT_TIMEOUT=120" >> $SQLNETORA
     echo "UPDATED SQLNET.ORA"
 
-LISTENERORA="/opt/oracle/oradata/dbconfig/XE/listener.ora"
+LISTENERORA="$ORACLE_ADMIN/listener.ora"
 touch $LISTENERORA
     echo "INBOUND_CONNECT_TIMEOUT_LISTENER=110" >> $LISTENERORA
 

@@ -1,4 +1,4 @@
-FROM kyleaure/oracle-18.4.0-expanded:1.0.full
+FROM gvenzl/oracle-xe:21.3.0-full-faststart
 
 # Update and install Kerberos (server head)
 USER root
@@ -7,6 +7,9 @@ RUN microdnf -y install krb5-workstation krb5-libs
 
 COPY setup/ /opt/oracle/scripts/setup
 COPY startup/ /container-entrypoint-startdb.d/
+
+# Oracle admin moved from /opt/oracle/oradata/dbconfig/XE/ to /opt/oracle/homes/OraDBHome21cXE/network/admin in 21c
+ENV ORACLE_ADMIN=/opt/oracle/homes/OraDBHome21cXE/network/admin
 
 ENV ORACLE_PWD=password
 ENV KRB5_REALM=EXAMPLE.COM
@@ -29,4 +32,4 @@ RUN rm /opt/oracle/scripts/setup/2oracle.sh
  
 USER oracle
 
-# Currently tagged in DockerHub as: kyleaure/oracle-18.4.0-expanded:1.0.full.krb5
+# Currently tagged in DockerHub as: kyleaure/oracle-21.3.0-faststart:1.0.full.krb5
