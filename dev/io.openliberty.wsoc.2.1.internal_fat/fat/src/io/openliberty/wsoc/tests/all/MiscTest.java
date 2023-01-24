@@ -46,8 +46,8 @@ public class MiscTest {
 
     public void testVerifyDefaultConfigurator() throws Exception {
 
-        // Checks are performed within client endpoint because wsoc Impl uses HashMap which doesn't guarentee order.
-        // Also avoids sending the properties to the client
+        // Simple test to verify that the getContainerDefaultConfigurator method can be accessed. In reality
+        // if the method couldn't be accessed we would expect a compilation error rather than a runtime exception
         String uri = "/basic21/testEchoConfigurator";
 
         String[] input1 = { "echoValue" };
