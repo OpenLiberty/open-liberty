@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,14 +23,20 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
+import jakarta.data.repository.Compare;
+import jakarta.data.repository.Count;
+import jakarta.data.repository.Exists;
+import jakarta.data.repository.Filter;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.Limit;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Page;
 import jakarta.data.repository.Pageable;
+import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Select;
 import jakarta.data.repository.Slice;
 import jakarta.data.repository.Sort;
 import jakarta.data.repository.Streamable;
@@ -40,6 +46,10 @@ import jakarta.enterprise.concurrent.Asynchronous;
  */
 @Repository
 public interface Primes {
+    @Exists
+    @Filter(by = "binary", op = Compare.EndsWith, param = "bits")
+    @Filter(by = "number", op = Compare.LessThan, param = "max")
+    boolean anyLessThanEndingWithBitPattern(@Param("max") long upperLimit, @Param("bits") String pattern);
 
     long countByNumberLessThan(long number);
 
@@ -153,6 +163,31 @@ public interface Primes {
 
     Boolean existsNumberBetween(Long first, Long last);
 
+    @Count
+    @Filter(by = "number", op = Compare.GreaterThanEqual)
+    @Filter(by = "number", op = Compare.LessThanEqual)
+    long howManyIn(long min, long max);
+
+    @Count
+    @Filter(by = "number", op = Compare.GreaterThan)
+    @Filter(by = "number", op = Compare.LessThan, value = "20")
+    Long howManyLessThan20StartingAfter(long min);
+
+    @Filter(by = "number", op = Compare.Between)
+    @Filter(by = "romanNumeral", ignoreCase = true, op = Compare.Like, value = "%v%")
+    @Filter(by = "name", op = Compare.Contains)
+    @OrderBy(value = "number", descending = true)
+    @Select("number")
+    List<Long> inRangeHavingVNumeralAndSubstringOfName(long min, long max, String nameSuffix);
+
+    @Filter(by = "number", op = Compare.LessThan)
+    @Filter(by = "name", op = Compare.EndsWith)
+    @Filter(as = Filter.Type.OR, by = "number", op = Compare.Between)
+    @Filter(by = "name", op = Compare.EndsWith)
+    @OrderBy(value = "number", descending = true)
+    Stream<Prime> lessThanWithSuffixOrBetweenWithSuffix(long numLessThan, String firstSuffix,
+                                                        long lowerLimit, long upperLimit, String secondSuffix);
+
     @Query("SELECT MIN(o.number), MAX(o.number), SUM(o.number), COUNT(o.number), AVG(o.number) FROM Prime o WHERE o.number < ?1")
     Deque<Double> minMaxSumCountAverageDeque(long numBelow);
 
@@ -187,6 +222,12 @@ public interface Primes {
     @Query("SELECT o.name, o.hex FROM Prime o WHERE o.number <= ?1")
     @OrderBy("number")
     Page<Object[]> namesWithHex(long maxNumber, Pageable pagination);
+
+    @Filter(by = "number", op = Compare.NotBetween)
+    @Filter(by = "number", op = Compare.LessThan)
+    @OrderBy("number")
+    @Select("number")
+    List<Long> notWithinButBelow(int rangeMin, int rangeMax, int below);
 
     @Query("SELECT DISTINCT LENGTH(p.romanNumeral) FROM Prime p WHERE p.number <= ?1 ORDER BY LENGTH(p.romanNumeral) DESC")
     Page<Integer> romanNumeralLengths(long maxNumber, Pageable pagination);

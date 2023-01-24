@@ -1,11 +1,9 @@
 ###############################################################################
 # Copyright (c) 2011, 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -118,11 +116,11 @@ MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: \ub2e4\uc74c \uba54\uc2dc\uc9c0\uac00 co
 MESSAGES_CONFIGURED_HIDDEN_2.explanation=\uc228\uaca8\uc9c0\ub3c4\ub85d \uad6c\uc131\ub41c \uba54\uc2dc\uc9c0\uac00 console.log \ubc0f messages.log \ud30c\uc77c\uc5d0 \uc791\uc131\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. trace.log \ud30c\uc77c\uc5d0 \uae30\ub85d\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 MESSAGES_CONFIGURED_HIDDEN_2.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 
-MESSAGE_FORMAT_UPDATED=TRAS3002I: messages.log \ucd9c\ub825 \ud615\uc2dd\uc774 \uc774\uc81c '' {0} ''(\uc73c)\ub85c \uc5c5\ub370\uc774\ud2b8\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+MESSAGE_FORMAT_UPDATED=TRAS3002I: messages.log \ucd9c\ub825 \ud615\uc2dd\uc774 \uc774\uc81c '{0}'(\uc73c)\ub85c \uc5c5\ub370\uc774\ud2b8\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 MESSAGE_FORMAT_UPDATED.explanation=messages.log\uc758 \ucd9c\ub825 \ud615\uc2dd\uc774 \uc774\uc81c \uc5c5\ub370\uc774\ud2b8\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 MESSAGE_FORMAT_UPDATED.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 
-CONSOLE_FORMAT_UPDATED=TRAS3003I: \ucf58\uc194 \ucd9c\ub825 \ud615\uc2dd\uc774 \uc774\uc81c ''{0}''(\uc73c)\ub85c \uc5c5\ub370\uc774\ud2b8\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+CONSOLE_FORMAT_UPDATED=TRAS3003I: \ucf58\uc194 \ucd9c\ub825 \ud615\uc2dd\uc774 \uc774\uc81c '{0}'(\uc73c)\ub85c \uc5c5\ub370\uc774\ud2b8\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 CONSOLE_FORMAT_UPDATED.explanation=\ucf58\uc194\uc758 \ucd9c\ub825 \ud615\uc2dd\uc774 \uc774\uc81c \uc5c5\ub370\uc774\ud2b8\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 CONSOLE_FORMAT_UPDATED.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. 
 

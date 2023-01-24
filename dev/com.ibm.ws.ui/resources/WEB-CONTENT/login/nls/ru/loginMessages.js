@@ -15,7 +15,7 @@ define({
         LOGIN_TITLE: "Liberty Admin Center",
         LOGIN_USER: "Имя пользователя",
         LOGIN_PASSWORD: "Пароль",
-        LOGIN_COPYRIGHT: "Copyright (c) 2013, 2016 IBM Corporation and others. All rights reserved.\nЭта программа и сопутствующие материалы распространяются на условиях Eclipse Public License v1.0, поставляемой вместе с продуктом и доступной на сайте http://www.eclipse.org/legal/epl-2.0/",
+        LOGIN_COPYRIGHT: "Copyright (c) 2013, 2016 IBM Corporation and others. All rights reserved.\nЭта программа и сопутствующие материалы распространяются на условиях Eclipse Public License 2.0, поставляемой вместе с продуктом и доступной на сайте http://www.eclipse.org/legal/epl-2.0/",
         LOGIN_ERROR_MESSAGE: "Ошибка входа в систему: неизвестное имя пользователя и/или пароль",
         ACCESS_ERROR_MESSAGE: "Нет доступа: учетной записи пользователя не предоставлен доступ к Admin Center"
 });

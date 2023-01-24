@@ -74,7 +74,7 @@ buildEngineName: defaultEngine
 
 Bundle-License: \
   Eclipse Public License; \
-  url=https://www.eclipse.org/legal/epl-v10.html
+  url=https://www.eclipse.org/legal/epl-2.0/
 
 Bundle-SCM: \
   connection=scm:git:https://github.com/OpenLiberty/open-liberty.git, \

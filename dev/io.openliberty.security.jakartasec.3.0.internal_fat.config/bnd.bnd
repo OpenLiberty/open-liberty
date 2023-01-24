@@ -26,6 +26,7 @@ src: \
     test-applications/UseSessionTrue.war/src,\
     test-applications/UseSessionFalse.war/src,\
     test-applications/UserInfo.war/src,\
+    test-applications/Discovery.war/src,\
     test-applications/ScopeOpenId.war/src,\
     test-applications/ScopeOpenIdProfile.war/src,\
     test-applications/ScopeOpenIdEmail.war/src,\
@@ -33,10 +34,28 @@ src: \
     test-applications/ScopeOpenIdProfileEmailWithEL.war/src,\
     test-applications/ResponseModeWithMockAuthEndpoint.war/src,\
     test-applications/Authorization.war/src,\
+    test-applications/Signing.war/src,\
+    test-applications/ComplexSigning1.war/src,\
+    test-applications/ComplexSigning2.war/src,\
+    test-applications/ComplexSigning3.war/src,\
+    test-applications/ComplexSigning4.war/src,\
+    test-applications/ComplexSigning5.war/src,\
+    test-applications/EmptySigning.war/src,\
+    test-applications/SigningShortJwksConnectionTimeoutELOverride.war/src,\
+    test-applications/SigningShortJwksConnectionTimeout.war/src,\
+    test-applications/SigningShortJwksReadTimeoutELOverride.war/src,\
+    test-applications/SigningShortJwksReadTimeout.war/src,\
+    test-applications/UserinfoAnnotation.war/src,\
     test-applications/UseNonceTrue.war/src,\
     test-applications/UseNonceFalse.war/src,\
     test-applications/UseNonceTrueWithEL.war/src,\
     test-applications/UseNonceFalseWithEL.war/src,\
+    test-applications/ExtraParametersOneParam.war/src,\
+    test-applications/ExtraParametersTwoParams.war/src,\
+    test-applications/ExtraParametersOneParamWithEL.war/src,\
+    test-applications/ExtraParametersUsingEL.war/src,\
+    test-applications/ExtraParametersSpaceAsKey.war/src,\
+    test-applications/ExtraParametersLeadingSpaceInKey.war/src,\
     test-applications/PromptNone.war/src,\
     test-applications/PromptLogin.war/src,\
     test-applications/PromptConsent.war/src,\
@@ -45,7 +64,9 @@ src: \
     test-applications/PromptLoginConsent.war/src,\
     test-applications/PromptEmpty.war/src,\
     test-applications/PromptLoginWithEL.war/src,\
+    test-applications/JwksEndpoint.war/src
 
+    
 -dependson: \
     build.changeDetector,\
     com.ibm.ws.security.fat.common,\
@@ -63,7 +84,11 @@ javac.target: 11
 	io.openliberty.jakarta.annotation.2.0;version=latest,\
 	io.openliberty.jakarta.security.3.0;version=latest,\
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
+	io.openliberty.jakarta.cdi.4.0;version=latest,\
+	io.openliberty.jakarta.servlet.5.0,\
+	io.openliberty.jakarta.jsonp.2.1;version=latest,\
 	com.ibm.ws.security.fat.common;version=latest,\
+	com.ibm.ws.security.fat.common.jwt;version=latest,\
 	io.openliberty.security.jakartasec.3.0.internal_fat.common;version=latest,\
 	net.sourceforge.htmlunit:htmlunit;version='2.44.0',\
 	net.sourceforge.htmlunit:webdriver;version='2.6',\
@@ -71,11 +96,16 @@ javac.target: 11
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.ws.org.slf4j.api;version=latest,\
-	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	jakarta.inject.jakarta.inject-api;version=latest,\
-	io.openliberty.jakarta.servlet.5.0,\
-	io.openliberty.jakarta.jsonp.2.1;version=latest,\
-	com.ibm.ws.org.jose4j;version=latest
+    org.glassfish:javax.json;version=1.0,\
+    com.ibm.json4j;version=latest,\
+	com.ibm.ws.org.jose4j;version=latest,\
+	org.eclipse.parsson:parsson;version=1.1.0,\
+	javax.json-api
+
+
+#-testpath: \
+#  io.openliberty.org.eclipse.parsson.1.1
 
 Bundle-Name: Jakarta Sec 3.0 Config Fats
 Bundle-Description: Configuration FAT for Jakarta EE10 Security 3.0

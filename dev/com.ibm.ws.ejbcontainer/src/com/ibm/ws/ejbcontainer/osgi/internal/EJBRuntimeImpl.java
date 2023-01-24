@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -267,7 +267,15 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         if (!ProductInfo.getBetaEdition()) {
             this.checkpointPhase = phase;
         } else {
-            CheckpointPhase testPhase = CheckpointPhase.getPhase(System.getProperty("io.openliberty.ejb.checkpoint.phase", ""));
+            String testPhaseProp = System.getProperty("io.openliberty.ejb.checkpoint.phase");
+            CheckpointPhase testPhase = null;
+            if (testPhaseProp != null) {
+                try {
+                    testPhase = CheckpointPhase.valueOf(testPhaseProp.trim().toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    // do nothing; FFDC will happen causing test to fail
+                }
+            }
             if (phase == CheckpointPhase.INACTIVE && testPhase != null) {
                 this.checkpointPhase = testPhase;
             } else {

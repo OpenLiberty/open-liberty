@@ -15,7 +15,7 @@ define({
         LOGIN_TITLE: "Centro de administración de Liberty",
         LOGIN_USER: "Nombre de usuario",
         LOGIN_PASSWORD: "Contraseña",
-        LOGIN_COPYRIGHT: "Copyright (c) 2013, 2016 IBM Corporation y otros. Todos los derechos reservados.\nEste programa y los materiales complementarios se suministran bajo los términos de Eclipse Public License v1.0 que se proporciona con esta distribución y está disponible en http://www.eclipse.org/legal/epl-2.0/",
+        LOGIN_COPYRIGHT: "Copyright (c) 2013, 2016 IBM Corporation y otros. Todos los derechos reservados.\nEste programa y los materiales complementarios se suministran bajo los términos de Eclipse Public License 2.0 que se proporciona con esta distribución y está disponible en http://www.eclipse.org/legal/epl-2.0/",
         LOGIN_ERROR_MESSAGE: "Error de inicio de sesión: no se reconoce el nombre de usuario o la contraseña",
         ACCESS_ERROR_MESSAGE: "Error de acceso: la cuenta de usuario no está autorizada a acceder al Centro de administración"
 });

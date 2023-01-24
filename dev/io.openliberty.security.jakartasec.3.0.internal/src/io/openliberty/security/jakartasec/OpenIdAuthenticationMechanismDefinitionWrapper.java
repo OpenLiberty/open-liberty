@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,7 @@ package io.openliberty.security.jakartasec;
 
 import static io.openliberty.security.jakartasec.JakartaSec30Constants.EMPTY_DEFAULT;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -216,9 +217,11 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
                 return null;
             }
 
-            issueWarningMessage("scopeExpression", scopeExpression, EMPTY_DEFAULT);
+            String[] defaultScope = new String[] { OpenIdConstant.OPENID_SCOPE, OpenIdConstant.EMAIL_SCOPE, OpenIdConstant.PROFILE_SCOPE }; /* Default value from spec. */
 
-            return new String[] { OpenIdConstant.OPENID_SCOPE, OpenIdConstant.EMAIL_SCOPE, OpenIdConstant.PROFILE_SCOPE }; /* Default value from spec. */
+            issueWarningMessage("scopeExpression", scopeExpression, Arrays.toString(defaultScope));
+
+            return defaultScope;
         }
     }
 

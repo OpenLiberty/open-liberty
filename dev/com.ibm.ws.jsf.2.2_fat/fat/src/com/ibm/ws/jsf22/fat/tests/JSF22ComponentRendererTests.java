@@ -28,7 +28,6 @@ import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
@@ -67,13 +66,6 @@ public class JSF22ComponentRendererTests {
                                       "com.ibm.ws.jsf22.fat.componentrenderer.jsf703",
                                       isEE10 ? "com.ibm.ws.jsf22.fat.componentrenderer.jsf943.bean.faces40" : "com.ibm.ws.jsf22.fat.componentrenderer.jsf943.bean.jsf22",
                                       "com.ibm.ws.jsf22.fat.componentrenderer.jsf997");
-
-        if (isEE10) {
-            // For Faces 4.0, CDI @Named is used since @ManagedBean is no longer available.
-            ServerConfiguration config = jsfTestServer2.getServerConfiguration();
-            config.getFeatureManager().getFeatures().add("cdi-4.0");
-            jsfTestServer2.updateServerConfiguration(config);
-        }
 
         jsfTestServer2.startServer(JSF22ComponentRendererTests.class.getSimpleName() + ".log");
     }

@@ -23,8 +23,6 @@ import org.junit.runner.RunWith;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
-import com.ibm.ws.security.fat.common.expectations.ResponseMessageExpectation;
-import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ResponseUrlExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
@@ -188,7 +186,7 @@ public class ConfigurationPromptTests extends CommonAnnotatedSecurityTests {
 
     }
 
-    public void runBadEndToEndTestWithPromptNoneCheck(String appRoot, String app, boolean useBasicAuth, String error) throws Exception {
+    public void runBadEndToEndTestWithPromptNone(String appRoot, String app, boolean useBasicAuth, String error) throws Exception {
 
         WebClient webClient = getAndSaveWebClient();
         webClient.getOptions().setRedirectEnabled(false);
@@ -201,8 +199,7 @@ public class ConfigurationPromptTests extends CommonAnnotatedSecurityTests {
         response = actions.invokeUrl(_testName, webClient, callback);
 
         Expectations errorExpectations = new Expectations();
-        errorExpectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
-        errorExpectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive the Unauthorized message."));
+        errorExpectations.addUnauthorizedStatusCodeAndMessageForCurrentAction();
         errorExpectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2407E_ERROR_VERIFYING_RESPONSE, "Did not receive an error message stating that the client encountered an error verifying the authentication response."));
         errorExpectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2414E_CALLBACK_URL_INCLUDES_ERROR_PARAMETER + ".*\\[" + error + "]", "Did not receive an error message stating that the callback url includes the [" + error + "] error param."));
         validationUtils.validateResult(response, errorExpectations);
@@ -232,8 +229,7 @@ public class ConfigurationPromptTests extends CommonAnnotatedSecurityTests {
         String authEndpointPromptRegex = "https:\\/\\/localhost:" + opServer.getBvtSecurePort() + "\\/oidc\\/endpoint\\/OP[0-9]*\\/authorize\\?.*prompt=" + promptString + "(&|$)";
 
         Expectations authExpectations = new Expectations();
-        authExpectations.addExpectation(new ResponseStatusExpectation(Constants.REDIRECT_STATUS));
-        authExpectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, Constants.FOUND_MSG, "Did not receive the Found message."));
+        authExpectations.addFoundStatusCodeAndMessageForCurrentAction();
         authExpectations.addExpectation(new ResponseUrlExpectation(checkType, authEndpointPromptRegex, failureMessage));
         validationUtils.validateResult(response, authExpectations);
 
@@ -357,7 +353,7 @@ public class ConfigurationPromptTests extends CommonAnnotatedSecurityTests {
     @Test
     public void ConfigurationPromptTests_promptEL_none_loginRequired() throws Exception {
 
-        runBadEndToEndTestWithPromptNoneCheck("PromptELNoneLoginRequired", "PromptELServlet", false, LOGIN_REQUIRED);
+        runBadEndToEndTestWithPromptNone("PromptELNoneLoginRequired", "PromptELServlet", false, LOGIN_REQUIRED);
 
     }
 
@@ -373,7 +369,7 @@ public class ConfigurationPromptTests extends CommonAnnotatedSecurityTests {
     @Test
     public void ConfigurationPromptTests_promptEL_none_consentRequired() throws Exception {
 
-        runBadEndToEndTestWithPromptNoneCheck("PromptELNoneConsentRequired", "PromptELServlet", true, CONSENT_REQUIRED);
+        runBadEndToEndTestWithPromptNone("PromptELNoneConsentRequired", "PromptELServlet", true, CONSENT_REQUIRED);
 
     }
 

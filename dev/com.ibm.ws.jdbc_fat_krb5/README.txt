@@ -3,7 +3,7 @@
 This bucket uses several custom docker images:
  - A kerberos container (e.g. 'kyleaure/krb5-server:1.0')
  - A DB2 container      (e.g. 'kyleaure/db2-krb5:1.0')
- - An Oracle container  (e.g. 'kyleaure/oracle-18.4.0-expanded:1.0.full.krb5')
+ - An Oracle container  (e.g. 'kyleaure/oracle-21.3.0-faststart:1.0.full.krb5')
  - A Postgre container  (e.g. 'kyleaure/postgres-krb5:1.0')
  
 The files necessary to build each container can be found under the 'publish/files/' folder. For example, to rebuild the Oracle container you can do:

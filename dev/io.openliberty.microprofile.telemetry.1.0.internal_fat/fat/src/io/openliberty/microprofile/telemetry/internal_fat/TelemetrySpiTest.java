@@ -29,8 +29,6 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.InMemorySpanExporter;
-import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.InMemorySpanExporterProvider;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.spi.customizer.CustomizerTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.spi.customizer.TestCustomizer;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.spi.exporter.ExporterTestServlet;
@@ -42,6 +40,8 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.spi.resource.Test
 import io.openliberty.microprofile.telemetry.internal_fat.apps.spi.sampler.SamplerTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.spi.sampler.TestSampler;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.spi.sampler.TestSamplerProvider;
+import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
+import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporterProvider;
 import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizerProvider;
 import io.opentelemetry.sdk.autoconfigure.spi.ConfigurablePropagatorProvider;
 import io.opentelemetry.sdk.autoconfigure.spi.ResourceProvider;

@@ -1,11 +1,9 @@
 ###############################################################################
 # Copyright (c) 2010 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License 2.0
+# are made available under the terms of the Eclipse Public License v1.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
+# http://www.eclipse.org/legal/epl-v10.html
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -16,8 +14,7 @@
 # NLS_MESSAGEFORMAT_VAR
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-briefUsage=Syntax: java [JVM-Optionen] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
-\t-jar bin/tools/ws-server.jar Servername {0} [Optionen]  
+briefUsage=Syntax: java [JVM-Optionen] -javaagent:bin/tools/ws-javaagent.jar \\        \n\t-jar bin/tools/ws-server.jar Servername {0} [Optionen]  
 scriptUsage=Syntax: {0} {1} serverName [Optionen] [JVM-Optionen]
 
 use.actions=Aktionen:
@@ -37,23 +34,15 @@ category-key.misc=Sonstiges
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # ServerName
 processName.key=\ \ \ \ Servername
-processName.desc=\tEin lokal eindeutiger Name f\u00fcr den Server. Der Name kann aus \n\
-\talphanumerischen Unicode-Zeichen (z. B. A-Za-z0-9), Unterstreichungszeichen (_), \n\
-\tMinuszeichen (-), Pluszeichen (+) und Punkten (.) gebildet werden. Ein Servername \n\
-\tdarf nicht mit einem Minuszeichen (-) oder mit einem Punkt (.) beginnen.
+processName.desc=\tEin lokal eindeutiger Name f\u00fcr den Server. Der Name kann aus \n\talphanumerischen Unicode-Zeichen (z. B. A-Za-z0-9), Unterstreichungszeichen (_), \n\tMinuszeichen (-), Pluszeichen (+) und Punkten (.) gebildet werden. Ein Servername \n\tdarf nicht mit einem Minuszeichen (-) oder mit einem Punkt (.) beginnen.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # JavaAgent 
 javaAgent.key=\ \ \ \ -javaagent:bin/tools/ws-javaagent.jar
-javaAgent.desc=\tMit dieser JVM-Option wird ein Agent f\u00fcr die Instrumentierung angegeben.   \n\
-\tDie Laufzeitumgebung verwendet Instrumentierung f\u00fcr die Erfassung von Trace- und anderen\n\
-\tDebuginformationen. Die Datei bootstrap-agent.jar befindet sich in demselben Verzeichnis wie\n\
-\tdie JAR-Datei, die zum Starten der Laufzeitumgebung verwendet wird.
+javaAgent.desc=\tMit dieser JVM-Option wird ein Agent f\u00fcr die Instrumentierung angegeben.   \n\tDie Laufzeitumgebung verwendet Instrumentierung f\u00fcr die Erfassung von Trace- und anderen\n\tDebuginformationen. Die Datei bootstrap-agent.jar befindet sich in demselben Verzeichnis wie\n\tdie JAR-Datei, die zum Starten der Laufzeitumgebung verwendet wird.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Actions: create, stop, version, package, dump
 action-key.create=\ \ \ \ --create
-action-desc.create=\tNeue Server erstellen, wenn der angegebene Server nicht vorhanden ist. Die Option \n\
-\t--template kann verwendet werden, um eine Vorlage anzugeben, die zum Erstellen eines \n\
-\tneuen Servers verwendet werden soll.
+action-desc.create=\tNeue Server erstellen, wenn der angegebene Server nicht vorhanden ist. Die Option \n\t--template kann verwendet werden, um eine Vorlage anzugeben, die zum Erstellen eines \n\tneuen Servers verwendet werden soll.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.list=\ \ \ \ --list
 action-desc.list=\tListet die definierten Anwendungsserver des Liberty-Profils auf.
@@ -65,8 +54,7 @@ action-key.run=\ \ \ \ --run
 action-desc.run=\tF\u00fchrt den angegebenen Server im Vordergrund der Konsole aus.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.debug=\ \ \ \ --debug
-action-desc.debug=\tF\u00fchrt den benannten Server im Vordergrund der Konsole aus, nachdem\n\
-\tein Debugger eine Verbindung zum Debug-Port (standardm\u00e4\u00dfig 7777) hergestellt hat.
+action-desc.debug=\tF\u00fchrt den benannten Server im Vordergrund der Konsole aus, nachdem\n\tein Debugger eine Verbindung zum Debug-Port (standardm\u00e4\u00dfig 7777) hergestellt hat.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.status=\ \ \ \ --status
 action-desc.status=\tPr\u00fcft den Status des angegebenen Servers.
@@ -78,32 +66,19 @@ action-key.version=\ \ \ \ --version
 action-desc.version=\tVersionsinformationen des Servers anzeigen und beenden.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.package=\ \ \ \ --package
-action-desc.package=\tServer in ein Archiv packen. \
-Die Option --archive kann verwendet werden.    \n\
-\tDie Option --include kann zusammen mit den Werten "all", "usr", \n\
-\t"minify", "wlp", "runnable", "all,runnable" und "minify,runnable"\n\
-\tverwendet werden. Die Werte "runnable" und "all,runnable" sind \n\
-\t\u00e4quivalent. Der Wert "runnable" funktioniert nur f\u00fcr Archive\n\
-\tdes Typs "jar". Mit der Option --server-root kann der\n\
-\tStammordner im Paketarchiv angegeben werden.
+action-desc.package=\tServer in ein Archiv packen. Die Option --archive kann verwendet werden.    \n\tDie Option --include kann zusammen mit den Werten "all", "usr", \n\t"minify", "wlp", "runnable", "all,runnable" und "minify,runnable"\n\tverwendet werden. Die Werte "runnable" und "all,runnable" sind \n\t\u00e4quivalent. Der Wert "runnable" funktioniert nur f\u00fcr Archive\n\tdes Typs "jar". Mit der Option --server-root kann der\n\tStammordner im Paketarchiv angegeben werden.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.dump=\ \ \ \ --dump
-action-desc.dump=\tSpeichert Diagnoseinformationen des Servers in einem Archiv. \
-Die Option \n\
-\t--archive kann verwendet werden. Die Option --include kann mit den Werten\n\
-\t"heap", "system" und "thread" verwendet werden.
+action-desc.dump=\tSpeichert Diagnoseinformationen des Servers in einem Archiv. Die Option \n\t--archive kann verwendet werden. Die Option --include kann mit den Werten\n\t"heap", "system" und "thread" verwendet werden.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.javadump=\ \ \ \ --javadump
-action-desc.javadump=\tErstellt einen Speicherauszug der Diagnoseinformationen aus der Server-JVM. Die \n\
-\tOption --include kann mit den Werten "heap" und "system" verwendet werden.
+action-desc.javadump=\tErstellt einen Speicherauszug der Diagnoseinformationen aus der Server-JVM. Die \n\tOption --include kann mit den Werten "heap" und "system" verwendet werden.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.registerWinService=\ \ \ \ --registerWinService
 action-desc.registerWinService=\tRegistriert den angegebenen Server als Windows-Dienstprogramm.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.startWinService=\ \ \ \ --startWinService
-action-desc.startWinService=\tStartet den angegebenen Server als Windows-Dienstprogramm. \
-            \n\
-\tEr muss vor dem Start registriert werden.
+action-desc.startWinService=\tStartet den angegebenen Server als Windows-Dienstprogramm. \n\tEr muss vor dem Start registriert werden.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.stopWinService=\ \ \ \ --stopWinService
 action-desc.stopWinService=\tStoppt den angegebenen Server als Windows-Dienstprogramm.
@@ -115,90 +90,38 @@ action-key.help=\ \ \ \ --help
 action-desc.help=\tGibt die Hilfeinformationen aus.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.pause=\ \ \ \ --pause
-action-desc.pause=\tAlle Komponenten im Server anhalten, die angehalten werden k\u00f6nnen. \n\
-\tSie k\u00f6nnen einen Teil der Komponenten anhalten, indem Sie die\n\
-\tgew\u00fcnschten Komponenten mit der Option --target angeben.
+action-desc.pause=\tAlle Komponenten im Server anhalten, die angehalten werden k\u00f6nnen. \n\tSie k\u00f6nnen einen Teil der Komponenten anhalten, indem Sie die\n\tgew\u00fcnschten Komponenten mit der Option --target angeben.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 action-key.resume=\ \ \ \ --resume
-action-desc.resume=\tAusf\u00fchrung aller angehaltenen Komponenten im Server \n\
-\tfortsetzen. Mit der Option --target k\u00f6nnen Sie bestimmte \n\
-\tangehaltene Komponenten angeben, deren Ausf\u00fchrung\n\
-\tfortgesetzt werden soll.
+action-desc.resume=\tAusf\u00fchrung aller angehaltenen Komponenten im Server \n\tfortsetzen. Mit der Option --target k\u00f6nnen Sie bestimmte \n\tangehaltene Komponenten angeben, deren Ausf\u00fchrung\n\tfortgesetzt werden soll.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.clean=\ \ \ \ --clean
-option-desc.start.clean=\tAlle zwischengespeicherten Informationen bereinigen, \n\
-\tdie sich auf diese Serverinstanz beziehen.
-
+option-desc.start.clean=\tAlle zwischengespeicherten Informationen bereinigen, \n\tdie sich auf diese Serverinstanz beziehen.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.archive=\ \ \ \ --archive="Pfad zur Zielarchivdatei"
-option-desc.dump.archive=\tGeben Sie das durch die Speicherauszugsaktion zu generierende Archivierungsziel an.\n\
-\tDas Ziel kann als absoluter Pfad oder als relativer Pfad angegeben\n\
-\twerden. Wird diese Option ausgelassen, wird die Archivdatei im\n\
-\tAusgabeverzeichnis des Servers erstellt. Die Erweiterung des Zieldateinamens\n\
-\tkann Einfluss auf das Format des generierten Archivs haben. Das Standardarchivformat\n\
-\tf\u00fcr die Paketaktion ist "pax" unter z/OS und "zip" auf allen anderen\n\
-\tPlattformen. Das Archivformat "jar" erzeugt eine selbstextrahierende JAR-Datei, die\n\
-\tdem urspr\u00fcnglichen Installationsarchiv gleicht. 
-option-desc.package.archive=\tGeben Sie das durch die Paketaktion zu generierende Archivierungsziel an.\n\
-\tDas Ziel kann als absoluter Pfad oder als relativer Pfad angegeben\n\
-\twerden. Wird diese Option ausgelassen, wird die Archivdatei im\n\
-\tAusgabeverzeichnis des Servers erstellt. Die Erweiterung des Zieldateinamens\n\
-\tkann Einfluss auf das Format des generierten Archivs haben. Das Standardarchivformat\n\
-\tf\u00fcr die Paketaktion ist "pax" unter z/OS und "zip" auf allen anderen\n\
-\tPlattformen. Das Archivformat "jar" erzeugt eine selbstextrahierende JAR-Datei, die\n\
-\tdem urspr\u00fcnglichen Installationsarchiv gleicht. Das Archivformat "jar" erzeugt in\n\
-\tKombination mit "runnable" in der Option --include eine ausf\u00fcrbare JAR-Datei, \n\
-\tmit der der Liberty-Server unter Verwendung von java -jar ausgef\u00fchrt werden\n\
-\tkann.
+option-desc.dump.archive=\tGeben Sie das durch die Speicherauszugsaktion zu generierende Archivierungsziel an.\n\tDas Ziel kann als absoluter Pfad oder als relativer Pfad angegeben\n\twerden. Wird diese Option ausgelassen, wird die Archivdatei im\n\tAusgabeverzeichnis des Servers erstellt. Die Erweiterung des Zieldateinamens\n\tkann Einfluss auf das Format des generierten Archivs haben. Das Standardarchivformat\n\tf\u00fcr die Paketaktion ist "pax" unter z/OS und "zip" auf allen anderen\n\tPlattformen. Das Archivformat "jar" erzeugt eine selbstextrahierende JAR-Datei, die\n\tdem urspr\u00fcnglichen Installationsarchiv gleicht. 
+option-desc.package.archive=\tGeben Sie das durch die Paketaktion zu generierende Archivierungsziel an.\n\tDas Ziel kann als absoluter Pfad oder als relativer Pfad angegeben\n\twerden. Wird diese Option ausgelassen, wird die Archivdatei im\n\tAusgabeverzeichnis des Servers erstellt. Die Erweiterung des Zieldateinamens\n\tkann Einfluss auf das Format des generierten Archivs haben. Das Standardarchivformat\n\tf\u00fcr die Paketaktion ist "pax" unter z/OS und "zip" auf allen anderen\n\tPlattformen. Das Archivformat "jar" erzeugt eine selbstextrahierende JAR-Datei, die\n\tdem urspr\u00fcnglichen Installationsarchiv gleicht. Das Archivformat "jar" erzeugt in\n\tKombination mit "runnable" in der Option --include eine ausf\u00fcrbare JAR-Datei, \n\tmit der der Liberty-Server unter Verwendung von java -jar ausgef\u00fchrt werden\n\tkann.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.include=\ \ \ \ --include=Wert,Wert,...
-option-desc.javadump.include=\tEine durch Kommas begrenzte Liste mit Werten. G\u00fcltige Werte sind: heap, system \n\
-\tthread.
-option-desc.package.include=\tEine durch Kommas begrenzte Liste mit Werten. G\u00fcltige Werte sind: all*, usr,   \n\
-\tminify, runnable und wlp. Wenn Sie runnable angeben, ist das erstellte Paket\n\
-\teine ausf\u00fchrbare JAR-Datei, die den Server ausf\u00fchrt. Die Option minify erzeugt\n\
-\tdas f\u00fcr den Server kleinstm\u00f6gliche Image. Die Option usr erstellt ein Paket, \n\
-\tdas den Server und die Anwendung enth\u00e4lt, aber nicht die \n\
-\tLaufzeitumgebung. Die Option wlp erstellt eine Laufzeitumgebung, \n\
-\tdie die Serverkonfiguration nicht enth\u00e4lt. Die Standardoption\n\
-\tall erzeugt ein Serverpaket, das alles enth\u00e4lt.
+option-desc.javadump.include=\tEine durch Kommas begrenzte Liste mit Werten. G\u00fcltige Werte sind: heap, system \n\tthread.
+option-desc.package.include=\tEine durch Kommas begrenzte Liste mit Werten. G\u00fcltige Werte sind: all*, usr,   \n\tminify, runnable und wlp. Wenn Sie runnable angeben, ist das erstellte Paket\n\teine ausf\u00fchrbare JAR-Datei, die den Server ausf\u00fchrt. Die Option minify erzeugt\n\tdas f\u00fcr den Server kleinstm\u00f6gliche Image. Die Option usr erstellt ein Paket, \n\tdas den Server und die Anwendung enth\u00e4lt, aber nicht die \n\tLaufzeitumgebung. Die Option wlp erstellt eine Laufzeitumgebung, \n\tdie die Serverkonfiguration nicht enth\u00e4lt. Die Standardoption\n\tall erzeugt ein Serverpaket, das alles enth\u00e4lt.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\ \ \ \ --template="Schablonenname"
 option-desc.template=\tGibt den Namen der Schablone an, die beim Erstellen eines neuen Servers verwendet werden soll.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.target=\ \ \ \ --target=Wert,Wert
-option-desc.target=\tGibt eine durch Kommas begrenzte Liste mit Komponenten\n\
-\tan, die Sie anhalten oder fortsetzen k\u00f6nnen.
+option-desc.target=\tGibt eine durch Kommas begrenzte Liste mit Komponenten\n\tan, die Sie anhalten oder fortsetzen k\u00f6nnen.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.os=\ \ \ \ --os=Wert,Wert,...
-option-desc.os=\tGibt die Betriebssysteme an, die der gepackte Server unterst\u00fctzen\n\
-\tsoll. Geben Sie eine durch Kommas getrennte Liste an. Der \n\
-\tStandardwert ist any, d. h., der Server muss unter jedem von der \n\
-\tQuelle unterst\u00fctzten Betriebssystem implementierbar sein. Um\n\
-\tanzugeben, dass ein Betriebssystem nicht unterst\u00fctzt wird, stellen\n\
-\tSie diesem Betriebssystem ein Minuszeichen ("-") voran. Eine \n\
-\tListe der Betriebssystemwerte finden Sie auf der OSGi Alliance-Website\n\
-\tunter der folgenden URL: \n\
-\thttp://www.osgi.org/Specifications/Reference#os                      \n\
-\tDiese Option gilt nur f\u00fcr die Paketoperation und kann nur mit der \n\
-\tOption --include=minify verwendet werden. Wenn Sie ein Betriebssystem\n\
-\tausschlie\u00dfen, ist es nicht m\u00f6glich, es sp\u00e4ter durch Wiederholung einer \n\
-\tminify-Operation wieder in das Archiv einzuschlie\u00dfen. 
+option-desc.os=\tGibt die Betriebssysteme an, die der gepackte Server unterst\u00fctzen\n\tsoll. Geben Sie eine durch Kommas getrennte Liste an. Der \n\tStandardwert ist any, d. h., der Server muss unter jedem von der \n\tQuelle unterst\u00fctzten Betriebssystem implementierbar sein. Um\n\tanzugeben, dass ein Betriebssystem nicht unterst\u00fctzt wird, stellen\n\tSie diesem Betriebssystem ein Minuszeichen ("-") voran. Eine \n\tListe der Betriebssystemwerte finden Sie auf der OSGi Alliance-Website\n\tunter der folgenden URL: \n\thttp://www.osgi.org/Specifications/Reference#os                      \n\tDiese Option gilt nur f\u00fcr die Paketoperation und kann nur mit der \n\tOption --include=minify verwendet werden. Wenn Sie ein Betriebssystem\n\tausschlie\u00dfen, ist es nicht m\u00f6glich, es sp\u00e4ter durch Wiederholung einer \n\tminify-Operation wieder in das Archiv einzuschlie\u00dfen. 
 #------------------------------\n at 72 chars -- leading tab-----------\n\# 
 option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\tInaktiviert die Generierung des Standard-Keystore-Kennworts.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="Serverstammordner im Archiv"
 option-desc.package.server-root=\tGibt den Namen des Serverstammordners in der Archivdatei an.\n
-#------------------------------\n\
-\ at 72 chars -- leading tab-----------\n\
-\#
 option-key.force=\ \ \ \ --force
-option-desc.stop.force=\t\u00dcberspringt die Quiescephase, bevor der Server heruntergefahren wird. Der normale\n\
-\tServerstopp beinhaltet eine Quiescephase, bevor der Server heruntergefahren wird. Die Quiescephase,\n\
-\teine Zeit von 30 Sekunden, erm\u00f6glicht Services, Arbeiten vorab zu beenden, z. B. eingehende\n\
-\tListener werden gestoppt, w\u00e4hrend vorhandene Anforderungen noch ausgef\u00fchrt werden \n\
-\td\u00fcrfen. Die Option --force option wirkt sich nicht aus, wenn der Serverstopp bereits \n\
-\taufgerufen wurde. Wenn Sie die Option --force verwenden, werden m\u00f6glicherweise nicht \n\
-\terwartete Ausnahmen in der Datei messages.log angezeigt, die nach dem Empfang des Befehls \n\
-\tzum Stoppen des Servers vom Server empfangen wurden.
+option-desc.stop.force=\t\u00dcberspringt die Quiesce-Phase, bevor der Server heruntergefahren wird. Der normale Serverstopp\n beinhaltet eine Quiesce-Phase, bevor der Server heruntergefahren wird. Die \n Quiesce-Phase (ein Zeitraum von 30 Sekunden) erm\u00f6glicht es Services, \n Arbeiten vor dem Herunterfahren auszuf\u00fchren. Beispielsweise werden eingehende Listener gestoppt, aber \n vorhandene Anforderungen k\u00f6nnen abgeschlossen werden. Die Option --force hat keine \n Auswirkung, wenn der Server bereits gestoppt wurde. Wenn Sie die Option '--force' \n verwenden, werden in der Datei messages.log \n m\u00f6glicherweise unerwartete Ausnahmebedingungen angezeigt, die auftreten, nachdem der Server den Befehl zum Stoppen des Servers empfangen hat. \n
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.timeout=\ \ \ \ --timeout
+option-desc.stop.timeout=\tLegt fest, wie lange der Befehl 'server stop' maximal auf\n die Best\u00e4tigung wartet, dass der Server gestoppt wurde.  Geben Sie eine positive ganze Zahl\n gefolgt von einer Zeiteinheit an, die Minuten (m) und \n Sekunden (s) enthalten kann. Geben Sie beispielsweise 2,5 Minuten als --timeout=2m30s \n oder --timeout=150s an.                                                   \n\t                                                                     \n\tDas Standardzeitlimit sind 30 Sekunden. Wenn das Stoppen des Servers durchg\u00e4ngig \n l\u00e4nger als 30 Sekunden dauert, sollten Sie den Zeitlimitwert\n mit der Option '--timeout' erh\u00f6hen.                                 \n

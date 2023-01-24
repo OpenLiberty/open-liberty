@@ -33,4 +33,22 @@ public interface ConfigFieldProvider {
      */
     public Collection<ConfigField> getConfigFields();
 
+    /**
+     * Serialize the configured servers from the config for the given path
+     *
+     * @param config the config to read from
+     * @param path the path
+     * @return serialization of the configured servers for the given path, or {@code null} or an empty string if no servers are configured for that path
+     */
+    public String getPathServers(OpenApiConfig config, String path);
+
+    /**
+     * Serialize the configured servers from the config for the given operation
+     *
+     * @param config the config to read from
+     * @param operationId the operation ID
+     * @return serialization of the configured servers for the given operation, or {@code null} or an empty string if no servers are configured for that operation
+     */
+    public String getOperationServers(OpenApiConfig config, String operationId);
+
 }

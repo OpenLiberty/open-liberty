@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -74,6 +74,8 @@ import jakarta.servlet.http.HttpServletResponse;
 public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechanism {
 
     private static final TraceComponent tc = Tr.register(OidcHttpAuthenticationMechanism.class);
+
+    private static final String CHECKING_FOR_EXPIRED_TOKEN = "CHECKING_FOR_EXPIRED_TOKEN";
 
     @Inject
     IdentityStoreHandler identityStoreHandler;
@@ -498,7 +500,13 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
             idTokenString = idToken.getToken();
         }
         String refreshTokenString = getRefreshToken(openIdContext);
-        return client.processExpiredToken(request, response, isAccessTokenExpired, isIdTokenExpired, idTokenString, refreshTokenString);
+
+        request.setAttribute(CHECKING_FOR_EXPIRED_TOKEN, true);
+        ProviderAuthenticationResult providerAuthenticationResult = client.processExpiredToken(request, response, isAccessTokenExpired, isIdTokenExpired, idTokenString,
+                                                                                               refreshTokenString);
+        request.removeAttribute(CHECKING_FOR_EXPIRED_TOKEN);
+
+        return providerAuthenticationResult;
     }
 
     private String getRefreshToken(OpenIdContext openIdContext) {
@@ -513,10 +521,36 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
     }
 
     @Override
-    public void cleanSubject(HttpServletRequest request,
-                             HttpServletResponse response,
-                             HttpMessageContext httpMessageContext) {
+    public void cleanSubject(HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) {
+        boolean checkingForExpiredToken = (boolean) request.getAttribute(CHECKING_FOR_EXPIRED_TOKEN);
 
+        // Skip if invocation is due to a logout during a check for an expired token. LogoutHandler will process the rest of the logout.
+        if (!checkingForExpiredToken) {
+            String idTokenString = null;
+            OpenIdContext openIdContext = OpenIdContextUtils.getOpenIdContextFromSubject();
+
+            if (openIdContext != null) {
+                IdentityToken idToken = openIdContext.getIdentityToken();
+                if (idToken != null) {
+                    idTokenString = idToken.getToken();
+                }
+            }
+
+            Client client = getClient(request);
+            // The cleanSubject invocation is already in a local logout due to request.logout() and the session will be invalidated if available. So call logoutWithoutLocalLogout.
+            ProviderAuthenticationResult providerAuthenticationResult = client.logoutWithoutLocalLogout(request, response, idTokenString);
+
+            processLogoutResult(providerAuthenticationResult, httpMessageContext);
+        }
+    }
+
+    // Process only redirections. Error messages when failing to re-authenticate are already handled by JakartaOidcAuthorizationRequest.
+    private void processLogoutResult(ProviderAuthenticationResult providerAuthenticationResult, HttpMessageContext httpMessageContext) {
+        AuthResult authResult = providerAuthenticationResult.getStatus();
+
+        if (AuthResult.REDIRECT_TO_PROVIDER.equals(authResult)) {
+            httpMessageContext.redirect(providerAuthenticationResult.getRedirectUrl());
+        }
     }
 
 }

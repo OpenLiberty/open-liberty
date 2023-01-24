@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,13 +22,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
 import com.ibm.ws.security.krb5.SpnegoUtil;
-import com.ibm.ws.webcontainer.security.internal.BasicAuthAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.CertificateLoginAuthenticator;
 import com.ibm.ws.webcontainer.security.internal.SSOAuthenticator;
 import com.ibm.ws.webcontainer.security.metadata.FormLoginConfiguration;
 import com.ibm.ws.webcontainer.security.metadata.LoginConfiguration;
 import com.ibm.ws.webcontainer.security.metadata.MatchResponse;
 import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
+import com.ibm.ws.webcontainer.srt.ISRTServletRequest;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 /**
  *
@@ -153,7 +154,7 @@ public class WebRequestImpl implements WebRequest {
      * @return {@code true} if some authentication data is available, {@code false} otherwise.
      */
     private boolean determineIfRequestHasAuthenticationData() {
-        String hdrValue = request.getHeader(BasicAuthAuthenticator.BASIC_AUTH_HEADER_NAME);
+        String hdrValue = ISRTServletRequest.getHeader(request, HttpHeaderKeys.HDR_AUTHORIZATION);
         return isBasicOrBearerAuthHeaderInRequest(hdrValue) || isClientCertHeaderInRequest(request) || isSSOCookieInRequest(request)
                || spnegoUtil.isSpnegoOrKrb5Token(hdrValue);
     }

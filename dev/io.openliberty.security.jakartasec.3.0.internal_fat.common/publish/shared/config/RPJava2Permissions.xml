@@ -18,5 +18,6 @@
 	<javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="io.openliberty.security.jakartasec.identitystore.OpenIdContextImpl" principalType="*" principalName="*" actions="read"/>
 	<javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.token.internal.SingleSignonTokenImpl" principalType="*" principalName="*" actions="read"/>
 	<javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.openidconnect.client.jose4j.OidcTokenImpl" principalType="*" principalName="*" actions="read"/>
-
+	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
+	
 </server>

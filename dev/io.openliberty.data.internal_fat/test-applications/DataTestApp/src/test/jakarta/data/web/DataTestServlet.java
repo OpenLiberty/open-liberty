@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -271,13 +271,14 @@ public class DataTestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         // Async update
-        CompletionStage<List<Person>> updated = personnel.changeSurnames("TestAsynchronous", "Test-Asynchronous",
+        CompletionStage<List<Person>> updated = personnel.changeSurnames("TestAsynchronous",
                                                                          List.of(1002003009L, 1002003008L, 1002003005L,
-                                                                                 1002003003L, 1002003002L, 1002003001L))
+                                                                                 1002003003L, 1002003002L, 1002003001L),
+                                                                         "TestAAsynchronous") // use only alphanumeric characters to ensure consistent sorting across databases
                         .thenCompose(updateCount -> {
                             assertEquals(Integer.valueOf(6), updateCount);
 
-                            return personnel.findByLastNameOrderByFirstName("Test-Asynchronous");
+                            return personnel.findByLastNameOrderByFirstName("TestAAsynchronous");
                         });
 
         assertIterableEquals(List.of("Aaron", "Albert", "Alice", "Amy", "Andrew", "Bob"),
@@ -298,7 +299,7 @@ public class DataTestServlet extends FATServlet {
             for (String lastName : lastNames)
                 names.add(lastName);
         }).toCompletableFuture().get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
-        assertEquals("Test-Asynchronous", names.poll());
+        assertEquals("TestAAsynchronous", names.poll());
         assertEquals("TestAsynchronous", names.poll());
         assertEquals(null, names.poll());
 
@@ -350,7 +351,7 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(Long.valueOf(4), bNames.stream().collect(lengthAverager));
 
-        assertEquals(Boolean.TRUE, personnel.setSurnameAsync("TestAsynchronously", 1002003008L).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+        assertEquals(Boolean.TRUE, personnel.setSurnameAsync(1002003008L, "TestAsynchronously").get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
 
         // Async delete with void return type
         personnel.deleteByFirstName("Andrew");
@@ -405,7 +406,7 @@ public class DataTestServlet extends FATServlet {
         tran.begin();
         try {
             // main thread obtains lock on p1
-            assertEquals(1L, personnel.setSurname("Test-AsyncPreventsDeadlock", p1.ssn));
+            assertEquals(1L, personnel.setSurname(p1.ssn, "Test-AsyncPreventsDeadlock"));
 
             CountDownLatch locked2 = new CountDownLatch(1);
 
@@ -415,12 +416,12 @@ public class DataTestServlet extends FATServlet {
                     tran.begin();
                     try {
                         // lock on p2
-                        long updateCount2 = personnel.setSurname("TestAsync-PreventsDeadlock", p2.ssn);
+                        long updateCount2 = personnel.setSurname(p2.ssn, "TestAsync-PreventsDeadlock");
 
                         locked2.countDown();
 
                         // lock on p1
-                        return updateCount2 + personnel.setSurname("TestAsync-PreventsDeadlock", p1.ssn);
+                        return updateCount2 + personnel.setSurname(p1.ssn, "TestAsync-PreventsDeadlock");
                     } finally {
                         tran.rollback();
                     }
@@ -433,7 +434,7 @@ public class DataTestServlet extends FATServlet {
 
             // If this runs on a third thread as expected, it will be blocked until the second thread releases the lock.
             // If it runs inline (unexpected) deadlock will occur.
-            updated2 = personnel.setSurnameAsync("TestAsyncPrevents-Deadlock", p2.ssn);
+            updated2 = personnel.setSurnameAsync(p2.ssn, "TestAsyncPrevents-Deadlock");
 
             try {
                 Boolean wasUpdated = updated2.get(1, TimeUnit.SECONDS);
@@ -512,7 +513,7 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Count the number of matching elements in the database.
+     * Count the number of matching entries in the database using query by method name.
      */
     @Test
     public void testCount() throws ExecutionException, InterruptedException, TimeoutException {
@@ -524,6 +525,20 @@ public class DataTestServlet extends FATServlet {
         assertEquals(Integer.valueOf(3), primes.countNumberBetween(40, 50));
 
         assertEquals(Short.valueOf((short) 14), primes.countByNumberBetweenAndEvenNot(0, 50, true).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+    }
+
+    /**
+     * Count the number of matching entries in the database using annotatively defined queries.
+     */
+    @Test
+    public void testCountAnnotation() throws ExecutionException, InterruptedException, TimeoutException {
+
+        assertEquals(6, primes.howManyIn(17L, 37L));
+        assertEquals(0, primes.howManyIn(24L, 28L));
+
+        assertEquals(Long.valueOf(5), primes.howManyLessThan20StartingAfter(5));
+        assertEquals(Long.valueOf(0), primes.howManyLessThan20StartingAfter(19));
+        assertEquals(Long.valueOf(0), primes.howManyLessThan20StartingAfter(21));
     }
 
     /**
@@ -725,7 +740,7 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Identify whether elements exist in the database.
+     * Identify whether elements exist in the database using query by method name.
      */
     @Test
     public void testExists() {
@@ -734,6 +749,28 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(Boolean.TRUE, primes.existsNumberBetween(Long.valueOf(14), Long.valueOf(18)));
         assertEquals(Boolean.FALSE, primes.existsNumberBetween(Long.valueOf(24), Long.valueOf(28)));
+    }
+
+    /**
+     * Identify whether elements exist in the database using an annotatively defined query.
+     */
+    @Test
+    public void testExistsAnnotation() {
+        assertEquals(true, primes.anyLessThanEndingWithBitPattern(25L, "1101"));
+        assertEquals(false, primes.anyLessThanEndingWithBitPattern(25L, "1111"));
+        assertEquals(false, primes.anyLessThanEndingWithBitPattern(12L, "1101"));
+    }
+
+    /**
+     * Define a query with Filter annotations.
+     */
+    @Test
+    public void testFilterAnnotation() {
+        assertIterableEquals(List.of(37L, 17L, 7L, 5L), // 11 has no V in the roman numeral and 47 is too big
+                             primes.inRangeHavingVNumeralAndSubstringOfName(5L, 45L, "ve"));
+
+        assertIterableEquals(List.of(),
+                             primes.inRangeHavingVNumeralAndSubstringOfName(1L, 18L, "nine"));
     }
 
     /**
@@ -2211,6 +2248,15 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Test NotBetween in a filter.
+     */
+    @Test
+    public void testNotBetweenFromFilter() {
+        assertIterableEquals(List.of(2L, 3L, 5L, 7L, 41L, 43L, 47L),
+                             primes.notWithinButBelow(10, 40, 50));
+    }
+
+    /**
      * PageableRepository.findAll(Pageable) must raise NullPointerException.
      */
     @Test
@@ -2328,13 +2374,13 @@ public class DataTestServlet extends FATServlet {
 
         Shipment s5 = new Shipment();
         s5.destination = "201 4th St SE, Rochester, MN 55904";
-        s5.location = " 2800 37th St NW, Rochester, MN 55901";
+        s5.location = "2800 37th St NW, Rochester, MN 55901";
         s5.id = 5;
         s5.orderedAt = OffsetDateTime.now().minusSeconds(50);
         s5.status = "PREPARING";
         shipments.save(s5);
 
-        assertEquals(true, shipments.dispatch(2, "44.036217, -92.488040"));
+        assertEquals(true, shipments.dispatch(2, "44.036217, -92.488040", OffsetDateTime.now()));
         assertEquals("IN_TRANSIT", shipments.getStatus(2));
 
         // @OrderBy "destination"
@@ -2358,17 +2404,25 @@ public class DataTestServlet extends FATServlet {
         s = shipments.find(3);
         assertEquals("44.029468, -92.483191", s.location);
 
-        assertEquals(true, shipments.cancel(4));
-        assertEquals(true, shipments.cancel(5));
-        assertEquals(false, shipments.cancel(10));
-
-        shipments.trim();
-        s = shipments.find(4);
-        assertEquals("2800 37th St NW, Rochester, MN 55901", s.location);
+        assertEquals(true, shipments.cancel(4, OffsetDateTime.now()));
+        assertEquals(true, shipments.cancel(5, OffsetDateTime.now()));
+        assertEquals(false, shipments.cancel(10, OffsetDateTime.now()));
 
         assertEquals(2, shipments.removeCanceled());
 
         assertEquals(3, shipments.removeEverything());
+    }
+
+    /**
+     * Use a repository method that has both AND and OR keywords.
+     * The AND keywords should take precedence over OR and be computed first.
+     */
+    @Test
+    public void testPrecedenceOfAndOverOr() {
+        assertIterableEquals(List.of(41L, 37L, 31L, 11L, 7L),
+                             primes.lessThanWithSuffixOrBetweenWithSuffix(40L, "even", 30L, 50L, "one")
+                                             .map(p -> p.number)
+                                             .collect(Collectors.toList()));
     }
 
     /**
@@ -2795,16 +2849,16 @@ public class DataTestServlet extends FATServlet {
         Reservation found = set.iterator().next();
         assertEquals(10030005L, found.meetingID);
 
-        // EndsWith, Upper
+        // EndsWith, IgnoreCase
         assertIterableEquals(List.of(10030002L, 10030005L, 10030007L),
-                             reservations.findByUpperHostEndsWith("HOST2@EXAMPLE.ORG")
+                             reservations.findByHostIgnoreCaseEndsWith("HOST2@EXAMPLE.ORG")
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .sorted()
                                              .collect(Collectors.toList()));
 
-        assertIterableEquals(Collections.EMPTY_LIST,
-                             reservations.findByUpperHostEndsWith("host2@example.org") // should not match with lower case
+        assertIterableEquals(List.of(10030002L, 10030005L, 10030007L),
+                             reservations.findByHostIgnoreCaseEndsWith("Host2@Example.org") // should match regardless of case
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .sorted()
@@ -2813,14 +2867,6 @@ public class DataTestServlet extends FATServlet {
         // StartsWith
         assertIterableEquals(List.of(10030005L, 10030007L, 10030009L),
                              reservations.findByLocationStartsWith("050-2 B")
-                                             .stream()
-                                             .map(r -> r.meetingID)
-                                             .sorted()
-                                             .collect(Collectors.toList()));
-
-        // Lower
-        assertIterableEquals(List.of(10030001L, 10030004L, 10030006L, 10030008L),
-                             reservations.findByLowerLocationIn(List.of("050-2 g105", "030-2 e314", "050-2 h115", "050-3 H103")) // H103 has upper case and should not match
                                              .stream()
                                              .map(r -> r.meetingID)
                                              .sorted()
@@ -2989,6 +3035,42 @@ public class DataTestServlet extends FATServlet {
         assertEquals(13.8f, p.width, 0.01f);
         assertEquals(19.5f, p.height, 0.01f);
 
+        // divide width and append to description via query by method name
+        assertEquals(true, packages.updateByIdDivideWidthAddDescription(990003, 2, " halved"));
+
+        p = packages.findById(990003).orElseThrow();
+        assertEquals(11.4f, p.length, 0.01f);
+        assertEquals(11.3f, p.width, 0.01f);
+        assertEquals(10.2f, p.height, 0.01f);
+        assertEquals("Tissue box halved", p.description);
+
+        // divide height and append to description via annotatively defined method with positional parameters
+        assertEquals(1, packages.reduceBy(990003, 1.02f, " and slightly shortened"));
+
+        p = packages.findById(990003).orElseThrow();
+        assertEquals(11.4f, p.length, 0.01f);
+        assertEquals(11.3f, p.width, 0.01f);
+        assertEquals(10.0f, p.height, 0.01f);
+        assertEquals("Tissue box halved and slightly shortened", p.description);
+
+        // subtract from height and append to description via annotatively defined method with fixed values
+        assertEquals(true, packages.shorten(990003));
+
+        p = packages.findById(990003).orElseThrow();
+        assertEquals(11.4f, p.length, 0.01f);
+        assertEquals(11.3f, p.width, 0.01f);
+        assertEquals(9.0f, p.height, 0.01f);
+        assertEquals("Tissue box halved and slightly shortened and shortened 1 cm", p.description);
+
+        // subtract from height and append to description via annotatively defined method with named parameters
+        packages.shortenBy(2, " and shortened 2 cm", 990003);
+
+        p = packages.findById(990003).orElseThrow();
+        assertEquals(11.4f, p.length, 0.01f);
+        assertEquals(11.3f, p.width, 0.01f);
+        assertEquals(7.0f, p.height, 0.01f);
+        assertEquals("Tissue box halved and slightly shortened and shortened 1 cm and shortened 2 cm", p.description);
+
         packages.delete(p3);
 
         Page<Package> page = packages.findAll(Pageable.ofSize(3).sortBy(Sort.desc("id")));
@@ -3036,7 +3118,7 @@ public class DataTestServlet extends FATServlet {
 
         // "Like" is used as a reserved keyword here.
         assertIterableEquals(List.of("A101"),
-                             things.findByALike("A%")
+                             things.findByALike("A1%") // include second character so that databases that compare independent of case don't match "apple"
                                              .map(o -> o.a)
                                              .collect(Collectors.toList()));
 
@@ -3586,6 +3668,106 @@ public class DataTestServlet extends FATServlet {
                              page4.stream().map(p -> p.number).collect(Collectors.toList()));
 
         assertEquals(null, page4.nextPageable());
+    }
+
+    /**
+     * Update multiple entries.
+     */
+    @Test
+    public void testUpdateAnnotation() {
+        products.clear();
+
+        Product prod1 = new Product();
+        prod1.id = "UPD-ANNO-1";
+        prod1.name = "Fairly Priced TestUpdateAnnotation Item";
+        prod1.price = 5.00f;
+        products.save(prod1);
+
+        Product prod2 = new Product();
+        prod2.id = "UPD-ANNO-2";
+        prod2.name = "Highly Priced TestUpdateAnnotation Item";
+        prod2.price = 100.00f;
+        products.save(prod2);
+
+        Product prod3 = new Product();
+        prod3.id = "UPD-ANNO-3";
+        prod3.name = "Middle Priced TestUpdateAnnotation Item";
+        prod3.price = 40.00f;
+        products.save(prod3);
+
+        Product prod4 = new Product();
+        prod4.id = "UPD-ANNO-4";
+        prod4.name = "Inexpensive TestUpdateAnnotation Item";
+        prod4.price = 2.00f;
+        products.save(prod4);
+
+        Product prod5 = new Product();
+        prod5.id = "UPD-ANNO-5";
+        prod5.name = "Ridiculously High Priced TestUpdateAnnotation Item";
+        prod5.price = 500.00f;
+        products.save(prod5);
+
+        Product prod6 = new Product();
+        prod6.id = "UPD-ANNO-6";
+        prod6.name = "Lowest Priced TestUpdateAnnotation Item";
+        prod6.price = 1.00f;
+        products.save(prod6);
+
+        assertEquals(true, products.isNotEmpty());
+        assertEquals(6, products.total());
+
+        assertEquals(5, products.inflatePrices("Priced TestUpdateAnnotation Item", 1.07f)); // prod4 does not match
+
+        Product[] found = products.findByVersionGreaterThanEqualOrderByPrice(2);
+
+        assertEquals(Stream.of(found).map(p -> p.id).collect(Collectors.toList()).toString(),
+                     5, found.length);
+
+        assertEquals(1.07f, found[0].price, 0.001f);
+        assertEquals(5.35f, found[1].price, 0.001f);
+        assertEquals(42.80f, found[2].price, 0.001f);
+        assertEquals(107.00f, found[3].price, 0.001f);
+        assertEquals(535.00f, found[4].price, 0.001f);
+
+        Product item = products.findItem("UPD-ANNO-4");
+        assertEquals(2.00f, item.price, 0.001f);
+
+        products.undoPriceIncrease(Set.of("UPD-ANNO-5", "UPD-ANNO-2", "UPD-ANNO-1"), 1.07f);
+
+        found = products.findByVersionGreaterThanEqualOrderByPrice(1);
+
+        assertEquals(Stream.of(found).map(p -> p.id).collect(Collectors.toList()).toString(),
+                     6, found.length);
+
+        assertEquals(1.07f, found[0].price, 0.001f); // update remains in place
+        assertEquals(2.00f, found[1].price, 0.001f); // never updated
+        assertEquals(5.00f, found[2].price, 0.001f); // reverted
+        assertEquals(42.80f, found[3].price, 0.001f); // update remains in place
+        assertEquals(100.00f, found[4].price, 0.001f); // reverted
+        assertEquals(500.00f, found[5].price, 0.001f); // reverted
+
+        assertEquals(2, found[0].version); // update remains in place
+        assertEquals(1, found[1].version); // never updated
+        assertEquals(1, found[2].version); // reverted
+        assertEquals(2, found[3].version); // update remains in place
+        assertEquals(1, found[4].version); // reverted
+        assertEquals(1, found[5].version); // reverted
+
+        assertEquals(6, products.inflateAllPrices(1.05f));
+
+        found = products.findByVersionGreaterThanEqualOrderByPrice(2);
+
+        assertEquals(1.12f, found[0].price, 0.01f);
+        assertEquals(2.10f, found[1].price, 0.01f);
+        assertEquals(5.25f, found[2].price, 0.01f);
+        assertEquals(44.94f, found[3].price, 0.01f);
+        assertEquals(105.00f, found[4].price, 0.01f);
+        assertEquals(525.00f, found[5].price, 0.01f);
+
+        products.clear();
+
+        assertEquals(0, products.total());
+        assertEquals(false, products.isNotEmpty());
     }
 
     /**

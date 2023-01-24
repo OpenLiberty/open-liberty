@@ -29,7 +29,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.ExpectedFFDC;
@@ -67,13 +66,6 @@ public class JSFCompELTests {
         ShrinkHelper.defaultDropinApp(jsfTestServer2, "TestJSFEL.war",
                                       isEE10 ? "com.ibm.ws.jsf22.el.beans.faces40" : "com.ibm.ws.jsf22.el.beans.jsf22",
                                       "com.ibm.ws.jsf22.el.components");
-
-        if (isEE10) {
-            // For Faces 4.0, CDI @Named is used since @ManagedBean is no longer available.
-            ServerConfiguration config = jsfTestServer2.getServerConfiguration();
-            config.getFeatureManager().getFeatures().add("cdi-4.0");
-            jsfTestServer2.updateServerConfiguration(config);
-        }
 
         jsfTestServer2.startServer(JSFCompELTests.class.getSimpleName() + ".log");
     }

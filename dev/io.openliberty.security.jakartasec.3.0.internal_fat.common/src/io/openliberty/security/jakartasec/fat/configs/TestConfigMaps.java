@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -41,6 +41,13 @@ public class TestConfigMaps {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
         updatedMap.put(Constants.PROVIDER_URI, opBase + "/oidc/endpoint/" + provider);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getProviderDiscUri(String rpBase, String provider) throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.PROVIDER_URI, rpBase + "/Discovery");
         return updatedMap;
     }
 
@@ -313,6 +320,102 @@ public class TestConfigMaps {
         return updatedMap;
     }
 
+    public static Map<String, Object> getExtraParametersTwoParams() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key1=value1,key2=value2");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersDuplicateKeys() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key1=value1,key1=value2");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersContainsSpaceInKey() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key 1=value1");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersContainsTrailingSpaceInKey() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key1 =value1");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersContainsSpaceInValue() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key1=value 1");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersContainsLeadingSpaceInValue() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key1= value1");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersContainsTrailingSpaceInValue() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key1=value1 ");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersContainsEmptyKey() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "=value1");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersContainsEmptyValue() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key1=");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersContainsSpaceAsValue() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key1= ");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersContainsTwoEqualsSigns() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key1=value1=value2");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersMissingEqualsSign() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key1value1");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersIsEmpty() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersIsAnEqualsSign() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "=");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersContainsSpecialCharacterInKey() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key&1=value1");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getExtraParametersContainsSpecialCharacterInValue() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key1=value&1");
+        return updatedMap;
+    }
+
     public static Map<String, Object> getOP2() throws Exception {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
@@ -390,6 +493,54 @@ public class TestConfigMaps {
         updatedMap.put(Constants.TOKEN_AUTO_REFRESH_EXPRESSION, String.valueOf(false));
         return updatedMap;
 
+    }
+
+    public static Map<String, Object> getIdTokenSigningAlgValuesSupported(String... algs) {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        String value = Constants.EMPTY_VALUE;
+        if (algs != null) {
+            value = null;
+            for (String alg : algs) {
+                if (value == null) {
+                    value = alg;
+                } else {
+                    value = value + "," + alg;
+                }
+            }
+        }
+        updatedMap.put(Constants.IDTOKENSIGNINGALGORITHMSSUPPORTED, value);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getJwksConnectTimeoutExpression(int jwksConnectTimeout) {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        String value = Integer.toString(jwksConnectTimeout);
+        updatedMap.put(Constants.JWKSCONNECTTIMEOUTEXPRESSION, value);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getJwksReadTimeoutExpression(int jwksReadTimeout) {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        String value = Integer.toString(jwksReadTimeout);
+        updatedMap.put(Constants.JWKSREADTIMEOUTEXPRESSION, value);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getJwksURI_BadHost(String rpPort, String provider) {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.JWKSURI, "https://192.194.99.99:" + rpPort + "/oidc/endpoint/" + provider + "/jwk");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getJwksURI_TestAppSleeps5Seconds(String rpBase) {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.JWKSURI, rpBase + "/JwksEndpoint/JwksSleeps5Seconds");
+        return updatedMap;
     }
 
     /****************** ClaimDefinitions ********************/
@@ -506,11 +657,30 @@ public class TestConfigMaps {
 
     }
 
+    public static Map<String, Object> getGoodUserInfo(String opBase, String provider) throws Exception {
+
+        String userinfoApp = opBase + "oidc/endpoint/" + provider + "/userinfo";
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        Log.info(thisClass, "", "userinfoApp: " + userinfoApp);
+        updatedMap.put(Constants.USERINFOENDPOINT, userinfoApp);
+        return updatedMap;
+
+    }
+
     public static Map<String, Object> getUserInfo(String rpBase, String userinfoApp) throws Exception {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
         Log.info(thisClass, "", "userinfoApp: " + userinfoApp);
         updatedMap.put(Constants.USERINFOENDPOINT, rpBase + "/UserInfo/" + userinfoApp);
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getUserInfoSplash(String opBase) throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        Log.info(thisClass, "", "userinfoApp: " + opBase);
+        updatedMap.put(Constants.USERINFOENDPOINT, opBase);
         return updatedMap;
 
     }
@@ -524,6 +694,7 @@ public class TestConfigMaps {
 
     }
 
+    /********************* helper methods *************************/
     public static Map<String, Object> mergeMaps(Map<String, Object> updatedMap, Map<String, Object> newMap) throws Exception {
 
         if (updatedMap == null) {

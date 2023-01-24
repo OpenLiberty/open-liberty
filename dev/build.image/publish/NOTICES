@@ -1,11 +1,11 @@
 Begin NOTICES AND INFORMATION FOR Open Liberty @LIBERTY_VERSION@
-Copyright 1999-2022 IBM Corporation and others
+Copyright 1999-2023 IBM Corporation and others
 This product includes software developed at
 The Open Liberty @LIBERTY_VERSION@ Project (https://openliberty.io/).
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 TABLE OF CONTENTS
 
-APACHE V1.1
+ 
 APACHE V2
 BSD
 BSD-2-CLAUSE  
@@ -554,6 +554,7 @@ PERSISTENCE_2_1.XSD [OSGi Core]
 JAVAEE.PERSISTENCE
 (https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api/2.2)
 
+
 END OF ECLIPSE PUBLIC LICENSE, VERSION 1 NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -595,7 +596,7 @@ GRPC (https://github.com/grpc/grpc/releases/tag/v1.0.0),
 JAKARTA-TRANSACTION
 (https://mvnrepository.com/artifact/jakarta.transaction/jakarta.transaction-api/2.0.0),
 JSTL
-(https://repo1.maven.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl-api/2.0.0/),
+(https://repo1.maven.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl-api/3.0.0/),
 GRPC-CLIENT (https://github.com/grpc/grpc/releases/tag/v1.0.0),
 EQUINOX.CONSOLE
 (http://www.java2s.com/example/jar/o/download-orgeclipseequinoxconsole11300jar-file.html),
@@ -627,7 +628,11 @@ JAKARTA-SECURITY
 JAKARTA.ENTERPRISEBEANS
 (https://github.com/jakartaee/enterprise-beans/tree/4.0.0-RELEASE),
 JAKARTAEE/CONNECTORS (https://github.com/jakartaee/connectors), JAKARTA
-CONNECTORS (https://github.com/jakartaee/connectors/tree/2.0.0)
+CONNECTORS (https://github.com/jakartaee/connectors/tree/2.0.0),
+JAKARTA.WEBSOCKET-API
+(https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/2.1.0/),
+OPEN LIBERTY
+(https://repo1.maven.org/maven2/io/openliberty/openliberty-runtime/23.0.0.1)
 
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
@@ -744,7 +749,7 @@ MODIFIABLE THIRD PARTY CODE
 This Program includes some or all of the following Modifiable Third 
 Party Code that IBM obtained under the GNU Lesser General Public 
 License. For copies of the source code for this software, send an email 
-to <mcaphobia@us.ibm.com> identifying the IBM Program and the Modifiable Third 
+to <mbroz@us.ibm.com> identifying the IBM Program and the Modifiable Third 
 Party Code for which you are requesting the source code. 
 
 RESTEASYPROVIDERFACTORYDELEGATE [JBoss RESTEasy] (No Copyright)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2022 IBM Corporation and others.
+ * Copyright (c) 2007, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -304,10 +304,14 @@ public class SSLConfigManager {
             Tr.entry(tc, "keyStoreModified");
 
         String ksPropValue = defaultSSLConfig.getProperty(Constants.SSLPROP_KEY_STORE, null);
+        boolean ksFileBased = Boolean.parseBoolean(defaultSSLConfig.getProperty(Constants.SSLPROP_KEY_STORE_FILE_BASED));
+        String ksProp = WSKeyStore.getCannonicalPath(ksPropValue, ksFileBased);
         String tsPropValue = defaultSSLConfig.getProperty(Constants.SSLPROP_TRUST_STORE, null);
+        boolean tsFileBased = Boolean.parseBoolean(defaultSSLConfig.getProperty(Constants.SSLPROP_TRUST_STORE_FILE_BASED));
+        String tsProp = WSKeyStore.getCannonicalPath(ksPropValue, tsFileBased);
 
-        if ((ksPropValue != null && ksPropValue.equals(modifiedFile)) ||
-            (tsPropValue != null && tsPropValue.equals(modifiedFile))) {
+        if ((ksProp != null && ksProp.equals(modifiedFile)) ||
+            (tsProp != null && tsProp.equals(modifiedFile))) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                 Tr.exit(tc, "keyStoreModified true");
             return true;

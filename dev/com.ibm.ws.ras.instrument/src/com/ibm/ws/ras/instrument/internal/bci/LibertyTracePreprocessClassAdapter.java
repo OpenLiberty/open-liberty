@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 IBM Corporation and others.
+ * Copyright (c) 2010, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 package com.ibm.ws.ras.instrument.internal.bci;
 
 import static com.ibm.ws.ras.instrument.internal.main.LibertyTracePreprocessInstrumentation.LOGGER_TYPE;
@@ -34,9 +33,8 @@ public class LibertyTracePreprocessClassAdapter extends AbstractTracingRasClassA
     }
 
     public LibertyTracePreprocessClassAdapter(ClassVisitor visitor, boolean initializeTraceObjectField, ClassTraceInfo info) {
-    	super(visitor, null);
+    	super(visitor, null, info);
     	this.initializeTraceObjectField = initializeTraceObjectField;
-    	traceInfo = info;
 	}
 
 	@Override

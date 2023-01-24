@@ -1,7 +1,7 @@
 type: pipeline_definition
-product: OpenLiberty
-name: OpenLiberty Personal Build RTC
-description: A build run against OpenLiberty Pull Requests
+product: Liberty
+name: Open Liberty Personal Build RTC
+description: A build run against Open Liberty Pull Requests
 triggers:
 - type: github
   triggerName: "ol-pb"
@@ -31,6 +31,10 @@ triggers:
     defaultValue: true
     steps:
     - stepName: compile
+  - name: spawn.fullfat.buckets
+    defaultValue: ""
+    steps:
+    - stepName: pr-changes
   - name: fat.buckets.to.run
     defaultValue: all
     steps:
@@ -64,5 +68,7 @@ steps:
     disable.run.createDoc: ${pr-changes:disable.run.createDoc}
     skip.open.liberty.build.if.possible: ${pr-changes:skip.open.liberty.build.if.possible}
     skip.open.liberty.fats.if.possible: ${pr-changes:skip.open.liberty.fats.if.possible}
+    fat.run.count: ${pr-changes:fat.run.count}
+    spawn.fullfat.buckets: ${pr-changes:spawn.fullfat.buckets}
   includeProperties:
   - file: compilePersonalRTC.properties

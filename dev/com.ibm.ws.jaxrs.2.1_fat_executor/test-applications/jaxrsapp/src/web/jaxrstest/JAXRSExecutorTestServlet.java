@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,9 +13,9 @@
 package web.jaxrstest;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -62,6 +62,16 @@ public class JAXRSExecutorTestServlet extends FATServlet {
 
     @Resource(name = "java:comp/env/concurrent/scheduledExecutorRef", lookup = "concurrent/scheduledExecutor")
     private ManagedScheduledExecutorService scheduledExecutor;
+    
+    private static boolean ee10;
+    static {
+       try {
+           Class.forName("jakarta.ws.rs.core.EntityPart");
+           ee10 = true;
+       } catch(Throwable t) {
+           ee10 = false;
+       }
+    }
 
     // Use JAX-RS client submit with an invocation callback, where the client builder is supplied with
     // a ManagedExecutorService. Verify that the callback runs with access to the java:comp namespace
@@ -159,7 +169,13 @@ public class JAXRSExecutorTestServlet extends FATServlet {
         } else {
             assertTrue(resultString, executionThreadName.startsWith("Default Executor-thread-"));
         }
-        assertTrue(resultString, results[2] instanceof NamingException);
+        // In EE10 the thread holds the proper context so the java:comp lookup is successful.
+        if (ee10) {
+            assertTrue("Not expected ManagedScheduledExecutorService", (results[2] instanceof ManagedScheduledExecutorService));
+        } else {
+            assertTrue(resultString, results[2] instanceof NamingException);
+        }
+
     }
 
     // Use JAX-RS client rx invoker, where the client builder is supplied with one ManagedExecutorService,
@@ -193,7 +209,7 @@ public class JAXRSExecutorTestServlet extends FATServlet {
         };
 
         ExecutorService executor = InitialContext.doLookup("java:comp/DefaultManagedExecutorService");
-
+        
         ClientBuilder clientBuilder = ClientBuilder.newBuilder();
         Client client = clientBuilder.executorService(executor).build();
         client.target(uri)
@@ -211,7 +227,7 @@ public class JAXRSExecutorTestServlet extends FATServlet {
         assertEquals("test123", results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         assertTrue((result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)).toString(), result.toString().startsWith("Default Executor-thread-"));
         assertTrue((result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)).toString(), result instanceof ScheduledExecutorService);
-        assertEquals("test123", results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));        
+        assertEquals("test123", results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)); 
         assertTrue((result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)).toString(), result.toString().startsWith("Default Executor-thread-"));
         assertTrue((result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS)).toString(), result instanceof ScheduledExecutorService);
     }
@@ -288,8 +304,15 @@ public class JAXRSExecutorTestServlet extends FATServlet {
         if (submitterThreadName.equals(executionThreadName)) {
             System.out.println("*** Unable to properly complete test because CompletionStage ran on submitter thread.");
             assertTrue(resultString, results[2] instanceof ScheduledExecutorService);
-        } else
-            assertTrue(resultString, results[2] instanceof NamingException);
+        } else { 
+            // In EE10 the thread holds the proper context so the java:comp lookup is successful.
+            if (ee10) {
+                assertTrue("Not expected ManagedScheduledExecutorService", (results[2] instanceof ManagedScheduledExecutorService));
+            } else {
+                assertTrue(resultString, results[2] instanceof NamingException);
+            }
+        }
+
     }
 
     // Use JAX-RS client rx invoker, where the client builder is supplied with a ManagedExecutorService.
@@ -397,12 +420,17 @@ public class JAXRSExecutorTestServlet extends FATServlet {
         assertTrue(callbackThreadName, callbackThreadName.startsWith("Default Executor-thread-"));
 
         assertNotNull(r = result.poll());
-        if (r instanceof NamingException)
-            ; // test passes, servlet's java:comp should be unavailable to callback thread
-        else if (r instanceof Throwable)
-            throw new Exception("Unxpected failure for InvocationCallback lookup attempt. See cause.", (Throwable) r);
-        else
-            fail("Should not be able to look up servlet's java:comp from InvocationCallback thread: " + r);
+        // In EE10 the thread holds the proper context so the java:comp lookup is successful.
+        if (ee10) {
+            assertTrue("Not expected ManagedScheduledExecutorService", (r instanceof ManagedScheduledExecutorService));
+        } else {
+            if (r instanceof NamingException)
+                ; // test passes, servlet's java:comp should be unavailable to callback thread
+            else if (r instanceof Throwable)
+                throw new Exception("Unxpected failure for InvocationCallback lookup attempt. See cause.", (Throwable) r);
+            else
+                fail("Should not be able to look up servlet's java:comp from InvocationCallback thread: " + r.getClass().getName());            
+        }
     }
 
     @Test

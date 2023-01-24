@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -69,7 +69,8 @@ public class HttpRequestInfo implements Serializable {
     String redirectAfterSPLogout = null;
 
     // same package can access to it
-    HttpRequestInfo() {};
+    HttpRequestInfo() {
+    };
 
     /**
      * Constructor for any incoming http request on
@@ -102,26 +103,26 @@ public class HttpRequestInfo implements Serializable {
             }
         }
         //@AV999-092821
-        if(request.getAttribute("OIDC_END_SESSION_REDIRECT") != null) {
-            redirectAfterSPLogout = (String)request.getAttribute("OIDC_END_SESSION_REDIRECT");
+        if (request.getAttribute("OIDC_END_SESSION_REDIRECT") != null) {
+            redirectAfterSPLogout = (String) request.getAttribute("OIDC_END_SESSION_REDIRECT");
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "SP Initiated SLO Request, save OIDC_END_SESSION_REDIRECT uri : " + redirectAfterSPLogout);
-            }        
+            }
         }
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Request: method (" + this.method + ") savedParams:" + this.savedPostParams);
         }
     }
-    
+
     public HttpRequestInfo(String reqUrl, String requestURL, String method, String strInResponseToId, String formlogout, HashMap postParams) {
         this.reqUrl = reqUrl;
         this.requestURL = requestURL;
         this.method = method;
         this.strInResponseToId = strInResponseToId;
         this.formLogoutExitPage = formlogout;
-        
-        if (METHOD_POST.equalsIgnoreCase(this.method) && formLogoutExitPage == null) {  
-                this.savedPostParams = postParams;                
+
+        if (METHOD_POST.equalsIgnoreCase(this.method) && formLogoutExitPage == null) {
+            this.savedPostParams = postParams;
         }
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Request: method (" + this.method + ") savedParams:" + this.savedPostParams);
@@ -135,7 +136,7 @@ public class HttpRequestInfo implements Serializable {
     public String getInResponseToId() {
         return this.strInResponseToId;
     }
-    
+
     public String getRedirectAfterSPLogout() {
         return this.redirectAfterSPLogout;
     }
@@ -172,11 +173,11 @@ public class HttpRequestInfo implements Serializable {
     public String getReqUrl() {
         return this.reqUrl;
     }
-    
+
     public String getRequestUrl() {
         return this.requestURL;
     }
-    
+
     public Map getSavedPostParams() {
         return this.savedPostParams;
     }
@@ -197,7 +198,7 @@ public class HttpRequestInfo implements Serializable {
      *
      * @param request
      * @param response
-     * @param cookieName --
+     * @param cookieName  --
      * @param cookieValue --
      * @throws SamlException
      */
@@ -249,22 +250,29 @@ public class HttpRequestInfo implements Serializable {
         String encodedUrl = RequestUtil.getCookieId((IExtendedRequest) request,
                                                     response,
                                                     encodedUrlCookieName);
- 
+
         if (encodedUrlCookieName != null) {
             RequestUtil.removeCookie(request, response, encodedUrlCookieName); // removing WASSamlReq_* cookie
         }
 
         // encodedURL is encoded since we called encodeURIComponent to get the cookie
         try {
-            if (encodedUrl != null && !encodedUrl.isEmpty())
+            if (encodedUrl != null && !encodedUrl.isEmpty()) {
                 this.requestURLWithFragments = URLDecoder.decode(encodedUrl, Constants.UTF8);
+            } else {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc,  "OLGH23567, url with encoded query string = ", this.requestURL);
+                }
+                this.requestURLWithFragments = getRequestUrlWithDecodedQueryString();
+            }
+
         } catch (UnsupportedEncodingException e) {
             // this should not happen since we are calling with UTF8;
             throw new SamlException(e);
         }
 
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Original RequestUrl:" + this.reqUrl + "\n  requestURLWithFragments:" + this.requestURLWithFragments);
+            Tr.debug(tc, "OLGH23567, Original RequestUrl:" + this.reqUrl + "\n  requestURLWithFragments:" + this.requestURLWithFragments);
         }
     }
 
@@ -286,24 +294,39 @@ public class HttpRequestInfo implements Serializable {
         return birthTime;
     }
 
+    public String getRequestUrlWithDecodedQueryString() {
+        StringBuffer decoded = new StringBuffer();
+        int index = this.requestURL.indexOf("?");
+        if (index > 0) {
+            decoded.append(this.requestURL.substring(0, index));
+            String queryString = this.requestURL.substring(index + 1);
+            if (queryString != null) {
+                decoded.append("?");
+                decoded.append(encodeOrDecodeQuery(queryString, false));
+                return decoded.toString();
+            }
+        }
+        return null;
+    }
+
     static public String getRequestURL(HttpServletRequest req) {
         StringBuffer reqURL = req.getRequestURL();
         String queryString = req.getQueryString();
         if (queryString != null) {
             reqURL.append("?");
-            reqURL.append(encodeQuery(queryString));
+            reqURL.append(encodeOrDecodeQuery(queryString, true));
         }
         return reqURL.toString();
     }
 
     /**
-     * Encodes each parameter in the provided query. Expects the query argument to be the query string of a URL with parameters
+     * Encodes/Decodes each parameter in the provided query. Expects the query argument to be the query string of a URL with parameters
      * in the format: param=value(&param2=value2)*
      *
      * @param query
      * @return
      */
-    public static String encodeQuery(String query) {
+    public static String encodeOrDecodeQuery(String query, boolean encode) {
         if (query == null) {
             return null;
         }
@@ -313,12 +336,22 @@ public class HttpRequestInfo implements Serializable {
         // Encode parameters to mitigate XSS attacks
         String[] queryParams = query.split("&");
         for (String param : queryParams) {
-            String rebuiltParam = encode(param);
+            String rebuiltParam;
+            if (encode) {
+                rebuiltParam = encode(param);
+            } else {
+                rebuiltParam = decode(param);
+            }
+
             int equalIndex = param.indexOf("=");
             if (equalIndex > -1) {
                 String name = param.substring(0, equalIndex);
                 String value = (equalIndex < (param.length() - 1)) ? param.substring(equalIndex + 1) : "";
-                rebuiltParam = encode(name) + "=" + encode(value);
+                if (encode) {
+                    rebuiltParam = encode(name) + "=" + encode(value);
+                } else {
+                    rebuiltParam = decode(name) + "=" + decode(value);
+                }
             }
             if (!rebuiltParam.isEmpty()) {
                 rebuiltQuery.append(rebuiltParam + "&");
@@ -343,6 +376,24 @@ public class HttpRequestInfo implements Serializable {
         }
         try {
             value = URLEncoder.encode(value, Constants.UTF8);
+        } catch (UnsupportedEncodingException e) {
+            // Do nothing - UTF-8 should always be supported
+        }
+        return value;
+    }
+
+    /**
+     * Decodes the given string using URLDecoder and UTF-8 encoding.
+     *
+     * @param value
+     * @return
+     */
+    public static String decode(String value) {
+        if (value == null) {
+            return value;
+        }
+        try {
+            value = URLDecoder.decode(value, Constants.UTF8);
         } catch (UnsupportedEncodingException e) {
             // Do nothing - UTF-8 should always be supported
         }
