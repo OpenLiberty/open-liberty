@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import static org.junit.Assert.fail;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.Constants;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ServerTraceExpectation;
 
@@ -38,6 +39,8 @@ public class CommonLogoutAndRefreshTests extends CommonAnnotatedSecurityTests {
     protected static final String goodRedirectUri = "goodRedirectUri";
     protected static final String badRedirectUri = "badRedirectUri";
     protected static final String emptyRedirectUri = "emptyRedirectUri";
+
+    protected static final int sleepTimeInSeconds = 35;
 
     /**
      * Try to access a protected app, then try to access it again after the tokens expire.
@@ -64,9 +67,10 @@ public class CommonLogoutAndRefreshTests extends CommonAnnotatedSecurityTests {
         Page response1 = runGoodEndToEndTest(webClient, appName, baseAppName);
 
         // now logged in - wait for token to expire
-        actions.testLogAndSleep(35);
+        actions.testLogAndSleep(sleepTimeInSeconds);
         String url = rpHttpsBase + "/" + appName + "/" + baseAppName;
-        Page response2 = invokeAppGetToApp(webClient, url); // get to app not because either id or access token is good, but because the token was refreshed.
+        Page response2 = invokeApp(webClient, url);
+        response2 = actions.doFormLogin(response2, Constants.TESTUSER, Constants.TESTUSERPWD);
 
         if (tokensAreDifferent(response1, response2, providerAllowsRefresh, TokenWasNotRefreshed)) {
             Log.info(thisClass, _testName, "Test tokens are different");
@@ -99,7 +103,7 @@ public class CommonLogoutAndRefreshTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest(webClient, appName, baseAppName);
 
         // now logged in - wait for token to expire
-        actions.testLogAndSleep(35);
+        actions.testLogAndSleep(sleepTimeInSeconds);
         String url = rpHttpsBase + "/" + appName + "/" + baseAppName;
         invokeAppReturnLogoutPage(webClient, url);
 
@@ -132,7 +136,7 @@ public class CommonLogoutAndRefreshTests extends CommonAnnotatedSecurityTests {
         Page response1 = runGoodEndToEndTest(webClient, appName, baseAppName);
 
         // now logged in - wait for token to expire
-        actions.testLogAndSleep(35);
+        actions.testLogAndSleep(sleepTimeInSeconds);
         String url = rpHttpsBase + "/" + appName + "/" + baseAppName;
         Page response2 = invokeAppGetToApp(webClient, url);
 
@@ -164,7 +168,7 @@ public class CommonLogoutAndRefreshTests extends CommonAnnotatedSecurityTests {
         runGoodEndToEndTest(webClient, appName, baseAppName);
 
         // now logged in - wait for token to expire
-        actions.testLogAndSleep(35);
+        actions.testLogAndSleep(sleepTimeInSeconds);
         String url = rpHttpsBase + "/" + appName + "/" + baseAppName;
         invokeAppGetToSplashPage(webClient, url);
 
