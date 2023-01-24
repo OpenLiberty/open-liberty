@@ -236,8 +236,8 @@ task createGradleBootstrap {
                     } catch (GradleException e) {
                         throw e
                     }
-                    depsList.add('    implementation \'' + org + ':' + bsn + ':' + version + '\'')
-                    depsList.add('    implementation \'' + org + ':' + bsn + ':' + version + '@pom\'')
+                    depsList.add('    compile \'' + org + ':' + bsn + ':' + version + '\'')
+                    depsList.add('    compile \'' + org + ':' + bsn + ':' + version + '@pom\'')
                 }
             }
         }
@@ -249,17 +249,17 @@ task createGradleBootstrap {
             if ('ga'.equals(featureProps.get('kind')) || 'beta'.equals(featureProps.get('kind'))) {
                 String featureArtifactId = featureName
                 String version = getVersionFromReleaseRepo(org, featureName)
-                depsList.add('    implementation \'' + org + ':' + featureArtifactId + ':' + version + '@esa\'')
-                depsList.add('    implementation \'' + org + ':' + featureArtifactId + ':' + version + '@esa.metadata.zip\'')
-                depsList.add('    implementation \'' + org + ':' + featureArtifactId + ':' + version + '@pom\'')
+                depsList.add('    compile \'' + org + ':' + featureArtifactId + ':' + version + '@esa\'')
+                depsList.add('    compile \'' + org + ':' + featureArtifactId + ':' + version + '@esa.metadata.zip\'')
+                depsList.add('    compile \'' + org + ':' + featureArtifactId + ':' + version + '@pom\'')
             }
         }
 
         if (isAutomatedBuild) {
-            depsList.add('    implementation \'' + org + ':openliberty-MavenArtifact:' + getVersionFromReleaseRepo('dev', 'openliberty-MavenArtifact') + '@zip\'')
-            depsList.add('    implementation \'' + org + ':openliberty-singleJson:' + getVersionFromReleaseRepo('dev', 'openliberty-singleJson') + '@json\'')
+            depsList.add('    compile \'' + org + ':openliberty-MavenArtifact:' + getVersionFromReleaseRepo('dev', 'openliberty-MavenArtifact') + '@zip\'')
+            depsList.add('    compile \'' + org + ':openliberty-singleJson:' + getVersionFromReleaseRepo('dev', 'openliberty-singleJson') + '@json\'')
         }
-        depsList.add('    implementation \'' + org + ':openliberty-modifiedgaFeatureList:' + getVersionFromReleaseRepo('dev', 'openliberty-modifiedgaFeatureList') + '@txt\'')
+        depsList.add('    compile \'' + org + ':openliberty-modifiedgaFeatureList:' + getVersionFromReleaseRepo('dev', 'openliberty-modifiedgaFeatureList') + '@txt\'')
 
         File dependenciesFile = new File(project.buildDir, 'dependencies.gradle')
         dependenciesFile.createNewFile()
