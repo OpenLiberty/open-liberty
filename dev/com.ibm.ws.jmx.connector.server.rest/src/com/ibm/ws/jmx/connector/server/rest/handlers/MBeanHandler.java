@@ -170,6 +170,7 @@ public class MBeanHandler implements RESTHandler {
 
     private void deleteMBean(RESTRequest request, RESTResponse response) {
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+        objectName = RESTHelper.repairSlashes(objectName, request);
 
         //Get the object for ObjectName
         ObjectName objectNameObj = RESTHelper.objectNameConverter(objectName, true, null);
