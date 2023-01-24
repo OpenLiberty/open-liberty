@@ -15,9 +15,11 @@ Replace this comment with a high level description of the feature. Include enoug
 
 When available, add links to required feature documents. Use "N/A" to mark particular documents which are not required by the feature.
 
-- Externally raised RFEs 
+- Externally raised requests for enhancements: 
   - [Aha](https://cloud-platform.ideas.aha.io/): Link to the Aha RFE idea (also add a link to this issue in the Aha idea)
+    - Owner adds label `Aha idea`
   - [OL Feature Request](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=): Link to the OL GH issue (also add a link to this issue in the Feature Request GH issue)
+    - Owner adds label `Feature request`
 - UFO: Link to [Upcoming Feature Overview](https://ibm.box.com/v/UFO-Template) document
   - [Upload the feature UFO to Box](https://ibm.ent.box.com/folder/52716090328) and set the link to be publicly accessible, with a long expiration (10 years)
     - Click "Share" > select "People with link" > click "Link Settings" > under "Link Expiration" select "Disable Shared Link on" > set an expiration date ~10 years into the future
