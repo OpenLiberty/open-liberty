@@ -337,6 +337,7 @@ org.apache.directory.server:apacheds-service:2.0.0-M15
 org.apache.directory.server:kerberos-client:2.0.0-M24
 org.apache.felix:org.apache.felix.http.api:2.2.0
 org.apache.felix:org.apache.felix.http.base:2.2.0
+org.apache.felix:org.apache.felix.scr:2.2.6
 org.apache.felix:org.osgi.service.obr:1.0.2
 org.apache.geronimo.specs:geronimo-jaxb_2.2_spec:1.0.1
 org.apache.httpcomponents.client5:httpclient5:5.0.2
