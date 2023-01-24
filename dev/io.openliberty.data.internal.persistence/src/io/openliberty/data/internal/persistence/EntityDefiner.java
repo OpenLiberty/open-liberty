@@ -258,9 +258,9 @@ class EntityDefiner implements Runnable {
                         embeddablePrefixes.add(attributeName);
                         embeddableAccessors.add(Collections.singletonList(attr.getJavaMember()));
                     } else {
-                        attributeNames.put(attributeName.toUpperCase(), attributeName);
+                        attributeNames.put(attributeName.toLowerCase(), attributeName);
                         if (attr instanceof SingularAttribute && ((SingularAttribute<?, ?>) attr).isId())
-                            attributeNames.put("ID", attributeName);
+                            attributeNames.put("id", attributeName);
                         attributeAccessors.put(attributeName, Collections.singletonList(attr.getJavaMember()));
                         attributeTypes.put(attributeName, PersistentAttributeType.ELEMENT_COLLECTION.equals(attributeType) //
                                         ? Collection.class //
@@ -285,11 +285,11 @@ class EntityDefiner implements Runnable {
                             embeddableAccessors.add(embAccessors);
                         } else {
                             // Allow the simple attribute name if it doesn't overlap
-                            embeddableAttributeName = embeddableAttributeName.toUpperCase();
+                            embeddableAttributeName = embeddableAttributeName.toLowerCase();
                             attributeNames.putIfAbsent(embeddableAttributeName, fullAttributeName);
 
                             // Allow a qualified name such as @OrderBy("address.street.name")
-                            embeddableAttributeName = fullAttributeName.toUpperCase();
+                            embeddableAttributeName = fullAttributeName.toLowerCase();
                             attributeNames.put(embeddableAttributeName, fullAttributeName);
 
                             // Allow a qualified name such as findByAddress_Street_Name if it doesn't overlap
@@ -301,7 +301,7 @@ class EntityDefiner implements Runnable {
                             attributeNames.putIfAbsent(embeddableAttributeNameUndelimited, fullAttributeName);
 
                             if (embAttr instanceof SingularAttribute && ((SingularAttribute<?, ?>) embAttr).isId())
-                                attributeNames.put("ID", fullAttributeName);
+                                attributeNames.put("id", fullAttributeName);
 
                             attributeAccessors.put(fullAttributeName, embAccessors);
                             attributeTypes.put(fullAttributeName, PersistentAttributeType.ELEMENT_COLLECTION.equals(attributeType) //

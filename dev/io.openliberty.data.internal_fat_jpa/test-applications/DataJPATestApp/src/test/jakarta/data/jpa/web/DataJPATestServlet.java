@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -149,6 +149,20 @@ public class DataJPATestServlet extends FATServlet {
                              Stream.of(found)
                                              .map(b -> b.name)
                                              .collect(Collectors.toList()));
+    }
+
+    /**
+     * Intermix different name patterns for embeddable attributes.
+     */
+    @Test
+    public void testEmbeddableIntermixNamePatterns() {
+        assertIterableEquals(List.of("HALCON", "Geotek"),
+                             businesses.in("Stewartville", "MN")
+                                             .map(b -> b.name)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("Custom Alarm", "Mayo Clinic", "Olmsted Medical", "Reichel Foods"),
+                             businesses.onSouthSide());
     }
 
     /**
