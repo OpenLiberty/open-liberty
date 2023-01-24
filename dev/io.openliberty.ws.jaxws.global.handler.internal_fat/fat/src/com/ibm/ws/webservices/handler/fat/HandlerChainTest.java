@@ -31,6 +31,7 @@ import javax.xml.ws.Service;
 import javax.xml.ws.soap.SOAPBinding;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -70,16 +71,22 @@ public class HandlerChainTest {
         }
         System.gc();
     }
-
-    @Test
-    public void testProviderHandlerChainWithGlobalHandlers() throws Exception {
-        //server.installUserBundle("MyHandler_1.0.0.201311011651");
+    
+    @Before
+    public void setup() throws Exception {
         ShrinkHelper.defaultUserFeatureArchive(server, "userBundle", "com.ibm.ws.userbundle.myhandler");
         TestUtils.installUserFeature(server, "MyHandlerFeature");
-        server.startServer("HandlerChainProvider.log");
         ShrinkHelper.defaultDropinApp(server, "testHandlerClient", "com.ibm.samples.jaxws.client", "com.ibm.samples.jaxws.client.handler", "com.ibm.samples.jaxws.client.servlet");
         ShrinkHelper.defaultDropinApp(server, "testHandlerClientWithoutXML", "com.ibm.samples.jaxws.client", "com.ibm.samples.jaxws.client.handler", "com.ibm.samples.jaxws.client.servlet");
         ShrinkHelper.defaultDropinApp(server, "testHandlerProvider", "com.ibm.samples.jaxws", "com.ibm.samples.jaxws.handler", "com.ibm.samples.jaxws.service");
+        
+        server.startServer("HandlerChainProvider.log");
+        
+        server.waitForMultipleStringsInLog(3, "CWWKZ0001I");
+    }
+
+    @Test
+    public void testProviderHandlerChainWithGlobalHandlers() throws Exception {
 
         // Create the dispatch
         StringBuilder sBuilder = new StringBuilder("http://").append(server.getHostname()).
@@ -131,8 +138,8 @@ public class HandlerChainTest {
                                                 "com.ibm.samples.jaxws.handler.TestLogicalHandler: postConstruct is invoked",
                                                 "com.ibm.samples.jaxws.handler.TestSOAPHandler: postConstruct is invoked"});
 
-	// Stop server, with option to preserve logs 
-	server.stopServer(false, null);
+        // Stop server, with option to preserve logs 
+        server.stopServer(false, null);
 
         // Test preDestroy  
         assertStatesExisted(new String[] {
