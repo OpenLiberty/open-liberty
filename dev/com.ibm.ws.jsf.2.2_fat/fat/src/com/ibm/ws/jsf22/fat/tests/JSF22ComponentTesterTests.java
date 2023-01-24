@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,7 +12,6 @@
  */
 package com.ibm.ws.jsf22.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
@@ -34,10 +33,10 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -46,7 +45,6 @@ import junit.framework.Assert;
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE10_FEATURES)
 public class JSF22ComponentTesterTests {
     @Rule
     public TestName name = new TestName();
@@ -62,7 +60,11 @@ public class JSF22ComponentTesterTests {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(jsfTestServer2, "JSF22ComponentTester.war", "com.ibm.ws.jsf22.fat.componenttester.*");
+        boolean isEE10 = JakartaEE10Action.isActive();
+
+        ShrinkHelper.defaultDropinApp(jsfTestServer2, "JSF22ComponentTester.war",
+                                      isEE10 ? "com.ibm.ws.jsf22.fat.componenttester.beans.faces40" : "com.ibm.ws.jsf22.fat.componenttester.beans.jsf22",
+                                      "com.ibm.ws.jsf22.fat.componenttester");
 
         jsfTestServer2.startServer(JSF22ComponentTesterTests.class.getSimpleName() + ".log");
     }
