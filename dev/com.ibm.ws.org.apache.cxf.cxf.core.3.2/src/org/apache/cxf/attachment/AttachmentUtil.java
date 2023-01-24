@@ -17,7 +17,7 @@
  * under the License.
  */
 
-// Liberty Change - https://github.com/apache/cxf/blob/03dd596d9270a0257de7ea2f5f0590c6ef02e6ec/core/src/main/java/org/apache/cxf/attachment/AttachmentUtil.java
+// Liberty Change - https://github.com/apache/cxf/blob/ce2dfb8f84175df5fb1c2241b80b6342ca4eeb55/core/src/main/java/org/apache/cxf/attachment/AttachmentUtil.java
 package org.apache.cxf.attachment;
 
 import java.io.File;
@@ -104,7 +104,7 @@ public final class AttachmentUtil {
         public synchronized CommandInfo[] getAllCommands(String mimeType) {
             CommandInfo[] commands = super.getAllCommands(mimeType);
             CommandInfo[] defaultCommands = DEFAULT_COMMAND_MAP.getAllCommands(mimeType);
-            List<CommandInfo> cmdList = new ArrayList<CommandInfo>(Arrays.asList(commands));
+            List<CommandInfo> cmdList = new ArrayList<>(Arrays.asList(commands));
 
             // Add CommandInfo which does not exist in current command map.
             for (CommandInfo defCmdInfo : defaultCommands) {
@@ -141,7 +141,7 @@ public final class AttachmentUtil {
         public synchronized String[] getMimeTypes() {
             String[] mimeTypes = super.getMimeTypes();
             String[] defMimeTypes = DEFAULT_COMMAND_MAP.getMimeTypes();
-            Set<String> mimeTypeSet = new HashSet<String>();
+            Set<String> mimeTypeSet = new HashSet<>();
             mimeTypeSet.addAll(Arrays.asList(mimeTypes));
             mimeTypeSet.addAll(Arrays.asList(defMimeTypes));
             String[] mimeArray = new String[0];
@@ -165,8 +165,7 @@ public final class AttachmentUtil {
     }
 
     public static boolean isMtomEnabled(Message message) {
-        Object prop = message.getContextualProperty(Message.MTOM_ENABLED);
-        return MessageUtils.isTrue(prop);
+        return MessageUtils.getContextualBoolean(message, Message.MTOM_ENABLED, false);
     }
 
     public static void setStreamedAttachmentProperties(Message message, CachedOutputStream bos)
@@ -359,13 +358,13 @@ public final class AttachmentUtil {
     }
 
     static String getHeaderValue(List<String> v) {
-        if (v != null && v.size() > 0) {
+        if (v != null && !v.isEmpty()) {
             return v.get(0);
         }
         return null;
     }
     static String getHeaderValue(List<String> v, String delim) {
-        if (v != null && v.size() > 0) {
+        if (v != null && !v.isEmpty()) {
             StringBuilder b = new StringBuilder();
             for (String s : v) {
                 if (b.length() > 0) {
@@ -409,7 +408,6 @@ public final class AttachmentUtil {
         if (encoding == null) {
             encoding = "binary";
         }
-
         InputStream ins =  decode(stream, encoding);
         if (ins != stream) {
             headers.remove("Content-Transfer-Encoding");
@@ -426,7 +424,6 @@ public final class AttachmentUtil {
         if (StringUtils.isEmpty(cd)) {
             return null;
         }
-        //TODO: save ContentDisposition directly
         ContentDisposition c = new ContentDisposition(cd);
         String s = c.getParameter("filename");
         if (s == null) {
