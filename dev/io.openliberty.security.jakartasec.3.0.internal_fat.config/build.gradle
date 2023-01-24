@@ -13,6 +13,7 @@
 
 dependencies {
   requiredLibs project(':com.ibm.ws.security.fat.common'),
+  	  project(':com.ibm.ws.security.fat.common.jwt'),
       project(':io.openliberty.security.jakartasec.3.0.internal_fat.common'),
       project(':io.openliberty.org.apache.commons.logging'),
       project(':com.ibm.ws.org.apache.httpcomponents'),
@@ -36,10 +37,14 @@ dependencies {
       'xml-apis:xml-apis:1.4.01',
       'xerces:xercesImpl:2.11.0',
       project(':io.openliberty.org.apache.xercesImpl'),
-      project(':com.ibm.ws.org.slf4j.api')    
+      project(':com.ibm.ws.org.slf4j.api'),
+      'org.eclipse.parsson:parsson:1.1.0'
 
 }
 
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
+autoFVT.dependsOn ':io.openliberty.security.jakartasec.3.0.internal_fat.common:assemble'
 autoFVT.doLast {
   
    copy {
@@ -83,6 +88,14 @@ autoFVT.doLast {
      into new File(autoFvtDir, 'publish/servers/' + server + '/')
      include '**/allAlg*.p12'
     }
+    copy { 
+     from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
+     into new File(autoFvtDir, 'publish/servers/' + server + '/')
+     include '**/*private-key.pem'
+     include '**/*public-key.pem'
+     exclude '**/short_*private-key.pem'
+     exclude '**/short_*public-key.pem'
+    }
 
   }    
   
@@ -96,7 +109,9 @@ autoFVT.doLast {
 	'jakartasec-3.0_fat.config.rp.userinfo.jwt.jwt',
 	'jakartasec-3.0_fat.config.rp.userinfo.jwt.opaque',
 	'jakartasec-3.0_fat.config.rp.userinfo.json.jwt',
-	'jakartasec-3.0_fat.config.rp.userinfo.json.opaque'
+	'jakartasec-3.0_fat.config.rp.userinfo.json.opaque',
+	'jakartasec-3.0_fat.config.rp.signing.jwt',
+	'jakartasec-3.0_fat.config.rp.signing.opaque'
 
   ]
 

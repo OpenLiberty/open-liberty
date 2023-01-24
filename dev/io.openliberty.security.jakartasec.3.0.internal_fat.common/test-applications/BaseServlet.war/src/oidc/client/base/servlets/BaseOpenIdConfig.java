@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -242,6 +242,17 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         String value = "RS256"; // spec default is RS256, OIDC default is HS256
         if (config.containsKey(Constants.IDTOKENSIGNINGALGORITHMSSUPPORTED)) {
             value = getStringValue(Constants.IDTOKENSIGNINGALGORITHMSSUPPORTED);
+        }
+
+        return value;
+
+    }
+
+    public String getJwksURI() {
+
+        String value = "";
+        if (config.containsKey(Constants.JWKSURI)) {
+            value = getStringValue(Constants.JWKSURI);
         }
 
         return value;
