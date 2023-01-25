@@ -52,6 +52,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 	io.opentelemetry:opentelemetry-api-logs;version='1.19.0.alpha',\
 	io.opentelemetry:opentelemetry-context;version='1.19.0',\
 	io.opentelemetry:opentelemetry-exporter-jaeger;version='1.19.0',\
+	io.opentelemetry:opentelemetry-exporter-logging;version='1.19.0',\
 	io.opentelemetry:opentelemetry-exporter-otlp-common;version='1.19.0',\
 	io.opentelemetry:opentelemetry-exporter-otlp;version='1.19.0',\
 	io.opentelemetry:opentelemetry-exporter-common;version='1.19.0',\

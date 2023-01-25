@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,9 +25,9 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.rest.handler.RESTHandler;
 
 import io.openliberty.microprofile.metrics50.helper.Util;
-import io.openliberty.microprofile.metrics50.internal.Constants;
-import io.openliberty.microprofile.metrics50.internal.MetricRESTHandler;
-import io.openliberty.microprofile.metrics50.internal.SharedMetricRegistries;
+import io.openliberty.microprofile.metrics50.helper.Constants;
+import io.openliberty.microprofile.metrics50.SharedMetricRegistries;
+import io.openliberty.microprofile.metrics50.rest.MetricRESTHandler;
 
 @Component(service = { RESTHandler.class }, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true,
         property = { "service.vendor=IBM",

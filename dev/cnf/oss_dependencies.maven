@@ -41,11 +41,11 @@ com.icegreen:greenmail:1.5.10
 com.jcraft:jsch:0.1.54
 com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8
 com.nimbusds:nimbus-jose-jwt:4.23
-com.oracle.database.jdbc.debug:ojdbc8_g:21.1.0.0
-com.oracle.database.jdbc:ucp:21.1.0.0
-com.oracle.database.security:oraclepki:21.1.0.0
-com.oracle.database.security:osdt_cert:21.1.0.0
-com.oracle.database.security:osdt_core:21.1.0.0
+com.oracle.database.jdbc.debug:ojdbc8_g:21.8.0.0
+com.oracle.database.jdbc:ucp:21.8.0.0
+com.oracle.database.security:oraclepki:21.8.0.0
+com.oracle.database.security:osdt_cert:21.8.0.0
+com.oracle.database.security:osdt_core:21.8.0.0
 com.sebastian-daschner:jaxrs-analyzer:0.9
 com.squareup.okhttp3:okhttp:4.10.0
 com.squareup.okio:okio-jvm:3.0.0
@@ -120,6 +120,7 @@ io.opentelemetry:opentelemetry-api:1.19.0
 io.opentelemetry:opentelemetry-context:1.19.0
 io.opentelemetry:opentelemetry-exporter-common:1.19.0
 io.opentelemetry:opentelemetry-exporter-jaeger:1.19.0
+io.opentelemetry:opentelemetry-exporter-logging:1.19.0
 io.opentelemetry:opentelemetry-exporter-otlp-common:1.19.0
 io.opentelemetry:opentelemetry-exporter-otlp:1.19.0
 io.opentelemetry:opentelemetry-exporter-zipkin:1.19.0
@@ -152,6 +153,7 @@ io.smallrye.common:smallrye-common-function:1.6.0
 io.smallrye.config:smallrye-config-common:2.5.1
 io.smallrye.config:smallrye-config-core:2.5.1
 io.smallrye.config:smallrye-config:2.5.1
+io.smallrye:jandex:3.0.5
 io.smallrye:smallrye-graphql-api:1.0.26
 io.smallrye:smallrye-graphql-cdi:1.0.26
 io.smallrye:smallrye-graphql-client-api:1.0.26
@@ -161,6 +163,8 @@ io.smallrye:smallrye-graphql-schema-model:1.0.26
 io.smallrye:smallrye-graphql-servlet:1.0.26
 io.smallrye:smallrye-graphql:1.0.26
 io.smallrye:smallrye-metrics:5.0.0-M5
+io.smallrye:smallrye-open-api-core:3.1.1
+io.smallrye:smallrye-open-api-jaxrs:3.1.1
 io.zipkin.reporter2:zipkin-reporter:2.16.3
 io.zipkin.reporter2:zipkin-sender-okhttp3:2.16.3
 io.zipkin.zipkin2:zipkin:2.23.2
@@ -334,6 +338,7 @@ org.apache.directory.server:apacheds-service:2.0.0-M15
 org.apache.directory.server:kerberos-client:2.0.0-M24
 org.apache.felix:org.apache.felix.http.api:2.2.0
 org.apache.felix:org.apache.felix.http.base:2.2.0
+org.apache.felix:org.apache.felix.scr:2.2.6
 org.apache.felix:org.osgi.service.obr:1.0.2
 org.apache.geronimo.specs:geronimo-jaxb_2.2_spec:1.0.1
 org.apache.httpcomponents.client5:httpclient5:5.0.2
@@ -384,9 +389,9 @@ org.apache.thrift:libthrift:0.13.0
 org.apache.thrift:libthrift:0.14.1
 org.apache.tomcat.embed:tomcat-embed-websocket:8.5.23
 org.apache.tomcat:tomcat-el-api:10.0.18
-org.apache.tomcat:tomcat-el-api:10.1.2
+org.apache.tomcat:tomcat-el-api:10.1.5
 org.apache.tomcat:tomcat-jasper-el:10.0.18
-org.apache.tomcat:tomcat-jasper-el:10.1.2
+org.apache.tomcat:tomcat-jasper-el:10.1.5
 org.apache.wink:wink-client-apache-httpclient:1.4
 org.apache.wink:wink-client:1.4
 org.apache.wink:wink-common:1.4
@@ -492,6 +497,7 @@ org.eclipse.microprofile.openapi:microprofile-openapi-api:1.0.1
 org.eclipse.microprofile.openapi:microprofile-openapi-api:1.1.1
 org.eclipse.microprofile.openapi:microprofile-openapi-api:2.0
 org.eclipse.microprofile.openapi:microprofile-openapi-api:3.0
+org.eclipse.microprofile.openapi:microprofile-openapi-api:3.1
 org.eclipse.microprofile.opentracing:microprofile-opentracing-api:1.0.1
 org.eclipse.microprofile.opentracing:microprofile-opentracing-api:1.1
 org.eclipse.microprofile.opentracing:microprofile-opentracing-api:1.2

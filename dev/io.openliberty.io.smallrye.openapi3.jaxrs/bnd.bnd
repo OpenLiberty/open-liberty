@@ -48,7 +48,7 @@ Export-Package: \
     io.smallrye:smallrye-open-api-jaxrs;version=3.1,\
     io.openliberty.org.eclipse.microprofile.openapi.3.1;version=latest,\
     com.ibm.ws.org.jboss.logging;version=latest,\
-    com.ibm.ws.org.jboss.jandex;version=latest,\
+    io.openliberty.io.smallrye.jandex3;version=latest,\
     io.openliberty.io.smallrye.openapi3.core;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
     com.ibm.ws.logging;version=latest,\

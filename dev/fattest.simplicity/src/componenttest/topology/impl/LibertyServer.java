@@ -62,6 +62,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
@@ -125,6 +126,7 @@ public class LibertyServer implements LogMonitorClient {
     protected static final Class<?> c = LibertyServer.class;
     protected static final String CLASS_NAME = c.getName();
     protected static Logger LOG = Logger.getLogger(CLASS_NAME); // why don't we always use the Logger directly?
+    private final static String LS = System.getProperty("line.separator");
 
     /** How frequently we poll the logs when waiting for something to happen */
     protected static final int WAIT_INCREMENT = 300;
@@ -1168,9 +1170,26 @@ public class LibertyServer implements LogMonitorClient {
         Log.info(c, m, "Printing processes to file: " + fileName);
 
         String filePath = properties.getFileProperty(Props.DIR_LOG).getAbsolutePath() + File.separator + fileName;
-        try (PrintStream stream = new PrintStream(new BufferedOutputStream(new FileOutputStream(filePath)), true, "UTF-8")) {
-            PortDetectionUtil detector = PortDetectionUtil.getPortDetector(host);
-            stream.print(detector.listProcesses());
+        PortDetectionUtil detector = PortDetectionUtil.getPortDetector(host);
+        try {
+            String processes = detector.listProcesses();
+            if (processes != null) {
+                try (PrintStream stream = new PrintStream(new BufferedOutputStream(new FileOutputStream(filePath)), true, "UTF-8")) {
+
+                    // Remove useless numbers and whitespace
+                    StringTokenizer st = new StringTokenizer(processes, LS);
+                    while (st.hasMoreTokens()) {
+                        String s = st.nextToken().trim();
+                        if (!s.matches("^\\d+$")) {
+                            stream.println(s.replaceAll("\\s+", " "));
+                        }
+                    }
+                } catch (Exception ex) {
+                    Log.error(c, m, ex, "Caught exception while trying to list processes");
+                }
+            } else {
+                Log.info(c, m, "Could not list processes");
+            }
         } catch (Exception ex) {
             Log.error(c, m, ex, "Caught exception while trying to list processes");
         }
@@ -1857,7 +1876,7 @@ public class LibertyServer implements LogMonitorClient {
      * @return
      */
     private boolean doCheckpoint() {
-        return (checkpointInfo != null) && getCheckpointSupported();
+        return (checkpointInfo != null);
     }
 
     /**
@@ -3103,6 +3122,7 @@ public class LibertyServer implements LogMonitorClient {
     public void postStopServerArchive(boolean retry, boolean skipArchives) throws Exception {
         final String method = "postStopServerArchive";
         Log.entering(c, method);
+        printProcesses();
 
         while (true) {
             try {

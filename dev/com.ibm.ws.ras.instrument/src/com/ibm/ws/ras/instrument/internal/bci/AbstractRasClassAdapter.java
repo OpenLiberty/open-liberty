@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2013 IBM Corporation and others.
+ * Copyright (c) 2006, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -91,6 +91,8 @@ public abstract class AbstractRasClassAdapter extends CheckInstrumentableClassAd
      */
     protected final ClassInfo classInfo;
 
+    protected final ClassTraceInfo traceInfo;
+    
     /**
      * The set of methods that have been visited.
      */
@@ -114,29 +116,51 @@ public abstract class AbstractRasClassAdapter extends CheckInstrumentableClassAd
     /**
      * Flag that indicates a class static initializer has been created.
      */
-    private boolean staticInitializerGenerated = false;
+    private boolean staticInitializerGenerated;
+
+    private final boolean throwComputeFrames;
+
+    public boolean getThrowComputeFrames() {
+    	return throwComputeFrames;
+    }
     
-    protected ClassTraceInfo traceInfo;
+    //
 
     /**
-     * Constructor.
+     * Control parameter: Throw a {@link ComputeRequiredException} if a variable
+     * store instruction is seen in an initializer before the superclass initializer
+     * is invoked.
      */
-    public AbstractRasClassAdapter(final ClassVisitor visitor) {
-        this(visitor, null);
-    }
+    public static final boolean THROW_COMPUTE_FRAMES = true;
 
-    /**
-     * Constructor.
-     */
-    public AbstractRasClassAdapter(final ClassVisitor visitor, final ClassInfo classInfo) {
+    public AbstractRasClassAdapter(ClassVisitor visitor,
+    		ClassInfo classInfo, ClassTraceInfo traceInfo,
+    		boolean throwComputeFrames) {
+
         super(visitor);
+
         this.classInfo = classInfo;
+        this.traceInfo = traceInfo;
+        
+        this.throwComputeFrames = throwComputeFrames;
     }
 
-    /**
-     * Begin processing a class. We save some of the header information that
-     * we only get from the header to assist with processing.
-     */
+    public AbstractRasClassAdapter(ClassVisitor visitor,
+    		ClassInfo classInfo, ClassTraceInfo traceInfo) {
+
+    	this(visitor, classInfo, traceInfo, !THROW_COMPUTE_FRAMES);
+    }
+
+    public AbstractRasClassAdapter(ClassVisitor visitor, ClassInfo classInfo) {
+    	this(visitor, classInfo, null, !THROW_COMPUTE_FRAMES);
+    }
+
+    public AbstractRasClassAdapter(ClassVisitor visitor) {
+        this(visitor, null, null, !THROW_COMPUTE_FRAMES);
+    }
+
+    //
+
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         this.classVersion = version;
@@ -149,12 +173,8 @@ public abstract class AbstractRasClassAdapter extends CheckInstrumentableClassAd
 
     /**
      * Visit the class annotations looking at the supported RAS annotations.
-     * The result of running the visitors are only used when a {@code ClassInfo} model object was not provided during construction.
-     * 
-     * @param desc
-     *            the annotation descriptor
-     * @param visible
-     *            true if the annotation is a runtime visible annotation
+     * The result of running the visitors are only used when a {@code ClassInfo}
+     * model object was not provided during construction.
      */
     @Override
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
@@ -292,21 +312,12 @@ public abstract class AbstractRasClassAdapter extends CheckInstrumentableClassAd
         super.visitEnd();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public ClassInfo getClassInfo() {
         return classInfo;
     }
 
-    /**
-     * {@inheritDoc}
-     * 
-     * Additionally, {@code Trivial} class are not instrumentable.
-     */
     @Override
     public boolean isInstrumentableClass() {
-        // Don't instrument trivial classes
         if (isTrivial()) {
             return false;
         }
@@ -327,86 +338,38 @@ public abstract class AbstractRasClassAdapter extends CheckInstrumentableClassAd
         return true;
     }
 
-    /**
-     * Determine whether or not @InjectedTrace should be updated.
-     * 
-     * @return true
-     */
     protected boolean isInjectedTraceAnnotationRequired() {
         return true;
     }
 
-    /**
-     * Get the {@code Type} that represents the class being processed.
-     * 
-     * @return the {@code Type} that represents the class being processed
-     */
     public Type getClassType() {
         return classType;
     }
 
-    /**
-     * Get the internal name of the class being processed.
-     * 
-     * @return the internal name of the class being processed
-     */
     public String getClassInternalName() {
         return classType.getInternalName();
     }
 
-    /**
-     * Get the class name in package qualified form as returned by {@code Class.getName()}.
-     * 
-     * @return the class name
-     * @see java.lang.Class#getName()
-     */
     public String getClassName() {
         return classType.getClassName();
     }
 
-    /**
-     * Get the version information from the class byte code being processed.
-     * 
-     * @return the class version information
-     */
     public int getClassVersion() {
         return classVersion;
     }
 
-    /**
-     * Determine if the class being processed represents an interface.
-     * 
-     * @return true if the class being processed is an interface.
-     */
     public boolean isInterface() {
         return isInterface;
     }
 
-    /**
-     * Determine if the class being processed is synthetic.
-     * 
-     * @return true if the class is synthetic
-     */
     public boolean isSynthetic() {
         return isSynthetic;
     }
 
-    /**
-     * Apply an "inner class detection" heuristic and try to determine if
-     * the class that's being processed is an inner class.
-     * 
-     * @return true if the class is an inner class
-     */
     public boolean isInnerClass() {
         return isInnerClass;
     }
 
-    /**
-     * Determine if the unprocessed class already had a static initializer
-     * defined.
-     * 
-     * @return true if the unprocessed class contained a static initializer
-     */
     public boolean isStaticInitDefined() {
         if (classInfo != null) {
             return classInfo.getDeclaredMethod("<clinit>", "()V") != null;
@@ -414,12 +377,6 @@ public abstract class AbstractRasClassAdapter extends CheckInstrumentableClassAd
         return visitedMethods.contains(new Method("<clinit>", "()V"));
     }
 
-    /**
-     * Determine if the introspection or trace configuration for this class
-     * indicates that it is sensitive.
-     * 
-     * @return true of the class config implies this class is sensitive
-     */
     public boolean isSensitveType() {
         if (classInfo != null) {
             return classInfo.isSensitive();
@@ -427,13 +384,6 @@ public abstract class AbstractRasClassAdapter extends CheckInstrumentableClassAd
         return observedAnnotations.contains(SENSITIVE_TYPE);
     }
 
-    /**
-     * Determine if the introspection or trace configuration for this class
-     * indicates that it is trivial. &quot;Trivial&quot; classes are not
-     * considered instrumentable.
-     * 
-     * @return true of the class config implies this class is trivial
-     */
     public boolean isTrivial() {
         if (classInfo != null) {
             return classInfo.isTrivial();
@@ -441,11 +391,6 @@ public abstract class AbstractRasClassAdapter extends CheckInstrumentableClassAd
         return observedAnnotations.contains(TRIVIAL_TYPE);
     }
 
-    /**
-     * Get the effective trace options for this class.
-     * 
-     * @return the effective trace options for this class
-     */
     public TraceOptionsData getTraceOptionsData() {
         if ((classInfo != null) && (classInfo.getTraceOptionsData() != null)) {
             return classInfo.getTraceOptionsData();
@@ -458,12 +403,6 @@ public abstract class AbstractRasClassAdapter extends CheckInstrumentableClassAd
         return null;
     }
 
-    /**
-     * Determine if the class static initializer is generated.
-     * 
-     * @return true iff the class static initializer has been generated by
-     *         this adapter
-     */
     protected boolean isStaticInitializerGenerated() {
         return staticInitializerGenerated;
     }

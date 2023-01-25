@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -33,7 +32,7 @@ class EntityInfo {
     final Map<String, List<Member>> attributeAccessors;
     // upper case attribute name --> properly cased/qualified JPQL attribute name
     final LinkedHashMap<String, String> attributeNames;
-    final Set<String> collectionAttributeNames;
+    final Map<String, Class<?>> attributeTypes;
     final boolean inheritance;
     final String name;
     final PersistenceServiceUnit persister;
@@ -42,13 +41,13 @@ class EntityInfo {
     EntityInfo(String entityName, Class<?> entityClass,
                Map<String, List<Member>> attributeAccessors,
                LinkedHashMap<String, String> attributeNames,
-               Set<String> collectionAttributeNames,
+               Map<String, Class<?>> attributeTypes,
                PersistenceServiceUnit persister) {
         this.name = entityName;
         this.type = entityClass;
         this.attributeAccessors = attributeAccessors;
         this.attributeNames = attributeNames;
-        this.collectionAttributeNames = collectionAttributeNames;
+        this.attributeTypes = attributeTypes;
         this.persister = persister;
 
         inheritance = entityClass.getAnnotation(Inheritance.class) != null ||

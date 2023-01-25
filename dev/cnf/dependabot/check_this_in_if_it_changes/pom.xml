@@ -229,27 +229,27 @@
     <dependency>
       <groupId>com.oracle.database.jdbc.debug</groupId>
       <artifactId>ojdbc8_g</artifactId>
-      <version>21.1.0.0</version>
+      <version>21.8.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.oracle.database.jdbc</groupId>
       <artifactId>ucp</artifactId>
-      <version>21.1.0.0</version>
+      <version>21.8.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.oracle.database.security</groupId>
       <artifactId>oraclepki</artifactId>
-      <version>21.1.0.0</version>
+      <version>21.8.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.oracle.database.security</groupId>
       <artifactId>osdt_cert</artifactId>
-      <version>21.1.0.0</version>
+      <version>21.8.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.oracle.database.security</groupId>
       <artifactId>osdt_core</artifactId>
-      <version>21.1.0.0</version>
+      <version>21.8.0.0</version>
     </dependency>
     <dependency>
       <groupId>com.sebastian-daschner</groupId>
@@ -628,6 +628,11 @@
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-logging</artifactId>
+      <version>1.19.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-exporter-otlp</artifactId>
       <version>1.19.0</version>
     </dependency>
@@ -783,6 +788,11 @@
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
+      <artifactId>jandex</artifactId>
+      <version>3.0.5</version>
+    </dependency>
+    <dependency>
+      <groupId>io.smallrye</groupId>
       <artifactId>smallrye-graphql-api</artifactId>
       <version>1.0.26</version>
     </dependency>
@@ -825,6 +835,16 @@
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-metrics</artifactId>
       <version>5.0.0-M5</version>
+    </dependency>
+    <dependency>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-open-api-core</artifactId>
+      <version>3.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>io.smallrye</groupId>
+      <artifactId>smallrye-open-api-jaxrs</artifactId>
+      <version>3.1.1</version>
     </dependency>
     <dependency>
       <groupId>io.zipkin.reporter2</groupId>
@@ -1693,6 +1713,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.scr</artifactId>
+      <version>2.2.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
       <artifactId>org.osgi.service.obr</artifactId>
       <version>1.0.2</version>
     </dependency>
@@ -1944,7 +1969,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-el-api</artifactId>
-      <version>10.1.2</version>
+      <version>10.1.5</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
@@ -1954,7 +1979,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jasper-el</artifactId>
-      <version>10.1.2</version>
+      <version>10.1.5</version>
     </dependency>
     <dependency>
       <groupId>org.apache.wink</groupId>
@@ -2480,6 +2505,11 @@
       <groupId>org.eclipse.microprofile.openapi</groupId>
       <artifactId>microprofile-openapi-api</artifactId>
       <version>3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.microprofile.openapi</groupId>
+      <artifactId>microprofile-openapi-api</artifactId>
+      <version>3.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.opentracing</groupId>
@@ -4143,18 +4173,8 @@
     </dependency>
     <dependency>
       <groupId>io.smallrye</groupId>
-      <artifactId>smallrye-open-api-core</artifactId>
-      <version>3.1.0-RC1</version>
-    </dependency>
-    <dependency>
-      <groupId>io.smallrye</groupId>
       <artifactId>smallrye-open-api-jaxrs</artifactId>
       <version>2.1.15</version>
-    </dependency>
-    <dependency>
-      <groupId>io.smallrye</groupId>
-      <artifactId>smallrye-open-api-jaxrs</artifactId>
-      <version>3.1.0-RC1</version>
     </dependency>
     <dependency>
       <groupId>javax.activation</groupId>
@@ -4335,11 +4355,6 @@
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.gogo.shell</artifactId>
       <version>1.1.4</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.scr</artifactId>
-      <version>2.2.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>

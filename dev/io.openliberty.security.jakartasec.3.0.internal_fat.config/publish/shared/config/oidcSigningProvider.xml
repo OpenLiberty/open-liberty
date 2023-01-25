@@ -1,0 +1,234 @@
+<!--
+    Copyright (c) 2022, 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+		 		 
+	<openidConnectProvider
+		id="OP1"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
+		oauthProviderRef="OAuth1" />
+
+	<oauthProvider
+		id="OAuth1"
+		autoAuthorize="true"
+		tokenFormat="${opTokenFormat}"
+	>
+		<autoAuthorizeClient>client_1</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client_1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_RS256_RS256/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_RS256_HS256/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_RS256_none/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_RS256_HS512/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_RS256_RS256HS256/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_RS256_RS256none/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_RS256_HS256none/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_RS256_RS256HS256none/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_RS256_RS256_jwksConnTimeout0_jwksReadTimeout0/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_RS256_RS256_jwksConnTimeout0_jwksReadTimeout1/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_RS256_RS256_jwksConnTimeout500_jwksReadTimeout500/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_RS256_RS256_jwksConnTimeout1_jwksReadTimeout0/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningShortJwksConnectionTimeout/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningShortJwksReadTimeout/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/EmptySigning/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ComplexSigning1/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ComplexSigning2/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ComplexSigning3/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ComplexSigning4/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ComplexSigning5/Callback"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>		
+
+	<openidConnectProvider
+		id="OP2"
+		oauthProviderRef="OAuth2" />
+
+	<oauthProvider
+		id="OAuth2"
+		autoAuthorize="true"
+		tokenFormat="${opTokenFormat}"
+	>
+		<autoAuthorizeClient>client_1</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client_1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_HS256_RS256/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_HS256_HS256/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_HS256_none/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_HS256_RS384/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_HS256_RS256HS256/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_HS256_RS256none/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_HS256_HS256none/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_HS256_RS256HS256none/Callback"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>		
+	
+	<openidConnectProvider
+		id="OP3"
+		signatureAlgorithm="none"
+		oauthProviderRef="OAuth3" />
+
+	<oauthProvider
+		id="OAuth3"
+		autoAuthorize="true"
+		tokenFormat="${opTokenFormat}"
+	>
+		<autoAuthorizeClient>client_1</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client_1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_none_RS256/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_none_HS256/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_none_none/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_none_ES256/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_none_RS256HS256/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_none_RS256none/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_none_HS256none/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_none_RS256HS256none/Callback"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>		
+
+	<openidConnectProvider
+		id="OPDefaultJWKS"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
+		oauthProviderRef="OAuthDefaultJWKS" />
+
+	<oauthProvider
+		id="OAuthDefaultJWKS"
+		autoAuthorize="true"
+		tokenFormat="${opTokenFormat}"
+	>
+		<autoAuthorizeClient>client_1</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client_1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_RS256_RS256_jwksConnTimeout500_jwksReadTimeout500/Callback"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>		
+
+	<openidConnectProvider
+		id="OPInfiniteJWKS"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
+		oauthProviderRef="OAuthInfiniteJWKS" />
+
+	<oauthProvider
+		id="OAuthInfiniteJWKS"
+		autoAuthorize="true"
+		tokenFormat="${opTokenFormat}"
+	>
+		<autoAuthorizeClient>client_1</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client_1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_RS256_RS256_jwksConnTimeout0_jwksReadTimeout0/Callback"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>		
+
+	<openidConnectProvider
+		id="OPShortJWKS"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
+		oauthProviderRef="OAuthShortJWKS" />
+
+	<oauthProvider
+		id="OAuthShortJWKS"
+		autoAuthorize="true"
+		tokenFormat="${opTokenFormat}"
+	>
+		<autoAuthorizeClient>client_1</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client_1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_RS256_RS256_jwksConnTimeout0_jwksReadTimeout1/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_RS256_RS256_jwksConnTimeout1_jwksReadTimeout0/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningShortJwksConnectionTimeout/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningShortJwksReadTimeout/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningShortJwksConnectionTimeoutELOverride/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningShortJwksReadTimeoutELOverride/Callback"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>		
+
+	<openidConnectProvider
+		id="OPNegativeJWKS"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
+		oauthProviderRef="OAuthNegativeJWKS" />
+
+	<oauthProvider
+		id="OAuthNegativeJWKS"
+		autoAuthorize="true"
+		tokenFormat="${opTokenFormat}"
+	>
+		<autoAuthorizeClient>client_1</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client_1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_RS256_RS256_jwksConnTimeout0_jwksReadTimeout-1/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SigningTestServlet_RS256_RS256_jwksConnTimeout-1_jwksReadTimeout0/Callback"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>	
+		
+<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+
+</server>

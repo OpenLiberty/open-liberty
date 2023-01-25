@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 import com.ibm.ws.microprofile.faulttolerance.utils.DummyMetricRecorder;
 
-import io.openliberty.microprofile.metrics50.internal.SharedMetricRegistries;
+import io.openliberty.microprofile.metrics50.SharedMetricRegistries;
 
 @Component(configurationPolicy = IGNORE)
 public class MetricRecorderProvider30Metrics50Impl implements MetricRecorderProvider {

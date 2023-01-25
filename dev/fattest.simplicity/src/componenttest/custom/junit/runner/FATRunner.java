@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.ClassRule;
+import org.junit.ComparisonFailure;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.runner.manipulation.Filter;
 import org.junit.runner.manipulation.NoTestsRemainException;
@@ -316,7 +317,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
     private static Throwable newThrowableWithTimeStamp(Throwable orig) throws Throwable {
         // Create a new throwable that includes the current timestamp to help with the
         // investigation of test failures.  We want to create the same type of exception
-        // as the original in order to distinguish between a test failure (AssertionFailedError)
+        // as the original in order to distinguish between a test failure (AssertionError)
         // and an error (RuntimeException, IOException, etc.).
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss:SSS");
         String newMsg = sdf.format(new Date()) + " " + orig.getMessage();
@@ -328,7 +329,14 @@ public class FATRunner extends BlockJUnit4ClassRunner {
             newThrowable = ctor.newInstance(newMsg);
             newThrowable.setStackTrace(orig.getStackTrace());
         } catch (Throwable t) {
-            newThrowable = new Throwable(newMsg, orig);
+            //assertEquals can throw a ComparisonFailure instead of AssertionError with a ctor that requires three params
+            //This should still be a test failure, not an error.
+            if (orig instanceof ComparisonFailure) {
+                newThrowable = new AssertionError(newMsg);
+                newThrowable.setStackTrace(orig.getStackTrace());
+            } else {
+                newThrowable = new Throwable(newMsg, orig);
+            }
         }
         return newThrowable;
     }

@@ -129,6 +129,15 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         return value;
     }
 
+    public String[] getExtraParametersExpression() {
+
+        String[] value = {};
+        if (config.containsKey(Constants.EXTRA_PARAMETERS_EXPRESSION)) {
+            value = getStringArrayValue(Constants.EXTRA_PARAMETERS_EXPRESSION, ",");
+        }
+        return value;
+    }
+
     public boolean getTokenAutoRefreshExpression() {
 
         boolean value = false;
@@ -243,6 +252,17 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         String value = "RS256"; // spec default is RS256, OIDC default is HS256
         if (config.containsKey(Constants.IDTOKENSIGNINGALGORITHMSSUPPORTED)) {
             value = getStringValue(Constants.IDTOKENSIGNINGALGORITHMSSUPPORTED);
+        }
+
+        return value;
+
+    }
+
+    public String getJwksURI() {
+
+        String value = "";
+        if (config.containsKey(Constants.JWKSURI)) {
+            value = getStringValue(Constants.JWKSURI);
         }
 
         return value;

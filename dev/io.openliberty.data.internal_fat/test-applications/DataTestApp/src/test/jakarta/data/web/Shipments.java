@@ -15,7 +15,7 @@ package test.jakarta.data.web;
 import java.time.OffsetDateTime;
 import java.util.stream.Stream;
 
-import jakarta.data.repository.Condition;
+import jakarta.data.repository.Compare;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Filter;
 import jakarta.data.repository.OrderBy;
@@ -30,7 +30,7 @@ import jakarta.data.repository.Update;
 @Repository
 public interface Shipments {
     @Filter(by = "id", param = "shipmentId")
-    @Filter(by = "status", op = Condition.In, value = { "PREPARING", "READY_FOR_PICKUP" })
+    @Filter(by = "status", op = Compare.In, value = { "PREPARING", "READY_FOR_PICKUP" })
     @Update(attr = "status", value = "CANCELED")
     @Update(attr = "canceledAt", param = "time")
     boolean cancel(@Param("shipmentId") long id,

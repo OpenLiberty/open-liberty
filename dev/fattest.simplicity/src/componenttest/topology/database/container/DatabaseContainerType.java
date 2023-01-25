@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -42,11 +42,11 @@ public enum DatabaseContainerType {
     Derby("derby.jar", DerbyNoopContainer.class.getCanonicalName(), Properties_derby_embedded.class, DockerImageName.parse("")),
     DerbyClient("derbyclient.jar", DerbyClientContainer.class.getCanonicalName(), Properties_derby_client.class, DockerImageName.parse("")),
     Oracle("ojdbc8_g.jar", OracleContainer.class.getCanonicalName(), Properties_oracle.class, //
-           DockerImageName.parse("kyleaure/oracle-18.4.0-expanded:1.0.full").asCompatibleSubstituteFor("gvenzl/oracle-xe")),
+           DockerImageName.parse("gvenzl/oracle-xe:21.3.0-full-faststart")),
     Postgres("postgresql.jar", PostgreSQLContainer.class.getCanonicalName(), Properties_postgresql.class, //
              DockerImageName.parse("postgres:14.1-alpine")),
     SQLServer("mssql-jdbc.jar", MSSQLServerContainer.class.getCanonicalName(), Properties_microsoft_sqlserver.class, //
-              DockerImageName.parse("mcr.microsoft.com/mssql/server:2019-CU10-ubuntu-16.04"));
+              DockerImageName.parse("mcr.microsoft.com/mssql/server:2019-CU18-ubuntu-20.04"));
 
     private final String driverName;
     private final Class<DataSourceProperties> dsPropsClass;

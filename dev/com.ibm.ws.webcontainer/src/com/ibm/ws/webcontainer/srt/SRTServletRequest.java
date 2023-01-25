@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -78,6 +78,7 @@ import com.ibm.ws.webcontainer.async.AsyncIllegalStateException;
 import com.ibm.ws.webcontainer.async.AsyncListenerEntry;
 import com.ibm.ws.webcontainer.internalRuntimeExport.srt.IPrivateRequestAttributes;
 import com.ibm.ws.webcontainer.osgi.collaborator.CollaboratorHelperImpl;
+import com.ibm.ws.webcontainer.osgi.request.IRequestImpl;
 import com.ibm.ws.webcontainer.servlet.RequestUtils;
 import com.ibm.ws.webcontainer.session.SessionManagerConfigBase;
 import com.ibm.ws.webcontainer.util.EmptyEnumeration;
@@ -86,6 +87,7 @@ import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.ws.webcontainer.webapp.WebAppConfiguration;
 import com.ibm.ws.webcontainer.webapp.WebAppDispatcherContext;
 import com.ibm.ws.webcontainer.webapp.WebGroup;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.webcontainer.IPoolable;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
 import com.ibm.wsspi.webcontainer.WebContainer;
@@ -573,6 +575,29 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         }// PK80362 End
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"getHeader", "this->"+this+": "+" name --> " + name + " header --> " + PasswordNullifier.nullifyParams(header));
+        }
+        return header;
+    }
+
+    /**
+     * Returns the value of a header field, or null if not known.
+     * @param headerKey the HttpHeaderKeys for the header name
+     */
+    @Override
+    public String getHeader(HttpHeaderKeys headerKey) {
+
+        if (WCCustomProperties.CHECK_REQUEST_OBJECT_IN_USE){
+            checkRequestObjectInUse();
+        }
+       
+        String header = null;
+        String name = headerKey.getName();
+        if ( (suppressHeadersInRequest == null) ||  !(isHeaderinSuppressedHeadersList(name))){  
+            if (_request != null)
+                header = _request instanceof IRequestImpl ? ((IRequestImpl)_request).getHeader(headerKey) : _request.getHeader(name);
+        }// PK80362 End
+        if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
+            logger.logp(Level.FINE, CLASS_NAME,"getHeader", "this->"+this+": "+" headerKey --> " + name + " header --> " + PasswordNullifier.nullifyParams(header));
         }
         return header;
     }
@@ -1653,7 +1678,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         // from the accepted languages
         if (encoding == null && webAppCfg.isAutoRequestEncoding())
         {
-            String acceptLanguage = getHeader("Accept-Language");
+            String acceptLanguage = getHeader(HttpHeaderKeys.HDR_ACCEPT_LANGUAGE);
             if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))  //306998.15
                 logger.logp(Level.FINE, CLASS_NAME,"getReaderEncoding", "accept-language --> " + acceptLanguage);
 

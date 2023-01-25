@@ -1,0 +1,59 @@
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+		 		 
+	<openidConnectProvider
+		id="OP1"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
+		oauthProviderRef="OAuth1" />
+
+	<oauthProvider
+		id="OAuth1"
+		autoAuthorize="true"
+		tokenFormat="${opTokenFormat}"
+	>
+		<autoAuthorizeClient>client_1</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client_1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ExtraParametersOneParam/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ExtraParametersTwoParams/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ExtraParametersOneParamELTwoDifferentParams/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ExtraParametersELDuplicateKeys/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ExtraParametersELSpaceInKey/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ExtraParametersLeadingSpaceInKey/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ExtraParametersELTrailingSpaceInKey/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ExtraParametersELSpaceInValue/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ExtraParametersELLeadingSpaceInValue/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ExtraParametersELTrailingSpaceInValue/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ExtraParametersELEmptyKey/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ExtraParametersSpaceAsKey/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ExtraParametersELEmptyValue/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ExtraParametersELSpaceAsValue/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ExtraParametersELMissingEqualsSign/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ExtraParametersELTwoEqualsSigns/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ExtraParametersELEmpty/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ExtraParametersELEqualsSign/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ExtraParametersELSpecialCharacterInKey/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ExtraParametersELSpecialCharacterInValue/Callback"
+				scope="ALL_SCOPES"
+				enabled="true"
+			></client>
+		</localStore>
+	</oauthProvider>		
+			
+</server>

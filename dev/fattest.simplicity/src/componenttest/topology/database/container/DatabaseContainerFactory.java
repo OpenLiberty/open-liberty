@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -38,7 +38,7 @@ import componenttest.custom.junit.runner.FATRunner;
  * Derby: Uses a derby no-op test container <br>
  * DerbyClient: Uses a derby no-op test container <br>
  * DB2: Uses <a href="https://hub.docker.com/repository/docker/kyleaure/db2">Custom DB2 container</a> <br>
- * Oracle: Uses <a href="https://hub.docker.com/repository/docker/kyleaure/oracle-18.4.0-expanded">Custom Oracle container</a> <br>
+ * Oracle: Uses <a href="https://hub.docker.com/r/gvenzl/oracle-xe">Offical Oracle container</a> <br>
  * Postgres: Uses <a href="https://hub.docker.com/_/postgres">Offical Postgres Container</a> <br>
  * MS SQL Server: Uses <a href="https://hub.docker.com/_/microsoft-mssql-server">Offical Microsoft SQL Container</a> <br>
  *

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2008 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,6 @@ import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor;
 import com.ibm.ws.webcontainer.srt.ISRTServletRequest;
 import com.ibm.ws.webcontainer.srt.SRTOutputStream;
-import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.srt.SRTServletResponse;
 import com.ibm.ws.webcontainer.srt.WriteBeyondContentLengthException;
 import com.ibm.ws.webcontainer.webapp.WebApp;
@@ -56,6 +55,7 @@ import com.ibm.ws.webcontainer.webapp.WebAppEventSource;
 import com.ibm.ws.webcontainer.webapp.WebAppRequestDispatcher;
 import com.ibm.ws.webcontainer.webapp.WebAppServletInvocationEvent;
 import com.ibm.ws.webcontainer.webapp.WebGroup; //PM79476
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.webcontainer.IPlatformHelper;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
 import com.ibm.wsspi.webcontainer.WebContainer;
@@ -786,7 +786,7 @@ public abstract class FileServletWrapper implements IServletWrapper, IServletWra
     // (3) this is not a forward &
     // (4) control header wasn't already added (by dynacache)
     // (5) request is not authenticated
-        if ((esiControl != null) && (req.getHeader("Surrogate-Capability") != null)
+        if ((esiControl != null) && (ISRTServletRequest.getHeader(req, HttpHeaderKeys.HDR_SURROGATE_CAPABILITY) != null)
                 && (req.getAttribute(WebAppRequestDispatcher.DISPATCH_NESTED_ATTR) == null) && (!resp.containsHeader("Surrogate-Control"))
                 && (req.getAuthType() == null)) {
       resp.addHeader("Surrogate-Control", esiControl);

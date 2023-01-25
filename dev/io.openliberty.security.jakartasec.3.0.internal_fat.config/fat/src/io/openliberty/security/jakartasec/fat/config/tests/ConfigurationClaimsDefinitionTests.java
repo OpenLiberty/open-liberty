@@ -23,8 +23,6 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
-import com.ibm.ws.security.fat.common.expectations.ResponseMessageExpectation;
-import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 
@@ -40,7 +38,6 @@ import io.openliberty.security.jakartasec.fat.utils.OpenIdContextExpectationHelp
 import io.openliberty.security.jakartasec.fat.utils.ServletMessageConstants;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 import io.openliberty.security.jakartasec.fat.utils.WsSubjectExpectationHelpers;
-import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Tests various values set for annotation attributes within the ClaimsDefinitiion
@@ -133,9 +130,8 @@ public class ConfigurationClaimsDefinitionTests extends CommonAnnotatedSecurityT
     public Expectations get401Expectations() throws Exception {
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addUnauthorizedStatusCodeAndMessageForCurrentAction();
 
-        expectations.addExpectation(new ResponseMessageExpectation(null, Constants.STRING_CONTAINS, Constants.UNAUTHORIZED_MESSAGE, "Did not receive a message stating that caller is not authorized."));
         expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_DOES_NOT_CONTAIN, "got here", "Did not land on the servlet."));
 
         return expectations;
@@ -144,7 +140,7 @@ public class ConfigurationClaimsDefinitionTests extends CommonAnnotatedSecurityT
     public Expectations get403Expectations(boolean includeSendFailure) throws Exception {
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_FORBIDDEN));
+        expectations.addForbiddenStatusCodeAndMessageForCurrentAction();
 
         expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_DOES_NOT_CONTAIN, "got here", "Did not land on the servlet."));
 
@@ -300,7 +296,7 @@ public class ConfigurationClaimsDefinitionTests extends CommonAnnotatedSecurityT
         response = actions.doFormLogin(response, "user1", "user1pwd");
 
         Expectations expectations = new Expectations();
-        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_FORBIDDEN));
+        expectations.addForbiddenStatusCodeAndMessageForCurrentAction();
         expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, Constants.AUTHORIZATION_ERROR, "Did not receive an authorization failure."));
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS9104A_NO_ACCESS_FOR_USER, "Did not receive an error message stating that the user is not granted access."));
 

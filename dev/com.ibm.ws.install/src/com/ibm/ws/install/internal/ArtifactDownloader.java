@@ -383,7 +383,7 @@ public class ArtifactDownloader implements AutoCloseable {
         Proxy proxy;
         if (envMap.get("https.proxyHost") != null) {
             proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("https.proxyHost"), Integer.parseInt((String) envMap.get("https.proxyPort"))));
-        } else if (envMap.get("http.proxyUser") != null) {
+        } else if (envMap.get("http.proxyHost") != null) {
             proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("http.proxyHost"), Integer.parseInt((String) envMap.get("http.proxyPort"))));
         } else {
             proxy = Proxy.NO_PROXY;
