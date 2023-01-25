@@ -1,5 +1,5 @@
 /**
- * Copyright 2013, 2022 International Business Machines Corp.
+ * Copyright 2013 International Business Machines Corp.
  *
  * See the NOTICE file distributed with this work for additional information
  * regarding copyright ownership. Licensed under the Apache License,
@@ -16,51 +16,29 @@
  */
 package com.ibm.ws.jbatch.cdi;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.batch.operations.JobOperator;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessBean;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.ws.cdi.CDIServiceUtils;
+import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 
-public class BatchCDIInjectionExtension implements Extension {
+@Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "api.classes=" +
+                                                                                                                 "javax.batch.api.BatchProperty;" +
+                                                                                                                 "javax.batch.runtime.context.JobContext;" +
+                                                                                                                 "javax.batch.runtime.context.StepContext",
+                                                                                                                 "service.vendor=IBM" })
 
-    private final static Logger logger = Logger.getLogger(BatchCDIInjectionExtension.class.getName());
+public class BatchCDIInjectionExtension implements WebSphereCDIExtension, Extension {
 
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
         AnnotatedType<BatchProducerBean> at = bm.createAnnotatedType(BatchProducerBean.class);
         bbd.addAnnotatedType(at, CDIServiceUtils.getAnnotatedTypeIdentifier(at, this.getClass()));
-    }
-
-    private Boolean foundJobOp = false;
-
-    public <A> void processBean(final @Observes ProcessBean<A> processBeanEvent) {
-        if (!foundJobOp) {
-            if (processBeanEvent.getBean().getTypes().contains(JobOperator.class)) {
-                if (processBeanEvent.getBean().getBeanClass().equals(JobOpProducerBean.class)) {
-                    logger.log(Level.FINE, "BatchCDIInjectionExtension.processBean() detecting our own JobOpProducerBean");
-                } else {
-                    logger.log(Level.FINE, "BatchCDIInjectionExtension.processBean() Found JobOperator of class: " + processBeanEvent.getBean().getBeanClass());
-                    foundJobOp = true;
-                }
-            }
-        }
-    }
-
-    public void afterBeanDiscovery(final @Observes AfterBeanDiscovery abd, BeanManager bm) {
-        if (foundJobOp) {
-          logger.log(Level.FINE, "Deferring to other detected JobOperator Bean");
-          return;
-        }
-        logger.log(Level.FINE, "Didn't find JobOperator Bean, registering JBatch one");
-        abd.addBean(new JobOpProducerBean(bm));
     }
 
 }
