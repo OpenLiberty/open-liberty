@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -26,6 +26,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS1406E_INVALID_CLIENT_CREDENTIAL = "CWWKS1406E";
     public static final String CWWKS1608E_MULTIPLE_RESPONSE_TYPE_ERROR = "CWWKS1608E";
     public static final String CWWKS1619E_OPENID_SCOPE_MISSING = "CWWKS1619E";
+    public static final String CWWKS1636E_INVALID_POST_LOGOUT = "CWWKS1636E";
     public static final String CWWKS1652A_AUTH_SEND_FAILURE = "CWWKS1652A";
 
     public static final String CWWKS1925E_MULTIPLE_ANNOTATIONS = "CWWKS1925E";

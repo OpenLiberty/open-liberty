@@ -286,7 +286,7 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
     }
 
     /**
-     * Invoke the requested app - and ensure that we landed on the logout page - we'll land on this page when we try to use expired tokens
+     * Invoke the requested app - and ensure that we landed on the post logout page - we'll land on this page when we try to use expired tokens
      *
      * @param webClient
      *            the webClient to use to make the request
@@ -295,9 +295,25 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
      * @return the logout page
      * @throws Exception
      */
-    public Page invokeAppReturnPostLogoutPage(WebClient webClient, String url, boolean extraParms) throws Exception {
+    public Page invokeAppReturnPostLogoutPage(WebClient webClient, String url, Map<String, String> extraParms) throws Exception {
 
         return invokeApp(webClient, url, CommonExpectations.successfullyReachedPostLogoutPage(extraParms));
+
+    }
+
+    /**
+     * Invoke the requested app - and ensure that we landed on the test endSession app (with/without a logout redirect, we won't get past the test endSession)
+     *
+     * @param webClient
+     *            the webClient to use to make the request
+     * @param url
+     *            the test requested url to attempt to access
+     * @return the logout page
+     * @throws Exception
+     */
+    public Page invokeAppReturnTestEndSessionPage(WebClient webClient, String url, boolean willRedirect) throws Exception {
+
+        return invokeApp(webClient, url, CommonExpectations.successfullyReachedTestEndSessiontPage(rpHttpsBase, willRedirect));
 
     }
 

@@ -21,7 +21,10 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.expectations.Expectations;
+import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 
 import componenttest.annotation.Server;
@@ -31,6 +34,7 @@ import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonLogoutAndRefreshTests;
 import io.openliberty.security.jakartasec.fat.configs.TestConfigMaps;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
+import io.openliberty.security.jakartasec.fat.utils.MessageConstants;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.PromptType;
 
@@ -59,6 +63,8 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     protected static final boolean IDTokenLongLifetime = false;
     protected static final boolean AccessTokenShortLifetime = true;
     protected static final boolean AccessTokenLongLifetime = false;
+
+    protected static final String EndSessionTestApp = "EndSessionServlet/end_session";
 
     @ClassRule
     public static RepeatTests repeat = createTokenTypeRepeat(Constants.OPAQUE_TOKEN_FORMAT);
@@ -103,6 +109,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
         swh = new ShrinkWrapHelpers(opHttpBase, opHttpsBase, rpHttpBase, rpHttpsBase);
 
         swh.defaultDropinApp(rpServer, "PostLogoutServlet.war", "oidc.client.postLogout.*", "oidc.client.base.utils");
+        swh.defaultDropinApp(rpServer, "EndSessionServlet.war", "oidc.client.endSession.*", "oidc.client.base.utils");
 
         // deploy the apps that are created at test time from common source
         // Notes about the providers:
@@ -200,6 +207,51 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
                                        "oidc.client.basicLogout.servlets",
                                        "oidc.client.base.*");
 
+        swh.deployConfigurableTestApps(rpServer, "GoodRedirectNotifyProviderTrueTestEndSessionLogoutServlet.war", "BasicLogoutServlet.war",
+                                       buildUpdatedConfigMap("GoodRedirectNotifyProviderTrueTestEndSessionLogoutServlet", "OP3", NotifyProvider, IDTokenHonorExpiry,
+                                                             AccessTokenHonorExpiry,
+                                                             goodRedirectUri, PromptType.LOGIN, EndSessionTestApp),
+                                       "oidc.client.basicLogout.servlets",
+                                       "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "EmptyRedirectNotifyProviderTrueTestEndSessionLogoutServlet.war", "BasicLogoutServlet.war",
+                                       buildUpdatedConfigMap("EmptyRedirectNotifyProviderTrueTestEndSessionLogoutServlet", "OP3", NotifyProvider, IDTokenHonorExpiry,
+                                                             AccessTokenHonorExpiry,
+                                                             emptyRedirectUri, PromptType.LOGIN, EndSessionTestApp),
+                                       "oidc.client.basicLogout.servlets",
+                                       "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "GoodRedirectNotifyProviderFalseTestEndSessionLogoutServlet.war", "BasicLogoutServlet.war",
+                                       buildUpdatedConfigMap("GoodRedirectNotifyProviderFalseTestEndSessionLogoutServlet", "OP3", DoNotNotifyProvider, IDTokenHonorExpiry,
+                                                             AccessTokenHonorExpiry,
+                                                             goodRedirectUri, PromptType.LOGIN, EndSessionTestApp),
+                                       "oidc.client.basicLogout.servlets",
+                                       "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "EmptyRedirectNotifyProviderFalseTestEndSessionLogoutServlet.war", "BasicLogoutServlet.war",
+                                       buildUpdatedConfigMap("EmptyRedirectNotifyProviderFalseTestEndSessionLogoutServlet", "OP3", DoNotNotifyProvider, IDTokenHonorExpiry,
+                                                             AccessTokenHonorExpiry,
+                                                             emptyRedirectUri, PromptType.LOGIN, EndSessionTestApp),
+                                       "oidc.client.basicLogout.servlets",
+                                       "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "GoodRedirectExtraParmsNotifyProviderTrueLogoutServlet.war", "BasicLogoutServlet.war",
+                                       buildUpdatedConfigMap("GoodRedirectExtraParmsNotifyProviderTrueLogoutServlet", "OP3", NotifyProvider, IDTokenHonorExpiry,
+                                                             AccessTokenHonorExpiry,
+                                                             goodRedirectExtraParmsUri, PromptType.LOGIN),
+                                       "oidc.client.basicLogout.servlets",
+                                       "oidc.client.base.*");
+
+        swh.deployConfigurableTestApps(rpServer, "GoodRedirectExtraParmsNotifyProviderFalseLogoutServlet.war", "BasicLogoutServlet.war",
+                                       buildUpdatedConfigMap("GoodRedirectExtraParmsNotifyProviderFalseLogoutServlet", "OP3", DoNotNotifyProvider, IDTokenHonorExpiry,
+                                                             AccessTokenHonorExpiry,
+                                                             goodRedirectExtraParmsUri, PromptType.LOGIN),
+                                       "oidc.client.basicLogout.servlets",
+                                       "oidc.client.base.*");
+
+        swh.deployConfigurableTestApps(rpServer, "GoodRedirectNotifyProviderTrueWithTrackingLogoutServlet.war", "BasicLogoutServlet.war",
+                                       buildUpdatedConfigMap("GoodRedirectNotifyProviderTrueWithTrackingLogoutServlet", "OP4", NotifyProvider, IDTokenHonorExpiry,
+                                                             AccessTokenHonorExpiry,
+                                                             goodRedirectUri, PromptType.LOGIN),
+                                       "oidc.client.basicLogout.servlets",
+                                       "oidc.client.base.*");
+
 //        Log.info(thisClass, "deployMyApps", "App Mapping");
 //        for (Entry<String, String> a : appMap.entrySet()) {
 //            Log.info(thisClass, "deployMyApps", "Short App Name: " + a.getValue() + " maps to an app that would/could be named: " + a.getKey());
@@ -280,6 +332,12 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     public static Map<String, Object> buildUpdatedConfigMap(String app, String provider, boolean notifyProvider, boolean idTokenExpires,
                                                             boolean accessTokenExpires, String redirectUri, PromptType prompt) throws Exception {
 
+        return buildUpdatedConfigMap(app, provider, notifyProvider, idTokenExpires, accessTokenExpires, redirectUri, prompt, null);
+    }
+
+    public static Map<String, Object> buildUpdatedConfigMap(String app, String provider, boolean notifyProvider, boolean idTokenExpires,
+                                                            boolean accessTokenExpires, String redirectUri, PromptType prompt, String endSession) throws Exception {
+
         // init the map with the provider info that the app should use
         Map<String, Object> testPropMap = TestConfigMaps.getProviderUri(opHttpsBase, provider);
 
@@ -308,10 +366,14 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
             if (redirectUri.equals(goodRedirectUri)) {
                 testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getRedirectURIGood_Logout(rpHttpsBase));
             } else {
-                if (redirectUri.equals(badRedirectUri)) {
-                    testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getRedirectURIBad_Logout(opHttpsBase));
+                if (redirectUri.equals(goodRedirectExtraParmsUri)) {
+                    testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getRedirectURIGoodWithExtraParms_Logout(rpHttpsBase));
                 } else {
-                    testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getRedirectURIEmpty_Logout());
+                    if (redirectUri.equals(badRedirectUri)) {
+                        testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getRedirectURIBad_Logout(opHttpsBase));
+                    } else {
+                        testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getRedirectURIEmpty_Logout());
+                    }
                 }
             }
         }
@@ -335,6 +397,10 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
                     testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getPromptExpressionEmpty());
                     break;
             }
+        }
+
+        if (endSession != null) {
+            testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getEndSessionEndpoint(rpHttpsBase, endSession));
         }
 
         Map<String, Object> updatedMap = buildUpdatedConfigMap(opServer, rpServer, app, "allValues.openIdConfig.properties", testPropMap);
@@ -843,18 +909,20 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
 
     /**
      * Show that when we have end_session from discovery and notify is true, we'll use end_session and perform the logout
+     * and then get redirected to the redirectURI
      *
      * @throws Exception
      */
     @Test
     public void BasicLogoutTests_goodRedirectUri_NotifyProviderTrue() throws Exception {
 
-        genericGoodLogoutTest("GoodRedirectNotifyProviderTrueLogoutServlet", "OP3");
+        genericGoodLogoutAndRedirectTest("GoodRedirectNotifyProviderTrueLogoutServlet", "OP3", null);
 
     }
 
     /**
      * Show that when we have end_session from discovery and notify is true, we'll use end_session and perform the logout
+     * The OP will attempt to invoke the post logout redirect, but that will fail - we'll find a message in the OP log
      *
      * @throws Exception
      */
@@ -862,11 +930,16 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     public void BasicLogoutTests_badRedirectUri_NotifyProviderTrue() throws Exception {
 
         genericGoodLogoutTest("BadRedirectNotifyProviderTrueLogoutServlet", "OP3");
+        // make sure that there is a message in the OP log stating that the post logout redirect is invalid
+        Expectations expectations = new Expectations();
+        expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWWKS1636E_INVALID_POST_LOGOUT, "Did not find a message in the OP server log stating that the post logout redirect was not valid."));
+        validationUtils.validateResult(null, expectations);
 
     }
 
     /**
      * Show that when we have end_session from discovery and notify is true, we'll use end_session and perform the logout
+     * No redirect will be done after the logout since the logout redirectURI in the annotation is set to ""
      *
      * @throws Exception
      */
@@ -878,28 +951,71 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     }
 
     /**
+     * Show that when we have end_session from discovery and notify is true, we'll use end_session and perform the logout
+     * and then get redirected to the post logout redirectURI - the logout redirectURI in the annotation includes some parameters.
+     * The OP config specifies postLogoutRedirectUris and it includes the value specified in the annotation. The test verifies that
+     * the app did receive those parms
+     *
+     * @throws Exception
+     */
+    @Test
+    public void BasicLogoutTests_goodRedirectUriWithExtraParms_NotifyProviderTrue() throws Exception {
+
+        Map<String, String> extraParmsMap = new HashMap<String, String>();
+        extraParmsMap.put("testParm1", "testParm1_value");
+        extraParmsMap.put("testParm2", "testParm2_value");
+        extraParmsMap.put("testParm3", "testParm3_value");
+
+        genericGoodLogoutAndRedirectTest("GoodRedirectExtraParmsNotifyProviderTrueLogoutServlet", "OP3", extraParmsMap);
+
+    }
+
+    /**
+     * Show that when we have end_session from discovery and notify is false, end_session will not be called to perform the a logout,
+     * but we will be redirected to the post logout redirectURI - the logout redirectURI in the annotation includes some parameters.
+     * The test verifies that the app did receive those parms
+     *
+     * @throws Exception
+     */
+    @Test
+    public void BasicLogoutTests_goodRedirectUriWithExtraParms_NotifyProviderFalse() throws Exception {
+
+        Map<String, String> extraParmsMap = new HashMap<String, String>();
+        extraParmsMap.put("testParm1", "testParm1_value");
+        extraParmsMap.put("testParm2", "testParm2_value");
+        extraParmsMap.put("testParm3", "testParm3_value");
+
+        genericGoodRedirectWithoutLogoutTest("GoodRedirectExtraParmsNotifyProviderFalseLogoutServlet", "OP3", extraParmsMap);
+
+    }
+
+    /**
      * Show that when notify is false and we have the logout redirectURI, we'll use that redirectURI
-     * This test has that redirect set to the valid end_session value
+     * After landing on that redirect/post logout page, we'll try to access the app again and since the
+     * OP wasen't involved in the logout, the OP's cookie will still exist. The rp will invoke the op and
+     * it will use that cookie to create a new access and id token
      *
      * @throws Exception
      */
     @Test
     public void BasicLogoutTests_goodRedirectUri_NotifyProviderFalse_PromptLogin() throws Exception {
 
-        genericGoodLogoutTest("GoodRedirectNotifyProviderFalsePromptLoginLogoutServlet", "OP3");
+        genericGoodRedirectWithoutLogoutTest("GoodRedirectNotifyProviderFalsePromptLoginLogoutServlet", "OP3", null);
 
     }
 
     /**
      * Show that when notify is false and we have the logout redirectURI, we'll use that redirectURI
-     * This test has that redirect set to the valid end_session value
+     * After landing on that redirect/post logout page, we'll try to access the app again and since the
+     * OP wasen't involved in the logout, the OP's cookie will still exist. The rp will invoke the op and
+     * it will use that cookie to create a new access and id token
      *
      * @throws Exception
      */
     @Test
     public void BasicLogoutTests_goodRedirectUri_NotifyProviderFalse_PromptNone() throws Exception {
 
-        genericGoodLogoutTest("GoodRedirectNotifyProviderFalsePromptNoneLogoutServlet", "OP3");
+        genericGoodRedirectWithoutLogoutTest("GoodRedirectNotifyProviderFalsePromptNoneLogoutServlet", "OP3", null);
 
     }
 
@@ -912,7 +1028,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicLogoutTests_goodRedirectUri_NotifyProviderFalse_PromptConsent() throws Exception {
 
-        genericGoodLogoutTest("GoodRedirectNotifyProviderFalsePromptConsentLogoutServlet", "OP3");
+        genericGoodRedirectWithoutLogoutTest("GoodRedirectNotifyProviderFalsePromptConsentLogoutServlet", "OP3", null);
 
     }
 
@@ -925,7 +1041,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicLogoutTests_goodRedirectUri_NotifyProviderFalse_PromptSelectAccount() throws Exception {
 
-        genericGoodLogoutTest("GoodRedirectNotifyProviderFalsePromptSelectAccountLogoutServlet", "OP3");
+        genericGoodRedirectWithoutLogoutTest("GoodRedirectNotifyProviderFalsePromptSelectAccountLogoutServlet", "OP3", null);
 
     }
 
@@ -938,7 +1054,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicLogoutTests_goodRedirectUri_NotifyProviderFalse_PromptEmpty() throws Exception {
 
-        genericGoodLogoutTest("GoodRedirectNotifyProviderFalsePromptEmptyLogoutServlet", "OP3");
+        genericGoodRedirectWithoutLogoutTest("GoodRedirectNotifyProviderFalsePromptEmptyLogoutServlet", "OP3", null);
 
     }
 
@@ -955,10 +1071,100 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
 
     }
 
+    /**
+     * The logout redirectURI is empty and notifyProvider is set to false - after sleeping long enough for the tokens to expire, make sure that we automatically get to the app
+     * again since the OP refreshes the tokens - this happens because the OP's cookie is still in the webClient - The OP will automatically refresh the tokens.
+     *
+     * @throws Exception
+     */
     @Test
     public void BasicLogoutTests_emptyRedirectUri_NotifyProviderFalse() throws Exception {
 
         genericReAuthn(rpServer, "EmptyRedirectNotifyProviderFalseLogoutServlet", "OP3", false);
+
+    }
+
+    /**
+     * Show that the proper parameters are passed the end_session app
+     * Use a test app in place of the standard end_session provided by the OP.
+     * This app will log the parms that it is passed - make sure that the client_id and post_logout_redirect_uri are passed
+     *
+     * @throws Exception
+     */
+    @Test
+    public void BasicLogoutTests_goodRedirectUri_NotifyProviderTrue_useTestEndSession() throws Exception {
+
+        String appName = "GoodRedirectNotifyProviderTrueTestEndSessionLogoutServlet";
+        WebClient webClient = getAndSaveWebClient();
+        rspValues.setIssuer(opHttpsBase + "/oidc/endpoint/OP3");
+        runGoodEndToEndTest(webClient, appName, baseAppName);
+
+        // now logged in - wait for token to expire
+        actions.testLogAndSleep(35);
+        String url = rpHttpsBase + "/" + appName + "/" + baseAppName;
+        invokeAppReturnTestEndSessionPage(webClient, url, true);
+
+    }
+
+    /**
+     * Show that the proper parameters are passed the end_session app
+     * Use a test app in place of the standard end_session provided by the OP.
+     * This app will log the parms that it is passed - make sure that the client_id and post_logout_redirect_uri are passed
+     *
+     * @throws Exception
+     */
+    @Test
+    public void BasicLogoutTests_EmptyRedirectUri_NotifyProviderTrue_useTestEndSession() throws Exception {
+
+        String appName = "EmptyRedirectNotifyProviderTrueTestEndSessionLogoutServlet";
+        WebClient webClient = getAndSaveWebClient();
+        rspValues.setIssuer(opHttpsBase + "/oidc/endpoint/OP3");
+        runGoodEndToEndTest(webClient, appName, baseAppName);
+
+        // now logged in - wait for token to expire
+        actions.testLogAndSleep(35);
+        String url = rpHttpsBase + "/" + appName + "/" + baseAppName;
+        invokeAppReturnTestEndSessionPage(webClient, url, false);
+
+    }
+
+    // Do not need tests with NotifyProvider = false since end_session won't be invoked - other tests that use the logout redirect uri already check for parms being passed
+
+    // TODO - not working yet - issue https://github.com/OpenLiberty/open-liberty/issues/24062
+    /**
+     * Invoke an app protected by the @OpenIdAuthenticationMechanismDefinition annotation and are granted access - invoke the post method of the app to perform a request.logout() -
+     * expect TODO
+     *
+     * @throws Exception
+     */
+    //@Test
+    public void BasicLogoutTests_invoke_reqLogout() throws Exception {
+
+        String appName = "GoodRedirectNotifyProviderTrueTestEndSessionLogoutServlet";
+        WebClient webClient = getAndSaveWebClient();
+        rspValues.setIssuer(opHttpsBase + "/oidc/endpoint/OP3");
+        runGoodEndToEndTest(webClient, appName, baseAppName);
+
+        String url = rpHttpsBase + "/GoodRedirectNotifyProviderTrueTestEndSessionLogoutServlet/" + baseAppName;
+        actions.invokeUrlWithParametersUsingPost(_testName, webClient, url, null);
+
+    }
+
+    /**
+     * Show that when we have end_session from discovery and notify is true, we'll use end_session and perform the logout
+     * and then get redirected to the redirectURI - in this case, the OP has trackOAuthClients set to true, so, when the post logout
+     * redirect app is called, "clients_intereated_with" is passed to that app with a generated value.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void BasicLogoutTests_goodRedirectUri_NotifyProviderTrue_trackClient() throws Exception {
+
+        Map<String, String> trackingParms = new HashMap<String, String>();
+        // the value is a generated value, so, test can't validate the actual value - we just need to make sure it exists
+        trackingParms.put("clients_interacted_with", "");
+
+        genericGoodLogoutAndRedirectTest("GoodRedirectNotifyProviderTrueWithTrackingLogoutServlet", "OP4", trackingParms);
 
     }
 

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec.fat.configs;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -418,6 +419,14 @@ public class TestConfigMaps {
         return getRedirectURIGood_Logout(rpBase, null);
     }
 
+    public static Map<String, Object> getRedirectURIGoodWithExtraParms_Logout(String rpBase) throws Exception {
+        Map<String, List<String>> parmsMap = new HashMap<String, List<String>>();
+        parmsMap.put("testParm1", Arrays.asList("testParm1_value"));
+        parmsMap.put("testParm2", Arrays.asList("testParm2_value"));
+        parmsMap.put("testParm3", Arrays.asList("testParm3_value"));
+        return getRedirectURIGood_Logout(rpBase, parmsMap);
+    }
+
     public static Map<String, Object> getRedirectURIGood_Logout(String rpBase, Map<String, List<String>> parms) throws Exception {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
@@ -525,6 +534,15 @@ public class TestConfigMaps {
         Map<String, Object> updatedMap = new HashMap<String, Object>();
         Log.info(thisClass, "", "userinfoApp:  (not set)");
         updatedMap.put(Constants.USERINFOENDPOINT, "");
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getEndSessionEndpoint(String serverBase, String appName) throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        Log.info(thisClass, "", "endSessionApp: " + appName);
+        updatedMap.put(Constants.ENDSESSION_ENDPOINT, serverBase + "/" + appName);
         return updatedMap;
 
     }

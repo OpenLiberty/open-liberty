@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,7 @@
 package oidc.client.endSession.servlets;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Enumeration;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletOutputStream;
@@ -38,15 +37,11 @@ public class EndSessionServlet extends HttpServlet {
         ServletOutputStream outputStream = response.getOutputStream();
         ServletLogger.printLine(outputStream, "Reached EndSessionServlet");
 
-        Map<String, String[]> parms = request.getParameterMap();
-        if (parms == null || parms.isEmpty()) {
-            ServletLogger.printLine(outputStream, "EndSessionServlet - No Parms were passed");
-        } else {
-            for (Entry<String, String[]> entry : parms.entrySet()) {
-                ServletLogger.printLine(outputStream, "EndSessionServlet - parmKey: " + entry.getKey() + " parmValue: " + entry.getValue().toString());
-            }
+        Enumeration<String> parmNames = request.getParameterNames();
+        while (parmNames.hasMoreElements()) {
+            String key = parmNames.asIterator().next();
+            ServletLogger.printLine(outputStream, "EndSessionServlet - parmKey: " + key + " parmValue: " + request.getParameter(key));
         }
-
     }
 
 }

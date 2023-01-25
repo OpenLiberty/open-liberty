@@ -12,6 +12,8 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec.fat.utils;
 
+import java.util.Map;
+
 import com.ibm.ws.security.fat.common.Constants;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
@@ -53,17 +55,40 @@ public class CommonExpectations extends com.ibm.ws.security.fat.common.utils.Com
         return expectations;
     }
 
-    public static Expectations successfullyReachedPostLogoutPage(boolean extraParms) {
+    public static Expectations successfullyReachedPostLogoutPage(Map<String, String> extraParms) {
         Expectations expectations = new Expectations();
         expectations.addSuccessCodeForCurrentAction();
 //        expectations.addExpectation(new ResponseTitleExpectation(Constants.STRING_EQUALS, Constants.LOGOUT_TITLE, "Title of page returned did not match expected value."));
         expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_EQUALS, Constants.OK_MESSAGE, "Did not receive the ok message."));
         expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, ServletMessageConstants.REACHEDPOSTLOGOUT, "Did not receive a message stating that we landed on the Post Logout page."));
-        if (extraParms) {
-            expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, ServletMessageConstants.REACHEDPOSTLOGOUT, "Did not receive a message stating that we landed on the Post Logout page."));
+        if (extraParms != null) {
+            for (Map.Entry<String, String> parm : extraParms.entrySet()) {
+                expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, ServletMessageConstants.POSTLOGOUT_EXTRAPARM_PART1 + parm.getKey()
+                                                                                                   + ServletMessageConstants.POSTLOGOUT_EXTRAPARM_PART2
+                                                                                                   + parm.getValue(), "Did not receive a message logging the expected parm: "
+                                                                                                                      + parm.getKey() + "."));
+            }
         } else {
             expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, ServletMessageConstants.POSTLOGOUT_NOEXTRAPARMS, "Did not receive a message stating that there were no extra parms passed to the Post Logout Page."));
         }
         return expectations;
     }
+
+    public static Expectations successfullyReachedTestEndSessiontPage(String rpBase, boolean willRedirect) {
+        Expectations expectations = new Expectations();
+        expectations.addSuccessCodeForCurrentAction();
+        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_EQUALS, Constants.OK_MESSAGE, "Did not receive the ok message."));
+        expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, ServletMessageConstants.REACHEDTESTENDSESSION, "Did not receive a message stating that we landed on the Test end_session page."));
+        expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, ServletMessageConstants.ENDSESSION_CLIENTID
+                                                                                           + "client_1", "Did not receive a message stating that we found the client_id parm when end_session is called."));
+        if (willRedirect) {
+            expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, ServletMessageConstants.ENDSESSION_POSTLOGOUTREDIRECTURI + rpBase
+                                                                                               + ServletMessageConstants.POSTLOGOUTREDIRECTURIAPP, "Did not receive a message stating that we found the post_logout_redirect_uri parm when end_session is called."));
+        } else {
+            expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_DOES_NOT_CONTAIN, ServletMessageConstants.ENDSESSION_POSTLOGOUTREDIRECTURI + rpBase
+                                                                                                       + ServletMessageConstants.POSTLOGOUTREDIRECTURIAPP, "Found the post_logout_redirect_uri parm when end_session is called and should not have."));
+        }
+        return expectations;
+    }
+
 }

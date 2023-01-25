@@ -72,4 +72,11 @@ public class ServletMessageConstants {
     public static final String USERINFO = "userinfo: ";
     public static final String REACHEDPOSTLOGOUT = "Reached PostLogoutServlet";
     public static final String POSTLOGOUT_NOEXTRAPARMS = "PostLogoutServlet - No Parms were passed";
+    public static final String POSTLOGOUT_EXTRAPARM_PART1 = "PostLogoutServlet - parmKey: ";
+    public static final String POSTLOGOUT_EXTRAPARM_PART2 = " parmValue: ";
+    public static final String REACHEDTESTENDSESSION = "Reached EndSessionServlet";
+    public static final String ENDSESSION_POSTLOGOUTREDIRECTURI = "EndSessionServlet - parmKey: post_logout_redirect_uri parmValue: ";
+    public static final String POSTLOGOUTREDIRECTURIAPP = "/PostLogoutServlet/PostLogout";
+    public static final String ENDSESSION_CLIENTID = "EndSessionServlet - parmKey: client_id parmValue: ";
+
 }
