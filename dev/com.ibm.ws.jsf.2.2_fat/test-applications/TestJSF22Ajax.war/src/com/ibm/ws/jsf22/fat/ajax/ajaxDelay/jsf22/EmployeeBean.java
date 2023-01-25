@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jsf22.fat.ajax.ajaxDelay;
+package com.ibm.ws.jsf22.fat.ajax.ajaxDelay.jsf22;
 
 import java.io.Serializable;
 import java.util.ArrayList;
