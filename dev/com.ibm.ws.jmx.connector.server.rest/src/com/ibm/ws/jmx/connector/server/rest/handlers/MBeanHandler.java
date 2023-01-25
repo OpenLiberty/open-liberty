@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -117,6 +117,7 @@ public class MBeanHandler implements RESTHandler {
 
     private void objectName(RESTRequest request, RESTResponse response) {
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+        objectName = RESTHelper.repairSlashes(objectName, request);
 
         //Get the object for ObjectName
         ObjectName objectNameObj = RESTHelper.objectNameConverter(objectName, true, null);
@@ -169,6 +170,7 @@ public class MBeanHandler implements RESTHandler {
 
     private void deleteMBean(RESTRequest request, RESTResponse response) {
         String objectName = RESTHelper.getRequiredParam(request, APIConstants.PARAM_OBJECT_NAME);
+        objectName = RESTHelper.repairSlashes(objectName, request);
 
         //Get the object for ObjectName
         ObjectName objectNameObj = RESTHelper.objectNameConverter(objectName, true, null);
