@@ -32,6 +32,7 @@ IBM-API-Package: \
   io.openliberty.cdi-4.0, \
   io.openliberty.mpCompatible-6.0,\
   com.ibm.websphere.appserver.injection-2.0, \
+  io.openliberty.org.eclipse.microprofile.rest.client-3.0, \
   io.openliberty.org.eclipse.microprofile.telemetry-1.0
 -bundles=\
   io.openliberty.com.squareup.okhttp,\
