@@ -17,13 +17,10 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.EE8FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.jaxrs.fat.globalhandler.simple.SimpleGlobalHandlerClientTestServlet;
@@ -34,7 +31,7 @@ import io.openliberty.jaxrs.fat.globalhandler.simple.SimpleGlobalHandlerClientTe
  * with JAX-RS/Restful-WS.
  */
 @RunWith(FATRunner.class)
-//@SkipForRepeat({ EE8FeatureReplacementAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID })
+//@SkipForRepeat({ EmptyAction.ID, EE8FeatureReplacementAction.ID, JakartaEE9Action.ID})
 public class SimpleGlobalHandlerTest extends FATServletClient {
 
     private static final String appName = "SimpleGlobalHandler";
@@ -53,8 +50,8 @@ public class SimpleGlobalHandlerTest extends FATServletClient {
          *
          * Note: EE10+ features MUST include the following Subsystem-Contents:
          *
-         * io.openliberty.globalhandler-1.0; type=“osgi.subsystem.feature” // EE10+ requires the user to bring in globalhandler-1.0
-         * com.ibm.websphere.appserver.servlet-6.0; type=“osgi.subsystem.feature” // globalhandler-1.0 requires the servlet-6.0 feature
+         * io.openliberty.globalhandler-1.0; type="osgi.subsystem.feature" // EE10+ requires the user to bring in globalhandler-1.0
+         * com.ibm.websphere.appserver.servlet-6.0; type="osgi.subsystem.feature" // globalhandler-1.0 requires the servlet-6.0 feature
          */
         ShrinkHelper.defaultUserFeatureArchive(server, "MySimpleGlobalHandler", "io.openliberty.jaxrs.fat.globalhandler.simple.userbundle");
         TestUtils.installUserFeature(server, "MySimpleGlobalHandlerFeature");

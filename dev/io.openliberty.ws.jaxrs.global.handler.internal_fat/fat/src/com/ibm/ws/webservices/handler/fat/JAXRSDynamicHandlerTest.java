@@ -30,12 +30,12 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat(JakartaEE9Action.ID) // bundle still resolves for EE9 - 2nd test fails... 1st should work
 public class JAXRSDynamicHandlerTest {
     @Server("RSTestServer")
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("RSTestServer");
@@ -113,6 +113,7 @@ public class JAXRSDynamicHandlerTest {
     }
 
     @Test
+    @SkipForRepeat({JakartaEE9Action.ID,JakartaEE10Action.ID}) //Would fail because the user feature will resolve.  
     public void testGlobalHandlerFeatureOnly() throws Exception {
         //server.installUserBundle("RSHandler1_1.0.0");
         ShrinkHelper.defaultUserFeatureArchive(server, "rsUserBundle1", "com.ibm.ws.rsuserbundle1.myhandler");
