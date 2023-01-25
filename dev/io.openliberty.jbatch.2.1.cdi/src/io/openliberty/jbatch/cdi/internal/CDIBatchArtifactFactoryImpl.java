@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ibm.ws.jbatch.cdi.internal;
+package io.openliberty.jbatch.cdi.internal;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;

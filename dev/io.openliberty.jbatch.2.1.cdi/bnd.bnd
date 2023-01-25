@@ -20,29 +20,29 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 bVersion=2.1
 
 Bundle-Name: Batch CDI
-Bundle-SymbolicName: com.ibm.ws.jbatch.cdi.2.1.jakarta
+Bundle-SymbolicName: io.openliberty.jbatch.cdi.2.1.jakarta
 Bundle-Description: Batch support for CDI; version=${bVersion}; Jakarta Enabled
 
 WS-TraceGroup: wsbatch
 
 
 Import-Package:\
-  !com.ibm.ws.jbatch.cdi, \
+  !io.openliberty.jbatch.cdi, \
   jakarta.enterprise.*;version="[4.0,5)",\
   *
 
 Export-Package:\
-  com.ibm.ws.jbatch.cdi;provide:=true
+  io.openliberty.jbatch.cdi;provide:=true
 
 Private-Package:\
-  com.ibm.ws.jbatch.cdi.internal
+  io.openliberty.jbatch.cdi.internal
 
 Include-Resource: \
   META-INF=resources/META-INF
 
 -dsannotations:\
-  com.ibm.ws.jbatch.cdi.BatchCDIInjectionExtensionMetaData,\
-  com.ibm.ws.jbatch.cdi.internal.CDIBatchArtifactFactoryImpl
+  io.openliberty.jbatch.cdi.BatchCDIInjectionExtensionMetaData,\
+  io.openliberty.jbatch.cdi.internal.CDIBatchArtifactFactoryImpl
 
 -cdiannotations:
 

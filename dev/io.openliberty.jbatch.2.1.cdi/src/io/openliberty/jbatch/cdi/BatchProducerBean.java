@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.ibm.ws.jbatch.cdi;
+package io.openliberty.jbatch.cdi;
 
 import java.lang.annotation.Annotation;
 import java.util.List;

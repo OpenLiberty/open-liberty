@@ -15,6 +15,6 @@
  */
 @org.osgi.annotation.versioning.Version("1.0.0")
 @TraceOptions(traceGroup = "wsbatch")
-package com.ibm.ws.jbatch.cdi.internal;
+package io.openliberty.jbatch.cdi;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

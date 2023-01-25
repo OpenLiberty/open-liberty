@@ -10,7 +10,7 @@
  * Contributors:
  *  IBM Corporation - initial API and implementation
  */
-package com.ibm.ws.jbatch.cdi;
+package io.openliberty.jbatch.cdi;
 
 import java.util.Collections;
 import java.util.HashSet;
