@@ -24,6 +24,6 @@
 
 	<include location="${shared.config.dir}/microProfileAppJava2Settings.xml"/>
 
-	<include location="${shared.config.dir}/mpJwt_TokenAge_long.xml"/>
+	<include location="${shared.config.dir}/mpJwt_TokenAge_Long.xml"/>
 
 </server>
