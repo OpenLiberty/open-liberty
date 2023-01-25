@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,9 +18,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE10RepeatAction;
-import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction;
-import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
+import com.ibm.ws.security.fat.common.actions.LargeProjectRepeatActions;
 import com.ibm.ws.security.fat.common.utils.ldaputils.CommonLocalLDAPServerSuite;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientConsumeUserinfoTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientCookieNameTests;
@@ -33,7 +31,6 @@ import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcPropagationConsumeUs
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcPropagationRemoteValidationTests;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -58,10 +55,7 @@ public class FATSuite extends CommonLocalLDAPServerSuite {
      *
      * This was done to increase coverage of EE9 and EE10 while not adding a large amount of of test runtime.
      */
-    @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
-            .andWith(new SecurityTestRepeatAction().onlyOnWindows().fullFATOnly())
-            .andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().fullFATOnly())
-            .andWith(new SecurityTestFeatureEE10RepeatAction().notOnWindows().fullFATOnly());
+	@ClassRule
+	public static RepeatTests repeat = LargeProjectRepeatActions.createEE9OrEE10Repeats();
 
 }
