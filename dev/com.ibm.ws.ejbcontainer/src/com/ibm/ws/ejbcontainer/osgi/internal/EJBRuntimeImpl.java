@@ -150,7 +150,6 @@ import com.ibm.ws.exception.WsRuntimeFwException;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.DeploymentDescriptor;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.managedobject.ManagedObjectContext;
 import com.ibm.ws.managedobject.ManagedObjectService;
@@ -263,25 +262,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
     private final CheckpointPhase checkpointPhase;
 
     public EJBRuntimeImpl() {
-        CheckpointPhase phase = CheckpointPhase.getPhase();
-        if (!ProductInfo.getBetaEdition()) {
-            this.checkpointPhase = phase;
-        } else {
-            String testPhaseProp = System.getProperty("io.openliberty.ejb.checkpoint.phase");
-            CheckpointPhase testPhase = null;
-            if (testPhaseProp != null) {
-                try {
-                    testPhase = CheckpointPhase.valueOf(testPhaseProp.trim().toUpperCase());
-                } catch (IllegalArgumentException e) {
-                    // do nothing; FFDC will happen causing test to fail
-                }
-            }
-            if (phase == CheckpointPhase.INACTIVE && testPhase != null) {
-                this.checkpointPhase = testPhase;
-            } else {
-                this.checkpointPhase = phase;
-            }
-        }
+        checkpointPhase = CheckpointPhase.getPhase();
 
         // For any Checkpoint phase, pause all non-persistent timers until checkpoint restored
         if (!checkpointPhase.restored()) {
