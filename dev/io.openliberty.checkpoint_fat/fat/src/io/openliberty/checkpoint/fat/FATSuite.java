@@ -67,7 +67,8 @@ import componenttest.topology.impl.LibertyServer;
                 JsonbTest.class,
                 JsonpTest.class,
                 ManagedBeansTest.class,
-                BellsTest.class
+                BellsTest.class,
+                SkipIfCheckpointNotSupportedAnnotationTest.class
 })
 
 public class FATSuite {
