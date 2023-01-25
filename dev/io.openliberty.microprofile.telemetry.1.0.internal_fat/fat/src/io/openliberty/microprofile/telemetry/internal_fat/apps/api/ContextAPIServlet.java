@@ -149,43 +149,40 @@ public class ContextAPIServlet extends FATServlet {
     public void testContextPropagators() {
         //create initial context and add a value
         Context contextA = Context.current();
-        contextA = contextA.with(MY_KEY, "myValue");
-        //create a temporary carrier and a propagator
+        contextA = contextA.with(MY_KEY, MY_VALUE);
+
+        //create a temporary carrier and a TextMapPropagator
         Map<String, String> carrier = new HashMap<>();
-        TextMapPropagator textPropagator = new MyTextMapPropagator<String>(MY_KEY, MY_KEY_STRING);
+        TextMapPropagator textPropagator = new MyTextMapPropagator();
+
         //inject the carrier with the value from the context
         textPropagator.inject(contextA, carrier, new MyTextMapSetter());
-        //create a ContextPropagators
+        assertTrue(carrier.containsKey(MY_KEY_STRING));
+        assertEquals(MY_VALUE, carrier.get(MY_KEY_STRING));
+
+        //create a ContextPropagators, get the TextMapPropagator back out and check that it contains the field we expect
         ContextPropagators contextPropagators = ContextPropagators.create(textPropagator);
-        //get the propagator back out
         textPropagator = contextPropagators.getTextMapPropagator();
-        //check that it contains the field we expect
         assertTrue(textPropagator.fields().contains(MY_KEY_STRING));
-        //create a second context
+
+        //create a second context, extract the value from the carrier and put it in the context
         Context contextB = Context.current();
-        //extract the value from the carrier and put it in the context
         contextB = textPropagator.extract(contextB, carrier, new MyTextMapGetter());
         String value = contextB.get(MY_KEY);
+
         //check that it still matches
-        assertEquals("myValue", value);
+        assertEquals(MY_VALUE, value);
     }
 
+    private static final String MY_VALUE = "myValue";
     private static final String MY_KEY_STRING = "myKey";
     private static final ContextKey<String> MY_KEY = ContextKey.named(MY_KEY_STRING);
 
-    private static class MyTextMapPropagator<T> implements TextMapPropagator {
-        private final ContextKey<T> key;
-        private final T rawKey;
-
-        MyTextMapPropagator(ContextKey<T> key, T rawKey) {
-            this.key = key;
-            this.rawKey = rawKey;
-        }
-
+    private static class MyTextMapPropagator implements TextMapPropagator {
         @Override
         public <C> void inject(Context context, C carrier, TextMapSetter<C> setter) {
             String value = context.get(MY_KEY);
-            setter.set(carrier, "myKey", value);
+            setter.set(carrier, MY_KEY_STRING, value);
         }
 
         @Override

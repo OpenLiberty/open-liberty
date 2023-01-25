@@ -50,6 +50,9 @@ public class BaggageAPIServlet extends FATServlet {
 
         String value = baggage.getEntryValue("myKey2");
         assertEquals("myValue2", value);
+
+        BaggageEntryMetadata metadataValue = baggage.asMap().get("myKey2").getMetadata();
+        assertEquals("myMetaData2", metadataValue.getValue());
     }
 
     /**

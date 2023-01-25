@@ -13,6 +13,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
@@ -42,13 +46,23 @@ public class CommonSDKServlet extends FATServlet {
     @Test
     public void testClockNanoTime() throws InterruptedException {
         Clock clock = Clock.getDefault();
+        //get the clock start time
         long startNano = clock.nanoTime();
-        int sleepNano = 100000;
-        Thread.sleep(0, sleepNano);
+        //sleep for a known period
+        Duration sleepDuration = Duration.ofSeconds(1);
+        Thread.sleep(sleepDuration.toMillis());
+        //get the clock end time
         long endNano = clock.nanoTime();
-        long durationNano = endNano - startNano;
-        assertTrue(durationNano >= sleepNano);
-        assertTrue(durationNano < (10 * sleepNano));
+        //work out the duration according to the clock
+        long clockDurationNano = endNano - startNano;
+        Duration clockDuration = Duration.ofNanos(clockDurationNano);
+
+        //the duration according to the clock should be at least as long as the time we slept for (we might have slept longer)
+        assertTrue(clockDuration.compareTo(sleepDuration) >= 0);
+
+        //make sure that the clockDuration isn't vastly bigger than the intended sleep duration
+        Duration maxSleepDuration = sleepDuration.plus(Duration.ofSeconds(5));
+        assertTrue(clockDuration.compareTo(maxSleepDuration) < 0);
     }
 
     /**
@@ -61,9 +75,17 @@ public class CommonSDKServlet extends FATServlet {
     public void testClockNow() throws InterruptedException {
         Clock clock = Clock.getDefault();
         long clockNow = clock.now(); //nanos
-        long systemNow = System.currentTimeMillis() * 1000000;
-        System.out.println("Clock: " + clockNow + " System: " + systemNow);
-        assertTrue("Clock: " + clockNow + " System: " + systemNow, clockNow <= systemNow);
+        long systemNow = System.currentTimeMillis(); //millis
+
+        Instant clockInstant = Instant.ofEpochMilli(Duration.ofNanos(clockNow).toMillis());
+        Instant systemInstant = Instant.ofEpochMilli(systemNow);
+        Instant systemMinusOne = systemInstant.minus(1, ChronoUnit.HOURS);
+        Instant systemPlusOne = systemInstant.plus(1, ChronoUnit.HOURS);
+
+        System.out.println("Clock: " + clockInstant + " System: " + systemInstant);
+        //check that the clock instant is roughly the same as the system instant, plus or minus one hour
+        assertTrue("Clock: " + clockInstant + " System: " + systemInstant, clockInstant.isAfter(systemMinusOne));
+        assertTrue("Clock: " + clockInstant + " System: " + systemInstant, clockInstant.isBefore(systemPlusOne));
     }
 
     /**
