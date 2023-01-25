@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -563,7 +563,13 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
              * Evaluate the EL expression to get the value.
              */
             Object obj = elHelper.evaluateElExpression(displayExpression);
-            if (obj instanceof String) {
+            if (obj instanceof DisplayType) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "processPrompt (promptType): " + obj);
+                }
+                result = (DisplayType) obj;
+                immediate = elHelper.isImmediateExpression(displayExpression);
+            } else if (obj instanceof String) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "processDisplay", "displayExpression evaluated to a String, compare to DisplayType enum options: " + obj);
                 }
