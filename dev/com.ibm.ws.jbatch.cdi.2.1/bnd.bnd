@@ -1,0 +1,57 @@
+#*******************************************************************************
+# Copyright (c) 2017, 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
+bVersion=2.1
+
+Bundle-Name: Batch CDI
+Bundle-SymbolicName: com.ibm.ws.jbatch.cdi.2.1.jakarta
+Bundle-Description: Batch support for CDI; version=${bVersion}; Jakarta Enabled
+
+WS-TraceGroup: wsbatch
+
+
+Import-Package:\
+  !com.ibm.ws.jbatch.cdi, \
+  jakarta.enterprise.*;version="[4.0,5)",\
+  *
+
+Export-Package:\
+  com.ibm.ws.jbatch.cdi;provide:=true
+
+Private-Package:\
+  com.ibm.ws.jbatch.cdi.internal
+
+Include-Resource: \
+  META-INF=resources/META-INF
+
+-dsannotations:\
+  com.ibm.ws.jbatch.cdi.BatchCDIInjectionExtensionMetaData,\
+  com.ibm.ws.jbatch.cdi.internal.CDIBatchArtifactFactoryImpl
+
+-cdiannotations:
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	io.openliberty.jakarta.batch.2.1;version=latest,\
+	io.openliberty.jakarta.cdi.4.0;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.cdi.interfaces.jakarta,\
+	com.ibm.jbatch.container.jakarta.ee10,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+		

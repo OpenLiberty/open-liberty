@@ -20,17 +20,17 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Set;
 
-import javax.batch.api.BatchProperty;
-import javax.batch.runtime.context.JobContext;
-import javax.batch.runtime.context.StepContext;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.Annotated;
-import javax.enterprise.inject.spi.InjectionPoint;
-
 import com.ibm.jbatch.container.cdi.DependencyInjectionUtilityCdi;
 import com.ibm.jbatch.container.cdi.ProxyFactoryCdi;
 import com.ibm.jbatch.jsl.model.Property;
+
+import jakarta.batch.api.BatchProperty;
+import jakarta.batch.runtime.context.JobContext;
+import jakarta.batch.runtime.context.StepContext;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.Annotated;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 public class BatchProducerBean {
 

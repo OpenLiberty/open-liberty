@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,7 +30,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -56,7 +56,7 @@ public class TranTimeoutCleanupTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new JakartaEE9Action().forServers("TranTimeoutCleanup"));
+                    .andWith(new JakartaEE10Action().forServers("TranTimeoutCleanup"));
     //.andWith(new JakartaEE10Action().forServers("TranTimeoutCleanup"));
 
     @Server("TranTimeoutCleanup")
