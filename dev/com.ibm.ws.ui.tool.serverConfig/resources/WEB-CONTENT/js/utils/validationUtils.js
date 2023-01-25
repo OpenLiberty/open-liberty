@@ -40,43 +40,37 @@
     var retrieveSchema = function() {
         validationMetaDataObject.isEnabled = false;
         validationMetaDataObject.metaData = {};
-        // Disable validationAPI if not in BetaMode.
-        if(!window.globalIsBetaMode) {
-            var deferred = new $.Deferred();
-            deferred.resolve();
-            return deferred; 
-        } else {
-            return getValidationApiSchema()
-                .then(function(result){
-                    validationMetaDataObject.isEnabled = false;
-                    if(result && result.success) {
-                        var metaDataObject = {};
-                        var data = result.data;
-                        var isValidationEnabled = false;
-                        if(data && data.paths) {
-                            $.each(data.paths, function( key, nodeMetaData ) {
-                                var nodeName = extractNodeNameFromValidationUri(key);
-                                if(nodeName) {
-                                    if(!metaDataObject[nodeName]) {
-                                        metaDataObject[nodeName] = {};
-                                    }
-                                    metaDataObject = appendParametersToNodeMetaData(nodeName, nodeMetaData, metaDataObject);
-                                    if(metaDataObject[nodeName].isEnabled) {
-                                        isValidationEnabled = true;
-                                    }
+
+        return getValidationApiSchema()
+            .then(function(result){
+                validationMetaDataObject.isEnabled = false;
+                if(result && result.success) {
+                    var metaDataObject = {};
+                    var data = result.data;
+                    var isValidationEnabled = false;
+                    if(data && data.paths) {
+                        $.each(data.paths, function( key, nodeMetaData ) {
+                            var nodeName = extractNodeNameFromValidationUri(key);
+                            if(nodeName) {
+                                if(!metaDataObject[nodeName]) {
+                                    metaDataObject[nodeName] = {};
                                 }
-                            });
-                        }
-    
-                        if(isValidationEnabled) {
-                            validationMetaDataObject.isEnabled = true;
-                            validationMetaDataObject.metaData = metaDataObject;
-                        }
+                                metaDataObject = appendParametersToNodeMetaData(nodeName, nodeMetaData, metaDataObject);
+                                if(metaDataObject[nodeName].isEnabled) {
+                                    isValidationEnabled = true;
+                                }
+                            }
+                        });
                     }
-    
-                    return validationMetaDataObject;
-                });
-        }
+
+                    if(isValidationEnabled) {
+                        validationMetaDataObject.isEnabled = true;
+                        validationMetaDataObject.metaData = metaDataObject;
+                    }
+                }
+
+                return validationMetaDataObject;
+            });
     };
 
     
