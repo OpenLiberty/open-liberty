@@ -32,10 +32,10 @@ import org.eclipse.microprofile.metrics.Tag;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import io.openliberty.microprofile.metrics50.internal.Constants;
+import io.openliberty.microprofile.metrics50.helper.Constants;
 
 import io.openliberty.microprofile.metrics50.helper.Util;
-import io.openliberty.microprofile.metrics50.internal.SharedMetricRegistries;
+import io.openliberty.microprofile.metrics50.SharedMetricRegistries;
 import io.openliberty.smallrye.metrics.adapters.SRMetricRegistryAdapter;
 
 public class MonitorMetrics {

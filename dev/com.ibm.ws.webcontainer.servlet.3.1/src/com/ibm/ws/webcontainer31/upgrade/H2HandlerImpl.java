@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http2.upgrade.H2UpgradeHandler;
 import com.ibm.ws.webcontainer.servlet.H2Handler;
+import com.ibm.ws.webcontainer.srt.ISRTServletRequest;
 import com.ibm.wsspi.http.HttpInboundConnection;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.ee8.Http2InboundConnection;
 
 /**
@@ -54,9 +56,9 @@ public class H2HandlerImpl implements H2Handler {
         Map<String, String> h2Headers = null;
         HttpServletRequest hsrt = (HttpServletRequest) request;
 
-        String upgradeHeaders = hsrt.getHeader(CONSTANT_upgrade);
+        String upgradeHeaders = ISRTServletRequest.getHeader(hsrt, HttpHeaderKeys.HDR_UPGRADE);
         if(upgradeHeaders != null) {
-            String connectionHeaders = hsrt.getHeader(CONSTANT_connection);
+            String connectionHeaders = ISRTServletRequest.getHeader(hsrt, HttpHeaderKeys.HDR_CONNECTION);
             if(connectionHeaders != null) {
                 h2Headers = new HashMap<String, String>();
                 h2Headers.put(CONSTANT_connection,connectionHeaders);
@@ -94,7 +96,7 @@ public class H2HandlerImpl implements H2Handler {
             h2uh.init(new H2UpgradeHandler());
         }
         
-        String http2Settings = request.getHeader(HTTP2_SETTINGS);
+        String http2Settings = ISRTServletRequest.getHeader(request, HttpHeaderKeys.HDR_HTTP2_SETTINGS);
         
         Map<String, String> http2Headers = (http2Settings == null ? Collections.emptyMap() : Collections.singletonMap(HTTP2_SETTINGS, http2Settings));
         boolean upgraded = h2ic.handleHTTP2UpgradeRequest(http2Headers);

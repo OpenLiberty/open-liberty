@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -38,15 +38,21 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS2404W_PROVIDERURI_MISSING = "CWWKS2404W";
     public static final String CWWKS2405E_PROVIDERMETADATA_MISSING_AUTHENDPOINT = "CWWKS2405E";
     public static final String CWWKS2407E_ERROR_VERIFYING_RESPONSE = "CWWKS2407E";
+
     public static final String CWWKS2410E_CANNOT_FIND_STATE = "CWWKS2410E";
     public static final String CWWKS2414E_CALLBACK_URL_INCLUDES_ERROR_PARAMETER = "CWWKS2414E";
     public static final String CWWKS2415E_TOKEN_VALIDATION_EXCEPTION = "CWWKS2415E";
-    public static final String CWWKS2423E_OIDC_CLIENT_INVALID_RESPONSE_TYPE = "CWWKS2423E";
-
     public static final String CWWKS2416E_FAILED_TO_REACH_ENDPOINT = "CWWKS2416E";
+    public static final String CWWKS2418W_USERINFO_PROBLEM = "CWWKS2418W";
+
+    public static final String CWWKS2420E_ID_TOKEN_VERIFY = "CWWKS2420E";
+    public static final String CWWKS2422E_FAILED_TO_READ_DATA = "CWWKS2422E";
+    public static final String CWWKS2423E_OIDC_CLIENT_INVALID_RESPONSE_TYPE = "CWWKS2423E";
 
     public static final String CWWKS2500W_MISSING_CLIENTID_EL = "CWWKS2500W";
     public static final String CWWKS2504E_CREDENTIAL_VALIDATION_ERROR = "CWWKS2504E";
+
+    public static final String CWWKS2520E_SIGNATURE_NOT_ALLOWED = "CWWKS2520E";
 
     public static final String CWWKS9104A_NO_ACCESS_FOR_USER = "CWWKS9104A";
 

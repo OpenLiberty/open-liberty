@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,6 +34,8 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String USE_NONCE_EXPRESSION = "useNonceExpression";
     public static final String USE_SESSION = "useSession";
     public static final String USE_SESSION_EXPRESSION = "useSessionExpression";
+    public static final String EXTRA_PARAMETERS = "extraParameters";
+    public static final String EXTRA_PARAMETERS_EXPRESSION = "extraParametersExpression";
     public static final String RESPONSE_TYPE = "responseType";
     public static final String PROVIDER = "provider";
     public static final String LOGOUT = "logout";
@@ -55,6 +57,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
 
     public static final String AUTHORIZATION_ENDPOINT = "authorizationEndpoint";
     public static final String USERINFOENDPOINT = "userinfoEndpoint";
+    public static final String JWKSURI = "jwksURI";
     public static final String IDTOKENSIGNINGALGORITHMSSUPPORTED = "idTokenSigningAlgorithmsSupported";
     public static final String JWKSCONNECTTIMEOUTEXPRESSION = "jwksConnectTimeoutExpression";
     public static final String JWKSREADTIMEOUTEXPRESSION = "jwksReadTimeoutExpression";
@@ -88,6 +91,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String PAGE_DISPLAY = "page";
 
     public static final int DEFAULT_JWKS_CONN_TIMEOUT = 500;
+    public static final int DEFAULT_JWKS_READ_TIMEOUT = 500;
     public static final int OVERRIDE_DEFAULT_JWKS_READ_TIMEOUT = 60000;
     public static final int TOKEN_MIN_VALIDITY = 10 * 1000;
 

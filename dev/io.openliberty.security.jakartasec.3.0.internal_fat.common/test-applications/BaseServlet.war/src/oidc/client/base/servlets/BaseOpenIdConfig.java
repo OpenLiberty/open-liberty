@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -129,6 +129,15 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         return value;
     }
 
+    public String[] getExtraParametersExpression() {
+
+        String[] value = {};
+        if (config.containsKey(Constants.EXTRA_PARAMETERS_EXPRESSION)) {
+            value = getStringArrayValue(Constants.EXTRA_PARAMETERS_EXPRESSION, ",");
+        }
+        return value;
+    }
+
     public boolean getTokenAutoRefreshExpression() {
 
         boolean value = false;
@@ -233,6 +242,17 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         String value = "RS256"; // spec default is RS256, OIDC default is HS256
         if (config.containsKey(Constants.IDTOKENSIGNINGALGORITHMSSUPPORTED)) {
             value = getStringValue(Constants.IDTOKENSIGNINGALGORITHMSSUPPORTED);
+        }
+
+        return value;
+
+    }
+
+    public String getJwksURI() {
+
+        String value = "";
+        if (config.containsKey(Constants.JWKSURI)) {
+            value = getStringValue(Constants.JWKSURI);
         }
 
         return value;

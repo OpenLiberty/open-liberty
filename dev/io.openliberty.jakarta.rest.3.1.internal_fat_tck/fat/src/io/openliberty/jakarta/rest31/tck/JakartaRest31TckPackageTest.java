@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,7 @@ public class JakartaRest31TckPackageTest {
     private static final Set<String> featuresToRemove = new HashSet<>();
     static {
         featuresToRemove.add("appSecurity-5.0");
+        featuresToRemove.add("concurrent-3.0");
         featuresToRemove.add("xmlBinding-4.0");
         featuresToRemove.add("webProfile-10.0");
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,8 @@ import com.ibm.ws.session.store.memory.MemoryStore;
 import com.ibm.ws.session.utils.LoggingUtil;
 import com.ibm.ws.webcontainer.osgi.collaborator.CollaboratorHelperImpl;
 import com.ibm.ws.webcontainer.session.IHttpSessionContext;
+import com.ibm.ws.webcontainer.srt.ISRTServletRequest;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.session.IGenericSessionManager;
 import com.ibm.wsspi.session.ISession;
 import com.ibm.wsspi.session.ISessionAffinityManager;
@@ -483,7 +485,7 @@ public class HttpSessionContextImpl extends SessionContext implements IHttpSessi
      * retrieves the latest session copy from the backend if the incoming
      * request is the failover one.
      */
-    if ( (id != null) && (Boolean.valueOf(_request.getHeader("$WSFO")).booleanValue()) ) {
+    if ( (id != null) && (Boolean.valueOf(ISRTServletRequest.getHeader(_request, HttpHeaderKeys.HDR_$WSFO)).booleanValue()) ) {
         IStore iStore = _coreHttpSessionManager.getIStore();
         iStore.removeFromMemory( id );
     }
@@ -824,7 +826,7 @@ private String getUser() {
     {
       if (_smc.getEnableUrlRewriting())
       {
-        boolean useCookies = _smc.getEnableCookies() && _request.getHeader("Cookie") != null;
+        boolean useCookies = _smc.getEnableCookies() && ISRTServletRequest.getHeader(_request, HttpHeaderKeys.HDR_COOKIE) != null;
         if (!useCookies)
         { // Either the server doesn't support cookies, or we didn't get
           // any cookies from the client, so we have to assume url-rewriting.
