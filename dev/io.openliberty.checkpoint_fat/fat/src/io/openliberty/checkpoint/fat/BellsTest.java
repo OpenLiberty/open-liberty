@@ -13,6 +13,7 @@
 package io.openliberty.checkpoint.fat;
 
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
@@ -95,25 +96,33 @@ public class BellsTest extends FATServletClient {
     @Test
     public void testBellsCheckpointAtDeployment() throws Exception {
         server.checkpointRestore();
-        assertTrue("Expected message for bell service registration not found", !server.findStringsInLogs("CWWKL0050I").isEmpty());
-        assertTrue("Expected message for injected bell properties found", !server.findStringsInLogs("Updated bell properties: \\{bProp=orig_val\\}").isEmpty());
-        assertTrue("Bell service should have been consumed during restore", !server.findStringsInLogs("Inside Servlet Container Initializer...").isEmpty());
+        assertEquals("Bell service registration for ServletContainerInitializer and TestInterface expected", 2, server.findStringsInLogs("CWWKL0050I").size());
+
+        assertTrue("Bell service for TestInterface should have been consumed and injected with original properties during restore",
+                   !server.findStringsInLogs("Updated bell properties: \\{bProp=orig_val\\}").isEmpty());
+        assertTrue("Bell service for ServletContainerInitializer should have been consumed during restore",
+                   !server.findStringsInLogs("Inside Servlet Container Initializer...").isEmpty());
     }
 
     @Test
     public void testBellsCheckpointAtApplication() throws Exception {
-        assertTrue("Expected message for bell service registration not found", !server.findStringsInLogs("CWWKL0050I").isEmpty());
-        assertTrue("Expected message for injected bell properties found", !server.findStringsInLogs("Updated bell properties: \\{bProp=orig_val\\}").isEmpty());
-        assertTrue("Bell service should have been consumed during checkpoint", !server.findStringsInLogs("Inside Servlet Container Initializer...").isEmpty());
+        assertEquals("Bell service registration for ServletContainerInitializer and TestInterface expected", 2, server.findStringsInLogs("CWWKL0050I").size());
+
+        assertTrue("Bell service for TestInterface should have been consumed and injected with original properties during checkpoint",
+                   !server.findStringsInLogs("Updated bell properties: \\{bProp=orig_val\\}").isEmpty());
+        assertTrue("Bell service for ServletContainerInitializer should have been consumed during checkpoint",
+                   !server.findStringsInLogs("Inside Servlet Container Initializer...").isEmpty());
         server.checkpointRestore();
     }
 
     @Test
     public void testUpdatedBellPropertiesBeforeRestore() throws Exception {
-        assertTrue("Expected message for injected bell properties found", !server.findStringsInLogs("Updated bell properties: \\{bProp=orig_val\\}").isEmpty());
+        assertTrue("Bell service for TestInterface should have been injected with original properties",
+                   !server.findStringsInLogs("Updated bell properties: \\{bProp=orig_val\\}").isEmpty());
         updateVariableConfig("bellProp", "updated_val");
         server.checkpointRestore();
-        assertTrue("Expected message for injected bell properties not found", !server.findStringsInLogs("Updated bell properties: \\{bProp=updated_val\\}").isEmpty());
+        assertTrue("Bell service for TestInterface should have been injected with updated properties",
+                   !server.findStringsInLogs("Updated bell properties: \\{bProp=updated_val\\}").isEmpty());
     }
 
     private static void buildAndExportBellLibrary(LibertyServer targetServer, String archiveName, String... classNames) throws Exception {

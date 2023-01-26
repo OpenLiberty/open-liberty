@@ -22,6 +22,7 @@ public class TestInterfaceImpl implements TestInterface {
     Map<String, String> updatedBellProps = null;
 
     public TestInterfaceImpl() {
+        System.out.println(getClass() + " is being consumed by a service consumer using getService().");
     }
 
     public void updateBell(Map<String, String> ubProps) {
