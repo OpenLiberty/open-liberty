@@ -28,8 +28,6 @@ import org.osgi.framework.BundleReference;
 import org.osgi.framework.Constants;
 import org.osgi.framework.wiring.BundleWiring;
 
-import java.util.Optional;
-
 import com.ibm.ws.cdi.CDIRuntimeException;
 
 /**
