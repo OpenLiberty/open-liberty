@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.fat.common.actions;
 
+import java.util.Set;
+
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.log.Log;
@@ -19,6 +21,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTestAction;
@@ -41,10 +44,14 @@ public class LargeProjectRepeatActions {
      * @return repeat test instances
      */
     public static RepeatTests createEE9OrEE10Repeats() {
-        return createEE9OrEE10Repeats(null, null);
+        return createEE9OrEE10Repeats(null, null, null, null);
     }
 
     public static RepeatTests createEE9OrEE10Repeats(String addEE9Feature, String addEE10Feature) {
+        return createEE9OrEE10Repeats(addEE9Feature, addEE10Feature, null, null);
+    }
+
+    public static RepeatTests createEE9OrEE10Repeats(String addEE9Feature, String addEE10Feature, Set<String> removeFeatureList, Set<String> insertFeatureList) {
 
         RepeatTests rTests = null;
 
@@ -63,18 +70,10 @@ public class LargeProjectRepeatActions {
             if (JavaInfo.forCurrentVM().majorVersion() > 8) {
                 if (TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.LITE) {
                     Log.info(thisClass, "createLargeProjectRepeats", "Enabling the EE9 test instance (Not on Windows, Java > 8, Lite Mode)");
-                    if (addEE9Feature == null) {
-                        rTests = addRepeat(rTests, new JakartaEE9Action());
-                    } else {
-                        rTests = addRepeat(rTests, new JakartaEE9Action().alwaysAddFeature(addEE9Feature));
-                    }
+                    rTests = addRepeat(rTests, adjustFeatures(JakartaEE9Action.ID, addEE9Feature, removeFeatureList, insertFeatureList));
                 } else {
                     Log.info(thisClass, "createLargeProjectRepeats", "Enabling the EE10 test instance (Not on Windows, Java > 8, FULL Mode)");
-                    if (addEE10Feature == null) {
-                        rTests = addRepeat(rTests, new JakartaEE10Action());
-                    } else {
-                        rTests = addRepeat(rTests, new JakartaEE10Action().alwaysAddFeature(addEE10Feature));
-                    }
+                    rTests = addRepeat(rTests, adjustFeatures(JakartaEE10Action.ID, addEE10Feature, removeFeatureList, insertFeatureList));
                 }
             } else {
                 Log.info(thisClass, "createLargeProjectRepeats", "Enabling the default EE7/EE8 test instance (Not on Windows, Java = 8, any Mode)");
@@ -93,6 +92,38 @@ public class LargeProjectRepeatActions {
         } else {
             return rTests.andWith(currentRepeat);
         }
+    }
+    
+    /**
+     * Create the requests level of EE action and then add or remove the requested features.
+     * 
+     * @param featureType
+     * @param addEEFeature
+     * @param removeFeatureList
+     * @param insertFeatureList
+     * @return
+     */
+    public static FeatureReplacementAction adjustFeatures(String featureType, String addEEFeature, Set<String> removeFeatureList, Set<String> insertFeatureList) {
+        FeatureReplacementAction featureAction = null;
+        if (featureType.equals(JakartaEE9Action.ID)) {
+            featureAction = new JakartaEE9Action();
+        } else if (featureType.equals(JakartaEE10Action.ID)) {
+            featureAction = new JakartaEE10Action();
+        } else {
+            Log.info(thisClass, "adjustFeatures", "Unknown feature type, " + featureType + ", defaulting to " + JakartaEE9Action.ID);
+            featureAction = new JakartaEE9Action();
+        }
+        if (addEEFeature != null) {
+            featureAction.alwaysAddFeature(addEEFeature);
+        }
+        if (removeFeatureList != null) {
+            featureAction.removeFeatures(removeFeatureList);
+        }
+        if (insertFeatureList != null) {
+            featureAction.addFeatures(insertFeatureList);
+        }
+        
+        return featureAction;
     }
 
 }
