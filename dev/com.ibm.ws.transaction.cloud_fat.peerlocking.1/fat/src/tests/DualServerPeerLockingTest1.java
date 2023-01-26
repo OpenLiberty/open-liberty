@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,16 +12,9 @@
  *******************************************************************************/
 package tests;
 
-import static org.junit.Assert.fail;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ProgramOutput;
-import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.transaction.fat.util.FATUtils;
-
-import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(FATRunner.class)
@@ -36,7 +29,7 @@ public class DualServerPeerLockingTest1 extends DualServerPeerLockingTest {
      */
     @Test
     public void testDynamicCloudRecovery007() throws Exception {
-        dynamicTest(server1, server2, 7, 2);
+        dynamicTest(firstServer, secondServer, 7, 2);
     }
 
     /**
@@ -49,7 +42,7 @@ public class DualServerPeerLockingTest1 extends DualServerPeerLockingTest {
      */
     @Test
     public void testDynamicCloudRecovery090() throws Exception {
-        dynamicTest(server1, server2, 90, 3);
+        dynamicTest(firstServer, secondServer, 90, 3);
     }
 
     /**
@@ -79,7 +72,7 @@ public class DualServerPeerLockingTest1 extends DualServerPeerLockingTest {
      */
     @Test
     public void testDynamicCloudRecoveryInterruptedPeerRecovery() throws Exception {
-        dynamicTest(server1, server2, "InterruptedPeerRecovery", 2);
+        dynamicTest(firstServer, secondServer, "InterruptedPeerRecovery", 2);
     }
 
     /**
@@ -94,7 +87,7 @@ public class DualServerPeerLockingTest1 extends DualServerPeerLockingTest {
 
         // Delete existing DB files, so that the tables that support transaction recovery
         // are created from scratch.
-        server1.deleteFileFromLibertyInstallRoot("/usr/shared/resources/data/tranlogdb");
-        dynamicTest(server1, server2, 7, 2);
+        firstServer.deleteFileFromLibertyInstallRoot("/usr/shared/resources/data/tranlogdb");
+        dynamicTest(firstServer, secondServer, 7, 2);
     }
 }
