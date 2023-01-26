@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<webservices-bnd xmlns="http://websphere.ibm.com/xml/ns/javaee" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee/ibm-ws-bnd_1_0.xsd" 
+		version="1.0">
+	<http-publishing>
+		<webservice-security> 
+			<security-constraint>
+				<web-resource-collection>
+					<web-resource-name>All</web-resource-name>
+					<url-pattern>/*</url-pattern>
+					<http-method>GET</http-method>
+					<http-method>POST</http-method>
+				</web-resource-collection>
+				<user-data-constraint>
+					<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+				</user-data-constraint>
+			</security-constraint>                     
+		</webservice-security>
+	</http-publishing>
+</webservices-bnd>
