@@ -13,6 +13,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ *
+ * Modified by IBM on January 2023 
  */
 
 package org.jboss.weld.bean.proxy;
@@ -939,13 +942,35 @@ public class ProxyFactory<T> implements PrivilegedAction<T> {
     public static ClassLoader resolveClassLoaderForBeanProxy(String contextId, Class<?> proxiedType, TypeInfo typeInfo) {
         Class<?> superClass = typeInfo.getSuperClass();
         if (superClass.getName().startsWith(JAVA)) {
-            ClassLoader cl = Container.instance(contextId).services().get(ProxyServices.class).getClassLoader(proxiedType);
+            ProxyServices proxyService = Container.instance(contextId).services().get(ProxyServices.class);
+
+            //Modified by IBM. This doPrivileged block was added so that the proxyService did not need a
+            //doPrivileged block when it calls Class.getClassLoader(). This means that if an attacker gets
+            //hold of proxyService they cannot bypass security.
+            ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                @Override
+                public ClassLoader run() {
+                    return proxyService.getClassLoader(proxiedType);
+                }
+            });
+
             if (cl == null) {
                 cl = Thread.currentThread().getContextClassLoader();
             }
             return cl;
         }
-        return Container.instance(contextId).services().get(ProxyServices.class).getClassLoader(superClass);
+
+        ProxyServices proxyService = Container.instance(contextId).services().get(ProxyServices.class);
+
+        //Modified by IBM. See previous comment for explenation.
+        ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+            @Override
+            public ClassLoader run() {
+                return proxyService.getClassLoader(superClass);
+            }
+        });
+
+        return cl;
     }
 
     protected void getMethodHandlerField(ClassFile file, CodeAttribute b) {
