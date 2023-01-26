@@ -30,6 +30,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -60,8 +61,8 @@ public class BatchInjectionTest extends FATServletClient {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
                     .andWith(FeatureReplacementAction.EE8_FEATURES().forServers("BatchInjection"))
+                    .andWith(new JakartaEE9Action().forServers("BatchInjection"))
                     .andWith(new JakartaEE10Action().forServers("BatchInjection"));
-    //.andWith(new JakartaEE10Action().forServers("BatchInjection"));
 
     @Server("BatchInjection")
     @TestServlet(servlet = BatchInjectionServlet.class, path = "implicit/BatchInjectionServlet")
