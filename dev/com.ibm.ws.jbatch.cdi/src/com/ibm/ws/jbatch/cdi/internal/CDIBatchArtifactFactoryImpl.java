@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 International Business Machines Corp.
+ * Copyright 2012, 2023 International Business Machines Corp.
  *
  * See the NOTICE file distributed with this work for additional information
  * regarding copyright ownership. Licensed under the Apache License,
@@ -53,7 +53,7 @@ public class CDIBatchArtifactFactoryImpl implements CDIBatchArtifactFactory {
 
     /**
      * Use CDI to load the artifact with the given ID.
-     * 
+     *
      * @return the loaded artifact; or null if CDI is not enabled for the app.
      */
     @Override
@@ -105,7 +105,7 @@ public class CDIBatchArtifactFactoryImpl implements CDIBatchArtifactFactory {
 
     /**
      * @param id Either the EL name of the bean, or its fully qualified class name.
-     * 
+     *
      * @return the bean for the given artifact id.
      */
     protected Bean<?> getBeanById(BeanManager bm, String id) {
@@ -126,7 +126,7 @@ public class CDIBatchArtifactFactoryImpl implements CDIBatchArtifactFactory {
     /**
      * Use the given BeanManager to lookup a unique CDI-registered bean
      * with bean name equal to 'batchId', using EL matching rules.
-     * 
+     *
      * @return the bean with the given bean name, or 'null' if there is an ambiguous resolution
      */
     protected Bean<?> getUniqueBeanByBeanName(BeanManager bm, String batchId) {
@@ -134,7 +134,7 @@ public class CDIBatchArtifactFactoryImpl implements CDIBatchArtifactFactory {
 
         // Get all beans with the given EL name (id).  EL names are applied via @Named.
         // If the bean is not annotated with @Named, then it does not have an EL name
-        // and therefore can't be looked up that way.  
+        // and therefore can't be looked up that way.
         Set<Bean<?>> beans = bm.getBeans(batchId);
 
         try {
@@ -148,7 +148,7 @@ public class CDIBatchArtifactFactoryImpl implements CDIBatchArtifactFactory {
     /**
      * Use the given BeanManager to lookup a unique CDI-registered bean
      * with bean class equal to the batch.xml entry mapped to be the batchId parameter
-     * 
+     *
      * @return the bean with the given className. It returns null if there are zero matches or if there is no umabiguous resolution (i.e. more than 1 match)
      */
     @FFDCIgnore(BatchCDIAmbiguousResolutionCheckedException.class)
@@ -173,7 +173,7 @@ public class CDIBatchArtifactFactoryImpl implements CDIBatchArtifactFactory {
     /**
      * Use the given BeanManager to lookup the set of CDI-registered beans with
      * the given class name.
-     * 
+     *
      * @return the bean with the given className. It returns null if there are zero matches or if there is no umabiguous resolution (i.e. more than 1 match)
      */
     @FFDCIgnore({ ClassNotFoundException.class, BatchCDIAmbiguousResolutionCheckedException.class })

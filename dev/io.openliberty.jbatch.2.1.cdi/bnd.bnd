@@ -18,7 +18,7 @@ bVersion=1.0
 
 Bundle-Name: Batch CDI
 Bundle-SymbolicName: io.openliberty.jbatch.2.1.cdi
-Bundle-Description: Batch 2.1 support for CDI; version=${bVersion};
+Bundle-Description: Batch 2.1 support for CDI; version=${bVersion}
 
 WS-TraceGroup: wsbatch
 
