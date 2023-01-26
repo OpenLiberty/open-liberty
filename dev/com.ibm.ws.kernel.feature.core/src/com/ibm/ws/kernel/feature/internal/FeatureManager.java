@@ -938,20 +938,17 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                 Tr.debug(tc, "added features", postInstalledFeatures);
             }
             installedPublicFeatures = getPublicFeatures(postInstalledFeatures, true);
+        } else if (provisioningMode == ProvisioningMode.INITIAL_PROVISIONING) {
+            // this is a case of warm start, just audit the installed features to be useful
+            installedPublicFeatures = getPublicFeatures(preInstalledFeatures, true);
         }
 
-        if (supportedProcessTypes.contains(ProcessType.CLIENT)) {
-
-            if (!installedPublicFeatures.isEmpty() && !preInstalledFeatures.isEmpty()) {
-                Tr.audit(tc, "FEATURES_ADDED_CLIENT_DELTA", installedPublicFeatures);
+        if (!!!installedPublicFeatures.isEmpty()) {
+            if (supportedProcessTypes.contains(ProcessType.CLIENT)) {
+                Tr.audit(tc, "FEATURES_ADDED_CLIENT", installedPublicFeatures);
+            } else {
+                Tr.audit(tc, "FEATURES_ADDED", installedPublicFeatures);
             }
-            Tr.audit(tc, "FEATURES_ADDED_CLIENT", getPublicFeatures(featureRepository.getInstalledFeatures(), true));
-        } else {
-
-            if (!!!installedPublicFeatures.isEmpty() && !preInstalledFeatures.isEmpty()) {
-                Tr.audit(tc, "FEATURES_ADDED_DELTA", installedPublicFeatures);
-            }
-            Tr.audit(tc, "FEATURES_ADDED", getPublicFeatures(featureRepository.getInstalledFeatures(), true));
         }
 
         featureRepository.copyInstalledFeaturesTo(postInstalledFeatures);
