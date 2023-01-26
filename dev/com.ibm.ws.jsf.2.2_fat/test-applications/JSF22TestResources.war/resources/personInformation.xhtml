@@ -14,21 +14,21 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-      
-<h:head>
-    <title>JSF 2.2 test case for new resource directory</title>
-</h:head>
-<h3>Please provide the following information:</h3>
-<h:body>
-    <h:form id="personInfoForm">
-    	First Name:
-    	<h:inputText id="firstName" value="#{personInformationBean.firstName}"/><br/>
-    	Last Name:
-    	<h:inputText id="lastName" value="#{personInformationBean.lastName}"/><br/>
-    	Favorite Animal:
-    	<h:inputText id="favoriteAnimal" value="#{personInformationBean.favoriteAnimal}"/><br/>
-    	<h:commandButton id="showMessageButton" value="Submit" action="#{personInformationBean.showMessage}"/>
-    </h:form>
-</h:body>
+    xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <h:head>
+        <title>JSF 2.2 test case for new resource directory</title>
+    </h:head>
+    <h:body>
+        <h3>Please provide the following information:</h3>
+        <h:form id="personInfoForm">
+            First Name:
+            <h:inputText id="firstName" value="#{personInformationBean.firstName}"/><br/>
+            Last Name:
+            <h:inputText id="lastName" value="#{personInformationBean.lastName}"/><br/>
+            Favorite Animal:
+            <h:inputText id="favoriteAnimal" value="#{personInformationBean.favoriteAnimal}"/><br/>
+            <h:commandButton id="showMessageButton" value="Submit" action="#{personInformationBean.showMessage}"/>
+        </h:form>
+    </h:body>
 </html>

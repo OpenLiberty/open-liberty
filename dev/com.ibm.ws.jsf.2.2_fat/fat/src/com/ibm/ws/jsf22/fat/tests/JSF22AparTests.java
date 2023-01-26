@@ -471,7 +471,7 @@ public class JSF22AparTests {
      * button will then be clicked that will invalidate the session and the test will look to ensure
      * that the PreDestroy method on the JSF Managed Bean was invoked.
      *
-     * For EE10 this test is executed with a CDI @Named bean to verify the PreDestroy is called.
+     * For EE10 this test is executed with a CDI @Named bean to verify that PreDestroy is called.
      *
      * @throws Exception
      */
@@ -504,7 +504,7 @@ public class JSF22AparTests {
      */
     @Test
     // Skipping for EE10 as this test uses both a CDI bean and a ManagedBean and ManagedBeans are
-    // are no longer available in Faces 4.0. The testViewScopedJSFManagedBeanPreDestroy test will
+    // no longer available in Faces 4.0. The testViewScopedJSFManagedBeanPreDestroy test will
     // be executed for EE10 with just a CDI bean to verify that PreDestroy is called.
     @SkipForRepeat(EE10_FEATURES)
     public void testViewScopedCDIManagedBeanPreDestroy() throws Exception {
