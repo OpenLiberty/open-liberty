@@ -1,6 +1,8 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=io.openliberty.globalhandler-1.0
 visibility=protected
+IBM-App-ForceRestart: uninstall, \
+ install
 IBM-SPI-Package: com.ibm.wsspi.webservices.handler
 -features=\
   io.openliberty.globalhandler1.0.internal.ee-10.0, \

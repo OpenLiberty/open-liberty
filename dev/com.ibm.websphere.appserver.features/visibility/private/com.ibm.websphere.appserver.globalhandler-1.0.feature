@@ -4,8 +4,8 @@ WLP-DisableAllFeatures-OnConflict: false
 visibility=private
 IBM-SPI-Package: com.ibm.wsspi.webservices.handler
 -features=\
-  io.openliberty.servlet.api-3.0; apiJar=false; ibm.tolerates:="3.1,4.0,5.0,6.0", \
-  io.openliberty.globalhandler1.0.internal.ee-6.0; ibm.tolerates:="9.0, 10.0"
+  io.openliberty.servlet.api-3.0; apiJar=false; ibm.tolerates:="3.1,4.0,5.0", \
+  io.openliberty.globalhandler1.0.internal.ee-6.0; ibm.tolerates:="9.0"
 -jars=\
   com.ibm.websphere.appserver.spi.globalhandler; location:=dev/spi/ibm/, \
   io.openliberty.globalhandler.spi; location:=dev/spi/ibm/

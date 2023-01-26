@@ -623,7 +623,7 @@
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
-      <artifactId>opentelemetry-exporter-logging</artifactId>
+      <artifactId>opentelemetry-exporter-otlp-common</artifactId>
       <version>1.19.0</version>
     </dependency>
     <dependency>

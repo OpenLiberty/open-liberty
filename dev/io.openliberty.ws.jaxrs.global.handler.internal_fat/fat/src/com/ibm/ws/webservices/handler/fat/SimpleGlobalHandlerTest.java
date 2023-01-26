@@ -1,12 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.webservices.handler.fat;
 
@@ -51,7 +50,6 @@ public class SimpleGlobalHandlerTest extends FATServletClient {
          * Note: EE10+ features MUST include the following Subsystem-Contents:
          *
          * io.openliberty.globalhandler-1.0; type="osgi.subsystem.feature" // EE10+ requires the user to bring in globalhandler-1.0
-         * com.ibm.websphere.appserver.servlet-6.0; type="osgi.subsystem.feature" // globalhandler-1.0 requires the servlet-6.0 feature
          */
         ShrinkHelper.defaultUserFeatureArchive(server, "MySimpleGlobalHandler", "io.openliberty.jaxrs.fat.globalhandler.simple.userbundle");
         TestUtils.installUserFeature(server, "MySimpleGlobalHandlerFeature");
@@ -69,9 +67,10 @@ public class SimpleGlobalHandlerTest extends FATServletClient {
     @AfterClass
     public static void teardown() throws Exception {
         if (server != null) {
-//            server.uninstallUserFeature("MySimpleGlobalHandlerFeature");
             server.stopServer("CWWKE1102W");  //ignore server quiesce timeouts due to slow test machines
-        }
+            server.uninstallUserBundle("MySimpleGlobalHandler");
+            server.uninstallUserFeature("MySimpleGlobalHandlerFeature");
+         }
     }
 
     @Before

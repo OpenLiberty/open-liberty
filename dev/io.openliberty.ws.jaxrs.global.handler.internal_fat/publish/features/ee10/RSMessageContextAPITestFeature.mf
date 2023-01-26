@@ -3,8 +3,7 @@ Subsystem-Type: osgi.subsystem.feature
 IBM-Feature-Version: 2
 Subsystem-Version: 1.0.0
 Subsystem-Content: RSMessageContextAPITestHandler.jakarta;version="1.0.0",
- io.openliberty.globalhandler-1.0; type="osgi.subsystem.feature",
- com.ibm.websphere.appserver.servlet-6.0; type="osgi.subsystem.feature"
+ io.openliberty.globalhandler-1.0; type="osgi.subsystem.feature"
 Subsystem-SymbolicName: RSMessageContextAPITestFeature;visibility:=public
 Subsystem-ManifestVersion: 1.0
 IBM-ShortName: RSMessageContextAPITestFeature
