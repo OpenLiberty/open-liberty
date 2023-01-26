@@ -1,17 +1,16 @@
-package com.ibm.tx.remote;
-
 /*******************************************************************************
- * Copyright (c) 2003, 2022 IBM Corporation and others.
+ * Copyright (c) 2003, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package com.ibm.tx.remote;
 
 import java.util.Hashtable;
 
@@ -102,7 +101,12 @@ public final class TransactionWrapper implements ResourceCallback {
             Tr.exit(tc, "TransactionWrapper");
     }
 
-    public static TransactionWrapper getTransactionWrapper(String globalId) {
+    public static TransactionWrapper getTransactionWrapper(String globalId) throws SystemException {
+        // Make sure TM is open for business
+        if (((EmbeddableTranManagerSet) EmbeddableTranManagerSet.instance()).isQuiesced()) {
+            final SystemException se = new SystemException();
+            throw se;
+        }
         return _wrappers.get(globalId);
     }
 
