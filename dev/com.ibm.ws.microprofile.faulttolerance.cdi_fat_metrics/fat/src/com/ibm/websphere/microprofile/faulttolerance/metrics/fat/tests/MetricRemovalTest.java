@@ -100,6 +100,7 @@ public class MetricRemovalTest {
      */
     private String getMetricsPage() throws IOException {
         HttpURLConnection con = HttpUtils.getHttpConnection(server, "metrics");
+        con.addRequestProperty("accept", "text/plain");
         BufferedReader reader = HttpUtils.getResponseBody(con, "UTF-8");
 
         StringBuilder b = new StringBuilder();
