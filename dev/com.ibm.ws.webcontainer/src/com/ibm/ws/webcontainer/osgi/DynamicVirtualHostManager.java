@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,10 +22,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.ws.webcontainer.osgi.osgi.WebContainerConstants;
 import com.ibm.wsspi.http.VirtualHost;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
@@ -72,17 +74,12 @@ public class DynamicVirtualHostManager implements Runnable {
             } catch (IOException e) {
             }
         }
-        
-        // Schedule a task to run after 30 seconds to see if any virtual hosts
-        // that applications reference are missing.. 
-        schedExecutor.schedule(this, 30, TimeUnit.SECONDS);
     }
     
     @Override
     public void run() {
         List<String> missingHosts = new ArrayList<String>();
 
-        // runnable used for scheduled executor.. 
         for (DynamicVirtualHost host : hostMap.values()) {
             String name = host.getName();
             if ( transportMap.get(name) == null ) {
@@ -100,7 +97,6 @@ public class DynamicVirtualHostManager implements Runnable {
                 }
             }
         }
-        
         // If there are missing hosts, issue a warning message to indicate that virtual hosts
         // referenced by applications aren't present in the config. This only happens at startup, 
         // not w/ dynamically added applications later.. but at least there is _some_ indication
@@ -229,6 +225,27 @@ public class DynamicVirtualHostManager implements Runnable {
     }
 
     protected void unsetScheduledExececutor(ScheduledExecutorService schedExec) {}
+    
+    /**
+     * Invoked once the server is started
+     *
+     * @param ref reference to the ServerStarted service
+     */
+    protected void setServerStarted(ServiceReference<ServerStarted> ref) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "DynamicVirtualHostManager Server Completely Started signal received");
+        }
+        // runnable used for scheduled executor.. 
+        schedExecutor.schedule(this, 0, TimeUnit.SECONDS);
+    }
+    
+    /**
+     * required DS method for unsetting the ServerStarted service
+     *
+     * @param ref reference to the service
+     */
+    protected synchronized void unsetServerStarted(ServiceReference<ServerStarted> ref) {
+    }
 
 
     protected void setVirtualHost(com.ibm.wsspi.http.VirtualHost vhost) {
