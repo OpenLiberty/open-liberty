@@ -53,6 +53,7 @@ import io.openliberty.security.jakartasec.fat.utils.ResponseValues;
 import io.openliberty.security.jakartasec.fat.utils.ServletMessageConstants;
 import io.openliberty.security.jakartasec.fat.utils.ServletRequestExpectationHelpers;
 import io.openliberty.security.jakartasec.fat.utils.WsSubjectExpectationHelpers;
+import jakarta.security.enterprise.authentication.mechanism.http.openid.DisplayType;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.PromptType;
 
 public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
@@ -529,6 +530,9 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
                 joiner.add(promptType.toString());
             }
             newValue = joiner.toString();
+        }
+        if (value instanceof DisplayType) {
+            newValue = ((DisplayType) value).toString();
         }
         return newValue;
     }

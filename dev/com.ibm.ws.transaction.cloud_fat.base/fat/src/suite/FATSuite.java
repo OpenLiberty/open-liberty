@@ -24,11 +24,13 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.container.DatabaseContainerType;
 import tests.DupXidTest;
 import tests.Simple2PCCloudTest;
+import tests.LongTranTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 DupXidTest.class,
                 Simple2PCCloudTest.class,
+                LongTranTest.class,
 })
 public class FATSuite extends TxTestContainerSuite {
 

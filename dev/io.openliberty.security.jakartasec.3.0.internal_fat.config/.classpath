@@ -50,6 +50,13 @@
 	<classpathentry kind="src" path="test-applications/PromptLoginConsent.war/src"/>
 	<classpathentry kind="src" path="test-applications/PromptEmpty.war/src"/>
 	<classpathentry kind="src" path="test-applications/PromptLoginWithEL.war/src"/>
+	<classpathentry kind="src" path="test-applications/DisplayPage.war/src"/>
+	<classpathentry kind="src" path="test-applications/DisplayPopup.war/src"/>
+	<classpathentry kind="src" path="test-applications/DisplayTouch.war/src"/>
+	<classpathentry kind="src" path="test-applications/DisplayWap.war/src"/>
+	<classpathentry kind="src" path="test-applications/DisplayEL.war/src"/>
+	<classpathentry kind="src" path="test-applications/DisplayEmpty.war/src"/>
+	<classpathentry kind="src" path="test-applications/DisplayPopupWithEL.war/src"/>
 	<classpathentry kind="src" path="test-applications/JwksEndpoint.war/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11">

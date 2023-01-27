@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -35,6 +35,9 @@ import componenttest.app.FATServlet;
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class DataJPATestServlet extends FATServlet {
+
+    @Inject
+    Accounts accounts;
 
     @Inject
     Businesses businesses;
@@ -152,6 +155,68 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Intermix different name patterns for embeddable attributes.
+     */
+    @Test
+    public void testEmbeddableIntermixNamePatterns() {
+        assertIterableEquals(List.of("HALCON", "Geotek"),
+                             businesses.in("Stewartville", "MN")
+                                             .map(b -> b.name)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("Custom Alarm", "Mayo Clinic", "Olmsted Medical", "Reichel Foods"),
+                             businesses.onSouthSide());
+    }
+
+    /**
+     * Repository methods for an entity where an embeddable is the id.
+     */
+    @Test
+    public void testEmbeddedId() {
+        // Clear out data before test
+        accounts.deleteByOwnerEndsWith("TestEmbeddedId");
+
+        accounts.save(new Account(1005380, 70081, "Think Bank", true, 552.18, "Ellen TestEmbeddedId"));
+        accounts.save(new Account(1004470, 70081, "Think Bank", true, 443.94, "Erin TestEmbeddedId"));
+        accounts.save(new Account(1006380, 70081, "Think Bank", true, 160.63, "Edward TestEmbeddedId"));
+        accounts.save(new Account(1007590, 70081, "Think Bank", true, 793.30, "Elizabeth TestEmbeddedId"));
+        accounts.save(new Account(1008410, 22158, "Home Federal Savings Bank", true, 829.91, "Elizabeth TestEmbeddedId"));
+        accounts.save(new Account(1006380, 22158, "Home Federal Savings Bank", true, 261.66, "Elliot TestEmbeddedId"));
+        accounts.save(new Account(1004470, 22158, "Home Federal Savings Bank", false, 416.14, "Emma TestEmbeddedId"));
+        accounts.save(new Account(1009130, 30372, "Mayo Credit Union", true, 945.20, "Elizabeth TestEmbeddedId"));
+        accounts.save(new Account(1004470, 30372, "Mayo Credit Union", true, 423.15, "Eric TestEmbeddedId"));
+        accounts.save(new Account(1008200, 30372, "Mayo Credit Union", true, 103.04, "Evan TestEmbeddedId"));
+
+        assertIterableEquals(List.of("Emma TestEmbeddedId", "Eric TestEmbeddedId", "Erin TestEmbeddedId"),
+                             accounts.findByAccountIdAccountNum(1004470)
+                                             .map(a -> a.owner)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("Edward TestEmbeddedId", "Elizabeth TestEmbeddedId", "Ellen TestEmbeddedId", "Erin TestEmbeddedId"),
+                             accounts.findByAccountIdRoutingNum(70081)
+                                             .map(a -> a.owner)
+                                             .collect(Collectors.toList()));
+
+        assertEquals("Emma TestEmbeddedId", accounts.findByAccountId(AccountId.of(1004470, 22158)).owner);
+
+        assertEquals("Erin TestEmbeddedId", accounts.findById(AccountId.of(1004470, 70081)).owner);
+
+        assertIterableEquals(List.of("Home Federal Savings Bank", "Mayo Credit Union"),
+                             accounts.findByAccountIdNotAndOwner(AccountId.of(1007590, 70081), "Elizabeth TestEmbeddedId")
+                                             .map(a -> a.bankName)
+                                             .collect(Collectors.toList()));
+
+        // TODO try other keywords with embeddables?
+        // "In" does not appear to work:
+        //assertIterableEquals(List.of("Evan TestEmbeddedId", "Emma TestEmbeddedId", "Edward TestEmbeddedId"),
+        //                     accounts.findByIdInOrOwner(List.of(AccountId.of(1006380, 70081), AccountId.of(1004470, 22158)), "Evan TestEmbeddedId")
+        //                                     .map(a -> a.owner)
+        //                                     .collect(Collectors.toList()));
+
+        accounts.deleteByOwnerEndsWith("TestEmbeddedId");
+    }
+
+    /**
      * Repository methods for an entity where the id is on the embeddable.
      */
     @Test
@@ -178,5 +243,7 @@ public class DataJPATestServlet extends FATServlet {
                                              .stream()
                                              .map(emp -> emp.badge.number)
                                              .collect(Collectors.toList()));
+
+        employees.deleteByLastName("TestIdOnEmbeddable");
     }
 }

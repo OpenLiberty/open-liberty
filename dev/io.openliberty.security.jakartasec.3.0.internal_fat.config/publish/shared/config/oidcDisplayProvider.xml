@@ -1,0 +1,50 @@
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+		 		 
+	<openidConnectProvider
+		id="OP1"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
+		oauthProviderRef="OAuth1" />
+
+	<oauthProvider
+		id="OAuth1"
+		autoAuthorize="true"
+		tokenFormat="${opTokenFormat}"
+	>
+		<autoAuthorizeClient>client_1</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client_1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/DisplayPage/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/DisplayPopup/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/DisplayTouch/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/DisplayWap/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/DisplayELPage/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/DisplayELPopup/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/DisplayELTouch/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/DisplayELWap/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/DisplayEmpty/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/DisplayPopupELTouch/Callback"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>		
+			
+</server>

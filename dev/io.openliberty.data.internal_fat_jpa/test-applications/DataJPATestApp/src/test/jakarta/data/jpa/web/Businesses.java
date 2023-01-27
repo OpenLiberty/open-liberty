@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,12 +13,16 @@
 package test.jakarta.data.jpa.web;
 
 import java.util.List;
+import java.util.stream.Stream;
 
+import jakarta.data.repository.Compare;
 import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.Filter;
 import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Select;
 
 /**
  *
@@ -38,4 +42,16 @@ public interface Businesses extends CrudRepository<Business, Integer> {
     @OrderBy("houseNum")
     @OrderBy("id")
     KeysetAwareSlice<Business> findByZipIn(Iterable<Integer> zipCodes, Pageable pagination);
+
+    @Filter(by = "location_address.city")
+    @Filter(by = "location.address_state")
+    @OrderBy(descending = true, ignoreCase = true, value = "name")
+    Stream<Business> in(String city, String state);
+
+    @Filter(by = "locationAddressCity", value = "Rochester")
+    @Filter(by = "locationAddressState", value = "MN")
+    @Filter(by = "locationAddress.street_direction", ignoreCase = true, op = Compare.StartsWith, value = "s")
+    @OrderBy("name") // Business.name, not Business.Location.Address.Street.name
+    @Select("name")
+    List<String> onSouthSide();
 }

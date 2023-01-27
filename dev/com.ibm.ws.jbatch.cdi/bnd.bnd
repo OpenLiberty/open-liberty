@@ -35,7 +35,7 @@ Include-Resource: \
   META-INF=resources/META-INF
 
 -dsannotations:\
-  com.ibm.ws.jbatch.cdi.BatchCDIInjectionExtensionMetaData,\
+  com.ibm.ws.jbatch.cdi.BatchCDIInjectionExtension,\
   com.ibm.ws.jbatch.cdi.internal.CDIBatchArtifactFactoryImpl
 
 -cdiannotations:

@@ -44,6 +44,7 @@ import com.ibm.ws.webcontainer.servlet31.fat.tests.WCServerHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.WCServerTest;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.WCServletContextUnsupportedOperationExceptionTest;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -97,8 +98,8 @@ public class FATSuite {
         // If we are running on Java 8 have EE9 be the lite mode test to run.
         if (JavaInfo.JAVA_VERSION >= 11) {
             //Repeat full fat for all features may exceed 3hrs limit on Fyre Windows and causes random build break.
-            //Skip EE9 on windows platform.
-            if (isWindows) {
+            //Skip EE9 on the windows platform when not running locally.
+            if (isWindows && !FATRunner.FAT_TEST_LOCALRUN) {
                 repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
                                 .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
                                 .andWith(FeatureReplacementAction.EE10_FEATURES());
