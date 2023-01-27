@@ -1,6 +1,15 @@
-/**
+/*******************************************************************************
+ * Copyright (c) 2023 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
  *
- */
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package io.openliberty.process;
 
 import java.io.FileNotFoundException;
@@ -62,7 +71,6 @@ public class PostProcessBNDPom {
         try {
             writer.write(new FileWriter(path + "/pom.xml"), pom);
         } catch (IOException e3) {
-            // TODO Auto-generated catch block
             e3.printStackTrace();
         }
     }
@@ -80,7 +88,6 @@ public class PostProcessBNDPom {
             Path fileInsideZipPath = fs.getPath(pomEntryPath);
             Files.copy(myFilePath, fileInsideZipPath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -90,7 +97,6 @@ public class PostProcessBNDPom {
      * @param pom
      */
     private static void removeDevDependecies(Model pom) {
-        // TODO Auto-generated method stub
 
         List<Dependency> deps = pom.getDependencies();
         for (Iterator iterator = deps.iterator(); iterator.hasNext();) {
@@ -105,13 +111,11 @@ public class PostProcessBNDPom {
      * @param jarFile2
      */
     private static Model readJARPom(String path) {
-        // TODO Auto-generated method stub
 
         ZipFile jar = null;
         try {
             jar = new ZipFile(path);
         } catch (IOException e2) {
-            // TODO Auto-generated catch block
             e2.printStackTrace();
         }
         if (jar != null) {
@@ -125,7 +129,6 @@ public class PostProcessBNDPom {
                         pomEntryPath = entry.getName();
                         stream = jar.getInputStream(entry);
                     } catch (IOException e1) {
-                        // TODO Auto-generated catch block
                         e1.printStackTrace();
                     }
                     MavenXpp3Reader reader = new MavenXpp3Reader();
@@ -134,19 +137,15 @@ public class PostProcessBNDPom {
                         if (stream != null)
                             model = reader.read(stream);
                     } catch (FileNotFoundException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     } catch (XmlPullParserException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                     try {
                         jar.close();
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                     return model;
@@ -157,7 +156,6 @@ public class PostProcessBNDPom {
         try {
             jar.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;

@@ -1,0 +1,9 @@
+{
+  "name": "ui.tool.javaBatch",
+  "version": "0.0.1",
+  "description": "OpenLiberty package refs for ui.javaBatch",
+  "author": "OpenLiberty",
+  "dependencies": {
+    "svg4everybody": "^2.1.9"
+  }
+}

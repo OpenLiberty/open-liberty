@@ -35,6 +35,8 @@ Include-Resource: \
   feature=resources/WEB-CONTENT/feature, \
   css=resources/WEB-CONTENT/css, \
   img=resources/WEB-CONTENT/img, \
+  package.json, \
+  package-lock.json, \
   nls=resources/WEB-CONTENT/nls
 
 Import-Package: com.ibm.ws.kernel.productinfo

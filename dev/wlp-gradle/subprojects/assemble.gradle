@@ -43,6 +43,7 @@ task cleanAllEmbeddedPoms {
           }
         }
     }
+assemble.dependsOn cleanAllEmbeddedPoms
 
 
 
@@ -50,7 +51,6 @@ def publishWlpJarDefault = parseBoolean(bnd.get('test.project', 'false')) ? 'tru
 if (bnd.get('publish.tool.jar', '').empty && !parseBoolean(bnd.get('publish.wlp.jar.disabled', publishWlpJarDefault))) {
     task publishWLPJars(type: Copy) {
         dependsOn jar
-        dependsOn cleanAllEmbeddedPoms
         from project.buildDir
         into buildImage.file('wlp/' + bnd.get('publish.wlp.jar.suffix', 'lib'))
         include bnd.get('publish.wlp.jar.include', '*.jar')
@@ -152,7 +152,6 @@ if (!bnd.get('publish.tool.jar', '').empty) {
     task publishToolScripts(type: Copy) {
         enabled !bnd.get('publish.tool.script', '').empty
         dependsOn jar
-        dependsOn cleanAllEmbeddedPoms
         from cnf.file('resources/bin')
         into buildImage.file('wlp/bin/' + bnd.get('publish.tool.script.subdir', ''))
         fileMode 0755
@@ -167,7 +166,6 @@ if (!bnd.get('publish.tool.jar', '').empty) {
     task publishToolJars(type: Copy) {
         dependsOn jar
         dependsOn publishToolScripts
-        dependsOn cleanAllEmbeddedPoms
         from project.buildDir
         into buildImage.file('wlp/bin/' + bnd.get('publish.tool.script.subdir', '') + 'tools')
         include bnd.get('publish.tool.jar', '')
@@ -178,7 +176,6 @@ if (!bnd.get('publish.tool.jar', '').empty) {
 if (project.file('resources/schemas').exists()) {
     task publishSchemaResources(type: Copy) {
         dependsOn jar
-        dependsOn cleanAllEmbeddedPoms
         from project.file('resources/schemas')
         into buildImage.file('wlp/dev/api/ibm/schema')
     }
@@ -188,7 +185,6 @@ if (project.file('resources/schemas').exists()) {
 if (project.file('publish/platform').exists()) {
     task publishPlatformManifests(type: Copy) {
         dependsOn jar
-        dependsOn cleanAllEmbeddedPoms
         from project.file('publish/platform')
         into buildImage.file('wlp/lib/platform')
         include '*.mf'
@@ -209,7 +205,6 @@ if (project.file('publish/platform').exists()) {
 if (project.file('publish/templates').exists()) {
     task publishTemplates(type: Copy) {
         dependsOn jar
-        dependsOn cleanAllEmbeddedPoms
         from project.file('publish/templates')
         into buildImage.file('wlp/templates')
     }
@@ -219,7 +214,6 @@ if (project.file('publish/templates').exists()) {
 if (project.file('publish/bin').exists()) {
     task publishBinScripts(type: Copy) {
         dependsOn jar
-        dependsOn cleanAllEmbeddedPoms
         from project.file('publish/bin')
         into buildImage.file('wlp/bin')
         fileMode 0755
@@ -230,7 +224,6 @@ if (project.file('publish/bin').exists()) {
 if (parseBoolean(bnd.get('publish.wlp.clients', 'false'))) {
     task publishClientScripts(type: Copy) {
         dependsOn jar
-        dependsOn cleanAllEmbeddedPoms
         from project.file('publish/clients')
         into buildImage.file('wlp/clients')
     }
@@ -240,7 +233,6 @@ if (parseBoolean(bnd.get('publish.wlp.clients', 'false'))) {
 if (project.file('lib/native').exists()) {
     task publishLibNative(type: Copy) {
         dependsOn jar
-        dependsOn cleanAllEmbeddedPoms
         from project.file('lib/native')
         into buildImage.file('wlp/lib/native')
     }

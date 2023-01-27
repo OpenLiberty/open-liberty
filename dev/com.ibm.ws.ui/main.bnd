@@ -47,6 +47,8 @@ Include-Resource: \
   404=resources/WEB-CONTENT/404, \
   login/images=resources/WEB-CONTENT/login/images, \
   toolbox.jsp=resources/WEB-CONTENT/toolbox.jsp, \
+  package.json, \
+  package-lock.json, \
   html=resources/WEB-CONTENT/html
 
 -dsannotations: \
