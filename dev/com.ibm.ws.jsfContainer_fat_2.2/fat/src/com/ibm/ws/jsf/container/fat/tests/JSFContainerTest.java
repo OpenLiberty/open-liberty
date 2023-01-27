@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jsf.container.fat.tests;
 
@@ -41,12 +38,12 @@ public class JSFContainerTest extends FATServletClient {
         WebArchive mojarraApp = ShrinkHelper.buildDefaultApp(MOJARRA_APP, "jsf.container.bean");
         mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "test-applications/" + MOJARRA_APP + "/resources");
         mojarraApp = FATSuite.addMojarra(mojarraApp);
-        ShrinkHelper.exportToServer(server, "dropins", mojarraApp);
+        ShrinkHelper.exportDropinAppToServer(server, mojarraApp);
 
         WebArchive myfacesApp = ShrinkHelper.buildDefaultApp(MYFACES_APP, "jsf.container.bean");
         ShrinkHelper.addDirectory(myfacesApp, "test-applications/" + MOJARRA_APP + "/resources");
         myfacesApp = FATSuite.addMyFaces(myfacesApp);
-        ShrinkHelper.exportToServer(server, "dropins", myfacesApp);
+        ShrinkHelper.exportDropinAppToServer(server, myfacesApp);
 
         server.startServer();
     }
