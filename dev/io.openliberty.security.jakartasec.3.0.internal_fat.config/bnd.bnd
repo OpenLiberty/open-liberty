@@ -56,8 +56,14 @@ src: \
     test-applications/ExtraParametersUsingEL.war/src,\
     test-applications/ExtraParametersSpaceAsKey.war/src,\
     test-applications/ExtraParametersLeadingSpaceInKey.war/src,\
+    test-applications/DisplayPage.war/src,\
+    test-applications/DisplayPopup.war/src,\
+    test-applications/DisplayTouch.war/src,\
+    test-applications/DisplayWap.war/src,\
+    test-applications/DisplayEL.war/src,\
+    test-applications/DisplayEmpty.war/src,\
+    test-applications/DisplayPopupWithEL.war/src,\
     test-applications/JwksEndpoint.war/src
-
     
 -dependson: \
     build.changeDetector,\

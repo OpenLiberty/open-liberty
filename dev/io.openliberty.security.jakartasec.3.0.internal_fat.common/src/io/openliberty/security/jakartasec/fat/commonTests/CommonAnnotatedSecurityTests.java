@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,7 @@ import io.openliberty.security.jakartasec.fat.utils.ResponseValues;
 import io.openliberty.security.jakartasec.fat.utils.ServletMessageConstants;
 import io.openliberty.security.jakartasec.fat.utils.ServletRequestExpectationHelpers;
 import io.openliberty.security.jakartasec.fat.utils.WsSubjectExpectationHelpers;
+import jakarta.security.enterprise.authentication.mechanism.http.openid.DisplayType;
 
 public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
 
@@ -517,6 +518,9 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
                                                                                                                                                                                                          Integer.toString(rpServer.getBvtSecurePort())).replace("rp_AppName_rp",
                                                                                                                                                                                                                                                                 appName);
 
+        }
+        if (value instanceof DisplayType) {
+            newValue = ((DisplayType) value).toString();
         }
         return newValue;
     }

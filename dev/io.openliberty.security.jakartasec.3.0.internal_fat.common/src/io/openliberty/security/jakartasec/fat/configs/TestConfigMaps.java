@@ -18,6 +18,7 @@ import java.util.Map;
 import com.ibm.websphere.simplicity.log.Log;
 
 import io.openliberty.security.jakartasec.fat.utils.Constants;
+import jakarta.security.enterprise.authentication.mechanism.http.openid.DisplayType;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.PromptType;
 
 public class TestConfigMaps {
@@ -413,6 +414,30 @@ public class TestConfigMaps {
     public static Map<String, Object> getExtraParametersContainsSpecialCharacterInValue() throws Exception {
         Map<String, Object> updatedMap = new HashMap<String, Object>();
         updatedMap.put(Constants.EXTRA_PARAMETERS_EXPRESSION, "key1=value&1");
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getDisplayPage() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.DISPLAY_EXPRESSION, DisplayType.PAGE);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getDisplayPopup() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.DISPLAY_EXPRESSION, DisplayType.POPUP);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getDisplayTouch() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.DISPLAY_EXPRESSION, DisplayType.TOUCH);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getDisplayWap() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.DISPLAY_EXPRESSION, DisplayType.WAP);
         return updatedMap;
     }
 
