@@ -257,15 +257,14 @@ class EntityDefiner implements Runnable {
                         embeddables.add(attr);
                         embeddablePrefixes.add(attributeName);
                         embeddableAccessors.add(Collections.singletonList(attr.getJavaMember()));
-                    } else {
-                        attributeNames.put(attributeName.toUpperCase(), attributeName);
-                        if (attr instanceof SingularAttribute && ((SingularAttribute<?, ?>) attr).isId())
-                            attributeNames.put("ID", attributeName);
-                        attributeAccessors.put(attributeName, Collections.singletonList(attr.getJavaMember()));
-                        attributeTypes.put(attributeName, PersistentAttributeType.ELEMENT_COLLECTION.equals(attributeType) //
-                                        ? Collection.class //
-                                        : attr.getJavaType());
                     }
+                    attributeNames.put(attributeName.toLowerCase(), attributeName);
+                    if (attr instanceof SingularAttribute && ((SingularAttribute<?, ?>) attr).isId())
+                        attributeNames.put("id", attributeName);
+                    attributeAccessors.put(attributeName, Collections.singletonList(attr.getJavaMember()));
+                    attributeTypes.put(attributeName, PersistentAttributeType.ELEMENT_COLLECTION.equals(attributeType) //
+                                    ? Collection.class //
+                                    : attr.getJavaType());
                 }
 
                 for (Attribute<?, ?> attr; (attr = embeddables.poll()) != null;) {
@@ -283,31 +282,31 @@ class EntityDefiner implements Runnable {
                             embeddables.add(embAttr);
                             embeddablePrefixes.add(fullAttributeName);
                             embeddableAccessors.add(embAccessors);
-                        } else {
-                            // Allow the simple attribute name if it doesn't overlap
-                            embeddableAttributeName = embeddableAttributeName.toUpperCase();
-                            attributeNames.putIfAbsent(embeddableAttributeName, fullAttributeName);
-
-                            // Allow a qualified name such as @OrderBy("address.street.name")
-                            embeddableAttributeName = fullAttributeName.toUpperCase();
-                            attributeNames.put(embeddableAttributeName, fullAttributeName);
-
-                            // Allow a qualified name such as findByAddress_Street_Name if it doesn't overlap
-                            String embeddableAttributeName_ = embeddableAttributeName.replace('.', '_');
-                            attributeNames.putIfAbsent(embeddableAttributeName_, fullAttributeName);
-
-                            // Allow a qualified name such as findByAddressStreetName if it doesn't overlap
-                            String embeddableAttributeNameUndelimited = embeddableAttributeName.replace(".", "");
-                            attributeNames.putIfAbsent(embeddableAttributeNameUndelimited, fullAttributeName);
-
-                            if (embAttr instanceof SingularAttribute && ((SingularAttribute<?, ?>) embAttr).isId())
-                                attributeNames.put("ID", fullAttributeName);
-
-                            attributeAccessors.put(fullAttributeName, embAccessors);
-                            attributeTypes.put(fullAttributeName, PersistentAttributeType.ELEMENT_COLLECTION.equals(attributeType) //
-                                            ? Collection.class //
-                                            : embAttr.getJavaType());
                         }
+
+                        // Allow the simple attribute name if it doesn't overlap
+                        embeddableAttributeName = embeddableAttributeName.toLowerCase();
+                        attributeNames.putIfAbsent(embeddableAttributeName, fullAttributeName);
+
+                        // Allow a qualified name such as @OrderBy("address.street.name")
+                        embeddableAttributeName = fullAttributeName.toLowerCase();
+                        attributeNames.put(embeddableAttributeName, fullAttributeName);
+
+                        // Allow a qualified name such as findByAddress_Street_Name if it doesn't overlap
+                        String embeddableAttributeName_ = embeddableAttributeName.replace('.', '_');
+                        attributeNames.putIfAbsent(embeddableAttributeName_, fullAttributeName);
+
+                        // Allow a qualified name such as findByAddressStreetName if it doesn't overlap
+                        String embeddableAttributeNameUndelimited = embeddableAttributeName.replace(".", "");
+                        attributeNames.putIfAbsent(embeddableAttributeNameUndelimited, fullAttributeName);
+
+                        if (embAttr instanceof SingularAttribute && ((SingularAttribute<?, ?>) embAttr).isId())
+                            attributeNames.put("id", fullAttributeName);
+
+                        attributeAccessors.put(fullAttributeName, embAccessors);
+                        attributeTypes.put(fullAttributeName, PersistentAttributeType.ELEMENT_COLLECTION.equals(attributeType) //
+                                        ? Collection.class //
+                                        : embAttr.getJavaType());
                     }
                 }
 

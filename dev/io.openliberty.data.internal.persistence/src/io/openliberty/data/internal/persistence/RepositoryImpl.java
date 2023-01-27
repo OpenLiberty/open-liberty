@@ -270,7 +270,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     q.append(whereClause);
             } else if (queryInfo.method.getAnnotation(Exists.class) != null) {
                 queryInfo.type = QueryInfo.Type.EXISTS;
-                String idAttrName = queryInfo.entityInfo.getAttributeName("ID");
+                String idAttrName = queryInfo.entityInfo.getAttributeName("id");
                 q = new StringBuilder(17 + idAttrName.length() + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
                                 .append("SELECT o.").append(idAttrName) //
                                 .append(" FROM ").append(queryInfo.entityInfo.name).append(" o");
@@ -817,7 +817,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         } else if (methodName.startsWith("exists")) {
             int by = methodName.indexOf("By", 6);
             int c = by < 0 ? 6 : by + 2;
-            q = new StringBuilder(200).append("SELECT o.").append(queryInfo.entityInfo.getAttributeName("ID")) //
+            q = new StringBuilder(200).append("SELECT o.").append(queryInfo.entityInfo.getAttributeName("id")) //
                             .append(" FROM ").append(queryInfo.entityInfo.name).append(" o");
             if (methodName.length() > c)
                 generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
