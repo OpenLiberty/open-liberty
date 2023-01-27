@@ -15,11 +15,13 @@ package test.jakarta.data.jpa.web;
 import static org.junit.Assert.assertEquals;
 import static test.jakarta.data.jpa.web.Assertions.assertIterableEquals;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jakarta.annotation.Resource;
+import jakarta.data.exceptions.MappingException;
 import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.Pageable;
 import jakarta.inject.Inject;
@@ -206,12 +208,47 @@ public class DataJPATestServlet extends FATServlet {
                                              .map(a -> a.bankName)
                                              .collect(Collectors.toList()));
 
-        // TODO try other keywords with embeddables?
-        // "In" does not appear to work:
-        //assertIterableEquals(List.of("Evan TestEmbeddedId", "Emma TestEmbeddedId", "Edward TestEmbeddedId"),
-        //                     accounts.findByIdInOrOwner(List.of(AccountId.of(1006380, 70081), AccountId.of(1004470, 22158)), "Evan TestEmbeddedId")
-        //                                     .map(a -> a.owner)
-        //                                     .collect(Collectors.toList()));
+        assertIterableEquals(List.of("AccountId:1004470:22158",
+                                     "AccountId:1004470:30372",
+                                     "AccountId:1004470:70081",
+                                     "AccountId:1005380:70081",
+                                     "AccountId:1006380:22158",
+                                     "AccountId:1006380:70081",
+                                     "AccountId:1007590:70081",
+                                     "AccountId:1008200:30372",
+                                     "AccountId:1008410:22158",
+                                     "AccountId:1009130:30372"),
+                             accounts.findByIdNotNull()
+                                             .map(a -> a.accountId.toString())
+                                             .collect(Collectors.toList()));
+
+        assertEquals(Collections.EMPTY_LIST, accounts.findByIdEmpty());
+
+        try {
+            System.out.println("findByIdBetween: " + accounts.findByIdBetween(AccountId.of(1006380, 22158), AccountId.of(1008200, 30372)));
+        } catch (MappingException x) {
+            // expected
+        }
+
+        try {
+            System.out.println("findByIdGreaterThan: " + accounts.findByIdGreaterThan(AccountId.of(1008200, 30372)));
+        } catch (MappingException x) {
+            // expected
+        }
+
+        try {
+            System.out.println("findByIdInOrOwner: " + accounts.findByIdInOrOwner(List.of(AccountId.of(1004470, 30372),
+                                                                                          AccountId.of(1006380, 22158)),
+                                                                                  "Emma TestEmbeddedId"));
+        } catch (MappingException x) {
+            // expected
+        }
+
+        try {
+            System.out.println("findByIdTrue: " + accounts.findByIdTrue());
+        } catch (MappingException x) {
+            // expected
+        }
 
         accounts.deleteByOwnerEndsWith("TestEmbeddedId");
     }

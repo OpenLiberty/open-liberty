@@ -21,6 +21,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
+import java.sql.SQLSyntaxErrorException;
 import java.sql.SQLTransientConnectionException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -496,6 +497,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     || cause instanceof SQLNonTransientConnectionException
                     || cause instanceof SQLTransientConnectionException)
                     x = new DataConnectionException(original);
+                else if (cause instanceof SQLSyntaxErrorException)
+                    x = new MappingException(original);
             }
             if (x == null) {
                 if (original instanceof NoResultException)
@@ -507,8 +510,16 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             }
         } else if (original instanceof CompletionException) {
             x = new MappingException(original); // TODO categorization is too broad
+        } else if (original instanceof IllegalArgumentException) {
+            // Example: Problem compiling [SELECT o FROM Account o WHERE (o.accountId>?1)]. The
+            // relationship mapping 'o.accountId' cannot be used in conjunction with the > operator
+            x = new MappingException(original);
         } else if (original instanceof RuntimeException) {
-            x = (RuntimeException) original;
+            // Per EclipseLink, "This exception is used for any problem that is detected with a descriptor or mapping"
+            if ("org.eclipse.persistence.exceptions.DescriptorException".equals(original.getClass().getName()))
+                x = new MappingException(original);
+            else
+                x = (RuntimeException) original;
         } else {
             x = new DataException(original);
         }
