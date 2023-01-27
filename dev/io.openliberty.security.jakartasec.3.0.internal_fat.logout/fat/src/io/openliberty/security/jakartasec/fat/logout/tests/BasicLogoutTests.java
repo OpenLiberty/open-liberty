@@ -434,7 +434,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
 
         String appName = getShortAppName(notifyProvider, idTokenExpiry, accessTokenExpiry, idTokenLifetimeShort, accessTokenLifetimeShort);
         String provider = determineProvider(idTokenLifetimeShort, accessTokenLifetimeShort);
-        genericReAuthn(rpServer, appName, provider, false);
+        genericReAuthn(rpServer, appName, provider, false, PromptLogin);
 
     }
 
@@ -986,7 +986,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicLogoutTests_emptyRedirectUri_NotifyProvierFalse() throws Exception {
 
-        genericReAuthn(rpServer, "EmptyRedirectNotifyProviderFalseLogoutServlet", "OP3", false);
+        genericReAuthn(rpServer, "EmptyRedirectNotifyProviderFalseLogoutServlet", "OP3", false, PromptLogin);
 
     }
 

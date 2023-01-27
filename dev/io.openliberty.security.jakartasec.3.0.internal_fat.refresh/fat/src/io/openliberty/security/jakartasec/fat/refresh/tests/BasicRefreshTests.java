@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -399,7 +399,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
         String appName = getShortAppName(tokenAutoRefresh, providerAllowsRefresh, notifyProvider, idTokenExpiry, accessTokenExpiry);
         String provider = determineProvider(providerAllowsRefresh, idTokenExpiry, accessTokenExpiry);
 
-        genericReAuthn(rpServer, appName, provider, providerAllowsRefresh);
+        genericReAuthn(rpServer, appName, provider, providerAllowsRefresh, DoNotPromptLogin);
 
     }
 

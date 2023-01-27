@@ -35,6 +35,8 @@ public class CommonLogoutAndRefreshTests extends CommonAnnotatedSecurityTests {
     protected static final boolean IDTokenDoNotHonorExpiry = false;
     protected static final boolean AccessTokenHonorExpiry = true;
     protected static final boolean AccessTokenDoNotHonorExpiry = false;
+    protected static final boolean PromptLogin = true;
+    protected static final boolean DoNotPromptLogin = false;
 
     protected static final String goodRedirectUri = "goodRedirectUri";
     protected static final String badRedirectUri = "badRedirectUri";
@@ -50,6 +52,8 @@ public class CommonLogoutAndRefreshTests extends CommonAnnotatedSecurityTests {
      * - notifyProvider is false
      * - redirectUri is empty
      * Callers using this method expect that we will successfully access the app the second time.
+     * If the promptType is setup to expect a login page, the second access will need to complete the login form again.
+     * Otherwise, the OP can immediately redirect to the callback.
      * This method will make sure that we access the protected app 2 times and that the id_token, access_token and refresh_token are all different in each access.
      *
      * Also make sure that we get a new token because we've gone down the re-auth path (do that by making sure that the re-auth message is in the trace)
@@ -58,9 +62,10 @@ public class CommonLogoutAndRefreshTests extends CommonAnnotatedSecurityTests {
      * @param appName - the name of the app to invoke (the specific app will contain properties to set the @@OpenIdAuthenticationMechanismDefinition properly.
      * @param provider - the provider that the test should use - this info will be used to validate the token created
      * @param providerAllowsRefresh - flag indicating if a refresh token should be validated
+     * @param promptLogin - flag indicating if the promptType is setup to expect the login page
      * @throws Exception
      */
-    public void genericReAuthn(LibertyServer rpServer, String appName, String provider, boolean providerAllowsRefresh) throws Exception {
+    public void genericReAuthn(LibertyServer rpServer, String appName, String provider, boolean providerAllowsRefresh, boolean promptLogin) throws Exception {
 
         WebClient webClient = getAndSaveWebClient();
         rspValues.setIssuer(opHttpsBase + "/oidc/endpoint/" + provider);
@@ -69,8 +74,14 @@ public class CommonLogoutAndRefreshTests extends CommonAnnotatedSecurityTests {
         // now logged in - wait for token to expire
         actions.testLogAndSleep(sleepTimeInSeconds);
         String url = rpHttpsBase + "/" + appName + "/" + baseAppName;
-        Page response2 = invokeApp(webClient, url);
-        response2 = actions.doFormLogin(response2, Constants.TESTUSER, Constants.TESTUSERPWD);
+
+        Page response2 = null;
+        if (promptLogin) {
+            response2 = invokeAppReturnLoginPage(webClient, url);
+            response2 = processLogin(response2, Constants.TESTUSER, Constants.TESTUSERPWD, baseAppName);
+        } else {
+            response2 = invokeAppGetToApp(webClient, url);
+        }
 
         if (tokensAreDifferent(response1, response2, providerAllowsRefresh, TokenWasNotRefreshed)) {
             Log.info(thisClass, _testName, "Test tokens are different");
