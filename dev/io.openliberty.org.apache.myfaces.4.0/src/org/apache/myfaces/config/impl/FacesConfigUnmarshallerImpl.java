@@ -577,7 +577,7 @@ public class FacesConfigUnmarshallerImpl implements FacesConfigUnmarshaller<Face
             onChild("case", n, (cn) -> { ffs.addNavigationCase(processNavigationCase(cn)); });
             onChild("default-outcome", n, (cn) -> {
                 NavigationCaseImpl nc = new NavigationCaseImpl();
-                nc.setFromAction(getTextContent(cn));
+                nc.setFromOutcome(getTextContent(cn));
                 ffs.setDefaultOutcome(nc);
             });
             obj.addSwitch(ffs);
