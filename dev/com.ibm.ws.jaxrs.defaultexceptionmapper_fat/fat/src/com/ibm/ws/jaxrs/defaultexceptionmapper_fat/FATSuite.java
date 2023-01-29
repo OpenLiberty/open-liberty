@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,7 @@ public class FATSuite {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
-                                             .andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("test.exceptionmapper-2.0").addFeature("test.exceptionmapper-3.0"))
+                                             .andWith(FeatureReplacementAction.EE9_FEATURES().removeFeature("test.exceptionmapper-2.0").addFeature("test.exceptionmapper-3.0").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
                                              .andWith(FeatureReplacementAction.EE10_FEATURES().removeFeature("test.exceptionmapper-2.0").addFeature("test.exceptionmapper-3.0"));
 
 }

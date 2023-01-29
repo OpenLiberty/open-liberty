@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,10 +12,13 @@
  *******************************************************************************/
 package componenttest.rules.repeater;
 
+import java.util.function.Predicate;
+
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.TestModeFilter;
+import componenttest.topology.impl.JavaInfo;
 
 public class EmptyAction implements RepeatTestAction {
 
@@ -24,6 +27,10 @@ public class EmptyAction implements RepeatTestAction {
     public static final String ID = "NO_MODIFICATION_ACTION";
     private TestMode testRunMode = TestMode.LITE;
     private boolean liteFATOnly = false;
+    
+    public static final Predicate<EmptyAction> GREATER_THAN_OR_EQUAL_JAVA_11 = (action) -> JavaInfo.JAVA_VERSION >= 11;
+    public static final Predicate<EmptyAction> GREATER_THAN_OR_EQUAL_JAVA_17 = (action) -> JavaInfo.JAVA_VERSION >= 17;
+
 
     @Override
     public void setup() {}
@@ -52,6 +59,14 @@ public class EmptyAction implements RepeatTestAction {
     public RepeatTestAction fullFATOnly() {
         this.testRunMode = TestMode.FULL;
         liteFATOnly = false;
+        return this;
+    }
+    
+    public EmptyAction conditionalFullFATOnly(Predicate<EmptyAction> conditional) {
+        if (conditional.test(this)) {
+            this.testRunMode = TestMode.FULL;
+            liteFATOnly = false;
+        }
         return this;
     }
 
