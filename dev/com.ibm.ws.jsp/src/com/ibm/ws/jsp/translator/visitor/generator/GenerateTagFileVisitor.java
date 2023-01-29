@@ -252,6 +252,16 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
             writer.println("private static java.util.List<String> importClassList = new java.util.ArrayList<String>();");
             writer.println("private static java.util.List<String> importStaticList = new java.util.ArrayList<String>();");
             writer.println();
+            
+            // Cannot place this in the ImportGenerator since that is only run when the import directive is included in the page
+            // the imports below are required for all pages 
+            writer.println("static {");
+            // Since import directive is the same for tags as pages, need to verify that this is actually what we expect here
+            // Pages 1.10 Directive Packages java.lang.*, jakarta.servlet.*, jakarta.servlet.jsp.*, and jakarta.servlet.http.* are imported implicitly by the JSP container.
+			writer.println("importPackageList.add(\"jakarta.servlet\");");
+			writer.println("importPackageList.add(\"jakarta.servlet.jsp\");");
+			writer.println("importPackageList.add(\"jakarta.servlet.http\");");
+            writer.println("}");
         }
     }
 
@@ -341,6 +351,18 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
         
         writer.println(" public boolean isErrorOnELNotFound() {");
         writer.println("return "+ validatorResult.isErrorOnELNotFound()  + ";");
+        writer.println("}");
+
+        writer.println(" public java.util.List<String> getImportClassList() {");
+        writer.println("return  importPackageList;");
+        writer.println("}");
+
+        writer.println(" public java.util.List<String> getImportPackageList() {");
+        writer.println("return importClassList;");
+        writer.println("}");
+
+        writer.println(" public java.util.List<String> getImportStaticList() {");
+        writer.println("return importStaticList;");
         writer.println("}");
 
         if (ti.hasDynamicAttributes()) {
