@@ -103,11 +103,14 @@ public class H2InboundLink extends HttpInboundLink {
     public volatile CountDownLatch initLock = new CountDownLatch(1) {
     };
 
+    // Stream level window size variables
     volatile long initialWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
-    volatile long connectionReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // keep track of how much data the client is allowed to send to the us
+    volatile long connectionReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // keep track of how much data the client is allowed to send to the us on the stream
     private final Object readWindowSync = new Object() {
     };
-    volatile long maxReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // user-set max window size
+    volatile long maxReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // user-set max window size on the stream
+    // Connection level window size variables
+    volatile long connectionMaxReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // configurable max window size on the connection
 
     FrameReadProcessor frameReadProcessor = null;
 
@@ -211,8 +214,10 @@ public class H2InboundLink extends HttpInboundLink {
         h2MuxServiceContextImpl = (HttpInboundServiceContextImpl) this.getChannelAccessor();
 
         // set up the initial connection read window size
-        maxReadWindowSize = config.getH2ConnReadWindowSize();
-        connectionReadWindowSize = config.getH2ConnWindowSize();
+        maxReadWindowSize = config.getH2SettingsInitialWindowSize();
+        connectionMaxReadWindowSize = config.getH2ConnectionWindowSize();
+
+        connectionReadWindowSize = config.getH2ConnectionWindowSize();
 
         writeQ = new H2WriteTree();
         writeQ.init(h2MuxTCPWriteContext, h2MuxWriteCallback);

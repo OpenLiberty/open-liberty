@@ -171,13 +171,13 @@ public class H2StreamProcessor {
             Tr.debug(tc, "completeConnectionPreface entry: about to send preface SETTINGS frame");
         }
         Tr.debug(tc, "completeConnectionPreface MaxStreams is " + this.muxLink.config.getH2MaxConcurrentStreams() + " InitWindowSize is "
-                     + this.muxLink.config.getH2ConnReadWindowSize() + " MaxFrameSize is " + this.muxLink.config.getH2MaxFrameSize());
+                     + this.muxLink.config.getH2SettingsInitialWindowSize() + " MaxFrameSize is " + this.muxLink.config.getH2MaxFrameSize());
 
         FrameSettings settings;
         // send out a settings frame with any HTTP2 settings that the user may have changed
         // The window size here is the default for any stream that is opened by this server, SETTINGS_INITIAL_WINDOW_SIZE from the spec
-        if (Constants.SPEC_INITIAL_WINDOW_SIZE != this.muxLink.config.getH2ConnReadWindowSize()) {
-            settings = new FrameSettings(0, -1, -1, this.muxLink.config.getH2MaxConcurrentStreams(), this.muxLink.config.getH2ConnReadWindowSize(), this.muxLink.config.getH2MaxFrameSize(), -1, false);
+        if (Constants.SPEC_INITIAL_WINDOW_SIZE != this.muxLink.config.getH2SettingsInitialWindowSize()) {
+            settings = new FrameSettings(0, -1, -1, this.muxLink.config.getH2MaxConcurrentStreams(), this.muxLink.config.getH2SettingsInitialWindowSize(), this.muxLink.config.getH2MaxFrameSize(), -1, false);
         } else {
             settings = new FrameSettings(0, -1, -1, this.muxLink.config.getH2MaxConcurrentStreams(), -1, this.muxLink.config.getH2MaxFrameSize(), -1, false);
         }
@@ -192,15 +192,15 @@ public class H2StreamProcessor {
 
         // Check to see if the user configured the connection window size.  If so, send a window update frame to let the client know.
         // The window size here is to let the client know that at the connection level, we have a different size window than the default
-        if (Constants.SPEC_INITIAL_WINDOW_SIZE != this.muxLink.config.getH2ConnWindowSize()) {
-            // window update sets the difference between what the client has (default) and the new value.  This could be negative
-            // if the new size is smaller than the default, that's ok.
-            int updateSize = this.muxLink.config.getH2ConnWindowSize() - Constants.SPEC_INITIAL_WINDOW_SIZE;
+        if (Constants.SPEC_INITIAL_WINDOW_SIZE != this.muxLink.config.getH2ConnectionWindowSize()) {
+            // window update sets the difference between what the client has (default) and the new value.
+            int updateSize = this.muxLink.config.getH2ConnectionWindowSize() - Constants.SPEC_INITIAL_WINDOW_SIZE;
+            this.muxLink.connectionMaxReadWindowSize = this.muxLink.config.getH2ConnectionWindowSize();
+            this.muxLink.connectionReadWindowSize = this.muxLink.config.getH2ConnectionWindowSize();
             FrameWindowUpdate wup = new FrameWindowUpdate(0, updateSize, false);
             this.processNextFrame(wup, Direction.WRITING_OUT);
         }
 
-        //}
     }
 
     /**
@@ -861,24 +861,33 @@ public class H2StreamProcessor {
                         throw new FlowControlException("Too much data received from the remote client");
                     }
 
-                    // update the connection read limit to its max
-                    int windowChange = (int) (muxLink.maxReadWindowSize - muxLink.connectionReadWindowSize);
-                    FrameWindowUpdate wuf = new FrameWindowUpdate(0, windowChange, false);
-                    muxLink.getStream(0).processNextFrame(wuf, Direction.WRITING_OUT);
-                    muxLink.connectionReadWindowSize += windowChange;
-
-                    // update the stream read limit to its max
-                    windowChange = (int) (muxLink.maxReadWindowSize - this.streamReadWindowSize);
-                    Frame savedFrame = currentFrame; // save off the current frame
-                    if (!currentFrame.flagEndStreamSet()) {
-                        currentFrame = new FrameWindowUpdate(myID, windowChange, false);
-                        writeFrameSync();
-                        streamReadWindowSize += windowChange;
-                        currentFrame = savedFrame;
+                    // Only send window_update frame for the connection if we are under half the max size
+                    if (muxLink.connectionReadWindowSize < muxLink.connectionMaxReadWindowSize / 2) {
+                        // update the connection read limit to its max
+                        int windowChange = (int) (muxLink.connectionMaxReadWindowSize - muxLink.connectionReadWindowSize);
+                        FrameWindowUpdate wuf = new FrameWindowUpdate(0, windowChange, false);
+                        muxLink.getStream(0).processNextFrame(wuf, Direction.WRITING_OUT);
+                        muxLink.connectionReadWindowSize += windowChange;
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "updateStreamReadWindow: window update sent; connection limit:" + muxLink.connectionReadWindowSize);
+                        }
                     }
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "updateStreamReadWindow: window updates sent; new stream read limit: " + streamReadWindowSize
-                                     + " connection limit:" + muxLink.connectionReadWindowSize);
+
+                    // Only send window_update frame for the stream if we are under half the max size
+                    if (this.streamReadWindowSize < muxLink.maxReadWindowSize / 2) {
+                        // update the stream read limit to its max
+                        int windowChange = (int) (muxLink.maxReadWindowSize - this.streamReadWindowSize);
+                        Frame savedFrame = currentFrame; // save off the current frame
+                        if (!currentFrame.flagEndStreamSet()) {
+                            currentFrame = new FrameWindowUpdate(myID, windowChange, false);
+                            writeFrameSync();
+                            streamReadWindowSize += windowChange;
+                            currentFrame = savedFrame;
+                        }
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "updateStreamReadWindow: window update sent; new stream read limit: " + streamReadWindowSize);
+
+                        }
                     }
                 }
             }

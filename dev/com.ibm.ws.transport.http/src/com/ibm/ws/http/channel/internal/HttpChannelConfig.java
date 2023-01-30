@@ -2172,17 +2172,17 @@ public class HttpChannelConfig {
                 }
                 this.h2ConnectionReadWindowSize = convertInteger(value);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: H2 Stream Initial Default Window Size is " + getH2ConnReadWindowSize());
+                    Tr.event(tc, "Config: H2 Stream Initial Default Window Size is " + getH2SettingsInitialWindowSize());
                 }
             } catch (NumberFormatException nfe) {
-                FFDCFilter.processException(nfe, getClass().getName() + ".parseH2ConnReadWindowSize", "1");
+                FFDCFilter.processException(nfe, getClass().getName() + ".parseH2SettingsInitialWindowSize", "1");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Config: Invalid H2 Stream Initial Default Window Size of " + value);
                 }
             } catch (ArithmeticException ae) {
-                FFDCFilter.processException(ae, getClass().getName() + ".parseH2ConnReadWindowSize", "2");
+                FFDCFilter.processException(ae, getClass().getName() + ".parseH2SettingsInitialWindowSize", "2");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: Invalid H2 Stream Initial Default Window Size: cannot exceed 2^31 - 1.  Value was: " + value);
+                    Tr.event(tc, "Config: Invalid H2 Settings Initial Window Size: cannot exceed 2^31 - 1.  Value was: " + value);
                 }
             }
         }
@@ -2199,15 +2199,15 @@ public class HttpChannelConfig {
                 }
                 this.h2ConnectionWindowSize = convertInteger(value);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: H2 Connection Window Size is " + getH2ConnWindowSize());
+                    Tr.event(tc, "Config: H2 Connection Window Size is " + getH2ConnectionWindowSize());
                 }
             } catch (NumberFormatException nfe) {
-                FFDCFilter.processException(nfe, getClass().getName() + ".parseH2ConnWindowSize", "1");
+                FFDCFilter.processException(nfe, getClass().getName() + ".parseH2ConnectionWindowSize", "1");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Config: Invalid H2 Connection Window Size of " + value);
                 }
             } catch (ArithmeticException ae) {
-                FFDCFilter.processException(ae, getClass().getName() + ".parseH2ConnWindowSize", "2");
+                FFDCFilter.processException(ae, getClass().getName() + ".parseH2ConnectionWindowSize", "2");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Config: Invalid H2 Connection Window Size: must be between 2^16 - 1 and 2^31 - 1 inclusive.  Value was: " + value);
                 }
@@ -2818,11 +2818,11 @@ public class HttpChannelConfig {
         return h2ConnectionCloseTimeout;
     }
 
-    public int getH2ConnReadWindowSize() {
+    public int getH2SettingsInitialWindowSize() {
         return h2ConnectionReadWindowSize;
     }
 
-    public int getH2ConnWindowSize() {
+    public int getH2ConnectionWindowSize() {
         return h2ConnectionWindowSize;
     }
 
