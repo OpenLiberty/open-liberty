@@ -17,6 +17,6 @@
                   httpPort="${bvt.prop.HTTP_secondary}"
                   httpsPort="${bvt.prop.HTTP_secondary.secure}">
         <tcpOptions soReuseAddr="true" />
-        <httpOptions H2ConnReadWindowSize="65535" H2ConnWindowSize="65535"/>
+        <httpOptions H2SettingsInitalWindowSize="65535" H2ConnectionWindowSize="65535"/>
     </httpEndpoint>   
 </server>

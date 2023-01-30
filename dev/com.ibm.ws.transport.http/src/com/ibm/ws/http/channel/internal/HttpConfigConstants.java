@@ -334,8 +334,11 @@ public class HttpConfigConstants {
 
     public static final String PROPNAME_H2_CONN_CLOSE_TIMEOUT = "H2ConnCloseTimeout";
 
-    public static final String PROPNAME_H2_CONN_READ_WINDOW_SIZE = "H2ConnReadWindowSize";
-    public static final String PROPNAME_H2_CONN_WINDOW_SIZE = "H2ConnWindowSize";
+    // This is the default value for all new streams and is sent to the client in the preface SETTINGS frame
+    // The spec defines this as the SETTINGS_INITIAL_WINDOW_SIZE
+    public static final String PROPNAME_H2_CONN_READ_WINDOW_SIZE = "H2SettingsInitalWindowSize";
+    // This is the connection level window size, sent out in a WINDOW_UPDATE frame just after the connection preface
+    public static final String PROPNAME_H2_CONN_WINDOW_SIZE = "H2ConnectionWindowSize";
 
     //PI81572 - Purge the remaining response body off the wire
     public static final String PROPNAME_PURGE_REMAINING_RESPONSE = "PurgeRemainingResponseBody";
