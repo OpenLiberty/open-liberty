@@ -74,7 +74,11 @@ public class JAXRSDynamicHandlerTest {
         assertNotNull("Expected to see config update completed", server.waitForStringInLog("CWWKG0017I"));
         assertNotNull("Expected to see feature update completed", server.waitForStringInLog("CWWKF0008I"));
         assertNotNull("usr:RSHandler1Feature install failed", server.waitForStringInLog("CWWKF0012I.*usr:RSHandler1Feature"));
-
+        if (JakartaEE10Action.isActive()) {
+            assertNotNull("Expected to see application rsApplication updated", server.waitForStringInLog("CWWKZ0003I: The application rsApplication updated"));
+        } else {
+            assertNull("Did not expect to see application rsApplication updated", server.waitForStringInLog("CWWKZ0003I: The application rsApplication updated"));
+        }
         response = client.resource(uri).get();
         assertEquals(200, response.getStatusCode());
         assertNotNull("No RSInHander1 message", server.waitForStringInLog("in RSInHandler1 handleMessage method"));
