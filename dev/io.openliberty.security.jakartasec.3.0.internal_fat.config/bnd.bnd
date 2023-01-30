@@ -56,7 +56,9 @@ src: \
     test-applications/ExtraParametersUsingEL.war/src,\
     test-applications/ExtraParametersSpaceAsKey.war/src,\
     test-applications/ExtraParametersLeadingSpaceInKey.war/src,\
-    test-applications/JwksEndpoint.war/src
+    test-applications/JwksEndpoint.war/src,\
+    test-applications/Endpoints.war/src,\
+    test-applications/ProviderMetadata.war/src
 
     
 -dependson: \

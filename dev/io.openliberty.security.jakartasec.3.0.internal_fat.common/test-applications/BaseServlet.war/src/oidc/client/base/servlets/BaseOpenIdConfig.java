@@ -227,11 +227,21 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         return value;
     }
 
+    public String getTokenEndpoint() {
+
+        String value = "";
+        if (config.containsKey(Constants.TOKEN_ENDPOINT)) {
+            value = getStringValue(Constants.TOKEN_ENDPOINT);
+        }
+
+        return value;
+    }
+
     public String getUserinfoEndpoint() {
 
         String value = "";
-        if (config.containsKey(Constants.USERINFOENDPOINT)) {
-            value = getStringValue(Constants.USERINFOENDPOINT);
+        if (config.containsKey(Constants.USERINFO_ENDPOINT)) {
+            value = getStringValue(Constants.USERINFO_ENDPOINT);
         }
 
         return value;
@@ -247,6 +257,39 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         return value;
     }
 
+    public String getJwksURI() {
+
+        String value = "";
+        if (config.containsKey(Constants.JWKSURI)) {
+            value = getStringValue(Constants.JWKSURI);
+        }
+
+        return value;
+
+    }
+
+    public String getIssuer() {
+
+        String value = "";
+        if (config.containsKey(Constants.ISSUER)) {
+            value = getStringValue(Constants.ISSUER);
+        }
+
+        return value;
+
+    }
+
+    public String getSubjectTypeSupported() {
+
+        String value = "";
+        if (config.containsKey(Constants.SUBJECTTYPESUPPORTED)) {
+            value = getStringValue(Constants.SUBJECTTYPESUPPORTED);
+        }
+
+        return value;
+
+    }
+
     public String getIdTokenSigningAlgorithmsSupported() {
 
         String value = "RS256"; // spec default is RS256, OIDC default is HS256
@@ -258,11 +301,11 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
 
     }
 
-    public String getJwksURI() {
+    public String getResponseTypeSupported() {
 
         String value = "";
-        if (config.containsKey(Constants.JWKSURI)) {
-            value = getStringValue(Constants.JWKSURI);
+        if (config.containsKey(Constants.RESPONSETYPESUPPORTED)) {
+            value = getStringValue(Constants.RESPONSETYPESUPPORTED);
         }
 
         return value;
