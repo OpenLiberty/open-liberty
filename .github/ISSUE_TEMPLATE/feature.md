@@ -16,10 +16,10 @@ Replace this comment with a high level description of the feature. Include enoug
 When available, add links to required feature documents. Use "N/A" to mark particular documents which are not required by the feature.
 
 - Externally raised requests for enhancements: 
-  - [Aha](https://cloud-platform.ideas.aha.io/): Link to the Aha RFE idea (also add a link to this issue in the Aha idea)
-    - Owner adds label `Aha idea`
-  - [OL Feature Request](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=): Link to the OL GH issue (also add a link to this issue in the Feature Request GH issue)
-    - Owner adds label `Feature request`
+  - [Aha](https://cloud-platform.ideas.aha.io/): Link to the Aha idea (also add a link to this issue in the Aha idea)
+    - Feature owner adds label `Aha idea`
+  - [Open Liberty Feature Request](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=): Link to the OL GH issue (also add a link to this issue in the Feature Request GH issue)
+    - Feature owner adds label `Requested feature`
 - UFO: Link to [Upcoming Feature Overview](https://ibm.box.com/v/UFO-Template) document
   - [Upload the feature UFO to Box](https://ibm.ent.box.com/folder/52716090328) and set the link to be publicly accessible, with a long expiration (10 years)
     - Click "Share" > select "People with link" > click "Link Settings" > under "Link Expiration" select "Disable Shared Link on" > set an expiration date ~10 years into the future
@@ -71,24 +71,24 @@ The ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chi
 Design preliminaries determine whether a formal design, which will be provided by an [Upcoming Feature Overview (UFO)](https://ibm.box.com/v/UFO-Template) document, must be created and reviewed.  A formal design is required if the feature requires any of the following: UI, Serviceability, SVT, Performance testing, or non-trivial documentation/ID.
 
 ### **Design Preliminaries**
-- [ ] UI requirements identified. (Owner and [UI focal point](https://github.com/orgs/OpenLiberty/teams/ui-approvers))
-- [ ] ID requirements identified. (Owner and [ID focal point](https://github.com/orgs/OpenLiberty/teams/id-approvers))
+- [ ] UI requirements identified. (Feature owner and [UI focal point](https://github.com/orgs/OpenLiberty/teams/ui-approvers))
+- [ ] ID requirements identified. (Feature owner and [ID focal point](https://github.com/orgs/OpenLiberty/teams/id-approvers))
    - Refer to [Documenting Open Liberty](https://github.com/OpenLiberty/open-liberty/wiki/Documenting-Open-Liberty).
    - Feature Owner adds label `ID Required`, if non-trivial documentation needs to be created by the ID team.
    - ID adds label `ID Required - Trivial`, if no design will be performed and only trivial ID updates are needed.
-- [ ] Serviceability requirements identified. (Owner and [Serviceability focal point](https://github.com/orgs/OpenLiberty/teams/serviceability-approvers))
-- [ ] SVT requirements identified. (Owner and [SVT focal point](https://github.com/orgs/OpenLiberty/teams/svt-approvers))
-- [ ] Performance testing requirements identified. (Owner and [Performance focal point](https://github.com/orgs/OpenLiberty/teams/performance-approvers))
+- [ ] Serviceability requirements identified. (Feature owner and [Serviceability focal point](https://github.com/orgs/OpenLiberty/teams/serviceability-approvers))
+- [ ] SVT requirements identified. (Feature owner and [SVT focal point](https://github.com/orgs/OpenLiberty/teams/svt-approvers))
+- [ ] Performance testing requirements identified. (Feature owner and [Performance focal point](https://github.com/orgs/OpenLiberty/teams/performance-approvers))
 
 ### **Design**
 - [ ] POC Design / UFO review requested.
-  - Owner adds label `Design Review Request`
+  - Feature owner adds label `Design Review Request`
 - [ ] POC Design / UFO review scheduled.
   - Follow the instructions in POC-Forum repo
 - [ ] POC Design / UFO review completed.
 - [ ] POC / UFO Review follow-ons completed.
 - [ ] POC Design / UFO approval requested.
-  - Owner adds label `Design Approval Request`
+  - Feature owner adds label `Design Approval Request`
 - [ ] Design / UFO approved. ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect)) or N/A
   - ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect)) adds label `Design Approved`
   - Add the public link to the UFO in Box to the [Documents](#documents) section.
@@ -96,11 +96,11 @@ Design preliminaries determine whether a formal design, which will be provided b
 
 ### **No Design**
 - [ ] No Design requested.
-  - Owner adds label `No Design Approval Request`
+  - Feature owner adds label `No Design Approval Request`
 - [ ] No Design / No UFO approved. ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect)) or N/A
   - Approver adds label `No Design Approved`
 - [ ] Feature / Capability stabilization or discontinuation or N/A
-  - Owner adds label `Product Management Approval Request` and notifies [OpenLiberty/product-management](https://github.com/orgs/OpenLiberty/teams/product-management)
+  - Feature owner adds label `Product Management Approval Request` and notifies [OpenLiberty/product-management](https://github.com/orgs/OpenLiberty/teams/product-management)
   - Approver adds label `Product Management Approved` ([OpenLiberty/product-management](https://github.com/orgs/OpenLiberty/teams/product-management))
   - Note: For stabilized, superseded, and discontinued feature/capability, skip the [Beta](#beta) section of the template (you may delete it).  Otherwise, proceed as normal.
 
