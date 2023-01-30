@@ -17,6 +17,7 @@ import static test.jakarta.data.jpa.web.Assertions.assertIterableEquals;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -43,6 +44,9 @@ public class DataJPATestServlet extends FATServlet {
 
     @Inject
     Businesses businesses;
+
+    @Inject
+    Cities cities;
 
     @Inject
     Employees employees;
@@ -251,6 +255,42 @@ public class DataJPATestServlet extends FATServlet {
         }
 
         accounts.deleteByOwnerEndsWith("TestEmbeddedId");
+    }
+
+    /**
+     * Use the IdClass annotation to define a composite id.
+     */
+    @Test
+    public void testIdClass() {
+        // Clear out data before test
+        cities.deleteByStateNameIn(Set.of("Illinois", "Kansas", "Massachusetts", "Minnesota", "Missouri", "New York", "Ohio", "Oregon"));
+
+        cities.save(new City("Rochester", "Minnesota", 121395, Set.of(507)));
+        cities.save(new City("Rochester", "New York", 211328, Set.of(585)));
+        cities.save(new City("Springfield", "Illinois", 114394, Set.of(217, 447)));
+        cities.save(new City("Springfield", "Massachusetts", 155929, Set.of(413)));
+        cities.save(new City("Springfield", "Missouri", 169176, Set.of(417)));
+        cities.save(new City("Springfield", "Ohio", 58662, Set.of(326, 937)));
+        cities.save(new City("Springfield", "Oregon", 59403, Set.of(458, 541)));
+        cities.save(new City("Kansas City", "Kansas", 156607, Set.of(913)));
+        cities.save(new City("Kansas City", "Missouri", 508090, Set.of(816, 975)));
+
+        assertIterableEquals(List.of("Minnesota", "New York"),
+                             cities.findByName("Rochester")
+                                             .map(c -> c.stateName)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("Kansas City", "Springfield"),
+                             cities.findByStateName("Missouri")
+                                             .map(c -> c.name)
+                                             .collect(Collectors.toList()));
+
+        // TODO JPA doesn't allow querying by IdClass. This would need to be interpreted as (c.name=?1 AND c.state=?2)
+        // The current error is confusing: You have attempted to set a value of type class test.jakarta.data.jpa.web.CityId
+        // for parameter 1 with expected type of class java.lang.String from query string SELECT o FROM City o WHERE (o.state=?1)
+        //cities.findById(CityId.of("Rochester", "Minnesota"));
+
+        cities.deleteByStateNameIn(Set.of("Illinois", "Kansas", "Massachusetts", "Minnesota", "Missouri", "New York", "Ohio", "Oregon"));
     }
 
     /**
