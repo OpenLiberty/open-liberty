@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -48,6 +48,8 @@ public class DualServerDynamicTestBase extends FATServletClient {
     public static LibertyServer server1;
     public static LibertyServer server2;
 
+    protected LibertyServer[] serversUsedInTest;
+
     public static String servletName;
     public static String cloud1RecoveryIdentity;
 
@@ -86,7 +88,7 @@ public class DualServerDynamicTestBase extends FATServletClient {
 
         try {
             // We expect this to fail since it is gonna crash the server
-            runTestWithResponse(server1, servletName, "setupRec" + id);
+            runTest(server1, servletName, "setupRec" + id);
         } catch (IOException e) {
         }
 

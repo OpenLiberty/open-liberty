@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -52,19 +52,28 @@ public final class CRIUSupport {
 	}
 
 	/**
-	 * Queries if CRIU support is enabled.
+	 * Queries if CRIU support is enabled and j9criu29 library has been loaded.
 	 *
-	 * @return TRUE is support is enabled, FALSE otherwise
+	 * @return TRUE if support is enabled and the library is loaded, FALSE otherwise
 	 */
-	public synchronized static boolean isCRIUSupportEnabled() {
-		return false;
+	public static boolean isCRIUSupportEnabled() {
+		return true;
+	}
+
+	/**
+	 * Queries if CRIU Checkpoint is allowed.
+	 *
+	 * @return true if Checkpoint is allowed, otherwise false
+	 */
+	public static boolean isCheckpointAllowed() {
+		return true;
 	}
 
 	/**
 	 * Returns an error message describing why isCRIUSupportEnabled()
 	 * returns false, and what can be done to remediate the issue.
 	 *
-	 * @return NULL if isCRIUSupportEnabled() returns true. Otherwise the error message
+	 * @return NULL if isCRIUSupportEnabled() returns true and nativeLoaded is true as well, otherwise the error message.
 	 */
 	public static String getErrorMessage() {
 		return null;
@@ -246,7 +255,7 @@ public final class CRIUSupport {
 	}
 
 	/**
-	 * User hook that is run before checkpointing the JVM.
+	 * User hook that is run after restoring a checkpoint image.
 	 *
 	 * Hooks will be run in single threaded mode, no other application threads
 	 * will be active. Users should avoid synchronization of objects that are not owned
@@ -262,12 +271,8 @@ public final class CRIUSupport {
 		return this;
 	}
 
-	public CRIUSupport registerPreSnapshotHook(Runnable hook) {
-		return this;
-	}
-
 	/**
-	 * User hook that is run after restoring a checkpoint image.
+	 * User hook that is run before checkpointing the JVM.
 	 *
 	 * Hooks will be run in single threaded mode, no other application threads
 	 * will be active. Users should avoid synchronization of objects that are not owned
@@ -288,12 +293,14 @@ public final class CRIUSupport {
 	 * options setters.
 	 *
 	 * @throws UnsupportedOperationException if CRIU is not supported
+	 *  or running in non-portable mode (only one checkpoint is allowed),
+	 *  and we have already checkpointed once.
 	 * @throws JVMCheckpointException        if a JVM error occurred before
 	 *                                       checkpoint
 	 * @throws SystemCheckpointException     if a CRIU operation failed
-	 * @throws RestoreException              if an error occurred during or after
+	 * @throws JVMRestoreException           if an error occurred during or after
 	 *                                       restore
 	 */
-	public void checkpointJVM() {
+	public synchronized void checkpointJVM() {
 	}
 }
