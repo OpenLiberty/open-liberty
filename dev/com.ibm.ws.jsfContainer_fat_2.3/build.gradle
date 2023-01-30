@@ -57,8 +57,8 @@ dependencies {
     myfaces30 'org.apache.myfaces.core:myfaces-api:3.0.1',
       'org.apache.myfaces.core:myfaces-impl:3.0.1'
     mojarra40 'org.glassfish:jakarta.faces:4.0.0'
-    myfaces40 'org.apache.myfaces.core:myfaces-api:4.0.0-RC3',
-      'org.apache.myfaces.core:myfaces-impl:4.0.0-RC3'
+    myfaces40 'org.apache.myfaces.core:myfaces-api:4.0.0-RC4',
+      'org.apache.myfaces.core:myfaces-impl:4.0.0-RC4'
     }
 
 task addMojarra(type: Copy) {
