@@ -27,6 +27,7 @@ import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
+@MinimumJavaLevel(javaLevel = 8)
 public class TestJPA30_JavaSourceLevel extends AbstractTestJavaSourceLevel {
     @Server("javaSupportServer_JPA30")
     public static LibertyServer server_jss_jpa30;
