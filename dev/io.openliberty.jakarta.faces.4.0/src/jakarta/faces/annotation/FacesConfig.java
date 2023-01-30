@@ -52,7 +52,7 @@ public @interface FacesConfig
         @Override
         public Version version()
         {
-            return null; // non binding, so not used
+            return Version.JSF_2_3;
         }
     }
 }
