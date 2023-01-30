@@ -17,14 +17,19 @@
         <feature>componenttest-1.0</feature>
         <feature>checkpoint-1.0</feature>
         <feature>bells-1.0</feature>
+        <feature>user.feature.checkpoint.bells-1.0</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
     
-    <library id="app1" name="app1" 
-             description="app1">
-        <fileset dir="${server.output.dir}/sharedLib" includes="app1.jar" />
+    <library id="bells" name="bells" 
+             description="bells">
+        <fileset dir="${server.output.dir}/sharedLib" includes="bells.jar" />
     </library>
 
-    <bell libraryRef="app1"/>
+    <bell libraryRef="bells">
+    	<properties bProp="${bellProp}"/>
+    </bell>
+        
+    <variable name="bellProp" value="orig_val" />
 </server>

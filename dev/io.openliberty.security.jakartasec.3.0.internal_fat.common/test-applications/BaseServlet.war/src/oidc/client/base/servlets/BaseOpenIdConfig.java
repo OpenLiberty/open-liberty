@@ -15,6 +15,7 @@ package oidc.client.base.servlets;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Named;
+import jakarta.security.enterprise.authentication.mechanism.http.openid.DisplayType;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.PromptType;
 
 /**
@@ -162,6 +163,17 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         }
 
         return value;
+    }
+
+    public DisplayType getDisplayExpression() {
+
+        DisplayType value = DisplayType.PAGE;
+        if (config.containsKey(Constants.DISPLAY_EXPRESSION)) {
+            value = getDisplayTypeValue(Constants.DISPLAY_EXPRESSION);
+        }
+
+        return value;
+
     }
 
     public String getCallerNameClaim() {

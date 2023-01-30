@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -340,6 +340,35 @@ public class TestActions {
             return postSubmissionPage;
         } catch (Exception e) {
             throw new TestActionException(thisMethod, "An error occurred while performing form login.", e);
+        }
+    }
+    
+    public Page doConsent(Page consentPage, String selection) throws Exception {
+        String thisMethod = "doConsent";
+        loggingUtils.printMethodName(thisMethod);
+
+        if (consentPage == null) {
+            throw new Exception("Cannot perform consent because the provided page object is null.");
+        }
+        if (!(consentPage instanceof HtmlPage)) {
+            throw new Exception("Cannot perform consent because the provided page object is not a " + HtmlPage.class.getName() + " instance. Page class is: "
+                    + consentPage.getClass().getName());
+        }
+        return doConsent((HtmlPage) consentPage, selection);
+    }
+    
+    public Page doConsent(HtmlPage consentPage, String selection) throws Exception {
+        String thisMethod = "doConsent";
+        loggingUtils.printMethodName(thisMethod);
+        if (consentPage == null) {
+            throw new Exception("Cannot perform consent because the provided page object is null.");
+        }
+        try {
+            Page postSubmissionPage = webFormUtils.getAndSubmitConsentForm(consentPage, selection);
+            loggingUtils.printResponseParts(postSubmissionPage, thisMethod, "Response from consent form submission:");
+            return postSubmissionPage;
+        } catch (Exception e) {
+            throw new TestActionException(thisMethod, "An error occurred while performing consent.", e);
         }
     }
 

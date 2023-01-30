@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,12 +21,14 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
@@ -368,14 +370,14 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
             } else {
                 if (redirectUri.equals(goodRedirectExtraParmsUri)) {
                     testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getRedirectURIGoodWithExtraParms_Logout(rpHttpsBase));
+            } else {
+                if (redirectUri.equals(badRedirectUri)) {
+                    testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getRedirectURIBad_Logout(opHttpsBase));
                 } else {
-                    if (redirectUri.equals(badRedirectUri)) {
-                        testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getRedirectURIBad_Logout(opHttpsBase));
-                    } else {
-                        testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getRedirectURIEmpty_Logout());
-                    }
+                    testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getRedirectURIEmpty_Logout());
                 }
             }
+        }
         }
         if (prompt == null) {
             testPropMap = TestConfigMaps.mergeMaps(testPropMap, TestConfigMaps.getPromptExpressionEmpty());
@@ -497,7 +499,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
 
         String appName = getShortAppName(notifyProvider, idTokenExpiry, accessTokenExpiry, idTokenLifetimeShort, accessTokenLifetimeShort);
         String provider = determineProvider(idTokenLifetimeShort, accessTokenLifetimeShort);
-        genericReAuthn(rpServer, appName, provider, false);
+        genericReAuthn(rpServer, appName, provider, false, PromptLogin);
 
     }
 
@@ -1006,16 +1008,39 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
 
     /**
      * Show that when notify is false and we have the logout redirectURI, we'll use that redirectURI
-     * After landing on that redirect/post logout page, we'll try to access the app again and since the
-     * OP wasen't involved in the logout, the OP's cookie will still exist. The rp will invoke the op and
-     * it will use that cookie to create a new access and id token
+     * This test has that redirect set to the valid end_session value
      *
      * @throws Exception
      */
+    @ExpectedFFDC({ "com.ibm.oauth.core.api.error.oauth20.OAuth20Exception", "io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException" })
     @Test
-    public void BasicLogoutTests_goodRedirectUri_NotifyProviderFalse_PromptNone() throws Exception {
+    public void BasicLogoutTests_goodRedirectUri_NotifyProvierFalse_PromptNone() throws Exception {
 
-        genericGoodRedirectWithoutLogoutTest("GoodRedirectNotifyProviderFalsePromptNoneLogoutServlet", "OP3", null);
+        String provider = "OP3";
+
+        String appName = "GoodRedirectNotifyProviderFalsePromptNoneLogoutServlet";
+        String url = rpHttpsBase + "/" + appName + "/" + baseAppName;
+
+        WebClient webClient = getAndSaveWebClient();
+        rspValues.setIssuer(opHttpsBase + "/oidc/endpoint/" + provider);
+        actions.invokeUrlWithBasicAuth(_testName, webClient, url, Constants.TESTUSER, Constants.TESTUSERPWD);
+
+        // now logged in - wait for token to expire
+        actions.testLogAndSleep(sleepTimeInSeconds);
+
+        invokeAppReturnLogoutPage(webClient, url);
+
+        // even though we validated that we landed on the logout successful page,
+        // make sure that we need to log in again.
+        // since login page cannot be presented with prompt=none,
+        // just check that invoking the app returns the login_required error
+        Page response = invokeApp(webClient, url);
+
+        Expectations expectations = new Expectations();
+        expectations.addUnauthorizedStatusCodeAndMessageForCurrentAction();
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2407E_ERROR_VERIFYING_RESPONSE, "Did not receive an error message stating that the client encountered an error verifying the authentication response."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2414E_CALLBACK_URL_INCLUDES_ERROR_PARAMETER + ".*\\[login_required]", "Did not receive an error message stating that the callback url includes the [login_required] error param."));
+        validationUtils.validateResult(response, expectations);
 
     }
 
@@ -1080,7 +1105,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicLogoutTests_emptyRedirectUri_NotifyProviderFalse() throws Exception {
 
-        genericReAuthn(rpServer, "EmptyRedirectNotifyProviderFalseLogoutServlet", "OP3", false);
+        genericReAuthn(rpServer, "EmptyRedirectNotifyProviderFalseLogoutServlet", "OP3", false, PromptLogin);
 
     }
 

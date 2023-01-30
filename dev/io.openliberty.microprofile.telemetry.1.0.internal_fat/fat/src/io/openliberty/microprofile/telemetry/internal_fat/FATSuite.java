@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal_fat;
 
@@ -33,7 +30,7 @@ import componenttest.annotation.MinimumJavaLevel;
                 TelemetryConfigNullTest.class,
                 TelemetryServiceNameTest.class,
                 TelemetryLoggingExporterTest.class,
+                TelemetryAPITest.class
 })
 
-public class FATSuite {
-}
+public class FATSuite {}

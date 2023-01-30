@@ -401,7 +401,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
         String appName = getShortAppName(tokenAutoRefresh, providerAllowsRefresh, notifyProvider, idTokenExpiry, accessTokenExpiry);
         String provider = determineProvider(providerAllowsRefresh, idTokenExpiry, accessTokenExpiry);
 
-        genericReAuthn(rpServer, appName, provider, providerAllowsRefresh);
+        genericReAuthn(rpServer, appName, provider, providerAllowsRefresh, DoNotPromptLogin);
 
     }
 

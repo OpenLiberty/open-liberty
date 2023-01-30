@@ -18,9 +18,11 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationClaimsDefinitionTests;
+import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationDisplayTests;
 import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationELValuesOverrideTests;
 import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationELValuesOverrideWithoutHttpSessionTests;
 import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationExtraParametersTests;
+import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationPromptTests;
 import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationResponseModeTests;
 import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationScopeTests;
 import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationSigningTests;
@@ -37,6 +39,8 @@ import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationUserInfo
                 ConfigurationResponseModeTests.class,
                 ConfigurationUseNonceTests.class,
                 ConfigurationExtraParametersTests.class,
+                ConfigurationPromptTests.class,
+                ConfigurationDisplayTests.class,
                 // LogoutDefinition tests are handled in a separate FAT project as the test use sleeps to wait for tokens to expire and that causes the tests to take quite some time to run
                 ConfigurationELValuesOverrideTests.class,
                 ConfigurationELValuesOverrideWithoutHttpSessionTests.class,

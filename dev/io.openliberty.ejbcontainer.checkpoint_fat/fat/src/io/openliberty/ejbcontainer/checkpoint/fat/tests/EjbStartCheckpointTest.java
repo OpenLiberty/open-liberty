@@ -15,6 +15,8 @@ package io.openliberty.ejbcontainer.checkpoint.fat.tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -43,6 +45,10 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @RunWith(FATRunner.class)
 public class EjbStartCheckpointTest extends FATServletClient {
     private static final Logger logger = Logger.getLogger(EjbStartCheckpointTest.class.getName());
+
+    private static final List<String> CHECKPOINT_INACTIVE = Collections.emptyList();
+    private static final List<String> CHECKPOINT_DEPLOYMENT = Arrays.asList("--internal-checkpoint-at=deployment");
+    private static final List<String> CHECKPOINT_APPLICATIONS = Arrays.asList("--internal-checkpoint-at=applications");
 
     private static final String MSG_INIT_ON_START = "will be initialized at Application start";
     private static final String MSG_DEFERRED_INIT = "will be deferred until it is first used";
@@ -79,7 +85,7 @@ public class EjbStartCheckpointTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("EjbStartCheckpointMockServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("EjbStartCheckpointMockServer")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("EjbStartCheckpointMockServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("EjbStartCheckpointMockServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("EjbStartCheckpointMockServer")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("EjbStartCheckpointMockServer")).andWith(FeatureReplacementAction.EE10_FEATURES().forServers("EjbStartCheckpointMockServer"));
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -107,6 +113,20 @@ public class EjbStartCheckpointTest extends FATServletClient {
     @AfterClass
     public static void afterClass() throws Exception {
         //server.stopServer();
+    }
+
+    @Test
+    public void testEjbStartCheckpointInactive() throws Exception {
+        setCheckpointPhase(CheckpointPhase.INACTIVE);
+        try {
+            server.startServer();
+            assert_12_BeanMetaDataInitilzedAtStart();
+            runTest(server, "CheckpointWeb/EjbStartCheckpointServlet", getTestMethodSimpleName());
+        } finally {
+            if (server.isStarted()) {
+                server.stopServer();
+            }
+        }
     }
 
     @Test
@@ -139,7 +159,19 @@ public class EjbStartCheckpointTest extends FATServletClient {
 
     private void setCheckpointPhase(CheckpointPhase phase) throws Exception {
         Map<String, String> jvmOptions = server.getJvmOptionsAsMap();
-        jvmOptions.put("-Dio.openliberty.ejb.checkpoint.phase", phase.name());
+        switch (phase) {
+            case DEPLOYMENT:
+                jvmOptions.put("-Dio.openliberty.checkpoint.stub.criu", "true");
+                server.setExtraArgs(CHECKPOINT_DEPLOYMENT);
+                break;
+            case APPLICATIONS:
+                jvmOptions.put("-Dio.openliberty.checkpoint.stub.criu", "true");
+                server.setExtraArgs(CHECKPOINT_APPLICATIONS);
+                break;
+            default:
+                jvmOptions.remove("-Dio.openliberty.checkpoint.stub.criu");
+                server.setExtraArgs(CHECKPOINT_INACTIVE);
+        }
         server.setJvmOptions(jvmOptions);
     }
 

@@ -11,4 +11,4 @@
  *     IBM Corporation - initial API and implementation
  */
 document.getElementById("helloMessage").innerHTML = "Hello ";
-document.getElementById("thanksMessage").innerHTML = "Thanks for providing the required information. Now we know that your favorite animal is: ";	
+document.getElementById("thanksMessage").innerHTML = "Thanks for providing the required information. Now we know that your favorite animal is: ";
