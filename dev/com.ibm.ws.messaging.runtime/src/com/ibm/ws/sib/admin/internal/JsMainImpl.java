@@ -20,8 +20,11 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -70,12 +73,11 @@ public final class JsMainImpl implements JsMain, Singleton {
                                                             JsConstants.TRGRP_AS, JsConstants.MSG_BUNDLE);
 
     private static final TraceNLS nls = TraceNLS.getTraceNLS("com.ibm.ws.sib.admin.internal.CWSIDText");
-    protected JsMEConfig meConfig = null;
+    private JsMEConfig meConfig = null;
     JsBusImpl bus = null;
-    String defaultMEUUID = "DefaultMEUUID";
     ArrayList services;
     BundleContext bContext;
-    ServiceRegistration<MessagingEngineMBean> mbeanServiceReg;
+    ServiceRegistration<?> mbeanServiceReg;
     private final RuntimeSecurityService runtimeSecurityService;
 
     /**
@@ -90,8 +92,8 @@ public final class JsMainImpl implements JsMain, Singleton {
     // Flag: Is the WAS server stopping?
     private boolean _serverStopping = false;
 
-    // The messaging engine instances configured in the process
-    protected Hashtable _messagingEngines = new Hashtable();
+    // The messaging engine instance configured in this process
+    private final AtomicReference<JsMessagingEngineImpl> messagingEngineRef = new AtomicReference<>();
 
     class ComponentList {
 
@@ -115,30 +117,6 @@ public final class JsMainImpl implements JsMain, Singleton {
         }
     }
 
-    // Object to represent a Messaging Engine process component
-    protected class MessagingEngine {
-
-        private JsMEConfig _meConfig = null;
-        private JsMessagingEngine _me = null;
-
-        MessagingEngine(JsMEConfig meConfig, JsMessagingEngine me) {
-            _meConfig = meConfig;
-            _me = me;
-        }
-
-        JsMEConfig getConfig() {
-            return _meConfig;
-        }
-
-        void setConfig(JsMEConfig newConfig) {
-            _meConfig = newConfig;
-        }
-
-        public JsMessagingEngine getRuntime() {
-            return _me;
-        }
-    }
-
     @Activate
     public JsMainImpl(BundleContext bContext, @Reference RuntimeSecurityService runtimeSecurityService) throws IllegalStateException {
         String methodName = "<init>";
@@ -153,46 +131,33 @@ public final class JsMainImpl implements JsMain, Singleton {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.ibm.wsspi.runtime.component.WsComponent#initialize(java.lang.Object)
-     */
     @Override
     public void initialize(JsMEConfig config) throws Exception {
 
-        String thisMethodName = CLASS_NAME + ".initialize(Object)";
+        String methodName = "initialize";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, "");
+            SibTr.entry(this, tc, methodName, "");
         }
 
         meConfig = config;
-        createMessageEngine(meConfig);
-
-        // Initialize the ME's we created
-        Enumeration meEnum = _messagingEngines.elements();
-        while (meEnum.hasMoreElements()) {
-            Object o = meEnum.nextElement();
-            Object c = ((MessagingEngine) o).getRuntime();
-            if (c instanceof BaseMessagingEngineImpl) {
-                try {
-                    ((BaseMessagingEngineImpl) c).initialize(null);
-                    setAttributes((BaseMessagingEngineImpl) c);
-                } catch (Exception e) {
-                    FFDCFilter.processException(e, thisMethodName,
-                                                "1:656:1.108", this);
-                    SibTr.exception(tc, e);
-                    SibTr.error(tc, "INTERNAL_ERROR_SIAS0003", e);
-                    SibTr.error(tc, "ME_ERROR_REPORTED_SIAS0029",
-                                ((BaseMessagingEngineImpl) c).getName());
-                }
-            }
-        }
-
+		
+		bus = new JsBusImpl(meConfig, this, (meConfig.getSIBus().getName()));
+		JsMessagingEngineImpl engineImpl = new JsMessagingEngineImpl(this, bus, meConfig);		
+		messagingEngineRef.set(engineImpl);
+        
+		try {
+			engineImpl.initialize(null);
+			engineImpl.setConfig(engineImpl);
+		} catch (Exception e) {
+			FFDCFilter.processException(e, methodName, "1:656:1.108", this);
+			SibTr.exception(tc, e);
+			SibTr.error(tc, "INTERNAL_ERROR_SIAS0003", e);
+			SibTr.error(tc, "ME_ERROR_REPORTED_SIAS0029", engineImpl.getName());
+		}
+   
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
+            SibTr.exit(this, tc, methodName, engineImpl);
         }
     }
 
@@ -204,224 +169,134 @@ public final class JsMainImpl implements JsMain, Singleton {
     @Override
     public void start() throws Exception {
 
-        String thisMethodName = CLASS_NAME + ".start()";
+        String methodName = "start";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            // SibTr.entry(tc, thisMethodName);
+            SibTr.entry(this, tc, methodName);
         }
 
-        Enumeration meEnum = _messagingEngines.elements();
+		Optional.ofNullable(messagingEngineRef.get()).ifPresent(me -> {
+			try {
 
-        while (meEnum.hasMoreElements()) {
-            Object o = meEnum.nextElement();
-            Object c = ((MessagingEngine) o).getRuntime();
-            try {
+				me.startConditional();
+				Dictionary<String, Object> properties = new Hashtable<>();
+				properties.put("service.vendor", "IBM");
+				properties.put("jmx.objectname", "WebSphere:feature=wasJmsServer,type=MessagingEngine,name="+me._name);
+				mbeanServiceReg = this.bContext.registerService(MessagingEngineMBean.class.getName(), me, properties);
 
-                ((BaseMessagingEngineImpl) c).startConditional();
-                Dictionary<String, Object> properties = new Hashtable<String, Object>();
-                properties.put("service.vendor", "IBM");
-                properties.put("jmx.objectname", "WebSphere:feature=wasJmsServer,type=MessagingEngine,name=" + ((BaseMessagingEngineImpl) c)._name);
-                mbeanServiceReg = (ServiceRegistration<MessagingEngineMBean>) this.bContext.registerService(MessagingEngineMBean.class.getName(), c, properties);
-
-            } catch (Exception w) {
-                // Not serious enough to warrant server stop.
-                FFDCFilter.processException(w, thisMethodName, "1:725:1.108",
-                                            this);
-                SibTr.exception(tc, w);
-                SibTr.error(tc, "INTERNAL_ERROR_SIAS0003", w);
-            }
-        }
+			} catch (Exception w) {
+				// Not serious enough to warrant server stop.
+				FFDCFilter.processException(w, methodName, "1:725:1.108", this);
+				SibTr.exception(this, tc, w);
+				SibTr.error(tc, "INTERNAL_ERROR_SIAS0003", w);
+			}
+		});
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
+            SibTr.exit(this, tc, methodName);
         }
     }
 
     public void serverStarted() {
 
-        String thisMethodName = CLASS_NAME + ".serverStarted()";
+        String methodName = "serverStarted";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            // SibTr.entry(tc, thisMethodName);
+            SibTr.entry(this, tc, methodName);
         }
 
-        _serverStarted = true;
+		_serverStarted = true;
 
-        Enumeration meEnum = _messagingEngines.elements();
+		Optional.ofNullable(messagingEngineRef.get()).ifPresent(me -> {
+			try {
+				me.serverStarted();
+			} catch (Exception e) {
+				FFDCFilter.processException(e, methodName, "1:772:1.108", this);
+				SibTr.exception(this, tc, e);
+				SibTr.error(tc, "INTERNAL_ERROR_SIAS0003", e);
+				SibTr.error(tc, "ME_ERROR_REPORTED_SIAS0029", me.getName());
+			}
+		});
 
-        // Call each ME on this server. Any exceptions are caught and
-        // deliberately
-        // not
-        // thrown as the failure of one ME must not affect any others that might
-        // exist.
-        while (meEnum.hasMoreElements()) {
-            Object o = meEnum.nextElement();
-            Object c = ((MessagingEngine) o).getRuntime();
-            if (c instanceof BaseMessagingEngineImpl) {
-                try {
-                    ((BaseMessagingEngineImpl) c).serverStarted();
-                } catch (Exception e) {
-                    FFDCFilter.processException(e, thisMethodName,
-                                                "1:772:1.108", this);
-                    SibTr.exception(tc, e);
-                    SibTr.error(tc, "INTERNAL_ERROR_SIAS0003", e);
-                    SibTr.error(tc, "ME_ERROR_REPORTED_SIAS0029",
-                                ((BaseMessagingEngineImpl) c).getName());
-                }
-            }
-        }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
+            SibTr.exit(this, tc, methodName);
         }
     }
 
     public void serverStopping() {
 
-        String thisMethodName = CLASS_NAME + ".serverStopping()";
+        String methodName = "serverStopping";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            // SibTr.entry(tc, thisMethodName);
+            SibTr.entry(this, tc, methodName);
         }
 
         _serverStopping = true;
         _serverStarted = false;
 
-        Enumeration meEnum = _messagingEngines.elements();
-
-        // Call each ME on this server. Any exceptions are caught and
-        // deliberately
-        // not
-        // thrown as the failure of one ME must not affect any others that might
-        // exist.
-        while (meEnum.hasMoreElements()) {
-            Object o = meEnum.nextElement();
-            Object c = ((MessagingEngine) o).getRuntime();
-            if (c instanceof BaseMessagingEngineImpl) {
-                try {
-                    ((BaseMessagingEngineImpl) c).serverStopping();
-                } catch (Exception e) {
-                    FFDCFilter.processException(e, thisMethodName,
-                                                "1:810:1.108", this);
-                    SibTr.exception(tc, e);
-                    SibTr.error(tc, "INTERNAL_ERROR_SIAS0003", e);
-                }
-            }
-        }
+		Optional.ofNullable(messagingEngineRef.get()).ifPresent(me -> {
+			try {
+				me.serverStopping();
+			} catch (Exception e) {
+				FFDCFilter.processException(e, methodName, "1:810:1.108", this);
+				SibTr.exception(this, tc, e);
+				SibTr.error(tc, "INTERNAL_ERROR_SIAS0003", e);
+			}
+		});
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
+            SibTr.exit(this, tc, methodName);
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.ibm.wsspi.runtime.component.WsComponent#stop()
-     */
-    public void stop() {
+   public void stop() {
 
-        String thisMethodName = CLASS_NAME + ".stop()";
+        String methodName = "stop";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            // SibTr.entry(tc, thisMethodName);
+             SibTr.entry(this, tc, methodName);
         }
 
-        // Get the MEs on this server
-        Enumeration meEnum = _messagingEngines.elements();
-
-        // Stop each ME on this server. Any exceptions are caught and
-        // deliberately
-        // not
-        // rethrown as errors in one ME must not affect any others that might
-        // exist.
-        while (meEnum.hasMoreElements()) {
-            Object o = meEnum.nextElement();
-            Object c = ((MessagingEngine) o).getRuntime();
-            try {
-
-                ((BaseMessagingEngineImpl) c)
-                                .stopConditional(JsConstants.ME_STOP_IMMEDIATE);
-            } catch (Exception e) {
-                FFDCFilter.processException(e, thisMethodName, "1:854:1.108",
-                                            this);
-                SibTr.exception(tc, e);
-                SibTr.error(tc, "INTERNAL_ERROR_SIAS0003", e);
-            }
-        }
+		Optional.ofNullable(messagingEngineRef.get()).ifPresent(me -> {
+			try {
+				me.stopConditional(JsConstants.ME_STOP_IMMEDIATE);
+			} catch (Exception e) {
+				FFDCFilter.processException(e, methodName, "1:854:1.108", this);
+				SibTr.exception(this, tc, e);
+				SibTr.error(tc, "INTERNAL_ERROR_SIAS0003", e);
+			}
+		});
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
+            SibTr.exit(tc, methodName);
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.ibm.wsspi.runtime.component.WsComponent#destroy()
-     */
     @Override
     public void destroy() throws Exception {
 
-        String thisMethodName = CLASS_NAME + ".destroy()";
+        String methodName = "destroy";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, "");
+            SibTr.entry(this, tc, methodName);
         }
+        
+		Optional.ofNullable(messagingEngineRef.getAndSet(null)).ifPresent(me -> {
+			try {
+				me.destroy();
+				mbeanServiceReg.unregister();
+			} catch (Exception e) {
+				FFDCFilter.processException(e, methodName, "1:910:1.108", new Object[] {this,me});
+				SibTr.exception(this, tc, e);
+				SibTr.error(tc, "INTERNAL_ERROR_SIAS0003", e);
+			}
+		});
 
-        // Destroy the ME's we created
-        Enumeration meEnum = _messagingEngines.elements();
-
-        // Destroy each ME on this server. Any exceptions are caught and
-        // deliberately not
-        // rethrown as errors in one ME must not affect any others that might
-        // exist.
-        while (meEnum.hasMoreElements()) {
-            Object o = meEnum.nextElement();
-            Object c = ((MessagingEngine) o).getRuntime();
-            if (c instanceof BaseMessagingEngineImpl) {
-                try {
-                    ((BaseMessagingEngineImpl) c).destroy();
-                    mbeanServiceReg.unregister();
-                } catch (Exception e) {
-                    FFDCFilter.processException(e, thisMethodName,
-                                                "1:910:1.108", this);
-                    SibTr.exception(tc, e);
-                    SibTr.error(tc, "INTERNAL_ERROR_SIAS0003", e);
-                }
-            }
-        }
-        _messagingEngines = null;
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
+            SibTr.exit(this, tc, methodName);
         }
-    }
-
-    /**
-     * Create a single Message Engine admin object using suppled config object.
-     */
-    private MessagingEngine createMessageEngine(JsMEConfig me) throws Exception {
-
-        String thisMethodName = CLASS_NAME + ".createMessageEngine(JsMEConfig)";
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, "replace ME name here");
-        }
-
-        JsMessagingEngine engineImpl = null;
-
-        bus = new JsBusImpl(me, this, (me.getSIBus().getName()));// getBusProxy(me);
-        engineImpl = new JsMessagingEngineImpl(this, bus, me);
-
-        MessagingEngine engine = new MessagingEngine(me, engineImpl);
-        _messagingEngines.put(defaultMEUUID, engine);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName, engine.toString());
-        }
-
-        return engine;
     }
 
     /**
@@ -435,14 +310,14 @@ public final class JsMainImpl implements JsMain, Singleton {
      */
     private JsBusImpl getBusProxy(JsMEConfig me) {
 
-        String thisMethodName = CLASS_NAME + ".getBusProxy(ConfigObject)";
+        String methodName = "getBusProxy(ConfigObject)";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, "ME Name");
+            SibTr.entry(tc, methodName, "ME Name");
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
+            SibTr.exit(tc, methodName);
         }
 
         return this.bus;
@@ -459,14 +334,14 @@ public final class JsMainImpl implements JsMain, Singleton {
      */
     private JsBusImpl getBusProxy(String name) throws SIBExceptionBusNotFound {
 
-        String thisMethodName = CLASS_NAME + ".getBusProxy(String)";
+        String methodName = "getBusProxy(String)";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, name);
+            SibTr.entry(tc, methodName, name);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
+            SibTr.exit(tc, methodName);
         }
 
         return this.bus;
@@ -481,14 +356,14 @@ public final class JsMainImpl implements JsMain, Singleton {
      */
     public JsBus getBus(String busName) throws SIBExceptionBusNotFound {
 
-        String thisMethodName = CLASS_NAME + ".getBus(String)";
+        String methodName = "getBus(String)";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, busName);
+            SibTr.entry(tc, methodName, busName);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
+            SibTr.exit(tc, methodName);
         }
 
         return this.bus;
@@ -496,260 +371,104 @@ public final class JsMainImpl implements JsMain, Singleton {
 
     public JsBus getDefinedBus(final String busName)
                     throws SIBExceptionBusNotFound {
-        String thisMethodName = "getDefinedBus";
+        String methodName = "getDefinedBus";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, busName);
+            SibTr.entry(this, tc, methodName, busName);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
+            SibTr.exit(this, tc, methodName);
         }
 
         return this.bus;
     }
 
-    /**
-     * Return a reference to the instance of the named class.
-     * 
-     * @param className
-     * @return JsProcessComponent
-     */
-    /*
-     * public JsProcessComponent getProcessComponent(String className) {
-     * 
-     * String thisMethodName = CLASS_NAME + ".getProcessComponent(String)";
-     * 
-     * if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-     * SibTr.entry(tc, thisMethodName, className); }
-     * 
-     * Enumeration<ComponentList> vEnum = _processComponents.elements();
-     * JsProcessComponent foundProcessComponent = null;
-     * 
-     * while (vEnum.hasMoreElements() && foundProcessComponent == null) {
-     * 
-     * ComponentList c = vEnum.nextElement();
-     * 
-     * if (c.getClassName().equals(className)) { foundProcessComponent =
-     * c.getRef(); } }
-     * 
-     * if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-     * SibTr.exit(tc, thisMethodName); }
-     * 
-     * return foundProcessComponent; }
-     */
-
-    /**
-     * Get an instance of a messaging engine
-     * 
-     * @param name
-     * @return JsMessagingEngineImpl
-     */
-    public JsMessagingEngineImpl getMessagingEngine(String name) {
-
-        String thisMethodName = CLASS_NAME + ".getMessagingEngine(String)";
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, name);
-        }
-
-        Enumeration vEnum = _messagingEngines.elements();
-        JsMessagingEngineImpl foundMessagingEngine = null;
-
-        while (vEnum.hasMoreElements() && foundMessagingEngine == null) {
-
-            //Liberty COMMs change
-            //In Liberty only one Messaging Engine and connection fctory properties
-            //cannot specify Target name.
-            //Hence changing the logic to not to compare.
-
-            Object o = vEnum.nextElement();
-            Object c = ((MessagingEngine) o).getRuntime();
-
-            foundMessagingEngine = (JsMessagingEngineImpl) c;
-
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
-        }
-
-        return foundMessagingEngine;
-    }
-
-    /**
-     * Get an instance of a messaging engine
-     * 
-     * @param busName
-     * @param engine
-     * @return JsMessagingEngine
-     */
     public JsMessagingEngine getMessagingEngine(String busName, String engine) {
 
-        String thisMethodName = CLASS_NAME
-                                + ".getMessagingEngine(String, String)";
+        String methodName = "getMessagingEngine";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, new Object[] { busName, engine });
+            SibTr.entry(this, tc, methodName, new Object[] { busName, engine });
         }
 
         AuditManager auditManager = new AuditManager();
         auditManager.setJMSBusName(busName);
         auditManager.setJMSMessagingEngine(engine);
 
-        Enumeration vEnum = _messagingEngines.elements();
-        JsMessagingEngine foundMessagingEngine = null;
-
-        while (vEnum.hasMoreElements() && foundMessagingEngine == null) {
-
-            //Liberty COMMs change
-            //In Liberty only one Messaging Engine and connection fctory properties
-            //cannot specify Target name.
-            //Hence changing the logic to not to compare.
-
-            Object o = vEnum.nextElement();
-            Object c = ((MessagingEngine) o).getRuntime();
-
-            foundMessagingEngine = (JsMessagingEngine) c;
-            break;
-        }
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
+            SibTr.exit(this, tc, methodName);
         }
 
-        return foundMessagingEngine;
+        return messagingEngineRef.get();
     }
 
-    /**
-     * Return a list of Messaging Engines
-     * 
-     * @return Enumeration
-     */
     public Enumeration listMessagingEngines() {
 
-        String thisMethodName = CLASS_NAME + ".listMessagingEngines()";
+        String methodName = "listMessagingEngines";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, this);
+            SibTr.entry(this, tc, methodName, this);
         }
 
-        Vector v = new Vector();
-
-        Enumeration vEnum = _messagingEngines.elements();
-        while (vEnum.hasMoreElements()) {
-            Object o = vEnum.nextElement();
-            Object c = ((MessagingEngine) o).getRuntime();
-            if (c instanceof BaseMessagingEngineImpl)
-                v.addElement(c);
-        }
-
-        Enumeration elements = v.elements();
+        Vector<JsMessagingEngine> v = new Vector();
+        Optional.ofNullable(messagingEngineRef.get()).ifPresent(v::add);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
+            SibTr.exit(this, tc, methodName);
         }
 
-        return elements;
+        return v.elements();
     }
 
-    /**
-     * Return a list of Messaging Engines
-     * 
-     * @param busName
-     * @return Enumeration
-     */
     public Enumeration listMessagingEngines(String busName) {
 
-        String thisMethodName = CLASS_NAME + ".listMessagingEngines(String)";
+        String methodName = "listMessagingEngines";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, busName);
+            SibTr.entry(this, tc, methodName, busName);
         }
 
-        Vector v = new Vector();
-
-        Enumeration e = listMessagingEngines();
-        while (e.hasMoreElements()) {
-            Object c = e.nextElement();
-            if (((BaseMessagingEngineImpl) c).getBusName().equals(busName))
-                v.addElement(c);
-        }
-
-        Enumeration elements = v.elements();
+        Vector<JsMessagingEngine> v = new Vector();
+        Optional.ofNullable(messagingEngineRef.get())
+                .filter(me -> Objects.equals(me.getBusName(), busName))
+        		.ifPresent(v::add);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
+            SibTr.exit(this, tc, methodName);
         }
 
-        return elements;
+        return v.elements();
     }
 
-    /**
-     * Returns the set of messaging engines on the named bus.
-     * 
-     * @param busName
-     * @return the set of messaging engines on the named bus.
-     */
     public Set getMessagingEngineSet(String busName) {
 
-        String thisMethodName = CLASS_NAME + ".getMessagingEngineSet(String)";
+        String methodName = "getMessagingEngineSet";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, busName);
+            SibTr.entry(tc, methodName, busName);
         }
         Set retSet = new HashSet();
         if (meConfig != null) {
             String meName = meConfig.getMessagingEngine().getName();
-            BaseMessagingEngineImpl engineImpl = getMessagingEngine(meName);
+            BaseMessagingEngineImpl engineImpl = messagingEngineRef.get();
             retSet.add(engineImpl.getUuid().toString());
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Integer i = new Integer(retSet.size());
-            SibTr.exit(tc, thisMethodName, i.toString());
+            SibTr.exit(tc, methodName, i.toString());
         }
 
         return retSet;
     }
 
     public String getLibertyMEUuid() {
-        JsMessagingEngineImpl engineImpl = getMessagingEngine(meConfig.getMessagingEngine().getName());
+        JsMessagingEngineImpl engineImpl = messagingEngineRef.get();
         return engineImpl.getUuid();
     }
 
-    /**
-     * Return a readable string of messaging engines in the process
-     * 
-     * @return String[]
-     */
-    public String[] showMessagingEngines() {
-
-        String thisMethodName = CLASS_NAME + ".showMessagingEngines()";
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, this);
-        }
-
-        final String[] list = new String[_messagingEngines.size()];
-        Enumeration e = listMessagingEngines();
-        int i = 0;
-        while (e.hasMoreElements()) {
-
-            Object c = e.nextElement();
-            list[i++] = ((BaseMessagingEngineImpl) c).getBusName() + ":"
-                        + ((BaseMessagingEngineImpl) c).getName() + ":"
-                        + ((BaseMessagingEngineImpl) c).getState();
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
-        }
-
-        return list;
-    }
-
-    /**
+   /**
      * Start a messaging engine
      * 
      * @param busName
@@ -758,15 +477,14 @@ public final class JsMainImpl implements JsMain, Singleton {
     public void startMessagingEngine(String busName, String name)
                     throws Exception {
 
-        String thisMethodName = CLASS_NAME
+        String methodName = CLASS_NAME
                                 + ".startMessagingEngine(String, String)";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, new Object[] { busName, name });
+            SibTr.entry(tc, methodName, new Object[] { busName, name });
         }
 
-        BaseMessagingEngineImpl me = (BaseMessagingEngineImpl) getMessagingEngine(
-                                                                                  busName, name);
+        BaseMessagingEngineImpl me = (BaseMessagingEngineImpl) getMessagingEngine(busName, name);
         if (me != null) {
             me.startConditional();
         } else {
@@ -778,7 +496,7 @@ public final class JsMainImpl implements JsMain, Singleton {
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
+            SibTr.exit(tc, methodName);
         }
     }
 
@@ -791,17 +509,17 @@ public final class JsMainImpl implements JsMain, Singleton {
     public void stopMessagingEngine(String busName, String name)
                     throws Exception {
 
-        String thisMethodName = CLASS_NAME
+        String methodName = CLASS_NAME
                                 + ".stopMessagingEngine(String, String)";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, new Object[] { busName, name });
+            SibTr.entry(tc, methodName, new Object[] { busName, name });
         }
 
         stopMessagingEngine(busName, name, JsConstants.ME_STOP_IMMEDIATE);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
+            SibTr.exit(tc, methodName);
         }
     }
 
@@ -815,11 +533,11 @@ public final class JsMainImpl implements JsMain, Singleton {
     public void stopMessagingEngine(String busName, String name, String mode)
                     throws Exception {
 
-        String thisMethodName = CLASS_NAME
+        String methodName = CLASS_NAME
                                 + ".stopMessagingEngine(String, String, String)";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName,
+            SibTr.entry(tc, methodName,
                         new Object[] { busName, name, mode });
         }
 
@@ -827,7 +545,7 @@ public final class JsMainImpl implements JsMain, Singleton {
         stopMessagingEngine(busName, name, iMode);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
+            SibTr.exit(tc, methodName);
         }
     }
 
@@ -841,11 +559,11 @@ public final class JsMainImpl implements JsMain, Singleton {
     private void stopMessagingEngine(String busName, String name, int mode)
                     throws Exception {
 
-        String thisMethodName = CLASS_NAME
+        String methodName = CLASS_NAME
                                 + ".stopMessagingEngine(String, String, int)";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, new Object[] { busName, name,
+            SibTr.entry(tc, methodName, new Object[] { busName, name,
                                                           Integer.toString(mode) });
         }
 
@@ -862,27 +580,7 @@ public final class JsMainImpl implements JsMain, Singleton {
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
-        }
-    }
-
-    /**
-     * @param c
-     */
-    protected void setAttributes(BaseMessagingEngineImpl c) {
-
-        String thisMethodName = CLASS_NAME
-                                + ".setAttributes(BaseMessagingEngineImpl)";
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, new Object[] { c.getBusName(),
-                                                          c.getName() });
-        }
-
-        ((JsEngineComponent) c).setConfig(c);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
+            SibTr.exit(tc, methodName);
         }
     }
 
@@ -891,14 +589,14 @@ public final class JsMainImpl implements JsMain, Singleton {
      */
     public JsProcessComponent getProcessComponent(String className) {
 
-        String thisMethodName = CLASS_NAME + ".getProcessComponent(String)";
+        String methodName = "getProcessComponent(String)";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, className);
+            SibTr.entry(tc, methodName, className);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
+            SibTr.exit(tc, methodName);
         }
 
         return null;
@@ -911,14 +609,14 @@ public final class JsMainImpl implements JsMain, Singleton {
      */
     public boolean isServerStarted() {
 
-        String thisMethodName = CLASS_NAME + ".isServerStarted()";
+        String methodName = "isServerStarted()";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, this);
+            SibTr.entry(tc, methodName, this);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName, new Boolean(_serverStarted));
+            SibTr.exit(tc, methodName, new Boolean(_serverStarted));
         }
 
         return _serverStarted;
@@ -931,14 +629,14 @@ public final class JsMainImpl implements JsMain, Singleton {
      */
     public boolean isServerStopping() {
 
-        String thisMethodName = CLASS_NAME + ".isServerStopping()";
+        String methodName = "isServerStopping()";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, this);
+            SibTr.entry(tc, methodName, this);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName, new Boolean(_serverStopping));
+            SibTr.exit(tc, methodName, new Boolean(_serverStopping));
         }
 
         return _serverStopping;
@@ -951,14 +649,14 @@ public final class JsMainImpl implements JsMain, Singleton {
      * 
      * public StatsGroup getSibServiceStatsGroup() {
      * 
-     * String thisMethodName = CLASS_NAME + ".getSibServiceStatsGroup()";
+     * String methodName = "getSibServiceStatsGroup()";
      * 
      * if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-     * SibTr.entry(tc, thisMethodName, this);
+     * SibTr.entry(tc, methodName, this);
      * }
      * 
      * if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-     * SibTr.exit(tc, thisMethodName);
+     * SibTr.exit(tc, methodName);
      * }
      * 
      * return _sibServiceStatsGroup;
@@ -972,14 +670,14 @@ public final class JsMainImpl implements JsMain, Singleton {
      */
     // public StatsGroup getSibEnginesStatsGroup() {
     //
-    // String thisMethodName = CLASS_NAME + ".getSibEnginesStatsGroup()";
+    // String methodName = "getSibEnginesStatsGroup()";
     //
     // if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-    // SibTr.entry(tc, thisMethodName, this);
+    // SibTr.entry(tc, methodName, this);
     // }
     //
     // if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-    // SibTr.exit(tc, thisMethodName);
+    // SibTr.exit(tc, methodName);
     // }
     //
     // return _meStatsGroup;
@@ -988,37 +686,19 @@ public final class JsMainImpl implements JsMain, Singleton {
     // 250606.3 recovery mode support
     public boolean isServerInRecoveryMode() {
 
-        String thisMethodName = CLASS_NAME + ".isServerInRecoveryMode()";
+        String methodName = "isServerInRecoveryMode()";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, this);
+            SibTr.entry(tc, methodName, this);
         }
 
         boolean ret = false;// (_serverMode == Server.RECOVERY_MODE); TBD
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName, new Boolean(ret));
+            SibTr.exit(tc, methodName, new Boolean(ret));
         }
 
         return ret;
-    }
-
-    /*
-     * This method will return null for liberty
-     */
-    public Object getService(Class c) {
-
-        String thisMethodName = CLASS_NAME + ".getService(Class)";
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.entry(tc, thisMethodName, this);
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            SibTr.exit(tc, thisMethodName);
-        }
-
-        return null;
     }
 
     /**
@@ -1048,7 +728,7 @@ public final class JsMainImpl implements JsMain, Singleton {
                     throws Exception {
         SibTr.entry(tc, "alterDestinationLocalization : ", config);
         String meName = meConfig.getMessagingEngine().getName();
-        BaseMessagingEngineImpl engine = getMessagingEngine(meName);
+        BaseMessagingEngineImpl engine = messagingEngineRef.get();
         SIBLocalizationPoint lpConfig = new SIBLocalizationPointImpl();
         lpConfig.setIdentifier(config.getName() + "@" + meName);
         if (!config.isAlias()) {
@@ -1073,7 +753,7 @@ public final class JsMainImpl implements JsMain, Singleton {
             BaseDestinationDefinition dd = dCache.addNewDestinationToCache(config);
 
             if (!config.isAlias()) {
-                BaseMessagingEngineImpl engine = getMessagingEngine(meName);
+                BaseMessagingEngineImpl engine = messagingEngineRef.get();
                 SIBLocalizationPoint lpConfig = new SIBLocalizationPointImpl();
                 lpConfig.setIdentifier(config.getName() + "@" + meName);
                 SIBDestination d = (SIBDestination) config;
@@ -1097,7 +777,7 @@ public final class JsMainImpl implements JsMain, Singleton {
                     throws Exception {
         SibTr.entry(tc, "deleteDestinationLocalization ", config.getName());
         try {
-            JsMessagingEngineImpl me = getMessagingEngine(meConfig.getMessagingEngine().getName());
+            JsMessagingEngineImpl me = messagingEngineRef.get();
             me.deleteLocalizationPoint(bus, config);
             JsDestinationCache cache = bus.getDestinationCache();
             cache.deleteDestination(bus.getName(), config.getName());
