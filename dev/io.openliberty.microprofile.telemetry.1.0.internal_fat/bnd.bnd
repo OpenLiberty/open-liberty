@@ -37,4 +37,8 @@ tested.features:\
 	io.openliberty.io.opentelemetry.internal;version=latest,\
 	io.openliberty.org.eclipse.microprofile.rest.client.3.0;version=latest,\
 	io.openliberty.jakarta.annotation.2.1;version=latest,\
+<<<<<<< HEAD
 	io.openliberty.jakarta.concurrency.3.0;version=latest
+=======
+	io.openliberty.jakarta.concurrency.3.0;version=latest
+>>>>>>> ef9e337f1f (Add telemetry test for long running app)
