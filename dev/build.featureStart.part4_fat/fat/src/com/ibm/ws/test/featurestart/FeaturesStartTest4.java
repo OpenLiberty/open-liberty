@@ -10,13 +10,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.simple;
+package com.ibm.ws.test.featurestart;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.simple.base.FeaturesStartTestBase;
+import com.ibm.ws.test.featurestart.FeaturesStartTestBase;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -35,26 +35,26 @@ import componenttest.topology.impl.LibertyServer;
  * extra running room before a new split is necessary.
  */
 @RunWith(FATRunner.class)
-public class FeaturesStartTest2 extends FeaturesStartTestBase {
-    public static final String SERVER_NAME_2 = "features.start.2.server";
+public class FeaturesStartTest4 extends FeaturesStartTestBase {
+    public static final String SERVER_NAME_4 = "features.start.4.server";
 
-    @Server(SERVER_NAME_2)
-    public static LibertyServer server2;
+    @Server(SERVER_NAME_4)
+    public static LibertyServer server4;
 
     public static final int NUM_BUCKETS = 4;
-    public static final int BUCKET_NO = 2;
-    public static final int SPARSITY = 0;
+    public static final int BUCKET_NO = 4;
+    public static final int SPARSITY = 1;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        FeaturesStartTestBase.setParameters(FeaturesStartTest2.class,
-                                            server2, SERVER_NAME_2,
+        FeaturesStartTestBase.setParameters(FeaturesStartTest4.class,
+                                            server4, SERVER_NAME_4,
                                             NUM_BUCKETS, BUCKET_NO, SPARSITY);
         FeaturesStartTestBase.setUp();
     }
 
     @Test
-    public void testStartFeaturesPart2() throws Exception {
+    public void testStartFeaturesPart4() throws Exception {
         FeaturesStartTestBase.testStartFeatures();
     }
 }
