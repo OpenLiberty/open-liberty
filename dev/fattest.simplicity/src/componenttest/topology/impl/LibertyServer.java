@@ -3206,8 +3206,6 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    // +++
-
     protected void recursivelyCopyDirectory(RemoteFile remoteFile,
                                             LocalFile logFolder,
                                             boolean ignoreFailures) throws Exception {

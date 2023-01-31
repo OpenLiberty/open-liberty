@@ -1,9 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -17,7 +19,15 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import com.ibm.websphere.simplicity.log.Log;
+
 public class FeatureReports {
+    private static Class<?> c = FeatureReports.class;
+
+    private static void logInfo(String m, String msg) {
+        Log.info(c, m, msg);
+    }
+
     // c:/dev/repos-pub/o-l/dev/build.image/wlp
     // c:/dev/repos-pri/WS-CD-Open/dev/build.image/wlp
 
@@ -58,10 +68,12 @@ public class FeatureReports {
         Function<String, String> featureFilter = (name) -> FeatureFilter.skipFeature(name);
         BiFunction<String, Boolean, String> featureZOSFilter = (name, isZOS) -> FeatureFilter.zosSkip(name, isZOS.booleanValue());
 
+        Map<String, String[]> allowedErrors = FeatureErrors.getAllowedErrors();
+
         System.out.println("Read features for server [ " + serverHome + " ] ... [ " + featureData.size() + " ] features read.");
         System.out.println();
 
-        (new FeatureReports(featureData, stableFeatures, requiredLevels, featureFilter, featureZOSFilter)).display();
+        (new FeatureReports(featureData, stableFeatures, requiredLevels, featureFilter, featureZOSFilter, allowedErrors)).display();
 
         return;
     }
@@ -70,13 +82,15 @@ public class FeatureReports {
                           FeatureStability stableFeatures,
                           Map<String, Integer> requiredLevels,
                           Function<String, String> featureFilter,
-                          BiFunction<String, Boolean, String> featureZOSFilter) {
+                          BiFunction<String, Boolean, String> featureZOSFilter,
+                          Map<String, String[]> allowedErrors) {
 
         this.featureData = featureData;
         this.stableFeatures = stableFeatures;
         this.requiredLevels = requiredLevels;
         this.featureFilter = featureFilter;
         this.featureZOSFilter = featureZOSFilter;
+        this.allowedErrors = allowedErrors;
     }
 
     protected Map<String, FeatureData> featureData;
@@ -102,31 +116,37 @@ public class FeatureReports {
         return featureZOSFilter.apply(name, Boolean.valueOf(isZOS));
     }
 
-    //
+    protected Map<String, String[]> allowedErrors;
 
-    public static final String BIG_BANNER = "========================================";
-
-    public static final String SMALL_BANNER = "----------------------------------------";
-
-    protected void log(String text) {
-        System.out.println(text);
+    public String[] getAllowedErrors(String name) {
+        return allowedErrors.get(name);
     }
 
+    //
+
+    public static final String BIG_BANNER = "========================================" +
+                                            "========================================";
+
+    public static final String SMALL_BANNER = "----------------------------------------" +
+                                              "--------------------";
+
     public void display() {
-        log("Features");
-        log(BIG_BANNER);
+        String m = "display";
+
+        logInfo(m, "Features");
+        logInfo(m, BIG_BANNER);
 
         String[] featureNames = featureData.keySet().toArray(new String[featureData.size()]);
         Arrays.sort(featureNames);
 
         for (int featureNo = 0; featureNo < featureNames.length; featureNo++) {
             if (featureNo != 0) {
-                log(SMALL_BANNER);
+                logInfo(m, SMALL_BANNER);
             }
             display(featureData.get(featureNames[featureNo]));
         }
 
-        log(BIG_BANNER);
+        logInfo(m, BIG_BANNER);
     }
 
     protected char flag(boolean value) {
@@ -138,39 +158,46 @@ public class FeatureReports {
     }
 
     public void display(FeatureData featureData) {
+        String m = "display";
+
         String name = featureData.getName();
 
-        String featureLine1 = String.format("    %20s : %30s", name, featureData.symbolicName);
+        String featureLine1 = String.format("  %-20s : %s", name, featureData.symbolicName);
 
-        String featureLine2 = "      " + flag(featureData.isClientOnly) + "isClient" +
-                              " " + flag(featureData.isPublic) + "isPublic" +
-                              " " + flag(featureData.isTest) + "isTest";
-
-        String featureLine3 = "      " + flag(isStable(name)) + "isStable" +
-                              " " + String.format("java %3s required", flagLevel(getRequiredLevel(name)));
+        String featureLine2 = "  " +
+                              "  " + (flag(featureData.isClientOnly) + "isClient") +
+                              " " + (flag(featureData.isPublic) + "isPublic") +
+                              " " + (flag(featureData.isTest) + "isTest") +
+                              " " + (flag(isStable(name)) + "isStable") +
+                              " " + ("java " + flagLevel(getRequiredLevel(name)));
 
         String filterReason = isFiltered(name);
         String nonzosFilterReason = isZOSFiltered(name, false);
         String zosFilterReason = isZOSFiltered(name, true);
 
-        log(featureLine1);
-        log(featureLine2);
-        log(featureLine3);
+        String[] ignoredErrors = getAllowedErrors(name);
+
+        logInfo(m, featureLine1);
+        logInfo(m, featureLine2);
 
         if (filterReason != null) {
-            String featureLine = "Filtered: " + filterReason;
-            log(featureLine);
+            String featureLine = "  Filtered: " + filterReason;
+            logInfo(m, featureLine);
         }
 
         if (nonzosFilterReason != null) {
-            String featureLine = "Non-ZOS Filtered: " + nonzosFilterReason;
-            log(featureLine);
+            String featureLine = "  Non-ZOS filtered: " + nonzosFilterReason;
+            logInfo(m, featureLine);
         }
 
         if (zosFilterReason != null) {
-            String featureLine = "ZOS Filtered: " + zosFilterReason;
-            log(featureLine);
+            String featureLine = "  ZOS filtered: " + zosFilterReason;
+            logInfo(m, featureLine);
+        }
+
+        if (ignoredErrors != null) {
+            String errorsLine = "  Allowed errors: " + Arrays.toString(ignoredErrors);
+            logInfo(m, errorsLine);
         }
     }
-
 }

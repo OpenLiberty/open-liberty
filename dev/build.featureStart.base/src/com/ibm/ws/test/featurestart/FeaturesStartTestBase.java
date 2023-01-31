@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -33,6 +33,7 @@ import java.util.function.ToLongFunction;
 import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.test.featurestart.features.FeatureData;
+import com.ibm.ws.test.featurestart.features.FeatureErrors;
 import com.ibm.ws.test.featurestart.features.FeatureFilter;
 import com.ibm.ws.test.featurestart.features.FeatureLevels;
 import com.ibm.ws.test.featurestart.features.FeatureReports;
@@ -335,6 +336,8 @@ public class FeaturesStartTestBase {
     //
 
     public static void setUp() throws Exception {
+        String m = "setUp";
+
         featureData = FeatureData.readFeatures(getServerFeaturesDir());
 
         stableFeatures = FeatureStability.readStableFeatures();
@@ -344,14 +347,16 @@ public class FeaturesStartTestBase {
         featureFilter = (name) -> FeatureFilter.skipFeature(name);
         featureZOSFilter = (name) -> FeatureFilter.zosSkip(name, isServerZOS());
 
+        allowedErrors = FeatureErrors.getAllowedErrors();
+
         //
 
         BiFunction<String, Boolean, String> zosFilter = (name, isZOS) -> FeatureFilter.zosSkip(name, isZOS.booleanValue());
 
-        System.out.println("Read [ " + featureData.size() + "] features for server [ " + serverName + " ] at [ " + server.getInstallRoot() + " ]");
-        System.out.println();
+        Log.info(c, m, "Read [ " + featureData.size() + "] features for server [ " + serverName + " ] at [ " + server.getInstallRoot() + " ]");
+        Log.info(c, m, "");
 
-        (new FeatureReports(featureData, stableFeatures, requiredLevels, featureFilter, zosFilter)).display();
+        (new FeatureReports(featureData, stableFeatures, requiredLevels, featureFilter, zosFilter, allowedErrors)).display();
 
         //
 
@@ -517,7 +522,7 @@ public class FeaturesStartTestBase {
 
         if (!clientFeatures.isEmpty()) {
             logInfo(m, "Skip client-only features [ " + clientFeatures.size() + " ]:");
-            display(m, "    ", 80, testFeatures);
+            display(m, "    ", 80, clientFeatures);
         }
 
         if (!nonPublicFeatures.isEmpty()) {
@@ -756,7 +761,7 @@ public class FeaturesStartTestBase {
         if (SPARSITY > 0) {
             logInfo(m, "  Sparsity [ " + SPARSITY + " ]");
         }
-        logInfo(m, "Level filtered features [ " + outOfLevelFeatureNames.size() + " ]");
+        logInfo(m, "Out-of-level features [ " + outOfLevelFeatureNames.size() + " ]");
         banner(m);
 
         int numFeatures = lastFeatureNo - firstFeatureNo;
@@ -812,7 +817,7 @@ public class FeaturesStartTestBase {
                     }
 
                     if (startupResult.attempted) {
-                        if (forceStopServer(nextShortName, startupResult.pid, allowedErrors.get(nextShortName), failures, timingResult)) {
+                        if (forceStopServer(nextShortName, startupResult.pid, getAllowedErrors(nextShortName), failures, timingResult)) {
                             if (!failures.containsKey(nextShortName)) {
                                 successes.add(nextShortName);
                             }
@@ -942,7 +947,7 @@ public class FeaturesStartTestBase {
 
         // The PID may or may not be available:
         // PID retrieval is performed even if 'started' is false, so to handle
-        // the case of an apparently failed startup which left a dangline process.
+        // the case of an apparently failed startup which left a dangling process.
 
         long initialPidNs = timingResult.getTimeNs();
 
