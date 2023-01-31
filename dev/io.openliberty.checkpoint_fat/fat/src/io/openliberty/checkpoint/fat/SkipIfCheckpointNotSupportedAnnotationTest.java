@@ -59,7 +59,9 @@ public class SkipIfCheckpointNotSupportedAnnotationTest extends FATServletClient
             server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, true, false, null));
             ProgramOutput output = server.startServer(getTestMethodNameOnly(testName) + ".log");
             returnCode = output.getReturnCode();
-            assertEquals("Return code 70 expected", 70, returnCode);
+            if (!output.getStdout().contains("Unrecognized VM option")) {
+                assertEquals("Return code 70 expected", 70, returnCode);
+            }
         }
     }
 
