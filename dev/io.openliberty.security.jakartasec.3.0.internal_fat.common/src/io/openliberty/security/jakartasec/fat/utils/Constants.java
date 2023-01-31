@@ -42,6 +42,8 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String LOGOUT_REDIRECT_URI = "logoutRedirectURI";
     public static final String PROMPT = "prompt";
     public static final String PROMPT_EXPRESSION = "promptExpression";
+    public static final String DISPLAY = "display";
+    public static final String DISPLAY_EXPRESSION = "displayExpression";
 
     public static final String CALLER_NAME_CLAIM = "callerNameClaim";
     public static final String CALLER_GROUPS_CLAIM = "callerGroupsClaim";

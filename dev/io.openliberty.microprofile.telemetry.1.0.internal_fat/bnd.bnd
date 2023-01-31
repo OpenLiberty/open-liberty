@@ -36,4 +36,5 @@ tested.features:\
 	com.ibm.ws.componenttest.2.0;version=latest,\
 	io.openliberty.io.opentelemetry.internal;version=latest,\
 	io.openliberty.org.eclipse.microprofile.rest.client.3.0;version=latest,\
-	io.openliberty.jakarta.annotation.2.1;version=latest
+	io.openliberty.jakarta.annotation.2.1;version=latest,\
+	io.openliberty.jakarta.concurrency.3.0;version=latest

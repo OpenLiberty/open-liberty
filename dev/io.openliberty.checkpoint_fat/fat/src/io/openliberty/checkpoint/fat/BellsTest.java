@@ -13,11 +13,15 @@
 package io.openliberty.checkpoint.fat;
 
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Iterator;
 
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -25,11 +29,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.config.Variable;
 
-import app1.TestServletA;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.MicroProfileActions;
@@ -42,15 +46,18 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @SkipIfCheckpointNotSupported
 public class BellsTest extends FATServletClient {
 
-    public static final String APP_NAME = "app1";
+    public static final String APP_NAME = "bells";
 
     public static final String SERVER_NAME = "checkpointBells";
 
     @Server(SERVER_NAME)
-    @TestServlet(servlet = TestServletA.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     public TestMethod testMethod;
+
+    public static final String USER_BUNDLE_NAME = "test.checkpoint.bells.bundle";
+
+    public static final String USER_FEATURE_NAME = "user.feature.checkpoint.bells-1.0";
 
     @ClassRule
     public static RepeatTests repeatTest = MicroProfileActions.repeat(SERVER_NAME, TestMode.FULL,
@@ -60,7 +67,9 @@ public class BellsTest extends FATServletClient {
 
     @BeforeClass
     public static void copyAppToDropins() throws Exception {
-        buildAndExportBellLibrary(server, "app1", "AppInitializer");
+        buildAndExportBellLibrary(server, "bells", "AppInitializer", "TestInterfaceImpl");
+        server.installUserBundle(USER_BUNDLE_NAME);
+        server.installUserFeature(USER_FEATURE_NAME);
         ShrinkHelper.defaultApp(server, APP_NAME, APP_NAME);
         FATSuite.copyAppsAppToDropins(server, APP_NAME);
     }
@@ -75,8 +84,8 @@ public class BellsTest extends FATServletClient {
             case testBellsCheckpointAtApplication:
                 server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
                 break;
-            case testHttpServletRequest:
-                server.setCheckpoint(CheckpointPhase.APPLICATIONS, true, null);
+            case testUpdatedBellPropertiesBeforeRestore:
+                server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
                 break;
             default:
                 break;
@@ -86,17 +95,34 @@ public class BellsTest extends FATServletClient {
 
     @Test
     public void testBellsCheckpointAtDeployment() throws Exception {
-        assertTrue("Expected message for bell service registration not found", !server.findStringsInLogs("CWWKL0050I").isEmpty());
         server.checkpointRestore();
-        assertTrue("Bell service should have been consumed during restore", !server.findStringsInLogs("Inside Servlet Container Initializer...").isEmpty());
+        assertEquals("Bell service registration for ServletContainerInitializer and TestInterface expected", 2, server.findStringsInLogs("CWWKL0050I").size());
+
+        assertTrue("Bell service for TestInterface should have been consumed and injected with original properties during restore",
+                   !server.findStringsInLogs("Updated bell properties: \\{bProp=orig_val\\}").isEmpty());
+        assertTrue("Bell service for ServletContainerInitializer should have been consumed during restore",
+                   !server.findStringsInLogs("Inside Servlet Container Initializer...").isEmpty());
     }
 
     @Test
     public void testBellsCheckpointAtApplication() throws Exception {
-        assertTrue("Expected message for bell service registration not found", !server.findStringsInLogs("CWWKL0050I").isEmpty());
-        assertTrue("Bell service should have been consumed during checkpoint", !server.findStringsInLogs("Inside Servlet Container Initializer...").isEmpty());
-        server.checkpointRestore();
+        assertEquals("Bell service registration for ServletContainerInitializer and TestInterface expected", 2, server.findStringsInLogs("CWWKL0050I").size());
 
+        assertTrue("Bell service for TestInterface should have been consumed and injected with original properties during checkpoint",
+                   !server.findStringsInLogs("Updated bell properties: \\{bProp=orig_val\\}").isEmpty());
+        assertTrue("Bell service for ServletContainerInitializer should have been consumed during checkpoint",
+                   !server.findStringsInLogs("Inside Servlet Container Initializer...").isEmpty());
+        server.checkpointRestore();
+    }
+
+    @Test
+    public void testUpdatedBellPropertiesBeforeRestore() throws Exception {
+        assertTrue("Bell service for TestInterface should have been injected with original properties",
+                   !server.findStringsInLogs("Updated bell properties: \\{bProp=orig_val\\}").isEmpty());
+        updateVariableConfig("bellProp", "updated_val");
+        server.checkpointRestore();
+        assertTrue("Bell service for TestInterface should have been injected with updated properties",
+                   !server.findStringsInLogs("Updated bell properties: \\{bProp=updated_val\\}").isEmpty());
     }
 
     private static void buildAndExportBellLibrary(LibertyServer targetServer, String archiveName, String... classNames) throws Exception {
@@ -111,19 +137,57 @@ public class BellsTest extends FATServletClient {
                                                                         return false;
                                                                     }
                                                                 },
-                                                                "app1");
+                                                                "bells");
         ShrinkHelper.exportToServer(targetServer, "sharedLib", bellArchive);
     }
 
+    private void updateVariableConfig(String name, String value) throws Exception {
+        // change config of variable for restore
+        ServerConfiguration config = removeTestKeyVar(server.getServerConfiguration(), name);
+        config.getVariables().add(new Variable(name, value));
+        server.updateServerConfiguration(config);
+    }
+
+    private ServerConfiguration removeTestKeyVar(ServerConfiguration config, String key) {
+        for (Iterator<Variable> iVars = config.getVariables().iterator(); iVars.hasNext();) {
+            Variable var = iVars.next();
+            if (var.getName().equals(key)) {
+                iVars.remove();
+            }
+        }
+        return config;
+    }
+
     @After
-    public void tearDown() throws Exception {
-        server.stopServer();
+    public void afterTest() throws Exception {
+        stopServer();
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        stopServer();
+        try {
+            server.uninstallUserFeature(USER_FEATURE_NAME);
+            server.uninstallUserBundle(USER_BUNDLE_NAME);
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    static void stopServer() {
+        if (server.isStarted()) {
+            try {
+                server.stopServer();
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     static enum TestMethod {
         testBellsCheckpointAtDeployment,
         testBellsCheckpointAtApplication,
-        testHttpServletRequest,
+        testUpdatedBellPropertiesBeforeRestore,
         unknown
     }
 

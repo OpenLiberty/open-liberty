@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -39,6 +39,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -46,11 +47,9 @@ import componenttest.topology.impl.LibertyServer;
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipForRepeat(EE10_FEATURES)
 public class JSF22ResetValuesAndAjaxDelayTests {
+    private static final String APP_NAME = "TestJSF22Ajax";
     public TestName name = new TestName();
-
-    String contextRoot = "TestJSF22Ajax";
 
     @Server("jsf22TracingServer")
     public static LibertyServer jsf22TracingServer;
@@ -61,7 +60,11 @@ public class JSF22ResetValuesAndAjaxDelayTests {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(jsf22TracingServer, "TestJSF22Ajax.war", "com.ibm.ws.jsf22.fat.ajax.ajaxDelay", "com.ibm.ws.jsf22.fat.ajax.resetValue");
+        boolean isEE10 = JakartaEE10Action.isActive();
+
+        ShrinkHelper.defaultDropinApp(jsf22TracingServer, APP_NAME + ".war",
+                                      isEE10 ? "com.ibm.ws.jsf22.fat.ajax.ajaxDelay.faces40" : "com.ibm.ws.jsf22.fat.ajax.ajaxDelay.jsf22",
+                                      isEE10 ? "com.ibm.ws.jsf22.fat.ajax.resetValue.faces40" : "com.ibm.ws.jsf22.fat.ajax.resetValue.jsf22");
 
         jsf22TracingServer.startServer(JSF22ResetValuesAndAjaxDelayTests.class.getSimpleName() + ".log");
     }
@@ -86,10 +89,10 @@ public class JSF22ResetValuesAndAjaxDelayTests {
             webClient.setAjaxController(new NicelyResynchronizingAjaxController());
             webClient.getOptions().setThrowExceptionOnScriptError(false);
 
-            URL url = JSFUtils.createHttpUrl(jsf22TracingServer, contextRoot, "resetValuesTest.jsf");
+            URL url = JSFUtils.createHttpUrl(jsf22TracingServer, APP_NAME, "resetValuesTest.jsf");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-            Log.info(c, name.getMethodName(), "Navigating to: /TestJSF22Ajax/resetValuesTest.jsf");
+            Log.info(c, name.getMethodName(), "Navigating to: /" + APP_NAME + "/resetValuesTest.jsf");
             HtmlElement link = (HtmlElement) page.getElementById("form1:link1");
             page = link.click();
 
@@ -141,11 +144,11 @@ public class JSF22ResetValuesAndAjaxDelayTests {
 
             jsf22TracingServer.setMarkToEndOfLog();
 
-            Log.info(c, name.getMethodName(), "Navigating to: /TestJSF22Ajax/ajaxDelayTest.jsf");
-            URL url = JSFUtils.createHttpUrl(jsf22TracingServer, contextRoot, "ajaxDelayTest.jsf");
+            Log.info(c, name.getMethodName(), "Navigating to: /" + APP_NAME + "/ajaxDelayTest.jsf");
+            URL url = JSFUtils.createHttpUrl(jsf22TracingServer, APP_NAME, "ajaxDelayTest.jsf");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-            Log.info(c, name.getMethodName(), "Returned from navigating to: /TestJSF22Ajax/ajaxDelayTest.jsf and setting mark in logs.");
+            Log.info(c, name.getMethodName(), "Returned from navigating to: /" + APP_NAME + "/ajaxDelayTest.jsf and setting mark in logs.");
 
             Log.info(c, name.getMethodName(), "Sleeping for 1 second");
             Thread.sleep(1000);
@@ -171,6 +174,7 @@ public class JSF22ResetValuesAndAjaxDelayTests {
      */
 
     @Test
+    @SkipForRepeat(EE10_FEATURES) // This test needs more investigation for EE10.
     public void testAjaxZeroDelay() throws Exception {
         try (WebClient webClient = new WebClient(browser)) {
             webClient.setAjaxController(new NicelyResynchronizingAjaxController());
@@ -178,11 +182,11 @@ public class JSF22ResetValuesAndAjaxDelayTests {
 
             jsf22TracingServer.setMarkToEndOfLog();
 
-            Log.info(c, name.getMethodName(), "Navigating to: /TestJSF22Ajax/ajaxZeroDelayTest.jsf");
-            URL url = JSFUtils.createHttpUrl(jsf22TracingServer, contextRoot, "ajaxZeroDelayTest.jsf");
+            Log.info(c, name.getMethodName(), "Navigating to: /" + APP_NAME + "/ajaxZeroDelayTest.jsf");
+            URL url = JSFUtils.createHttpUrl(jsf22TracingServer, APP_NAME, "ajaxZeroDelayTest.jsf");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
-            Log.info(c, name.getMethodName(), "Returned from navigating to: /TestJSF22Ajax/ajaxDelayTest.jsf and setting mark in logs.");
+            Log.info(c, name.getMethodName(), "Returned from navigating to: /" + APP_NAME + "/ajaxDelayTest.jsf and setting mark in logs.");
 
             Log.info(c, name.getMethodName(), "Sleeping for 1 second");
             Thread.sleep(1000);
@@ -194,10 +198,12 @@ public class JSF22ResetValuesAndAjaxDelayTests {
             input.type("joh");
 
             Log.info(c, name.getMethodName(), "Checking logs for bean call entry");
-            int numOfMethodCalls = jsf22TracingServer.waitForMultipleStringsInLogUsingMark(3, "AjaxDelayTest getMatchingEmployees");
 
-            Log.info(c, name.getMethodName(), "The bean method should have been called three times, actual amount is: " + numOfMethodCalls);
-            assertEquals(3, numOfMethodCalls);
+            // Four messages should be found, one for the initial page load and then 3 for typing "joh".
+            int numOfMethodCalls = jsf22TracingServer.waitForMultipleStringsInLogUsingMark(4, "AjaxDelayTest getMatchingEmployees");
+
+            Log.info(c, name.getMethodName(), "The bean method should have been called four times, actual amount is: " + numOfMethodCalls);
+            assertEquals(4, numOfMethodCalls);
         }
     }
 

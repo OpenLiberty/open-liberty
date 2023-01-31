@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -62,6 +63,8 @@ public class EjbLinkTest extends FATServletClient {
             }
         }
     };
+
+    private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
 
     private static Class<?> c = EjbLinkTest.class;
 
@@ -127,6 +130,12 @@ public class EjbLinkTest extends FATServletClient {
         // CWNEN1001E - testStyle1BeanInJarAndWarFromClient; ambiguous, cannot lookup
         // CWNEN0030E - testStyle1BeanInJarAndWarFromClient; ambiguous, cannot lookup
         client.addIgnoreErrors("CWWKC0105W", "CWNEN1001E", "CWNEN0030E");
+
+        // CWWKZ0022W: Application ______ has not started in 30 seconds.
+        if (isWindows) {
+            client.addIgnoreErrors("CWWKZ0022W");
+        }
+
         client.startClient();
     }
 

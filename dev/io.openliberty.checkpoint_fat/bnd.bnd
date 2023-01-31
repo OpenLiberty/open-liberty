@@ -39,7 +39,9 @@ src: \
 	test-applications/facesApp/src,\
 	test-applications/jsonb/src,\
 	test-applications/jsonp/src,\
-	test-applications/managedBeans/src
+	test-applications/managedBeans/src,\
+	test-bundles/test.checkpoint.bells.bundle/src,\
+	test-applications/bells/src
 
 fat.project: true
 

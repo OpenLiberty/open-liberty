@@ -56,10 +56,24 @@ src: \
     test-applications/ExtraParametersUsingEL.war/src,\
     test-applications/ExtraParametersSpaceAsKey.war/src,\
     test-applications/ExtraParametersLeadingSpaceInKey.war/src,\
+    test-applications/PromptNone.war/src,\
+    test-applications/PromptLogin.war/src,\
+    test-applications/PromptConsent.war/src,\
+    test-applications/PromptSelectAccount.war/src,\
+    test-applications/PromptEL.war/src,\
+    test-applications/PromptLoginConsent.war/src,\
+    test-applications/PromptEmpty.war/src,\
+    test-applications/PromptLoginWithEL.war/src,\
+    test-applications/DisplayPage.war/src,\
+    test-applications/DisplayPopup.war/src,\
+    test-applications/DisplayTouch.war/src,\
+    test-applications/DisplayWap.war/src,\
+    test-applications/DisplayEL.war/src,\
+    test-applications/DisplayEmpty.war/src,\
+    test-applications/DisplayPopupWithEL.war/src,\
     test-applications/JwksEndpoint.war/src,\
     test-applications/Endpoints.war/src,\
     test-applications/ProviderMetadata.war/src
-
     
 -dependson: \
     build.changeDetector,\

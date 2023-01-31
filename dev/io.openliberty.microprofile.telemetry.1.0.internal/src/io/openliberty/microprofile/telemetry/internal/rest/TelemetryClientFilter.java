@@ -51,6 +51,20 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
     private static final NetClientAttributesGetterImpl NET_CLIENT_ATTRIBUTES_GETTER = new NetClientAttributesGetterImpl();
     private static final HttpClientAttributesGetterImpl HTTP_CLIENT_ATTRIBUTES_GETTER = new HttpClientAttributesGetterImpl();
 
+    /**
+     * Retrieve the TelemetryClientFilter for the current application using CDI
+     * <p>
+     * Implementation note: It's important that there's a class which is registered as a CDI bean on the stack from this bundle when {@code CDI.current()} is called so that CDI
+     * finds the correct BDA and bean manager.
+     * <p>
+     * Calling it from this static method ensures that {@code TelemetryClientFilter} is the first thing on the stack and CDI will find the right BDA.
+     *
+     * @return the TelemetryClientFilter for the current application
+     */
+    public static TelemetryClientFilter getCurrent() {
+        return CDI.current().select(TelemetryClientFilter.class).get();
+    }
+
     // RestEasy sometimes creates and injects client filters using CDI and sometimes doesn't so we need to work around that
     // See: https://github.com/OpenLiberty/open-liberty/issues/23758
     public void init() {

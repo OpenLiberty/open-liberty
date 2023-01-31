@@ -56,18 +56,28 @@ class EntityInfo {
     }
 
     String getAttributeName(String name) {
-        // TODO update per outcome of #44
-        String attributeName = attributeNames.get(name.toUpperCase());
+        String lowerName = name.toLowerCase();
+        String attributeName = attributeNames.get(lowerName);
         if (attributeName == null)
             if ("All".equals(name))
                 attributeName = null; // Special case for CrudRepository.deleteAll and CrudRepository.findAll
-            else if ("ID".equals(name.toUpperCase()))
+            else if ("id".equals(lowerName))
                 throw new MappingException("Entity class " + type.getName() + " does not have a property named " + name +
                                            " or which is designated as the @Id."); // TODO NLS
             else if (name.length() == 0)
                 throw new MappingException("Error parsing method name or entity property name is missing."); // TODO NLS
-            else
-                throw new MappingException("Entity class " + type.getName() + " does not have a property named " + name + "."); // TODO NLS
+            else {
+                // tolerate possible mixture of . and _ separators:
+                lowerName = lowerName.replace('.', '_');
+                attributeName = attributeNames.get(lowerName);
+                if (attributeName == null) {
+                    // tolerate possible mixture of . and _ separators with lack of separators:
+                    lowerName = lowerName.replace("_", "");
+                    attributeName = attributeNames.get(lowerName);
+                    if (attributeName == null)
+                        throw new MappingException("Entity class " + type.getName() + " does not have a property named " + name + "."); // TODO NLS
+                }
+            }
 
         return attributeName;
     }

@@ -89,5 +89,20 @@ public class WebFormUtils {
             return submitButton.click();
         }
     }
+    
+    public Page getAndSubmitConsentForm(HtmlPage consentPage, String selection) throws Exception {
+        if (consentPage == null) {
+            throw new Exception("Cannot submit consent form because the provided HtmlPage object is null.");
+        }
+        HtmlForm form = getConsentForm(consentPage);
+        return submitForm(form, selection);
+    }
+    
+    HtmlForm getConsentForm(HtmlPage consentPage) throws Exception {
+        List<HtmlForm> forms = consentPage.getForms();
+        assertPageContainsAtLeastOneForm(forms);
+        HtmlForm form = forms.get(0);
+        return form;
+    }
 
 }

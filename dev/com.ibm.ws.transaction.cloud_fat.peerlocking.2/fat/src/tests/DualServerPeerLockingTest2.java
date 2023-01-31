@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,15 +14,19 @@ package tests;
 
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
 public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
@@ -44,12 +48,14 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
         boolean testFailed = false;
         String testFailureString = "";
 
+        servers = new LibertyServer[] { firstServer };
+
         // Start Server1
-        FATUtils.startServers(server1);
+        FATUtils.startServers(firstServer);
 
         try {
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(server1, servletName, "setupRec" + id);
+            sb = runTestWithResponse(firstServer, servletName, "setupRec" + id);
         } catch (Throwable e) {
             // as expected
             Log.error(this.getClass(), method, e); // TODO remove this
@@ -57,7 +63,7 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
         Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
         // wait for 1st server to have gone away
-        if (server1.waitForStringInLog("Dump State:") == null) {
+        if (firstServer.waitForStringInLog("Dump State:") == null) {
             testFailed = true;
             testFailureString = "First server did not crash";
         }
@@ -67,9 +73,9 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
             //
             // Under the HADB locking scheme, the server should be able to acquire the logs immediately and proceed
             // with recovery.
-            server1.startServerAndValidate(false, true, true);
+            firstServer.startServerAndValidate(false, true, true);
 
-            if (server1.waitForStringInTrace("WTRN0133I") == null) {
+            if (firstServer.waitForStringInTrace("WTRN0133I") == null) {
                 testFailed = true;
                 testFailureString = "Recovery incomplete on first server";
             }
@@ -77,7 +83,7 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
             // check resource states
             Log.info(this.getClass(), method, "calling checkRec" + id);
             try {
-                sb = runTestWithResponse(server1, servletName, "checkRec" + id);
+                sb = runTestWithResponse(firstServer, servletName, "checkRec" + id);
             } catch (Exception e) {
                 Log.error(this.getClass(), "dynamicTest", e);
                 throw e;
@@ -85,24 +91,20 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
             Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
 
             // Bounce first server to clear log
-            FATUtils.stopServers(server1);
-            server1.startServerAndValidate(false, true, true);
+            FATUtils.stopServers(firstServer);
+            firstServer.startServerAndValidate(false, true, true);
 
             // Check log was cleared
-            if (server1.waitForStringInTrace("WTRN0135I") == null) {
+            if (firstServer.waitForStringInTrace("WTRN0135I") == null) {
                 testFailed = true;
                 testFailureString = "Transactions left in transaction log on first server";
             }
-            if (!testFailed && (server1.waitForStringInTrace("WTRN0134I.*0") == null)) {
+            if (!testFailed && (firstServer.waitForStringInTrace("WTRN0134I.*0") == null)) {
                 testFailed = true;
                 testFailureString = "XAResources left in partner log on first server";
             }
-
-            FATUtils.stopServers(server1);
         }
 
-        tidyServersAfterTest(server1);
-        // XA resource data is cleared in setup servlet methods. Probably should do it here.
         if (testFailed)
             fail(testFailureString);
     }
@@ -126,120 +128,111 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
 
         final String method = "testPeerServerDoesNotAcquireLogs";
         final String id = String.format("%03d", test);
-        StringBuilder sb = null;
         boolean testFailed = false;
         String testFailureString = "";
 
+        servers = new LibertyServer[] { firstServer, longPeerStaleTimeServer2 };
+
+        // Start Server1
+        FATUtils.startServers(firstServer);
+
         try {
-            // Start Server1
-            FATUtils.startServers(server1);
-
-            try {
-                // We expect this to fail since it is gonna crash the server
-                sb = runTestWithResponse(server1, servletName, "setupRec" + id);
-            } catch (Throwable e) {
-                // as expected
-                Log.error(this.getClass(), method, e); // TODO remove this
-            }
-            Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
-
-            // wait for 1st server to have gone away
-            if (server1.waitForStringInLog("Dump State:") == null) {
-                testFailed = true;
-                testFailureString = "First server did not crash";
-            }
-
-            // Now start server2
-            if (!testFailed) {
-                longPeerStaleTimeServer2.setHttpDefaultPort(longPeerStaleTimeServer2.getHttpSecondaryPort());
-                ProgramOutput po = longPeerStaleTimeServer2.startServerAndValidate(false, true, true);
-                if (po.getReturnCode() != 0) {
-                    Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-                    Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-                    Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-                    Exception ex = new Exception("Could not start server2");
-                    Log.error(this.getClass(), method, ex);
-                    throw ex;
-                }
-
-                // wait for 2nd server to attempt (but fail) to perform peer recovery
-                int numStringOccurrences = longPeerStaleTimeServer2.waitForMultipleStringsInLog(2, "CWRLS0011I.*cloud001", 60000);
-                if (numStringOccurrences < 2) {
-                    testFailed = true;
-                    testFailureString = "Second server did not attempt peer recovery at least 2 times, attempted " + numStringOccurrences;
-                }
-                if (!testFailed && (longPeerStaleTimeServer2.waitForStringInLog("HADB Peer Recovery failed for server") == null)) {
-                    testFailed = true;
-                    testFailureString = "Server2 did not report that HADB Peer recovery had failed";
-                }
-
-                //Stop server2
-                if (!testFailed) {
-                    FATUtils.stopServers(longPeerStaleTimeServer2);
-                }
-            }
-
-            if (!testFailed) {
-                // restart 1st server
-                //
-                // Under the HADB locking scheme, the server should be able to acquire the logs immediately and proceed
-                // with recovery. server2 will still have the lease at this point so we'll have to wait the leaseLength
-                // (20 seconds) before this will definitely succeed
-                Thread.sleep(20000);
-                ProgramOutput po = server1.startServerAndValidate(false, true, true);
-                if (po.getReturnCode() != 0) {
-                    Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-                    Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-                    Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-                    Exception ex = new Exception("Could not restart server1");
-                    Log.error(this.getClass(), method, ex);
-                    throw ex;
-                }
-
-                if (server1.waitForStringInTrace("WTRN0133I") == null) {
-                    testFailed = true;
-                    testFailureString = "Recovery incomplete on first server";
-                }
-
-                // check resource states
-                Log.info(this.getClass(), method, "calling checkRec" + id);
-                try {
-                    sb = runTestWithResponse(server1, servletName, "checkRec" + id);
-                } catch (Exception e) {
-                    Log.error(this.getClass(), "dynamicTest", e);
-                    throw e;
-                }
-                Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
-
-                // Bounce first server to clear log
-                FATUtils.stopServers(server1);
-                po = server1.startServerAndValidate(false, true, true);
-                if (po.getReturnCode() != 0) {
-                    Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-                    Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-                    Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-                    Exception ex = new Exception("Could not bounce server1");
-                    Log.error(this.getClass(), method, ex);
-                    throw ex;
-                }
-
-                // Check log was cleared
-                if (server1.waitForStringInTrace("WTRN0135I") == null) {
-                    testFailed = true;
-                    testFailureString = "Transactions left in transaction log on first server";
-                }
-                if (!testFailed && (server1.waitForStringInTrace("WTRN0134I.*0") == null)) {
-                    testFailed = true;
-                    testFailureString = "XAResources left in partner log on first server";
-                }
-
-            }
-        } finally {
-            FATUtils.stopServers(server1);
-            tidyServersAfterTest(server1, longPeerStaleTimeServer2);
+            // We expect this to fail since it is gonna crash the server
+            runTest(firstServer, servletName, "setupRec" + id);
+        } catch (Throwable e) {
+            // as expected
         }
 
-        // XA resource data is cleared in setup servlet methods. Probably should do it here.
+        // wait for 1st server to have gone away
+        if (firstServer.waitForStringInLog("Dump State:") == null) {
+            testFailed = true;
+            testFailureString = "First server did not crash";
+        }
+
+        // Now start server2
+        if (!testFailed) {
+            longPeerStaleTimeServer2.setHttpDefaultPort(longPeerStaleTimeServer2.getHttpSecondaryPort());
+            ProgramOutput po = longPeerStaleTimeServer2.startServerAndValidate(false, true, true);
+            if (po.getReturnCode() != 0) {
+                Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
+                Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
+                Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
+                Exception ex = new Exception("Could not start server2");
+                Log.error(this.getClass(), method, ex);
+                throw ex;
+            }
+
+            // wait for 2nd server to attempt (but fail) to perform peer recovery
+            int numStringOccurrences = longPeerStaleTimeServer2.waitForMultipleStringsInLog(2, "CWRLS0011I.*cloud001", 60000);
+            if (numStringOccurrences < 2) {
+                testFailed = true;
+                testFailureString = "Second server did not attempt peer recovery at least 2 times, attempted " + numStringOccurrences;
+            }
+            if (!testFailed && (longPeerStaleTimeServer2.waitForStringInLog("HADB Peer Recovery failed for server") == null)) {
+                testFailed = true;
+                testFailureString = "Server2 did not report that HADB Peer recovery had failed";
+            }
+
+            //Stop server2
+            if (!testFailed) {
+                FATUtils.stopServers(longPeerStaleTimeServer2);
+            }
+        }
+
+        if (!testFailed) {
+            // restart 1st server
+            //
+            // Under the HADB locking scheme, the server should be able to acquire the logs immediately and proceed
+            // with recovery. server2 will still have the lease at this point so we'll have to wait the leaseLength
+            // (20 seconds) before this will definitely succeed
+            Thread.sleep(20000);
+            ProgramOutput po = firstServer.startServerAndValidate(false, true, true);
+            if (po.getReturnCode() != 0) {
+                Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
+                Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
+                Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
+                Exception ex = new Exception("Could not restart server1");
+                Log.error(this.getClass(), method, ex);
+                throw ex;
+            }
+
+            if (firstServer.waitForStringInTrace("WTRN0133I") == null) {
+                testFailed = true;
+                testFailureString = "Recovery incomplete on first server";
+            }
+
+            // check resource states
+            Log.info(this.getClass(), method, "calling checkRec" + id);
+            try {
+                runTest(firstServer, servletName, "checkRec" + id);
+            } catch (Exception e) {
+                Log.error(this.getClass(), "dynamicTest", e);
+                throw e;
+            }
+
+            // Bounce first server to clear log
+            FATUtils.stopServers(firstServer);
+            po = firstServer.startServerAndValidate(false, true, true);
+            if (po.getReturnCode() != 0) {
+                Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
+                Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
+                Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
+                Exception ex = new Exception("Could not bounce server1");
+                Log.error(this.getClass(), method, ex);
+                throw ex;
+            }
+
+            // Check log was cleared
+            if (firstServer.waitForStringInTrace("WTRN0135I") == null) {
+                testFailed = true;
+                testFailureString = "Transactions left in transaction log on first server";
+            }
+            if (!testFailed && (firstServer.waitForStringInTrace("WTRN0134I.*0") == null)) {
+                testFailed = true;
+                testFailureString = "XAResources left in partner log on first server";
+            }
+        }
+
         if (testFailed)
             fail(testFailureString);
     }
@@ -264,25 +257,20 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
 
         final String method = "testLocalServerDoesAcquireLogs";
         final String id = String.format("%03d", test);
-        StringBuilder sb = null;
         boolean testFailed = false;
         String testFailureString = "";
 
+        servers = new LibertyServer[] { secondServer, longPeerStaleTimeServer1 };
+
         // Start Server2
-        server2.setHttpDefaultPort(server2.getHttpSecondaryPort());
-        FATUtils.startServers(server2);
+        secondServer.setHttpDefaultPort(secondServer.getHttpSecondaryPort());
+        FATUtils.startServers(secondServer);
 
         // Set the owner of our recovery logs to a peer in the control row through a servlet
         // This simulates a peer's acquisition of our recovery logs.
-        try {
-            sb = runTestWithResponse(server2, servletName, "setPeerOwnership");
+        runTest(secondServer, servletName, "setPeerOwnership");
 
-        } catch (Throwable e) {
-        }
-
-        Log.info(this.getClass(), method, "setPeerOwnership" + id + " returned: " + sb);
-
-        FATUtils.stopServers(server2);
+        FATUtils.stopServers(secondServer);
         if (!testFailed) {
             // restart 1st server
             //
@@ -294,16 +282,8 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
                 testFailed = true;
                 testFailureString = "Server failed to claim logs";
             }
-
-            //Stop server1
-            if (!testFailed) {
-                FATUtils.stopServers(longPeerStaleTimeServer1);
-            }
         }
 
-        tidyServersAfterTest(longPeerStaleTimeServer1);
-
-        // XA resource data is cleared in setup servlet methods. Probably should do it here.
         if (testFailed)
             fail(testFailureString);
     }
@@ -325,34 +305,27 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
         int test = 1;
         final String method = "testSetLatchLocalServer";
         final String id = String.format("%03d", test);
-        StringBuilder sb = null;
         boolean testFailed = false;
         String testFailureString = "";
+
+        servers = new LibertyServer[] { peerLockingDisabledServer1, peerLockingEnabledServer1 };
 
         // switch to configuration with HADB peer locking disabled
         // Start Server1
         FATUtils.startServers(peerLockingDisabledServer1);
 
         // Set the latch in the control row through a servlet
-        try {
-            sb = runTestWithResponse(peerLockingDisabledServer1, servletName, "setLatch");
-
-        } catch (Throwable e) {
-        }
-
-        Log.info(this.getClass(), method, "setLatch" + id + " returned: " + sb);
+        runTest(peerLockingDisabledServer1, servletName, "setLatch");
 
         try {
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(peerLockingDisabledServer1, servletName, "setupRec" + id);
-        } catch (Throwable e) {
+            runTest(peerLockingDisabledServer1, servletName, "setupRec" + id);
+        } catch (IOException e) {
             // as expected
-            Log.error(this.getClass(), method, e); // TODO remove this
         }
-        Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
         // wait for 1st server to have gone away
-        if (peerLockingDisabledServer1.waitForStringInLog("Dump State:") == null) {
+        if (peerLockingDisabledServer1.waitForStringInLog(XAResourceImpl.DUMP_STATE) == null) {
             testFailed = true;
             testFailureString = "First server did not crash";
         }
@@ -379,13 +352,7 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
             // check resource states
             if (!testFailed) {
                 Log.info(this.getClass(), method, "calling checkRec" + id);
-                try {
-                    sb = runTestWithResponse(peerLockingEnabledServer1, servletName, "checkRec" + id);
-                } catch (Exception e) {
-                    Log.error(this.getClass(), "dynamicTest", e);
-                    throw e;
-                }
-                Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
+                runTest(peerLockingEnabledServer1, servletName, "checkRec" + id);
 
                 // Bounce first server to clear log
                 FATUtils.stopServers(peerLockingEnabledServer1);
@@ -400,14 +367,9 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
                     testFailed = true;
                     testFailureString = "XAResources left in partner log on first server";
                 }
-
-                FATUtils.stopServers(peerLockingEnabledServer1);
             }
         }
 
-        tidyServersAfterTest(peerLockingEnabledServer1);
-
-        // XA resource data is cleared in setup servlet methods. Probably should do it here.
         if (testFailed)
             fail(testFailureString);
     }
@@ -430,42 +392,35 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
         int test = 1;
         final String method = "testSetLatchPeerServer";
         final String id = String.format("%03d", test);
-        StringBuilder sb = null;
         boolean testFailed = false;
         String testFailureString = "";
+
+        servers = new LibertyServer[] { peerLockingDisabledServer1, secondServer };
 
         // switch to configuration with HADB peer locking disabled
         // Start Server1
         FATUtils.startServers(peerLockingDisabledServer1);
 
         // Set the latch in the control row through a servlet
-        try {
-            sb = runTestWithResponse(peerLockingDisabledServer1, servletName, "setLatch");
-
-        } catch (Throwable e) {
-        }
-
-        Log.info(this.getClass(), method, "setLatch" + id + " returned: " + sb);
+        runTest(peerLockingDisabledServer1, servletName, "setLatch");
 
         try {
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(peerLockingDisabledServer1, servletName, "setupRec" + id);
+            runTest(peerLockingDisabledServer1, servletName, "setupRec" + id);
         } catch (Throwable e) {
             // as expected
-            Log.error(this.getClass(), method, e); // TODO remove this
         }
-        Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
         // wait for 1st server to have gone away
-        if (peerLockingDisabledServer1.waitForStringInLog("Dump State:") == null) {
+        if (peerLockingDisabledServer1.waitForStringInLog(XAResourceImpl.DUMP_STATE) == null) {
             testFailed = true;
             testFailureString = "First server did not crash";
         }
 
         // Now start server2
         if (!testFailed) {
-            server2.setHttpDefaultPort(server2.getHttpSecondaryPort());
-            ProgramOutput po = server2.startServerAndValidate(false, true, true);
+            secondServer.setHttpDefaultPort(secondServer.getHttpSecondaryPort());
+            ProgramOutput po = secondServer.startServerAndValidate(false, true, true);
 
             if (po.getReturnCode() != 0) {
                 Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
@@ -477,12 +432,12 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
             }
 
             // wait for 2nd server to perform peer recovery
-            if (server2.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity) == null) {
+            if (secondServer.waitForStringInTrace("Performed recovery for " + cloud1RecoveryIdentity) == null) {
                 testFailed = true;
                 testFailureString = "Second server did not perform peer recovery";
             }
 
-            if (!testFailed && (server2.waitForStringInTrace("Claim peer logs from a peer server") == null)) {
+            if (!testFailed && (secondServer.waitForStringInTrace("Claim peer logs from a peer server") == null)) {
                 testFailed = true;
                 testFailureString = "Server failed to claim peer logs";
             }
@@ -490,17 +445,10 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
 
         // flush the resource states
         if (!testFailed) {
-
-            try {
-                sb = runTestWithResponse(server2, servletName, "dumpState");
-                Log.info(this.getClass(), method, sb.toString());
-            } catch (Exception e) {
-                Log.error(this.getClass(), method, e);
-                throw e;
-            }
+            runTest(secondServer, servletName, "dumpState");
 
             //Stop server2
-            FATUtils.stopServers(server2);
+            FATUtils.stopServers(secondServer);
 
             // restart 1st server
             peerLockingDisabledServer1.startServerAndValidate(false, true, true);
@@ -512,16 +460,9 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
         }
 
         if (!testFailed) {
-
             // check resource states
             Log.info(this.getClass(), method, "calling checkRec" + id);
-            try {
-                sb = runTestWithResponse(peerLockingDisabledServer1, servletName, "checkRec" + id);
-            } catch (Exception e) {
-                Log.error(this.getClass(), "dynamicTest", e);
-                throw e;
-            }
-            Log.info(this.getClass(), method, "checkRec" + id + " returned: " + sb);
+            runTest(peerLockingDisabledServer1, servletName, "checkRec" + id);
 
             // Bounce first server to clear log
             FATUtils.stopServers(peerLockingDisabledServer1);
@@ -536,13 +477,8 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
                 testFailed = true;
                 testFailureString = "XAResources left in partner log on first server";
             }
-
-            FATUtils.stopServers(peerLockingDisabledServer1);
         }
 
-        tidyServersAfterTest(peerLockingDisabledServer1, server2);
-
-        // XA resource data is cleared in setup servlet methods. Probably should do it here.
         if (testFailed)
             fail(testFailureString);
     }

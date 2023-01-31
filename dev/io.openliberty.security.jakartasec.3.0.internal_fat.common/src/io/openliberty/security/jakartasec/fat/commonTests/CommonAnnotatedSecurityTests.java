@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.StringJoiner;
 
 import org.junit.Before;
 
@@ -52,6 +53,8 @@ import io.openliberty.security.jakartasec.fat.utils.ResponseValues;
 import io.openliberty.security.jakartasec.fat.utils.ServletMessageConstants;
 import io.openliberty.security.jakartasec.fat.utils.ServletRequestExpectationHelpers;
 import io.openliberty.security.jakartasec.fat.utils.WsSubjectExpectationHelpers;
+import jakarta.security.enterprise.authentication.mechanism.http.openid.DisplayType;
+import jakarta.security.enterprise.authentication.mechanism.http.openid.PromptType;
 
 public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
 
@@ -549,6 +552,19 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
                                                                                                                                                                                                          Integer.toString(rpServer.getBvtSecurePort())).replace("rp_AppName_rp",
                                                                                                                                                                                                                                                                 appName);
 
+        }
+        if (value instanceof PromptType) {
+            newValue = ((PromptType) value).toString();
+        }
+        if (value instanceof PromptType[]) {
+            StringJoiner joiner = new StringJoiner(",");
+            for (PromptType promptType : (PromptType[]) value) {
+                joiner.add(promptType.toString());
+            }
+            newValue = joiner.toString();
+        }
+        if (value instanceof DisplayType) {
+            newValue = ((DisplayType) value).toString();
         }
         return newValue;
     }

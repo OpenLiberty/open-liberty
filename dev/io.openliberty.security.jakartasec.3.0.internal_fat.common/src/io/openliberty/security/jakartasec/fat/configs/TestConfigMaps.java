@@ -21,6 +21,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.web.WebRequestUtils;
 
 import io.openliberty.security.jakartasec.fat.utils.Constants;
+import jakarta.security.enterprise.authentication.mechanism.http.openid.DisplayType;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.PromptType;
 
 public class TestConfigMaps {
@@ -421,6 +422,30 @@ public class TestConfigMaps {
         return updatedMap;
     }
 
+    public static Map<String, Object> getDisplayPage() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.DISPLAY_EXPRESSION, DisplayType.PAGE);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getDisplayPopup() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.DISPLAY_EXPRESSION, DisplayType.POPUP);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getDisplayTouch() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.DISPLAY_EXPRESSION, DisplayType.TOUCH);
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getDisplayWap() throws Exception {
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.DISPLAY_EXPRESSION, DisplayType.WAP);
+        return updatedMap;
+    }
+
     public static Map<String, Object> getOP2() throws Exception {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
@@ -464,6 +489,22 @@ public class TestConfigMaps {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
         updatedMap.put(Constants.PROMPT_EXPRESSION, PromptType.SELECT_ACCOUNT);
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getPromptExpressionLoginAndConsent() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.PROMPT_EXPRESSION, new PromptType[] { PromptType.LOGIN, PromptType.CONSENT });
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getPromptExpressionDuplicates() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.PROMPT_EXPRESSION, new PromptType[] { PromptType.LOGIN, PromptType.LOGIN });
         return updatedMap;
 
     }

@@ -78,7 +78,7 @@ public class InMemorySpanExporter implements SpanExporter {
 
     @Override
     public CompletableResultCode export(Collection<SpanData> spans) {
-        LOGGER.info("export method called");
+        LOGGER.info("export method called, exporter = " + System.identityHashCode(this) + ", collection: " + System.identityHashCode(finishedSpanItems));
         if (isStopped) {
             return CompletableResultCode.ofFailure();
         }
@@ -101,6 +101,7 @@ public class InMemorySpanExporter implements SpanExporter {
         }
 
         finishedSpanItems.addAll(lSpans);
+        LOGGER.info("There are now " + finishedSpanItems.size() + " items");
 
         return CompletableResultCode.ofSuccess();
     }

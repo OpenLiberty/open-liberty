@@ -1,5 +1,5 @@
 /*
- * Copyright (c)  2015  IBM Corporation and others.
+ * Copyright (c) 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,10 +33,12 @@ public class ViewScopedManagedBean implements Serializable {
     private transient HtmlInputText emailComp;
 
     @PostConstruct
-    public void init() {}
+    public void init() {
+    }
 
     @PreDestroy
-    public void goodBye() {}
+    public void goodBye() {
+    }
 
     public String updateEmail() {
 
@@ -68,7 +70,8 @@ public class ViewScopedManagedBean implements Serializable {
         this.appManagerBean = appManagerBean;
     }
 
-    public void validateUserUpdate(FacesContext context, UIComponent component, Object value) {}
+    public void validateUserUpdate(FacesContext context, UIComponent component, Object value) {
+    }
 
     public void setStr1(String str1) {
         this.str1 = str1;
