@@ -15,6 +15,7 @@ src: \
     test-applications/AcceptInputFileTest.war/src,\
     test-applications/AjaxRenderExecuteThisTest.war/src,\
     test-applications/AnnotationLiteralsTest.war/src,\
+    test-applications/ClientWindowScopedTest.war/src,\
     test-applications/ExternalContextAddResponseCookie.war/src,\
     test-applications/Faces40URN.war/src,\
     test-applications/FacesContextGetLifecycle.war/src,\
@@ -44,4 +45,4 @@ javac.target: 11
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
 	io.openliberty.jakarta.annotation.2.1;version=latest,\
 	io.openliberty.jakarta.expressionLanguage.5.0;version=latest,\
-
+	jakarta.enterprise.cdi-api
