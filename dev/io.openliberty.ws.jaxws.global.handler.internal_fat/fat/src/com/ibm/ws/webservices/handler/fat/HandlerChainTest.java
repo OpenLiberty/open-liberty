@@ -17,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 
 import java.io.FileNotFoundException;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 import javax.xml.soap.MessageFactory;
@@ -32,6 +33,7 @@ import javax.xml.ws.soap.SOAPBinding;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,6 +45,9 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -57,8 +62,14 @@ public class HandlerChainTest {
     private static final String CLIENT_APP_LOCATION_DROPINS = "dropins/testHandlerClient.war.xml";
     private static final String CLIENT_APP_WITHOUTXML_LOCATION_DROPINS = "dropins/testHandlerClientWithoutXML.war.xml";
 
+    public static LibertyServer server = null;
+    
+    //Alternating servers to avoid un-registration of incomingObserver
     @Server("HandlerChainTestServer")
-    public static LibertyServer server = LibertyServerFactory.getLibertyServer("HandlerChainTestServer");
+    public static LibertyServer serverAlternate1;
+    
+    @Server("HandlerChainTestServerAlternate")
+    public static LibertyServer serverAlternate2;
 
     private final static QName serviceQName = new QName("http://jaxws.samples.ibm.com/", "TemperatureConverterService");
     private final static QName portQName = new QName("http://jaxws.samples.ibm.com/", "TemperatureConverterPort");
@@ -67,13 +78,22 @@ public class HandlerChainTest {
     public void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
             server.stopServer();
-            server.clearLogMarks();
         }
-        System.gc();
     }
     
-    @Before
-    public void setup() throws Exception {
+    @BeforeClass
+    public static void setup() throws Exception {
+        // Alternate server to prevent deregistration of incomingObserver from next EE repetition
+        if(JakartaEE10Action.isActive()) {
+            server = serverAlternate2;
+        } else if(JakartaEE9Action.isActive()) {
+            server = serverAlternate1;
+        } else if(EE8FeatureReplacementAction.isActive()) {
+            server = serverAlternate2;
+        } else {
+            server = serverAlternate1;
+        }
+
         ShrinkHelper.defaultUserFeatureArchive(server, "userBundle", "com.ibm.ws.userbundle.myhandler");
         TestUtils.installUserFeature(server, "MyHandlerFeature");
         ShrinkHelper.defaultDropinApp(server, "testHandlerClient", "com.ibm.samples.jaxws.client", "com.ibm.samples.jaxws.client.handler", "com.ibm.samples.jaxws.client.servlet");
@@ -84,7 +104,7 @@ public class HandlerChainTest {
         
         server.waitForMultipleStringsInLog(3, "CWWKZ0001I");
     }
-
+    
     @Test
     public void testProviderHandlerChainWithGlobalHandlers() throws Exception {
 
@@ -139,7 +159,7 @@ public class HandlerChainTest {
                                                 "com.ibm.samples.jaxws.handler.TestSOAPHandler: postConstruct is invoked"});
 
         // Stop server, with option to preserve logs 
-        server.stopServer(false, null);
+        server.stopServer(false, true, null);
 
         // Test preDestroy  
         assertStatesExisted(new String[] {
@@ -156,8 +176,6 @@ public class HandlerChainTest {
                                                               "in INHandler2 handlemessage method",
                                                               "in InHandler3 handlemessage method",
         });
-
-        //API CHECK:
 
     }
 
