@@ -3206,121 +3206,170 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    /**
-     * @param remoteFile
-     * @param logFolder
-     * @param b
-     * @param d
-     */
-    protected void recursivelyCopyDirectory(RemoteFile remoteFile, LocalFile logFolder, boolean ignoreFailures) throws Exception {
-        recursivelyCopyDirectory(remoteFile, logFolder, ignoreFailures, false, false);
+    // +++
 
+    protected void recursivelyCopyDirectory(RemoteFile remoteFile,
+                                            LocalFile logFolder,
+                                            boolean ignoreFailures) throws Exception {
+
+        recursivelyCopyDirectory(remoteFile, logFolder, ignoreFailures, false, false);
     }
 
-    /**
-     * @param  method
-     * @throws Exception
-     */
-    protected void recursivelyCopyDirectory(RemoteFile remoteDirectory, LocalFile destination, boolean ignoreFailures, boolean skipArchives, boolean moveFile) throws Exception {
+    private boolean isSkippableArchive(String srcPath, String dstName, String dumpName) {
+        // Don't skip zips which are intended for a server dump.
+
+        if ( srcPath.endsWith(".jar") ||
+             srcPath.endsWith(".war") ||
+             srcPath.endsWith(".ear") ||
+             srcPath.endsWith(".rar") ) {
+            return true;
+        } else if ( srcPath.endsWith(".zip") ){
+            return ( !dstName.contains(dumpName) );
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isLog(String localPath, String remoteName, String dumpName) {
+        // Only non-FFDC log files are moved.
+        //
+        // FFDC log files cannot be moved because they must remain for FFDC checking.
+
+        if ( localPath.contains("logs") ) {
+            return ( !localPath.contains("ffdc") );
+
+        } else {
+            return ( remoteName.contains("javacore") ||
+                     remoteName.contains("heapdump") ||
+                     remoteName.contains("Snap") ||
+                     remoteName.contains(dumpName) );
+        }
+    }
+
+    protected void recursivelyCopyDirectory(RemoteFile remoteSrcDir,
+                                            LocalFile localDstDir,
+                                            boolean ignoreFailures, boolean skipArchives, boolean moveFile) throws Exception {
+
         String method = "recursivelyCopyDirectory";
-        destination.mkdirs();
 
-        Log.finest(c, method, "Remote: " + remoteDirectory + "\nDestination: " + destination + "\nignoreFailures: " + ignoreFailures + "\nskipArchives: " + skipArchives
-                              + "\nmoveFile: " + moveFile);
+        Log.finest(c, method, "Remote source directory: " + remoteSrcDir +
+                              "\n  Local destination directory: " + localDstDir +
+                              "\n  ignore failures: " + ignoreFailures +
+                              "\n  skip archives: " + skipArchives +
+                              "\n  move file: " + moveFile);
 
-        ArrayList<String> logs = new ArrayList<String>();
-        logs = listDirectoryContents(remoteDirectory);
-        for (String l : logs) {
-            if (remoteDirectory.getName().equals("workarea")) {
-                if (l.equals(OSGI_DIR_NAME) || l.startsWith(".s")) {
-                    // skip the osgi framework cache, and runtime artifacts: too big / too racy
-                    Log.finest(c, method, "Skipping workarea element " + l);
-                    continue;
+        String remoteSrcDirPath = remoteSrcDir.getAbsolutePath();
+        String remoteSrcDirName = remoteSrcDir.getName();
+
+        String localDstDirPath = localDstDir.getAbsolutePath();
+
+        localDstDir.mkdirs();
+
+        if ( !localDstDir.exists() ) {
+            String msg = "Error: Failed to create local [ " + localDstDirPath + " ] to receive remote [ " + remoteSrcDirPath + " ]";
+            Log.info(c, method, msg);
+            if ( ignoreFailures ) {
+                return;
+            } else {
+                throw new IOException(msg);
+            } 
+        }
+
+        boolean isLocal = machine.isLocal();
+
+        String dumpName = serverToUse + ".dump";
+
+        boolean isWorkarea = remoteSrcDirName.equals("workarea");
+        boolean isCheckpoint = !isWorkarea && remoteSrcDirName.equals("checkpoint");
+        boolean isMessaging = !isWorkarea && !isCheckpoint && remoteSrcDirName.equals("messaging");
+
+        for ( String remoteSrcFileName : listDirectoryContents(remoteSrcDir) ) {
+            String skipReason = null;
+            if ( isWorkarea ) {
+                if ( remoteSrcFileName.equals(OSGI_DIR_NAME) || remoteSrcFileName.startsWith(".s") ) {
+                    skipReason = "workarea element"; // too big / too racy
                 }
-            }
-            if (remoteDirectory.getName().equals("checkpoint")) {
-                if (l.equals("image")) {
-                    // skip the checkpoint image; it is too big
-                    Log.finest(c, method, "Skipping checkpoint/image element " + l);
-                    continue;
+            } else if ( isCheckpoint ) {
+                if ( remoteSrcFileName.equals("image") ) {
+                    skipReason = "checkpoint/image element"; // too big
                 }
+            } else if ( isMessaging ) {
+                skipReason = "message store element"; // ?
             }
-
-            if (remoteDirectory.getName().equals("messaging")) {
-                Log.finest(c, method, "Skipping message store element " + l);
+            if ( skipReason != null ) {
+                Log.finest(c, method, "Skip [ " + remoteSrcFileName + " ]: " + skipReason);
                 continue;
             }
 
-            RemoteFile toCopy = new RemoteFile(machine, remoteDirectory, l);
-            LocalFile toReceive = new LocalFile(destination, l);
-            String absPath = toCopy.getAbsolutePath();
-            Log.finest(c, method, "Getting: " + absPath);
+            RemoteFile remoteSrcFile = new RemoteFile(machine, remoteSrcDir, remoteSrcFileName);
+            LocalFile localDstFile = new LocalFile(localDstDir, remoteSrcFileName);
 
-            if (absPath.endsWith(".log"))
-                LogPolice.measureUsedTrace(toCopy.length());
+            if ( remoteSrcFile.isDirectory() ) {
+                recursivelyCopyDirectory(remoteSrcFile, localDstFile, ignoreFailures, skipArchives, moveFile);
 
-            if (toCopy.isDirectory()) {
-                // Recurse
-                recursivelyCopyDirectory(toCopy, toReceive, ignoreFailures, skipArchives, moveFile);
             } else {
+                String remoteSrcFilePath = remoteSrcFile.getAbsolutePath();
+
+                Log.finest(c, method, "Remote source file [ " + remoteSrcFilePath + " ]");
+
+                if ( remoteSrcFilePath.endsWith(".log") ) {
+                    LogPolice.measureUsedTrace( remoteSrcFile.length() );
+                }
+
+                if ( skipArchives && isSkippableArchive(remoteSrcFilePath, remoteSrcFileName, dumpName) ) {
+                    Log.finest(c, method, "Skip [ " + remoteSrcFilePath + " ]: Archive");
+                    continue;
+                }
+
+                String localDstFilePath = localDstFile.getAbsolutePath();
+                Log.finest(c, method, "Local destination file [ " + localDstFilePath + " ]");
+
+                String opDesc = "remote [ " + remoteSrcFilePath + " ] to local [ " + localDstFilePath + " ]";
+
+                boolean isLog = moveFile && isLog(remoteSrcFilePath, remoteSrcFileName, dumpName);
+                boolean isConfigBackup = moveFile && !isLog && remoteSrcFilePath.contains("serverConfigBackups");
+
+                String opName = null;
+                IOException failure = null;
+
                 try {
-                    if (skipArchives
-                        && (absPath.endsWith(".jar")
-                            || absPath.endsWith(".war")
-                            || absPath.endsWith(".ear")
-                            || absPath.endsWith(".rar")
-                            //If we're only getting logs, skip jars, wars, ears, zips, unless they are server dump zips
-                            || (absPath.endsWith(".zip") && !toCopy.getName().contains(serverToUse + ".dump")))) {
-                        Log.finest(c, method, "Skipping: " + absPath);
-                        continue;
-                    }
+                    boolean success = false;
 
-                    // We're only going to attempt to move log files. Because of ffdc log checking, we
-                    // can't move those. But we should move other log files..
-                    boolean isLog = (absPath.contains("logs") && !absPath.contains("ffdc"))
-                                    || toCopy.getName().contains("javacore")
-                                    || toCopy.getName().contains("heapdump")
-                                    || toCopy.getName().contains("Snap")
-                                    || toCopy.getName().contains(serverToUse + ".dump");
-
-                    boolean isConfigBackup = absPath.contains("serverConfigBackups");
-
-                    if (moveFile && (isLog || isConfigBackup)) {
-                        boolean copied = false;
-
-                        // If we're local, try to rename the file instead..
-                        if (machine.isLocal() && toCopy.rename(toReceive)) {
-                            copied = true; // well, we moved it, but it counts.
-                            Log.finest(c, method, "MOVE: " + l + " to " + toReceive.getAbsolutePath());
-                        }
-
-                        if (!copied && toReceive.copyFromSource(toCopy)) {
-                            boolean done = false;
-
-                            while (!done) {
-                                // copy was successful, clean up the source log
-                                done = toCopy.delete();
-                                if (!done) {
-                                    Log.info(c, method, "Sleeping 0.5s before trying again");
-                                    Thread.sleep(500);
-                                }
+                    if ( moveFile && (isLog || isConfigBackup) ) {
+                        if ( isLocal ) {
+                            opName = "rename";
+                            success = remoteSrcFile.rename(localDstFile);
+                            if ( !success ) {
+                                Log.info(c, method, "Error: Failed rename of " + opDesc + "; falling back to copy and delete");
                             }
-                            Log.finest(c, method, "MOVE: " + l + " to " + toReceive.getAbsolutePath());
+                        }
+                        if ( !success ) {
+                            opName = "copy and delete";
+                            success = localDstFile.copyFromSource(remoteSrcFile) && remoteSrcFile.delete();
                         }
                     } else {
-                        toReceive.copyFromSource(toCopy);
-                        Log.finest(c, method, "COPY: " + l + " to " + toReceive.getAbsolutePath());
+                        opName = "copy";
+                        success = localDstFile.copyFromSource(remoteSrcFile);
                     }
-                } catch (Exception e) {
-                    Log.info(c, method, "unable to copy or move " + l + " to " + toReceive.getAbsolutePath());
-                    Log.error(c, method, e);
-                    // Ignore on request and carry on copying the rest of the files
-                    if (!ignoreFailures) {
-                        throw e;
+
+                    if ( !success ) {
+                        failure = new IOException("Error: Failed [ " + opName + " ] of " + opDesc);
                     }
+
+                } catch ( Exception e ) {
+                    failure = new IOException("Error: Failed [ " + opName + " ] of " + opDesc, e);
+                }
+
+                if ( failure != null ) {
+                    if ( !ignoreFailures ) {
+                        throw failure;
+                    } else {
+                        Log.error(c, method, failure, "Ignoring failure during transfer of [ " + remoteSrcDirPath + " ] to [ " + localDstDirPath + " ]");
+                    }
+                } else {
+                    Log.finest(c, method, "Successful [ " + opName + " ]" + " of " + opDesc);
                 }
             }
-
         }
     }
 

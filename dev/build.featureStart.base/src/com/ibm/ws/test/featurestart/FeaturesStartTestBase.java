@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,29 +10,36 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.simple.base;
+package com.ibm.ws.test.featurestart;
 
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.Scanner;
-import java.util.TreeMap;
+import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.ToLongFunction;
 
 import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.test.featurestart.features.FeatureData;
+import com.ibm.ws.test.featurestart.features.FeatureFilter;
+import com.ibm.ws.test.featurestart.features.FeatureLevels;
+import com.ibm.ws.test.featurestart.features.FeatureReports;
+import com.ibm.ws.test.featurestart.features.FeatureStability;
 
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
@@ -49,23 +56,21 @@ import componenttest.topology.impl.LibertyServer;
  * extra running room before a new split is necessary.
  */
 public class FeaturesStartTestBase {
-    // TODO: A cleaner implementation would have the test base have
-    //       instance state.  Keeping the use of static / class state
-    //       since the test implementation evolved from a single FAT
-    //       test class which had a static injected test server,
-    //       and which relies on the static before/after class API.
-
     public static void setParameters(Class<?> c,
                                      LibertyServer server, String serverName,
-                                     int numBuckets, int bucketNo, int sparsity) {
+                                     int numBuckets, int bucketNo, int sparsity) throws Exception {
         FeaturesStartTestBase.c = c;
+
+        // Disabling unexpected FFDC checking for now because there is no good way for this FAT
+        // to know what feature artifacts it should wait for before the server is stopped.
+        server.setFFDCChecking(false);
 
         FeaturesStartTestBase.server = server;
         FeaturesStartTestBase.serverName = serverName;
         FeaturesStartTestBase.serverConfigPath = server.getServerConfigurationPath();
+        FeaturesStartTestBase.serverIsZOS = isServerZOS(server);
+        FeaturesStartTestBase.serverJavaLevel = serverJavaLevel(server);
 
-        // TODO: Not sure if having 'NUM_BUCKETS' be set is best.
-        //       All of the buckets should set the same value.
         FeaturesStartTestBase.NUM_BUCKETS = numBuckets;
         FeaturesStartTestBase.BUCKET_NO = bucketNo;
         FeaturesStartTestBase.SPARSITY = sparsity;
@@ -89,16 +94,7 @@ public class FeaturesStartTestBase {
 
     //
 
-    static int JAVA_LEVEL;
-
-    static boolean isHealthCenterAvailable() {
-        // TODO: Is this the correct implementation of this test?
-        // How is the test specific to the java which is running the test
-        // server?  The test seems to be specific to the java running the
-        // FAT.
-
-        return JavaInfo.isSystemClassAvailable("com.ibm.java.diagnostics.healthcenter.agent.mbean.HealthCenter");
-    }
+    public static int JAVA_LEVEL;
 
     // Test features within a bucket, with an assigned range within
     // the features list.
@@ -108,8 +104,8 @@ public class FeaturesStartTestBase {
     //
     // The server name must be updated to match the bucket parameters.
 
-    static int NUM_BUCKETS;
-    static int BUCKET_NO;
+    public static int NUM_BUCKETS;
+    public static int BUCKET_NO;
 
     // Control parameter: Must be 0 or greater.
     // If greater than 0, test a subset of features, 1 of every SPARSITY.
@@ -120,33 +116,39 @@ public class FeaturesStartTestBase {
     // Use this when testing to limit the number of features which are
     // started.
 
-    static int SPARSITY;
+    public static int SPARSITY;
 
-    static int FIRST_FEATURE_NO; // The first test to be run.
-    static int LAST_FEATURE_NO; // One past the last test to be run.
+    //
 
-    static final Map<String, Integer> requiredLevels = new TreeMap<>();
-    static final List<String> features = new ArrayList<>();
-    static final Map<String, String[]> allowedErrors = new HashMap<>();
-
-    // The server name is set according to the bucket parameters.
     public static LibertyServer server;
+
+    /** Relative path from the server home to the server features directory. */
+    public static final String SERVER_FEATURES_PATH = "/lib/features/";
+
+    public static File getServerFeaturesDir() {
+        return new File(server.getInstallRoot() + SERVER_FEATURES_PATH);
+    }
+
     public static String serverName;
     public static String serverConfigPath;
 
-    // TODO: Should this be cached?  There is currently only
-    //       one use, but that might change.
+    public static boolean serverIsZOS;
+    public static int serverJavaLevel;
 
     public static boolean isServerZOS() {
-        String m = "isServerZOS";
-        try {
-            return server.getMachine().getOperatingSystem().equals(OperatingSystem.ZOS);
-        } catch (Exception e) {
-            // This should never happen; if it does, we will run possibly one extra
-            // test.
-            logError(m, "Unexpected failure", e);
-            return false;
-        }
+        return serverIsZOS;
+    }
+
+    protected static boolean isServerZOS(LibertyServer server) throws Exception {
+        return server.getMachine().getOperatingSystem().equals(OperatingSystem.ZOS);
+    }
+
+    public static int serverJavaLevel() {
+        return serverJavaLevel;
+    }
+
+    public static int serverJavaLevel(LibertyServer server) throws Exception {
+        return JavaInfo.forServer(server).majorVersion();
     }
 
     /**
@@ -332,66 +334,107 @@ public class FeaturesStartTestBase {
 
     //
 
-    /**
-     * Perform class level initialization:
-     *
-     * The FAT runner must have already injected the test server.
-     *
-     * Read the required java levels for features from the test server.
-     *
-     * Determine the java level used by the test server.
-     *
-     * Read and filter features from the test server.
-     *
-     * Setup the table of allowed errors, per feature short name.
-     *
-     * @throws Exception Thrown if the class level initialization failed. This
-     *                       would be most likely because of a failure to read feature data, or
-     *                       because the build produced no testable features.
-     */
     public static void setUp() throws Exception {
-        initRequiredLevels(); // This is a static table read.
-        initJavaInfo();
-        initFeatures(); // Uses the java level as one of the feature filters.
-        initAllowedErrors(); // Static table of known allowable errors.
+        featureData = FeatureData.readFeatures(getServerFeaturesDir());
+
+        stableFeatures = FeatureStability.readStableFeatures();
+
+        requiredLevels = FeatureLevels.getRequiredLevels();
+
+        featureFilter = (name) -> FeatureFilter.skipFeature(name);
+        featureZOSFilter = (name) -> FeatureFilter.zosSkip(name, isServerZOS());
+
+        //
+
+        BiFunction<String, Boolean, String> zosFilter = (name, isZOS) -> FeatureFilter.zosSkip(name, isZOS.booleanValue());
+
+        System.out.println("Read [ " + featureData.size() + "] features for server [ " + serverName + " ] at [ " + server.getInstallRoot() + " ]");
+        System.out.println();
+
+        (new FeatureReports(featureData, stableFeatures, requiredLevels, featureFilter, zosFilter)).display();
+
+        //
+
+        initFeatures();
     }
 
     //
 
-    /**
-     * Determine the major version of the java which is being used by the server.
-     *
-     * This relies on the FAT running having already injected the server.
-     */
-    public static void initJavaInfo() throws Exception {
-        JAVA_LEVEL = JavaInfo.forServer(server).majorVersion();
+    public static Map<String, FeatureData> featureData;
+
+    public static Set<String> getFeatureNames() {
+        return featureData.keySet();
     }
 
-    // TODO: Should this perhaps be initialized from java code?  Having the
-    // external properties file doesn't seem to add anything.
+    public static String[] sortFeatureNames() {
+        Set<String> featureNamesSet = getFeatureNames();
+        String[] featureNamesArray = featureNamesSet.toArray(new String[featureNamesSet.size()]);
+        Arrays.sort(featureNamesArray);
+        return featureNamesArray;
+    }
 
-    public static final String REQUIRED_LEVELS_NAME = "/feature-java-levels.properties";
+    public static FeatureData getFeatureData(String name) {
+        return featureData.get(name);
+    }
 
-    /**
-     * Read the table of minimum required java levels for features.
-     *
-     * Keys are feature names, all lower case. Values are integer values
-     * representing a minimum java level.
-     *
-     * @throws IOException Thrown if the properties file could not be read.
-     */
-    public static void initRequiredLevels() throws IOException {
-        Properties props = new Properties();
-        try (InputStream input = FeaturesStartTestBase.class.getResourceAsStream(REQUIRED_LEVELS_NAME)) {
-            props.load(input);
+    public static FeatureStability stableFeatures;
+
+    public static FeatureStability getStableFeatures() {
+        return stableFeatures;
+    }
+
+    public static boolean isStable(String name) {
+        return stableFeatures.isStable(name);
+    }
+
+    public static Map<String, Integer> requiredLevels;
+
+    public static Integer getRequiredLevel(String name) {
+        return requiredLevels.get(name);
+    }
+
+    public static String isLevelFiltered(String name) {
+        return isLevelFiltered(name, serverJavaLevel);
+    }
+
+    public static String isLevelFiltered(String name, int currentLevel) {
+        Integer requiredLevel = getRequiredLevel(name);
+        if ((requiredLevel == null) || (currentLevel >= requiredLevel.intValue())) {
+            return null;
+        } else {
+            return "Required level [ " + requiredLevel + " ] greater than the current level [ " + currentLevel + " ]";
         }
-
-        props.forEach((sName, reqLevel) -> {
-            String shortName = ((String) sName).toLowerCase();
-            Integer requiredLevel = Integer.valueOf((String) reqLevel);
-            requiredLevels.put(shortName, requiredLevel);
-        });
     }
+
+    public static Map<String, String[]> allowedErrors;
+
+    public static String[] getAllowedErrors(String name) {
+        return allowedErrors.get(name);
+    }
+
+    public static Function<String, String> featureFilter;
+
+    public static String isFiltered(String name) {
+        return featureFilter.apply(name);
+    }
+
+    public static Function<String, String> featureZOSFilter;
+
+    public static String isZOSFiltered(String name) {
+        return featureZOSFilter.apply(name);
+    }
+
+    //
+
+    public static List<String> runnableFeatureNames;
+    public static Map<String, FeatureData> runnableFeatures;
+
+    public static Set<String> outOfLevelFeatureNames;
+
+    public static int firstFeatureNo;
+    public static int lastFeatureNo; // One past the last test to be run.
+
+    //
 
     /**
      * Initialize the features which are to be tested.
@@ -407,242 +450,118 @@ public class FeaturesStartTestBase {
     public static void initFeatures() throws IOException {
         String m = "initFeatures";
 
-        File featuresDir = new File(server.getInstallRoot() + "/lib/features/");
-        String featuresPath = featuresDir.getAbsolutePath();
+        Set<String> featureNamesSet = getFeatureNames();
+        String[] featureNamesArray = featureNamesSet.toArray(new String[featureNamesSet.size()]);
+        Arrays.sort(featureNamesArray);
 
-        if (!featuresDir.exists()) {
-            throw new IOException("Folder [ " + featuresPath + " ] does not exist");
-        }
+        List<String> selectedFeatureNames = new ArrayList<>(featureNamesArray.length);
+        Map<String, FeatureData> selectedFeatures = new HashMap<>(featureNamesArray.length);
 
-        File[] featureManifests = featuresDir.listFiles();
-        if (featureManifests == null) {
-            throw new IOException("Folder [ " + featuresPath + " ] could not be listed");
-        } else if (featureManifests.length == 0) {
-            throw new IOException("Folder [ " + featuresPath + " ] is empty");
-        }
+        List<String> filteredFeatureNames = new ArrayList<>();
+        Map<String, String> filteredFeatures = new HashMap<>();
+        List<String> zosFilteredFeatureNames = new ArrayList<>();
+        Map<String, String> zosFilteredFeatures = new HashMap<>();
+        List<String> levelFilteredFeatureNames = new ArrayList<>();
+        Map<String, String> levelFilteredFeatures = new HashMap<>();
 
-        Arrays.sort(featureManifests, (f1, f2) -> f1.getName().compareTo(f2.getName()));
-
-        // 'parseShortName' filters on OSGI meta-information:
-        // client features, test features, and non-public features are filtered.
-        //
-        // 'skipFeature' filters on feature name and external information, for
-        // example, required java level, required platform, disallowed as singleton.
-
+        List<String> stableFeatures = new ArrayList<>();
+        List<String> clientFeatures = new ArrayList<>();
         List<String> testFeatures = new ArrayList<>();
         List<String> nonPublicFeatures = new ArrayList<>();
 
-        for (File featureManifest : featureManifests) {
-            String shortName = parseShortName(featureManifest, nonPublicFeatures, testFeatures);
-            if (shortName == null) {
-                continue; // Not readable, or filtered.
-            }
-
-            String skipReason = skipFeature(shortName);
-            if (skipReason != null) {
-                logInfo(m, "Cannot test feature [ " + shortName + " ]: " + skipReason);
+        for (String name : featureNamesArray) {
+            String filterReason = isFiltered(name);
+            if (filterReason != null) {
+                filteredFeatureNames.add(name);
+                filteredFeatures.put(name, filterReason);
                 continue;
             }
 
-            features.add(shortName);
+            String zosFilterReason = isZOSFiltered(name);
+            if (zosFilterReason != null) {
+                zosFilteredFeatureNames.add(name);
+                zosFilteredFeatures.put(name, zosFilterReason);
+                continue;
+            }
+
+            String levelFilterReason = isLevelFiltered(name);
+            if (levelFilterReason != null) {
+                levelFilteredFeatureNames.add(name);
+                levelFilteredFeatures.put(name, levelFilterReason);
+                // Do NOT skip level filtered features.  An attempt
+                // is made to start these, with failure as the expected
+                // result.
+            }
+
+            FeatureData featureData = getFeatureData(name);
+
+            if ((TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.LITE) && isStable(name)) {
+                stableFeatures.add(name);
+            } else if (featureData.isClientOnly()) {
+                clientFeatures.add(name);
+            } else if (featureData.isTest()) {
+                testFeatures.add(name);
+            } else if (!featureData.isPublic()) {
+                nonPublicFeatures.add(name);
+
+            } else {
+                selectedFeatureNames.add(name);
+                selectedFeatures.put(name, featureData);
+            }
+        }
+
+        if (!stableFeatures.isEmpty()) {
+            logInfo(m, "LITE mode: Skip stable features [ " + stableFeatures.size() + " ]:");
+            display(m, "    ", 80, stableFeatures);
+        }
+
+        if (!clientFeatures.isEmpty()) {
+            logInfo(m, "Skip client-only features [ " + clientFeatures.size() + " ]:");
+            display(m, "    ", 80, testFeatures);
         }
 
         if (!nonPublicFeatures.isEmpty()) {
-            logInfo(m, "Cannot test features [ " + nonPublicFeatures.size() + " ]: non-public");
+            logInfo(m, "Skip non-public features [ " + nonPublicFeatures.size() + " ]:");
             display(m, "    ", 80, nonPublicFeatures);
         }
 
         if (!testFeatures.isEmpty()) {
-            logInfo(m, "Cannot test features [ " + testFeatures.size() + " ]: test");
+            logInfo(m, "Skip test features [ " + testFeatures.size() + " ]:");
             display(m, "    ", 80, testFeatures);
         }
 
-        if (features.isEmpty()) {
-            throw new IOException("Folder [ " + featuresPath + " ] has no testable features");
+        if (!filteredFeatures.isEmpty()) {
+            logInfo(m, "Skip filtered features [ " + filteredFeatures.size() + " ]:");
+            display(m, "    ", ": ", "", filteredFeatureNames, filteredFeatures);
         }
 
-        // All tests *MUST* use the same features, in the same order.
-        features.sort((n1, n2) -> n1.compareTo(n2));
+        if (!zosFilteredFeatures.isEmpty()) {
+            logInfo(m, "Skip ZOS filtered features [ " + zosFilteredFeatures.size() + " ]:");
+            display(m, "    ", ": ", "", zosFilteredFeatureNames, zosFilteredFeatures);
+        }
+
+        if (selectedFeatures.isEmpty()) {
+            throw new IllegalArgumentException("No testable features are present.");
+        }
+
+        logInfo(m, "Run features [ " + selectedFeatures.size() + " ]:");
+        display(m, "    ", 80, selectedFeatures.keySet());
+
+        if (!levelFilteredFeatures.isEmpty()) {
+            logInfo(m, "Out-of-level features [ " + levelFilteredFeatures.size() + " ]:");
+            display(m, "    ", ": ", "", levelFilteredFeatureNames, levelFilteredFeatures);
+        }
+
+        runnableFeatureNames = selectedFeatureNames;
+        runnableFeatures = selectedFeatures;
+
+        outOfLevelFeatureNames = new HashSet<>(levelFilteredFeatureNames);
 
         // Limit the features to the current bucket.
-        int[] range = getRange(features.size(), NUM_BUCKETS, BUCKET_NO);
-        FIRST_FEATURE_NO = range[0];
-        LAST_FEATURE_NO = range[1];
-    }
+        int[] range = getRange(selectedFeatures.size(), NUM_BUCKETS, BUCKET_NO);
 
-    /**
-     * Parse the short name of a feature manifest.
-     *
-     * Answer null if the feature manifest is a directory, or is not actually a manifest.
-     * Answer null if the feature manifest is missing a short name value, or is a client
-     * feature, a test feature, or a non-public feature.
-     *
-     * @param featureFile The feature manifest file which is to be parsed.
-     * @param nonPublic   Storage for non-public feature names.
-     * @param test        Storage for test feature names.
-     *
-     * @return The short name from the feature file.
-     *
-     * @throws IOException Thrown if an error occurs while reading the feature file.
-     */
-    public static String parseShortName(File featureFile, List<String> nonPublic, List<String> test) throws IOException {
-        String m = "parseShortName";
-
-        // The features directory has additional, non-manifest files.
-        // Ignore them.
-        if (featureFile.isDirectory() || !featureFile.getName().endsWith(".mf")) {
-            return null;
-        }
-
-        try (Scanner scanner = new Scanner(featureFile)) {
-            String symbolicName = null;
-            String shortName = null;
-            String unusableReason = null;
-
-            boolean isNonPublic = false;
-            boolean isTest = false;
-
-            // Keep looping after setting the reason, so to have the
-            // short name to display.
-            while (((unusableReason == null) || (shortName == null) || (symbolicName == null)) &&
-                   scanner.hasNextLine()) {
-
-                String line = scanner.nextLine();
-
-                // TODO: This checking is approximate!
-                // Metadata may be split across multiple lines.
-
-                if ((shortName == null) && line.startsWith("IBM-ShortName:")) {
-                    shortName = line.substring("IBM-ShortName:".length()).trim();
-                    String upperShortName = shortName.toUpperCase();
-                    if (upperShortName.contains("EECLIENT") || upperShortName.contains("SECURITYCLIENT")) {
-                        unusableReason = "client-only";
-                    }
-
-                } else if (line.contains("IBM-Test-Feature:") && line.contains("true")) {
-                    isTest = true;
-                    unusableReason = "test";
-
-                } else if (line.startsWith("Subsystem-SymbolicName:")) {
-                    // A short name is not available for most non-public features.
-                    // Read the symbolic name as an alternative name.
-
-                    String tail = line.substring("Subsystem-SymbolicName:".length());
-                    int semiPos = tail.indexOf(';');
-                    if (semiPos == -1) {
-                        symbolicName = tail.trim();
-                    } else {
-                        symbolicName = tail.substring(0, semiPos).trim();
-                    }
-
-                    if (!tail.contains("visibility:=public")) {
-                        isNonPublic = true;
-                        unusableReason = "non-public";
-                    }
-                }
-            }
-
-            // TODO: Do all public features have a short name?
-            // At least one feature, 'configfatlibertyinternals-1.0', has no short name,
-            // and is not filtered by any of the tests.
-
-            if (unusableReason == null) {
-                if (shortName == null) {
-                    unusableReason = "No 'IBM-ShortName'";
-                }
-            }
-
-            if (unusableReason != null) {
-                if (isNonPublic || isTest) {
-                    String useName;
-                    if (shortName != null) {
-                        useName = shortName;
-                    } else if (symbolicName != null) {
-                        useName = symbolicName;
-                    } else {
-                        useName = featureFile.getName();
-                        logInfo(m, "Strange: [ " + featureFile.getAbsolutePath() + " ] has no symbolic name");
-                    }
-                    if (isNonPublic) {
-                        nonPublic.add(useName);
-                    } else {
-                        test.add(useName);
-                    }
-                    // Log non-public and test features all together.  Otherwise,
-                    // these bloat the log.
-                } else {
-                    logInfo(m, "Cannot test feature [ " + symbolicName + " ] [ " + shortName + " ]: " + unusableReason);
-                }
-                return null;
-            } else {
-                return shortName;
-            }
-        }
-    }
-
-    /**
-     * Tell if a feature is to be skipped.
-     *
-     * Feature testing attempts to start the server using every
-     * configured feature.
-     *
-     * However, for a variaty of reasons, a feature may not be
-     * testable. The most common reasons are because of a JDK or System
-     * dependencies, or a dependency on a configuration value which is
-     * not set by these simple tests.
-     *
-     * These tests are for all buckets, not just the current bucket.
-     *
-     * @param shortName The short name of the feature which is to be tested.
-     * @return Null if the feature is to be tested. A string message if the
-     *         feature is not to be tested.
-     */
-    public static String skipFeature(String shortName) {
-        // TODO: We don't check if the server is running on z/OS,
-        //       although we do check later in this method.
-        // TODO: Condition this on z/OS.
-        // z/OS Connect is NOT a z/OS only feature.  Every other
-        // "zos" prefix feature is for z/OS.
-        if (((shortName.startsWith("zos") && !shortName.startsWith("zosconnect-")) ||
-             shortName.equalsIgnoreCase("batchSMFLogging-1.0"))) {
-            return "z/OS only";
-        }
-
-        // Don't test this feature if environment is using Java level below minimum required
-        // specified in properties file. Not every feature has a mapping in that file.
-        Integer javaLevel = requiredLevels.get(shortName.toLowerCase());
-        if ((javaLevel != null) && (JAVA_LEVEL < javaLevel)) {
-            return "Requires java " + javaLevel;
-        }
-
-        // This feature is grand-fathered in on not starting cleanly on its own.
-        // Fixing it could potentially break existing configurations
-        if (shortName.equalsIgnoreCase("wsSecurity-1.1")) {
-            return "Cannot start by itself";
-        } else if (shortName.equalsIgnoreCase("constrainedDelegation-1.0")) {
-            return "Requires spnego-1.0 or OIDC";
-        }
-
-        // Only IBM JDK includes Health Center and IBM JDK 11+ (Semeru)
-        // is based on Adopt JDK 11+, which does not include Health Center.
-        if (shortName.equalsIgnoreCase("logstashCollector-1.0")) {
-            if (!isHealthCenterAvailable()) {
-                return "Requires Health Center";
-            } else if (isServerZOS()) {
-                return "Requires the attach API, which is disabled on z/OS";
-            }
-        }
-
-        // WMQ features require a RAR location variable to be set.
-        // These simple tests do not have a RAR and have not set the
-        // location variable.
-        if (shortName.equalsIgnoreCase("wmqMessagingClient-3.0") ||
-            shortName.equalsIgnoreCase("wmqJmsClient-2.0") ||
-            shortName.equalsIgnoreCase("wmqJmsClient-1.1")) {
-            return "Required variable 'wmqJmsClient.rar.location' is not set";
-        }
-
-        return null;
+        firstFeatureNo = range[0];
+        lastFeatureNo = range[1];
     }
 
     /**
@@ -709,54 +628,6 @@ public class FeaturesStartTestBase {
     //         }
     //     }
     // }
-
-    /**
-     * Initialize the allowed failure messages.
-     *
-     * This is a table of error message codes, specified per feature short name.
-     *
-     * The table spans all buckets.
-     */
-    public static void initAllowedErrors() {
-        // TODO: OpenAPI code needs to be reworked so that it
-        // doesn't leave threads around when the server stops
-        // before it has finished initializing. Once OpenAPI is
-        // fixed, these QUISCE_FAILURES should be removed.
-        // TODO: This might be fixed by now.
-        String[] QUIESCE_FAILURES = new String[] { "CWWKE1102W", "CWWKE1107W" };
-        allowedErrors.put("openapi-3.0", QUIESCE_FAILURES);
-        allowedErrors.put("openapi-3.1", QUIESCE_FAILURES);
-        allowedErrors.put("mpOpenApi-1.0", QUIESCE_FAILURES);
-
-        allowedErrors.put("batchSMFLogging-1.0", new String[] { "CWWKE0702E: .* com.ibm.ws.jbatch.smflogging" });
-
-        // requires binaryLogging-1.0 to be enabled via bootstrap.properties
-        allowedErrors.put("logAnalysis-1.0", new String[] { "CWWKE0702E: .* com.ibm.ws.loganalysis" });
-
-        // The Rtcomm service is not able to connect to tcp://localhost:1883.
-        allowedErrors.put("rtcomm-1.0", new String[] { "CWRTC0002E" });
-        // The Rtcomm service is not able to connect to tcp://localhost:1883.
-        // The Rtcomm service - The following virtual hosts could not be found or are not correctly configured: [abcdefg].
-        allowedErrors.put("rtcommGateway-1.0", new String[] { "CWRTC0002E", "SRVE9956W" });
-
-        // lets the user now certain config attributes will be ignored depending on whether or not 'inboundPropagation' is configured
-        allowedErrors.put("samlWeb-2.0", new String[] { "CWWKS5207W: .* inboundPropagation" });
-        // pulls in the samlWeb-2.0 feature
-        allowedErrors.put("wsSecuritySaml-1.1", new String[] { "CWWKS5207W: .* inboundPropagation" });
-
-        // Ignore required config warnings for the 'collectiveMember-1.0' feature, and all features that include it
-        String[] COLLECTIVE_MEMBER_WARNINGS = new String[] { "CWWKG0033W: .*collectiveTrust", "CWWKG0033W: .*serverIdentity" };
-        allowedErrors.put("collectiveMember-1.0", COLLECTIVE_MEMBER_WARNINGS);
-        allowedErrors.put("collectiveController-1.0", COLLECTIVE_MEMBER_WARNINGS);
-        allowedErrors.put("clusterMember-1.0", COLLECTIVE_MEMBER_WARNINGS);
-        allowedErrors.put("dynamicRouting-1.0", COLLECTIVE_MEMBER_WARNINGS);
-        allowedErrors.put("healthAnalyzer-1.0", COLLECTIVE_MEMBER_WARNINGS);
-        allowedErrors.put("healthManager-1.0", COLLECTIVE_MEMBER_WARNINGS);
-        allowedErrors.put("scalingController-1.0", COLLECTIVE_MEMBER_WARNINGS);
-        allowedErrors.put("scalingMember-1.0", COLLECTIVE_MEMBER_WARNINGS);
-    }
-
-    //
 
     public static class StartupResult {
         public final boolean attempted;
@@ -876,25 +747,19 @@ public class FeaturesStartTestBase {
         logInfo(m, "Test server: " + serverName);
         logInfo(m, "Test server java: " + JAVA_LEVEL);
 
-        if (features.isEmpty()) {
-            banner(m);
-            logInfo(m, "No features were selected");
-            banner(m);
-            return;
-        }
-
         banner(m);
-        logInfo(m, "Features [ " + features.size() + " ]");
+        logInfo(m, "Features [ " + runnableFeatures.size() + " ]");
         logInfo(m, "Bucket [ " + BUCKET_NO + " ] of [ " + NUM_BUCKETS + " ]");
-        logInfo(m, "  Count [ " + (LAST_FEATURE_NO - FIRST_FEATURE_NO) + " ]");
-        logInfo(m, "  First [ " + FIRST_FEATURE_NO + " ]: [ " + features.get(FIRST_FEATURE_NO) + " ]");
-        logInfo(m, "  Last  [ " + (LAST_FEATURE_NO - 1) + " ]: [ " + features.get(LAST_FEATURE_NO - 1) + " ]");
+        logInfo(m, "  Count [ " + (lastFeatureNo - firstFeatureNo) + " ]");
+        logInfo(m, "  First [ " + firstFeatureNo + " ]: [ " + runnableFeatureNames.get(firstFeatureNo) + " ]");
+        logInfo(m, "  Last  [ " + (lastFeatureNo - 1) + " ]: [ " + runnableFeatureNames.get(lastFeatureNo - 1) + " ]");
         if (SPARSITY > 0) {
             logInfo(m, "  Sparsity [ " + SPARSITY + " ]");
         }
+        logInfo(m, "Level filtered features [ " + outOfLevelFeatureNames.size() + " ]");
         banner(m);
 
-        int numFeatures = LAST_FEATURE_NO - FIRST_FEATURE_NO;
+        int numFeatures = lastFeatureNo - firstFeatureNo;
         if (SPARSITY > 0) {
             numFeatures /= SPARSITY;
             if ((numFeatures % SPARSITY) > 0) {
@@ -904,6 +769,8 @@ public class FeaturesStartTestBase {
 
         List<String> successes = new ArrayList<>();
         Map<String, String> failures = new LinkedHashMap<>();
+        Map<String, String> levelFailures = new LinkedHashMap<>();
+        Map<String, String> unexpectedStarts = new LinkedHashMap<>();
         List<String> skipped = new ArrayList<>();
 
         Map<String, TimingResult> timingResults = new HashMap<>(numFeatures);
@@ -911,10 +778,11 @@ public class FeaturesStartTestBase {
         String lastShortName;
         String nextShortName = null;
 
-        for (int featureNo = FIRST_FEATURE_NO; featureNo < LAST_FEATURE_NO; featureNo++) {
-            String shortName = features.get(featureNo);
+        for (int featureNo = firstFeatureNo; featureNo < lastFeatureNo; featureNo++) {
+            String shortName = runnableFeatureNames.get(featureNo);
+            boolean isOutOfLevel = outOfLevelFeatureNames.contains(shortName);
 
-            if ((SPARSITY > 0) && (((featureNo - FIRST_FEATURE_NO) % SPARSITY) != 0)) {
+            if ((SPARSITY > 0) && (((featureNo - firstFeatureNo) % SPARSITY) != 0)) {
                 skipped.add(shortName);
                 logInfo(m, "Skipping [ " + shortName + " ]: Filtered by SPARSITY");
                 continue;
@@ -929,7 +797,10 @@ public class FeaturesStartTestBase {
             try {
                 StartupResult startupResult = null;
                 try {
-                    startupResult = startFeature(lastShortName, nextShortName, failures, timingResult);
+                    startupResult = startFeature(lastShortName, nextShortName,
+                                                 isOutOfLevel,
+                                                 failures, levelFailures, unexpectedStarts,
+                                                 timingResult);
 
                 } finally {
                     // A null result is only possible if 'startFeature' failed with a throwable.
@@ -959,9 +830,19 @@ public class FeaturesStartTestBase {
             display(m, "    ", 80, successes);
         }
 
+        logInfo(m, "Expected failures [ " + levelFailures.size() + " ]");
+        if (!levelFailures.isEmpty()) {
+            display(m, "    ", 80, levelFailures.keySet());
+        }
+
         logInfo(m, "Failures [ " + failures.size() + " ]");
         if (!failures.isEmpty()) {
             display(m, "    ", 80, failures.keySet());
+        }
+
+        logInfo(m, "Unexpected successes [ " + unexpectedStarts.size() + " ]");
+        if (!unexpectedStarts.isEmpty()) {
+            display(m, "    ", 80, unexpectedStarts.keySet());
         }
 
         if (!skipped.isEmpty()) {
@@ -971,8 +852,18 @@ public class FeaturesStartTestBase {
 
         display(m, timingResults);
 
+        if (!unexpectedStarts.isEmpty()) {
+            logInfo(m, "Features [ " + unexpectedStarts.keySet() + " ] started on java [ " + serverJavaLevel + " ].");
+            logInfo(m, "If these are test-only features, add 'IBM-Test-Feature: true' to the feature manifests. ");
+            logInfo(m, "Feature required java levels are specified in resource [ " + FeatureLevels.REQUIRED_LEVELS_NAME + " ]");
+        }
+
         if (!failures.isEmpty()) {
             assertTrue("Features [ " + failures.keySet() + " ] should have started.", false);
+        }
+
+        if (!unexpectedStarts.isEmpty()) {
+            assertTrue("Features [ " + unexpectedStarts.keySet() + " ] should not have started", false);
         }
     }
 
@@ -987,15 +878,24 @@ public class FeaturesStartTestBase {
      * If an attempt was made to start the server, answer the PID of the started server.
      * (This can be null if the attempt was made but failed.)
      *
-     * @param lastShortName The last configured short name. May be null.
-     * @param shortName     The short name of the feature which is to be started.
-     * @param failures      Storage for features which failed to start.
-     * @param timingResult  Storage for time recording.
+     * @param lastShortName    The last configured short name. May be null.
+     * @param shortName        The short name of the feature which is to be started.
+     * @param isOutOfLevel     The java level is not sufficient to run the feature. A
+     *                             failure is expected.
+     * @param failures         Storage for features which failed to start.
+     * @param levelFailures    Storage for features which failed to start, and which were expected to fail.
+     * @param unexpectedStarts Storage for features which started but which were expected to fail.
+     * @param timingResult     Storage for time recording.
      *
      * @return The PID of the started server. Null if the feature could not be
      *         configured, or if the server startup was attempted but failed.
      */
-    public static StartupResult startFeature(String lastShortName, String shortName, Map<String, String> failures, TimingResult timingResult) {
+    public static StartupResult startFeature(String lastShortName, String shortName,
+                                             boolean isOutOfLevel,
+                                             Map<String, String> failures,
+                                             Map<String, String> levelFailures,
+                                             Map<String, String> unexpectedStarts,
+                                             TimingResult timingResult) {
         String m = "startFeature";
 
         long initialUpdateNs = timingResult.getTimeNs();
@@ -1019,7 +919,19 @@ public class FeaturesStartTestBase {
         boolean started;
         try {
             // Default start: Pre-clean and clean the server.
-            server.startServer(shortName + ".log");
+            server.setConsoleLogName(shortName + ".log");
+
+            boolean preClean = true;
+            boolean cleanStart = true;
+            boolean validateApps = false;
+            boolean expectStartFailure = isOutOfLevel;
+            boolean validateTimedExit = false;
+
+            server.startServerAndValidate(preClean, cleanStart,
+                                          validateApps,
+                                          expectStartFailure,
+                                          validateTimedExit);
+
             started = true;
         } catch (Exception e) {
             started = false;
@@ -1042,14 +954,25 @@ public class FeaturesStartTestBase {
         // There is no point to doing feature startup verification if the
         // server did not start cleanly.
 
+        // Verify we DO get CWWKF0032E
+        // boolean featureStarted = server.waitForStringInLog("CWWKF0032E", 5 * 1000) == null;
+
         if (started) {
             long initialVerifyNs = timingResult.getTimeNs();
             try {
                 List<String> errors = server.findStringsInLogs("CWWKF0032E");
                 if (!errors.isEmpty()) {
-                    addFailure(m, failures, shortName, "Verification Failure", null);
-                    for (String error : errors) {
-                        logError(m, "Server failure message [ " + error + " ]");
+                    if (isOutOfLevel) {
+                        addLevelFailure(m, levelFailures, shortName);
+                    } else {
+                        addFailure(m, failures, shortName, "Verification Failure", null);
+                        for (String error : errors) {
+                            logError(m, "Server failure message [ " + error + " ]");
+                        }
+                    }
+                } else {
+                    if (isOutOfLevel) {
+                        addUnexpectedSuccess(m, unexpectedStarts, shortName);
                     }
                 }
             } catch (Exception e) {
@@ -1065,6 +988,16 @@ public class FeaturesStartTestBase {
     public static void addFailure(String m, Map<String, String> failures, String shortName, String description, Throwable th) {
         logError(m, "Failed to start feature [ " + shortName + " ]: " + description, th);
         failures.put(shortName, shortName);
+    }
+
+    public static void addLevelFailure(String m, Map<String, String> levelFailures, String shortName) {
+        logError(m, "Failed to start feature (expected) [ " + shortName + " ]");
+        levelFailures.put(shortName, shortName);
+    }
+
+    public static void addUnexpectedSuccess(String m, Map<String, String> unexpectedStarts, String shortName) {
+        logError(m, "Started feature (unexpected; required java not present) [ " + shortName + " ]");
+        unexpectedStarts.put(shortName, shortName);
     }
 
     //
@@ -1283,5 +1216,13 @@ public class FeaturesStartTestBase {
             logInfo(m, builder.toString());
             builder.setLength(0);
         }
+    }
+
+    public static void display(String m,
+                               String head, String middle, String tail,
+                               List<String> keys, Map<String, String> values) {
+        keys.forEach((name) -> {
+            logInfo(m, head + name + middle + values.get(name) + tail);
+        });
     }
 }

@@ -1,0 +1,83 @@
+null, appSecurity, 1.0, 2.0
+null, appState, 1.0, 2.0
+null, audit, 1.0
+null, batch, 1.0
+null, beanValidation, 1.0, 1.1
+null, bells, 1.0
+null, bluemixUtility, 1.0
+null, blueprint, 1.0
+null, cdi, 1.0, 1.2
+null, cloudAutowiring, 1.0
+null, cloudant, 1.0
+null, clusterMember, 1.0
+null, collectiveController, 1.0
+null, collectiveMember, 1.0
+null, concurrent, 1.0, 2.0
+null, constrainedDelegation, 1.0
+null, distributedMap, 1.0
+null, dynamicRouting, 1.0
+null, el, 3.0, 4.0
+null, eventLogging, 1.0
+null, federatedRegistry, 1.0
+null, heritageAPIs, 1.0
+null, httpWhiteboard, 1.0
+null, j2eeManagement, 1.1
+null, javaMail, 1.5
+null, jaxrs, 1.1, 2.0, 2.2, 2.3, 3.0
+null, jca, 1.6
+null, jcaInboundSecurity, 1.0
+null, jcacheContainer, 1.1
+null, jdbc, 4.0, 4.1
+null, jms, 1.1
+null, jmsMdb, 3.1
+null, jndi, 1.0
+null, jpaContainer, 2.1
+null, jsf, 2.0
+null, jsfContainer, 2.2
+null, json, 1.0
+null, jsonbContainer, 1.0, 2.0
+null, jsonp, 1.0
+null, jsonpContainer, 1.1, 2.0
+null, jsp, 2.2
+null, logAnalysis, 1.0
+null, logstashCollector, 1.0
+null, managedBeans, 1.0
+null, mdb, 3.1
+null, mediaServerControl, 1.0
+null, microProfile, 1.0, 1.2, 1.3, 2.0, 2.1, 3.0, 3.2
+null, mongodb, 2.0
+null, mpConfig, 1.1, 1.2, 1.3
+null, mpFaultTolerance, 1.0, 1.1, 2.0
+null, mpHealth, 1.0, 2.0, 2.1
+null, mpJwt, 1.0
+null, mpMetrics, 1.0, 1.1, 2.0, 2.2
+null, mpOpenAPI, 1.0
+null, mpOpenTracing, 1.0, 1.1, 1.2
+null, mqtt, 3.1
+null, openapi, 3.0
+null, opentracing, 1.0, 1.1, 1.2
+null, osgi.jpa, 1.0
+null, osgiAppConsole, 1.0
+null, osgiAppIntegration, 1.0
+null, osgiBundle, 1.0
+null, osgiConsole, 1.0
+null, passwordUtilities, 1.0
+null, rtcomm, 1.0
+null, rtcommGateway, 1.0
+null, 1samlWeb, 2.0
+null, scalingController, 1.0
+null, scalingMember, 1.0
+null, scim, 1.0
+null, serverStatus, 1.0
+null, sipServlet, 1.1
+null, usageMetering, 1.0
+null, wab, 1.0
+null, wasJmsSecurity, 1.0
+null, wasJmsServer, 1.0
+null, webCache, 1.0
+null, webCacheMonitor, 1.0
+null, webProfile, 7.0
+null, websocket, 1.0
+null, wsAtomicTransaction, 1.2
+null, wsSecurity, 1.1
+null, wsSecuritySaml, 1.1

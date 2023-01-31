@@ -10,13 +10,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.simple;
+package com.ibm.ws.test.featurestart;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.simple.base.FeaturesStartTestBase;
+import com.ibm.ws.test.featurestart.FeaturesStartTestBase;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
