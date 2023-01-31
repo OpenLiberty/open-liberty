@@ -10,7 +10,8 @@ Implementation-Version: 2.4.8.Final
 Embed-Dependency: *; scope=compile; inline=true
 Specification-Title: JSR-346 Contexts and Dependency Injection for the
   Java EE platform
-Export-Package: org.jboss.*;version="2.4.8.Final", \
+Export-Package: !org.jboss.classfilewriter.* , \
+ org.jboss.*;version="2.4.8.Final", \
  org.jboss.weld.context.beanstore;version="2.4.8.Final", \
  org.jboss.weldx.transaction;version="1.0.16"
 DynamicImport-Package: *
