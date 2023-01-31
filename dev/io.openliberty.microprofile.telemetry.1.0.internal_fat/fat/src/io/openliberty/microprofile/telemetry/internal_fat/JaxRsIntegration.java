@@ -33,6 +33,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.JaxRsEndpoints;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.async.JaxRsServerAsyncTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.common.PropagationHeaderEndpoint;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.transports.B3MultiPropagationTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.transports.B3PropagationTestServlet;
@@ -53,6 +54,7 @@ public class JaxRsIntegration extends FATServletClient {
     public static final String B3_APP_NAME = "b3";
     public static final String B3_MULTI_APP_NAME = "b3multi";
     public static final String JAEGER_APP_NAME = "jaeger";
+    public static final String ASYNC_SERVER_APP_NAME = "jaxrsAsyncServer";
 
     @TestServlets({
                     @TestServlet(contextRoot = W3C_TRACE_APP_NAME, servlet = W3CTracePropagationTestServlet.class),
@@ -60,6 +62,7 @@ public class JaxRsIntegration extends FATServletClient {
                     @TestServlet(contextRoot = B3_APP_NAME, servlet = B3PropagationTestServlet.class),
                     @TestServlet(contextRoot = B3_MULTI_APP_NAME, servlet = B3MultiPropagationTestServlet.class),
                     @TestServlet(contextRoot = JAEGER_APP_NAME, servlet = JaegerPropagationTestServlet.class),
+                    @TestServlet(contextRoot = ASYNC_SERVER_APP_NAME, servlet = JaxRsServerAsyncTestServlet.class),
     })
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -126,12 +129,19 @@ public class JaxRsIntegration extends FATServletClient {
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
                         .addAsResource(jaegerAppConfig, "META-INF/microprofile-config.properties");
 
+        WebArchive asyncServerApp = ShrinkWrap.create(WebArchive.class, ASYNC_SERVER_APP_NAME + ".war")
+                        .addPackage(JaxRsServerAsyncTestServlet.class.getPackage())
+                        .addPackage(InMemorySpanExporter.class.getPackage())
+                        .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
+                        .addAsResource(appConfig, "META-INF/microprofile-config.properties");
+
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
         ShrinkHelper.exportAppToServer(server, w3cTraceApp, SERVER_ONLY);
         ShrinkHelper.exportAppToServer(server, w3cTraceBaggageApp, SERVER_ONLY);
         ShrinkHelper.exportAppToServer(server, b3App, SERVER_ONLY);
         ShrinkHelper.exportAppToServer(server, b3MultiApp, SERVER_ONLY);
         ShrinkHelper.exportAppToServer(server, jaegerApp, SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(server, asyncServerApp, SERVER_ONLY);
 
         server.startServer();
     }
