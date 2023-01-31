@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Interface for retrieving page directive information.
  */
-public interface PagesDirectiveInfo {
+public interface DirectiveInfo {
 
     List<String> getImportClassList();
 

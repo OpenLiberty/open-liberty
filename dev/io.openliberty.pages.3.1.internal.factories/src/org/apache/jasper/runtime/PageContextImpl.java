@@ -80,7 +80,7 @@ import org.apache.jasper.el.VariableResolverImpl;
 
 import com.ibm.websphere.servlet.error.ServletErrorReport;
 import com.ibm.ws.jsp.Constants;
-import com.ibm.ws.jsp.runtime.PagesDirectiveInfo;
+import com.ibm.ws.jsp.runtime.DirectiveInfo;
 
 import jakarta.el.ELContext;
 import jakarta.el.ExpressionFactory;
@@ -838,22 +838,22 @@ public class PageContextImpl extends PageContext {
 
     private void addImportsToELContext() {
         // For Pages 3.1
-        PagesDirectiveInfo  pagesDirectiveInfo;
-        if (servlet instanceof PagesDirectiveInfo) {
-            pagesDirectiveInfo  =  (PagesDirectiveInfo) servlet; 
-            if(pagesDirectiveInfo.isErrorOnELNotFound()){
+        DirectiveInfo  directiveInfo;
+        if (servlet instanceof DirectiveInfo) {
+            directiveInfo  =  (DirectiveInfo) servlet; 
+            if(directiveInfo.isErrorOnELNotFound()){
                 this.elContext.putContext(jakarta.servlet.jsp.el.NotFoundELResolver.class, true);
             }
-            for (String _package : pagesDirectiveInfo.getImportPackageList()) {
+            for (String _package : directiveInfo.getImportPackageList()) {
                 this.elContext.getImportHandler().importPackage(_package);
             }
-            for (String _class : pagesDirectiveInfo.getImportClassList()) {
+            for (String _class : directiveInfo.getImportClassList()) {
                 this.elContext.getImportHandler().importClass(_class);
             }
             // not sure about importing static fields/methods? spec doesn't seem to mention it?
             // Follow up Liberty Issue 22507 to see if there's anything to be done here with static imports
             // Does this work with importStatic com.example.*?
-            for (String _static : pagesDirectiveInfo.getImportStaticList()) {
+            for (String _static : directiveInfo.getImportStaticList()) {
                 this.elContext.getImportHandler().importStatic(_static);
             }
         }

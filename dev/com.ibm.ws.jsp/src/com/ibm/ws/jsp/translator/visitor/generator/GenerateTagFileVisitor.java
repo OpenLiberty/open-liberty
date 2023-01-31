@@ -222,7 +222,7 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
         ArrayList<String> implementingInterfaces = new ArrayList<String>();
 
         if(PagesVersionHandler.isPages31OrHigherLoaded()){
-            implementingInterfaces.add("com.ibm.ws.jsp.runtime.PagesDirectiveInfo");
+            implementingInterfaces.add("com.ibm.ws.jsp.runtime.DirectiveInfo");
         }
 
         TagFileInfo tfi = (TagFileInfo)inputMap.get("TagFileInfo");
