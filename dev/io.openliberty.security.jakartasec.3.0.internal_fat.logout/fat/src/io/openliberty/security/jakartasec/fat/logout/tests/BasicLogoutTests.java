@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,9 +21,14 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.expectations.Expectations;
+import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
@@ -31,6 +36,7 @@ import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonLogoutAndRefreshTests;
 import io.openliberty.security.jakartasec.fat.configs.TestConfigMaps;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
+import io.openliberty.security.jakartasec.fat.utils.MessageConstants;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.PromptType;
 
@@ -428,7 +434,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
 
         String appName = getShortAppName(notifyProvider, idTokenExpiry, accessTokenExpiry, idTokenLifetimeShort, accessTokenLifetimeShort);
         String provider = determineProvider(idTokenLifetimeShort, accessTokenLifetimeShort);
-        genericReAuthn(rpServer, appName, provider, false);
+        genericReAuthn(rpServer, appName, provider, false, PromptLogin);
 
     }
 
@@ -893,10 +899,35 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
      *
      * @throws Exception
      */
+    @ExpectedFFDC({ "com.ibm.oauth.core.api.error.oauth20.OAuth20Exception", "io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException" })
     @Test
     public void BasicLogoutTests_goodRedirectUri_NotifyProvierFalse_PromptNone() throws Exception {
 
-        genericGoodLogoutTest("GoodRedirectNotifyProviderFalsePromptNoneLogoutServlet", "OP3");
+        String provider = "OP3";
+
+        String appName = "GoodRedirectNotifyProviderFalsePromptNoneLogoutServlet";
+        String url = rpHttpsBase + "/" + appName + "/" + baseAppName;
+
+        WebClient webClient = getAndSaveWebClient();
+        rspValues.setIssuer(opHttpsBase + "/oidc/endpoint/" + provider);
+        actions.invokeUrlWithBasicAuth(_testName, webClient, url, Constants.TESTUSER, Constants.TESTUSERPWD);
+
+        // now logged in - wait for token to expire
+        actions.testLogAndSleep(sleepTimeInSeconds);
+
+        invokeAppReturnLogoutPage(webClient, url);
+
+        // even though we validated that we landed on the logout successful page,
+        // make sure that we need to log in again.
+        // since login page cannot be presented with prompt=none,
+        // just check that invoking the app returns the login_required error
+        Page response = invokeApp(webClient, url);
+
+        Expectations expectations = new Expectations();
+        expectations.addUnauthorizedStatusCodeAndMessageForCurrentAction();
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2407E_ERROR_VERIFYING_RESPONSE, "Did not receive an error message stating that the client encountered an error verifying the authentication response."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2414E_CALLBACK_URL_INCLUDES_ERROR_PARAMETER + ".*\\[login_required]", "Did not receive an error message stating that the callback url includes the [login_required] error param."));
+        validationUtils.validateResult(response, expectations);
 
     }
 
@@ -955,7 +986,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     @Test
     public void BasicLogoutTests_emptyRedirectUri_NotifyProvierFalse() throws Exception {
 
-        genericReAuthn(rpServer, "EmptyRedirectNotifyProviderFalseLogoutServlet", "OP3", false);
+        genericReAuthn(rpServer, "EmptyRedirectNotifyProviderFalseLogoutServlet", "OP3", false, PromptLogin);
 
     }
 

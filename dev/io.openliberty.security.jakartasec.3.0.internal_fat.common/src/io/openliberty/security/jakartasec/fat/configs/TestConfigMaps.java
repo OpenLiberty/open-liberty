@@ -488,6 +488,22 @@ public class TestConfigMaps {
 
     }
 
+    public static Map<String, Object> getPromptExpressionLoginAndConsent() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.PROMPT_EXPRESSION, new PromptType[] { PromptType.LOGIN, PromptType.CONSENT });
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getPromptExpressionDuplicates() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.PROMPT_EXPRESSION, new PromptType[] { PromptType.LOGIN, PromptType.LOGIN });
+        return updatedMap;
+
+    }
+
     public static Map<String, Object> getTokenAutoRefreshExpressionTrue() throws Exception {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();

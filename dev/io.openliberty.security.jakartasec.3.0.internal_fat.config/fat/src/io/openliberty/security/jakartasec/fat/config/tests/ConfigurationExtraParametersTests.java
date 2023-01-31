@@ -195,7 +195,7 @@ public class ConfigurationExtraParametersTests extends CommonAnnotatedSecurityTe
         response = actions.invokeUrl(_testName, webClient, WebResponseUtils.getResponseHeaderField(response, Constants.RESPONSE_HEADER_LOCATION));
 
         String authEndpointRegex = "https:\\/\\/localhost:" + opServer.getBvtSecurePort() + "\\/oidc\\/endpoint\\/OP1\\/authorize";
-        String defaultParametersRegex = "\\?scope=[^&]*&response_type=[^&]*&client_id=[^&]*&redirect_uri=[^&]*&state=[^&]*&nonce=[^&]*&prompt=[^&]*&response_mode=[^&]*&display=[^&]*";
+        String defaultParametersRegex = "\\?scope=[^&]+&response_type=[^&]+&client_id=[^&]+&redirect_uri=[^&]+&state=[^&]+&nonce=[^&]+&display=[^&]+";
         String authEndpointWithParametersRegex = authEndpointRegex + defaultParametersRegex;
         if (expectedExtraParameters != null && !expectedExtraParameters.isEmpty()) {
             authEndpointWithParametersRegex += "&" + Pattern.quote(expectedExtraParameters) + "$";
