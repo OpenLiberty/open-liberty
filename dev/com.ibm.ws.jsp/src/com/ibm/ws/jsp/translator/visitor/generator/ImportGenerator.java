@@ -31,7 +31,6 @@ public class ImportGenerator extends CodeGeneratorBase {
 					Node attribute = attributes.item(i);
 					String directiveName = attribute.getNodeName();
 					String directiveValue = attribute.getNodeValue();
-					System.out.println("TEST from import: "+directiveName+" : "+directiveValue);
 					if (directiveName.equals("import")) {
 						StringTokenizer tokenizer = new StringTokenizer(directiveValue, ",");
 						writeDebugStartBegin(writer);
@@ -49,16 +48,13 @@ public class ImportGenerator extends CodeGeneratorBase {
 					Node attribute = attributes.item(i);
 					String directiveName = attribute.getNodeName();
 					String directiveValue = attribute.getNodeValue();
-					System.out.println("TEST from static: "+directiveName+" : "+directiveValue);
 					if (directiveName.equals("import")) {
 						StringTokenizer tokenizer = new StringTokenizer(directiveValue, ",");
 						String STATIC_IMPORT_PREPPEND = "static ";
 						writeDebugStartBegin(writer);
 						while (tokenizer.hasMoreTokens()) {
 							String singleImport = ((String) tokenizer.nextToken()).trim();
-							System.out.println("Got single import: "+singleImport);
 							if (singleImport.startsWith(STATIC_IMPORT_PREPPEND)) {
-							        System.out.println("Adding to list: "+singleImport.substring(STATIC_IMPORT_PREPPEND.length()));
 							        writer.println("importStaticList.add(\"" + singleImport.substring(STATIC_IMPORT_PREPPEND.length()) + "\");");
 							} else if(singleImport.endsWith(".*")){
 								writer.println("importPackageList.add(\"" + singleImport.replace(".*", "") + "\");");

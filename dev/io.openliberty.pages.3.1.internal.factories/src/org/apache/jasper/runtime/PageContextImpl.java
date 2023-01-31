@@ -80,6 +80,7 @@ import org.apache.jasper.el.VariableResolverImpl;
 
 import com.ibm.websphere.servlet.error.ServletErrorReport;
 import com.ibm.ws.jsp.Constants;
+import com.ibm.ws.jsp.runtime.PagesDirectiveInfo;
 
 import jakarta.el.ELContext;
 import jakarta.el.ExpressionFactory;
@@ -805,8 +806,6 @@ public class PageContextImpl extends PageContext {
         final ExpressionFactory exprFactory = exprFactorySetInPageContext;
         //if (SecurityUtil.isPackageProtectionEnabled()) {
         ELContextImpl ctx = (ELContextImpl) pageContext.getELContext();
-        System.out.println("Evaluating expression: "+expression);
-        Thread.dumpStack();
         ctx.setFunctionMapper(new FunctionMapperImpl(functionMap));
         ValueExpression ve = exprFactory.createValueExpression(ctx, expression, expectedType);
         retValue = ve.getValue(ctx);
@@ -839,24 +838,22 @@ public class PageContextImpl extends PageContext {
 
     private void addImportsToELContext() {
         // For Pages 3.1
-        if (servlet instanceof com.ibm.ws.jsp.runtime.PagesDirectiveImportInfo && ((com.ibm.ws.jsp.runtime.PagesDirectiveImportInfo) servlet).isErrorOnELNotFound()) {
-            this.elContext.putContext(jakarta.servlet.jsp.el.NotFoundELResolver.class, true);
-        }
-
-        if (servlet instanceof com.ibm.ws.jsp.runtime.PagesDirectiveImportInfo) {
-            for (String _package : ((com.ibm.ws.jsp.runtime.PagesDirectiveImportInfo) servlet).getImportPackageList()) {
-                System.out.println("Adding package: " + _package);
+        PagesDirectiveInfo  pagesDirectiveInfo;
+        if (servlet instanceof PagesDirectiveInfo) {
+            pagesDirectiveInfo  =  (PagesDirectiveInfo) servlet; 
+            if(pagesDirectiveInfo.isErrorOnELNotFound()){
+                this.elContext.putContext(jakarta.servlet.jsp.el.NotFoundELResolver.class, true);
+            }
+            for (String _package : pagesDirectiveInfo.getImportPackageList()) {
                 this.elContext.getImportHandler().importPackage(_package);
             }
-            for (String _class : ((com.ibm.ws.jsp.runtime.PagesDirectiveImportInfo) servlet).getImportClassList()) {
-                System.out.println("Adding class: " + _class);
+            for (String _class : pagesDirectiveInfo.getImportClassList()) {
                 this.elContext.getImportHandler().importClass(_class);
             }
             // not sure about importing static fields/methods? spec doesn't seem to mention it?
             // Follow up Liberty Issue 22507 to see if there's anything to be done here with static imports
             // Does this work with importStatic com.example.*?
-            for (String _static : ((com.ibm.ws.jsp.runtime.PagesDirectiveImportInfo) servlet).getImportStaticList()) {
-                System.out.println("Adding static: " + _static);
+            for (String _static : pagesDirectiveInfo.getImportStaticList()) {
                 this.elContext.getImportHandler().importStatic(_static);
             }
         }

@@ -15,19 +15,15 @@ package com.ibm.ws.jsp.runtime;
 import java.util.List;
 
 /**
- * Interface for retrieving page directive information as well as page import information.
+ * Interface for retrieving page directive information.
  */
-public interface PagesDirectiveImportInfo {
-
-    // Import Info methods
+public interface PagesDirectiveInfo {
 
     List<String> getImportClassList();
 
     List<String> getImportPackageList();
 
     List<String> getImportStaticList();
-
-    // Directive Info methods
 
     boolean isErrorOnELNotFound();
 

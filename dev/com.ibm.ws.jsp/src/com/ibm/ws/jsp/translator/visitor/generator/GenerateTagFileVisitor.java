@@ -222,7 +222,7 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
         ArrayList<String> implementingInterfaces = new ArrayList<String>();
 
         if(PagesVersionHandler.isPages31OrHigherLoaded()){
-            implementingInterfaces.add("com.ibm.ws.jsp.runtime.PagesDirectiveImportInfo");
+            implementingInterfaces.add("com.ibm.ws.jsp.runtime.PagesDirectiveInfo");
         }
 
         TagFileInfo tfi = (TagFileInfo)inputMap.get("TagFileInfo");
@@ -348,22 +348,24 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
         writer.println("public JspContext getJspContext() {");
         writer.println("return this.jspContext;");
         writer.println("}");
-        
-        writer.println(" public boolean isErrorOnELNotFound() {");
-        writer.println("return "+ validatorResult.isErrorOnELNotFound()  + ";");
-        writer.println("}");
 
-        writer.println(" public java.util.List<String> getImportClassList() {");
-        writer.println("return  importPackageList;");
-        writer.println("}");
+        if(PagesVersionHandler.isPages31OrHigherLoaded()){
+            writer.println(" public boolean isErrorOnELNotFound() {");
+            writer.println("return "+ validatorResult.isErrorOnELNotFound()  + ";");
+            writer.println("}");
 
-        writer.println(" public java.util.List<String> getImportPackageList() {");
-        writer.println("return importClassList;");
-        writer.println("}");
+            writer.println(" public java.util.List<String> getImportClassList() {");
+            writer.println("return  importPackageList;");
+            writer.println("}");
 
-        writer.println(" public java.util.List<String> getImportStaticList() {");
-        writer.println("return importStaticList;");
-        writer.println("}");
+            writer.println(" public java.util.List<String> getImportPackageList() {");
+            writer.println("return importClassList;");
+            writer.println("}");
+
+            writer.println(" public java.util.List<String> getImportStaticList() {");
+            writer.println("return importStaticList;");
+            writer.println("}");
+        }
 
         if (ti.hasDynamicAttributes()) {
             writer.println("private java.util.HashMap _jspx_dynamic_attrs = new java.util.HashMap();");

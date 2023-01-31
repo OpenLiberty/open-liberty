@@ -248,7 +248,7 @@ public class GenerateJspVisitor extends GenerateVisitor {
                 : extendsClass);
         interfaces.add("com.ibm.ws.jsp.runtime.JspClassInformation");
         if(PagesVersionHandler.isPages31OrHigherLoaded()){
-            interfaces.add("com.ibm.ws.jsp.runtime.PagesDirectiveImportInfo");
+            interfaces.add("com.ibm.ws.jsp.runtime.PagesDirectiveInfo");
         }
 
         /*  SingleThreadModel was removed in Servlet 6.0 (Pages 3.1)
