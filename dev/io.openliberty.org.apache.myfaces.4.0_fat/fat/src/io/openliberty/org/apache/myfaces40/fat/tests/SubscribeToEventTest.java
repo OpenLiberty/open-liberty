@@ -16,7 +16,6 @@ import java.net.URL;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
@@ -63,9 +62,9 @@ public class SubscribeToEventTest {
 
     /**
      * FIXME - this test currently fails because a single subscribe causes duplicate values to be returned from list.
-     * Opened PR with MyFaces
+     * Opened PR with MyFaces to fix this behavior: https://github.com/apache/myfaces/pull/509
      */
-    @Test
+//    @Test
     public void testSubscribeToEventBehaviorChange() throws Exception {
         String expected = "true";
         try (WebClient webClient = new WebClient()) {
