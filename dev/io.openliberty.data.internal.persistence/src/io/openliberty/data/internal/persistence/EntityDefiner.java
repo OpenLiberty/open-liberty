@@ -24,6 +24,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -249,6 +251,8 @@ class EntityDefiner implements Runnable {
                 Queue<Attribute<?, ?>> embeddables = new LinkedList<>();
                 Queue<String> embeddablePrefixes = new LinkedList<>();
                 Queue<List<Member>> embeddableAccessors = new LinkedList<>();
+                Class<?> idClass = null;
+                SortedMap<String, Member> idClassAttributeAccessors = null;
 
                 for (Attribute<?, ?> attr : entityType.getAttributes()) {
                     String attributeName = attr.getName();
@@ -310,6 +314,21 @@ class EntityDefiner implements Runnable {
                     }
                 }
 
+                if (!entityType.hasSingleIdAttribute()) {
+                    String attrName = attributeNames.get("id");
+                    if (!attrName.contains(".")) { // Skip for Id on Embeddable. Only apply to IdClass
+                        attributeNames.remove("id");
+                        idClass = entityType.getIdType().getJavaType();
+                        idClassAttributeAccessors = new TreeMap<>();
+                        for (SingularAttribute<?, ?> attr : entityType.getIdClassAttributes()) {
+                            Member entityMember = attr.getJavaMember();
+                            Member idClassMember = entityMember instanceof Field //
+                                            ? idClass.getField(entityMember.getName()) //
+                                            : idClass.getMethod(entityMember.getName());
+                            idClassAttributeAccessors.put(attr.getName().toLowerCase(), idClassMember);
+                        }
+                    }
+                }
                 // This works for version Fields, and might work for version getter/setter methods
                 // but is debatable whether we should do it.
                 //Member versionMember = null;
@@ -327,6 +346,8 @@ class EntityDefiner implements Runnable {
                                 attributeAccessors, //
                                 attributeNames, //
                                 attributeTypes, //
+                                idClass, //
+                                idClassAttributeAccessors, //
                                 punit);
 
                 provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).complete(entityInfo);

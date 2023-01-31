@@ -218,6 +218,55 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     }
 
     /**
+     * Appends JQPL to sort based on the specified entity attribute.
+     * For most properties will be of a form such as o.Name or LOWER(o.Name) DESC or ...
+     * For IdClass, will include all Id properties, such as: o.IdAttr1 DESC, o.idAttr2 DESC, o.idAttr3 DESC
+     *
+     * @param q          builder for the JPQL query.
+     * @param entityInfo entity information.
+     * @param ignoreCase if ordering is to be independent of case.
+     * @param attribute  name of attribute (@OrderBy value or Sort property or parsed from OrderBy query-by-method).
+     * @param descending if ordering is to be in descending order
+     * @param keyset     keyset to populate with sort criteria. Null if not generating a query for keyset pagination.
+     * @return the same builder for the JPQL query.
+     */
+    @Trivial
+    private void appendSort(StringBuilder q, EntityInfo entityInfo, boolean ignoreCase, String attribute, boolean descending, List<Sort> keyset) {
+        Set<String> names = entityInfo.idClass != null && "id".equalsIgnoreCase(attribute) //
+                        ? entityInfo.idClassAttributeAccessors.keySet() //
+                        : Set.of(attribute);
+
+        boolean first = true;
+        for (String name : names) {
+            if (first)
+                first = false;
+            else
+                q.append(", ");
+
+            q.append(ignoreCase ? "LOWER(o." : "o.").append(name = entityInfo.getAttributeName(name));
+
+            if (ignoreCase)
+                q.append(")");
+
+            if (keyset == null) {
+                if (descending)
+                    q.append(" DESC");
+            } else {
+                if (!descending)
+                    q.append(" DESC");
+
+                keyset.add(ignoreCase ? //
+                                descending ? //
+                                                Sort.descIgnoreCase(name) : //
+                                                Sort.ascIgnoreCase(name) : //
+                                descending ? //
+                                                Sort.desc(name) : //
+                                                Sort.asc(name));
+            }
+        }
+    }
+
+    /**
      * Gathers the information that is needed to perform the query that the repository method represents.
      *
      * @param entityInfo entity information
@@ -372,27 +421,12 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             List<Sort> keyset = needsKeysetQueries ? new ArrayList<>(orderBy.length) : null;
 
             for (int i = 0; i < orderBy.length; i++) {
-                String name = entityInfo.getAttributeName(orderBy[i].value());
-                o.append(i == 0 ? " ORDER BY " : ", ").append(orderBy[i].ignoreCase() ? "LOWER(o." : "o.").append(name);
-                if (orderBy[i].ignoreCase())
-                    o.append(")");
-                if (orderBy[i].descending())
-                    o.append(" DESC");
+                o.append(i == 0 ? " ORDER BY " : ", ");
+                appendSort(o, entityInfo, orderBy[i].ignoreCase(), orderBy[i].value(), orderBy[i].descending(), null);
 
                 if (needsKeysetQueries) {
-                    r.append(i == 0 ? " ORDER BY " : ", ").append(orderBy[i].ignoreCase() ? "LOWER(o." : "o.").append(name);
-                    if (orderBy[i].ignoreCase())
-                        r.append(")");
-                    if (!orderBy[i].descending())
-                        r.append(" DESC");
-
-                    keyset.add(orderBy[i].ignoreCase() ? //
-                                    orderBy[i].descending() ? //
-                                                    Sort.descIgnoreCase(name) : //
-                                                    Sort.ascIgnoreCase(name) : //
-                                    orderBy[i].descending() ? //
-                                                    Sort.desc(name) : //
-                                                    Sort.asc(name));
+                    r.append(i == 0 ? " ORDER BY " : ", ");
+                    appendSort(r, entityInfo, orderBy[i].ignoreCase(), orderBy[i].value(), orderBy[i].descending(), keyset);
                 }
             }
 
@@ -617,7 +651,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         }
 
         String name = queryInfo.entityInfo.getAttributeName(attribute);
-        if (name == null) {
+        if (name == null && attribute.length() == 3) {
             // Special case for CrudRepository.deleteAll and CrudRepository.findAll
             int len = q.length(), where = q.lastIndexOf(" WHERE (");
             if (where + 8 == len)
@@ -863,31 +897,19 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 iNext = Math.max(asc, desc);
 
             boolean ignoreCase;
+            boolean descending = iNext > 0 && iNext == desc;
             int endBefore = iNext < 0 ? methodName.length() : iNext;
             if (ignoreCase = endsWith("IgnoreCase", methodName, i, endBefore))
                 endBefore -= 10;
 
             String attribute = methodName.substring(i, endBefore);
-            String name = queryInfo.entityInfo.getAttributeName(attribute);
-            if (ignoreCase)
-                o.append(ignoreCase ? "LOWER(o." : "o.").append(name).append(')');
-            else
-                o.append("o.").append(name);
+
+            appendSort(o, queryInfo.entityInfo, ignoreCase, attribute, descending, null);
 
             if (needsKeysetQueries)
-                if (ignoreCase) {
-                    r.append(ignoreCase ? "LOWER(o." : "o.").append(name).append(')');
-                    keyset.add(iNext > 0 && iNext == desc ? Sort.descIgnoreCase(name) : Sort.ascIgnoreCase(name));
-                } else {
-                    r.append("o.").append(name);
-                    keyset.add(iNext > 0 && iNext == desc ? Sort.desc(name) : Sort.asc(name));
-                }
+                appendSort(r, queryInfo.entityInfo, ignoreCase, attribute, descending, keyset);
 
             if (iNext > 0) {
-                if (iNext == desc)
-                    o.append(" DESC");
-                else if (needsKeysetQueries)
-                    r.append(" DESC");
                 iNext += (iNext == desc ? 4 : 3);
                 if (iNext < length) {
                     o.append(", ");

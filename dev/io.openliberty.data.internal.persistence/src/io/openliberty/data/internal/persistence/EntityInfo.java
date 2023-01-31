@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.concurrent.CompletableFuture;
 
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -33,6 +34,8 @@ class EntityInfo {
     // upper case attribute name --> properly cased/qualified JPQL attribute name
     final LinkedHashMap<String, String> attributeNames;
     final Map<String, Class<?>> attributeTypes;
+    final Class<?> idClass; // null if no IdClass
+    final SortedMap<String, Member> idClassAttributeAccessors; // null if no IdClass
     final boolean inheritance;
     final String name;
     final PersistenceServiceUnit persister;
@@ -42,12 +45,16 @@ class EntityInfo {
                Map<String, List<Member>> attributeAccessors,
                LinkedHashMap<String, String> attributeNames,
                Map<String, Class<?>> attributeTypes,
+               Class<?> idClass,
+               SortedMap<String, Member> idClassAttributeAccessors,
                PersistenceServiceUnit persister) {
         this.name = entityName;
         this.type = entityClass;
         this.attributeAccessors = attributeAccessors;
         this.attributeNames = attributeNames;
         this.attributeTypes = attributeTypes;
+        this.idClass = idClass;
+        this.idClassAttributeAccessors = idClassAttributeAccessors;
         this.persister = persister;
 
         inheritance = entityClass.getAnnotation(Inheritance.class) != null ||
@@ -62,8 +69,11 @@ class EntityInfo {
             if ("All".equals(name))
                 attributeName = null; // Special case for CrudRepository.deleteAll and CrudRepository.findAll
             else if ("id".equals(lowerName))
-                throw new MappingException("Entity class " + type.getName() + " does not have a property named " + name +
-                                           " or which is designated as the @Id."); // TODO NLS
+                if (idClass == null)
+                    throw new MappingException("Entity class " + type.getName() + " does not have a property named " + name +
+                                               " or which is designated as the @Id."); // TODO NLS
+                else
+                    attributeName = null; // Special case for IdClass
             else if (name.length() == 0)
                 throw new MappingException("Error parsing method name or entity property name is missing."); // TODO NLS
             else {

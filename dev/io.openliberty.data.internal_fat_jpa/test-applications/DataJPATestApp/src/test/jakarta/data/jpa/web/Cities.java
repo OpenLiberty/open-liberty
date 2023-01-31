@@ -10,10 +10,15 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
-import java.util.Set;
 import java.util.stream.Stream;
 
+import jakarta.data.repository.Compare;
+import jakarta.data.repository.Filter;
+import jakarta.data.repository.KeysetAwarePage;
+import jakarta.data.repository.KeysetAwareSlice;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Pageable;
+import jakarta.data.repository.Param;
 import jakarta.data.repository.Repository;
 
 /**
@@ -22,8 +27,6 @@ import jakarta.data.repository.Repository;
 @Repository
 public interface Cities {
 
-    long deleteByStateNameIn(Set<String> states);
-
     City findById(CityId id);
 
     @OrderBy("stateName")
@@ -31,6 +34,22 @@ public interface Cities {
 
     @OrderBy("name")
     Stream<City> findByStateName(String state);
+
+    KeysetAwarePage<City> findByStateNameGreaterThan(String stateNameBefore, Pageable pagination);
+
+    @OrderBy(value = "id", descending = true, ignoreCase = true)
+    Stream<City> findByStateNameNot(String exclude);
+
+    @OrderBy("id")
+    KeysetAwareSlice<City> findByStateNameNotEndsWith(String postfix, Pageable pagination);
+
+    KeysetAwareSlice<City> findByStateNameNotNullOrderById(Pageable pagination);
+
+    KeysetAwarePage<City> findByStateNameNotStartsWithOrderByIdDesc(String prefix, Pageable pagination);
+
+    @Filter(by = "population", op = Compare.Between, param = { "minSize", "maxSize" })
+    @OrderBy(value = "id", descending = true)
+    KeysetAwarePage<City> sizedWithin(@Param("minSize") int minPopulation, @Param("maxSize") int maxPopulation, Pageable pagination);
 
     void save(City c);
 }
