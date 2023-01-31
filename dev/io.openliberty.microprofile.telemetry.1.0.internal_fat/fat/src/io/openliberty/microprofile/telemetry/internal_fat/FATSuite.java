@@ -18,7 +18,6 @@ import componenttest.annotation.MinimumJavaLevel;
 @RunWith(Suite.class)
 @MinimumJavaLevel(javaLevel = 11)
 @SuiteClasses({
-                Telemetry10.class,
                 JaxRsIntegration.class,
                 TelemetryBeanTest.class,
                 TelemetryMultiAppTest.class,

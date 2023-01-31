@@ -32,9 +32,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.Baggage
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.ConfigServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.MetricsDisabledServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.OpenTelemetryBeanServlet;
-import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.PatchTestApp;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.SpanCurrentServlet;
-import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.Telemetry10Servlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.WithSpanServlet;
 
 @RunWith(FATRunner.class)
@@ -45,7 +43,6 @@ public class Telemetry10 extends FATServletClient {
 
     @Server(SERVER_NAME)
     @TestServlets({
-                    @TestServlet(servlet = Telemetry10Servlet.class, contextRoot = APP_NAME),
                     @TestServlet(servlet = OpenTelemetryBeanServlet.class, contextRoot = APP_NAME),
                     @TestServlet(servlet = BaggageServlet.class, contextRoot = APP_NAME),
                     @TestServlet(servlet = SpanCurrentServlet.class, contextRoot = APP_NAME),
@@ -58,10 +55,8 @@ public class Telemetry10 extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addAsResource(Telemetry10Servlet.class.getResource("microprofile-config.properties"), "META-INF/microprofile-config.properties")
-                        .addClasses(Telemetry10Servlet.class,
-                                    OpenTelemetryBeanServlet.class,
-                                    PatchTestApp.class,
+                        .addAsResource(OpenTelemetryBeanServlet.class.getResource("microprofile-config.properties"), "META-INF/microprofile-config.properties")
+                        .addClasses(OpenTelemetryBeanServlet.class,
                                     BaggageServlet.class,
                                     MetricsDisabledServlet.class,
                                     SpanCurrentServlet.class,
