@@ -16,14 +16,14 @@ bVersion=1.0
 Bundle-SymbolicName: io.openliberty.jakarta.interceptor.2.0; singleton:=true
 
 
-Export-Package: jakarta.interceptor;version="2.0.0"
+Export-Package: jakarta.interceptor;version="2.0.1"
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -includeresource: \
-  @${repo;jakarta.interceptor:jakarta.interceptor-api;2.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @${repo;jakarta.interceptor:jakarta.interceptor-api;2.0.1;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -buildpath: \
-  jakarta.interceptor:jakarta.interceptor-api;version=2.0.0;strategy=exact
+  jakarta.interceptor:jakarta.interceptor-api;version=2.0.1;strategy=exact
