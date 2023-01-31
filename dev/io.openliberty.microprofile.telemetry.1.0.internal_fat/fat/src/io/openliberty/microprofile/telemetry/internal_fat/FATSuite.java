@@ -31,7 +31,8 @@ import componenttest.annotation.MinimumJavaLevel;
                 TelemetryServiceNameTest.class,
                 TelemetryLoggingExporterTest.class,
                 TelemetryAPITest.class,
-                MultiThreadedContextTest.class
+                MultiThreadedContextTest.class,
+                TelemetryMisconfigTest.class
 })
 
 public class FATSuite {}
