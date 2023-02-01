@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -197,13 +197,11 @@ public class DataFrameTests extends H2FATDriverServlet {
     }
 
     /**
-     * Send a DATA frame with no EOS flag, and expect WINDOW_UPDATE frames from the server which restore its read window
-     * This test uses a server.xml with stream intial window size set to 100 and connection set to 65537
+     * Send a DATA frame with no EOS flag, and expect WINDOW_UPDATE frames from the server which restore its stream read window
+     * This test uses a server.xml with stream intial window size set to 1000 and connection set to 65537
      *
-     * We expect the server to send a connection window_update frame with a size increment of 2 (65537-65535)
-     *
-     * Window update frames aren't sent until the window is less than 1/2 the max window size. In this case it would be
-     * 499 on the stream and 32768 on the connection.
+     * Window update frames aren't sent until the window is less than 1/2 the max window size. The stream max window size is set
+     * to 1000 and the connection is set to 32768.
      */
     public void testSimpleWindowUpdatesReceived(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
 
