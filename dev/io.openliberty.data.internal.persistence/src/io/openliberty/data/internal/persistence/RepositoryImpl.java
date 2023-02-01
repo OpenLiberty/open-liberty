@@ -27,7 +27,6 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -559,7 +558,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         }
 
         if (trace && tc.isDebugEnabled() && x != original)
-            Tr.debug(tc, "replaced with " + x.getClass().getName());
+            Tr.debug(tc, original.getClass().getName() + "replaced with " + x.getClass().getName());
         return x;
     }
 
@@ -1382,20 +1381,20 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         for (int i = queryInfo.paramCount; i < (args == null ? 0 : args.length); i++) {
                             Object param = args[i];
                             if (param instanceof Limit)
-                                limit = (Limit) param;
+                                limit = (Limit) param; // TODO must fail if 2 Limits
                             else if (param instanceof Pageable)
-                                pagination = (Pageable) param;
+                                pagination = (Pageable) param; // TODO must fail if 2 Pageables
                             else if (param instanceof Sort)
-                                (sortList == null ? (sortList = new ArrayList<>()) : sortList).add((Sort) param);
+                                sortList = queryInfo.entityInfo.getSorts(sortList, (Sort) param);
                             else if (param instanceof Sort[])
-                                Collections.addAll(sortList == null ? (sortList = new ArrayList<>()) : sortList, (Sort[]) param);
+                                sortList = queryInfo.entityInfo.getSorts(sortList, (Sort[]) param);
                         }
 
                         if (pagination != null) {
                             if (limit != null)
                                 throw new DataException("Repository method " + method + " cannot have both Limit and Pageable as parameters."); // TODO
                             if (sortList == null || sortList.isEmpty())
-                                sortList = pagination.sorts();
+                                sortList = queryInfo.entityInfo.getSorts(pagination);
                             else if (sortList != null && !pagination.sorts().isEmpty())
                                 throw new DataException("Repository method " + method + " cannot specify Sort parameters if Pageable also has Sort parameters."); // TODO
                         }
@@ -1404,17 +1403,14 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             boolean forward = pagination == null || pagination.mode() != Pageable.Mode.CURSOR_PREVIOUS;
                             StringBuilder q = new StringBuilder(queryInfo.jpql);
                             StringBuilder o = null; // ORDER BY clause based on Sorts
-                            for (Sort sort : sortList)
-                                if (sort == null)
-                                    throw new DataException(new IllegalArgumentException("Sort: null"));
-                                else {
-                                    o = o == null ? new StringBuilder(100).append(" ORDER BY ") : o.append(", ");
-                                    o.append(sort.ignoreCase() ? "LOWER(o." : "o.").append(sort.property());
-                                    if (sort.ignoreCase())
-                                        o.append(')');
-                                    if (forward ? sort.isDescending() : sort.isAscending())
-                                        o.append(" DESC");
-                                }
+                            for (Sort sort : sortList) {
+                                o = o == null ? new StringBuilder(100).append(" ORDER BY ") : o.append(", ");
+                                o.append(sort.ignoreCase() ? "LOWER(o." : "o.").append(sort.property());
+                                if (sort.ignoreCase())
+                                    o.append(')');
+                                if (forward ? sort.isDescending() : sort.isAscending())
+                                    o.append(" DESC");
+                            }
 
                             if (pagination == null || pagination.mode() == Pageable.Mode.OFFSET)
                                 (queryInfo = queryInfo.withJPQL(q.append(o).toString())).keyset = sortList; // offset pagination can be a starting point for keyset pagination

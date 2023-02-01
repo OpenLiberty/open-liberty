@@ -495,6 +495,23 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Sort on a composite id that is defined by an IdClass attribute.
+     */
+    @Test
+    public void testIdClassOrderBySorts() {
+        assertIterableEquals(List.of("Springfield Missouri",
+                                     "Springfield Massachusetts",
+                                     "Springfield Illinois",
+                                     "Rochester New York",
+                                     "Rochester Minnesota",
+                                     "Kansas City Missouri",
+                                     "Kansas City Kansas"),
+                             cities.findByStateNameLessThan("Ohio", Sort.desc("id"))
+                                             .map(c -> c.name + ' ' + c.stateName)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
      * Repository methods for an entity where the id is on the embeddable.
      */
     @Test

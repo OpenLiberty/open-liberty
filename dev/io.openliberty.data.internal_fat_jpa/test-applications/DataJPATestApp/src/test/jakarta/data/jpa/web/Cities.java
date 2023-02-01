@@ -20,6 +20,7 @@ import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Sort;
 
 /**
  *
@@ -35,7 +36,9 @@ public interface Cities {
     @OrderBy("name")
     Stream<City> findByStateName(String state);
 
-    KeysetAwarePage<City> findByStateNameGreaterThan(String stateNameBefore, Pageable pagination);
+    KeysetAwarePage<City> findByStateNameGreaterThan(String stateNameAfter, Pageable pagination);
+
+    Stream<City> findByStateNameLessThan(String stateNameBefore, Sort... sorts);
 
     @OrderBy(value = "id", descending = true, ignoreCase = true)
     Stream<City> findByStateNameNot(String exclude);
