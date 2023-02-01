@@ -639,21 +639,12 @@ public class LibertyJaxRsServerFactoryBean extends JAXRSServerFactoryBean {
             final OperationResourceInfo ori = exchange.get(OperationResourceInfo.class);
             final ClassResourceInfo cri = ori.getClassResourceInfo();
 
-            try {
-                Object rc = beanCustomizer.serviceInvoke(serviceObject,
-                                                         m,
-                                                         paramArray,
-                                                         cri.isSingleton(),
-                                                         getBeanCustomizerContext(beanCustomizer),
-                                                         exchange.getInMessage());
-
-                return rc;
-            } finally {
-                beanCustomizer.afterServiceInvoke(serviceObject,
-                                                  cri.isSingleton(),
-                                                  getBeanCustomizerContext(beanCustomizer));
-            }
-
+            return beanCustomizer.serviceInvoke(serviceObject,
+                                                     m,
+                                                     paramArray,
+                                                     cri.isSingleton(),
+                                                     getBeanCustomizerContext(beanCustomizer),
+                                                     exchange.getInMessage());
         } else
             return m.invoke(serviceObject, paramArray);
     }
