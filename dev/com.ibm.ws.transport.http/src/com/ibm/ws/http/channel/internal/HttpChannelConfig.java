@@ -2172,7 +2172,7 @@ public class HttpChannelConfig {
                 }
                 this.h2ConnectionReadWindowSize = convertInteger(value);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: H2 Stream Initial Default Window Size is " + getH2SettingsInitialWindowSize());
+                    Tr.event(tc, "Config: H2 Settings Initial Window Size is " + getH2SettingsInitialWindowSize());
                 }
             } catch (NumberFormatException nfe) {
                 FFDCFilter.processException(nfe, getClass().getName() + ".parseH2SettingsInitialWindowSize", "1");

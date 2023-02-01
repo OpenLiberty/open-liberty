@@ -336,7 +336,7 @@ public class HttpConfigConstants {
 
     // This is the default value for all new streams and is sent to the client in the preface SETTINGS frame
     // The spec defines this as the SETTINGS_INITIAL_WINDOW_SIZE
-    public static final String PROPNAME_H2_CONN_READ_WINDOW_SIZE = "H2SettingsInitalWindowSize";
+    public static final String PROPNAME_H2_CONN_READ_WINDOW_SIZE = "H2SettingsInitialWindowSize";
     // This is the connection level window size, sent out in a WINDOW_UPDATE frame just after the connection preface
     public static final String PROPNAME_H2_CONN_WINDOW_SIZE = "H2ConnectionWindowSize";
 

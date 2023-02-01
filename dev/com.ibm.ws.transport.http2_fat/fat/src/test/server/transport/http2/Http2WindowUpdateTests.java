@@ -43,10 +43,7 @@ public class Http2WindowUpdateTests extends FATServletClient {
     private final static LibertyServer runtimeServer = LibertyServerFactory.getLibertyServer("http2ClientRuntime.tracing");
     private final static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.transport.http2.fat.window.update");
 
-    String defaultServletPath = "H2FATDriver/H2FATDriverServlet?hostName=";
     String dataServletPath = "H2FATDriver/DataFrameTests?hostName=";
-    String genericServletPath = "H2FATDriver/GenericFrameTests?hostName=";
-    String methodServletPath = "H2FATDriver/HttpMethodTests?hostName=";
 
     @Rule
     public TestName testName = new TestName();

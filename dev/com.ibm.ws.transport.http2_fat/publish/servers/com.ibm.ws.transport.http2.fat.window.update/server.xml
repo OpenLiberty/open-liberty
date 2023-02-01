@@ -3,7 +3,7 @@
    		<feature>componenttest-1.0</feature>
         <feature>http2clienttest-1.0</feature>
     	<feature>jsp-2.3</feature>
-        <feature>servlet-3.1</feature>
+        <feature>servlet-4.0</feature>
         <feature>timedexit-1.0</feature>
     </featureManager>
     
@@ -16,9 +16,10 @@
     <!-- FAT framework expects to start with the usual port  -->
     <httpEndpoint id="defaultHttpEndpoint"
                   host="*"
-                  httpPort="${bvt.prop.HTTP_default}"
-                  httpsPort="${bvt.prop.HTTP_default.secure}">
+                  httpPort="${bvt.prop.HTTP_secondary}"
+                  httpsPort="${bvt.prop.HTTP_secondary.secure}">
         <tcpOptions soReuseAddr="true" />
-        <httpOptions H2SettingsIntialWindowSize="1000" H2ConnWindowSize="2000"/>
+        <httpOptions H2SettingsInitialWindowSize="1000" H2ConnectionWindowSize="65537"/>
+                     
     </httpEndpoint>   
 </server>

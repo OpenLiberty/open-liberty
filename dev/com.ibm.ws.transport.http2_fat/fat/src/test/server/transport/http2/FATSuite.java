@@ -37,14 +37,14 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class, // LITE
-                //Http2LiteModeTests.class, // LITE
-                //Http2SecureTests.class, // LITE
-                //Http2FullModeTests.class, // FULL
+                Http2LiteModeTests.class, // LITE
+                Http2SecureTests.class, // LITE
+                Http2FullModeTests.class, // FULL
                 /** move tests to Http2FullTracingTests to diagnose failures via full tracing */
-                //Http2FullTracingTests.class, // FULL
-                //Http2Config40H2Off.class, // FULL
-                //Http2Config31H2Off.class, // FULL
-                //Http2Config31H2On.class // FULL
+                Http2FullTracingTests.class, // FULL
+                Http2Config40H2Off.class, // FULL
+                Http2Config31H2Off.class, // FULL
+                Http2Config31H2On.class, // FULL
                 //MultiSessionTests.class // FULL; disabled for now
                 Http2WindowUpdateTests.class
 })
