@@ -101,6 +101,8 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
     
     private ViewIdSupport viewIdSupport;
 
+    public final String STARTED_FLOW_TRANSITION = "STARTED_FLOW_TRANSITION";
+
     public NavigationHandlerImpl()
     {
         if (log.isLoggable(Level.FINEST))
@@ -364,6 +366,11 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
             }
         }
     }
+
+    private Boolean didFlowTransitionAlready(FacesContext facesContext)
+    {
+        return facesContext.getAttributes().containsKey(STARTED_FLOW_TRANSITION);
+    }
     
     private void applyFlowTransition(FacesContext facesContext, NavigationContext navigationContext)
     {
@@ -374,7 +381,10 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                 || (navigationContext.getTargetFlows() != null && !navigationContext.getTargetFlows().isEmpty()))
         {
             FlowHandler flowHandler = facesContext.getApplication().getFlowHandler();
-            for (int i = 0; i < navigationContext.getTargetFlows().size(); i++)
+
+            int size = navigationContext.getTargetFlows().size();
+            // if we already transitioned (MYFACES-4553), skip the first entry
+            for (int i = didFlowTransitionAlready(facesContext) ? 1 : 0; i < size; i++)
             {
                 Flow sourceFlow = navigationContext.getSourceFlows().get(i);
                 Flow targetFlow = navigationContext.getTargetFlows().get(i);
@@ -527,7 +537,6 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
             boolean checkFlowNode = false;
             String outcomeToGo = outcome;
             String actionToGo = fromAction;
-            
             if (currentFlow != null)
             {
                 // Faces 2.2 section 7.4.2: When inside a flow, a view identifier has 
@@ -556,7 +565,6 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                 }
                 else
                 {
-                    // Check if thie 
                     checkFlowNode = true;
                 }
             }
@@ -564,7 +572,6 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
             {
                 if (targetFlow != null)
                 {
-                    // start flow!
                     startFlow = true;
                 }
             }
@@ -595,7 +602,6 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
             {
                 boolean complete = false;
                 boolean checkNavCase = true;
-
                 while (!complete && (startFlow || checkFlowNode))
                 {
                     if (startFlow)
@@ -640,49 +646,13 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                         if (flowNode != null)
                         {
                             checkNavCase = true;
-                            if (!complete && flowNode instanceof SwitchNode)
+                            // Note: Node Ordering changed in MYFACES-4553
+                            if (!complete && flowNode instanceof ViewNode)
                             {
-                                outcomeToGo = calculateSwitchOutcome(facesContext, (SwitchNode) flowNode);
-                                // Start over again checking if the node exists.
-                                //fromAction = currentFlow.getId();
-                                actionToGo = currentFlow.getId();
-                                flowNode = currentFlow.getNode(outcomeToGo);
-                                continue;
-                            }
-                            if (!complete && flowNode instanceof FlowCallNode)
-                            {
-                                // "... If the node is a FlowCallNode, save it aside as facesFlowCallNode. ..."
-                                FlowCallNode flowCallNode = (FlowCallNode) flowNode;
-                                targetFlow = calculateFlowCallTargetFlow(facesContext, 
-                                    flowHandler, flowCallNode, currentFlow);
-                                if (targetFlow != null)
-                                {
-                                    targetFlowCallNode = flowCallNode;
-                                    startFlow = true;
-                                    continue;
-                                }
-                                else
-                                {
-                                    // Ask the FlowHandler for a Flow for this flowId, flowDocumentId pair. Obtain a 
-                                    // reference to the start node and execute this algorithm again, on that start node.
-                                    complete = true;
-                                }
-                            }
-                            if (!complete && flowNode instanceof MethodCallNode)
-                            {
-                                MethodCallNode methodCallNode = (MethodCallNode) flowNode;
-                                String vdlViewIdentifier = calculateVdlViewIdentifier(facesContext, methodCallNode);
-                                // note a vdlViewIdentifier could be a flow node too
-                                if (vdlViewIdentifier != null)
-                                {
-                                    outcomeToGo = vdlViewIdentifier;
-                                    actionToGo = currentFlow.getId();
-                                    continue;
-                                }
-                                else
-                                {
-                                    complete = true;
-                                }
+                                ViewNode viewNode = (ViewNode) flowNode;
+                                navigationCase = createNavigationCase(viewId, flowNode.getId(), 
+                                    viewNode.getVdlDocumentId());
+                                complete = true;
                             }
                             if (!complete && flowNode instanceof ReturnNode)
                             {
@@ -735,17 +705,58 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                                 }
                                 continue;
                             }
-                            if (!complete && flowNode instanceof ViewNode)
+                            if(!complete && flowHandler.getCurrentFlow() == null) // See  MYFACES-4553 for details
                             {
-                                ViewNode viewNode = (ViewNode) flowNode;
-                                navigationCase = createNavigationCase(viewId, flowNode.getId(), 
-                                    viewNode.getVdlDocumentId());
-                                complete = true;
+                                flowHandler.transition(facesContext, null, targetFlow, null, outcomeToGo);
+                                facesContext.getAttributes().put(STARTED_FLOW_TRANSITION, true);
+                                continue;
+                            }
+                            if (!complete && flowNode instanceof FlowCallNode)
+                            {
+                                // "... If the node is a FlowCallNode, save it aside as facesFlowCallNode. ..."
+                                FlowCallNode flowCallNode = (FlowCallNode) flowNode;
+                                targetFlow = calculateFlowCallTargetFlow(facesContext, 
+                                    flowHandler, flowCallNode, currentFlow);
+                                if (targetFlow != null)
+                                {
+                                    targetFlowCallNode = flowCallNode;
+                                    startFlow = true;
+                                    continue;
+                                }
+                                else
+                                {
+                                    // Ask the FlowHandler for a Flow for this flowId, flowDocumentId pair. Obtain a 
+                                    // reference to the start node and execute this algorithm again, on that start node.
+                                    complete = true;
+                                }
+                            }
+                            if (!complete && flowNode instanceof SwitchNode)
+                            {
+                                outcomeToGo = calculateSwitchOutcome(facesContext, (SwitchNode) flowNode);
+                                // Start over again checking if the node exists.
+                                actionToGo = currentFlow.getId();
+                                flowNode = currentFlow.getNode(outcomeToGo);
+                                continue;
+                            }
+                            if (!complete && flowNode instanceof MethodCallNode)
+                            {
+                                MethodCallNode methodCallNode = (MethodCallNode) flowNode;
+                                String vdlViewIdentifier = calculateVdlViewIdentifier(facesContext, methodCallNode);
+                                // note a vdlViewIdentifier could be a flow node too
+                                if (vdlViewIdentifier != null)
+                                {
+                                    outcomeToGo = vdlViewIdentifier;
+                                    actionToGo = currentFlow.getId();
+                                    continue;
+                                }
+                                else
+                                {
+                                    complete = true;
+                                }
                             }
                             else
                             {
-                                //Should not happen
-                                complete = true;
+                                complete = true; //Should not happen
                             }
                         }
                         else if (checkNavCase)
@@ -757,8 +768,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                                     flowNavigationStructure, actionToGo, outcomeToGo, viewId);
                             
                             // Faces 2.2 section 7.4.2 "... any text that references a view identifier, such as 
-                            // <from-view-id> or <to-view-id>,
-                            // can also refer to a flow node ..."
+                            // <from-view-id> or <to-view-id>, can also refer to a flow node ..."
                             if (navigationCase != null)
                             {
                                 outcomeToGo = navigationCase.getToViewId(facesContext);
@@ -776,8 +786,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
                         }
                     }
                 }
-                // Apply implicit navigation rules over outcomeToGo
-                if (outcomeToGo != null && navigationCase == null)
+                if (outcomeToGo != null && navigationCase == null) // Apply implicit navigation rules over outcomeToGo
                 {
                     navigationCase = getOutcomeNavigationCase (facesContext, actionToGo, outcomeToGo);
                 }
@@ -804,8 +813,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
         {
             navigationContext.setNavigationCase(navigationCase);
         }
-        return navigationContext.getNavigationCase();
-        // if navigationCase == null, will stay on current view
+        return navigationContext.getNavigationCase(); // if navigationCase == null, will stay on current view
     }
 
     private String resolveStartNodeOutcome(Flow targetFlow)
@@ -890,7 +898,7 @@ public class NavigationHandlerImpl extends ConfigurableNavigationHandler
             }
             else if (methodCallNode.getOutcome() != null)
             {
-                vdlViewIdentifier = (String) methodCallNode.getOutcome().getValue(
+                vdlViewIdentifier = methodCallNode.getOutcome().getValue(
                     facesContext.getELContext());
             }
         }
