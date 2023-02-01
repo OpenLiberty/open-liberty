@@ -701,6 +701,20 @@ public final class JsMainImpl implements JsMain, Singleton {
         return ret;
     }
 
+    public Object getService(Class c) {
+
+        String methodName = "getService";
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            SibTr.entry(this, tc, methodName);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            SibTr.exit(this, tc, methodName);
+        }
+
+        return null;
+    }
+
     /**
      * Returns a list of configured buses in this cell. For liberty this method
      * will return the null value, because no directory structure is maintained
