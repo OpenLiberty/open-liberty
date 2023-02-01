@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -161,6 +161,20 @@ public class CookieBasedStorageTest extends CommonTestClass {
         String value = storage.get(doesNotExistCookieName);
 
         assertNull("Expected the value to be null if the cookie name does not exist in the cookies.", value);
+    }
+
+    @Test
+    public void test_get_nullCookies() {
+        mockery.checking(new Expectations() {
+            {
+                one(request).getCookies();
+                will(returnValue(null));
+            }
+        });
+
+        String value = storage.get(testCookieName);
+
+        assertNull("Expected the value to be null if no cookies were sent.", value);
     }
 
     @Test
