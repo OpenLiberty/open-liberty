@@ -39,16 +39,8 @@ public class WebsocketPushBean implements Serializable {
     private PushContext myChannel;
 
     public void send() {
-        LOGGER.log(Level.INFO, "Method send was invoked successfully!");
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            e.printStackTrace();
-        }
-//        throw new RuntimeException("Test onerror exception.");
         myChannel.send("Message from the server via push!");
+        LOGGER.log(Level.INFO, "Method send was invoked successfully!");
     }
 
     public void onOpen(@Observes @Opened WebsocketEvent event) {
