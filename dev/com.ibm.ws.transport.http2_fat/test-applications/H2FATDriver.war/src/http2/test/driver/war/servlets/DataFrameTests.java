@@ -198,6 +198,12 @@ public class DataFrameTests extends H2FATDriverServlet {
 
     /**
      * Send a DATA frame with no EOS flag, and expect WINDOW_UPDATE frames from the server which restore its read window
+     * This test uses a server.xml with stream intial window size set to 100 and connection set to 65537
+     *
+     * We expect the server to send a connection window_update frame with a size increment of 2 (65537-65535)
+     *
+     * Window update frames aren't sent until the window is less than 1/2 the max window size. In this case it would be
+     * 499 on the stream and 32768 on the connection.
      */
     public void testSimpleWindowUpdatesReceived(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
 
@@ -207,9 +213,8 @@ public class DataFrameTests extends H2FATDriverServlet {
 
         // expect window updates on streams 0 (connection) and 3
         FrameWindowUpdate streamUpdateFrame = new FrameWindowUpdate(3, 1000, false);
-        FrameWindowUpdate connectionUpdateFrame = new FrameWindowUpdate(0, 1000, false);
+        FrameWindowUpdate connectionUpdateFrame = new FrameWindowUpdate(0, 502, false);
         h2Client.addExpectedFrame(streamUpdateFrame);
-        h2Client.addExpectedFrame(connectionUpdateFrame);
 
         setupDefaultUpgradedConnection(h2Client);
 
@@ -222,14 +227,17 @@ public class DataFrameTests extends H2FATDriverServlet {
         FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
         frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
 
-        // generate 1000 bytes for data frame
-        byte[] data = new byte[999];
+        // generate 251 bytes for data frame
+        byte[] data = new byte[250];
         for (int i = 0; i < data.length; i++) {
             data[i] = 0x01;
         }
         FrameData dataFrame = new FrameData(3, data, 0, false, true, false);
 
+        //Send headers followed by 251 bytes, and then another 251 bytes.
+        // We should only get one window_udpate frame back, and it should have a value of 502.
         h2Client.sendFrame(frameHeadersToSend);
+        h2Client.sendFrame(dataFrame);
         h2Client.sendFrame(dataFrame);
 
         // now send EOS
@@ -241,7 +249,7 @@ public class DataFrameTests extends H2FATDriverServlet {
     }
 
     /**
-     * Send a DATA frames on streams 3 and 7 with no EOS, and expect WINDOW_UPDATE frames from the server which restore the connection and
+     * Send a DATA frames on streams 3 and 7 with no EOS, and expect WINDOW_UPDATE frames from the server which restore the
      * stream read windows. Additionally, send DATA on stream 5 with an EOS set - so no WINDOW_UPDATE is expected.
      */
     public void testMultiStreamWindowUpdatesReceived(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
@@ -255,11 +263,7 @@ public class DataFrameTests extends H2FATDriverServlet {
         FrameWindowUpdate stream7UpdateFrame = new FrameWindowUpdate(7, 1000, false);
         h2Client.addExpectedFrame(stream3UpdateFrame);
         h2Client.addExpectedFrame(stream7UpdateFrame);
-        // expect three connection window updates - one for each stream
-        FrameWindowUpdate connectionUpdateFrame = new FrameWindowUpdate(0, 1000, false);
-        h2Client.addExpectedFrame(connectionUpdateFrame);
-        h2Client.addExpectedFrame(connectionUpdateFrame);
-        h2Client.addExpectedFrame(connectionUpdateFrame);
+        // connection window size is large, so no window_udpates are expected
 
         setupDefaultUpgradedConnection(h2Client);
 
