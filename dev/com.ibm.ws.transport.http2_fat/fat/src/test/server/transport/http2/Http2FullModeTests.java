@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -1749,28 +1749,6 @@ public class Http2FullModeTests extends FATServletClient {
     @Test
     public void testSendPostRequestWithBody() throws Exception {
         runTest(defaultServletPath, testName.getMethodName());
-    }
-
-    /**
-     * Test Coverage: Send a DATA frame
-     * Test Outcome: Expect WINDOW_UPDATE frames matching the DATA payload size
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testSimpleWindowUpdatesReceived() throws Exception {
-        runTest(dataServletPath, testName.getMethodName());
-    }
-
-    /**
-     * Test Coverage: Send multiple DATA frames
-     * Test Outcome: Expect WINDOW_UPDATE frames matching the DATA payloads sent
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testMultiStreamWindowUpdatesReceived() throws Exception {
-        runTest(dataServletPath, testName.getMethodName());
     }
 
     /**

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -247,7 +247,7 @@ public class DataFrameTests extends H2FATDriverServlet {
     public void testMultiStreamWindowUpdatesReceived(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
 
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-        String testName = "testSimpleWindowUpdatesReceived";
+        String testName = "testMultiStreamWindowUpdatesReceived";
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         // expect window updates on streams 0 (connection), 3, and 7
