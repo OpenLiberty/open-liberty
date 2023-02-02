@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -57,7 +57,7 @@ public abstract class GenericMessageImpl extends BNFHeadersImpl {
 
     /**
      * Called when the first token of the first line has been parsed.
-     * 
+     *
      * @param token
      * @throws Exception
      */
@@ -65,7 +65,7 @@ public abstract class GenericMessageImpl extends BNFHeadersImpl {
 
     /**
      * Called when the second token of the first line has been parsed.
-     * 
+     *
      * @param token
      * @throws Exception
      */
@@ -73,7 +73,7 @@ public abstract class GenericMessageImpl extends BNFHeadersImpl {
 
     /**
      * Called when the third token of the first line has been parsed.
-     * 
+     *
      * @param token
      * @throws Exception
      */
@@ -82,7 +82,7 @@ public abstract class GenericMessageImpl extends BNFHeadersImpl {
     /**
      * Query whether or not this message is over the allowed change limit to
      * decide if we need to remarshall the entire thing.
-     * 
+     *
      * @return boolean
      */
     protected boolean overChangeLimit() {
@@ -93,28 +93,28 @@ public abstract class GenericMessageImpl extends BNFHeadersImpl {
      * Called when the first CRLF is reached.
      * This should check to ensure correct tokens were all parsed and
      * throw an exception if they were not parsed.
-     * 
+     *
      * @throws MalformedMessageException
      */
     protected abstract void parsingComplete() throws MalformedMessageException;
 
     /**
      * Query the first token to be marshalled outbound.
-     * 
+     *
      * @return byte[]
      */
     protected abstract byte[] getMarshalledFirstToken();
 
     /**
      * Query the second token to be marshalled outbound.
-     * 
+     *
      * @return byte[]
      */
     protected abstract byte[] getMarshalledSecondToken();
 
     /**
      * Query the third token to be marshalled outbound.
-     * 
+     *
      * @return byte[]
      */
     protected abstract byte[] getMarshalledThirdToken();
@@ -122,7 +122,7 @@ public abstract class GenericMessageImpl extends BNFHeadersImpl {
     /**
      * Set the flag on whether the first line has been completely parsed yet
      * based on the input flag.
-     * 
+     *
      * @param flag
      */
     protected void setFirstLineComplete(boolean flag) {
@@ -136,7 +136,7 @@ public abstract class GenericMessageImpl extends BNFHeadersImpl {
 
     /**
      * Query whether the first line has been completely parsed yet.
-     * 
+     *
      * @return boolean
      */
     final protected boolean isFirstLineComplete() {
@@ -145,7 +145,7 @@ public abstract class GenericMessageImpl extends BNFHeadersImpl {
 
     /**
      * Set the flag that the first line has changed since being parsed.
-     * 
+     *
      */
     protected void setFirstLineChanged() {
         this.firstLineChanged = true;
@@ -154,7 +154,7 @@ public abstract class GenericMessageImpl extends BNFHeadersImpl {
     /**
      * Query whether or not the first line of the message has been changed
      * since the parse stage.
-     * 
+     *
      * @return boolean
      */
     protected boolean hasFirstLineChanged() {
@@ -163,7 +163,7 @@ public abstract class GenericMessageImpl extends BNFHeadersImpl {
 
     /**
      * Query the number of first line tokens parsed for the incoming message.
-     * 
+     *
      * @return int (0 if this was an outgoing message)
      */
     final protected int getNumberFirstLineTokens() {
@@ -172,7 +172,7 @@ public abstract class GenericMessageImpl extends BNFHeadersImpl {
 
     /**
      * Parse the first line of a message.
-     * 
+     *
      * @param buff
      * @return boolean (true means parsed entire line)
      * @throws Exception
@@ -291,7 +291,7 @@ public abstract class GenericMessageImpl extends BNFHeadersImpl {
 
     /**
      * Marshall the first line.
-     * 
+     *
      * @return WsByteBuffer[] of line ready to be written.
      */
     public WsByteBuffer[] marshallLine() {
@@ -321,7 +321,7 @@ public abstract class GenericMessageImpl extends BNFHeadersImpl {
      * Parse a message from the input buffer. The input flag is whether or not
      * to save the header value immediately or delay the extraction until the
      * header value is queried.
-     * 
+     *
      * @param buffer
      * @param bExtractValue
      * @return boolean (true means parsed entire message)
@@ -352,7 +352,7 @@ public abstract class GenericMessageImpl extends BNFHeadersImpl {
 
     /**
      * Marshall a message.
-     * 
+     *
      * @return WsByteBuffer[]
      * @throws MessageSentException
      */
@@ -379,7 +379,7 @@ public abstract class GenericMessageImpl extends BNFHeadersImpl {
      * through a compliancy check and take appropriate action (throw
      * errors, add missing headers, etc). Subclasses would write their
      * own according to their protocol
-     * 
+     *
      * @throws MessageSentException
      */
     protected abstract void headerComplianceCheck() throws MessageSentException;
@@ -388,7 +388,7 @@ public abstract class GenericMessageImpl extends BNFHeadersImpl {
      * Before the message is marshalled, this method allows subclasses to
      * perform any final compliance checks or whatever else might be required
      * as last minute actions.
-     * 
+     *
      * @throws MessageSentException
      */
     protected void preMarshallMessage() throws MessageSentException {
@@ -410,7 +410,7 @@ public abstract class GenericMessageImpl extends BNFHeadersImpl {
      */
     @Override
     public void clear() {
-        super.clear();
+        super.clearBuffers();
         this.completedFirstLine = false;
         this.numFirstLineTokensRead = 0;
         this.firstLineChanged = false;
@@ -421,7 +421,7 @@ public abstract class GenericMessageImpl extends BNFHeadersImpl {
      */
     @Override
     protected void destroy() {
-        super.destroy();
+        clear();
     }
 
     /*
@@ -436,7 +436,7 @@ public abstract class GenericMessageImpl extends BNFHeadersImpl {
 
     /**
      * Duplicate this generic message into the given object.
-     * 
+     *
      * @param msg
      * @throws NullPointerException (if input message is null)
      */

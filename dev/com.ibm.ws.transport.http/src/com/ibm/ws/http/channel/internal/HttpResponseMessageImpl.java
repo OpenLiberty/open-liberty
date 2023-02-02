@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2021 IBM Corporation and others.
+ * Copyright (c) 2004, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -292,9 +292,11 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
             Tr.event(tc, "Clearing this response: " + this);
         }
         super.clear();
-        this.myStatusCode = StatusCodes.OK;
-        this.myReason = null;
-        this.myReasonBytes = null;
+        /*
+         * this.myStatusCode = StatusCodes.OK;
+         * this.myReason = null;
+         * this.myReasonBytes = null;
+         */
     }
 
     /**
@@ -302,14 +304,8 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
      */
     @Override
     public void destroy() {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Destroying this response: " + this);
-        }
-        HttpObjectFactory tempFactory = getObjectFactory();
-        super.destroy();
-        if (null != tempFactory) {
-            tempFactory.releaseResponse(this);
-        }
+        clearBuffers();
+
     }
 
     /**

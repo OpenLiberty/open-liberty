@@ -562,7 +562,6 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (bTrace && tc.isEntryEnabled()) {
             Tr.entry(tc, "clear");
         }
-
         clearAllHeaders();
         this.eohPosition = HeaderStorage.NOTSET;
         this.currentElem = null;
@@ -594,7 +593,6 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         this.forwardedHost = null;
         this.forwardedPort = null;
         this.forwardedProto = null;
-
         if (bTrace && tc.isEntryEnabled()) {
             Tr.exit(tc, "clear");
         }
@@ -604,7 +602,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * Clear the array of buffers used during the parsing or marshalling of
      * headers.
      */
-    private void clearBuffers() {
+    public void clearBuffers() {
         // simply null out the parse buffers list, then release all the created buffers
         final boolean bTrace = TraceComponent.isAnyTracingEnabled();
         for (int i = 0; i <= this.parseIndex; i++) {

@@ -58,6 +58,7 @@ public class HttpResponseMessageImplTest {
     private HttpResponseMessageImpl response = null;
     protected ChannelDataImpl cdi;
     protected HttpChannelConfig config;
+    protected MockInboundSC sc = null;
 
     /**
      * Capture stdout/stderr output to the manager.
@@ -125,6 +126,15 @@ public class HttpResponseMessageImplTest {
         this.response = new MockResponseMessage(sc);
     }
 
+    protected void getNewResponse() {
+        if (sc != null) {
+            this.response = new MockResponseMessage(sc);
+        } else {
+            setUp();
+        }
+
+    }
+
     protected WsByteBuffer[] duplicateBuffers(WsByteBuffer[] list) {
         if (null == list) {
             return null;
@@ -171,7 +181,7 @@ public class HttpResponseMessageImplTest {
             // Test the status code APIs
             // *****************************************************************
 
-            getResponse().clear();
+            getNewResponse();
 
             // @ Tested API - setStatusCode(int)
             getResponse().setStatusCode(200);
@@ -192,7 +202,7 @@ public class HttpResponseMessageImplTest {
             // Test the duplicate method
             // *****************************************************************
 
-            getResponse().clear();
+            getNewResponse();
             getResponse().setHeader("Test", "TestValue");
 
             // @ Tested API - duplicate()
@@ -225,7 +235,7 @@ public class HttpResponseMessageImplTest {
             // Test the Cookie APIs
             // *****************************************************************
 
-            getResponse().clear();
+            getNewResponse();
 
             // Test setting cookies with strings
             // @Tested API - setCookie(String, String, HeaderKeys)
@@ -252,7 +262,7 @@ public class HttpResponseMessageImplTest {
             // Test setting cookies with actual Cookie object
             // @Tested API - setCookie(Cookie, HeaderKeys)
 
-            getResponse().clear();
+            getNewResponse();
             cookie = new HttpCookie("TestCookie", "TestCookieValue");
             getResponse().setCookie(cookie, HttpHeaderKeys.HDR_SET_COOKIE);
             cookie = getResponse().getCookie("TestCookie");
@@ -263,7 +273,7 @@ public class HttpResponseMessageImplTest {
             // Test adding multiple cookies
             // @Tested API - getAllCookies()
 
-            getResponse().clear();
+            getNewResponse();
             getResponse().setCookie(new HttpCookie("TestCookie1", "TestCookieValue1"),
                                     HttpHeaderKeys.HDR_SET_COOKIE);
             getResponse().setCookie("TestCookie2", "TestCookieValue2",
@@ -288,7 +298,7 @@ public class HttpResponseMessageImplTest {
 
             // Test setting header directly first
 
-            getResponse().clear();
+            getNewResponse();
             getResponse().setHeader(HttpHeaderKeys.HDR_SET_COOKIE,
                                     "TestCookie1=TestCookieValue1;"
                                                                    + "TestCookie2=TestCookieValue2;"
@@ -300,7 +310,7 @@ public class HttpResponseMessageImplTest {
 
             // Test trying to add to a committed msg
 
-            getResponse().clear();
+            getNewResponse();
             getResponse().setCommitted();
             assertFalse(getResponse().setCookie(
                                                 new HttpCookie("C1", "V1"), HttpHeaderKeys.HDR_SET_COOKIE));
@@ -318,7 +328,7 @@ public class HttpResponseMessageImplTest {
             // Test more variations on adding cookies and querying values
             // @Tested API - getCookieValue(String)
 
-            getResponse().clear();
+            getNewResponse();
             getResponse().setHeader(HttpHeaderKeys.HDR_SET_COOKIE, "myCookie=myValue");
             byte[] val = getResponse().getCookieValue("myCookie");
             assertEquals("myValue", new String(val));
@@ -337,7 +347,7 @@ public class HttpResponseMessageImplTest {
             // @Tested API - getAllCookieValues(String)
             // @Tested API - getAllCookies(String)
 
-            getResponse().clear();
+            getNewResponse();
             getResponse().setHeader("Set-Cookie", "jsessionid=blah1;bogus=test;jsessionid=blah2");
             getResponse().setHeader("Set-Cookie2", "bogus2=test2;jsessionid=blah3");
             List<String> cvalues = getResponse().getAllCookieValues("jsessionid");
@@ -346,7 +356,7 @@ public class HttpResponseMessageImplTest {
             assertEquals("blah2", cvalues.get(1));
             assertEquals("blah3", cvalues.get(2));
 
-            getResponse().clear();
+            getNewResponse();
             getResponse().setHeader("Set-Cookie", "ws=this;id=that");
             getResponse().setHeader("Set-Cookie2", "id=something;id=otherthing");
             List<HttpCookie> list = getResponse().getAllCookies("id");
@@ -359,7 +369,7 @@ public class HttpResponseMessageImplTest {
             // Test the marshalling/parsing of the first line code
             // *****************************************************************
 
-            getResponse().clear();
+            getNewResponse();
 
             // Test known first line bits
 
@@ -378,7 +388,7 @@ public class HttpResponseMessageImplTest {
             assertTrue(rc);
 
             // Test unknown first line bits
-            getResponse().clear();
+            getNewResponse();
             getResponse().setVersion(VersionValues.find("HTTP/3.0"));
             getResponse().setStatusCode(StatusCodes.CONFLICT);
             mData = null;
@@ -393,7 +403,7 @@ public class HttpResponseMessageImplTest {
             assertTrue(rc);
 
             // Test mixing known and unknown first line bits
-            getResponse().clear();
+            getNewResponse();
             getResponse().setVersion(VersionValues.V10);
             getResponse().setStatusCode(StatusCodes.ACCEPTED);
             getResponse().setReasonPhrase("This is a test reason phrase".getBytes());
@@ -413,7 +423,7 @@ public class HttpResponseMessageImplTest {
             // Test the mime-type APIs
             // *****************************************************************
 
-            getResponse().clear();
+            getNewResponse();
 
             // Test the charset APIs
             // @Tested API - getCharset()
@@ -492,7 +502,7 @@ public class HttpResponseMessageImplTest {
             // Test duplication
             // ****************************************************************
 
-            getResponse().clear();
+            getNewResponse();
             getResponse().setStatusCode(500);
             getResponse().setReasonPhrase("bad reason");
             getResponse().setHeader("host", "localhost");
@@ -522,7 +532,7 @@ public class HttpResponseMessageImplTest {
             // ****************************************************************
 
             // test appendHeader
-            getResponse().clear();
+            getNewResponse();
             String sTemp = "0123456789abcdef0123";
             byte[] temp = sTemp.getBytes();
             getResponse().appendHeader("Host", temp, 0, 20);
@@ -552,7 +562,7 @@ public class HttpResponseMessageImplTest {
             getResponse().setHeader("ETag", temp, 15, 5);
             // marshall the response, should be adding the above header
             mData = duplicateBuffers(getResponse().marshallMessage());
-            getResponse().clear();
+            getNewResponse();
 
             // parse the response
             for (int i = 0; i < mData.length; i++) {
@@ -570,7 +580,7 @@ public class HttpResponseMessageImplTest {
                              "TestServer/1.0");
             // marshall the response, should be adding the above header
             mData = duplicateBuffers(getResponse().marshallMessage());
-            getResponse().clear();
+            getNewResponse();
 
             // parse the response
             for (int i = 0; i < mData.length; i++) {
@@ -581,7 +591,7 @@ public class HttpResponseMessageImplTest {
             // marshall the response, test not-overriding existing header
             getResponse().setHeader("Server", "Explicit Value/0.9");
             mData = duplicateBuffers(getResponse().marshallMessage());
-            getResponse().clear();
+            getNewResponse();
 
             // parse the response
             for (int i = 0; i < mData.length; i++) {
@@ -593,7 +603,7 @@ public class HttpResponseMessageImplTest {
             getResponse().setHeader("Server", "ShouldNotSeeThis/7.0");
             // marshall the response, should be removing the above header
             mData = duplicateBuffers(getResponse().marshallMessage());
-            getResponse().clear();
+            getNewResponse();
 
             // parse the response
             for (int i = 0; i < mData.length; i++) {
@@ -605,7 +615,7 @@ public class HttpResponseMessageImplTest {
             getResponse().setHeader("Server", "ShouldSeeThis/4.0");
             // marshall the response, should be leaving the above header
             mData = duplicateBuffers(getResponse().marshallMessage());
-            getResponse().clear();
+            getNewResponse();
 
             // parse the response
             for (int i = 0; i < mData.length; i++) {
@@ -619,10 +629,10 @@ public class HttpResponseMessageImplTest {
             // *****************************************************************
 
             // test adding the cache headers
-            getResponse().clear();
+            getNewResponse();
             getResponse().setHeader("Set-Cookie", "jsessionid=nocache_default");
             mData = duplicateBuffers(getResponse().marshallMessage());
-            getResponse().clear();
+            getNewResponse();
             for (int i = 0; i < mData.length; i++) {
                 getResponse().parseMessage(mData[i], true);
             }
@@ -631,10 +641,10 @@ public class HttpResponseMessageImplTest {
                          getResponse().getHeader("Cache-Control").asString());
 
             // test adding Response Split
-            getResponse().clear();
+            getNewResponse();
             getResponse().setHeader("split-header0", "split_value_BEGIN0_\u560A_END0:it");
             mData = duplicateBuffers(getResponse().marshallMessage());
-            getResponse().clear();
+            getNewResponse();
             for (int i = 0; i < mData.length; i++) {
                 getResponse().parseMessage(mData[i], true);
             }
@@ -643,10 +653,10 @@ public class HttpResponseMessageImplTest {
                          getResponse().getHeader("split-header0").asString());
 
             // test Response Split via append header
-            getResponse().clear();
+            getNewResponse();
             getResponse().appendHeader("split-header1", "split_appendHeader_BEGIN1_\u570A_END1:it");
             mData = duplicateBuffers(getResponse().marshallMessage());
-            getResponse().clear();
+            getNewResponse();
             for (int i = 0; i < mData.length; i++) {
                 getResponse().parseMessage(mData[i], true);
             }
@@ -657,7 +667,7 @@ public class HttpResponseMessageImplTest {
             getResponse().clear();
             getResponse().appendHeader("split-header2", "split_\r\n \n appendHeader_BEGIN2_\u570A_END2:it");
             mData = duplicateBuffers(getResponse().marshallMessage());
-            getResponse().clear();
+            getNewResponse();
             for (int i = 0; i < mData.length; i++) {
                 getResponse().parseMessage(mData[i], true);
             }
@@ -669,7 +679,7 @@ public class HttpResponseMessageImplTest {
             createNewMessage(HttpConfigConstants.PROPNAME_COOKIES_CONFIGURE_NOCACHE, "false");
             getResponse().setHeader("Set-Cookie", "jsessionid=nocache_false");
             mData = duplicateBuffers(getResponse().marshallMessage());
-            getResponse().clear();
+            getNewResponse();
             for (int i = 0; i < mData.length; i++) {
                 getResponse().parseMessage(mData[i], true);
             }
@@ -682,7 +692,7 @@ public class HttpResponseMessageImplTest {
             getResponse().setHeader("Cache-Control", "no-cache");
             getResponse().setHeader("Set-Cookie", "jsessionid=blah");
             mData = duplicateBuffers(getResponse().marshallMessage());
-            getResponse().clear();
+            getNewResponse();
             for (int i = 0; i < mData.length; i++) {
                 getResponse().parseMessage(mData[i], true);
             }
@@ -702,12 +712,12 @@ public class HttpResponseMessageImplTest {
             getResponse().clear();
             getResponse().setContentLength(Integer.MAX_VALUE + 1L);
             assertEquals(Integer.MAX_VALUE + 1L, getResponse().getContentLength());
-            getResponse().clear();
+            getNewResponse();
             getResponse().setContentLength(Long.MAX_VALUE);
             assertEquals(Long.MAX_VALUE, getResponse().getContentLength());
             getResponse().setHeader(HttpHeaderKeys.HDR_CONTENT_LENGTH, Long.toString(Integer.MAX_VALUE + 1L));
             assertEquals(Integer.MAX_VALUE + 1L, getResponse().getContentLength());
-            getResponse().clear();
+            getNewResponse();
             getResponse().setHeader(HttpHeaderKeys.HDR_CONTENT_LENGTH, Long.toString(Long.MAX_VALUE));
             assertEquals(Long.MAX_VALUE, getResponse().getContentLength());
 
@@ -716,7 +726,7 @@ public class HttpResponseMessageImplTest {
             buff.clear();
             buff.put("HTTP/1.1 200 OK\r\nv:t1\r\nV  : testheader\r\nV : testheader2\r\n\r\n".getBytes());
             buff.flip();
-            getResponse().clear();
+            getNewResponse();
             getResponse().parseMessage(buff, true);
             buff.release();
             assertEquals(3, getResponse().getNumberOfHeaderInstances("V"));
@@ -815,7 +825,7 @@ public class HttpResponseMessageImplTest {
             buff = ChannelFrameworkFactory.getBufferManager().allocate(8192);
             buff.put(test.getBytes());
             buff.flip();
-            getResponse().clear();
+            getNewResponse();
             getResponse().parseMessage(buff, true);
             buff.release();
             assertEquals(152, getResponse().getContentLength());
