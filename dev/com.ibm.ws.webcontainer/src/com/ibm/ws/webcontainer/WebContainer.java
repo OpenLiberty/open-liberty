@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -36,6 +37,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -210,7 +212,7 @@ public abstract class WebContainer extends BaseContainer {
 
     public static boolean appInstallBegun = false;
     
-    private static final Map<VHostCacheKey, String> vhostCache = new ConcurrentHashMap<>();
+    private static final Map<VHostCacheKey, String> vhostCache = new MRUVHostCache(200);
     
     // Servlet 4.0 : Must be static since referenced from static method
     protected static CacheServletWrapperFactory cacheServletWrapperFactory;
@@ -737,18 +739,27 @@ public abstract class WebContainer extends BaseContainer {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
             logger.logp(Level.FINE, CLASS_NAME, "getHostAliasKey", "host-->"+host +", port-->"+port);
         }
-        StringBuilder vhostKey = new StringBuilder();
+
+        VHostCacheKey vhostCacheKey = new VHostCacheKey(host, port);
+        String vhostKey = vhostCache.get(vhostCacheKey);
+        if(vhostKey != null) {
+            return vhostKey;
+        }
+
+        StringBuilder vhostKeyStringBuilder = new StringBuilder();
         String serverName = host;
         // Begin 255189, Part 1
         if (serverName != null && serverName.length() > 0) {
             if (serverName.charAt(0) == '[' && serverName.charAt(serverName.length() - 1) == ']')
                 serverName = serverName.substring(1, serverName.length() - 1);
-            vhostKey.append(serverName.toLowerCase()); //have to do lower case here instead of mapper since context root is case sensitive, stupid VirtualHostContextRootMapper!
+            vhostKeyStringBuilder.append(serverName.toLowerCase()); //have to do lower case here instead of mapper since context root is case sensitive, stupid VirtualHostContextRootMapper!
         }
         // End 255189, Part 1
-        vhostKey.append(':');
-        vhostKey.append(port);
-        return vhostKey.toString();
+        vhostKeyStringBuilder.append(':');
+        vhostKeyStringBuilder.append(port);
+        vhostKey = vhostKeyStringBuilder.toString();
+        vhostCache.put(vhostCacheKey, vhostKey);
+        return vhostKey;
     }
 
     public void handleRequest(IRequest req, IResponse res, VirtualHost vhost, RequestProcessor processor) throws IOException {
@@ -762,14 +773,8 @@ public abstract class WebContainer extends BaseContainer {
 
         String serverName = req.getServerName();
         int serverPort = req.getServerPort();
-        String vhostKey;
         
-        VHostCacheKey vhostCacheKey = new VHostCacheKey(serverName, serverPort);
-        vhostKey = vhostCache.get(vhostCacheKey);
-        if(vhostKey == null) {
-            vhostKey = getHostAliasKey(serverName, serverPort);
-            vhostCache.put(vhostCacheKey, vhostKey);
-        }
+        String vhostKey = getHostAliasKey(serverName, serverPort);
          
         boolean ardRequest = false;
         if (reqState != null) {
@@ -2027,20 +2032,57 @@ public abstract class WebContainer extends BaseContainer {
         }
 
         @Override
-        public boolean equals(Object o) {
-            if(this == o)
+        public boolean equals(Object obj) {
+            if (this == obj)
                 return true;
-            if(o == null)
+            if (obj == null)
                 return false;
-            if (o.getClass() != VHostCacheKey.class)
+            if (getClass() != obj.getClass())
                 return false;
-            VHostCacheKey that = (VHostCacheKey) o;
-            return this.serverPort == that.serverPort && (this.serverName == null ? that.serverName == null : this.serverName.equals(that.serverName));
+            VHostCacheKey other = (VHostCacheKey) obj;
+            return serverPort == other.serverPort && Objects.equals(serverName, other.serverName);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(this.serverName, this.serverPort);
+            return Objects.hash(serverName, serverPort);
+        }
+    }
+    
+    private static class MRUVHostCache extends LinkedHashMap<VHostCacheKey, String> {
+        /**  */
+        private static final long serialVersionUID = 1L;
+        private final int maxSize;
+        // Use a read write lock to avoid using a synchronized collection on the LinkedHashMap to allow gets to execute in parallel.
+        private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
+
+        @Override
+        public boolean removeEldestEntry(Map.Entry<VHostCacheKey, String> eldest) {
+            return size() > maxSize;
+        }
+
+        MRUVHostCache(int maxSize) {
+            this.maxSize = maxSize;
+        }
+
+        @Override
+        public String get(Object key) {
+            rwLock.readLock().lock();
+            try {
+                return super.get(key);
+            } finally {
+                rwLock.readLock().unlock();
+            }
+        }
+
+        @Override
+        public String put(VHostCacheKey key, String vhostKey) {
+            rwLock.writeLock().lock();
+            try {
+                return super.put(key, vhostKey);
+            } finally {
+                rwLock.writeLock().unlock();
+            }
         }
     }
 }
