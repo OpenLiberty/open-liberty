@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec;
 
+import static io.openliberty.security.jakartasec.JakartaSec30Constants.DEFAULT_TOKEN_MIN_VALIDITY;
 import static io.openliberty.security.jakartasec.JakartaSec30Constants.EMPTY_DEFAULT;
 
 import java.util.Arrays;
@@ -324,8 +325,21 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
     }
 
     private Integer evaluateTokenMinValidity(boolean immediateOnly) {
-        return ELUtils.evaluateIntegerAttribute("tokenMinValidityExpression", oidcMechanismDefinition.tokenMinValidity(), 10000,
-                                                oidcMechanismDefinition.tokenMinValidityExpression(), immediateOnly);
+        return evaluateNonNegativeInteger("tokenMinValidity", oidcMechanismDefinition.tokenMinValidity(), DEFAULT_TOKEN_MIN_VALIDITY,
+                                          "tokenMinValidityExpression", oidcMechanismDefinition.tokenMinValidityExpression(), immediateOnly);
+    }
+
+    private Integer evaluateNonNegativeInteger(String attributeName, int attribute, int attributeDefault,
+                                               String attributeExpressionName, String attributeExpression, boolean immediateOnly) {
+        Integer value = ELUtils.evaluateIntegerAttribute(attributeExpressionName, attribute, attributeDefault, attributeExpression, immediateOnly);
+        if (value != null && value < 0) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                String attributeNameForWarning = attributeExpression.isEmpty() ? attributeName : attributeExpressionName;
+                Tr.warning(tc, "JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT", new Object[] { attributeNameForWarning, value, attributeDefault });
+            }
+            value = attributeDefault;
+        }
+        return value;
     }
 
     private void issueWarningMessage(String attributeName, Object valueProvided, Object attributeDefault) {
