@@ -65,7 +65,7 @@ pluginManagement {
           ('aQute.bnd.repository.maven.provider.MavenBndRepository;'
                   +'name = RemoteIBMSource'
                   +';local=~/.ibmdhe/repository'
-                  +';releaseUrl=http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/'
+                  +';releaseUrl=https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/'
                   +';index=${build}/oss_ibm_source_dependencies.maven') :
 
           ('aQute.bnd.repository.maven.provider.MavenBndRepository'
@@ -97,7 +97,7 @@ pluginManagement {
           ('aQute.bnd.repository.maven.provider.MavenBndRepository'
                   +';name = RemoteIBM'
                   +';local=~/.ibmdhe/repository'
-                  +';releaseUrl=http://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/'
+                  +';releaseUrl=https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/'
                   +';index=${build}/oss_ibm.maven') :
 
           ('aQute.bnd.repository.maven.provider.MavenBndRepository'
