@@ -35,6 +35,9 @@ public interface Accounts {
     @OrderBy("owner")
     Stream<Account> findByAccountIdRoutingNum(long routingNum);
 
+    @OrderBy("accountId")
+    Stream<AccountId> findByBankName(String bank);
+
     Account findById(AccountId id);
 
     // EclipseLink IllegalArgumentException:
@@ -57,7 +60,7 @@ public interface Accounts {
     @OrderBy(value = "owner", descending = true)
     Stream<Account> findByIdInOrOwner(List<AccountId> id, String owner);
 
-    @OrderBy(value = "accountId")
+    @OrderBy("accountId")
     Stream<Account> findByIdNotNull();
 
     // EclipseLink org.eclipse.persistence.exceptions.DescriptorException

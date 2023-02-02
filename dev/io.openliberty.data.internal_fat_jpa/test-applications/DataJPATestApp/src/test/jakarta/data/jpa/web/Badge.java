@@ -29,7 +29,7 @@ public class Badge {
     public Badge() {
     }
 
-    Badge(short number, char accessLevel) {
+    public Badge(short number, char accessLevel) {
         this.number = number;
         this.accessLevel = accessLevel;
     }

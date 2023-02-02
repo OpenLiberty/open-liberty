@@ -954,6 +954,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             // It would be preferable if the spec included the Select annotation to explicitly identify parameters, but if that doesn't happen
             // TODO we could compare attribute types with known constructor to improve on guessing a correct order of parameters
             q.append("NEW ").append(type.getName()).append('(');
+            List<String> embAttrNames;
             boolean first = true;
             if (cols != null && cols.length > 0)
                 for (int i = 0; i < cols.length; i++) {
@@ -963,6 +964,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             else if (type.equals(queryInfo.entityInfo.idClass))
                 for (String idClassAttributeName : queryInfo.entityInfo.idClassAttributeAccessors.keySet()) {
                     String name = queryInfo.entityInfo.getAttributeName(idClassAttributeName);
+                    generateSelectExpression(q, first, function, distinct, name);
+                    first = false;
+                }
+            else if ((embAttrNames = queryInfo.entityInfo.embeddableAttributeNames.get(type)) != null)
+                for (String name : embAttrNames) {
                     generateSelectExpression(q, first, function, distinct, name);
                     first = false;
                 }

@@ -188,6 +188,39 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Repository method where the result type is the embeddable class of one of the entity attributes.
+     */
+    @Test
+    public void testEmbeddableTypeAsResult() {
+        assertIterableEquals(List.of("NW 19th St",
+                                     "NW 37st St",
+                                     "NW 4th Ave",
+                                     "NW Civic Center Dr",
+                                     "NW Lakeridge Pl",
+                                     "NW Members Parkway",
+                                     "W Highway 14"),
+                             businesses.findByZip(55901)
+                                             .map(loc -> loc.address.street.direction + " " + loc.address.street.name)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Repository method where the result type is an embeddable class 3 levels deep on the entity.
+     */
+    @Test
+    public void testEmbeddableTypeAsResultDepth3() {
+        assertIterableEquals(List.of("N Broadway Ave",
+                                     "NE Wellner Dr",
+                                     "SE 9th St",
+                                     "SW 1st St",
+                                     "SW Enterprise Dr",
+                                     "SW Greenview Dr"),
+                             businesses.findByZipNotAndCity(55901, "Rochester")
+                                             .map(street -> street.direction + " " + street.name)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
      * Repository methods for an entity where an embeddable is the id.
      */
     @Test
@@ -237,6 +270,14 @@ public class DataJPATestServlet extends FATServlet {
                                      "AccountId:1009130:30372"),
                              accounts.findByIdNotNull()
                                              .map(a -> a.accountId.toString())
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("AccountId:1004470:70081",
+                                     "AccountId:1005380:70081",
+                                     "AccountId:1006380:70081",
+                                     "AccountId:1007590:70081"),
+                             accounts.findByBankName("Think Bank")
+                                             .map(AccountId::toString)
                                              .collect(Collectors.toList()));
 
         assertEquals(Collections.EMPTY_LIST, accounts.findByIdEmpty());
@@ -566,6 +607,11 @@ public class DataJPATestServlet extends FATServlet {
                              employees.findByFirstNameStartsWithOrderByIdDesc("I")
                                              .stream()
                                              .map(emp -> emp.badge.number)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("Badge#2636 Level A", "Badge#4948 Level A", "Badge#5310 Level C", "Badge#8171 Level B"),
+                             employees.findByLastName("TestIdOnEmbeddable")
+                                             .map(Badge::toString)
                                              .collect(Collectors.toList()));
 
         employees.deleteByLastName("TestIdOnEmbeddable");

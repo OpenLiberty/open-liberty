@@ -21,11 +21,16 @@ public class AccountId {
     public long accountNum;
     public long routingNum;
 
+    public AccountId() {
+    }
+
+    public AccountId(long accountNum, long routingNum) {
+        this.accountNum = accountNum;
+        this.routingNum = routingNum;
+    }
+
     public static AccountId of(long accountNum, long routingNum) {
-        AccountId a = new AccountId();
-        a.accountNum = accountNum;
-        a.routingNum = routingNum;
-        return a;
+        return new AccountId(accountNum, routingNum);
     }
 
     @Override

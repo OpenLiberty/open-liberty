@@ -247,6 +247,7 @@ class EntityDefiner implements Runnable {
                 Map<String, String> attributeNames = new HashMap<>();
                 Map<String, List<Member>> attributeAccessors = new HashMap<>();
                 SortedMap<String, Class<?>> attributeTypes = new TreeMap<>();
+                Map<Class<?>, List<String>> embeddableAttributeNames = new HashMap<>();
                 Queue<Attribute<?, ?>> embeddables = new LinkedList<>();
                 Queue<String> embeddablePrefixes = new LinkedList<>();
                 Queue<List<Member>> embeddableAccessors = new LinkedList<>();
@@ -257,6 +258,7 @@ class EntityDefiner implements Runnable {
                     String attributeName = attr.getName();
                     PersistentAttributeType attributeType = attr.getPersistentAttributeType();
                     if (PersistentAttributeType.EMBEDDED.equals(attributeType)) {
+                        embeddableAttributeNames.put(attr.getJavaType(), new ArrayList<>());
                         embeddables.add(attr);
                         embeddablePrefixes.add(attributeName);
                         embeddableAccessors.add(Collections.singletonList(attr.getJavaMember()));
@@ -274,14 +276,17 @@ class EntityDefiner implements Runnable {
                     String prefix = embeddablePrefixes.poll();
                     List<Member> accessors = embeddableAccessors.poll();
                     EmbeddableType<?> embeddable = model.embeddable(attr.getJavaType());
+                    List<String> embAttributeList = embeddableAttributeNames.get(attr.getJavaType());
                     for (Attribute<?, ?> embAttr : embeddable.getAttributes()) {
                         String embeddableAttributeName = embAttr.getName();
                         String fullAttributeName = prefix + '.' + embeddableAttributeName;
                         List<Member> embAccessors = new LinkedList<>(accessors);
                         embAccessors.add(embAttr.getJavaMember());
+                        embAttributeList.add(fullAttributeName);
 
                         PersistentAttributeType attributeType = embAttr.getPersistentAttributeType();
                         if (PersistentAttributeType.EMBEDDED.equals(attributeType)) {
+                            embeddableAttributeNames.put(embAttr.getJavaType(), new ArrayList<>());
                             embeddables.add(embAttr);
                             embeddablePrefixes.add(fullAttributeName);
                             embeddableAccessors.add(embAccessors);
@@ -345,6 +350,7 @@ class EntityDefiner implements Runnable {
                                 attributeAccessors, //
                                 attributeNames, //
                                 attributeTypes, //
+                                embeddableAttributeNames, //
                                 idClass, //
                                 idClassAttributeAccessors, //
                                 punit);

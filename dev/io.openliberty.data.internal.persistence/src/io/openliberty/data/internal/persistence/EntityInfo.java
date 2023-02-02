@@ -41,6 +41,9 @@ class EntityInfo {
     // properly cased/qualified JPQL attribute name --> type
     final SortedMap<String, Class<?>> attributeTypes;
 
+    // embeddable class -> fully qualified attribute names of embeddable
+    final Map<Class<?>, List<String>> embeddableAttributeNames;
+
     final Class<?> idClass; // null if no IdClass
     final SortedMap<String, Member> idClassAttributeAccessors; // null if no IdClass
     final boolean inheritance;
@@ -52,6 +55,7 @@ class EntityInfo {
                Map<String, List<Member>> attributeAccessors,
                Map<String, String> attributeNames,
                SortedMap<String, Class<?>> attributeTypes,
+               Map<Class<?>, List<String>> embeddableAttributeNames,
                Class<?> idClass,
                SortedMap<String, Member> idClassAttributeAccessors,
                PersistenceServiceUnit persister) {
@@ -60,6 +64,7 @@ class EntityInfo {
         this.attributeAccessors = attributeAccessors;
         this.attributeNames = attributeNames;
         this.attributeTypes = attributeTypes;
+        this.embeddableAttributeNames = embeddableAttributeNames;
         this.idClass = idClass;
         this.idClassAttributeAccessors = idClassAttributeAccessors;
         this.persister = persister;
