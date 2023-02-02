@@ -6,9 +6,6 @@
     http://www.eclipse.org/legal/epl-2.0/
     
     SPDX-License-Identifier: EPL-2.0
-   
-    Contributors:
-        IBM Corporation - initial API and implementation
  -->
  <%@ page import = "static io.openliberty.pages31.fat.misc.Cafe.NAME, static io.openliberty.pages31.fat.misc.Cafe.SPECIALTY" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">

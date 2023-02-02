@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -38,14 +35,5 @@ Import-Package: \
   org.xml.sax; resolution:=optional, \
   org.xml.sax.helpers; resolution:=optional
 
-instrument.disabled: true
-
-publish.wlp.jar.suffix: dev/api/spec
-
 -includeresource: \
-  @${repo;jakarta.servlet.jsp:jakarta.servlet.jsp-api;3.1.0;EXACT}!/!(META-INF/maven/*|module-info.class), \
-  jakarta/servlet/jsp/el=${bin}/jakarta/servlet/jsp/el
-
--buildpath: \
-  jakarta.servlet.jsp:jakarta.servlet.jsp-api;version=3.1.0;strategy=exact, \
-  org.apache.tomcat:tomcat-el-api;strategy=exact;version=10.1.5
+  @${repo;jakarta.servlet.jsp:jakarta.servlet.jsp-api;3.1.1;EXACT}!/!(META-INF/maven/*|module-info.class)
