@@ -498,13 +498,59 @@ public class TestConfigMaps {
         Map<String, Object> updatedMap = new HashMap<String, Object>();
         updatedMap.put(Constants.PROMPT_EXPRESSION, new PromptType[] { PromptType.LOGIN, PromptType.CONSENT });
         return updatedMap;
-
     }
 
     public static Map<String, Object> getPromptExpressionDuplicates() throws Exception {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
         updatedMap.put(Constants.PROMPT_EXPRESSION, new PromptType[] { PromptType.LOGIN, PromptType.LOGIN });
+        return updatedMap;
+    }
+
+    public static Map<String, Object> getTokenMinValidity5s() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.TOKEN_MIN_VALIDITY_EXPRESSION, 5 * 1000);
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getTokenMinValidity15s() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.TOKEN_MIN_VALIDITY_EXPRESSION, 15 * 1000);
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getTokenMinValidity20s() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.TOKEN_MIN_VALIDITY_EXPRESSION, 20 * 1000);
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getTokenMinValidity30s() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.TOKEN_MIN_VALIDITY_EXPRESSION, 30 * 1000);
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getTokenMinValidity0s() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.TOKEN_MIN_VALIDITY_EXPRESSION, 0);
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getTokenMinValidityNegative5s() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.TOKEN_MIN_VALIDITY_EXPRESSION, -5 * 1000);
         return updatedMap;
 
     }

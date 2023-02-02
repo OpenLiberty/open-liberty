@@ -71,7 +71,15 @@ src: \
     test-applications/DisplayEL.war/src,\
     test-applications/DisplayEmpty.war/src,\
     test-applications/DisplayPopupWithEL.war/src,\
-    test-applications/JwksEndpoint.war/src
+    test-applications/JwksEndpoint.war/src,\
+    test-applications/TokenMinValidity5s.war/src,\
+    test-applications/TokenMinValidity20s.war/src,\
+    test-applications/TokenMinValidity30s.war/src,\
+    test-applications/TokenMinValidity0s.war/src,\
+    test-applications/TokenMinValidityNegative5s.war/src,\
+    test-applications/TokenMinValidity5sWithEL.war/src,\
+    test-applications/TokenMinValidityEL.war/src,\
+    test-applications/TokenMinValidityDefault.war/src
     
 -dependson: \
     build.changeDetector,\

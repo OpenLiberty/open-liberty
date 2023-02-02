@@ -566,6 +566,9 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
         if (value instanceof DisplayType) {
             newValue = ((DisplayType) value).toString();
         }
+        if (value instanceof Integer) {
+            newValue = ((Integer) value).toString();
+        }
         return newValue;
     }
 
