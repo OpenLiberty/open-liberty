@@ -52,7 +52,7 @@ public class ImportGenerator extends CodeGeneratorBase {
 						while (tokenizer.hasMoreTokens()) {
 							String singleImport = ((String) tokenizer.nextToken()).trim();
 							if (singleImport.startsWith(STATIC_IMPORT_PREPPEND)) {
-							        writer.println("importStaticList.add(\"" + singleImport.substring(STATIC_IMPORT_PREPPEND.length()) + "\");");
+								writer.println("importStaticList.add(\"" + singleImport.substring(STATIC_IMPORT_PREPPEND.length()).trim() + "\");");
 							} else if(singleImport.endsWith(".*")){
 								writer.println("importPackageList.add(\"" + singleImport.replace(".*", "") + "\");");
 							} else {
