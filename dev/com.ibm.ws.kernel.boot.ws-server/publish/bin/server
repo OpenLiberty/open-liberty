@@ -856,7 +856,7 @@ readServerEnv()
   fi
 }
 
-## Set the environment varialbes needed by default for criu to work.
+## Set the environment variables needed by default for criu to work.
 ## Mostly these are variables read by the OS libraries to ensure a portable process
 criuEnvDefaults() {
   if [ -z "$GLIBC_TUNABLES" ]
@@ -867,6 +867,14 @@ criuEnvDefaults() {
   fi
   export GLIBC_TUNABLES
   export LD_BIND_NOT=on
+
+  # syslog is disabled for checkpoint to allow jvm dumps before a checkpoint.
+  # We expect an enhancement to OpenJ9 to allow syslog to be enabled on restore.
+  # When that becomes available we can remove the -Xsyslog:none option
+  # -Djdk.nativeEC=false disabled nativeEC until some issues are resolved around portability
+  CHECKPOINT_JAVA_OPTIONS="-XX:+EnableCRIUSupport -XX:+CRIURestoreNonPortableMode -Xsyslog:none -Djdk.nativeEC=false"
+  IBM_JAVA_OPTIONS="$CHECKPOINT_JAVA_OPTIONS $IBM_JAVA_OPTIONS"
+  OPENJ9_JAVA_OPTIONS="$CHECKPOINT_JAVA_OPTIONS $OPENJ9_JAVA_OPTIONS"
 }
 
 ##
@@ -986,12 +994,7 @@ javaCmd()
       X_WLP_IMMUTABLE_VARS="$X_WLP_IMMUTABLE_VARS,$WLP_IMMUTABLE_VARS"
     fi
 
-    # syslog is disabled for checkpoint to allow jvm dumps before a checkpoint.
-    # We expect an enhancement to OpenJ9 to allow syslog to be enabled on restore.
-    # When that becomes available we can remove the -Xsyslog:none option
-    # -Djdk.nativeEC=false disabled nativeEC until some issues are resolved around portability
-    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+EnableCRIUSupport -XX:+CRIURestoreNonPortableMode -Xsyslog:none -Djdk.nativeEC=false $X_WLP_IMMUTABLE_VARS"
-
+    JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED $X_WLP_IMMUTABLE_VARS"
 
     checkCriuUnprivileged
     if [ $DO_CRIU_UNPRIVILEGED = true ]; then
