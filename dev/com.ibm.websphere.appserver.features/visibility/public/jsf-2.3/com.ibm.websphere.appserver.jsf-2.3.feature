@@ -38,6 +38,7 @@ Subsystem-Name: JavaServer Faces 2.3
 -features=com.ibm.websphere.appserver.internal.optional.jaxb-2.2, \
   com.ibm.websphere.appserver.jsfProvider-2.3.0.MyFaces, \
   com.ibm.websphere.appserver.servlet-4.0, \
+  io.openliberty.servlet.internal-4.0, \
   com.ibm.websphere.appserver.jsp-2.3, \
   com.ibm.websphere.appserver.eeCompatible-8.0, \
   com.ibm.websphere.appserver.javax.cdi-2.0, \
