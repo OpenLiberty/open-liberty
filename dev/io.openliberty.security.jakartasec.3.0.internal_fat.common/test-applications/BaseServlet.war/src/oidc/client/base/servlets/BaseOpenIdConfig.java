@@ -176,6 +176,16 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
 
     }
 
+    public int getTokenMinValidityExpression() {
+
+        int value = Constants.DEFAULT_TOKEN_MIN_VALIDITY;
+        if (config.containsKey(Constants.TOKEN_MIN_VALIDITY_EXPRESSION)) {
+            value = getIntValue(Constants.TOKEN_MIN_VALIDITY_EXPRESSION, value);
+        }
+        return value;
+
+    }
+
     public String getCallerNameClaim() {
 
         System.out.println("in getCallerNameClaim");

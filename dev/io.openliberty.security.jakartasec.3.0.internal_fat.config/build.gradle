@@ -108,6 +108,7 @@ autoFVT.doLast {
 	'jakartasec-3.0_fat.config.rp.extraParameters',
 	'jakartasec-3.0_fat.config.rp.prompt',
 	'jakartasec-3.0_fat.config.rp.display',
+	'jakartasec-3.0_fat.config.rp.tokenMinValidity',
 	'jakartasec-3.0_fat.config.rp.userinfo.jwt.jwt',
 	'jakartasec-3.0_fat.config.rp.userinfo.jwt.opaque',
 	'jakartasec-3.0_fat.config.rp.userinfo.json.jwt',

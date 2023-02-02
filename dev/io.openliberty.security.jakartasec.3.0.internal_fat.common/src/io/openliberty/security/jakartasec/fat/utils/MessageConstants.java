@@ -51,6 +51,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
 
     public static final String CWWKS2500W_MISSING_CLIENTID_EL = "CWWKS2500W";
     public static final String CWWKS2504E_CREDENTIAL_VALIDATION_ERROR = "CWWKS2504E";
+    public static final String CWWKS2507W_OIDC_MECH_CONFIG_NEGATIVE_INT = "CWWKS2507W";
 
     public static final String CWWKS2520E_SIGNATURE_NOT_ALLOWED = "CWWKS2520E";
 
