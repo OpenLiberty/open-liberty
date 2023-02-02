@@ -15,6 +15,7 @@ package com.ibm.tx.jta.util;
 
 import javax.transaction.NotSupportedException;
 import javax.transaction.SystemException;
+import javax.transaction.TransactionManager;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -22,6 +23,7 @@ import org.osgi.framework.ServiceReference;
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.ConfigurationProviderManager;
+import com.ibm.tx.jta.TransactionManagerFactory;
 import com.ibm.tx.jta.impl.EventSemaphore;
 import com.ibm.tx.jta.impl.LocalTIDTable;
 import com.ibm.tx.jta.impl.RecoveryManager;
@@ -455,9 +457,9 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
             Tr.exit(tc, "startRecovery");
     }
 
-    private synchronized void shutdown(boolean explicit, int timeout) {
+    private synchronized void shutdown(boolean withCleanup, int timeout) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "shutdown", new Object[] { explicit, timeout });
+            Tr.entry(tc, "shutdown", new Object[] { withCleanup, timeout });
 
         if ((_state != TMService.TMStates.STOPPED) && (_state != TMService.TMStates.INACTIVE)) {
             // Ensure no new transactions can start
@@ -497,8 +499,12 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
             // The task initiated by JCA may generate an IllegalStateException as a result of attempting to instantiate
             // a new ThreadLocal because Transaction Manager may have dereferenced its Configuration Provider.
             //
-            // TransactionManager tm = TransactionManagerFactory.getTransactionManager();
-            // ((TranManagerSet) tm).cleanup();
+            // The withCleanup parameter allows the retention of the previous behaviour for use by the zos_tx unittests
+            // who are the sole user of the TMHelper.shutdown(int) method
+            if (withCleanup) {
+                TransactionManager tm = TransactionManagerFactory.getTransactionManager();
+                ((TranManagerSet) tm).cleanup();
+            }
 
             setRecoveryAgent(null);
 
