@@ -951,17 +951,25 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 }
             }
         } else {
+            // It would be preferable if the spec included the Select annotation to explicitly identify parameters, but if that doesn't happen
+            // TODO we could compare attribute types with known constructor to improve on guessing a correct order of parameters
             q.append("NEW ").append(type.getName()).append('(');
             boolean first = true;
-            if (cols == null || cols.length == 0)
-                for (String name : queryInfo.entityInfo.attributeNames.values()) {
+            if (cols != null && cols.length > 0)
+                for (int i = 0; i < cols.length; i++) {
+                    String name = queryInfo.entityInfo.getAttributeName(cols[i]);
+                    generateSelectExpression(q, i == 0, function, distinct, name == null ? cols[i] : name);
+                }
+            else if (type.equals(queryInfo.entityInfo.idClass))
+                for (String idClassAttributeName : queryInfo.entityInfo.idClassAttributeAccessors.keySet()) {
+                    String name = queryInfo.entityInfo.getAttributeName(idClassAttributeName);
                     generateSelectExpression(q, first, function, distinct, name);
                     first = false;
                 }
             else
-                for (int i = 0; i < cols.length; i++) {
-                    String name = queryInfo.entityInfo.getAttributeName(cols[i]);
-                    generateSelectExpression(q, i == 0, function, distinct, name == null ? cols[i] : name);
+                for (String name : queryInfo.entityInfo.attributeTypes.keySet()) {
+                    generateSelectExpression(q, first, function, distinct, name);
+                    first = false;
                 }
             q.append(')');
         }

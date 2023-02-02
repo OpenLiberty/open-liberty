@@ -512,6 +512,35 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Repository method where the result is the entity's IdClass.
+     */
+    @Test
+    public void testIdClassResult() {
+        // single result
+        CityId cityId = cities.findFirstByNameOrderByPopulationDesc("Springfield");
+        assertEquals("Springfield", cityId.name);
+        assertEquals("Missouri", cityId.stateName);
+
+        // Stream result
+        assertIterableEquals(List.of("Springfield, Oregon",
+                                     "Springfield, Ohio",
+                                     "Springfield, Missouri",
+                                     "Springfield, Massachusetts",
+                                     "Springfield, Illinois"),
+                             cities.findByNameStartsWith("Spring")
+                                             .map(CityId::toString)
+                                             .collect(Collectors.toList()));
+
+        // array result
+        assertIterableEquals(List.of("Springfield, Illinois",
+                                     "Kansas City, Kansas",
+                                     "Springfield, Massachusetts"),
+                             Stream.of(cities.findByStateNameEndsWith("s"))
+                                             .map(CityId::toString)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
      * Repository methods for an entity where the id is on the embeddable.
      */
     @Test

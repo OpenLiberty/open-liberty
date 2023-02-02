@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -245,9 +244,9 @@ class EntityDefiner implements Runnable {
             Metamodel model = em.getMetamodel();
             for (EntityType<?> entityType : model.getEntities()) {
                 entityType.getName();//TODO
-                LinkedHashMap<String, String> attributeNames = new LinkedHashMap<>();
-                HashMap<String, List<Member>> attributeAccessors = new HashMap<>();
-                HashMap<String, Class<?>> attributeTypes = new HashMap<>();
+                Map<String, String> attributeNames = new HashMap<>();
+                Map<String, List<Member>> attributeAccessors = new HashMap<>();
+                SortedMap<String, Class<?>> attributeTypes = new TreeMap<>();
                 Queue<Attribute<?, ?>> embeddables = new LinkedList<>();
                 Queue<String> embeddablePrefixes = new LinkedList<>();
                 Queue<List<Member>> embeddableAccessors = new LinkedList<>();

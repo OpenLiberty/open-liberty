@@ -15,7 +15,6 @@ package io.openliberty.data.internal.persistence;
 import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -35,9 +34,13 @@ import jakarta.data.repository.Sort;
 class EntityInfo {
     // properly cased/qualified JPQL attribute name --> accessor methods or fields (multiple in the case of embeddable)
     final Map<String, List<Member>> attributeAccessors;
-    // upper case attribute name --> properly cased/qualified JPQL attribute name
-    final LinkedHashMap<String, String> attributeNames;
-    final Map<String, Class<?>> attributeTypes;
+
+    // lower case attribute name --> properly cased/qualified JPQL attribute name
+    final Map<String, String> attributeNames;
+
+    // properly cased/qualified JPQL attribute name --> type
+    final SortedMap<String, Class<?>> attributeTypes;
+
     final Class<?> idClass; // null if no IdClass
     final SortedMap<String, Member> idClassAttributeAccessors; // null if no IdClass
     final boolean inheritance;
@@ -47,8 +50,8 @@ class EntityInfo {
 
     EntityInfo(String entityName, Class<?> entityClass,
                Map<String, List<Member>> attributeAccessors,
-               LinkedHashMap<String, String> attributeNames,
-               Map<String, Class<?>> attributeTypes,
+               Map<String, String> attributeNames,
+               SortedMap<String, Class<?>> attributeTypes,
                Class<?> idClass,
                SortedMap<String, Member> idClassAttributeAccessors,
                PersistenceServiceUnit persister) {

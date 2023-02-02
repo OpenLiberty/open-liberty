@@ -22,11 +22,13 @@ public class CityId implements Serializable {
 
     public String stateName;
 
+    public CityId(String name, String state) {
+        this.name = name;
+        this.stateName = state;
+    }
+
     public static CityId of(String name, String state) {
-        CityId c = new CityId();
-        c.name = name;
-        c.stateName = state;
-        return c;
+        return new CityId(name, state);
     }
 
     @Override

@@ -33,8 +33,14 @@ public interface Cities {
     @OrderBy("stateName")
     Stream<City> findByName(String name);
 
+    @OrderBy(value = "stateName", descending = true)
+    Stream<CityId> findByNameStartsWith(String prefix);
+
     @OrderBy("name")
     Stream<City> findByStateName(String state);
+
+    @OrderBy("stateName")
+    CityId[] findByStateNameEndsWith(String ending);
 
     KeysetAwarePage<City> findByStateNameGreaterThan(String stateNameAfter, Pageable pagination);
 
@@ -49,6 +55,8 @@ public interface Cities {
     KeysetAwareSlice<City> findByStateNameNotNullOrderById(Pageable pagination);
 
     KeysetAwarePage<City> findByStateNameNotStartsWithOrderByIdDesc(String prefix, Pageable pagination);
+
+    CityId findFirstByNameOrderByPopulationDesc(String name);
 
     @Filter(by = "population", op = Compare.Between, param = { "minSize", "maxSize" })
     @OrderBy(value = "id", descending = true)
