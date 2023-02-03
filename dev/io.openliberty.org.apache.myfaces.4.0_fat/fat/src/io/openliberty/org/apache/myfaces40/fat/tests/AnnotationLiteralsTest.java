@@ -26,7 +26,6 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -293,36 +292,12 @@ public class AnnotationLiteralsTest {
     }
 
     /**
-     * FIXME - this test isn't currently working.
-     * Need help from WebTeam to figure out why the websocket isn't playing nice.
+     * NOTE - the following annotation literals were added but cannot be tested from a user application:
      *
-     * Observer does not log message when I call faces.push.open('testChannel')
-     * As a result I don't believe the websocket becomes open, and so none of the annotation literals can be found by CDI.
-     * Possibly related to https://github.com/OpenLiberty/open-liberty/issues/22368?
+     * @Push - this is a produced bean that has no scope and as such can only be injected and isn't generally available to the bean manager.
+     * @WebsocketEvent.Opened - this is an event bean, that is fired, but never cached in the bean manager.
+     * @WebsocketEvent.Closed - this is an event bean, that is fired, but never cached in the bean manager.
      */
-//    @Test
-    public void testWebsocketEvent() throws Exception {
-        try (WebClient webClient = new WebClient()) {
-            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-
-            HtmlPage page = getAndLogPage(webClient);
-
-            page = page.getElementById("open:websocket").click();
-            FATSuite.logOutputForDebugging(server, page.asXml(), name.getMethodName() + ".openWebsocket.html");
-
-            page = page.getElementById("open:submit").click();
-            FATSuite.logOutputForDebugging(server, page.asXml(), name.getMethodName() + ".openSubmit.html");
-
-            page = page.getElementById("push:message").click();
-            FATSuite.logOutputForDebugging(server, page.asXml(), name.getMethodName() + ".pushMessage.html");
-
-            page = page.getElementById("close:websocket").click();
-            FATSuite.logOutputForDebugging(server, page.asXml(), name.getMethodName() + ".closeWebsocket.html");
-
-            page = page.getElementById("close:submit").click();
-            FATSuite.logOutputForDebugging(server, page.asXml(), name.getMethodName() + ".closeSubmit.html");
-        }
-    }
 
     /**
      * Test the configured flows testFlow and testFlowNext work

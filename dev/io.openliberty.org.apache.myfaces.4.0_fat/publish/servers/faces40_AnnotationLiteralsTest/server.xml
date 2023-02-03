@@ -18,8 +18,6 @@
         <!-- Test differences between myfaces and mojarra if needed -->
         <!-- <feature>facesContainer-4.0</feature> -->
         <feature>faces-4.0</feature>
-        <feature>cdi-4.0</feature>
-        <feature>websocket-2.1</feature>
     </featureManager>
     
     <javaPermission codeBase="${server.config.dir}/dropins/AnnotationLiteralsTest.war" className="java.security.AllPermission"/>
