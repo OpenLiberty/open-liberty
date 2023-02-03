@@ -68,11 +68,8 @@ public class TelemetryLongRunningTest extends FATServletClient {
         long timeoutNanos = DEFAULT_TIMEOUT.toNanos();
         long startNanoTime = System.nanoTime();
         while (System.nanoTime() - startNanoTime < timeoutNanos) {
-            try {
-                Thread.sleep(1000);
-                runTest(server, APP_NAME + "/longrunning", "testLongRunningTask");
-            } catch (InterruptedException e) {
-            }
+            Thread.sleep(1000);
+            runTest(server, APP_NAME + "/longrunning", "testLongRunningTask");
         }
     }
 
