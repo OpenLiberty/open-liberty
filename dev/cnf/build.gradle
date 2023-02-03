@@ -215,7 +215,9 @@ String getVersionFromReleaseRepo(String org, String name) {
 }
 
 task everythingElseHasBeenReleased {
-    dependsOn parent.subprojects.minus(project).release
+    if (!rootProject.hasProperty('partialBuild')) {
+        dependsOn parent.subprojects.minus(project).release
+    }
 }
 
 task createGradleBootstrap {
