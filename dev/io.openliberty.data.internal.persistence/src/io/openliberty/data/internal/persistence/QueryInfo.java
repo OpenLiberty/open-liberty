@@ -176,24 +176,47 @@ class QueryInfo {
      *
      * @param query        the query
      * @param keysetCursor keyset values
+     * @throws Exception if an error occurs
      */
-    void setKeysetParameters(Query query, Pageable.Cursor keysetCursor) {
+    void setKeysetParameters(Query query, Pageable.Cursor keysetCursor) throws Exception {
+        int paramNum = paramCount + 1; // set to position of first keyset parameter
         if (paramNames.isEmpty() || paramNames.get(0) == null) // positional parameters
             for (int i = 0; i < keysetCursor.size(); i++) {
                 Object value = keysetCursor.getKeysetElement(i);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "set keyset parameter ?" + (paramCount + i + 1) + ' ' + (value == null ? null : value.getClass().getSimpleName()));
-                // TODO detect if user provides a wrong-sized keyset? Or let JPA error surface?
-                query.setParameter(paramCount + i + 1, value);
+                if (entityInfo.idClass != null && entityInfo.idClass.isInstance(value)) {
+                    for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
+                        Object v = accessor instanceof Field ? ((Field) accessor).get(value) : ((Method) accessor).invoke(value);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "set keyset parameter ?" + paramNum + ' ' + value.getClass().getName() + "-->" +
+                                               (v == null ? null : v.getClass().getSimpleName()));
+                        query.setParameter(paramNum++, v);
+                    }
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "set keyset parameter ?" + paramNum + ' ' +
+                                           (value == null ? null : value.getClass().getSimpleName()));
+                    query.setParameter(paramNum++, value);
+                }
             }
         else // named parameters
             for (int i = 0; i < keysetCursor.size(); i++) {
                 Object value = keysetCursor.getKeysetElement(i);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "set keyset parameter :keyset" + (i + 1) + ' ' + (value == null ? null : value.getClass().getSimpleName()));
-                // TODO detect if user provides a wrong-sized keyset? Or let JPA error surface?
-                query.setParameter("keyset" + (paramCount + i + 1), value);
+                if (entityInfo.idClass != null && entityInfo.idClass.isInstance(value)) {
+                    for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
+                        Object v = accessor instanceof Field ? ((Field) accessor).get(value) : ((Method) accessor).invoke(value);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "set keyset parameter :keyset" + paramNum + ' ' + value.getClass().getName() + "-->" +
+                                               (v == null ? null : v.getClass().getSimpleName()));
+                        query.setParameter(paramNum++, v);
+                    }
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "set keyset parameter :keyset" + paramNum + ' ' +
+                                           (value == null ? null : value.getClass().getSimpleName()));
+                    query.setParameter("keyset" + (paramNum++), value);
+                }
             }
+        // TODO detect if user provides a wrong-sized keyset? Or let JPA error surface?
     }
 
     /**

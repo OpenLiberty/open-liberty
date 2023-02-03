@@ -33,5 +33,8 @@ public interface Employees {
 
     Employee findById(long badgeNumber);
 
+    @OrderBy("badge")
+    Stream<Badge> findByLastName(String lastName);
+
     void save(Employee e);
 }
