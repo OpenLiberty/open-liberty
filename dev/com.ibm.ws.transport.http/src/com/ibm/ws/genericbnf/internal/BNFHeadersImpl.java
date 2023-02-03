@@ -499,6 +499,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "appendHeader(s,s): " + header);
         }
+        validateHeaderName(header);
         if (this.bHeaderValidation) {
             if (getCharacterValidation()) //PI45266
                 value = getValidatedCharacters(value); //PI57228
@@ -521,6 +522,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "appendHeader(b,s): " + GenericUtils.getEnglishString(header));
         }
+        validateHeaderName(header.toString());
         if (this.bHeaderValidation) {
             if (getCharacterValidation()) //PI45266
                 value = getValidatedCharacters(value); //PI57228
@@ -543,6 +545,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "appendHeader(h,s): " + key.getName());
         }
+        validateHeaderName(key.getName());
         if (this.bHeaderValidation) {
             if (getCharacterValidation()) //PI45266
                 value = getValidatedCharacters(value); //PI57228
@@ -1954,6 +1957,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "setHeader(h,b): " + key.getName());
         }
+        validateHeaderName(key.getName());
         if (this.bHeaderValidation) {
             checkHeaderValue(value, 0, value.length);
         }
@@ -1991,6 +1995,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "setHeader(h,b,i,i): " + key.getName());
         }
+        validateHeaderName(key.getName());
         if (this.bHeaderValidation) {
             checkHeaderValue(value, offset, length);
         }
@@ -2031,6 +2036,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "setHeader(h,s): " + key.getName());
         }
+        validateHeaderName(key.getName());
         if (this.bHeaderValidation) {
             if (getCharacterValidation()) //PI45266
                 value = getValidatedCharacters(value); //PI57228
@@ -2107,7 +2113,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (elem != null && elem.asString() != null) {
             return elem;
         }
-
+        validateHeaderName(key.toString());
         if (this.bHeaderValidation) {
             if (getCharacterValidation()) //PI45266
                 value = getValidatedCharacters(value); //PI57228
@@ -4757,6 +4763,54 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             }
         }
         return nodename;
+
+    }
+
+    /*
+     * A valid header name is "!" / "#" / "$" / "%" / "&" / "'" /
+     * "*" / "+" / "-" / "." / "^" / "_" / "`" / "|" / "~" / DIGIT / ALPHA
+     *
+     * The information about valid chars in a header name comes from
+     * RCF 9110 section 5.6.2 tchars
+     * https://www.rfc-editor.org/rfc/rfc9110.html#section-5.6.2
+     */
+
+    private void validateHeaderName(String name) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "validateHeaderName, name is " + name);
+        }
+        char[] a = name.toCharArray();
+        boolean valid = true;
+        char c;
+
+        for (int i = 0; i < a.length; i++) {
+            c = a[i];
+            valid = ((c >= 'a') && (c <= 'z')) ||
+                    ((c >= 'A') && (c <= 'Z')) ||
+                    ((c >= '0') && (c <= '9')) ||
+                    (c == '!') || (c == '#') ||
+                    (c == '$') || (c == '%') ||
+                    (c == '&') || (c == '\'') ||
+                    (c == '*') || (c == '+') ||
+                    (c == '-') || (c == '.') ||
+                    (c == '^') || (c == '_') ||
+                    (c == '`') || (c == '|') ||
+                    (c == '~');
+            if (!valid) {
+                Tr.debug(tc, "validateHeaderName invalid char " + c);
+                break;
+            }
+        }
+
+        // if we found an error, throw the exception now
+        if (!valid) {
+            IllegalArgumentException iae = new IllegalArgumentException("Header name contained invalid character");
+            FFDCFilter.processException(iae, getClass().getName() + ".validateHeaderName(String)", "1", this);
+            throw iae;
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "validateHeaderName");
+        }
 
     }
 
