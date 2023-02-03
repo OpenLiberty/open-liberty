@@ -51,4 +51,39 @@ public class AnimalBean implements Serializable {
     public Dog getLostDog() {
         return null;
     }
+
+    /*
+    For testGetTypeFromCompositeComponentELResolver --
+    EL 5.0: Explicitly document that ELResolver.getType() must return null if either the ELResolver or the resolved property is read-only.
+    BeanELResolver is created with readonly as true;
+    The follow need setters to pass  
+            untypedXwideEL="#{animalBean.animal}"
+            untypedXmediumEL="#{animalBean.dog}"
+            untypedXnarrowEL="#{animalBean.pitbull}"
+            untypedXnullEL="#{animalBean.lostDog}"
+
+    public void setAnimal(Animal dog) {
+        
+    }
+
+    public void setAnimal(Dog dog) {
+        
+    }
+
+    public void setAnimal(Pitbull dog) {
+        
+    }
+    
+    public void setDog(Dog dog) {
+        
+    }
+
+    public void setPitbull(Pitbull dog) {
+        
+    }
+
+    public void setLostDog(Dog dog) {
+        
+    }
+     */
 }

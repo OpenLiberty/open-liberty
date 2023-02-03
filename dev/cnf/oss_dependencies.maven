@@ -375,11 +375,11 @@ org.apache.maven:maven-model:3.6.3
 org.apache.myfaces.core:myfaces-api:2.2.12
 org.apache.myfaces.core:myfaces-api:2.3.9
 org.apache.myfaces.core:myfaces-api:3.0.1
-org.apache.myfaces.core:myfaces-api:4.0.0-RC3
+org.apache.myfaces.core:myfaces-api:4.0.0-RC4
 org.apache.myfaces.core:myfaces-impl:2.2.12
 org.apache.myfaces.core:myfaces-impl:2.3.9
 org.apache.myfaces.core:myfaces-impl:3.0.1
-org.apache.myfaces.core:myfaces-impl:4.0.0-RC3
+org.apache.myfaces.core:myfaces-impl:4.0.0-RC4
 org.apache.neethi:neethi:3.1.1
 org.apache.openjpa:openjpa:3.1.2
 org.apache.santuario:xmlsec:2.2.3
