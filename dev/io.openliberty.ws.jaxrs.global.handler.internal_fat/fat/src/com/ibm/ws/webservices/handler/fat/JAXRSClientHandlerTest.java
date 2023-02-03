@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.net.URI;
 import org.apache.wink.client.ClientResponse;
 import org.apache.wink.client.RestClient;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -54,11 +55,13 @@ public class JAXRSClientHandlerTest {
         client = new RestClient();
     }
 
-    @After
-    public void tearDown() throws Exception {
-        if (server != null && server.isStarted()) {
-            server.stopServer();
-        }
+    @AfterClass
+    public static void tearDown() throws Exception {
+        server.stopServer();
+        server.uninstallUserBundle("rsUserBundle1");
+        server.uninstallUserFeature("RSHandler1Feature");
+        server.uninstallUserBundle("rsUserBundle2");
+        server.uninstallUserFeature("RSHandler2Feature");
     }
 
     @Test

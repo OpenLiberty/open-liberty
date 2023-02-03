@@ -20,7 +20,8 @@ IBM-API-Package: \
  com.ibm.ws.jaxws.webcontainer.jakarta, \
  com.ibm.ws.jaxws.web.jakarta, \
  com.ibm.ws.jaxws.wsat, \
- com.ibm.ws.webservices.javaee.common.jakarta
+ com.ibm.ws.webservices.javaee.common.jakarta, \
+ io.openliberty.jaxws.globalhandler.internal.jakarta
 -files=\
  bin/xmlWS/wsgen; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/xmlWS/wsimport; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
