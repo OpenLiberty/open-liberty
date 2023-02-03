@@ -121,7 +121,10 @@ if (!myfaces._impl.core._EvalHandlers) {
                 return _T.resolveNonce(document.currentScript);
             }
 
-            var scripts = document.querySelectorAll("script[src], link[src]");
+            var _Lang = myfaces._impl._util._Lang;
+            var scripts = _Lang.objToArray(document.getElementsByTagName("script"))
+                .concat(_Lang.objToArray(document.getElementsByTagName("link")));
+
             var faces_js = null;
 
             //we search all scripts
@@ -933,9 +936,6 @@ if (!myfaces._impl.core._Runtime) {
         * does not alter the user agent, which they normally dont!
         *
         * the exception is the ie detection which relies on specific quirks in ie
-        *
-        * TODO check if the browser detection still is needed
-        * for 2.3 since our baseline will be IE11 most likely not
         */
        var n = navigator;
        var dua = n.userAgent,
@@ -2310,6 +2310,22 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
         }
         return str.slice(0, i + 1);
     },
+
+    /**
+     * a fuzzy match where one item is subset of the other or vice versa
+     * @param str1
+     * @param str2
+     * @returns {boolean}
+     */
+    match: function(str1, str2) {
+        //Sometimes we have to deal with paths in hrefs so
+        //one of the itmes either is an exact match or a substring
+        str1 = this.trim(str1 || "");
+        str2 = this.trim(str2 || "");
+
+        return str1.indexOf(str2) != -1 || str2.indexOf(str1) != -1;
+    },
+
     /**
      * Backported from dojo
      * a failsafe string determination method
@@ -2432,14 +2448,14 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      *      <li>param scope (optional) the scope to apply the closure to  </li>
      * </ul>
      */
-    arrForEach:function (arr, func /*startPos, scope*/) {
+    arrForEach:function (arr, func, startPos, scope) {
         if (!arr || !arr.length) return;
-        var startPos = Number(arguments[2]) || 0;
-        var thisObj = arguments[3];
+        var start = startPos || 0;
+        var thisObj = scope || arr;
         //check for an existing foreach mapping on array prototypes
         //IE9 still does not pass array objects as result for dom ops
         arr = this.objToArray(arr);
-        (startPos) ? arr.slice(startPos).forEach(func, thisObj) : arr.forEach(func, thisObj);
+        (start) ? arr.slice(start).forEach(func, thisObj) : arr.forEach(func, thisObj);
     },
     /**
      * foreach implementation utilizing the
@@ -2458,8 +2474,10 @@ _MF_SINGLTN(_PFX_UTIL + "_Lang", Object, /** @lends myfaces._impl._util._Lang.pr
      */
     arrFilter:function (arr, func, startPos, scope) {
         if (!arr || !arr.length) return [];
+        var start = startPos || 0;
+        var thisObj = scope || arr;
         arr = this.objToArray(arr);
-        return (startPos || 0) ? arr.slice(startPos).filter(func, scope || arr) : arr.filter(func, scope || arr);
+        return ((start) ? arr.slice(start).filter(func, thisObj) : arr.filter(func, thisObj));
     },
     /**
      * adds a EcmaScript optimized indexOf to our mix,
@@ -2817,17 +2835,19 @@ _MF_CLS(_PFX_CORE+"Object", Object, {
     /*optional functionality can be provided
      * for ie6 but is turned off by default*/
     _initDefaultFinalizableFields: function() {
-        var isIE = this._RT.browser.isIE;
-        if(!isIE || isIE > 7) return;
-        for (var key in this) {
-            //per default we reset everything which is not preinitalized
-            if (null == this[key] && key != "_resettableContent" && key.indexOf("_mf") != 0 && key.indexOf("_") == 0) {
-                this._resettableContent[key] = true;
-            }
-        }
     },
 
-
+    /**
+     * ie6 cleanup
+     * This method disposes all properties manually in case of ie6
+     * hence reduces the chance of running into a gc problem tremendously
+     * on other browsers this method does nothing
+     */
+    _finalize: function() {
+        // not needed anymore but to preserve
+        // the connection to quirks mode
+        // we keep it as empty implementation
+    },
 
     attr: function(name, value) {
        return this._Lang.attr(this, name, value);
@@ -2854,12 +2874,9 @@ _MF_CLS(_PFX_CORE+"Object", Object, {
 (function() {
     /*some mobile browsers do not have a window object*/
     var target = window ||document;
-    var _RT = myfaces._impl.core._Runtime;
-    _RT._MF_OBJECT = target._MF_OBJECT;
+    target._MF_OBJECT = myfaces._impl.core.Object;
 
-     target._MF_OBJECT = myfaces._impl.core.Object;
 })();
-
 /* Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -3249,9 +3266,11 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                         //we have to move this into an inner if because chrome otherwise chokes
                         //due to changing the and order instead of relying on left to right
                         //if jsf.js is already registered we do not replace it anymore
-                        if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=jakarta.faces") == -1) || (src.indexOf("/faces.js") == -1
-                            && src.indexOf("/faces-development.js") == -1)) {
-
+                        if ((src.indexOf("ln=scripts") == -1 && src.indexOf("ln=javax.faces") == -1) ||
+                            (src.indexOf("/jsf.js") == -1
+                            && (src.indexOf("/jsf-uncompressed.js") == -1)
+                            && (src.indexOf("/jsf-development.js") == -1)
+                            )) {
                             finalScripts = evalCollectedScripts(finalScripts);
                             _RT.loadScriptEval(src, item.getAttribute('type'), false, "UTF-8", false, nonce ? {nonce: nonce} : null );
                         }
@@ -4050,7 +4069,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
     findByTagName : function(fragment, tagName) {
         this._assertStdParams(fragment, tagName, "findByTagName", ["fragment", "tagName"]);
         var _Lang = this._Lang,
-                nodeType = fragment.nodeType;
+            nodeType = fragment.nodeType;
         if (nodeType != 1 && nodeType != 9 && nodeType != 11) return null;
 
         //remapping to save a few bytes
@@ -4117,8 +4136,8 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
         //we use the reject mechanism to prevent a deep scan reject means any
         //child elements will be omitted from the scan
         var FILTER_ACCEPT = NodeFilter.FILTER_ACCEPT,
-                FILTER_SKIP = NodeFilter.FILTER_SKIP,
-                FILTER_REJECT = NodeFilter.FILTER_REJECT;
+            FILTER_SKIP = NodeFilter.FILTER_SKIP,
+            FILTER_REJECT = NodeFilter.FILTER_REJECT;
 
         var walkerFilter = function (node) {
             var retCode = (filter(node)) ? FILTER_ACCEPT : FILTER_SKIP;
@@ -4215,7 +4234,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
             //https://issues.apache.org/jira/browse/MYFACES-2793
 
             return (_Lang.equalsIgnoreCase(elem.tagName, "form")) ? elem :
-                    ( this.html5FormDetection(elem) || this.getParent(elem, "form"));
+                ( this.html5FormDetection(elem) || this.getParent(elem, "form"));
         });
 
         if (finalElem) {
@@ -4263,13 +4282,13 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
 
         if (!item) {
             throw this._Lang.makeException(new Error(), null, null, this._nameSpace, "getParent",
-                    this._Lang.getMessage("ERR_MUST_BE_PROVIDED1", null, "_Dom.getParent", "item {DomNode}"));
+                this._Lang.getMessage("ERR_MUST_BE_PROVIDED1", null, "_Dom.getParent", "item {DomNode}"));
         }
 
         var _Lang = this._Lang;
         var searchClosure = function(parentItem) {
             return parentItem && parentItem.tagName
-                    && _Lang.equalsIgnoreCase(parentItem.tagName, tagName);
+                && _Lang.equalsIgnoreCase(parentItem.tagName, tagName);
         };
         try {
             return this.getFilteredParent(item, searchClosure);
@@ -4416,7 +4435,9 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
 
         //we filter out only those evalNodes which do not match
         var _RT = this._RT;
+        var _Lang = this._Lang;
         var _T = this;
+
         var doubleExistsFilter = function(item)  {
             switch((item.tagName || "").toLowerCase()) {
                 case "script":
@@ -4425,9 +4446,9 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                     var scripts = document.head.getElementsByTagName("script");
 
                     for(var cnt = 0; cnt < scripts.length; cnt++) {
-                        if(src && scripts[cnt].getAttribute("src") == src) {
+                        if(src && _Lang.match(scripts[cnt].getAttribute("src"), src)) {
                             return false;
-                        } else if(!src && scripts[cnt].innerText == content) {
+                        } else if(!src && _Lang.match(scripts[cnt].innerText, content)) {
                             return false;
                         }
                     }
@@ -4436,7 +4457,7 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                     var content = item.innerText;
                     var styles = document.head.getElementsByTagName("style");
                     for(var cnt = 0; cnt < styles.length; cnt++) {
-                        if(content && styles[cnt].innerText == content) {
+                        if(content && _Lang.match(styles[cnt].innerText, content)) {
                             return false;
                         }
                     }
@@ -4446,9 +4467,9 @@ _MF_SINGLTN(_PFX_UTIL + "_Dom", Object, /** @lends myfaces._impl._util._Dom.prot
                     var content = item.innerText;
                     var links = document.head.getElementsByTagName("link");
                     for(var cnt = 0; cnt < links.length; cnt++) {
-                        if(href && links[cnt].getAttribute("href") == href) {
+                        if(href && _Lang.match(links[cnt].getAttribute("href"), href)) {
                             return false;
-                        } else if(!href && links[cnt].innerText == content) {
+                        } else if(!href && _Lang.match(links[cnt].innerText, content)) {
                             return false;
                         }
                     }
@@ -5031,6 +5052,9 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
 /** @lends myfaces._impl.xhrCore._AjaxUtils.prototype */
 {
 
+    NAMED_VIEWROOT: "namedViewRoot",
+    NAMING_CONTAINER_ID: "myfaces.partialId",
+
 
     /**
      * determines fields to submit
@@ -5143,6 +5167,85 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
                 }
             }
 
+        }
+    },
+
+    _$ncRemap: function(internalContext, containerId) {
+        var namedVieRoot = internalContext[this.NAMED_VIEWROOT];
+        var namingContainerId = internalContext[this.NAMING_CONTAINER_ID];
+        if(!namedVieRoot || !namingContainerId) {
+            return containerId
+        }
+        if(containerId.indexOf(namingContainerId) == 0) {
+            return containerId;
+        }
+        return [namingContainerId, containerId].join("");
+    },
+
+    /**
+     * determines the current naming container
+     * and assigns it internally
+     *
+     * @param internalContext
+     * @param formElement
+     * @private
+     */
+    _assignNamingContainerData: function(internalContext, formElement, separatorChar) {
+        const viewRootId = this._resolveViewRootId(formElement, separatorChar);
+
+        if(!!viewRootId) {
+            internalContext[this.NAMED_VIEWROOT] = true;
+            internalContext[this.NAMING_CONTAINER_ID] = viewRootId;
+        }
+    },
+
+    /**
+     * resolve the viewRoot id in a naming container situation
+     * (aka ViewState element name is prefixed)
+     * @param form
+     * @return a string (never null) which is either emtpy or contains the prefix for the ViewState
+     * (including the separator)
+     */
+    _resolveViewRootId: function(form, separatorChar) /*string*/ {
+        form = this._Dom.byId(form);
+        var _t = this;
+        var foundNames = this._Dom.findAll(form, function(node) {
+            var name = node.getAttribute("name");
+            if(!name || name.indexOf("jakarta.faces.ViewState") <= 0) {
+                return false;
+            }
+            return node;
+        }, true);
+        if(!foundNames.length) {
+            return "";
+        }
+        return foundNames[0].name.split(separatorChar, 2)[0] + separatorChar;
+    },
+
+    /**
+     * as per jsdoc before the request it must be ensured that every post argument
+     * is prefixed with the naming container id (there is an exception in mojarra with
+     * the element=element param, which we have to follow here as well.
+     * (inputs are prefixed by name anyway normally this only affects our standard parameters)
+     * @private
+     */
+    _resoveConfigNamingContainerMapper: function(myfacesOptions, separatorChar) {
+        var isNamedViewRoot = !!myfacesOptions[this.NAMED_VIEWROOT];
+        if(!isNamedViewRoot) {
+            return;
+        }
+
+        var partialId = myfacesOptions[this.NAMING_CONTAINER_ID];
+        var prefix = partialId + this.getSeparatorChar();
+        return function (data /*assoc array of key value pairs*/) {
+            var ret = {};
+            for(var key in data) {
+                if(!data.hasOwnProperty(key)) {
+                    continue;
+                }
+                ret[prefix + key] = data[key]
+            }
+            return ret;
         }
     }
 });
@@ -5413,9 +5516,9 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
         } catch (e) {
             this._stdErrorHandler(this._xhr, this._context, e);
         }
-		//add for xhr level2 support
-		//}  finally {
-            //W3C spec onloadend must be called no matter if success or not
+        //add for xhr level2 support
+        //}  finally {
+        //W3C spec onloadend must be called no matter if success or not
         //    this.ondone();
         //}
     },
@@ -5440,10 +5543,10 @@ _MF_CLS(_PFX_XHR + "_AjaxRequest", _MF_OBJECT, /** @lends myfaces._impl.xhrCore.
             errorText = _Lang.getMessage("ERR_REQ_FAILED_UNKNOWN", null);
         } finally {
             var _Impl = this.attr("impl");
-            _Impl.sendError(xhr, context, _Impl.HTTPERROR,
-                    _Impl.HTTPERROR, errorText,"","myfaces._impl.xhrCore._AjaxRequest","onerror");
+                _Impl.sendError(xhr, context, _Impl.HTTPERROR,
+                _Impl.HTTPERROR, errorText,"","myfaces._impl.xhrCore._AjaxRequest","onerror");
             //add for xhr level2 support
-			//since chrome does not call properly the onloadend we have to do it manually
+            //since chrome does not call properly the onloadend we have to do it manually
             //to eliminate xhr level1 for the compile profile modern
             //W3C spec onloadend must be called no matter if success or not
             //this.ondone();
@@ -5591,7 +5694,7 @@ _MF_CLS(_PFX_XHR+"_FormDataRequest", myfaces._impl.xhrCore._AjaxRequest, {
     /**
      * Spec. 13.3.1
      * Collect and encode input elements.
-     * Additionally the hidden element jakarta.faces.ViewState
+     * Additionally, the hidden element jakarta.faces.ViewState
      * Enhancement partial page submit
      *
      * @return  an element of formDataWrapper
@@ -5628,6 +5731,7 @@ _MF_CLS(_PFX_XHR+"_FormDataRequest", myfaces._impl.xhrCore._AjaxRequest, {
     _applyContentType: function(xhr) {
 
     }
+
 
 });
 /* Licensed to the Apache Software Foundation (ASF) under one or more
@@ -5714,6 +5818,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         mfInternal.namingModeId = null;
 
 
+        var NAME_CONT_ID = myfaces._impl.xhrCore._AjaxUtils.NAMING_CONTAINER_ID;
         try {
             var _Impl = this.attr("impl"), _Lang = this._Lang;
             // TODO:
@@ -5757,7 +5862,11 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
              * @type {string} ... the naming mode id is set or an empty string
              * definitely not a null value to avoid type confusions later on
              */
-            mfInternal.namingModeId = (partials.id || "");
+            mfInternal[NAME_CONT_ID] = mfInternal.namingModeId = (partials.id || "");
+            var rawNamingContainerId = mfInternal[NAME_CONT_ID];
+            if(rawNamingContainerId.length) {
+                mfInternal[NAME_CONT_ID] = rawNamingContainerId + faces.separatorchar;
+            }
 
 
             var childNodesLength = partials.childNodes.length;
@@ -5809,6 +5918,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             delete mfInternal.appliedViewState;
             delete mfInternal.appliedClientWindow;
             delete mfInternal.namingModeId;
+            delete mfInternal[NAME_CONT_ID];
         }
     },
 
@@ -5862,7 +5972,6 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         if (!theForm) return;
         var _Lang = this._Lang;
         var _Dom = this._Dom;
-        var prefix = this._getPrefix(context);
 
         //in IE7 looking up form elements with complex names (such as 'jakarta.faces.ViewState') fails in certain cases
         //iterate through the form elements to find the element, instead
@@ -5890,7 +5999,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
             //per faces 2.3 spec the identifier of the element must be unique in the dom tree
             //otherwise we will break the html spec here
-            element.innerHTML = ["<input type='hidden'", "id='", this._fetchUniqueId(prefix, identifier), "' name='", identifier, "' value='", value, "' />"].join("");
+            element.innerHTML = ["<input type='hidden'", "id='", this._fetchUniqueId(context, identifier), "' name='", this._fetchName(context, identifier), "' value='", value, "' />"].join("");
             //now we go to proper dom handling after having to deal with another ie screw-up
             try {
                 theForm.appendChild(element.childNodes[0]);
@@ -5900,7 +6009,8 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
         }
     },
 
-    _fetchUniqueId: function(prefix, identifier) {
+    _fetchUniqueId: function(context, identifier) {
+        var prefix = this._getPrefix(context);
         var cnt = 0;
         var retVal = prefix + identifier + faces.separatorchar + cnt;
         while(this._Dom.byId(retVal) != null) {
@@ -5908,6 +6018,12 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
             retVal = prefix + identifier + faces.separatorchar + cnt;
         }
         return retVal;
+    },
+
+    _fetchName: function(context, identifier) {
+        var mfInternal = context._mfInternal;
+        var prefix = myfaces._impl.xhrCore._AjaxUtils._$ncRemap(mfInternal, "");
+        return prefix + identifier;
     },
 
     /**
@@ -5924,8 +6040,6 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
         //elem not found for whatever reason
         //https://issues.apache.org/jira/browse/MYFACES-3544
-
-        var prefix = this._getPrefix(context);
 
         //do we still need the issuing form update? I guess it is needed.
         //faces spec 2.3 and earlier all issuing forms must update
@@ -6014,7 +6128,7 @@ _MF_SINGLTN(_PFX_XHR + "_AjaxResponse", _MF_OBJECT, /** @lends myfaces._impl.xhr
 
     _getPrefix: function (context) {
         var mfInternal = context._mfInternal;
-        var prefix = mfInternal.namingModeId;
+        var prefix = mfInternal[myfaces._impl.xhrCore._AjaxUtils.NAMING_CONTAINER_ID];
         if (prefix != "") {
             prefix = prefix + faces.separatorchar;
         }
@@ -6879,6 +6993,10 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
     P_EVT:"jakarta.faces.partial.event",
     P_WINDOW_ID:"jakarta.faces.ClientWindow",
     P_RESET_VALUES:"jakarta.faces.partial.resetValues",
+    P_EVENT: "jakarta.faces.behavior.event",
+
+    //faces std values
+    STD_VALUES: [],
 
     /* message types */
     ERROR:"error",
@@ -6903,6 +7021,13 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
     /*blockfilter for the passthrough filtering, the attributes given here
      * will not be transmitted from the options into the passthrough*/
     _BLOCKFILTER:{onerror:1, onevent:1, render:1, execute:1, myfaces:1, delay:1, resetValues:1, params: 1},
+
+
+    constructor_: function() {
+        this._callSuper("constructor_");
+        this.STD_VALUES = [this.P_PARTIAL_SOURCE, this.P_VIEWSTATE, this.P_CLIENTWINDOW, this.P_AJAX,
+            this.P_EXECUTE, this.P_RENDER, this.P_EVT, this.P_WINDOW_ID, this.P_RESET_VALUES, this.P_EVENT];
+    },
 
     /**
      * collect and encode data for a given form element (must be of type form)
@@ -6964,7 +7089,8 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
          *all the time
          **/
         var _Lang = this._Lang,
-            _Dom = this._Dom;
+            _Dom = this._Dom,
+            _Utils = myfaces._impl.xhrCore._AjaxUtils;
         /*assert if the onerror is set and once if it is set it must be of type function*/
         _Lang.assertType(options.onerror, "function");
         /*assert if the onevent is set and once if it is set it must be of type function*/
@@ -6974,7 +7100,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         options = options || {};
 
         /**
-         * we cross reference statically hence the mapping here
+         * we cross - reference statically hence the mapping here
          * the entire mapping between the functions is stateless
          */
         //null definitely means no event passed down so we skip the ie specific checks
@@ -7002,6 +7128,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
          */
         // this is legacy behavior which is faulty, will be removed if we decide to do it
         // that way
+        // TODO not sure whether we add the naming container prefix to the user params
         var passThrgh = _Lang.mixMaps({}, options, true, this._BLOCKFILTER);
         // jsdoc spec everything under params must be passed through
         if(options.params)  {
@@ -7043,6 +7170,12 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         context.viewId = this.getViewId(form);
 
         /**
+         * we also now assign the container data to deal with it later
+         */
+        _Utils._assignNamingContainerData(mfInternal, form, faces.separatorchar);
+
+
+        /**
          * faces2.2 client window must be part of the issuing form so it is encoded
          * automatically in the request
          */
@@ -7051,7 +7184,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         //in case someone decorates the getClientWindow we reset the value from
         //what we are getting
         if ('undefined' != typeof clientWindow && null != clientWindow) {
-            var formElem = _Dom.getNamedElementFromForm(form, this.P_CLIENTWINDOW);
+            var formElem = _Dom.getNamedElementFromForm(form, _Utils._$ncRemap(mfInternal,  this.P_CLIENTWINDOW));
             if (formElem) {
                 //we store the value for later processing during the ajax phase
                 //job so that we do not get double values
@@ -7107,6 +7240,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
             this._transformList(passThrgh, this.P_RENDER, options.render, form, elementId, context.viewId);
         }
 
+
         /**
          * multiple transports upcoming faces 2.x feature currently allowed
          * default (no value) xhrQueuedPost
@@ -7125,12 +7259,31 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         mfInternal["_mfSourceControlId"] = elementId;
         mfInternal["_mfTransportType"] = transportType;
 
+
+
         //mojarra compatibility, mojarra is sending the form id as well
         //this is not documented behavior but can be determined by running
         //mojarra under blackbox conditions
         //i assume it does the same as our formId_submit=1 so leaving it out
-        //wont hurt but for the sake of compatibility we are going to add it
+        //won´t hurt but for the sake of compatibility we are going to add it
         passThrgh[form.id] = form.id;
+
+
+        // TCK 790 we now have to remap all passthroughs in case of a naming container
+        // thing is the naming container is always prefixed on inputs, and our own
+        var passthroughKeys = Object.keys(passThrgh);
+        for (var cnt = 0; cnt <  passthroughKeys.length; cnt++) {
+            var key, oldKey = passthroughKeys[cnt];
+
+            // only the standard values need remapping for now
+            if((!key) || Object.hasOwnProperty(key) || this.STD_VALUES.indexOf(key) == -1) {
+                continue;
+            }
+            passThrgh[_Utils._$ncRemap(mfInternal, key)] = passThrgh[key];
+            if(oldKey != key) {
+                delete passThrgh[key];
+            }
+        }
 
         /* faces2.2 only: options.delay || */
         var delayTimeout = options.delay || this._RT.getLocalOrGlobalConfig(context, "delay", false);
@@ -7249,6 +7402,7 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
      * @param srcStr
      * @param form
      * @param elementId
+     * @param namingContainerId the naming container namingContainerId
      */
     _transformList:function (passThrgh, target, srcStr, form, elementId, namingContainerId) {
         var _Lang = this._Lang;
@@ -7735,6 +7889,8 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
         // even without being in a naming container, the other components ignore that
         return form.id.indexOf(viewStateViewId) === 0 ? viewStateViewId : "";
     }
+
+
 });
 
 
