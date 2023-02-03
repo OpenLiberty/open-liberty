@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -47,6 +47,7 @@ import com.microsoft.sqlserver.jdbc.ISQLServerDataSource;
 import com.microsoft.sqlserver.jdbc.ISQLServerStatement;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -363,6 +364,7 @@ public class SQLServerTestServlet extends FATServlet {
     //Test that the proper implementation classes are used for the various datasources configured in this test bucket
     //since the JDBC Driver used is named so as not to be recognized by the built-in logic
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testInferSQLServerDataSource() throws Exception {
         //The default datasource should continue to be inferred as an XADataSource, since it has properties.microsoft.sqlserver configured
         assertTrue("default datasource should wrap XADataSource", ds.isWrapperFor(XADataSource.class));
