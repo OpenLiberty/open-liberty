@@ -14,6 +14,7 @@ IBM-API-Package: javax.security.enterprise; type="spec", \
 IBM-ShortName: appSecurity-3.0
 Subsystem-Name: Application Security 3.0
 -features=com.ibm.websphere.appserver.servlet-4.0, \
+  io.openliberty.servlet.internal-4.0, \
   com.ibm.websphere.appserver.eeCompatible-8.0, \
   com.ibm.websphere.appserver.el-3.0, \
   com.ibm.websphere.appserver.cdi-2.0, \

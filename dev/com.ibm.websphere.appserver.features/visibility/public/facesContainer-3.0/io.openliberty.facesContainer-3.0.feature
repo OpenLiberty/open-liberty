@@ -15,6 +15,7 @@ IBM-API-Package: org.jboss.weld;type="internal",\
 -features=io.openliberty.facesProvider-3.0.0.Container, \
   io.openliberty.cdi-3.0, \
   com.ibm.websphere.appserver.servlet-5.0, \
+  io.openliberty.servlet.internal-5.0, \
   com.ibm.websphere.appserver.eeCompatible-9.0, \
   io.openliberty.jakarta.validation-3.0, \
   io.openliberty.pages-3.0, \

@@ -13,6 +13,7 @@ Subsystem-Name: MicroProfile 4.1
   com.ibm.websphere.appserver.jaxrs-2.1, \
   com.ibm.websphere.appserver.jaxrsClient-2.1, \
   com.ibm.websphere.appserver.servlet-4.0, \
+  io.openliberty.servlet.internal-4.0, \
   io.openliberty.mpCompatible-4.0, \
   com.ibm.websphere.appserver.mpConfig-2.0, \
   com.ibm.websphere.appserver.mpFaultTolerance-3.0, \
