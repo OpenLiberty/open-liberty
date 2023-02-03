@@ -51,8 +51,6 @@ public interface JsAdminService extends Singleton {
      */
     String unquoteJmxPropertyValue(String s);
 
-    JsMain getAdminMain() throws IllegalStateException;
-
     boolean isInitialized();
 
     /**

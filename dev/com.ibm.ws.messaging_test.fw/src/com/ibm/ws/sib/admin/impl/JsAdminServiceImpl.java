@@ -46,21 +46,6 @@ public class JsAdminServiceImpl implements JsAdminService
   }
 
   /* (non-Javadoc)
-   * @see com.ibm.ws.sib.admin.JsAdminService#setAdminMain(com.ibm.ws.sib.admin.JsMain)
-   */
-  public void setAdminMain(JsMain arg0)
-  {
-  }
-
-  /* (non-Javadoc)
-   * @see com.ibm.ws.sib.admin.JsAdminService#getAdminMain()
-   */
-  public JsMain getAdminMain() throws IllegalStateException
-  {
-    return null;
-  }
-
-  /* (non-Javadoc)
    * @see com.ibm.ws.sib.admin.JsAdminService#isInitialized()
    */
   public boolean isInitialized()

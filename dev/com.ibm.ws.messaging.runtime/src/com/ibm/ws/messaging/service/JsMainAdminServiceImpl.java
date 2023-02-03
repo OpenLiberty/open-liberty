@@ -34,6 +34,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.messaging.lifecycle.Singleton;
 import com.ibm.ws.messaging.security.RuntimeSecurityService;
 import com.ibm.ws.sib.admin.AliasDestination;
 import com.ibm.ws.sib.admin.BaseDestination;
@@ -64,8 +65,8 @@ import com.ibm.wsspi.sib.core.DestinationType;
  * A Singleton class to fetch JsAdminServiceImpl
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, 
-           property = "service.vendor=IBM")
-public class JsMainAdminServiceImpl implements JsMainAdminService {
+           property={"type=com.ibm.ws.sib.admin.JsMainAdminService", "service.vendor=IBM"})
+public class JsMainAdminServiceImpl implements Singleton, JsMainAdminService {
 
     /** RAS trace variable */
     private static final TraceComponent tc = SibTr.register(
@@ -673,13 +674,15 @@ public class JsMainAdminServiceImpl implements JsMainAdminService {
     /**
      * {@inheritDoc}
      * 
-     * Constructs the new config object based on the server.xml changes.There
-     * are few rules while constructing 1) If the defaultQueue or defaultTopic
-     * is deleted it will not be taken into consideration.Old values are
-     * retained 2) Filestore changes are not honoured hence old values will be
-     * considered
+     * Constructs the new config object based on the changed server.xml.
      * 
-     * */
+     * - If the defaultQueue or defaultTopic has been deleted it will not be taken into consideration, 
+     *   any existing values are retained 
+     * - Filestore changes are not honoured, existing values will be used
+     * 
+     * Note that this is not the OSGI modified method, it is invoked from the JsMainAdminComponentImpl.modified()
+     * method when it detects that the config has changed. 
+     */
     @Override
     public void modify(Map<String, Object> properties) {
         final String methodName = "modify";

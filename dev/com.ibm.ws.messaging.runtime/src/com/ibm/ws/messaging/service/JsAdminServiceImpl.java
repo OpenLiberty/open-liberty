@@ -79,10 +79,6 @@ static {
     return jsMain != null;
   }
 
-  public JsMain getAdminMain() {
-    return jsMain;
-  }
-
   public JsBus getBus(String name) throws SIBExceptionBusNotFound {
     if (!isInitialized()) {
       return null;

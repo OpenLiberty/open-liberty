@@ -14,11 +14,13 @@ package com.ibm.ws.sib.admin;
 
 import java.util.Map;
 
+import com.ibm.ws.messaging.lifecycle.Singleton;
+
 /**
  * This class provides the functionality to consume the messaging properties sent by the configuration admin
  * and to use it. 
  */
-public interface JsMainAdminService {
+public interface JsMainAdminService extends Singleton {
 
     /**
      * Get the state of the Messaging Engine.
