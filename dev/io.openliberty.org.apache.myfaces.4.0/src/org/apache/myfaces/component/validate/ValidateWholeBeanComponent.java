@@ -22,7 +22,7 @@ import jakarta.faces.application.ProjectStage;
 import jakarta.faces.component.EditableValueHolder;
 import jakarta.faces.component.UIComponent;
 import jakarta.faces.component.UIForm;
-import jakarta.faces.component.UIInput;
+import jakarta.faces.component.UIInput; 
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.validator.BeanValidator;
@@ -66,7 +66,7 @@ public class ValidateWholeBeanComponent extends UIInput
     @Override
     public void encodeBegin(FacesContext context) throws IOException
     {    
-        // https://github.com/jakartaee/faces/issues/1780
+        // Developement check: https://github.com/jakartaee/faces/issues/1780
         if (context.isProjectStage(ProjectStage.Development)) 
         {
             // find closest form
@@ -86,16 +86,10 @@ public class ValidateWholeBeanComponent extends UIInput
      * As required by https://github.com/jakartaee/faces/issues/1
      * Also ensures all inputs are available for f:wholeBeanValidate processing
      * (otherwise they'd be empty during the validation)
-     * Inspired by Mojarra's UIValidateWholeBean#misplacedComponentCheck
-     * 1) Get all children of the form component
-     * 2) Loop in reverse thorough each child in the form
-     * 3) If we find an editable component (EditableValueHolder)
-     * and it's group validator matches f:wholeBeanValidate (this part is unique to
-     * myfaces) then throw an exception.
-     * 4) If we find the f:wholeBeanValidate's client id before any
-     * EditableValueHolder tags, return.
+     * Similar to a Recursive Non-Binary Search, but checks if f:wholeBeanValidate 
+     * is before any EditableValueHolders (i.e inputs)
      */
-    public void validateTagPlacement(UIComponent component, String clientId) throws IllegalStateException
+    private void validateTagPlacement(UIComponent component, String clientId) throws IllegalStateException
     {
         List<UIComponent> children = component.getChildren();
     
@@ -122,7 +116,7 @@ public class ValidateWholeBeanComponent extends UIInput
               }
               else
               {
-                  validateTagPlacement(c, clientId);
+                  validateTagPlacement(c, clientId); // continue again 
               }
           }
         }
