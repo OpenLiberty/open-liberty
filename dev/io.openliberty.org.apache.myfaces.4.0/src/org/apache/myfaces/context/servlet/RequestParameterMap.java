@@ -18,9 +18,11 @@
  */
 package org.apache.myfaces.context.servlet;
 
+import jakarta.faces.context.FacesContext;
 import java.util.Enumeration;
 
 import jakarta.servlet.ServletRequest;
+import org.apache.myfaces.util.ViewNamespaceUtils;
 
 import org.apache.myfaces.util.lang.AbstractAttributeMap;
 
@@ -33,6 +35,7 @@ import org.apache.myfaces.util.lang.AbstractAttributeMap;
 public final class RequestParameterMap extends AbstractAttributeMap<String>
 {
     private final ServletRequest servletRequest;
+    private String viewNamespace;
 
     RequestParameterMap(final ServletRequest servletRequest)
     {
@@ -42,9 +45,33 @@ public final class RequestParameterMap extends AbstractAttributeMap<String>
     @Override
     protected String getAttribute(final String key)
     {
-        return servletRequest.getParameter(key);
+        String value = servletRequest.getParameter(key);
+        if (value == null)
+        {
+            String viewNamespace = getViewNamespace();
+            if (!viewNamespace.isEmpty() && !key.startsWith(viewNamespace))
+            {
+                value = servletRequest.getParameter(viewNamespace + key);
+            }  
+        }
+
+        return value;
     }
 
+    protected String getViewNamespace()
+    {
+        if (viewNamespace == null)
+        {
+            FacesContext context = FacesContext.getCurrentInstance();
+            if (context == null)
+            {
+                return "";
+            }
+            viewNamespace = ViewNamespaceUtils.getViewNamespace(context, servletRequest);
+        }
+        return viewNamespace;
+    }
+    
     @Override
     protected void setAttribute(final String key, final String value)
     {

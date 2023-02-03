@@ -35,6 +35,7 @@ import org.apache.myfaces.renderkit.MyfacesResponseStateManager;
 import org.apache.myfaces.renderkit.html.util.HTML;
 import org.apache.myfaces.spi.StateCacheProvider;
 import org.apache.myfaces.spi.StateCacheProviderFactory;
+import org.apache.myfaces.util.ViewNamespaceUtils;
 
 /**
  * @author Manfred Geiler (latest modification by $Author$)
@@ -75,17 +76,20 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
             savedStateObject = getStateCache(facesContext).encodeSerializedState(facesContext, state);
         }
 
+        String viewNamespace = ViewNamespaceUtils.getViewNamespace(facesContext);
+
         // write the view state field
-        writeViewStateField(facesContext, responseWriter, savedStateObject);
+        writeViewStateField(facesContext, responseWriter, savedStateObject, viewNamespace);
 
         // renderKitId field
         writeRenderKitIdField(facesContext, responseWriter);
         
         // windowId field
-        writeWindowIdField(facesContext, responseWriter);
+        writeWindowIdField(facesContext, responseWriter, viewNamespace);
     }
     
-    private void writeWindowIdField(FacesContext facesContext, ResponseWriter responseWriter) throws IOException
+    private void writeWindowIdField(FacesContext facesContext, ResponseWriter responseWriter, String viewNamespace)
+            throws IOException
     {
         ClientWindow clientWindow = facesContext.getExternalContext().getClientWindow();
         if (clientWindow != null)
@@ -93,7 +97,8 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
             responseWriter.startElement(HTML.INPUT_ELEM, null);
             responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
             responseWriter.writeAttribute(HTML.ID_ATTR, generateUpdateClientWindowId(facesContext), null);
-            responseWriter.writeAttribute(HTML.NAME_ATTR, ResponseStateManager.CLIENT_WINDOW_PARAM, null);
+            responseWriter.writeAttribute(HTML.NAME_ATTR, viewNamespace
+                    + ResponseStateManager.CLIENT_WINDOW_PARAM, null);
             responseWriter.writeAttribute(HTML.VALUE_ATTR, clientWindow.getId(), null);
             responseWriter.endElement(HTML.INPUT_ELEM);
         }
@@ -108,7 +113,8 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
         }
     }
 
-    private void writeViewStateField(FacesContext facesContext, ResponseWriter responseWriter, Object savedState)
+    private void writeViewStateField(FacesContext facesContext, ResponseWriter responseWriter, Object savedState,
+            String viewNamespace)
         throws IOException
     {
         String serializedState = getStateCache(facesContext).getStateTokenProcessor(facesContext)
@@ -121,7 +127,7 @@ public class HtmlResponseStateManager extends MyfacesResponseStateManager
 
         responseWriter.startElement(HTML.INPUT_ELEM, null);
         responseWriter.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_HIDDEN, null);
-        responseWriter.writeAttribute(HTML.NAME_ATTR, ResponseStateManager.VIEW_STATE_PARAM, null);
+        responseWriter.writeAttribute(HTML.NAME_ATTR, viewNamespace + ResponseStateManager.VIEW_STATE_PARAM, null);
         if (myfacesConfig.isRenderViewStateId())
         {
             // responseWriter.writeAttribute(HTML.ID_ATTR, STANDARD_STATE_SAVING_PARAM, null);
