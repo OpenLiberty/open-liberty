@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -41,7 +38,8 @@ src: \
 	test-applications/jsonp/src,\
 	test-applications/managedBeans/src,\
 	test-bundles/test.checkpoint.bells.bundle/src,\
-	test-applications/bells/src
+	test-applications/bells/src,\
+	test-applications/transaction/src
 
 fat.project: true
 
@@ -135,6 +133,25 @@ tested.features: \
 	com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
 	org.eclipse:yasson;version='1.0.8',\
 	com.ibm.websphere.javaee.jsonp.1.1;version=latest,\
-	com.ibm.ws.logging.core
+	com.ibm.ws.logging.core,\
+	com.ibm.ws.transaction.cdi;version=latest,\
+	com.ibm.tx.jta;version=latest,\
+	com.ibm.tx.util;version=latest,\
+	com.ibm.ws.kernel.service,\
+	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+	com.ibm.ws.logging,\
+	com.ibm.websphere.org.eclipse.microprofile.faulttolerance.1.0;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.tx.embeddable;version=latest,\
+	com.ibm.ws.transaction.fat.util;version=latest,\
+	com.ibm.ws.transaction.test.util;version=latest
 
 -sub: *.bnd

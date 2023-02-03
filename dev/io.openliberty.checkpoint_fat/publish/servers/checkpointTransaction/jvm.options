@@ -1,0 +1,3 @@
+-Dcom.ibm.ws.beta.edition=true
+-Dio.openliberty.checkpoint.dump.threads=true
+-Dcom.ibm.websphere.tx.propagateXAResourceTransactionTimeout=true
