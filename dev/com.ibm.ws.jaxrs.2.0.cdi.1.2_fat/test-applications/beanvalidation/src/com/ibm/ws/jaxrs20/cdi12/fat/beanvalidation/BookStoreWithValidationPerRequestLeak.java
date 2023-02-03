@@ -6,15 +6,10 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.cdi12.fat.beanvalidation;
 
 import java.util.WeakHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
@@ -26,7 +21,7 @@ import javax.ws.rs.core.MediaType;
 @Path("/perrequestleak/")
 public class BookStoreWithValidationPerRequestLeak {
 
-    static WeakHashMap<BookStoreWithValidationPerRequestLeak, String> map = new WeakHashMap<BookStoreWithValidationPerRequestLeak, String>();
+    static WeakHashMap<BookStoreWithValidationPerRequestLeak, String> map = new WeakHashMap<>();
 
     Person person;
 
@@ -52,6 +47,23 @@ public class BookStoreWithValidationPerRequestLeak {
     @Produces(MediaType.TEXT_PLAIN)
     public String book() {
         int size = map.size();
+
+        // Explicitly call garbage collection to make sure references to person get cleaned up
+        for (int i = 0; i < 10; ++i) {
+            if (size == 1) {
+                break;
+            }
+
+            System.out.println("calling system gc");
+            System.gc();
+
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+            }
+            size = map.size();
+        }
+
         System.out.println("hashmap size=" + size);
         return Integer.toString(size);
     }

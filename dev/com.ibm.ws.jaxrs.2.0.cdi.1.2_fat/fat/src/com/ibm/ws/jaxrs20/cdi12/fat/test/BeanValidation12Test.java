@@ -87,8 +87,6 @@ public class BeanValidation12Test extends AbstractTest {
         for (int i = 0; i < 10000; i++) {
             runGetMethod("/rest/perrequestleak/book", 400, "I am a Student. null", true);
         }
-        Thread.sleep(10000);
-        System.gc();
         StringBuilder lines = runGetMethod("/rest/perrequestleak/size", 200, "", false);
         String result = lines.toString().trim();
         System.out.println("Adam result=" + result);
