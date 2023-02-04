@@ -693,20 +693,22 @@ public final class RendererUtils
     public static Object getConvertedUISelectOneValue(
             FacesContext facesContext, UISelectOne output, Object submittedValue)
     {
-        if (submittedValue != null && !(submittedValue instanceof String))
+
+        if(submittedValue == null || "".equals(submittedValue))
+        {
+            if (log.isLoggable(Level.FINE))
+            {
+                log.fine("No conversion necessary for null / empty string uiselectone value: client id " 
+                            + output.getClientId());
+            }
+            return null;
+        }
+
+        if (!(submittedValue instanceof String))
         {
             throw new IllegalArgumentException(
                     "Submitted value of type String for component : "
                             + ComponentUtils.getPathToComponent(output) + "expected");
-        }
-
-        //To be compatible with jsf ri, and according to issue 69
-        //[  Permit the passing of a null value to SelectItem.setValue()  ]
-        //If submittedValue == "" then convert to null.
-        if (submittedValue != null && "".equals(submittedValue))
-        {
-            //Replace "" by null value
-            submittedValue = null;
         }
 
         Converter converter;
