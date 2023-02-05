@@ -2113,7 +2113,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (elem != null && elem.asString() != null) {
             return elem;
         }
-        validateHeaderName(key.toString());
+        validateHeaderName(key.getName());
         if (this.bHeaderValidation) {
             if (getCharacterValidation()) //PI45266
                 value = getValidatedCharacters(value); //PI57228
@@ -4797,14 +4797,16 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                     (c == '`') || (c == '|') ||
                     (c == '~');
             if (!valid) {
-                Tr.debug(tc, "validateHeaderName invalid char " + c);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                    Tr.debug(tc, "validateHeaderName invalid char " + c);
+                }
                 break;
             }
         }
 
         // if we found an error, throw the exception now
         if (!valid) {
-            IllegalArgumentException iae = new IllegalArgumentException("Header name contained invalid character");
+            IllegalArgumentException iae = new IllegalArgumentException("Header name contained an invalid character");
             FFDCFilter.processException(iae, getClass().getName() + ".validateHeaderName(String)", "1", this);
             throw iae;
         }
