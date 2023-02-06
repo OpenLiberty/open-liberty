@@ -22,6 +22,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
@@ -90,9 +91,7 @@ public class AjaxRenderExecuteThisTest {
         inputs.add(2, (HtmlTextInput) page.getElementById(form + ":inputs:input3"));
     }
 
-    //@Test
-    // TODO test currently fails due to this defect in myfaces: https://issues.apache.org/jira/projects/MYFACES/issues/MYFACES-4505?filter=allopenissues
-    // Test passes when running against Mojarra.
+    @Test
     public void testAjaxRenderAndExecute() throws Exception {
 
         try (WebClient webClient = new WebClient()) {
