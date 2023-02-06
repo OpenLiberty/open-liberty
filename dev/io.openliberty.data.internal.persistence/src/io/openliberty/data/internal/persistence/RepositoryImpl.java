@@ -312,17 +312,17 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             } else if (queryInfo.method.getAnnotation(Count.class) != null) {
                 queryInfo.type = QueryInfo.Type.COUNT;
                 q = new StringBuilder(23 + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
-                                .append("SELECT COUNT(o) FROM ").append(queryInfo.entityInfo.name).append(" o");
+                                .append("SELECT COUNT(o) FROM ").append(entityInfo.name).append(" o");
                 if (whereClause == null)
                     queryInfo.paramCount = 0;
                 else
                     q.append(whereClause);
             } else if (queryInfo.method.getAnnotation(Exists.class) != null) {
                 queryInfo.type = QueryInfo.Type.EXISTS;
-                String idAttrName = queryInfo.entityInfo.getAttributeName("id");
-                q = new StringBuilder(17 + idAttrName.length() + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
-                                .append("SELECT o.").append(idAttrName) //
-                                .append(" FROM ").append(queryInfo.entityInfo.name).append(" o");
+                String attrName = entityInfo.getAttributeName(entityInfo.idClass == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey());
+                q = new StringBuilder(17 + attrName.length() + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
+                                .append("SELECT o.").append(attrName) //
+                                .append(" FROM ").append(entityInfo.name).append(" o");
                 if (whereClause == null)
                     queryInfo.paramCount = 0;
                 else
@@ -799,6 +799,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     }
 
     private StringBuilder generateMethodNameQuery(QueryInfo queryInfo, boolean countPages) {
+        EntityInfo entityInfo = queryInfo.entityInfo;
         String methodName = queryInfo.method.getName();
         StringBuilder q = null;
         if (methodName.startsWith("find")) {
@@ -842,7 +843,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     c = 8;
                 }
             }
-            q = new StringBuilder(150).append("DELETE FROM ").append(queryInfo.entityInfo.name).append(" o");
+            q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(" o");
             if (methodName.length() > c)
                 generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
             queryInfo.type = QueryInfo.Type.DELETE;
@@ -854,15 +855,16 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         } else if (methodName.startsWith("count")) {
             int by = methodName.indexOf("By", 5);
             int c = by < 0 ? 5 : by + 2;
-            q = new StringBuilder(150).append("SELECT COUNT(o) FROM ").append(queryInfo.entityInfo.name).append(" o");
+            q = new StringBuilder(150).append("SELECT COUNT(o) FROM ").append(entityInfo.name).append(" o");
             if (methodName.length() > c)
                 generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
             queryInfo.type = QueryInfo.Type.COUNT;
         } else if (methodName.startsWith("exists")) {
             int by = methodName.indexOf("By", 6);
             int c = by < 0 ? 6 : by + 2;
-            q = new StringBuilder(200).append("SELECT o.").append(queryInfo.entityInfo.getAttributeName("id")) //
-                            .append(" FROM ").append(queryInfo.entityInfo.name).append(" o");
+            String attrName = entityInfo.getAttributeName(entityInfo.idClass == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey());
+            q = new StringBuilder(200).append("SELECT o.").append(attrName) //
+                            .append(" FROM ").append(entityInfo.name).append(" o");
             if (methodName.length() > c)
                 generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
             queryInfo.type = QueryInfo.Type.EXISTS;

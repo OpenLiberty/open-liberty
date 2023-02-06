@@ -286,11 +286,16 @@ class QueryInfo {
     @Override
     @Trivial
     public String toString() {
-        return new StringBuilder("QueryInfo@").append(Integer.toHexString(hashCode())) //
-                        .append(':').append(method) //
-                        .append("; ").append(jpql) //
-                        .append("; ").append(paramCount == Integer.MIN_VALUE ? "no" : paramCount).append(" parameters") //
-                        .toString();
+        StringBuilder b = new StringBuilder("QueryInfo@").append(Integer.toHexString(hashCode())) //
+                        .append(' ').append(method.getReturnType().getSimpleName()).append(' ').append(method.getName());
+        boolean first = true;
+        for (Class<?> p : method.getParameterTypes()) {
+            b.append(first ? "(" : ", ").append(p.getSimpleName());
+            first = false;
+        }
+        b.append(first ? "() " : ") ").append(jpql) //
+                        .append(" [").append(paramCount == Integer.MIN_VALUE ? "no" : paramCount).append(" parameters]");
+        return b.toString();
     }
 
     /**

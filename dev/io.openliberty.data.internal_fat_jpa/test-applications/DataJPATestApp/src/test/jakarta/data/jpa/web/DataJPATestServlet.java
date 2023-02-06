@@ -333,6 +333,24 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Repository method with the Exists annotation that checks if any matching entities exist.
+     */
+    @Test
+    public void testIdClassExistsAnnotation() {
+        assertEquals(true, cities.areFoundIn("Minnesota"));
+        assertEquals(false, cities.areFoundIn("Antarctica"));
+    }
+
+    /**
+     * Repository method with the Exists keyword that checks if any matching entities exist.
+     */
+    @Test
+    public void testIdClassExistsKeyword() {
+        assertEquals(true, cities.existsByNameAndStateName("Kansas City", "Kansas"));
+        assertEquals(false, cities.existsByNameAndStateName("Kansas City", "Minnesota"));
+    }
+
+    /**
      * Use the OrderBy annotation on a composite id that is defined by an IdClass attribute.
      */
     @Test

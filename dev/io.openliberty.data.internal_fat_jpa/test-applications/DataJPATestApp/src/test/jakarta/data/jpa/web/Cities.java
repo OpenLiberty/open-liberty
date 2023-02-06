@@ -13,6 +13,7 @@ package test.jakarta.data.jpa.web;
 import java.util.stream.Stream;
 
 import jakarta.data.repository.Compare;
+import jakarta.data.repository.Exists;
 import jakarta.data.repository.Filter;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
@@ -27,6 +28,11 @@ import jakarta.data.repository.Sort;
  */
 @Repository
 public interface Cities {
+    @Exists
+    @Filter(by = "stateName")
+    boolean areFoundIn(String state);
+
+    boolean existsByNameAndStateName(String name, String state);
 
     City findById(CityId id);
 
