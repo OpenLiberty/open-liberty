@@ -25,8 +25,7 @@ src: \
     test-applications/UIViewRootGetDoctypeTest.war/src,\
     test-applications/Faces40ThirdPartyApi.war/src,\
     test-applications/MultipleInputFileTest.war/src,\
-    test-applications/ProgrammaticFaceletTests.war/src,\
-    test-applications/WebSocket.war/src
+    test-applications/ProgrammaticFaceletTests.war/src
 
 fat.project: true
 
