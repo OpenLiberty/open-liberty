@@ -5210,7 +5210,10 @@ _MF_SINGLTN(_PFX_XHR+"_AjaxUtils", _MF_OBJECT,
         form = this._Dom.byId(form);
         var _t = this;
         var foundNames = this._Dom.findAll(form, function(node) {
-            var name = node.getAttribute("name");
+            var name;
+            if (typeof node.getAttribute === 'function') {
+                name = node.getAttribute("name")
+            }
             if(!name || name.indexOf("jakarta.faces.ViewState") <= 0) {
                 return false;
             }
