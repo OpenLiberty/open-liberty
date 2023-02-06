@@ -253,7 +253,6 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
             // Cannot place this in the ImportGenerator since that is only run when the import directive is included in the page
             // the imports below are required for all pages 
             writer.println("static {");
-            // Since import directive is the same for tags as pages, need to verify that this is actually what we expect here
             // Pages 1.10 Directive Packages java.lang.*, jakarta.servlet.*, jakarta.servlet.jsp.*, and jakarta.servlet.http.* are imported implicitly by the JSP container.
 			writer.println("importPackageList.add(\"jakarta.servlet\");");
 			writer.println("importPackageList.add(\"jakarta.servlet.jsp\");");

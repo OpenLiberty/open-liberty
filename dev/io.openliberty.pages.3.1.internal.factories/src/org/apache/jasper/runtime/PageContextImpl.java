@@ -850,9 +850,8 @@ public class PageContextImpl extends PageContext {
             for (String _class : directiveInfo.getImportClassList()) {
                 this.elContext.getImportHandler().importClass(_class);
             }
-            // not sure about importing static fields/methods? spec doesn't seem to mention it?
-            // Follow up Liberty Issue 22507 to see if there's anything to be done here with static imports
-            // Does this work with importStatic com.example.*?
+            // This does not work with importStatic com.example.Math.*
+            // Follow up on #24182 for importing static en masse
             for (String _static : directiveInfo.getImportStaticList()) {
                 this.elContext.getImportHandler().importStatic(_static);
             }
