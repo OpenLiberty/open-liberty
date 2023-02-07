@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -113,8 +113,8 @@ public class SecureTest {
         } catch (InterruptedException x) {
 
         }
-        LOG.info("ConfigUpdateTimeout before change is: " + LS.getConfigUpdateTimeout());
-        LS.setConfigUpdateTimeout(180 * 1000);
+
+        LS.setConfigUpdateTimeout(300 * 1000);
         LOG.info("ConfigUpdateTimeout update change is: " + LS.getConfigUpdateTimeout());
 
         // test cleanup
