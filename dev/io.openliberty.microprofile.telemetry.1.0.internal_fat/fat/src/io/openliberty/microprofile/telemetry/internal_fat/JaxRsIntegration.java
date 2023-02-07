@@ -35,6 +35,10 @@ import componenttest.topology.utils.HttpRequest;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.JaxRsEndpoints;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.async.JaxRsServerAsyncTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.common.PropagationHeaderEndpoint;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.methods.JaxRsMethodTestEndpoints;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.methods.JaxRsMethodTestServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.responses.JaxRsResponseCodeTestEndpoints;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.responses.JaxRsResponseCodeTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.transports.B3MultiPropagationTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.transports.B3PropagationTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.transports.JaegerPropagationTestServlet;
@@ -63,6 +67,8 @@ public class JaxRsIntegration extends FATServletClient {
                     @TestServlet(contextRoot = B3_MULTI_APP_NAME, servlet = B3MultiPropagationTestServlet.class),
                     @TestServlet(contextRoot = JAEGER_APP_NAME, servlet = JaegerPropagationTestServlet.class),
                     @TestServlet(contextRoot = ASYNC_SERVER_APP_NAME, servlet = JaxRsServerAsyncTestServlet.class),
+                    @TestServlet(contextRoot = APP_NAME, servlet = JaxRsMethodTestServlet.class),
+                    @TestServlet(contextRoot = APP_NAME, servlet = JaxRsResponseCodeTestServlet.class),
     })
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -75,6 +81,8 @@ public class JaxRsIntegration extends FATServletClient {
                         .addProperty("otel.bsp.schedule.delay", "100");
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackage(JaxRsEndpoints.class.getPackage())
+                        .addPackage(JaxRsMethodTestEndpoints.class.getPackage())
+                        .addPackage(JaxRsResponseCodeTestEndpoints.class.getPackage())
                         .addPackage(InMemorySpanExporter.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");
