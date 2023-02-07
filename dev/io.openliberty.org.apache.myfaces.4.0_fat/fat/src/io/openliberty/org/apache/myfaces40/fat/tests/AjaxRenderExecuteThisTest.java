@@ -6,13 +6,12 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.org.apache.myfaces40.fat.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -78,21 +77,151 @@ public class AjaxRenderExecuteThisTest {
         }
     }
 
-    private void fillForm(HtmlPage page, String form, String input) {
+    private void fillForm(HtmlPage page, String form, String input, String value) {
         HtmlTextInput inputObj = (HtmlTextInput) page.getElementById(form + ":inputs:" + input);
-        inputObj.setValueAttribute("1");
+        inputObj.setValueAttribute(value);
         inputObj.fireEvent("change");
-        FATSuite.logOutputForDebugging(server, page.asXml(), form + input + ".html");
+        FATSuite.logOutputForDebugging(server, page.asXml(), form + "." + input + ".html");
     }
 
-    private void fillInputs(HtmlPage page, String form, List<HtmlTextInput> inputs) {
-        inputs.add(0, (HtmlTextInput) page.getElementById(form + ":inputs:input1"));
-        inputs.add(1, (HtmlTextInput) page.getElementById(form + ":inputs:input2"));
-        inputs.add(2, (HtmlTextInput) page.getElementById(form + ":inputs:input3"));
+    private void fillInputs(HtmlPage page, String form, List<HtmlTextInput> addressAttributes) {
+        addressAttributes.add(0, (HtmlTextInput) page.getElementById(form + ":inputs:street"));
+        addressAttributes.add(1, (HtmlTextInput) page.getElementById(form + ":inputs:city"));
+        addressAttributes.add(2, (HtmlTextInput) page.getElementById(form + ":inputs:state"));
+    }
+
+    private void replaceAllMessages(List<String> messageList, String... newMessages) {
+        messageList.clear();
+        messageList.addAll(List.of(newMessages));
+    }
+
+    private void assertListEqual(List<String> expectedMessages, List<String> actualMessages) {
+        for (String expectedMessage : expectedMessages) {
+            try {
+                assertNotNull(actualMessages.remove(expectedMessage));
+            } catch (AssertionError ae) {
+                throw new AssertionError("Expected message " + expectedMessage + " was was not in list of actual messages");
+            }
+        }
+
+        try {
+            assertTrue(actualMessages.isEmpty());
+        } catch (AssertionError ae) {
+            throw new AssertionError("Actual message(s) [" + String.join(",", actualMessages) + "] where not expected.");
+        }
     }
 
     @Test
-    public void testAjaxRenderAndExecute() throws Exception {
+    public void testAjaxRender() throws Exception {
+        try (WebClient webClient = new WebClient()) {
+            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+
+            URL url = HttpUtils.createURL(server, "/" + APP_NAME + "/ajaxRenderExecuteThis.xhtml");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
+
+            //Address attributes: street, city, state
+            List<HtmlTextInput> addressAttributes = new ArrayList<>(3);
+            List<String> actualMessages = new ArrayList<>();
+            List<String> expectedMessages = new ArrayList<>();
+
+            //Test attributes
+            String form = "testRender";
+
+            // Test street
+            fillForm(page, form, "street", "aberdeen way");
+            fillInputs(page, form, addressAttributes);
+
+            replaceAllMessages(actualMessages, page.getElementById(form + ":messages").asText().split(System.lineSeparator()));
+            replaceAllMessages(expectedMessages, "setTestRenderStreet:aberdeen way", "setTestRenderCity:");
+
+            assertEquals("street contained unexpected result", "aberdeen way", addressAttributes.get(0).getValueAttribute());
+            assertEquals("city contained unexpected result", "", addressAttributes.get(1).getValueAttribute());
+            assertEquals("state contained unexpected result", "", addressAttributes.get(2).getValueAttribute());
+            assertListEqual(expectedMessages, actualMessages);
+
+            // Test city
+            fillForm(page, form, "city", "big lake");
+            fillInputs(page, form, addressAttributes);
+
+            replaceAllMessages(actualMessages, page.getElementById(form + ":messages").asText().split(System.lineSeparator()));
+            replaceAllMessages(expectedMessages, "setTestRenderStreet:aberdeen way", "setTestRenderCity:big lake");
+
+            assertEquals("street contained unexpected result", "aberdeen way", addressAttributes.get(0).getValueAttribute());
+            assertEquals("city contained unexpected result", "big lake", addressAttributes.get(1).getValueAttribute());
+            assertEquals("state contained unexpected result", "", addressAttributes.get(2).getValueAttribute());
+            assertListEqual(expectedMessages, actualMessages);
+
+            // Test state
+            fillForm(page, form, "state", "minnesota");
+            fillInputs(page, form, addressAttributes);
+
+            replaceAllMessages(actualMessages, page.getElementById(form + ":messages").asText().split(System.lineSeparator()));
+            replaceAllMessages(expectedMessages, "setTestRenderState:minnesota");
+
+            assertEquals("street contained unexpected result", "", addressAttributes.get(0).getValueAttribute());
+            assertEquals("city contained unexpected result", "", addressAttributes.get(1).getValueAttribute());
+            assertEquals("state contained unexpected result", "minnesota^", addressAttributes.get(2).getValueAttribute());
+            assertListEqual(expectedMessages, actualMessages);
+        }
+    }
+
+    @Test
+    public void testAjaxExecuteThis() throws Exception {
+        try (WebClient webClient = new WebClient()) {
+            webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+
+            URL url = HttpUtils.createURL(server, "/" + APP_NAME + "/ajaxRenderExecuteThis.xhtml");
+            HtmlPage page = (HtmlPage) webClient.getPage(url);
+
+            // Inputs / Outputs
+            List<HtmlTextInput> inputs = new ArrayList<>(3);
+            List<String> actualMessages = new ArrayList<>();
+            List<String> expectedMessages = new ArrayList<>();
+
+            //Test attributes
+            String form = "testExecuteThis";
+
+            // Test street
+            fillForm(page, form, "street", "w 4th street");
+            fillInputs(page, form, inputs);
+
+            replaceAllMessages(actualMessages, page.getElementById(form + ":messages").asText().split(System.lineSeparator()));
+            replaceAllMessages(expectedMessages, "setTestExecuteThisStreet:w 4th street", "setTestExecuteThisCity:");
+
+            assertEquals("street contained unexpected result", "w 4th street", inputs.get(0).getValueAttribute());
+            assertEquals("city contained unexpected result", "", inputs.get(1).getValueAttribute());
+            assertEquals("state contained unexpected result", "", inputs.get(2).getValueAttribute());
+            assertListEqual(expectedMessages, actualMessages);
+
+            // Test city
+            fillForm(page, form, "city", "red wing");
+            fillInputs(page, form, inputs);
+
+            replaceAllMessages(actualMessages, page.getElementById(form + ":messages").asText().split(System.lineSeparator()));
+            replaceAllMessages(expectedMessages, "setTestExecuteThisStreet:w 4th street", "setTestExecuteThisCity:red wing");
+
+            assertEquals("street contained unexpected result", "w 4th street", inputs.get(0).getValueAttribute());
+            assertEquals("city contained unexpected result", "red wing", inputs.get(1).getValueAttribute());
+            assertEquals("state contained unexpected result", "", inputs.get(2).getValueAttribute());
+            assertListEqual(expectedMessages, actualMessages);
+
+            // Test state
+            fillForm(page, form, "state", "minnesota");
+            fillInputs(page, form, inputs);
+
+            replaceAllMessages(actualMessages, page.getElementById(form + ":messages").asText().split(System.lineSeparator()));
+            replaceAllMessages(expectedMessages, "setTestExecuteThisState:minnesota");
+
+            assertEquals("street contained unexpected result", "", inputs.get(0).getValueAttribute());
+            assertEquals("city contained unexpected result", "", inputs.get(1).getValueAttribute());
+            assertEquals("state contained unexpected result", "minnesota^", inputs.get(2).getValueAttribute());
+            assertListEqual(expectedMessages, actualMessages);
+        }
+
+    }
+
+    @Test
+    public void testAjaxRenderThis() throws Exception {
 
         try (WebClient webClient = new WebClient()) {
             webClient.setAjaxController(new NicelyResynchronizingAjaxController());
@@ -100,98 +229,49 @@ public class AjaxRenderExecuteThisTest {
             URL url = HttpUtils.createURL(server, "/" + APP_NAME + "/ajaxRenderExecuteThis.xhtml");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
+            // Inputs / Outputs
             List<HtmlTextInput> inputs = new ArrayList<>(3);
-            String actualMessage, expectedMessage;
+            List<String> actualMessages = new ArrayList<>();
+            List<String> expectedMessages = new ArrayList<>();
 
-            // fill form1 input1
-            fillForm(page, "form1", "input1");
-            fillInputs(page, "form1", inputs);
-            actualMessage = page.getElementById("form1:messages").asText();
-            expectedMessage = "setForm1input1:1\nsetForm1input2:";
-            assertEquals("input1 is filled with 1", "1", inputs.get(0).getValueAttribute());
-            assertEquals("input2 is empty", "", inputs.get(1).getValueAttribute());
-            assertEquals("input3 is empty", "", inputs.get(2).getValueAttribute());
-            assertEquals("input1 is filled and input2 is empty", expectedMessage, actualMessage);
+            //Test attributes
+            String form = "testRenderThis";
 
-            // fill form1 input2
-            fillForm(page, "form1", "input2");
-            fillInputs(page, "form1", inputs);
-            actualMessage = page.getElementById("form1:messages").asText();
-            expectedMessage = "setForm1input1:1\nsetForm1input2:1";
-            assertEquals("input1 is filled with 1", "1", inputs.get(0).getValueAttribute());
-            assertEquals("input2 is filled with 1", "1", inputs.get(1).getValueAttribute());
-            assertEquals("input3 is empty", "", inputs.get(2).getValueAttribute());
-            assertEquals("input1 is filled and input2 is filled", expectedMessage, actualMessage);
+            // Test street
+            fillForm(page, form, "street", "hilbert ave");
+            fillInputs(page, form, inputs);
 
-            // fill form1 input3
-            fillForm(page, "form1", "input3");
-            fillInputs(page, "form1", inputs);
-            actualMessage = page.getElementById("form1:messages").asText();
-            expectedMessage = "setForm1input3:1";
-            assertEquals("input1 is refreshed to empty string", "", inputs.get(0).getValueAttribute());
-            assertEquals("input2 is refreshed to empty string", "", inputs.get(1).getValueAttribute());
-            assertEquals("input3 is filled and refreshed", "1x", inputs.get(2).getValueAttribute());
-            assertEquals("input3 is filled", expectedMessage, actualMessage);
+            replaceAllMessages(actualMessages, page.getElementById(form + ":messages").asText().split(System.lineSeparator()));
+            replaceAllMessages(expectedMessages, "setTestRenderThisStreet:hilbert ave", "setTestRenderThisCity:");
 
-            // fill form2 input1
-            fillForm(page, "form2", "input1");
-            fillInputs(page, "form2", inputs);
-            actualMessage = page.getElementById("form2:messages").asText();
-            expectedMessage = "setForm2input1:1\nsetForm2input2:";
-            assertEquals("input1 is filled with 1", "1", inputs.get(0).getValueAttribute());
-            assertEquals("input2 is empty", "", inputs.get(1).getValueAttribute());
-            assertEquals("input3 is empty", "", inputs.get(2).getValueAttribute());
-            assertEquals("input1 is filled and input2 is empty", expectedMessage, actualMessage);
+            assertEquals("street contained unexpected result", "hilbert ave^", inputs.get(0).getValueAttribute());
+            assertEquals("city contained unexpected result", "^", inputs.get(1).getValueAttribute());
+            assertEquals("state contained unexpected result", "", inputs.get(2).getValueAttribute());
+            assertListEqual(expectedMessages, actualMessages);
 
-            // fill form2 input2
-            fillForm(page, "form2", "input2");
-            fillInputs(page, "form2", inputs);
-            actualMessage = page.getElementById("form2:messages").asText();
-            expectedMessage = "setForm2input1:1\nsetForm2input2:1";
-            assertEquals("input1 is filled with 1", "1", inputs.get(0).getValueAttribute());
-            assertEquals("input2 is filled with 1", "1", inputs.get(1).getValueAttribute());
-            assertEquals("input3 is empty", "", inputs.get(2).getValueAttribute());
-            assertEquals("input1 is filled and input2 is filled", expectedMessage, actualMessage);
+            // Test city
+            fillForm(page, form, "city", "winona");
+            fillInputs(page, form, inputs);
 
-            // fill form2 input3
-            fillForm(page, "form2", "input3");
-            fillInputs(page, "form2", inputs);
-            actualMessage = page.getElementById("form2:messages").asText();
-            expectedMessage = "setForm2input3:1";
-            assertEquals("input1 is refreshed to empty string", "", inputs.get(0).getValueAttribute());
-            assertEquals("input2 is refreshed to empty string", "", inputs.get(1).getValueAttribute());
-            assertEquals("input3 is filled and refreshed", "1x", inputs.get(2).getValueAttribute());
-            assertEquals("input3 is filled", expectedMessage, actualMessage);
+            replaceAllMessages(actualMessages, page.getElementById(form + ":messages").asText().split(System.lineSeparator()));
+            replaceAllMessages(expectedMessages, "setTestRenderThisStreet:hilbert ave^", "setTestRenderThisCity:winona");
 
-            // fill form3 input1
-            fillForm(page, "form3", "input1");
-            fillInputs(page, "form3", inputs);
-            actualMessage = page.getElementById("form3:messages").asText();
-            expectedMessage = "setForm3input1:1\nsetForm3input2:";
-            assertEquals("input1 is refreshed to 1x", "1x", inputs.get(0).getValueAttribute());
-            assertEquals("input2 is refreshed to x", "x", inputs.get(1).getValueAttribute());
-            assertEquals("input3 is empty", "", inputs.get(2).getValueAttribute());
-            assertEquals("input1 is filled and input2 is empty", expectedMessage, actualMessage);
+            assertEquals("street contained unexpected result", "hilbert ave^^", inputs.get(0).getValueAttribute());
+            assertEquals("city contained unexpected result", "winona^", inputs.get(1).getValueAttribute());
+            assertEquals("state contained unexpected result", "", inputs.get(2).getValueAttribute());
+            assertListEqual(expectedMessages, actualMessages);
 
-            // fill form3 input2
-            fillForm(page, "form3", "input2");
-            fillInputs(page, "form3", inputs);
-            actualMessage = page.getElementById("form3:messages").asText();
-            expectedMessage = "setForm3input1:1x\nsetForm3input2:1";
-            assertEquals("input1 is refreshed to 1xx", "1xx", inputs.get(0).getValueAttribute());
-            assertEquals("input2 is refreshed to 1x", "1x", inputs.get(1).getValueAttribute());
-            assertEquals("input3 is empty", "", inputs.get(2).getValueAttribute());
-            assertEquals("input1 is filled and input2 is filled", expectedMessage, actualMessage);
+            // Test state
+            fillForm(page, form, "state", "minnesota");
+            fillInputs(page, form, inputs);
 
-            // fill form3 input3
-            fillForm(page, "form3", "input3");
-            fillInputs(page, "form3", inputs);
-            actualMessage = page.getElementById("form3:messages").asText();
-            expectedMessage = "setForm3input3:1";
-            assertEquals("input1 is refreshed to empty string", "", inputs.get(0).getValueAttribute());
-            assertEquals("input2 is refreshed to empty string", "", inputs.get(1).getValueAttribute());
-            assertEquals("input3 is filled and refreshed", "1x", inputs.get(2).getValueAttribute());
-            assertEquals("input3 is filled", expectedMessage, actualMessage);
+            replaceAllMessages(actualMessages, page.getElementById(form + ":messages").asText().split(System.lineSeparator()));
+            replaceAllMessages(expectedMessages, "setTestRenderThisState:minnesota");
+
+            assertEquals("street contained unexpected result", "", inputs.get(0).getValueAttribute());
+            assertEquals("city contained unexpected result", "", inputs.get(1).getValueAttribute());
+            assertEquals("state contained unexpected result", "minnesota^", inputs.get(2).getValueAttribute());
+            assertListEqual(expectedMessages, actualMessages);
         }
     }
 }
