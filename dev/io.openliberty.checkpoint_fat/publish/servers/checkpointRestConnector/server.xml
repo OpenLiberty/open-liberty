@@ -1,0 +1,48 @@
+<!--
+    Copyright (c) 2022 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <applicationManager startTimeout="90s"/>
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+        <feature>checkpoint-1.0</feature>  
+        <feature>restConnector-2.0</feature>
+        <feature>jdbc-4.2</feature>
+        <feature>servlet-4.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+    <keyStore id="defaultKeyStore" password="Liberty"/>
+    
+    <basicRegistry id="basicRegistry">
+    	<user name="adminuser" password="adminpwd" />
+    	<user name="reader" password="readerpwd" />
+    	<user name="user" password="userpwd" />
+  	</basicRegistry>
+  
+  	<administrator-role>
+    	<user>adminuser</user>
+  	</administrator-role>
+  	<reader-role>
+    	<user>reader</user>
+  	</reader-role>
+  	
+    <library id="Derby">
+    	<file name="${shared.resource.dir}/derby/derby.jar"/>
+    </library>
+  	<dataSource id="DefaultDataSource">
+    	<jdbcDriver libraryRef="Derby"/>
+   		<properties.derby.embedded id = "prop1" databaseName="defaultdb" createDatabase="create" 
+   	                           user="dbuser1" password="dbpass1"/>
+  	</dataSource>
+  	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+</server>
