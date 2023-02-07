@@ -460,6 +460,10 @@
 		<try rethrow="false">
 			<sequential>
 				<junit printsummary="on" fork="on" dir="${dir.test.current.directory}" timeout="${fattest.timeout}" failureproperty="test.failure" includeantruntime="no">
+					<!-- On iseries, when a java program is called via ant, the IBM_JAVA_OPTIONS env variable will not be overwritten in child-->
+					<!-- processes. The ServerStartJavaEnvironmentVariablesTest has tests which overwrite this env var during the tests so we -->
+					<!-- must explicitly override it to empty for this set of tests -->
+					<env key="IBM_JAVA_OPTIONS" value=""/>
 					<!-- junit printsummary="on" fork="on" dir="${dir.test.current.directory}" watchdog="TimeoutWatchdog(${fattest.timeout})" failureproperty="test.failure" includeantruntime="no" -->
 					<!-- Push in the is.running.automated.build and isPersonalBuild -->
 					<sysproperty key="disable.ffdc.checking" value="${disable.ffdc.checking}" />
