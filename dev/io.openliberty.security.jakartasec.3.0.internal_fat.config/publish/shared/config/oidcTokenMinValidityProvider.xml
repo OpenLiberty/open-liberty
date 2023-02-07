@@ -17,14 +17,14 @@
 		signatureAlgorithm="RS256"
 		keyAliasName="rs256"
 		keystoreRef="key_allSigAlg"
-		idTokenLifetime="20s"
+		idTokenLifetime="30s"
 		oauthProviderRef="OAuth1" />
 
 	<oauthProvider
 		id="OAuth1"
 		autoAuthorize="true"
 		tokenFormat="${opTokenFormat}"
-		accessTokenLifetime="20s"
+		accessTokenLifetime="30s"
 	>
 		<autoAuthorizeClient>client_1</autoAuthorizeClient>
 		
@@ -35,11 +35,13 @@
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/TokenMinValidity5s/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/TokenMinValidity20s/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/TokenMinValidity30s/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/TokenMinValidity60s/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/TokenMinValidity0s/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/TokenMinValidityNegative5s/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/TokenMinValidityEL5s/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/TokenMinValidityEL20s/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/TokenMinValidityEL30s/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/TokenMinValidityEL60s/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/TokenMinValidityEL0s/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/TokenMinValidityELNegative5s/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/TokenMinValidity5sEL15s/Callback,

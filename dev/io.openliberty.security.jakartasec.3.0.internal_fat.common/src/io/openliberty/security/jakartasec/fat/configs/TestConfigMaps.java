@@ -539,6 +539,14 @@ public class TestConfigMaps {
 
     }
 
+    public static Map<String, Object> getTokenMinValidity60s() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.TOKEN_MIN_VALIDITY_EXPRESSION, 60 * 1000);
+        return updatedMap;
+
+    }
+
     public static Map<String, Object> getTokenMinValidity0s() throws Exception {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
