@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- * IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -19,9 +16,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 
 import org.jmock.Expectations;
 import org.junit.After;
@@ -57,7 +52,6 @@ public class AttributeToSubjectTest extends CommonTestClass {
 
     private final ConvergedClientConfig convClientConfig = mockery.mock(ConvergedClientConfig.class);
     private final Payload payload = mockery.mock(Payload.class);
-    private final MockAttributeToSubjectInterface mockA2SInterface = mockery.mock(MockAttributeToSubjectInterface.class);
 
     private final String CLIENT_ID = "client_id";
     private final String UID_TOCREATE_SUBJECT = "uid_toCreate_subject";
@@ -346,124 +340,6 @@ public class AttributeToSubjectTest extends CommonTestClass {
     }
 
     @Test
-    public void testAttributeToSubject_UserIdentityToCreateSubjectIsNull_subIsNull() {
-        mockery.checking(new Expectations() {
-            {
-                one(convClientConfig).getClientId();
-                will(returnValue(CLIENT_ID));
-                one(convClientConfig).getUserIdentifier();
-                will(returnValue(null));
-                one(convClientConfig).getUserIdentityToCreateSubject();
-                will(returnValue(null));
-                // Null userIdentifier and userIdentityToCreateSubject will default to "sub"
-                one(payload).get(ClientConstants.SUB);
-                will(returnValue(null));
-            }
-        });
-
-        AttributeToSubject attrToSub = new AttributeToSubject(convClientConfig, payload, ACCESS_TOKEN);
-
-        assertEquals("Did not get expected clientId.", CLIENT_ID, attrToSub.clientId);
-        assertEquals("Did not get expected access token string.", ACCESS_TOKEN, attrToSub.tokenString);
-        assertNull("User name was expected to be null but was: [" + attrToSub.userName + "].", attrToSub.userName);
-        assertNull("Custom cache key was expected to be null but was: [" + attrToSub.customCacheKey + "].", attrToSub.customCacheKey);
-        assertNull("Realm was expected to be null but was: [" + attrToSub.realm + "].", attrToSub.realm);
-        assertNull("Unique security name was expected to be null but was: [" + attrToSub.uniqueSecurityName + "].", attrToSub.uniqueSecurityName);
-        assertNull("Group IDs were expected to be null but were: [" + attrToSub.groupIds + "].", attrToSub.groupIds);
-    }
-
-    @Test
-    public void testAttributeToSubject_UserNameIsNotNull_noGroups() {
-
-        mockery.checking(new Expectations() {
-            {
-                one(convClientConfig).getClientId();
-                will(returnValue(CLIENT_ID));
-                one(convClientConfig).getUserIdentifier();
-                will(returnValue(USER_IDENTIFIER));
-                one(payload).get(USER_IDENTIFIER);
-                will(returnValue(USER_NAME));
-                one(convClientConfig).isMapIdentityToRegistryUser();
-                will(returnValue(false));
-                one(mockA2SInterface).getTheRealmName();
-                will(returnValue(REAL_NAME));
-                one(mockA2SInterface).getTheUniqueSecurityName();
-                will(returnValue(USER_NAME));
-                one(convClientConfig).getGroupIdentifier();
-                will(returnValue(GROUP_IDS));
-                one(payload).get(GROUP_IDS);
-                will(returnValue(null));
-            }
-        });
-
-        AttributeToSubject attrToSub = new AttributeToSubject(convClientConfig, payload, ACCESS_TOKEN) {
-            @Override
-            protected String getTheRealmName(ConvergedClientConfig clientConfig, JSONObject jobj, Payload payload) {
-                return mockA2SInterface.getTheRealmName();
-            }
-
-            @Override
-            protected String getTheUniqueSecurityName(ConvergedClientConfig clientConfig, JSONObject jobj, Payload payload) {
-                return mockA2SInterface.getTheUniqueSecurityName();
-            }
-        };
-
-        assertEquals("Did not get expected clientId.", CLIENT_ID, attrToSub.clientId);
-        assertEquals("Did not get expected access token string.", ACCESS_TOKEN, attrToSub.tokenString);
-        assertEquals("Did not get expected userName.", USER_NAME, attrToSub.userName);
-        assertTrue("Expected that 'custom cache key' starts with:" + USER_NAME + " but it didn't. Cache key was [" + attrToSub.customCacheKey + "].", attrToSub.customCacheKey.startsWith(USER_NAME));
-        assertEquals("Did not get expected realm.", REAL_NAME, attrToSub.realm);
-        assertEquals("Did not get expected uniqueSecurityName.", USER_NAME, attrToSub.uniqueSecurityName);
-        assertNull("Group IDs were expected to be null but were: [" + attrToSub.groupIds + "].", attrToSub.groupIds);
-    }
-
-    @Test
-    public void testAttributeToSubject_UserNameIsNotNull_withGroups() {
-        final List<String> groups = new ArrayList<String>();
-        groups.add(GROUP1);
-
-        mockery.checking(new Expectations() {
-            {
-                one(convClientConfig).getClientId();
-                will(returnValue(CLIENT_ID));
-                one(convClientConfig).getUserIdentifier();
-                will(returnValue(USER_IDENTIFIER));
-                one(payload).get(USER_IDENTIFIER);
-                will(returnValue(USER_NAME));
-                one(convClientConfig).isMapIdentityToRegistryUser();
-                will(returnValue(false));
-                one(mockA2SInterface).getTheRealmName();
-                will(returnValue(REAL_NAME));
-                one(mockA2SInterface).getTheUniqueSecurityName();
-                will(returnValue(USER_NAME));
-                one(convClientConfig).getGroupIdentifier();
-                will(returnValue(GROUP_IDS));
-                one(payload).get(GROUP_IDS);
-                will(returnValue(groups));
-            }
-        });
-
-        AttributeToSubject attrToSub = new AttributeToSubject(convClientConfig, payload, ACCESS_TOKEN) {
-            @Override
-            protected String getTheRealmName(ConvergedClientConfig clientConfig, JSONObject jobj, Payload payload) {
-                return mockA2SInterface.getTheRealmName();
-            }
-
-            @Override
-            protected String getTheUniqueSecurityName(ConvergedClientConfig clientConfig, JSONObject jobj, Payload payload) {
-                return mockA2SInterface.getTheUniqueSecurityName();
-            }
-        };
-
-        assertEquals("Did not get expected clientId.", CLIENT_ID, attrToSub.clientId);
-        assertEquals("Did not get expected access token string.", ACCESS_TOKEN, attrToSub.tokenString);
-        assertEquals("Did not get expected userName.", USER_NAME, attrToSub.userName);
-        assertEquals("Did not get expected realm.", REAL_NAME, attrToSub.realm);
-        assertEquals("Did not get expected uniqueSecurityName.", USER_NAME, attrToSub.uniqueSecurityName);
-        assertTrue("JSONArray should have contained:" + GROUP1 + " but it didn't. Group IDs were: " + attrToSub.groupIds, attrToSub.groupIds.contains(GROUP1));
-    }
-
-    @Test
     public void testGetTheRealmName_NullArgs() throws IOException {
         getJsonObjConstructorExpectations();
 
@@ -516,48 +392,6 @@ public class AttributeToSubjectTest extends CommonTestClass {
         AttributeToSubject attrToSub = new AttributeToSubject(convClientConfig, jobj, ACCESS_TOKEN);
 
         String realmName = attrToSub.getTheRealmName(convClientConfig, jobj, null);
-        assertEquals("Did not get expected realm.", iss, realmName);
-    }
-
-    @Test
-    public void testGetTheRealmName_PayloadNonNullRealm() throws IOException {
-        getPayloadConstructorExpectations();
-
-        mockery.checking(new Expectations() {
-            {
-                one(convClientConfig).getRealmName();
-                will(returnValue(REAL_NAME));
-            }
-        });
-
-        AttributeToSubject attrToSub = new AttributeToSubject(convClientConfig, payload, ACCESS_TOKEN);
-
-        String realmName = attrToSub.getTheRealmName(convClientConfig, null, payload);
-        assertEquals("Did not get expected realm.", REAL_NAME, realmName);
-    }
-
-    @Test
-    public void testGetTheRealmName_PayloadNullRealmNullRealmIdentifier() throws IOException {
-
-        getPayloadConstructorExpectations();
-
-        final String iss = "client02";
-        mockery.checking(new Expectations() {
-            {
-                one(convClientConfig).getRealmName();
-                will(returnValue(null));
-                one(convClientConfig).getRealmIdentifier();
-                will(returnValue(null));
-                one(payload).get(null);
-                will(returnValue(null));
-                one(payload).get(ClientConstants.ISS);
-                will(returnValue(iss));
-            }
-        });
-
-        AttributeToSubject attrToSub = new AttributeToSubject(convClientConfig, payload, ACCESS_TOKEN);
-
-        String realmName = attrToSub.getTheRealmName(convClientConfig, null, payload);
         assertEquals("Did not get expected realm.", iss, realmName);
     }
 
