@@ -54,7 +54,7 @@ public class TelemetryLongRunningTest extends FATServletClient {
                         .addPackage(LongRunningTask.class.getPackage())
                         .addPackage(InMemorySpanExporter.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
-                        .addAsResource(new StringAsset("otel.sdk.disabled=false\notel.traces.exporter=in-memory"),
+                        .addAsResource(new StringAsset("otel.sdk.disabled=false\notel.traces.exporter=none"),
                                        "META-INF/microprofile-config.properties");
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);

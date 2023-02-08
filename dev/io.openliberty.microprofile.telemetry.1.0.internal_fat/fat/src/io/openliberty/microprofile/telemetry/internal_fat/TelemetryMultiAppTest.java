@@ -33,6 +33,7 @@ import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.multiapp1.MultiApp1TestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.multiapp2.MultiApp2TargetResource;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.multiapp2.MultiApp2TestServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporterProvider;
 import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;
@@ -60,6 +61,7 @@ public class TelemetryMultiAppTest extends FATServletClient {
                         .addProperty("otel.traces.exporter", "in-memory");
         JavaArchive exporterJar = ShrinkWrap.create(JavaArchive.class, "exporter.jar")
                         .addClasses(InMemorySpanExporter.class, InMemorySpanExporterProvider.class)
+                        .addPackage(TestSpans.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
                         .addAsResource(exporterConfig, "META-INF/microprofile-config.properties");
 
@@ -69,6 +71,7 @@ public class TelemetryMultiAppTest extends FATServletClient {
                         .addProperty("otel.service.name", "multiapp1");
         WebArchive multiapp1 = ShrinkWrap.create(WebArchive.class, APP1_NAME + ".war")
                         .addClass(MultiApp1TestServlet.class)
+                        .addPackage(TestSpans.class.getPackage())
                         .addAsResource(app1Config, "META-INF/microprofile-config.properties");
 
         ShrinkHelper.exportAppToServer(server, multiapp1, SERVER_ONLY);
@@ -78,6 +81,7 @@ public class TelemetryMultiAppTest extends FATServletClient {
         WebArchive multiapp2 = ShrinkWrap.create(WebArchive.class, APP2_NAME + ".war")
                         .addClass(MultiApp2TestServlet.class)
                         .addClass(MultiApp2TargetResource.class)
+                        .addPackage(TestSpans.class.getPackage())
                         .addAsResource(app2Config, "META-INF/microprofile-config.properties");
 
         ShrinkHelper.exportAppToServer(server, multiapp2, SERVER_ONLY);

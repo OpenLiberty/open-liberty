@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -46,7 +46,7 @@ public class CustomizerTestServlet extends FATServlet {
         Span span = tracer.spanBuilder("span").startSpan();
         span.end();
 
-        SpanData spanData = exporter.getFinishedSpanItems(1).get(0);
+        SpanData spanData = exporter.getFinishedSpanItems(1, span).get(0);
 
         // Attributes added by TestCustomizer should have been merged into the default resource
         Resource resource = spanData.getResource();
