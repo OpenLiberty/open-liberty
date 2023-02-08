@@ -312,7 +312,7 @@
 											<div class="keyValueTable containerAuthSubSection" id="keyValueTable">
 												<div class="keyValueTableRow">
 													<div class="keyValueTableItemAction">
-														<div class="keyValueTableItemActionIcon keyValueTableItemActionIconAdd bx--tag" data-externalizedString="ADD_LOGIN_CONFIG_PROPERTY"></div>
+														<button class="keyValueTableItemActionIcon keyValueTableItemActionIconAdd bx--tag" data-externalizedString="ADD_LOGIN_CONFIG_PROPERTY"></button>
 													</div>
 												</div>
 												<div id="keyValueTableRowValueSection">
