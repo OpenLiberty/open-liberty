@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -31,7 +31,6 @@ import org.apache.cxf.logging.FaultListener;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageContentsList;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -300,6 +299,7 @@ public class LibertyJaxRsInvoker extends JAXRSInvoker {
             if (beanCustomizer != null && realServiceObject != null) {
                 beanCustomizer.afterServiceInvoke(realServiceObject, cri.isSingleton(), libertyJaxRsServerFactoryBean.getBeanCustomizerContext(beanCustomizer));
             }
+            InjectionRuntimeContextHelper.removeRuntimeContext();
         }
     }
 

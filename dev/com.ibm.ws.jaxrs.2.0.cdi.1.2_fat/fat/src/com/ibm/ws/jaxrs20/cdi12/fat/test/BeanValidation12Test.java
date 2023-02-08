@@ -12,8 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.cdi12.fat.test;
 
-import static org.junit.Assert.assertTrue;
-
+import static org.junit.Assert.assertEquals;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -23,16 +22,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.jaxrs20.cdi12.fat.TestUtils;
-
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
 public class BeanValidation12Test extends AbstractTest {
-
-    private static final String PARAM_URL_PATTERN = "rest";
 
     @Server("com.ibm.ws.jaxrs20.cdi12.fat.beanvalidation")
     public static LibertyServer server;
@@ -84,12 +79,12 @@ public class BeanValidation12Test extends AbstractTest {
     @Test
     public void testIsViolatedInPerRequestWithCDI12Leak_BeanValidation() throws Exception {
 
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 10; i++) {
             runGetMethod("/rest/perrequestleak/book", 400, "I am a Student. null", true);
         }
         StringBuilder lines = runGetMethod("/rest/perrequestleak/size", 200, "", false);
         String result = lines.toString().trim();
-        System.out.println("Adam result=" + result);
-        assertTrue(Integer.valueOf(result) < 10000);
+
+        assertEquals(1, Integer.parseInt(result));
     }
 }
