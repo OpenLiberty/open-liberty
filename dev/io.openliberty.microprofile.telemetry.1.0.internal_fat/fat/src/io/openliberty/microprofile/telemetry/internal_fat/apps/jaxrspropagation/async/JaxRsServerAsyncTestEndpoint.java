@@ -28,6 +28,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.container.AsyncResponse;
+import jakarta.ws.rs.container.Suspended;
 import jakarta.ws.rs.core.Application;
 
 /**
@@ -60,7 +62,8 @@ public class JaxRsServerAsyncTestEndpoint extends Application {
     private Tracer tracer;
 
     @GET
-    public CompletionStage<String> get() {
+    @Path("completionstage")
+    public CompletionStage<String> getCompletionStage() {
         Span span = Span.current();
 
         // Retrieve the test baggage value (if present) and store in the span
@@ -75,6 +78,29 @@ public class JaxRsServerAsyncTestEndpoint extends Application {
 
         // Return the async result
         return result;
+    }
+
+    @GET
+    @Path("suspend")
+    public void getSuspend(@Suspended AsyncResponse async) {
+        Span span = Span.current();
+
+        // Retrieve the test baggage value (if present) and store in the span
+        String baggageValue = Baggage.current().getEntryValue(BAGGAGE_KEY);
+        if (baggageValue != null) {
+            span.setAttribute(BAGGAGE_VALUE_ATTR, baggageValue);
+        }
+
+        // Call a subtask, propagating the context
+        ExecutorService contextExecutor = Context.taskWrapping(managedExecutor);
+        contextExecutor.execute(() -> {
+            // Ensure we call resume, either with the result or a thrown exception
+            try {
+                async.resume(subtask());
+            } catch (Throwable t) {
+                async.resume(t);
+            }
+        });
     }
 
     private String subtask() {

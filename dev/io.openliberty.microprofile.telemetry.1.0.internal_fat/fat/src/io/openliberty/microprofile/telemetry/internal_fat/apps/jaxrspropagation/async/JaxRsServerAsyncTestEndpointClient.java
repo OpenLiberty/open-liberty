@@ -19,6 +19,11 @@ import jakarta.ws.rs.Path;
 public interface JaxRsServerAsyncTestEndpointClient {
 
     @GET
-    public String get();
+    @Path("completionstage")
+    public String getCompletionStage();
+
+    @GET
+    @Path("suspend")
+    public String getSuspend();
 
 }
