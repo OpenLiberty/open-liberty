@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,7 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,8 +35,7 @@ public class FileLogUtils {
 
     private static final TraceComponent tc = Tr.register(FileLogUtils.class);
 
-    /** Simple date format for file names: use only while synchronized */
-    public final static SimpleDateFormat FILE_DATE = new SimpleDateFormat("_yy.MM.dd_HH.mm.ss");
+    public final static DateTimeFormatter FILE_DATE = DateTimeFormatter.ofPattern("_uu.MM.dd_HH.mm.ss");
 
     /**
      * Filter used to match filenames for pruning when file rolling is enabled.
@@ -60,7 +59,7 @@ public class FileLogUtils {
      * filter the files using the specified regular expression
      *
      * @param dirName Directory to list
-     * @param p Regex pattern that should be used to filter listed files
+     * @param p       Regex pattern that should be used to filter listed files
      * @return String array containing files matching the pattern, or null
      */
     static String[] safelyFindFiles(final File directory, final Pattern p) {
@@ -147,8 +146,8 @@ public class FileLogUtils {
      * The first capturing group is the date/time string, and the second
      * capturing group is the ID.
      *
-     * @param baseName the log file basename (e.g., "messages")
-     * @param extension the log file extension (e.g., ".log")
+     * @param baseName   the log file basename (e.g., "messages")
+     * @param extension  the log file extension (e.g., ".log")
      * @param idOptional true if the rollover ID is optional
      * @return
      */
@@ -174,7 +173,7 @@ public class FileLogUtils {
      * Safely delete the specified file.
      *
      * @param dirName Directory containing the file
-     * @param name Target file name
+     * @param name    Target file name
      */
     static final void deleteFile(final File directory, final String name) {
         deleteFile(new File(directory, name));

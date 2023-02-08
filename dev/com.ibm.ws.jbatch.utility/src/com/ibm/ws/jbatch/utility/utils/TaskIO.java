@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,11 +13,13 @@
 package com.ibm.ws.jbatch.utility.utils;
 
 import java.io.PrintStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class TaskIO {
     
+    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("'['uuuu/MM/dd HH:mm:ss.SSS Z']'");
+
     /**
      * STDOUT/STDOUT/STDERR streams.
      */
@@ -53,7 +55,7 @@ public class TaskIO {
      * @return a timestamp string for messages
      */
     public static String getTimestamp() {
-        return new SimpleDateFormat("[yyyy/MM/dd HH:mm:ss.SSS Z]").format( new Date() );
+        return dateTimeFormatter.format(ZonedDateTime.now());
     }
 
     /**

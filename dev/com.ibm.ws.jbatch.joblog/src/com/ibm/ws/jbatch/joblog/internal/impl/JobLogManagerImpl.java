@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,10 +14,10 @@ package com.ibm.ws.jbatch.joblog.internal.impl;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +71,7 @@ public class JobLogManagerImpl implements IJobLogManagerService {
     private static final int MAX_SUBDIRECTORIES = 32000;
     private static final String ENV_LOG_DIR = "LOG_DIR";
     private static final String SERVER_OUTPUT_DIR = "server.output.dir";
+    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("uuuu-MM-dd");
 
     /**
      * For locating the server's logs dir
@@ -435,7 +436,7 @@ public class JobLogManagerImpl implements IJobLogManagerService {
 
             String dateDirBase = String.format(getAbsoluteJobLogsRootDirName() + File.separator
                                                + "%s" + File.separator
-                                               + new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
+                                               + dateFormatter.format(LocalDate.now()),
                                                jobName);
             dateDir = new File(dateDirBase);
             int extraDir = 2;

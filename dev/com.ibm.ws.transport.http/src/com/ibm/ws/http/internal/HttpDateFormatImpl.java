@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2009, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,8 +14,20 @@ package com.ibm.ws.http.internal;
 
 import java.text.ParseException;
 import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
+import java.time.DateTimeException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalField;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -23,6 +35,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.genericbnf.internal.GenericUtils;
+import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.wsspi.http.HttpDateFormat;
 
 /**
@@ -50,23 +63,150 @@ public class HttpDateFormatImpl implements HttpDateFormat {
         return HttpDateFormatHolder.dateFormatSvc;
     }
 
-    /** Thread local storage of format wrapper class */
-    private static final ThreadLocal<HttpLocalFormat> threadStorage = new ThreadLocal<HttpLocalFormat>();
+    /** Cached RFC 1123 format timer */
+    private final CachedTime c1123Time = new CachedTime("EEE, dd MMM uuuu HH:mm:ss z", true);
+    /** Cached RFC 1036 format timer */
+    private final CachedTime c1036Time = new CachedTime("EEEE, dd-MMM-uu HH:mm:ss z", true);
+    /** Cached ASCII format timer */
+    private final CachedTime cAsciiTime = new CachedTime("EEE MMM  d HH:mm:ss uuuu", true);
+    /** Cached NCSA format timer */
+    private final CachedTime cNCSATime = new CachedTime("dd/MMM/uuuu:HH:mm:ss Z", false);
+    /** Cached RFC 2109 format timer */
+    private final CachedTime c2109Time = new CachedTime("EEE, dd-MMM-uu HH:mm:ss z", true);
+
+    private static class CachedFormattedTime {
+        final long timeInMilliseconds;
+        final long timeWithStrippedMillis;
+        final String formattedTimeString;
+        volatile byte[] bytes = null;
+
+        CachedFormattedTime(long time, long timeWithoutMillis, String formattedString) {
+            timeInMilliseconds = time;
+            timeWithStrippedMillis = timeWithoutMillis;
+            formattedTimeString = formattedString;
+        }
+
+        byte[] getBytes() {
+            if (bytes == null) {
+                byte[] ba = new byte[formattedTimeString.length()];
+                for (int i = 0, length = ba.length; i < length; ++i) {
+                    ba[i] = (byte) formattedTimeString.charAt(i);
+                }
+                bytes = ba;
+            }
+            return bytes;
+        }
+    }
 
     /**
-     * Get access to the format wrapper class that is local to this particular
-     * worker thread.
-     * <br>
-     * 
-     * @return HttpLocalFormat
+     * Private class that wraps handling a specific date formatter and keeping
+     * a stored formatted byte[]. If the current time is within the target
+     * tolerance in milliseconds of the stored time, then the previous formatted
+     * byte[] is returned, otherwise the current time is formatted and used for
+     * the next tolerance range of time. This class is used at the threadlocal
+     * level so no synchronization is required.
+     *
      */
-    private HttpLocalFormat getFormat() {
-        HttpLocalFormat format = threadStorage.get();
-        if (null == format) {
-            format = new HttpLocalFormat();
-            threadStorage.set(format);
+    private static class CachedTime {
+
+        /** Ref to the GMT timezone */
+        static final ZoneId gmt = ZoneId.of("GMT");
+
+        static final Set<TemporalField> resolverFields;
+        static {
+            Set<TemporalField> fields = new HashSet<>();
+            fields.add(ChronoField.YEAR);
+            fields.add(ChronoField.MONTH_OF_YEAR);
+            fields.add(ChronoField.DAY_OF_MONTH);
+            fields.add(ChronoField.HOUR_OF_DAY);
+            fields.add(ChronoField.MINUTE_OF_HOUR);
+            fields.add(ChronoField.SECOND_OF_MINUTE);
+            fields.add(ChronoField.INSTANT_SECONDS);
+            fields.add(ChronoField.NANO_OF_SECOND);
+            resolverFields = Collections.unmodifiableSet(fields);
         }
-        return format;
+
+        private final AtomicReference<CachedFormattedTime> cachedTime = new AtomicReference<>();
+
+        /** Stored formatter */
+        final DateTimeFormatter formatter;
+
+        /**
+         * Create a cachedTime instance with the given format.
+         * <br>
+         *
+         * @param pattern
+         */
+        CachedTime(String pattern, boolean gmtTimeZone) {
+            DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder().parseCaseInsensitive().parseLenient().appendPattern(pattern);
+            DateTimeFormatter dateFormatter = builder.toFormatter(Locale.US).withZone(gmtTimeZone ? gmt : ZoneId.systemDefault()).withResolverFields(resolverFields);
+            formatter = dateFormatter;
+        }
+
+        /**
+         * Utility method to determine whether to use the cached time value or
+         * update to a newly formatted timestamp.
+         *
+         * @param tolerance
+         */
+        private CachedFormattedTime updateTime(long tolerance) {
+            long now = HttpDispatcher.getApproxTime();
+
+            // We only care about seconds, so remove the milliseconds from the time.
+            long strippedMillis = now - (now % 1000);
+
+            final CachedFormattedTime cachedFormattedTime = cachedTime.get();
+            if (cachedFormattedTime != null) {
+                if (strippedMillis == cachedFormattedTime.timeWithStrippedMillis) {
+                    return cachedFormattedTime;
+                }
+                if (tolerance > 1000L) {
+                    if ((now - cachedFormattedTime.timeInMilliseconds) <= tolerance) {
+                        return cachedFormattedTime;
+                    }
+                }
+            }
+
+            // otherwise need to format the current time
+            String sTime = formatter.format(Instant.ofEpochMilli(strippedMillis));
+
+            CachedFormattedTime newCachedFormattedTime = new CachedFormattedTime(now, strippedMillis, sTime);
+
+            // Only update it if another thread hasn't already updated it.
+            cachedTime.compareAndSet(cachedFormattedTime, newCachedFormattedTime);
+
+            return newCachedFormattedTime;
+        }
+
+        /**
+         * Get a formatted version of the time as a byte[]. The input range is
+         * the allowed difference in time from the cached snapshot that the
+         * caller is willing to use. If that range is exceeded, then a new
+         * snapshot is taken and formatted.
+         * <br>
+         *
+         * @param tolerance -- milliseconds, -1 means use default 1000ms, a 0
+         *                      means that this must be an exact match in time
+         * @return byte[]
+         */
+        byte[] getTimeAsBytes(long tolerance) {
+            return updateTime(tolerance).getBytes();
+        }
+
+        /**
+         * Get a formatted version of the time as a String. The input range is
+         * the allowed difference in time from the cached snapshot that the
+         * caller is willing to use. If that range is exceeded, then a new
+         * snapshot is taken and formatted.
+         * <br>
+         *
+         * @param tolerance -- milliseconds, -1 means use default 1000ms, a 0
+         *                      means that this must be an exact match in time
+         * @return String
+         */
+        String getTimeAsString(long tolerance) {
+            return updateTime(tolerance).formattedTimeString;
+        }
     }
 
     /*
@@ -74,7 +214,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public byte[] getRFC1123TimeAsBytes() {
-        return getFormat().get1123TimeAsBytes(0L);
+        return c1123Time.getTimeAsBytes(0L);
     }
 
     /*
@@ -82,7 +222,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public byte[] getRFC1123TimeAsBytes(long range) {
-        return getFormat().get1123TimeAsBytes(range);
+        return c1123Time.getTimeAsBytes(range);
     }
 
     /*
@@ -90,7 +230,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public String getRFC1123Time() {
-        return getFormat().get1123TimeAsString(0L);
+        return c1123Time.getTimeAsString(0L);
     }
 
     /*
@@ -98,7 +238,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public String getRFC1123Time(long range) {
-        return getFormat().get1123TimeAsString(range);
+        return c1123Time.getTimeAsString(range);
     }
 
     /*
@@ -106,7 +246,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public String getRFC1123Time(Date inDate) {
-        return getFormat().get1123Format().format(inDate);
+        return c1123Time.formatter.format(inDate.toInstant());
     }
 
     /*
@@ -114,7 +254,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public byte[] getRFC1036TimeAsBytes() {
-        return getFormat().get1036TimeAsBytes(0L);
+        return c1036Time.getTimeAsBytes(0L);
     }
 
     /*
@@ -122,7 +262,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public byte[] getRFC1036TimeAsBytes(long range) {
-        return getFormat().get1036TimeAsBytes(range);
+        return c1036Time.getTimeAsBytes(range);
     }
 
     /*
@@ -130,7 +270,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public String getRFC1036Time() {
-        return getFormat().get1036TimeAsString(0L);
+        return c1036Time.getTimeAsString(0L);
     }
 
     /*
@@ -138,7 +278,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public String getRFC1036Time(long range) {
-        return getFormat().get1036TimeAsString(range);
+        return c1036Time.getTimeAsString(range);
     }
 
     /*
@@ -146,7 +286,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public String getRFC1036Time(Date inDate) {
-        return getFormat().get1036Format().format(inDate);
+        return c1036Time.formatter.format(inDate.toInstant());
     }
 
     /*
@@ -154,7 +294,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public byte[] getRFC2109TimeAsBytes() {
-        return getFormat().get2109TimeAsBytes(0L);
+        return c2109Time.getTimeAsBytes(0L);
     }
 
     /*
@@ -162,7 +302,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public byte[] getRFC2109TimeAsBytes(long range) {
-        return getFormat().get2109TimeAsBytes(range);
+        return c2109Time.getTimeAsBytes(range);
     }
 
     /*
@@ -170,7 +310,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public String getRFC2109Time() {
-        return getFormat().get2109TimeAsString(0L);
+        return c2109Time.getTimeAsString(0L);
     }
 
     /*
@@ -178,7 +318,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public String getRFC2109Time(long range) {
-        return getFormat().get2109TimeAsString(range);
+        return c2109Time.getTimeAsString(range);
     }
 
     /*
@@ -186,7 +326,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public String getRFC2109Time(Date inDate) {
-        return getFormat().get2109Format().format(inDate);
+        return c2109Time.formatter.format(inDate.toInstant());
     }
 
     /*
@@ -194,7 +334,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public byte[] getASCIITimeAsBytes() {
-        return getFormat().getAsciiTimeAsBytes(0L);
+        return cAsciiTime.getTimeAsBytes(0L);
     }
 
     /*
@@ -202,7 +342,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public byte[] getASCIITimeAsBytes(long range) {
-        return getFormat().getAsciiTimeAsBytes(range);
+        return cAsciiTime.getTimeAsBytes(range);
     }
 
     /*
@@ -210,7 +350,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public String getASCIITime() {
-        return getFormat().getAsciiTimeAsString(0L);
+        return cAsciiTime.getTimeAsString(0L);
     }
 
     /*
@@ -218,7 +358,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public String getASCIITime(long range) {
-        return getFormat().getAsciiTimeAsString(range);
+        return cAsciiTime.getTimeAsString(range);
     }
 
     /*
@@ -226,7 +366,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public String getASCIITime(Date inDate) {
-        return getFormat().getAsciiFormat().format(inDate);
+        return cAsciiTime.formatter.format(inDate.toInstant());
     }
 
     /*
@@ -234,7 +374,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public byte[] getNCSATimeAsBytes() {
-        return getFormat().getNCSATimeAsBytes(0L);
+        return cNCSATime.getTimeAsBytes(0L);
     }
 
     /*
@@ -242,7 +382,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public byte[] getNCSATimeAsBytes(long range) {
-        return getFormat().getNCSATimeAsBytes(range);
+        return cNCSATime.getTimeAsBytes(range);
     }
 
     /*
@@ -250,7 +390,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public String getNCSATime() {
-        return getFormat().getNCSATimeAsString(0L);
+        return cNCSATime.getTimeAsString(0L);
     }
 
     /*
@@ -258,7 +398,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public String getNCSATime(long range) {
-        return getFormat().getNCSATimeAsString(range);
+        return cNCSATime.getTimeAsString(range);
     }
 
     /*
@@ -266,26 +406,30 @@ public class HttpDateFormatImpl implements HttpDateFormat {
      */
     @Override
     public String getNCSATime(Date inDate) {
-        return getFormat().getNCSAFormat().format(inDate);
+        return cNCSATime.formatter.format(inDate.toInstant());
     }
 
     /**
      * Parse the input value against the formatter but do not throw an exception
      * if it fails to match, instead just return null.
      * <br>
-     * 
+     *
      * @param format
      * @param input
      * @return Date
      */
-    private Date attemptParse(SimpleDateFormat format, String input) {
+    private Date attemptParse(DateTimeFormatter format, String input) {
         ParsePosition pos = new ParsePosition(0);
-        Date d = format.parse(input, pos);
-        if (0 == pos.getIndex() || pos.getIndex() != input.length()) {
-            // invalid format matching
+        try {
+            TemporalAccessor accessor = format.parse(input, pos);
+            if (0 == pos.getIndex() || pos.getIndex() != input.length()) {
+                // invalid format matching
+                return null;
+            }
+            return Date.from(Instant.from(accessor));
+        } catch (DateTimeException e) {
             return null;
         }
-        return d;
     }
 
     /*
@@ -296,7 +440,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "rfc1123 parsing [" + input + "]");
         }
-        Date d = attemptParse(getFormat().get1123Parse(), input);
+        Date d = attemptParse(c1123Time.formatter, input);
         if (null == d) {
             throw new ParseException("Unparseable [" + input + "]", 0);
         }
@@ -311,7 +455,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "rfc1036 parsing [" + input + "]");
         }
-        Date d = attemptParse(getFormat().get1036Parse(), input);
+        Date d = attemptParse(c1036Time.formatter, input);
         if (null == d) {
             throw new ParseException("Unparseable [" + input + "]", 0);
         }
@@ -326,7 +470,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "rfc2109 parsing [" + input + "]");
         }
-        Date d = attemptParse(getFormat().get2109Parse(), input);
+        Date d = attemptParse(c2109Time.formatter, input);
         if (null == d) {
             throw new ParseException("Unparseable [" + input + "]", 0);
         }
@@ -341,7 +485,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "ascii parsing [" + input + "]");
         }
-        Date d = attemptParse(getFormat().getAsciiParse(), input);
+        Date d = attemptParse(cAsciiTime.formatter, input);
         if (null == d) {
             throw new ParseException("Unparseable [" + input + "]", 0);
         }
@@ -379,13 +523,13 @@ public class HttpDateFormatImpl implements HttpDateFormat {
             data = input.substring(0, i);
         }
 
-        Date parsedDate = attemptParse(getFormat().get1123Parse(), data);
+        Date parsedDate = attemptParse(c1123Time.formatter, data);
         if (null == parsedDate) {
-            parsedDate = attemptParse(getFormat().get1036Parse(), data);
+            parsedDate = attemptParse(c1036Time.formatter, data);
             if (null == parsedDate) {
-                parsedDate = attemptParse(getFormat().getAsciiParse(), data);
+                parsedDate = attemptParse(cAsciiTime.formatter, data);
                 if (null == parsedDate) {
-                    parsedDate = attemptParse(getFormat().get2109Parse(), data);
+                    parsedDate = attemptParse(c2109Time.formatter, data);
                     if (null == parsedDate) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "Time does not match supported formats");
@@ -405,5 +549,4 @@ public class HttpDateFormatImpl implements HttpDateFormat {
     public Date parseTime(byte[] inBytes) throws ParseException {
         return parseTime(GenericUtils.getEnglishString(inBytes));
     }
-
 }
