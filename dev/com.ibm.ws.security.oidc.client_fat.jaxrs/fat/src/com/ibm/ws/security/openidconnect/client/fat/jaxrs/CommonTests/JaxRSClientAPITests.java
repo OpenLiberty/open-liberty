@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.fat.jaxrs.CommonTests;
 
@@ -65,8 +62,10 @@ public class JaxRSClientAPITests extends CommonTest {
                 scopes = settings.getScope();
                 if (scopes.contains("openid")) {
                     expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_DOES_NOT_CONTAIN, "Did not see a valid ID Token in the ouptut", null, "JaxRSClient-getIdToken: null");
+                    expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see a valid raw ID token string in the ouptut", null, "JaxRSClient-getIdToken-rawIdTokenString: eyJ");
                 } else {
                     expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Received an ID Token and should NOT have", null, "JaxRSClient-getIdToken: null");
+                    expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Found a non-null raw ID token string and should NOT have.", null, "JaxRSClient-getIdToken-rawIdTokenString: null");
                 }
             } else {
                 bearer = "null";
@@ -79,6 +78,7 @@ public class JaxRSClientAPITests extends CommonTest {
             expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the Access Token printed in the app output", null, "JaxRSClient-getAccessToken: ");
             expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the Access Token Scopes printed in the app output", null, "JaxRSClient-getScopes: " + scopes);
             expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the Access Token IDToken printed in the app output", null, "JaxRSClient-getIdToken: ");
+            expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the raw ID token string printed in the app output.", null, "JaxRSClient-getIdToken-rawIdTokenString: ");
         } else {
             if (contextWillBeSet) {
                 expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "Did not see the Access Token Type set to Bearer printed in the app output", null, "token_type.*Bearer.*");
