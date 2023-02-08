@@ -56,29 +56,32 @@ public class FeatureStability {
                 }
                 int commentOffset = line.indexOf('#');
                 if (commentOffset != -1) {
-                    line = line.substring(0, commentOffset - 1).trim();
+                    line = line.substring(0, commentOffset).trim();
                 }
                 if (line.isEmpty()) {
                     continue;
                 }
 
                 int nextStart = 0;
-                int nextComma;
-                while ((nextComma = line.indexOf(',', nextStart)) != -1) {
-                    String text = line.substring(nextStart, nextComma).trim();
+                int nextSpace;
+                while ((nextSpace = line.indexOf(' ', nextStart)) != -1) {
+                    String text = line.substring(nextStart, nextSpace).trim();
+                    if (!text.isEmpty()) {
+                        if (text.equals("null")) {
+                            text = null;
+                        }
+                        data.add(text);
+                    }
+                    nextStart = nextSpace + 1;
+                }
+
+                String text = line.substring(nextStart).trim();
+                if (!text.isEmpty()) {
                     if (text.equals("null")) {
                         text = null;
                     }
                     data.add(text);
-
-                    nextStart = nextComma + 1;
                 }
-
-                String text = line.substring(nextStart).trim();
-                if (text.contentEquals("null")) {
-                    text = null;
-                }
-                data.add(text);
 
                 featureData.add(data);
             }
@@ -140,30 +143,23 @@ public class FeatureStability {
                 throw new IllegalArgumentException("Weight [ " + weight + " ] for [ " + name + " ] must be at least [ 1 ].");
             }
 
-            int numElements;
-
-            if (elements == null) {
-                numElements = 0;
-
+            if (elementsStart < 0) {
+                throw new IllegalArgumentException("Unusable start of element data [ " + elementsStart + " ]");
+            }
+            int numElements = ((elements == null) ? 0 : elements.size());
+            if (numElements < elementsStart) {
+                throw new IllegalArgumentException("Incomplete element data [ " + elements + " ] starting at [ " + elementsStart + " ]");
             } else {
-                if (elementsStart < 0) {
-                    throw new IllegalArgumentException("Unusable start of element data [ " + elementsStart + " ]");
-                }
-
-                numElements = elements.size();
-                if (numElements <= elementsStart) {
-                    throw new IllegalArgumentException("Incomplete element data [ " + elements + " ] starting at [ " + elementsStart + " ]");
-                } else {
-                    numElements -= elementsStart;
-                }
+                numElements -= elementsStart;
             }
 
             this.name = name;
             this.weight = weight;
 
-            this.elements = ((numElements == 0) ? new HashSet<String>() : new HashSet<String>(numElements));
-
-            if (elements != null) {
+            if (elements == null) {
+                this.elements = Collections.emptySet();
+            } else {
+                this.elements = new HashSet<String>(numElements);
                 for (int elementOffset = elementsStart; elementOffset < elementsStart + numElements; elementOffset++) {
                     addElement(elements.get(elementOffset));
                 }

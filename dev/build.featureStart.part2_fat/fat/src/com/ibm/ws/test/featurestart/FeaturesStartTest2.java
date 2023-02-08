@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,15 +12,11 @@
  *******************************************************************************/
 package com.ibm.ws.test.featurestart;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
-import com.ibm.ws.test.featurestart.FeaturesStartTestBase;
-
-import componenttest.annotation.Server;
-import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
+import com.ibm.ws.test.featurestart.utils.NamedParameterized;
 
 /**
  * Test to verify that Open Liberty can start with every valid
@@ -34,27 +30,44 @@ import componenttest.topology.impl.LibertyServer;
  * number of buckets was two. The number has been increased to four to give us
  * extra running room before a new split is necessary.
  */
-@RunWith(FATRunner.class)
+@RunWith(NamedParameterized.class)
 public class FeaturesStartTest2 extends FeaturesStartTestBase {
     public static final String SERVER_NAME_2 = "features.start.2.server";
-
-    @Server(SERVER_NAME_2)
-    public static LibertyServer server2;
 
     public static final int NUM_BUCKETS = 4;
     public static final int BUCKET_NO = 2;
     public static final int SPARSITY = 0;
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-        FeaturesStartTestBase.setParameters(FeaturesStartTest2.class,
-                                            server2, SERVER_NAME_2,
-                                            NUM_BUCKETS, BUCKET_NO, SPARSITY);
-        FeaturesStartTestBase.setUp();
+    static {
+        try {
+            FeaturesStartTestBase.setParameters(FeaturesStartTest2.class,
+                                                SERVER_NAME_2,
+                                                NUM_BUCKETS, BUCKET_NO, SPARSITY);
+            FeaturesStartTestBase.setupFeatures();
+        } catch (Exception e) {
+            throw new RuntimeException("Feature parameters failure", e);
+        }
+    }
+
+    /**
+     * Answer parameters for running this test. These are set
+     * by the calls to {@link #setParameters}, and {@link #setupFeatures()},
+     * which load feature information and set the test buckets.
+     * The resulting parameters are filtered feature short names.
+     *
+     * @return The parameters for running this test class.
+     */
+    @Parameterized.Parameters()
+    public static Iterable<Object[]> data() {
+        return FeaturesStartTestBase.getParameters();
+    }
+
+    public FeaturesStartTest2(String shortName) {
+        super(shortName);
     }
 
     @Test
-    public void testStartFeaturesPart2() throws Exception {
-        FeaturesStartTestBase.testStartFeatures();
+    public void test() throws Exception {
+        super.testStartFeature();
     }
 }

@@ -23,6 +23,7 @@ import com.ibm.websphere.simplicity.log.Log;
 public class FeatureData {
     protected static final Class<?> CLASS = FeatureData.class;
 
+    @SuppressWarnings("unused")
     private static void logInfo(String m, String msg) {
         Log.info(CLASS, m, msg);
     }
