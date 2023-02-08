@@ -56,6 +56,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
         // until config supplies a suitable target LDAP filter
         // and the actual cardinality.minimum value
         configurationPolicy = REQUIRE,
+     	configurationPid = "com.ibm.ws.messaging.lifecycle.singletons",
         property = {
                 "service.vendor=IBM",
                 "singletons.cardinality.minimum=100000",

@@ -15,7 +15,6 @@ package com.ibm.ws.messaging.lifecycle;
 import static com.ibm.websphere.ras.Tr.debug;
 import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
 import static java.util.Collections.unmodifiableSet;
-import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 import static org.osgi.service.component.annotations.ReferenceCardinality.MULTIPLE;
 import static org.osgi.service.component.annotations.ReferencePolicy.DYNAMIC;
 import static org.osgi.service.component.annotations.ReferencePolicyOption.GREEDY;
@@ -23,6 +22,7 @@ import static org.osgi.service.component.annotations.ReferencePolicyOption.GREED
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,11 +31,11 @@ import java.util.stream.Stream;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.cm.ConfigurationEvent;
-import org.osgi.service.cm.ConfigurationListener;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
@@ -52,13 +52,14 @@ import com.ibm.wsspi.logging.Introspector;
  */
 @Component(
         immediate = true, 
-        configurationPolicy = IGNORE,
+        configurationPolicy = ConfigurationPolicy.REQUIRE,
+        configurationPid = "com.ibm.ws.messaging.lifecycle.singletons",
         property = {
                 "osgi.command.scope=sib",
                 "osgi.command.function=singletons",
                 "service.vendor=IBM"
         })
-public class SingletonMonitor implements Introspector, ConfigurationListener {
+public class SingletonMonitor implements Introspector {
     public static final TraceComponent tc = Tr.register(SingletonMonitor.class);
     private static final AtomicInteger counter = new AtomicInteger(0);
     private final int version = counter.incrementAndGet();
@@ -67,34 +68,45 @@ public class SingletonMonitor implements Introspector, ConfigurationListener {
     private volatile Set<String> declaredSingletons;
 
     @Activate
-    public SingletonMonitor(@Reference(name="configAdmin") ConfigurationAdmin configAdmin) {
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) debug(this, tc, "SingletonMonitor constructed");
+    public SingletonMonitor(@Reference(name="configAdmin") ConfigurationAdmin configAdmin, 
+    		                Map<String, Object> properties) {
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.entry(tc, "<init>", (Object[])properties.get("singletonDeclarations"));
 
         this.configAdmin = configAdmin;
-        this.declaredSingletons = unmodifiableSet(findDeclaredSingletons(configAdmin));
-        if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "Declared singletons: " + declaredSingletons);
+        this.declaredSingletons = unmodifiableSet(findDeclaredSingletons(properties));
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.exit(tc, "<init>");
     }
 
-    private static Set<String> findDeclaredSingletons(ConfigurationAdmin configAdmin) {
+    /**
+     * Get the current set of declared SingletonAgents.
+     * @param properties not currently used, for purely historical reasons
+     */
+    private Set<String> findDeclaredSingletons(Map<String, Object> properties) {
+    	if (isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.entry(this, tc, "findDeclaredSingletons");
         Configuration[] configs;
         try {
             configs = configAdmin.listConfigurations("(service.factoryPid=com.ibm.ws.messaging.lifecycle.SingletonAgent)");
-            if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(tc, "Singleton configs: ", Arrays.toString(configs));
+            if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "Singleton configs: ", Arrays.toString(configs));
         } catch (IOException | InvalidSyntaxException e) {
             FFDCFilter.processException(e, "com.ibm.ws.messaging.lifecycle.SingletonMonitor.findDeclaredSingletons", "list configs");
             throw new LifecycleError("Could not list declared singletons", e);
         }
-        return Stream.of(configs)
+        Set<String> result = Stream.of(configs)
                 .map(Configuration::getProperties)
                 .map(dict -> dict.get("id"))
                 .map(String.class::cast)
                 .collect(TreeSet::new, Set::add, Set::addAll);
+        result = unmodifiableSet(result);
+        
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.exit(this, tc, "findDeclaredSingletons", result);
+        return result;
     }
 
-    @Override
-    public void configurationEvent(ConfigurationEvent cfgEvent) {
+    @Modified
+    public void modified(Map<String, Object> properties) {
+    	if (isAnyTracingEnabled() && tc.isDebugEnabled()) Tr.entry(this, tc, "modified", properties);
         Set<String> oldSet = declaredSingletons;
-        Set<String> newSet = findDeclaredSingletons(configAdmin);
+        Set<String> newSet = findDeclaredSingletons(properties);
         if (newSet.equals(oldSet)) return;
         // Now we know there are some changes.
         this.declaredSingletons = newSet;
@@ -109,6 +121,7 @@ public class SingletonMonitor implements Introspector, ConfigurationListener {
             if (removed.size() > 0) debug(this, tc, "Singleton declarations removed:", removed);
             if (added.size() > 0) debug(this, tc, "Singleton declarations added:", added);
         }
+        if (isAnyTracingEnabled() && tc.isDebugEnabled()) Tr.exit(this, tc, "modified");
     }
 
     @Deactivate
