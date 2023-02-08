@@ -20,6 +20,7 @@ import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.trace.Span;
@@ -45,27 +46,27 @@ public class JaxRsServerAsyncTestServlet extends FATServlet {
     @Inject
     private HttpServletRequest request;
 
+    @Inject
+    private TestSpans testSpans;
+
     @Test
     public void testJaxRsServerAsync() {
-        Span span = tracer.spanBuilder("test").startSpan();
-        try (Scope scope = span.makeCurrent()) {
-            // Add the test value to baggage
+        Span span = testSpans.withTestSpan(() -> {
             Baggage baggage = Baggage.builder()
                             .put(JaxRsServerAsyncTestEndpoint.BAGGAGE_KEY, TEST_VALUE)
                             .build();
-            baggage.makeCurrent();
 
-            // Make the request to the test endpoint
-            JaxRsServerAsyncTestEndpointClient client = RestClientBuilder.newBuilder()
-                            .baseUri(JaxRsServerAsyncTestEndpoint.getBaseUri(request))
-                            .build(JaxRsServerAsyncTestEndpointClient.class);
-            String response = client.get();
-            assertEquals("OK", response);
-        } finally {
-            span.end();
-        }
+            try (Scope s = baggage.makeCurrent()) {
+                // Make the request to the test endpoint
+                JaxRsServerAsyncTestEndpointClient client = RestClientBuilder.newBuilder()
+                                .baseUri(JaxRsServerAsyncTestEndpoint.getBaseUri(request))
+                                .build(JaxRsServerAsyncTestEndpointClient.class);
+                String response = client.get();
+                assertEquals("OK", response);
+            }
+        });
 
-        List<SpanData> spanData = spanExporter.getFinishedSpanItems(4);
+        List<SpanData> spanData = spanExporter.getFinishedSpanItems(4, span.getSpanContext().getTraceId());
 
         SpanData testSpan = spanData.get(0);
         SpanData clientSpan = spanData.get(1);
