@@ -66,7 +66,6 @@ Service-Component: \
     jaasLoginContextEntry=com.ibm.ws.security.jaas.common.JAASLoginContextEntry?; \
     jdbcRuntimeVersion=com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion; \
     recoveryAuthData=com.ibm.websphere.security.auth.data.AuthData?; \
-    runningCondition='org.osgi.service.condition.Condition';\
     greedy:='connectionManager,containerAuthData,driver,jaasLoginContextEntry,jdbcRuntimeVersion,recoveryAuthData';\
     properties:='\
       connectionManager.target=(id=unbound),\
@@ -74,8 +73,7 @@ Service-Component: \
       driver.target=(id=unbound),\
       jaasLoginContextEntry.target=(id=unbound),\
       recoveryAuthData.target=(id=unbound),\
-      creates.objectClass=|javax.sql.DataSource,\
-      runningCondition.target=(osgi.condition.id=io.openliberty.process.running)',\
+      creates.objectClass=|javax.sql.DataSource', \
   com.ibm.ws.jdbc.jdbcDriver; \
     implementation:=com.ibm.ws.jdbc.internal.JDBCDriverService; \
     provide:='com.ibm.ws.jdbc.internal.JDBCDriverService,com.ibm.wsspi.library.LibraryChangeListener'; \
