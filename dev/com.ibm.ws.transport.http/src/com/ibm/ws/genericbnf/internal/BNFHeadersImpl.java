@@ -3882,14 +3882,35 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             } else {
                 // reset the counter on any non-space or colon
                 numSpaces = 0;
-            }
+            
 
-            // check for possible CRLF
-            if (BNFHeaders.CR == b || BNFHeaders.LF == b) {
-                // Note: would be nice to print the failing data but would need
-                // to keep track of where we started inside here, then what about
-                // data straddling bytecaches, etc?
-                throw new MalformedMessageException("Invalid CRLF found in header name");
+                // check for possible CRLF
+                if (BNFHeaders.CR == b || BNFHeaders.LF == b) {
+                    // Note: would be nice to print the failing data but would need
+                    // to keep track of where we started inside here, then what about
+                    // data straddling bytecaches, etc?
+                    throw new MalformedMessageException("Invalid CRLF found in header name");
+                }
+            
+                // PH52074 Check for other invalid chars
+                boolean valid = ((b >= 'a') && (b <= 'z')) ||
+                                ((b >= 'A') && (b <= 'Z')) ||
+                                ((b >= '0') && (b <= '9')) ||
+                                (b == '!') || (b == '#') ||
+                                (b == '$') || (b == '%') ||
+                                (b == '&') || (b == '\'') ||
+                                (b == '*') || (b == '+') ||
+                                (b == '-') || (b == '.') ||
+                                (b == '^') || (b == '_') ||
+                                (b == '`') || (b == '|') ||
+                                (b == '~');
+                if (!valid) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                        final int maskedCodePoint = b & 0xFF;
+                        Tr.debug(tc, "Invalid character found in http header name.  The Unicode is: " + (char) maskedCodePoint);
+                    }
+                    throw new MalformedMessageException("Invalid character found in header name");
+                }
             }
 
             length++;
