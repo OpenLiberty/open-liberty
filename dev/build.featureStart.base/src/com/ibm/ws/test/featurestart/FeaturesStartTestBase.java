@@ -669,10 +669,18 @@ public class FeaturesStartTestBase {
     public static class StartupResult {
         public final boolean attempted;
         public final boolean started;
+        public final boolean hadForbiddenErrors;
+        public final boolean missingRequiredErrors;
         public final String pid;
 
         public static final boolean DID_ATTEMPT = true;
         public static final boolean DID_START = true;
+        public static final boolean HAD_FORBIDDEN_ERRORS = true;
+        public static final boolean MISSING_REQUIRED_ERRORS = true;
+
+        public static StartupResult notAttemptedResult() {
+            return new StartupResult(!DID_ATTEMPT, !DID_START, !HAD_FORBIDDEN_ERRORS, !MISSING_REQUIRED_ERRORS, null);
+        }
 
         /**
          * Fully parameterized factory method.
@@ -683,13 +691,19 @@ public class FeaturesStartTestBase {
          * if 'started' is false. That indicates a startup attempt which left
          * a dangling server process, but which reported failure.
          *
-         * @param attempted True or false, telling if the startup was attempted.
-         * @param started   True or false telling if the started was successful.
-         * @param pid       The PID of the server process.
+         * @param attempted             True or false, telling if the startup was attempted.
+         * @param started               True or false telling if the server was started.
+         * @param hadForbiddenErrors    True or false telling if unexpected errors were present.
+         * @param missingRequiredErrors True or false telling if required errors were missing.
+         * @param pid                   The PID of the server process.
          */
-        public StartupResult(boolean attempted, boolean started, String pid) {
+        public StartupResult(boolean attempted, boolean started,
+                             boolean hadForbiddenErrors, boolean missingRequiredErrors,
+                             String pid) {
             this.attempted = attempted;
             this.started = started;
+            this.hadForbiddenErrors = hadForbiddenErrors;
+            this.missingRequiredErrors = missingRequiredErrors;
             this.pid = pid;
         }
     }
@@ -949,7 +963,7 @@ public class FeaturesStartTestBase {
                 addFailure(m, failures, nextShortName, "Failed to set feature", e);
 
                 // Complete failure: The start was not attempted.
-                return new StartupResult(!StartupResult.DID_ATTEMPT, !StartupResult.DID_START, null);
+                return StartupResult.notAttemptedResult();
 
             } finally {
                 timingResult.setUpdateNsFromInitial(initialUpdateNs);
@@ -959,25 +973,62 @@ public class FeaturesStartTestBase {
 
             long initialStartNs = timingResult.getTimeNs();
             boolean started;
+            boolean hadUnexpectedErrors = false;
+            boolean missingRequiredErrors = false;
+
             try {
                 // Default start: Pre-clean and clean the server.
                 server.setConsoleLogName(nextShortName + ".log");
 
+                // When a feature is out-of-level, the server starts with
+                // logged errors.  The  messages log is expected to have the
+                // following pattern of messages:
+                //
+                // [2/7/23 23:08:18:611 EST] 00000001 com.ibm.ws.kernel.launch.internal.FrameworkManager
+                //   A CWWKE0001I: The server features.start.1.server has been launched.
+                // [2/7/23 23:08:21:254 EST] 00000001 com.ibm.ws.kernel.launch.internal.FrameworkManager
+                //   I CWWKE0002I: The kernel started after 3.066 seconds
+                //
+                // [2/7/23 23:08:21:809 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
+                //   I CWWKF0007I: Feature update started.
+                //
+                // [2/7/23 23:08:24:907 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
+                //   E CWWKF0032E: The io.openliberty.servlet.api-6.0 feature requires a minimum Java
+                //   runtime environment version of JavaSE 11.
+                // [2/7/23 23:08:24:907 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
+                //   E CWWKF0032E: The io.openliberty.jakarta.expressionLanguage-5.0 feature requires
+                //   a minimum Java runtime environment version of JavaSE 11.
+                // [2/7/23 23:08:24:907 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
+                //   E CWWKF0032E: The io.openliberty.jsonpImpl-2.1.1 feature requires a minimum Java
+                //   runtime environment version of JavaSE 11.
+                //
+                // [2/7/23 23:08:31:101 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
+                //   A CWWKF0012I: The server installed the following features: [appAuthentication-3.0,
+                //   distributedMap-1.0, jndi-1.0, jsonp-2.1, servlet-6.0, ssl-1.0, timedexit-1.0,
+                //   transportSecurity-1.0].
+                // [2/7/23 23:08:31:101 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
+                //   I CWWKF0008I: Feature update completed in 9.858 seconds.
+                //
+                // [2/7/23 23:08:31:101 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
+                //   A CWWKF0011I: The features.start.1.server server is ready to run a smarter planet.
+                //   The features.start.1.server server started in 12.922 seconds.
+
                 boolean preClean = true;
                 boolean cleanStart = true;
                 boolean validateApps = false;
-                boolean expectStartFailure = isOutOfLevel;
+                boolean expectStartFailure = false;
                 boolean validateTimedExit = false;
 
                 server.startServerAndValidate(preClean, cleanStart,
                                               validateApps,
                                               expectStartFailure,
                                               validateTimedExit);
-
                 started = true;
+
             } catch (Exception e) {
                 started = false;
                 addFailure(m, failures, nextShortName, "Start Exception", e);
+
             } finally {
                 timingResult.setStartNsFromInitial(initialStartNs);
             }
@@ -1007,6 +1058,7 @@ public class FeaturesStartTestBase {
                         if (isOutOfLevel) {
                             addLevelFailure(m, levelFailures, nextShortName);
                         } else {
+                            hadUnexpectedErrors = true;
                             addFailure(m, failures, nextShortName, "Verification Failure", null);
                             for (String error : errors) {
                                 logError(m, "Server failure message [ " + error + " ]");
@@ -1014,24 +1066,40 @@ public class FeaturesStartTestBase {
                         }
                     } else {
                         if (isOutOfLevel) {
+                            missingRequiredErrors = true;
                             addUnexpectedSuccess(m, unexpectedStarts, nextShortName);
                         }
                     }
                 } catch (Exception e) {
+                    hadUnexpectedErrors = true;
                     addFailure(m, failures, nextShortName, "Verify Exception", e);
                 } finally {
                     timingResult.setVerifyNsFromInitial(initialVerifyNs);
                 }
             }
 
-            return new StartupResult(StartupResult.DID_ATTEMPT, started, pid);
+            return new StartupResult(StartupResult.DID_ATTEMPT, started, hadUnexpectedErrors, missingRequiredErrors, pid);
         }
 
-        public void forceStopFeature(TimingResult timingResult, StartupResult startupResult) {
-            if (forceStopServer(nextShortName, startupResult.pid,
-                                getAllowedErrors(nextShortName),
-                                failures, timingResult)) {
+        /**
+         * The allowed errors for when the feature start uses a dis-allowed java level.
+         *
+         * These allowed errors are used in place of any other allowed errors.
+         */
+        private static String[] JAVA_LEVEL_ALLOWED_ERRORS = { "CWWKF0032E", "CWWKE0702E" };
 
+        // Both 32E and 702E errors are expected:
+        //
+        // [2/7/23 23:08:24:907 EST] 00000033 com.ibm.ws.kernel.feature.internal.FeatureManager
+        //   E CWWKF0032E: The io.openliberty.jakarta.expressionLanguage-5.0 feature requires
+        //   a minimum Java runtime environment version of JavaSE 11.
+        //
+        // [2/8/23 12:22:13:451 EST] 00000024 LogService-25-io.openliberty.java11.internal
+        //   E CWWKE0702E: Could not resolve module: io.openliberty.java11.internal [25]
+
+        public void forceStopFeature(boolean isOutOfLevel, TimingResult timingResult, StartupResult startupResult) {
+            String[] allowedErrors = (isOutOfLevel ? JAVA_LEVEL_ALLOWED_ERRORS : getAllowedErrors(nextShortName));
+            if (forceStopServer(nextShortName, startupResult.pid, allowedErrors, failures, timingResult)) {
                 if (!failures.containsKey(nextShortName)) {
                     successes.add(nextShortName);
                 }
@@ -1113,11 +1181,11 @@ public class FeaturesStartTestBase {
                 // In this case, do our best to stop the server.
                 // Make a dummy result that looks like an attempted startup.
                 if (startupResult == null) {
-                    startupResult = new StartupResult(StartupResult.DID_ATTEMPT, !StartupResult.DID_START, getPid());
+                    startupResult = new StartupResult(StartupResult.DID_ATTEMPT, !StartupResult.DID_START, !StartupResult.HAD_FORBIDDEN_ERRORS, !StartupResult.MISSING_REQUIRED_ERRORS, getPid());
                 }
 
                 if (startupResult.attempted) {
-                    testState.forceStopFeature(timingResult, startupResult);
+                    testState.forceStopFeature(isOutOfLevel, timingResult, startupResult);
                 }
             }
 
@@ -1128,6 +1196,10 @@ public class FeaturesStartTestBase {
                 Assert.assertTrue("Did not attempt [ " + useShortName + " ]", false);
             } else if (!startupResult.started) {
                 Assert.assertTrue("Failed to start [ " + useShortName + " ]", false);
+            } else if (startupResult.hadForbiddenErrors) {
+                Assert.assertFalse("Start had forbidden errors [ " + useShortName + " ]", true);
+            } else if (startupResult.missingRequiredErrors) {
+                Assert.assertFalse("Start missing required errors [ " + useShortName + " ]", true);
             }
         }
     }
