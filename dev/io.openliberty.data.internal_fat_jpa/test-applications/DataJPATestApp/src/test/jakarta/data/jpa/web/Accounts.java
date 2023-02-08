@@ -22,6 +22,12 @@ import jakarta.data.repository.Repository;
 @Repository
 public interface Accounts {
 
+    void delete(Account account); // copied from CrudRepository
+
+    // "IN" (which is needed for this) is not supported for embeddables, but EclipseLink generates SQL
+    // that leads to an SQLSyntaxErrorException rather than rejecting it outright
+    void deleteAll(Iterable<Account> list); // copied from CrudRepository
+
     long deleteByOwnerEndsWith(String pattern);
 
     Account findByAccountId(AccountId id);

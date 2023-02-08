@@ -227,15 +227,34 @@ class QueryInfo {
      * @throws Exception if an error occurs
      */
     void setParameters(Query query, Object... args) throws Exception {
-        for (int i = 0, count = paramNames.size(); i < paramCount; i++) {
-            Object arg = paramsNeedConversionToId ? //
-                            toEntityId(args[i]) : //
-                            args[i];
-            String paramName = count > i ? paramNames.get(i) : null;
-            if (paramName == null)
-                query.setParameter(i + 1, arg);
-            else // named parameter
-                query.setParameter(paramName, arg);
+        if (entityInfo.idClass == null || !paramsNeedConversionToId) {
+            for (int i = 0, count = paramNames.size(); i < paramCount; i++) {
+                Object arg = paramsNeedConversionToId ? //
+                                toEntityId(args[i]) : //
+                                args[i];
+                String paramName = count > i ? paramNames.get(i) : null;
+                if (paramName == null)
+                    query.setParameter(i + 1, arg);
+                else // named parameter
+                    query.setParameter(paramName, arg);
+            }
+        } else { // Special case: CrudRepository.delete(entity) where entity has IdClass
+            Object arg = args == null || args.length == 0 ? null : args[0];
+            if (arg == null || !entityInfo.type.isAssignableFrom(arg.getClass()))
+                throw new DataException("The " + (arg == null ? null : arg.getClass().getName()) +
+                                        " parameter does not match the " + entityInfo.type.getClass().getName() +
+                                        " entity type that is expected for this repository.");
+            int i = 0;
+            for (String idClassAttr : entityInfo.idClassAttributeAccessors.keySet()) {
+                List<Member> accessors = entityInfo.attributeAccessors.get(entityInfo.getAttributeName(idClassAttr));
+                Object param = arg;
+                for (Member accessor : accessors)
+                    if (accessor instanceof Method)
+                        param = ((Method) accessor).invoke(param);
+                    else
+                        param = ((Field) accessor).get(param);
+                query.setParameter(++i, param);
+            }
         }
     }
 

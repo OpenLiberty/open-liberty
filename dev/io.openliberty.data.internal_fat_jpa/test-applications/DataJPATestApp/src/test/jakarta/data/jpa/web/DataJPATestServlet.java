@@ -308,6 +308,11 @@ public class DataJPATestServlet extends FATServlet {
             // expected
         }
 
+        accounts.delete(new Account(1005380, 70081, "Think Bank", true, 552.18, "Ellen TestEmbeddedId"));
+
+        // JPQL with "IN", which this needs, is not supported by EclipseLink for embeddables
+        // accounts.deleteAll(List.of(new Account(1004470, 70081, "Think Bank", true, 443.94, "Erin TestEmbeddedId")));
+
         accounts.deleteByOwnerEndsWith("TestEmbeddedId");
     }
 
@@ -330,6 +335,17 @@ public class DataJPATestServlet extends FATServlet {
         // The current error is confusing: You have attempted to set a value of type class test.jakarta.data.jpa.web.CityId
         // for parameter 1 with expected type of class java.lang.String from query string SELECT o FROM City o WHERE (o.state=?1)
         //cities.findById(CityId.of("Rochester", "Minnesota"));
+    }
+
+    /**
+     * Use CrudRepository-style delete(entity) operation where entity has a composite ID that is defined by IdClass.
+     */
+    @Test
+    public void testIdClassDelete() {
+        City winona = new City("Winona", "Minnesota", 25948, Set.of(507));
+        cities.save(winona);
+        cities.delete(winona);
+        assertEquals(0L, cities.findByName("Winona").count());
     }
 
     /**

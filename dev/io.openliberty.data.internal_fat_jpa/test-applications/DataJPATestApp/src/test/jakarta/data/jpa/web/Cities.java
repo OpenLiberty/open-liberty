@@ -32,6 +32,12 @@ public interface Cities {
     @Filter(by = "stateName")
     boolean areFoundIn(String state);
 
+    void delete(City city); // copied from CrudRepository
+
+    // "IN" (which is needed for this) is not supported for composite IDs, but EclipseLink generates SQL
+    // that leads to an SQLSyntaxErrorException rather than rejecting it outright
+    void deleteAll(Iterable<City> list); // copied from CrudRepository
+
     boolean existsByNameAndStateName(String name, String state);
 
     City findById(CityId id);

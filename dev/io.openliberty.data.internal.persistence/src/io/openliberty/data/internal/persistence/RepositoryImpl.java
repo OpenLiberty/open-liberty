@@ -558,7 +558,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         }
 
         if (trace && tc.isDebugEnabled() && x != original)
-            Tr.debug(tc, original.getClass().getName() + "replaced with " + x.getClass().getName());
+            Tr.debug(tc, original.getClass().getName() + " replaced with " + x.getClass().getName());
         return x;
     }
 
@@ -826,22 +826,40 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             int by = methodName.indexOf("By", 6);
             int c = by < 0 ? 6 : by + 2;
             if (by > 6) {
-                if ("deleteAllById".equals(methodName) && Iterable.class.equals(queryInfo.method.getParameterTypes()[0]))
-                    methodName = "deleteAllByIdIn"; // CrudRepository.deleteAllById(Iterable)
+                if ("deleteAllById".equals(methodName) && Iterable.class.isAssignableFrom(queryInfo.method.getParameterTypes()[0]))
+                    if (entityInfo.idClass == null)
+                        methodName = "deleteAllByIdIn"; // CrudRepository.deleteAllById(Iterable)
+                    else
+                        throw new MappingException("The deleteAllById operation cannot be used on entities with composite IDs."); // TODO NLS
             } else if (methodName.length() == 6) {
                 Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
-                if (paramTypes.length == 1 && Object.class.equals(paramTypes[0])) {
-                    methodName = "deleteById"; // CrudRepository.delete(entity)
+                if (paramTypes.length == 1 && (Object.class.equals(paramTypes[0]) || entityInfo.type.equals(paramTypes[0]))) {
+                    if (entityInfo.idClass == null)
+                        methodName = "deleteById"; // CrudRepository.delete(entity)
+                    else { // TODO should be unnecessary after general path is updated to understand id
+                        methodName = "deleteBy";
+                        boolean first = true;
+                        for (String idClassAttr : entityInfo.idClassAttributeAccessors.keySet()) {
+                            if (first)
+                                first = false;
+                            else
+                                methodName += "And";
+                            methodName += idClassAttr;
+                        }
+                    }
                     queryInfo.paramsNeedConversionToId = true;
                     c = 8;
                 }
             } else if (methodName.length() == 9 && methodName.endsWith("All")) {
                 Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
-                if (paramTypes.length == 1 && Iterable.class.equals(paramTypes[0])) {
-                    methodName = "deleteByIdIn"; // CrudRepository.deleteAll(Iterable)
-                    queryInfo.paramsNeedConversionToId = true;
-                    c = 8;
-                }
+                if (paramTypes.length == 1 && Iterable.class.isAssignableFrom(paramTypes[0]))
+                    if (entityInfo.idClass == null) {
+                        methodName = "deleteByIdIn"; // CrudRepository.deleteAll(Iterable)
+                        queryInfo.paramsNeedConversionToId = true;
+                        c = 8;
+                    } else {
+                        throw new MappingException("The deleteAll operation cannot be used on entities with composite IDs."); // TODO NLS
+                    }
             }
             q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(" o");
             if (methodName.length() > c)
@@ -1333,6 +1351,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                                 " is no longer in scope."); // TODO
 
             QueryInfo queryInfo = queryInfoFuture.join();
+
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(this, tc, queryInfo.toString());
 
             LocalTransactionCoordinator suspendedLTC = null;
             EntityManager em = null;
