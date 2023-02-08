@@ -795,10 +795,17 @@ public abstract class UIComponent
         {
             listeners = new _DeltaList<>(3);
             _systemEventListenerClassMap.put(eventClass, listeners);
+            listeners.add(listener);
+        }
+        else
+        {
+            if(!listeners.contains(listener))
+            {
+                listeners.add(listener);
+            }
         }
 
-        // Deal with contains? Spec is silent
-        listeners.add(listener);
+        
     }
 
     public void unsubscribeFromEvent(Class<? extends SystemEvent> eventClass,
