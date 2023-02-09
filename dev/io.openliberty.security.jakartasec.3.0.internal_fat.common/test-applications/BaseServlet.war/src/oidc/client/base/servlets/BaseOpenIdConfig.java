@@ -259,6 +259,16 @@ public class BaseOpenIdConfig extends MinimumBaseOpenIdConfig {
         return value;
     }
 
+    public String getEndSessionEndpoint() {
+
+        String value = "";
+        if (config.containsKey(Constants.ENDSESSION_ENDPOINT)) {
+            value = getStringValue(Constants.ENDSESSION_ENDPOINT);
+        }
+
+        return value;
+    }
+
     public String getIdTokenSigningAlgorithmsSupported() {
 
         String value = "RS256"; // spec default is RS256, OIDC default is HS256

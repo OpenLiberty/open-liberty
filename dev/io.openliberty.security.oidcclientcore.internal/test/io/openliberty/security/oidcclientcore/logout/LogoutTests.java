@@ -1,22 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.logout;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.jmock.Expectations;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -37,8 +32,7 @@ public class LogoutTests extends CommonTestClass {
     private static final String redirectURI = "http://redirect-uri.com/some/path";
     private static final String idToken = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaGFybW9uaWM6ODAxMS9vYXV0aDIvZW5kcG9pbnQvT0F1dGhDb25maWdTYW1wbGUvdG9rZW4iLCJpYXQiOjEzODczODM5NTMsInN1YiI6InRlc3R1c2VyIiwiZXhwIjoxMzg3Mzg3NTUzLCJhdWQiOiJjbGllbnQwMSJ9.ottD3eYa6qrnItRpL_Q9UaKumAyo14LnlvwnyF3Kojk";
 
-    private final OidcClientConfig oidcClientConfigMock = null; // mockery.mock(OidcClientConfig.class);
-    private final HttpServletRequest request = mockery.mock(HttpServletRequest.class);
+    private final OidcClientConfig oidcClientConfigMock = null;
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -58,19 +52,15 @@ public class LogoutTests extends CommonTestClass {
 
     @Test
     public void test_RPInitiatedLogoutStrategy() throws Exception {
-        mockery.checking(new Expectations() {
-            {
-                allowing(request).setAttribute("id_token_hint", idToken);
-                allowing(request).setAttribute("post_logout_redirect_uri", null);
-                allowing(request).setAttribute("post_logout_redirect_uri", null);
-            }
-        });
-        RPInitiatedLogoutStrategy rpInitiatedLogoutStrategy = new RPInitiatedLogoutStrategy(request, oidcClientConfigMock, endSessionEndpoint, idToken);
+        RPInitiatedLogoutStrategy rpInitiatedLogoutStrategy = new RPInitiatedLogoutStrategy(oidcClientConfigMock, endSessionEndpoint, idToken);
         ProviderAuthenticationResult result = rpInitiatedLogoutStrategy.logout();
 
-        assertTrue(result.getStatus().equals(AuthResult.REDIRECT_TO_PROVIDER));
-        assertTrue(result.getHttpStatusCode() == 200);
-        assertTrue(result.getRedirectUrl().equals(endSessionEndpoint));
+        assertTrue("ProviderAuthenticationResult status [" + result.getStatus() + "] did not match expected value [" + AuthResult.REDIRECT_TO_PROVIDER + "].",
+                   result.getStatus().equals(AuthResult.REDIRECT_TO_PROVIDER));
+        assertEquals("HTTP status code did not match expected value.", 200, result.getHttpStatusCode());
+
+        String expectedRedirectUrl = endSessionEndpoint;
+        assertEquals("Redirect URL did not match expected value.", expectedRedirectUrl, result.getRedirectUrl());
     }
 
     @Test
@@ -78,8 +68,10 @@ public class LogoutTests extends CommonTestClass {
         CustomLogoutStrategy customLogoutStrategy = new CustomLogoutStrategy(redirectURI);
         ProviderAuthenticationResult result = customLogoutStrategy.logout();
 
-        assertTrue(result.getStatus().equals(AuthResult.REDIRECT_TO_PROVIDER));
-        assertTrue(result.getHttpStatusCode() == 200);
-        assertTrue(result.getRedirectUrl().equals(redirectURI));
+        assertTrue("ProviderAuthenticationResult status [" + result.getStatus() + "] did not match expected value [" + AuthResult.REDIRECT_TO_PROVIDER + "].",
+                   result.getStatus().equals(AuthResult.REDIRECT_TO_PROVIDER));
+        assertEquals("HTTP status code did not match expected value.", 200, result.getHttpStatusCode());
+        assertEquals("Redirect URL did not match expected value.", redirectURI, result.getRedirectUrl());
     }
+
 }

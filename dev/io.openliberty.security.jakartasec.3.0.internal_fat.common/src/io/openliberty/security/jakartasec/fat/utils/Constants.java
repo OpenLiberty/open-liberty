@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -61,6 +61,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
 
     public static final String AUTHORIZATION_ENDPOINT = "authorizationEndpoint";
     public static final String USERINFOENDPOINT = "userinfoEndpoint";
+    public static final String ENDSESSION_ENDPOINT = "endSessionEndpoint";
     public static final String JWKSURI = "jwksURI";
     public static final String IDTOKENSIGNINGALGORITHMSSUPPORTED = "idTokenSigningAlgorithmsSupported";
     public static final String JWKSCONNECTTIMEOUTEXPRESSION = "jwksConnectTimeoutExpression";

@@ -14,6 +14,8 @@ package io.openliberty.security.jakartasec.fat.commonTests;
 
 import static org.junit.Assert.fail;
 
+import java.util.Map;
+
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.log.Log;
@@ -39,6 +41,7 @@ public class CommonLogoutAndRefreshTests extends CommonAnnotatedSecurityTests {
     protected static final boolean DoNotPromptLogin = false;
 
     protected static final String goodRedirectUri = "goodRedirectUri";
+    protected static final String goodRedirectExtraParmsUri = "goodRedirectExtraParmsUri";
     protected static final String badRedirectUri = "badRedirectUri";
     protected static final String emptyRedirectUri = "emptyRedirectUri";
 
@@ -121,6 +124,45 @@ public class CommonLogoutAndRefreshTests extends CommonAnnotatedSecurityTests {
         // even though we validated that we landed on the logut successful page,
         // make sure that we need to log in again.
         invokeAppReturnLoginPage(webClient, url);
+
+    }
+
+    public void genericGoodLogoutAndRedirectTest(String appName, String provider, Map<String, String> extraParms) throws Exception {
+
+        WebClient webClient = getAndSaveWebClient();
+        rspValues.setIssuer(opHttpsBase + "/oidc/endpoint/" + provider);
+        runGoodEndToEndTest(webClient, appName, baseAppName);
+
+        // now logged in - wait for token to expire
+        actions.testLogAndSleep(35);
+        String url = rpHttpsBase + "/" + appName + "/" + baseAppName;
+        invokeAppReturnPostLogoutPage(webClient, url, extraParms);
+
+        // even though we validated that we landed on the logut successful page,
+        // make sure that we need to log in again.
+        invokeAppReturnLoginPage(webClient, url);
+
+    }
+
+    public void genericGoodRedirectWithoutLogoutTest(String appName, String provider, Map<String, String> extraParms) throws Exception {
+
+        WebClient webClient = getAndSaveWebClient();
+        rspValues.setIssuer(opHttpsBase + "/oidc/endpoint/" + provider);
+        Page response1 = runGoodEndToEndTest(webClient, appName, baseAppName);
+
+        // now logged in - wait for token to expire
+        actions.testLogAndSleep(35);
+        String url = rpHttpsBase + "/" + appName + "/" + baseAppName;
+        invokeAppReturnPostLogoutPage(webClient, url, extraParms);
+
+        Page response2 = invokeAppGetToApp(webClient, url);
+
+        if (!accessTokensAreDifferent(response1, response2)) {
+            fail("access token should have been different");
+        }
+        if (!idTokensAreDifferent(response1, response2)) {
+            fail("id token should have been different");
+        }
 
     }
 

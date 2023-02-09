@@ -20,6 +20,7 @@ Subsystem-Name: Java EE Web Profile 8.0
   com.ibm.websphere.appserver.websocket-1.1, \
   com.ibm.websphere.appserver.jsp-2.3, \
   com.ibm.websphere.appserver.servlet-4.0, \
+  io.openliberty.servlet.internal-4.0, \
   com.ibm.websphere.appserver.ejbLite-3.2, \
   com.ibm.websphere.appserver.jaxrs-2.1, \
   com.ibm.websphere.appserver.managedBeans-1.0, \

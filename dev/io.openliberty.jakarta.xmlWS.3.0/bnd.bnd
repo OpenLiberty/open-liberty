@@ -26,7 +26,7 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -includeresource: \
-  @${repo;jakarta.xml.ws:jakarta.xml.ws-api;3.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @${repo;jakarta.xml.ws:jakarta.xml.ws-api;3.0.1;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -buildpath: \
-	jakarta.xml.ws:jakarta.xml.ws-api;version=3.0.0;strategy=exact
+	jakarta.xml.ws:jakarta.xml.ws-api;version=3.0.1;strategy=exact

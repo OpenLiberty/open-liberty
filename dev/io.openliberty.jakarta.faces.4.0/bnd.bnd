@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -33,20 +30,21 @@ DynamicImport-Package: \
   org.apache.myfaces.cdi.util, \
   org.apache.myfaces.spi
 
-# Use this format once we have an official release and not an RC3
+# Use this format once we have an official release and not an RC4
 # @${repo;org.apache.myfaces.core:myfaces-api;${Implementation-Version};EXACT}!/META-INF/**
 -includeresource: \
-	@${repo;org.apache.myfaces.core:myfaces-api;4.0.0.RC3;EXACT}!/META-INF/**
+	@${repo;org.apache.myfaces.core:myfaces-api;4.0.0.RC4;EXACT}!/META-INF/**
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
-# Use this once we have a non RC3 release
+# Use this once we have a non RC4 release
 # org.apache.myfaces.core:myfaces-api;strategy=exact;version=${Implementation-Version},\
 -buildpath: \
     org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9;strategy=exact, \
-    org.apache.myfaces.core:myfaces-api;strategy=exact;version=4.0.0.RC3, \
+    org.apache.myfaces.core:myfaces-api;strategy=exact;version=4.0.0.RC4, \
     io.openliberty.jakarta.expressionLanguage.5.0;version=latest, \
-    io.openliberty.jakarta.servlet.6.0;version=latest
+    io.openliberty.jakarta.servlet.6.0;version=latest, \
+    io.openliberty.jakarta.cdi.4.0;version=latest
 

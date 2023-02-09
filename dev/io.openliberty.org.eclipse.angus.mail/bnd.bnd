@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -20,20 +20,20 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 Bundle-SymbolicName: io.openliberty.org.eclipse.angus.mail
 
-Implementation-Version: 1.0.0
+Implementation-Version: 2.0.1
 Export-Version: 2.1.0
 Import-Version: 2.1.0
 
 Export-Package: \
-  com.sun.mail.auth; version=${Export-Version}; thread-context=true, \
-  com.sun.mail.handlers; version=${Export-Version}; thread-context=true, \
-  com.sun.mail.iap; version=${Export-Version}; thread-context=true, \
-  com.sun.mail.imap; version=${Export-Version}; thread-context=true, \
-  com.sun.mail.imap.protocol; version=${Export-Version}; thread-context=true, \
-  com.sun.mail.pop3; version=${Export-Version}; thread-context=true, \
-  com.sun.mail.smtp; version=${Export-Version}; thread-context=true, \
-  com.sun.mail.util; version=${Export-Version}; thread-context=true, \
-  com.sun.mail.util.logging; version=${Export-Version}; thread-context=true
+  org.eclipse.angus.mail.auth; version=${Export-Version}; thread-context=true, \
+  org.eclipse.angus.mail.handlers; version=${Export-Version}; thread-context=true, \
+  org.eclipse.angus.mail.iap; version=${Export-Version}; thread-context=true, \
+  org.eclipse.angus.mail.imap; version=${Export-Version}; thread-context=true, \
+  org.eclipse.angus.mail.imap.protocol; version=${Export-Version}; thread-context=true, \
+  org.eclipse.angus.mail.pop3; version=${Export-Version}; thread-context=true, \
+  org.eclipse.angus.mail.smtp; version=${Export-Version}; thread-context=true, \
+  org.eclipse.angus.mail.util; version=${Export-Version}; thread-context=true, \
+  org.eclipse.angus.mail.util.logging; version=${Export-Version}; thread-context=true
 
 Import-Package: \
   com.ibm.wsspi.classloading, \
@@ -60,8 +60,7 @@ Service-Component: \
     properties:= "resources=${app-resources}"
 
 -includeresource: \
-  @${repo;org.eclipse.angus:angus-mail;${Implementation-Version};EXACT}!/!(module-info.class|META-INF/maven/*| \
-    META-INF/mailcap|META-INF/gfprobe-provider.xml|META-INF/javamail.charset.map|META-INF/javamail.default.address.map|META-INF/javamail.default.providers)
+  @${repo;org.eclipse.angus:angus-mail;${Implementation-Version};EXACT}!/!(module-info.class|META-INF/maven/*|META-INF/native-image/*|org/eclipse/angus/mail/nativeimage/*)
    
 -buildpath: \
   org.eclipse.angus:angus-mail;version=${Implementation-Version};strategy=exact, \

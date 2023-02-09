@@ -383,9 +383,10 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
         Principal user = request.getUserPrincipal();
         String idTokenString = request.getParameter(OIDCConstants.OIDC_LOGOUT_ID_TOKEN_HINT);
         String redirectUri = request.getParameter(OIDCConstants.OIDC_LOGOUT_REDIRECT_URI);
+        String clientId = request.getParameter(OIDCConstants.OIDC_LOGOUT_CLIENT_ID);
         OAuth20Token cachedIdToken = null;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "id_token_hint : " + idTokenString + " post_logout_redirect_uri : " + redirectUri);
+            Tr.debug(tc, "id_token_hint : " + idTokenString + " post_logout_redirect_uri : " + redirectUri + " client_id : " + clientId);
         }
         if (idTokenString != null && idTokenString.length() == 0) {
             idTokenString = null;
@@ -413,7 +414,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
 
         String userName = ((user == null) ? null : user.getName());
         String tokenUsername = ((cachedIdToken == null) ? null : cachedIdToken.getUsername());
-        String clientId = ((cachedIdToken == null) ? null : cachedIdToken.getClientId());
+        clientId = ((cachedIdToken == null) ? clientId : cachedIdToken.getClientId());
 
         if (idTokenString != null && cachedIdToken == null && continueLogoff) {
             // if it's not there parse the idTokenString and validate signature.

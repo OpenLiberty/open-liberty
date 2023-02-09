@@ -18,13 +18,22 @@
  */
 package org.apache.myfaces.component.validate;
 
-import jakarta.faces.component.UIInput;
+import jakarta.faces.application.ProjectStage;
+import jakarta.faces.component.EditableValueHolder;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.component.UIForm;
+import jakarta.faces.component.UIInput; 
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.convert.Converter;
 import jakarta.faces.validator.BeanValidator;
 import jakarta.faces.validator.Validator;
+
+import java.io.IOException;
+import java.util.List;
+
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFComponent;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFProperty;
+import org.apache.myfaces.core.api.shared.ComponentUtils;
 import org.apache.myfaces.util.WebConfigParamUtils;
 
 /**
@@ -33,10 +42,8 @@ import org.apache.myfaces.util.WebConfigParamUtils;
 @JSFComponent
 public class ValidateWholeBeanComponent extends UIInput
 {
-    static public final String COMPONENT_FAMILY =
-        "jakarta.faces.Input";
-    static public final String COMPONENT_TYPE =
-        "org.apache.myfaces.component.validate.ValidateWholeBean";
+    static public final String COMPONENT_FAMILY = "jakarta.faces.Input";
+    static public final String COMPONENT_TYPE = "org.apache.myfaces.component.validate.ValidateWholeBean";
 
     public ValidateWholeBeanComponent()
     {
@@ -53,6 +60,66 @@ public class ValidateWholeBeanComponent extends UIInput
     public void addValidator(Validator validator)
     {
         // No-op. It does not make sense to allow additional validators to be installed.
+    }
+
+
+    @Override
+    public void encodeBegin(FacesContext context) throws IOException
+    {    
+        // Developement check: https://github.com/jakartaee/faces/issues/1780
+        if (context.isProjectStage(ProjectStage.Development)) 
+        {
+            // find closest form
+            UIForm closestForm = ComponentUtils.findClosest(UIForm.class, this);
+        
+            if (closestForm == null)
+            {
+                // Throw an exception just as Mojarra
+                throw new IllegalStateException("f:validateWholeBean must be placed within a form");
+            }
+        
+            validateTagPlacement(closestForm, this.getClientId(context));
+        }
+    }
+  
+    /*
+     * As required by https://github.com/jakartaee/faces/issues/1
+     * Also ensures all inputs are available for f:wholeBeanValidate processing
+     * (otherwise they'd be empty during the validation)
+     * Similar to a Recursive Non-Binary Search, but checks if f:wholeBeanValidate 
+     * is before any EditableValueHolders (i.e inputs)
+     */
+    private void validateTagPlacement(UIComponent component, String clientId) throws IllegalStateException
+    {
+        List<UIComponent> children = component.getChildren();
+    
+        for (int i = children.size() -1; i >=0; i--)
+        {
+          UIComponent c = children.get(i);
+          if (c instanceof EditableValueHolder && !(c instanceof ValidateWholeBeanComponent))
+          {
+              Validator[] validators = ((EditableValueHolder) c).getValidators();
+              for (Validator v : validators)
+              {
+                  if (v instanceof BeanValidator
+                      && ((BeanValidator) v).getValidationGroups().equals(this.getValidationGroups()))
+                  {
+                    throw new IllegalStateException("f:validateWholeBean must be placed after all validated inputs");
+                  }
+              }
+          }
+          else
+          {
+              if (c.getClientId().equals(clientId))
+              {
+                  return; // found f:validateWholeBean before any inputs
+              }
+              else
+              {
+                  validateTagPlacement(c, clientId); // continue again 
+              }
+          }
+        }
     }
 
     @Override

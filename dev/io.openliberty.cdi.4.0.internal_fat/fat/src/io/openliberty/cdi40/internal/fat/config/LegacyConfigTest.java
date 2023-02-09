@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,7 +27,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
-import com.ibm.websphere.simplicity.beansxml.BeansAsset.CDIVersion;
 import com.ibm.websphere.simplicity.config.Cdi;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
@@ -50,7 +49,7 @@ public class LegacyConfigTest extends FATServletClient {
     public static final String SERVER_NAME = "CDI40LegacyConfigServer";
 
     public static final String LEGACY_EMPTY_BEANS_APP_NAME = "LegacyEmptyBeans";
-    public static final String LEGACY_BEANS10_APP_NAME = "LegacyBeans10";
+    public static final String LEGACY_NON_EMPTY_APP_NAME = "LegacyNonEmpty";
 
     @Server(SERVER_NAME)
     @TestServlets({
@@ -76,14 +75,14 @@ public class LegacyConfigTest extends FATServletClient {
         CDIArchiveHelper.addEmptyBeansXML(legacyEmptyBeansXMLWar);
         ShrinkHelper.exportDropinAppToServer(server, legacyEmptyBeansXMLWar, DeployOptions.SERVER_ONLY);
 
-        //This application contains a non-empty CDI 1.0 beans.xml. When using CDI 4.0, the discovery mode will default to
+        //This application contains a non-empty CDI 4.0 beans.xml. When using CDI 4.0, the discovery mode will default to
         //ANNOTATED. Unlike an empty beans.xml, the legacy configuration option has no effect. Therefore we will output a warning when the
         //DeploymentException occurs
-        WebArchive unannotatedlegacyBeans10XMLWar = ShrinkWrap.create(WebArchive.class, LEGACY_BEANS10_APP_NAME + ".war")
+        WebArchive unannotatedlegacyBeans10XMLWar = ShrinkWrap.create(WebArchive.class, LEGACY_NON_EMPTY_APP_NAME + ".war")
                                                               .addClass(AllBeansServlet.class)
                                                               .addClass(UnannotatedBean.class)
                                                               .addClass(RequestScopedBean.class);
-        CDIArchiveHelper.addBeansXML(unannotatedlegacyBeans10XMLWar, CDIVersion.CDI10);
+        CDIArchiveHelper.addBeansXML(unannotatedlegacyBeans10XMLWar, RequestScopedBean.class.getPackage());
         ShrinkHelper.exportDropinAppToServer(server, unannotatedlegacyBeans10XMLWar, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);
 
         server.startServer();
@@ -92,12 +91,12 @@ public class LegacyConfigTest extends FATServletClient {
     @Test
     public void testUnversionedBeansXmlWarning() throws Exception {
         //check for a warning message about a non-empty unversioned beans.xml file
-        List<String> warningMessages = server.findStringsInLogs("CWOWB1018W: .*wsjar:file:.*" + LEGACY_BEANS10_APP_NAME + ".war!/WEB-INF/beans.xml");
+        List<String> warningMessages = server.findStringsInLogs("CWOWB1018W: .*wsjar:file:.*" + LEGACY_NON_EMPTY_APP_NAME + ".war!/WEB-INF/beans.xml");
         assertTrue("Message CWOWB1018W not found", warningMessages.size() > 0);
         assertEquals("Message CWOWB1018W was found more than once", 1, warningMessages.size());
 
         //check for the DeploymentException
-        List<String> errorMessages = server.findStringsInLogs("CWWKZ0002E:.*" + LEGACY_BEANS10_APP_NAME + ".*DeploymentException");
+        List<String> errorMessages = server.findStringsInLogs("CWWKZ0002E:.*" + LEGACY_NON_EMPTY_APP_NAME + ".*DeploymentException");
         assertTrue("Message CWWKZ0002E not found", errorMessages.size() > 0);
         assertEquals("Message CWWKZ0002E was found more than once", 1, errorMessages.size());
     }

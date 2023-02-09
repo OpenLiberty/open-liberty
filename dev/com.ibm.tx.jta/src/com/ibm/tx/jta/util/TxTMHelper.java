@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2021 IBM Corporation and others.
+ * Copyright (c) 2002, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -457,9 +457,9 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
             Tr.exit(tc, "startRecovery");
     }
 
-    private synchronized void shutdown(boolean explicit, int timeout) {
+    private synchronized void shutdown(boolean withCleanup, int timeout) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "shutdown", new Object[] { explicit, timeout });
+            Tr.entry(tc, "shutdown", new Object[] { withCleanup, timeout });
 
         if ((_state != TMService.TMStates.STOPPED) && (_state != TMService.TMStates.INACTIVE)) {
             // Ensure no new transactions can start
@@ -494,8 +494,17 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
 
             _recLogService.stop();
 
-            TransactionManager tm = TransactionManagerFactory.getTransactionManager();
-            ((TranManagerSet) tm).cleanup();
+            // Issue #23676. The JCA component needs TX services at shutdown. If TranManagerSet.cleanup() is called,
+            // as it was previously at this point, then that removes the current (shutdown) thread's reference to the TM.
+            // The task initiated by JCA may generate an IllegalStateException as a result of attempting to instantiate
+            // a new ThreadLocal because Transaction Manager may have dereferenced its Configuration Provider.
+            //
+            // The withCleanup parameter allows the retention of the previous behaviour for use by the zos_tx unittests
+            // who are the sole user of the TMHelper.shutdown(int) method
+            if (withCleanup) {
+                TransactionManager tm = TransactionManagerFactory.getTransactionManager();
+                ((TranManagerSet) tm).cleanup();
+            }
 
             setRecoveryAgent(null);
 

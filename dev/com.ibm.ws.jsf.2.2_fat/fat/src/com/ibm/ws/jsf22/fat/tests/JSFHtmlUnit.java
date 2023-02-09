@@ -39,6 +39,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -321,6 +322,7 @@ public class JSFHtmlUnit {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testGetTypeFromCompositeComponentELResolver() throws Exception {
         try (WebClient webClient = new WebClient()) {
             URL url = JSFUtils.createHttpUrl(jsfTestServer2, "JSF22BackwardCompatibilityTests", "testCompositeComponentAttribute.jsf");

@@ -16,7 +16,7 @@ import javax.ejb.Singleton;
 import javax.interceptor.Interceptors;
 
 @Singleton
-@Interceptors({ InterceptorA.class, Interceptor9.class })
+@Interceptors({ InterceptorSubClass2.class, InterceptorSubClass1.class })
 public class SingletonEJB {
 
     public SingletonEJB() {

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.filter;
 
@@ -222,7 +219,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
     private WebComponentMetaData defaultComponentMetaData;
     
     public static final boolean DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR = WCCustomProperties.DEFER_SERVLET_REQUEST_LISTENER_DESTROY_ON_ERROR;  //PI26908
-
+    
     public WebAppFilterManager(WebAppConfiguration webGroupConfig, WebApp webApp) {
         this.webAppConfig = webGroupConfig;
         this.webApp = webApp;
@@ -1102,6 +1099,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
         boolean isInclude = dispatchContext.isInclude();
         boolean isForward = dispatchContext.isForward();
         boolean isRequest = dispatchContext.getDispatcherType()==DispatcherType.REQUEST;
+        
 
         HttpServletRequest httpServletReq = (HttpServletRequest) ServletUtil.unwrapRequest(request,HttpServletRequest.class);
         HttpServletResponse httpServletRes = (HttpServletResponse) ServletUtil.unwrapResponse(response,HttpServletResponse.class);
@@ -1114,10 +1112,14 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
         //PI08268
 
         boolean h2InUse = false;
+        
+        //Servlet 6.0
+        boolean alreadyVerifiedEncodedChar = false;
+        String reqURI = httpServletReq.getRequestURI();
+        boolean isSkipVerifyEncodedCharInURI = dispatchContext.getWebApp().getConfiguration().isSkipVerifyEncodedCharInURI();
 
         try {
             if (requestProcessor != null) {
-
                 if (requestProcessor instanceof ExtensionProcessor) {
                     IServletWrapper servletWrapper = ((ExtensionProcessor) requestProcessor).getServletWrapper(request, response);
                     if (servletWrapper != null) {
@@ -1142,10 +1144,44 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
 
                     // let the servlet warrper know that the request is about to start.
                     if (servletWrapper instanceof ServletWrapper) {
+
+                        //Servlet 6.0 - It is a servlet; verify that no invalid encoded character in URI
+                        //              only check if direct request
+                        //This can be checked earlier in WebApp before invokeFilters; but do the check here 
+                        //so alreadyVerifiedEncodedChar flag can skip in case the app has definedFilter
+                        if (isRequest && WebContainer.isServlet60orAbove) {
+                            try {
+                                if (!isSkipVerifyEncodedCharInURI) {
+                                    verifyEncodedCharacter(reqURI);
+                                }
+
+                                alreadyVerifiedEncodedChar = true;        //either way, skip subsequent check in filterDefined
+                            }
+                            catch (IOException ioe) {
+                                logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "servletWrapper. Bad request - sending 400 [" + ioe.getMessage() + "]");
+                                throw ioe;
+                            }
+                        }
+
                         ((ServletWrapper)servletWrapper).startRequest(request);
                     }
                     //PI08268 - start - disable JSP and Static default methods (i.e TRACE, PUT, DELETE...)
                     else {
+                        //Servlet 6.0 - JSPExtensionServletWrapper is GenericServletWrapper
+                        if (isRequest && WebContainer.isServlet60orAbove && (servletWrapper instanceof GenericServletWrapper)){
+                            try {
+                                if (!isSkipVerifyEncodedCharInURI) {
+                                    verifyEncodedCharacter(reqURI);
+                                }
+
+                                alreadyVerifiedEncodedChar = true;        //to skip check in filterDefined later on
+                            }
+                            catch (IOException ioe) {
+                                logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "genericServletWrapper. Bad request - sending 400 [" + ioe.getMessage() + "]");
+                                throw ioe;
+                            }
+                        }
+                            
                         String httpMethod = httpServletReq.getMethod().toUpperCase();
                         if (!(httpMethod.equals("GET") || httpMethod.equals("POST"))){ //quick check since most request is GET/POST
                             if (servletWrapper instanceof FileServletWrapper){  // subsequent static request takes this path
@@ -1202,6 +1238,21 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                 logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "### looking at isFiltersDefined");
 
             if (context.isFiltersDefined()) {
+                //Servlet 6.0 - Filter path - if not alreadyVerifiedEncodedChar (i.e neither ServletWrapper or JSPExtension found),
+                //              verify that no invalid encoded character in direct request URI
+                if (isRequest && WebContainer.isServlet60orAbove && !alreadyVerifiedEncodedChar) {
+                    try {
+                        if (!isSkipVerifyEncodedCharInURI) {
+                            verifyEncodedCharacter(reqURI);
+                        }
+
+                        alreadyVerifiedEncodedChar = true;      // skip checking in the DefaultExtension
+                    }
+                    catch (IOException ioe) {
+                        logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "filtersDefined. Bad request - sending 400 [" + ioe.getMessage() + "]");
+                        throw ioe;
+                    }
+                }
 
                 if (isTraceOn && logger.isLoggable(Level.FINE)) 
                     logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "### calling doFilter");
@@ -1293,6 +1344,24 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                                 logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "in H2 processing calling requestProcessor.handleRequest");
 
                             try {
+                                //Servlet 6.0 - no filter, servlet/jsp found. DefaultExtensionProcessor is most likely it.
+                                //              Last check encodedCharacter for direct request.
+                                if (isRequest && WebContainer.isServlet60orAbove && !alreadyVerifiedEncodedChar) {
+                                    if (requestProcessor instanceof DefaultExtensionProcessor){
+                                        try {
+                                            if (!isSkipVerifyEncodedCharInURI) {
+                                                verifyEncodedCharacter(reqURI);
+                                            }
+
+                                            alreadyVerifiedEncodedChar = true;  //nothing after this, but just incase
+                                        }
+                                        catch (IOException ioe) {
+                                            logger.logp(Level.FINE, CLASS_NAME, "invokeFilters", "DefaultExtensionProcessor. Bad request - sending 400 [" + ioe.getMessage() + "]");
+                                            throw ioe;
+                                        }
+                                    }
+                                }
+
                                 requestProcessor.handleRequest(request, response);
                             }  catch (Exception x) {
                                 if (h2InUse) {
@@ -1573,4 +1642,52 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
         return false;
     }
     //issue#9386
+    
+    /**
+     * Since Servlet 6.0:
+     *  Process original URI. It rejects any path has encoded character of:
+     *  %23 (#)
+     *  %2e (.)
+     *  %2f (/)
+     *  %5c (\)
+     *  
+     *  This verification is deferred until WC can determine the request is indeed for a servlet/JSP/filter
+     */
+    private void verifyEncodedCharacter(String uri) throws IOException {
+        final boolean isTraceOn = com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled();
+        final String METHOD_NAME ="verifyEncodedCharacter";
+
+        if (isTraceOn && logger.isLoggable(Level.FINE))
+            logger.entering(CLASS_NAME, METHOD_NAME + " [" + uri + "]");
+
+        String path = uri.toLowerCase();
+        String message = null;
+
+        try {
+            if (path.contains("#") || path.contains("%23")) {
+                message = nls.getString("uri.has.fragment.character", "URI has a fragment [#] character; encoded [%23] or not");
+            }
+            else if (path.contains("%2e")){
+                message = nls.getString("uri.has.dot.character", "URI has encoded dot [%2E] character");
+            }
+            else if (path.contains("%2f")) {
+                message = nls.getString("uri.has.forwarslash.character", "URI has encoded forward slash [%2F] character");
+            }
+            else if (path.contains("\\") || path.contains("%5c")){
+                message = nls.getString("uri.has.backslash.character", "URI has backslash character; encoded [%5C] or not");
+            }
+
+            if (message != null) {
+                if (isTraceOn && logger.isLoggable(Level.FINE))
+                    logger.logp(Level.FINE, CLASS_NAME, METHOD_NAME, "Bad Request : " + message);
+
+                throw new IOException(nls.getFormattedMessage("bad.request.uri:.{0}", new Object[] { ((uri.length() > 128) ? (uri.substring(0, 127)) : uri) }, 
+                                "Bad request URI") + " . " + message);
+            }
+        }
+        finally {
+            if (isTraceOn && logger.isLoggable(Level.FINE))
+                logger.exiting(CLASS_NAME, METHOD_NAME);
+        }
+    }
 }

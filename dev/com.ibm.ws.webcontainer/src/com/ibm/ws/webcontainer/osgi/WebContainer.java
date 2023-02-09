@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2022 IBM Corporation and others.
+ * Copyright (c) 2010, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.osgi;
 
@@ -1617,6 +1614,13 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
         return WebContainer.loadedContainerSpecLevel;
     }
     
+    public static boolean isServletLevel60orAbove() {
+        if(WebContainer.getServletContainerSpecLevel() >= WebContainer.SPEC_LEVEL_60) {
+            return true;
+        }
+        
+        return false;
+    }
     
     protected static class CompletedFuture implements Future {
 
