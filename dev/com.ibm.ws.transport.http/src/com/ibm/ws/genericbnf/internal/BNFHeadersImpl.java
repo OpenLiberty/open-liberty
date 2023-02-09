@@ -3882,7 +3882,6 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             } else {
                 // reset the counter on any non-space or colon
                 numSpaces = 0;
-            
 
                 // check for possible CRLF
                 if (BNFHeaders.CR == b || BNFHeaders.LF == b) {
@@ -3891,23 +3890,12 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                     // data straddling bytecaches, etc?
                     throw new MalformedMessageException("Invalid CRLF found in header name");
                 }
-            
+
                 // PH52074 Check for other invalid chars
-                boolean valid = ((b >= 'a') && (b <= 'z')) ||
-                                ((b >= 'A') && (b <= 'Z')) ||
-                                ((b >= '0') && (b <= '9')) ||
-                                (b == '!') || (b == '#') ||
-                                (b == '$') || (b == '%') ||
-                                (b == '&') || (b == '\'') ||
-                                (b == '*') || (b == '+') ||
-                                (b == '-') || (b == '.') ||
-                                (b == '^') || (b == '_') ||
-                                (b == '`') || (b == '|') ||
-                                (b == '~');
-                if (!valid) {
+                if (!isValidTchar((char) (b & 0xFF))) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                         final int maskedCodePoint = b & 0xFF;
-                        Tr.debug(tc, "Invalid character found in http header name.  The Unicode is: " + (char) maskedCodePoint);
+                        Tr.debug(tc, "Invalid character found in http header name.  The Unicode is: " + String.format("%04x", maskedCodePoint));
                     }
                     throw new MalformedMessageException("Invalid character found in header name");
                 }
@@ -4794,6 +4782,8 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
      * The information about valid chars in a header name comes from
      * RCF 9110 section 5.6.2 tchars
      * https://www.rfc-editor.org/rfc/rfc9110.html#section-5.6.2
+     *
+     * PH52074
      */
 
     private void validateHeaderName(String name) {
@@ -4801,25 +4791,15 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             Tr.entry(tc, "validateHeaderName, name is " + name);
         }
         char[] a = name.toCharArray();
-        boolean valid = true;
         char c;
+        boolean valid = true;
 
         for (int i = 0; i < a.length; i++) {
             c = a[i];
-            valid = ((c >= 'a') && (c <= 'z')) ||
-                    ((c >= 'A') && (c <= 'Z')) ||
-                    ((c >= '0') && (c <= '9')) ||
-                    (c == '!') || (c == '#') ||
-                    (c == '$') || (c == '%') ||
-                    (c == '&') || (c == '\'') ||
-                    (c == '*') || (c == '+') ||
-                    (c == '-') || (c == '.') ||
-                    (c == '^') || (c == '_') ||
-                    (c == '`') || (c == '|') ||
-                    (c == '~');
+            valid = isValidTchar(c);
             if (!valid) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                    Tr.debug(tc, "validateHeaderName invalid char " + c);
+                    Tr.debug(tc, "validateHeaderName invalid char " + String.format("%04x", (int) c));
                 }
                 break;
             }
@@ -4834,6 +4814,23 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "validateHeaderName");
         }
+
+    }
+
+    private boolean isValidTchar(char c) {
+        boolean valid = ((c >= 'a') && (c <= 'z')) ||
+                        ((c >= 'A') && (c <= 'Z')) ||
+                        ((c >= '0') && (c <= '9')) ||
+                        (c == '!') || (c == '#') ||
+                        (c == '$') || (c == '%') ||
+                        (c == '&') || (c == '\'') ||
+                        (c == '*') || (c == '+') ||
+                        (c == '-') || (c == '.') ||
+                        (c == '^') || (c == '_') ||
+                        (c == '`') || (c == '|') ||
+                        (c == '~');
+
+        return valid;
 
     }
 
