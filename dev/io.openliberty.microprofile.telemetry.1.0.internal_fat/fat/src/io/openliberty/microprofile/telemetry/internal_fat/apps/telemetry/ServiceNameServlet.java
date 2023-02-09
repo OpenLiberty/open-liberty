@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry;
@@ -19,7 +16,6 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
-
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.common.AttributeKey;
@@ -31,6 +27,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 
+@SuppressWarnings("serial")
 @WebServlet("/ServiceNameServlet")
 @ApplicationScoped
 public class ServiceNameServlet extends FATServlet {
