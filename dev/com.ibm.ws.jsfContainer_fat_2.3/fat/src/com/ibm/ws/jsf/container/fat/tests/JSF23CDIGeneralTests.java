@@ -4,11 +4,8 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jsf.container.fat.tests;
 
@@ -48,10 +45,10 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import componenttest.rules.repeater.JakartaEE9Action;
-import componenttest.rules.repeater.JakartaEE10Action;
 
 /**
  * General JSF 2.3 test cases the also require CDI.
@@ -186,7 +183,7 @@ public class JSF23CDIGeneralTests extends FATServletClient {
      *
      * @throws Exception
      */
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) // HTMLUnit gargoylesoftware thinks there's a JavaScript error 
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) // HTMLUnit gargoylesoftware thinks there's a JavaScript error
     @Test
     @WebArchiveInfo(name = "CDIManagedProperty", pkgs = { "com.ibm.ws.jsf23.fat.cdi.managedproperty" })
     public void testCDIManagedProperty() throws Exception {
@@ -290,14 +287,14 @@ public class JSF23CDIGeneralTests extends FATServletClient {
             assertTrue(resultPage.asText().contains("URI from RequestMap: /ELImplicitObjectsViaCDI/index.xhtml"));
             assertTrue(resultPage.asText()
                             .contains("Flow map object is null: Exception: WELD-001303: No active contexts "
-                                      + "for scope type "+(isEE9 || isEE10 ? "jakarta." : "javax.")+"faces.flow.FlowScoped")); // Expected exception
+                                      + "for scope type " + (isEE10 || isEE9 ? "jakarta." : "javax.") + "faces.flow.FlowScoped")); // Expected exception
             assertTrue(resultPage.asText().contains("Message from HeaderMap: This is a test"));
-            assertTrue(resultPage.asText().contains("Cookie object from CookieMap: "+(isEE9 || isEE10 ? "jakarta." : "javax.")+"servlet.http.Cookie"));
+            assertTrue(resultPage.asText().contains("Cookie object from CookieMap: " + (isEE10 || isEE9 ? "jakarta." : "javax.") + "servlet.http.Cookie"));
             assertTrue(resultPage.asText().contains("WELD_CONTEXT_ID_KEY from InitParameterMap: ELImplicitObjectsViaCDI"));
             assertTrue(resultPage.asText().contains("Message from RequestParameterMap: Hello World"));
             assertTrue(resultPage.asText().contains("Message from RequestParameterValuesMap: [Hello World]"));
             assertTrue(resultPage.asText().contains("Message from HeaderValuesMap: [This is a test]"));
-            assertTrue(resultPage.asText().contains("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: "+(isEE9 || isEE10 ? "jakarta." : "javax.")+"faces"));
+            assertTrue(resultPage.asText().contains("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: " + (isEE10 || isEE9 ? "jakarta." : "javax.") + "faces"));
         }
     }
 
@@ -583,42 +580,42 @@ public class JSF23CDIGeneralTests extends FATServletClient {
     @Mode(TestMode.FULL)
     @WebArchiveInfo(name = "ConversationScopedTest", pkgs = { "com.ibm.ws.jsf.conversationscoped.bean" })
     public void testConversationScoped() throws Exception {
-      String contextRoot = "ConversationScopedTest";
+        String contextRoot = "ConversationScopedTest";
 
-      // Wait for the application to be started.
-      jsf23CDIServer.waitForStringInLog("CWWKZ0001I: Application " + contextRoot + " started", 2000);
+        // Wait for the application to be started.
+        jsf23CDIServer.waitForStringInLog("CWWKZ0001I: Application " + contextRoot + " started", 2000);
 
-      // Construct the URL for the test
-      URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
+        // Construct the URL for the test
+        URL url = JSFUtils.createHttpUrl(jsf23CDIServer, contextRoot, "index.xhtml");
 
-      try (WebClient webClient = new WebClient()) {
-          HtmlPage indexPage = (HtmlPage) webClient.getPage(url);
+        try (WebClient webClient = new WebClient()) {
+            HtmlPage indexPage = (HtmlPage) webClient.getPage(url);
 
-          //Get index page & click increment button
-          HtmlForm form = indexPage.getFormByName("form1");
-          HtmlSubmitInput submitButton = form.getInputByName("form1:incrementButton");
-          indexPage = submitButton.click();
+            //Get index page & click increment button
+            HtmlForm form = indexPage.getFormByName("form1");
+            HtmlSubmitInput submitButton = form.getInputByName("form1:incrementButton");
+            indexPage = submitButton.click();
 
-          String responseText = indexPage.asText();
-          assertTrue("Page does not contain expected response.", responseText.contains("Value is 1"));
+            String responseText = indexPage.asText();
+            assertTrue("Page does not contain expected response.", responseText.contains("Value is 1"));
 
-          //Click Continue to go to page2.xhtml 
-          form = indexPage.getFormByName("form1");
-          submitButton = form.getInputByName("form1:continueButton");
-          HtmlPage page2 = submitButton.click();
+            //Click Continue to go to page2.xhtml 
+            form = indexPage.getFormByName("form1");
+            submitButton = form.getInputByName("form1:continueButton");
+            HtmlPage page2 = submitButton.click();
 
-          //Ensure value is still 1 for conversation scoped bean
-          responseText = page2.asText();
-          assertTrue("Page does not contain expected response.", responseText.contains("Value is 1"));
+            //Ensure value is still 1 for conversation scoped bean
+            responseText = page2.asText();
+            assertTrue("Page does not contain expected response.", responseText.contains("Value is 1"));
 
-          //End conversation and redirect to index.xhtml
-          form = page2.getFormByName("form2");
-          submitButton = form.getInputByName("form2:endButton");
-          indexPage = submitButton.click();
+            //End conversation and redirect to index.xhtml
+            form = page2.getFormByName("form2");
+            submitButton = form.getInputByName("form2:endButton");
+            indexPage = submitButton.click();
 
-          //Ensure bean counter resets to 0 when conversation scope ends.
-          responseText = indexPage.asText();
-          assertTrue("Page does not contain expected response.", responseText.contains("Value is 0"));
+            //Ensure bean counter resets to 0 when conversation scope ends.
+            responseText = indexPage.asText();
+            assertTrue("Page does not contain expected response.", responseText.contains("Value is 0"));
+        }
     }
-  }
 }
