@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,10 +12,13 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec.fat.configs;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.fat.common.web.WebRequestUtils;
 
 import io.openliberty.security.jakartasec.fat.utils.Constants;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.DisplayType;
@@ -36,6 +39,8 @@ public class TestConfigMaps {
     public static final String UserInfoOtherCallerNameClaimBadCaller = "UserInfoOtherCallerNameClaimBadCaller";
 
     public static final String AllDefault = "UserInfo";
+
+    protected static WebRequestUtils webReqUtils = new WebRequestUtils();
 
     /*************** OpenIdAuthenticationMechanismDefinition ************/
     public static Map<String, Object> getProviderUri(String opBase, String provider) throws Exception {
@@ -602,10 +607,27 @@ public class TestConfigMaps {
     }
 
     /****************** LogoutDefinitions ********************/
-    public static Map<String, Object> getRedirectURIGood_Logout(String opBase, String provider) throws Exception {
+    public static Map<String, Object> getRedirectURIGood_Logout(String rpBase) throws Exception {
+        return getRedirectURIGood_Logout(rpBase, null);
+    }
+
+    public static Map<String, Object> getRedirectURIGoodWithExtraParms_Logout(String rpBase) throws Exception {
+        Map<String, List<String>> parmsMap = new HashMap<String, List<String>>();
+        parmsMap.put("testParm1", Arrays.asList("testParm1_value"));
+        parmsMap.put("testParm2", Arrays.asList("testParm2_value"));
+        parmsMap.put("testParm3", Arrays.asList("testParm3_value"));
+        return getRedirectURIGood_Logout(rpBase, parmsMap);
+    }
+
+    public static Map<String, Object> getRedirectURIGood_Logout(String rpBase, Map<String, List<String>> parms) throws Exception {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
-        updatedMap.put(Constants.LOGOUT_REDIRECT_URI, opBase + "/oidc/endpoint/" + provider + "/end_session");
+        if (parms == null) {
+            updatedMap.put(Constants.LOGOUT_REDIRECT_URI, rpBase + "/PostLogoutServlet/PostLogout");
+        } else {
+            String parmString = webReqUtils.buildUrlQueryString(parms);
+            updatedMap.put(Constants.LOGOUT_REDIRECT_URI, rpBase + "/PostLogoutServlet/PostLogout?" + parmString);
+        }
         return updatedMap;
 
     }
@@ -614,6 +636,14 @@ public class TestConfigMaps {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
         updatedMap.put(Constants.LOGOUT_REDIRECT_URI, opBase);
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getRedirectURIEndSession_Logout(String opBase, String provider) throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.LOGOUT_REDIRECT_URI, opBase + "/oidc/endpoint/" + provider + "/end_session");
         return updatedMap;
 
     }
@@ -715,6 +745,15 @@ public class TestConfigMaps {
         Map<String, Object> updatedMap = new HashMap<String, Object>();
         Log.info(thisClass, "", "userinfoApp:  (not set)");
         updatedMap.put(Constants.USERINFOENDPOINT, "");
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getEndSessionEndpoint(String serverBase, String appName) throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        Log.info(thisClass, "", "endSessionApp: " + appName);
+        updatedMap.put(Constants.ENDSESSION_ENDPOINT, serverBase + "/" + appName);
         return updatedMap;
 
     }

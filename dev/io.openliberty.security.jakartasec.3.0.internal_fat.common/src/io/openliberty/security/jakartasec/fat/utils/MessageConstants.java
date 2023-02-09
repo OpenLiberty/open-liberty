@@ -26,6 +26,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS1406E_INVALID_CLIENT_CREDENTIAL = "CWWKS1406E";
     public static final String CWWKS1608E_MULTIPLE_RESPONSE_TYPE_ERROR = "CWWKS1608E";
     public static final String CWWKS1619E_OPENID_SCOPE_MISSING = "CWWKS1619E";
+    public static final String CWWKS1636E_INVALID_POST_LOGOUT = "CWWKS1636E";
     public static final String CWWKS1652A_AUTH_SEND_FAILURE = "CWWKS1652A";
 
     public static final String CWWKS1925E_MULTIPLE_ANNOTATIONS = "CWWKS1925E";
