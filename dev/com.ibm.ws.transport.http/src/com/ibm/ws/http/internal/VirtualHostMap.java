@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -106,12 +107,12 @@ public class VirtualHostMap {
                 for (HttpEndpointImpl e : HttpEndpointList.getInstance()) {
                     int ePort = e.getListeningHttpPort();
                     if (ePort > 0) {
-                        defaultHost.listenerStarted(e, e.getResolvedHostName(), ePort, false);
+                        defaultHost.listenerStarted(e, e.getResolvedHostNameSupplier(), ePort, false);
                     }
 
                     ePort = e.getListeningSecureHttpPort();
                     if (ePort > 0) {
-                        defaultHost.listenerStarted(e, e.getResolvedHostName(), ePort, true);
+                        defaultHost.listenerStarted(e, e.getResolvedHostNameSupplier(), ePort, true);
                     }
 
                 }
@@ -174,22 +175,22 @@ public class VirtualHostMap {
      * Add an endpoint that has started listening, and notify associated virtual hosts
      *
      * @param endpoint         The HttpEndpointImpl that owns the started chain/listener
-     * @param resolvedHostName A hostname that can be used in messages (based on endpoint configuration, something other than *)
+     * @param hostNameResolver A hostname resolver that can be used in messages (based on endpoint configuration, something other than *)
      * @param port             The port the endpoint is listening on
      * @param isHttps          True if this is an SSL port
      * @see HttpChain#chainStarted(com.ibm.websphere.channelfw.ChainData)
      */
-    public static synchronized void notifyStarted(HttpEndpointImpl endpoint, String resolvedHostName, int port, boolean isHttps) {
+    public static synchronized void notifyStarted(HttpEndpointImpl endpoint, Supplier<String> hostNameResolver, int port, boolean isHttps) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Notify endpoint started: " + endpoint, resolvedHostName, port, isHttps, defaultHost, alternateHostSelector);
+            Tr.event(tc, "Notify endpoint started: " + endpoint, hostNameResolver, port, isHttps, defaultHost, alternateHostSelector);
         }
         if (alternateHostSelector == null) {
             if (defaultHost != null) {
-                defaultHost.listenerStarted(endpoint, resolvedHostName, port, isHttps);
+                defaultHost.listenerStarted(endpoint, hostNameResolver, port, isHttps);
             }
 
         } else {
-            alternateHostSelector.alternateNotifyStarted(endpoint, resolvedHostName, port, isHttps);
+            alternateHostSelector.alternateNotifyStarted(endpoint, hostNameResolver, port, isHttps);
         }
     }
 
@@ -257,13 +258,13 @@ public class VirtualHostMap {
                 int ePort = e.getListeningHttpPort();
                 if (ePort > 0) {
                     VirtualHostDiscriminator d = findOrCreateDiscriminator(ePort);
-                    d.addEndpoint(e, e.getResolvedHostName(), false);
+                    d.addEndpoint(e, e.getResolvedHostNameSupplier(), false);
                 }
 
                 ePort = e.getListeningSecureHttpPort();
                 if (ePort > 0) {
                     VirtualHostDiscriminator d = findOrCreateDiscriminator(ePort);
-                    d.addEndpoint(e, e.getResolvedHostName(), true);
+                    d.addEndpoint(e, e.getResolvedHostNameSupplier(), true);
                 }
             }
         }
@@ -313,10 +314,10 @@ public class VirtualHostMap {
          * @param port
          * @param isHttps
          */
-        void alternateNotifyStarted(HttpEndpointImpl endpoint, String hostName, int port, boolean isHttps) {
+        void alternateNotifyStarted(HttpEndpointImpl endpoint, Supplier<String> hostNameResolver, int port, boolean isHttps) {
             // will not return null: a new discriminator will be created if it doesn't exist already..
             VirtualHostDiscriminator d = findOrCreateDiscriminator(port);
-            d.addEndpoint(endpoint, hostName, isHttps);
+            d.addEndpoint(endpoint, hostNameResolver, isHttps);
         }
 
         /**
@@ -638,9 +639,12 @@ public class VirtualHostMap {
                 // Tell the target virtual host about the port this discriminator is for
                 for (HttpEndpointImpl e : endpoints) {
                     if (config.acceptFromEndpoint(e.getPid())) {
-                        String msgHostName = aliasHost;
-                        if (HttpServiceConstants.WILDCARD.equals(aliasHost))
-                            msgHostName = e.getResolvedHostName();
+                        Supplier<String> msgHostName;
+                        if (HttpServiceConstants.WILDCARD.equals(aliasHost)) {
+                            msgHostName = e.getResolvedHostNameSupplier();
+                        } else {
+                            msgHostName = () -> aliasHost;
+                        }
 
                         // If the port for this discriminator matches the secure listening port
                         // of the endpoint, then this is an https listener..
@@ -649,7 +653,7 @@ public class VirtualHostMap {
                         if (added)
                             config.listenerStarted(e, msgHostName, port, isHttps);
                         else
-                            config.listenerStopped(e, msgHostName, port, isHttps);
+                            config.listenerStopped(e, msgHostName.get(), port, isHttps);
                     }
                 }
             }
@@ -664,12 +668,12 @@ public class VirtualHostMap {
             for (HttpEndpointImpl e : HttpEndpointList.getInstance()) {
                 int ePort = e.getListeningHttpPort();
                 if (ePort == port) {
-                    addEndpoint(e, e.getResolvedHostName(), false);
+                    addEndpoint(e, e.getResolvedHostNameSupplier(), false);
                 }
 
                 ePort = e.getListeningSecureHttpPort();
                 if (ePort == port) {
-                    addEndpoint(e, e.getResolvedHostName(), true);
+                    addEndpoint(e, e.getResolvedHostNameSupplier(), true);
                 }
             }
         }
@@ -679,10 +683,10 @@ public class VirtualHostMap {
          * Notify virtual hosts that an endpoint is listening on this port..
          *
          * @param endpoint
-         * @param resolvedHostName Hostname suitable for use in a message (a real hostname, not *)
+         * @param hostNameResolver Hostname resolver suitable for use in a message (a real hostname, not *)
          * @param isHttps          true if this is an https port.
          */
-        void addEndpoint(HttpEndpointImpl endpoint, String resolvedHostName, boolean isHttps) {
+        void addEndpoint(HttpEndpointImpl endpoint, Supplier<String> hostNameResolver, boolean isHttps) {
             if (endpoints.add(endpoint)) {
                 /** For notifications: make sure we notify hosts only once.. */
                 HashSet<VirtualHostConfig> hosts = new HashSet<VirtualHostConfig>();
@@ -703,7 +707,7 @@ public class VirtualHostMap {
 
                         // Notify the listener _with the hostAlias's host value_
                         if (hosts.add(config) && config.acceptFromEndpoint(endpoint.getPid())) {
-                            config.listenerStarted(endpoint, host, port, isHttps);
+                            config.listenerStarted(endpoint, () -> host, port, isHttps);
                         }
                     }
                 }
@@ -712,7 +716,7 @@ public class VirtualHostMap {
                 // using the endpoint's resolved host name
                 VirtualHostConfig wildcard = currentHosts.wildcardHost;
                 if (wildcard != null) {
-                    wildcard.listenerStarted(endpoint, resolvedHostName, port, isHttps);
+                    wildcard.listenerStarted(endpoint, hostNameResolver, port, isHttps);
                 }
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                     Tr.event(tc, "Endpoint {0} added for port {1}: {2}", endpoint.getName(), portString, this);
@@ -760,7 +764,7 @@ public class VirtualHostMap {
          */
         boolean cleanup() {
             if ((currentHosts.wildcardHost == null || currentHosts.wildcardHost == defaultHost)
-                            && currentHosts.otherHosts == null && endpoints.isEmpty()) {
+                && currentHosts.otherHosts == null && endpoints.isEmpty()) {
                 return true;
             }
 
