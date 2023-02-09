@@ -6,11 +6,7 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 package io.openliberty.org.apache.faces40.fat.programmaticfacelettests;
 
 import java.io.IOException;
@@ -36,7 +32,7 @@ public class FieldFacelet extends Facelet {
 
         UIOutput output = new UIOutput();
         output.setValue("<html xmlns=\"http://www.w3.org/1999/xhtml\"\n"
-                        + "    xmlns:h=\"http://xmlns.jcp.org/jsf/html\">");
+                        + "    xmlns:h=\"jakarta.faces.html\">");
         rootChildren.add(output);
 
         HtmlHead head = new HtmlHead();
