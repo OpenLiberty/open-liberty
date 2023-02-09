@@ -1,9 +1,11 @@
 #*******************************************************************************
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -13,8 +15,9 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/ExampleApp/src,\
-	test-resourceadapter/src
+	test-applications/WorkContextJCApp/src,\
+	test-resourceadapter/src,\
+    test-bundles/threadingtestbundle/src
 
 fat.project: true
 
@@ -22,11 +25,40 @@ fat.project: true
 tested.features:\
 	connectors-2.1,\
 	mdb-4.0,\
-	servlet-6.0
+	servlet-6.0,\
+	threadingTestFeature-1.0
+# above is Not in server.xml, causes timedexit not enabled error
 
+# enable sub-features
+-sub: *.bnd
+
+# removed from buildpath below.
+#	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
 -buildpath: \
-	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
 	io.openliberty.jakarta.annotation.2.0;version=latest,\
 	io.openliberty.jakarta.connectors.2.1;version=latest,\
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
-	io.openliberty.jakarta.enterpriseBeans.4.0
+	io.openliberty.jakarta.enterpriseBeans.4.0,\
+	com.ibm.wsspi.org.osgi.core;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.org.apache.yoko.corba.spec.1.5;version=latest,\
+	com.ibm.ws.org.apache.yoko.core.1.5;version=latest,\
+	com.ibm.ws.org.apache.yoko.osgi.1.5;version=latest,\
+	com.ibm.ws.org.apache.yoko.rmi.impl.1.5;version=latest,\
+	com.ibm.ws.org.apache.yoko.rmi.spec.1.5;version=latest,\
+	com.ibm.ws.org.apache.yoko.util.1.5;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
+	com.ibm.ws.jca;version=latest,\
+	com.ibm.ws.jca.cm;version=latest,\
+    com.ibm.ws.threading;version=latest
+# is this line required ? yes
+#	com.ibm.ws.threading;version=latest
+# Duplicate name
+# 	fattest.simplicity;version=latest,\
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file

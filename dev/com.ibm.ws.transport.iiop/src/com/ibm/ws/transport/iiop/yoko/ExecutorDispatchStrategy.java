@@ -107,6 +107,8 @@ public class ExecutorDispatchStrategy extends LocalObject implements DispatchStr
 		//System.out.println("Request_Id: " + workInfoMap.get().IIOP_REQUEST_ID + "\n");
 		System.out.println("ExecutorDispatchStrategy-requestId: " + wc.get(WorkContext.IIOP_REQUEST_ID) + "\n");
 		System.out.println("ExecutorDispatchStrategy-operation: " + wc.get(WorkContext.IIOP_OPERATION_NAME) + "\n");
+		System.out.println("ExecutorDispatchStrategy-targetId: " + wc.get(WorkContext.IIOP_TARGET_NAME) + "\n");
+
 
 		executor.execute(new RunnableWithContext() {
 

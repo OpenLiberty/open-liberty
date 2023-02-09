@@ -38,6 +38,7 @@ public interface WorkContext extends Map<String, Serializable> {
     static final String INBOUND_PORT = "com.ibm.wsspi.threading.work.inboundPort";
     static final String IIOP_OPERATION_NAME = "com.ibm.wsspi.threading.work.operationName";
     static final String IIOP_REQUEST_ID = "com.ibm.wsspi.threading.work.requestId";
+    static final String IIOP_TARGET_NAME = "com.ibm.wsspi.threading.work.targetId";
     /**
      * WorkContext objects with WORK_TYPE_IIOP_EJB will contain a value of either "local" or
      * "remote" for this key.

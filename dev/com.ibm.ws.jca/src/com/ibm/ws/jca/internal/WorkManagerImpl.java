@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -26,10 +26,15 @@ import javax.resource.spi.work.WorkListener;
 import javax.resource.spi.work.WorkManager;
 import javax.resource.spi.work.WorkRejectedException;
 
+import org.osgi.service.component.annotations.Reference;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+// 04/05/23
+// import com.ibm.wsspi.threading.ExecutorServiceTaskInterceptor;
 import com.ibm.ws.threading.CallableWithContext;
+import com.ibm.wsspi.threading.ExecutorServiceTaskInterceptor;
 
 /**
  * Implementation of J2C WorkManager for WebSphere Application Server
@@ -63,10 +68,22 @@ public final class WorkManagerImpl implements WorkManager {
      */
     private volatile boolean stopped;
 
+    // LH 04/05/2023 Interceptor to Activate
+    @Reference
+    protected synchronized void setInterceptor(ExecutorServiceTaskInterceptor interceptor) {
+        System.out.println(" WorkManagerImlp setInterceptor ");
+
+    }
+
+    protected synchronized void unsetInterceptor(ExecutorServiceTaskInterceptor interceptor) {
+        System.out.println(" WorkManagerImlp unsetInterceptor ");
+
+    }
+
     /**
      * Constructs the implementation of WorkManager.
      *
-     * @param execSvc Liberty executor.
+     * @param execSvc          Liberty executor.
      * @param bootstrapContext the bootstrap context.
      */
     public WorkManagerImpl(BootstrapContextImpl bootstrapContext) {
@@ -172,7 +189,6 @@ public final class WorkManagerImpl implements WorkManager {
             if (futures.add(f) && futures.size() % FUTURE_PURGE_INTERVAL == 0)
                 purgeFutures();
 
-
             // It is this call that guarantees that startWork will not return until
             // the work is started or times out.
             Long startupDuration = workProxy.waitForStart();
@@ -230,8 +246,8 @@ public final class WorkManagerImpl implements WorkManager {
      * @param workListener
      * @throws WorkException
      * @exception NullPointerException this method relies on the
-     *                RALifeCycleManager to call setThreadPoolName() to set
-     *                theScheduler
+     *                                     RALifeCycleManager to call setThreadPoolName() to set
+     *                                     theScheduler
      * @see <a
      *      href="http://java.sun.com/j2ee/1.4/docs/api/javax/resource/spi/work/WorkManager.html#scheduleWork(com.ibm.javarx.spi.work.Work, long, com.ibm.javarx.spi.work.ExecutionContext, com.ibm.javarx.spi.work.WorkListener)">
      *      com.ibm.javarx.spi.work.WorkManager.scheduleWork(Work, long, ExecutionContext, WorkListener)</a>

@@ -74,7 +74,7 @@ public class IIOPWorkContextInterceptor extends LocalObject implements ServerReq
 
                 int requestId = ri.request_id();
                 String operation = ri.operation();
-
+                // String targetId = ri.target_most_derived_interface();
 
                 // Set ExecutorDispatchStrategy new map, pass to ExecutorDispatchStrategy
                 // setIiopWorkContext
@@ -93,6 +93,7 @@ public class IIOPWorkContextInterceptor extends LocalObject implements ServerReq
 
                 theMap.put(WorkContext.IIOP_REQUEST_ID, requestId);
                 theMap.put(WorkContext.IIOP_OPERATION_NAME, operation);
+                // theMap.put(WorkContext.IIOP_TARGET_NAME, targetId);
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "operation: " + operation + ", and requestId: " + requestId);
@@ -100,6 +101,7 @@ public class IIOPWorkContextInterceptor extends LocalObject implements ServerReq
                 // debug: What's in the map
                 System.out.println("IIOPWorkContextInterceptor - requestId: " + theMap.get(WorkContext.IIOP_REQUEST_ID) + "\n");
                 System.out.println("IIOPWorkContextInterceptor - operation: " + theMap.get(WorkContext.IIOP_OPERATION_NAME) + "\n");
+                // System.out.println("IIOPWorkContextInterceptor - targetId: " + theMap.get(WorkContext.IIOP_TARGET_NAME) + "\n");
 
                 //        } //catch (SystemException e) {
 //            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -144,8 +146,14 @@ public class IIOPWorkContextInterceptor extends LocalObject implements ServerReq
     }
 
 	@Override
-	public void receive_request(ServerRequestInfo arg0) throws ForwardRequest {
-	// Don't think we have  to do anything here.
+	// public void receive_request(ServerRequestInfo arg0) throws ForwardRequest {
+	public void receive_request(ServerRequestInfo ri) throws ForwardRequest {
+	// Don't think we have to do anything here.
+		System.out.println("receive_request - target_most_derived_interface");
+		String targetId = ri.target_most_derived_interface();
+		//theMap.put(WorkContext.IIOP_TARGET_NAME, targetId);
+		System.out.println("IIOPWorkContextInterceptor - targetId: " + targetId + "\n");
+		// System.out.println("IIOPWorkContextInterceptor - targetId: " + theMap.get(WorkContext.IIOP_TARGET_NAME) + "\n");
 
 	}
 

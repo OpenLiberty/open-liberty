@@ -8,6 +8,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" output="bin_test" path="test"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.transport.iiop.workcontext"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

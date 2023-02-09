@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -459,6 +459,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             wc.put(WorkContext.URI, this.request.getURI());
             wc.put(WorkContext.METHOD_NAME, this.request.getMethod());
             wc.put(WorkContext.INBOUND_HOSTNAME, this.request.getVirtualHost());
+            //wc.put(WorkContext.APPLICATION_NAME, this.request.xxxxx());
 
             handlerWC = new RunnableWithContext() {
 

@@ -1,0 +1,25 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+Bundle-Name: ThreadingTestBundle
+Bundle-SymbolicName: test.bundle.threading; singleton:=true
+Bundle-Description: Bundle that provides executor overrides for ThreadFactory and TaskInterceptor; version=${bVersion}
+
+Export-Package: test.bundle.threading
+
+Import-Package: com.ibm.wsspi.threading
+
+Private-Package: test.bundle.threading.internal.*
+
+Service-Component:\
+    test.bundle.threading.ThreadFactoryImpl;\
+        implementation:=test.bundle.threading.ThreadFactoryImpl;\
+        provide:=java.util.concurrent.ThreadFactory;\
+        properties:="com.ibm.ws.threading.defaultExecutorThreadFactory=true",\
+    test.bundle.threading.TaskInterceptorImpl;\
+        implementation:=test.bundle.threading.TaskInterceptorImpl;\
+        provide:=com.ibm.wsspi.threading.ExecutorServiceTaskInterceptor;\
+        workContextService=com.ibm.wsspi.threading.WorkContextService;\
+        properties:="service.vendor=IBM"

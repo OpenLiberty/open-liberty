@@ -50,7 +50,8 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
   com.ibm.ws.transport.iiop.internal.WSUtilService, \
   com.ibm.ws.transport.iiop.yoko.DefaultSocketFactorySubsystemFactory, \
   com.ibm.ws.transport.iiop.yoko.DispatchSubsystemFactory, \
-  com.ibm.ws.transport.iiop.yoko.ORBConfigAdapter
+  com.ibm.ws.transport.iiop.yoko.ORBConfigAdapter, \
+  com.ibm.ws.transport.iiop.workcontext.IIOPWorkContextSubsystemFactory
 -dsannotations-options: version;minimum=1.2
 
 instrument.classesExcludes: com/ibm/ws/transport/iiop/resources/*.class
@@ -73,8 +74,9 @@ instrument.classesExcludes: com/ibm/ws/transport/iiop/resources/*.class
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
-	com.ibm.ws.threading;version=latest,\
-    com.ibm.ws.transport.iiop.workcontext;version=latest
+	com.ibm.ws.threading;version=latest
+#    com.ibm.ws.transport.iiop.workcontext;version=latest
+# above added so workcontext will exist
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
