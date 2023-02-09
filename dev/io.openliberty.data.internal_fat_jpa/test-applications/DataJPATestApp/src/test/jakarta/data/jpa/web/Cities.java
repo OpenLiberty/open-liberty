@@ -10,6 +10,7 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import jakarta.data.repository.Compare;
@@ -32,18 +33,28 @@ public interface Cities {
     @Filter(by = "stateName")
     boolean areFoundIn(String state);
 
+    long countByStateNameAndIdNotOrIdNotAndName(String state, CityId exceptForInState, CityId exceptForCity, String city);
+
     void delete(City city); // copied from CrudRepository
 
     // "IN" (which is needed for this) is not supported for composite IDs, but EclipseLink generates SQL
     // that leads to an SQLSyntaxErrorException rather than rejecting it outright
     void deleteAll(Iterable<City> list); // copied from CrudRepository
 
+    boolean existsById(CityId id);
+
     boolean existsByNameAndStateName(String name, String state);
 
-    City findById(CityId id);
+    Optional<City> findById(CityId id);
+
+    @OrderBy("name")
+    Stream<City> findByIdOrIdIgnoreCaseOrId(CityId id1, CityId id2, CityId id3);
 
     @OrderBy("stateName")
     Stream<City> findByName(String name);
+
+    @OrderBy("stateName")
+    Stream<City> findByNameAndIdNot(String state, CityId exceptFor);
 
     @OrderBy(value = "stateName", descending = true)
     Stream<CityId> findByNameStartsWith(String prefix);
@@ -70,9 +81,21 @@ public interface Cities {
 
     CityId findFirstByNameOrderByPopulationDesc(String name);
 
+    @Filter(by = "population", op = Compare.GreaterThan)
+    @Filter(by = "id", ignoreCase = true, op = Compare.Not)
+    @Filter(by = "stateName", op = Compare.StartsWith)
+    @OrderBy("stateName")
+    @OrderBy("name")
+    Stream<City> largerThan(int minPopulation, CityId exceptFor, String statePattern);
+
     @Filter(by = "population", op = Compare.Between, param = { "minSize", "maxSize" })
     @OrderBy(value = "id", descending = true)
     KeysetAwarePage<City> sizedWithin(@Param("minSize") int minPopulation, @Param("maxSize") int maxPopulation, Pageable pagination);
 
     void save(City c);
+
+    @Filter(by = "id", op = Compare.NotNull)
+    @Filter(by = "name")
+    @OrderBy("stateName")
+    Stream<City> withNameOf(String name);
 }

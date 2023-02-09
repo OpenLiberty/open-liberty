@@ -298,6 +298,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             Update[] updates = queryInfo.method.getAnnotationsByType(Update.class);
             if (updates.length > 0) {
                 queryInfo.type = QueryInfo.Type.UPDATE;
+                if (whereClause == null)
+                    queryInfo.paramCount = 0;
                 q = generateUpdateClause(queryInfo, updates);
                 if (whereClause != null)
                     q.append(whereClause);
@@ -641,21 +643,17 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         if (attribute.length() == 0)
             throw new MappingException("Entity property name is missing."); // TODO possibly combine with unknown entity property name
 
-        if (negated) {
-            Condition negatedCondition = condition.negate();
-            if (negatedCondition != null) {
-                condition = negatedCondition;
-                negated = false;
-            }
-        }
-
         String name = queryInfo.entityInfo.getAttributeName(attribute);
-        if (name == null && attribute.length() == 3) {
-            // Special case for CrudRepository.deleteAll and CrudRepository.findAll
-            int len = q.length(), where = q.lastIndexOf(" WHERE (");
-            if (where + 8 == len)
-                q.delete(where, len); // Remove " WHERE " because there are no conditions
-            queryInfo.hasWhere = false;
+        if (name == null) {
+            if (attribute.length() == 3) {
+                // Special case for CrudRepository.deleteAll and CrudRepository.findAll
+                int len = q.length(), where = q.lastIndexOf(" WHERE (");
+                if (where + 8 == len)
+                    q.delete(where, len); // Remove " WHERE " because there are no conditions
+                queryInfo.hasWhere = false;
+            } else if (queryInfo.entityInfo.idClass != null && attribute.equalsIgnoreCase("id")) {
+                generateConditionsForIdClass(queryInfo, condition, ignoreCase, negated, q);
+            }
             return;
         }
 
@@ -664,6 +662,14 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             attributeExpr.append("LOWER(o.").append(name).append(')');
         else
             attributeExpr.append("o.").append(name);
+
+        if (negated) {
+            Condition negatedCondition = condition.negate();
+            if (negatedCondition != null) {
+                condition = negatedCondition;
+                negated = false;
+            }
+        }
 
         boolean isCollection = Collection.class.equals(queryInfo.entityInfo.attributeTypes.get(name));
         if (isCollection)
@@ -714,6 +720,50 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 q.append(attributeExpr).append(negated ? " NOT " : "").append(condition.operator);
                 appendParam(q, ignoreCase, ++queryInfo.paramCount);
         }
+    }
+
+    /**
+     * Generates JPQL for a *By condition on the IdClass, which expands to multiple conditions in JPQL.
+     */
+    private void generateConditionsForIdClass(QueryInfo queryInfo, Condition condition, boolean ignoreCase, boolean negate, StringBuilder q) {
+        q.append(negate ? "NOT (" : "(");
+
+        boolean first = true;
+        for (String idClassAttr : queryInfo.entityInfo.idClassAttributeAccessors.keySet()) {
+            if (!first)
+                q.append(" AND ");
+
+            String name = queryInfo.entityInfo.getAttributeName(idClassAttr);
+            if (ignoreCase)
+                q.append("LOWER(o.").append(name).append(')');
+            else
+                q.append("o.").append(name);
+
+            switch (condition) {
+                case EQUALS:
+                case NOT_EQUALS:
+                    q.append(condition.operator);
+                    appendParam(q, ignoreCase, ++queryInfo.paramCount);
+                    if (!first)
+                        queryInfo.paramAddedCount++;
+                    break;
+                case NULL:
+                case EMPTY:
+                    q.append(Condition.NULL.operator);
+                    break;
+                case NOT_NULL:
+                case NOT_EMPTY:
+                    q.append(Condition.NOT_NULL.operator);
+                    break;
+                default:
+                    throw new MappingException("Repository keyword " + condition.name() +
+                                               " cannot be used when the Id of the entity is an IdClass."); // TODO
+            }
+
+            first = false;
+        }
+
+        q.append(')');
     }
 
     /**
@@ -834,19 +884,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             } else if (methodName.length() == 6) {
                 Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
                 if (paramTypes.length == 1 && (Object.class.equals(paramTypes[0]) || entityInfo.type.equals(paramTypes[0]))) {
-                    if (entityInfo.idClass == null)
-                        methodName = "deleteById"; // CrudRepository.delete(entity)
-                    else { // TODO should be unnecessary after general path is updated to understand id
-                        methodName = "deleteBy";
-                        boolean first = true;
-                        for (String idClassAttr : entityInfo.idClassAttributeAccessors.keySet()) {
-                            if (first)
-                                first = false;
-                            else
-                                methodName += "And";
-                            methodName += idClassAttr;
-                        }
-                    }
+                    methodName = "deleteById"; // CrudRepository.delete(entity)
                     queryInfo.paramsNeedConversionToId = true;
                     c = 8;
                 }
@@ -1162,8 +1200,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 }
                 q.append(')');
             } else { // positional parameter
-                if (queryInfo.paramCount == Integer.MIN_VALUE)
-                    queryInfo.paramCount = 0;
                 q.append('?').append(++queryInfo.paramCount);
             }
 
@@ -1220,16 +1256,20 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
             String attribute = filter.by();
             boolean ignoreCase = filter.ignoreCase();
-            Compare condition = filter.op();
-            Compare negatedFrom = condition.negatedFrom();
+            Compare comparison = filter.op();
+            Compare negatedFrom = comparison.negatedFrom();
             boolean negated = negatedFrom != null;
             if (negated)
-                condition = negatedFrom;
+                comparison = negatedFrom;
 
             if (attribute.length() == 0)
                 throw new MappingException("Entity property name is missing."); // TODO possibly combine with unknown entity property name
 
             String name = queryInfo.entityInfo.getAttributeName(attribute);
+            if (name == null) {
+                generateConditionsForIdClass(queryInfo, Condition.forIdClass(comparison), ignoreCase, negated, q);
+                continue;
+            }
 
             StringBuilder attributeExpr = new StringBuilder();
             if (ignoreCase)
@@ -1239,9 +1279,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
             boolean isCollection = Collection.class.equals(queryInfo.entityInfo.attributeTypes.get(name));
             if (isCollection)
-                verifyCollectionsSupported(name, ignoreCase, condition);
+                verifyCollectionsSupported(name, ignoreCase, comparison);
 
-            switch (condition) {
+            switch (comparison) {
                 case Equal:
                     q.append(attributeExpr).append(negated ? Condition.NOT_EQUALS.operator : Condition.EQUALS.operator);
                     appendParamOrValue(q, queryInfo, filter);
@@ -1309,7 +1349,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         q.append(attributeExpr).append(negated ? Condition.NOT_NULL.operator : Condition.NULL.operator);
                     break;
                 default:
-                    throw new MappingException(new UnsupportedOperationException(condition.name())); // should be unreachable
+                    throw new MappingException(new UnsupportedOperationException(comparison.name())); // should be unreachable
             }
         }
 
@@ -1415,7 +1455,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
                         // Jakarta Data allows the method parameter positions after those used as query parameters
                         // to be used for purposes such as pagination and sorting.
-                        for (int i = queryInfo.paramCount; i < (args == null ? 0 : args.length); i++) {
+                        for (int i = queryInfo.paramCount - queryInfo.paramAddedCount; i < (args == null ? 0 : args.length); i++) {
                             Object param = args[i];
                             if (param instanceof Limit)
                                 limit = (Limit) param; // TODO must fail if 2 Limits

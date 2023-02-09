@@ -338,6 +338,15 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Repository method with the Count keyword that counts how many matching entities there are.
+     */
+    @Test
+    public void testIdClassCountKeyword() {
+        assertEquals(2L, cities.countByStateNameAndIdNotOrIdNotAndName("Missouri", CityId.of("Kansas City", "Missouri"),
+                                                                       CityId.of("Rochester", "New York"), "Rochester"));
+    }
+
+    /**
      * Use CrudRepository-style delete(entity) operation where entity has a composite ID that is defined by IdClass.
      */
     @Test
@@ -345,7 +354,7 @@ public class DataJPATestServlet extends FATServlet {
         City winona = new City("Winona", "Minnesota", 25948, Set.of(507));
         cities.save(winona);
         cities.delete(winona);
-        assertEquals(0L, cities.findByName("Winona").count());
+        assertEquals(true, cities.findById(CityId.of("Winona", "Minnesota")).isEmpty());
     }
 
     /**
@@ -364,6 +373,51 @@ public class DataJPATestServlet extends FATServlet {
     public void testIdClassExistsKeyword() {
         assertEquals(true, cities.existsByNameAndStateName("Kansas City", "Kansas"));
         assertEquals(false, cities.existsByNameAndStateName("Kansas City", "Minnesota"));
+
+        assertEquals(true, cities.existsById(CityId.of("Kansas City", "Missouri")));
+        assertEquals(false, cities.existsById(CityId.of("Kansas City", "Nebraska")));
+    }
+
+    /**
+     * Repository method with the Filter annotation that queries based on multiple IdClass parameters.
+     */
+    @Test
+    public void testIdClassFilterAnnotation() {
+        assertIterableEquals(List.of("Rochester Minnesota",
+                                     "Rochester New York"),
+                             cities.withNameOf("Rochester")
+                                             .map(c -> c.name + ' ' + c.stateName)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("Springfield Massachusetts",
+                                     "Rochester Minnesota",
+                                     "Kansas City Missouri"),
+                             cities.largerThan(100000, CityId.of("springfield", "missouri"), "M%s")
+                                             .map(c -> c.name + ' ' + c.stateName)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Repository method with the Find keyword that queries based on multiple IdClass parameters.
+     */
+    @Test
+    public void testIdClassFindKeyword() {
+        assertIterableEquals(List.of("Kansas City Missouri",
+                                     "Rochester Minnesota",
+                                     "Springfield Illinois"),
+                             cities.findByIdOrIdIgnoreCaseOrId(CityId.of("Rochester", "Minnesota"),
+                                                               CityId.of("springfield", "illinois"),
+                                                               CityId.of("Kansas City", "Missouri"))
+                                             .map(c -> c.name + ' ' + c.stateName)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("Springfield Illinois",
+                                     "Springfield Massachusetts",
+                                     "Springfield Missouri",
+                                     "Springfield Ohio"),
+                             cities.findByNameAndIdNot("Springfield", CityId.of("Springfield", "Oregon"))
+                                             .map(c -> c.name + ' ' + c.stateName)
+                                             .collect(Collectors.toList()));
     }
 
     /**

@@ -97,7 +97,9 @@ class EntityInfo {
                     lowerName = lowerName.replace("_", "");
                     attributeName = attributeNames.get(lowerName);
                     if (attributeName == null)
-                        throw new MappingException("Entity class " + type.getName() + " does not have a property named " + name + "."); // TODO NLS
+                        throw new MappingException("Entity class " + type.getName() + " does not have a property named " + name +
+                                                   ". The following are valid property names for the entity: " +
+                                                   attributeTypes.keySet()); // TODO NLS
                 }
             }
 

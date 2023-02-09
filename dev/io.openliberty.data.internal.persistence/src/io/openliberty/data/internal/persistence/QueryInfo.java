@@ -92,6 +92,15 @@ class QueryInfo {
     int paramCount = Integer.MIN_VALUE; // initialize to undefined
 
     /**
+     * Difference between the number of parameters to the JPQL query and the expected number of
+     * corresponding parameters on the repository method signature. If the entity has an IdClass
+     * and the repository method queries on Id, it will have only a single parameter for the user
+     * to input, whereas the JPQL will have additional parameters for each additional attribute
+     * of the IdClass.
+     */
+    int paramAddedCount = 0;
+
+    /**
      * Names that are specified by the <code>Param</code> annotation for each query parameter.
      * If positional parameters (?1, ?2, ...) are used rather than named parameters,
      * the list can be empty or have null as its first element.
@@ -227,16 +236,31 @@ class QueryInfo {
      * @throws Exception if an error occurs
      */
     void setParameters(Query query, Object... args) throws Exception {
+        int methodParamForQueryCount = paramCount - paramAddedCount;
+        if (args != null && args.length < methodParamForQueryCount)
+            throw new MappingException("The " + method.getName() + " repository method has " + args.length +
+                                       " parameters, but requires " + methodParamForQueryCount +
+                                       " method parameters. The generated JPQL query is: " + jpql + "."); // TODO NLS
+
         if (entityInfo.idClass == null || !paramsNeedConversionToId) {
-            for (int i = 0, count = paramNames.size(); i < paramCount; i++) {
+            for (int i = 0, p = 0, count = paramNames.size(); i < methodParamForQueryCount; i++) {
                 Object arg = paramsNeedConversionToId ? //
                                 toEntityId(args[i]) : //
                                 args[i];
-                String paramName = count > i ? paramNames.get(i) : null;
-                if (paramName == null)
-                    query.setParameter(i + 1, arg);
-                else // named parameter
-                    query.setParameter(paramName, arg);
+
+                if (arg == null || entityInfo.idClass == null || !entityInfo.idClass.isInstance(arg)) {
+                    String paramName = count > i ? paramNames.get(i) : null;
+                    if (paramName == null)
+                        query.setParameter(++p, arg);
+                    else // named parameter
+                        query.setParameter(paramName, arg);
+                } else { // split IdClass argument into parameters
+                    for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
+                        Object param = accessor instanceof Method ? ((Method) accessor).invoke(arg) : ((Field) accessor).get(arg);
+                        query.setParameter(++p, param);
+                        // TODO: named parameters would only be valid here if @Filter/@Update become part of the spec
+                    }
+                }
             }
         } else { // Special case: CrudRepository.delete(entity) where entity has IdClass
             Object arg = args == null || args.length == 0 ? null : args[0];
@@ -244,7 +268,7 @@ class QueryInfo {
                 throw new DataException("The " + (arg == null ? null : arg.getClass().getName()) +
                                         " parameter does not match the " + entityInfo.type.getClass().getName() +
                                         " entity type that is expected for this repository.");
-            int i = 0;
+            int p = 0;
             for (String idClassAttr : entityInfo.idClassAttributeAccessors.keySet()) {
                 List<Member> accessors = entityInfo.attributeAccessors.get(entityInfo.getAttributeName(idClassAttr));
                 Object param = arg;
@@ -253,7 +277,7 @@ class QueryInfo {
                         param = ((Method) accessor).invoke(param);
                     else
                         param = ((Field) accessor).get(param);
-                query.setParameter(++i, param);
+                query.setParameter(++p, param);
             }
         }
     }
@@ -312,8 +336,13 @@ class QueryInfo {
             b.append(first ? "(" : ", ").append(p.getSimpleName());
             first = false;
         }
-        b.append(first ? "() " : ") ").append(jpql) //
-                        .append(" [").append(paramCount == Integer.MIN_VALUE ? "no" : paramCount).append(" parameters]");
+        b.append(first ? "() " : ") ").append(jpql);
+        if (paramCount != Integer.MIN_VALUE) {
+            b.append("[").append(paramCount).append(" JPQL params");
+            if (paramAddedCount != 0)
+                b.append(", ").append(paramCount - paramAddedCount).append(" method params");
+            b.append(']');
+        }
         return b.toString();
     }
 
@@ -331,6 +360,7 @@ class QueryInfo {
         q.keyset = keyset;
         q.maxResults = maxResults;
         q.paramCount = paramCount;
+        q.paramAddedCount = paramAddedCount;
         q.paramNames = paramNames;
         q.paramsNeedConversionToId = paramsNeedConversionToId;
         q.saveParamType = saveParamType;
