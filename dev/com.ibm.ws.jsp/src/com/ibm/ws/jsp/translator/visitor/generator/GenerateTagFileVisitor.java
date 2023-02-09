@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jsp.translator.visitor.generator;
 
@@ -222,7 +219,7 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
         ArrayList<String> implementingInterfaces = new ArrayList<String>();
 
         if(PagesVersionHandler.isPages31OrHigherLoaded()){
-            implementingInterfaces.add("com.ibm.ws.jsp.runtime.JspDirectiveInfo");
+            implementingInterfaces.add("com.ibm.ws.jsp.runtime.DirectiveInfo");
         }
 
         TagFileInfo tfi = (TagFileInfo)inputMap.get("TagFileInfo");
@@ -250,7 +247,17 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
             writer.println();
             writer.println("private static java.util.List<String> importPackageList = new java.util.ArrayList<String>();");
             writer.println("private static java.util.List<String> importClassList = new java.util.ArrayList<String>();");
+            writer.println("private static java.util.List<String> importStaticList = new java.util.ArrayList<String>();");
             writer.println();
+            
+            // Cannot place this in the ImportGenerator since that is only run when the import directive is included in the page
+            // the imports below are required for all pages 
+            writer.println("static {");
+            // Pages 1.10 Directive Packages java.lang.*, jakarta.servlet.*, jakarta.servlet.jsp.*, and jakarta.servlet.http.* are imported implicitly by the JSP container.
+			writer.println("importPackageList.add(\"jakarta.servlet\");");
+			writer.println("importPackageList.add(\"jakarta.servlet.jsp\");");
+			writer.println("importPackageList.add(\"jakarta.servlet.http\");");
+            writer.println("}");
         }
     }
 
@@ -337,10 +344,24 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
         writer.println("public JspContext getJspContext() {");
         writer.println("return this.jspContext;");
         writer.println("}");
-        
-        writer.println(" public boolean isErrorOnELNotFound() {");
-        writer.println("return "+ validatorResult.isErrorOnELNotFound()  + ";");
-        writer.println("}");
+
+        if(PagesVersionHandler.isPages31OrHigherLoaded()){
+            writer.println(" public boolean isErrorOnELNotFound() {");
+            writer.println("return "+ validatorResult.isErrorOnELNotFound()  + ";");
+            writer.println("}");
+
+            writer.println(" public java.util.List<String> getImportClassList() {");
+            writer.println("return  importPackageList;");
+            writer.println("}");
+
+            writer.println(" public java.util.List<String> getImportPackageList() {");
+            writer.println("return importClassList;");
+            writer.println("}");
+
+            writer.println(" public java.util.List<String> getImportStaticList() {");
+            writer.println("return importStaticList;");
+            writer.println("}");
+        }
 
         if (ti.hasDynamicAttributes()) {
             writer.println("private java.util.HashMap _jspx_dynamic_attrs = new java.util.HashMap();");
