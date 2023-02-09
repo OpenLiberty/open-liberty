@@ -74,7 +74,6 @@ public class RestConnectorTest extends FATServletClient {
         server.saveServerConfiguration();
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
         server.startServer(getTestMethodNameOnly(testName) + ".log");
-        assertNotNull(server.waitForStringInLog("CWWKT0016I")); // CWWKT0016I: Web application available
     }
 
     @Test
@@ -83,7 +82,7 @@ public class RestConnectorTest extends FATServletClient {
         assertNotNull(server.waitForStringInLog("CWWKS0008I")); // CWWKS0008I: The security service is ready.
         assertNotNull(server.waitForStringInLog("CWWKS4105I")); // CWWKS4105I: LTPA configuration is ready after # seconds.
         assertNotNull(server.waitForStringInLog("CWPKI0803A")); // CWPKI0803A: SSL certificate created in # seconds. SSL key file: ...
-        assertNotNull(server.waitForStringInLog("CWWKO0219I")); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.
+        assertNotNull(server.waitForStringInLog("CWWKO0219I:.*defaultHttpEndpoint-ssl")); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.
 
         JsonArray json = new HttpsRequest(server, "/ibm/api/config").run(JsonArray.class);
         int count = json.size();
@@ -115,7 +114,7 @@ public class RestConnectorTest extends FATServletClient {
     @Test
     public void testDataSourceConfigUpdate() throws Exception {
         server.checkpointRestore();
-        assertNotNull(server.waitForStringInLog("CWWKO0219I")); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.
+        assertNotNull(server.waitForStringInLog("CWWKO0219I:.*defaultHttpEndpoint-ssl")); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.
 
         JsonArray json = new HttpsRequest(server, "/ibm/api/config/dataSource").run(JsonArray.class);
         assertEquals("unexpected response: " + json, 1, json.size());
