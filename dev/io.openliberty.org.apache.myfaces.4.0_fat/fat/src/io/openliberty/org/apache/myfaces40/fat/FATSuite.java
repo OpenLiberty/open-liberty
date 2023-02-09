@@ -34,6 +34,7 @@ import io.openliberty.org.apache.myfaces40.fat.tests.FacesContextGetLifecycleTes
 import io.openliberty.org.apache.myfaces40.fat.tests.InputTextTypeTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.LayoutAttributeTests;
 import io.openliberty.org.apache.myfaces40.fat.tests.MultipleInputFileTest;
+import io.openliberty.org.apache.myfaces40.fat.tests.ProgrammaticFaceletTests;
 import io.openliberty.org.apache.myfaces40.fat.tests.SelectItemTests;
 import io.openliberty.org.apache.myfaces40.fat.tests.SimpleTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.UIViewRootGetDoctypeTest;
@@ -53,7 +54,8 @@ import io.openliberty.org.apache.myfaces40.fat.tests.UIViewRootGetDoctypeTest;
                 SelectItemTests.class,
                 FacesContextGetLifecycleTest.class,
                 UIViewRootGetDoctypeTest.class,
-                Faces40ThirdPartyApiTests.class
+                Faces40ThirdPartyApiTests.class,
+                ProgrammaticFaceletTests.class
 })
 public class FATSuite {
 

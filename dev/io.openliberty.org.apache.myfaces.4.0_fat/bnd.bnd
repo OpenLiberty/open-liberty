@@ -24,7 +24,8 @@ src: \
     test-applications/SelectItemTests.war/src,\
     test-applications/UIViewRootGetDoctypeTest.war/src,\
     test-applications/Faces40ThirdPartyApi.war/src,\
-    test-applications/MultipleInputFileTest.war/src
+    test-applications/MultipleInputFileTest.war/src,\
+    test-applications/ProgrammaticFaceletTests.war/src
 
 fat.project: true
 
@@ -42,3 +43,4 @@ javac.target: 11
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
 	io.openliberty.jakarta.annotation.2.1;version=latest,\
 	io.openliberty.jakarta.expressionLanguage.5.0;version=latest,\
+
