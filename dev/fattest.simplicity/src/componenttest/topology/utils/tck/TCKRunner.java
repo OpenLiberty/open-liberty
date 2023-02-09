@@ -217,7 +217,7 @@ public class TCKRunner {
      * run the TCK and process the results
      */
     private void runTCK() throws Exception {
-        Assume.assumeThat(System.getProperty("os.name"), CoreMatchers.not("os/400")); // skip tests on IBM i due to mvn issue.
+        Assume.assumeThat(System.getProperty("os.name"), CoreMatchers.not("OS/400")); // skip tests on IBM i due to mvn issue.
         String[] testOutput = runCleanTestCmd();
         List<String> failingTestsList = postProcessTestResults(testOutput);
         assertTestsPassed(this.bucketName, this.testName, failingTestsList);
