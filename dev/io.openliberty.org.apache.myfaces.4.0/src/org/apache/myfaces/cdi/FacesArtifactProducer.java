@@ -33,7 +33,6 @@ import jakarta.faces.annotation.RequestParameterMap;
 import jakarta.faces.annotation.RequestParameterValuesMap;
 import jakarta.faces.annotation.SessionMap;
 import jakarta.faces.annotation.ViewMap;
-import jakarta.faces.application.Application;
 import jakarta.faces.application.ResourceHandler;
 import jakarta.faces.component.UIViewRoot;
 import jakarta.faces.context.ExternalContext;
@@ -55,9 +54,9 @@ public class FacesArtifactProducer
     @Produces
     @Named("application")
     @ApplicationScoped
-    public Application getApplication()
+    public Object getApplication()
     {
-       return FacesContext.getCurrentInstance().getApplication();
+       return FacesContext.getCurrentInstance().getExternalContext().getContext();
     }
 
     @Produces
