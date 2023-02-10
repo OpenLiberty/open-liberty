@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ def grpcVersion='1.43.2'
 
 configurations {
   telemetryAgent
+  jaegerClient
 }
 
 dependencies {
@@ -37,6 +38,22 @@ dependencies {
   requiredLibs project(':com.ibm.websphere.org.reactivestreams.reactive-streams.1.0')
   
   telemetryAgent 'io.opentelemetry.javaagent:opentelemetry-javaagent:1.19.0'
+  
+  // Jaeger Client is needed for testing with mpOpenTracing-3.0
+  jaegerClient 'io.opentracing:opentracing-util:0.33.0'
+  jaegerClient 'io.opentracing:opentracing-noop:0.33.0'
+  jaegerClient 'io.jaegertracing:jaeger-core:1.6.0'
+  jaegerClient 'io.jaegertracing:jaeger-thrift:1.6.0'
+  jaegerClient 'io.jaegertracing:jaeger-client:1.6.0'
+  jaegerClient 'io.jaegertracing:jaeger-tracerresolver:1.6.0'
+  jaegerClient 'org.apache.thrift:libthrift:0.14.1'
+  jaegerClient project(':com.ibm.ws.org.slf4j.api')
+  jaegerClient project(':com.ibm.ws.org.slf4j.simple')
+  jaegerClient project(':io.openliberty.com.google.gson')
+  jaegerClient 'com.squareup.okio:okio-jvm:3.0.0'
+  jaegerClient 'com.squareup.okhttp3:okhttp:4.10.0'
+  jaegerClient 'org.jetbrains.kotlin:kotlin-stdlib:1.6.20'
+  jaegerClient 'org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20'
 }
 
 task addAgent(type: Copy) {
@@ -45,6 +62,12 @@ task addAgent(type: Copy) {
   rename { 'opentelemetry-javaagent.jar' }
 }
 
+task addJaegerClientLibs (type: Copy) {
+    into new File(autoFvtDir, 'publish/servers/crossFeatureOpenTracingServer/jaegerLib')
+    from configurations.jaegerClient
+}
+
 addRequiredLibraries.dependsOn copyTestContainers
 addRequiredLibraries.dependsOn addJakartaTransformer
 addRequiredLibraries.dependsOn addAgent
+addRequiredLibraries.dependsOn addJaegerClientLibs
