@@ -110,12 +110,6 @@ public class WebSocketTests {
 
             assertTrue(JSFUtils.waitForPageResponse(openPage, "Called onerror listener"));
             assertTrue(JSFUtils.waitForPageResponse(openPage, "Called onclose listener"));
-
-            //TODO: Should the onClose(@Observes @Closed WebsocketEvent event) method in WebsocketPushBean get invoked for onclose?
-//            String result = server.waitForStringInLogUsingMark("Channel myChannel was closed successfully!");
-//
-//            // Verify that the correct message is found in the logs
-//            assertNotNull("Message not found: 'Channel myChannel was closed successfully!'", result);
         }
     }
 
