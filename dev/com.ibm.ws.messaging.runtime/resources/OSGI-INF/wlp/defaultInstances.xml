@@ -16,4 +16,6 @@
 	<com.ibm.ws.sib.fileStore id="defaultFileStore"/>
     <com.ibm.ws.messaging.lifecycle.SingletonAgent id="com.ibm.ws.sib.processor.ItemInterface" />
     <com.ibm.ws.messaging.lifecycle.SingletonAgent id="com.ibm.ws.sib.admin.JsAdminService" />
+    <com.ibm.ws.messaging.lifecycle.SingletonAgent id="com.ibm.ws.sib.admin.internal.JsMain" />
+    <com.ibm.ws.messaging.lifecycle.SingletonAgent id="com.ibm.ws.sib.admin.JsMainAdminService" />
 </server>
