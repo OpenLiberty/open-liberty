@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -31,7 +31,6 @@ import org.apache.cxf.logging.FaultListener;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageContentsList;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -198,7 +197,8 @@ public class LibertyJaxRsInvoker extends JAXRSInvoker {
     public Object invoke(Exchange exchange, final Object serviceObject, Method m, List<Object> params) {
 
         //bean customizer....
-        final Object realServiceObject;
+        Object realServiceObject = null;
+        JaxRsFactoryBeanCustomizer beanCustomizer = null;
 
         final OperationResourceInfo ori = exchange.get(OperationResourceInfo.class);
         final ClassResourceInfo cri = ori.getClassResourceInfo();
@@ -206,95 +206,101 @@ public class LibertyJaxRsInvoker extends JAXRSInvoker {
         // put related context object into ThreadLocal
         //SingleTon resources's replacement is put in InjectionUtil.injectContextProxiesAndApplication() method
 
-        if (!cri.isSingleton()) {
-            Class<?> clazz = serviceObject.getClass();
-            JaxRsFactoryBeanCustomizer beanCustomizer = libertyJaxRsServerFactoryBean.findBeanCustomizer(clazz);
-            if (beanCustomizer != null) {
+        try {
+            if (!cri.isSingleton()) {
+                Class<?> clazz = serviceObject.getClass();
+                beanCustomizer = libertyJaxRsServerFactoryBean.findBeanCustomizer(clazz);
+                if (beanCustomizer != null) {
 
-                realServiceObject = beanCustomizer.beforeServiceInvoke(serviceObject,
-                                                                       cri.isSingleton(),
-                                                                       libertyJaxRsServerFactoryBean.getBeanCustomizerContext(beanCustomizer));
-                if (realServiceObject == serviceObject && !beanCustomizer.getClass().getName().equalsIgnoreCase("com.ibm.ws.jaxrs20.ejb.JaxRsFactoryBeanEJBCustomizer")
-                    && !cri.contextsAvailable() && !cri.paramsAvailable()) {
-                    //call postConstruct method if it has not been repleaced with EJB/CDI for per-request resources
-                    Method postConstructMethod = ResourceUtils.findPostConstructMethod(realServiceObject.getClass());
-                    InjectionUtils.invokeLifeCycleMethod(realServiceObject, postConstructMethod);
+                    realServiceObject = beanCustomizer.beforeServiceInvoke(serviceObject,
+                                                                           cri.isSingleton(),
+                                                                           libertyJaxRsServerFactoryBean.getBeanCustomizerContext(beanCustomizer));
+                    if (realServiceObject == serviceObject && !beanCustomizer.getClass().getName().equalsIgnoreCase("com.ibm.ws.jaxrs20.ejb.JaxRsFactoryBeanEJBCustomizer")
+                        && !cri.contextsAvailable() && !cri.paramsAvailable()) {
+                        //call postConstruct method if it has not been repleaced with EJB/CDI for per-request resources
+                        Method postConstructMethod = ResourceUtils.findPostConstructMethod(realServiceObject.getClass());
+                        InjectionUtils.invokeLifeCycleMethod(realServiceObject, postConstructMethod);
+
+                    }
+
+                } else {
+                    realServiceObject = serviceObject;
+
+                    if (!cri.contextsAvailable() && !cri.paramsAvailable()) {
+
+                        //if bean customizer is null, means it is a pojo, we need to call postConstruct here
+                        Method postConstructMethod = ResourceUtils.findPostConstructMethod(serviceObject.getClass());
+                        InjectionUtils.invokeLifeCycleMethod(serviceObject, postConstructMethod);
+                    }
 
                 }
 
             } else {
                 realServiceObject = serviceObject;
-
-                if (!cri.contextsAvailable() && !cri.paramsAvailable()) {
-
-                    //if bean customizer is null, means it is a pojo, we need to call postConstruct here
-                    Method postConstructMethod = ResourceUtils.findPostConstructMethod(serviceObject.getClass());
-                    InjectionUtils.invokeLifeCycleMethod(serviceObject, postConstructMethod);
-                }
-
             }
 
-        } else {
-            realServiceObject = serviceObject;
-        }
+            //
+            Message message = JAXRSUtils.getCurrentMessage();
 
-        //
-        Message message = JAXRSUtils.getCurrentMessage();
+            Object theProvider = null;
+            if (isEnableBeanValidation && cxfBeanValidationProviderClass != null) {
 
-        Object theProvider = null;
-        if (isEnableBeanValidation && cxfBeanValidationProviderClass != null) {
+                theProvider = getProvider(message);
 
-            theProvider = getProvider(message);
+                try {
+                    if (isValidateServiceObject()) {
+                        //theProvider.validateBean(serviceObject);
+                        callValidationMethod("validateBean", new Object[] { realServiceObject }, theProvider);
 
-            try {
-                if (isValidateServiceObject()) {
-                    //theProvider.validateBean(serviceObject);
-                    callValidationMethod("validateBean", new Object[] { realServiceObject }, theProvider);
+                    }
+                    //theProvider.validateParameters(serviceObject, m, params.toArray());
+                    callValidationMethod("validateParameters", new Object[] { realServiceObject, m, params.toArray() }, theProvider);
+
+                } catch (RuntimeException e) {
+                    // Since BeanValidation is enabled, if this exception is a ConstraintViolationException
+                    // then we will want to put a FaultListener on the message so that
+                    // when this exception bubbles up to PhaseInterceptorChain that we do not
+                    // use default logging which will log this exception.  BeanValidation is
+                    // supposed to block logging these messages.
+                    if (beanValidationFaultListener != null && beanValidationFaultListener.cve.isInstance(e)) {
+                        Message m2 = exchange.getInMessage();
+                        m2.put(FaultListener.class.getName(), beanValidationFaultListener);
+                    }
+                    //re-throw exception.  If the FaultListener is set then a ConstraintViolation will not
+                    //be logged in the messages.log.
+                    throw e;
 
                 }
-                //theProvider.validateParameters(serviceObject, m, params.toArray());
-                callValidationMethod("validateParameters", new Object[] { realServiceObject, m, params.toArray() }, theProvider);
-
-            } catch (RuntimeException e) {
-                // Since BeanValidation is enabled, if this exception is a ConstraintViolationException
-                // then we will want to put a FaultListener on the message so that
-                // when this exception bubbles up to PhaseInterceptorChain that we do not
-                // use default logging which will log this exception.  BeanValidation is
-                // supposed to block logging these messages.
-                if (beanValidationFaultListener != null && beanValidationFaultListener.cve.isInstance(e)) {
-                    Message m2 = exchange.getInMessage();
-                    m2.put(FaultListener.class.getName(), beanValidationFaultListener);
-                }
-                //re-throw exception.  If the FaultListener is set then a ConstraintViolation will not
-                //be logged in the messages.log.
-                throw e;
-
             }
-        }
 
-        Object response = super.invoke(exchange, realServiceObject, m, params);
+            Object response = super.invoke(exchange, realServiceObject, m, params);
 
-        if (isEnableBeanValidation && cxfBeanValidationProviderClass != null && theProvider != null) {
+            if (isEnableBeanValidation && cxfBeanValidationProviderClass != null && theProvider != null) {
 
-            if (response instanceof MessageContentsList) {
-                MessageContentsList list = (MessageContentsList) response;
-                if (list.size() == 1) {
-                    Object entity = list.get(0);
+                if (response instanceof MessageContentsList) {
+                    MessageContentsList list = (MessageContentsList) response;
+                    if (list.size() == 1) {
+                        Object entity = list.get(0);
 
-                    if (entity instanceof Response) {
-                        //theProvider.validateReturnValue(serviceObject, m, ((Response) entity).getEntity());
-                        callValidationMethod("validateReturnValue", new Object[] { realServiceObject, m, ((Response) entity).getEntity() }, theProvider);
+                        if (entity instanceof Response) {
+                            //theProvider.validateReturnValue(serviceObject, m, ((Response) entity).getEntity());
+                            callValidationMethod("validateReturnValue", new Object[] { realServiceObject, m, ((Response) entity).getEntity() }, theProvider);
 
-                    } else {
-                        //theProvider.validateReturnValue(serviceObject, m, entity);
-                        callValidationMethod("validateReturnValue", new Object[] { realServiceObject, m, entity }, theProvider);
+                        } else {
+                            //theProvider.validateReturnValue(serviceObject, m, entity);
+                            callValidationMethod("validateReturnValue", new Object[] { realServiceObject, m, entity }, theProvider);
 
+                        }
                     }
                 }
             }
+            return response;
+        } finally {
+            if (beanCustomizer != null && realServiceObject != null) {
+                beanCustomizer.afterServiceInvoke(realServiceObject, cri.isSingleton(), libertyJaxRsServerFactoryBean.getBeanCustomizerContext(beanCustomizer));
+            }
+            InjectionRuntimeContextHelper.removeRuntimeContext();
         }
-
-        return response;
     }
 
     /**
