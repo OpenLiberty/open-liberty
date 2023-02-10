@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  */
 package com.ibm.ws.jsf22.fat.backwards.beans.faces40;
 
@@ -34,7 +31,7 @@ public class AnimalBean implements Serializable {
     public static class Pitbull extends Dog {
     }
 
-    private final Pitbull dog = new Pitbull();
+    private Pitbull dog = new Pitbull();
 
     public Animal getAnimal() {
         return dog;
@@ -53,37 +50,38 @@ public class AnimalBean implements Serializable {
     }
 
     /*
-    For testGetTypeFromCompositeComponentELResolver --
-    EL 5.0: Explicitly document that ELResolver.getType() must return null if either the ELResolver or the resolved property is read-only.
-    BeanELResolver is created with readonly as true;
-    The follow need setters to pass  
-            untypedXwideEL="#{animalBean.animal}"
-            untypedXmediumEL="#{animalBean.dog}"
-            untypedXnarrowEL="#{animalBean.pitbull}"
-            untypedXnullEL="#{animalBean.lostDog}"
+     * For testGetTypeFromCompositeComponentELResolver Expression Language 5.0 explicitly states that:
+     * ELResolver.getType() must return null if either the ELResolver or the resolved
+     * property is read-only. BeanELResolver is created with read-only as true; the following need setters to pass:
+     *
+     * untypedXwideEL="#{animalBean.animal}"
+     * untypedXmediumEL="#{animalBean.dog}"
+     * untypedXnarrowEL="#{animalBean.pitbull}"
+     * untypedXnullEL="#{animalBean.lostDog}"
+     */
 
     public void setAnimal(Animal dog) {
-        
+        this.dog = (Pitbull) dog;
     }
 
     public void setAnimal(Dog dog) {
-        
+        this.dog = (Pitbull) dog;
     }
 
     public void setAnimal(Pitbull dog) {
-        
+        this.dog = dog;
     }
-    
+
     public void setDog(Dog dog) {
-        
+        this.dog = (Pitbull) dog;
     }
 
     public void setPitbull(Pitbull dog) {
-        
+        this.dog = dog;
     }
 
     public void setLostDog(Dog dog) {
-        
+        this.dog = (Pitbull) dog;
     }
-     */
+
 }
