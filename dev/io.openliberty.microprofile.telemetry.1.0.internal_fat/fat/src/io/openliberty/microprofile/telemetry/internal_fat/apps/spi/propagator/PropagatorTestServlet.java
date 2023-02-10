@@ -30,6 +30,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.In
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.context.Scope;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
@@ -68,11 +69,12 @@ public class PropagatorTestServlet extends FATServlet {
     public void testPropagator() {
         Span span = testSpans.withTestSpan(() -> {
             // Add a key to the baggage that we will look for later
-            baggage.toBuilder().put(TEST_KEY.getKey(), TEST_VALUE).build().makeCurrent();
-
-            // Call PropagatorTarget (below)
-            String result = ClientBuilder.newClient().target(getTargetURI()).request().get(String.class);
-            assertEquals("OK", result);
+            try(Scope s = baggage.toBuilder().put(TEST_KEY.getKey(), TEST_VALUE).build().makeCurrent()){
+                // Call PropagatorTarget (below)
+                String result = ClientBuilder.newClient().target(getTargetURI()).request().get(String.class);
+                assertEquals("OK", result);
+                s.close();
+            }
         });
 
         // Expect three spans (test, client and server)

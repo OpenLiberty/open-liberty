@@ -95,6 +95,7 @@ public class ContextAPIServlet extends FATServlet {
         assertNotSame(Scope.noop(), scope);
         Context stored = storage.current();
         assertEquals(context, stored);
+        scope.close();
     }
 
     /**
@@ -111,6 +112,7 @@ public class ContextAPIServlet extends FATServlet {
         assertEquals(Scope.noop(), scope);
         Context stored = storage.current();
         assertEquals(context, stored);
+        scope.close();
     }
 
     private static class MyContextStorageProvider implements ContextStorageProvider {
