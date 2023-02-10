@@ -861,8 +861,9 @@ public class H2StreamProcessor {
                         throw new FlowControlException("Too much data received from the remote client");
                     }
 
-                    // Only send window_update frame for the connection if we are under half the max size
-                    if (muxLink.connectionReadWindowSize < muxLink.connectionMaxReadWindowSize / 2) {
+                    // Only send window_update frame for the connection if we are under half the max size, or if we are not limiting
+                    if ((!muxLink.limitWindowUpdateFrames) ||
+                        ((muxLink.limitWindowUpdateFrames) && (muxLink.connectionReadWindowSize < muxLink.connectionMaxReadWindowSize / 2))) {
                         // update the connection read limit to its max
                         int windowChange = (int) (muxLink.connectionMaxReadWindowSize - muxLink.connectionReadWindowSize);
                         FrameWindowUpdate wuf = new FrameWindowUpdate(0, windowChange, false);
@@ -873,8 +874,9 @@ public class H2StreamProcessor {
                         }
                     }
 
-                    // Only send window_update frame for the stream if we are under half the max size
-                    if (this.streamReadWindowSize < muxLink.maxReadWindowSize / 2) {
+                    // Only send window_update frame for the stream if we are under half the max size, or if not limiting
+                    if ((!muxLink.limitWindowUpdateFrames) ||
+                        ((muxLink.limitWindowUpdateFrames) && (this.streamReadWindowSize < muxLink.maxReadWindowSize / 2))) {
                         // update the stream read limit to its max
                         int windowChange = (int) (muxLink.maxReadWindowSize - this.streamReadWindowSize);
                         Frame savedFrame = currentFrame; // save off the current frame

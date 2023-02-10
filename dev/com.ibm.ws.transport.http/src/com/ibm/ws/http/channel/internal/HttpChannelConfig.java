@@ -144,7 +144,7 @@ public class HttpChannelConfig {
     private boolean skipCookiePathQuotes = false;
     /** The amount of time the connection will be left open when HTTP/2 goes into an idle state */
     private long h2ConnectionCloseTimeout = 30;
-
+    private final boolean http2LimitWindowUpdateFrames = false;
     private int h2ConnectionReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // init the stream default initial window to the spec max
     private int h2ConnectionWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // init the connection window to the spec max
     /** PI81572 Purge the remaining response body off the wire when clear is called */
@@ -407,6 +407,10 @@ public class HttpChannelConfig {
                 props.put(HttpConfigConstants.PROPNAME_SKIP_PATH_QUOTE, value);
                 continue;
             }
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_H2_LIMIT_WINDOW_UPDATE_FRAMES)) {
+                props.put(HttpConfigConstants.PROPNAME_H2_LIMIT_WINDOW_UPDATE_FRAMES, value);
+                continue;
+            }
             if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_H2_CONN_CLOSE_TIMEOUT)) {
                 props.put(HttpConfigConstants.PROPNAME_H2_CONN_CLOSE_TIMEOUT, value);
                 continue;
@@ -543,6 +547,7 @@ public class HttpChannelConfig {
         parseAttemptPurgeData(props); //PI11176
         parseThrowIOEForInboundConnections(props); //PI57542
         parseSkipCookiePathQuotes(props); //738893
+        parseH2LimitWindowUpdateFrames(props);
         parseH2ConnCloseTimeout(props);
         parseH2ConnReadWindowSize(props);
         parseH2ConnectionWindowSize(props);
@@ -864,6 +869,16 @@ public class HttpChannelConfig {
                     Tr.event(tc, "Config: Invalid HTTP/2 Frame Size; " + value);
 
                 }
+            }
+        }
+    }
+
+    private void parseH2LimitWindowUpdateFrames(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_H2_LIMIT_WINDOW_UPDATE_FRAMES);
+        if (null != value) {
+            this.bExtractValue = convertBoolean(value);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Config: H2 Limit Window_Update frames " + shouldExtractValue());
             }
         }
     }
@@ -2333,6 +2348,10 @@ public class HttpChannelConfig {
 
     public int getH2MaxConcurrentStreams() {
         return this.http2MaxConcurrentStreams;
+    }
+
+    public boolean getH2LimitWindowUpdateFrames() {
+        return this.http2LimitWindowUpdateFrames;
     }
 
     /**
