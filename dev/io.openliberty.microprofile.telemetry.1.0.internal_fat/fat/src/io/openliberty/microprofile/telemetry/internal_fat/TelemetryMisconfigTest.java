@@ -12,6 +12,9 @@ package io.openliberty.microprofile.telemetry.internal_fat;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static org.junit.Assert.assertFalse;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -118,6 +121,7 @@ public class TelemetryMisconfigTest extends FATServletClient {
 
         ShrinkHelper.exportAppToServer(server, doesNotExistEndpointApp, SERVER_ONLY);
 
+        server.setJvmOptions(new ArrayList<>(Arrays.asList("-Dio.opentelemetry.context.enableStrictContext=true")));
         server.startServer();
     }
 

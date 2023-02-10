@@ -11,6 +11,9 @@ package io.openliberty.microprofile.telemetry.internal_fat;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -54,6 +57,7 @@ public class TelemetryConfigNullTest extends FATServletClient {
         // This is not ideal and is a current limitation, but we still want to test the scenario to ensure we don't throw an exception when processing config
         server.addEnvVar("otel_service_name", "overrideDone");
         server.addEnvVar("otel_sdk_disabled", "false");
+        server.setJvmOptions(new ArrayList<>(Arrays.asList("-Dio.opentelemetry.context.enableStrictContext=true")));
         server.startServer();
     }
 

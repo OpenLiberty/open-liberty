@@ -16,6 +16,8 @@ import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONL
 import static io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.JaxRsEndpoints.TEST_PASSED;
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -170,6 +172,7 @@ public class JaxRsIntegration extends FATServletClient {
         ShrinkHelper.exportAppToServer(server, jaegerApp, SERVER_ONLY);
         ShrinkHelper.exportAppToServer(server, asyncServerApp, SERVER_ONLY);
         ShrinkHelper.exportAppToServer(server, methodsApp, SERVER_ONLY);
+        server.setJvmOptions(new ArrayList<>(Arrays.asList("-Dio.opentelemetry.context.enableStrictContext=true")));
 
         server.startServer();
     }
