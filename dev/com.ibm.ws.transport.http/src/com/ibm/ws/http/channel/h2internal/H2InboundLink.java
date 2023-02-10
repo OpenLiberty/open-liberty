@@ -111,6 +111,8 @@ public class H2InboundLink extends HttpInboundLink {
     volatile long maxReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // user-set max window size on the stream
     // Connection level window size variables
     volatile long connectionMaxReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // configurable max window size on the connection
+    // Should we limit the number of window udpate frames sent?  Limiting may help with performance.
+    volatile boolean limitWindowUpdateFrames = false;
 
     FrameReadProcessor frameReadProcessor = null;
 
@@ -216,8 +218,8 @@ public class H2InboundLink extends HttpInboundLink {
         // set up the initial connection read window size
         maxReadWindowSize = config.getH2SettingsInitialWindowSize();
         connectionMaxReadWindowSize = config.getH2ConnectionWindowSize();
-
         connectionReadWindowSize = config.getH2ConnectionWindowSize();
+        limitWindowUpdateFrames = config.getH2LimitWindowUpdateFrames();
 
         writeQ = new H2WriteTree();
         writeQ.init(h2MuxTCPWriteContext, h2MuxWriteCallback);

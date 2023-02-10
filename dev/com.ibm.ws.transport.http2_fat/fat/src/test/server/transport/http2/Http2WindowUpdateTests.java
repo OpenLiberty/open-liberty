@@ -90,7 +90,7 @@ public class Http2WindowUpdateTests extends FATServletClient {
      * @throws Exception
      */
     @Test
-    public void testSimpleWindowUpdatesReceived() throws Exception {
+    public void testSimpleWindowUpdatesReceivedLimitWindowUpdateFrames() throws Exception {
         runTest(dataServletPath, testName.getMethodName());
     }
 
@@ -101,7 +101,7 @@ public class Http2WindowUpdateTests extends FATServletClient {
      * @throws Exception
      */
     @Test
-    public void testMultiStreamWindowUpdatesReceived() throws Exception {
+    public void testMultiStreamWindowUpdatesReceivedLimitWindowUpdateFrames() throws Exception {
         runTest(dataServletPath, testName.getMethodName());
     }
 

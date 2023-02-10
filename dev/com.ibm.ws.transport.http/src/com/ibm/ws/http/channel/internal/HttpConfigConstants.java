@@ -339,6 +339,9 @@ public class HttpConfigConstants {
     public static final String PROPNAME_H2_CONN_READ_WINDOW_SIZE = "H2SettingsInitialWindowSize";
     // This is the connection level window size, sent out in a WINDOW_UPDATE frame just after the connection preface
     public static final String PROPNAME_H2_CONN_WINDOW_SIZE = "H2ConnectionWindowSize";
+    // This turns on the ability to limit window_update frames to be sent only when 1/2 the window is gone.
+    // Turning this on may increase performance.
+    public static final String PROPNAME_H2_LIMIT_WINDOW_UPDATE_FRAMES = "H2LimitWindowUpdateFrames";
 
     //PI81572 - Purge the remaining response body off the wire
     public static final String PROPNAME_PURGE_REMAINING_RESPONSE = "PurgeRemainingResponseBody";
