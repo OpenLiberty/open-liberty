@@ -17,7 +17,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.ibm.websphere.ras.Tr;
@@ -89,7 +88,7 @@ class QueryInfo {
     /**
      * Number of parameters to the JPQL query.
      */
-    int paramCount = Integer.MIN_VALUE; // initialize to undefined
+    int paramCount;
 
     /**
      * Difference between the number of parameters to the JPQL query and the expected number of
@@ -98,14 +97,16 @@ class QueryInfo {
      * to input, whereas the JPQL will have additional parameters for each additional attribute
      * of the IdClass.
      */
-    int paramAddedCount = 0;
+    int paramAddedCount;
 
     /**
      * Names that are specified by the <code>Param</code> annotation for each query parameter.
-     * If positional parameters (?1, ?2, ...) are used rather than named parameters,
-     * the list can be empty or have null as its first element.
+     * An empty list is a marker that named parameters are present, but need to be populated into the list.
+     * Population is deferred to ensure the order of the list matches the order of parameters in the method signature.
+     * A null value indicates positional parameters (?1, ?2, ...) are used rather than named parameters
+     * or there are no parameters at all.
      */
-    List<String> paramNames = Collections.emptyList();
+    List<String> paramNames;
 
     /**
      * Indicates that parameters are supplied to the repository method
@@ -189,7 +190,7 @@ class QueryInfo {
      */
     void setKeysetParameters(Query query, Pageable.Cursor keysetCursor) throws Exception {
         int paramNum = paramCount + 1; // set to position of first keyset parameter
-        if (paramNames.isEmpty() || paramNames.get(0) == null) // positional parameters
+        if (paramNames == null) // positional parameters
             for (int i = 0; i < keysetCursor.size(); i++) {
                 Object value = keysetCursor.getKeysetElement(i);
                 if (entityInfo.idClass != null && entityInfo.idClass.isInstance(value)) {
@@ -243,13 +244,14 @@ class QueryInfo {
                                        " method parameters. The generated JPQL query is: " + jpql + "."); // TODO NLS
 
         if (entityInfo.idClass == null || !paramsNeedConversionToId) {
-            for (int i = 0, p = 0, count = paramNames.size(); i < methodParamForQueryCount; i++) {
+            int namedParamCount = paramNames == null ? 0 : paramNames.size();
+            for (int i = 0, p = 0; i < methodParamForQueryCount; i++) {
                 Object arg = paramsNeedConversionToId ? //
                                 toEntityId(args[i]) : //
                                 args[i];
 
                 if (arg == null || entityInfo.idClass == null || !entityInfo.idClass.isInstance(arg)) {
-                    String paramName = count > i ? paramNames.get(i) : null;
+                    String paramName = namedParamCount > i ? paramNames.get(i) : null;
                     if (paramName == null)
                         query.setParameter(++p, arg);
                     else // named parameter
@@ -337,8 +339,8 @@ class QueryInfo {
             first = false;
         }
         b.append(first ? "() " : ") ").append(jpql);
-        if (paramCount != Integer.MIN_VALUE) {
-            b.append("[").append(paramCount).append(" JPQL params");
+        if (paramCount > 0) {
+            b.append("[").append(paramCount).append(paramNames == null ? " positional params" : " named params");
             if (paramAddedCount != 0)
                 b.append(", ").append(paramCount - paramAddedCount).append(" method params");
             b.append(']');

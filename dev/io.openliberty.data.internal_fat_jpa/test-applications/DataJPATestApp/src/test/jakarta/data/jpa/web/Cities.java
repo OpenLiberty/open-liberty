@@ -11,6 +11,7 @@
 package test.jakarta.data.jpa.web;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import jakarta.data.repository.Compare;
@@ -23,6 +24,7 @@ import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Sort;
+import jakarta.data.repository.Update;
 
 /**
  *
@@ -40,6 +42,8 @@ public interface Cities {
     // "IN" (which is needed for this) is not supported for composite IDs, but EclipseLink generates SQL
     // that leads to an SQLSyntaxErrorException rather than rejecting it outright
     void deleteAll(Iterable<City> list); // copied from CrudRepository
+
+    long deleteByIdOrId(CityId id1, CityId id2);
 
     boolean existsById(CityId id);
 
@@ -88,11 +92,20 @@ public interface Cities {
     @OrderBy("name")
     Stream<City> largerThan(int minPopulation, CityId exceptFor, String statePattern);
 
+    @Filter(by = "id")
+    @Update(attr = "id")
+    @Update(attr = "population")
+    @Update(attr = "areaCodes")
+    int replace(CityId oldId, CityId newId, int newPopulation, Set<Integer> newAreaCodes);
+
     @Filter(by = "population", op = Compare.Between, param = { "minSize", "maxSize" })
     @OrderBy(value = "id", descending = true)
     KeysetAwarePage<City> sizedWithin(@Param("minSize") int minPopulation, @Param("maxSize") int maxPopulation, Pageable pagination);
 
     void save(City c);
+
+    int updateByIdAndPopulationSetIdSetPopulationSetAreaCodes(CityId oldId, int oldPopulation,
+                                                              CityId newId, int newPopulation, Set<Integer> newAreaCodes);
 
     @Filter(by = "id", op = Compare.NotNull)
     @Filter(by = "name")

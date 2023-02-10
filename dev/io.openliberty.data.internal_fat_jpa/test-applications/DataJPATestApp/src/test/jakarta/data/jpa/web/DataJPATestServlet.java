@@ -670,6 +670,60 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Repository method with the Update annotation that makes an update by assigning the IdClass instance to something else.
+     */
+    @Test
+    public void testIdClassUpdateAnnotation() {
+        cities.save(new City("La Crosse", "Wisconsin", 52680, Set.of(608)));
+        try {
+            cities.findById(CityId.of("La Crosse", "Wisconsin")).orElseThrow();
+
+            assertEquals(1, cities.replace(CityId.of("La Crosse", "Wisconsin"),
+                                           CityId.of("Decorah", "Iowa"), 7587, Set.of(563)));
+
+            assertEquals(true, cities.findById(CityId.of("La Crosse", "Wisconsin")).isEmpty());
+            assertEquals(true, cities.existsById(CityId.of("Decorah", "Iowa")));
+
+            // TODO EclipseLink bug needs to be fixed:
+            // java.lang.IllegalArgumentException: Can not set java.util.Set field test.jakarta.data.jpa.web.City.areaCodes to java.lang.Integer
+            //City city = cities.findById(CityId.of("Decorah", "Iowa")).orElseThrow();
+            //assertEquals("Decorah", city.name);
+            //assertEquals("Iowa", city.stateName);
+            //assertEquals(7587, city.population);
+            //assertEquals(Set.of(563), city.areaCodes);
+        } finally {
+            cities.deleteByIdOrId(CityId.of("La Crosse", "Wisconsin"), CityId.of("Decorah", "Iowa"));
+        }
+    }
+
+    /**
+     * Repository method with the Update keyword that makes an update by assigning the IdClass instance to something else.
+     */
+    @Test
+    public void testIdClassUpdateKeyword() {
+        cities.save(new City("Madison", "Wisconsin", 269840, Set.of(608)));
+        try {
+            cities.findById(CityId.of("Madison", "Wisconsin")).orElseThrow();
+
+            assertEquals(1, cities.updateByIdAndPopulationSetIdSetPopulationSetAreaCodes(CityId.of("Madison", "Wisconsin"), 269840,
+                                                                                         CityId.of("Des Moines", "Iowa"), 214133, Set.of(515)));
+
+            assertEquals(true, cities.findById(CityId.of("Madison", "Wisconsin")).isEmpty());
+            assertEquals(true, cities.existsById(CityId.of("Des Moines", "Iowa")));
+
+            // TODO EclipseLink bug needs to be fixed:
+            // java.lang.IllegalArgumentException: Can not set java.util.Set field test.jakarta.data.jpa.web.City.areaCodes to java.lang.Integer
+            //City city = cities.findById(CityId.of("Des Moines", "Iowa")).orElseThrow();
+            //assertEquals("Des Moines", city.name);
+            //assertEquals("Iowa", city.stateName);
+            //assertEquals(214133, city.population);
+            //assertEquals(Set.of(515), city.areaCodes);
+        } finally {
+            cities.deleteByIdOrId(CityId.of("Madison", "Wisconsin"), CityId.of("Des Moines", "Iowa"));
+        }
+    }
+
+    /**
      * Repository methods for an entity where the id is on the embeddable.
      */
     @Test

@@ -176,9 +176,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             if (lower)
                 q.append("LOWER(");
             if (params.length > i) {
+                if (queryInfo.paramNames == null)
+                    queryInfo.paramNames = new ArrayList<>(); // content is computed later from method signature
                 if (numArgs == 1 && params.length > 1) { // IN (:param1, :param2, :param3)
                     for (int p = 0; p < params.length; p++)
-                        q.append(p == 0 ? "(" : ", ").append(params[p]);
+                        q.append(p == 0 ? "(" : ", ").append(':').append(params[p]);
                     q.append(')');
                 } else {
                     q.append(':').append(params[i]); // TODO if this is null, could use values[i]
@@ -206,8 +208,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         q.append("'");
                 }
             } else { // positional parameter
-                if (queryInfo.paramCount == Integer.MIN_VALUE)
-                    queryInfo.paramCount = 0;
                 q.append('?').append(++queryInfo.paramCount);
             }
             if (lower)
@@ -293,13 +293,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         Query query = queryInfo.method.getAnnotation(Query.class);
         if (query == null) {
             Filter[] filters = queryInfo.method.getAnnotationsByType(Filter.class);
-            StringBuilder whereClause = (queryInfo.hasWhere = filters.length > 0) ? generateWhereClause(queryInfo, filters) : null;
+            StringBuilder whereClause = filters.length > 0 ? generateWhereClause(queryInfo, filters) : null;
 
             Update[] updates = queryInfo.method.getAnnotationsByType(Update.class);
             if (updates.length > 0) {
                 queryInfo.type = QueryInfo.Type.UPDATE;
-                if (whereClause == null)
-                    queryInfo.paramCount = 0;
                 q = generateUpdateClause(queryInfo, updates);
                 if (whereClause != null)
                     q.append(whereClause);
@@ -307,17 +305,13 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 queryInfo.type = QueryInfo.Type.DELETE;
                 q = new StringBuilder(14 + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
                                 .append("DELETE FROM ").append(entityInfo.name).append(" o");
-                if (whereClause == null)
-                    queryInfo.paramCount = 0;
-                else
+                if (whereClause != null)
                     q.append(whereClause);
             } else if (queryInfo.method.getAnnotation(Count.class) != null) {
                 queryInfo.type = QueryInfo.Type.COUNT;
                 q = new StringBuilder(23 + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
                                 .append("SELECT COUNT(o) FROM ").append(entityInfo.name).append(" o");
-                if (whereClause == null)
-                    queryInfo.paramCount = 0;
-                else
+                if (whereClause != null)
                     q.append(whereClause);
             } else if (queryInfo.method.getAnnotation(Exists.class) != null) {
                 queryInfo.type = QueryInfo.Type.EXISTS;
@@ -325,9 +319,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 q = new StringBuilder(17 + attrName.length() + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
                                 .append("SELECT o.").append(attrName) //
                                 .append(" FROM ").append(entityInfo.name).append(" o");
-                if (whereClause == null)
-                    queryInfo.paramCount = 0;
-                else
+                if (whereClause != null)
                     q.append(whereClause);
             } else if (whereClause != null) {
                 queryInfo.type = QueryInfo.Type.SELECT;
@@ -393,14 +385,18 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
         // If we don't already know from generating the JPQL, find out how many
         // parameters the JPQL takes and which parameters are named parameters.
-        if (queryInfo.paramCount < 0 && queryInfo.type != QueryInfo.Type.MERGE) {
+        if (query != null || queryInfo.paramNames != null) {
+            int initialParamCount = queryInfo.paramCount;
             Parameter[] params = queryInfo.method.getParameters();
             for (int i = 0; i < params.length && !SPECIAL_PARAM_TYPES.contains(params[i].getType()); i++) {
-                List<String> paramNames = i == 0 ? (queryInfo.paramNames = new ArrayList<>()) : queryInfo.paramNames;
                 Param param = params[i].getAnnotation(Param.class);
-                paramNames.add(param == null ? null : param.value());
+                if (param != null)
+                    (queryInfo.paramNames == null ? (queryInfo.paramNames = new ArrayList<>()) : queryInfo.paramNames).add(param.value());
+                queryInfo.paramCount++;
+                if (initialParamCount != 0)
+                    throw new MappingException("Cannot mix positional and named parameters on repository method " +
+                                               queryInfo.method.getDeclaringClass().getName() + '.' + queryInfo.method.getName()); // TODO NLS
             }
-            queryInfo.paramCount = queryInfo.paramNames.size();
         }
 
         // The Sorts parameter is from JNoSQL and might get added to Jakarta Data.
@@ -757,7 +753,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     break;
                 default:
                     throw new MappingException("Repository keyword " + condition.name() +
-                                               " cannot be used when the Id of the entity is an IdClass."); // TODO
+                                               " cannot be used when the Id of the entity is an IdClass."); // TODO NLS
             }
 
             first = false;
@@ -799,7 +795,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      */
     private void generateKeysetQueries(QueryInfo queryInfo, List<Sort> keyset, StringBuilder q, StringBuilder o, StringBuilder r) {
         int numKeys = keyset.size();
-        String paramPrefix = queryInfo.paramNames.isEmpty() || queryInfo.paramNames.get(0) == null ? "?" : ":keyset";
+        String paramPrefix = queryInfo.paramNames == null ? "?" : ":keyset";
         StringBuilder a = o == null ? null : new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (");
         StringBuilder b = r == null ? null : new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (");
         for (int i = 0; i < numKeys; i++) {
@@ -1110,21 +1106,32 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
             String attribute = next == Integer.MAX_VALUE ? methodName.substring(u) : methodName.substring(u, next);
             String name = queryInfo.entityInfo.getAttributeName(attribute);
-            q.append(first ? " o." : ", o.").append(name).append("=");
 
-            switch (op) {
-                case '+':
-                    if (CharSequence.class.isAssignableFrom(queryInfo.entityInfo.attributeTypes.get(name))) {
-                        q.append("CONCAT(").append("o.").append(name).append(',').append('?').append(++queryInfo.paramCount).append(')');
-                        break;
-                    }
-                    // else fall through
-                case '*':
-                case '/':
-                    q.append("o.").append(name).append(op);
-                    // fall through
-                case '=':
-                    q.append('?').append(++queryInfo.paramCount);
+            if (name == null) {
+                if (op == '=') {
+                    generateUpdatesForIdClass(queryInfo, first, q);
+                } else {
+                    String opName = op == '+' ? Operation.Add.name() : op == '*' ? Operation.Multiply.name() : Operation.Divide.name();
+                    throw new MappingException("The " + opName +
+                                               " repository update operation cannot be used on the Id of the entity when the Id is an IdClass."); // TODO NLS
+                }
+            } else {
+                q.append(first ? " o." : ", o.").append(name).append("=");
+
+                switch (op) {
+                    case '+':
+                        if (CharSequence.class.isAssignableFrom(queryInfo.entityInfo.attributeTypes.get(name))) {
+                            q.append("CONCAT(").append("o.").append(name).append(',').append('?').append(++queryInfo.paramCount).append(')');
+                            break;
+                        }
+                        // else fall through
+                    case '*':
+                    case '/':
+                        q.append("o.").append(name).append(op);
+                        // fall through
+                    case '=':
+                        q.append('?').append(++queryInfo.paramCount);
+                }
             }
 
             u = next == Integer.MAX_VALUE ? -1 : next;
@@ -1141,71 +1148,79 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      * @return the JPQL UPDATE clause
      */
     private StringBuilder generateUpdateClause(QueryInfo queryInfo, Update[] updates) {
-
         StringBuilder q = new StringBuilder(400).append("UPDATE ").append(queryInfo.entityInfo.name).append(" o SET");
 
         boolean first = true;
         for (Update update : updates) {
             String attribute = update.attr();
+            Operation op = update.op();
             String name = queryInfo.entityInfo.getAttributeName(attribute);
 
-            q.append(first ? " o." : ", o.").append(name).append("=");
+            if (name == null) {
+                if (op == Operation.Assign)
+                    generateUpdatesForIdClass(queryInfo, first, q);
+                else
+                    throw new MappingException("The " + op.name() +
+                                               " repository update operation cannot be used on the Id of the entity when the Id is an IdClass."); // TODO NLS
+            } else {
+                q.append(first ? " o." : ", o.").append(name).append("=");
 
-            boolean withFunction = false;
-            Operation op = update.op();
-            switch (op) {
-                case Assign:
-                    break;
-                case Add:
-                    if (withFunction = CharSequence.class.isAssignableFrom(queryInfo.entityInfo.attributeTypes.get(name)))
-                        q.append("CONCAT(").append("o.").append(name).append(',');
-                    else
-                        q.append("o.").append(name).append('+');
-                    break;
-                case Multiply:
-                    q.append("o.").append(name).append('*');
-                    break;
-                case Subtract:
-                    q.append("o.").append(name).append('-');
-                    break;
-                case Divide:
-                    q.append("o.").append(name).append('/');
-                    break;
-                default:
-                    throw new UnsupportedOperationException(op.name());
-            }
+                boolean withFunction = false;
+                switch (op) {
+                    case Assign:
+                        break;
+                    case Add:
+                        if (withFunction = CharSequence.class.isAssignableFrom(queryInfo.entityInfo.attributeTypes.get(name)))
+                            q.append("CONCAT(").append("o.").append(name).append(',');
+                        else
+                            q.append("o.").append(name).append('+');
+                        break;
+                    case Multiply:
+                        q.append("o.").append(name).append('*');
+                        break;
+                    case Subtract:
+                        q.append("o.").append(name).append('-');
+                        break;
+                    case Divide:
+                        q.append("o.").append(name).append('/');
+                        break;
+                    default:
+                        throw new UnsupportedOperationException(op.name());
+                }
 
-            String param = update.param();
-            String[] values = update.value();
-            if (param.length() > 0) { // named parameter
-                q.append(':').append(param);
-            } else if (values.length == 1) { // single value
-                char c = values[0].length() == 0 ? ' ' : values[0].charAt(0);
-                boolean enquote = (c < '0' || c > '9') && c != '\'';
-                if (enquote)
-                    q.append("'");
-                q.append(values[0]);
-                if (enquote)
-                    q.append("'");
-            } else if (values.length > 1) { // multiple value list // TODO should we even allow this if there is no way to supply a single value list?
-                for (int v = 0; v < values.length; v++) {
-                    q.append(v == 0 ? "(" : ", ");
-                    char c = values[v].length() == 0 ? ' ' : values[v].charAt(0);
+                String param = update.param();
+                String[] values = update.value();
+                if (param.length() > 0) { // named parameter
+                    q.append(':').append(param);
+                    if (queryInfo.paramNames == null)
+                        queryInfo.paramNames = new ArrayList<>(); // content is computed later from method signature
+                } else if (values.length == 1) { // single value
+                    char c = values[0].length() == 0 ? ' ' : values[0].charAt(0);
                     boolean enquote = (c < '0' || c > '9') && c != '\'';
                     if (enquote)
                         q.append("'");
-                    q.append(values[v]);
+                    q.append(values[0]);
                     if (enquote)
                         q.append("'");
+                } else if (values.length > 1) { // multiple value list // TODO should we even allow this if there is no way to supply a single value list?
+                    for (int v = 0; v < values.length; v++) {
+                        q.append(v == 0 ? "(" : ", ");
+                        char c = values[v].length() == 0 ? ' ' : values[v].charAt(0);
+                        boolean enquote = (c < '0' || c > '9') && c != '\'';
+                        if (enquote)
+                            q.append("'");
+                        q.append(values[v]);
+                        if (enquote)
+                            q.append("'");
+                    }
+                    q.append(')');
+                } else { // positional parameter
+                    q.append('?').append(++queryInfo.paramCount);
                 }
-                q.append(')');
-            } else { // positional parameter
-                q.append('?').append(++queryInfo.paramCount);
+
+                if (withFunction)
+                    q.append(')');
             }
-
-            if (withFunction)
-                q.append(')');
-
             first = false;
         }
 
@@ -1213,10 +1228,27 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     }
 
     /**
+     * Generates JPQL to assign the entity properties of which the IdClass consists.
+     */
+    private void generateUpdatesForIdClass(QueryInfo queryInfo, boolean firstOperation, StringBuilder q) {
+        boolean firstIdClassAttr = true;
+        for (String idClassAttr : queryInfo.entityInfo.idClassAttributeAccessors.keySet()) {
+            String name = queryInfo.entityInfo.getAttributeName(idClassAttr);
+
+            q.append(firstOperation ? " o." : ", o.").append(name).append("=?").append(++queryInfo.paramCount);
+            firstOperation = false;
+
+            if (firstIdClassAttr)
+                firstIdClassAttr = false;
+            else
+                queryInfo.paramAddedCount++;
+        }
+    }
+
+    /**
      * Generates the JPQL WHERE clause for all findBy, deleteBy, or updateBy conditions such as MyColumn[IgnoreCase][Not]Like
      */
     private void generateWhereClause(QueryInfo queryInfo, String methodName, int start, int endBefore, StringBuilder q) {
-        queryInfo.paramCount = 0;
         queryInfo.hasWhere = true;
         q.append(" WHERE (");
         for (int and = start, or = start, iNext = start, i = start; queryInfo.hasWhere && i >= start && iNext < endBefore; i = iNext) {
@@ -1245,6 +1277,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      * @return the JPQL WHERE clause
      */
     private StringBuilder generateWhereClause(QueryInfo queryInfo, Filter[] filters) {
+        queryInfo.hasWhere = true;
         StringBuilder q = new StringBuilder(250).append(" WHERE (");
 
         boolean first = true;
@@ -1352,11 +1385,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     throw new MappingException(new UnsupportedOperationException(comparison.name())); // should be unreachable
             }
         }
-
-        int namedParamCount = queryInfo.paramNames.size();
-        if (namedParamCount > 0 && queryInfo.paramCount != namedParamCount)
-            throw new MappingException("Cannot mix positional and named parameters on repository method " +
-                                       queryInfo.method.getDeclaringClass().getName() + '.' + queryInfo.method.getName()); // TODO NLS
 
         return q.append(')');
     }
