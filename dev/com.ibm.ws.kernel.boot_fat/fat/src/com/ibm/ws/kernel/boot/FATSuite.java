@@ -51,6 +51,7 @@ import com.ibm.wsspi.kernel.embeddable.EmbeddedServerTest;
                 KernelChangeTest.class,
                 ServerEnvTest.class,
                 ServerStartTest.class,
+                ServerStopTest.class,
                 ServerStartAsServiceTest.class,
                 ShutdownTest.class,
                 ServerCommandPortTest.class,
