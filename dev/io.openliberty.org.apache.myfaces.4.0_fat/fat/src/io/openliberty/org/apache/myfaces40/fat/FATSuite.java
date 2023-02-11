@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.org.apache.myfaces40.fat;
 
@@ -29,6 +26,7 @@ import io.openliberty.org.apache.myfaces40.fat.tests.AnnotationLiteralsTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.ExtensionlessMappingTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.ExternalContextAddResponseCookieTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.Faces40ThirdPartyApiTests;
+import io.openliberty.org.apache.myfaces40.fat.tests.Faces40URNTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.FacesConfigTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.FacesContextGetLifecycleTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.InputTextTypeTest;
@@ -55,7 +53,8 @@ import io.openliberty.org.apache.myfaces40.fat.tests.UIViewRootGetDoctypeTest;
                 FacesContextGetLifecycleTest.class,
                 UIViewRootGetDoctypeTest.class,
                 Faces40ThirdPartyApiTests.class,
-                ProgrammaticFaceletTests.class
+                ProgrammaticFaceletTests.class,
+                Faces40URNTest.class
 })
 public class FATSuite {
 
