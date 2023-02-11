@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -270,7 +270,7 @@ public class FATTest {
 
         server.waitForStringInLog("CWWKZ0001I.*PeopleService");
 
-        String wsimportArgs = new StringBuilder().append("-s ").append(wsimportSrcDir.getAbsolutePath()).append(" -d ").append(wsimportClassesDir.getAbsolutePath()).append(" -target 2.2 ").append(TEST_WSDL_LOCATION).toString();
+        String wsimportArgs = new StringBuilder().append("-s ").append(wsimportSrcDir.getAbsolutePath()).append(" -d ").append(wsimportClassesDir.getAbsolutePath()).append(JakartaEE9Action.isActive() ? " -target 3.0 " : " -target 2.2 ").append(TEST_WSDL_LOCATION).toString();
 
         assertTrue("The file bin/wsimport does not exist.", wsimport.exists());
         assertTrue("The file bin/wsimport.bat does not exist.", wsimportBat.exists());
