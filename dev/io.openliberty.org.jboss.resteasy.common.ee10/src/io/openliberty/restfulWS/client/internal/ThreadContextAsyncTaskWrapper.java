@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ package io.openliberty.restfulWS.client.internal;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -100,4 +101,29 @@ public class ThreadContextAsyncTaskWrapper implements ClientAsyncTaskWrapper {
             }
         };
     }
+
+    @Override
+    public <T> Supplier<T> wrap(Supplier<T> s) {
+        ClassLoader cl = getThreadContextClassLoader();
+        ComponentMetaData cmd = cmdAccessor.getComponentMetaData();
+        return new Supplier<T>() {
+            @Override
+            public T get() {
+                ClassLoader origCL = getThreadContextClassLoader();
+                try {
+                    setThreadContextClassLoader(cl);
+                    if (cmd != null) {
+                        cmdAccessor.beginContext(cmd);
+                    }
+                    return s.get();
+                } finally {
+                    if (cmd != null) {
+                        cmdAccessor.endContext();
+                    }
+                    setThreadContextClassLoader(origCL);
+                }
+            }
+        };
+    }
+
 }

@@ -25,12 +25,12 @@ import org.junit.Test;
 import componenttest.app.FATServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.common.PropagationHeaderClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.common.PropagationHeaderEndpoint;
+import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.baggage.BaggageEntryMetadata;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
-import io.opentelemetry.context.Scope;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
@@ -52,28 +52,25 @@ public class W3CTraceBaggagePropagationTestServlet extends FATServlet {
     @Inject
     private HttpServletRequest request;
 
+    @Inject
+    private TestSpans testSpans;
+
     @Test
     public void testW3cTraceBaggagePropagation() throws URISyntaxException {
-        Span span = tracer.spanBuilder("test").startSpan();
-        try (Scope scope = span.makeCurrent()) {
+        Span span = testSpans.withTestSpan(() -> {
             Baggage baggage = Baggage.builder().put(BAGGAGE_KEY, BAGGAGE_VALUE, BaggageEntryMetadata.create(BAGGAGE_METADATA)).build();
             baggage.makeCurrent();
             PropagationHeaderClient client = RestClientBuilder.newBuilder().baseUri(PropagationHeaderEndpoint.getBaseUri(request)).build(PropagationHeaderClient.class);
             client.get();
-        } finally {
-            span.end();
-        }
+        });
 
-        List<SpanData> spanData = spanExporter.getFinishedSpanItems(3);
-
-        SpanData testSpan = spanData.get(0);
-        SpanData clientSpan = spanData.get(1);
-        SpanData serverSpan = spanData.get(2);
+        List<SpanData> spanData = spanExporter.getFinishedSpanItems(3, span);
 
         // Assert correct parent-child links
         // Shows that propagation occurred
-        assertEquals("client parent span id", testSpan.getSpanId(), clientSpan.getParentSpanId());
-        assertEquals("server parent span id", clientSpan.getSpanId(), serverSpan.getParentSpanId());
+        TestSpans.assertLinearParentage(spanData);
+
+        SpanData serverSpan = spanData.get(2);
 
         // Assert baggage is propagated
         assertEquals("baggage value propagated", BAGGAGE_VALUE, serverSpan.getAttributes().get(BAGGAGE_VALUE_ATTR));

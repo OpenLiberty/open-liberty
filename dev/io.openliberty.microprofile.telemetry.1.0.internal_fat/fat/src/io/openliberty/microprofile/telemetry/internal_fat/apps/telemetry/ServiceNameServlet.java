@@ -10,7 +10,7 @@
 
 package io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry;
 
-import static org.hamcrest.Matchers.equalTo;
+import static io.openliberty.microprofile.telemetry.internal_fat.common.SpanDataMatcher.hasResourceAttribute;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
@@ -21,7 +21,6 @@ import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
-import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -53,11 +52,10 @@ public class ServiceNameServlet extends FATServlet {
         Span span = tracer.spanBuilder("span").startSpan();
         span.end();
 
-        SpanData spanData = exporter.getFinishedSpanItems(1).get(0);
+        SpanData spanData = exporter.getFinishedSpanItems(1, span).get(0);
         System.out.println(spanData.toString());
         // Attributes added by TestResourceProvider should have been merged into the default resource
-        Resource resource = spanData.getResource();
-        assertThat(resource.getAttribute(SERVICE_NAME_KEY), equalTo(APP_NAME));
+        assertThat(spanData, hasResourceAttribute(SERVICE_NAME_KEY, APP_NAME));
     }
 
 }

@@ -12,6 +12,10 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal_fat.apps.multiapp1;
 
+import static io.openliberty.microprofile.telemetry.internal_fat.common.SpanDataMatcher.hasResourceAttribute;
+import static io.openliberty.microprofile.telemetry.internal_fat.common.SpanDataMatcher.isSpan;
+import static io.opentelemetry.api.trace.SpanKind.CLIENT;
+import static io.opentelemetry.api.trace.SpanKind.SERVER;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -22,11 +26,10 @@ import java.util.List;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.opentelemetry.api.trace.Span;
-import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.api.trace.Tracer;
-import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.semconv.resource.attributes.ResourceAttributes;
 import jakarta.inject.Inject;
@@ -47,32 +50,39 @@ public class MultiApp1TestServlet extends FATServlet {
     @Inject
     private HttpServletRequest request;
 
+    @Inject
+    private TestSpans testSpans;
+
     @Test
     public void testResource() {
         Span span = tracer.spanBuilder("test").startSpan();
         span.end();
 
-        SpanData spanData = exporter.getFinishedSpanItems(1).get(0);
-        Resource resource = spanData.getResource();
-        assertThat(resource.getAttribute(ResourceAttributes.SERVICE_NAME), equalTo("multiapp1"));
+        SpanData spanData = exporter.getFinishedSpanItems(1, span).get(0);
+        assertThat(spanData, hasResourceAttribute(ResourceAttributes.SERVICE_NAME, "multiapp1"));
     }
 
     @Test
     public void callMultiApp() {
-        URI uri = getTargetUri();
-        String response = ClientBuilder.newClient().target(uri).request().get(String.class);
-        assertThat(response, equalTo("OK"));
+
+        Span span = testSpans.withTestSpan(() -> {
+            URI uri = getTargetUri();
+            String response = ClientBuilder.newClient().target(uri).request().get(String.class);
+            assertThat(response, equalTo("OK"));
+        });
 
         // Note the exporter is static and in a shared library so it will contain traces from both apps
-        List<SpanData> spanData = exporter.getFinishedSpanItems(2);
-        SpanData app1client = spanData.get(0);
-        SpanData app2server = spanData.get(1);
+        List<SpanData> spanData = exporter.getFinishedSpanItems(3, span);
+        SpanData app1client = spanData.get(1);
+        SpanData app2server = spanData.get(2);
 
-        assertThat(app1client.getKind(), equalTo(SpanKind.CLIENT));
-        assertThat(app1client.getResource().getAttribute(ResourceAttributes.SERVICE_NAME), equalTo("multiapp1"));
+        assertThat(app1client, isSpan()
+                        .withKind(CLIENT)
+                        .withResourceAttribute(ResourceAttributes.SERVICE_NAME, "multiapp1"));
 
-        assertThat(app2server.getKind(), equalTo(SpanKind.SERVER));
-        assertThat(app2server.getResource().getAttribute(ResourceAttributes.SERVICE_NAME), equalTo("multiapp2"));
+        assertThat(app2server, isSpan()
+                        .withKind(SERVER)
+                        .withResourceAttribute(ResourceAttributes.SERVICE_NAME, "multiapp2"));
     }
 
     /**
@@ -88,11 +98,6 @@ public class MultiApp1TestServlet extends FATServlet {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    protected void before() throws Exception {
-        exporter.reset();
     }
 
 }

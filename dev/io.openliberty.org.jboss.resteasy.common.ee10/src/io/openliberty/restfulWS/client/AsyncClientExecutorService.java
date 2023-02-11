@@ -195,8 +195,10 @@ public class AsyncClientExecutorService implements ExecutorService {
     
     public <T> CompletableFuture<T> supplyAsync(Supplier<T> supplier) {
         ExecutorService executor = getDelegate();
-        if (executor instanceof CompletionStageExecutor)
-            return ((CompletionStageExecutor) executor).supplyAsync(supplier);
+        if (executor instanceof CompletionStageExecutor) {
+            return ((CompletionStageExecutor) executor).supplyAsync(wrap(supplier));
+        }
+        // No need to wrap here as tasks will be wrapped when CompletableFuture submits them to this executor
         return CompletableFuture.supplyAsync(supplier, this);
     }
 

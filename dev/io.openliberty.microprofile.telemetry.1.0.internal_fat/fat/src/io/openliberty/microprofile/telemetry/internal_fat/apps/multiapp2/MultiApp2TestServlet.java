@@ -12,7 +12,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal_fat.apps.multiapp2;
 
-import static org.hamcrest.Matchers.equalTo;
+import static io.openliberty.microprofile.telemetry.internal_fat.common.SpanDataMatcher.hasResourceAttribute;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
@@ -21,7 +21,6 @@ import componenttest.app.FATServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
-import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.semconv.resource.attributes.ResourceAttributes;
 import jakarta.inject.Inject;
@@ -42,14 +41,8 @@ public class MultiApp2TestServlet extends FATServlet {
         Span span = tracer.spanBuilder("test").startSpan();
         span.end();
 
-        SpanData spanData = exporter.getFinishedSpanItems(1).get(0);
-        Resource resource = spanData.getResource();
-        assertThat(resource.getAttribute(ResourceAttributes.SERVICE_NAME), equalTo("multiapp2"));
-    }
-
-    @Override
-    protected void before() throws Exception {
-        exporter.reset();
+        SpanData spanData = exporter.getFinishedSpanItems(1, span).get(0);
+        assertThat(spanData, hasResourceAttribute(ResourceAttributes.SERVICE_NAME, "multiapp2"));
     }
 
 }
