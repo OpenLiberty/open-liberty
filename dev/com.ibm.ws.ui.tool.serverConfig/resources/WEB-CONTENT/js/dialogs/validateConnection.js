@@ -572,6 +572,7 @@
         $(".loginConfigKey").prop("disabled", true);
         $(".loginConfigValue").prop("disabled", true);
         $(".keyValueTableItemActionIcon").addClass("keyValueTableItemActionIconDisabled");
+        $(".keyValueTableItemActionIcon").prop("disabled", true);
     };
 
 
@@ -587,6 +588,7 @@
         $(".loginConfigKey").prop("disabled", false);
         $(".loginConfigValue").prop("disabled", false);
         $(".keyValueTableItemActionIcon").removeClass("keyValueTableItemActionIconDisabled");
+        $(".keyValueTableItemActionIcon").prop("disabled", false);
     };
 
 
@@ -603,7 +605,7 @@
                     '<input type="text" class="form-control loginConfigValue bx--text-input bx--text-input--light" placeholder="' + editorMessages.NO_VALUE + '" aria-labelledby="betaLabel" title="' + editorMessages.VALUE + '">' +
                 '</div>' +
                 '<div class="keyValueTableItemAction">' +
-                    '<div class="keyValueTableItemActionIcon keyValueTableItemActionIconRemove bx--tag">' + editorMessages.REMOVE + '</div>' +
+                    '<button type="button" class="keyValueTableItemActionIcon keyValueTableItemActionIconRemove bx--tag">' + editorMessages.REMOVE + '</button>' +
                 '</div>' +
             '</div>';
         $(container).append(newRow);
