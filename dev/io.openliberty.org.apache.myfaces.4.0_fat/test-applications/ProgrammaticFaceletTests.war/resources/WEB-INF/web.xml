@@ -7,9 +7,6 @@
     http://www.eclipse.org/legal/epl-2.0/
     
     SPDX-License-Identifier: EPL-2.0
-   
-    Contributors:
-        IBM Corporation - initial API and implementation
  -->
 <web-app
     xmlns="https://jakarta.ee/xml/ns/jakartaee"
@@ -28,9 +25,9 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
-    
+
     <welcome-file-list>
         <welcome-file>welcome.xhtml</welcome-file>
     </welcome-file-list>
-    
+
 </web-app>
