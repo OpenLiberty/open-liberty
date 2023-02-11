@@ -10,9 +10,12 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import jakarta.data.repository.Compare;
+import jakarta.data.repository.Exists;
 import jakarta.data.repository.Filter;
 import jakarta.data.repository.KeysetAwarePage;
 import jakarta.data.repository.KeysetAwareSlice;
@@ -21,17 +24,41 @@ import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Sort;
+import jakarta.data.repository.Update;
 
 /**
  *
  */
 @Repository
 public interface Cities {
+    @Exists
+    @Filter(by = "stateName")
+    boolean areFoundIn(String state);
 
-    City findById(CityId id);
+    long countByStateNameAndIdNotOrIdNotAndName(String state, CityId exceptForInState, CityId exceptForCity, String city);
+
+    void delete(City city); // copied from CrudRepository
+
+    // "IN" (which is needed for this) is not supported for composite IDs, but EclipseLink generates SQL
+    // that leads to an SQLSyntaxErrorException rather than rejecting it outright
+    void deleteAll(Iterable<City> list); // copied from CrudRepository
+
+    long deleteByIdOrId(CityId id1, CityId id2);
+
+    boolean existsById(CityId id);
+
+    boolean existsByNameAndStateName(String name, String state);
+
+    Optional<City> findById(CityId id);
+
+    @OrderBy("name")
+    Stream<City> findByIdOrIdIgnoreCaseOrId(CityId id1, CityId id2, CityId id3);
 
     @OrderBy("stateName")
     Stream<City> findByName(String name);
+
+    @OrderBy("stateName")
+    Stream<City> findByNameAndIdNot(String state, CityId exceptFor);
 
     @OrderBy(value = "stateName", descending = true)
     Stream<CityId> findByNameStartsWith(String prefix);
@@ -58,9 +85,30 @@ public interface Cities {
 
     CityId findFirstByNameOrderByPopulationDesc(String name);
 
+    @Filter(by = "population", op = Compare.GreaterThan)
+    @Filter(by = "id", ignoreCase = true, op = Compare.Not)
+    @Filter(by = "stateName", op = Compare.StartsWith)
+    @OrderBy("stateName")
+    @OrderBy("name")
+    Stream<City> largerThan(int minPopulation, CityId exceptFor, String statePattern);
+
+    @Filter(by = "id")
+    @Update(attr = "id")
+    @Update(attr = "population")
+    @Update(attr = "areaCodes")
+    int replace(CityId oldId, CityId newId, int newPopulation, Set<Integer> newAreaCodes);
+
     @Filter(by = "population", op = Compare.Between, param = { "minSize", "maxSize" })
     @OrderBy(value = "id", descending = true)
     KeysetAwarePage<City> sizedWithin(@Param("minSize") int minPopulation, @Param("maxSize") int maxPopulation, Pageable pagination);
 
     void save(City c);
+
+    int updateByIdAndPopulationSetIdSetPopulationSetAreaCodes(CityId oldId, int oldPopulation,
+                                                              CityId newId, int newPopulation, Set<Integer> newAreaCodes);
+
+    @Filter(by = "id", op = Compare.NotNull)
+    @Filter(by = "name")
+    @OrderBy("stateName")
+    Stream<City> withNameOf(String name);
 }

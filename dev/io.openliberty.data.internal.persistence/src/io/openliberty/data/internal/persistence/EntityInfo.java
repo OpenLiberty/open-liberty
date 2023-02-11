@@ -97,7 +97,9 @@ class EntityInfo {
                     lowerName = lowerName.replace("_", "");
                     attributeName = attributeNames.get(lowerName);
                     if (attributeName == null)
-                        throw new MappingException("Entity class " + type.getName() + " does not have a property named " + name + "."); // TODO NLS
+                        throw new MappingException("Entity class " + type.getName() + " does not have a property named " + name +
+                                                   ". The following are valid property names for the entity: " +
+                                                   attributeTypes.keySet()); // TODO NLS
                 }
             }
 
@@ -184,5 +186,14 @@ class EntityInfo {
     static CompletableFuture<EntityInfo> newFuture(Class<?> entityClass) {
         // It's okay to use Java SE's CompletableFuture here given that *Async methods are never invoked on it
         return new CompletableFuture<>();
+    }
+
+    @Override
+    @Trivial
+    public String toString() {
+        return new StringBuilder("EntityInfo@").append(Integer.toHexString(hashCode())).append(' ') //
+                        .append(name).append(' ') //
+                        .append(attributeTypes.keySet()) //
+                        .toString();
     }
 }

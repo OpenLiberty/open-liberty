@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
 /**
@@ -37,4 +38,8 @@ public interface Employees {
     Stream<Badge> findByLastName(String lastName);
 
     void save(Employee e);
+
+    // "IN" is not supported for embeddables, but EclipseLink generates SQL that leads to an SQLDataException rather than rejecting outright
+    @Query("SELECT e FROM Employee e WHERE e.badge IN ?1")
+    List<Employee> withBadge(Iterable<Badge> badges);
 }

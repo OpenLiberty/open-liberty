@@ -308,6 +308,11 @@ public class DataJPATestServlet extends FATServlet {
             // expected
         }
 
+        accounts.delete(new Account(1005380, 70081, "Think Bank", true, 552.18, "Ellen TestEmbeddedId"));
+
+        // JPQL with "IN", which this needs, is not supported by EclipseLink for embeddables
+        // accounts.deleteAll(List.of(new Account(1004470, 70081, "Think Bank", true, 443.94, "Erin TestEmbeddedId")));
+
         accounts.deleteByOwnerEndsWith("TestEmbeddedId");
     }
 
@@ -330,6 +335,89 @@ public class DataJPATestServlet extends FATServlet {
         // The current error is confusing: You have attempted to set a value of type class test.jakarta.data.jpa.web.CityId
         // for parameter 1 with expected type of class java.lang.String from query string SELECT o FROM City o WHERE (o.state=?1)
         //cities.findById(CityId.of("Rochester", "Minnesota"));
+    }
+
+    /**
+     * Repository method with the Count keyword that counts how many matching entities there are.
+     */
+    @Test
+    public void testIdClassCountKeyword() {
+        assertEquals(2L, cities.countByStateNameAndIdNotOrIdNotAndName("Missouri", CityId.of("Kansas City", "Missouri"),
+                                                                       CityId.of("Rochester", "New York"), "Rochester"));
+    }
+
+    /**
+     * Use CrudRepository-style delete(entity) operation where entity has a composite ID that is defined by IdClass.
+     */
+    @Test
+    public void testIdClassDelete() {
+        City winona = new City("Winona", "Minnesota", 25948, Set.of(507));
+        cities.save(winona);
+        cities.delete(winona);
+        assertEquals(true, cities.findById(CityId.of("Winona", "Minnesota")).isEmpty());
+    }
+
+    /**
+     * Repository method with the Exists annotation that checks if any matching entities exist.
+     */
+    @Test
+    public void testIdClassExistsAnnotation() {
+        assertEquals(true, cities.areFoundIn("Minnesota"));
+        assertEquals(false, cities.areFoundIn("Antarctica"));
+    }
+
+    /**
+     * Repository method with the Exists keyword that checks if any matching entities exist.
+     */
+    @Test
+    public void testIdClassExistsKeyword() {
+        assertEquals(true, cities.existsByNameAndStateName("Kansas City", "Kansas"));
+        assertEquals(false, cities.existsByNameAndStateName("Kansas City", "Minnesota"));
+
+        assertEquals(true, cities.existsById(CityId.of("Kansas City", "Missouri")));
+        assertEquals(false, cities.existsById(CityId.of("Kansas City", "Nebraska")));
+    }
+
+    /**
+     * Repository method with the Filter annotation that queries based on multiple IdClass parameters.
+     */
+    @Test
+    public void testIdClassFilterAnnotation() {
+        assertIterableEquals(List.of("Rochester Minnesota",
+                                     "Rochester New York"),
+                             cities.withNameOf("Rochester")
+                                             .map(c -> c.name + ' ' + c.stateName)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("Springfield Massachusetts",
+                                     "Rochester Minnesota",
+                                     "Kansas City Missouri"),
+                             cities.largerThan(100000, CityId.of("springfield", "missouri"), "M%s")
+                                             .map(c -> c.name + ' ' + c.stateName)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Repository method with the Find keyword that queries based on multiple IdClass parameters.
+     */
+    @Test
+    public void testIdClassFindKeyword() {
+        assertIterableEquals(List.of("Kansas City Missouri",
+                                     "Rochester Minnesota",
+                                     "Springfield Illinois"),
+                             cities.findByIdOrIdIgnoreCaseOrId(CityId.of("Rochester", "Minnesota"),
+                                                               CityId.of("springfield", "illinois"),
+                                                               CityId.of("Kansas City", "Missouri"))
+                                             .map(c -> c.name + ' ' + c.stateName)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("Springfield Illinois",
+                                     "Springfield Massachusetts",
+                                     "Springfield Missouri",
+                                     "Springfield Ohio"),
+                             cities.findByNameAndIdNot("Springfield", CityId.of("Springfield", "Oregon"))
+                                             .map(c -> c.name + ' ' + c.stateName)
+                                             .collect(Collectors.toList()));
     }
 
     /**
@@ -579,6 +667,60 @@ public class DataJPATestServlet extends FATServlet {
                              Stream.of(cities.findByStateNameEndsWith("s"))
                                              .map(CityId::toString)
                                              .collect(Collectors.toList()));
+    }
+
+    /**
+     * Repository method with the Update annotation that makes an update by assigning the IdClass instance to something else.
+     */
+    @Test
+    public void testIdClassUpdateAnnotation() {
+        cities.save(new City("La Crosse", "Wisconsin", 52680, Set.of(608)));
+        try {
+            cities.findById(CityId.of("La Crosse", "Wisconsin")).orElseThrow();
+
+            assertEquals(1, cities.replace(CityId.of("La Crosse", "Wisconsin"),
+                                           CityId.of("Decorah", "Iowa"), 7587, Set.of(563)));
+
+            assertEquals(true, cities.findById(CityId.of("La Crosse", "Wisconsin")).isEmpty());
+            assertEquals(true, cities.existsById(CityId.of("Decorah", "Iowa")));
+
+            // TODO EclipseLink bug needs to be fixed:
+            // java.lang.IllegalArgumentException: Can not set java.util.Set field test.jakarta.data.jpa.web.City.areaCodes to java.lang.Integer
+            //City city = cities.findById(CityId.of("Decorah", "Iowa")).orElseThrow();
+            //assertEquals("Decorah", city.name);
+            //assertEquals("Iowa", city.stateName);
+            //assertEquals(7587, city.population);
+            //assertEquals(Set.of(563), city.areaCodes);
+        } finally {
+            cities.deleteByIdOrId(CityId.of("La Crosse", "Wisconsin"), CityId.of("Decorah", "Iowa"));
+        }
+    }
+
+    /**
+     * Repository method with the Update keyword that makes an update by assigning the IdClass instance to something else.
+     */
+    @Test
+    public void testIdClassUpdateKeyword() {
+        cities.save(new City("Madison", "Wisconsin", 269840, Set.of(608)));
+        try {
+            cities.findById(CityId.of("Madison", "Wisconsin")).orElseThrow();
+
+            assertEquals(1, cities.updateByIdAndPopulationSetIdSetPopulationSetAreaCodes(CityId.of("Madison", "Wisconsin"), 269840,
+                                                                                         CityId.of("Des Moines", "Iowa"), 214133, Set.of(515)));
+
+            assertEquals(true, cities.findById(CityId.of("Madison", "Wisconsin")).isEmpty());
+            assertEquals(true, cities.existsById(CityId.of("Des Moines", "Iowa")));
+
+            // TODO EclipseLink bug needs to be fixed:
+            // java.lang.IllegalArgumentException: Can not set java.util.Set field test.jakarta.data.jpa.web.City.areaCodes to java.lang.Integer
+            //City city = cities.findById(CityId.of("Des Moines", "Iowa")).orElseThrow();
+            //assertEquals("Des Moines", city.name);
+            //assertEquals("Iowa", city.stateName);
+            //assertEquals(214133, city.population);
+            //assertEquals(Set.of(515), city.areaCodes);
+        } finally {
+            cities.deleteByIdOrId(CityId.of("Madison", "Wisconsin"), CityId.of("Des Moines", "Iowa"));
+        }
     }
 
     /**
