@@ -60,7 +60,7 @@ public class SubscribeTest {
             }
 
             //UIComponent#unsubscribeToEvent should remove listeners
-            testUnsubscribeToEvent(cc, event, new MyTestListener());
+            testUnsubscribeToEvent(cc, event, myListener);
         } catch (AssertionError ae) {
             return Boolean.toString(false) + " - " + ae.getLocalizedMessage();
         }
@@ -110,7 +110,7 @@ public class SubscribeTest {
         cc.unsubscribeFromEvent(event, listener);
         List<SystemEventListener> subscribeList = cc.getListenersForEventClass(event);
         if (subscribeList == null || !subscribeList.isEmpty()) {
-            throw new AssertionError("testGetListenersForEventClass subscribeList was either null, or not empty: " + subscribeList);
+            throw new AssertionError("testUnsubscribeToEvent subscribeList was either null, or not empty: " + subscribeList);
         }
     }
 

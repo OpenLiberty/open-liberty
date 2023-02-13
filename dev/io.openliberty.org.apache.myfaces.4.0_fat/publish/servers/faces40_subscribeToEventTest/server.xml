@@ -13,7 +13,6 @@
 
     <featureManager>
         <feature>faces-4.0</feature>
-        <feature>cdi-4.0</feature>
     </featureManager>
 
 </server>

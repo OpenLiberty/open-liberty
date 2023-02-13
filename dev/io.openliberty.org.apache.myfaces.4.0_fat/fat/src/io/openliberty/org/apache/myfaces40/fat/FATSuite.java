@@ -46,7 +46,7 @@ import io.openliberty.org.apache.myfaces40.fat.tests.UIViewRootGetDoctypeTest;
                 ExtensionlessMappingTest.class,
                 ExternalContextAddResponseCookieTest.class,
                 Faces40ThirdPartyApiTests.class,
-				Faces40URNTest.class,
+                Faces40URNTest.class,
                 FacesConfigTest.class,
                 FacesContextGetLifecycleTest.class,
                 InputTextTypeTest.class,
@@ -54,8 +54,8 @@ import io.openliberty.org.apache.myfaces40.fat.tests.UIViewRootGetDoctypeTest;
                 MultipleInputFileTest.class,
                 ProgrammaticFaceletTests.class,
                 SelectItemTests.class,
-				SimpleTest.class,
-				SubscribeToEventTest.class,
+                SimpleTest.class,
+                SubscribeToEventTest.class,
                 UIViewRootGetDoctypeTest.class
 })
 
