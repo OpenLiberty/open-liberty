@@ -36,7 +36,25 @@
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SimplestAnnotated/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SimplestAnnotatedWithEL/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/IdentityStore/Callback,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/MultipleIdentityStore/Callback"
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/MultipleIdentityStore/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppInjectRedirectFalseUseSessionFalseServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppInjectRedirectFalseUseSessionTrueServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppInjectRedirectFalseUseSessionEmptyServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppInjectRedirectTrueUseSessionFalseServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppInjectRedirectTrueUseSessionTrueServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppInjectRedirectTrueUseSessionEmptyServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppInjectRedirectEmptyUseSessionFalseServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppInjectRedirectEmptyUseSessionTrueServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppInjectRedirectEmptyUseSessionEmptyServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppNoInjectRedirectFalseUseSessionFalseServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppNoInjectRedirectFalseUseSessionTrueServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppNoInjectRedirectFalseUseSessionEmptyServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppNoInjectRedirectTrueUseSessionFalseServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppNoInjectRedirectTrueUseSessionTrueServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppNoInjectRedirectTrueUseSessionEmptyServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppNoInjectRedirectEmptyUseSessionFalseServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppNoInjectRedirectEmptyUseSessionTrueServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppNoInjectRedirectEmptyUseSessionEmptyServlet/Callback"
 				scope="ALL_SCOPES"
 				enabled="true"
 			>

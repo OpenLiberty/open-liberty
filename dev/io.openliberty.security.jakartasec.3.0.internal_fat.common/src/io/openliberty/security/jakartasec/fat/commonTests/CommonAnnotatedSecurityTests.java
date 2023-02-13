@@ -384,7 +384,10 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
         // confirm protected resource was accessed
         validationUtils.validateResult(response, currentExpectations);
 //        validateTheSameContext(ServletMessageConstants.CALLBACK, response);
-        validateTheSameContext(ServletMessageConstants.SERVLET, response);
+        // when simple servlet is used, we won't have an openidContext
+        if (!rspValues.getBaseApp().equals(Constants.DEFAULT_SERVLET)) {
+            validateTheSameContext(ServletMessageConstants.SERVLET, response);
+        }
 
         return response;
     }
@@ -398,7 +401,7 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
                                                                                                                      + "OpenIdContext: null", "The context was null and should not have been"));
 
         processLoginexpectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, ServletMessageConstants.HELLO_MSG
-                                                                                                             + ServletMessageConstants.BASE_SERVLET, "Did not land on the test app."));
+                                                                                                             + rspValues.getBaseApp(), "Did not land on the test app."));
         processLoginexpectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, ServletMessageConstants.HELLO_MSG
                                                                                                              + app, "Did not land on the test app."));
 

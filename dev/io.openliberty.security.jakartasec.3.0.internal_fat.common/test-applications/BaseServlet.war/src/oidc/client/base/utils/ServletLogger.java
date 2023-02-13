@@ -29,6 +29,8 @@ public class ServletLogger {
         System.out.println(msg);
         if (ps != null) {
             ps.println(msg);
+        } else {
+            System.out.println("output stream is null");
         }
 
     }
@@ -46,4 +48,9 @@ public class ServletLogger {
         return null;
 
     }
+
+    public static void printBlankLine(ServletOutputStream ps) throws IOException {
+        printLine(ps, "");
+    }
+
 }

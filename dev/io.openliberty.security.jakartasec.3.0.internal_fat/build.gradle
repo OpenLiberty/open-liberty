@@ -56,7 +56,13 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/shared/config')
       include '**/*.xml'
    }
-  
+ 
+    copy {
+      from project(':io.openliberty.security.jakartasec.3.0.internal_fat.common').file('publish/shared/config/oidcClient')
+      into new File(autoFvtDir, 'publish/shared/config/oidcClient')
+      include '**/*.properties'
+   }
+ 
   def servers = [
 	'jakartasec-3.0_fat.op',
 	'jakartasec-3.0_fat.rp'
@@ -93,7 +99,9 @@ autoFVT.doLast {
 	'jakartasec-3.0_fat.withOidcClientConfig.jwt.rp',
     'jakartasec-3.0_fat.withOidcClientConfig.opaque.rp',
 	'jakartasec-3.0_fat.identityStore.jwt.rp',
-    'jakartasec-3.0_fat.identityStore.opaque.rp'
+    'jakartasec-3.0_fat.identityStore.opaque.rp',
+	'jakartasec-3.0_fat.authentication.jwt.rp',
+    'jakartasec-3.0_fat.authentication.opaque.rp'
   ]
 
   rpCopyServers.each { rpServer ->

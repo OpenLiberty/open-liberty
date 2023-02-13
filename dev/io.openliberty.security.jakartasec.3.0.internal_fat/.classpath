@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/AuthAppInjectServlet.war/src"/>
+	<classpathentry kind="src" path="test-applications/AuthAppNoInjectServlet.war/src"/>
 	<classpathentry kind="src" path="test-applications/ApplicationScoped.war/src"/>
 	<classpathentry kind="src" path="test-applications/RequestScoped.war/src"/>
 	<classpathentry kind="src" path="test-applications/SessionScoped.war/src"/>

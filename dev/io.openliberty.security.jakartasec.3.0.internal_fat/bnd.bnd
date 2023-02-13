@@ -16,6 +16,8 @@ bVersion=1.0
 src: \
     fat/src,\
     test-applications/ApplicationScoped.war/src,\
+    test-applications/AuthAppInjectServlet.war/src,\
+    test-applications/AuthAppNoInjectServlet.war/src,\
     test-applications/RequestScoped.war/src,\
     test-applications/SessionScoped.war/src,\
     test-applications/SimplestAnnotated.war/src,\
@@ -58,4 +60,5 @@ javac.target: 11
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	jakarta.inject.jakarta.inject-api;version=latest,\
 	io.openliberty.jakarta.servlet.5.0,\
-	com.ibm.websphere.javaee.security.1.0
+	com.ibm.websphere.javaee.security.1.0,\
+	jakarta.servlet-api
