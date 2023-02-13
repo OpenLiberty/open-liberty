@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020,2021 IBM Corporation and others.
+# Copyright (c) 2020,2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -18,6 +18,8 @@ src: \
 	test-applications/fvtweb/src,\
 	test-libraries/testlib/src,\
 	test-resourceadapters/fvtra/src
+
+tested.features: connectors-2.1, messaging-3.1, servlet-6.0
 
 fat.project: true
 	

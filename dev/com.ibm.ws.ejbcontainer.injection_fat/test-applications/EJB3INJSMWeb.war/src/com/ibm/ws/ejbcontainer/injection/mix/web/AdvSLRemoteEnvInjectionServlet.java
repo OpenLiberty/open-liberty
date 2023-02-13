@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2021 IBM Corporation and others.
+ * Copyright (c) 2006, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import com.ibm.websphere.ejbcontainer.test.tools.FATHelper;
 import com.ibm.ws.ejbcontainer.injection.fat.tests.repeataction.RepeatWithCDI;
+import com.ibm.ws.ejbcontainer.injection.fat.tests.repeataction.RepeatWithEE10CDI;
 import com.ibm.ws.ejbcontainer.injection.fat.tests.repeataction.RepeatWithEE9CDI;
 import com.ibm.ws.ejbcontainer.injection.mix.ejb.EnvInjectionEJBRemote;
 import com.ibm.ws.ejbcontainer.injection.mix.ejb.EnvInjectionEJBRemoteHome;
@@ -37,6 +38,7 @@ import componenttest.app.FATServlet;
 import componenttest.rules.repeater.EE7FeatureReplacementAction;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 
 /**
@@ -526,7 +528,7 @@ public class AdvSLRemoteEnvInjectionServlet extends FATServlet {
      */
     @Test
     @ExpectedFFDC("javax.ejb.EJBException")
-    @SkipForRepeat({ RepeatWithCDI.ID, RepeatWithEE9CDI.ID })
+    @SkipForRepeat({ RepeatWithCDI.ID, RepeatWithEE9CDI.ID, RepeatWithEE10CDI.ID })
     public void testSLRAdvCompEnvObjMthdInjection() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Local Home/Factory and execute the test
@@ -556,7 +558,7 @@ public class AdvSLRemoteEnvInjectionServlet extends FATServlet {
 
     @Test
     @ExpectedFFDC("javax.ejb.EJBException")
-    @SkipForRepeat({ EmptyAction.ID, EE7FeatureReplacementAction.ID, EE8FeatureReplacementAction.ID, JakartaEE9Action.ID })
+    @SkipForRepeat({ EmptyAction.ID, EE7FeatureReplacementAction.ID, EE8FeatureReplacementAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID })
     public void testSLRAdvCompEnvObjMthdInjectionCDIEnabled() throws Exception {
         // --------------------------------------------------------------------
         // Locate SL Local Home/Factory and execute the test

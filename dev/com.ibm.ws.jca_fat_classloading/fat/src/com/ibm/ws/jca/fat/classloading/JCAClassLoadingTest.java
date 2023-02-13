@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -31,6 +31,7 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -45,7 +46,11 @@ public class JCAClassLoadingTest extends FATServletClient {
     private static final String RAR_NAME = "fvtra";
 
     private void runTest() throws Exception {
-        runTest(server, WAR_NAME, testName);
+        String test = testName.getMethodName();
+        if (test.endsWith(RepeatTestFilter.getRepeatActionsAsString())) {
+            test = test.replace(RepeatTestFilter.getRepeatActionsAsString(), "");
+        }
+        runTest(server, WAR_NAME, test);
     }
 
     private void restartWithNewConfig(boolean validateAppStarted) throws Exception {

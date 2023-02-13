@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -41,6 +41,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -59,13 +60,13 @@ public class BadApplicationTests extends AbstractTest {
     }
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.BadAppServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.fat.BadAppServer")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.BadAppServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.BadAppServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.fat.BadAppServer")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.BadAppServer")).andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.BadAppServer"));
 
     private static Set<String> installedApps;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        eeVersion = JakartaEE9Action.isActive() ? "EE9" : RepeatTestFilter.isRepeatActionActive(EE8FeatureReplacementAction.ID) ? "EE8" : "";
+        eeVersion = JakartaEE10Action.isActive() ? "EE10" : JakartaEE9Action.isActive() ? "EE9" : RepeatTestFilter.isRepeatActionActive(EE8FeatureReplacementAction.ID) ? "EE8" : "";
 
         // Use ShrinkHelper to build the Ears & Wars
 

@@ -29,7 +29,7 @@ fat.test.container.images: kyleaure/db2-krb5:2.0, kyleaure/krb5-server:1.0, kyle
 tested.features: \
   connectors-2.0, \
   servlet-5.0, \
-  xmlBinding-3.0
+  servlet-6.0
 
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true
