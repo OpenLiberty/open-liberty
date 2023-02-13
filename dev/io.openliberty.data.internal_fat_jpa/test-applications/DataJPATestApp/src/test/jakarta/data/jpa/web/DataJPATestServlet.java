@@ -398,6 +398,15 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Repository method with the Filter annotation that queries based on IdClass as a named parameter.
+     */
+    @Test
+    public void testIdClassFilterAnnotationWithNamedParameters() {
+        assertEquals(true, cities.isBiggerThan(100000, CityId.of("Rochester", "Minnesota")));
+        assertEquals(false, cities.isBiggerThan(500000, CityId.of("Rochester", "Minnesota")));
+    }
+
+    /**
      * Repository method with the Find keyword that queries based on multiple IdClass parameters.
      */
     @Test
@@ -693,6 +702,34 @@ public class DataJPATestServlet extends FATServlet {
             //assertEquals(Set.of(563), city.areaCodes);
         } finally {
             cities.deleteByIdOrId(CityId.of("La Crosse", "Wisconsin"), CityId.of("Decorah", "Iowa"));
+        }
+    }
+
+    /**
+     * Repository method with the Update annotation that makes an update by assigning the IdClass instance to something else.
+     * This test uses named parameters.
+     */
+    @Test
+    public void testIdClassUpdateAnnotationWithNamedParameters() {
+        cities.save(new City("Janesville", "Wisconsin", 65615, Set.of(608)));
+        try {
+            cities.findById(CityId.of("Janesville", "Wisconsin")).orElseThrow();
+
+            assertEquals(1, cities.replace(CityId.of("Janesville", "Wisconsin"),
+                                           CityId.of("Ames", "Iowa"), Set.of(515), 66427));
+
+            assertEquals(true, cities.findById(CityId.of("Janesville", "Wisconsin")).isEmpty());
+            assertEquals(true, cities.existsById(CityId.of("Ames", "Iowa")));
+
+            // TODO EclipseLink bug needs to be fixed:
+            // java.lang.IllegalArgumentException: Can not set java.util.Set field test.jakarta.data.jpa.web.City.areaCodes to java.lang.Integer
+            //City city = cities.findById(CityId.of("Decorah", "Iowa")).orElseThrow();
+            //assertEquals("Ames", city.name);
+            //assertEquals("Iowa", city.stateName);
+            //assertEquals(66427, city.population);
+            //assertEquals(Set.of(515), city.areaCodes);
+        } finally {
+            cities.deleteByIdOrId(CityId.of("Janesville", "Wisconsin"), CityId.of("Ames", "Iowa"));
         }
     }
 

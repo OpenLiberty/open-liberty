@@ -237,6 +237,8 @@ class QueryInfo {
      * @throws Exception if an error occurs
      */
     void setParameters(Query query, Object... args) throws Exception {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
         int methodParamForQueryCount = paramCount - paramAddedCount;
         if (args != null && args.length < methodParamForQueryCount)
             throw new MappingException("The " + method.getName() + " repository method has " + args.length +
@@ -251,16 +253,27 @@ class QueryInfo {
                                 args[i];
 
                 if (arg == null || entityInfo.idClass == null || !entityInfo.idClass.isInstance(arg)) {
-                    String paramName = namedParamCount > i ? paramNames.get(i) : null;
-                    if (paramName == null)
+                    if (namedParamCount > i) {
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "set :" + paramNames.get(p) + ' ' + (arg == null ? null : arg.getClass().getSimpleName()));
+                        query.setParameter(paramNames.get(p++), arg);
+                    } else { // positional parameter
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "set ?" + (p + 1) + ' ' + (arg == null ? null : arg.getClass().getSimpleName()));
                         query.setParameter(++p, arg);
-                    else // named parameter
-                        query.setParameter(paramName, arg);
+                    }
                 } else { // split IdClass argument into parameters
                     for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
                         Object param = accessor instanceof Method ? ((Method) accessor).invoke(arg) : ((Field) accessor).get(arg);
-                        query.setParameter(++p, param);
-                        // TODO: named parameters would only be valid here if @Filter/@Update become part of the spec
+                        if (namedParamCount > p) {
+                            if (trace && tc.isDebugEnabled())
+                                Tr.debug(this, tc, "set :" + paramNames.get(p) + ' ' + (param == null ? null : param.getClass().getSimpleName()));
+                            query.setParameter(paramNames.get(p++), param);
+                        } else { // positional parameter
+                            if (trace && tc.isDebugEnabled())
+                                Tr.debug(this, tc, "set ?" + (p + 1) + ' ' + (param == null ? null : param.getClass().getSimpleName()));
+                            query.setParameter(++p, param);
+                        }
                     }
                 }
             }
@@ -279,6 +292,8 @@ class QueryInfo {
                         param = ((Method) accessor).invoke(param);
                     else
                         param = ((Field) accessor).get(param);
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "set ?" + (p + 1) + ' ' + (param == null ? null : param.getClass().getSimpleName()));
                 query.setParameter(++p, param);
             }
         }
@@ -338,9 +353,11 @@ class QueryInfo {
             b.append(first ? "(" : ", ").append(p.getSimpleName());
             first = false;
         }
-        b.append(first ? "() " : ") ").append(jpql);
+        b.append(first ? "() " : ") ");
+        if (jpql != null)
+            b.append(jpql);
         if (paramCount > 0) {
-            b.append("[").append(paramCount).append(paramNames == null ? " positional params" : " named params");
+            b.append(" [").append(paramCount).append(paramNames == null ? " positional params" : " named params");
             if (paramAddedCount != 0)
                 b.append(", ").append(paramCount - paramAddedCount).append(" method params");
             b.append(']');
