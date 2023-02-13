@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jsp.translator.visitor.generator;
 
@@ -221,6 +218,10 @@ public class GenerateJspVisitor extends GenerateVisitor {
         writer.println("public java.util.List<String> getImportPackageList() {");
         writer.println("return importPackageList;");
         writer.println("}");
+        writer.println();
+        writer.println("public java.util.List<String> getImportStaticList() {");
+        writer.println("return importStaticList;");
+        writer.println("}");
     }
 
     protected void generateImportSection(ValidateJspResult validatorResult) {
@@ -244,8 +245,7 @@ public class GenerateJspVisitor extends GenerateVisitor {
                 : extendsClass);
         interfaces.add("com.ibm.ws.jsp.runtime.JspClassInformation");
         if(PagesVersionHandler.isPages31OrHigherLoaded()){
-            interfaces.add("com.ibm.ws.jsp.runtime.JspDirectiveInfo");
-            interfaces.add("com.ibm.ws.jsp.runtime.JspImportInfo");
+            interfaces.add("com.ibm.ws.jsp.runtime.DirectiveInfo");
         }
 
         /*  SingleThreadModel was removed in Servlet 6.0 (Pages 3.1)
@@ -304,6 +304,7 @@ public class GenerateJspVisitor extends GenerateVisitor {
             writer.println();
             writer.println("private static java.util.List<String> importPackageList = new java.util.ArrayList<String>();");
             writer.println("private static java.util.List<String> importClassList = new java.util.ArrayList<String>();");
+            writer.println("private static java.util.List<String> importStaticList = new java.util.ArrayList<String>();");
             writer.println();
             
             // Cannot place this in the ImportGenerator since that is only run when the import directive is included in the page

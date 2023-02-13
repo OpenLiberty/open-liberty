@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- * IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jaxrs.fat.jaxrsclient;
 
@@ -32,6 +29,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 
+import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.websphere.security.jwt.JwtHeaderInjecter;
 import com.ibm.websphere.security.openidconnect.PropagationHelper;
@@ -52,6 +50,7 @@ public class JaxRSClient extends HttpServlet {
     String scopesFromSubject = null;
     String accessTokenExpirationTimeFromSubject = null;
     String idTokenFromSubject = null;
+    String rawIdTokenString = null;
 
     private static final long serialVersionUID = 1L;
 
@@ -479,12 +478,21 @@ public class JaxRSClient extends HttpServlet {
         } else if (api.equals("getScopes")) {
             valueString = PropagationHelper.getScopes();
         } else if (api.equals("getIdToken")) {
+            String rawIdToken = null;
             IdToken x = PropagationHelper.getIdToken();
             if (x == null) {
                 valueString = "null";
             } else {
                 valueString = x.toString();
+                try {
+                    rawIdToken = x.getRawIdToken();
+                } catch (WSSecurityException e) {
+                    rawIdToken = "Exception: " + e;
+                }
             }
+            String printRawIdTokenString = "JaxRSClient-" + api + "-rawIdTokenString: " + rawIdToken;
+            pw.print(printRawIdTokenString + "\r\n");
+            System.out.println(printRawIdTokenString);
         } else {
             valueString = "something not recognized";
         }
@@ -515,6 +523,7 @@ public class JaxRSClient extends HttpServlet {
         scopesFromSubject = null;
         accessTokenExpirationTimeFromSubject = null;
         idTokenFromSubject = null;
+        rawIdTokenString = null;
 
         Subject runAsSubject = WSSubject.getRunAsSubject();
         if (runAsSubject != null) {
@@ -556,6 +565,7 @@ public class JaxRSClient extends HttpServlet {
                     }
                     if (tmpIdToken != null) {
                         idTokenFromSubject = tmpIdToken.toString();
+                        rawIdTokenString = tmpIdToken.getRawIdToken();
                         accessTokenExpirationTimeFromSubject = String.valueOf(tmpIdToken.getExpirationTimeSeconds());
                     }
                 }
@@ -568,6 +578,7 @@ public class JaxRSClient extends HttpServlet {
         System.out.println(msgPrefix + "scopesFromSubject: " + scopesFromSubject);
         System.out.println(msgPrefix + "accessTokenExpirationTimeFromSubject: " + accessTokenExpirationTimeFromSubject);
         System.out.println(msgPrefix + "idTokenFromSubject: " + idTokenFromSubject);
+        System.out.println(msgPrefix + "rawIdTokenString: " + rawIdTokenString);
 
     }
 

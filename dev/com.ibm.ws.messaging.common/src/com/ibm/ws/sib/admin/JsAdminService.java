@@ -51,13 +51,7 @@ public interface JsAdminService extends Singleton {
      */
     String unquoteJmxPropertyValue(String s);
 
-    void setAdminMain(JsMain e) throws IllegalStateException;
-
-    JsMain getAdminMain() throws IllegalStateException;
-
     boolean isInitialized();
-    
-    void reset();
 
     /**
      * Return the instance of the JsBus corresponding to the named Bus. The instance will only

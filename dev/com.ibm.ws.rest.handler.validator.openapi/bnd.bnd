@@ -43,5 +43,4 @@ Include-Resource: \
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.ws.microprofile.openapi,\
 	io.openliberty.com.fasterxml.jackson;version=latest,\
-	com.ibm.websphere.org.eclipse.microprofile.openapi.1.0,\
-	com.ibm.ws.kernel.boot
+	com.ibm.websphere.org.eclipse.microprofile.openapi.1.0

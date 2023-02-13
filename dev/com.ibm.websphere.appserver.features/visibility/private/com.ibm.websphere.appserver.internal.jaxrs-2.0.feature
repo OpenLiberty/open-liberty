@@ -10,6 +10,7 @@ Subsystem-Name: Internal Java RESTful Services 2.0
   com.ibm.websphere.appserver.containerServices-1.0, \
   com.ibm.websphere.appserver.injection-1.0, \
   com.ibm.websphere.appserver.servlet-3.1, \
+  io.openliberty.servlet.internal-3.1, \
   com.ibm.websphere.appserver.classloading-1.0, \
   com.ibm.websphere.appserver.eeCompatible-7.0, \
   com.ibm.websphere.appserver.javax.jaxrs-2.0, \

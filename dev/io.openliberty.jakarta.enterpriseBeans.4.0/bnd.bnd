@@ -29,10 +29,10 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -includeresource: \
-  @${repo;jakarta.ejb:jakarta.ejb-api;4.0.0;EXACT}!/(META-INF/LICENSE.md|META-INF/NOTICE.md)
+  @${repo;jakarta.ejb:jakarta.ejb-api;4.0.1;EXACT}!/(META-INF/LICENSE.md|META-INF/NOTICE.md)
 
 -buildpath: \
-	jakarta.ejb:jakarta.ejb-api;version=4.0.0;strategy=exact
+	jakarta.ejb:jakarta.ejb-api;version=4.0.1;strategy=exact
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

@@ -7,6 +7,7 @@ IBM-App-ForceRestart: install, \
 IBM-ShortName: mpLRACoordinator-1.0
 Subsystem-Name: MicroProfile Long Running Actions Coordinator 1.0
 -features=com.ibm.websphere.appserver.servlet-4.0, \
+  io.openliberty.servlet.internal-4.0, \
   com.ibm.websphere.appserver.jaxrs-2.1, \
   io.openliberty.mpCompatible-4.0; ibm.tolerates:="0.0", \
   io.openliberty.org.eclipse.microprofile.lra-1.0

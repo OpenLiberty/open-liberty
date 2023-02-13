@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
@@ -21,7 +21,7 @@ bVersion=1.0
 
 resteasy-version=6.2.0.Final
 resteasy-tracing-api-version=1.1.0.Final
-apache-mime4j-version=0.8.6
+apache-mime4j-version=0.8.9
 
 src: src, resources
 

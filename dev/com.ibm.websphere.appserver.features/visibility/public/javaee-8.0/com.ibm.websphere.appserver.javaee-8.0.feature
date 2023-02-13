@@ -23,6 +23,7 @@ Subsystem-Name: Java EE Full Platform 8.0
   com.ibm.websphere.appserver.jacc-1.5, \
   com.ibm.websphere.appserver.javax.persistence.base-2.2, \
   com.ibm.websphere.appserver.servlet-4.0, \
+  io.openliberty.servlet.internal-4.0, \
   com.ibm.websphere.appserver.wasJmsClient-2.0, \
   com.ibm.websphere.appserver.javaMail-1.6, \
   com.ibm.websphere.appserver.j2eeManagement-1.1

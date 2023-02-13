@@ -4,17 +4,13 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.utils.jaeger;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -38,8 +34,6 @@ import io.opentelemetry.api.trace.StatusCode;
  * Hamcrest {@link Matcher} for performing assertions against {@link Span} objects retrieved from Jaeger
  */
 public class SpanMatcher extends TypeSafeDiagnosingMatcher<Span> {
-
-    private static final Class<SpanMatcher> c = SpanMatcher.class;
 
     List<KeyValue> expectedTags = new ArrayList<>();
     List<List<KeyValue>> expectedLogs = new ArrayList<>();

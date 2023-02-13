@@ -30,6 +30,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.ServiceNameServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporterProvider;
 import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;
@@ -53,6 +54,7 @@ public class TelemetryServiceNameTest extends FATServletClient {
                         .addAsResource(new StringAsset("otel.sdk.disabled=false\notel.traces.exporter=in-memory\notel.bsp.schedule.delay=100"),
                                        "META-INF/microprofile-config.properties")
                         .addClasses(InMemorySpanExporter.class, InMemorySpanExporterProvider.class, ServiceNameServlet.class)
+                        .addPackage(TestSpans.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class);
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);

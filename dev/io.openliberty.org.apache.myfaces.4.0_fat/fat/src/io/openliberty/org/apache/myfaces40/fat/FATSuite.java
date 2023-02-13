@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.org.apache.myfaces40.fat;
 
@@ -25,14 +22,17 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.org.apache.myfaces40.fat.tests.AcceptInputFileTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.AjaxRenderExecuteThisTest;
+import io.openliberty.org.apache.myfaces40.fat.tests.AnnotationLiteralsTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.ExtensionlessMappingTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.ExternalContextAddResponseCookieTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.Faces40ThirdPartyApiTests;
+import io.openliberty.org.apache.myfaces40.fat.tests.Faces40URNTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.FacesConfigTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.FacesContextGetLifecycleTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.InputTextTypeTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.LayoutAttributeTests;
 import io.openliberty.org.apache.myfaces40.fat.tests.MultipleInputFileTest;
+import io.openliberty.org.apache.myfaces40.fat.tests.ProgrammaticFaceletTests;
 import io.openliberty.org.apache.myfaces40.fat.tests.SelectItemTests;
 import io.openliberty.org.apache.myfaces40.fat.tests.SimpleTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.UIViewRootGetDoctypeTest;
@@ -41,6 +41,7 @@ import io.openliberty.org.apache.myfaces40.fat.tests.UIViewRootGetDoctypeTest;
 @SuiteClasses({
                 AcceptInputFileTest.class,
                 AjaxRenderExecuteThisTest.class,
+                AnnotationLiteralsTest.class,
                 SimpleTest.class,
                 ExternalContextAddResponseCookieTest.class,
                 FacesConfigTest.class,
@@ -51,7 +52,9 @@ import io.openliberty.org.apache.myfaces40.fat.tests.UIViewRootGetDoctypeTest;
                 SelectItemTests.class,
                 FacesContextGetLifecycleTest.class,
                 UIViewRootGetDoctypeTest.class,
-                Faces40ThirdPartyApiTests.class
+                Faces40ThirdPartyApiTests.class,
+                ProgrammaticFaceletTests.class,
+                Faces40URNTest.class
 })
 public class FATSuite {
 

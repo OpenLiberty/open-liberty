@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,9 +12,8 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal_fat.apps.spi.propagator;
 
+import static io.openliberty.microprofile.telemetry.internal_fat.common.SpanDataMatcher.hasAttribute;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
@@ -26,6 +25,7 @@ import java.util.List;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.common.AttributeKey;
@@ -61,26 +61,30 @@ public class PropagatorTestServlet extends FATServlet {
     @Inject
     private Baggage baggage;
 
+    @Inject
+    private TestSpans testSpans;
+
     @Test
     public void testPropagator() {
-        // Add a key to the baggage that we will look for later
-        baggage.toBuilder().put(TEST_KEY.getKey(), TEST_VALUE).build().makeCurrent();
+        Span span = testSpans.withTestSpan(() -> {
+            // Add a key to the baggage that we will look for later
+            baggage.toBuilder().put(TEST_KEY.getKey(), TEST_VALUE).build().makeCurrent();
 
-        // Call PropagatorTarget (below)
-        String result = ClientBuilder.newClient().target(getTargetURI()).request().get(String.class);
-        assertEquals("OK", result);
+            // Call PropagatorTarget (below)
+            String result = ClientBuilder.newClient().target(getTargetURI()).request().get(String.class);
+            assertEquals("OK", result);
+        });
 
-        // Expect two spans (client and server)
-        List<SpanData> spans = exporter.getFinishedSpanItems(2);
+        // Expect three spans (test, client and server)
+        List<SpanData> spans = exporter.getFinishedSpanItems(3, span);
 
-        SpanData client = spans.get(0);
-        SpanData server = spans.get(1);
+        SpanData server = spans.get(2);
 
         // Check that baggage propagation worked by checking that the baggage entry was copied into a span attribute
-        assertThat(server.getAttributes().asMap(), hasEntry(TEST_KEY, TEST_VALUE));
+        assertThat(server, hasAttribute(TEST_KEY, TEST_VALUE));
 
         // Check that trace context propagation worked by checking that the parent was set correctly
-        assertThat(server.getParentSpanId(), equalTo(client.getSpanId()));
+        TestSpans.assertLinearParentage(spans);
     }
 
     @ApplicationPath("/")

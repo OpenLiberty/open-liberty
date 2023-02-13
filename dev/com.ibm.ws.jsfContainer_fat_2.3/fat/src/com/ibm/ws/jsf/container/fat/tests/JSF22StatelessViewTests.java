@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jsf.container.fat.tests;
 
@@ -33,12 +30,10 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import junit.framework.Assert;
-
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
 
 @RunWith(FATRunner.class)
 public class JSF22StatelessViewTests extends FATServletClient {
@@ -62,7 +57,7 @@ public class JSF22StatelessViewTests extends FATServletClient {
         mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "publish/files/permissions");
         mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "test-applications/" + MOJARRA_APP + "/resources");
         //Mojarra 3.0.0-RC3 (and possibily later versions) need a beans.xml for the
-        // JSF22StatelessView_TestViewScopeCDIBeanNotTransient_Mojarra test to pass 
+        // JSF22StatelessView_TestViewScopeCDIBeanNotTransient_Mojarra test to pass
         mojarraApp.addAsWebInfResource(new File("lib/LibertyFATTestFiles/beans.xml"));
         ShrinkHelper.exportToServer(server, "dropins", mojarraApp);
         server.addInstalledAppForValidation(MOJARRA_APP);
@@ -83,13 +78,7 @@ public class JSF22StatelessViewTests extends FATServletClient {
     public static void testCleanup() throws Exception {
         // Stop the server
         if (server != null && server.isStarted()) {
-            if (JakartaEE10Action.isActive()) {
-                // Unsure why these errors occur, tests pass otherwise. 
-                // "The response is already committed to the client. The session cookie cannot be set."
-                server.stopServer("SESN0066E", "SRVE8114W");
-            } else {
-                server.stopServer();
-            }
+            server.stopServer();
         }
     }
 

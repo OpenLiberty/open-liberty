@@ -75,9 +75,6 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
         jar.addPackage("com.ibm.ws.rest.handler.validator.loginmodule");
         ShrinkHelper.exportToServer(server, "/", jar, SERVER_ONLY);
 
-        // Delete once feature 18696 is GA.
-        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
-
         server.startServer();
 
         // Wait for the API to become available

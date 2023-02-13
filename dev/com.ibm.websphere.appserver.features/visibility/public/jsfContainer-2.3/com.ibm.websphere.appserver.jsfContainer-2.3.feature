@@ -15,6 +15,7 @@ IBM-API-Package: org.jboss.weld;type="internal",\
 -features=com.ibm.websphere.appserver.websocket-1.1, \
   com.ibm.websphere.appserver.jsfProvider-2.3.0.Container, \
   com.ibm.websphere.appserver.servlet-4.0, \
+  io.openliberty.servlet.internal-4.0, \
   com.ibm.websphere.appserver.jsp-2.3, \
   com.ibm.websphere.appserver.eeCompatible-8.0, \
   com.ibm.websphere.appserver.cdi-2.0, \

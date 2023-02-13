@@ -1,47 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    Copyright (c) 2021 IBM Corporation and others. All rights reserved.
+    Copyright (c) 2021, 2023 IBM Corporation and others. All rights reserved.
     This program and the accompanying materials are made available under the 
     terms of the Eclipse Public License 2.0 which accompanies this distribution, 
     and is available at 
         http://www.eclipse.org/legal/epl-2.0/
     
     SPDX-License-Identifier: EPL-2.0 
-    Contributors: 
-        IBM Corporation - initial API and implementation
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>io.openliberty.microprofile.telemetry</groupId>
-    <artifactId>tck.runner.tck</artifactId>
-    <version>3.0</version>
-    <name>MicroProfile Telemetry 1.0 TCK Runner TCK Module</name>
-    
-    <repositories>
-        <repository>
-            <id>eclipse-staging</id>
-            <url>https://oss.sonatype.org/content/repositories/orgeclipsemicroprofile-1632/</url>
-        </repository>
-    </repositories>
     
     <properties>
-        <microprofile.rest.client.version>3.0</microprofile.rest.client.version>
         <arquillian.version>1.7.0.Alpha13</arquillian.version>
+        <opentelemetry.version>1.19.0</opentelemetry.version>
+        <mptelemetry.version>1.0</mptelemetry.version>
 
         <!-- the below is used in arquillian.xml -->
         <wlp>${wlp}</wlp>
         <!-- <wlp>${project.basedir}/../../../../build.image/wlp/</wlp> -->
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
 
         <defaultSuiteFiles>tck-suite.xml</defaultSuiteFiles>
         <suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
         <targetDirectory>${project.basedir}/target</targetDirectory>
-        <jetty.version>9.4.41.v20210516</jetty.version>
+        
     </properties>
+
+    <groupId>io.openliberty.microprofile.telemetry</groupId>
+    <artifactId>tck.runner.tck</artifactId>
+    <version>1.0</version>
+    <name>MicroProfile Telemetry ${mptelemetry.version} TCK Runner TCK Module</name>
 
     <dependencyManagement>
         <dependencies>
@@ -64,108 +56,59 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/../../../lib/fattest.simplicity.jar</systemPath> <!-- This will point to build/libs/autoFVT/lib/fattest.simplicity.jar -->
         </dependency>
+        
         <dependency>
             <groupId>org.eclipse.microprofile.telemetry.tracing</groupId>
             <artifactId>microprofile-telemetry-tracing-tck</artifactId>
-            <version>1.0</version>
+            <version>${mptelemetry.version}</version>
         </dependency>
-        <dependency>
-            <groupId>io.opentelemetry</groupId>
-            <artifactId>opentelemetry-api</artifactId>
-            <version>1.19.0</version>
-        </dependency>
+        
         <dependency>
             <groupId>io.opentelemetry</groupId>
             <artifactId>opentelemetry-sdk</artifactId>
-            <version>1.19.0</version>
+            <version>${opentelemetry.version}</version>
         </dependency>
         <dependency>
             <groupId>io.opentelemetry</groupId>
             <artifactId>opentelemetry-sdk-extension-autoconfigure</artifactId>
-            <version>1.19.0-alpha</version>
-        </dependency>
-        <dependency>
-            <groupId>io.opentelemetry</groupId>
-            <artifactId>opentelemetry-sdk-trace</artifactId>
-            <version>1.19.0</version>
+            <version>${opentelemetry.version}-alpha</version>
         </dependency>
         <dependency>
             <groupId>io.opentelemetry.instrumentation</groupId>
             <artifactId>opentelemetry-instrumentation-annotations</artifactId>
-            <version>1.19.0-alpha</version>
-        </dependency>
-        <dependency>
-            <groupId>io.opentelemetry.instrumentation</groupId>
-            <artifactId>opentelemetry-instrumentation-api</artifactId>
-            <version>1.19.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.opentelemetry.instrumentation</groupId>
-            <artifactId>opentelemetry-instrumentation-annotations-support</artifactId>
-            <version>1.19.0-alpha</version>
+            <version>${opentelemetry.version}-alpha</version>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.microprofile.rest.client</groupId>
             <artifactId>microprofile-rest-client-api</artifactId>
-            <version>${microprofile.rest.client.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.microprofile.config</groupId>
-            <artifactId>microprofile-config-api</artifactId>
-            <version>3.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-all</artifactId>
-            <version>1.3</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.openliberty.smallrye</groupId>
-            <artifactId>common</artifactId>
-            <version>1.0</version>
+            <version>3.0</version>
             <scope>system</scope>
-            <systemPath>${io.openliberty.io.smallrye.common.jakarta_}</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>io.smallrye.config</groupId>
-            <artifactId>smallrye-config</artifactId>
-            <version>2.5.1</version>
+            <systemPath>${io.openliberty.org.eclipse.microprofile.rest.client.3.0_}</systemPath>
         </dependency>
 
         <dependency>
             <groupId>io.openliberty.org.jboss.resteasy</groupId>
             <artifactId>common</artifactId>
-            <version>4.7.0.Final</version>
+            <version>6.2.0.Final</version>
             <scope>system</scope>
-            <systemPath>${io.openliberty.org.jboss.resteasy.common.jakarta_}</systemPath>
+            <systemPath>${io.openliberty.org.jboss.resteasy.common.ee10_}</systemPath>
         </dependency>
 
         <dependency>
             <groupId>io.openliberty.org.jboss.resteasy</groupId>
             <artifactId>jaxb.provider</artifactId>
-            <version>4.7.0.Final</version>
+            <version>6.2.0.Final</version>
             <scope>system</scope>
-            <systemPath>${io.openliberty.org.jboss.resteasy.jaxb.provider_}</systemPath>
+            <systemPath>${io.openliberty.org.jboss.resteasy.jaxb.provider.ee10_}</systemPath>
         </dependency>
 
         <dependency>
-            <groupId>com.ibm.ws.org.jboss</groupId>
-            <artifactId>logging</artifactId>
-            <version>4.7.0.Final</version>
+            <groupId>io.openliberty.org.jboss</groupId>
+            <artifactId>logging35</artifactId>
+            <version>3.5.0.Final</version>
             <scope>system</scope>
-            <systemPath>${com.ibm.ws.org.jboss.logging_}</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse</groupId>
-            <artifactId>osgi</artifactId>
-            <version>4.7.0.Final</version>
-            <scope>system</scope>
-            <systemPath>${org.eclipse.osgi_}</systemPath>
+            <systemPath>${io.openliberty.org.jboss.logging35_}</systemPath>
         </dependency>
 
         <dependency>
@@ -177,65 +120,75 @@
         </dependency>
 
         <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>jakarta.json</artifactId>
-            <version>2.0.1</version>
+            <groupId>jakarta.mail</groupId>
+            <artifactId>jakarta.mail-api</artifactId>
+            <version>2.1.0</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.jakarta.mail.2.1_}</systemPath>
         </dependency>
 
         <dependency>
             <groupId>jakarta.activation</groupId>
             <artifactId>jakarta.activation-api</artifactId>
-            <version>2.0.1</version>
+            <version>2.1</version>
             <scope>system</scope>
-            <systemPath>${io.openliberty.jakarta.activation.2.0_}</systemPath>
+            <systemPath>${io.openliberty.jakarta.activation.2.1_}</systemPath>
         </dependency>
 
         <dependency>
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>
-            <version>2.0</version>
+            <version>2.1</version>
             <scope>system</scope>
-            <systemPath>${io.openliberty.jakarta.annotation.2.0_}</systemPath>
+            <systemPath>${io.openliberty.jakarta.annotation.2.1_}</systemPath>
         </dependency>
 
         <dependency>
             <groupId>jakarta.ws.rs</groupId>
             <artifactId>jakarta.ws.rs-api</artifactId>
-            <version>3.0</version>
+            <version>3.1</version>
             <scope>system</scope>
-            <systemPath>${io.openliberty.jakarta.restfulWS.3.0_}</systemPath>
+            <systemPath>${io.openliberty.jakarta.restfulWS.3.1_}</systemPath>
         </dependency>
 
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
-            <version>3.0</version>
+            <version>4.0</version>
             <scope>system</scope>
-            <systemPath>${io.openliberty.jakarta.cdi.3.0_}</systemPath>
+            <systemPath>${io.openliberty.jakarta.cdi.4.0_}</systemPath>
         </dependency>
 
         <dependency>
             <groupId>jakarta.json</groupId>
             <artifactId>jakarta.json-api</artifactId>
-            <version>2.0</version>
+            <version>2.1</version>
             <scope>system</scope>
-            <systemPath>${io.openliberty.jakarta.jsonp.2.0_}</systemPath>
+            <systemPath>${io.openliberty.jakarta.jsonp.2.1_}</systemPath>
         </dependency>
 
         <dependency>
             <groupId>jakarta.json.bind</groupId>
             <artifactId>jakarta.json.bind-api</artifactId>
-            <version>2.0</version>
+            <version>3.0</version>
             <scope>system</scope>
-            <systemPath>${io.openliberty.jakarta.jsonb.2.0_}</systemPath>
+            <systemPath>${io.openliberty.jakarta.jsonb.3.0_}</systemPath>
+        </dependency>
+        
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>4.0</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.jakarta.xmlBinding.4.0_}</systemPath>
         </dependency>
 
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <version>5.0.0</version>
+            <version>6.0.0</version>
             <scope>system</scope>
-            <systemPath>${io.openliberty.jakarta.servlet.5.0_}</systemPath>
+            <systemPath>${io.openliberty.jakarta.servlet.6.0_}</systemPath>
         </dependency>
 
         <dependency>
@@ -244,95 +197,28 @@
             <version>${arquillian.version}</version>
             <scope>test</scope>
         </dependency>
+        
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed-jakarta</artifactId>
             <version>2.1.1</version>
             <scope>test</scope>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>com.github.tomakehurst</groupId>
-            <artifactId>wiremock-standalone</artifactId>
-            <version>2.14.0</version>
-        </dependency>
-        -->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>4.4.11</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.13</version>
-        </dependency>
-
 
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-server</artifactId>
-            <version>${jetty.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-io</artifactId>
-            <version>${jetty.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-security</artifactId>
-            <version>${jetty.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-plus</artifactId>
-            <version>${jetty.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-servlets</artifactId>
-            <version>${jetty.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-webapp</artifactId>
-            <version>${jetty.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>apache-jsp</artifactId>
-            <version>${jetty.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.glassfish</groupId>
-                    <artifactId>javax.el</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.ow2.asm</groupId>
-                    <artifactId>asm-commons</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-util</artifactId>
-            <version>${jetty.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.xml.bind</groupId>
-            <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>4.0.0</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.13</version>
+            <artifactId>httpcomponents</artifactId>
+            <version>4.5</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.org.apache.httpcomponents_}</systemPath>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>logging</artifactId>
+            <version>1.2</version>
+            <scope>system</scope>
+            <systemPath>${io.openliberty.org.apache.commons.logging_}</systemPath>
         </dependency>
 
         <dependency>
@@ -341,19 +227,13 @@
             <version>7.4.0</version>
             <scope>test</scope>
         </dependency>
+        
         <dependency>
             <groupId>org.jboss.arquillian.testng</groupId>
             <artifactId>arquillian-testng-container</artifactId>
             <version>${arquillian.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>io.openliberty.arquillian</groupId>
-            <artifactId>arquillian-liberty-managed-jakarta</artifactId>
-            <version>2.1.0</version>
-            <scope>test</scope>
-        </dependency>
-        
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -400,8 +280,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
             <plugin>

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -105,61 +102,6 @@ public class AttributeToSubject {
         }
     }
 
-    public AttributeToSubject(ConvergedClientConfig clientConfig, Payload payload, String idToken) {
-        earlyinit(clientConfig, idToken);
-        initializep(clientConfig, payload, idToken);
-    }
-
-    @SuppressWarnings("unchecked")
-    public void initializep(ConvergedClientConfig clientConfig, Payload payload, String idToken) {
-
-        String uid = null;
-        if (userName == null || userName.isEmpty()) {
-            String attrUsedToCreateSubject = "userIdentifier";
-
-            uid = clientConfig.getUserIdentifier();
-            if (uid != null && !uid.isEmpty()) {
-                userName = (String) payload.get(uid);
-            } else {
-                attrUsedToCreateSubject = "userIdentityToCreateSubject";
-                uid = clientConfig.getUserIdentityToCreateSubject();
-                if (uid == null || uid.isEmpty()) {
-                    uid = ClientConstants.SUB;
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "The userIdentityToCreateSubject config attribute is null or empty; defaulting to " + uid);
-                    }
-                }
-                userName = (String) payload.get(uid);
-            }
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "user name = '" + userName + "' and the user identifier = " + uid + " " + (userName == null));
-            }
-            if (userName == null) {
-                Tr.error(tc, "OIDC_CLIENT_ID_TOKEN_MISSING_CLAIM", new Object[] { clientId, uid, attrUsedToCreateSubject });
-                return;
-            }
-        }
-
-        customCacheKey = userName + tokenString.toString().hashCode();
-
-        if (!clientConfig.isMapIdentityToRegistryUser()) {
-            if (realm == null || realm.isEmpty()) {
-                realm = getTheRealmName(clientConfig, null, payload);
-            }
-
-            if (uniqueSecurityName == null || uniqueSecurityName.isEmpty()) {
-                uniqueSecurityName = getTheUniqueSecurityName(clientConfig, null, payload);
-            }
-
-            if (groupIds == null || groupIds.isEmpty()) {
-                groupIds = (ArrayList<String>) payload.get(clientConfig.getGroupIdentifier());
-                if (groupIds != null && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "groups size = ", groupIds.size());
-                }
-            }
-        }
-    }
-
     public boolean checkUserNameForNull() {
         if (userName == null || userName.isEmpty()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -234,25 +176,27 @@ public class AttributeToSubject {
         if (jobj != null) {
             String uid = clientConfig.getUserIdentifier();
             if (uid != null && !uid.isEmpty()) {
+                String attributeName = clientConfig.isSocial() ? "userNameAttribute" : "userIdentifier";
                 if (jobj.get(uid) != null) {
                     if (jobj.get(uid) instanceof String) {
                         userName = (String) jobj.get(uid);
                     } else {
-                        Tr.error(tc, "PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE", new Object[] { clientConfig.getUserIdentifier(), "userIdentifier" });
+                        Tr.error(tc, "PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE", new Object[] { clientConfig.getUserIdentifier(), attributeName });
                     }
                 } else {
-                    Tr.error(tc, "PROPAGATION_TOKEN_MISSING_USERID", new Object[] { clientConfig.getUserIdentifier(), "userIdentifier" });
+                    Tr.error(tc, "PROPAGATION_TOKEN_MISSING_USERID", new Object[] { clientConfig.getUserIdentifier(), attributeName });
                 }
             } else {
+                String attributeName = clientConfig.isSocial() ? "userNameAttribute" : "userIdentityToCreateSubject";
                 String uidToCreateSub = clientConfig.getUserIdentityToCreateSubject();
                 if (jobj.get(uidToCreateSub) != null) {
                     if (jobj.get(uidToCreateSub) instanceof String) {
                         userName = (String) jobj.get(uidToCreateSub);
                     } else {
-                        Tr.error(tc, "PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE", new Object[] { uidToCreateSub, "userIdentityToCreateSubject" });
+                        Tr.error(tc, "PROPAGATION_TOKEN_INCORRECT_CLAIM_TYPE", new Object[] { uidToCreateSub, attributeName });
                     }
                 } else {
-                    Tr.error(tc, "PROPAGATION_TOKEN_MISSING_USERID", new Object[] { uidToCreateSub, "userIdentityToCreateSubject" });
+                    Tr.error(tc, "PROPAGATION_TOKEN_MISSING_USERID", new Object[] { uidToCreateSub, attributeName });
                 }
             }
             return userName;
@@ -341,19 +285,19 @@ public class AttributeToSubject {
         tokenString = idToken.getAllClaimsAsJson();
 
         String uid = null;
-        String attrUsedToCreateSubject = "userIdentifier";
+        String attrUsedToCreateSubject = clientConfig.isSocial() ? "userNameAttribute" : "userIdentifier";
         if (userName == null || userName.isEmpty()) {
             uid = clientConfig.getUserIdentifier();
             if (uid != null && !uid.isEmpty()) {
                 userName = (String) idToken.getClaim(uid);
             } else {
-                attrUsedToCreateSubject = "userIdentityToCreateSubject";
+                attrUsedToCreateSubject = clientConfig.isSocial() ? "userNameAttribute" : "userIdentityToCreateSubject";
                 uid = clientConfig.getUserIdentityToCreateSubject();
                 if (uid != null && !uid.isEmpty()) {
                     //uid = ClientConstants.SUB;
                     userName = (String) idToken.getClaim(uid);
                     if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "The userIdentityToCreateSubject config attribute is used");
+                        Tr.debug(tc, "The " + attrUsedToCreateSubject + " config attribute is used");
                     }
                 }
 

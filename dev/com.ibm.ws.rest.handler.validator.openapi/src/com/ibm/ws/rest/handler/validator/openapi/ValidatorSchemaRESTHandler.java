@@ -36,7 +36,6 @@ import org.osgi.service.component.annotations.Deactivate;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.microprofile.openapi.Constants;
 import com.ibm.ws.microprofile.openapi.impl.core.util.Json;
 import com.ibm.ws.microprofile.openapi.impl.core.util.Yaml;
@@ -75,14 +74,6 @@ public class ValidatorSchemaRESTHandler implements RESTHandler {
             }
             response.setResponseHeader("Accept", "GET");
             response.sendError(405); // Method Not Allowed
-            return;
-        }
-
-        // Delete once feature 18696 is GA.
-        // Remove com.ibm.ws.kernel.boot from bnd buildpath once the Beta check is no longer needed.
-        if (!ProductInfo.getBetaEdition() && request.getContextPath().contains("/ibm/api")) {
-            response.setResponseHeader("Accept", "GET");
-            response.sendError(404); // Not Found
             return;
         }
 
@@ -138,16 +129,16 @@ public class ValidatorSchemaRESTHandler implements RESTHandler {
         try {
             cloudantEnabled = getServiceReferences(context.getBundleContext(), Validator.class,
                                                    "(component.name=com.ibm.ws.rest.handler.validator.cloudant.CloudantDatabaseValidator)")
-                            .iterator()
-                            .hasNext();
+                                                                   .iterator()
+                                                                   .hasNext();
             jcaEnabled = getServiceReferences(context.getBundleContext(), Validator.class,
                                               "(component.name=com.ibm.ws.rest.handler.validator.jca.ConnectionFactoryValidator)")
-                            .iterator()
-                            .hasNext();
+                                                              .iterator()
+                                                              .hasNext();
             jdbcEnabled = getServiceReferences(context.getBundleContext(), Validator.class,
                                                "(component.name=com.ibm.ws.rest.handler.validator.jdbc.DataSourceValidator)")
-                            .iterator()
-                            .hasNext();
+                                                               .iterator()
+                                                               .hasNext();
         } catch (InvalidSyntaxException e) {
             //Should never happen.
             e.printStackTrace();

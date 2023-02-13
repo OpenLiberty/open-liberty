@@ -17,7 +17,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.ibm.websphere.ras.Tr;
@@ -89,14 +88,25 @@ class QueryInfo {
     /**
      * Number of parameters to the JPQL query.
      */
-    int paramCount = Integer.MIN_VALUE; // initialize to undefined
+    int paramCount;
+
+    /**
+     * Difference between the number of parameters to the JPQL query and the expected number of
+     * corresponding parameters on the repository method signature. If the entity has an IdClass
+     * and the repository method queries on Id, it will have only a single parameter for the user
+     * to input, whereas the JPQL will have additional parameters for each additional attribute
+     * of the IdClass.
+     */
+    int paramAddedCount;
 
     /**
      * Names that are specified by the <code>Param</code> annotation for each query parameter.
-     * If positional parameters (?1, ?2, ...) are used rather than named parameters,
-     * the list can be empty or have null as its first element.
+     * An empty list is a marker that named parameters are present, but need to be populated into the list.
+     * Population is deferred to ensure the order of the list matches the order of parameters in the method signature.
+     * A null value indicates positional parameters (?1, ?2, ...) are used rather than named parameters
+     * or there are no parameters at all.
      */
-    List<String> paramNames = Collections.emptyList();
+    List<String> paramNames;
 
     /**
      * Indicates that parameters are supplied to the repository method
@@ -176,24 +186,47 @@ class QueryInfo {
      *
      * @param query        the query
      * @param keysetCursor keyset values
+     * @throws Exception if an error occurs
      */
-    void setKeysetParameters(Query query, Pageable.Cursor keysetCursor) {
-        if (paramNames.isEmpty() || paramNames.get(0) == null) // positional parameters
+    void setKeysetParameters(Query query, Pageable.Cursor keysetCursor) throws Exception {
+        int paramNum = paramCount + 1; // set to position of first keyset parameter
+        if (paramNames == null) // positional parameters
             for (int i = 0; i < keysetCursor.size(); i++) {
                 Object value = keysetCursor.getKeysetElement(i);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "set keyset parameter ?" + (paramCount + i + 1) + ' ' + (value == null ? null : value.getClass().getSimpleName()));
-                // TODO detect if user provides a wrong-sized keyset? Or let JPA error surface?
-                query.setParameter(paramCount + i + 1, value);
+                if (entityInfo.idClass != null && entityInfo.idClass.isInstance(value)) {
+                    for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
+                        Object v = accessor instanceof Field ? ((Field) accessor).get(value) : ((Method) accessor).invoke(value);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "set keyset parameter ?" + paramNum + ' ' + value.getClass().getName() + "-->" +
+                                               (v == null ? null : v.getClass().getSimpleName()));
+                        query.setParameter(paramNum++, v);
+                    }
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "set keyset parameter ?" + paramNum + ' ' +
+                                           (value == null ? null : value.getClass().getSimpleName()));
+                    query.setParameter(paramNum++, value);
+                }
             }
         else // named parameters
             for (int i = 0; i < keysetCursor.size(); i++) {
                 Object value = keysetCursor.getKeysetElement(i);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "set keyset parameter :keyset" + (i + 1) + ' ' + (value == null ? null : value.getClass().getSimpleName()));
-                // TODO detect if user provides a wrong-sized keyset? Or let JPA error surface?
-                query.setParameter("keyset" + (paramCount + i + 1), value);
+                if (entityInfo.idClass != null && entityInfo.idClass.isInstance(value)) {
+                    for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
+                        Object v = accessor instanceof Field ? ((Field) accessor).get(value) : ((Method) accessor).invoke(value);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "set keyset parameter :keyset" + paramNum + ' ' + value.getClass().getName() + "-->" +
+                                               (v == null ? null : v.getClass().getSimpleName()));
+                        query.setParameter(paramNum++, v);
+                    }
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "set keyset parameter :keyset" + paramNum + ' ' +
+                                           (value == null ? null : value.getClass().getSimpleName()));
+                    query.setParameter("keyset" + (paramNum++), value);
+                }
             }
+        // TODO detect if user provides a wrong-sized keyset? Or let JPA error surface?
     }
 
     /**
@@ -204,15 +237,50 @@ class QueryInfo {
      * @throws Exception if an error occurs
      */
     void setParameters(Query query, Object... args) throws Exception {
-        for (int i = 0, count = paramNames.size(); i < paramCount; i++) {
-            Object arg = paramsNeedConversionToId ? //
-                            toEntityId(args[i]) : //
-                            args[i];
-            String paramName = count > i ? paramNames.get(i) : null;
-            if (paramName == null)
-                query.setParameter(i + 1, arg);
-            else // named parameter
-                query.setParameter(paramName, arg);
+        int methodParamForQueryCount = paramCount - paramAddedCount;
+        if (args != null && args.length < methodParamForQueryCount)
+            throw new MappingException("The " + method.getName() + " repository method has " + args.length +
+                                       " parameters, but requires " + methodParamForQueryCount +
+                                       " method parameters. The generated JPQL query is: " + jpql + "."); // TODO NLS
+
+        if (entityInfo.idClass == null || !paramsNeedConversionToId) {
+            int namedParamCount = paramNames == null ? 0 : paramNames.size();
+            for (int i = 0, p = 0; i < methodParamForQueryCount; i++) {
+                Object arg = paramsNeedConversionToId ? //
+                                toEntityId(args[i]) : //
+                                args[i];
+
+                if (arg == null || entityInfo.idClass == null || !entityInfo.idClass.isInstance(arg)) {
+                    String paramName = namedParamCount > i ? paramNames.get(i) : null;
+                    if (paramName == null)
+                        query.setParameter(++p, arg);
+                    else // named parameter
+                        query.setParameter(paramName, arg);
+                } else { // split IdClass argument into parameters
+                    for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
+                        Object param = accessor instanceof Method ? ((Method) accessor).invoke(arg) : ((Field) accessor).get(arg);
+                        query.setParameter(++p, param);
+                        // TODO: named parameters would only be valid here if @Filter/@Update become part of the spec
+                    }
+                }
+            }
+        } else { // Special case: CrudRepository.delete(entity) where entity has IdClass
+            Object arg = args == null || args.length == 0 ? null : args[0];
+            if (arg == null || !entityInfo.type.isAssignableFrom(arg.getClass()))
+                throw new DataException("The " + (arg == null ? null : arg.getClass().getName()) +
+                                        " parameter does not match the " + entityInfo.type.getClass().getName() +
+                                        " entity type that is expected for this repository.");
+            int p = 0;
+            for (String idClassAttr : entityInfo.idClassAttributeAccessors.keySet()) {
+                List<Member> accessors = entityInfo.attributeAccessors.get(entityInfo.getAttributeName(idClassAttr));
+                Object param = arg;
+                for (Member accessor : accessors)
+                    if (accessor instanceof Method)
+                        param = ((Method) accessor).invoke(param);
+                    else
+                        param = ((Field) accessor).get(param);
+                query.setParameter(++p, param);
+            }
         }
     }
 
@@ -263,11 +331,21 @@ class QueryInfo {
     @Override
     @Trivial
     public String toString() {
-        return new StringBuilder("QueryInfo@").append(Integer.toHexString(hashCode())) //
-                        .append(':').append(method) //
-                        .append("; ").append(jpql) //
-                        .append("; ").append(paramCount == Integer.MIN_VALUE ? "no" : paramCount).append(" parameters") //
-                        .toString();
+        StringBuilder b = new StringBuilder("QueryInfo@").append(Integer.toHexString(hashCode())) //
+                        .append(' ').append(method.getReturnType().getSimpleName()).append(' ').append(method.getName());
+        boolean first = true;
+        for (Class<?> p : method.getParameterTypes()) {
+            b.append(first ? "(" : ", ").append(p.getSimpleName());
+            first = false;
+        }
+        b.append(first ? "() " : ") ").append(jpql);
+        if (paramCount > 0) {
+            b.append("[").append(paramCount).append(paramNames == null ? " positional params" : " named params");
+            if (paramAddedCount != 0)
+                b.append(", ").append(paramCount - paramAddedCount).append(" method params");
+            b.append(']');
+        }
+        return b.toString();
     }
 
     /**
@@ -284,6 +362,7 @@ class QueryInfo {
         q.keyset = keyset;
         q.maxResults = maxResults;
         q.paramCount = paramCount;
+        q.paramAddedCount = paramAddedCount;
         q.paramNames = paramNames;
         q.paramsNeedConversionToId = paramsNeedConversionToId;
         q.saveParamType = saveParamType;

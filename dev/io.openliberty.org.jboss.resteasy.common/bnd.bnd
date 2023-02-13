@@ -1,10 +1,10 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2022 IBM Corporation and others.
+# Copyright (c) 2020, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -21,7 +21,7 @@ publish.wlp.jar.include: io.openliberty.org.jboss.resteasy.common.jakarta.jar
 
 resteasy-version=4.7.2.Final
 resteasy-tracing-api-version=1.1.0.Final
-apache-mime4j-version=0.8.6
+apache-mime4j-version=0.8.9
 
 src: src, resources
 
@@ -158,7 +158,7 @@ DynamicImport-Package: \
 
 Private-Package: \
   org.apache.james.*
-  
+
 instrument.ffdc: false
 instrument.classesExcludes: \
   org/jboss/resteasy/client/jaxrs/internal/ClientConfiguration.class, \

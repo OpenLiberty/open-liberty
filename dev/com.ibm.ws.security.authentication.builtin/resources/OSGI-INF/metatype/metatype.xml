@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2022 IBM Corporation and others.
+    Copyright (c) 2011, 2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -62,8 +62,7 @@
               JCache configuration.
         -->
         <AD id="cacheRef" type="String" required="false" cardinality="1" ibm:type="pid"
-            ibm:reference="io.openliberty.jcache.cache" name="%cacheRef" description="%cacheRef.desc"
-            ibm:beta="true" />
+            ibm:reference="io.openliberty.jcache.cache" name="%cacheRef" description="%cacheRef.desc" />
         <AD id="cacheService.target" type="String" default="(service.pid=${cacheRef})"
             ibm:final="true" name="internal" description="internal use only" />
         <AD id="cacheService.cardinality.minimum" type="String"  default="${count(cacheRef)}" 

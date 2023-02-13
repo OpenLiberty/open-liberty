@@ -30,14 +30,13 @@ Private-Package:\
 -dsannotations:\
   com.ibm.ws.rest.handler.config.openapi.ConfigSchemaRESTHandler
 
--buildpath: \
-	com.ibm.websphere.appserver.spi.logging,\
-	com.ibm.websphere.org.osgi.core,\
-	com.ibm.websphere.rest.handler;version=latest,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.ws.microprofile.openapi;version=latest,\
-	com.ibm.websphere.org.eclipse.microprofile.openapi.1.0;version=latest,\
-	io.openliberty.com.fasterxml.jackson;version=latest,\
-	com.ibm.ws.logging;version=latest,\
-	com.ibm.ws.kernel.boot
+-buildpath:\
+  com.ibm.websphere.appserver.spi.logging,\
+  com.ibm.websphere.org.osgi.core,\
+  com.ibm.websphere.rest.handler;version=latest,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+  com.ibm.ws.microprofile.openapi;version=latest,\
+  com.ibm.websphere.org.eclipse.microprofile.openapi.1.0;version=latest,\
+  io.openliberty.com.fasterxml.jackson;version=latest,\
+  com.ibm.ws.logging;version=latest

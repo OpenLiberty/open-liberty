@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.pages31.fat.tests;
 
@@ -140,4 +137,28 @@ public class MiscTests {
         assertTrue("Imports not found in Expression Language Environment", response.getText().contains("CAFFE NERO"));
         assertTrue("Imports not found in Expression Language Environment", response.getText().contains("CANE SUGAR"));
     }
+
+    /**
+     * Verify if static imports can be accessed through a JSP with both Expression Language and Pages expressions
+     * @throws Exception if something goes horribly wrong
+     */
+    @Test
+    public void testStaticImportsAreAvailable() throws Exception {
+        WebConversation wc = new WebConversation();
+        wc.setExceptionsThrownOnErrorStatus(false);
+
+        String url = JSPUtils.createHttpUrlString(server, APP_NAME, "staticImports.jsp");
+        LOG.info("url: " + url);
+
+        WebRequest request = new GetMethodWebRequest(url);
+        WebResponse response = wc.getResponse(request);
+        LOG.info("Servlet response : " + response.getText());
+
+        assertTrue("Static field not found in Expression Language Environment", response.getText().contains("EL Field expression: CAFFE NERO"));
+        assertTrue("Static method not found in Expression Language Environment", response.getText().contains("EL Method expression: LATTE"));
+        assertTrue("Static field not found in Pages Environment", response.getText().contains("JSP Field expression: CAFFE NERO"));
+        assertTrue("Static method not found in Pages Environment", response.getText().contains("JSP Method expression: LATTE"));
+    }
+
+
 }

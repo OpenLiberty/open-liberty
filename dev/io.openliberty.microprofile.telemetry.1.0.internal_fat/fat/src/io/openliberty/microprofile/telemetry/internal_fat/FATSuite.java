@@ -18,7 +18,6 @@ import componenttest.annotation.MinimumJavaLevel;
 @RunWith(Suite.class)
 @MinimumJavaLevel(javaLevel = 11)
 @SuiteClasses({
-                Telemetry10.class,
                 JaxRsIntegration.class,
                 TelemetryBeanTest.class,
                 TelemetryMultiAppTest.class,
@@ -32,7 +31,8 @@ import componenttest.annotation.MinimumJavaLevel;
                 TelemetryLoggingExporterTest.class,
                 TelemetryAPITest.class,
                 MultiThreadedContextTest.class,
-                TelemetryMisconfigTest.class
+                TelemetryMisconfigTest.class,
+                TelemetryLongRunningTest.class
 })
 
 public class FATSuite {}

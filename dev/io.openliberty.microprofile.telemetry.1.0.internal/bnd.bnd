@@ -32,7 +32,8 @@ src: src, resources
 -dsannotations: \
   io.openliberty.microprofile.telemetry.internal.cdi.SPIMetaData,\
   io.openliberty.microprofile.telemetry.internal.rest.TelemetryClientAsyncTaskWrapper,\
-  io.openliberty.microprofile.telemetry.internal.rest.TelemetryClientBuilderListener
+  io.openliberty.microprofile.telemetry.internal.rest.TelemetryClientBuilderListener,\
+  io.openliberty.microprofile.telemetry.internal.rest.TelemetryServletContainerInitializer
 
 -dsannotations-inherit: true
 
@@ -68,6 +69,7 @@ Private-Package: \
     io.openliberty.jakarta.annotation.2.1;version=latest,\
     io.openliberty.jakarta.interceptor.2.1;version=latest,\
     io.openliberty.jakarta.cdi.4.0;version=latest,\
+    io.openliberty.jakarta.servlet.6.0;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
     com.ibm.ws.logging.core;version=latest,\
     com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
