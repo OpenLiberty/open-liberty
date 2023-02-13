@@ -26,11 +26,11 @@ Export-Package: \
    jakarta.json.stream;version=2.0
  
 -includeresource: \
-  @${repo;jakarta.json:jakarta.json-api;2.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @${repo;jakarta.json:jakarta.json-api;2.0.2;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	 jakarta.json:jakarta.json-api;version=2.0.0;strategy=exact
+	 jakarta.json:jakarta.json-api;version=2.0.2;strategy=exact

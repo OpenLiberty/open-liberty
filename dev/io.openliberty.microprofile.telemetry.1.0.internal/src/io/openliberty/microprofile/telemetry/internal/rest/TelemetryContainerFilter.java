@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -54,7 +54,7 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
     private static final String SPAN_CONTEXT = "otel.span.server.context";
     private static final String SPAN_PARENT_CONTEXT = "otel.span.server.parentContext";
-    private static final String SPAN_SCOPE = "otel.span.server.scope";
+    static final String SPAN_SCOPE = "otel.span.server.scope";
 
     private static final HttpServerAttributesGetterImpl HTTP_SERVER_ATTRIBUTES_GETTER = new HttpServerAttributesGetterImpl();
     private static final NetServerAttributesGetterImpl NET_SERVER_ATTRIBUTES_GETTER = new NetServerAttributesGetterImpl();
@@ -102,22 +102,21 @@ public class TelemetryContainerFilter implements ContainerRequestFilter, Contain
 
     @Override
     public void filter(final ContainerRequestContext request, final ContainerResponseContext response) {
-        Scope scope = (Scope) request.getProperty(SPAN_SCOPE);
-        if (scope == null) {
+        // Note: for async resource methods, this may not run on the same thread as the other filter method
+        // Scope is ended in TelemetryServletRequestListener to ensure it does run on the original request thread
+
+        Context spanContext = (Context) request.getProperty(SPAN_CONTEXT);
+        if (spanContext == null) {
             return;
         }
 
-        Context spanContext = (Context) request.getProperty(SPAN_CONTEXT);
         try {
             instrumenter.end(spanContext, request, response, null);
         } finally {
-            scope.close();
-
             request.removeProperty(REST_RESOURCE_CLASS);
             request.removeProperty(REST_RESOURCE_METHOD);
             request.removeProperty(SPAN_CONTEXT);
             request.removeProperty(SPAN_PARENT_CONTEXT);
-            request.removeProperty(SPAN_SCOPE);
         }
     }
 

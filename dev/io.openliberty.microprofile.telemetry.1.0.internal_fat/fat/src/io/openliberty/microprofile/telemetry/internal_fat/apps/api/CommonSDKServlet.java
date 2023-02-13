@@ -32,14 +32,24 @@ import io.opentelemetry.sdk.resources.ResourceBuilder;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.annotation.WebServlet;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({ "serial", "deprecation" })
 @WebServlet("/common")
 @ApplicationScoped // Make this a bean so that there's one bean in the archive, otherwise CDI gets disabled and @Inject doesn't work
 public class CommonSDKServlet extends FATServlet {
 
+    //How long are we expecting to sleep
+    private static final Duration SLEEP_DURATION = Duration.ofSeconds(3);
+    //How much earlier are we allowing the sleep to actually be
+    private static final Duration NEGATIVE_ERROR_MARGIN = Duration.ofSeconds(2);
+    //How much later are we allowing the sleep to actually be
+    private static final Duration POSITIVE_ERROR_MARGIN = Duration.ofSeconds(5);
+
     /**
      * Very simple test that we can use Clock.nanoTime()
      * {@link Clock}
+     *
+     * This test checks the duration of a sleep as calculated using the Clock.nanoTime().
+     * Since Thread.sleep is not always precise, we are allowing a margin of error; minus 1 second and plus 5 seconds.
      *
      * @throws InterruptedException
      */
@@ -49,20 +59,19 @@ public class CommonSDKServlet extends FATServlet {
         //get the clock start time
         long startNano = clock.nanoTime();
         //sleep for a known period
-        Duration sleepDuration = Duration.ofSeconds(1);
-        Thread.sleep(sleepDuration.toMillis());
+        Thread.sleep(SLEEP_DURATION.toMillis());
         //get the clock end time
         long endNano = clock.nanoTime();
         //work out the duration according to the clock
         long clockDurationNano = endNano - startNano;
         Duration clockDuration = Duration.ofNanos(clockDurationNano);
 
-        //the duration according to the clock should be at least as long as the time we slept for (we might have slept longer)
-        assertTrue(clockDuration.compareTo(sleepDuration) >= 0);
+        //the duration according to the clock should be close to the expected sleep time
+        Duration minSleepDuration = SLEEP_DURATION.minus(NEGATIVE_ERROR_MARGIN);
+        assertTrue("Clock: " + clockDuration + " System: " + SLEEP_DURATION, clockDuration.compareTo(minSleepDuration) > 0);
 
-        //make sure that the clockDuration isn't vastly bigger than the intended sleep duration
-        Duration maxSleepDuration = sleepDuration.plus(Duration.ofSeconds(5));
-        assertTrue(clockDuration.compareTo(maxSleepDuration) < 0);
+        Duration maxSleepDuration = SLEEP_DURATION.plus(POSITIVE_ERROR_MARGIN);
+        assertTrue("Clock: " + clockDuration + " System: " + SLEEP_DURATION, clockDuration.compareTo(maxSleepDuration) < 0);
     }
 
     /**

@@ -1,0 +1,53 @@
+<server>
+    <featureManager>
+        <feature>jsp-2.3</feature>
+        <feature>jaxws-2.2</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>appSecurity-2.0</feature>
+    </featureManager>
+
+    <executor stealPolicy="NEVER"/>
+    
+    <basicRegistry id="basic" realm="SampleRealm">
+    		<user name="user1" password="user1pwd" />
+    		<user name="user2" password="user2pwd" />
+    		<user name="user3" password="user3pwd" />
+    		<user name="user4" password="user4pwd" />
+    </basicRegistry>
+	  
+    <application type="ear" id="EJBInJarServiceSecurity" name="EJBInJarServiceSecurity" location="EJBInJarServiceSecurity.ear">
+    		<application-bnd>
+    			<security-role name="role12">
+        				<user name="user1" />
+        				<user name="user2" />
+    			</security-role>
+    			<security-role name="role34">
+        				<user name="user3" />
+        				<user name="user4" />
+    			</security-role>	
+    			<security-role name="role23">
+        				<user name="user2" />
+        				<user name="user3" />
+    			</security-role>	
+    		</application-bnd>
+    </application>	  
+
+    <include location="../fatTestPorts.xml"/>
+    
+    	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
+  	<javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+	<javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.org.apache.xerces.internal.dom" />
+  	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>    
+  	<javaPermission className="java.lang.RuntimePermission" name="createClassLoader"/>
+  	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+	<javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader" />
+  	<javaPermission className="java.lang.RuntimePermission" name="setFactory"/>
+	<javaPermission className="java.net.NetPermission" name="setDefaultAuthenticator" />
+  	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+  	<javaPermission className="java.net.URLPermission" name="http://192.168.1.6:8010/helloServer/PeopleService" actions="POST:Accept,SOAPAction,User-Agent" />
+	<javaPermission className="java.security.SecurityPermission" name="getPolicy"/>
+	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+  	<javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get" />
+	<javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*" />
+  	<javaPermission className="javax.security.auth.AuthPermission" name="*" actions="getSubject" /> 
+</server>

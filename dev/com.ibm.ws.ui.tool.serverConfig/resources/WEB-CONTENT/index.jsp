@@ -13,7 +13,6 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<%@ page import="com.ibm.ws.kernel.productinfo.ProductInfo" %>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,12 +25,10 @@
 		
 		<%
 			boolean isAdmin = request.isUserInRole("Administrator");
-			boolean isBetaMode = ProductInfo.getBetaEdition() ? true: false;
 		%>
 
 		<script type="text/javascript">
 			globalIsAdmin = <%=isAdmin%>;
-			globalIsBetaMode = <%=isBetaMode%>;
 		</script>
 
         <%
@@ -76,12 +73,13 @@
 			<div id="messageContainer"></div>
 
 			<div id="progress" class="position-absolute top-50 start-50 translate-middle hidden">
-		  		<label class="form-label" for="progressBar" data-externalizedString="ONE_MOMENT_PLEASE"></label>
+                <label class="form-label" for="progressBar" data-externalizedString="ONE_MOMENT_PLEASE">
 			  	<div class="progress">
 					<div id="progressBar" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
 						<span class="visually-hidden" data-externalizedString="ONE_MOMENT_PLEASE"></span>
 					</div>
 				</div>
+			    </label>
 		  	</div>
 
 		  	<div id="login" class="position-absolute top-50 start-50 translate-middle hidden">
@@ -312,7 +310,7 @@
 											<div class="keyValueTable containerAuthSubSection" id="keyValueTable">
 												<div class="keyValueTableRow">
 													<div class="keyValueTableItemAction">
-														<div class="keyValueTableItemActionIcon keyValueTableItemActionIconAdd bx--tag" data-externalizedString="ADD_LOGIN_CONFIG_PROPERTY"></div>
+														<button class="keyValueTableItemActionIcon keyValueTableItemActionIconAdd bx--tag" data-externalizedString="ADD_LOGIN_CONFIG_PROPERTY"></button>
 													</div>
 												</div>
 												<div id="keyValueTableRowValueSection">

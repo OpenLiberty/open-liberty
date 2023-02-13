@@ -1,24 +1,21 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.cdi;
 
+import java.util.concurrent.TimeUnit;
+
+import io.opentelemetry.api.common.AttributeKey;
+import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanContext;
 import io.opentelemetry.api.trace.StatusCode;
-import io.opentelemetry.api.common.AttributeKey;
-import io.opentelemetry.api.common.Attributes;
-import io.opentelemetry.context.Context;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This proxy class redirects method calls to Span.current(), by doing so it allows people to use @Inject Span and get an object which will not become obsolete.
@@ -80,6 +77,7 @@ public class SpanProxy implements Span {
         return Span.current().equals(obj);
     }
 
+    @Override
     public int hashCode() {
         return Span.current().hashCode();
     }
@@ -87,6 +85,6 @@ public class SpanProxy implements Span {
     @Override
     public String toString() {
         return Span.current().toString();
-    }	
+    }
 
 }

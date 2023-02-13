@@ -22,6 +22,7 @@ Subsystem-Name: Java EE Full Platform 7.0
   com.ibm.websphere.appserver.jaxws-2.2, \
   com.ibm.websphere.appserver.jacc-1.5, \
   com.ibm.websphere.appserver.servlet-3.1, \
+  io.openliberty.servlet.internal-3.1, \
   com.ibm.websphere.appserver.jdbc-4.1; ibm.tolerates:="4.2,4.3", \
   com.ibm.websphere.appserver.wasJmsClient-2.0, \
   com.ibm.websphere.appserver.javaMail-1.5, \

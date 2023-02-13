@@ -97,7 +97,7 @@
                 // Add "Test" button only if the element is supported by the validator APIs
                 if(isValidationSupportedOnNode(nodeName)) {
                     var validatorMetaDataParameters = getMetaDataStringForTestButton(nodeName);
-                    editorForm.append("<a draggable=\"false\" role=\"button\" id=\"testButton\" class=\"btn btn-default\"" + validatorMetaDataParameters + ">" + editorMessages.TEST + "</a>");
+                    editorForm.append("<a href=\"#\" draggable=\"false\" role=\"button\" id=\"testButton\" class=\"btn btn-default\"" + validatorMetaDataParameters + ">" + editorMessages.TEST + "</a>");
                     // handle the element dataSource nested case
                     if (elementPath.length > 2) {
                         // nested-under-singleton

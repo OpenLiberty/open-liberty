@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<webservices-bnd xmlns="http://websphere.ibm.com/xml/ns/javaee" 
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                      xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ws-bnd_1_0.xsd" version="1.0">
+                      
+    <http-publishing>
+        <webservice-security> 
+               <security-constraint>
+                    <web-resource-collection>
+                        <web-resource-name>Resource for SayHelloServiceOne</web-resource-name>
+                        <url-pattern>/SayHelloServiceOne</url-pattern>
+                    </web-resource-collection>
+                    <auth-constraint>
+                        <description>Only role1 is allowed</description>
+                        <role-name>role1</role-name>
+                    </auth-constraint>
+               </security-constraint>        
+               <!-- SECURITY ROLES -->
+               <security-role id="role1_id">
+                    <role-name>role1</role-name>
+               </security-role>
+        </webservice-security>
+    </http-publishing>
+</webservices-bnd>

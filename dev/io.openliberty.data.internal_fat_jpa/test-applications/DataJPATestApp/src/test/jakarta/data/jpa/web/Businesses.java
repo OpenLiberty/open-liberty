@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -36,12 +36,22 @@ public interface Businesses extends CrudRepository<Business, Integer> {
     // embeddable 3 levels deep where @Column resolves name conflict
     Business[] findByLocation_Address_Street_NameIgnoreCaseEndsWithOrderByLocation_Address_Street_DirectionIgnoreCaseAscNameAsc(String streetName);
 
+    // embeddable as result type
+    @OrderBy("street")
+    @OrderBy("houseNum")
+    Stream<Location> findByZip(int zipCode);
+
     // embeddable 2 levels deep
     @OrderBy(value = "city", descending = true)
     @OrderBy("location.address.zip")
     @OrderBy("houseNum")
     @OrderBy("id")
     KeysetAwareSlice<Business> findByZipIn(Iterable<Integer> zipCodes, Pageable pagination);
+
+    // embeddable 3 levels deep as result type
+    @OrderBy("street")
+    @OrderBy("houseNum")
+    Stream<Street> findByZipNotAndCity(int excludeZipCode, String city);
 
     @Filter(by = "location_address.city")
     @Filter(by = "location.address_state")

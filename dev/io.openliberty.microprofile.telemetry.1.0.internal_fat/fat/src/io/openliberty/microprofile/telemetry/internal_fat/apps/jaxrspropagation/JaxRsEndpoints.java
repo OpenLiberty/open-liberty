@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.NET_H
 import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.NET_PEER_NAME;
 import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.NET_PEER_PORT;
 import static java.net.HttpURLConnection.HTTP_OK;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -32,6 +33,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Future;
+import java.util.logging.Logger;
 
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
@@ -40,12 +42,15 @@ import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.In
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.sdk.trace.data.SpanData;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.HttpMethod;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.Application;
@@ -92,18 +97,38 @@ import jakarta.ws.rs.core.UriInfo;
 @Path("endpoints")
 public class JaxRsEndpoints extends Application {
 
+    private static final Logger LOGGER = Logger.getLogger(JaxRsEndpoints.class.getName());
+
+    public static final String TEST_PASSED = "Test Passed";
+
     @Inject
     private InMemorySpanExporter spanExporter;
 
     @Inject
     private HttpServletRequest request;
 
+    private Client client;
+
+    @PostConstruct
+    private void openClient() {
+        LOGGER.info("Creating JAX-RS client");
+        client = ClientBuilder.newClient();
+    }
+
+    @PreDestroy
+    private void closeClient() {
+        if (client != null) {
+            client.close();
+            client = null;
+        }
+    }
+
     //Gets a list of spans created by open telemetry when a test was running and confirms the spans are what we expected and IDs are propagated correctly
     //spanExporter.reset() should be called at the start of each new test.
     @GET
-    @Path("/readspans")
-    public Response readSpans(@Context UriInfo uriInfo) {
-        List<SpanData> spanData = spanExporter.getFinishedSpanItems(3);
+    @Path("/readspans/{traceId}")
+    public Response readSpans(@Context UriInfo uriInfo, @PathParam("traceId") String traceId) {
+        List<SpanData> spanData = spanExporter.getFinishedSpanItems(3, traceId);
 
         SpanData firstURL = spanData.get(0);
         SpanData httpGet = spanData.get(1);
@@ -134,7 +159,7 @@ public class JaxRsEndpoints extends Application {
         assertEquals(Long.valueOf(requestUri.getPort()), httpGet.getAttributes().get(NET_PEER_PORT));
         assertThat(httpGet.getAttributes().get(HTTP_URL), containsString("endpoints"));
 
-        return Response.ok("Test Passed").build();
+        return Response.ok(TEST_PASSED).build();
     }
 
     //This URL is called by the test framework to trigger testing both JAX-RS server and JAX-RS client
@@ -142,29 +167,23 @@ public class JaxRsEndpoints extends Application {
     @GET
     @Path("/jaxrsclient")
     public Response getJax(@Context UriInfo uriInfo) {
+        LOGGER.info(">>> getJax");
         assertNotNull(Span.current());
-        try {
-            Thread.sleep(3000);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        spanExporter.reset();
 
         Baggage.builder().put("foo", "bar").build().makeCurrent();
         Baggage baggage = Baggage.current();
         assertEquals("bar", baggage.getEntryValue("foo"));
 
-        Client client = ClientBuilder.newClient();
         String url = new String(uriInfo.getAbsolutePath().toString());
         url = url.replace("jaxrsclient", "jaxrstwo"); //The jaxrsclient will use the URL as given so it needs the final part to be provided.
 
         String result = client.target(url)
                         .request(MediaType.TEXT_PLAIN)
                         .get(String.class);
+        assertEquals(TEST_PASSED, result);
 
-        client.close();
-
-        return Response.ok(result).build();
+        LOGGER.info("<<< getJax");
+        return Response.ok(Span.current().getSpanContext().getTraceId()).build();
     }
 
     //This URL is called by the test framework to trigger testing for calling JAX-RS client in Asnyc.
@@ -172,34 +191,33 @@ public class JaxRsEndpoints extends Application {
     @GET
     @Path("/jaxrsclientasync")
     public Response getJaxAsync(@Context UriInfo uriInfo) {
+        LOGGER.info(">>> getJaxAsync");
         assertNotNull(Span.current());
-        try {
-            Thread.sleep(3000);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        spanExporter.reset();
 
         Baggage.builder().put("foo", "bar").build().makeCurrent();
         Baggage baggage = Baggage.current();
         assertEquals("bar", baggage.getEntryValue("foo"));
 
-        Client client = ClientBuilder.newClient();
         String url = new String(uriInfo.getAbsolutePath().toString());
         url = url.replace("jaxrsclientasync", "jaxrstwo"); //The jaxrsclient will use the URL as given so it needs the final part to be provided.
 
+        Client client = ClientBuilder.newClient();
         Future<String> result = client.target(url)
                         .request(MediaType.TEXT_PLAIN)
                         .async()
                         .get(String.class);
 
         try {
-            return Response.ok(result.get()).build();
+            String resultValue = result.get(10, SECONDS);
+            assertEquals(TEST_PASSED, resultValue);
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
-            client.close(); //This needs tobe after result.get()
+            client.close();
         }
+
+        LOGGER.info("<<< getJaxAsync");
+        return Response.ok(Span.current().getSpanContext().getTraceId()).build();
     }
 
     //A method to be called by JAX Clients
@@ -207,10 +225,12 @@ public class JaxRsEndpoints extends Application {
     @GET
     @Path("/jaxrstwo")
     public Response getJaxRsTwo() {
+        LOGGER.info(">>> getJaxRsTwo");
         assertNotNull(Span.current());
         Baggage baggage = Baggage.current();
         assertEquals("bar", baggage.getEntryValue("foo")); //Assert that Baggage is propagated from Jax Server to Jax Client. Tests {8} and {10} (depending on which entry method calls this one)
-        return Response.ok("Test Passed").build();
+        LOGGER.info("<<< getJaxRsTwo");
+        return Response.ok(TEST_PASSED).build();
     }
 
     ////// MP code below //////
@@ -220,13 +240,8 @@ public class JaxRsEndpoints extends Application {
     @GET
     @Path("/mpclient")
     public Response getMP(@Context UriInfo uriInfo) {
+        LOGGER.info(">>> getMP");
         assertNotNull(Span.current());
-        try {
-            Thread.sleep(3000);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        spanExporter.reset();
 
         Baggage.builder().put("foo", "bar").build().makeCurrent();
         Baggage baggage = Baggage.current();
@@ -246,7 +261,10 @@ public class JaxRsEndpoints extends Application {
                         .build(MPTwo.class);
 
         String result = two.getMPTwo();
-        return Response.ok(result).build();
+        assertEquals(TEST_PASSED, result);
+
+        LOGGER.info("<<< getMP");
+        return Response.ok(Span.current().getSpanContext().getTraceId()).build();
     }
 
     //This method is called via mpClient from the entry methods.
@@ -254,11 +272,14 @@ public class JaxRsEndpoints extends Application {
     @GET
     @Path("/mptwo")
     public Response getMPTwo() {
+        LOGGER.info(">>> getMPTwo");
+
         assertNotNull(Span.current());
         Baggage baggage = Baggage.current();
         assertEquals("bar", baggage.getEntryValue("foo")); //Assert that Baggage is propagated from Jax Server to MPClient. Tests {9} or {11} depending on which method called by the framework calls this one
 
-        return Response.ok("Test Passed").build();
+        LOGGER.info("<<< getMPTwo");
+        return Response.ok(TEST_PASSED).build();
     }
 
     @RegisterRestClient
@@ -275,13 +296,8 @@ public class JaxRsEndpoints extends Application {
     @GET
     @Path("/mpclientasync")
     public Response getMPAsync(@Context UriInfo uriInfo) {
+        LOGGER.info(">>> getMPAsync");
         assertNotNull(Span.current());
-        try {
-            Thread.sleep(3000);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        spanExporter.reset();
 
         Baggage.builder().put("foo", "bar").build().makeCurrent();
         Baggage baggage = Baggage.current();
@@ -301,7 +317,10 @@ public class JaxRsEndpoints extends Application {
                         .build(MPTwoAsync.class);
 
         String result = two.getMPTwo().toCompletableFuture().join();
-        return Response.ok(result).build();
+        assertEquals(TEST_PASSED, result);
+
+        LOGGER.info("<<< getMPAsync");
+        return Response.ok(Span.current().getSpanContext().getTraceId()).build();
     }
 
     @RegisterRestClient

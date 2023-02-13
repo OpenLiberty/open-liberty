@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 //  CHANGE HISTORY
 //    Defect | Issue   Date            Modified By             Description
@@ -554,6 +551,11 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
             } 
 
             config.setSessionCookieConfig(scc);
+        }
+        
+        //Servlet 6.0 - skip checking for %23 , %2e , %2f , %5c in URI
+        public void setSkipEncodedCharVerification() {
+            config.setSkipEncodedCharVerification();
         }
 
         public void cacheResults(ServletConfigurator configurator) {

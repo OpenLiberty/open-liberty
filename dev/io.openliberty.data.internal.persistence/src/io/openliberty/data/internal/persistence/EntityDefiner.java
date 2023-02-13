@@ -19,11 +19,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -243,17 +244,21 @@ class EntityDefiner implements Runnable {
             Metamodel model = em.getMetamodel();
             for (EntityType<?> entityType : model.getEntities()) {
                 entityType.getName();//TODO
-                LinkedHashMap<String, String> attributeNames = new LinkedHashMap<>();
-                HashMap<String, List<Member>> attributeAccessors = new HashMap<>();
-                HashMap<String, Class<?>> attributeTypes = new HashMap<>();
+                Map<String, String> attributeNames = new HashMap<>();
+                Map<String, List<Member>> attributeAccessors = new HashMap<>();
+                SortedMap<String, Class<?>> attributeTypes = new TreeMap<>();
+                Map<Class<?>, List<String>> embeddableAttributeNames = new HashMap<>();
                 Queue<Attribute<?, ?>> embeddables = new LinkedList<>();
                 Queue<String> embeddablePrefixes = new LinkedList<>();
                 Queue<List<Member>> embeddableAccessors = new LinkedList<>();
+                Class<?> idClass = null;
+                SortedMap<String, Member> idClassAttributeAccessors = null;
 
                 for (Attribute<?, ?> attr : entityType.getAttributes()) {
                     String attributeName = attr.getName();
                     PersistentAttributeType attributeType = attr.getPersistentAttributeType();
                     if (PersistentAttributeType.EMBEDDED.equals(attributeType)) {
+                        embeddableAttributeNames.put(attr.getJavaType(), new ArrayList<>());
                         embeddables.add(attr);
                         embeddablePrefixes.add(attributeName);
                         embeddableAccessors.add(Collections.singletonList(attr.getJavaMember()));
@@ -271,14 +276,17 @@ class EntityDefiner implements Runnable {
                     String prefix = embeddablePrefixes.poll();
                     List<Member> accessors = embeddableAccessors.poll();
                     EmbeddableType<?> embeddable = model.embeddable(attr.getJavaType());
+                    List<String> embAttributeList = embeddableAttributeNames.get(attr.getJavaType());
                     for (Attribute<?, ?> embAttr : embeddable.getAttributes()) {
                         String embeddableAttributeName = embAttr.getName();
                         String fullAttributeName = prefix + '.' + embeddableAttributeName;
                         List<Member> embAccessors = new LinkedList<>(accessors);
                         embAccessors.add(embAttr.getJavaMember());
+                        embAttributeList.add(fullAttributeName);
 
                         PersistentAttributeType attributeType = embAttr.getPersistentAttributeType();
                         if (PersistentAttributeType.EMBEDDED.equals(attributeType)) {
+                            embeddableAttributeNames.put(embAttr.getJavaType(), new ArrayList<>());
                             embeddables.add(embAttr);
                             embeddablePrefixes.add(fullAttributeName);
                             embeddableAccessors.add(embAccessors);
@@ -310,6 +318,21 @@ class EntityDefiner implements Runnable {
                     }
                 }
 
+                if (!entityType.hasSingleIdAttribute()) {
+                    String attrName = attributeNames.get("id");
+                    if (!attrName.contains(".")) { // Skip for Id on Embeddable. Only apply to IdClass
+                        attributeNames.remove("id");
+                        idClass = entityType.getIdType().getJavaType();
+                        idClassAttributeAccessors = new TreeMap<>();
+                        for (SingularAttribute<?, ?> attr : entityType.getIdClassAttributes()) {
+                            Member entityMember = attr.getJavaMember();
+                            Member idClassMember = entityMember instanceof Field //
+                                            ? idClass.getField(entityMember.getName()) //
+                                            : idClass.getMethod(entityMember.getName());
+                            idClassAttributeAccessors.put(attr.getName().toLowerCase(), idClassMember);
+                        }
+                    }
+                }
                 // This works for version Fields, and might work for version getter/setter methods
                 // but is debatable whether we should do it.
                 //Member versionMember = null;
@@ -327,6 +350,9 @@ class EntityDefiner implements Runnable {
                                 attributeAccessors, //
                                 attributeNames, //
                                 attributeTypes, //
+                                embeddableAttributeNames, //
+                                idClass, //
+                                idClassAttributeAccessors, //
                                 punit);
 
                 provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).complete(entityInfo);

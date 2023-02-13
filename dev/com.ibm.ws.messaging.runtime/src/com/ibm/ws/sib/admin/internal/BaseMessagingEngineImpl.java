@@ -124,15 +124,12 @@ public class BaseMessagingEngineImpl implements JsEngineComponent, LWMConfig, Co
     // 181851 changed name of creation state to avoid ambiguity with hamanager.
     protected int _state = STATE_UNINITIALIZED;
 
-    // Vector of the classes which are bootstrapped.
-    // Needs to be synchronized to prevent concurrent modification from dynamic config and runtime callbacks
-    //protected Vector jmeComponents = new Vector();
     protected CopyOnWriteArrayList<ComponentList> jmeComponents = new CopyOnWriteArrayList<ComponentList>();
 
     // Used to synchronize on stateChangeLock to manage the startup of the engine
     // with potential addition of new engine components via dynamic config.
 
-    protected Object stateChangeLock = new Object();
+    protected Object stateChangeLock = new Object() {};
 
     // 190516
     // Array of Vectors for stopping JsEngineComponents in custom order.

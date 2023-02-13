@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2021 IBM Corporation and others.
+ * Copyright (c) 2019,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -79,7 +79,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
             if (server.isStarted())
                 server.stopServer(
                         "CWWKC1500W", "CWWKC1501W", "CWWKC1502W", "CWWKC1503W", // Rolled back task that exceeded missedTaskThreshold. The rollback/abort can lead to further warnings/errors...
-                        "DSRA", "J2CA");
+                        "DSRA", "J2CA", "WTRN");
         } finally {
             server.updateServerConfiguration(originalConfig);
         }
@@ -243,7 +243,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
 
             server.stopServer(
                     "CWWKC1500W", "CWWKC1501W", "CWWKC1502W", "CWWKC1503W", // Rolled back task that exceeded missedTaskThreshold. The rollback/abort can lead to further warnings/errors...
-                    "DSRA", "J2CA");
+                    "DSRA", "J2CA", "WTRN");
 
             // Enable fail over
             server.updateServerConfiguration(originalConfig);
@@ -342,7 +342,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
 
             server.stopServer(
                     "CWWKC1500W", "CWWKC1501W", "CWWKC1502W", "CWWKC1503W", // Rolled back task that exceeded missedTaskThreshold. The rollback/abort can lead to further warnings/errors...
-                    "DSRA", "J2CA");
+                    "DSRA", "J2CA", "WTRN");
 
             // Enable fail over on a new instance
             persistentExec = (PersistentExecutor) persistentExec.clone();
@@ -370,7 +370,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
 
             server.stopServer(
                     "CWWKC1500W", "CWWKC1501W", "CWWKC1502W", "CWWKC1503W", // Rolled back task that exceeded missedTaskThreshold. The rollback/abort can lead to further warnings/errors...
-                    "DSRA", "J2CA");
+                    "DSRA", "J2CA", "WTRN");
 
             // Remove the old instance
             config.getPersistentExecutors().removeById("persistentExec2");
@@ -693,7 +693,8 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
                     "CWWKC1502W.*", // Rolled back task [id or name]
                     "CWWKC1503W.*", // Rolled back task [id or name] due to failure ...
                     "DSRA*", // various errors possible due to rollback or usage during shutdown
-                    "J2CA*" // various errors possible due to rollback or usage during shutdown
+                    "J2CA*", // various errors possible due to rollback or usage during shutdown
+                    "WTRN*" // errors due to usage during shutdown
                     );
 
             // Disable fail over
@@ -882,7 +883,7 @@ public class SwitchFromSingleInstanceToFailOverTest extends FATServletClient {
 
             server.stopServer(
                     "CWWKC1500W", "CWWKC1501W", "CWWKC1502W", "CWWKC1503W", // Rolled back task that exceeded missedTaskThreshold. The rollback/abort can lead to further warnings/errors...
-                    "DSRA", "J2CA");
+                    "DSRA", "J2CA", "WTRN");
 
             // Enable fail over
             config.getPersistentExecutors().removeById("persistentExec2");

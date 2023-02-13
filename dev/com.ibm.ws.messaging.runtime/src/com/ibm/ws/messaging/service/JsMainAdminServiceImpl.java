@@ -34,6 +34,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.messaging.lifecycle.Singleton;
 import com.ibm.ws.messaging.security.RuntimeSecurityService;
 import com.ibm.ws.sib.admin.AliasDestination;
 import com.ibm.ws.sib.admin.BaseDestination;
@@ -64,8 +65,8 @@ import com.ibm.wsspi.sib.core.DestinationType;
  * A Singleton class to fetch JsAdminServiceImpl
  */
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, 
-           property = "service.vendor=IBM")
-public class JsMainAdminServiceImpl implements JsMainAdminService {
+           property={"type=com.ibm.ws.sib.admin.JsMainAdminService", "service.vendor=IBM"})
+public class JsMainAdminServiceImpl implements Singleton, JsMainAdminService {
 
     /** RAS trace variable */
     private static final TraceComponent tc = SibTr.register(
@@ -75,7 +76,7 @@ public class JsMainAdminServiceImpl implements JsMainAdminService {
 
     private String _state = ME_STATE.STOPPED.toString();
 
-    private JsMainImpl _jsMainImpl = null;
+    private final JsMainImpl jsMainImpl;
 
     private volatile Map<String, Object> properties;
 
@@ -84,33 +85,26 @@ public class JsMainAdminServiceImpl implements JsMainAdminService {
     
     private final RuntimeSecurityService runtimeSecurityService;
     private final ConfigurationAdmin configAdmin;
-    private BundleContext bundleContext;
+    private final BundleContext bundleContext;
 
     @Activate
-    public JsMainAdminServiceImpl( @Reference RuntimeSecurityService runtimeSecurityService,
-                                   @Reference ConfigurationAdmin configAdmin) {
+    public JsMainAdminServiceImpl( 
+    		@Reference RuntimeSecurityService runtimeSecurityService,
+            @Reference ConfigurationAdmin configAdmin,
+            @Reference JsMainImpl jsMainImpl,
+            BundleContext bundleContext ) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, "JsMainAdminServiceImpl", new Object[] { this, runtimeSecurityService, configAdmin });
+            SibTr.entry(tc, "<init>", new Object[] { this, runtimeSecurityService, configAdmin, jsMainImpl, bundleContext });
         
         this.runtimeSecurityService = runtimeSecurityService;
         this.configAdmin = configAdmin;
+        this.jsMainImpl = jsMainImpl;
+        this.bundleContext = bundleContext;
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, "JsMainAdminServiceImpl");
+            SibTr.exit(tc, "<init>");
     }
 
-    @Activate
-    public void activate(BundleContext bundleContext) {
-        final String methodName = "activate";
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.entry(tc, methodName, new Object[] { this, bundleContext });
-
-        this.bundleContext = bundleContext;
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            SibTr.exit(tc, methodName);           
-    }
-    
     /**
      * Sets ME state to STARTING, then creates and initialises the messaging engine.
      */
@@ -131,9 +125,8 @@ public class JsMainAdminServiceImpl implements JsMainAdminService {
             // Initialize the config object.
             initialize(properties, configAdmin);
 
-            _jsMainImpl = new JsMainImpl(bundleContext, runtimeSecurityService);
-            _jsMainImpl.initialize(jsMEConfig);
-            _jsMainImpl.start();
+            jsMainImpl.initialize(jsMEConfig);
+            jsMainImpl.start();
 
             // If its here it means all the components have started hence set
             // the state to STARTED
@@ -681,13 +674,15 @@ public class JsMainAdminServiceImpl implements JsMainAdminService {
     /**
      * {@inheritDoc}
      * 
-     * Constructs the new config object based on the server.xml changes.There
-     * are few rules while constructing 1) If the defaultQueue or defaultTopic
-     * is deleted it will not be taken into consideration.Old values are
-     * retained 2) Filestore changes are not honoured hence old values will be
-     * considered
+     * Constructs the new config object based on the changed server.xml.
      * 
-     * */
+     * - If the defaultQueue or defaultTopic has been deleted it will not be taken into consideration, 
+     *   any existing values are retained 
+     * - Filestore changes are not honoured, existing values will be used
+     * 
+     * Note that this is not the OSGI modified method, it is invoked from the JsMainAdminComponentImpl.modified()
+     * method when it detects that the config has changed. 
+     */
     @Override
     public void modify(Map<String, Object> properties) {
         final String methodName = "modify";
@@ -896,7 +891,7 @@ public class JsMainAdminServiceImpl implements JsMainAdminService {
         // Check if the highMessageThreshold is different.If yes then invoke reloadEngine() 
         if (jsMEConfig.getMessagingEngine().getHighMessageThreshold() != newConfig.getMessagingEngine().getHighMessageThreshold()) {
             try {
-                _jsMainImpl.reloadEngine(newConfig.getMessagingEngine().getHighMessageThreshold());
+                jsMainImpl.reloadEngine(newConfig.getMessagingEngine().getHighMessageThreshold());
             } catch (Exception e) {
                 SibTr.exception(tc, e);
                 FFDCFilter.processException(e, this.getClass().getName(), "972", this);
@@ -907,7 +902,7 @@ public class JsMainAdminServiceImpl implements JsMainAdminService {
             String key = (String) dit.next();
             // deleted SIBDestination can be got from the old jsMEConfig
             try {
-                _jsMainImpl.deleteDestinationLocalization(jsMEConfig
+                jsMainImpl.deleteDestinationLocalization(jsMEConfig
                                 .getMessagingEngine().getDestinationList().get(
                                                                                (key)));
             } catch (Exception e) {
@@ -920,7 +915,7 @@ public class JsMainAdminServiceImpl implements JsMainAdminService {
             String key = (String) nit.next();
             // New SIBDestination can be got from the new jsMEConfig
             try {
-                _jsMainImpl.createDestinationLocalization(newConfig
+                jsMainImpl.createDestinationLocalization(newConfig
                                 .getMessagingEngine().getDestinationList().get(
                                                                                (key)));
             } catch (Exception e) {
@@ -933,7 +928,7 @@ public class JsMainAdminServiceImpl implements JsMainAdminService {
             String key = (String) mmit.next();
             // Modified SIBDestination can be got from the new jsMEConfig
             try {
-                _jsMainImpl.alterDestinationLocalization(newConfig
+                jsMainImpl.alterDestinationLocalization(newConfig
                                 .getMessagingEngine().getDestinationList().get(
                                                                                (key)));
             } catch (Exception e) {
@@ -954,8 +949,8 @@ public class JsMainAdminServiceImpl implements JsMainAdminService {
             SibTr.exit(tc, methodName, this);
         
         try {
-            _jsMainImpl.stop();
-            _jsMainImpl.destroy();
+            jsMainImpl.stop();
+            jsMainImpl.destroy();
             SibTr.info(tc, "ME_STOPPED_SIAS0121");
         } catch (Exception e) {
             SibTr.exception(tc, e);

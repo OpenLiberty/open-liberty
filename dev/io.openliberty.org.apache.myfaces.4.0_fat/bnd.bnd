@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -17,13 +14,16 @@ src: \
     fat/src,\
     test-applications/AcceptInputFileTest.war/src,\
     test-applications/AjaxRenderExecuteThisTest.war/src,\
+    test-applications/AnnotationLiteralsTest.war/src,\
     test-applications/ExternalContextAddResponseCookie.war/src,\
     test-applications/FacesContextGetLifecycle.war/src,\
     test-applications/LayoutAttribute.war/src,\
     test-applications/SelectItemTests.war/src,\
     test-applications/UIViewRootGetDoctypeTest.war/src,\
     test-applications/Faces40ThirdPartyApi.war/src,\
-    test-applications/MultipleInputFileTest.war/src
+    test-applications/MultipleInputFileTest.war/src,\
+    test-applications/ProgrammaticFaceletTests.war/src,\
+    test-applications/Faces40URN.war/src
 
 fat.project: true
 
@@ -39,4 +39,6 @@ javac.target: 11
 	io.openliberty.org.apache.commons.codec;version=latest,\
 	io.openliberty.org.apache.xercesImpl;version=latest,\
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
-	io.openliberty.jakarta.annotation.2.1;version=latest
+	io.openliberty.jakarta.annotation.2.1;version=latest,\
+	io.openliberty.jakarta.expressionLanguage.5.0;version=latest,\
+

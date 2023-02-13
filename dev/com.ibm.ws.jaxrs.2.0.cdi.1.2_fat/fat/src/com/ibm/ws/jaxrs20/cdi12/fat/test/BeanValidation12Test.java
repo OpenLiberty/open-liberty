@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.cdi12.fat.test;
 
+import static org.junit.Assert.assertEquals;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -21,16 +22,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.jaxrs20.cdi12.fat.TestUtils;
-
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
 public class BeanValidation12Test extends AbstractTest {
-
-    private static final String PARAM_URL_PATTERN = "rest";
 
     @Server("com.ibm.ws.jaxrs20.cdi12.fat.beanvalidation")
     public static LibertyServer server;
@@ -65,7 +62,6 @@ public class BeanValidation12Test extends AbstractTest {
     @Test
     public void testIsViolatedInPerRequestWithCDI12_BeanValidation() throws Exception {
         runGetMethod("/rest/perrequest/book", 400, "I am a Student. null", true);
-        String uri = TestUtils.getBaseTestUri(appname, PARAM_URL_PATTERN, "/perrequest/book");
     }
 
     @Test
@@ -78,5 +74,17 @@ public class BeanValidation12Test extends AbstractTest {
     public void testIsViolatedInSingletonWithCDI12_BeanValidation() throws Exception {
         runGetMethod("/rest/singleton/book", 400, "Hello from SimpleBean null", true);
 //        String uri = TestUtils.getBaseTestUri(appname, PARAM_URL_PATTERN, "/singleton/book");
+    }
+
+    @Test
+    public void testIsViolatedInPerRequestWithCDI12Leak_BeanValidation() throws Exception {
+
+        for (int i = 0; i < 10; i++) {
+            runGetMethod("/rest/perrequestleak/book", 400, "I am a Student. null", true);
+        }
+        StringBuilder lines = runGetMethod("/rest/perrequestleak/size", 200, "", false);
+        String result = lines.toString().trim();
+
+        assertEquals(1, Integer.parseInt(result));
     }
 }

@@ -69,7 +69,8 @@ Subsystem-Name: Java Web Services 2.2
  com.ibm.ws.org.apache.cxf.cxf.rt.ws.addr.3.2, \
  com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2, \
  com.ibm.ws.org.jvnet.mimepull;require-java:="9", \
- com.ibm.ws.prereq.wsdl4j.1.6.2
+ com.ibm.ws.prereq.wsdl4j.1.6.2, \
+ io.openliberty.jaxws.globalhandler.internal
 -files=\
  bin/jaxws/wsgen; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/jaxws/wsimport; ibm.executable:=true; ibm.file.encoding:=ebcdic, \

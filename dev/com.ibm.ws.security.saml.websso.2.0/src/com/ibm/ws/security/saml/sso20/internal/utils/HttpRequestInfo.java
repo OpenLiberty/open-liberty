@@ -226,7 +226,7 @@ public class HttpRequestInfo implements Serializable {
         // redirect with requestURLWithFragments then requestURL
         String redirectUrl = this.requestURLWithFragments == null || this.requestURLWithFragments.isEmpty() ? this.requestURL : this.requestURLWithFragments;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "... expect sendRedirect to '" + redirectUrl + "'");
+            Tr.debug(tc, "SAML WEBSSO - ... expect sendRedirect to '" + redirectUrl + "'");
         }
         try {
             response.sendRedirect(redirectUrl);

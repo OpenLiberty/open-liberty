@@ -11,6 +11,7 @@ Subsystem-Name: Internal Java RESTful Services 2.1
   com.ibm.websphere.appserver.httpcommons-1.0, \
   com.ibm.websphere.appserver.injection-1.0, \
   com.ibm.websphere.appserver.servlet-4.0, \
+  io.openliberty.servlet.internal-4.0, \
   com.ibm.websphere.appserver.classloading-1.0, \
   com.ibm.websphere.appserver.eeCompatible-8.0, \
   com.ibm.websphere.appserver.globalhandler-1.0, \
