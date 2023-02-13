@@ -176,9 +176,9 @@ public class JSF23WebSocketTests {
 
             // Now click the open button and get the resulted page.
             HtmlPage openPage = openButton.click();
-            webClient.waitForBackgroundJavaScript(10000);
 
-            assertContains(openPage.asText(), "Called onopen listener");
+            // Use JSFUtils as this fails intermittently waiting for background JavaScript.
+            assertTrue(JSFUtils.waitForPageResponse(openPage, "Called onopen listener"));
 
             String result1 = server.waitForStringInLogUsingMark("Channel myChannel was opened successfully!");
 
@@ -187,9 +187,9 @@ public class JSF23WebSocketTests {
 
             // Now click the close button and get the resulted page.
             HtmlPage closePage = closeButton.click();
-            webClient.waitForBackgroundJavaScript(10000);
 
-            assertContains(closePage.asText(), "Called onclose listener");
+            // Use JSFUtils as this fails intermittently waiting for background JavaScript.
+            assertTrue(JSFUtils.waitForPageResponse(closePage, "Called onclose listener"));
 
             String result2 = server.waitForStringInLogUsingMark("Channel myChannel was closed successfully!");
 
