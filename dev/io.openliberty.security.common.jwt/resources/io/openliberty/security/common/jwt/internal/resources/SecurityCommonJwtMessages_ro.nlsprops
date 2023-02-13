@@ -1,12 +1,11 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 ###############################################################################
 #CMVCPATHNAME io.openliberty.security.common.jwt/resources/io/openliberty/security/common/jwt/internal/resources/SecurityCommonJwtMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -17,10 +16,10 @@
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS2520 - CWWKS2549
 
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER=CWWKS2520E: Algoritmul de semn\u0103tur\u0103 {0} din antetul JWT nu se potrive\u0219te cu algoritmul de semn\u0103tur\u0103 a\u0219teptat {1}.
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.explanation=Jetonul trebuie s\u0103 fie semnat cu algoritmul care este specificat \u00een mesaj.
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.useraction=Asigura\u021bi-v\u0103 c\u0103 jetonul este semnat cu algoritmul a\u0219teptat sau actualiza\u021bi configura\u021bia pentru componenta care prime\u0219te jetonul, pentru a utiliza algoritmul care este specificat \u00een mesaj.
-
-SIG_ALG_IN_HEADER_NOT_ALLOWED=CWWKS2521E: Algoritmul de semn\u0103tur\u0103 {0} din antetul JWT nu este unul dintre algoritmii de semn\u0103tur\u0103 permi\u0219i: {1}.
+SIG_ALG_IN_HEADER_NOT_ALLOWED=CWWKS2520E: Algoritmul de semn\u0103tur\u0103 {0} din antetul JWT nu este unul dintre algoritmii de semn\u0103tur\u0103 permi\u0219i: {1}.
 SIG_ALG_IN_HEADER_NOT_ALLOWED.explanation=Jetonul trebuie s\u0103 fie semnat cu unul dintre algoritmii care sunt specifica\u021bi \u00een mesaj.
 SIG_ALG_IN_HEADER_NOT_ALLOWED.useraction=Asigura\u021bi-v\u0103 c\u0103 jetonul este semnat cu unul dintre algoritmii a\u0219tepta\u021bi sau actualiza\u021bi configura\u021bia pentru componenta care prime\u0219te jetonul, pentru a permite algoritmul care este specificat \u00een mesaj.
+
+SIGNING_KEY_NOT_SPECIFIED=CWWKS2521E: Algoritmul de semn\u0103tur\u0103 {0} din antetul JWT necesit\u0103 o cheie de semnare, dar nu este specificat\u0103 o cheie de semnare.
+SIGNING_KEY_NOT_SPECIFIED.explanation=Serverul nu a reu\u0219it s\u0103 extrag\u0103 cheia care este necesar\u0103 pentru a verifica semn\u0103tura JWT. Cheia ar putea fi \u00eenc\u0103rcat\u0103 de la un URL JWK (JSON Web Key), un depozit de chei sau o cheie partajat\u0103 specificat\u0103 \u00een configura\u021bia serverului.
+SIGNING_KEY_NOT_SPECIFIED.useraction=Asigura\u021bi-v\u0103 c\u0103 configura\u021bia pentru componenta care prime\u0219te jetonul specific\u0103 un URL JWK, un depozit de chei corespunz\u0103tor sau o cheie partajat\u0103.

@@ -1,9 +1,11 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -119,3 +121,7 @@ OIDC_CLIENT_INVALID_RESPONSE_TYPE.useraction=Specifica\u021bi unul dintre tipuri
 TOKEN_CLAIM_VALUE_MISMATCH=CWWKS2424E: Valoarea [{0}] pentru revendicarea [{1}] din jeton nu se potrive\u0219te cu valoarea a\u0219teptat\u0103 [{2}].
 TOKEN_CLAIM_VALUE_MISMATCH.explanation=Valoarea revendic\u0103rii este incorect\u0103 sau format\u0103 gre\u0219it. Configura\u021bia pentru clientul OpenID Connect ar putea fi incorect\u0103 sau jetonul a fost creat cu valori incorecte.
 TOKEN_CLAIM_VALUE_MISMATCH.useraction=Asigura\u021bi-v\u0103 c\u0103 este configurat corect atributul din configura\u021bia clientului OpenID Connect care este aferent revendic\u0103rii specificate \u00een mesaj.
+
+TOKEN_MISSING_CLAIMS=CWWKS2425E: Jetonul de client {0} OpenID Connect nu este valid. Valoarea jwtClaims pentru obiectul JwtContext este nul\u0103 sau goal\u0103.
+TOKEN_MISSING_CLAIMS.explanation=Validarea jetonului nu poate fi finalizat\u0103, deoarece lipsesc informa\u021bii din jeton.
+TOKEN_MISSING_CLAIMS.useraction=Examina\u0163i istoricul pentru orice erori anterioare pentru detalii despre e\u015fec. Verifica\u021bi formatul \u0219i con\u021binutul jetonului care este returnat de la furnizorul OpenID Connect.

@@ -6,11 +6,13 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -73,6 +75,31 @@ noPrometheusRegistry.info.CWMMC0008I.useraction=Wenn die Nichtverf\u00fcgbarkeit
 disabled.info.CWMMC0009I=CWMMC0009I: Der Endpunkt '/metrics' ist nicht verf\u00fcgbar, weil die Prometheus-Registry inaktiviert ist.
 disabled.info.CWMMC0009I.explanation=Die MicroProfile-Config-Eigenschaft 'mp.metrics.prometheus.enabled' ist auf 'false' gesetzt.
 disabled.info.CWMMC0009I.useraction=Wenn die Inaktivierung der Prometheus-Registry nicht beabsichtigt ist, entfernen Sie die Konfiguration der MicroProfile-Konfigurationseigenschaft 'mp.metrics.prometheus.enabled' oder setzen Sie die Eigenschaft explizit auf 'true'.
+
+#Embedded SmallRye Metrics or Micrometer JAR not found in the lib directory
+fileNotFound.error.CWMMC0010E=CWMMC0010E: Das Feature MicroProfile Metrics konnte nicht initialisiert werden. Die erforderliche JAR-Datei {0} wurde im Verzeichnis <wlp_home>/lib nicht gefunden.
+fileNotFound.error.CWMMC0010E.explanation=Die JAR-Datei wurde im Verzeichnis <wlp_home>/lib nicht gefunden. Die Datei kann gel\u00f6scht oder umbenannt werden.
+fileNotFound.error.CWMMC0010E.useraction=Die JAR-Datei, die sich normalerweise im Verzeichnis <wlp_home>/lib befindet, ist nicht vorhanden. Stellen Sie die Installation des Anwendungsservers erneut bereit.
+
+#Bundle add-on class loader was null
+nullBundleAddOnClassLoader.error.CWMMC0011E=CWMMC0011E: Das Feature MicroProfile Metrics konnte nicht initialisiert werden. Die Laufzeitumgebung von MicroProfile Metrics konnte ein erforderliches Klassenladeprogramm nicht erstellen.
+nullBundleAddOnClassLoader.error.CWMMC0011E.explanation=Beim Erstellen eines erforderlichen Klassenladeprogramms ist ein interner Fehler aufgetreten.
+nullBundleAddOnClassLoader.error.CWMMC0011E.useraction=\u00dcberpr\u00fcfen Sie die FFDC-Protokolle und den Ausnahmetext, um das Problem zu identifizieren.
+
+#SmallRye Metrics classes not found when loading through reflection
+missingSmallRyeClasses.error.CWMMC0012E=CWMMC0012E: Das Feature MicroProfile Metrics konnte nicht initialisiert werden. Eine Klasse aus SmallRye Metrics wurde nicht geladen.
+missingSmallRyeClasses.error.CWMMC0012E.explanation=Eine oder mehrere Klassen aus der gepackten JAR-Datei f\u00fcr SmallRye Metrics aus dem Verzeichnis <wlp_home>/lib wurden nicht geladen oder fehlen.
+missingSmallRyeClasses.error.CWMMC0012E.useraction=\u00dcberpr\u00fcfen Sie die FFDC-Protokolle und den Ausnahmetext, um die fehlende Klasse zu ermitteln und sicherzustellen, dass sie in der JAR-Datei unter <wlp_home>/lib/io.openliberty.io.smallrye.metrics vorhanden ist.
+
+#Configured Micrometer Library is missing dependencies
+missingDependencyClasses.error.CWMMC0013E=CWMMC0013E: Das Feature MicroProfile Metrics konnte nicht initialisiert werden. Eine Klasse, die f\u00fcr eine vom Benutzer bereitgestellte Mikrometerbibliothek erforderlich ist, fehlt.
+missingDependencyClasses.error.CWMMC0013E.explanation=Das Feature MicroProfile Metrics l\u00e4dt Mikrometerbibliotheken, die \u00fcber das Attribut libraryRef definiert sind, und muss alle Abh\u00e4ngigkeiten enthalten.
+missingDependencyClasses.error.CWMMC0013E.useraction=Geben Sie die erforderlichen Abh\u00e4ngigkeiten mit den Mikrometerbibliotheken an.
+
+#MicroProfile Metrics 5.0 has been configured to use a libraryRef attribute
+libraryRefConfigured.info.CWMMC0014I=CWMMC0014I: Das Feature MicroProfile Metrics ist f\u00fcr die Verwendung des folgenden libraryRef-Attributs konfiguriert: [{0}]
+libraryRefConfigured.info.CWMMC0014I.explanation=Das Feature MicroProfile Metrics ist f\u00fcr die Verwendung eines libraryRef-Attributs konfiguriert. Diese referenzierte Bibliothek muss die Mikrometerkernbibliothek, die Zielmikrometerbibliotheken und die Abh\u00e4ngigkeiten enthalten.
+libraryRefConfigured.info.CWMMC0014I.useraction=Es ist keine Aktion erforderlich.
 
 #Memory usedHeap message
 memory.usedHeap.description=Zeigt die Menge des belegten Heapspeichers in Bytes an.

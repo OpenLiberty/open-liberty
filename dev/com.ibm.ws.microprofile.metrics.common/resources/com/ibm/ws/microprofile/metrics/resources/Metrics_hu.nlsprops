@@ -6,11 +6,13 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -73,6 +75,31 @@ noPrometheusRegistry.info.CWMMC0008I.useraction=Ha a Prometheus nyilv\u00e1ntart
 disabled.info.CWMMC0009I=CWMMC0009I: A /metrikus v\u00e9gpont nem \u00e9rhet\u0151 el, mert a Prometheus nyilv\u00e1ntart\u00e1s le van tiltva.
 disabled.info.CWMMC0009I.explanation=Az mp.metrics.prometeus.enabled MicroProfile konfigur\u00e1ci\u00f3s tulajdons\u00e1g false \u00e9rt\u00e9kre van be\u00e1ll\u00edtva.
 disabled.info.CWMMC0009I.useraction=Ha a Prometheus nyilv\u00e1ntart\u00e1s letilt\u00e1sa nem sz\u00e1nd\u00e9kos, t\u00e1vol\u00edtsa el az mp.metrics.prometheus.enabled MicroProfile Config tulajdons\u00e1got, vagy explicit m\u00f3don \u00e1ll\u00edtsa be a tulajdons\u00e1got true \u00e9rt\u00e9kre.
+
+#Embedded SmallRye Metrics or Micrometer JAR not found in the lib directory
+fileNotFound.error.CWMMC0010E=CWMMC0010E: A MicroProfile Metrics szolg\u00e1ltat\u00e1s nem inicializ\u00e1lhat\u00f3. A sz\u00fcks\u00e9ges {0} JAR f\u00e1jl nem tal\u00e1lhat\u00f3 a k\u00f6vetkez\u0151ben: <wlp_home>/lib k\u00f6nyvt\u00e1rban.
+fileNotFound.error.CWMMC0010E.explanation=A JAR f\u00e1jl nem tal\u00e1lhat\u00f3 a <wlp_home>/lib k\u00f6nyvt\u00e1rban. A f\u00e1jlt lehet t\u00f6r\u00f6lni vagy \u00e1tnevezni.
+fileNotFound.error.CWMMC0010E.useraction=A(z) <wlp_home>/lib k\u00f6nyvt\u00e1rban \u00e1ltal\u00e1ban tal\u00e1lhat\u00f3 JAR f\u00e1jl nem tal\u00e1lhat\u00f3. Telep\u00edtse \u00fajra az alkalmaz\u00e1skiszolg\u00e1l\u00f3 telep\u00edt\u00e9st.
+
+#Bundle add-on class loader was null
+nullBundleAddOnClassLoader.error.CWMMC0011E=CWMMC0011E: A MicroProfile Metrics szolg\u00e1ltat\u00e1s nem inicializ\u00e1lhat\u00f3. A MicroProfile Metrics fut\u00e1si k\u00f6rnyezet nem tudott l\u00e9trehozni egy k\u00f6telez\u0151 oszt\u00e1lybet\u00f6lt\u0151t.
+nullBundleAddOnClassLoader.error.CWMMC0011E.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt egy k\u00f6telez\u0151 oszt\u00e1lybet\u00f6lt\u0151 l\u00e9trehoz\u00e1sakor.
+nullBundleAddOnClassLoader.error.CWMMC0011E.useraction=Az FFDC napl\u00f3k \u00e9s a kiv\u00e9tel sz\u00f6veg\u00e9nek \u00e1ttekint\u00e9s\u00e9vel azonos\u00edtsa a probl\u00e9m\u00e1t.
+
+#SmallRye Metrics classes not found when loading through reflection
+missingSmallRyeClasses.error.CWMMC0012E=CWMMC0012E: A MicroProfile Metrics szolg\u00e1ltat\u00e1s nem inicializ\u00e1lhat\u00f3. A SmallRye m\u00e9r\u0151sz\u00e1mok oszt\u00e1lya nem volt bet\u00f6ltve.
+missingSmallRyeClasses.error.CWMMC0012E.explanation=A csomagolt SmallRye Metrics JAR csomagb\u00f3l a<wlp_home>/lib sz\u00e1rmaz\u00f3 oszt\u00e1ly vagy oszt\u00e1lyok nem lettek bet\u00f6ltve vagy hi\u00e1nyoznak.
+missingSmallRyeClasses.error.CWMMC0012E.useraction=Tekintse \u00e1t az FFDC napl\u00f3kat \u00e9s a kiv\u00e9tel sz\u00f6veg\u00e9t a hi\u00e1nyz\u00f3 oszt\u00e1ly azonos\u00edt\u00e1s\u00e1hoz, \u00e9s ellen\u0151rizze, hogy l\u00e9tezik-e a k\u00f6vetkez\u0151 helyen: wlp_home><wlp_home>/lib/io.openliberty.io.smallrye.metrics JAR.
+
+#Configured Micrometer Library is missing dependencies
+missingDependencyClasses.error.CWMMC0013E=CWMMC0013E: A MicroProfile Metrics szolg\u00e1ltat\u00e1s nem inicializ\u00e1lhat\u00f3. Egy felhaszn\u00e1l\u00f3 \u00e1ltal biztos\u00edtott mikrom\u00e9teres k\u00f6nyvt\u00e1rhoz sz\u00fcks\u00e9ges oszt\u00e1ly hi\u00e1nyzik.
+missingDependencyClasses.error.CWMMC0013E.explanation=A MicroProfile Metrics szolg\u00e1ltat\u00e1s a libraryRef attrib\u00fatumon kereszt\u00fcl meghat\u00e1rozott mikrom\u00e9teres k\u00f6nyvt\u00e1rakat t\u00f6lti be, \u00e9s tartalmaznia kell az \u00f6sszes f\u00fcgg\u0151s\u00e9get.
+missingDependencyClasses.error.CWMMC0013E.useraction=Adja meg a mikrom\u00e9teres k\u00f6nyvt\u00e1rak sz\u00fcks\u00e9ges f\u00fcgg\u0151s\u00e9geit.
+
+#MicroProfile Metrics 5.0 has been configured to use a libraryRef attribute
+libraryRefConfigured.info.CWMMC0014I=CWMMC0014I: A MicroProfile Metrics szolg\u00e1ltat\u00e1s a k\u00f6vetkez\u0151 libraryRefhaszn\u00e1lat\u00e1ra van be\u00e1ll\u00edtva: [{0}]
+libraryRefConfigured.info.CWMMC0014I.explanation=A MicroProfile Metrics szolg\u00e1ltat\u00e1s a libraryRefhaszn\u00e1lat\u00e1ra van be\u00e1ll\u00edtva. A hivatkozott k\u00f6nyvt\u00e1rnak tartalmaznia kell a Mikrom\u00e9teres mag k\u00f6nyvt\u00e1rat, a c\u00e9l mikrom\u00e9teres k\u00f6nyvt\u00e1rakat \u00e9s f\u00fcgg\u0151s\u00e9geket.
+libraryRefConfigured.info.CWMMC0014I.useraction=Nem kell semmit tennie.
 
 #Memory usedHeap message
 memory.usedHeap.description=A haszn\u00e1lt kupacmem\u00f3ria mennyis\u00e9g\u00e9t jelen\u00edti meg byte-ban.

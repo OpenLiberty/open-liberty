@@ -1,12 +1,11 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 ###############################################################################
 #CMVCPATHNAME io.openliberty.security.common.jwt/resources/io/openliberty/security/common/jwt/internal/resources/SecurityCommonJwtMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -17,10 +16,10 @@
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS2520 - CWWKS2549
 
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER=CWWKS2520E: JWT \ud5e4\ub354\uc758 {0} \uc11c\uba85 \uc54c\uace0\ub9ac\uc998\uc774 {1} \uc608\uc0c1 \uc11c\uba85 \uc54c\uace0\ub9ac\uc998\uacfc \uc77c\uce58\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.explanation=\ud1a0\ud070\uc740 \uba54\uc2dc\uc9c0\uc5d0 \uc9c0\uc815\ub41c \uc54c\uace0\ub9ac\uc998\uc73c\ub85c \uc11c\uba85\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.useraction=\ud1a0\ud070\uc774 \uc608\uc0c1 \uc54c\uace0\ub9ac\uc998\uc73c\ub85c \uc11c\uba85\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uac70\ub098 \uba54\uc2dc\uc9c0\uc5d0 \uc9c0\uc815\ub41c \uc54c\uace0\ub9ac\uc998\uc744 \uc0ac\uc6a9\ud558\ub3c4\ub85d \ud1a0\ud070\uc744 \uc218\uc2e0\ud558\ub294 \ucef4\ud3ec\ub10c\ud2b8\uc758 \uad6c\uc131\uc744 \uc5c5\ub370\uc774\ud2b8\ud558\uc2ed\uc2dc\uc624.
-
-SIG_ALG_IN_HEADER_NOT_ALLOWED=CWWKS2521E: JWT \ud5e4\ub354\uc758 {0} \uc11c\uba85 \uc54c\uace0\ub9ac\uc998\uc774 \ud5c8\uc6a9\ub418\ub294 \uc11c\uba85 \uc54c\uace0\ub9ac\uc998 \uc911 \ud558\ub098\uac00 \uc544\ub2d9\ub2c8\ub2e4. {1}
+SIG_ALG_IN_HEADER_NOT_ALLOWED=CWWKS2520E: JWT \ud5e4\ub354\uc758 {0} \uc11c\uba85 \uc54c\uace0\ub9ac\uc998\uc774 \ud5c8\uc6a9\ub418\ub294 \uc11c\uba85 \uc54c\uace0\ub9ac\uc998 \uc911 \ud558\ub098\uac00 \uc544\ub2d9\ub2c8\ub2e4. {1}
 SIG_ALG_IN_HEADER_NOT_ALLOWED.explanation=\ud1a0\ud070\uc740 \uba54\uc2dc\uc9c0\uc5d0 \uc9c0\uc815\ub41c \uc54c\uace0\ub9ac\uc998 \uc911 \ud558\ub098\ub85c \uc11c\uba85\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
 SIG_ALG_IN_HEADER_NOT_ALLOWED.useraction=\ud1a0\ud070\uc774 \ud5c8\uc6a9\ub41c \uc54c\uace0\ub9ac\uc998 \uc911 \ud558\ub098\ub85c \uc11c\uba85\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uac70\ub098 \uba54\uc2dc\uc9c0\uc5d0 \uc9c0\uc815\ub41c \uc54c\uace0\ub9ac\uc998\uc744 \ud5c8\uc6a9\ud558\ub3c4\ub85d \ud1a0\ud070\uc744 \uc218\uc2e0\ud558\ub294 \ucef4\ud3ec\ub10c\ud2b8\uc758 \uad6c\uc131\uc744 \uc5c5\ub370\uc774\ud2b8\ud558\uc2ed\uc2dc\uc624.
+
+SIGNING_KEY_NOT_SPECIFIED=CWWKS2521E: JWT \ud5e4\ub354\uc758 {0} \uc11c\uba85 \uc54c\uace0\ub9ac\uc998\uc5d0 \uc11c\uba85 \ud0a4\uac00 \ud544\uc694\ud558\uc9c0\ub9cc \uc11c\uba85 \ud0a4\uac00 \uc9c0\uc815\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+SIGNING_KEY_NOT_SPECIFIED.explanation=\uc11c\ubc84\uac00 JWT \uc11c\uba85\uc744 \ud655\uc778\ud558\ub294 \ub370 \ud544\uc694\ud55c \ud0a4\ub97c \uac80\uc0c9\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. \ud0a4\ub294 \uc11c\ubc84 \uad6c\uc131\uc5d0\uc11c \uc9c0\uc815\ub41c JSON \uc6f9 \ud0a4(JWK) URL, \ud0a4 \uc800\uc7a5\uc18c, \ub610\ub294 \uacf5\uc720 \ud0a4\uc5d0\uc11c \ub85c\ub4dc\ub420 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+SIGNING_KEY_NOT_SPECIFIED.useraction=\ud1a0\ud070\uc744 \uc218\uc2e0\ud558\ub294 \ucef4\ud3ec\ub10c\ud2b8\uc758 \uad6c\uc131\uc774 JWK URL, \uc801\uc808\ud55c \ud0a4 \uc800\uc7a5\uc18c \ub610\ub294 \uacf5\uc720 \ud0a4\ub97c \uc9c0\uc815\ud558\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.

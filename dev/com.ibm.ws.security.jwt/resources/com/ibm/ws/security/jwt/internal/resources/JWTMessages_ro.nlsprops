@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2021 IBM Corporation and others.
+# Copyright (c) 2016, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -312,7 +312,7 @@ JWT_TRUSTED_ISSUERS_NULL=CWWKS6052E: Emitentul [{0}] al jetonului JWT (JSON Web 
 JWT_TRUSTED_ISSUERS_NULL.explanation=Configura\u0163ia de server specific\u0103 ce emiten\u0163i sunt de \u00eencredere pentru validarea jetoanelor JWT. Configura\u0163ia JWT nu specific\u0103 niciun emitent de \u00eencredere, a\u015fa c\u0103 jetonul nu poate fi validat.
 JWT_TRUSTED_ISSUERS_NULL.useraction=Asigura\u0163i-v\u0103 c\u0103 \u00een configura\u0163ia JWT care este specificat\u0103 \u00een mesaj este definit cel pu\u0163in un emitent de \u00eencredere. Asigura\u0163i-v\u0103 c\u0103 emitentul se potrive\u015fte cu unul din emiten\u0163ii de \u00eencredere specifica\u0163i \u00een configura\u0163ia dumneavoastr\u0103 JWT.
 
-SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: Este utilizat\u0103 schema HTTP \u00een punctul final specificat: {0}, este necesar HTTPS.
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6052E: Este utilizat\u0103 schema HTTP \u00een punctul final specificat: {0}, este necesar HTTPS.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=Punctul final specificat necesit\u0103 HTTPS, dar a fost utilizat HTTP \u00een URL-ul de cerere.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Verifica\u0163i URL-ul de cerere \u015fi asigura\u0163i-v\u0103 c\u0103 utilizeaz\u0103 HTTPS sau modifica\u0163i configura\u0163ia astfel \u00eenc\u00e2t HTTPS s\u0103 nu fie necesar.
 
@@ -388,3 +388,21 @@ NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Asigura\u0163i-v\u0103 c\u0103 date
 JWE_DECRYPTION_KEY_MISSING=CWWKS6066E: Jetonul JWE (JSON Web Encryption) nu poate fi decriptat deoarece nu a putut fi g\u0103sit\u0103 o cheie de decriptare. Atributul de configura\u0163ie server {0} este setat la [{1}].
 JWE_DECRYPTION_KEY_MISSING.explanation=Pentru a decripta jetonul JWE este necesar\u0103 o cheie de decriptare. Cheia de decriptare trebuie s\u0103 fie prezent\u0103 \u00een depozitul de chei al consumatorului JWT, sau cheia trebuie specificat\u0103 \u00een propriet\u0103\u0163ile MicroProfile Config.
 JWE_DECRYPTION_KEY_MISSING.useraction=Verifica\u0163i c\u0103 aliasul de cheie care este specificat \u00een mesaj exist\u0103 \u00een depozitul de chei al consumatorului JWT. Dac\u0103 aliasul nu este configurat, cheia de decriptare trebuie specificat\u0103 \u00een propriet\u0103\u0163ile MicroProfile Config.
+
+# Do not translate "JSON Web Token", "JWT", "iat"
+# 0=iat claim time value (date), 1=Current time, 2=Clock skew configuration value, 3=Token age configuration value
+JWT_TOKEN_AGED=CWWKS6067E: Jetonul JWT (JSON Web Token) nu este valid, deoarece v\u00e2rsta jetonului a trecut de la revendicarea iat (issued at - emis la). Ora revendic\u0103rii iat este {0}. Ora curent\u0103 minus decalajul de ceas este {1}. Decalajul de ceas configurat este {2} secunde. V\u00e2rsta de jeton configurat\u0103 este {3} secunde.
+JWT_TOKEN_AGED.explanation=Jetoanele care dep\u0103\u0219esc v\u00e2rsta nu sunt valide.
+JWT_TOKEN_AGED.useraction=Ob\u021bine\u021bi un jeton nou, care s\u0103 nu aib\u0103 v\u00e2rsta dep\u0103\u0219it\u0103. Sincroniza\u021bi orele ceasului \u00eentre emitentul jetonului \u0219i consumator sau cre\u0219te\u021bi decalajul ceasului sau v\u00e2rsta jetonului \u00een configura\u021bia JWT.
+
+# Do not translate "JSON Web Encryption", "JWE", "alg"
+# 0=Key management key algorithm configuration value
+JWE_MISSING_ALG_HEADER=CWWKS6068E: Jetonul JWE (JSON Web Encryption) nu este valid, deoarece nu are antetul alg. Algoritmul cheie configurat pentru gestionarea cheilor este {0}.
+JWE_MISSING_ALG_HEADER.explanation=Jetonul fie nu este format corect, fie nu este criptat, fie nu are informa\u021biile de criptare.
+JWE_MISSING_ALG_HEADER.useraction=Asigura\u021bi-v\u0103 c\u0103 antetul de algoritm al jetonului JWE este setat la valoarea necesar\u0103.
+
+# Do not translate "JSON Web Encryption", "JWE", "JWT", "Content Encryption Key", "CEK"
+# 0=Cryptographic algorithm used to encrypt the Content Encryption Key (e.g. RSA-OAEP), 1=Cryptographic algorithm required for decrypting the Content Encryption Key (e.g. RSA-OAEP)
+JWE_ALGORITHM_MISMATCH=CWWKS6069E: JWE (JSON Web Encryption) nu este valid, deoarece cheia CEK (Content Encryption Key) a fost criptat\u0103 utiliz\u00e2nd algoritmul {0}. Cheile CEK trebuie s\u0103 fie criptate utiliz\u00e2nd algoritmul {1}.
+JWE_ALGORITHM_MISMATCH.explanation=Cheile CEK trebuie s\u0103 fie criptate cu algoritmul specificat \u00een mesaj. Cheile CEK care sunt criptate cu orice alt algoritm de criptare nu pot fi validate.
+JWE_ALGORITHM_MISMATCH.useraction=Ob\u021bine\u021bi un jeton nou, cu o cheie CEK care s\u0103 fie criptat\u0103 prin utilizarea algoritmului necesar care este specificat \u00een mesaj. Sau actualiza\u021bi configura\u021bia JWT pentru a permite jetoane cu chei CEK care sunt criptate prin utilizarea celuilalt algoritm de criptare.

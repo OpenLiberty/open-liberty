@@ -6,11 +6,13 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -73,6 +75,31 @@ noPrometheusRegistry.info.CWMMC0008I.useraction=\u5982\u679c\u7121\u6cd5\u4f7f\u
 disabled.info.CWMMC0009I=CWMMC0009I: /metrics \u7aef\u9ede\u7121\u6cd5\u4f7f\u7528\uff0c\u56e0\u70ba\u300cPrometheus \u767b\u9304\u300d\u5df2\u505c\u7528\u3002
 disabled.info.CWMMC0009I.explanation=mp.metrics.prometheus.enabled MicroProfile Config \u5167\u5bb9\u8a2d\u70ba false\u3002
 disabled.info.CWMMC0009I.useraction=\u5982\u679c\u505c\u7528\u300cPrometheus \u767b\u9304\u300d\u4e0d\u662f\u51fa\u65bc\u6709\u610f\u7684\u76ee\u7684\uff0c\u8acb\u79fb\u9664 mp.metrics.prometheus.enabled MicroProfile Config \u5167\u5bb9\u7684\u914d\u7f6e\uff0c\u6216\u5c07\u5167\u5bb9\u660e\u78ba\u8a2d\u70ba true\u3002
+
+#Embedded SmallRye Metrics or Micrometer JAR not found in the lib directory
+fileNotFound.error.CWMMC0010E=CWMMC0010E: MicroProfile Metrics \u7279\u6027\u7121\u6cd5\u8d77\u59cb\u8a2d\u5b9a\u3002 \u6240\u9700 JAR \u6a94 {0} \u4e0d\u5728 <wlp_home>/lib \u76ee\u9304\u4e2d\u3002
+fileNotFound.error.CWMMC0010E.explanation=JAR \u6a94\u4e0d\u5728 <wlp_home>/lib \u76ee\u9304\u4e2d\u3002 \u6a94\u6848\u53ef\u80fd\u5df2\u522a\u9664\u6216\u91cd\u65b0\u547d\u540d\u3002
+fileNotFound.error.CWMMC0010E.useraction=JAR \u901a\u5e38\u4f4d\u65bc <wlp_home>/lib \u76ee\u9304\u4e2d\uff0c\u4f46\u4e0d\u5b58\u5728\u3002 \u91cd\u65b0\u90e8\u7f72\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u5b89\u88dd\u3002
+
+#Bundle add-on class loader was null
+nullBundleAddOnClassLoader.error.CWMMC0011E=CWMMC0011E: MicroProfile Metrics \u7279\u6027\u7121\u6cd5\u8d77\u59cb\u8a2d\u5b9a\u3002 MicroProfile Metrics \u57f7\u884c\u6642\u671f\u7121\u6cd5\u5efa\u7acb\u5fc5\u8981\u7684\u985e\u5225\u8f09\u5165\u5668\u3002
+nullBundleAddOnClassLoader.error.CWMMC0011E.explanation=\u5efa\u7acb\u5fc5\u8981\u7684\u985e\u5225\u8f09\u5165\u5668\u6642\u767c\u751f\u5167\u90e8\u932f\u8aa4\u3002
+nullBundleAddOnClassLoader.error.CWMMC0011E.useraction=\u8acb\u6aa2\u95b1 FFDC \u65e5\u8a8c\u548c\u7570\u5e38\u72c0\u6cc1\u6587\u5b57\uff0c\u4ee5\u8b58\u5225\u554f\u984c\u3002
+
+#SmallRye Metrics classes not found when loading through reflection
+missingSmallRyeClasses.error.CWMMC0012E=CWMMC0012E: MicroProfile Metrics \u7279\u6027\u7121\u6cd5\u8d77\u59cb\u8a2d\u5b9a\u3002 \u672a\u8f09\u5165\u4f86\u81ea SmallRye Metrics \u7684\u985e\u5225\u3002
+missingSmallRyeClasses.error.CWMMC0012E.explanation=<wlp_home>/lib \u76ee\u9304\u4e2d\u5305\u88dd\u7684 SmallRye Metrics JAR \u4e2d\u7684\u4e00\u500b\u4ee5\u4e0a\u985e\u5225\u672a\u8f09\u5165\u6216\u907a\u6f0f\u3002
+missingSmallRyeClasses.error.CWMMC0012E.useraction=\u67e5\u770b FFDC \u65e5\u8a8c\u548c\u7570\u5e38\u72c0\u6cc1\u6587\u5b57\u4ee5\u78ba\u5b9a\u7f3a\u5c11\u7684\u985e\u5225\u4e26\u9a57\u8b49\u5b83\u662f\u5426\u5b58\u5728\u65bc <wlp_home>/lib/io.openliberty.io.smallrye.metrics JAR \u4e2d\u3002
+
+#Configured Micrometer Library is missing dependencies
+missingDependencyClasses.error.CWMMC0013E=CWMMC0013E: MicroProfile Metrics \u7279\u6027\u7121\u6cd5\u8d77\u59cb\u8a2d\u5b9a\u3002 \u907a\u6f0f\u4f7f\u7528\u8005\u63d0\u4f9b\u7684 Micrometer Library \u6240\u9700\u7684\u985e\u5225\u3002
+missingDependencyClasses.error.CWMMC0013E.explanation=MicroProfile Metrics \u7279\u6027\u6b63\u5728\u8f09\u5165\u900f\u904e libraryRef \u5c6c\u6027\u6240\u5b9a\u7fa9\u7684 Micrometer \u7a0b\u5f0f\u5eab\uff0c\u4e14\u5fc5\u9808\u5305\u542b\u6240\u6709\u76f8\u4f9d\u95dc\u4fc2\u3002
+missingDependencyClasses.error.CWMMC0013E.useraction=\u63d0\u4f9b\u8207 Micrometer Library \u7684\u5fc5\u8981\u76f8\u4f9d\u95dc\u4fc2\u3002
+
+#MicroProfile Metrics 5.0 has been configured to use a libraryRef attribute
+libraryRefConfigured.info.CWMMC0014I=CWMMC0014I: MicroProfile Metrics \u914d\u7f6e\u6210\u4f7f\u7528\u4e0b\u5217 libraryRef: [{0}]
+libraryRefConfigured.info.CWMMC0014I.explanation=MicroProfile Metrics \u7279\u6027\u914d\u7f6e\u6210\u4f7f\u7528 libraryRef\u3002 \u9019\u500b\u53c3\u7167\u7684\u7a0b\u5f0f\u5eab\u5fc5\u9808\u5305\u542b Micrometer \u6838\u5fc3\u7a0b\u5f0f\u5eab\u3001\u76ee\u6a19 Micrometer \u7a0b\u5f0f\u5eab\u53ca\u76f8\u4f9d\u95dc\u4fc2\u3002
+libraryRefConfigured.info.CWMMC0014I.useraction=\u4e0d\u9700\u4efb\u4f55\u52d5\u4f5c\u3002
 
 #Memory usedHeap message
 memory.usedHeap.description=\u986f\u793a\u5df2\u7528\u7684\u8cc7\u6599\u5806\u8a18\u61b6\u9ad4\u91cf\uff08\u4ee5\u4f4d\u5143\u7d44\u70ba\u55ae\u4f4d\uff09\u3002

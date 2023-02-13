@@ -1,9 +1,11 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -119,3 +121,7 @@ OIDC_CLIENT_INVALID_RESPONSE_TYPE.useraction=Uve\u010fte jeden z platn\u00fdch t
 TOKEN_CLAIM_VALUE_MISMATCH=CWWKS2424E: Hodnota [{0}] pro n\u00e1rok [{1}] v tokenu neodpov\u00edd\u00e1 o\u010dek\u00e1van\u00e9 hodnot\u011b [{2}].
 TOKEN_CLAIM_VALUE_MISMATCH.explanation=Hodnota n\u00e1roku je nespr\u00e1vn\u00e1 nebo chybn\u00e1. Konfigurace pro klienta OpenID Connect m\u016f\u017ee b\u00fdt nespr\u00e1vn\u00e1, nebo byl token vytvo\u0159en s nespr\u00e1vn\u00fdmi hodnotami.
 TOKEN_CLAIM_VALUE_MISMATCH.useraction=Ujist\u011bte se, \u017ee je atribut v konfiguraci klienta OpenID Connect, kter\u00fd souvis\u00ed s n\u00e1rokem uveden\u00fdm ve zpr\u00e1v\u011b, spr\u00e1vn\u011b nakonfigurov\u00e1n.
+
+TOKEN_MISSING_CLAIMS=CWWKS2425E: Token klienta {0} OpenID Connect je neplatn\u00fd. Hodnota jwtClaims v objektu JwtContext m\u00e1 hodnotu null, nebo je pr\u00e1zdn\u00e1.
+TOKEN_MISSING_CLAIMS.explanation=V tokenu chyb\u00ed informace a ov\u011b\u0159en\u00ed tokenu nelze dokon\u010dit.
+TOKEN_MISSING_CLAIMS.useraction=Zkontrolujte, zda nejsou v protokolu n\u011bjak\u00e9 d\u0159\u00edv\u011bj\u0161\u00ed chyby, abyste se dozv\u011bd\u011bli podrobnosti o selh\u00e1n\u00ed. Zkontrolujte form\u00e1t a obsah tokenu, kter\u00fd je vr\u00e1cen od poskytovatele OpenID Connect.

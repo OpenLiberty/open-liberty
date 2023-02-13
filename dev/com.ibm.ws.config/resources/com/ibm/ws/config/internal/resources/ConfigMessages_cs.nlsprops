@@ -31,7 +31,7 @@
 # Message prefix block: CWWKG0001 - CWWKG1000
 # -------------------------------------------------------------------------------------------------
 
-copyright=\nCopyright (c) 2010 IBM Corporation a dal\u0161\u00ed.\nV\u0161echna pr\u00e1va vyhrazena. Tento program a doprovodn\u00e9 materi\u00e1ly\njsou povoleny za podm\u00ednek licence Eclipse Public License 2.0,\nkter\u00e1 je sou\u010d\u00e1st\u00ed t\u00e9to distribuce a je k dispozici na adrese \nhttp://www.eclipse.org/legal/epl-2.0/
+copyright=\nCopyright (c) 2010 IBM Corporation a dal\u0161\u00ed.\nV\u0161echna pr\u00e1va vyhrazena. Tento program a doprovodn\u00e9 materi\u00e1ly\njsou zp\u0159\u00edstupn\u011bny za podm\u00ednek licence Eclipse Public License 2.0,\nkter\u00e1 je sou\u010d\u00e1st\u00ed t\u00e9to distribuce a je k dispozici na adrese:\nhttp://www.eclipse.org/legal/epl-2.0/
 
 error.parse.server=CWWKG0001E: Syntaktick\u00fd analyz\u00e1tor konfigurace zjistil chybu p\u0159i syntaktick\u00e9 anal\u00fdze ko\u0159ene konfigurace a v odkazovan\u00fdch dokumentech typu Konfigurace. Chyba: {0}
 error.parse.server.explanation=Konfiguraci serveru nelze p\u0159e\u010d\u00edst, proto\u017ee v jednom z konfigura\u010dn\u00edch soubor\u016f je chyba.

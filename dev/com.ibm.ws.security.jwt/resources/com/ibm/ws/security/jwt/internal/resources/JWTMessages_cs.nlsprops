@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2021 IBM Corporation and others.
+# Copyright (c) 2016, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -312,7 +312,7 @@ JWT_TRUSTED_ISSUERS_NULL=CWWKS6052E: Vydavatel [{0}] zadan\u00e9ho tokenu JSON W
 JWT_TRUSTED_ISSUERS_NULL.explanation=Konfigurace serveru specifikuje, kte\u0159\u00ed vydavatel\u00e9 jsou d\u016fv\u011bryhodn\u00ed pro ov\u011b\u0159en\u00ed token\u016f JWT. Konfigurace tokenu JWT nespecifikuje \u017e\u00e1dn\u00e9 d\u016fv\u011bryhodn\u00e9 u\u017eivatele, a proto token nem\u016f\u017ee b\u00fdt ov\u011b\u0159en.
 JWT_TRUSTED_ISSUERS_NULL.useraction=Ujist\u011bte se, \u017ee konfigurace tokenu JWT specifikovan\u00e1 ve zpr\u00e1v\u011b definuje alespo\u0148 jednoho d\u016fv\u011bryhodn\u00e9ho vydavatele. Ujist\u011bte se, \u017ee vydavatel tokenu JWT odpov\u00edd\u00e1 jednomu z d\u016fv\u011bryhodn\u00fdch vydavatel\u016f specifikovan\u00fdch ve va\u0161\u00ed konfiguraci tokenu JWT.
 
-SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: V ur\u010den\u00e9m koncov\u00e9m bod\u011b: {0} se pou\u017e\u00edv\u00e1 sch\u00e9ma HTTP, je po\u017eadov\u00e1no sch\u00e9ma HTTPS.
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6052E: V ur\u010den\u00e9m koncov\u00e9m bod\u011b: {0} se pou\u017e\u00edv\u00e1 sch\u00e9ma HTTP, je po\u017eadov\u00e1no sch\u00e9ma HTTPS.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=Ur\u010den\u00fd koncov\u00fd bod vy\u017eaduje sch\u00e9ma HTTPS, ale v adrese URL po\u017eadavku bylo pou\u017eito sch\u00e9ma HTTP.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Zkontrolujte adresu URL po\u017eadavku a ujist\u011bte se, \u017ee pou\u017e\u00edv\u00e1 sch\u00e9ma HTTPS, nebo zm\u011b\u0148te konfiguraci tak, aby sch\u00e9ma HTTPS nebylo po\u017eadov\u00e1no.
 
@@ -388,3 +388,21 @@ NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Ujist\u011bte se, \u017ee informa\u
 JWE_DECRYPTION_KEY_MISSING=CWWKS6066E: Token JSON Web Encryption (JWE) nem\u016f\u017ee b\u00fdt de\u0161ifrov\u00e1n, proto\u017ee de\u0161ifrovac\u00ed kl\u00ed\u010d nelze nal\u00e9zt. Atribut konfigurace serveru {0} je nastaven na [{1}].
 JWE_DECRYPTION_KEY_MISSING.explanation=K de\u0161ifrov\u00e1n\u00ed tokenu JWE je vy\u017eadov\u00e1n de\u0161ifrovac\u00ed kl\u00ed\u010d. De\u0161ifrovac\u00ed kl\u00ed\u010d mus\u00ed b\u00fdt v \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f spot\u0159ebitele JWT, nebo mus\u00ed b\u00fdt uveden ve vlastnostech konfigurace MicroProfile.
 JWE_DECRYPTION_KEY_MISSING.useraction=Ov\u011b\u0159te, zda alias kl\u00ed\u010de, kter\u00fd je uveden ve zpr\u00e1v\u011b, existuje v \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f spot\u0159ebitele JWT. Jestli\u017ee alias nen\u00ed nakonfigurov\u00e1n, mus\u00ed b\u00fdt de\u0161ifrovac\u00ed kl\u00ed\u010d uveden ve vlastnostech konfigurace MicroProfile.
+
+# Do not translate "JSON Web Token", "JWT", "iat"
+# 0=iat claim time value (date), 1=Current time, 2=Clock skew configuration value, 3=Token age configuration value
+JWT_TOKEN_AGED=CWWKS6067E: Webov\u00fd token JSON (JWT) nen\u00ed platn\u00fd, proto\u017ee od n\u00e1roku vyd\u00e1n\u00ed (iat) do\u0161lo k vypr\u0161en\u00ed platnosti st\u00e1\u0159\u00ed tokenu. \u010cas n\u00e1roku iat je {0}. Aktu\u00e1ln\u00ed \u010das minus posun hodin je {1}. Nakonfigurovan\u00fd posun hodin je {2} sekund. Nakonfigurovan\u00e9 st\u00e1\u0159\u00ed tokenu je {3} sekund.
+JWT_TOKEN_AGED.explanation=Tokeny s p\u0159ekro\u010denou \u017eivotnost\u00ed nejsou platn\u00e9.
+JWT_TOKEN_AGED.useraction=Z\u00edskejte nov\u00fd token, kter\u00fd nem\u00e1 p\u0159ekro\u010denou \u017eivotnost. Prove\u010fte synchronizaci hodin mezi vydavatelem a odb\u011bratelem tokenu, nebo zvy\u0161te posun hodin v konfiguraci JWT.
+
+# Do not translate "JSON Web Encryption", "JWE", "alg"
+# 0=Key management key algorithm configuration value
+JWE_MISSING_ALG_HEADER=CWWKS6068E: Token JSON Web Encryption (JWE) nen\u00ed platn\u00fd, proto\u017ee chyb\u00ed hlavi\u010dka alg. Nakonfigurovan\u00fd algoritmus kl\u00ed\u010de spr\u00e1vy kl\u00ed\u010d\u016f je {0}.
+JWE_MISSING_ALG_HEADER.explanation=Token je bu\u010f deformovan\u00fd, neza\u0161ifrovan\u00fd, nebo v n\u011bm chyb\u00ed informace o \u0161ifrov\u00e1n\u00ed.
+JWE_MISSING_ALG_HEADER.useraction=Ujist\u011bte se, \u017ee z\u00e1hlav\u00ed algoritmu tokenu JWE je nastaveno na po\u017eadovanou hodnotu.
+
+# Do not translate "JSON Web Encryption", "JWE", "JWT", "Content Encryption Key", "CEK"
+# 0=Cryptographic algorithm used to encrypt the Content Encryption Key (e.g. RSA-OAEP), 1=Cryptographic algorithm required for decrypting the Content Encryption Key (e.g. RSA-OAEP)
+JWE_ALGORITHM_MISMATCH=CWWKS6069E: Webov\u00e9 \u0161ifrov\u00e1n\u00ed JSON (JWE) nen\u00ed platn\u00e9, proto\u017ee jeho \u0161ifrovac\u00ed kl\u00ed\u010d obsahu (CEK) byl za\u0161ifrov\u00e1n pomoc\u00ed algoritmu {0}. \u0160ifrovac\u00ed kl\u00ed\u010de obsahu mus\u00ed b\u00fdt za\u0161ifrov\u00e1ny pomoc\u00ed algoritmu {1}.
+JWE_ALGORITHM_MISMATCH.explanation=\u0160ifrovac\u00ed kl\u00ed\u010de obsahu mus\u00ed b\u00fdt za\u0161ifrov\u00e1ny pomoc\u00ed algoritmu uveden\u00e9ho ve zpr\u00e1v\u011b. \u0160ifrovac\u00ed kl\u00ed\u010de obsahu, kter\u00e9 jsou za\u0161ifrov\u00e1ny pomoc\u00ed jak\u00e9hokoli jin\u00e9ho \u0161ifrovac\u00edho algoritmu, nelze ov\u011b\u0159it.
+JWE_ALGORITHM_MISMATCH.useraction=Z\u00edskejte nov\u00fd token s \u0161ifrovac\u00edm kl\u00ed\u010dem obsahu, kter\u00fd je za\u0161ifrov\u00e1n pomoc\u00ed vy\u017eadovan\u00e9ho algoritmu, kter\u00fd je uveden ve zpr\u00e1v\u011b. P\u0159\u00edpadn\u011b aktualizujte konfiguraci JWT tak, aby povolovala tokeny se \u0161ifrovac\u00edmi kl\u00ed\u010di obsahu, kter\u00e9 jsou za\u0161ifrov\u00e1ny pomoc\u00ed jin\u00e9ho \u0161ifrovac\u00edho algoritmu.
