@@ -41,6 +41,10 @@
         <classloader apiTypeVisibility="+third-party"/>
     </application>
 
+    <application type="war" location="jaxrsMethods.war">
+        <classloader apiTypeVisibility="+third-party"/>
+    </application>
+
     <!--logging traceSpecification="TELEMETRY=all:RESTfulWS=all"/-->
 
 </server>
