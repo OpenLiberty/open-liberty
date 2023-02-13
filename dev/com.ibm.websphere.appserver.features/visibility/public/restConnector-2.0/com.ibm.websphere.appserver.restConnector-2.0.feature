@@ -27,3 +27,4 @@ Subsystem-Name: Admin REST Connector 2.0
  dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.restHandler_2.0-javadoc.zip
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true
