@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
@@ -31,6 +32,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.config.Variable;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
@@ -69,7 +72,8 @@ import componenttest.topology.impl.LibertyServer;
                 ManagedBeansTest.class,
                 BellsTest.class,
                 SkipIfCheckpointNotSupportedAnnotationTest.class,
-                RestConnectorTest.class
+                RestConnectorTest.class,
+                AuditTest.class
 })
 
 public class FATSuite {
@@ -130,5 +134,22 @@ public class FATSuite {
         try (OutputStream out = new FileOutputStream(serverEnvFile)) {
             serverEnvProperties.store(out, "");
         }
+    }
+
+    static void updateVariableConfig(LibertyServer server, String name, String value) throws Exception {
+        // change config of variable for restore
+        ServerConfiguration config = removeTestKeyVar(server.getServerConfiguration(), name);
+        config.getVariables().add(new Variable(name, value));
+        server.updateServerConfiguration(config);
+    }
+
+    static ServerConfiguration removeTestKeyVar(ServerConfiguration config, String key) {
+        for (Iterator<Variable> iVars = config.getVariables().iterator(); iVars.hasNext();) {
+            Variable var = iVars.next();
+            if (var.getName().equals(key)) {
+                iVars.remove();
+            }
+        }
+        return config;
     }
 }
