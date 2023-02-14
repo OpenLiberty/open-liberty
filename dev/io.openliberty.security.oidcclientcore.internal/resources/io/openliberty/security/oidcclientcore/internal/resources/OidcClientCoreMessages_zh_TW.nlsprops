@@ -1,9 +1,11 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -119,3 +121,7 @@ OIDC_CLIENT_INVALID_RESPONSE_TYPE.useraction=\u8acb\u6307\u5b9a\u5176\u4e2d\u4e0
 TOKEN_CLAIM_VALUE_MISMATCH=CWWKS2424E: \u8a18\u865f\u4e2d [{1}] \u8981\u6c42\u7684 [{0}] \u503c\u4e0d\u7b26\u5408 [{2}] \u671f\u671b\u503c\u3002
 TOKEN_CLAIM_VALUE_MISMATCH.explanation=\u8981\u6c42\u503c\u4e0d\u6b63\u78ba\u6216\u5f62\u614b\u7570\u5e38\u3002 OpenID Connect \u7528\u6236\u7aef\u7684\u914d\u7f6e\u53ef\u80fd\u4e0d\u6b63\u78ba\uff0c\u6216\u7528\u65bc\u5efa\u7acb\u8a18\u865f\u7684\u503c\u4e0d\u6b63\u78ba\u3002
 TOKEN_CLAIM_VALUE_MISMATCH.useraction=\u8acb\u78ba\u5b9a OpenID Connect \u7528\u6236\u7aef\u914d\u7f6e\u4e2d\u8207\u8a0a\u606f\u4e2d\u6307\u5b9a\u4e4b\u8981\u6c42\u76f8\u95dc\u7684\u5c6c\u6027\u914d\u7f6e\u6b63\u78ba\u3002
+
+TOKEN_MISSING_CLAIMS=CWWKS2425E: {0} OpenID Connect \u7528\u6236\u7aef\u8a18\u865f\u7121\u6548\u3002 JwtContext \u7269\u4ef6\u4e0a\u7684 jwtClaims \u503c\u662f\u7a7a\u503c\u6216\u7a7a\u767d\u3002
+TOKEN_MISSING_CLAIMS.explanation=\u8a18\u865f\u907a\u6f0f\u8cc7\u8a0a\uff0c\u7121\u6cd5\u5b8c\u6210\u8a18\u865f\u7684\u9a57\u8b49\u3002
+TOKEN_MISSING_CLAIMS.useraction=\u5982\u9700\u5931\u6557\u7684\u76f8\u95dc\u8a73\u7d30\u8cc7\u6599\uff0c\u8acb\u6aa2\u95b1\u4efb\u4f55\u65e9\u4e9b\u6642\u5019\u932f\u8aa4\u7684\u65e5\u8a8c\u3002 \u8acb\u6aa2\u67e5 OpenID Connect \u63d0\u4f9b\u8005\u6240\u50b3\u56de\u8a18\u865f\u7684\u683c\u5f0f\u548c\u5167\u5bb9\u3002

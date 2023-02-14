@@ -21,7 +21,7 @@ var messages = {
     DOCS: "Dokumentation", // Translate 'Documentation'
     COPYRIGHT: "Copyright",
     OPEN_LIBERTY_FOOTER: "Liberty-Fußzeilen-Logo",
-    COPYRIGHT_OPEN_LIBERTY: "Lizenziertes Material — Eigentum von Open Liberty Project, Copyright IBM Corp und andere 1997, 2019. Das Projekt wird unter den Bedingungen von Eclipse Public License v2 verteilt.", // COPYRIGHT_URL
+    COPYRIGHT_OPEN_LIBERTY: "Lizenziertes Material — Eigentum von Open Liberty Project, Copyright IBM Corp und andere 1997, 2019. Das Projekt wird gemäß den Bedingungen von Eclipse Public License v2verteilt.", // COPYRIGHT_URL
     UPDATE_BANNER_SECTION: "Bannerbereich aktualisieren",
     UPDATE_BANNER_SECTION_CONTENT: "Inhalt des Bannerbereichs aktualisieren",
     HEADER_UPDATE_AVAILABLE: "Aktualisierung verfügbar: ",

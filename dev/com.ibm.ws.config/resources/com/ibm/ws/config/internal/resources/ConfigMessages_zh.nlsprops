@@ -31,7 +31,7 @@
 # Message prefix block: CWWKG0001 - CWWKG1000
 # -------------------------------------------------------------------------------------------------
 
-copyright=\nCopyright (c) 2010 IBM Corporation and others.\n\u4fdd\u7559\u6240\u6709\u6743\u5229 (All rights reserved)\u3002\u6b64\u7a0b\u5e8f\u548c\u968f\u9644\u7684\u8d44\u6599\u5c06\u6839\u636e\nEclipse Public License 2.0 \u7684\u6761\u6b3e\u63d0\u4f9b\uff0c\nEclipse Public License 2.0 \u4f1a\u968f\u6b64\u5206\u53d1\u4ea7\u54c1\u4e00\u8d77\u63d0\u4f9b\uff0c\u5e76\u4e14\u53ef\u4ee5\u5728\u4ee5\u4e0b\u4f4d\u7f6e\u83b7\u5f97\uff1a\nhttp://www.eclipse.org/legal/epl-2.0/
+copyright=\nCopyright (c) 2010 IBM Corporation and others.\nAll rights reserved. \u672c\u7a0b\u5e8f\u548c\u968f\u9644\u7684\u6750\u6599\u662f\u6839\u636e\u968f\u9644\u4e8e\n\u6b64\u5206\u53d1\u7248\u7684 Eclipse Public License 2.0\n\u7684\u6761\u6b3e\u800c\u63d0\u4f9b\uff0c\u5176\u7f51\u5740\u4e3a \nhttp://www.eclipse.org/legal/epl-2.0/
 
 error.parse.server=CWWKG0001E: \u914d\u7f6e\u89e3\u6790\u5668\u5728\u89e3\u6790\u914d\u7f6e\u6839\u548c\u5f15\u7528\u7684\u914d\u7f6e\u6587\u6863\u65f6\u68c0\u6d4b\u5230\u9519\u8bef\u3002\u9519\u8bef\uff1a{0}
 error.parse.server.explanation=\u65e0\u6cd5\u8bfb\u53d6\u670d\u52a1\u5668\u914d\u7f6e\uff0c\u56e0\u4e3a\u67d0\u4e2a\u914d\u7f6e\u6587\u4ef6\u4e2d\u5b58\u5728\u9519\u8bef\u3002

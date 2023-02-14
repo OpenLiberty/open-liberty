@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2021 IBM Corporation and others.
+# Copyright (c) 2016, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ JWT_BUILDER_CONFIG_MODIFIED.useraction=Keine.
 JWT_ENDPOINT_SERVICE_ACTIVATED=CWWKS6002I: Der JWT-Endpunktservice (JSON Web Token) ist verf\u00fcgbar.
 JWT_ENDPOINT_SERVICE_ACTIVATED.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
 JWT_ENDPOINT_SERVICE_ACTIVATED.useraction=Es ist keine Aktion erforderlich. 
+
 # Do not translate "JSON Web Token", "JWT", "jwt-1.0"
 JWT_OSGI_ENDPOINT_SERVICE_ERROR=CWWKS6003E: Ein Konfigurationsfehler ist aufgetreten. Der JWT-Endpunktservice (JSON Web Token) ist nicht verf\u00fcgbar. Stellen Sie sicher, dass das Feature jwt-1.0 konfiguriert ist.
 JWT_OSGI_ENDPOINT_SERVICE_ERROR.explanation=Der JWT-Service (JSON Web Token) ist nicht in der OSGi-Service-Registry verf\u00fcgbar.
@@ -81,6 +82,7 @@ JWT_CLAIMSMAP_NULL_KEY_OR_VALUE.useraction=Stellen Sie sicher, dass eine g\u00fc
 JWT_CONSUMER_SERVICE_ACTIVATED=CWWKS6012I: Der JWT-Konsumentenservice (JSON Web Token) ist verf\u00fcgbar.
 JWT_CONSUMER_SERVICE_ACTIVATED.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
 JWT_CONSUMER_SERVICE_ACTIVATED.useraction=Es ist keine Aktion erforderlich. 
+
 # Do not translate "JSON Web Token", "JWT"
 JWT_CONSUMER_SERVICE_NOT_ACTIVATED=CWWKS6013E: Der JWT-Konsument (JSON Web Token) kann nicht erstellt werden, weil der Konsumentenservice nicht aktiviert wurde.
 JWT_CONSUMER_SERVICE_NOT_ACTIVATED.explanation=Der JWT-Konsumentenservice muss aktiviert werden, bevor er verwendet werden kann. Entweder wurde der Service nicht gestartet oder der Service wurde inaktiviert, weil das Feature jwt-1.0 entfernt wurde.
@@ -310,7 +312,7 @@ JWT_TRUSTED_ISSUERS_NULL=CWWKS6052E: Der Aussteller [{0}] des angegebenen JSON W
 JWT_TRUSTED_ISSUERS_NULL.explanation=In der Serverkonfiguration werden die Aussteller angegeben, die f\u00fcr die Validierung von JWTs anerkannt werden. Da in der JWT-Konfiguration jedoch keine anerkannten Aussteller angegeben sind, kann das Token nicht validiert werden.
 JWT_TRUSTED_ISSUERS_NULL.useraction=Stellen Sie sicher, dass in der in der Nachricht angegebenen JWT-Konfiguration mindestens ein anerkannter Aussteller definiert ist. Stellen Sie sicher, dass der Aussteller des JWT mit einem der in der JWT-Konfiguration angegebenen anerkannten Aussteller \u00fcbereinstimmt.
 
-SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: Das HTTP-Schema wird am angegebenen Endpunkt {0} verwendet. Es ist aber HTTPS erforderlich.
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6052E: Das HTTP-Schema wird am angegebenen Endpunkt {0} verwendet. Es ist aber HTTPS erforderlich.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=F\u00fcr den angegebenen Endpunkt ist HTTPS erforderlich, in der Anforderungs-URL wurde jedoch HTTP verwendet.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=\u00dcberpr\u00fcfen Sie die Anforderungs-URL und stellen Sie sicher, dass HTTPS verwendet wird, oder \u00e4ndern Sie die Konfiguration so, dass HTTPS nicht erforderlich ist.
 
@@ -386,3 +388,21 @@ NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Stellen Sie sicher, dass die Nutzda
 JWE_DECRYPTION_KEY_MISSING=CWWKS6066E: Das JWE-Token (JSON Web Encryption) kann nicht entschl\u00fcsselt werden, weil kein Entschl\u00fcsselungsschl\u00fcssel gefunden wurde. Das Serverkonfigurationsattribut {0} ist auf [{1}] gesetzt.
 JWE_DECRYPTION_KEY_MISSING.explanation=Zum Entschl\u00fcsseln des JWE-Tokens wird ein Entschl\u00fcsselungsschl\u00fcssel ben\u00f6tigt. Der Entschl\u00fcsselungsschl\u00fcssel muss im Keystore des JWT-Konsumenten enthalten oder in den MicroProfile-Config-Eigenschaften angegeben sein.
 JWE_DECRYPTION_KEY_MISSING.useraction=Vergewissern Sie sich, dass der in der Nachricht angegebene Schl\u00fcsselalias im Keystore des JWT-Konsumenten enthalten ist. Wenn der Alias nicht konfiguriert ist, muss der Entschl\u00fcsselungsschl\u00fcssel in den MicroProfile-Config-Eigenschaften angegeben werden.
+
+# Do not translate "JSON Web Token", "JWT", "iat"
+# 0=iat claim time value (date), 1=Current time, 2=Clock skew configuration value, 3=Token age configuration value
+JWT_TOKEN_AGED=CWWKS6067E: Das JSON-Web-Token (JWT) ist ung\u00fcltig, weil die G\u00fcltigkeitsdauer des Tokens seit dem iat-Anspruch (issued-at, ausgegeben am/um) abgelaufen ist. Die iat-Anspruchszeit ist {0}. Die aktuelle Zeit minus der Zeitabweichung ist {1}. Die konfigurierte Zeitabweichung betr\u00e4gt {2} Sekunden. Das konfigurierte G\u00fcltigkeitsdauer des Tokens betr\u00e4gt {3} Sekunden.
+JWT_TOKEN_AGED.explanation=Veraltete Tokens sind ung\u00fcltig.
+JWT_TOKEN_AGED.useraction=Fordern Sie ein neues Token an, das nicht veraltete ist. Synchronisieren Sie die Uhrzeiten zwischen dem Tokenaussteller und dem Konsumenten oder erh\u00f6hen Sie die Zeitabweichung oder die G\u00fcltigkeitdauer des Tokens in Ihrer JWT-Konfiguration.
+
+# Do not translate "JSON Web Encryption", "JWE", "alg"
+# 0=Key management key algorithm configuration value
+JWE_MISSING_ALG_HEADER=CWWKS6068E: Das JWE-Token (JSON Web Encryption) ist ung\u00fcltig, da der Header ''alg'' fehlt. Der konfigurierte Schl\u00fcsselalgorithmus f\u00fcr die Schl\u00fcsselverwaltung ist {0}.
+JWE_MISSING_ALG_HEADER.explanation=Das Token ist entweder fehlerhaft, nicht verschl\u00fcsselt oder es fehlen Verschl\u00fcsselungsinformationen.
+JWE_MISSING_ALG_HEADER.useraction=Stellen Sie sicher, dass der Algorithmus-Header des JWE-Tokens auf den erforderlichen Wert gesetzt ist.
+
+# Do not translate "JSON Web Encryption", "JWE", "JWT", "Content Encryption Key", "CEK"
+# 0=Cryptographic algorithm used to encrypt the Content Encryption Key (e.g. RSA-OAEP), 1=Cryptographic algorithm required for decrypting the Content Encryption Key (e.g. RSA-OAEP)
+JWE_ALGORITHM_MISMATCH=CWWKS6069E: Das JSON Web Encryption-Token (JWE) ist ung\u00fcltig, da sein Inhaltsverschl\u00fcsselungsschl\u00fcssel (CEK, Content Encryption Key) mit dem Algorithmus {0} verschl\u00fcsselt wurde. Inhaltsverschl\u00fcsselungsschl\u00fcssel m\u00fcssen mit dem Algorithmus {1} verschl\u00fcsselt werden.
+JWE_ALGORITHM_MISMATCH.explanation=Die Inhaltsverschl\u00fcsselungsschl\u00fcssel m\u00fcssen mit dem in der Nachricht angegebenen Algorithmus verschl\u00fcsselt werden. Inhaltsverschl\u00fcsselungsschl\u00fcssel, die mit einem anderen Verschl\u00fcsselungsalgorithmus verschl\u00fcsselt wurden, k\u00f6nnen nicht validiert werden.
+JWE_ALGORITHM_MISMATCH.useraction=Fordern Sie ein neues Token mit einem Inhaltsverschl\u00fcsselungsschl\u00fcssel an, der mit dem in der Nachricht angegebenen erforderlichen Algorithmus verschl\u00fcsselt wurde. Alternativ k\u00f6nnen Sie Ihre JWT-Konfiguration aktualisieren, um Tokens mit Inhaltsverschl\u00fcsselungsschl\u00fcsseln zuzulassen, die mit dem anderen Verschl\u00fcsselungsalgorithmus verschl\u00fcsselt wurden.

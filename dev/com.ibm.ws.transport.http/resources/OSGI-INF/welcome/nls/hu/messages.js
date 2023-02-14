@@ -21,7 +21,7 @@ var messages = {
     DOCS: "Dokumentáció", // Translate 'Documentation'
     COPYRIGHT: "Szerzői jogok",
     OPEN_LIBERTY_FOOTER: "Liberty lábléc logó",
-    COPYRIGHT_OPEN_LIBERTY: "Licenc hatálya alá tartozó anyagok - az Open Liberty projekt tulajdona, Copyright IBM Corp és mások 1997, 2019. A projekt az Eclipse Public License v2 feltételei alatt érhető el.", // COPYRIGHT_URL
+    COPYRIGHT_OPEN_LIBERTY: "Licenc hatálya alá tartozó anyagok - az Open Liberty projekt tulajdona, Copyright IBM Corp és mások 1997, 2019. A projekt az Eclipse nyilvános licenc v2feltételei szerint szlik meg.", // COPYRIGHT_URL
     UPDATE_BANNER_SECTION: "Fejléccsík szakasz frissítése",
     UPDATE_BANNER_SECTION_CONTENT: "Fejléccsík szakasz tartalom frissítése",
     HEADER_UPDATE_AVAILABLE: "Rendelkezésre álló frissítés: ",

@@ -6,11 +6,13 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -73,6 +75,31 @@ noPrometheusRegistry.info.CWMMC0008I.useraction=Pokud nen\u00ed nedostupnost reg
 disabled.info.CWMMC0009I=CWMMC0009I: Koncov\u00fd bod /metrics nen\u00ed k dispozici, proto\u017ee je registr Prometheus zak\u00e1z\u00e1n.
 disabled.info.CWMMC0009I.explanation=Vlastnost mp.metrics.prometheus.enabled MicroProfile MicroProfile Config je nastavena na hodnotu false.
 disabled.info.CWMMC0009I.useraction=Pokud nen\u00ed zak\u00e1z\u00e1n\u00ed registru Prometheus z\u00e1m\u011brn\u00e9, odeberte konfiguraci vlastnosti mp.metrics.prometuus.enabled MicroProfile Config, nebo explicitn\u011b nastavte vlastnost na hodnotu true.
+
+#Embedded SmallRye Metrics or Micrometer JAR not found in the lib directory
+fileNotFound.error.CWMMC0010E=CWMMC0010E: Funkci metrik MicroProfile se nepoda\u0159ilo inicializovat. Po\u017eadovan\u00fd soubor JAR {0} nebyl nalezen v adres\u00e1\u0159i <wlp_home>/lib.
+fileNotFound.error.CWMMC0010E.explanation=Soubor JAR nebyl nalezen v adres\u00e1\u0159i <wlp_home>/lib. Soubor mohl b\u00fdt odstran\u011bn nebo p\u0159ejmenov\u00e1n.
+fileNotFound.error.CWMMC0010E.useraction=Soubor JAR, kter\u00fd se obvykle nach\u00e1z\u00ed v adres\u00e1\u0159i <wlp_home>/lib, nen\u00ed p\u0159\u00edtomen. Znovu implementujte instalaci aplika\u010dn\u00edho serveru.
+
+#Bundle add-on class loader was null
+nullBundleAddOnClassLoader.error.CWMMC0011E=CWMMC0011E: Funkci metrik MicroProfile se nepoda\u0159ilo inicializovat. B\u011bhov\u00e9 prost\u0159ed\u00ed metrik MicroProfile nebylo schopno vytvo\u0159it po\u017eadovan\u00fd zavad\u011b\u010d t\u0159\u00edd.
+nullBundleAddOnClassLoader.error.CWMMC0011E.explanation=Do\u0161lo k intern\u00ed chyb\u011b p\u0159i vytv\u00e1\u0159en\u00ed po\u017eadovan\u00e9ho zavad\u011b\u010de t\u0159\u00edd.
+nullBundleAddOnClassLoader.error.CWMMC0011E.useraction=Prozkoumejte protokoly FFDC a text v\u00fdjimky a identifikujte p\u0159\u00ed\u010dinu probl\u00e9mu.
+
+#SmallRye Metrics classes not found when loading through reflection
+missingSmallRyeClasses.error.CWMMC0012E=CWMMC0012E: Funkci metrik MicroProfile se nepoda\u0159ilo inicializovat. T\u0159\u00edda z metrik SmallRye nebyla na\u010dtena.
+missingSmallRyeClasses.error.CWMMC0012E.explanation=T\u0159\u00edda nebo t\u0159\u00eddy ze zabalen\u00e9ho souboru JAR metrik SmallRye z adres\u00e1\u0159e <wlp_home>/lib se nena\u010detly nebo chyb\u00ed.
+missingSmallRyeClasses.error.CWMMC0012E.useraction=Zkontrolujte protokoly FFDC a text v\u00fdjimky a identifikujte chyb\u011bj\u00edc\u00ed t\u0159\u00eddu a ov\u011b\u0159te, \u017ee existuje v souboru JAR <wlp_home>/lib/io.openliberty.io.smallrye.metrics JAR.
+
+#Configured Micrometer Library is missing dependencies
+missingDependencyClasses.error.CWMMC0013E=CWMMC0013E: Funkci metrik MicroProfile se nepoda\u0159ilo inicializovat. Chyb\u00ed t\u0159\u00edda, kter\u00e1 je vy\u017eadov\u00e1na pro u\u017eivatelskou knihovnu Micrometer.
+missingDependencyClasses.error.CWMMC0013E.explanation=Funkce metrik MicroProfile na\u010d\u00edt\u00e1 knihovny Micrometer, kter\u00e9 jsou definov\u00e1ny prost\u0159ednictv\u00edm atributu libraryRef a mus\u00ed obsahovat v\u0161echny z\u00e1vislosti.
+missingDependencyClasses.error.CWMMC0013E.useraction=Zadejte nezbytn\u00e9 z\u00e1vislosti s knihovnami Micrometer.
+
+#MicroProfile Metrics 5.0 has been configured to use a libraryRef attribute
+libraryRefConfigured.info.CWMMC0014I=CWMMC0014I: Funkce metrik MicroProfile je nakonfigurov\u00e1na tak, aby pou\u017e\u00edvala n\u00e1sleduj\u00edc\u00ed libraryRef: [{0}]
+libraryRefConfigured.info.CWMMC0014I.explanation=Funkce metrik MicroProfile je nakonfigurov\u00e1na pro pou\u017eit\u00ed libraryRef. Tato odkazovan\u00e1 knihovna mus\u00ed obsahovat knihovnu j\u00e1dra Micrometer, c\u00edlov\u00e9 knihovny Micrometer a z\u00e1vislosti.
+libraryRefConfigured.info.CWMMC0014I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
 #Memory usedHeap message
 memory.usedHeap.description=Zobrazuje mno\u017estv\u00ed vyu\u017eit\u00e9 pam\u011bti haldy v bajtech.

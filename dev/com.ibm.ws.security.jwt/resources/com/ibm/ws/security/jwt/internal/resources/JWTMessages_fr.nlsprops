@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2021 IBM Corporation and others.
+# Copyright (c) 2016, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -312,7 +312,7 @@ JWT_TRUSTED_ISSUERS_NULL=CWWKS6052E: L''\u00e9metteur [{0}] du jeton JWT (JSON W
 JWT_TRUSTED_ISSUERS_NULL.explanation=La configuration du serveur sp\u00e9cifie quels \u00e9metteurs sont dignes de confiance pour la validation des jetons JWT. La configuration JWT ne sp\u00e9cifie aucun \u00e9metteur digne de confiance, le jeton ne peut donc pas \u00eatre valid\u00e9.
 JWT_TRUSTED_ISSUERS_NULL.useraction=Assurez-vous que la configuration JWT qui est sp\u00e9cifi\u00e9e dans le message d\u00e9finit au moins un \u00e9metteur digne de confiance. V\u00e9rifiez que l'\u00e9metteur du jeton JWT correspond \u00e0 l'un des \u00e9metteurs dignes de confiance sp\u00e9cifi\u00e9s dans votre configuration JWT.
 
-SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: Un sch\u00e9ma HTTP est utilis\u00e9 au point d''extr\u00e9mit\u00e9 indiqu\u00e9 : {0}, HTTPS est requis.
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6052E: Un sch\u00e9ma HTTP est utilis\u00e9 au point d''extr\u00e9mit\u00e9 indiqu\u00e9 : {0}, HTTPS est requis.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=Le noeud final sp\u00e9cifi\u00e9 requiert le protocole HTTPS, mais le protocole HTTP a \u00e9t\u00e9 utilis\u00e9 dans l'URL de demande.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=V\u00e9rifiez l'URL de demande et assurez-vous qu'elle utilise le protocole HTTPS ou changez la configuration de sorte que le protocole HTTPS ne soit pas requis.
 
@@ -388,3 +388,21 @@ NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Assurez-vous que le contenu du jeto
 JWE_DECRYPTION_KEY_MISSING=CWWKS6066E: Le jeton JWE (JSON Web Encryption) ne peut pas \u00eatre d\u00e9chiffr\u00e9 car une cl\u00e9 de d\u00e9chiffrement est introuvable. L''attribut de configuration du serveur {0} est d\u00e9fini sur [{1}].
 JWE_DECRYPTION_KEY_MISSING.explanation=Une cl\u00e9 de d\u00e9chiffrement est requise pour d\u00e9chiffrer le jeton JWE. La cl\u00e9 de d\u00e9chiffrement doit \u00eatre pr\u00e9sente dans le fichier de cl\u00e9s de consommateur JWT ou elle doit \u00eatre sp\u00e9cifi\u00e9e dans les propri\u00e9t\u00e9s de configuration du microprofil.
 JWE_DECRYPTION_KEY_MISSING.useraction=V\u00e9rifiez que l'alias de cl\u00e9 sp\u00e9cifi\u00e9 dans le message existe dans le fichier de cl\u00e9s de consommateur JWT. Si l'alias n'est pas configur\u00e9, la cl\u00e9 de d\u00e9chiffrement doit \u00eatre sp\u00e9cifi\u00e9e dans les propri\u00e9t\u00e9s de configuration du microprofil.
+
+# Do not translate "JSON Web Token", "JWT", "iat"
+# 0=iat claim time value (date), 1=Current time, 2=Clock skew configuration value, 3=Token age configuration value
+JWT_TOKEN_AGED=CWWKS6067E: Le jeton Web JSON (JWT) n''est pas valide car l''\u00e2ge de jeton s''est \u00e9coul\u00e9 depuis la demande iat (issued at). L''heure de la demande iat est {0}. L''heure courante moins le d\u00e9calage d''horloge est {1}. Le d\u00e9calage d''horloge configur\u00e9 est de {2} secondes. L''\u00e2ge de jeton configur\u00e9 est de {3} secondes.
+JWT_TOKEN_AGED.explanation=Les jetons qui sont \u00e2g\u00e9s ne sont pas valides.
+JWT_TOKEN_AGED.useraction=Obtenez un nouveau jeton qui ne soit pas \u00e2g\u00e9. Synchronisez les heures d'horloge entre l'\u00e9metteur du jeton et le consommateur, ou augmentez le d\u00e9calage d'horloge ou l'\u00e2ge de jeton dans votre configuration JWT.
+
+# Do not translate "JSON Web Encryption", "JWE", "alg"
+# 0=Key management key algorithm configuration value
+JWE_MISSING_ALG_HEADER=CWWKS6068E: Le jeton JWE (JSON Web Encryption) n''est pas valide car il lui manque l''en-t\u00eate alg. L''algorithme de cl\u00e9 de gestion de cl\u00e9s configur\u00e9 est {0}.
+JWE_MISSING_ALG_HEADER.explanation=Le jeton est mal form\u00e9, non chiffr\u00e9 ou il lui manque des informations de chiffrement.
+JWE_MISSING_ALG_HEADER.useraction=Assurez-vous que l'en-t\u00eate d'algorithme du jeton JWE soit d\u00e9fini \u00e0 la valeur requise.
+
+# Do not translate "JSON Web Encryption", "JWE", "JWT", "Content Encryption Key", "CEK"
+# 0=Cryptographic algorithm used to encrypt the Content Encryption Key (e.g. RSA-OAEP), 1=Cryptographic algorithm required for decrypting the Content Encryption Key (e.g. RSA-OAEP)
+JWE_ALGORITHM_MISMATCH=CWWKS6069E: Le chiffrement Web JSON (JWE) n''est pas valide car sa cl\u00e9 de chiffrement de contenu (CEK) a \u00e9t\u00e9 chiffr\u00e9e \u00e0 l''aide de l''algorithme {0}. Les cl\u00e9s de chiffrement de contenu doivent \u00eatre chiffr\u00e9es \u00e0 l''aide de l''algorithme {1}.
+JWE_ALGORITHM_MISMATCH.explanation=Les cl\u00e9s de chiffrement de contenu doivent \u00eatre chiffr\u00e9es par l'algorithme sp\u00e9cifi\u00e9 dans le message. Les cl\u00e9s de chiffrement de contenu qui sont chiffr\u00e9es avec un autre algorithme de chiffrement ne peuvent pas \u00eatre valid\u00e9es.
+JWE_ALGORITHM_MISMATCH.useraction=Obtenez un nouveau jeton avec une cl\u00e9 de chiffrement de contenu qui soit \u00e0 l'aide de l'algorithme requis sp\u00e9cifi\u00e9 dans le message. Vous pouvez \u00e9galement mettre \u00e0 jour votre configuration JWT pour autoriser les jetons avec une cl\u00e9 de chiffrement de contenu chiffr\u00e9e \u00e0 l'aide de l'autre algorithme de chiffrement.

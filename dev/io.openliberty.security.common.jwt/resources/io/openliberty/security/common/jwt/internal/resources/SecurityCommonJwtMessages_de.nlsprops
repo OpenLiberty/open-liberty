@@ -1,12 +1,11 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 ###############################################################################
 #CMVCPATHNAME io.openliberty.security.common.jwt/resources/io/openliberty/security/common/jwt/internal/resources/SecurityCommonJwtMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -17,10 +16,10 @@
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS2520 - CWWKS2549
 
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER=CWWKS2520E: Der Signaturalgorithmus {0} im JWT-Header stimmt nicht mit dem erwarteten Signaturalgorithmus {1} \u00fcberein.
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.explanation=Das Token muss mit dem in der Nachricht angegebenen Algorithmus signiert werden.
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.useraction=Stellen Sie sicher, dass das Token mit dem erwarteten Algorithmus signiert ist, oder aktualisieren Sie die Konfiguration f\u00fcr die Komponente, die das Token empf\u00e4ngt, so, dass der in der Nachricht angegebene Algorithmus verwendet wird.
-
-SIG_ALG_IN_HEADER_NOT_ALLOWED=CWWKS2521E: Der Signaturalgorithmus {0} im JWT-Header ist nicht zul\u00e4ssig: {1}.
+SIG_ALG_IN_HEADER_NOT_ALLOWED=CWWKS2520E: Der Signaturalgorithmus {0} im JWT-Header ist nicht zul\u00e4ssig: {1}.
 SIG_ALG_IN_HEADER_NOT_ALLOWED.explanation=Das Token muss mit einem der Algorithmen signiert werden, die in der Nachricht angegeben sind.
 SIG_ALG_IN_HEADER_NOT_ALLOWED.useraction=Stellen Sie sicher, dass das Token mit einem der zul\u00e4ssigen Algorithmen signiert ist, oder aktualisieren Sie die Konfiguration f\u00fcr die Komponente, die das Token empf\u00e4ngt, damit der in der Nachricht angegebene Algorithmus zugelassen wird.
+
+SIGNING_KEY_NOT_SPECIFIED=CWWKS2521E: Der Signaturalgorithmus {0} im JWT-Header erfordert einen Signierschl\u00fcssel, es wurde jedoch kein Signierschl\u00fcssel angegeben.
+SIGNING_KEY_NOT_SPECIFIED.explanation=Der Server konnte den Schl\u00fcssel nicht abrufen, der zum Verifizieren der JWT-Signatur ben\u00f6tigt wird. Der Schl\u00fcssel kann \u00fcber die JSON Web Key-URL (JWK), aus einem Schl\u00fcsselspeicher oder einem gemeinsam genutzten Schl\u00fcssel geladen werden, der in der Serverkonfiguration angegeben ist.
+SIGNING_KEY_NOT_SPECIFIED.useraction=Stellen Sie sicher, dass in der Konfiguration f\u00fcr die Komponente, die das Token empf\u00e4ngt, eine JWK-URL, ein entsprechender Schl\u00fcsselspeicher oder ein gemeinsam genutzter Schl\u00fcssel angegeben ist.

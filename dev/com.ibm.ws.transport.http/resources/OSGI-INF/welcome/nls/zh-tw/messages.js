@@ -21,7 +21,7 @@ var messages = {
     DOCS: "說明文件", // Translate 'Documentation'
     COPYRIGHT: "Copyright",
     OPEN_LIBERTY_FOOTER: "Liberty 標底標誌",
-    COPYRIGHT_OPEN_LIBERTY: "Licensed Materials — Property of the Open Liberty project, Copyright IBM Corp and others 1997, 2019. 本專案在配送時遵守 Eclipse Public License 第 2 版。", // COPYRIGHT_URL
+    COPYRIGHT_OPEN_LIBERTY: "Licensed Materials — Property of the Open Liberty project, Copyright IBM Corp and others 1997, 2019. 專案是根據 Eclipse Public License v2 條款來配送。", // COPYRIGHT_URL
     UPDATE_BANNER_SECTION: "「更新橫幅」區段",
     UPDATE_BANNER_SECTION_CONTENT: "「更新橫幅」區段內容",
     HEADER_UPDATE_AVAILABLE: "有更新項目可用：",

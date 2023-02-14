@@ -31,7 +31,7 @@
 # Message prefix block: CWWKG0001 - CWWKG1000
 # -------------------------------------------------------------------------------------------------
 
-copyright=\nCopyright (c) 2010 IBM Corporation and others.\nAll rights reserved. This program and the accompanying materials\nare made available under the terms of the Eclipse Public License 2.0\nwhich accompanies this distribution, and is available at\nhttp://www.eclipse.org/legal/epl-2.0/
+copyright=\nCopyright (c) 2010 IBM Corporation \u307b\u304b\u3002\nAll rights reserved. \u3053\u306e\u30d7\u30ed\u30b0\u30e9\u30e0\u304a\u3088\u3073\u4ed8\u968f\u3059\u308b\u8cc7\u6599\n\u306f\u3001\u3053\u306e\u30c7\u30a3\u30b9\u30c8\u30ea\u30d3\u30e5\u30fc\u30b7\u30e7\u30f3\u306b\u4ed8\u5c5e\u3059\u308b Eclipse Public License 2.0\n \u306e\u6761\u4ef6\u306b\u57fa\u3065\u3044\u3066\u63d0\u4f9b\u3055\u308c\u3001\u4ee5\u4e0b\u306e Web \u30b5\u30a4\u30c8\u3067\u5165\u624b\u53ef\u80fd\u3067\u3059\u3002\nhttp://www.eclipse.org/legal/epl-2.0/
 
 error.parse.server=CWWKG0001E: \u69cb\u6210\u30d1\u30fc\u30b5\u30fc\u304c\u3001\u69cb\u6210\u306e\u30eb\u30fc\u30c8\u3068\u53c2\u7167\u3055\u308c\u308b\u69cb\u6210\u6587\u66f8\u3092\u69cb\u6587\u89e3\u6790\u4e2d\u306b\u30a8\u30e9\u30fc\u3092\u691c\u51fa\u3057\u307e\u3057\u305f\u3002 \u30a8\u30e9\u30fc:  {0}
 error.parse.server.explanation=\u3044\u305a\u308c\u304b\u306e\u69cb\u6210\u30d5\u30a1\u30a4\u30eb\u306b\u30a8\u30e9\u30fc\u304c\u3042\u308b\u305f\u3081\u3001\u30b5\u30fc\u30d0\u30fc\u69cb\u6210\u3092\u8aad\u307f\u53d6\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002

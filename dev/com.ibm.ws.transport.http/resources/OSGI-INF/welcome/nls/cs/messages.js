@@ -21,7 +21,7 @@ var messages = {
     DOCS: "Dokumentace", // Translate 'Documentation'
     COPYRIGHT: "Copyright",
     OPEN_LIBERTY_FOOTER: "Logo zápatí Liberty",
-    COPYRIGHT_OPEN_LIBERTY: "Licencované materiály — vlastnictví projektu Open Liberty. Copyright IBM Corp a další 1997, 2019. Projekt je distribuován za podmínek veřejné licence Eclipse Public License v2.", // COPYRIGHT_URL
+    COPYRIGHT_OPEN_LIBERTY: "Licencované materiály — vlastnictví projektu Open Liberty. Copyright IBM Corp a další 1997, 2019. Projekt je distribuován za podmínek licence Eclipse Public License v2.", // COPYRIGHT_URL
     UPDATE_BANNER_SECTION: "Sekce Aktualizovat proužek",
     UPDATE_BANNER_SECTION_CONTENT: "Obsah sekce Aktualizovat proužek",
     HEADER_UPDATE_AVAILABLE: "Je k dispozici aktualizace: ",

@@ -21,7 +21,7 @@ var messages = {
     DOCS: "Docs", // Translate 'Documentation'
     COPYRIGHT: "Copyright",
     OPEN_LIBERTY_FOOTER: "Emblemă de subsol Liberty",
-    COPYRIGHT_OPEN_LIBERTY: "Materiale licenţiate — Proprietatea proiectului Open Liberty, Copyright IBM Corp şi alţii 1997, 2019. Proiectul este distribuit sub termenii licenţei Eclipse Public License v2.", // COPYRIGHT_URL
+    COPYRIGHT_OPEN_LIBERTY: "Materiale licenţiate — Proprietatea proiectului Open Liberty, Copyright IBM Corp şi alţii 1997, 2019. Proiectul este distribuit în baza termenilor din Eclipse Public License v2.", // COPYRIGHT_URL
     UPDATE_BANNER_SECTION: "Actualizare secţiune banner",
     UPDATE_BANNER_SECTION_CONTENT: "Actualizare conţinut secţiune banner",
     HEADER_UPDATE_AVAILABLE: "Este disponibilă o actualizare: ",
