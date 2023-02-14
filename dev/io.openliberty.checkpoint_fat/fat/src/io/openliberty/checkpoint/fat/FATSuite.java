@@ -84,7 +84,8 @@ import componenttest.topology.impl.LibertyServer;
                 SkipIfCheckpointNotSupportedAnnotationTest.class,
                 RestConnectorTest.class,
                 AuditTest.class,
-                ConcurrencyTest.class
+                ConcurrencyTest.class,
+                MapCacheTest.class
 })
 
 public class FATSuite {
