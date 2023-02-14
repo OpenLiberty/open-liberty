@@ -73,7 +73,7 @@ public class LibertyCXFPositivePropertiesTest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CWWKO0801E");
         }
     }
 
