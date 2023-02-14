@@ -28,6 +28,7 @@ import java.security.PrivilegedExceptionAction;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import javax.management.DynamicMBean;
 import javax.naming.Context;
@@ -403,7 +404,7 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
             JaxWsModuleMetaData jaxwsModuleMetaData = tInfo.getClientMetaData().getModuleMetaData();
             String applicationName = jaxwsModuleMetaData.getJ2EEName().getApplication();
             String contextRoot = jaxwsModuleMetaData.getContextRoot();
-            Map<String, String> appNameURLMap = jaxwsModuleMetaData.getAppNameURLMap();
+            Map<String, Supplier<String>> appNameURLMap = jaxwsModuleMetaData.getAppNameURLMap();
             Container moduleContainer = jaxwsModuleMetaData.getModuleContainer();
             NonPersistentCache overlayCache;
             try {
@@ -417,7 +418,8 @@ public class ServiceRefObjectFactory implements javax.naming.spi.ObjectFactory {
                         {
                             String wsdlLocation = null;
                             if ((appNameURLMap != null) && (!appNameURLMap.isEmpty())) {
-                                String applicationURL = appNameURLMap.get(applicationName);
+                                Supplier<String> applicationURLSupplier = appNameURLMap.get(applicationName);
+                                String applicationURL = applicationURLSupplier != null ? applicationURLSupplier.get() : "";
                                 wsdlLocation = applicationURL + "/" + address + "?wsdl";
                             } else {
                                 wsdlLocation = getWsdlUrl() + contextRoot + "/" + address + "?wsdl";

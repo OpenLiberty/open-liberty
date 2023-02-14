@@ -23,6 +23,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 import javax.jws.WebService;
 import javax.xml.ws.WebServiceProvider;
@@ -296,6 +299,30 @@ public class WebJaxWsModuleInfoBuilder extends AbstractJaxWsModuleInfoBuilder {
         jaxWsModuleMetaData.setContextRoot(contextRoot);
     }
 
+    static class VirtualHostURL implements Supplier<String>, UnaryOperator<String> {
+        private final AtomicReference<String> cached = new AtomicReference<>();
+        private final VirtualHost vHost;
+        private final String contextRoot;
+
+        VirtualHostURL(VirtualHost vHost, String contextRoot) {
+            this.vHost = vHost;
+            this.contextRoot = contextRoot;
+        }
+
+        @Override
+        public String get() {
+            return cached.updateAndGet(this);
+        }
+
+        @Override
+        public String apply(String cachedValue) {
+            if (cachedValue == null || "".equals(cachedValue)) {
+                return vHost.getUrlString(contextRoot, true);
+            }
+            return cachedValue;
+        }
+    }
+
     private void setupVirtualHostConfig(ModuleMetaData moduleMetaData, WebAppConfig webAppConfig) {
 
         String webAppName = webAppConfig.getApplicationName();
@@ -324,8 +351,7 @@ public class WebJaxWsModuleInfoBuilder extends AbstractJaxWsModuleInfoBuilder {
                 ConcurrentHashMap<String, VirtualHost> vhostMap = (ConcurrentHashMap<String, VirtualHost>) transportObj;
                 VirtualHost vHost = vhostMap.get(configedVirtualHostName);
                 if (vHost != null) {
-                    String vHostURL = vHost.getUrlString(contextRoot, true);
-                    jaxWsModuleMetaData.getAppNameURLMap().put(webAppName, vHostURL);
+                    jaxWsModuleMetaData.getAppNameURLMap().put(webAppName, new VirtualHostURL(vHost, contextRoot));
                 }
             }
 

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
@@ -55,7 +56,7 @@ public class JaxWsModuleMetaData {
     // the ModuleMetaDatas which contain the JaxWsModuleMetadata
     private final List<ModuleMetaData> enclosingModuleMetaDatas = new ArrayList<ModuleMetaData>(2);
 
-    private final Map<String, String> appNameURLMap = new HashMap<String, String>();
+    private final Map<String, Supplier<String>> appNameURLMap = new HashMap<String, Supplier<String>>();
 
     private String contextRoot;
 
@@ -176,7 +177,7 @@ public class JaxWsModuleMetaData {
         return this.enclosingModuleMetaDatas;
     }
 
-    public Map<String, String> getAppNameURLMap() {
+    public Map<String, Supplier<String>> getAppNameURLMap() {
         return this.appNameURLMap;
     }
 
