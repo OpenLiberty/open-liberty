@@ -39,8 +39,6 @@ import com.ibm.ws.test.featurestart.features.FeatureLevels;
 import com.ibm.ws.test.featurestart.features.FeatureReports;
 import com.ibm.ws.test.featurestart.features.FeatureStability;
 
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -279,6 +277,9 @@ public class FeaturesStartTestBase {
      * Second, if the server PID is available, attempt to kill
      * the server process.
      *
+     * @param shortName     The short name of the feature being tested.
+     * @param outOfLevel    True or false telling if the startup used
+     *                          an unsupported java level.
      * @param pid           The PID of the running server.
      * @param allowedErrors Errors allowed in the stop server command.
      * @param failures      Storage for recording failures.
@@ -287,16 +288,18 @@ public class FeaturesStartTestBase {
      * @return True or false telling if the stop was successful.
      */
     public static boolean forceStopServer(String shortName,
+                                          boolean outOfLevel,
                                           String pid,
                                           String[] allowedErrors,
-                                          Map<String, String> failures,
-                                          TimingResult timingResult) {
+                                          List<String> levelFailures, Map<String, String> failures,
+                                          TimingResult timingResult,
+                                          StartupResult startupResult) {
         String m = "forceStopServer";
 
         String description = "Server [ " + serverName + " ] PID [ " + pid + " ] Feature [ " + shortName + " ]";
 
-        boolean didStop;
-        boolean didKill;
+        boolean noStopError = true;
+        boolean noKillError = true;
 
         try {
             if (server.isStarted()) {
@@ -309,23 +312,32 @@ public class FeaturesStartTestBase {
                 Exception boundException;
                 try {
                     server.stopServer(allowedErrors);
-                    didStop = true;
                     boundException = null;
                 } catch (Exception e) {
-                    didStop = false;
                     boundException = e;
                 } finally {
                     timingResult.setStopNsFromInitial(initialStopNs);
                 }
+
                 // Handle the result *outside* of the timing block.
                 if (boundException == null) {
                     logInfo(m, "Stopped: " + description);
                 } else {
-                    addFailure(m, failures, shortName, "Stop Exception", boundException);
+                    if (outOfLevel) {
+                        if (startupResult.started) {
+                            // Level failures is a list; a startup failure will
+                            // have already added the short name.
+                            levelFailures.add(shortName);
+                        }
+                        logInfo(m, "Failed to stop feature (expected: out-of-level) [ " + shortName + " ]: " + boundException);
+                    } else {
+                        noStopError = false;
+                        failures.put(shortName, "Stop Exception");
+                        logError(m, "Failed to stop feature [ " + shortName + " ]: " + description, boundException);
+                    }
                 }
             } else {
                 logInfo(m, "Not started: " + description);
-                didStop = true;
             }
 
         } finally {
@@ -335,27 +347,32 @@ public class FeaturesStartTestBase {
                 Exception boundException;
                 try {
                     killProcess(pid);
-                    didKill = true;
                     boundException = null;
                 } catch (Exception e) {
-                    didKill = false;
                     boundException = e;
                 } finally {
                     timingResult.setKillNsFromInitial(initialKillNs);
                 }
+
                 // Handle the result *outside* of the timing block.
                 if (boundException == null) {
                     logInfo(m, "Killed: " + description);
                 } else {
-                    addFailure(m, failures, shortName, "Kill Exception", boundException);
+                    if (outOfLevel) {
+                        levelFailures.add(shortName);
+                        logInfo(m, "Failed to kill feature (expected: out-of-level) [ " + shortName + " ]: " + description + ": " + boundException);
+                    } else {
+                        noKillError = false;
+                        failures.put(shortName, "Kill Exception");
+                        logError(m, "Failed to kill feature [ " + shortName + " ]: " + description, boundException);
+                    }
                 }
             } else {
                 logInfo(m, "Null PID: " + description);
-                didKill = true;
             }
         }
 
-        return (didStop && didKill);
+        return (noStopError && noKillError);
     }
 
     //
@@ -471,6 +488,8 @@ public class FeaturesStartTestBase {
     public static int firstFeatureNo;
     public static int lastFeatureNo; // One past the last test to be run.
 
+    public static Set<String> bucketOutOfLevelFeatureNames;
+
     //
 
     /**
@@ -491,60 +510,88 @@ public class FeaturesStartTestBase {
         String[] featureNamesArray = featureNamesSet.toArray(new String[featureNamesSet.size()]);
         Arrays.sort(featureNamesArray);
 
-        List<String> selectedFeatureNames = new ArrayList<>(featureNamesArray.length);
-        Map<String, FeatureData> selectedFeatures = new HashMap<>(featureNamesArray.length);
+        // Generic filters: Client, test, and non-public features are never tested.
+        // Stable features are not tested in LITE mode.
 
-        List<String> filteredFeatureNames = new ArrayList<>();
-        Map<String, String> filteredFeatures = new HashMap<>();
-        List<String> zosFilteredFeatureNames = new ArrayList<>();
-        Map<String, String> zosFilteredFeatures = new HashMap<>();
-        List<String> levelFilteredFeatureNames = new ArrayList<>();
-        Map<String, String> levelFilteredFeatures = new HashMap<>();
-
-        List<String> stableFeatures = new ArrayList<>();
         List<String> clientFeatures = new ArrayList<>();
         List<String> testFeatures = new ArrayList<>();
         List<String> nonPublicFeatures = new ArrayList<>();
+        List<String> stableFeatures = new ArrayList<>();
+
+        // Features may be skipped for feature specific reasons.
+        // For example, some features cannot be started by themselves.
+
+        List<String> filteredNames = new ArrayList<>();
+        Map<String, String> filterReasons = new HashMap<>();
+        List<String> zosFilteredNames = new ArrayList<>();
+        Map<String, String> zosFilterReasons = new HashMap<>();
+
+        // What is left are the features features.
+
+        List<String> selectedNames = new ArrayList<>(featureNamesArray.length);
+        Map<String, FeatureData> selectedFeatures = new HashMap<>(featureNamesArray.length);
+
+        // Of the selected features, some may be out-of-level.  Those are still
+        // tested, but the expected server startup result changes.
+
+        List<String> outOfLevelNames = new ArrayList<>();
+        Map<String, String> outOfLevelReasons = new HashMap<>();
 
         for (String name : featureNamesArray) {
+            FeatureData featureData = getFeatureData(name);
+            if (featureData.isClientOnly()) {
+                clientFeatures.add(name);
+                continue;
+            } else if (featureData.isTest()) {
+                testFeatures.add(name);
+                continue;
+            } else if (!featureData.isPublic()) {
+                nonPublicFeatures.add(name);
+                continue;
+            }
+
+            // } else if ((TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.LITE) && isStable(name)) {
+            //     stableFeatures.add(name);
+            //     continue;
+            // }
+
             String filterReason = isFiltered(name);
             if (filterReason != null) {
-                filteredFeatureNames.add(name);
-                filteredFeatures.put(name, filterReason);
+                filteredNames.add(name);
+                filterReasons.put(name, filterReason);
                 continue;
             }
-
             String zosFilterReason = isZOSFiltered(name);
             if (zosFilterReason != null) {
-                zosFilteredFeatureNames.add(name);
-                zosFilteredFeatures.put(name, zosFilterReason);
+                zosFilteredNames.add(name);
+                zosFilterReasons.put(name, zosFilterReason);
                 continue;
             }
 
-            String levelFilterReason = isLevelFiltered(name);
-            if (levelFilterReason != null) {
-                levelFilteredFeatureNames.add(name);
-                levelFilteredFeatures.put(name, levelFilterReason);
+            selectedNames.add(name);
+            selectedFeatures.put(name, featureData);
+
+            String outOfLevelReason = isLevelFiltered(name);
+            if (outOfLevelReason != null) {
+                outOfLevelNames.add(name);
+                outOfLevelReasons.put(name, outOfLevelReason);
                 // Do NOT skip level filtered features.  An attempt
                 // is made to start these, with failure as the expected
                 // result.
             }
+        }
 
-            FeatureData featureData = getFeatureData(name);
-
-            if ((TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.LITE) && isStable(name)) {
-                stableFeatures.add(name);
-            } else if (featureData.isClientOnly()) {
-                clientFeatures.add(name);
-            } else if (featureData.isTest()) {
-                testFeatures.add(name);
-            } else if (!featureData.isPublic()) {
-                nonPublicFeatures.add(name);
-
-            } else {
-                selectedFeatureNames.add(name);
-                selectedFeatures.put(name, featureData);
-            }
+        if (!clientFeatures.isEmpty()) {
+            logInfo(m, "Skip client-only features [ " + clientFeatures.size() + " ]:");
+            display(m, "    ", 80, clientFeatures);
+        }
+        if (!nonPublicFeatures.isEmpty()) {
+            logInfo(m, "Skip non-public features [ " + nonPublicFeatures.size() + " ]:");
+            display(m, "    ", 80, nonPublicFeatures);
+        }
+        if (!testFeatures.isEmpty()) {
+            logInfo(m, "Skip test features [ " + testFeatures.size() + " ]:");
+            display(m, "    ", 80, testFeatures);
         }
 
         if (!stableFeatures.isEmpty()) {
@@ -552,53 +599,45 @@ public class FeaturesStartTestBase {
             display(m, "    ", 80, stableFeatures);
         }
 
-        if (!clientFeatures.isEmpty()) {
-            logInfo(m, "Skip client-only features [ " + clientFeatures.size() + " ]:");
-            display(m, "    ", 80, clientFeatures);
+        if (!filterReasons.isEmpty()) {
+            logInfo(m, "Skip filtered features [ " + filterReasons.size() + " ]:");
+            display(m, "    ", ": ", "", filteredNames, filterReasons);
         }
-
-        if (!nonPublicFeatures.isEmpty()) {
-            logInfo(m, "Skip non-public features [ " + nonPublicFeatures.size() + " ]:");
-            display(m, "    ", 80, nonPublicFeatures);
-        }
-
-        if (!testFeatures.isEmpty()) {
-            logInfo(m, "Skip test features [ " + testFeatures.size() + " ]:");
-            display(m, "    ", 80, testFeatures);
-        }
-
-        if (!filteredFeatures.isEmpty()) {
-            logInfo(m, "Skip filtered features [ " + filteredFeatures.size() + " ]:");
-            display(m, "    ", ": ", "", filteredFeatureNames, filteredFeatures);
-        }
-
-        if (!zosFilteredFeatures.isEmpty()) {
-            logInfo(m, "Skip ZOS filtered features [ " + zosFilteredFeatures.size() + " ]:");
-            display(m, "    ", ": ", "", zosFilteredFeatureNames, zosFilteredFeatures);
+        if (!zosFilterReasons.isEmpty()) {
+            logInfo(m, "Skip ZOS filtered features [ " + zosFilterReasons.size() + " ]:");
+            display(m, "    ", ": ", "", zosFilteredNames, zosFilterReasons);
         }
 
         if (selectedFeatures.isEmpty()) {
             throw new IllegalArgumentException("No testable features are present.");
         }
-
         logInfo(m, "Run features [ " + selectedFeatures.size() + " ]:");
         display(m, "    ", 80, selectedFeatures.keySet());
 
-        if (!levelFilteredFeatures.isEmpty()) {
-            logInfo(m, "Out-of-level features [ " + levelFilteredFeatures.size() + " ]:");
-            display(m, "    ", ": ", "", levelFilteredFeatureNames, levelFilteredFeatures);
+        if (!outOfLevelReasons.isEmpty()) {
+            logInfo(m, "Out-of-level features [ " + outOfLevelReasons.size() + " ]:");
+            display(m, "    ", ": ", "", outOfLevelNames, outOfLevelReasons);
         }
 
-        runnableFeatureNames = selectedFeatureNames;
+        runnableFeatureNames = selectedNames;
         runnableFeatures = selectedFeatures;
 
-        outOfLevelFeatureNames = new HashSet<>(levelFilteredFeatureNames);
+        outOfLevelFeatureNames = new HashSet<>(outOfLevelNames);
 
         // Limit the features to the current bucket.
         int[] range = getRange(selectedFeatures.size(), NUM_BUCKETS, BUCKET_NO);
 
         firstFeatureNo = range[0];
         lastFeatureNo = range[1];
+
+        bucketOutOfLevelFeatureNames = new HashSet<>(outOfLevelFeatureNames.size());
+
+        for (int featureNo = firstFeatureNo; featureNo < lastFeatureNo; featureNo++) {
+            String shortName = runnableFeatureNames.get(featureNo);
+            if (outOfLevelFeatureNames.contains(shortName)) {
+                bucketOutOfLevelFeatureNames.add(shortName);
+            }
+        }
     }
 
     /**
@@ -672,11 +711,13 @@ public class FeaturesStartTestBase {
         public final boolean hadForbiddenErrors;
         public final boolean missingRequiredErrors;
         public final String pid;
+        public boolean didStop;
 
         public static final boolean DID_ATTEMPT = true;
         public static final boolean DID_START = true;
         public static final boolean HAD_FORBIDDEN_ERRORS = true;
         public static final boolean MISSING_REQUIRED_ERRORS = true;
+        public static final boolean DID_STOP = true;
 
         public static StartupResult notAttemptedResult() {
             return new StartupResult(!DID_ATTEMPT, !DID_START, !HAD_FORBIDDEN_ERRORS, !MISSING_REQUIRED_ERRORS, null);
@@ -705,6 +746,11 @@ public class FeaturesStartTestBase {
             this.hadForbiddenErrors = hadForbiddenErrors;
             this.missingRequiredErrors = missingRequiredErrors;
             this.pid = pid;
+            this.didStop = !DID_STOP;
+        }
+
+        public void stopped() {
+            this.didStop = DID_STOP;
         }
     }
 
@@ -825,15 +871,17 @@ public class FeaturesStartTestBase {
         logInfo(m, "  Server java [ " + serverJavaLevel + " ]");
         logInfo(m, "  Server isZOS [ " + serverIsZOS + " ]");
         banner(m);
+
         logInfo(m, "Features [ " + runnableFeatures.size() + " ]");
+        logInfo(m, "  Out-of-level [ " + outOfLevelFeatureNames.size() + " ]");
+
         logInfo(m, "Bucket [ " + BUCKET_NO + " ] of [ " + NUM_BUCKETS + " ]");
-        logInfo(m, "  Count [ " + (lastFeatureNo - firstFeatureNo) + " ]");
+        logInfo(m, "  Count [ " + (lastFeatureNo - firstFeatureNo) + " ] Out-of-level [ " + bucketOutOfLevelFeatureNames.size() + " ]");
         logInfo(m, "  First [ " + firstFeatureNo + " ]: [ " + runnableFeatureNames.get(firstFeatureNo) + " ]");
         logInfo(m, "  Last  [ " + (lastFeatureNo - 1) + " ]: [ " + runnableFeatureNames.get(lastFeatureNo - 1) + " ]");
         if (SPARSITY > 0) {
             logInfo(m, "  Sparsity [ " + SPARSITY + " ]");
         }
-        logInfo(m, "Out-of-level features [ " + outOfLevelFeatureNames.size() + " ]");
         banner(m);
 
         int numFeatures = lastFeatureNo - firstFeatureNo;
@@ -873,8 +921,8 @@ public class FeaturesStartTestBase {
 
         public final List<String> successes;
         public final Map<String, String> failures;
-        public final Map<String, String> levelFailures;
-        public final Map<String, String> unexpectedStarts;
+        public final List<String> levelExpectedFailures;
+        public final List<String> levelUnexpectedSuccesses;
 
         public final Map<String, TimingResult> timingResults;
 
@@ -888,8 +936,8 @@ public class FeaturesStartTestBase {
 
             this.successes = new ArrayList<>();
             this.failures = new LinkedHashMap<>();
-            this.levelFailures = new LinkedHashMap<>();
-            this.unexpectedStarts = new LinkedHashMap<>();
+            this.levelExpectedFailures = new ArrayList<>();
+            this.levelUnexpectedSuccesses = new ArrayList<>();
 
             this.timingResults = new HashMap<>(numFeatures);
 
@@ -910,21 +958,21 @@ public class FeaturesStartTestBase {
             if (!successes.isEmpty()) {
                 display(m, "    ", 80, successes);
             }
-            logInfo(m, "Expected failures [ " + levelFailures.size() + " ]");
-            if (!levelFailures.isEmpty()) {
-                display(m, "    ", 80, levelFailures.keySet());
+            logInfo(m, "Expected failures [ " + levelExpectedFailures.size() + " ]");
+            if (!levelExpectedFailures.isEmpty()) {
+                display(m, "    ", 80, levelExpectedFailures);
             }
             logInfo(m, "Failures [ " + failures.size() + " ]");
             if (!failures.isEmpty()) {
                 display(m, "    ", 80, failures.keySet());
             }
 
-            logInfo(m, "Unexpected successes [ " + unexpectedStarts.size() + " ]");
-            if (!unexpectedStarts.isEmpty()) {
-                display(m, "    ", 80, unexpectedStarts.keySet());
+            logInfo(m, "Unexpected successes [ " + levelUnexpectedSuccesses.size() + " ]");
+            if (!levelUnexpectedSuccesses.isEmpty()) {
+                display(m, "    ", 80, levelUnexpectedSuccesses);
             }
-            if (!testState.unexpectedStarts.isEmpty()) {
-                logInfo(m, "Features [ " + testState.unexpectedStarts.keySet() + " ] started on java [ " + serverJavaLevel + " ].");
+            if (!testState.levelUnexpectedSuccesses.isEmpty()) {
+                logInfo(m, "Features [ " + testState.levelUnexpectedSuccesses + " ] started on java [ " + serverJavaLevel + " ].");
                 logInfo(m, "");
                 logInfo(m, "If these are test-only features, add 'IBM-Test-Feature: true' to the feature manifests. ");
                 logInfo(m, "Feature required java levels are specified in resource [ " + FeatureLevels.REQUIRED_LEVELS_NAME + " ]");
@@ -960,7 +1008,8 @@ public class FeaturesStartTestBase {
                 setFeature(lastShortName, nextShortName, timingResult);
 
             } catch (Exception e) {
-                addFailure(m, failures, nextShortName, "Failed to set feature", e);
+                logError(m, "Failed to set feature [ " + nextShortName + " ]", e);
+                failures.put(nextShortName, "Failed to set feature");
 
                 // Complete failure: The start was not attempted.
                 return StartupResult.notAttemptedResult();
@@ -973,8 +1022,8 @@ public class FeaturesStartTestBase {
 
             long initialStartNs = timingResult.getTimeNs();
             boolean started;
-            boolean hadUnexpectedErrors = false;
-            boolean missingRequiredErrors = false;
+            boolean extraErrors = false;
+            boolean missingErrors = false;
 
             try {
                 // Default start: Pre-clean and clean the server.
@@ -1027,7 +1076,9 @@ public class FeaturesStartTestBase {
 
             } catch (Exception e) {
                 started = false;
-                addFailure(m, failures, nextShortName, "Start Exception", e);
+                failures.put(nextShortName, "Start failure");
+
+                logError(m, "Failed to start feature [ " + nextShortName + " ]", e);
 
             } finally {
                 timingResult.setStartNsFromInitial(initialStartNs);
@@ -1056,29 +1107,38 @@ public class FeaturesStartTestBase {
                     List<String> errors = server.findStringsInLogs("CWWKF0032E");
                     if (!errors.isEmpty()) {
                         if (isOutOfLevel) {
-                            addLevelFailure(m, levelFailures, nextShortName);
+                            levelExpectedFailures.add(nextShortName);
+                            logInfo(m, "Found expected out-of-level errors [ " + nextShortName + " ]");
+
                         } else {
-                            hadUnexpectedErrors = true;
-                            addFailure(m, failures, nextShortName, "Verification Failure", null);
+                            extraErrors = true;
+                            failures.put(nextShortName, "Unexpected errors");
+
+                            logError(m, "Found unexpected errors [ " + nextShortName + " ]");
                             for (String error : errors) {
-                                logError(m, "Server failure message [ " + error + " ]");
+                                logError(m, "  [ " + error + " ]");
                             }
                         }
                     } else {
                         if (isOutOfLevel) {
-                            missingRequiredErrors = true;
-                            addUnexpectedSuccess(m, unexpectedStarts, nextShortName);
+                            missingErrors = true;
+                            levelUnexpectedSuccesses.add(nextShortName);
+
+                            logError(m, "Missing expected out-of-level errors [ " + nextShortName + " ]");
                         }
                     }
                 } catch (Exception e) {
-                    hadUnexpectedErrors = true;
-                    addFailure(m, failures, nextShortName, "Verify Exception", e);
+                    extraErrors = true;
+                    failures.put(nextShortName, "Verify exception");
+
+                    logError(m, "Verify exception [ " + nextShortName + " ]", e);
+
                 } finally {
                     timingResult.setVerifyNsFromInitial(initialVerifyNs);
                 }
             }
 
-            return new StartupResult(StartupResult.DID_ATTEMPT, started, hadUnexpectedErrors, missingRequiredErrors, pid);
+            return new StartupResult(StartupResult.DID_ATTEMPT, started, extraErrors, missingErrors, pid);
         }
 
         /**
@@ -1097,9 +1157,19 @@ public class FeaturesStartTestBase {
         // [2/8/23 12:22:13:451 EST] 00000024 LogService-25-io.openliberty.java11.internal
         //   E CWWKE0702E: Could not resolve module: io.openliberty.java11.internal [25]
 
-        public void forceStopFeature(boolean isOutOfLevel, TimingResult timingResult, StartupResult startupResult) {
+        public void forceStopFeature(boolean isOutOfLevel,
+                                     TimingResult timingResult,
+                                     StartupResult startupResult) {
+
             String[] allowedErrors = (isOutOfLevel ? JAVA_LEVEL_ALLOWED_ERRORS : getAllowedErrors(nextShortName));
-            if (forceStopServer(nextShortName, startupResult.pid, allowedErrors, failures, timingResult)) {
+
+            if (forceStopServer(nextShortName, isOutOfLevel,
+                                startupResult.pid, allowedErrors,
+                                levelExpectedFailures, failures,
+                                timingResult, startupResult)) {
+
+                startupResult.stopped();
+
                 if (!failures.containsKey(nextShortName)) {
                     successes.add(nextShortName);
                 }
@@ -1200,25 +1270,10 @@ public class FeaturesStartTestBase {
                 Assert.assertFalse("Start had forbidden errors [ " + useShortName + " ]", true);
             } else if (startupResult.missingRequiredErrors) {
                 Assert.assertFalse("Start missing required errors [ " + useShortName + " ]", true);
+            } else if (!startupResult.didStop) {
+                Assert.assertTrue("Failed to stop [ " + useShortName + " ]", false);
             }
         }
-    }
-
-    //
-
-    public static void addFailure(String m, Map<String, String> failures, String shortName, String description, Throwable th) {
-        logError(m, "Failed to start feature [ " + shortName + " ]: " + description, th);
-        failures.put(shortName, shortName);
-    }
-
-    public static void addLevelFailure(String m, Map<String, String> levelFailures, String shortName) {
-        logError(m, "Failed to start feature (expected) [ " + shortName + " ]");
-        levelFailures.put(shortName, shortName);
-    }
-
-    public static void addUnexpectedSuccess(String m, Map<String, String> unexpectedStarts, String shortName) {
-        logError(m, "Started feature (unexpected; required java not present) [ " + shortName + " ]");
-        unexpectedStarts.put(shortName, shortName);
     }
 
     //
