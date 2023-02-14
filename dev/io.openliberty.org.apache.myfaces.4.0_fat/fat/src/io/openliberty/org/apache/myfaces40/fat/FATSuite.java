@@ -35,6 +35,7 @@ import io.openliberty.org.apache.myfaces40.fat.tests.MultipleInputFileTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.ProgrammaticFaceletTests;
 import io.openliberty.org.apache.myfaces40.fat.tests.SelectItemTests;
 import io.openliberty.org.apache.myfaces40.fat.tests.SimpleTest;
+import io.openliberty.org.apache.myfaces40.fat.tests.SubscribeToEventTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.UIViewRootGetDoctypeTest;
 
 @RunWith(Suite.class)
@@ -42,20 +43,22 @@ import io.openliberty.org.apache.myfaces40.fat.tests.UIViewRootGetDoctypeTest;
                 AcceptInputFileTest.class,
                 AjaxRenderExecuteThisTest.class,
                 AnnotationLiteralsTest.class,
-                SimpleTest.class,
+                ExtensionlessMappingTest.class,
                 ExternalContextAddResponseCookieTest.class,
+                Faces40ThirdPartyApiTests.class,
+                Faces40URNTest.class,
                 FacesConfigTest.class,
+                FacesContextGetLifecycleTest.class,
                 InputTextTypeTest.class,
                 LayoutAttributeTests.class,
                 MultipleInputFileTest.class,
-                ExtensionlessMappingTest.class,
-                SelectItemTests.class,
-                FacesContextGetLifecycleTest.class,
-                UIViewRootGetDoctypeTest.class,
-                Faces40ThirdPartyApiTests.class,
                 ProgrammaticFaceletTests.class,
-                Faces40URNTest.class
+                SelectItemTests.class,
+                SimpleTest.class,
+                SubscribeToEventTest.class,
+                UIViewRootGetDoctypeTest.class
 })
+
 public class FATSuite {
 
     /**
