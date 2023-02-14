@@ -6,18 +6,15 @@
     http://www.eclipse.org/legal/epl-2.0/
     
     SPDX-License-Identifier: EPL-2.0
-   
-    Contributors:
-        IBM Corporation - initial API and implementation
  -->
 <server>
 
     <!-- This server configuration is invalid, we we will use it to verify that  -->
     <!-- the jsf-2.2 and jsfContainer-2.2 features cannot be loaded at the same time -->
-	<featureManager>
-		<feature>jsfContainer-2.3</feature>
-		<feature>jsf-2.3</feature>
+    <featureManager>
+        <feature>jsfContainer-2.3</feature>
+        <feature>jsf-2.3</feature>
     </featureManager>
-    
+
     <include location="../fatTestPorts.xml"/>
 </server>
