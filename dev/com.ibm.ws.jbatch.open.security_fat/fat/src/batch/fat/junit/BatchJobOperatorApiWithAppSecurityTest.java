@@ -172,9 +172,11 @@ public class BatchJobOperatorApiWithAppSecurityTest {
     }
 
     @Test
-    @AllowedFFDC({ "com.ibm.jbatch.container.exception.PersistenceException" })
     @ExpectedFFDC({ "com.ibm.jbatch.container.exception.BatchContainerRuntimeException",
                     "java.lang.Exception" })
+    @AllowedFFDC({ "com.ibm.jbatch.container.exception.PersistenceException",
+                   "com.ibm.jbatch.container.exception.BatchIllegalJobStatusTransitionException",
+                   "javax.servlet.ServletException" })
     public void testAbandonAsSubmitterNotOwner() throws Exception {
 
         Long jobinstance = submitJob(true);
