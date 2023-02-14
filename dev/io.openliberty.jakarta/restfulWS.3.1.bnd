@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -21,13 +21,6 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 Bundle-SymbolicName: io.openliberty.jakarta.restfulWS.3.1; singleton:=true
 
 Export-Package: jakarta.ws.rs.*; version="3.1.0"
-
-Import-Package: !jakarta.xml.bind.annotation,\
-  !jakarta.xml.bind.annotation.adapters,\
-  *
-  
-DynamicImport-Package: jakarta.xml.bind.annotation;version="[4.0,5.0)",\
-  jakarta.xml.bind.annotation.adapters;version="[4.0,5.0)"
 
 -includeresource: \
    @${repo;jakarta.ws.rs:jakarta.ws.rs-api;3.1.0;EXACT}!/!(META-INF/maven/*|module-info.class)
