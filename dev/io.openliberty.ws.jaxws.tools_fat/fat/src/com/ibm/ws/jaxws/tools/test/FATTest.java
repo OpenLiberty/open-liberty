@@ -15,12 +15,6 @@ package com.ibm.ws.jaxws.tools.test;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Scanner;
 
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -30,15 +24,15 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.Machine;
+import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
-import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE9Action;
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -66,14 +60,8 @@ public class FATTest {
     private RemoteFile wsimport;
     private RemoteFile wsimportBat;
 
-    /**
-     * True if running on Windows and the .bat file should be used.
-     */
-    private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
-    /**
-     * Environment variable that can be set to test the UNIX script on Windows.
-     */
-    private static final String WLP_CYGWIN_HOME = System.getenv("WLP_CYGWIN_HOME");
+    private static Machine machine;
+    private static String installRoot;
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -91,11 +79,14 @@ public class FATTest {
         }
         ExplodedShrinkHelper.copyFileToDirectory(server, outputFile, "dropins");
 
+        installRoot = server.getInstallRoot();
+        machine = server.getMachine();
+        
         server.startServer();
 
         TEST_WSDL_LOCATION = new StringBuilder().append("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append("/PeopleService/PeopleService?wsdl").toString();
 
-        TEST_PACKAGE_DIR = new StringBuilder().append("com").append(File.separator).append("ibm").append(File.separator).append("ws").append(File.separator).append("jaxws").append(File.separator).append("test").append(File.separator).append("wsr").append(File.separator).append("server").toString();
+        TEST_PACKAGE_DIR = new StringBuilder().append("com").append(File.separator).append("ibm").append(File.separator).append("ws").append(File.separator).append("jaxws").append(File.separator).append("test").append(File.separator).append("wsr").append(File.separator).append("server").toString();        
     }
 
     @Before
@@ -143,26 +134,21 @@ public class FATTest {
 
         RemoteFile classpathFile = server.getFileFromLibertyServerRoot(packagePath);
 
-        String wsgenArgs = new StringBuilder().append("-cp ").append(classpathFile.getAbsolutePath()).append(" -wsdl ").append("-s ").append(wsgenSrcDir).append(" -d ").append(wsgenClassesDir).append(" -r ").append(outputResourceDir).append(" com.ibm.ws.jaxws.test.wsr.server.impl.Bill").toString();
+        String[] wsgenArgs = new String[] { "-cp", 
+                                            classpathFile.getAbsolutePath(),
+                                            "-wsdl",
+                                            "-s",
+                                            wsgenSrcDir.getAbsolutePath(),
+                                            "-d",
+                                            wsgenClassesDir.getAbsolutePath(),
+                                            "-r",
+                                            outputResourceDir.getAbsolutePath(),
+                                            "com.ibm.ws.jaxws.test.wsr.server.impl.Bill" };
 
         assertTrue("The file bin/wsgen does not exist.", wsgen.exists());
         assertTrue("The file bin/wsgen.bat does not exist.", wsgenBat.exists());
-
-        StringBuilder commandBuilder = new StringBuilder();
-        if (isWindows && WLP_CYGWIN_HOME == null) {
-            commandBuilder.append(wsgenBat);
-        } else {
-            if (WLP_CYGWIN_HOME == null) {
-                commandBuilder.append("/bin/sh");
-            } else {
-                commandBuilder.append(WLP_CYGWIN_HOME + "/bin/sh");
-            }
-            commandBuilder.append(" -x ");
-            commandBuilder.append(wsgen);
-        }
-        commandBuilder.append(" ").append(wsgenArgs);
-
-        execute(commandBuilder.toString());
+        
+        machine.execute(wsgen.getAbsolutePath(), wsgenArgs, installRoot);
 
         RemoteFile wsdlFile = server.getFileFromLibertyServerRoot("temp" + File.separator + "resource" + File.separator + "PeopleService.wsdl");
         RemoteFile schemaFile = server.getFileFromLibertyServerRoot("temp" + File.separator + "resource" + File.separator + "PeopleService_schema1.xsd");
@@ -198,26 +184,22 @@ public class FATTest {
 
         RemoteFile classpathFile = server.getFileFromLibertyServerRoot(packagePath);
 
-        String wsgenArgs = new StringBuilder().append("-cp ").append(classpathFile.getAbsolutePath()).append(" -wsdl ").append("-inlineSchemas ").append("-s ").append(wsgenSrcDir).append(" -d ").append(wsgenClassesDir).append(" -r ").append(outputResourceDir).append(" com.ibm.ws.jaxws.test.wsr.server.impl.Bill").toString();
+        String[] wsgenArgs = new String[] { "-cp",
+                                            classpathFile.getAbsolutePath(),
+                                            "-wsdl",
+                                            "-inlineSchemas",
+                                            "-s",
+                                            wsgenSrcDir.getAbsolutePath(),
+                                            "-d",
+                                            wsgenClassesDir.getAbsolutePath(),
+                                            "-r",
+                                            outputResourceDir.getAbsolutePath(),
+                                            "com.ibm.ws.jaxws.test.wsr.server.impl.Bill" };
 
         assertTrue("The file bin/wsgen does not exist.", wsgen.exists());
         assertTrue("The file bin/wsgen.bat does not exist.", wsgenBat.exists());
-
-        StringBuilder commandBuilder = new StringBuilder();
-        if (isWindows && WLP_CYGWIN_HOME == null) {
-            commandBuilder.append(wsgenBat);
-        } else {
-            if (WLP_CYGWIN_HOME == null) {
-                commandBuilder.append("/bin/sh");
-            } else {
-                commandBuilder.append(WLP_CYGWIN_HOME + "/bin/sh");
-            }
-            commandBuilder.append(" -x ");
-            commandBuilder.append(wsgen);
-        }
-        commandBuilder.append(" ").append(wsgenArgs);
-
-        execute(commandBuilder.toString());
+        
+        machine.execute(wsgen.getAbsolutePath(), wsgenArgs, installRoot);
 
         RemoteFile wsdlFile = server.getFileFromLibertyServerRoot("temp" + File.separator + "resource" + File.separator + "PeopleService.wsdl");
 
@@ -248,21 +230,10 @@ public class FATTest {
         assertTrue("The file bin/wsgen does not exist.", wsgen.exists());
         assertTrue("The file bin/wsgen.bat does not exist.", wsgenBat.exists());
 
-        StringBuilder commandBuilder = new StringBuilder();
-        if (isWindows && WLP_CYGWIN_HOME == null) {
-            commandBuilder.append(wsgenBat);
-        } else {
-            if (WLP_CYGWIN_HOME == null) {
-                commandBuilder.append("/bin/sh");
-            } else {
-                commandBuilder.append(WLP_CYGWIN_HOME + "/bin/sh");
-            }
-            commandBuilder.append(" -x ");
-            commandBuilder.append(wsgen);
-        }
-
+        ProgramOutput po = machine.execute(wsgen.getAbsolutePath(), installRoot);
+        
         // No args should give exit code 1.
-        execute(commandBuilder.toString(), 1);
+        assertTrue("No args wsgen call should return 1", po.getReturnCode() == 1);
     }
 
     @Test
@@ -270,26 +241,17 @@ public class FATTest {
 
         server.waitForStringInLog("CWWKZ0001I.*PeopleService");
 
-        String wsimportArgs = new StringBuilder().append("-s ").append(wsimportSrcDir.getAbsolutePath()).append(" -d ").append(wsimportClassesDir.getAbsolutePath()).append(JakartaEE9Action.isActive() ? " -target 3.0 " : " -target 2.2 ").append(TEST_WSDL_LOCATION).toString();
+        String[] wsimportArgs = new String[] { "-s",
+                                               wsimportSrcDir.getAbsolutePath(),
+                                               "-d",
+                                               wsimportClassesDir.getAbsolutePath(),
+                                               JakartaEE9Action.isActive() ? "-target 3.0" : "-target 2.2",
+                                               TEST_WSDL_LOCATION };
 
         assertTrue("The file bin/wsimport does not exist.", wsimport.exists());
         assertTrue("The file bin/wsimport.bat does not exist.", wsimportBat.exists());
-
-        StringBuilder commandBuilder = new StringBuilder();
-        if (isWindows && WLP_CYGWIN_HOME == null) {
-            commandBuilder.append(wsimportBat.getAbsolutePath());
-        } else {
-            if (WLP_CYGWIN_HOME == null) {
-                commandBuilder.append("/bin/sh");
-            } else {
-                commandBuilder.append(WLP_CYGWIN_HOME + "/bin/sh");
-            }
-            commandBuilder.append(" -x ");
-            commandBuilder.append(wsimport.getAbsolutePath());
-        }
-        commandBuilder.append(" ").append(wsimportArgs);
-
-        execute(commandBuilder.toString());
+        
+        machine.execute(wsimport.getAbsolutePath(), wsimportArgs, installRoot);
 
         RemoteFile helloSrc = server.getFileFromLibertyServerRoot("temp" + File.separator + "wsimportSrc" + File.separator + TEST_PACKAGE_DIR + File.separator + "Hello.java");
         RemoteFile helloResponseSrc = server.getFileFromLibertyServerRoot("temp" + File.separator + "wsimportSrc" + File.separator + TEST_PACKAGE_DIR + File.separator
@@ -336,21 +298,10 @@ public class FATTest {
         assertTrue("The file bin/wsimport does not exist.", wsimport.exists());
         assertTrue("The file bin/wsimport.bat does not exist.", wsimportBat.exists());
 
-        StringBuilder commandBuilder = new StringBuilder();
-        if (isWindows && WLP_CYGWIN_HOME == null) {
-            commandBuilder.append(wsimportBat.getAbsolutePath());
-        } else {
-            if (WLP_CYGWIN_HOME == null) {
-                commandBuilder.append("/bin/sh");
-            } else {
-                commandBuilder.append(WLP_CYGWIN_HOME + "/bin/sh");
-            }
-            commandBuilder.append(" -x ");
-            commandBuilder.append(wsimport.getAbsolutePath());
-        }
-
+        ProgramOutput po = machine.execute(wsimport.getAbsolutePath(), installRoot);
+        
         // No args should give exit code 1.
-        execute(commandBuilder.toString(), 1);
+        assertTrue("No args wsgen call should return 1", po.getReturnCode() == 1);
     }
 
     // Not required for xmlWS-3.0
@@ -360,89 +311,17 @@ public class FATTest {
 
         server.waitForStringInLog("CWWKZ0001I.*PeopleService");
 
-        String wsimportArgs = new StringBuilder().append("-s ").append(wsimportSrcDir.getAbsolutePath()).append(" -d ").append(wsimportClassesDir.getAbsolutePath()).append(" ").append(TEST_WSDL_LOCATION).toString();
+        String[] wsimportArgs = new String[] { "-s",
+                                               wsimportSrcDir.getAbsolutePath(),
+                                               "-d",
+                                               wsimportClassesDir.getAbsolutePath(),
+                                               TEST_WSDL_LOCATION };
 
         assertTrue("The file bin/wsimport does not exist.", wsimport.exists());
         assertTrue("The file bin/wsimport.bat does not exist.", wsimportBat.exists());
-
-        StringBuilder commandBuilder = new StringBuilder();
-        if (isWindows && WLP_CYGWIN_HOME == null) {
-            commandBuilder.append(wsimportBat.getAbsolutePath());
-        } else {
-            if (WLP_CYGWIN_HOME == null) {
-                commandBuilder.append("/bin/sh");
-            } else {
-                commandBuilder.append(WLP_CYGWIN_HOME + "/bin/sh");
-            }
-            commandBuilder.append(" -x ");
-            commandBuilder.append(wsimport.getAbsolutePath());
-        }
-        commandBuilder.append(" ").append(wsimportArgs);
-        String output = execute(commandBuilder.toString(), 1);
-        assertTrue("The output should contain the error id 'CWWKW0800E', but the actual is not.", output.indexOf("CWWKW0800E") >= 0);
-    }
-
-    private String execute(String commandLine) throws IOException, InterruptedException {
-        return execute(commandLine, 0);
-    }
-
-    private String execute(String commandLine, int expectedExitValue) throws IOException, InterruptedException {
-        List<String> command = new ArrayList<String>();
-        for (String arg : commandLine.split(" ")) {
-            command.add(arg);
-        }
-        Log.info(c, "execute", "Run command: " + commandLine);
-
-        ProcessBuilder builder = new ProcessBuilder();
-        builder.command(command);
-        String javaHome = JavaInfo.forServer(server).javaHome();
-        builder.environment().put("JAVA_HOME", javaHome);
-        Log.info(c, "execute", "Using JAVA_HOME=" + javaHome);
-
-        final Process p = builder.start();
-        List<String> stdout = new ArrayList<String>();
-        List<String> stderr = new ArrayList<String>();
-        Thread outThread = inheritIO(p.getInputStream(), stdout);
-        Thread errThread = inheritIO(p.getErrorStream(), stderr);
-
-        outThread.join(60 * 1000);
-        errThread.join(60 * 1000);
-        p.waitFor();
-
-        StringBuilder sb = new StringBuilder();
-        Log.info(c, "execute", "Stdout:");
-        for (String line : stdout) {
-            sb.append(line).append('\n');
-            Log.info(c, "execute", line);
-        }
-        Log.info(c, "execute", "Stderr:");
-        for (String line : stderr) {
-            sb.append(line).append('\n');
-            Log.info(c, "execute", line);
-        }
-
-        int exitValue = p.exitValue();
-
-        p.destroy();
-
-        if (exitValue != expectedExitValue)
-            throw new IOException(command.get(0) + " failed (exit=" + exitValue + ", expected " + expectedExitValue + "): " + sb.toString());
-
-        return sb.toString();
-    }
-
-    private static Thread inheritIO(final InputStream src, final List<String> lines) {
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try (Scanner sc = new Scanner(src)) {
-                    while (sc.hasNextLine()) {
-                        lines.add(sc.nextLine());
-                    }
-                }
-            }
-        });
-        t.start();
-        return t;
+        
+        ProgramOutput po = machine.execute(wsimport.getAbsolutePath(), wsimportArgs, installRoot);
+        assertTrue("The wsimport call should return 1", po.getReturnCode() == 1);
+        assertTrue("The output should contain the error id 'CWWKW0800E', but the actual is not.", po.getStdout().indexOf("CWWKW0800E") >= 0);
     }
 }

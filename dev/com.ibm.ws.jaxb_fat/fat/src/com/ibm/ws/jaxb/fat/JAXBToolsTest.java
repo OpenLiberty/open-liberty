@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,24 +15,19 @@ package com.ibm.ws.jaxb.fat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Scanner;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.Machine;
+import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE9Action;
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -52,14 +47,8 @@ public class JAXBToolsTest extends FATServletClient {
     private static File jakartaSchemagenSourceDir;
     private static File jakartaSchemagenTargetDir;
 
-    /**
-     * True if running on Windows and the .bat file should be used.
-     */
-    private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
-    /**
-     * Environment variable that can be set to test the UNIX script on Windows.
-     */
-    private static final String WLP_CYGWIN_HOME = System.getenv("WLP_CYGWIN_HOME");
+    private static Machine machine;
+    private static String installRoot;
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -76,18 +65,18 @@ public class JAXBToolsTest extends FATServletClient {
         xjcTargetDir.mkdirs();
         schemagenTargetDir.mkdirs();
         jakartaSchemagenTargetDir.mkdirs();
+
+        installRoot = server.getInstallRoot();
+        machine = server.getMachine();
     }
 
     @Test
     public void testXJCToolWithoutTarget() throws Exception {
-        String xjcArgs = new StringBuilder().append("-p po")
-                        .append(" -d ")
-                        .append(xjcTargetDir.getAbsolutePath())
-                        .append(" ")
-                        .append(xjcSourceDir.getAbsolutePath())
-                        .append(File.separator)
-                        .append("purchaseOrder.xsd")
-                        .toString();
+        String[] xjcArgs = { "-p",
+                             "po",
+                             "-d",
+                             xjcTargetDir.getAbsolutePath(),
+                             xjcSourceDir.getAbsolutePath() + File.separator + "purchaseOrder.xsd" };
         RemoteFile xjc;
         RemoteFile xjcBat;
         if (JakartaEE9Action.isActive()) {
@@ -104,53 +93,37 @@ public class JAXBToolsTest extends FATServletClient {
             assertTrue("The file bin/jaxb/xjc.bat does not exist.", xjcBat.exists());
         }
 
-        StringBuilder commandBuilder = new StringBuilder();
-        if (isWindows && WLP_CYGWIN_HOME == null) {
-            commandBuilder.append(xjcBat);
-        } else {
-            if (WLP_CYGWIN_HOME == null) {
-                commandBuilder.append("/bin/sh");
-            } else {
-                commandBuilder.append(WLP_CYGWIN_HOME + "/bin/sh");
-            }
-            commandBuilder.append(" -x ");
-            commandBuilder.append(xjc);
-        }
-        commandBuilder.append(" ").append(xjcArgs);
+        ProgramOutput po = machine.execute(xjc.getAbsolutePath(), xjcArgs, installRoot);
 
-        String output = execute(commandBuilder.toString());
-        assertTrue("The output should contain the error id 'CWWKW1400E', 'CWWKW1401E', or 'CWWKW1402E', but does not.\nActual output:\n" + output,
-                   ((output.indexOf("CWWKW1400E") >= 0) || (output.indexOf("CWWKW1401E") >= 0) || (output.indexOf("CWWKW1402E") >= 0)));
+        Log.info(c, "testXJCToolWithoutTarget", "Executed " + xjc.getAbsolutePath() + " command:" + po.getCommand());
+        assertTrue("The output should contain the error id 'CWWKW1400E', 'CWWKW1401E', or 'CWWKW1402E', but does not.\nActual output:\n" + po.getStdout(),
+                   ((po.getStdout().indexOf("CWWKW1400E") >= 0) || (po.getStdout().indexOf("CWWKW1401E") >= 0) || (po.getStdout().indexOf("CWWKW1402E") >= 0)));
     }
 
     @Test
     public void testXJCTool() throws Exception {
-        String xjcArgs;
+        String[] xjcArgs;
         RemoteFile xjc;
         RemoteFile xjcBat;
         if (JakartaEE9Action.isActive()) {
-            xjcArgs = new StringBuilder().append("-p po")
-                            .append(" -d ")
-                            .append(xjcTargetDir.getAbsolutePath())
-                            .append(" -target 3.0 ")
-                            .append(xjcSourceDir.getAbsolutePath())
-                            .append(File.separator)
-                            .append("purchaseOrder.xsd")
-                            .toString();
+            xjcArgs = new String[] { "-p",
+                                     "po",
+                                     "-d",
+                                     xjcTargetDir.getAbsolutePath(),
+                                     "-target 3.0",
+                                     xjcSourceDir.getAbsolutePath() + File.separator + "purchaseOrder.xsd" };
             xjc = server.getFileFromLibertyInstallRoot("bin/xmlBinding/xjc");
             xjcBat = server.getFileFromLibertyInstallRoot("bin/xmlBinding/xjc.bat");
 
             assertTrue("The file bin/xmlBinding/xjc does not exist.", xjc.exists());
             assertTrue("The file bin/xmlBinding/xjc.bat does not exist.", xjcBat.exists());
         } else {
-            xjcArgs = new StringBuilder().append("-p po")
-                            .append(" -d ")
-                            .append(xjcTargetDir.getAbsolutePath())
-                            .append(" -target 2.2 ")
-                            .append(xjcSourceDir.getAbsolutePath())
-                            .append(File.separator)
-                            .append("purchaseOrder.xsd")
-                            .toString();
+            xjcArgs = new String[] { "-p",
+                                     "po",
+                                     "-d",
+                                     xjcTargetDir.getAbsolutePath(),
+                                     "-target 2.2",
+                                     xjcSourceDir.getAbsolutePath() + File.separator + "purchaseOrder.xsd" };
             xjc = server.getFileFromLibertyInstallRoot("bin/jaxb/xjc");
             xjcBat = server.getFileFromLibertyInstallRoot("bin/jaxb/xjc.bat");
 
@@ -158,20 +131,9 @@ public class JAXBToolsTest extends FATServletClient {
             assertTrue("The file bin/jaxb/xjc.bat does not exist.", xjcBat.exists());
         }
 
-        StringBuilder commandBuilder = new StringBuilder();
-        if (isWindows && WLP_CYGWIN_HOME == null) {
-            commandBuilder.append(xjcBat);
-        } else {
-            if (WLP_CYGWIN_HOME == null) {
-                commandBuilder.append("/bin/sh");
-            } else {
-                commandBuilder.append(WLP_CYGWIN_HOME + "/bin/sh");
-            }
-            commandBuilder.append(" -x ");
-            commandBuilder.append(xjc);
-        }
-        commandBuilder.append(" ").append(xjcArgs);
-        execute(commandBuilder.toString());
+        ProgramOutput po = machine.execute(xjc.getAbsolutePath(), xjcArgs, installRoot);
+
+        Log.info(c, "testXJCTool", "Executed command:" + po.getCommand());
 
         RemoteFile itemsJavaFile = server.getFileFromLibertyServerRoot("temp/xjcTargetDir/po/Items.java");
         RemoteFile purchaseOrderTypeJavaFile = server.getFileFromLibertyServerRoot("temp/xjcTargetDir/po" + File.separator
@@ -185,46 +147,26 @@ public class JAXBToolsTest extends FATServletClient {
 
     @Test
     public void testSchemaGenTool() throws Exception {
-        String schemagenArgs;
+        String[] schemagenArgs;
         RemoteFile schemagen;
         RemoteFile schemagenBat;
         if (JakartaEE9Action.isActive()) {
-            schemagenArgs = new StringBuilder().append("-d ")
-                            .append(jakartaSchemagenTargetDir.getAbsolutePath())
-                            .append(" ")
-                            .append(jakartaSchemagenSourceDir.getAbsolutePath())
-                            .append(File.separator)
-                            .append("Items.java")
-                            .append(" ")
-                            .append(jakartaSchemagenSourceDir.getAbsolutePath())
-                            .append(File.separator)
-                            .append("PurchaseOrderType.java")
-                            .append(" ")
-                            .append(jakartaSchemagenSourceDir.getAbsolutePath())
-                            .append(File.separator)
-                            .append("ShippingAddress.java")
-                            .toString();
+            schemagenArgs = new String[] { "-d",
+                                           jakartaSchemagenTargetDir.getAbsolutePath(),
+                                           jakartaSchemagenSourceDir.getAbsolutePath() + File.separator + "Items.java",
+                                           jakartaSchemagenSourceDir.getAbsolutePath() + File.separator + "PurchaseOrderType.java",
+                                           jakartaSchemagenSourceDir.getAbsolutePath() + File.separator + "ShippingAddress.java" };
             schemagen = server.getFileFromLibertyInstallRoot("bin/xmlBinding/schemagen");
             schemagenBat = server.getFileFromLibertyInstallRoot("bin/xmlBinding/schemagen.bat");
 
             assertTrue("The file bin/xmlBinding/schemagen does not exist.", schemagen.exists());
             assertTrue("The file bin/xmlBinding/schemagen.bat does not exist.", schemagenBat.exists());
         } else {
-            schemagenArgs = new StringBuilder().append("-d ")
-                            .append(schemagenTargetDir.getAbsolutePath())
-                            .append(" ")
-                            .append(schemagenSourceDir.getAbsolutePath())
-                            .append(File.separator)
-                            .append("Items.java")
-                            .append(" ")
-                            .append(schemagenSourceDir.getAbsolutePath())
-                            .append(File.separator)
-                            .append("PurchaseOrderType.java")
-                            .append(" ")
-                            .append(schemagenSourceDir.getAbsolutePath())
-                            .append(File.separator)
-                            .append("ShippingAddress.java")
-                            .toString();
+            schemagenArgs = new String[] { "-d",
+                                           schemagenTargetDir.getAbsolutePath(),
+                                           schemagenSourceDir.getAbsolutePath() + File.separator + "Items.java",
+                                           schemagenSourceDir.getAbsolutePath() + File.separator + "PurchaseOrderType.java",
+                                           schemagenSourceDir.getAbsolutePath() + File.separator + "ShippingAddress.java" };
             schemagen = server.getFileFromLibertyInstallRoot("bin/jaxb/schemagen");
             schemagenBat = server.getFileFromLibertyInstallRoot("bin/jaxb/schemagen.bat");
 
@@ -232,20 +174,7 @@ public class JAXBToolsTest extends FATServletClient {
             assertTrue("The file bin/jaxb/schemagen.bat does not exist.", schemagenBat.exists());
         }
 
-        StringBuilder commandBuilder = new StringBuilder();
-        if (isWindows && WLP_CYGWIN_HOME == null) {
-            commandBuilder.append(schemagenBat);
-        } else {
-            if (WLP_CYGWIN_HOME == null) {
-                commandBuilder.append("/bin/sh");
-            } else {
-                commandBuilder.append(WLP_CYGWIN_HOME + "/bin/sh");
-            }
-            commandBuilder.append(" -x ");
-            commandBuilder.append(schemagen);
-        }
-        commandBuilder.append(" ").append(schemagenArgs);
-        execute(commandBuilder.toString());
+        machine.execute(schemagen.getAbsolutePath(), schemagenArgs, installRoot);
 
         RemoteFile xsdFile;
         RemoteFile itemsClassFile;
@@ -267,64 +196,5 @@ public class JAXBToolsTest extends FATServletClient {
         assertTrue("Items.class does not exist.", itemsClassFile.exists());
         assertTrue("PurchaseOrderType.class does not exist.", purchaseOrderTypeClassFile.exists());
         assertTrue("ShippingAddress.class does not exist.", shippingAddressClassFile.exists());
-    }
-
-    private String execute(String commandLine) throws IOException, InterruptedException {
-        List<String> command = new ArrayList<String>();
-        for (String arg : commandLine.split(" ")) {
-            command.add(arg);
-        }
-        Log.info(c, "execute", "Run command: " + commandLine);
-
-        ProcessBuilder builder = new ProcessBuilder();
-        builder.command(command);
-        String javaHome = JavaInfo.forServer(server).javaHome();
-        builder.environment().put("JAVA_HOME", javaHome);
-        Log.info(c, "execute", "Using JAVA_HOME=" + javaHome);
-
-        final Process p = builder.start();
-        List<String> stdout = new ArrayList<String>();
-        List<String> stderr = new ArrayList<String>();
-        Thread outThread = inheritIO(p.getInputStream(), stdout);
-        Thread errThread = inheritIO(p.getErrorStream(), stderr);
-
-        outThread.join(60 * 1000);
-        errThread.join(60 * 1000);
-        p.waitFor();
-
-        int exitValue = p.exitValue();
-
-        StringBuilder sb = new StringBuilder();
-        Log.info(c, "execute", "Stdout:");
-        for (String line : stdout) {
-            sb.append(line).append('\n');
-            Log.info(c, "execute", line);
-        }
-        Log.info(c, "execute", "Stderr:");
-        for (String line : stderr) {
-            sb.append(line).append('\n');
-            Log.info(c, "execute", line);
-        }
-
-        if (exitValue != 0) {
-            throw new IOException(command.get(0) + " failed (" + exitValue + "): " + sb.toString());
-        }
-
-        return sb.toString();
-    }
-
-    private static Thread inheritIO(final InputStream src, final List<String> lines) {
-        Thread t = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try (Scanner sc = new Scanner(src)) {
-                    while (sc.hasNextLine()) {
-                        lines.add(sc.nextLine());
-                    }
-                }
-            }
-        });
-        t.start();
-        return t;
     }
 }
