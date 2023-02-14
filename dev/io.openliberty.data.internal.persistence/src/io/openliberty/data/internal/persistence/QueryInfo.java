@@ -253,7 +253,7 @@ class QueryInfo {
                                 args[i];
 
                 if (arg == null || entityInfo.idClass == null || !entityInfo.idClass.isInstance(arg)) {
-                    if (namedParamCount > i) {
+                    if (p < namedParamCount) {
                         if (trace && tc.isDebugEnabled())
                             Tr.debug(this, tc, "set :" + paramNames.get(p) + ' ' + (arg == null ? null : arg.getClass().getSimpleName()));
                         query.setParameter(paramNames.get(p++), arg);
@@ -265,7 +265,7 @@ class QueryInfo {
                 } else { // split IdClass argument into parameters
                     for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
                         Object param = accessor instanceof Method ? ((Method) accessor).invoke(arg) : ((Field) accessor).get(arg);
-                        if (namedParamCount > p) {
+                        if (p < namedParamCount) {
                             if (trace && tc.isDebugEnabled())
                                 Tr.debug(this, tc, "set :" + paramNames.get(p) + ' ' + (param == null ? null : param.getClass().getSimpleName()));
                             query.setParameter(paramNames.get(p++), param);
