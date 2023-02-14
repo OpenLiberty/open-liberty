@@ -6,9 +6,6 @@
     http://www.eclipse.org/legal/epl-2.0/
     
     SPDX-License-Identifier: EPL-2.0
-   
-    Contributors:
-        IBM Corporation - initial API and implementation
  -->
 <ui:component
     xmlns:ui="jakarta.faces.facelets"
@@ -17,16 +14,16 @@
     xmlns:cc="jakarta.faces.composite"
 >
     <cc:interface>
-        <cc:attribute name="input1" />
-        <cc:attribute name="input2" />
-        <cc:attribute name="input3" />
-        <cc:clientBehavior name="change" default="true" targets="input1 input2" event="change" />
+        <cc:attribute name="street" />
+        <cc:attribute name="city" />
+        <cc:attribute name="state" />
+        <cc:clientBehavior name="change" default="true" targets="street city" event="change" />
     </cc:interface>
     <cc:implementation>
         <div id="#{cc.clientId}">
-            <h:inputText id="input1" value="#{cc.attrs.input1}" />
-            <h:inputText id="input2" value="#{cc.attrs.input2}" />
-            <h:inputText id="input3" value="#{cc.attrs.input3}">
+            <h:inputText id="street" value="#{cc.attrs.street}" />
+            <h:inputText id="city"   value="#{cc.attrs.city}" />
+            <h:inputText id="state"  value="#{cc.attrs.state}">
             	<f:ajax render="@form" />
             </h:inputText>
         </div>
