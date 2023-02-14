@@ -41,7 +41,8 @@ src: \
 	test-applications/jsonp/src,\
 	test-applications/managedBeans/src,\
 	test-bundles/test.checkpoint.bells.bundle/src,\
-	test-applications/bells/src
+	test-applications/bells/src,\
+	test-applications/virtualhost/src
 
 fat.project: true
 
@@ -135,6 +136,8 @@ tested.features: \
 	com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
 	org.eclipse:yasson;version='1.0.8',\
 	com.ibm.websphere.javaee.jsonp.1.1;version=latest,\
-	com.ibm.ws.logging.core
+	com.ibm.ws.logging.core,\
+	com.ibm.websphere.javaee.jaxws.2.2,\
+	com.ibm.websphere.javaee.jws.1.0
 
 -sub: *.bnd
