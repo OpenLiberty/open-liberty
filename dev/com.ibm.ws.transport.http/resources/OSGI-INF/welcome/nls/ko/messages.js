@@ -21,7 +21,7 @@ var messages = {
     DOCS: "문서", // Translate 'Documentation'
     COPYRIGHT: "Copyright",
     OPEN_LIBERTY_FOOTER: "Liberty 푸터 로고",
-    COPYRIGHT_OPEN_LIBERTY: "Licensed Materials — Property of the Open Liberty project, Copyright IBM Corp and others 1997, 2019. Project는 Eclipse Public License v2의 조항에 따라 배포됩니다.", // COPYRIGHT_URL
+    COPYRIGHT_OPEN_LIBERTY: "Licensed Materials — Property of the Open Liberty project, Copyright IBM Corp and others 1997, 2019. 프로젝트는 Eclipse 공용 라이센스 v2의 조건에 따라 배포됩니다.", // COPYRIGHT_URL
     UPDATE_BANNER_SECTION: "업데이트 배너 섹션",
     UPDATE_BANNER_SECTION_CONTENT: "업데이트 배너 섹션 컨텐츠",
     HEADER_UPDATE_AVAILABLE: "사용 가능한 업데이트: ",

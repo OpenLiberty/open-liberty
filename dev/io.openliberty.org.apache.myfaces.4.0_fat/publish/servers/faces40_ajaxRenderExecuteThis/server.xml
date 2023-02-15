@@ -6,20 +6,15 @@
     http://www.eclipse.org/legal/epl-2.0/
     
     SPDX-License-Identifier: EPL-2.0
-   
-    Contributors:
-        IBM Corporation - initial API and implementation
  -->
 <server description="Server for testing the Faces 4.0 f:selectItemGroup and f:selectItemGroups.">
 
     <include location="../fatTestPorts.xml"/>
 
     <featureManager>
-        <feature>faces-4.0</feature>
-        <feature>cdi-4.0</feature>
-        
         <!-- Test differences between myfaces and mojarra if needed -->
     	<!-- <feature>facesContainer-4.0</feature> -->
+        <feature>faces-4.0</feature>
     </featureManager>
 
 </server>

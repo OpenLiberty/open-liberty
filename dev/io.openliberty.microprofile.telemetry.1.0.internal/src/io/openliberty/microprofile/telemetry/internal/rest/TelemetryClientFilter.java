@@ -22,7 +22,6 @@ import java.util.List;
 
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.context.Context;
-import io.opentelemetry.context.Scope;
 import io.opentelemetry.context.propagation.TextMapSetter;
 import io.opentelemetry.instrumentation.api.instrumenter.Instrumenter;
 import io.opentelemetry.instrumentation.api.instrumenter.InstrumenterBuilder;
@@ -96,10 +95,8 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
                 Context parentContext = Context.current();
                 if ((!isAgentActive()) && instrumenter.shouldStart(parentContext, request)) {
                     Context spanContext = instrumenter.start(parentContext, request);
-                    Scope scope = spanContext.makeCurrent();
                     request.setProperty(configString + "context", spanContext);
                     request.setProperty(configString + "parentContext", parentContext);
-                    request.setProperty(configString + "scope", scope);
                 }
                 return null;
             }
@@ -113,19 +110,16 @@ public class TelemetryClientFilter implements ClientRequestFilter, ClientRespons
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
             @Override
             public Void run() {
-                Scope scope = (Scope) request.getProperty(configString + "scope");
-                if (scope == null) {
+                Context spanContext = (Context) request.getProperty(configString + "context");
+                if (spanContext == null) {
                     return null;
                 }
 
-                Context spanContext = (Context) request.getProperty(configString + "context");
                 try {
                     instrumenter.end(spanContext, request, response, null);
                 } finally {
-                    scope.close();
                     request.removeProperty(configString + "context");
                     request.removeProperty(configString + "parentContext");
-                    request.removeProperty(configString + "scope");
                 }
                 return null;
             }

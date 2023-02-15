@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -75,9 +72,10 @@ Private-Package: \
     com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
     io.openliberty.io.opentelemetry.internal;version=latest,\
-    io.openliberty.mpTelemetry.1.0.thirdparty;version=latest,\
     io.openliberty.org.eclipse.microprofile.config.3.0,\
     io.openliberty.org.eclipse.microprofile.rest.client.3.0,\
     io.openliberty.org.jboss.resteasy.common.ee10;version=latest,\
     com.ibm.websphere.org.osgi.core;version=latest,\
     com.ibm.ws.container.service;version=latest
+
+WS-TraceGroup: TELEMETRY

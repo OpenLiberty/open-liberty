@@ -59,40 +59,48 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
-/*
- * MP Telemetry needs to integrate with restfulWS and mpRestClient. Whenever a request is made or received by one of these features, MP Telemetry should create a span. Trace ID information should be sent via the HTTP headers so that the traces from both the client and server can be joined up. Baggage information should also be sent via the HTTP headers so that contextual information from the first service can be included in trace messages in the second service.
- *
- * We need to test:
- *
- *     Creation of Spans in
- *          JAX-RS Client {1}
- *          JAX-RS Server {2}
- *          MP Rest Client {3}
- *
- *     Propagation of Spans from
- *          JAX-RS Server to JAX-RS Client {4}
- *          JAX-RS Server to MP Client {5}
- *          JAX-RS Server to JAX-RS Client Async {6}
- *          JAX-RS Server to MP Client Async {7}
- *
- *     Baggage is correctly Propagated:
- *          from JAX-RS Client to JAX-RS Server {8}
- *          from MP Client to JAX-RS Server {9}
- *          from JAX-RS Client async to JAX-RS Server {10}
- *          from MP Client async to JAX-RS Server {11}
- *
- *     Correct application of Semantic convention attributes
- *         TCK RestClientSpanTest only checks HTTP_STATUS, HTTP_METHOD, HTTP_SCHEME, HTTP_TARGET, HTTP_URL, see if there are any others which should be present
- *         There are constants defined for each of the attributes in the spec
- *
- * There are several different standards (selected via configuration) for propagating spanIds and baggage. We need to test:
- *
- *     W3C tracer (default for trace)
- *     W3C baggage (default for baggage)
- *     B3 (TODO)
- *     Jaeger (TODO)
+/**
+ * Tests MP Telemetry integration with restfulWS and mpRestClient.
+ * <p>
+ * Whenever a request is made or received by one of these features, MP Telemetry should create a span.
+ * Trace ID information should be sent via the HTTP headers so that the traces from both the client and server can be joined up.
+ * Baggage information should also be sent via the HTTP headers so that contextual information from the first service can be included in trace messages in the second service.
+ * <p>
+ * This class covers:
+ * <p>
+ * Creation of Spans in
+ * <ul>
+ * <li>JAX-RS Client {1}
+ * <li>JAX-RS Server {2}
+ * <li>MP Rest Client {3}
+ * </ul>
+ * <p>
+ * Propagation of Spans from
+ * <ul>
+ * <li>JAX-RS Server to JAX-RS Client {4}
+ * <li>JAX-RS Server to MP Client {5}
+ * <li>JAX-RS Server to JAX-RS Client Async {6}
+ * <li>JAX-RS Server to MP Client Async {7}
+ * </ul>
+ * <p>
+ * Baggage is correctly Propagated:
+ * <ul>
+ * <li>from JAX-RS Client to JAX-RS Server {8}
+ * <li>from MP Client to JAX-RS Server {9}
+ * <li>from JAX-RS Client async to JAX-RS Server {10}
+ * <li>from MP Client async to JAX-RS Server {11}
+ * </ul>
+ * <p>
+ * Correct application of Semantic convention attributes:
+ * <ul>
+ * <li>TCK RestClientSpanTest only checks HTTP_STATUS, HTTP_METHOD, HTTP_SCHEME, HTTP_TARGET, HTTP_URL, see if there are any others which should be present
+ * <li>There are constants defined for each of the attributes in the spec
+ * </ul>
+ * <p>
+ * <strong>NOTE</strong>: Some of the tests in this class could be re-written more simply using {@code FATServlet} and {@code TestSpans}.
+ * However, we've sometimes seen slightly different behaviour for JAX-RS client and MP Rest client depending on whether or not they're called via a JAX-RS resource method.
+ * Therefore we're leaving these tests as they are so that we have some test coverage of calling JAX-RS client via a JAX-RS resource method.
  */
-
 @ApplicationPath("")
 @Path("endpoints")
 public class JaxRsEndpoints extends Application {

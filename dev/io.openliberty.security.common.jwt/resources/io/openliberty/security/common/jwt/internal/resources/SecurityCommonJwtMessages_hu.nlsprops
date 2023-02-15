@@ -1,12 +1,11 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 ###############################################################################
 #CMVCPATHNAME io.openliberty.security.common.jwt/resources/io/openliberty/security/common/jwt/internal/resources/SecurityCommonJwtMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -17,10 +16,10 @@
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS2520 - CWWKS2549
 
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER=CWWKS2520E: A JWT fejl\u00e9cben l\u00e9v\u0151 {0} al\u00e1\u00edr\u00e1si algoritmus nem egyezik a(z) {1} elv\u00e1rt al\u00e1\u00edr\u00e1si algoritmussal.
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.explanation=A kulcssz\u00f3t az \u00fczenetben megadott algoritmussal kell al\u00e1\u00edrni.
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a kulcssz\u00f3 al\u00e1\u00edr\u00e1sra ker\u00fclt a v\u00e1rt algoritmussal, vagy friss\u00edtse a kulcssz\u00f3t fogad\u00f3 komponens konfigur\u00e1ci\u00f3j\u00e1t az \u00fczenetben megadott algoritmus haszn\u00e1lat\u00e1hoz.
-
-SIG_ALG_IN_HEADER_NOT_ALLOWED=CWWKS2521E: A JWT fejl\u00e9cben l\u00e9v\u0151 {0} al\u00e1\u00edr\u00e1si algoritmus nem az enged\u00e9lyezett al\u00e1\u00edr\u00e1si algoritmusok egyike: {1}.
+SIG_ALG_IN_HEADER_NOT_ALLOWED=CWWKS2520E: A JWT fejl\u00e9cben l\u00e9v\u0151 {0} al\u00e1\u00edr\u00e1si algoritmus nem az enged\u00e9lyezett al\u00e1\u00edr\u00e1si algoritmusok egyike: {1}.
 SIG_ALG_IN_HEADER_NOT_ALLOWED.explanation=A kulcssz\u00f3t az \u00fczenetben megadott algoritmusokkal kell al\u00e1\u00edrni.
 SIG_ALG_IN_HEADER_NOT_ALLOWED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kulcssz\u00f3 egy enged\u00e9lyezett algoritmussal van al\u00e1\u00edrva, vagy friss\u00edtse a tokent fogad\u00f3 komponens konfigur\u00e1ci\u00f3j\u00e1t, hogy enged\u00e9lyezze az \u00fczenetben megadott algoritmust.
+
+SIGNING_KEY_NOT_SPECIFIED=CWWKS2521E: A JWT fejl\u00e9cben l\u00e9v\u0151 {0} al\u00e1\u00edr\u00e1si algoritmus al\u00e1\u00edr\u00e1si kulcsot ig\u00e9nyel, de az al\u00e1\u00edr\u00e1si kulcs nincs megadva.
+SIGNING_KEY_NOT_SPECIFIED.explanation=A kiszolg\u00e1l\u00f3 nem tudta lek\u00e9rni a JWT al\u00e1\u00edr\u00e1s ellen\u0151rz\u00e9s\u00e9hez sz\u00fcks\u00e9ges kulcsot. A kulcs egy JSON webkulcsb\u00f3l (JWK) t\u00f6lthet\u0151 be URL, kulcst\u00e1rol\u00f3 vagy megosztott kulcs, amely a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban van megadva.
+SIGNING_KEY_NOT_SPECIFIED.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a tokent fogad\u00f3 \u00f6sszetev\u0151 konfigur\u00e1ci\u00f3ja JWK URL c\u00edmet, megfelel\u0151 kulcst\u00e1rol\u00f3t vagy megosztott kulcsot ad meg.

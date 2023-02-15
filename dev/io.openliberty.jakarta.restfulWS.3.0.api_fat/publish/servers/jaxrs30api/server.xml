@@ -3,7 +3,6 @@
     <featureManager>
         <feature>componenttest-2.0</feature>
         <feature>restfulWS-3.0</feature>
-        <feature>xmlBinding-3.0</feature>
     </featureManager>
     <include location="../fatTestPorts.xml"/>
 </server>

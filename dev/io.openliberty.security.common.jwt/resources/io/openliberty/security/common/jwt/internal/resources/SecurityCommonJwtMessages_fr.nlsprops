@@ -1,12 +1,11 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 ###############################################################################
 #CMVCPATHNAME io.openliberty.security.common.jwt/resources/io/openliberty/security/common/jwt/internal/resources/SecurityCommonJwtMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -17,10 +16,10 @@
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS2520 - CWWKS2549
 
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER=CWWKS2520E: L''algorithme de signature {0} dans l''en-t\u00eate JWT ne correspond pas \u00e0 l''algorithme de signature attendu {1}.
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.explanation=Le jeton doit \u00eatre sign\u00e9 avec l'algorithme sp\u00e9cifi\u00e9 dans le message.
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.useraction=Assurez-vous que le jeton soit sign\u00e9 avec l'algorithme attendu ou mettez \u00e0 jour la configuration du composant qui re\u00e7oit le jeton pour qu'il utilise l'algorithme sp\u00e9cifi\u00e9 dans le message.
-
-SIG_ALG_IN_HEADER_NOT_ALLOWED=CWWKS2521E: L''algorithme de signature {0} dans l''en-t\u00eate JWT n''est pas l''un des algorithmes de signature autoris\u00e9s : {1}.
+SIG_ALG_IN_HEADER_NOT_ALLOWED=CWWKS2520E: L''algorithme de signature {0} dans l''en-t\u00eate JWT n''est pas l''un des algorithmes de signature autoris\u00e9s : {1}.
 SIG_ALG_IN_HEADER_NOT_ALLOWED.explanation=Le jeton doit \u00eatre sign\u00e9 avec l'un des algorithmes sp\u00e9cifi\u00e9s dans le message.
 SIG_ALG_IN_HEADER_NOT_ALLOWED.useraction=Assurez-vous que le jeton soit sign\u00e9 avec l'un des algorithmes autoris\u00e9s ou mettez \u00e0 jour la configuration du composant qui re\u00e7oit le jeton pour qu'il autorise l'algorithme sp\u00e9cifi\u00e9 dans le message.
+
+SIGNING_KEY_NOT_SPECIFIED=CWWKS2521E: L''algorithme de signature {0} dans l''en-t\u00eate JWT requiert une cl\u00e9 de signature et aucune n''est sp\u00e9cifi\u00e9e.
+SIGNING_KEY_NOT_SPECIFIED.explanation=Le serveur n'a pas pu extraire la cl\u00e9 n\u00e9cessaire pour v\u00e9rifier la signature du jeton Web JSON (JWT). La cl\u00e9 peut \u00eatre charg\u00e9e \u00e0 partir d'une URL JWK (JSON Web Key), d'un magasin de cl\u00e9s ou d'une cl\u00e9 partag\u00e9e sp\u00e9cifi\u00e9e dans la configuration du serveur.
+SIGNING_KEY_NOT_SPECIFIED.useraction=Assurez-vous que la configuration du composant qui re\u00e7oit le jeton sp\u00e9cifie une URL JWK, un magasin de cl\u00e9s appropri\u00e9 ou une cl\u00e9 partag\u00e9e.

@@ -21,7 +21,7 @@ var messages = {
     DOCS: "Documentos", // Translate 'Documentation'
     COPYRIGHT: "copyright",
     OPEN_LIBERTY_FOOTER: "Logotipo do rodapé do Liberty",
-    COPYRIGHT_OPEN_LIBERTY: "Licensed Materials — Property of the Open Liberty project, Copyright IBM Corp and others 1997, 2019. O projeto é distribuído sob os termos do Eclipse Public License v2.", // COPYRIGHT_URL
+    COPYRIGHT_OPEN_LIBERTY: "Licensed Materials — Property of the Open Liberty project, Copyright IBM Corp and others 1997, 2019. O projeto é distribuído sob os termos da Eclipse Public License v2.", // COPYRIGHT_URL
     UPDATE_BANNER_SECTION: "Seção de atualização de banner",
     UPDATE_BANNER_SECTION_CONTENT: "Conteúdo da seção de atualização de banner",
     HEADER_UPDATE_AVAILABLE: "Atualização disponível: ",

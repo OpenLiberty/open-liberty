@@ -64,6 +64,7 @@ public class JaxRsIntegration extends FATServletClient {
     public static final String B3_MULTI_APP_NAME = "b3multi";
     public static final String JAEGER_APP_NAME = "jaeger";
     public static final String ASYNC_SERVER_APP_NAME = "jaxrsAsyncServer";
+    public static final String METHODS_APP_NAME = "jaxrsMethods";
 
     @TestServlets({
                     @TestServlet(contextRoot = W3C_TRACE_APP_NAME, servlet = W3CTracePropagationTestServlet.class),
@@ -72,8 +73,8 @@ public class JaxRsIntegration extends FATServletClient {
                     @TestServlet(contextRoot = B3_MULTI_APP_NAME, servlet = B3MultiPropagationTestServlet.class),
                     @TestServlet(contextRoot = JAEGER_APP_NAME, servlet = JaegerPropagationTestServlet.class),
                     @TestServlet(contextRoot = ASYNC_SERVER_APP_NAME, servlet = JaxRsServerAsyncTestServlet.class),
-                    @TestServlet(contextRoot = APP_NAME, servlet = JaxRsMethodTestServlet.class),
-                    @TestServlet(contextRoot = APP_NAME, servlet = JaxRsResponseCodeTestServlet.class),
+                    @TestServlet(contextRoot = METHODS_APP_NAME, servlet = JaxRsMethodTestServlet.class),
+                    @TestServlet(contextRoot = METHODS_APP_NAME, servlet = JaxRsResponseCodeTestServlet.class),
     })
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -86,8 +87,6 @@ public class JaxRsIntegration extends FATServletClient {
                         .addProperty("otel.bsp.schedule.delay", "100");
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackage(JaxRsEndpoints.class.getPackage())
-                        .addPackage(JaxRsMethodTestEndpoints.class.getPackage())
-                        .addPackage(JaxRsResponseCodeTestEndpoints.class.getPackage())
                         .addPackage(InMemorySpanExporter.class.getPackage())
                         .addPackage(TestSpans.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
@@ -155,6 +154,14 @@ public class JaxRsIntegration extends FATServletClient {
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");
 
+        WebArchive methodsApp = ShrinkWrap.create(WebArchive.class, METHODS_APP_NAME + ".war")
+                        .addPackage(JaxRsMethodTestEndpoints.class.getPackage())
+                        .addPackage(JaxRsResponseCodeTestEndpoints.class.getPackage())
+                        .addPackage(InMemorySpanExporter.class.getPackage())
+                        .addPackage(TestSpans.class.getPackage())
+                        .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
+                        .addAsResource(appConfig, "META-INF/microprofile-config.properties");
+
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
         ShrinkHelper.exportAppToServer(server, w3cTraceApp, SERVER_ONLY);
         ShrinkHelper.exportAppToServer(server, w3cTraceBaggageApp, SERVER_ONLY);
@@ -162,6 +169,7 @@ public class JaxRsIntegration extends FATServletClient {
         ShrinkHelper.exportAppToServer(server, b3MultiApp, SERVER_ONLY);
         ShrinkHelper.exportAppToServer(server, jaegerApp, SERVER_ONLY);
         ShrinkHelper.exportAppToServer(server, asyncServerApp, SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(server, methodsApp, SERVER_ONLY);
 
         server.startServer();
     }

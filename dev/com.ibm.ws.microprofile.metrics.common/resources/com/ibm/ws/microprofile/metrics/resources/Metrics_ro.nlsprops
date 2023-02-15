@@ -6,11 +6,13 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -73,6 +75,31 @@ noPrometheusRegistry.info.CWMMC0008I.useraction=Dac\u0103 indisponibilitatea reg
 disabled.info.CWMMC0009I=CWMMC0009I: Punctul final /metrics nu este disponibil, deoarece registrul Prometheus este dezactivat.
 disabled.info.CWMMC0009I.explanation=Proprietatea MicroProfile Config mp.metrics.prometheus.enabled este setat\u0103 la false.
 disabled.info.CWMMC0009I.useraction=Dac\u0103 dezactivarea registrului Prometheus nu este inten\u021bionat\u0103, elimina\u021bi configura\u021bia propriet\u0103\u021bii MicroProfile Config mp.metrics.prometheus.enabled sau seta\u021bi explicit proprietatea la true.
+
+#Embedded SmallRye Metrics or Micrometer JAR not found in the lib directory
+fileNotFound.error.CWMMC0010E=CWMMC0010E: Caracteristica MicroProfile Metrics nu a putut fi ini\u021bializat\u0103. Fi\u0219ierul JAR necesar {0} nu a fost g\u0103sit \u00een directorul <wlp_home>/lib.
+fileNotFound.error.CWMMC0010E.explanation=Fi\u0219ierul JAR nu a fost g\u0103sit \u00een directorul <wlp_home>/lib. Este posibil ca fi\u0219ierul s\u0103 fie \u0219ters sau redenumit.
+fileNotFound.error.CWMMC0010E.useraction=Fi\u0219ierul JAR, care \u00een mod normal se afl\u0103 \u00een directorul <wlp_home>/lib, nu este prezent. Reimplementa\u021bi instalarea serverului de aplica\u021bii.
+
+#Bundle add-on class loader was null
+nullBundleAddOnClassLoader.error.CWMMC0011E=CWMMC0011E: Caracteristica MicroProfile Metrics nu a putut fi ini\u021bializat\u0103. Runtime-ul MicroProfile Metrics nu a putut crea un \u00eenc\u0103rc\u0103tor de clas\u0103 necesar.
+nullBundleAddOnClassLoader.error.CWMMC0011E.explanation=A ap\u0103rut o eroare intern\u0103 la crearea unui \u00eenc\u0103rc\u0103tor de clas\u0103 necesar.
+nullBundleAddOnClassLoader.error.CWMMC0011E.useraction=Verifica\u021bi istoricele FFDC \u0219i textul excep\u021biei pentru a identifica problema.
+
+#SmallRye Metrics classes not found when loading through reflection
+missingSmallRyeClasses.error.CWMMC0012E=CWMMC0012E: Caracteristica MicroProfile Metrics nu a putut fi ini\u021bializat\u0103. O clas\u0103 din SmallRye Metrics nu a fost \u00eenc\u0103rcat\u0103.
+missingSmallRyeClasses.error.CWMMC0012E.explanation=Nu a fost \u00eenc\u0103rcat\u0103 sau lipse\u0219te o clas\u0103, sau mai multe clase, din fi\u0219ierul JAR SmallRye Metrics \u00eempachetat din directorul <wlp_home>/lib.
+missingSmallRyeClasses.error.CWMMC0012E.useraction=Examina\u021bi istoricele FFDC \u0219i textul excep\u021biei pentru a identifica clasa care lipse\u0219te \u0219i a verifica dac\u0103 exist\u0103 \u00een fi\u0219ierul JAR <wlp_home>/lib/io.openliberty.io.smallrye.metrics.
+
+#Configured Micrometer Library is missing dependencies
+missingDependencyClasses.error.CWMMC0013E=CWMMC0013E: Caracteristica MicroProfile Metrics nu a putut fi ini\u021bializat\u0103. Lipse\u0219te o clas\u0103 care este necesar\u0103 pentru o bibliotec\u0103 Micrometer furnizat\u0103 de utilizator.
+missingDependencyClasses.error.CWMMC0013E.explanation=Caracteristica MicroProfile Metrics \u00eencarc\u0103 bibliotecile Micrometer care sunt definite prin atributul libraryRef \u0219i trebuie s\u0103 con\u021bin\u0103 toate dependen\u021bele.
+missingDependencyClasses.error.CWMMC0013E.useraction=Furniza\u021bi dependen\u021bele necesare cu bibliotecile Micrometer.
+
+#MicroProfile Metrics 5.0 has been configured to use a libraryRef attribute
+libraryRefConfigured.info.CWMMC0014I=CWMMC0014I: Caracteristica MicroProfile Metrics este configurat\u0103 pentru a utiliza urm\u0103toarele libraryRef: [{0}]
+libraryRefConfigured.info.CWMMC0014I.explanation=Caracteristica MicroProfile Metrics este configurat\u0103 pentru a utiliza o libraryRef. Aceast\u0103 bibliotec\u0103 referit\u0103 trebuie s\u0103 con\u021bin\u0103 biblioteca nucleu Micrometer, bibliotecile Micrometer \u021bint\u0103 \u0219i dependen\u021bele.
+libraryRefConfigured.info.CWMMC0014I.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 
 #Memory usedHeap message
 memory.usedHeap.description=Afi\u015feaz\u0103 cantitatea de memorie heap utilizat\u0103 \u00een octe\u0163i.

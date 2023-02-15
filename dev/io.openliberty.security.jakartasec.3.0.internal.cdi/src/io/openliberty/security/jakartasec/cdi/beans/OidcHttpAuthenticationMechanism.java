@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -76,6 +76,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
     private static final TraceComponent tc = Tr.register(OidcHttpAuthenticationMechanism.class);
 
     private static final String CHECKING_FOR_EXPIRED_TOKEN = "CHECKING_FOR_EXPIRED_TOKEN";
+    private static final String JASPIC_PROVIDER_PERFORMED_REQUEST_LOGOUT = "JASPIC_PROVIDER_PERFORMED_REQUEST_LOGOUT";
 
     @Inject
     IdentityStoreHandler identityStoreHandler;
@@ -146,6 +147,8 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
             status = processCallback(client, httpMessageContext);
         } else if (alreadyAuthenticated) {
             status = processExpiredTokenResult(processExpiredToken(client, request, response), client, httpMessageContext);
+        } else if (!httpMessageContext.isProtected()) {
+            status = AuthenticationStatus.NOT_DONE;
         }
 
         return status;
@@ -172,7 +175,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
     }
 
     private boolean isProgrammaticAuthenticationWithoutBeingAuthenticated(HttpMessageContext httpMessageContext, boolean alreadyAuthenticated) {
-        return (isNewAuthentication(httpMessageContext.getAuthParameters())) && !alreadyAuthenticated;
+        return isNewAuthentication(httpMessageContext.getAuthParameters()) || (httpMessageContext.isAuthenticationRequest() && !alreadyAuthenticated);
     }
 
     private boolean isNewAuthentication(AuthenticationParameters authParameters) {
@@ -200,7 +203,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         HttpServletRequest request = httpMessageContext.getRequest();
         HttpServletResponse response = httpMessageContext.getResponse();
 
-        request.setAttribute(IS_CONTAINER_INITIATED_FLOW, isContainerInitiatedFlow(httpMessageContext.getAuthParameters()));
+        request.setAttribute(IS_CONTAINER_INITIATED_FLOW, !httpMessageContext.isAuthenticationRequest());
 
         AuthenticationStatus status = AuthenticationStatus.SEND_CONTINUE;
         try {
@@ -301,23 +304,20 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         return originalRequestUrl;
     }
 
-    private Optional<HttpServletRequest> getOriginalResourceRequest(OidcClientConfig clientConfig, HttpMessageContext context) {
-        AuthenticationParameters authParams = context.getAuthParameters();
+    private Optional<HttpServletRequest> getOriginalResourceRequest(OidcClientConfig clientConfig, HttpMessageContext httpMessageContext) {
         HttpServletRequest originalResourceRequest = null;
-        if (shouldRestoreOriginalRequest(clientConfig, authParams)) {
-            HttpServletRequest request = context.getRequest();
-            HttpServletResponse response = context.getResponse();
+
+        if (shouldRestoreOriginalRequest(clientConfig, httpMessageContext)) {
+            HttpServletRequest request = httpMessageContext.getRequest();
+            HttpServletResponse response = httpMessageContext.getResponse();
             originalResourceRequest = getOriginalResourceRequest(request, response, clientConfig.isUseSession());
         }
+
         return Optional.ofNullable(originalResourceRequest);
     }
 
-    private boolean shouldRestoreOriginalRequest(OidcClientConfig clientConfig, AuthenticationParameters authParams) {
-        return clientConfig.isRedirectToOriginalResource() && isContainerInitiatedFlow(authParams);
-    }
-
-    private boolean isContainerInitiatedFlow(AuthenticationParameters authParams) {
-        return (authParams == null || !authParams.isNewAuthentication());
+    private boolean shouldRestoreOriginalRequest(OidcClientConfig clientConfig, HttpMessageContext httpMessageContext) {
+        return clientConfig.isRedirectToOriginalResource() && !httpMessageContext.isAuthenticationRequest();
     }
 
     protected OriginalResourceRequest getOriginalResourceRequest(HttpServletRequest request, HttpServletResponse response, boolean useSession) {
@@ -472,6 +472,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
             } else if (AuthResult.SUCCESS.equals(authResult)) {
                 status = updateOpenIdContextWithRefreshedTokens(providerAuthenticationResult, client, httpMessageContext);
             }
+            // TODO convert an AuthResult.CONTINUE to AuthenticationStatus.NOT_DONE to signal that no further processing is needed.
         }
 
         return status;
@@ -521,7 +522,9 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
     }
 
     @Override
-    public void cleanSubject(HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) {
+    public void cleanSubject(HttpServletRequest req, HttpServletResponse resp, HttpMessageContext httpMessageContext) {
+        HttpServletRequest request = httpMessageContext.getRequest();
+        HttpServletResponse response = httpMessageContext.getResponse();
 
         Object checkingForExpiredTokenObject = request.getAttribute(CHECKING_FOR_EXPIRED_TOKEN);
         boolean checkingForExpiredToken = (checkingForExpiredTokenObject == null) ? false : (boolean) checkingForExpiredTokenObject;
@@ -539,8 +542,8 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
             }
 
             Client client = getClient(request);
-            // The cleanSubject invocation is already in a local logout due to request.logout() and the session will be invalidated if available. So call logoutWithoutLocalLogout.
-            ProviderAuthenticationResult providerAuthenticationResult = client.logoutWithoutLocalLogout(request, response, idTokenString);
+            ProviderAuthenticationResult providerAuthenticationResult = client.logout(request, response, idTokenString);
+            request.setAttribute(JASPIC_PROVIDER_PERFORMED_REQUEST_LOGOUT, "true");
 
             processLogoutResult(providerAuthenticationResult, httpMessageContext);
         }

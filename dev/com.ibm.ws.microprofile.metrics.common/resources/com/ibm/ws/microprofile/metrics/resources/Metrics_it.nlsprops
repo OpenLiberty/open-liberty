@@ -6,11 +6,13 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -73,6 +75,31 @@ noPrometheusRegistry.info.CWMMC0008I.useraction=Se la non disponibilit\u00e0 del
 disabled.info.CWMMC0009I=CWMMC0009I: L'endpoint /metriche non \u00e8 disponibile perch\u00e9 il registro Prometheus \u00e8 disabilitato.
 disabled.info.CWMMC0009I.explanation=La propriet\u00e0 mp.metrics.prometheus.enabled MicroProfile Config \u00e8 impostata su false.
 disabled.info.CWMMC0009I.useraction=Se la disabilitazione del registro Prometheus non \u00e8 intenzionale, rimuovere la configurazione della propriet\u00e0 di configurazione del MicroProfile mp.metrics.prometheus.enabled o impostare esplicitamente la propriet\u00e0 su true.
+
+#Embedded SmallRye Metrics or Micrometer JAR not found in the lib directory
+fileNotFound.error.CWMMC0010E=CWMMC0010E: Non \u00e8 stato possibile inizializzare la funzione delle metriche MicroProfile. Il file JAR {0} richiesto non \u00e8 stato trovato nella directory <wlp_home>/lib.
+fileNotFound.error.CWMMC0010E.explanation=Il file JAR non \u00e8 stato trovato nella directory <wlp_home>/lib. Il file potrebbe essere stato eliminato o ridenominato.
+fileNotFound.error.CWMMC0010E.useraction=Il file JAR, normalmente ubicato nella directory <wlp_home>/lib, non \u00e8 presente. Distribuire nuovamente l'installazione del server delle applicazioni.
+
+#Bundle add-on class loader was null
+nullBundleAddOnClassLoader.error.CWMMC0011E=CWMMC0011E: Non \u00e8 stato possibile inizializzare la funzione delle metriche MicroProfile. Il runtime delle metriche MicroProfile non \u00e8 stato in grado di creare un programma di caricamento classi richiesto.
+nullBundleAddOnClassLoader.error.CWMMC0011E.explanation=Si \u00e8 verificato un errore interno durante la creazione di un programma di caricamento classi richiesto.
+nullBundleAddOnClassLoader.error.CWMMC0011E.useraction=Esaminare i log FFDC e il testo dell'eccezione per individuare il problema.
+
+#SmallRye Metrics classes not found when loading through reflection
+missingSmallRyeClasses.error.CWMMC0012E=CWMMC0012E: Non \u00e8 stato possibile inizializzare la funzione delle metriche MicroProfile. Una classe delle metriche SmallRye non \u00e8 stata caricata.
+missingSmallRyeClasses.error.CWMMC0012E.explanation=Una classe o delle classi del JAR delle metriche SmallRye in pacchetto, dalla directory <wlp_home>/lib, non sono state caricate o risultano mancanti.
+missingSmallRyeClasses.error.CWMMC0012E.useraction=Esaminare i log FFDC e il testo dell'eccezione per identificare la classe mancante e verificare che esista nel JAR <wlp_home>/lib/io.openliberty.io.smallrye.metrics.
+
+#Configured Micrometer Library is missing dependencies
+missingDependencyClasses.error.CWMMC0013E=CWMMC0013E: Non \u00e8 stato possibile inizializzare la funzione delle metriche MicroProfile. Manca una classe richiesta per una libreria Micrometer fornita dall'utente.
+missingDependencyClasses.error.CWMMC0013E.explanation=La funzione delle metriche MicroProfile sta caricando le librerie Micrometer che vengono definite tramite l'attributo libraryRef e devono contenere tutte le dipendenze.
+missingDependencyClasses.error.CWMMC0013E.useraction=Fornire le dipendenze necessarie con le librerie Micrometer.
+
+#MicroProfile Metrics 5.0 has been configured to use a libraryRef attribute
+libraryRefConfigured.info.CWMMC0014I=CWMMC0014I: La funzione delle metriche MicroProfile \u00e8 configurata per utilizzare il seguente attributo libraryRef: [{0}]
+libraryRefConfigured.info.CWMMC0014I.explanation=La funzione delle metriche MicroProfile \u00e8 configurata per utilizzare un attributo libraryRef. Questa libreria di riferimento deve contenere la libreria di base Micrometer, le dipendenze e le librerie Micrometer di destinazione.
+libraryRefConfigured.info.CWMMC0014I.useraction=Non \u00e8 richiesta alcuna azione.
 
 #Memory usedHeap message
 memory.usedHeap.description=Visualizza la quantit\u00e0 di memoria heap utilizzata in byte.

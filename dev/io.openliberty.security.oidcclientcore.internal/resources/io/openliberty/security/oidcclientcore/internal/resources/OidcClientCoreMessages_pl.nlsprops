@@ -1,9 +1,11 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -119,3 +121,7 @@ OIDC_CLIENT_INVALID_RESPONSE_TYPE.useraction=Podaj jeden z poprawnych typ\u00f3w
 TOKEN_CLAIM_VALUE_MISMATCH=CWWKS2424E: Warto\u015b\u0107 [{0}] dla roszczenia [{1}] w tokenie nie jest zgodna z oczekiwan\u0105 warto\u015bci\u0105 [{2}].
 TOKEN_CLAIM_VALUE_MISMATCH.explanation=Warto\u015b\u0107 roszczenia nie jest poprawna lub jest zniekszta\u0142cona. Konfiguracja klienta OpenID Connect mo\u017ce by\u0107 niepoprawna lub token zosta\u0142 utworzony z niepoprawnymi warto\u015bciami.
 TOKEN_CLAIM_VALUE_MISMATCH.useraction=Upewnij si\u0119, \u017ce atrybut w konfiguracji klienta OpenID Connect, kt\u00f3ry jest powi\u0105zany z roszczeniem okre\u015blonym w komunikacie, zosta\u0142 poprawnie skonfigurowany.
+
+TOKEN_MISSING_CLAIMS=CWWKS2425E: Token klienta produktu {0} OpenID Connect nie jest poprawny. Warto\u015b\u0107 jwtClaims w obiekcie JwtContext ma warto\u015b\u0107 NULL lub jest pusta.
+TOKEN_MISSING_CLAIMS.explanation=Brak informacji w tokenie i nie mo\u017cna zako\u0144czy\u0107 sprawdzania poprawno\u015bci tokenu.
+TOKEN_MISSING_CLAIMS.useraction=Sprawd\u017a, czy w dzienniku nie odnotowano wcze\u015bniejszych b\u0142\u0119d\u00f3w zwi\u0105zanych z tym niepowodzeniem. Sprawd\u017a format i tre\u015b\u0107 tokenu, kt\u00f3ry jest zwracany przez dostawc\u0119 OpenID Connect.

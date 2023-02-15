@@ -1,12 +1,11 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 ###############################################################################
 #CMVCPATHNAME io.openliberty.security.common.jwt/resources/io/openliberty/security/common/jwt/internal/resources/SecurityCommonJwtMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -17,10 +16,10 @@
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS2520 - CWWKS2549
 
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER=CWWKS2520E: Algorytm podpisu {0} w nag\u0142\u00f3wku JWT nie jest zgodny z oczekiwanym algorytmem podpisu {1}.
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.explanation=Token musi by\u0107 podpisany za pomoc\u0105 algorytmu okre\u015blonego w komunikacie.
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.useraction=Upewnij si\u0119, \u017ce token zosta\u0142 podpisany oczekiwanym algorytmem lub zaktualizuj konfiguracj\u0119 komponentu, kt\u00f3ry odbiera token, aby u\u017cy\u0107 algorytmu okre\u015blonego w komunikacie.
-
-SIG_ALG_IN_HEADER_NOT_ALLOWED=CWWKS2521E: Algorytm podpisu {0} w nag\u0142\u00f3wku JWT nie jest jednym z dozwolonych algorytm\u00f3w: {1}.
+SIG_ALG_IN_HEADER_NOT_ALLOWED=CWWKS2520E: Algorytm podpisu {0} w nag\u0142\u00f3wku JWT nie jest jednym z dozwolonych algorytm\u00f3w: {1}.
 SIG_ALG_IN_HEADER_NOT_ALLOWED.explanation=Token musi by\u0107 podpisany za pomoc\u0105 jednego z algorytm\u00f3w okre\u015blonych w komunikacie.
 SIG_ALG_IN_HEADER_NOT_ALLOWED.useraction=Upewnij si\u0119, \u017ce token zosta\u0142 podpisany jednym z dozwolonych algorytm\u00f3w lub zaktualizuj konfiguracj\u0119 komponentu, kt\u00f3ry odbiera token, aby zezwoli\u0107 na algorytm okre\u015blony w komunikacie.
+
+SIGNING_KEY_NOT_SPECIFIED=CWWKS2521E: Algorytm podpisu {0} w nag\u0142\u00f3wku JWT wymaga klucza podpisuj\u0105cego, ale klucz podpisuj\u0105cy nie zosta\u0142 okre\u015blony.
+SIGNING_KEY_NOT_SPECIFIED.explanation=Serwer nie m\u00f3g\u0142 pobra\u0107 klucza potrzebnego do zweryfikowania podpisu JWT. Klucz mo\u017ce zosta\u0107 za\u0142adowany z adresu URL JWK (JSON Web Key), pliku kluczy lub klucza wsp\u00f3\u0142u\u017cytkowanego okre\u015blonego w konfiguracji serwera.
+SIGNING_KEY_NOT_SPECIFIED.useraction=Upewnij si\u0119, \u017ce konfiguracja komponentu, kt\u00f3ry odbiera token, okre\u015bla adres URL JWK, odpowiedni plik kluczy lub klucz wsp\u00f3\u0142u\u017cytkowany.
