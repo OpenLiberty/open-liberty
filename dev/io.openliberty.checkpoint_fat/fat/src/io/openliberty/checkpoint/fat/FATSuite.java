@@ -69,6 +69,7 @@ import componenttest.topology.impl.LibertyServer;
                 ManagedBeansTest.class,
                 BellsTest.class,
                 JaxWSVirtualHostTest.class,
+                WebAppMessageTest.class,
                 SkipIfCheckpointNotSupportedAnnotationTest.class,
                 RestConnectorTest.class
 })
