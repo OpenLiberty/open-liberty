@@ -1935,7 +1935,7 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testKeysetWithLimit() {
         // This is not a recommended pattern. Testing to see how it is handled.
-        KeysetAwarePage<Prime> page = primes.findByNumberBetween(15L, 45L, Limit.of(5L));
+        KeysetAwarePage<Prime> page = primes.findByNumberBetween(15L, 45L, Limit.of(5));
 
         assertEquals(1L, page.number());
         assertEquals(5L, page.numberOfElements());
@@ -3280,7 +3280,7 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testSliceWithLimit() {
         // This is not a recommended pattern. Testing to see how it is handled.
-        Slice<Prime> slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("II", 50L, Limit.of(4L), Sort.desc("number"));
+        Slice<Prime> slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("II", 50L, Limit.of(4), Sort.desc("number"));
 
         assertEquals(1L, slice.number());
         assertEquals(4L, slice.numberOfElements());

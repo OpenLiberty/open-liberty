@@ -1580,7 +1580,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             TypedQuery<?> query = em.createQuery(queryInfo.jpql, queryInfo.entityInfo.type);
                             queryInfo.setParameters(query, args);
 
-                            int maxResults = limit != null ? (int) limit.maxResults() // TODO fix data type in spec
+                            int maxResults = limit != null ? limit.maxResults() //
                                             : pagination != null ? pagination.size() //
                                                             : queryInfo.maxResults;
 
@@ -1944,7 +1944,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         if (limit.startAt() != 1L)
             throw new DataException(new IllegalArgumentException("Limit with starting point " + limit.startAt() +
                                                                  ", which is greater than 1, cannot be used to request pages or slices."));
-        return Pageable.ofSize((int) limit.maxResults()); // TODO remove cast once spec is updated
+        return Pageable.ofSize(limit.maxResults());
     }
 
     private static final Object toReturnValue(int i, Class<?> returnType, QueryInfo queryInfo) {
