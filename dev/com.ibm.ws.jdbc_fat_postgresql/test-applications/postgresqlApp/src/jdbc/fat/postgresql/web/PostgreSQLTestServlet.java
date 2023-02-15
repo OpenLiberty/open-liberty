@@ -55,9 +55,6 @@ public class PostgreSQLTestServlet extends FATServlet {
 
     private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
-    @Resource(lookup = "jdbc/anonymous/XADataSource")
-    DataSource resRefDS;
-
     @Resource
     UserTransaction tx;
 
