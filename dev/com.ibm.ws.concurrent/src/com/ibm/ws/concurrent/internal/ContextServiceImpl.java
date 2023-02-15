@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -74,7 +74,6 @@ import com.ibm.ws.context.service.serializable.ContextualInvocationHandler;
 import com.ibm.ws.context.service.serializable.ContextualObject;
 import com.ibm.ws.context.service.serializable.ThreadContextManager;
 import com.ibm.ws.javaee.version.JavaEEVersion;
-import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
@@ -99,8 +98,6 @@ import com.ibm.wsspi.threadcontext.WSContextService;
 public class ContextServiceImpl implements ContextService, //
                 ResourceFactory, ThreadContext, WSContextService, ApplicationRecycleComponent {
     private static final TraceComponent tc = Tr.register(ContextServiceImpl.class);
-
-    private static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     // Names of references
     private static final String BASE_INSTANCE = "baseInstance",
@@ -642,15 +639,15 @@ public class ContextServiceImpl implements ContextService, //
                         String parentPid = (String) properties.get("config.parentPID");
                         if (parentPid != null) {
                             String filter = FilterUtils.createPropertyFilter("service.pid", parentPid);
-                            BundleContext bc = priv.getBundleContext(componentContext);
+                            BundleContext bc = ConcurrencyService.priv.getBundleContext(componentContext);
                             Collection<ServiceReference<ManagedExecutorService>> refs = //
-                                            priv.getServiceReferences(bc, ManagedExecutorService.class, filter);
+                                            ConcurrencyService.priv.getServiceReferences(bc, ManagedExecutorService.class, filter);
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                                 Tr.debug(this, tc, filter + " found:", refs);
                             Iterator<ServiceReference<ManagedExecutorService>> it = refs.iterator();
                             if (it.hasNext()) {
                                 ServiceReference<ManagedExecutorService> ref = refs.iterator().next();
-                                executor = priv.getService(bc, ref);
+                                executor = ConcurrencyService.priv.getService(bc, ref);
                                 if (executor == null)
                                     throw new IllegalStateException(filter);
                                 else
@@ -879,7 +876,7 @@ public class ContextServiceImpl implements ContextService, //
         }
 
         // Inherit complementary thread context config from base instance
-        ContextServiceImpl baseInstance = (ContextServiceImpl) priv.locateService(componentContext, BASE_INSTANCE);
+        ContextServiceImpl baseInstance = (ContextServiceImpl) ConcurrencyService.priv.locateService(componentContext, BASE_INSTANCE);
         if (baseInstance != null)
             baseInstance.addComplementaryThreadContextConfigurationsTo(this);
 
