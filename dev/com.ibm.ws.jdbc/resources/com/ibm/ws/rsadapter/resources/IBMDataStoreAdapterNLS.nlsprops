@@ -303,7 +303,7 @@ META_DATA_EXCEPTION.useraction=Verify that the metadata is enabled on the backen
 # Do not translate: java.util.Logging
 ORACLE_TRACE_PARSE_WARNING=DSRA7043W: A default value was used for the {0} system property because of the following parsing error: {1}
 ORACLE_TRACE_PARSE_WARNING.explanation=The system property strings for Oracle are parsed and passed to the java.util.logging library. If a property value cannot be parsed, a default value is used instead.
-ORACLE_TRACE_PARSE_WARNING.useraction=Examine the parsing error, and modify the system property. Additional documentation for valid logging properties are documented within the java.util.logging package.
+ORACLE_TRACE_PARSE_WARNING.useraction=Examine the parsing error and modify the system property. The valid logging properties are documented within the java.util.logging package.
 
 ORACLE_TRACE_ENABLE_INFO=DSRA7044I: Oracle JDBC driver tracing was enabled via the {0} system property. One or more of the [{1}] system properties that are required to separate Oracle log files are missing.
 ORACLE_TRACE_ENABLE_INFO.explanation=The Oracle JDBC debug driver uses the java.util.logging package for tracing. By default, the Oracle JDBC debug logs will be integrated into Liberty logs. To configure Oracle JDBC debug trace separation, all of the properties in this message must be configured as system properties.
