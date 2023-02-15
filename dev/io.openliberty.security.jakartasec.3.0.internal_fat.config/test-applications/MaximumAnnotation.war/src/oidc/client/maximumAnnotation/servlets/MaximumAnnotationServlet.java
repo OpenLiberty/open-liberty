@@ -51,7 +51,7 @@ import oidc.client.base.servlets.BaseServlet;
                                          jwksReadTimeout = Constants.OVERRIDE_DEFAULT_JWKS_READ_TIMEOUT,
                                          tokenAutoRefresh = false,
                                          tokenAutoRefreshExpression = "",
-                                         tokenMinValidity = Constants.TOKEN_MIN_VALIDITY,
+                                         tokenMinValidity = Constants.DEFAULT_TOKEN_MIN_VALIDITY,
                                          tokenMinValidityExpression = "",
                                          providerMetadata = @OpenIdProviderMetadata(authorizationEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/authorize",
                                                                                     tokenEndpoint = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1/token"))
