@@ -10,6 +10,8 @@
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
+ * 
+ * MODIFIED 2023 for Open Liberty to default to using SafeConstructor
  */
 package org.yaml.snakeyaml;
 
@@ -27,7 +29,7 @@ import java.util.regex.Pattern;
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.composer.Composer;
 import org.yaml.snakeyaml.constructor.BaseConstructor;
-import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.constructor.SafeConstructor;
 import org.yaml.snakeyaml.emitter.Emitable;
 import org.yaml.snakeyaml.emitter.Emitter;
 import org.yaml.snakeyaml.error.YAMLException;
@@ -61,7 +63,8 @@ public class Yaml {
    * Create Yaml instance.
    */
   public Yaml() {
-    this(new Constructor(), new Representer(), new DumperOptions(), new LoaderOptions(),
+    // Liberty change
+    this(new SafeConstructor(), new Representer(), new DumperOptions(), new LoaderOptions(),
         new Resolver());
   }
 
@@ -71,7 +74,8 @@ public class Yaml {
    * @param dumperOptions DumperOptions to configure outgoing objects
    */
   public Yaml(DumperOptions dumperOptions) {
-    this(new Constructor(), new Representer(dumperOptions), dumperOptions);
+    // Liberty change
+    this(new SafeConstructor(), new Representer(dumperOptions), dumperOptions);
   }
 
   /**
@@ -80,7 +84,8 @@ public class Yaml {
    * @param loadingConfig LoadingConfig to control load behavior
    */
   public Yaml(LoaderOptions loadingConfig) {
-    this(new Constructor(loadingConfig), new Representer(), new DumperOptions(), loadingConfig);
+    // Liberty change
+    this(new SafeConstructor(loadingConfig), new Representer(), new DumperOptions(), loadingConfig);
   }
 
   /**
@@ -89,7 +94,8 @@ public class Yaml {
    * @param representer Representer to emit outgoing objects
    */
   public Yaml(Representer representer) {
-    this(new Constructor(), representer);
+    // Liberty change
+    this(new SafeConstructor(), representer);
   }
 
   /**
@@ -128,7 +134,8 @@ public class Yaml {
    * @param dumperOptions DumperOptions to configure outgoing objects
    */
   public Yaml(Representer representer, DumperOptions dumperOptions) {
-    this(new Constructor(), representer, dumperOptions, new LoaderOptions(), new Resolver());
+    // Liberty change
+    this(new SafeConstructor(), representer, dumperOptions, new LoaderOptions(), new Resolver());
   }
 
   /**
