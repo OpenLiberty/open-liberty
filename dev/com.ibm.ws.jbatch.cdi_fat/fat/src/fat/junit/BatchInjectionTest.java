@@ -74,7 +74,15 @@ public class BatchInjectionTest extends FATServletClient {
                         .addPackages(true, "app.injection")
                         .addPackages(true, "fat.util");
 
+        if (!JakartaEE10Action.isActive()) {
+            implicit.deletePackages(true, "app.injection.ee10");
+        }
+
         addBatchJob(implicit, "Injection.xml");
+
+        if (JakartaEE10Action.isActive()) {
+            addBatchJob(implicit, "InjectionNonStringProps.xml");
+        }
 
         // Write the WebArchive to 'publish/servers/<server>/apps' and print the contents
         ShrinkHelper.exportAppToServer(server1, implicit);
@@ -95,7 +103,7 @@ public class BatchInjectionTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.stopServer();
+        server1.stopServer("CWWKY0011W");
     }
 
 }
