@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,13 +14,13 @@ package io.openliberty.checkpoint.fat;
 
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
+import static io.openliberty.checkpoint.fat.FATSuite.updateVariableConfig;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedReader;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -36,8 +36,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.websphere.simplicity.config.Variable;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
@@ -189,7 +187,7 @@ public class MPHealthTest extends FATServletClient {
                     Map<String, String> checks = new HashMap<>();
                     checks.put("mp.health.default.readiness.empty.response", "UP");
                     checks.put("mp.health.default.startup.empty.response", "UP");
-                    updateVariableConfig(checks);
+                    updateVariableConfigMap(checks);
                     break;
                 default:
                     Log.info(getClass(), testName.getMethodName(), "No configuration required: " + testMethod);
@@ -201,24 +199,11 @@ public class MPHealthTest extends FATServletClient {
         }
     }
 
-    private void updateVariableConfig(Map<String, String> configMap) throws Exception {
+    private void updateVariableConfigMap(Map<String, String> configMap) throws Exception {
         // change config of variable for restore
-        ServerConfiguration config = server.getServerConfiguration();
         for (Map.Entry<String, String> entry : configMap.entrySet()) {
-            config = removeTestKeyVar(config, entry.getKey());
-            config.getVariables().add(new Variable(entry.getKey(), entry.getValue()));
-            server.updateServerConfiguration(config);
+            updateVariableConfig(server, entry.getKey(), entry.getValue());
         }
-    }
-
-    private ServerConfiguration removeTestKeyVar(ServerConfiguration config, String key) {
-        for (Iterator<Variable> iVars = config.getVariables().iterator(); iVars.hasNext();) {
-            Variable var = iVars.next();
-            if (var.getName().equals(key)) {
-                iVars.remove();
-            }
-        }
-        return config;
     }
 
     @After
