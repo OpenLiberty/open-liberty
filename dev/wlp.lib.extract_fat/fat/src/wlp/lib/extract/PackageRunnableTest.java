@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -210,7 +210,7 @@ public class PackageRunnableTest {
 
         String extLoc = executeTheJar(extractDirectory3, false, true, true);
 
-        assertTrue("The extract location does not match the WLP_JAR_EXTRACT_DIR. ExtractDir = " + extractDirectory3.getAbsolutePath() + " vs " + extractLocation,
+        assertTrue("The extract location does not match the WLP_JAR_EXTRACT_DIR. ExtractDir = " + extractDirectory3.getAbsolutePath() + " vs " + extLoc,
                    extLoc.startsWith(extractDirectory3.getAbsolutePath()));
 
         assertTrue("root folder at " + extractDirectory3.getAbsolutePath() + " does not exist, but should.", extractDirectory3.exists());
@@ -313,7 +313,15 @@ public class PackageRunnableTest {
 
             assertTrue("Extract directory " + extractDirectory.getAbsolutePath() + " does not exist.", extractDirectory.exists());
 
-            String[] cmd = { "java", "-jar", runnableJar.getAbsolutePath() };
+            String[] cmd;
+
+            if (System.getProperty("os.name").equalsIgnoreCase("os/400")) {
+                // If this is running on IBM i, add the -XX:+EnableHCR option to not run in a separate JVM
+                cmd = new String[] { "java", "-XX:+EnableHCR", "-jar", runnableJar.getAbsolutePath() };
+            } else {
+                cmd = new String[] { "java", "-jar", runnableJar.getAbsolutePath() };
+            }
+
             Log.info(c, method, "Running command: " + Arrays.toString(cmd));
             ProcessBuilder processBuilder = new ProcessBuilder(cmd);
             processBuilder.redirectErrorStream(true);
@@ -380,6 +388,9 @@ public class PackageRunnableTest {
                 assertTrue("Runnable jar did not contain a META-INF/MANIFEST.MF file", manifestFound);
 
                 // If we have an invalid package, save off the jar for troubleshooting.
+                outputAutoFVTDirectory = new File("output/servers/", serverName);
+                Log.info(c, method, "outputAutoFVTDirectory: " + outputAutoFVTDirectory.getAbsolutePath());
+
                 outputAutoFVTDirectory.mkdirs();
                 Log.info(c, method, "Copying directory from " +
                                     runnableJar.getAbsolutePath() + " to " +
@@ -421,10 +432,11 @@ public class PackageRunnableTest {
         } finally {
 
             if (proc.isAlive()) {
-                // Attempt to dump the server if its still alive
-                Log.info(c, method, "Dumping server as it has not stopped by request.");
-                server.dumpServer(extractLoc + File.separator + "usr" + File.separator + "servers" + File.separator + serverName);
-
+                if (server.isStarted()) {
+                    // Attempt to dump the server if its still alive
+                    Log.info(c, method, "Dumping server as it has not stopped by request.");
+                    server.dumpServer(extractLoc + File.separator + "usr" + File.separator + "servers" + File.separator + serverName);
+                }
                 Log.info(c, method, "Destroying the process as it was not stopped via the previous attempts.");
                 proc.destroy();
             }
@@ -473,7 +485,15 @@ public class PackageRunnableTest {
             }
         }
 
-        String[] cmd = { "java", "-cp", extractAndRunDir.getAbsolutePath(), "wlp.lib.extract.SelfExtractRun" };
+        String[] cmd;
+
+        if (System.getProperty("os.name").equalsIgnoreCase("os/400")) {
+            // If this is running on IBM i, add the -XX:+EnableHCR option to not run in a separate JVM
+            cmd = new String[] { "java", "-XX:+EnableHCR", "-cp", extractAndRunDir.getAbsolutePath(), "wlp.lib.extract.SelfExtractRun" };
+        } else {
+            cmd = new String[] { "java", "-cp", extractAndRunDir.getAbsolutePath(), "wlp.lib.extract.SelfExtractRun" };
+        }
+
         Log.info(c, "executeAndExecuteMain", "Running command: " + Arrays.toString(cmd));
         ProcessBuilder processBuilder = new ProcessBuilder(cmd);
         processBuilder.redirectErrorStream(true);
@@ -517,7 +537,7 @@ public class PackageRunnableTest {
             Log.info(c, "extractAndExecuteMain", "WLP installation directory was removed.");
         }
 
-        Log.info(c, "extractAndExecuteMain", "Waiting 30 seconds...to make sure all Liberty thread exiting.");
+        Log.info(c, "extractAndExecuteMain", "Waiting 30 seconds...to make sure all Liberty threads exit.");
         Thread.sleep(30000); // wait 30 second
     }
 

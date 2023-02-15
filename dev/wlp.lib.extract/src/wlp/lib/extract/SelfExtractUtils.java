@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2017 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -677,21 +677,23 @@ public class SelfExtractUtils {
     }
 
     /*
-     * PlatformType provides constants to denote Unix, Windows, or Cygwin platform/environment.
+     * PlatformType provides constants to denote Unix, Windows, Cygwin or OS/400 platform/environment.
      */
 
     public static final int PlatformType_UNIX = 1;
     public static final int PlatformType_WINDOWS = 2;
     public static final int PlatformType_CYGWIN = 3;
+    public static final int PlatformType_OS400 = 4;
 
     /**
-     * Return platform type. Determine this by interrogating properties and environemnt variables
+     * Return platform type. Determine this by interrogating properties and environment variables
      * as follows:
      * 1) If Java os.name property indicates Windows and the WLP_CYGWIN env var is not set, then it's Windows.
      * 2) If Java os.name property indicates Windows and the WLP_CYGWIN env var *is* set, then it's Cygwin.
-     * 3) If Java os.name property indicates other than Windows, then platform type is regarded a Unix.
+     * 3) If Java os.name property indicates OS/400, then platform type is regarded as OS400.
+     * 4) If Java os.name property indicates other than Windows or OS/400, then platform type is regarded as Unix.
      *
-     * @return int value for unix(1), windows(2), or cygwin(3) according to interrogation
+     * @return int value for unix(1), windows(2), cygwin(3) or os400(4) according to interrogation
      */
     public static int getPlatform() {
         if (System.getProperty("os.name").startsWith("Win")) {
@@ -700,9 +702,10 @@ public class SelfExtractUtils {
             } else {
                 return PlatformType_WINDOWS;
             }
+        } else if (System.getProperty("os.name").equalsIgnoreCase("os/400")) {
+            return PlatformType_OS400;
         } else {
             return PlatformType_UNIX;
         }
     }
-
 }

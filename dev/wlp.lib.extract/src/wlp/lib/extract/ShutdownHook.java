@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2017 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -40,9 +40,9 @@ public class ShutdownHook implements Runnable {
     /**
      * The only constructor.
      *
-     * @param platformType - platform type: unix(1), windows(2), cygwin(3)
-     * @param dir - extraction directory
-     * @param serverName - name of server from jar (in extraction directory)
+     * @param platformType         - platform type: unix(1), windows(2), cygwin(3), os400(4)
+     * @param dir                  - extraction directory
+     * @param serverName           - name of server from jar (in extraction directory)
      * @param extractDirPredefined - flag which indicates if WLP_JAR_EXTRACT_DIR was predefined by user
      */
     public ShutdownHook(int platformType,
@@ -96,7 +96,7 @@ public class ShutdownHook implements Runnable {
         // build stop command for Unix platforms
         String cmd = dir + File.separator + "wlp" + File.separator + "bin" + File.separator + "server stop " + serverName;
 
-        if (platformType == SelfExtractUtils.PlatformType_UNIX) {
+        if (platformType == SelfExtractUtils.PlatformType_UNIX || platformType == SelfExtractUtils.PlatformType_OS400) {
             // use command as-is
         } else if (platformType == SelfExtractUtils.PlatformType_WINDOWS) {
             cmd = "cmd /c " + cmd;
@@ -125,6 +125,10 @@ public class ShutdownHook implements Runnable {
             scriptFile = writeCleanupFile(SelfExtractUtils.PlatformType_UNIX);
             rt.exec("chmod 750 " + scriptFile.getAbsolutePath());
             rt.exec("sh -c " + scriptFile.getAbsolutePath() + " &");
+        } else if (platformType == SelfExtractUtils.PlatformType_OS400) {
+            scriptFile = writeCleanupFile(SelfExtractUtils.PlatformType_OS400);
+            rt.exec("chmod 750 " + scriptFile.getAbsolutePath());
+            rt.exec("/usr/bin/qsh -c " + scriptFile.getAbsolutePath() + " &");
         } else if (platformType == SelfExtractUtils.PlatformType_WINDOWS) {
             scriptFile = writeCleanupFile(SelfExtractUtils.PlatformType_WINDOWS);
             // Note: must redirect output in order for script to run on windows.
@@ -142,7 +146,7 @@ public class ShutdownHook implements Runnable {
      * Write logic for windows cleanup script
      *
      * @param file - script File object
-     * @param bw - bufferedWriter to write into script file
+     * @param bw   - bufferedWriter to write into script file
      * @throws IOException
      */
     private void writeWindowsCleanup(File file, BufferedWriter bw) throws IOException {
@@ -178,14 +182,13 @@ public class ShutdownHook implements Runnable {
      * Write logic for Unix cleanup script
      *
      * @param file - script File object
-     * @param bw - bufferedWriter to write into script file
+     * @param bw   - bufferedWriter to write into script file
      * @throws IOException
      */
     private void writeUnixCleanup(File file, BufferedWriter bw) throws IOException {
 
         String logDir = dir + File.separator + "wlp" + File.separator + "usr" + File.separator + "servers" + File.separator + serverName + File.separator + "logs";
         String serverDir = dir + File.separator + "wlp" + File.separator + "usr" + File.separator + "servers" + File.separator + serverName + File.separator;
-
         File tempDir = Files.createTempDirectory("logs").toFile();
 
         bw.write("echo begin delete" + "\n");
@@ -211,7 +214,7 @@ public class ShutdownHook implements Runnable {
      * Write logic for Cygwin cleanup script
      *
      * @param file - script File object
-     * @param bw - bufferedWriter to write into script file
+     * @param bw   - bufferedWriter to write into script file
      * @throws IOException
      */
     private void writeCygwinCleanup(File file, BufferedWriter bw) throws IOException {
@@ -241,7 +244,7 @@ public class ShutdownHook implements Runnable {
      * of doing the delete in the background, even after the
      * foreground process has terminated.
      *
-     * @param type is the platform type: unix(1), windows(2), or cygwin(3)
+     * @param type is the platform type: unix(1), windows(2), cygwin(3) or os400(4)
      * @return a script File object
      * @throws IOException
      */
@@ -263,7 +266,7 @@ public class ShutdownHook implements Runnable {
 
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file.getAbsoluteFile()), "UTF-8"));
 
-        if (platformType == SelfExtractUtils.PlatformType_UNIX) {
+        if (platformType == SelfExtractUtils.PlatformType_UNIX || platformType == SelfExtractUtils.PlatformType_OS400) {
             writeUnixCleanup(file, bw);
         } else if (platformType == SelfExtractUtils.PlatformType_WINDOWS) {
             writeWindowsCleanup(file, bw);
