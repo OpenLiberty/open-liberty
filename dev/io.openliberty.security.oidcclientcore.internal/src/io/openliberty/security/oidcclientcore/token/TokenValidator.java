@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,9 @@ import java.util.List;
 
 import org.jose4j.jwt.NumericDate;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
 
 public class TokenValidator {
@@ -32,6 +35,8 @@ public class TokenValidator {
     protected OidcClientConfig oidcConfig;
 
     private final long clockSkewInSeconds = 120; // default value in seconds
+    
+    public static final TraceComponent tc = Tr.register(TokenValidator.class);
 
     public TokenValidator(OidcClientConfig clientConfig) {
         this.oidcConfig = clientConfig;
@@ -115,18 +120,21 @@ public class TokenValidator {
     }
 
     protected void validateAudiences() throws TokenValidationException {
-        if (this.audiences != null && !(this.audiences.isEmpty())) {
-            if (this.audiences.size() == 1) {
-                // validate aud claim against client id
-                if (!(oidcConfig.getClientId().equals(this.audiences.get(0)))) {
-                    throw new TokenClaimMismatchException(oidcConfig.getClientId(), audiences.get(0), "aud", oidcConfig.getClientId());
-                }
-            } else if (this.azp == null) {
-                // if more than one audience, then azp claim is a must
-                throw new TokenValidationException(oidcConfig.getClientId(), "multiple audiences present [ " + this.audiences(audiences).toString()
-                                                                             + " ], but required azp claim is missing");
-            }
+        if (this.audiences == null || this.audiences.isEmpty()) {
+            throw new TokenValidationException(oidcConfig.getClientId(), Tr.formatMessage(tc, "TOKEN_MISSING_REQUIRED_CLAIM", "aud"));
         }
+        if (this.audiences.contains(oidcConfig.getClientId())) {
+            if (this.audiences.size() > 1 && this.azp == null) {
+                // if more than one audience, then azp claim is a must
+                throw new TokenValidationException(oidcConfig.getClientId(), Tr.formatMessage(tc, "TOKEN_MISSING_REQUIRED_CLAIM", "azp") );
+            }
+        } else {      
+            StringBuffer audience = new StringBuffer();
+            for (String aud : this.audiences) {            
+                audience.append("\"").append(aud).append("\"").append(" ");
+            }
+            throw new TokenClaimMismatchException(oidcConfig.getClientId(), audience.toString(), "aud", oidcConfig.getClientId());
+        }         
     }
 
     protected void validateSubject() throws TokenValidationException {
