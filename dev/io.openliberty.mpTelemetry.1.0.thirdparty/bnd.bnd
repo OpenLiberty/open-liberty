@@ -1,16 +1,13 @@
 #*******************************************************************************
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/bundle.props,~../cnf/resources/bnd/transform.props
+-include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 publish.wlp.jar.suffix: dev/api/third-party
 
@@ -42,13 +39,14 @@ Private-Package: \
   io.opentelemetry.semconv.resource.attributes;version=${alphaOpenTelemetryVersion},\
   io.opentelemetry.instrumentation.annotations;version=${alphaOpenTelemetryVersion}
   
-Import-Package: \
-  *
-  
+Import-Package:
+
+Export-Package:
+
 -buildpath: \
   io.openliberty.jakarta.interceptor.2.1;version=latest,\
   io.openliberty.io.opentelemetry.internal;version=latest
   
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
-WS-TraceGroup: opentelemetry
+WS-TraceGroup: TELEMETRY
