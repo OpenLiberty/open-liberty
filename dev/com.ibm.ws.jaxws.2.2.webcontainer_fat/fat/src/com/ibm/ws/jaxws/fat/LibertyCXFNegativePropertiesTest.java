@@ -131,7 +131,7 @@ public class LibertyCXFNegativePropertiesTest {
     private void connect(String methodName, int ExpectedConnection) throws Exception {
         String serverURL = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort();
         URL url = new URL(serverURL + "/webServiceRefFeatures/wsapolicyskip?impl=" + methodName + "&serverurl=" + serverURL);
-        Log.info(c, "LibertyCXFPositivePropertiesTest",
+        Log.info(c, "LibertyCXFNegativePropertiesTest",
                  "Calling Application with URL=" + url.toString());
         HttpUtils.trustAllCertificates();
         HttpUtils.trustAllHostnames();
