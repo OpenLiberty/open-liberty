@@ -212,7 +212,8 @@ public abstract class WebContainer extends BaseContainer {
 
     public static boolean appInstallBegun = false;
     
-    private static final Map<VHostCacheKey, String> vhostCache = new MRUVHostCache(200);
+    private static final VHostCache vhostCache = new VHostCache(200);
+    private static final int vHostCacheMRUThreshold = 10;
     
     // Servlet 4.0 : Must be static since referenced from static method
     protected static CacheServletWrapperFactory cacheServletWrapperFactory;
@@ -2046,6 +2047,46 @@ public abstract class WebContainer extends BaseContainer {
         @Override
         public int hashCode() {
             return Objects.hash(serverName, serverPort);
+        }
+    }
+    
+    /**
+     *  We start with a lightweight, vHost cache implementation, which should suffice for 
+     *  typical cloud native apps. If the number vHostCacheKey exceeds a threshold, 
+     *  we move that vHostCacheKey cache to an MRU implementation, which is slower but avoids the possibility 
+     *  of a memory leak. 
+     */
+    private static class VHostCache {
+        private volatile Map<VHostCacheKey, String> vHostKeyCacheMap = new ConcurrentHashMap<>();
+        private volatile boolean isMRU = false;
+        private final int mruMaxSize;
+
+        VHostCache(int maxSize) {
+            mruMaxSize = maxSize;
+        }
+
+        public void put(VHostCacheKey vhostCacheKey, String vhostKey) {
+            String oldValue = vHostKeyCacheMap.put(vhostCacheKey, vhostKey);
+            if(oldValue == null && !isMRU && vHostKeyCacheMap.size() > vHostCacheMRUThreshold) {
+                synchronized(this){
+                    if(!isMRU && vHostKeyCacheMap.size() > vHostCacheMRUThreshold) {
+                        vHostKeyCacheMap = getMRUVHostCache();
+                        isMRU = true;
+                    }
+                }
+            }
+        }
+
+        public String get(VHostCacheKey key) {
+            return vHostKeyCacheMap.get(key);
+        }
+
+        private Map<VHostCacheKey, String> getMRUVHostCache() {
+            Map<VHostCacheKey, String> newMap = new MRUVHostCache(mruMaxSize);
+            for(Map.Entry<VHostCacheKey, String> entry : vHostKeyCacheMap.entrySet()) {
+                newMap.put(entry.getKey(), entry.getValue());
+            }
+            return newMap;
         }
     }
     
