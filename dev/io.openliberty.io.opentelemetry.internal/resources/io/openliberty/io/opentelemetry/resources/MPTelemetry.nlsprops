@@ -25,9 +25,9 @@
 # Message prefix block: CWMOT5000 - CWMOT5999
 #-----------------------------------------------------------------------------------------------------------------------------
 
-CWMOT5000.cannot.get.globalopentelemetry=CWMOT5000W: Cannot get GlobalOpenTelemetry.
-CWMOT5000.cannot.get.globalopentelemetry.explanation=The GlobalOpenTelemetry instance should not be used as the entrypoint to telemetry functionality.
-CWMOT5000.cannot.get.globalopentelemetry.useraction=Use the OpenTelemetry instance instead.
+CWMOT5000.cannot.get.globalopentelemetry=CWMOT5000W: The GlobalOpenTelemetry.get method was called. This method returns a non-functional OpenTelemetry object. Use CDI to inject an OpenTelemetry object instead.
+CWMOT5000.cannot.get.globalopentelemetry.explanation=There is no global OpenTelemetry object and so using GlobalOpenTelemetry is not supported. Each application must instead use CDI to inject the OpenTelemetry object for that application.
+CWMOT5000.cannot.get.globalopentelemetry.useraction=Use CDI to inject the OpenTelemetry object.
 
 CWMOT5001.cannot.set.globalopentelemetry=CWMOT5001E: Setting GlobalOpenTelemetry is not supported
 CWMOT5001.cannot.set.globalopentelemetry.explanation=There is no global OpenTelemetry object and so calling the GlobalOpenTelemetry.set method is not supported. Each application must instead use CDI to inject the OpenTelemetry object for that application.
