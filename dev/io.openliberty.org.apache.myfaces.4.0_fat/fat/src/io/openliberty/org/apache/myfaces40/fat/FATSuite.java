@@ -29,6 +29,7 @@ import io.openliberty.org.apache.myfaces40.fat.tests.Faces40ThirdPartyApiTests;
 import io.openliberty.org.apache.myfaces40.fat.tests.Faces40URNTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.FacesConfigTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.FacesContextGetLifecycleTest;
+import io.openliberty.org.apache.myfaces40.fat.tests.Html5Tests;
 import io.openliberty.org.apache.myfaces40.fat.tests.InputTextTypeTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.LayoutAttributeTests;
 import io.openliberty.org.apache.myfaces40.fat.tests.MultipleInputFileTest;
@@ -37,6 +38,7 @@ import io.openliberty.org.apache.myfaces40.fat.tests.SelectItemTests;
 import io.openliberty.org.apache.myfaces40.fat.tests.SimpleTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.SubscribeToEventTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.UIViewRootGetDoctypeTest;
+import io.openliberty.org.apache.myfaces40.fat.tests.WebSocketTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -56,7 +58,10 @@ import io.openliberty.org.apache.myfaces40.fat.tests.UIViewRootGetDoctypeTest;
                 SelectItemTests.class,
                 SimpleTest.class,
                 SubscribeToEventTest.class,
-                UIViewRootGetDoctypeTest.class
+                UIViewRootGetDoctypeTest.class,
+                Faces40URNTest.class,
+                WebSocketTests.class,
+                Html5Tests.class
 })
 
 public class FATSuite {
