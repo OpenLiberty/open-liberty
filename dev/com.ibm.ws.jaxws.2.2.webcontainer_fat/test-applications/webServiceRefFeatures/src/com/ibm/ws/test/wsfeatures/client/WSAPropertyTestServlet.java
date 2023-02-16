@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -53,23 +53,22 @@ public class WSAPropertyTestServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         String methodName = request.getParameter("impl");
-        // Decided to pass as parameter instead of getting from request since getting from request is not always reliable
-        String serverURL = request.getParameter("serverurl");
+        int port = request.getLocalPort();
+        String host = request.getLocalAddr();
 
         if (methodName != null && (methodName.equals("ImageServiceImplService") || methodName.equals("testCxfAttachmentOutputProperty"))) {
             ImageService proxy = imageServiceNegative.getImageServiceImplPort();
             BindingProvider provider = (BindingProvider) proxy;
             provider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                                             serverURL + "/webServiceRefFeatures/ImageServiceImplService");
+                                             "https://" + host + ":" + port + "/webServiceRefFeatures/ImageServiceImplService");
 
             proxy.uploadImage("ServiceInjection", new DataHandler(new FileDataSource("resources/" + "a.jpg")));
-        } else {// method=testCxfPropertyUnsupportedPolicy or null
-            ImageServiceTwo proxy = imageService.getImageServiceImplPortTwo();
-            BindingProvider provider = (BindingProvider) proxy;
-            provider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                                             serverURL + "/webServiceRefFeatures/ImageServiceImplServiceTwo");
+        } // method=testCxfPropertyUnsupportedPolicy or null
+        ImageServiceTwo proxy = imageService.getImageServiceImplPortTwo();
+        BindingProvider provider = (BindingProvider) proxy;
+        provider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                                         "https://" + host + ":" + port + "/webServiceRefFeatures/ImageServiceImplServiceTwo");
 
-            proxy.uploadImage("ServiceInjection", new DataHandler(new FileDataSource("resources/" + "a.jpg")));
-        }
+        proxy.uploadImage("ServiceInjection", new DataHandler(new FileDataSource("resources/" + "a.jpg")));
     }
 }
