@@ -29,6 +29,6 @@ CWMOT5000.cannot.get.globalopentelemetry=CWMOT5000W: Cannot get GlobalOpenTeleme
 CWMOT5000.cannot.get.globalopentelemetry.explanation=The GlobalOpenTelemetry instance should not be used as the entrypoint to telemetry functionality.
 CWMOT5000.cannot.get.globalopentelemetry.useraction=Use the OpenTelemetry instance instead.
 
-CWMOT5001.cannot.set.globalopentelemetry=CWMOT5001E: Cannot set GlobalOpenTelemetry.
-CWMOT5001.cannot.set.globalopentelemetry.explanation=The GlobalOpenTelemetry instance should not be used as the entrypoint to telemetry functionality.
-CWMOT5001.cannot.set.globalopentelemetry.useraction=Use the OpenTelemetry instance instead.
+CWMOT5001.cannot.set.globalopentelemetry=CWMOT5001E: Setting GlobalOpenTelemetry is not supported
+CWMOT5001.cannot.set.globalopentelemetry.explanation=There is no global OpenTelemetry object and so calling the GlobalOpenTelemetry.set method is not supported. Each application must instead use CDI to inject the OpenTelemetry object for that application.
+CWMOT5001.cannot.set.globalopentelemetry.useraction=Do not call the GlobalOpenTelemetry.get method. Where the application code needs to obtain an OpenTelemetry object, use CDI to inject it.
