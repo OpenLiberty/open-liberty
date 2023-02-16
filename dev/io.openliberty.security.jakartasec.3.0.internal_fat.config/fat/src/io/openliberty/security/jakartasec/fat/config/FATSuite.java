@@ -23,6 +23,7 @@ import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationELValues
 import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationELValuesOverrideWithoutHttpSessionTests;
 import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationExtraParametersTests;
 import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationPromptTests;
+import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationProviderMetadataTests;
 import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationResponseModeTests;
 import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationScopeTests;
 import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationSigningTests;
@@ -47,7 +48,8 @@ import io.openliberty.security.jakartasec.fat.config.tests.ConfigurationUserInfo
                 ConfigurationELValuesOverrideTests.class,
                 ConfigurationELValuesOverrideWithoutHttpSessionTests.class,
                 ConfigurationUserInfoTests.class,
-                ConfigurationSigningTests.class
+                ConfigurationSigningTests.class,
+                ConfigurationProviderMetadataTests.class
 })
 public class FATSuite {
 

@@ -58,6 +58,8 @@
 	<classpathentry kind="src" path="test-applications/DisplayEmpty.war/src"/>
 	<classpathentry kind="src" path="test-applications/DisplayPopupWithEL.war/src"/>
 	<classpathentry kind="src" path="test-applications/JwksEndpoint.war/src"/>
+	<classpathentry kind="src" path="test-applications/ProviderMetadata.war/src"/>
+	<classpathentry kind="src" path="test-applications/Endpoints.war/src"/>
 	<classpathentry kind="src" path="test-applications/TokenMinValidity5s.war/src"/>
 	<classpathentry kind="src" path="test-applications/TokenMinValidity20s.war/src"/>
 	<classpathentry kind="src" path="test-applications/TokenMinValidity30s.war/src"/>

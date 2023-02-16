@@ -72,6 +72,8 @@ src: \
     test-applications/DisplayEmpty.war/src,\
     test-applications/DisplayPopupWithEL.war/src,\
     test-applications/JwksEndpoint.war/src,\
+    test-applications/Endpoints.war/src,\
+    test-applications/ProviderMetadata.war/src,\
     test-applications/TokenMinValidity5s.war/src,\
     test-applications/TokenMinValidity20s.war/src,\
     test-applications/TokenMinValidity30s.war/src,\

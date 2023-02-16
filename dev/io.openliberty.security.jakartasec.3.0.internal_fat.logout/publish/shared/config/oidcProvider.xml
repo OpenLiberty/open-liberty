@@ -252,7 +252,8 @@ https://localhost:${bvt.prop.security_2_HTTP_default.secure}/GoodRedirectNotifyP
 https://localhost:${bvt.prop.security_2_HTTP_default.secure}/GoodRedirectNotifyProviderTrueTestEndSessionLogoutServlet/Callback,
 https://localhost:${bvt.prop.security_2_HTTP_default.secure}/EmptyRedirectNotifyProviderTrueTestEndSessionLogoutServlet/Callback,
 https://localhost:${bvt.prop.security_2_HTTP_default.secure}/GoodRedirectExtraParmsNotifyProviderTrueLogoutServlet/Callback,
-https://localhost:${bvt.prop.security_2_HTTP_default.secure}/GoodRedirectExtraParmsNotifyProviderFalseLogoutServlet/Callback"
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/GoodRedirectExtraParmsNotifyProviderFalseLogoutServlet/Callback,
+https://localhost:${bvt.prop.security_2_HTTP_default.secure}/BadEndSessionNotifyProviderTrueLogoutServlet/Callback"
 				scope="ALL_SCOPES"
 				enabled="true"
 				postLogoutRedirectUris="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/PostLogoutServlet/PostLogout,

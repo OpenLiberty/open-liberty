@@ -114,7 +114,9 @@ autoFVT.doLast {
 	'jakartasec-3.0_fat.config.rp.userinfo.json.jwt',
 	'jakartasec-3.0_fat.config.rp.userinfo.json.opaque',
 	'jakartasec-3.0_fat.config.rp.signing.jwt',
-	'jakartasec-3.0_fat.config.rp.signing.opaque'
+	'jakartasec-3.0_fat.config.rp.signing.opaque',
+	'jakartasec-3.0_fat.config.rp.providerMetadata.jwt',
+	'jakartasec-3.0_fat.config.rp.providerMetadata.opaque'
 
   ]
 

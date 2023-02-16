@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -766,12 +766,108 @@ public class TestConfigMaps {
 
     }
 
+    public static Map<String, Object> getDefaultAuthorizationEndpoint(String opBase, String provider) throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.AUTHORIZATION_ENDPOINT, opBase + "/oidc/endpoint/" + provider + "/authorize");
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getTestAuthorizationEndpoint(String rpBase) throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.AUTHORIZATION_ENDPOINT, rpBase + "/Endpoints/authorize");
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getEmptyAuthorizationEndpoint() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.AUTHORIZATION_ENDPOINT, "");
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getBadAuthorizationEndpoint(String rpBase) throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.AUTHORIZATION_ENDPOINT, rpBase + "/Endpoints/doesntExist");
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getDefaultTokenEndpoint(String opBase, String provider) throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.TOKEN_ENDPOINT, opBase + "/oidc/endpoint/" + provider + "/token");
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getTestTokenEndpoint(String rpBase) throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.TOKEN_ENDPOINT, rpBase + "/Endpoints/token");
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getEmptyTokenEndpoint() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.TOKEN_ENDPOINT, "");
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getBadTokenEndpoint(String rpBase) throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.TOKEN_ENDPOINT, rpBase + "/Endpoints/doesntExist");
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getTestJwksURI(String rpBase) throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.JWKSURI, rpBase + "/Endpoints/jwk");
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getDefaultJwksURI(String opBase, String provider) throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.JWKSURI, opBase + "/oidc/endpoint/" + provider + "/jwk");
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getEmptyJwksURI() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.JWKSURI, "");
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getTestUserinfoEndpoint(String rpBase) throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.USERINFO_ENDPOINT, rpBase + "/Endpoints/userinfo");
+        return updatedMap;
+
+    }
+
     public static Map<String, Object> getGoodUserInfo(String opBase, String provider) throws Exception {
 
         String userinfoApp = opBase + "oidc/endpoint/" + provider + "/userinfo";
         Map<String, Object> updatedMap = new HashMap<String, Object>();
         Log.info(thisClass, "", "userinfoApp: " + userinfoApp);
-        updatedMap.put(Constants.USERINFOENDPOINT, userinfoApp);
+        updatedMap.put(Constants.USERINFO_ENDPOINT, userinfoApp);
         return updatedMap;
 
     }
@@ -780,7 +876,7 @@ public class TestConfigMaps {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
         Log.info(thisClass, "", "userinfoApp: " + userinfoApp);
-        updatedMap.put(Constants.USERINFOENDPOINT, rpBase + "/UserInfo/" + userinfoApp);
+        updatedMap.put(Constants.USERINFO_ENDPOINT, rpBase + "/UserInfo/" + userinfoApp);
         return updatedMap;
 
     }
@@ -789,7 +885,7 @@ public class TestConfigMaps {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
         Log.info(thisClass, "", "userinfoApp: " + opBase);
-        updatedMap.put(Constants.USERINFOENDPOINT, opBase);
+        updatedMap.put(Constants.USERINFO_ENDPOINT, opBase);
         return updatedMap;
 
     }
@@ -798,7 +894,7 @@ public class TestConfigMaps {
 
         Map<String, Object> updatedMap = new HashMap<String, Object>();
         Log.info(thisClass, "", "userinfoApp:  (not set)");
-        updatedMap.put(Constants.USERINFOENDPOINT, "");
+        updatedMap.put(Constants.USERINFO_ENDPOINT, "");
         return updatedMap;
 
     }
@@ -808,6 +904,87 @@ public class TestConfigMaps {
         Map<String, Object> updatedMap = new HashMap<String, Object>();
         Log.info(thisClass, "", "endSessionApp: " + appName);
         updatedMap.put(Constants.ENDSESSION_ENDPOINT, serverBase + "/" + appName);
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getEmptyEndSessionEndpoint() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        Log.info(thisClass, "", "endSessionApp: \"\"");
+        updatedMap.put(Constants.ENDSESSION_ENDPOINT, "");
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getDefaultIssuer(String opBase, String provider) throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.ISSUER, opBase + "/oidc/endpoint/" + provider);
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getEmptyIssuer() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.ISSUER, "");
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getBadIssuer(String rpBase) throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.ISSUER, rpBase + "/someProvider");
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getDefaultSubjectTypeSupported() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.SUBJECTTYPESUPPORTED, "public");
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getEmptySubjectTypeSupported() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.SUBJECTTYPESUPPORTED, "");
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getBadSubjectTypeSupported() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.SUBJECTTYPESUPPORTED, "SomeValue");
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getDefaultResponseTypeSupported() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.RESPONSETYPESUPPORTED, "code,id_token,token id_token");
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getEmptyResponseTypeSupported() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.RESPONSETYPESUPPORTED, "");
+        return updatedMap;
+
+    }
+
+    public static Map<String, Object> getBadResponseTypeSupported() throws Exception {
+
+        Map<String, Object> updatedMap = new HashMap<String, Object>();
+        updatedMap.put(Constants.RESPONSETYPESUPPORTED, "SomeValue");
         return updatedMap;
 
     }
