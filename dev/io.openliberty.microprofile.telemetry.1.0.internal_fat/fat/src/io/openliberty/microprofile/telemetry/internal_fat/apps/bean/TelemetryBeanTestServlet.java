@@ -61,7 +61,6 @@ public class TelemetryBeanTestServlet extends FATServlet {
                         span.getSpanContext().equals(spanTwo.getSpanContext()));
             assertEquals("The current span was not the one we created and invoked makeCurrent() with", newSpan.getSpanContext(), spanTwo.getSpanContext());
             assertEquals("The injected span was not the same as the current span after calling makeCurrent()", spanTwo.getSpanContext(), injectedSpan.getSpanContext());
-            s.close();
         } finally {
             newSpan.end();
         }
@@ -84,7 +83,6 @@ public class TelemetryBeanTestServlet extends FATServlet {
             assertEquals("Didn't find expected value in injected baggage", "bar", injectedBaggage.getEntryValue("foo"));
             assertEquals("The current baggage was not the one we created and invoked makeCurrent() with", newBaggage.asMap(), baggageTwo.asMap());
             assertEquals("The injected baggage was not the same as the current baggage after calling makeCurrent()", baggageTwo.asMap(), injectedBaggage.asMap());
-            s.close();
         }
 
     }

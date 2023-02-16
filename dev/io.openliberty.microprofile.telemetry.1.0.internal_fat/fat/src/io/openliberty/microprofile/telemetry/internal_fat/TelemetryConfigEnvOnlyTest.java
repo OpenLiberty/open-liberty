@@ -11,8 +11,6 @@ package io.openliberty.microprofile.telemetry.internal_fat;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -55,7 +53,6 @@ public class TelemetryConfigEnvOnlyTest extends FATServletClient {
         // This tests that we do pick up config properties which are _only_ defined in the environment, using a format which MP Config only accepts for environment variables.
         server.addEnvVar("otel_service_name", "overrideDone");
         server.addEnvVar("otel_sdk_disabled", "false");
-        server.setJvmOptions(new ArrayList<>(Arrays.asList("-Dio.opentelemetry.context.enableStrictContext=true")));
         server.startServer();
     }
 

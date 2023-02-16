@@ -190,11 +190,10 @@ public class JaxRsEndpoints extends Application {
                             .request(MediaType.TEXT_PLAIN)
                             .get(String.class);
             assertEquals(TEST_PASSED, result);
-            s.close();
         } finally {
             LOGGER.info("<<< getJax");
-            return Response.ok(Span.current().getSpanContext().getTraceId()).build();
         }
+        return Response.ok(Span.current().getSpanContext().getTraceId()).build();
     }
 
     //This URL is called by the test framework to trigger testing for calling JAX-RS client in Asnyc.
@@ -229,8 +228,8 @@ public class JaxRsEndpoints extends Application {
 
         } finally {
             LOGGER.info("<<< getJax");
-            return Response.ok(Span.current().getSpanContext().getTraceId()).build();
         }
+        return Response.ok(Span.current().getSpanContext().getTraceId()).build();
     }
 
     //A method to be called by JAX Clients
@@ -277,8 +276,9 @@ public class JaxRsEndpoints extends Application {
             assertEquals(TEST_PASSED, result);
         } finally {
             LOGGER.info("<<< getMP");
-            return Response.ok(Span.current().getSpanContext().getTraceId()).build();
         }
+        return Response.ok(Span.current().getSpanContext().getTraceId()).build();
+        
     }
 
     //This method is called via mpClient from the entry methods.
@@ -335,10 +335,8 @@ public class JaxRsEndpoints extends Application {
             assertEquals(TEST_PASSED, result);
 
             LOGGER.info("<<< getMPAsync");
-            s.close();
-        } finally {
-            return Response.ok(Span.current().getSpanContext().getTraceId()).build();
         }
+        return Response.ok(Span.current().getSpanContext().getTraceId()).build();
     }
 
     @RegisterRestClient

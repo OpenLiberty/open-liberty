@@ -14,8 +14,6 @@ package io.openliberty.microprofile.telemetry.internal_fat;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -61,7 +59,6 @@ public class TelemetryServiceNameTest extends FATServletClient {
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class);
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
-        server.setJvmOptions(new ArrayList<>(Arrays.asList("-Dio.opentelemetry.context.enableStrictContext=true")));
         server.startServer();
     }
 

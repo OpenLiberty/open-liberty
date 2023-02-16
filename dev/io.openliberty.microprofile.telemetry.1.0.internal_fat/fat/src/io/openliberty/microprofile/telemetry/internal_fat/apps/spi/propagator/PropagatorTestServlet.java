@@ -73,7 +73,6 @@ public class PropagatorTestServlet extends FATServlet {
                 // Call PropagatorTarget (below)
                 String result = ClientBuilder.newClient().target(getTargetURI()).request().get(String.class);
                 assertEquals("OK", result);
-                s.close();
             }
         });
 
