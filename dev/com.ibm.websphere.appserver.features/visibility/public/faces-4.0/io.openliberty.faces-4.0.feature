@@ -35,7 +35,7 @@ IBM-API-Package: jakarta.faces; type="spec", \
  org.apache.myfaces.renderkit.html.util; type="third-party"
 IBM-ShortName: faces-4.0
 WLP-AlsoKnownAs: jsf-4.0
-Subsystem-Name: Jakarta Server Faces 4.0
+Subsystem-Name: Jakarta Faces 4.0
 -features=io.openliberty.jakarta.websocket-2.1, \
   com.ibm.websphere.appserver.servlet-6.0, \
   io.openliberty.jakarta.xmlBinding-4.0, \
