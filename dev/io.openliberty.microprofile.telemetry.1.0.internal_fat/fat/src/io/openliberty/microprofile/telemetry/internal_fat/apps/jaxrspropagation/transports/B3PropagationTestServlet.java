@@ -63,7 +63,6 @@ public class B3PropagationTestServlet extends FATServlet {
             try (Scope s = baggage.makeCurrent()) {
                 PropagationHeaderClient client = RestClientBuilder.newBuilder().baseUri(PropagationHeaderEndpoint.getBaseUri(request)).build(PropagationHeaderClient.class);
                 client.get();
-                s.close();
             }
         });
 

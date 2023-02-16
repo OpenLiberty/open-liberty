@@ -59,7 +59,6 @@ public class MultiThreadedContextServlet extends FATServlet {
 
             //check that the baggage was not modified by the sub-task
             assertCurrentBaggage(MY_KEY_1, MY_VALUE_1);
-            s.close();
         }
     }
 
@@ -77,7 +76,6 @@ public class MultiThreadedContextServlet extends FATServlet {
 
             //check that the baggage was not modified by the sub-task
             assertCurrentBaggage(MY_KEY_1, MY_VALUE_1);
-            s.close();
         }
     }
 
@@ -99,7 +97,6 @@ public class MultiThreadedContextServlet extends FATServlet {
 
             //check that the baggage of the current context was not modified by the sub-task
             assertCurrentBaggage(MY_KEY_1, MY_VALUE_1);
-            s.close();
         }
     }
 
@@ -124,7 +121,6 @@ public class MultiThreadedContextServlet extends FATServlet {
 
             //check that the baggage of the current context was not modified by the sub-task
             assertCurrentBaggage(MY_KEY_1, MY_VALUE_1);
-            s.close();
         }
     }
 
@@ -180,10 +176,8 @@ public class MultiThreadedContextServlet extends FATServlet {
 
                     //check that the new baggage is in the current context
                     assertCurrentBaggage(key, MY_VALUE_3);
-                    s.close();
                 }
             }
-
             return results;
         }
 
