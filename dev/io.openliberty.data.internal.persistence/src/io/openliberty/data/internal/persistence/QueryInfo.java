@@ -30,6 +30,7 @@ import jakarta.data.repository.Sort;
 import jakarta.persistence.Query;
 
 /**
+ * Query information.
  */
 class QueryInfo {
     private final TraceComponent tc = Tr.register(QueryInfo.class);
@@ -42,6 +43,12 @@ class QueryInfo {
      * Information about the type of entity to which the query pertains.
      */
     EntityInfo entityInfo;
+
+    /**
+     * Indicates if the query has an ORDER BY clause.
+     * This is accurate only for generated or partially provided queries.
+     */
+    boolean hasOrder;
 
     /**
      * Indicates if the query has a WHERE clause.
@@ -371,6 +378,7 @@ class QueryInfo {
     QueryInfo withJPQL(String jpql) {
         QueryInfo q = new QueryInfo(method, returnArrayType, returnTypeParam);
         q.entityInfo = entityInfo;
+        q.hasOrder = hasOrder;
         q.hasWhere = hasWhere;
         q.jpql = jpql;
         q.jpqlAfterKeyset = jpqlAfterKeyset;

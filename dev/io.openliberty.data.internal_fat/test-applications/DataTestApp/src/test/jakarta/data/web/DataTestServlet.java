@@ -3423,6 +3423,76 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * When sort criteria is specified statically via the OrderBy annotation and
+     * dynamically via Sorts from pagination, the static sort criteria is applied
+     * before the dynamic sort criteria.
+     */
+    @Test
+    public void testSortCriteriaOfOrderByAnnoTakesPrecedenceOverPaginationSorts() {
+
+        Pageable pagination = Pageable.ofSize(9).sortBy(Sort.desc("number"));
+        Page<Prime> page1 = primes.findByNumberLessThan(49L, pagination);
+
+        assertIterableEquals(List.of("17(2)", "5(2)", "3(2)",
+                                     "41(3)", "37(3)", "19(3)", "13(3)", "11(3)", "7(3)"),
+                             page1.stream()
+                                             .map(p -> p.number + "(" + p.sumOfBits + ")")
+                                             .collect(Collectors.toList()));
+
+        Page<Prime> page2 = primes.findByNumberLessThan(49L, page1.nextPageable());
+
+        assertIterableEquals(List.of("43(4)", "29(4)", "23(4)",
+                                     "47(5)", "31(5)",
+                                     "2(1)"),
+                             page2.stream()
+                                             .map(p -> p.number + "(" + p.sumOfBits + ")")
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * When sort criteria is specified statically via the OrderBy keyword and
+     * dynamically via Sorts, the static sort criteria is applied
+     * before the dynamic sort criteria.
+     */
+    @Test
+    public void testSortCriteriaOfOrderByKeywordTakesPrecedenceOverSorts() {
+
+        assertIterableEquals(List.of("3(2)", "5(2)", "17(2)",
+                                     "7(3)", "11(3)", "13(3)", "19(3)", "37(3)", "41(3)",
+                                     "23(4)", "29(4)", "43(4)",
+                                     "31(5)", "47(5)",
+                                     "2(1)"),
+                             primes.findByNumberLessThanOrderByEven(50L, Sort.asc("sumOfBits"), Sort.asc("number"))
+                                             .map(p -> p.number + "(" + p.sumOfBits + ")")
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * When sort criteria is specified statically via the Query annotation and
+     * dynamically via Sorts from pagination, the static sort criteria is applied
+     * before the dynamic sort criteria.
+     */
+    @Test
+    public void testSortCriteriaOfQueryTakesPrecedenceOverPaginationSorts() {
+
+        Pageable pagination = Pageable.ofSize(10).sortBy(Sort.desc("sumOfBits"), Sort.desc("romanNumeral"));
+        Page<String> page1 = primes.romanNumerals(51L, pagination);
+
+        assertIterableEquals(List.of("XXXVII",
+                                     "XLVII", "XXIII", "XLIII",
+                                     "XXXI", "XXIX", "XIII", "XVII",
+                                     "XLI", "XIX"),
+                             page1.content());
+
+        Page<String> page2 = primes.romanNumerals(51L, page1.nextPageable());
+
+        assertIterableEquals(List.of("VII", "III",
+                                     "XI", "II",
+                                     "V"),
+                             page2.content());
+    }
+
+    /**
      * Repository method that returns a stream and uses it as a parallel stream.
      */
     @Test

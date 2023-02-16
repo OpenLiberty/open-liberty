@@ -353,9 +353,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             String upper = queryInfo.jpql.toUpperCase();
             String upperTrimmed = upper.stripLeading();
             if (upperTrimmed.startsWith("SELECT")) {
+                int orderBy = upper.lastIndexOf("ORDER BY");
                 queryInfo.type = QueryInfo.Type.SELECT;
-
+                queryInfo.hasOrder = orderBy > 0;
                 queryInfo.jpqlCount = query.count().length() > 0 ? query.count() : null;
+
                 if (countPages && queryInfo.jpqlCount == null) {
                     // Attempt to infer from provided query
                     int select = upper.indexOf("SELECT");
@@ -365,7 +367,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         int comma = s.indexOf(',');
                         if (comma > 0)
                             s = s.substring(0, comma);
-                        int orderBy = upper.lastIndexOf("ORDER BY");
                         queryInfo.jpqlCount = new StringBuilder(queryInfo.jpql.length() + 7) //
                                         .append("SELECT COUNT(").append(s.trim()).append(") ") //
                                         .append(orderBy > from ? queryInfo.jpql.substring(from, orderBy) : queryInfo.jpql.substring(from)) //
@@ -412,10 +413,10 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             }
         }
 
-        // The Sorts parameter is from JNoSQL and might get added to Jakarta Data.
-        // The @OrderBy annotation from Jakarta Data defines the same information annotatively.
+        // The @OrderBy annotation from Jakarta Data provides sort criteria statically
         OrderBy[] orderBy = queryInfo.method.getAnnotationsByType(OrderBy.class);
         if (orderBy.length > 0) {
+            queryInfo.hasOrder = true;
             queryInfo.type = queryInfo.type == null ? QueryInfo.Type.SELECT : queryInfo.type;
             if (q == null)
                 if (queryInfo.jpql == null) {
@@ -962,6 +963,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         StringBuilder o = needsKeysetQueries ? new StringBuilder(100) : q; // forward order
         StringBuilder r = needsKeysetQueries ? new StringBuilder(100).append(" ORDER BY ") : null; // reverse order
         List<Sort> keyset = needsKeysetQueries ? new ArrayList<>() : null;
+
+        queryInfo.hasOrder = true;
 
         o.append(" ORDER BY ");
 
@@ -1518,9 +1521,15 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         for (int i = queryInfo.paramCount - queryInfo.paramAddedCount; i < (args == null ? 0 : args.length); i++) {
                             Object param = args[i];
                             if (param instanceof Limit)
-                                limit = (Limit) param; // TODO must fail if 2 Limits
+                                if (limit == null)
+                                    limit = (Limit) param;
+                                else
+                                    throw new DataException("Repository method " + method + " cannot have multiple Limit parameters."); // TODO NLS
                             else if (param instanceof Pageable)
-                                pagination = (Pageable) param; // TODO must fail if 2 Pageables
+                                if (pagination == null)
+                                    pagination = (Pageable) param;
+                                else
+                                    throw new DataException("Repository method " + method + " cannot have multiple Pageable parameters."); // TODO NLS
                             else if (param instanceof Sort)
                                 sortList = queryInfo.entityInfo.getSorts(sortList, (Sort) param);
                             else if (param instanceof Sort[])
@@ -1529,11 +1538,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
                         if (pagination != null) {
                             if (limit != null)
-                                throw new DataException("Repository method " + method + " cannot have both Limit and Pageable as parameters."); // TODO
+                                throw new DataException("Repository method " + method + " cannot have both Limit and Pageable as parameters."); // TODO NLS
                             if (sortList == null || sortList.isEmpty())
                                 sortList = queryInfo.entityInfo.getSorts(pagination);
                             else if (sortList != null && !pagination.sorts().isEmpty())
-                                throw new DataException("Repository method " + method + " cannot specify Sort parameters if Pageable also has Sort parameters."); // TODO
+                                throw new DataException("Repository method " + method + " cannot specify Sort parameters if Pageable also has Sort parameters."); // TODO NLS
                         }
 
                         if (sortList != null && !sortList.isEmpty()) {
@@ -1541,7 +1550,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             StringBuilder q = new StringBuilder(queryInfo.jpql);
                             StringBuilder o = null; // ORDER BY clause based on Sorts
                             for (Sort sort : sortList) {
-                                o = o == null ? new StringBuilder(100).append(" ORDER BY ") : o.append(", ");
+                                o = o == null ? new StringBuilder(100).append(queryInfo.hasOrder ? ", " : " ORDER BY ") : o.append(", ");
                                 o.append(sort.ignoreCase() ? "LOWER(o." : "o.").append(sort.property());
                                 if (sort.ignoreCase())
                                     o.append(')');
@@ -1552,7 +1561,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             if (pagination == null || pagination.mode() == Pageable.Mode.OFFSET)
                                 (queryInfo = queryInfo.withJPQL(q.append(o).toString())).keyset = sortList; // offset pagination can be a starting point for keyset pagination
                             else // CURSOR_NEXT or CURSOR_PREVIOUS
-                                generateKeysetQueries(queryInfo = queryInfo.withJPQL(null), sortList, q, forward ? o : null, forward ? null : o);
+                                generateKeysetQueries(queryInfo = queryInfo.withJPQL(null), sortList, q, forward ? o : null, forward ? null : o); // TODO merging of sort criteria
+
+                            queryInfo.hasOrder = true;
                         }
 
                         boolean asyncCompatibleResultForPagination = pagination != null &&
