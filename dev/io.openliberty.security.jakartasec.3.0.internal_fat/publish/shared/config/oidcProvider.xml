@@ -36,7 +36,8 @@
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SimplestAnnotated/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SimplestAnnotatedWithEL/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/IdentityStore/Callback,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/MultipleIdentityStore/Callback"
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/MultipleIdentityStore/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/RedirectToOriginalResourceTruePromptNone/Callback"
 				scope="ALL_SCOPES"
 				enabled="true"
 			>
