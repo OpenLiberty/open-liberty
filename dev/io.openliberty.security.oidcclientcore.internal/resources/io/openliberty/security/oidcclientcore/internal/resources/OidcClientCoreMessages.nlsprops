@@ -125,3 +125,22 @@ TOKEN_CLAIM_VALUE_MISMATCH.useraction=Ensure the attribute in the OpenID Connect
 TOKEN_MISSING_CLAIMS=CWWKS2425E: The {0} OpenID Connect client token is invalid. The jwtClaims value on the JwtContext object is null or empty.
 TOKEN_MISSING_CLAIMS.explanation=Information is missing from the token and validation of the token cannot be completed.
 TOKEN_MISSING_CLAIMS.useraction=Review the log for any earlier errors for details on the failure. Check the format and content of the token that is returned from the OpenID Connect provider.
+
+TOKEN_EMPTY_CLAIM=CWWKS2426E: The token has an empty [{0}] claim.
+TOKEN_EMPTY_CLAIM.explanation=The claim that is specified in the message must have a valid value.
+TOKEN_EMPTY_CLAIM.useraction=The OpenID Connect provider returns an ID token with an empty claim. When present, the claim must have a valid value. Check the format and content of the token that is returned from the OpenID Connect provider.
+
+# Do not translate "exp"
+TOKEN_EXP_IN_PAST=CWWKS2427E: The token has the [{0}] claim which is not valid. Additional Details: [The token Expiration Time (exp=[{1}]) claim value must be in future. Current time with clock skew [{2}] seconds is [{3}]].
+TOKEN_EXP_IN_PAST.explanation=The claim that is specified in the message must have a valid value.
+TOKEN_EXP_IN_PAST.useraction=See the error in the message for more information
+
+# Do not translate "iat"
+TOKEN_IAT_IN_FUTURE=CWWKS2428E: The token has the [{0}] claim which is not valid. Additional Details: [The token Issued at Time (iat=[{1}]) claim value must be in past. Current time with clock skew [{2}] seconds is [{3}]].
+TOKEN_IAT_IN_FUTURE.explanation=The claim that is specified in the message must have a valid value.
+TOKEN_IAT_IN_FUTURE.useraction=See the error in the message for more information
+
+# Do not translate "nbf"
+TOKEN_NBF_IN_FUTURE=CWWKS2429E: The token has the [{0}] claim which is not valid. Additional Details: [The token Not Before Time (nbf=[{1}]) claim value must be in past. Current time with clock skew [{2}] seconds is [{3}]].
+TOKEN_NBF_IN_FUTURE.explanation=The claim that is specified in the message must have a valid value.
+TOKEN_NBF_IN_FUTURE.useraction=See the error in the message for more information
