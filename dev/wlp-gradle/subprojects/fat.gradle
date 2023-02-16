@@ -16,6 +16,7 @@
  */
 // Global vars
 ext.autoFvtDir = new File(project.buildDir, 'autoFVT')
+ext.distsDirectory= new File(project.buildDir, 'distributions')
 
 // Local vars
 File publishDir = new File(autoFvtDir, 'publish')
@@ -28,7 +29,7 @@ if (isAutomatedBuild && project.file('fat').exists()) {
   release {
     doLast {
       delete autoFvtDir
-      delete distsDir
+      delete distsDirectory
     }
   }
 }
@@ -231,7 +232,7 @@ task autoFVT {
     File bndPropsFile = new File(autoFvtDir, 'fat.bnd.properties')
     def bndWriter = new FileWriter(bndPropsFile)
     try {
-    	bndProps.store(bndWriter, null)
+      bndProps.store(bndWriter, null)
     } finally {
       bndWriter.close()
     }
@@ -248,7 +249,7 @@ task autoFVT {
     File sysPropsFile = new File(autoFvtDir, 'fat.sys.properties')
     def sysWriter = new FileWriter(sysPropsFile)
     try {
-    	sysProps.store(sysWriter, null)
+      sysProps.store(sysWriter, null)
     } finally {
       sysWriter.close()
     }
@@ -353,7 +354,7 @@ task autoFVT {
       println "This FAT tests the following features: " + featureDeps
       def fatDeps = new groovy.json.JsonBuilder()
       def root = fatDeps {
-    	  "feature-deps" featureDeps
+    	"feature-deps" featureDeps
       }
       new File(autoFvtDir, 'fat-metadata.json').write(new groovy.json.JsonBuilder(root).toPrettyString())
     } else {
@@ -378,7 +379,7 @@ task zipAutoFVT(type: Zip) {
 task zipProjectFVT(type: Zip) {
   dependsOn zipAutoFVT
   baseName project.name
-  into project.name + '/build/lib', {from "${distsDir}/autoFVT.zip"}
+  into project.name + '/build/lib', {from "${distsDirectory}/autoFVT.zip"}
   into project.name, {from 'build-test.xml'}
 }
 
@@ -596,15 +597,15 @@ build {
 }
 
 buildfat {
- dependsOn cleanFat
- dependsOn assemble
- dependsOn build
- dependsOn zipProjectFVT
+  dependsOn cleanFat
+  dependsOn assemble
+  dependsOn build
+  dependsOn zipProjectFVT
 }
 
 task buildandrun {
- dependsOn buildfat
- dependsOn runfat
+  dependsOn buildfat
+  dependsOn runfat
 }
 
 task buildFatAndRelease {

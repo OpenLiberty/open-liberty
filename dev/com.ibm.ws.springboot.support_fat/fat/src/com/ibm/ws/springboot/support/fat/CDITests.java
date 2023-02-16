@@ -22,7 +22,6 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import componenttest.annotation.MaximumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import junit.framework.Assert;
@@ -31,15 +30,12 @@ import junit.framework.Assert;
 @Mode(FULL)
 public class CDITests extends CommonWebServerTests {
 
-    private static final String TEST_APP_15_WITH_CDI = "testSpringBootApp15WithCDIFeatureEnabled";
     private static final String TEST_APP_20_WITH_CDI = "testSpringBootApp20WithCDIFeatureEnabled";
 
     @Override
     public String getApplication() {
         String methodName = testName.getMethodName();
-        if (TEST_APP_15_WITH_CDI.equals(methodName)) {
-            return SPRING_BOOT_15_APP_BASE;
-        } else if (TEST_APP_20_WITH_CDI.equals(methodName)) {
+        if (TEST_APP_20_WITH_CDI.equals(methodName)) {
             return SPRING_BOOT_20_APP_BASE;
         }
         Assert.fail("Unknown test.");
@@ -50,9 +46,7 @@ public class CDITests extends CommonWebServerTests {
     public Set<String> getFeatures() {
         String methodName = testName.getMethodName();
         Set<String> features = new HashSet<>(Arrays.asList("servlet-3.1", "cdi-1.2"));
-        if (TEST_APP_15_WITH_CDI.equals(methodName)) {
-            features.add("springBoot-1.5");
-        } else if (TEST_APP_20_WITH_CDI.equals(methodName)) {
+        if (TEST_APP_20_WITH_CDI.equals(methodName)) {
             features.add("springBoot-2.0");
         } else {
             Assert.fail("Unknown test.");
@@ -62,18 +56,7 @@ public class CDITests extends CommonWebServerTests {
 
     @After
     public void stopTestServer() throws Exception {
-        String methodName = testName.getMethodName();
-        if (TEST_APP_15_WITH_CDI.equals(methodName) && !javaVersion.startsWith("1.")) {
-            super.stopServer(true, "CWWKC0265W");
-        } else {
-            super.stopServer(true);
-        }
-    }
-
-    @Test
-    @MaximumJavaLevel(javaLevel = 8)
-    public void testSpringBootApp15WithCDIFeatureEnabled() throws Exception {
-        testBasicSpringBootApplication();
+        super.stopServer(true);
     }
 
     @Test

@@ -413,7 +413,7 @@ if (isAutomatedBuild) {
         from project.file('build/temp/mavenArtifact')
         include "io/**"
         archiveName 'openliberty-mavenArtifact.zip'
-        destinationDir distsDir
+        destinationDirectory = distsDirectory
     }
 
     publishing {

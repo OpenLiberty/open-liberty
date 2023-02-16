@@ -228,8 +228,8 @@ steps:
     fat.test.mode: lite
     fats_to_omit: "com.ibm.ws.collective.controller.deploy_fat, com.ibm.ws.health.manager.odrlib_fat, com.ibm.ws.dynamic.routing_ihs_fat, com.ibm.ws.node.scaling_fat, com.ibm.ws.scaling.member_fat_multinode, com.ibm.ws.node.health_fat"
     fat_uploads_to_expect: ${compile:fat_uploads_to_expect}
-    fileserver: libfsfe04.hursley.ibm.com
-    outputServer: libfsfe04.hursley.ibm.com
+    fileserver: libfsfe05.hursley.ibm.com
+    outputServer: libfsfe05.hursley.ibm.com
     outputPath: /liberty/personal/2/ciorchestrator
     command: ant -f build-test.xml localrun -propertyfile ../../../buildandbucket.properties -DhaltOnFailure=false -lib ../ant_build/lib.antClasspath
     aggregationId: ${compile:execution_id}

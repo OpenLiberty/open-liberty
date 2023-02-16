@@ -28,7 +28,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 
-import componenttest.annotation.MaximumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import junit.framework.Assert;
@@ -49,11 +48,7 @@ public class InvalidAppTests extends CommonWebServerTests {
 
     @Override
     public Set<String> getFeatures() {
-        String methodName = testName.getMethodName();
         Set<String> features = new HashSet<>(Arrays.asList("springBoot-2.0"));
-        if (methodName.contains("15")) {
-            features = new HashSet<>(Arrays.asList("springBoot-1.5"));
-        }
         return features;
     }
 
@@ -117,28 +112,12 @@ public class InvalidAppTests extends CommonWebServerTests {
 
     @After
     public void stopTestServer() throws Exception {
-        if (!javaVersion.startsWith("1.")) {
-            super.stopServer(true, "CWWKZ0002E", "CWWKC0265W");
-        } else {
-            super.stopServer(true, "CWWKZ0002E");
-        }
+        super.stopServer(true, "CWWKZ0002E");
     }
 
     @Override
     public String getLogMethodName() {
         return "-" + testName.getMethodName();
-    }
-
-    @Test
-    @MaximumJavaLevel(javaLevel = 8)
-    public void testNoManifest15() throws Exception {
-        assertNotNull("No error message for missing manifest.", server.waitForStringInLog("CWWKC0256E"));
-    }
-
-    @Test
-    @MaximumJavaLevel(javaLevel = 8)
-    public void testNoStartCLass15() throws Exception {
-        assertNotNull("No error message for missing start class.", server.waitForStringInLog("CWWKC0257E"));
     }
 
     @Test
