@@ -87,7 +87,7 @@ public class LibertyCXFNegativePropertiesTest {
     @Test
     public void testCxfUnsupportedPolicyProperty() throws Exception {
 
-        connect("ImageServiceImplService", HttpsURLConnection.HTTP_OK);
+        connect("ImageServiceImplServiceTwo", HttpsURLConnection.HTTP_OK);
 
         assertNotNull("Since cxf.ignore.unsupported.policy is not enabled, invalid alternative policies are not supported",
                       server.waitForStringInTraceUsingMark("BasicAuthentication is not supported"));
@@ -129,8 +129,8 @@ public class LibertyCXFNegativePropertiesTest {
     }
 
     private void connect(String methodName, int ExpectedConnection) throws Exception {
-        URL url = new URL("https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort()
-                          + "/webServiceRefFeatures/wsapolicyskip?impl=" + methodName);
+        String serverURL = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort();
+        URL url = new URL(serverURL + "/webServiceRefFeatures/wsapolicyskip?impl=" + methodName + "&serverurl=" + serverURL);
         Log.info(c, "LibertyCXFPositivePropertiesTest",
                  "Calling Application with URL=" + url.toString());
         HttpUtils.trustAllCertificates();

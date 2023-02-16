@@ -56,20 +56,22 @@ public class WSAPropertyTestServlet extends HttpServlet {
         // Decided to pass as parameter instead of getting from request since getting from request is not always reliable
         String serverURL = request.getParameter("serverurl");
 
-        if (methodName != null && (methodName.equals("ImageServiceImplService") || methodName.equals("testCxfAttachmentOutputProperty"))) {
-            ImageService proxy = imageServiceNegative.getImageServiceImplPort();
-            BindingProvider provider = (BindingProvider) proxy;
-            provider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                                             serverURL + "/webServiceRefFeatures/ImageServiceImplService");
+        if (methodName != null) {
+            if (methodName.equals("ImageServiceImplService")) {
+                ImageService proxy = imageServiceNegative.getImageServiceImplPort();
+                BindingProvider provider = (BindingProvider) proxy;
+                provider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                                                 serverURL + "/webServiceRefFeatures/ImageServiceImplService");
 
-            proxy.uploadImage("ServiceInjection", new DataHandler(new FileDataSource("resources/" + "a.jpg")));
-        } else {// method=testCxfPropertyUnsupportedPolicy or null
-            ImageServiceTwo proxy = imageService.getImageServiceImplPortTwo();
-            BindingProvider provider = (BindingProvider) proxy;
-            provider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                                             serverURL + "/webServiceRefFeatures/ImageServiceImplServiceTwo");
+                proxy.uploadImage("ServiceInjection", new DataHandler(new FileDataSource("resources/" + "a.jpg")));
+            } else if (methodName.equals("ImageServiceImplServiceTwo")) {// method=testCxfPropertyUnsupportedPolicy or null
+                ImageServiceTwo proxy = imageService.getImageServiceImplPortTwo();
+                BindingProvider provider = (BindingProvider) proxy;
+                provider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                                                 serverURL + "/webServiceRefFeatures/ImageServiceImplServiceTwo");
 
-            proxy.uploadImage("ServiceInjection", new DataHandler(new FileDataSource("resources/" + "a.jpg")));
+                proxy.uploadImage("ServiceInjection", new DataHandler(new FileDataSource("resources/" + "a.jpg")));
+            }
         }
     }
 }
