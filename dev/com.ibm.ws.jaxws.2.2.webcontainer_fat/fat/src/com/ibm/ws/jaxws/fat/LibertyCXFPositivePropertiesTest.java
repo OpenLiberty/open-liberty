@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -124,9 +124,8 @@ public class LibertyCXFPositivePropertiesTest {
      * Calls WSAPropertyTestServlet with parameter defining which Image Service Implementation to call
      */
     private void connect(String methodName) throws Exception {
-        //Server URL is constructed to pass to servlet since getting this info from HttpServletRequest is not providing the correct one each time
-        String serverURL = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort();
-        URL url = new URL(serverURL + "/webServiceRefFeatures/wsapolicyskip?impl=" + methodName + "&serverurl=" + serverURL);
+        URL url = new URL("https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort()
+                          + "/webServiceRefFeatures/wsapolicyskip?impl=" + methodName);
         Log.info(c, "LibertyCXFPositivePropertiesTest",
                  "Calling Application with URL=" + url.toString());
         HttpUtils.trustAllCertificates();
