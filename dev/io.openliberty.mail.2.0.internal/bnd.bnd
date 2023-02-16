@@ -45,13 +45,10 @@ Service-Component: \
 -dsannotations=io.openliberty.mail.internal.MailSessionService, \
   io.openliberty.mail.internal.injection.MailSessionDefinitionInjectionProcessorProvider, \
   io.openliberty.mail.internal.injection.MailSessionResourceFactoryBuilder
-
-## The only file that is used by the app-resources is the
-## mailcap file, this is because it is used by JAF to assess
-## what type of content the Message classes uses with its DataHandler
-## I originally included the other files, but commented them out for now
-## as I'm not entirely sure they are needed for the feature to work properly
 app-resources= \
+  META-INF/javamail.default.address.map | \
+  META-INF/javamail.default.providers | \
+  META-INF/javamail.charset.map | \
   META-INF/mailcap 
 
 Private-Package: \
