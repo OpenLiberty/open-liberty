@@ -13,11 +13,11 @@ sourceCompatibility = 1.8
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 dependencies {
-	compile project(':com.ibm.ws.springboot.support.version20.test.war.app:module')
-	compile 'org.springframework.boot:spring-boot-starter-web'
-	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
-    providedRuntime 'javax.servlet:jstl'
-    providedRuntime 'org.apache.tomcat.embed:tomcat-embed-jasper'
+    implementation project(':com.ibm.ws.springboot.support.version20.test.war.app:module')
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    providedCompile 'org.springframework.boot:spring-boot-starter-tomcat'
+    providedCompile 'javax.servlet:jstl'
+    providedCompile 'org.apache.tomcat.embed:tomcat-embed-jasper'
 }
 
 bootJar {

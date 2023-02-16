@@ -35,7 +35,7 @@ dependencies {
 
   // NOTE: More current js versions have a bug that prevents multiple redirects - this causes
   // a couple of our tests to fail.
-                
+
   /*
    * Previously we had an uber jar named htmlunit-2.20-OSGi.jar. It appears to have contained all of
    * the runtime dependencies for htmlunit. Instead of generating an uber jar, we'll add the dependencies
@@ -77,7 +77,7 @@ autoFVT.doLast {
     into autoFvtDir
     include 'apacheds-2.0.0-M15/**'
   }
-  
+
   /*
    * Copy common artifacts to test servers.
    */
@@ -93,13 +93,13 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
       include '*.xml'
     }
-    
+
     copy { 
       from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
     }
 
-  	/* copy shared key/trust stores from the common security fat project */
+    /* copy shared key/trust stores from the common security fat project */
     copy { 
      from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
      into new File(autoFvtDir, 'publish/servers/' + server + '/')
@@ -126,9 +126,9 @@ autoFVT.doLast {
       from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/config')
       into new File(autoFvtDir, 'publish/servers/' + server+ '/imports')
       include 'signEncryptSSLSettings.xml'
-    }    
+    }
   }
-  
+
   /*
    * Copy formlogin application to designated test servers.
    */
@@ -141,9 +141,8 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
       rename 'formlogin.zip', 'formlogin.war'
     }
-    
   }
-  
+
   /*
    * Copy helloworld application and the associated keystore to the applicable test server.
    */
@@ -161,7 +160,7 @@ autoFVT.doLast {
     from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
     into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.rs/')
     include '*.pem'
-  }  	
+  }
   /* copy shared key/trust stores from the common security fat project */
   copy { 
    from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
@@ -169,8 +168,8 @@ autoFVT.doLast {
    include 'allAlgKeyStore.p12'
    include 'allAlgTrustStore.p12'
   }
-  
-   /*
+
+  /*
    * Copy TokenEndpointServlet and UserinfoEndpointServlet applications and the associated keystore to the applicable test server.
    */
   copy {
@@ -201,12 +200,10 @@ autoFVT.doLast {
     from new File(project(':com.ibm.ws.security.fat.common.jwt').buildDir, 'test-application/jwtbuilder.war')
     into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.opWithStub/test-apps')
   }
-
   copy {
     from new File(project(':com.ibm.ws.security.fat.common.jwt').buildDir, 'test-application/jwtbuilder.war')
     into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.op/test-apps')
   }
-   
   copy {
     from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/testUserinfoEndpoint.zip')
     into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.op/test-apps')
@@ -217,38 +214,39 @@ autoFVT.doLast {
     into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.op/imports')
     include 'jwtBuilderApplication.xml'
   }
-   copy {
+  copy {
     from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
     into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.op/imports')
     include 'userinfoEndpointApplication.xml'
     include 'signingBuilders.xml'
-    include 'signingEncryptingBuilders.xml'  } 
+    include 'signingEncryptingBuilders.xml'
+  }
  /*
   * Copy the pem files that are needed to use with the TokenEndpointServlet
   */
-       	/* copy shared key/trust stores from the common jwt security fat project */
-    copy { 
-      from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
-      into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.opWithStub')
-      include '*.pem'
-    }
-    copy { 
-     from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
-     into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.op/')
-     include '*.pem'
-    }  	
-     
+  /* copy shared key/trust stores from the common jwt security fat project */
+  copy { 
+    from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.opWithStub')
+    include '*.pem'
+  }
+  copy { 
+    from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.openidconnect.client-1.0_fat.op/')
+    include '*.pem'
+  }
+
   /*
    * Copy some other testing artifacts to the root autofvt directory.
    */
-    copy {
-      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, "/securitykeys")
-      into new File(autoFvtDir, 'securitykeys')
-      include 'commonSslClientDefault.jks'
-    }
-    copy {
-      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'testFiles')
-      into new File(autoFvtDir, 'testFiles')
-      include '**'
-    }
+  copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, "/securitykeys")
+    into new File(autoFvtDir, 'securitykeys')
+    include 'commonSslClientDefault.jks'
+  }
+  copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'testFiles')
+    into new File(autoFvtDir, 'testFiles')
+    include '**'
+  }
 }
