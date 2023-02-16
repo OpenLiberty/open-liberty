@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package servlets;
+package uripathwebxml.servlets;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -28,13 +28,13 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * In the 400 Bad Request tests, this is not called cuz the WC rejects it early.
  */
-@WebServlet("/DecodeNormalizeURI/*")
-public class DecodeNormalizeURI extends HttpServlet {
+@WebServlet("/DecodeNormalizeURI_2/*")
+public class DecodeNormalizeURI_2 extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static final String CLASS_NAME = DecodeNormalizeURI.class.getName();
+    private static final String CLASS_NAME = DecodeNormalizeURI_2.class.getName();
     private static final Logger LOG = Logger.getLogger(CLASS_NAME);
 
-    public DecodeNormalizeURI() {
+    public DecodeNormalizeURI_2() {
         super();
     }
 
