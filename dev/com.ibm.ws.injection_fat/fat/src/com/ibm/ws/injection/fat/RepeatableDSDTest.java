@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -43,7 +44,7 @@ public class RepeatableDSDTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(new JakartaEE9Action().fullFATOnly().forServers("com.ibm.ws.injection.fat.RepeatableDSDServer"));
+    public static RepeatTests r = RepeatTests.withoutModification().andWith(new JakartaEE9Action().fullFATOnly().forServers("com.ibm.ws.injection.fat.RepeatableDSDServer")).andWith(new JakartaEE10Action().fullFATOnly().forServers("com.ibm.ws.injection.fat.RepeatableDSDServer"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -76,10 +77,10 @@ public class RepeatableDSDTest extends FATServletClient {
 //        ShrinkHelper.exportAppToServer(server, RepeatableDSDXMLTest);
 
         // Since not using ShrinkWrap, manually transform the applications if required
-        if (JakartaEE9Action.isActive()) {
-            transformJakartaEE9App(server, "apps", "RepeatableDSDAnnTest.ear");
-            transformJakartaEE9App(server, "apps", "RepeatableDSDMixTest.ear");
-            transformJakartaEE9App(server, "apps", "RepeatableDSDXMLTest.ear");
+        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
+            transformJakartaEEApp(server, "apps", "RepeatableDSDAnnTest.ear");
+            transformJakartaEEApp(server, "apps", "RepeatableDSDMixTest.ear");
+            transformJakartaEEApp(server, "apps", "RepeatableDSDXMLTest.ear");
         }
 
         server.addInstalledAppForValidation("RepeatableDSDAnnTest");
@@ -89,11 +90,15 @@ public class RepeatableDSDTest extends FATServletClient {
         server.startServer();
     }
 
-    private static void transformJakartaEE9App(LibertyServer server, String path, String filename) throws Exception {
+    private static void transformJakartaEEApp(LibertyServer server, String path, String filename) throws Exception {
         String localLocation = "publish/servers/" + server.getServerName() + "/" + path;
 
         Path localAppPath = Paths.get(localLocation + "/" + filename);
-        JakartaEE9Action.transformApp(localAppPath);
+        if (JakartaEE9Action.isActive()) {
+            JakartaEE9Action.transformApp(localAppPath);
+        } else if (JakartaEE10Action.isActive()) {
+            JakartaEE10Action.transformApp(localAppPath);
+        }
 
         server.copyFileToLibertyServerRoot(localLocation, path, filename);
     }
