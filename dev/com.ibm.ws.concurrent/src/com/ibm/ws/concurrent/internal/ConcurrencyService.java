@@ -68,10 +68,12 @@ public class ConcurrencyService implements ApplicationMetaDataListener {
                             priv.getServiceReferences(bc, ManagedScheduledExecutorService.class,
                                                       "(service.factoryPid=com.ibm.ws.concurrent.managedScheduledExecutorService)");
             for (ServiceReference<ManagedScheduledExecutorService> ref : refs) {
-                ManagedScheduledExecutorServiceImpl executor = (ManagedScheduledExecutorServiceImpl) priv.getService(bc, ref);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "purge futures list for " + executor);
-                executor.purgeFutures();
+                ManagedScheduledExecutorService executor = priv.getService(bc, ref);
+                if (executor instanceof ManagedScheduledExecutorServiceImpl) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "purge futures list for " + executor);
+                    ((ManagedScheduledExecutorServiceImpl) executor).purgeFutures();
+                }
             }
         } catch (InvalidSyntaxException x) {
             throw new RuntimeException(x); // should never occur because a valid filter is hard-coded
