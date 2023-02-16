@@ -22,22 +22,26 @@ dependencies {
 	project(':com.ibm.ws.org.apache.commons.io')
 }
 
-task copyTestApps {
+task copyTestApps(type: Copy) {
   dependsOn ':com.ibm.ws.jbatch.fat.common:autoFVT'
+
   doLast {
     // Sources to enable application compilation and shrinkwrap operations
     copy {
       from project(':com.ibm.ws.jbatch.fat.common').file('test-applications')
       into new File('test-applications/fat.common')
+      duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
     copy {
       from project(':com.ibm.ws.jbatch.fat.common').file('src/batch/fat/common/util')
       into new File('test-applications/fat.common/src/batch/fat/common/util')
+      duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
     // Pre-built application archives
     copy {
       from project(':com.ibm.ws.jbatch.fat.common').file('build/libs/test-application')
       into new File('build/libs/autoFVT/build/lib/test-application')
+      duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
   }
 }

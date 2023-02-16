@@ -11,7 +11,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 apply from: '../com.ibm.ws.security.saml.sso_fat.common/ShibbolethCommon.gradle'
-  
+
 repositories {
   if (isUsingArtifactory) {
     maven {
@@ -24,7 +24,7 @@ repositories {
   } else {
     mavenCentral()
   }
-}  
+}
 
 dependencies {
   /*
@@ -37,7 +37,7 @@ dependencies {
                'jtidy:jtidy:4aug2000r7-dev',
                'rhino:js:1.6R5',
                'xml-apis:xml-apis:1.4.01'
-              
+
   /*
    * Previously we had an uber jar named htmlunit-2.20-OSGi.jar. It appears to have contained all of
    * the runtime dependencies for htmlunit. Instead of generating an uber jar, we'll add the dependencies
@@ -53,7 +53,7 @@ dependencies {
                'xalan:xalan:2.7.2',
                project(':io.openliberty.org.apache.xercesImpl')
 }
-  
+
 task copyResolver (dependsOn: [':com.ibm.ws.security.fat.common:assemble', ':com.ibm.ws.security.saml.sso_fat.common:assemble']) {
   doLast {
     copy { 
@@ -124,8 +124,8 @@ task copySamlFat_rs_server(dependsOn: [':com.ibm.ws.security.fat.common:assemble
           into new File(autoFvtDir, "publish/servers/${serverName}/imports")
           include '*/*.xml.orig'
         }
-      } 
-      copy {  
+      }
+      copy {
         from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/SAML_Demo.ear')
         into new File(autoFvtDir, "publish/servers/${serverName}/dropins")
       }
@@ -213,7 +213,7 @@ task copySamlFat_rs_server(dependsOn: [':com.ibm.ws.security.fat.common:assemble
         into new File(autoFvtDir, "publish/servers/${serverName}/imports")
         include '**/**'
       }
-  
+
       // Copy files to LibertyFATTestFiles. This occurred in WS-CD-Open automatically b/c the files
       // were compiled in the source directories instead of the build directories.
       copy {
@@ -237,7 +237,7 @@ task copySamlFat_rs_server(dependsOn: [':com.ibm.ws.security.fat.common:assemble
       println "We do not need the rs server"
     }
   }
-}  
+}
 
 /** PLEASE read note above copySamlFat_rs_server task method before updating this task **/
 task copySamlFat_sp_server(dependsOn: [':com.ibm.ws.security.fat.common:assemble', ':com.ibm.ws.security.saml.sso_fat.common:assemble', 'copyCommonLogoutServers']) {
@@ -258,7 +258,7 @@ task copySamlFat_sp_server(dependsOn: [':com.ibm.ws.security.fat.common:assemble
           include '*/*.xml.orig'
         }
       } 
-      copy {  
+      copy {
         from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/SAML_Demo.ear')
         into new File(autoFvtDir, "publish/servers/${serverName}/dropins")
       }
@@ -346,7 +346,7 @@ task copySamlFat_sp_server(dependsOn: [':com.ibm.ws.security.fat.common:assemble
         into new File(autoFvtDir, "publish/servers/${serverName}/imports")
         include '**/**'
       }
-  
+
       // Copy files to LibertyFATTestFiles. This occurred in WS-CD-Open automatically b/c the files
       // were compiled in the source directories instead of the build directories.
       copy {
@@ -370,7 +370,7 @@ task copySamlFat_sp_server(dependsOn: [':com.ibm.ws.security.fat.common:assemble
       println "We do not need the sp server"
     }
   }
-}  
+}
 
 /** copySamlFatMerged_sp_rs_Server and copySamlFat_secondSP_mergedSPRS_server perform the same steps - to make the names more clear, 
      we'll use unique targets, that in the end use a common target **/
@@ -382,7 +382,7 @@ task copySamlFat_secondSP_mergedSPRS_server(dependsOn: [':com.ibm.ws.security.fa
   doLast {
     println "in copySamlFat_secondSP_mergedSPRS_server"
     if (project.findProperty('second_sp_serverName') || project.findProperty('merged_sp_rs_serverName')) {
- 	  def serverName = ""
+    def serverName = ""
       if (project.findProperty('second_sp_serverName')) {
         serverName = project.findProperty('second_sp_serverName')
         println "second_sp_serverName: ${serverName}"
@@ -401,8 +401,8 @@ task copySamlFat_secondSP_mergedSPRS_server(dependsOn: [':com.ibm.ws.security.fa
           into new File(autoFvtDir, "publish/servers/${serverName}/imports")
           include '*/*.xml.orig'
         }
-      } 
-      copy {  
+      }
+      copy {
         from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/SAML_Demo.ear')
         into new File(autoFvtDir, "publish/servers/${serverName}/dropins")
       }
@@ -490,7 +490,7 @@ task copySamlFat_secondSP_mergedSPRS_server(dependsOn: [':com.ibm.ws.security.fa
         into new File(autoFvtDir, "publish/servers/${serverName}/imports")
         include '**/**'
       }
-  
+
       // Copy files to LibertyFATTestFiles. This occurred in WS-CD-Open automatically b/c the files
       // were compiled in the source directories instead of the build directories.
       copy {
@@ -502,7 +502,7 @@ task copySamlFat_secondSP_mergedSPRS_server(dependsOn: [':com.ibm.ws.security.fa
         copy {
           from new File(project(':com.ibm.ws.security.saml.sso_fat.jaxrs').buildDir, 'test-application/helloworld.war')
           into new File(autoFvtDir, "publish/servers/${serverName}/test-apps")
-	     }
+        }
       }
       if (project.findProperty('jaxrsclientWar')) {
         copy {
@@ -516,11 +516,10 @@ task copySamlFat_secondSP_mergedSPRS_server(dependsOn: [':com.ibm.ws.security.fa
         into new File(autoFvtDir, "publish/servers/${serverName}/test-apps")
       }
     }
-      
+
     } else {
       println "We do not need a second sp server or a merged sp/rs server"
     }
   }
 }
-  
 addRequiredLibraries.dependsOn addJakartaTransformer
