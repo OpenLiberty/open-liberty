@@ -33,13 +33,16 @@ import junit.framework.Assert;
 @Mode(FULL)
 public class EnableSpringBootTraceTests extends CommonWebServerTests {
 
+    private static final String TEST_ENABLE_TRACE_FOR_15 = "testEnableSpringBootTraceFor15";
     private static final String TEST_ENABLE_TRACE_FOR_20 = "testEnableSpringBootTraceFor20";
 
     @Override
     public Set<String> getFeatures() {
         String methodName = testName.getMethodName();
         Set<String> features = new HashSet<>(Arrays.asList("servlet-3.1"));
-        if (TEST_ENABLE_TRACE_FOR_20.equals(methodName)) {
+        if (TEST_ENABLE_TRACE_FOR_15.equals(methodName)) {
+            features.add("springBoot-1.5");
+        } else if (TEST_ENABLE_TRACE_FOR_20.equals(methodName)) {
             features.add("springBoot-2.0");
         } else {
             Assert.fail("Unknown test.");
@@ -50,7 +53,9 @@ public class EnableSpringBootTraceTests extends CommonWebServerTests {
     @Override
     public String getApplication() {
         String methodName = testName.getMethodName();
-        if (TEST_ENABLE_TRACE_FOR_20.equals(methodName)) {
+        if (TEST_ENABLE_TRACE_FOR_15.equals(methodName)) {
+            return SPRING_BOOT_15_APP_BASE;
+        } else if (TEST_ENABLE_TRACE_FOR_20.equals(methodName)) {
             return SPRING_BOOT_20_APP_BASE;
         }
         Assert.fail("Unknown test.");
@@ -66,7 +71,12 @@ public class EnableSpringBootTraceTests extends CommonWebServerTests {
 
     @After
     public void stopTestServer() throws Exception {
-        super.stopServer(true);
+        String methodName = testName.getMethodName();
+        if (TEST_ENABLE_TRACE_FOR_15.equals(methodName) && !javaVersion.startsWith("1.")) {
+            super.stopServer(true, "CWWKC0265W");
+        } else {
+            super.stopServer(true);
+        }
     }
 
     @Test
