@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -61,6 +61,7 @@ public class JakartaOidcAuthenticationResponseValidatorTest extends CommonTestCl
     private final String clientId = "myOidcClientId";
     private final String clientSecret = "someSuperSecretValue";
     private final String requestUrl = "https://localhost/some/protected/path";
+    private final String callbackUrl = "https://localhost/Callback";
 
     private final AuthorizationRequestUtils requestUtils = new AuthorizationRequestUtils();
     private JakartaOidcAuthenticationResponseValidator validator;
@@ -307,6 +308,8 @@ public class JakartaOidcAuthenticationResponseValidatorTest extends CommonTestCl
             {
                 one(request).getRequestURL();
                 will(returnValue(new StringBuffer(requestUrl)));
+                one(config).getRedirectURI();
+                will(returnValue(callbackUrl));
                 one(config).isRedirectToOriginalResource();
                 will(returnValue(true));
                 one(request).getCookies();
@@ -330,6 +333,8 @@ public class JakartaOidcAuthenticationResponseValidatorTest extends CommonTestCl
             {
                 one(request).getRequestURL();
                 will(returnValue(new StringBuffer(requestUrl)));
+                one(config).getRedirectURI();
+                will(returnValue(callbackUrl));
                 one(config).isRedirectToOriginalResource();
                 will(returnValue(true));
                 one(request).getCookies();
@@ -357,6 +362,8 @@ public class JakartaOidcAuthenticationResponseValidatorTest extends CommonTestCl
             {
                 one(request).getRequestURL();
                 will(returnValue(new StringBuffer(requestUrl)));
+                one(config).getRedirectURI();
+                will(returnValue(callbackUrl));
                 one(config).isRedirectToOriginalResource();
                 will(returnValue(true));
                 one(request).getCookies();
@@ -381,6 +388,8 @@ public class JakartaOidcAuthenticationResponseValidatorTest extends CommonTestCl
             {
                 one(request).getRequestURL();
                 will(returnValue(new StringBuffer(requestUrl)));
+                one(config).getRedirectURI();
+                will(returnValue(requestUrl));
                 one(config).isRedirectToOriginalResource();
                 will(returnValue(true));
                 one(request).getCookies();
@@ -405,10 +414,10 @@ public class JakartaOidcAuthenticationResponseValidatorTest extends CommonTestCl
             {
                 one(request).getRequestURL();
                 will(returnValue(new StringBuffer(requestUrl)));
-                one(config).isRedirectToOriginalResource();
-                will(returnValue(false));
                 one(config).getRedirectURI();
                 will(returnValue(configuredUri));
+                one(config).isRedirectToOriginalResource();
+                will(returnValue(false));
                 allowing(config).getClientId();
                 will(returnValue(clientId));
             }
@@ -427,12 +436,8 @@ public class JakartaOidcAuthenticationResponseValidatorTest extends CommonTestCl
             {
                 one(request).getRequestURL();
                 will(returnValue(new StringBuffer(requestUrl)));
-                one(config).isRedirectToOriginalResource();
-                will(returnValue(false));
                 one(config).getRedirectURI();
                 will(returnValue(requestUrl));
-                allowing(config).getClientId();
-                will(returnValue(clientId));
             }
         });
         try {

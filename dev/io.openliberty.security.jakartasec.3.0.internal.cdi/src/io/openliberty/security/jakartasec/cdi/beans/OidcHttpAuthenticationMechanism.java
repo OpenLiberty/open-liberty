@@ -18,7 +18,6 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.regex.Pattern;
 
 import javax.security.auth.Subject;
 
@@ -249,15 +248,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         HttpServletRequest request = httpMessageContext.getRequest();
         HttpServletResponse response = httpMessageContext.getResponse();
 
-        OidcClientConfig clientConfig = client.getOidcClientConfig();
-
-        Optional<String> originalRequestUrl = getOriginalRequestUrlForRedirect(request, response, clientConfig);
-        if (originalRequestUrl.isPresent()) {
-            return httpMessageContext.redirect(originalRequestUrl.get());
-        }
-
         AuthenticationStatus status = AuthenticationStatus.SEND_CONTINUE;
-        Optional<HttpServletRequest> originalResourceRequest = getOriginalResourceRequest(clientConfig, httpMessageContext);
         try {
             ProviderAuthenticationResult providerAuthenticationResult = client.continueFlow(request, response);
             status = processContinueFlowResult(providerAuthenticationResult, httpMessageContext, client);
@@ -265,43 +256,14 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
             Tr.error(tc, e.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
-        if (status == AuthenticationStatus.SUCCESS && originalResourceRequest.isPresent()) {
-            httpMessageContext.setRequest(originalResourceRequest.get());
-            httpMessageContext.getMessageInfo().setRequestMessage(originalResourceRequest.get());
-        }
-        return status;
-    }
-
-    private Optional<String> getOriginalRequestUrlForRedirect(HttpServletRequest request, HttpServletResponse response, OidcClientConfig clientConfig) {
-        if (clientConfig.isRedirectToOriginalResource()) {
-            String currentRequestUrl = request.getRequestURL().toString();
-            String originalRequestUrl = getOriginalRequestUrl(request, response, clientConfig.isUseSession());
-            if (originalRequestUrl != null && !originalRequestUrl.equals(currentRequestUrl)) {
-                originalRequestUrl = appendCodeAndStateParams(originalRequestUrl, request);
-                return Optional.of(originalRequestUrl);
+        if (status == AuthenticationStatus.SUCCESS) {
+            Optional<HttpServletRequest> originalResourceRequest = getOriginalResourceRequest(client.getOidcClientConfig(), httpMessageContext);
+            if (originalResourceRequest.isPresent()) {
+                httpMessageContext.setRequest(originalResourceRequest.get());
+                httpMessageContext.getMessageInfo().setRequestMessage(originalResourceRequest.get());
             }
         }
-        return Optional.empty();
-    }
-
-    private String getOriginalRequestUrl(HttpServletRequest request, HttpServletResponse response, boolean useSession) {
-        String state = request.getParameter(OpenIdConstant.STATE);
-        if (state == null) {
-            return null;
-        }
-        Storage storage = StorageFactory.instantiateStorage(request, response, useSession);
-        String originalRequestUrl = storage.get(OidcStorageUtils.getOriginalReqUrlStorageKey(state));
-        if (originalRequestUrl == null) {
-            return null;
-        }
-        String originalRequestUrlWithoutQueryParams = originalRequestUrl.split(Pattern.quote("?"))[0];
-        return originalRequestUrlWithoutQueryParams;
-    }
-
-    private String appendCodeAndStateParams(String originalRequestUrl, HttpServletRequest request) {
-        originalRequestUrl += "?code=" + request.getParameter(OpenIdConstant.CODE);
-        originalRequestUrl += "&state=" + request.getParameter(OpenIdConstant.STATE);
-        return originalRequestUrl;
+        return status;
     }
 
     private Optional<HttpServletRequest> getOriginalResourceRequest(OidcClientConfig clientConfig, HttpMessageContext httpMessageContext) {
@@ -333,6 +295,8 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
 
             if (AuthResult.SUCCESS.equals(authResult)) {
                 status = handleOidcLogin(providerAuthenticationResult, httpMessageContext, client);
+            } else if (AuthResult.REDIRECT.equals(authResult)) {
+                status = httpMessageContext.redirect(providerAuthenticationResult.getRedirectUrl());
             }
         }
 

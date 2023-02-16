@@ -44,7 +44,6 @@ import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseE
 import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
 import io.openliberty.security.oidcclientcore.exceptions.UnsupportedResponseTypeException;
 import io.openliberty.security.oidcclientcore.http.OriginalResourceRequest;
-import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import io.openliberty.security.oidcclientcore.token.JakartaOidcTokenRequest;
 import io.openliberty.security.oidcclientcore.token.TokenResponse;
 import jakarta.enterprise.inject.Instance;
@@ -197,11 +196,10 @@ public class OidcHttpAuthenticationMechanismTest {
     @Test
     public void testValidateRequest_callbackRequest() throws Exception {
         mechanismReceivesCallbackFromOP();
-        withoutRedirectingToOriginalResource();
         clientContinuesFlow(createSuccessfulProviderAuthenticationResult());
         mechanismValidatesTokens(AuthenticationStatus.SUCCESS);
         withMessageInfo();
-        withRestoreOriginalRequest();
+        withoutRestoreOriginalRequest();
         mechanismSetsResponseStatus(HttpServletResponse.SC_OK);
 
         OidcHttpAuthenticationMechanism mechanism = new TestOidcHttpAuthenticationMechanism();
@@ -219,8 +217,6 @@ public class OidcHttpAuthenticationMechanismTest {
     @Test
     public void testValidateRequest_callbackRequest_continueFlowAuthenticationResponseException_fails() throws Exception {
         mechanismReceivesCallbackFromOP();
-        withoutRedirectingToOriginalResource();
-        withoutRestoreOriginalRequest();
         clientContinuesFlowThrowsException(AUTHENTICATION_RESPONSE_EXCEPTION_INVALID_RESULT);
         mechanismSetsResponseStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
@@ -239,8 +235,6 @@ public class OidcHttpAuthenticationMechanismTest {
     @Test
     public void testValidateRequest_callbackRequest_continueFlowTokenResponseException_fails() throws Exception {
         mechanismReceivesCallbackFromOP();
-        withoutRedirectingToOriginalResource();
-        withoutRestoreOriginalRequest();
         clientContinuesFlowThrowsException(TOKEN_REQUEST_EXCEPTION);
         mechanismSetsResponseStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
@@ -252,15 +246,19 @@ public class OidcHttpAuthenticationMechanismTest {
     }
 
     @Test
-    public void testValidateRequest_callbackRequest_redirectToOriginalResource() throws Exception {
+    public void testValidateRequest_callbackRequest_restoreOriginalRequest() throws Exception {
         mechanismReceivesCallbackFromOP();
-        redirectToOriginalResource();
+        clientContinuesFlow(createSuccessfulProviderAuthenticationResult());
+        mechanismValidatesTokens(AuthenticationStatus.SUCCESS);
+        withMessageInfo();
+        withRestoreOriginalRequest();
+        mechanismSetsResponseStatus(HttpServletResponse.SC_OK);
 
         OidcHttpAuthenticationMechanism mechanism = new TestOidcHttpAuthenticationMechanism();
 
         AuthenticationStatus authenticationStatus = mechanism.validateRequest(request, response, httpMessageContext);
 
-        assertEquals("The AuthenticationStatus must be SEND_CONTINUE.", AuthenticationStatus.SEND_CONTINUE, authenticationStatus);
+        assertEquals("The AuthenticationStatus must be SUCCESS.", AuthenticationStatus.SUCCESS, authenticationStatus);
     }
 
     @Test
@@ -531,50 +529,6 @@ public class OidcHttpAuthenticationMechanismTest {
             {
                 one(request).getParameter(OpenIdConstant.STATE);
                 will(returnValue(null));
-            }
-        });
-    }
-
-    private void withoutRedirectingToOriginalResource() {
-        mockery.checking(new Expectations() {
-            {
-                one(oidcClientConfig).isRedirectToOriginalResource();
-                will(returnValue(false));
-            }
-        });
-    }
-
-    private void redirectToOriginalResource() {
-        String code = "authCode";
-        String state = "aStateValue";
-        String storageKey = OidcStorageUtils.getOriginalReqUrlStorageKey(state);
-
-        String currentReqUrl = "https://currentReqUrl";
-        String originalReqUrl = "https://originalReqUrl";
-        String redirectUrl = originalReqUrl + "?code=" + code + "&state=" + state;
-
-        mockery.checking(new Expectations() {
-            {
-                one(client).getOidcClientConfig();
-                will(returnValue(oidcClientConfig));
-                one(oidcClientConfig).isRedirectToOriginalResource();
-                will(returnValue(true));
-                one(request).getRequestURL();
-                will(returnValue(new StringBuffer(currentReqUrl)));
-                one(oidcClientConfig).isUseSession();
-                will(returnValue(true));
-                one(request).getParameter(OpenIdConstant.STATE);
-                will(returnValue(state));
-                one(request).getSession();
-                will(returnValue(httpSession));
-                one(httpSession).getAttribute(storageKey);
-                will(returnValue(originalReqUrl));
-                one(request).getParameter(OpenIdConstant.CODE);
-                will(returnValue(code));
-                one(request).getParameter(OpenIdConstant.STATE);
-                will(returnValue(state));
-                one(httpMessageContext).redirect(redirectUrl);
-                will(returnValue(AuthenticationStatus.SEND_CONTINUE));
             }
         });
     }
