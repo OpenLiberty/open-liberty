@@ -14,6 +14,7 @@ package io.openliberty.security.oidcclientcore.token;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,6 +137,7 @@ public class TokenValidatorTest {
             });
             tokenValidator = tokenValidator.issuer(iss_claim_from_token).issuerconfigured(iss_from_config);
             tokenValidator.validateIssuer();
+            fail("Should have thrown an exception but didn't.");
         } catch (TokenValidationException e) {
             String error = e.getMessage();
             assertTrue("message", error.contains("issuer"));
@@ -164,6 +166,7 @@ public class TokenValidatorTest {
             });
             tokenValidator = tokenValidator.issuer(iss_claim_from_token).issuerconfigured(iss_from_config);
             tokenValidator.validateIssuer();
+            fail("Should have thrown an exception but didn't.");
 
         } catch (TokenValidationException e) {
             String error = e.getMessage();
@@ -203,6 +206,7 @@ public class TokenValidatorTest {
             });
             tokenValidator = tokenValidator.subject(subject_claim_from_token);
             tokenValidator.validateSubject();
+            fail("Should have thrown an exception but didn't.");
         } catch(TokenValidationException e) {
             String received = e.getMessage();
             String expected = "CWWKS2426E: The token has an empty [sub] claim.";
@@ -293,6 +297,7 @@ public class TokenValidatorTest {
             });
             tokenValidator = tokenValidator.audiences(aud_claim_from_token);
             tokenValidator.validateAudiences();
+            fail("Should have thrown an exception but didn't.");
         } catch (TokenValidationException e) {
             String error = e.getMessage();
             assertTrue("error message should include - The token is missing the required [azp] claim", error.contains("CWWKS2417E: The token is missing the required [azp] claim."));
@@ -347,6 +352,7 @@ public class TokenValidatorTest {
             });
             tokenValidator = tokenValidator.audiences(aud_claim_from_token);
             tokenValidator.validateAudiences();
+            fail("Should have thrown an exception but didn't.");
         } catch (TokenClaimMismatchException e) {
             //error message = "CWWKS2424E: The [\"client04\" \"client02\" \"client03\" ] value for the [aud] claim in the token does not match the [client01] expected value.]";
             String expected = "value for the [aud] claim in the token does not match the [client01]";
@@ -429,11 +435,12 @@ public class TokenValidatorTest {
             });
             tokenValidator = tokenValidator.iat(iat);
             tokenValidator.validateIssuedAt();
+            fail("Should have thrown an exception but didn't.");
 
         } catch(TokenValidationException e) {
             String received = e.getMessage();
-            String expected = "CWWKS2428E: The token has the [iat] claim which is not valid.";
-            assertTrue("iat is in future and should have received an error", received.contains(expected));
+            String expected = "CWWKS2428E: The token is deemed invalid";
+            assertTrue("iat is in future and should have received an error", received.contains(expected) && received.contains("[iat] claim"));
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }
@@ -509,10 +516,11 @@ public class TokenValidatorTest {
             });
             tokenValidator = tokenValidator.exp(exp);
             tokenValidator.validateExpiration();
+            fail("Should have thrown an exception but didn't.");
 
         } catch(TokenValidationException e) {
             String received = e.getMessage();
-            String expected = "CWWKS2427E: The token has the [exp] claim which is not valid.";
+            String expected = "CWWKS2427E: The token is not valid because the token expired.";
             assertTrue("exp is in past and should have received an error", received.contains(expected));
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
@@ -587,11 +595,12 @@ public class TokenValidatorTest {
             });
             tokenValidator = tokenValidator.nbf(nbf);
             tokenValidator.validateNotBefore();
+            fail("Should have thrown an exception but didn't.");
 
         } catch(TokenValidationException e) {
             String received = e.getMessage();
-            String expected = "CWWKS2429E: The token has the [nbf] claim which is not valid.";
-            assertTrue("nbf is in future and should have received an error", received.contains(expected));
+            String expected = "CWWKS2428E: The token is deemed invalid";
+            assertTrue("nbf is in future and should have received an error", received.contains(expected)&&received.contains("[nbf] claim"));
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }

@@ -95,7 +95,7 @@ public class TokenValidator {
             if (now + (this.clockSkewInSeconds * 1000) < this.notBefore.getValueInMillis()) {
                 NumericDate nd = NumericDate.now();
                 nd.addSeconds(this.clockSkewInSeconds);
-                throw new TokenValidationException(oidcConfig.getClientId(), Tr.formatMessage(tc, "TOKEN_NBF_IN_FUTURE", "nbf", this.notBefore, this.clockSkewInSeconds, nd));
+                throw new TokenValidationException(oidcConfig.getClientId(), Tr.formatMessage(tc, "TOKEN_CLAIM_IN_FUTURE", this.notBefore, "nbf",  nd, this.clockSkewInSeconds));
             }
         }
     }
@@ -105,7 +105,7 @@ public class TokenValidator {
         if (now + (this.clockSkewInSeconds * 1000) < this.iat.getValueInMillis()) {
             NumericDate nd = NumericDate.now();
             nd.addSeconds(this.clockSkewInSeconds);
-            throw new TokenValidationException(oidcConfig.getClientId(), Tr.formatMessage(tc, "TOKEN_IAT_IN_FUTURE", "iat", this.iat, this.clockSkewInSeconds, nd));
+            throw new TokenValidationException(oidcConfig.getClientId(), Tr.formatMessage(tc, "TOKEN_CLAIM_IN_FUTURE", this.iat, "iat",  nd, this.clockSkewInSeconds));
         }
     }
 
@@ -114,7 +114,7 @@ public class TokenValidator {
         if (now - (this.clockSkewInSeconds * 1000) > this.exp.getValueInMillis()) {
             NumericDate nd = NumericDate.now();
             nd.setValue((now/1000) - this.clockSkewInSeconds);            
-            throw new TokenValidationException(oidcConfig.getClientId(), Tr.formatMessage(tc, "TOKEN_EXP_IN_PAST", "exp", this.exp, this.clockSkewInSeconds, nd));
+            throw new TokenValidationException(oidcConfig.getClientId(), Tr.formatMessage(tc, "TOKEN_EXP_IN_PAST", this.exp, nd, this.clockSkewInSeconds));
         }
     }
 
