@@ -23,6 +23,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -34,34 +35,40 @@ public class TestJPA31_JavaSourceLevel extends AbstractTestJavaSourceLevel {
 
     @BeforeClass
     public static void setup() throws Exception {
-        setupFAT(server_jss_jpa31, true);
+        if (JavaInfo.JAVA_VERSION >= 11) {
+            setupFAT(server_jss_jpa31, true);
+        }
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        shutdownFAT(server_jss_jpa31);
+        if (JavaInfo.JAVA_VERSION >= 11) {
+            shutdownFAT(server_jss_jpa31);
+        }
     }
 
+    // Jakarta EE 10 requires a minimum JDK runtime of 11, however application code using an earlier JDK should be okay.
+
     @Test
-    @MinimumJavaLevel(javaLevel = 7)
+    @MinimumJavaLevel(javaLevel = 11)
     public void testJPA31WithJava07() throws Exception {
         runTest(server_jss_jpa31, 7);
     }
 
     @Test
-    @MinimumJavaLevel(javaLevel = 8)
+    @MinimumJavaLevel(javaLevel = 11)
     public void testJPA31WithJava08() throws Exception {
         runTest(server_jss_jpa31, 8);
     }
 
     @Test
-    @MinimumJavaLevel(javaLevel = 9)
+    @MinimumJavaLevel(javaLevel = 11)
     public void testJPA31WithJava09() throws Exception {
         runTest(server_jss_jpa31, 9);
     }
 
     @Test
-    @MinimumJavaLevel(javaLevel = 10)
+    @MinimumJavaLevel(javaLevel = 11)
     public void testJPA31WithJava10() throws Exception {
         runTest(server_jss_jpa31, 10);
     }
