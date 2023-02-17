@@ -17,7 +17,7 @@ IBM-API-Package: org.jboss.weld;type="internal",\
   com.ibm.websphere.appserver.servlet-6.0, \
   com.ibm.websphere.appserver.eeCompatible-10.0, \
   io.openliberty.jakarta.validation-3.0, \
-  io.openliberty.pages-3.1, \
+  io.openliberty.expressionLanguage-5.0, \
   com.ibm.websphere.appserver.jndi-1.0, \
   io.openliberty.websocket-2.1
 -jars=com.ibm.ws.jsfContainer.jakarta; location:=lib/
