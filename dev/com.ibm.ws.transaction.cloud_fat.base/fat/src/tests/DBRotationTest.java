@@ -36,6 +36,7 @@ import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerType;
@@ -46,6 +47,7 @@ import servlets.Simple2PCCloudServlet;
 
 @RunWith(FATRunner.class)
 @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
+@SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
 public class DBRotationTest extends FATServletClient {
     private static final Class<?> c = DBRotationTest.class;
 
