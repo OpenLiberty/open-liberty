@@ -35,6 +35,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -53,10 +54,13 @@ public class JSF23SelectOneRadioGroupTests {
     @Server("jsf23SelectOneRadioGroupServer")
     public static LibertyServer server;
 
+    private static Boolean isEE10;
+
     @BeforeClass
     public static void setup() throws Exception {
         ShrinkHelper.defaultDropinApp(server, "JSF23SelectOneRadioGroup.war", "com.ibm.ws.jsf23.fat.selectoneradio");
 
+        isEE10 = JakartaEE10Action.isActive();
         // Start the server and use the class name so we can find logs easily.
         // Many tests use the same server.
         server.startServer(JSF23SelectOneRadioGroupTests.class.getSimpleName() + ".log");
@@ -78,7 +82,6 @@ public class JSF23SelectOneRadioGroupTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     public void testSelectOneRadioGroup_AjaxRequest() throws Exception {
         try (WebClient webClient = new WebClient(BrowserVersion.CHROME)) {
             // Use a synchronizing ajax controller to allow proper ajax updating
@@ -112,6 +115,12 @@ public class JSF23SelectOneRadioGroupTests {
 
             assertTrue("Selected value was not found.", resultingPage.contains("Selected Value: staticValue2"));
 
+            // For Faces 4.0, HTMLUnit does not play nicely with this second AJAX request. As such
+            // we're just going to refresh the page. We should look at updating HTMLUnit in the future
+            // for this test bucket.
+            if (isEE10) {
+                testPage.refresh();
+            }
             // Get radio button 0
             HtmlRadioButtonInput radioButton0 = (HtmlRadioButtonInput) testPage.getElementById("f3:radio0");
             // Mark it as checked
