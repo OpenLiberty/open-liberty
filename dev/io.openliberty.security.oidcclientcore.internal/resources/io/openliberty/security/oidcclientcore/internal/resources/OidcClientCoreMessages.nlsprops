@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME io.openliberty.security.oidcclientcore.internal/resources/io/openliberty/security/oidcclientcore/internal/resources/OidcClientCoreMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -125,3 +122,7 @@ TOKEN_CLAIM_VALUE_MISMATCH.useraction=Ensure the attribute in the OpenID Connect
 TOKEN_MISSING_CLAIMS=CWWKS2425E: The {0} OpenID Connect client token is invalid. The jwtClaims value on the JwtContext object is null or empty.
 TOKEN_MISSING_CLAIMS.explanation=Information is missing from the token and validation of the token cannot be completed.
 TOKEN_MISSING_CLAIMS.useraction=Review the log for any earlier errors for details on the failure. Check the format and content of the token that is returned from the OpenID Connect provider.
+
+TOKEN_RESPONSE_MISSING_PARAMETER=CWWKS2426E: The token response from the OpenID Connect provider is missing at least one required parameter: {0}.
+TOKEN_RESPONSE_MISSING_PARAMETER.explanation=The OpenID Connect provider failed to return a required parameter, or the OpenID Connect provider failed to process the token request.
+TOKEN_RESPONSE_MISSING_PARAMETER.useraction=Verify that the token endpoint that is configured is correct and capable of responding to OAuth token requests.

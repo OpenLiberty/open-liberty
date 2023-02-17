@@ -37,6 +37,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.json.java.JSONObject;
 import com.ibm.ws.security.test.common.CommonTestClass;
 
 import io.openliberty.security.jakartasec.ClaimsDefinitionWrapper;
@@ -44,6 +45,7 @@ import io.openliberty.security.jakartasec.TestClaimsDefinition;
 import io.openliberty.security.jakartasec.tokens.OpenIdClaimsImpl;
 import io.openliberty.security.oidcclientcore.client.ClaimsMappingConfig;
 import io.openliberty.security.oidcclientcore.client.OidcClientConfig;
+import io.openliberty.security.oidcclientcore.token.TokenConstants;
 import io.openliberty.security.oidcclientcore.token.TokenResponse;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.ClaimsDefinition;
 import jakarta.security.enterprise.identitystore.CredentialValidationResult;
@@ -644,7 +646,10 @@ public class OidcIdentityStoreTest extends CommonTestClass {
     @Test
     public void test_createAccessTokenFromTokenResponse_jwt() {
         String JWT_ACCESS_TOKEN_STRING = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKYWNrc29uIiwiYXRfaGFzaCI6ImJrR0NWcy1EcndMMGMycEtoN0ZVNGciLCJyZWFsbU5hbWUiOiJCYXNpY1JlZ2lzdHJ5IiwidW5pcXVlU2VjdXJpdHlOYW1lIjoiSmFja3NvbiIsInNpZCI6InFTTzBXeWs0VVNjMWFCYlMyUVlmIiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6OTQ0My9vaWRjL2VuZHBvaW50L09QIiwiYXVkIjoib2lkY2NsaWVudCIsImV4cCI6MTY2MTIwNzIwOCwiaWF0IjoxNjYxMjAwMDA4fQ.a4PRKYeG18vsmBOukcjmNve10KnVSBGVgwh2RqXkNbY";
-        TokenResponse tokenResponse = new TokenResponse(null, "", JWT_ACCESS_TOKEN_STRING, "");
+        JSONObject tokenResponseJson = new JSONObject();
+        tokenResponseJson.put(TokenConstants.ACCESS_TOKEN, JWT_ACCESS_TOKEN_STRING);
+
+        TokenResponse tokenResponse = new TokenResponse(tokenResponseJson);
         // should contain uniqueSecurityName=Jackson when parsed.
 
         AccessToken result = identityStore.createAccessTokenFromTokenResponse(10000, tokenResponse);
@@ -661,7 +666,10 @@ public class OidcIdentityStoreTest extends CommonTestClass {
      */
     @Test
     public void test_createAccessTokenFromTokenResponse_notjwt() {
-        TokenResponse tokenResponse = new TokenResponse(null, "", "HxcmkeFrEXVkB4KxpudAW9GDEBDgNtcGjrBAIUkW", "");
+        JSONObject tokenResponseJson = new JSONObject();
+        tokenResponseJson.put(TokenConstants.ACCESS_TOKEN, "HxcmkeFrEXVkB4KxpudAW9GDEBDgNtcGjrBAIUkW");
+
+        TokenResponse tokenResponse = new TokenResponse(tokenResponseJson);
 
         AccessToken result = identityStore.createAccessTokenFromTokenResponse(10000, tokenResponse);
         assertEquals("Should not have claimsMap", jakarta.security.enterprise.identitystore.openid.JwtClaims.NONE, result.getJwtClaims());
@@ -675,8 +683,10 @@ public class OidcIdentityStoreTest extends CommonTestClass {
     @Test
     public void test_createAccessTokenFromTokenResponse_badjwt() {
         String BAD_JWT_ACCESS_TOKEN_STRING = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKYWNrc29uIiwiYXRfaGFzaCI6ImJdHJ5IiwidW5pcXVlU2VjdXJpdHlOYW1lIjoiSmFja3NvbiIsInNpZCI6InFTTzBXeWs0VVNjMWFCYlMyUVlmIiwiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6OTQ0My9vaWRjL2VuZHBvaW50L09QIiwiYXVkIjoib2lkY2NsaWVudCIsImV4cCI6MTY2MTIwNzIwOCwiaWF0IjoxNjYxMjAwMDA4fQ.a4PRKYeG18vsmBOukcjmNve10KnVSBGVgwh2RqXkNbY";
+        JSONObject tokenResponseJson = new JSONObject();
+        tokenResponseJson.put(TokenConstants.ACCESS_TOKEN, BAD_JWT_ACCESS_TOKEN_STRING);
 
-        TokenResponse tokenResponse = new TokenResponse(null, "", BAD_JWT_ACCESS_TOKEN_STRING, "");
+        TokenResponse tokenResponse = new TokenResponse(tokenResponseJson);
 
         AccessToken result = identityStore.createAccessTokenFromTokenResponse(10000, tokenResponse);
         assertEquals("Should not have claimsMap", jakarta.security.enterprise.identitystore.openid.JwtClaims.NONE, result.getJwtClaims());

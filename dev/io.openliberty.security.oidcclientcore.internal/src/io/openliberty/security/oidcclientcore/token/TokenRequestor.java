@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,9 +13,7 @@
 package io.openliberty.security.oidcclientcore.token;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -110,8 +108,7 @@ public class TokenRequestor {
         Map<String, Object> tokenEndpointResponse = postToTokenEndpoint();
         String tokenEndpointEntity = oidcClientHttpUtil.extractEntityFromTokenResponse(tokenEndpointResponse);
         JSONObject json = JSONObject.parse(tokenEndpointEntity);
-        Map<String, String> tokens = getTokensFromJson(json);
-        return new TokenResponse(json, tokens.get(TokenConstants.ID_TOKEN), tokens.get(TokenConstants.ACCESS_TOKEN), tokens.get(TokenConstants.REFRESH_TOKEN));
+        return new TokenResponse(json);
     }
 
     private Map<String, Object> postToTokenEndpoint() throws Exception {
@@ -124,23 +121,6 @@ public class TokenRequestor {
                                                  isHostnameVerification,
                                                  authMethod,
                                                  useSystemPropertiesForHttpClientConnections);
-    }
-
-    private Map<String, String> getTokensFromJson(JSONObject json) throws Exception {
-        Map<String, String> tokens = new HashMap<>();
-        List<String> tokenTypes = Arrays.asList(TokenConstants.TOKEN_TYPES);
-
-        @SuppressWarnings("unchecked")
-        Iterator<String> iterator = json.keySet().iterator();
-        while (iterator.hasNext()) {
-            String key = iterator.next();
-            Object value = json.get(key);
-            if (value instanceof String && tokenTypes.contains(key)) {
-                tokens.put(key, value.toString());
-            }
-        }
-
-        return tokens;
     }
 
     public static class Builder {
