@@ -24,6 +24,7 @@ import java.net.URL;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -32,17 +33,25 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
 @SkipIfCheckpointNotSupported
 public class JaxWSVirtualHostTest {
-
-    @Server("jaxWSVirtualHost")
-    public static LibertyServer server;
-
+    private static final String SERVER_NAME = "jaxWSVirtualHost";
     private static final String virtualhostWar = "virtualhost";
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(new JakartaEE9Action().forServers(SERVER_NAME).fullFATOnly())
+                    .andWith(new JakartaEE10Action().forServers(SERVER_NAME).fullFATOnly());
+
+    @Server(SERVER_NAME)
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
