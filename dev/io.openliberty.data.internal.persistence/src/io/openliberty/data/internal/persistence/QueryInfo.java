@@ -18,6 +18,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -45,12 +46,6 @@ class QueryInfo {
     EntityInfo entityInfo;
 
     /**
-     * Indicates if the query has an ORDER BY clause.
-     * This is accurate only for generated or partially provided queries.
-     */
-    boolean hasOrder;
-
-    /**
      * Indicates if the query has a WHERE clause.
      * This is accurate only for generated or partially provided queries.
      */
@@ -76,11 +71,6 @@ class QueryInfo {
      * Null if pagination is not used or only slices are used.
      */
     String jpqlCount;
-
-    /**
-     * Keyset consisting of key names and sort direction.
-     */
-    List<Sort> keyset;
 
     /**
      * Value from findFirst#By, or 1 for findFirstBy, otherwise 0.
@@ -148,6 +138,17 @@ class QueryInfo {
     Class<?> saveParamType;
 
     /**
+     * Ordered list of Sort criteria, which can be defined statically via the OrderBy annotation or keyword,
+     * or dynamically via Pageable Sort parameters or Sort parameters to the repository method,
+     * or a combination of both static and dynamic.
+     * If the Query annotation is used, it will be unknown whether its value hard-codes Sort criteria,
+     * in which case this field gets set to any additional sort criteria that is added statically or dynamically,
+     * or lacking either of those, an empty list.
+     * If none of the above, the value of this field is null, which can also mean it has not been initialized yet.
+     */
+    List<Sort> sorts;
+
+    /**
      * Categorization of query type.
      */
     Type type;
@@ -162,6 +163,87 @@ class QueryInfo {
     }
 
     /**
+     * Adds Sort criteria to the end of the tracked list of sort criteria.
+     * For IdClass, adds all Id properties separately.
+     *
+     * @param ignoreCase if ordering is to be independent of case.
+     * @param attribute  name of attribute (@OrderBy value or Sort property or parsed from OrderBy query-by-method).
+     * @param descending if ordering is to be in descending order
+     */
+    @Trivial
+    void addSort(boolean ignoreCase, String attribute, boolean descending) {
+        Set<String> names = entityInfo.idClass != null && "id".equalsIgnoreCase(attribute) //
+                        ? entityInfo.idClassAttributeAccessors.keySet() //
+                        : Set.of(attribute);
+
+        for (String name : names) {
+            name = entityInfo.getAttributeName(name);
+
+            sorts.add(ignoreCase ? //
+                            descending ? //
+                                            Sort.descIgnoreCase(name) : //
+                                            Sort.ascIgnoreCase(name) : //
+                            descending ? //
+                                            Sort.desc(name) : //
+                                            Sort.asc(name));
+        }
+    }
+
+    /**
+     * Adds dynamically specified Sort criteria from the Pageable to the end of an existing list, or
+     * if the combined list Sort criteria doesn't already exist, this method creates it
+     * starting with the Sort criteria of this QueryInfo.
+     *
+     * Obtains and processes sort criteria from pagination information.
+     *
+     * @param combined   existing list of sorts, or otherwise null.
+     * @param additional list to add from.
+     * @return the combined list that the sort criteria was added to.
+     */
+    @Trivial
+    List<Sort> combineSorts(List<Sort> combined, List<Sort> additional) {
+        boolean hasIdClass = entityInfo.idClass != null;
+        if (combined == null && !additional.isEmpty())
+            combined = sorts == null ? new ArrayList<>() : new ArrayList<>(sorts);
+        for (Sort sort : additional) {
+            if (sort == null)
+                throw new DataException(new IllegalArgumentException("Sort: null"));
+            else if (hasIdClass && sort.property().equalsIgnoreCase("id"))
+                for (String name : entityInfo.idClassAttributeAccessors.keySet())
+                    combined.add(entityInfo.getWithAttributeName(entityInfo.getAttributeName(name), sort));
+            else
+                combined.add(entityInfo.getWithAttributeName(sort.property(), sort));
+        }
+        return combined;
+    }
+
+    /**
+     * Adds dynamically specified Sort criteria to the end of an existing list, or
+     * if the combined list of Sort criteria doesn't already exist, this method creates it
+     * starting with the Sort criteria of this QueryInfo.
+     *
+     * @param combined   existing list of sorts, or otherwise null.
+     * @param additional list to add from.
+     * @return the combined list that the sort criteria was added to.
+     */
+    @Trivial
+    List<Sort> combineSorts(List<Sort> combined, Sort... additional) {
+        boolean hasIdClass = entityInfo.idClass != null;
+        if (combined == null && additional.length > 0)
+            combined = sorts == null ? new ArrayList<>() : new ArrayList<>(sorts);
+        for (Sort sort : additional) {
+            if (sort == null)
+                throw new DataException(new IllegalArgumentException("Sort: null"));
+            else if (hasIdClass && sort.property().equalsIgnoreCase("id"))
+                for (String name : entityInfo.idClassAttributeAccessors.keySet())
+                    combined.add(entityInfo.getWithAttributeName(entityInfo.getAttributeName(name), sort));
+            else
+                combined.add(entityInfo.getWithAttributeName(sort.property(), sort));
+        }
+        return combined;
+    }
+
+    /**
      * Obtains keyset cursor values for the specified entity.
      *
      * @param entity the entity.
@@ -169,8 +251,13 @@ class QueryInfo {
      */
     @Trivial
     Object[] getKeysetValues(Object entity) {
+        if (!entityInfo.type.isInstance(entity))
+            throw new MappingException("Unable to obtain keyset values from the " +
+                                       (entity == null ? null : entity.getClass().getName()) +
+                                       " type query result. Queries that use keyset pagination must return results of the same type as the entity type, which is " +
+                                       entityInfo.type.getName() + "."); // TODO NLS
         ArrayList<Object> keyValues = new ArrayList<>();
-        for (Sort keyInfo : keyset)
+        for (Sort keyInfo : sorts)
             try {
                 List<Member> accessors = entityInfo.attributeAccessors.get(keyInfo.property());
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -183,9 +270,39 @@ class QueryInfo {
                         value = ((Field) accessor).get(value);
                 keyValues.add(value);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException x) {
-                throw new DataException(x.getCause());
+                throw new DataException(x instanceof InvocationTargetException ? x.getCause() : x);
             }
         return keyValues.toArray();
+    }
+
+    /**
+     * Identifies whether sort criteria can be dynamically supplied when invoking the query.
+     *
+     * @return true if it is possible to provide sort criteria dynamically, otherwise false.
+     */
+    boolean hasDynamicSortCriteria() {
+        Class<?>[] paramTypes = method.getParameterTypes();
+        for (int i = paramCount - paramAddedCount; i < paramTypes.length; i++)
+            if (Pageable.class.equals(paramTypes[i]) || Sort[].class.equals(paramTypes[i]) || Sort.class.equals(paramTypes[i]))
+                return true;
+        return false;
+    }
+
+    /**
+     * Raises an error because the number of keyset keys does not match the number of sort parameters.
+     *
+     * @param keysetCursor keyset cursor
+     */
+    @Trivial
+    private void keysetSizeMismatchError(Pageable.Cursor keysetCursor) {
+        List<String> keyTypes = new ArrayList<>();
+        for (int i = 0; i < keysetCursor.size(); i++)
+            keyTypes.add(keysetCursor.getKeysetElement(i) == null ? null : keysetCursor.getKeysetElement(i).getClass().getName());
+
+        throw new MappingException("The keyset cursor with key types " + keyTypes +
+                                   " cannot be used with sort criteria of " + sorts +
+                                   " because they have different numbers of elements. The keyset size is " + keysetCursor.size() +
+                                   " and the sort criteria size is " + sorts.size() + "."); // TODO NLS
     }
 
     /**
@@ -196,23 +313,27 @@ class QueryInfo {
      * @throws Exception if an error occurs
      */
     void setKeysetParameters(Query query, Pageable.Cursor keysetCursor) throws Exception {
-        int paramNum = paramCount + 1; // set to position of first keyset parameter
+        int paramNum = paramCount; // set to position before the first keyset parameter
         if (paramNames == null) // positional parameters
             for (int i = 0; i < keysetCursor.size(); i++) {
                 Object value = keysetCursor.getKeysetElement(i);
                 if (entityInfo.idClass != null && entityInfo.idClass.isInstance(value)) {
                     for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
                         Object v = accessor instanceof Field ? ((Field) accessor).get(value) : ((Method) accessor).invoke(value);
+                        if (++paramNum - paramCount > sorts.size())
+                            keysetSizeMismatchError(keysetCursor);
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                             Tr.debug(this, tc, "set keyset parameter ?" + paramNum + ' ' + value.getClass().getName() + "-->" +
                                                (v == null ? null : v.getClass().getSimpleName()));
-                        query.setParameter(paramNum++, v);
+                        query.setParameter(paramNum, v);
                     }
                 } else {
+                    if (++paramNum - paramCount > sorts.size())
+                        keysetSizeMismatchError(keysetCursor);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, "set keyset parameter ?" + paramNum + ' ' +
                                            (value == null ? null : value.getClass().getSimpleName()));
-                    query.setParameter(paramNum++, value);
+                    query.setParameter(paramNum, value);
                 }
             }
         else // named parameters
@@ -221,19 +342,25 @@ class QueryInfo {
                 if (entityInfo.idClass != null && entityInfo.idClass.isInstance(value)) {
                     for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
                         Object v = accessor instanceof Field ? ((Field) accessor).get(value) : ((Method) accessor).invoke(value);
+                        if (++paramNum - paramCount > sorts.size())
+                            keysetSizeMismatchError(keysetCursor);
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                             Tr.debug(this, tc, "set keyset parameter :keyset" + paramNum + ' ' + value.getClass().getName() + "-->" +
                                                (v == null ? null : v.getClass().getSimpleName()));
-                        query.setParameter(paramNum++, v);
+                        query.setParameter("keyset" + paramNum, v);
                     }
                 } else {
+                    if (++paramNum - paramCount > sorts.size())
+                        keysetSizeMismatchError(keysetCursor);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, "set keyset parameter :keyset" + paramNum + ' ' +
                                            (value == null ? null : value.getClass().getSimpleName()));
-                    query.setParameter("keyset" + (paramNum++), value);
+                    query.setParameter("keyset" + paramNum, value);
                 }
             }
-        // TODO detect if user provides a wrong-sized keyset? Or let JPA error surface?
+
+        if (sorts.size() > paramNum - paramCount) // not enough keyset values
+            keysetSizeMismatchError(keysetCursor);
     }
 
     /**
@@ -373,24 +500,23 @@ class QueryInfo {
     }
 
     /**
-     * Copy of query information, but with updated JPQL.
+     * Copy of query information, but with updated JPQL and sort criteria.
      */
-    QueryInfo withJPQL(String jpql) {
+    QueryInfo withJPQL(String jpql, List<Sort> sorts) {
         QueryInfo q = new QueryInfo(method, returnArrayType, returnTypeParam);
         q.entityInfo = entityInfo;
-        q.hasOrder = hasOrder;
         q.hasWhere = hasWhere;
         q.jpql = jpql;
         q.jpqlAfterKeyset = jpqlAfterKeyset;
         q.jpqlBeforeKeyset = jpqlBeforeKeyset;
         q.jpqlCount = jpqlCount;
-        q.keyset = keyset;
         q.maxResults = maxResults;
         q.paramCount = paramCount;
         q.paramAddedCount = paramAddedCount;
         q.paramNames = paramNames;
         q.paramsNeedConversionToId = paramsNeedConversionToId;
         q.saveParamType = saveParamType;
+        q.sorts = sorts;
         q.type = type;
         return q;
     }
