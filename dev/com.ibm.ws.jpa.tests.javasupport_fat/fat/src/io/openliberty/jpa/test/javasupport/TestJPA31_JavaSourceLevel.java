@@ -62,7 +62,7 @@ public class TestJPA31_JavaSourceLevel extends AbstractTestJavaSourceLevel {
     }
 
     @Test
-    @MinimumJavaLevel(javaLevel = 1)
+    @MinimumJavaLevel(javaLevel = 11)
     public void testJPA31WithJava09() throws Exception {
         runTest(server_jss_jpa31, 9);
     }
