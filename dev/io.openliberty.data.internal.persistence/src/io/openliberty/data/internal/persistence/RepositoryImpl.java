@@ -388,10 +388,23 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         if (query != null || queryInfo.paramNames != null) {
             int initialParamCount = queryInfo.paramCount;
             Parameter[] params = queryInfo.method.getParameters();
-            for (int i = 0; i < params.length && !SPECIAL_PARAM_TYPES.contains(params[i].getType()); i++) {
+            Class<?> paramType;
+            for (int i = 0; i < params.length && !SPECIAL_PARAM_TYPES.contains(paramType = params[i].getType()); i++) {
                 Param param = params[i].getAnnotation(Param.class);
-                if (param != null)
-                    (queryInfo.paramNames == null ? (queryInfo.paramNames = new ArrayList<>()) : queryInfo.paramNames).add(param.value());
+                if (param != null) {
+                    if (queryInfo.paramNames == null)
+                        queryInfo.paramNames = new ArrayList<>();
+                    if (paramType.equals(queryInfo.entityInfo.idClass))
+                        for (int p = 1, numIdClassParams = queryInfo.entityInfo.idClassAttributeAccessors.size(); p <= numIdClassParams; p++) {
+                            queryInfo.paramNames.add(new StringBuilder(param.value()).append('_').append(p).toString());
+                            if (p > 1) {
+                                queryInfo.paramCount++;
+                                queryInfo.paramAddedCount++;
+                            }
+                        }
+                    else
+                        queryInfo.paramNames.add(param.value());
+                }
                 queryInfo.paramCount++;
                 if (initialParamCount != 0)
                     throw new MappingException("Cannot mix positional and named parameters on repository method " +
@@ -648,7 +661,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     q.delete(where, len); // Remove " WHERE " because there are no conditions
                 queryInfo.hasWhere = false;
             } else if (queryInfo.entityInfo.idClass != null && attribute.equalsIgnoreCase("id")) {
-                generateConditionsForIdClass(queryInfo, condition, ignoreCase, negated, q);
+                generateConditionsForIdClass(queryInfo, null, condition, ignoreCase, negated, q);
             }
             return;
         }
@@ -721,12 +734,17 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     /**
      * Generates JPQL for a *By condition on the IdClass, which expands to multiple conditions in JPQL.
      */
-    private void generateConditionsForIdClass(QueryInfo queryInfo, Condition condition, boolean ignoreCase, boolean negate, StringBuilder q) {
+    private void generateConditionsForIdClass(QueryInfo queryInfo, Filter filter, Condition condition, boolean ignoreCase, boolean negate, StringBuilder q) {
+        if (filter != null && filter.value().length != 0)
+            throw new MappingException("IdClass parameter cannot be represented as a hard-coded value of the @Filter annotation."); // TODO NLS
+
+        String paramName = filter == null || filter.param().length == 0 ? null : filter.param()[0];
+
         q.append(negate ? "NOT (" : "(");
 
-        boolean first = true;
+        int count = 0;
         for (String idClassAttr : queryInfo.entityInfo.idClassAttributeAccessors.keySet()) {
-            if (!first)
+            if (++count != 1)
                 q.append(" AND ");
 
             String name = queryInfo.entityInfo.getAttributeName(idClassAttr);
@@ -739,9 +757,16 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 case EQUALS:
                 case NOT_EQUALS:
                     q.append(condition.operator);
-                    appendParam(q, ignoreCase, ++queryInfo.paramCount);
-                    if (!first)
-                        queryInfo.paramAddedCount++;
+                    if (paramName == null) { // positional parameter
+                        appendParam(q, ignoreCase, ++queryInfo.paramCount);
+                        if (count != 1)
+                            queryInfo.paramAddedCount++;
+                    } else { // named parameter
+                        q.append(ignoreCase ? "LOWER(:" : ":");
+                        q.append(paramName).append('_').append(count);
+                        if (ignoreCase)
+                            q.append(')');
+                    }
                     break;
                 case NULL:
                 case EMPTY:
@@ -755,8 +780,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     throw new MappingException("Repository keyword " + condition.name() +
                                                " cannot be used when the Id of the entity is an IdClass."); // TODO NLS
             }
-
-            first = false;
         }
 
         q.append(')');
@@ -1109,7 +1132,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
             if (name == null) {
                 if (op == '=') {
-                    generateUpdatesForIdClass(queryInfo, first, q);
+                    generateUpdatesForIdClass(queryInfo, null, first, q);
                 } else {
                     String opName = op == '+' ? Operation.Add.name() : op == '*' ? Operation.Multiply.name() : Operation.Divide.name();
                     throw new MappingException("The " + opName +
@@ -1158,7 +1181,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
             if (name == null) {
                 if (op == Operation.Assign)
-                    generateUpdatesForIdClass(queryInfo, first, q);
+                    generateUpdatesForIdClass(queryInfo, update, first, q);
                 else
                     throw new MappingException("The " + op.name() +
                                                " repository update operation cannot be used on the Id of the entity when the Id is an IdClass."); // TODO NLS
@@ -1230,18 +1253,27 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     /**
      * Generates JPQL to assign the entity properties of which the IdClass consists.
      */
-    private void generateUpdatesForIdClass(QueryInfo queryInfo, boolean firstOperation, StringBuilder q) {
-        boolean firstIdClassAttr = true;
+    private void generateUpdatesForIdClass(QueryInfo queryInfo, Update update, boolean firstOperation, StringBuilder q) {
+        if (update != null && update.value().length != 0)
+            throw new MappingException("IdClass parameter cannot be represented as a hard-coded value of the @Update annotation."); // TODO NLS
+
+        String paramName = update == null || update.param().length() == 0 ? null : update.param();
+
+        int count = 0;
         for (String idClassAttr : queryInfo.entityInfo.idClassAttributeAccessors.keySet()) {
+            count++;
             String name = queryInfo.entityInfo.getAttributeName(idClassAttr);
 
-            q.append(firstOperation ? " o." : ", o.").append(name).append("=?").append(++queryInfo.paramCount);
-            firstOperation = false;
+            q.append(firstOperation ? " o." : ", o.").append(name);
+            if (paramName == null) { // positional parameter
+                q.append("=?").append(++queryInfo.paramCount);
+                if (count != 1)
+                    queryInfo.paramAddedCount++;
+            } else { // named parameter
+                q.append("=:").append(paramName).append('_').append(count);
+            }
 
-            if (firstIdClassAttr)
-                firstIdClassAttr = false;
-            else
-                queryInfo.paramAddedCount++;
+            firstOperation = false;
         }
     }
 
@@ -1300,7 +1332,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
             String name = queryInfo.entityInfo.getAttributeName(attribute);
             if (name == null) {
-                generateConditionsForIdClass(queryInfo, Condition.forIdClass(comparison), ignoreCase, negated, q);
+                generateConditionsForIdClass(queryInfo, filter, Condition.forIdClass(comparison), ignoreCase, negated, q);
                 continue;
             }
 

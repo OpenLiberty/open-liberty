@@ -85,6 +85,11 @@ public interface Cities {
 
     CityId findFirstByNameOrderByPopulationDesc(String name);
 
+    @Exists
+    @Filter(by = "id", param = "name")
+    @Filter(by = "population", op = Compare.GreaterThan, param = "size")
+    boolean isBiggerThan(@Param("size") int minPopulation, @Param("name") CityId id);
+
     @Filter(by = "population", op = Compare.GreaterThan)
     @Filter(by = "id", ignoreCase = true, op = Compare.Not)
     @Filter(by = "stateName", op = Compare.StartsWith)
@@ -97,6 +102,15 @@ public interface Cities {
     @Update(attr = "population")
     @Update(attr = "areaCodes")
     int replace(CityId oldId, CityId newId, int newPopulation, Set<Integer> newAreaCodes);
+
+    @Filter(by = "id", param = "oldName")
+    @Update(attr = "id", param = "newName")
+    @Update(attr = "population", param = "newSize")
+    @Update(attr = "areaCodes", param = "newAreaCodes")
+    int replace(@Param("oldName") CityId oldId,
+                @Param("newName") CityId newId,
+                @Param("newAreaCodes") Set<Integer> newAreaCodes,
+                @Param("newSize") int newPopulation);
 
     @Filter(by = "population", op = Compare.Between, param = { "minSize", "maxSize" })
     @OrderBy(value = "id", descending = true)
