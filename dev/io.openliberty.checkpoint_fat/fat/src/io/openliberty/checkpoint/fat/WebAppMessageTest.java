@@ -76,7 +76,7 @@ public class WebAppMessageTest extends FATServletClient {
                                                    server.waitForStringInLogUsingMark("CWWKZ0001I: Application " + APP_NAME + " started", 0));
                                  }
                                  // make sure the web app URL is not logged on checkpoint side
-                                 assertNull("'CWWKT0016I: Web application available' not found in log.",
+                                 assertNull("'CWWKT0016I: Web application available' found in log.",
                                             server.waitForStringInLogUsingMark("CWWKT0016I: .*" + APP_NAME, 0));
                              });
         server.startServer(getTestMethodNameOnly(testName) + ".log");
