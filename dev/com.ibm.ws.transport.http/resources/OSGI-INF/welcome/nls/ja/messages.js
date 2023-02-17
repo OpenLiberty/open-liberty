@@ -21,7 +21,7 @@ var messages = {
     DOCS: "資料", // Translate 'Documentation'
     COPYRIGHT: "Copyright",
     OPEN_LIBERTY_FOOTER: "Liberty フッター・ロゴ",
-    COPYRIGHT_OPEN_LIBERTY: "Licensed Materials — Property of the Open Liberty project, Copyright IBM Corp and others 1997, 2019. プロジェクトは、Eclipse Public License v2 の条項の下で配布されます。", // COPYRIGHT_URL
+    COPYRIGHT_OPEN_LIBERTY: "Licensed Materials — Property of the Open Liberty project, Copyright IBM Corp and others 1997, 2019. プロジェクトは、Eclipse Public License v2 の条件で配布されます。", // COPYRIGHT_URL
     UPDATE_BANNER_SECTION: "バナー・セクションの更新",
     UPDATE_BANNER_SECTION_CONTENT: "バナー・セクションの内容を更新",
     HEADER_UPDATE_AVAILABLE: "アップデートが利用可能: ",

@@ -13,10 +13,9 @@
 package io.openliberty.checkpoint.fat;
 
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
+import static io.openliberty.checkpoint.fat.FATSuite.updateVariableConfig;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
-import java.util.Iterator;
 
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -29,8 +28,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.websphere.simplicity.config.Variable;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
@@ -119,7 +116,7 @@ public class BellsTest extends FATServletClient {
     public void testUpdatedBellPropertiesBeforeRestore() throws Exception {
         assertTrue("Bell service for TestInterface should have been injected with original properties",
                    !server.findStringsInLogs("Updated bell properties: \\{bProp=orig_val\\}").isEmpty());
-        updateVariableConfig("bellProp", "updated_val");
+        updateVariableConfig(server, "bellProp", "updated_val");
         server.checkpointRestore();
         assertTrue("Bell service for TestInterface should have been injected with updated properties",
                    !server.findStringsInLogs("Updated bell properties: \\{bProp=updated_val\\}").isEmpty());
@@ -139,23 +136,6 @@ public class BellsTest extends FATServletClient {
                                                                 },
                                                                 "bells");
         ShrinkHelper.exportToServer(targetServer, "sharedLib", bellArchive);
-    }
-
-    private void updateVariableConfig(String name, String value) throws Exception {
-        // change config of variable for restore
-        ServerConfiguration config = removeTestKeyVar(server.getServerConfiguration(), name);
-        config.getVariables().add(new Variable(name, value));
-        server.updateServerConfiguration(config);
-    }
-
-    private ServerConfiguration removeTestKeyVar(ServerConfiguration config, String key) {
-        for (Iterator<Variable> iVars = config.getVariables().iterator(); iVars.hasNext();) {
-            Variable var = iVars.next();
-            if (var.getName().equals(key)) {
-                iVars.remove();
-            }
-        }
-        return config;
     }
 
     @After

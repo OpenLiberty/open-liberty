@@ -21,7 +21,7 @@ var messages = {
     DOCS: "Dokumenty", // Translate 'Documentation'
     COPYRIGHT: "Copyright",
     OPEN_LIBERTY_FOOTER: "Logo stopki produktu Liberty",
-    COPYRIGHT_OPEN_LIBERTY: "Licensed Materials — Property of the Open Liberty project, Copyright IBM Corp and others 1997, 2019. Projekt jest dystrybuowany na warunkach licencji Public License v2.", // COPYRIGHT_URL
+    COPYRIGHT_OPEN_LIBERTY: "Licensed Materials — Property of the Open Liberty project, Copyright IBM Corp and others 1997, 2019. Projekt jest dystrybuowany zgodnie z warunkami licencji Eclipse Public License v2.", // COPYRIGHT_URL
     UPDATE_BANNER_SECTION: "Sekcja aktualizacji banera",
     UPDATE_BANNER_SECTION_CONTENT: "Treść sekcji aktualizacji banera",
     HEADER_UPDATE_AVAILABLE: "Dostępna aktualizacja: ",

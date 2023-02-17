@@ -11,6 +11,7 @@ package io.openliberty.microprofile.telemetry.internal_fat;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -66,7 +67,6 @@ public class TelemetryAPITest extends FATServletClient {
                         .addClass(CommonSDKServlet.class);
 
         ShrinkHelper.exportAppToServer(server, apiTestWar, SERVER_ONLY);
-
         server.startServer();
     }
 

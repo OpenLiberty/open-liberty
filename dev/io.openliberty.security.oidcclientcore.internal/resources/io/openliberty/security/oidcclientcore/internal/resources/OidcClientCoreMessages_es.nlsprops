@@ -1,9 +1,11 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -112,10 +114,14 @@ JWK_READ_TIMED_OUT=CWWKS2422E: El cliente de OpenID Connect no ha podido leer lo
 JWK_READ_TIMED_OUT.explanation=El cliente de OpenID Connect no puede leer los datos JWK del URI JWK en el intervalo de tiempo configurado.
 JWK_READ_TIMED_OUT.useraction=Actualice la propiedad jwksReadTimeout en la configuraci\u00f3n de cliente de OpenID Connect. Verifique que se pueda acceder al proveedor de OpenID Connect.
 
-OIDC_CLIENT_INVALID_RESPONSE_TYPE=CWWKS2423E: Se ha especificado el siguiente tipo de respuesta no v\u00e1lido: '{0}'. Los tipos de respuesta v\u00e1lidos son [{1}].
+OIDC_CLIENT_INVALID_RESPONSE_TYPE=CWWKS2423E: Se ha especificado el siguiente tipo de respuesta no v\u00e1lido: ''{0}''. Los tipos de respuesta v\u00e1lidos son [{1}].
 OIDC_CLIENT_INVALID_RESPONSE_TYPE.explanation=El tipo de respuesta especificado no es v\u00e1lido. 
 OIDC_CLIENT_INVALID_RESPONSE_TYPE.useraction=Especifique uno de los tipos de respuesta v\u00e1lidos.
 
 TOKEN_CLAIM_VALUE_MISMATCH=CWWKS2424E: El valor [{0}] de la aserci\u00f3n [{1}] del token no coincide con el valor esperado [{2}].
 TOKEN_CLAIM_VALUE_MISMATCH.explanation=El valor de la aserci\u00f3n es incorrecto o est\u00e1 mal formado. Puede que la configuraci\u00f3n del cliente de OpenID Connect sea incorrecta o que el token se haya creado con valores incorrectos.
 TOKEN_CLAIM_VALUE_MISMATCH.useraction=Aseg\u00farese de que est\u00e9 configurado correctamente el atributo de la configuraci\u00f3n del cliente de OpenID Connect relacionado con la aserci\u00f3n (claim) especificada en el mensaje.
+
+TOKEN_MISSING_CLAIMS=CWWKS2425E: El token de cliente de {0} OpenID Connect no es v\u00e1lido. El valor de jwtClaims en el objeto JwtContext es nulo o est\u00e1 vac\u00edo.
+TOKEN_MISSING_CLAIMS.explanation=Falta informaci\u00f3n en el token y su validaci\u00f3n no se puede completar.
+TOKEN_MISSING_CLAIMS.useraction=Revise en el registro los errores anteriores para obtener detalles sobre la anomal\u00eda. Compruebe el formato y el contenido del token devuelto por el proveedor de OpenID Connect.

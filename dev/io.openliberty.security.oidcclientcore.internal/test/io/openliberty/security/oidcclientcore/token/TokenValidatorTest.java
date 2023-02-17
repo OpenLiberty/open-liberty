@@ -12,8 +12,10 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.token;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jmock.Expectations;
@@ -56,8 +58,8 @@ public class TokenValidatorTest {
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
+        outputMgr.captureStreams();
         jwtClaims = JwtParsingUtils.parseJwtWithoutValidation(idToken).getJwtClaims();
-
     }
 
     /**
@@ -65,6 +67,8 @@ public class TokenValidatorTest {
      */
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
+        outputMgr.dumpStreams();
+        outputMgr.restoreStreams();
     }
 
     /**
@@ -80,6 +84,7 @@ public class TokenValidatorTest {
      */
     @After
     public void tearDown() throws Exception {
+        outputMgr.resetStreams();
     }
 
     /**
@@ -192,7 +197,6 @@ public class TokenValidatorTest {
     public void testValidateAudiences() {
         final String methodName = "testValidateAudiences";
         List<String> aud_claim_from_token = null;
-        String aud_from_config = "clientid";
 
         try {
             aud_claim_from_token = jwtClaims.getAudience();
@@ -210,7 +214,91 @@ public class TokenValidatorTest {
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }
+    }
+    
+    @Test
+    public void testValidateAudiences_multipleAudiences_matchingClientId_missingAzp() {
+        final String methodName = "testValidateAudiences";
+        List<String> aud_claim_from_token = new ArrayList<String>();
 
+        try {
+            aud_claim_from_token.add("client01");
+            aud_claim_from_token.add("client02");
+            aud_claim_from_token.add("client03");
+            
+            mock.checking(new Expectations() {
+                {
+                    allowing(oidcClientConfig).getProviderMetadata();//.getIssuer();
+                    will(returnValue(oidcmd));
+                    allowing(oidcClientConfig).getClientId();
+                    will(returnValue("client01"));
+                }
+            });
+            tokenValidator = tokenValidator.audiences(aud_claim_from_token);
+            tokenValidator.validateAudiences();
+        } catch (TokenValidationException e) {
+            String error = e.getMessage();
+            assertTrue("error message should include - The token is missing the required [azp] claim", error.contains("CWWKS2417E: The token is missing the required [azp] claim."));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+    
+    @Test
+    public void testValidateAudiences_multipleAudiences_matchingClientId() {
+        final String methodName = "testValidateAudiences";
+        List<String> aud_claim_from_token = new ArrayList<String>();
+
+        try {
+            aud_claim_from_token.add("client01");
+            aud_claim_from_token.add("client02");
+            aud_claim_from_token.add("client03");
+            
+            mock.checking(new Expectations() {
+                {
+                    allowing(oidcClientConfig).getProviderMetadata();//.getIssuer();
+                    will(returnValue(oidcmd));
+                    allowing(oidcClientConfig).getClientId();
+                    will(returnValue("client01"));
+                }
+            });
+            tokenValidator = tokenValidator.audiences(aud_claim_from_token);
+            tokenValidator = tokenValidator.azp("some azp");
+            tokenValidator.validateAudiences();
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+    
+    @Test
+    public void testValidateAudiences_multipleAudiences_clientIdNotMatching() {
+        final String methodName = "testValidateAudiences";
+        List<String> aud_claim_from_token = new ArrayList<String>();
+
+        try {
+            aud_claim_from_token.add("client04");
+            aud_claim_from_token.add("client02");
+            aud_claim_from_token.add("client03");
+  
+            mock.checking(new Expectations() {
+                {
+                    allowing(oidcClientConfig).getProviderMetadata();//.getIssuer();
+                    will(returnValue(oidcmd));
+                    allowing(oidcClientConfig).getClientId();
+                    will(returnValue("client01"));
+                }
+            });
+            tokenValidator = tokenValidator.audiences(aud_claim_from_token);
+            tokenValidator.validateAudiences();
+        } catch (TokenClaimMismatchException e) {
+            //error message = "CWWKS2424E: The [\"client04\" \"client02\" \"client03\" ] value for the [aud] claim in the token does not match the [client01] expected value.]";
+            String expected = "value for the [aud] claim in the token does not match the [client01]";
+            String received = e.getMessage();
+            assertTrue("error should include - value for the [aud] claim in the token does not match the [client01]", received.contains("CWWKS2424E:")&&received.contains(expected));
+            
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
     }
 
     /**

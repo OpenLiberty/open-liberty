@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -28,7 +28,7 @@ public class DefaultSubjectDN {
 
     /**
      * Create the default SubjectDN based on the host and server names.
-     * 
+     *
      * @param hostName May be {@code null}. If {@code null} an attempt is made to determine it.
      * @param serverName May be {@code null}.
      */
@@ -37,9 +37,9 @@ public class DefaultSubjectDN {
             hostName = getHostName();
         }
         if (serverName == null) {
-            subjectDN = "CN=" + hostName + ",O=ibm,C=us";
+            subjectDN = "CN=" + hostName;
         } else {
-            subjectDN = "CN=" + hostName + ",OU=" + serverName + ",O=ibm,C=us";
+            subjectDN = "CN=" + hostName + ",OU=" + serverName;
         }
     }
 
@@ -52,7 +52,7 @@ public class DefaultSubjectDN {
 
     /**
      * Get the host name.
-     * 
+     *
      * @return String value of the host name or "localhost" if not able to resolve
      */
     private String getHostName() {

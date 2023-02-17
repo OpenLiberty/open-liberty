@@ -1,9 +1,11 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -112,10 +114,14 @@ JWK_READ_TIMED_OUT=CWWKS2422E: Der OpenID Connect-Client konnte innerhalb von {1
 JWK_READ_TIMED_OUT.explanation=Der OpenID Connect-Client kann die JWK-Daten nicht innerhalb des konfigurierten Zeitrahmens aus dem JWK-URI lesen.
 JWK_READ_TIMED_OUT.useraction=Aktualisieren Sie die Eigenschaft "jwksReadTimeout" in der OpenID Connect-Clientkonfiguration. \u00dcberpr\u00fcfen Sie, ob der OpenID Connect-Provider erreichbar ist.
 
-OIDC_CLIENT_INVALID_RESPONSE_TYPE=CWWKS2423E: Der folgende ung\u00fcltige Antworttyp wurde angegeben: '{0}'. G\u00fcltige Antworttypen sind [{1}].
+OIDC_CLIENT_INVALID_RESPONSE_TYPE=CWWKS2423E: Der folgende ung\u00fcltige Antworttyp wurde angegeben: ''{0}''. G\u00fcltige Antworttypen sind [{1}].
 OIDC_CLIENT_INVALID_RESPONSE_TYPE.explanation=Der angegebene Antworttyp ist ung\u00fcltig. 
 OIDC_CLIENT_INVALID_RESPONSE_TYPE.useraction=Geben Sie einen der g\u00fcltigen Antworttypen an.
 
 TOKEN_CLAIM_VALUE_MISMATCH=CWWKS2424E: Der Wert [{0}] f\u00fcr den Anspruch [{1}] im Token stimmt nicht mit dem erwarteten Wert [{2}] \u00fcberein.
 TOKEN_CLAIM_VALUE_MISMATCH.explanation=Der Anspruchswert ist falsch oder fehlerhaft. M\u00f6glicherweise ist die Konfiguration f\u00fcr den OpenID Connect-Client falsch oder das Token wurde mit falschen Werten erstellt.
 TOKEN_CLAIM_VALUE_MISMATCH.useraction=Stellen Sie sicher, dass das Attribut in der OpenID Connect-Clientkonfiguration, das sich auf den in der Nachricht angegebenen Anspruch bezieht, ordnungsgem\u00e4\u00df konfiguriert ist.
+
+TOKEN_MISSING_CLAIMS=CWWKS2425E: Das {0} OpenID Connect-Client-Token ist ung\u00fcltig. Der Wert jwtClaims im Objekt JwtContext ist null oder leer.
+TOKEN_MISSING_CLAIMS.explanation=Im Token fehlen Informationen und die Validierung des Tokens kann nicht abgeschlossen werden.
+TOKEN_MISSING_CLAIMS.useraction=Suchen Sie im Protokoll nach fr\u00fcheren Fehlern, um Details zum Fehler zu erhalten. \u00dcberpr\u00fcfen Sie Format und Inhalt des Tokens, das vom OpenID Connect-Provider zur\u00fcckgegeben wird.

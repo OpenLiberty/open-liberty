@@ -31,7 +31,7 @@
 # Message prefix block: CWWKG0001 - CWWKG1000
 # -------------------------------------------------------------------------------------------------
 
-copyright=\nCopyright (c) 2010 IBM Corporation \u015fi al\u0163ii.\nToate drepturile rezervate. Acest program \u015fi materialele \u00eenso\u0163itoare\nsunt f\u0103cute disponibile \u00een baza termenilor din Eclipse Public License 2.0,\ncare \u00eenso\u0163e\u015fte aceast\u0103 distribu\u0163ie \u015fi este disponibil\u0103 la\nhttp://www.eclipse.org/legal/epl-2.0/
+copyright=\nCopyright (c) 2010 IBM Corporation \u0219i al\u021bii.\nToate drepturile rezervate. Acest program \u0219i materialele care \u00eel \u00eenso\u021besc \nsunt disponibile \u00een baza termenilor din Eclipse Public License 2.0, \ncare \u00eenso\u021be\u0219te aceast\u0103 distribu\u021bie \u0219i este disponibil\u0103 la \nhttp://www.eclipse.org/legal/epl-2.0/
 
 error.parse.server=CWWKG0001E: Parser-ul de configurare a detectat o eroare la parsarea r\u0103d\u0103cinii configura\u0163iei \u015fi a documentelor de configurare cu referire. Eroare: {0}
 error.parse.server.explanation=Configura\u0163ia serverului nu a putut fi citit\u0103 pentru c\u0103 este o eroare \u00eentr-unul din fi\u015fierele de configurare.

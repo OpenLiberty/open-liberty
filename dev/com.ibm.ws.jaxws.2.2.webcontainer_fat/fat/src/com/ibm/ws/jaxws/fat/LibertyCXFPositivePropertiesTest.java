@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -45,7 +45,7 @@ public class LibertyCXFPositivePropertiesTest {
     public static LibertyServer server;
 
     private final static Class<?> c = LibertyCXFPositivePropertiesTest.class;
-    private static final int CONN_TIMEOUT = 800;
+    private static final int CONN_TIMEOUT = 300;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -73,7 +73,7 @@ public class LibertyCXFPositivePropertiesTest {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CWWKO0801E");
         }
     }
 
@@ -124,8 +124,9 @@ public class LibertyCXFPositivePropertiesTest {
      * Calls WSAPropertyTestServlet with parameter defining which Image Service Implementation to call
      */
     private void connect(String methodName) throws Exception {
-        URL url = new URL("https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort()
-                          + "/webServiceRefFeatures/wsapolicyskip?impl=" + methodName);
+        //Server URL is constructed to pass to servlet since getting this info from HttpServletRequest is not providing the correct one each time
+        String serverURL = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort();
+        URL url = new URL(serverURL + "/webServiceRefFeatures/wsapolicyskip?impl=" + methodName + "&serverurl=" + serverURL);
         Log.info(c, "LibertyCXFPositivePropertiesTest",
                  "Calling Application with URL=" + url.toString());
         HttpUtils.trustAllCertificates();

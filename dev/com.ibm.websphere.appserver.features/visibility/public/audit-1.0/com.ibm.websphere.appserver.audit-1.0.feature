@@ -12,3 +12,4 @@ Subsystem-Name: Audit 1.0
   com.ibm.json4j
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true

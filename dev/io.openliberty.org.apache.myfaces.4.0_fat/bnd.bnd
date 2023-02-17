@@ -16,6 +16,7 @@ src: \
     test-applications/AjaxRenderExecuteThisTest.war/src,\
     test-applications/AnnotationLiteralsTest.war/src,\
     test-applications/ExternalContextAddResponseCookie.war/src,\
+    test-applications/Faces40URN.war/src,\
     test-applications/FacesContextGetLifecycle.war/src,\
     test-applications/LayoutAttribute.war/src,\
     test-applications/SelectItemTests.war/src,\
@@ -23,7 +24,9 @@ src: \
     test-applications/Faces40ThirdPartyApi.war/src,\
     test-applications/MultipleInputFileTest.war/src,\
     test-applications/ProgrammaticFaceletTests.war/src,\
-    test-applications/Faces40URN.war/src
+    test-applications/SubscribeToEventTest.war/src,\
+    test-applications/Faces40URN.war/src,\
+    test-applications/WebSocket.war/src
 
 fat.project: true
 

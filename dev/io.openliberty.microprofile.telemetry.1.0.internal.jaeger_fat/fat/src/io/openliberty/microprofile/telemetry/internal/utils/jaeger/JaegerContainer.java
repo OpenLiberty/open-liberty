@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -33,6 +33,7 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
     public static final int OLTP_GRPC_PORT = 4317;
     public static final int OLTP_HTTP_PORT = 4318;
     public static final int JAEGER_LEGACY_PORT = 14250;
+    public static final int JAEGER_THRIFT_PORT = 14268;
     public static final int ZIPKIN_PORT = 9411;
 
     public static final int HTTP_QUERY_PORT = 16686;
@@ -48,6 +49,7 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
         withExposedPorts(OLTP_GRPC_PORT,
                          OLTP_HTTP_PORT,
                          JAEGER_LEGACY_PORT,
+                         JAEGER_THRIFT_PORT,
                          GRPC_QUERY_PORT,
                          HTTP_QUERY_PORT);
 
@@ -107,6 +109,28 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
      */
     public int getJaegerLegacyPort() {
         return getMappedPort(JAEGER_LEGACY_PORT);
+    }
+
+    /**
+     * Get the URL to use to send spans using the legacy Jaeger thrift protocol
+     * <p>
+     * Only valid when the container is started
+     *
+     * @return the legacy Jaeger thrift URL
+     */
+    public String getJaegerThriftUrl() {
+        return "http://" + getHost() + ":" + getJaegerThiftPort() + "/api/traces";
+    }
+
+    /**
+     * Get the port to use to send spans using the legacy Jaeger thrift protocol
+     * <p>
+     * Only valid when the container is started
+     *
+     * @return the legacy Jaeger thrift port
+     */
+    public int getJaegerThiftPort() {
+        return getMappedPort(JAEGER_THRIFT_PORT);
     }
 
     /**

@@ -15,8 +15,6 @@
         <feature>servlet-6.0</feature>
         <feature>pages-3.1</feature>
     </featureManager>
-
-    <webContainer collapseEmptySegmentsInURI="true"/>
     
     <applicationManager autoExpand="true"/>
 

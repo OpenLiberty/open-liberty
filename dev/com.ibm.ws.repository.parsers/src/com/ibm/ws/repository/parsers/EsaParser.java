@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -81,6 +81,7 @@ public class EsaParser extends ParserBase implements Parser<EsaResourceWritable>
     /**  */
     private static final String OSGI_EE_NAMESPACE_ID = "osgi.ee";
 
+    private static final VersionRange JAVA_17_RANGE = VersionRange.parseVersionRange("[1.2,17]");
     private static final VersionRange JAVA_11_RANGE = VersionRange.parseVersionRange("[1.2,11]");
     private static final VersionRange JAVA_10_RANGE = VersionRange.parseVersionRange("[1.2,10]");
     private static final VersionRange JAVA_9_RANGE = VersionRange.parseVersionRange("[1.2,9]");
@@ -401,7 +402,7 @@ public class EsaParser extends ParserBase implements Parser<EsaResourceWritable>
      * @param esa
      * @param resource
      * @throws RepositoryException If there are any IOExceptions reading the esa, or if the
-     *             the bundles have conflicting Java version requirements.
+     *                                 the bundles have conflicting Java version requirements.
      */
     private static void setJavaRequirements(File esa, EsaResourceWritable resource) throws RepositoryException {
 
@@ -415,6 +416,7 @@ public class EsaParser extends ParserBase implements Parser<EsaResourceWritable>
         matchingEnvs.put("Java 9", JAVA_9_RANGE);
         matchingEnvs.put("Java 10", JAVA_10_RANGE);
         matchingEnvs.put("Java 11", JAVA_11_RANGE);
+        matchingEnvs.put("Java 17", JAVA_17_RANGE);
 
         StringBuilder message = new StringBuilder();
 
@@ -536,8 +538,8 @@ public class EsaParser extends ParserBase implements Parser<EsaResourceWritable>
      * Adds the Require-Capability Strings from a bundle jar to the Map of
      * Require-Capabilities found
      *
-     * @param zipSystem - the FileSystem mapping to the feature containing this bundle
-     * @param bundle - the bundle within a zipped up feature
+     * @param zipSystem   - the FileSystem mapping to the feature containing this bundle
+     * @param bundle      - the bundle within a zipped up feature
      * @param requiresMap - Map of Path to Require-Capability
      * @throws IOException
      */
@@ -580,7 +582,7 @@ public class EsaParser extends ParserBase implements Parser<EsaResourceWritable>
      * Adds the Require-Capability Strings from a SUBSYSTEM.MF to the Map of
      * Require-Capabilities found
      *
-     * @param esa - the feature file containing the SUBSYSTEM.MF
+     * @param esa         - the feature file containing the SUBSYSTEM.MF
      * @param requiresMap - Map of Path to Require-Capability
      * @throws IOException
      */

@@ -21,7 +21,7 @@ var messages = {
     DOCS: "Doc", // Translate 'Documentation'
     COPYRIGHT: "Copyright",
     OPEN_LIBERTY_FOOTER: "Logo pie' di pagina Liberty",
-    COPYRIGHT_OPEN_LIBERTY: "Materiali su licenza — Proprietà di Open Liberty Project, Copyright IBM Corp e altri 1997, 2019. Distribuito secondo i termini di Eclipse Public License v2.", // COPYRIGHT_URL
+    COPYRIGHT_OPEN_LIBERTY: "Materiali su licenza — Proprietà di Open Liberty Project, Copyright IBM Corp e altri 1997, 2019. La distribuzione del progetto è soggetta ai termini di Eclipse Public License v2.", // COPYRIGHT_URL
     UPDATE_BANNER_SECTION: "Sezione Aggiorna banner",
     UPDATE_BANNER_SECTION_CONTENT: "Contenuto sezione Aggiorna banner",
     HEADER_UPDATE_AVAILABLE: "Aggiornamento disponibile: ",

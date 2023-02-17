@@ -6,11 +6,13 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2009, 2011 IBM Corporation and others.
+# Copyright (c) 2009, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -73,6 +75,31 @@ noPrometheusRegistry.info.CWMMC0008I.useraction=Prometheus \ub808\uc9c0\uc2a4\ud
 disabled.info.CWMMC0009I=CWMMC0009I: Prometheus \ub808\uc9c0\uc2a4\ud2b8\ub9ac\uac00 \uc0ac\uc6a9 \uc548\ud568\uc73c\ub85c \uc124\uc815\ub418\uc5b4 \uc788\uc5b4 /metrics \uc5d4\ub4dc\ud3ec\uc778\ud2b8\ub97c \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 disabled.info.CWMMC0009I.explanation=mp.metrics.prometheus.enabled MicroProfile Config \ud2b9\uc131\uc740 false\ub85c \uc124\uc815\ub429\ub2c8\ub2e4.
 disabled.info.CWMMC0009I.useraction=Prometheus \ub808\uc9c0\uc2a4\ud2b8\ub9ac\uc758 \uc0ac\uc6a9 \uc548\ud568 \uc124\uc815\uc774 \uc758\ub3c4\uc801\uc774\uc9c0 \uc54a\uc740 \uacbd\uc6b0 mp.metrics.prometheus.enabled MicroProfile Config \ud2b9\uc131\uc758 \uad6c\uc131\uc744 \uc81c\uac70\ud558\uac70\ub098 \ud2b9\uc131\uc744 \uba85\uc2dc\uc801\uc73c\ub85c true\ub85c \uc124\uc815\ud558\uc2ed\uc2dc\uc624.
+
+#Embedded SmallRye Metrics or Micrometer JAR not found in the lib directory
+fileNotFound.error.CWMMC0010E=CWMMC0010E: MicroProfile \uba54\ud2b8\ub9ad \uae30\ub2a5\uc744 \ucd08\uae30\ud654\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \ud544\uc218 JAR \ud30c\uc77c {0}\uc744(\ub97c) <wlp_home>/lib \ub514\ub809\ud1a0\ub9ac\uc5d0\uc11c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+fileNotFound.error.CWMMC0010E.explanation=JAR \ud30c\uc77c\uc744 <wlp_home>/lib \ub514\ub809\ud1a0\ub9ac\uc5d0\uc11c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \ud30c\uc77c\uc774 \uc0ad\uc81c\ub418\uac70\ub098 \uc774\ub984\uc774 \ubcc0\uacbd\ub420 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+fileNotFound.error.CWMMC0010E.useraction=\uc77c\ubc18\uc801\uc73c\ub85c <wlp_home>/lib \ub514\ub809\ud1a0\ub9ac\uc5d0 \uc788\ub294 JAR \ud30c\uc77c\uc774 \uc874\uc7ac\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc11c\ubc84 \uc124\uce58\ub97c \ub2e4\uc2dc \ubc30\uce58\ud558\uc2ed\uc2dc\uc624.
+
+#Bundle add-on class loader was null
+nullBundleAddOnClassLoader.error.CWMMC0011E=CWMMC0011E: MicroProfile \uba54\ud2b8\ub9ad \uae30\ub2a5\uc744 \ucd08\uae30\ud654\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. MicroProfile \uba54\ud2b8\ub9ad \ub7f0\ud0c0\uc784\uc774 \ud544\uc218 \ud074\ub798\uc2a4 \ub85c\ub354\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+nullBundleAddOnClassLoader.error.CWMMC0011E.explanation=\ud544\uc218 \ud074\ub798\uc2a4 \ub85c\ub354\ub97c \uc791\uc131\ud558\ub294 \uc911\uc5d0 \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+nullBundleAddOnClassLoader.error.CWMMC0011E.useraction=FFDC \ub85c\uadf8 \ubc0f \uc608\uc678 \ud14d\uc2a4\ud2b8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+#SmallRye Metrics classes not found when loading through reflection
+missingSmallRyeClasses.error.CWMMC0012E=CWMMC0012E: MicroProfile \uba54\ud2b8\ub9ad \uae30\ub2a5\uc744 \ucd08\uae30\ud654\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. SmallRye \uba54\ud2b8\ub9ad\uc758 \ud074\ub798\uc2a4\uac00 \ub85c\ub4dc\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+missingSmallRyeClasses.error.CWMMC0012E.explanation=<wlp_home>/lib \ub514\ub809\ud1a0\ub9ac\uc758 \ud328\ud0a4\uc9d5\ub41c SmallRye \uba54\ud2b8\ub9ad JAR \ud30c\uc77c\uc758 \ud074\ub798\uc2a4\uac00 \ub85c\ub4dc\ub418\uc9c0 \uc54a\uc558\uac70\ub098 \ub204\ub77d\ub418\uc5c8\uc2b5\ub2c8\ub2e4
+missingSmallRyeClasses.error.CWMMC0012E.useraction=FFDC \ub85c\uadf8\uc640 \uc608\uc678 \ud14d\uc2a4\ud2b8\ub97c \uac80\ud1a0\ud574\uc11c \ub204\ub77d\ub41c \ud074\ub798\uc2a4\ub97c \uc2dd\ubcc4\ud558\uace0 \ud574\ub2f9 \ud074\ub798\uc2a4\uac00 <wlp_home>/lib/io.openliberty.io.smallrye.metrics JAR\uc5d0 \uc874\uc7ac\ud558\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+#Configured Micrometer Library is missing dependencies
+missingDependencyClasses.error.CWMMC0013E=CWMMC0013E: MicroProfile \uba54\ud2b8\ub9ad \uae30\ub2a5\uc744 \ucd08\uae30\ud654\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc0ac\uc6a9\uc790 \uc81c\uacf5 \ub9c8\uc774\ud06c\ub85c\ubbf8\ud130 \ub77c\uc774\ube0c\ub7ec\ub9ac\uc5d0 \ud544\uc694\ud55c \ud074\ub798\uc2a4\uac00 \ub204\ub77d\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+missingDependencyClasses.error.CWMMC0013E.explanation=MicroProfile \uba54\ud2b8\ub9ad \uae30\ub2a5\uc774 libraryRef \uc18d\uc131\uc744 \ud1b5\ud574 \uc815\uc758\ub41c \ub9c8\uc774\ud06c\ub85c\ubbf8\ud130 \ub77c\uc774\ube0c\ub7ec\ub9ac\ub97c \ub85c\ub4dc\ud558\uace0 \uc788\uc73c\uba70 \ubaa8\ub4e0 \uc885\uc18d\uc131\uc744 \ud3ec\ud568\ud574\uc57c \ud569\ub2c8\ub2e4.
+missingDependencyClasses.error.CWMMC0013E.useraction=\ub9c8\uc774\ud06c\ub85c\ubbf8\ud130 \ub77c\uc774\ube0c\ub7ec\ub9ac\uc5d0 \ud544\uc694\ud55c \uc885\uc18d\uc131\uc744 \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+
+#MicroProfile Metrics 5.0 has been configured to use a libraryRef attribute
+libraryRefConfigured.info.CWMMC0014I=CWMMC0014I: MicroProfile \uba54\ud2b8\ub9ad \uae30\ub2a5\uc774 \ub2e4\uc74c libraryRef: [{0}]\uc744(\ub97c) \uc0ac\uc6a9\ud558\ub3c4\ub85d \uad6c\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+libraryRefConfigured.info.CWMMC0014I.explanation=MicroProfile \uba54\ud2b8\ub9ad \uae30\ub2a5\uc740 libraryRef\ub97c \uc0ac\uc6a9\ud558\ub3c4\ub85d \uad6c\uc131\ub429\ub2c8\ub2e4. \uc774 \ucc38\uc870\ub41c \ub77c\uc774\ube0c\ub7ec\ub9ac\uc5d0\ub294 \ub9c8\uc774\ud06c\ub85c\ubbf8\ud130 \ucf54\uc5b4 \ub77c\uc774\ube0c\ub7ec\ub9ac, \ub300\uc0c1 \ub9c8\uc774\ud06c\ub85c\ubbf8\ud130 \ub77c\uc774\ube0c\ub7ec\ub9ac \ubc0f \uc885\uc18d\uc131\uc774 \ud3ec\ud568\ub418\uc5b4 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+libraryRefConfigured.info.CWMMC0014I.useraction=\uc544\ubb34 \uc870\uce58\ub3c4 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 
 #Memory usedHeap message
 memory.usedHeap.description=\uc0ac\uc6a9\ub41c \ud799 \uba54\ubaa8\ub9ac \ud06c\uae30(\ubc14\uc774\ud2b8)\ub97c \ud45c\uc2dc\ud569\ub2c8\ub2e4.

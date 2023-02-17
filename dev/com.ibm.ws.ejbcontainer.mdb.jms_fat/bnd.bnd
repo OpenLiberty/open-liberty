@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2021 IBM Corporation and others.
+# Copyright (c) 2021, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ fat.project: true
 
 tested.features: \
 	connectors-2.0, \
+	connectors-2.1, \
 	enterpriseBeansHome-4.0, \
 	enterpriseBeansRemote-4.0, \
 	mdb-4.0, \
@@ -44,7 +45,7 @@ tested.features: \
 	messagingserver-3.0, \
 	servlet-4.0, \
 	servlet-5.0, \
-	xmlbinding-3.0
+	servlet-6.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.ejb.3.1;version=latest,\

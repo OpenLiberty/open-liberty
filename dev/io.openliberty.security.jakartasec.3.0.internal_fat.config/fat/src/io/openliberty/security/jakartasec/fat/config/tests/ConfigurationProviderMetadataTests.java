@@ -477,7 +477,7 @@ public class ConfigurationProviderMetadataTests extends CommonAnnotatedSecurityT
 
         String url = rpHttpsBase + "/" + appRoot + "/" + TestApp;
 
-        String[] parmOnlyToCheck = new String[] { "state", "prompt", "nonce", "response_mode" };
+        String[] parmOnlyToCheck = new String[] { "state", "nonce" };
         Map<String, String> parmAndValuesToCheck = new HashMap<String, String>();
         parmAndValuesToCheck.put("redirect_uri", rpHttpsBase + "/testAuthorizationEndpoint/Callback");
         parmAndValuesToCheck.put("client_id", rspValues.getClientId());

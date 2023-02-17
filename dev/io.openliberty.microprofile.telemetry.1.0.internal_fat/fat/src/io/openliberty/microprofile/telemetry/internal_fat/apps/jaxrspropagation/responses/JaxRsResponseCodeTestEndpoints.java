@@ -11,16 +11,23 @@ package io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation
 
 import static jakarta.ws.rs.core.Response.Status.BAD_REQUEST;
 
+import java.net.URI;
+
+import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.UriInfo;
 
 /**
  *
  */
+@ApplicationPath("/")
 @Path("responseCodeEndpoints")
-public class JaxRsResponseCodeTestEndpoints {
+public class JaxRsResponseCodeTestEndpoints extends Application {
 
     @Path("200")
     @GET
@@ -56,6 +63,22 @@ public class JaxRsResponseCodeTestEndpoints {
         return Response.status(Status.INTERNAL_SERVER_ERROR)
                         .entity("get500")
                         .build();
+    }
+
+    @Path("307")
+    @GET
+    public Response get307(@Context UriInfo uriInfo) {
+        URI targetUri = uriInfo.getBaseUriBuilder()
+                        .path(JaxRsResponseCodeTestEndpoints.class)
+                        .path(JaxRsResponseCodeTestEndpoints.class, "redirectTarget")
+                        .build();
+        return Response.temporaryRedirect(targetUri).entity("get307").build();
+    }
+
+    @Path("redirectTarget")
+    @GET
+    public Response redirectTarget() {
+        return Response.ok("redirectTarget").build();
     }
 
 }

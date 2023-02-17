@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2021 IBM Corporation and others.
+# Copyright (c) 2016, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -312,7 +312,7 @@ JWT_TRUSTED_ISSUERS_NULL=CWWKS6052E: El emisor [{0}] del JSON Web Token (JWT) pr
 JWT_TRUSTED_ISSUERS_NULL.explanation=La configuraci\u00f3n del servidor especifica los emisores de confianza con la validaci\u00f3n de JWT. La configuraci\u00f3n de JWT no especifica ning\u00fan emisor de confianza, por lo tanto, no se puede validar la se\u00f1al.
 JWT_TRUSTED_ISSUERS_NULL.useraction=Asegurese que la configuraci\u00f3n JWT que se especifica en el mensaje, define como m\u00ednimo un emisor de confianza. Aseg\u00farese que el emisor de JWT coincide con un emisor especificado en la configuraci\u00f3n JWT.
 
-SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: Se utiliza un esquema HTTP en el punto final especificado: {0}, se necesita HTTPS.
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6052E: Se utiliza un esquema HTTP en el punto final especificado: {0}, se necesita HTTPS.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=El punto final especificado requiere HTTPS, pero se ha utilizado HTTP en el URL de solicitud.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Compruebe el URL de solicitud y aseg\u00farese de que utiliza HTTPS o cambie la configuraci\u00f3n para que no sea necesario HTTPS.
 
@@ -388,3 +388,21 @@ NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Aseg\u00farese de que la carga \u00
 JWE_DECRYPTION_KEY_MISSING=CWWKS6066E: La se\u00f1al JWE (JSON Web Encryption) no se puede descifrar porque no se puede encontrar una clave de descifrado. El atributo de configuraci\u00f3n del servidor {0} est\u00e1 establecido en [{1}].
 JWE_DECRYPTION_KEY_MISSING.explanation=Es necesaria una clave de descifrado para descifrar la se\u00f1al JWE. La clave de descifrado debe estar presente en el almac\u00e9n de claves de consumidor de JWT o la clave debe especificarse en las propiedades de configuraci\u00f3n de MicroProfile.
 JWE_DECRYPTION_KEY_MISSING.useraction=Verifique que el alias de clave especificado en el mensaje exista en el almac\u00e9n de claves de consumidor de JWT. Si el alias no est\u00e1 configurado, la clave de descifrado debe especificarse en las propiedades de configuraci\u00f3n de MicroProfile.
+
+# Do not translate "JSON Web Token", "JWT", "iat"
+# 0=iat claim time value (date), 1=Current time, 2=Clock skew configuration value, 3=Token age configuration value
+JWT_TOKEN_AGED=CWWKS6067E: El token web JSON (JWT) no es v\u00e1lido porque su antig\u00fcedad ha vencido desde la emisi\u00f3n de la reclamaci\u00f3n at (iat). La hora de la reclamaci\u00f3n iat es {0}. La hora actual menos el desfase horario es {1}. El desfase horario configurado es de {2} segundos. La antig\u00fcedad de token configurada es de {3} segundos.
+JWT_TOKEN_AGED.explanation=Los tokens caducados no son v\u00e1lidos.
+JWT_TOKEN_AGED.useraction=Obtenga un token nuevo que no est\u00e9 caducado. Sincronice las horas de reloj del emisor y del consumidor del token, o aumente el desfase horario o la antig\u00fcedad del token en la configuraci\u00f3n de JWT.
+
+# Do not translate "JSON Web Encryption", "JWE", "alg"
+# 0=Key management key algorithm configuration value
+JWE_MISSING_ALG_HEADER=CWWKS6068E: El token web de cifrado de JSON (JWE) no es v\u00e1lido porque le falta la cabecera alg. El algoritmo de clave de gesti\u00f3n de claves configurado es {0}.
+JWE_MISSING_ALG_HEADER.explanation=El token tiene un formato incorrecto, no est\u00e1 cifrado o le falta informaci\u00f3n de cifrado.
+JWE_MISSING_ALG_HEADER.useraction=Aseg\u00farese de que la cabecera de algoritmo del token JWE tenga configurado el valor correcto.
+
+# Do not translate "JSON Web Encryption", "JWE", "JWT", "Content Encryption Key", "CEK"
+# 0=Cryptographic algorithm used to encrypt the Content Encryption Key (e.g. RSA-OAEP), 1=Cryptographic algorithm required for decrypting the Content Encryption Key (e.g. RSA-OAEP)
+JWE_ALGORITHM_MISMATCH=CWWKS6069E: El cifrado web JSON (JWE) no es v\u00e1lido porque su clave de cifrado de contenido (CEK) se ha cifrado con el algoritmo {0}. Las claves de cifrado de contenido tienen que cifrarse con el algoritmo {1}.
+JWE_ALGORITHM_MISMATCH.explanation=Las claves de cifrado de contenido tienen que estar cifradas con el algoritmo especificado en el mensaje. Las claves de cifrado de contenido cifradas con cualquier otro algoritmo de cifrado no se pueden validar.
+JWE_ALGORITHM_MISMATCH.useraction=Obtenga un token nuevo con una clave de cifrado de contenido que est\u00e9 cifrada con el algoritmo especificado en el mensaje. De forma alternativa, actualice la configuraci\u00f3n de JWT para permitir tokens con claves de cifrado de contenido cifradas con el otro algoritmo.

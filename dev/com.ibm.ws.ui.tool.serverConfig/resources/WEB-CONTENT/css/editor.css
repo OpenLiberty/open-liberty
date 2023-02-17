@@ -1081,7 +1081,7 @@ color: #999999;
 }
 
 #orionEditor .string.quoted.double {
-	color: #5596E6;
+	color: #255A97;
 }
 
 #orionEditor .meta.tag.xml {
@@ -1496,19 +1496,19 @@ color: #999999;
 }
 
 .configurationEditorToggle {
-padding: 2px;
-width: 40px;
-height: 24px;
-border-radius: 12px;
-transition: background 0.3s;
+    padding: 2px;
+    width: 40px;
+    height: 24px;
+    border-radius: 12px;
+    transition: background 0.3s;
 }
 
 .configurationEditorToggleOn {
-background-color: #4178BE;
+    background-color: #4178BE;
 }
 
 .configurationEditorToggleOff {
-background-color: #929399;
+    background-color: #929399;
 }
 
 .configurationEditorToggle:before {
@@ -1805,7 +1805,7 @@ background-color: #929399;
 }
 
 .keyValueTableItemActionIconAdd {
-border-radius: 3px;
+    border-radius: 3px;
 }
 
 .keyValueTableItemActionIconDisabled, .keyValueTableItemActionIconDisabled:hover {
