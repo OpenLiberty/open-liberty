@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,14 +12,20 @@
  *******************************************************************************/
 package componenttest.rules.repeater;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatActions.EEVersion;
+import componenttest.topology.impl.JavaInfo;
 
-public class EERepeatActions extends RepeatActions {
+public class EERepeatActions {
 
     //The EE FeatureSet IDs
     public static final String EE6_ID = EE6FeatureReplacementAction.ID;
@@ -105,7 +111,44 @@ public class EERepeatActions extends RepeatActions {
      * @return                          A RepeatTests instance
      */
     public static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
-        return repeat(server, otherFeatureSetsTestMode, ALL, firstFeatureSet, otherFeatureSets);
+        return repeat(server, otherFeatureSetsTestMode, ALL, firstFeatureSet, Arrays.asList(otherFeatureSets));
     }
 
+    /**
+     * As {@link RepeatActions#repeat(String, TestMode, Set, FeatureSet, Set)} except that if {@code firstFeatureSet} isn't compatible with the current Java version, we try to
+     * replace it with the newest set from {@code otherFeatureSets} that is compatible.
+     *
+     * @param  server                   The server to repeat on
+     * @param  otherFeatureSetsTestMode The test mode to run the otherFeatureSets
+     * @param  allFeatureSets           All known FeatureSets. The features not in the current FeatureSet are removed from the repeat
+     * @param  firstFeatureSet          The first FeatureSet to repeat with. This is run in LITE mode.
+     * @param  otherFeatureSets         The other FeatureSets to repeat with. These are in the mode specified by otherFeatureSetsTestMode
+     * @return                          A RepeatTests instance
+     */
+    private static RepeatTests repeat(String server, TestMode otherFeatureSetsTestMode, Set<FeatureSet> allFeatureSets, FeatureSet firstFeatureSet,
+                                      Collection<FeatureSet> otherFeatureSets) {
+
+        // If the firstFeatureSet requires a Java level higher than the one we're running, try to find a suitable replacement so we don't end up not running the test at all in LITE mode
+        int currentJavaLevel = JavaInfo.forCurrentVM().majorVersion();
+        if (currentJavaLevel < firstFeatureSet.getEEVersion().getMinJavaLevel()) {
+
+            List<FeatureSet> allSetsList = new ArrayList<>(Arrays.asList(ALL_SETS_ARRAY));
+            Collections.reverse(allSetsList); // Reverse list so newest EE version is first in list
+
+            Collection<FeatureSet> candidateFeatureSets = otherFeatureSets;
+
+            // Find the newest EE feature set that's in otherFeatureSets and is compatible with the current java version
+            Optional<FeatureSet> newestSupportedSet = allSetsList.stream()
+                            .filter(s -> candidateFeatureSets.contains(s))
+                            .filter(s -> s.getEEVersion().getMinJavaLevel() <= currentJavaLevel)
+                            .findFirst();
+
+            if (newestSupportedSet.isPresent()) {
+                firstFeatureSet = newestSupportedSet.get();
+                otherFeatureSets = new ArrayList<>(otherFeatureSets);
+                otherFeatureSets.remove(newestSupportedSet.get());
+            }
+        }
+        return RepeatActions.repeat(server, otherFeatureSetsTestMode, allFeatureSets, firstFeatureSet, otherFeatureSets);
+    }
 }
