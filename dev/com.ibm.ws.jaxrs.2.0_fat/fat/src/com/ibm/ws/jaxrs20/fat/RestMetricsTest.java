@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -79,6 +79,8 @@ public class RestMetricsTest {
 
     private static final String METRICS_URL_STRING = "/metrics/base/REST.request";
 
+    private static final String METRICS5_URL_STRING = "/metrics?scope=base&name=REST.request";
+
     private final String MAPPEDURI = getBaseTestUri(METRICSWAR, "rest", "restmetrics");
 
     private static final int BUFFER = 2000; // margin or error in ms for response times.
@@ -112,12 +114,8 @@ public class RestMetricsTest {
                       server.waitForStringInLog("CWWKF0011I"));
 
         // wait for LTPA key to be available to avoid CWWKS4000E
-        //TODO: make sure to remove this check when MP 6.0 is available - where MP Metrics supports EE10
-        //      metrics loads LTPA, so when we use MP Metrics in MP 6, we'll need to verify that LTPA is started
-        if (!JakartaEE10Action.isActive()) {
-            assertNotNull("CWWKS4105I.* not received on server",
-                      server.waitForStringInLog("CWWKS4105I.*"));
-        }
+        assertNotNull("CWWKS4105I.* not received on server",
+                  server.waitForStringInLog("CWWKS4105I.*"));
     }
 
     @AfterClass
@@ -180,7 +178,7 @@ public class RestMetricsTest {
         // Execute delete method once.
         runDeleteMethod(++method_Index);
 
-        ArrayList<String> metricsList = getMetricsStrings(200, METRICS_URL_STRING, false);
+        ArrayList<String> metricsList = getMetricsStrings(200, JakartaEE10Action.isActive() ? METRICS5_URL_STRING : METRICS_URL_STRING, false);
 
         //Confirm the metrics information is available.
         for (int i = 0; i <= method_Index; i++) {
@@ -199,9 +197,8 @@ public class RestMetricsTest {
         // Expect a 200 when metrics from other methods have already been collected. However, if this test is run first or by itself
         // no metrics should exist and a 404 would be expected.
         boolean allow404 = true;
-        ArrayList<String> metricsList = getMetricsStrings(200, METRICS_URL_STRING, allow404);
+        ArrayList<String> metricsList = getMetricsStrings(200, JakartaEE10Action.isActive() ? METRICS5_URL_STRING : METRICS_URL_STRING, allow404);
 
-        // getMetricsStrings() doesn't run for EE10 so metricsList will be null in that case
         if ((metricsList != null) && (metricsList.contains("abortTest"))) {
             fail("The /restmetrics/rest/restmetrics/abortTest method should not have run following the ContainerRequestFilter abort so no metrics information should be collected." + metricsList.toString());
         }
@@ -217,7 +214,7 @@ public class RestMetricsTest {
 
         runGetCheckedExceptionMethod(CHECKED_METHOD_INDEX, 500, "/restmetrics/rest/restmetrics/checked/unmappedChecked", "Unmapped Checked");
 
-        ArrayList<String> metricsList = getMetricsStrings(200, METRICS_URL_STRING, false);
+        ArrayList<String> metricsList = getMetricsStrings(200, JakartaEE10Action.isActive() ? METRICS5_URL_STRING : METRICS_URL_STRING, false);
 
         // Confirm the metrics data
         responseTimes[CHECKED_METHOD_INDEX] = checkMetrics(metricsList, CHECKED_METHOD_INDEX);
@@ -235,7 +232,7 @@ public class RestMetricsTest {
         runGetUncheckedExceptionMethod(UNCHECKED_METHOD_INDEX, 500, "/restmetrics/rest/restmetrics/unchecked/unmappedUnchecked", "Unmapped Unchecked");
 
 
-        ArrayList<String> metricsList = getMetricsStrings(200, METRICS_URL_STRING, false);
+        ArrayList<String> metricsList = getMetricsStrings(200, JakartaEE10Action.isActive() ? METRICS5_URL_STRING : METRICS_URL_STRING, false);
 
         // Confirm the metrics data
         responseTimes[UNCHECKED_METHOD_INDEX] = checkMetrics(metricsList, UNCHECKED_METHOD_INDEX);
@@ -647,11 +644,6 @@ public class RestMetricsTest {
     }
 
     private ArrayList<String> getMetricsStrings(int expectedRc, String metricString, boolean allow404) {
-        //TODO: remove this check when MP 6.0 is available - where MP Metrics supports EE10:
-        if (JakartaEE10Action.isActive()) {
-            return null;
-        }
-
         HttpURLConnection con = null;
         try {
             URL url = new URL("http://" + getHost() + ":" + getPort() + metricString);
@@ -702,10 +694,6 @@ public class RestMetricsTest {
 
 
     private float checkMetrics(ArrayList<String> lines, int index) {
-        //TODO: remove this check when MP 6.0 is available - where MP Metrics supports EE10:
-        if (JakartaEE10Action.isActive()) {
-            return -1.0f;
-        }
 
         float responseTime = -1;
         int value = -1;
@@ -716,13 +704,13 @@ public class RestMetricsTest {
         for (String line : lines) {
 
             if ((line.contains(METHOD_STRINGS[index])) &&
-                           (line.contains("base_REST_request_total"))) {
+                           (JakartaEE10Action.isActive() ? line.contains("REST_request_seconds_count") : line.contains("base_REST_request_total"))) {
                 String stringValue = line.substring(line.indexOf("}") + 2);
-                value = Integer.parseInt(stringValue);
+                value = Float.valueOf(stringValue).intValue();
             }
 
             if ((line.contains(METHOD_STRINGS[index])) &&
-                            (line.contains("base_REST_request_elapsedTime"))) {
+                            (JakartaEE10Action.isActive() ? line.contains("REST_request_seconds_sum") : line.contains("base_REST_request_elapsedTime"))) {
                 String stringValue = line.substring(line.indexOf("}") + 2);
                 responseTime = Float.parseFloat(stringValue) * 1000; //convert to ms
             }
