@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.genericbnf.BNFHeaders;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.KeyMatcher;
@@ -240,7 +241,7 @@ public class HttpHeaderKeys extends HeaderKeys {
      *
      * @param name
      */
-    public HttpHeaderKeys(String name) {
+    private HttpHeaderKeys(String name) {
         super(name, generateNextOrdinal());
         if (NEXT_ORDINAL.get() <= ORD_MAX) {
 
@@ -275,7 +276,7 @@ public class HttpHeaderKeys extends HeaderKeys {
      * @param shouldLog
      * @param shouldFilter
      */
-    public HttpHeaderKeys(String name, boolean shouldLog, boolean shouldFilter) {
+    private HttpHeaderKeys(String name, boolean shouldLog, boolean shouldFilter) {
         super(name, generateNextOrdinal());
         super.setShouldLogValue(shouldLog);
         super.setUseFilters(shouldFilter);
@@ -353,13 +354,10 @@ public class HttpHeaderKeys extends HeaderKeys {
                 // testing again inside a sync block
                 key = (HttpHeaderKeys) myMatcher.match(name, offset, length);
                 if (null == key) {
+                    String headerName = new String(name, offset, length);
                     // make sure the name is valid
-                    for (int i = offset; i < length; i++) {
-                        if (BNFHeaders.CR == name[i] || BNFHeaders.LF == name[i]) {
-                            throw new IllegalArgumentException("Invalid CRLF in name: " + i);
-                        }
-                    }
-                    key = new HttpHeaderKeys(new String(name, offset, length), true);
+                    validateHeaderName(headerName);
+                    key = new HttpHeaderKeys(headerName, true);
                 }
             } // end-sync
 
@@ -387,17 +385,53 @@ public class HttpHeaderKeys extends HeaderKeys {
                 key = (HttpHeaderKeys) myMatcher.match(name, 0, name.length());
                 if (null == key) {
                     // make sure the name is valid
-                    for (int i = 0, size = name.length(); i < size; i++) {
-                        char c = name.charAt(i);
-                        if (BNFHeaders.CR == c || BNFHeaders.LF == c) {
-                            throw new IllegalArgumentException("Invalid CRLF in name: " + i);
-                        }
-                    }
+                    validateHeaderName(name);
                     key = new HttpHeaderKeys(name, true);
                 }
             } // end-sync
         }
         return key;
+    }
+
+    /*
+     * A valid header name is "!" / "#" / "$" / "%" / "&" / "'" /
+     * "*" / "+" / "-" / "." / "^" / "_" / "`" / "|" / "~" / DIGIT / ALPHA
+     *
+     * The information about valid chars in a header name comes from
+     * RCF 9110 section 5.6.2 tchars
+     * https://www.rfc-editor.org/rfc/rfc9110.html#section-5.6.2
+     *
+     * PH52074
+     */
+    private static void validateHeaderName(String name) {
+        for (int i = 0, size = name.length(); i < size; i++) {
+            char c = name.charAt(i);
+            if (BNFHeaders.CR == c || BNFHeaders.LF == c) {
+                throw new IllegalArgumentException("Invalid CRLF in name: " + i);
+            }
+            // if we found an error, throw the exception now
+            if (!isValidTchar(c)) {
+                IllegalArgumentException iae = new IllegalArgumentException("Header name contained an invalid character " + i);
+                FFDCFilter.processException(iae, HttpHeaderKeys.class.getName() + ".validateHeaderName(String)", "1", name);
+                throw iae;
+            }
+        }
+    }
+
+    public static boolean isValidTchar(char c) {
+        boolean valid = ((c >= 'a') && (c <= 'z')) ||
+                        ((c >= 'A') && (c <= 'Z')) ||
+                        ((c >= '0') && (c <= '9')) ||
+                        (c == '!') || (c == '#') ||
+                        (c == '$') || (c == '%') ||
+                        (c == '&') || (c == '\'') ||
+                        (c == '*') || (c == '+') ||
+                        (c == '-') || (c == '.') ||
+                        (c == '^') || (c == '_') ||
+                        (c == '`') || (c == '|') ||
+                        (c == '~');
+
+        return valid;
     }
 
     /**
