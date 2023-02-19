@@ -17,6 +17,11 @@
     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     
   <display-name>JSF22SimpleHTML</display-name>
+
+    <context-param>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>Development</param-value>
+    </context-param>
   
   <context-param>
     <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
