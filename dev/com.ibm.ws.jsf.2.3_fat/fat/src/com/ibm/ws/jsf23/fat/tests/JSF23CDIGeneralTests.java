@@ -11,6 +11,7 @@ package com.ibm.ws.jsf23.fat.tests;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -258,6 +259,7 @@ public class JSF23CDIGeneralTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(EE10_FEATURES)  // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testInjectableELImplicitObjects() throws Exception {
         try (WebClient webClient = new WebClient()) {
             checkInjectableELImplicitObjects(webClient);
@@ -480,6 +482,7 @@ public class JSF23CDIGeneralTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(EE10_FEATURES)  // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testFacesConverterBeanInjection() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
@@ -520,6 +523,7 @@ public class JSF23CDIGeneralTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(EE10_FEATURES)  // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testFacesValidatorBeanInjection() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
@@ -560,6 +564,7 @@ public class JSF23CDIGeneralTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testFacesBehaviorBeanInjection() throws Exception {
         try (WebClient webClient = new WebClient()) {
             CollectingAlertHandler alertHandler = new CollectingAlertHandler();

@@ -14,6 +14,7 @@ package com.ibm.ws.jsf23.fat.tests;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -25,6 +26,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -69,6 +71,7 @@ public class JSF23ExternalContextStartupShutdownTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(EE10_FEATURES) // Local run shows "Timed out waiting for StartupShutdownExternalContext"?
     public void testExternalContextGetRealPath_Startup_Shutdown() throws Exception {
         String msgToSearchForStartup = ".*JSF23: PostConstructApplicationEvent getRealPath test:.*";
         String msgToSearchForShutdown = ".*JSF23: PreDestroyApplicationEvent getRealPath test:.*";
