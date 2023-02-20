@@ -63,7 +63,7 @@ public class SimpleJSFWithSharedLibTest {
         CDIArchiveHelper.addBeansXML(simpleJSFWithSharedLib, DiscoveryMode.ALL);
 
         ShrinkHelper.exportToServer(server, "/InjectionSharedLibrary", sharedLibrary, DeployOptions.SERVER_ONLY);
-        ShrinkHelper.exportToServer(server, "/apps", simpleJSFWithSharedLib, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(server, simpleJSFWithSharedLib, DeployOptions.SERVER_ONLY);
         server.startServer();
         server.waitForStringInLogUsingMark("CWWKZ0001I.*Application " + APP_NAME + " started");
     }
