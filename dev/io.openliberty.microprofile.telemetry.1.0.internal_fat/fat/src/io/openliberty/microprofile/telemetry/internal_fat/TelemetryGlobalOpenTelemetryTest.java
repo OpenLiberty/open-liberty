@@ -61,11 +61,11 @@ public class TelemetryGlobalOpenTelemetryTest extends FATServletClient {
     public void testGetGlobalOpenTelemetry() throws Exception {
         server.setMarkToEndOfLog();
         runTest(server, APP_NAME + "/GlobalOpenTelemetryServlet", "testGetGlobalOpenTelemetry");
-        assertFalse(server.waitForStringInLogUsingMark("CWMOT5000W: Cannot get GlobalOpenTelemetry.").isEmpty());
+        assertFalse(server.waitForStringInLogUsingMark("CWMOT5000W: The GlobalOpenTelemetry.get method was called. This method returns a non-functional OpenTelemetry object. Use CDI to inject an OpenTelemetry object instead.").isEmpty());
 
         server.setMarkToEndOfLog();
         runTest(server, APP_NAME + "/GlobalOpenTelemetryServlet", "testGetGlobalOpenTelemetry");
-        assertNull(server.verifyStringNotInLogUsingMark("CWMOT5000W: Cannot get GlobalOpenTelemetry.", 1000));
+        assertNull(server.verifyStringNotInLogUsingMark("CWMOT5000W: The GlobalOpenTelemetry.get method was called. This method returns a non-functional OpenTelemetry object. Use CDI to inject an OpenTelemetry object instead.", 1000));
     }
 
     @AfterClass
