@@ -189,6 +189,7 @@ public class JSF22AppConfigPopTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(EE10_FEATURES)  // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testACPNavigationRule() throws Exception {
         try (WebClient webClient = new WebClient()) {
 

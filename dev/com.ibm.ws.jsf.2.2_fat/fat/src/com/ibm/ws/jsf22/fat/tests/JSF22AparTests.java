@@ -476,6 +476,7 @@ public class JSF22AparTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(EE10_FEATURES)
     public void testViewScopedJSFManagedBeanPreDestroy() throws Exception {
         try (WebClient webClient = new WebClient()) {
             URL url = JSFUtils.createHttpUrl(jsfAparServer, "ViewScopedJSFBean", "");
@@ -506,7 +507,7 @@ public class JSF22AparTests {
     // Skipping for EE10 as this test uses both a CDI bean and a ManagedBean and ManagedBeans are
     // no longer available in Faces 4.0. The testViewScopedJSFManagedBeanPreDestroy test will
     // be executed for EE10 with just a CDI bean to verify that PreDestroy is called.
-    @SkipForRepeat(EE10_FEATURES)
+    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testViewScopedCDIManagedBeanPreDestroy() throws Exception {
         try (WebClient webClient = new WebClient()) {
             URL url = JSFUtils.createHttpUrl(jsfAparServer, "ViewScopedCDIBean", "");
