@@ -42,6 +42,7 @@ import com.gargoylesoftware.htmlunit.html.parser.neko.HtmlUnitNekoHtmlParser;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;
@@ -171,6 +172,7 @@ public class MultipleInputFileTest {
 
     @Test
     @Mode(FULL)
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testNoMultiple_WithAjax_SingleFile() throws Exception {
         URL url = HttpUtils.createURL(server, "/" + APP_NAME + "/MutipleInputFile.xhtml" + "?" + Form.NO_MULTIPLE_WITH_AJAX.testParam);
 
@@ -186,6 +188,7 @@ public class MultipleInputFileTest {
 
     @Test
     @Mode(FULL)
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testNoMultiple_WithAjax_MultipleFiles() throws Exception {
         URL url = HttpUtils.createURL(server, "/" + APP_NAME + "/MutipleInputFile.xhtml" + "?" + Form.NO_MULTIPLE_WITH_AJAX.testParam);
 
@@ -201,6 +204,7 @@ public class MultipleInputFileTest {
 
     @Test
     @Mode(FULL)
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testWithMultiple_WithAjax_SingleFile() throws Exception {
         URL url = HttpUtils.createURL(server, "/" + APP_NAME + "/MutipleInputFile.xhtml" + "?" + Form.WITH_MULTIPLE_WITH_AJAX.testParam);
 
@@ -216,6 +220,7 @@ public class MultipleInputFileTest {
 
     @Test
     @Mode(FULL)
+    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testWithMultiple_WithAjax_MultipleFiles() throws Exception {
         URL url = HttpUtils.createURL(server, "/" + APP_NAME + "/MutipleInputFile.xhtml" + "?" + Form.WITH_MULTIPLE_WITH_AJAX.testParam);
 

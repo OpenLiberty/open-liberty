@@ -32,6 +32,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -43,6 +44,7 @@ import io.openliberty.org.apache.myfaces40.fat.FATSuite;
  * More tests might need to be added depending on the outcome of issue: https://github.com/jakartaee/faces/issues/1567
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat(SkipForRepeat.NO_MODIFICATION) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
 public class AjaxRenderExecuteThisTest {
 
     protected static final Class<?> clazz = AjaxRenderExecuteThisTest.class;

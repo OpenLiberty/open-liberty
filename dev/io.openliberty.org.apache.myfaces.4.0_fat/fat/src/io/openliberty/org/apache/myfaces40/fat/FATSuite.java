@@ -12,6 +12,7 @@ package io.openliberty.org.apache.myfaces40.fat;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -41,6 +42,8 @@ import io.openliberty.org.apache.myfaces40.fat.tests.SubscribeToEventTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.UIViewRootGetDoctypeTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.WebSocketTests;
 
+import componenttest.rules.repeater.RepeatTests;
+
 @RunWith(Suite.class)
 @SuiteClasses({
                 AcceptInputFileTest.class,
@@ -67,6 +70,9 @@ import io.openliberty.org.apache.myfaces40.fat.tests.WebSocketTests;
 })
 
 public class FATSuite {
+
+    @ClassRule
+    public static RepeatTests repeat =  RepeatTests.withoutModification();
 
     /**
      * Utility method that will write xmlContent to output.txt and
