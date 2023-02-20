@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -292,17 +292,17 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent Client service identification and callback object.
-     * @param sequence Client service sequence value.
+     * @param sequence      Client service sequence value.
      *
      * @return A RecoveryLogManager object that the client service can use to
      *         control recovery logging.
      *
      * @exception ConflictingCredentialsException Thrown if the RecoveryAgent identity or
-     *                name clashes with a client service that
-     *                is already registered
-     * @exception InvalidStateException Thrown if the registration occurs after
-     *                the first recovery process has been
-     *                started.
+     *                                                name clashes with a client service that
+     *                                                is already registered
+     * @exception InvalidStateException           Thrown if the registration occurs after
+     *                                                the first recovery process has been
+     *                                                started.
      */
     @Override
     public RecoveryLogManager registerService(RecoveryAgent recoveryAgent, int sequence) throws ConflictingCredentialsException, InvalidStateException {
@@ -424,11 +424,11 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The client services RecoveryAgent instance.
-     * @param failureScope The unit of recovery that is completed.
+     * @param failureScope  The unit of recovery that is completed.
      *
      * @exception InvalidFailureScope The supplied FailureScope was not recognized as
-     *                outstanding unit of recovery for the client
-     *                service.
+     *                                    outstanding unit of recovery for the client
+     *                                    service.
      */
     @Override
     public void serialRecoveryComplete(RecoveryAgent recoveryAgent, FailureScope failureScope) throws InvalidFailureScopeException {
@@ -467,11 +467,11 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The client services RecoveryAgent instance.
-     * @param failureScope The unit of recovery that is completed.
+     * @param failureScope  The unit of recovery that is completed.
      *
      * @exception InvalidFailureScopeException The supplied FailureScope was not recognized as
-     *                outstanding unit of recovery for the client
-     *                service.
+     *                                             outstanding unit of recovery for the client
+     *                                             service.
      */
     @Override
     public void terminationComplete(RecoveryAgent recoveryAgent, FailureScope failureScope) throws InvalidFailureScopeException {
@@ -797,8 +797,8 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The RecoveryAgent that is about to be directed to process
-     *            recovery of a FailureScope.
-     * @param failureScope The FailureScope.
+     *                          recovery of a FailureScope.
+     * @param failureScope  The FailureScope.
      */
     private void addInitializationRecord(RecoveryAgent recoveryAgent, FailureScope failureScope) {
         if (tc.isEntryEnabled())
@@ -842,8 +842,8 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The RecoveryAgent that is about to be directed to terminate
-     *            recovery of a FailureScope.
-     * @param failureScope The FailureScope.
+     *                          recovery of a FailureScope.
+     * @param failureScope  The FailureScope.
      */
     private void addTerminationRecord(RecoveryAgent recoveryAgent, FailureScope failureScope) {
         if (tc.isEntryEnabled())
@@ -896,9 +896,9 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The RecoveryAgent that has completed the serial recovery
-     *            processing phase.
-     * @param failureScope The FailureScope that defined the scope of this recovery
-     *            processing.
+     *                          processing phase.
+     * @param failureScope  The FailureScope that defined the scope of this recovery
+     *                          processing.
      *
      * @return boolean true if there was an oustanding recovery record, otherwise false.
      */
@@ -948,7 +948,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The RecoveryAgent.
-     * @param failureScope The FailureScope
+     * @param failureScope  The FailureScope
      *
      * @return boolean true if there was an oustanding recovery record, otherwise false.
      */
@@ -1009,7 +1009,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The RecoveryAgent.
-     * @param failureScope The FailureScope.
+     * @param failureScope  The FailureScope.
      *
      * @return boolean true if there is an oustanding recovery request, otherwise false.
      */
@@ -1043,7 +1043,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * the supplied RecoveryAgent and FailureScope.
      *
      * @param recoveryAgent The RecoveryAgent.
-     * @param failureScope The FailureScope.
+     * @param failureScope  The FailureScope.
      *
      * @return boolean true if there is an oustanding termination request, otherwise false.
      */
@@ -1079,6 +1079,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * recover the local server node.
      * </p>
      */
+    @FFDCIgnore({ RecoveryFailedException.class })
     public void driveLocalRecovery() throws RecoveryFailedException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "driveLocalRecovery", this);
@@ -1132,8 +1133,8 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The RecoveryAgent that is about to be directed to process
-     *            recovery of a FailureScope.
-     * @param failureScope The FailureScope.
+     *                          recovery of a FailureScope.
+     * @param failureScope  The FailureScope.
      */
     private void addRecoveryRecord(RecoveryAgent recoveryAgent, FailureScope failureScope) {
         if (tc.isEntryEnabled())
@@ -1180,9 +1181,9 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The RecoveryAgent that has completed the initial recovery
-     *            processing phase.
-     * @param failureScope The FailureScope that defined the scope of this recovery
-     *            processing.
+     *                          processing phase.
+     * @param failureScope  The FailureScope that defined the scope of this recovery
+     *                          processing.
      *
      * @return boolean true if there was an oustanding recovery record, otherwise false.
      */
@@ -1232,7 +1233,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The RecoveryAgent.
-     * @param failureScope The FailureScope.
+     * @param failureScope  The FailureScope.
      *
      * @return boolean true if there is an oustanding recovery request, otherwise false.
      */
@@ -1292,11 +1293,11 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The client services RecoveryAgent instance.
-     * @param failureScope The unit of recovery that is completed.
+     * @param failureScope  The unit of recovery that is completed.
      *
      * @exception InvalidFailureScope The supplied FailureScope was not recognized as
-     *                outstanding unit of recovery for the client
-     *                service.
+     *                                    outstanding unit of recovery for the client
+     *                                    service.
      */
     @Override
     public void initialRecoveryComplete(RecoveryAgent recoveryAgent, FailureScope failureScope) throws InvalidFailureScopeException {
@@ -1383,11 +1384,11 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The client services RecoveryAgent instance.
-     * @param failureScope The unit of recovery that is failed.
+     * @param failureScope  The unit of recovery that is failed.
      *
      * @exception InvalidFailureScope The supplied FailureScope was not recognized as
-     *                outstanding unit of recovery for the client
-     *                service.
+     *                                    outstanding unit of recovery for the client
+     *                                    service.
      */
     @Override
     public void initialRecoveryFailed(RecoveryAgent recoveryAgent, FailureScope failureScope) throws InvalidFailureScopeException {
@@ -1511,7 +1512,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      *
-     * @param stage The required callback stage.
+     * @param stage        The required callback stage.
      * @param failureScope The failure scope for which the event is taking place.
      */
     private void driveCallBacks(int stage, FailureScope failureScope) {
@@ -1586,7 +1587,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * </p>
      *
      * @param failureScope The failure scope for which the recovery log configuration is
-     *            required.
+     *                         required.
      * @return Object The associated configuration
      */
     @Override
