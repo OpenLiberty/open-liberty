@@ -15,6 +15,7 @@ package com.ibm.ws.jdbc.internal;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -27,12 +28,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Properties;
 import java.util.ServiceLoader;
@@ -41,6 +45,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.FileHandler;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+import java.util.logging.XMLFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,18 +64,19 @@ import javax.sql.XADataSource;
 import org.osgi.service.component.ComponentContext;
 
 import com.ibm.websphere.crypto.InvalidPasswordDecodingException;
-import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
 import com.ibm.websphere.crypto.PasswordUtil;
+import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jca.cm.AppDefinedResource;
 import com.ibm.ws.jca.cm.ConnectorService;
 import com.ibm.ws.rsadapter.AdapterUtil;
 import com.ibm.wsspi.config.Fileset;
-import com.ibm.wsspi.library.LibraryChangeListener;
 import com.ibm.wsspi.library.Library;
+import com.ibm.wsspi.library.LibraryChangeListener;
 
 /**
  * Provides information about a JDBC driver.
@@ -111,6 +124,16 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
      * Properties that should not be set on the JDBC driver.
      */
     private static final List<String> PROPS_NOT_SET_ON_DRIVER = Arrays.asList("isolationLevelSwitchingSupport");
+    
+    /**
+     * Atomic flag to determine if we have already done oracle logging activation.
+     * Note: Nonblocking to ensure setup is only done once, but doesn't stop other threads.
+     * This does mean that some oracle logs may make it into the Liberty log, but not worth the 
+     * performance hit to block other threads. 
+     */
+    private static final AtomicBoolean FLAG_ORACLE_LOGGING_ACTIVE = new AtomicBoolean(false);
+    private static final AtomicBoolean FLAG_ORACLE_LOGGING_DEACTIVE = new AtomicBoolean(false);
+    private static final String ORACLELOG_PARENT_PACKAGENAME = "oracle";
 
     /**
      * Class loader instance. If null, JDBC driver classes should be loaded from the
@@ -245,6 +268,13 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(tc, "create", className, classloader, PropertyService.hidePasswords(props));
+        
+        //At this point we can determine if we are using an Oracle JDBC driver and enable custom logging if configured. 
+        if(className.startsWith("oracle")) {
+            if(FLAG_ORACLE_LOGGING_ACTIVE.compareAndSet(false, true)) {
+                setupOracleLogging();
+            }
+        }
 
         //Add a value for connectionFactoryClassName when using UCP if one is not specified
         if (className.startsWith("oracle.ucp.jdbc") && !props.containsKey("connectionFactoryClassName")) {
@@ -258,6 +288,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 ((PropertyService) props).setProperty("connectionFactoryClassName", "oracle.jdbc.xa.client.OracleXADataSource");
             }
         }
+        
         try {
             T ds = AccessController.doPrivileged(new PrivilegedExceptionAction<T>() {
                 public T run() throws Exception {
@@ -724,6 +755,16 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "deactivate");
 
+        //Ensure oracle custom logger file handler is closed, it's possible the oracle driver won't do this and leave a lock file behind.
+        if(FLAG_ORACLE_LOGGING_DEACTIVE.compareAndSet(false, true)) {
+            Logger parentLogger = Logger.getLogger(ORACLELOG_PARENT_PACKAGENAME);
+            if(!parentLogger.getUseParentHandlers()) { //this means we aren't using the Liberty logger
+                for(Handler h : parentLogger.getHandlers()) {
+                    h.close();
+                }
+            }
+        }
+        
         lock.writeLock().lock();
         try {
             if (isInitialized) {
@@ -1036,6 +1077,199 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "setSharedLib", lib);
         sharedLib = lib;
+    }
+    
+    @FFDCIgnore(Exception.class)
+    private void setupOracleLogging() {
+        final String method = "setupCustomOracleLogging";
+        
+        final String
+        ORACLELOG_ENABLE_TRACE = "oracle.jdbc.Trace",
+        ORACLELOG_FILE_SIZE_LIMIT = "oracleLogFileSizeLimit",
+        ORACLELOG_FILE_COUNT = "oracleLogFileCount",
+        ORACLELOG_FILENAME = "oracleLogFileName",
+        ORACLELOG_TRACELEVEL = "oracleLogTraceLevel",
+        ORACLELOG_FORMAT = "oracleLogFormat",
+        ORACLELOG_PACKAGENAME = "oracleLogPackageName";
+        
+        Logger parentLogger = Logger.getLogger(ORACLELOG_PARENT_PACKAGENAME);
+        
+        //If the 'oracle' logger isn't using a parent then it's possible the user configured their 
+        //application to send logs somewhere else.  Don't overwrite them.
+        if(!parentLogger.getUseParentHandlers()) {
+            return;
+        }
+        
+        /**
+         * Fail fast: 
+         * 1. If none of the required properties were set, return.
+         * 2. If some, but not all, required properties were provided
+         *      * If oracle trace was enabled, inform user of insufficient config, and return
+         *      * If trace was not enabled, assume user intentionally disabled logging, and return.
+         */
+        if( (System.getProperty(ORACLELOG_FILENAME) != null) == (System.getProperty(ORACLELOG_PACKAGENAME) != null) &&
+            (System.getProperty(ORACLELOG_PACKAGENAME) != null) == Boolean.getBoolean(ORACLELOG_ENABLE_TRACE)) {
+            if(!Boolean.getBoolean(ORACLELOG_ENABLE_TRACE)) { 
+                return; //None of these properties were set, return
+            }
+            //All of these properties were set, continue
+        } else {
+            if(tc.isInfoEnabled() && Boolean.getBoolean(ORACLELOG_ENABLE_TRACE)) {
+                Tr.info(tc, "ORACLE_TRACE_ENABLE_INFO", ORACLELOG_ENABLE_TRACE,  ORACLELOG_FILENAME + ", " + ORACLELOG_PACKAGENAME);
+            }
+            return;
+        }
+        
+        if(tc.isEntryEnabled()) {
+            Tr.entry(tc, method);
+        }
+
+        // Expected Settings from system properties
+        String fileName = null;    //REQUIRED
+        String packageName = null; //REQUIRED
+        int fileSizeLimit = -1;    //Needs validation >= 0
+        int fileCountLimit = -1;   //Needs validation >= 1
+        Formatter formatter;
+        Level traceLevel;
+        
+        // Default values for optional parameters
+        final int defaultFileSizeLimit = 0;  // unlimited
+        final int defaultFileCountLimit = 1; // only one file to rotate through
+        final Formatter defaultFormatter = new SimpleFormatter();
+        final Level defaultLevel = Level.INFO;
+        
+        Map<String, Exception> parseExceptions = new HashMap<>();
+        
+        // Variable Value
+        String holder = null;
+        
+        // Get, parse, and validate system properties
+        holder = System.getProperty(ORACLELOG_FILENAME);
+        if (holder != null && !holder.equals(""))
+            fileName = holder;
+        
+        holder = System.getProperty(ORACLELOG_PACKAGENAME);
+        if (holder != null && !holder.equals(""))
+            packageName = holder;
+        
+        holder = System.getProperty(ORACLELOG_FILE_SIZE_LIMIT);
+        try {
+            if (holder != null && (!holder.equals(""))) {
+                fileSizeLimit = Integer.parseInt(holder); 
+                if(fileSizeLimit < 0) {
+                    //FIXME - does this message need to be localized?
+                    throw new NumberFormatException(ORACLELOG_FILE_SIZE_LIMIT + " < 0");
+                }
+            } else {
+                fileSizeLimit = defaultFileSizeLimit;
+            }
+        } catch (NumberFormatException e) {
+            fileSizeLimit = defaultFileSizeLimit;
+            parseExceptions.put(ORACLELOG_FILE_SIZE_LIMIT, e);
+        }
+        
+        holder = System.getProperty(ORACLELOG_FILE_COUNT);
+        try {
+            if (holder != null && (!holder.equals(""))) {
+                fileCountLimit = Integer.parseInt(holder);
+                if(fileCountLimit < 1) {
+                    //FIXME - does this message need to be localized?
+                    throw new NumberFormatException(ORACLELOG_FILE_COUNT + " < 1");
+                }
+            } else {
+                fileCountLimit = defaultFileCountLimit;
+            }
+        } catch (NumberFormatException e) {
+            fileCountLimit = defaultFileCountLimit;
+            parseExceptions.put(ORACLELOG_FILE_COUNT, e);
+        }
+        
+        holder = System.getProperty(ORACLELOG_FORMAT);
+        try {
+            if (holder != null && !holder.equals(""))
+                if(holder.toLowerCase().contains("simpleformatter")) {
+                    formatter = defaultFormatter;
+                } else if (holder.toLowerCase().contains("xmlformatter")) {
+                    formatter = new XMLFormatter();
+                } else {
+                    formatter = (Formatter) Class.forName(holder).getConstructor().newInstance();
+                }
+            else 
+                formatter = defaultFormatter;
+        } catch (Exception e) {
+            formatter = defaultFormatter;
+            parseExceptions.put(ORACLELOG_FORMAT, e);
+        }
+        
+        holder = System.getProperty(ORACLELOG_TRACELEVEL);
+        try {
+            if (holder != null && !holder.equals(""))
+                traceLevel = Level.parse(holder);
+            else 
+                traceLevel = defaultLevel;
+        } catch (IllegalArgumentException e) {
+            traceLevel = defaultLevel;
+            parseExceptions.put(ORACLELOG_TRACELEVEL, e);
+        }
+        
+        if (tc.isWarningEnabled() && !parseExceptions.isEmpty()) {
+            for(Map.Entry<String, Exception> entry : parseExceptions.entrySet()) {
+                Tr.warning(tc, "ORACLE_TRACE_PARSE_WARNING", entry.getKey(), 
+                           entry.getValue().getClass().getName() + ": " + entry.getValue().getLocalizedMessage());
+            }
+        }
+        
+        /* "%g" the generation number to distinguish rotated logs 
+         * "%u" a unique number to resolve conflicts 
+         * If user provided oracle.log, then log file generated will be oracle.0.0.log
+         * If user provided oracle, then log file generated will be oracle.0.0.log
+         */
+        int directoryEnds = fileName.contains("/") ? fileName.lastIndexOf("/") : 0;
+        String originalFileName = fileName;
+        fileName = fileName.substring(0, directoryEnds) + (
+                        fileName.contains(".") ? 
+                                        fileName.substring(directoryEnds).replaceFirst("\\.", ".%g.%u.") : 
+                                        fileName.substring(directoryEnds).concat(".%g.%u.log"));
+        
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "ORACLELOG_FILENAME is:  " + originalFileName); 
+            Tr.debug(tc, "ORACLELOG_PACKAGENAME is: " + packageName); 
+            Tr.debug(tc, "ORACLELOG_FILE_SIZE_LIMIT is: " + fileSizeLimit); 
+            Tr.debug(tc, "ORACLELOG_FILE_COUNT is: " + fileCountLimit); 
+            Tr.debug(tc, "ORACLELOG_FORMAT is: " + formatter.getClass()); 
+            Tr.debug(tc, "ORACLELOG_TRACELEVEL is: " + traceLevel.getName()); 
+            Tr.debug(tc, "File name provided to java.util.logging: " + fileName);
+        }
+        
+        //Get and modify logger(s)
+        Logger logger = Logger.getLogger(packageName);
+        Handler handler;
+
+        try {
+            handler = new FileHandler(fileName, fileSizeLimit, fileCountLimit);
+            handler.setFormatter(formatter);
+            handler.setLevel(Level.ALL); //Logger should determine what gets logged not the handler
+             
+            parentLogger.setLevel(traceLevel); //Parent logger doesn't need to log anymore than the child (if one exists)
+            parentLogger.setUseParentHandlers(false); //Make sure this logger does not use WAS Logging
+            parentLogger.addHandler(handler);
+            
+            LogManager.getLogManager().addLogger(parentLogger);
+            
+            //If the package name provided by user is 'oracle' then then no need to create a child logger.
+            if(! logger.getName().equalsIgnoreCase(parentLogger.getName())) {
+                logger.setLevel(traceLevel);
+                logger.setParent(parentLogger);
+                logger.setUseParentHandlers(true);     
+                LogManager.getLogManager().addLogger(logger);
+            }
+        } catch (IOException iox) {
+            Tr.warning(tc, "ORACLE_TRACE_WARNING", fileName, iox);
+        }
+        
+        if(tc.isEntryEnabled()) {
+            Tr.exit(tc, method);
+        }
     }
 
     /**

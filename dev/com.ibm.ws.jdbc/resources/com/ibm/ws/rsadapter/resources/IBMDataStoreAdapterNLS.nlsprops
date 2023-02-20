@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2021 IBM Corporation and others.
+# Copyright (c) 2001, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -299,6 +299,16 @@ META_DATA_EXCEPTION.useraction=Verify that the metadata is enabled on the backen
 # 7019 deleted
 # 7020 reserved for other NLS file
 # 7021-7042 deleted
+
+# Do not translate: java.util.Logging
+ORACLE_TRACE_PARSE_WARNING=DSRA7043W: A default value was used for the {0} system property because of the following parsing error: {1}
+ORACLE_TRACE_PARSE_WARNING.explanation=The system property strings for Oracle are parsed and passed to the java.util.logging library. If a property value cannot be parsed, a default value is used instead.
+ORACLE_TRACE_PARSE_WARNING.useraction=Examine the parsing error and modify the system property. The valid logging properties are documented within the java.util.logging package.
+
+ORACLE_TRACE_ENABLE_INFO=DSRA7044I: Oracle JDBC driver tracing was enabled by the {0} system property. One or more of the [{1}] system properties that are required to separate Oracle log files are missing.
+ORACLE_TRACE_ENABLE_INFO.explanation=The Oracle JDBC debug driver uses the java.util.logging package for tracing. The Oracle JDBC debug logs are integrated into Liberty logs by default. To configure Oracle JDBC debug trace separation, all of the properties in this message must be configured as system properties.
+ORACLE_TRACE_ENABLE_INFO.useraction=If you want to configure separated Oracle JDBC log files, check your system properties and add the missing properties. Otherwise, you can ignore this message.
+
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------

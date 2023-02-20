@@ -33,6 +33,7 @@ import oracle.jdbc.pool.OracleDataSource;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                OracleCustomTrace.class,
                 OracleTest.class,
                 OracleTraceTest.class,
                 OracleUCPTest.class,
