@@ -539,6 +539,23 @@ public class LibertyServer implements LogMonitorClient {
         // TODO these booleans don't seem to ever get set to true
         private final boolean validateApps = false;
         private final boolean validateTimedExit = false;
+        //Check log on serverStop for unintentional app restart after restore.
+        private boolean assertNoAppRestartOnRestore = true;
+
+        /**
+         * @return the assertNoAppRestartOnRestore
+         */
+        public boolean isAssertNoAppRestartOnRestore() {
+            return assertNoAppRestartOnRestore;
+        }
+
+        /**
+         * @param assertNoAppRestartOnRestore the assertNoAppRestartOnRestore to set
+         */
+        public void setAssertNoAppRestartOnRestore(boolean assertNoAppRestartOnRestore) {
+            this.assertNoAppRestartOnRestore = assertNoAppRestartOnRestore;
+        }
+
         private Properties checkpointEnv = null;
 
     }
@@ -3024,10 +3041,35 @@ public class LibertyServer implements LogMonitorClient {
             ex = new Exception(sb.toString());
         }
 
-        if (ex == null)
+        if (ex == null) {
             Log.info(c, method, "No unexpected errors or warnings found in server logs.");
-        else
+
+            //In general, apps are not expected to restart in a server restored from an APPLICATIONS checkpoint
+            // If it happens it may mean a bug in how config changes are handled by checkpoint.
+            // We intentionally only make this check if the test will not otherwise fail due to unexpected error messages
+            // already found.
+            //TODO add an exception list for handling complicated scenarios where some app restarts expected.
+            if (doCheckpoint() && checkpointInfo.isAssertNoAppRestartOnRestore() &&
+                checkpointInfo.checkpointPhase == CheckpointPhase.APPLICATIONS) {
+                List<String> appsRestarted = this.findStringsInLogs("CWWKZ0018I: Starting application");
+                if (!appsRestarted.isEmpty()) {
+                    StringBuffer sb = new StringBuffer("Unexpected application restart messages found after restore:");
+                    sb.append(getServerName());
+                    sb.append(" logs:");
+                    for (String applicationRestarted : appsRestarted) {
+                        sb.append("\n <br>");
+                        sb.append(applicationRestarted);
+                        Log.info(c, method, "Unexpected application restart in retored server found in log " +
+                                            getDefaultLogFile() + ": " + applicationRestarted);
+                    }
+                    throw new Exception(sb.toString());
+                }
+
+            }
+
+        } else {
             throw ex;
+        }
     }
 
     public void restartServer() throws Exception {
