@@ -512,7 +512,21 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     x = new DataException(original);
             }
         } else if (original instanceof CompletionException) {
-            x = new MappingException(original); // TODO categorization is too broad
+            Throwable cause = original.getCause();
+            if (cause == null)
+                x = new MappingException(original);
+            else if (DataException.class.equals(cause.getClass()))
+                x = new DataException(cause.getMessage(), cause);
+            else if (DataConnectionException.class.equals(cause.getClass()))
+                x = new DataConnectionException(cause.getMessage(), cause);
+            else if (EmptyResultException.class.equals(cause.getClass()))
+                x = new EmptyResultException(cause.getMessage(), cause);
+            else if (MappingException.class.equals(cause.getClass()))
+                x = new MappingException(cause.getMessage(), cause);
+            else if (NonUniqueResultException.class.equals(cause.getClass()))
+                x = new NonUniqueResultException(cause.getMessage(), cause);
+            else
+                x = new MappingException(cause);
         } else if (original instanceof IllegalArgumentException) {
             // Example: Problem compiling [SELECT o FROM Account o WHERE (o.accountId>?1)]. The
             // relationship mapping 'o.accountId' cannot be used in conjunction with the > operator
@@ -527,8 +541,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             x = new DataException(original);
         }
 
-        if (trace && tc.isDebugEnabled() && x != original)
-            Tr.debug(tc, original.getClass().getName() + " replaced with " + x.getClass().getName());
+        if (trace && tc.isDebugEnabled())
+            if (x == original)
+                Tr.debug(tc, "Failure occurred: " + x.getClass().getName());
+            else
+                Tr.debug(tc, original.getClass().getName() + " replaced with " + x.getClass().getName());
         return x;
     }
 
