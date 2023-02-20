@@ -30,9 +30,9 @@ import componenttest.app.FATServlet;
 @DataSourceDefinition(
                       name = "java:comp/env/jdbc/conn_prop_dsd",
                       className = "oracle.jdbc.pool.OracleDataSource",
-                      url = "${env.URL}",
-                      user = "${env.USER}",
-                      password = "${env.PASSWORD}",
+                      url = "${env.ORACLE_URL}",
+                      user = "${env.ORACLE_USER}",
+                      password = "${env.ORACLE_PASSWORD}",
                       properties = {
                                      "connectionProperties=" +
                                      "oracle.net.ssl_version=1.2;" +

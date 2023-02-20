@@ -51,9 +51,10 @@ public class OracleTraceTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        server.addEnvVar("URL", oracle.getJdbcUrl());
-        server.addEnvVar("USER", oracle.getUsername());
-        server.addEnvVar("PASSWORD", oracle.getPassword());
+        // Set server environment variables
+        server.addEnvVar("ORACLE_URL", oracle.getJdbcUrl());
+        server.addEnvVar("ORACLE_USER", oracle.getUsername());
+        server.addEnvVar("ORACLE_PASSWORD", oracle.getPassword());
         server.addEnvVar("SSL_PASSWORD", SSL_PASSWORD);
 
         Map<String, String> jvmOps = server.getJvmOptionsAsMap();

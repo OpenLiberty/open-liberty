@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -52,9 +52,9 @@ public class OracleUCPTest extends FATServletClient {
     public static void setUp() throws Exception {
 
         // Set server environment variables
-        server.addEnvVar("URL", oracle.getJdbcUrl());
-        server.addEnvVar("USER", oracle.getUsername());
-        server.addEnvVar("PASSWORD", oracle.getPassword());
+        server.addEnvVar("ORACLE_URL", oracle.getJdbcUrl());
+        server.addEnvVar("ORACLE_USER", oracle.getUsername());
+        server.addEnvVar("ORACLE_PASSWORD", oracle.getPassword());
 
         // Create a normal Java EE application and export to server
         ShrinkHelper.defaultApp(server, JEE_APP, "ucp.web");
@@ -90,9 +90,9 @@ public class OracleUCPTest extends FATServletClient {
         try {
             //update to UCP
             props.setMaxPoolSize("2");
-            props.setUser("${env.USER}");
-            props.setPassword("${env.PASSWORD}");
-            props.setURL("${env.URL}");
+            props.setUser("${env.ORACLE_USER}");
+            props.setPassword("${env.ORACLE_PASSWORD}");
+            props.setURL("${env.ORACLE_URL}");
             props.setConnectionWaitTimeout("30");
 
             //Update config
