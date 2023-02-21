@@ -16,7 +16,8 @@ bVersion=1.0
 src: \
 	fat/src,\
 	test-applications/db2fat/src,\
-	test-applications/jpafat/src
+	test-applications/jpafat/src,\
+	test-applications/sessionCacheApp/src
 
 fat.project: true
 

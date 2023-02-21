@@ -22,9 +22,10 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                DB2Test.class
+                DB2Test.class,
 // Comment out JPA pending upcoming changes to support JPA with checkpoint
-// JPATest.class
+// JPATest.class,
+                SessionDatabaseTest.class
 })
 
 public class FATSuite extends TestContainerSuite {

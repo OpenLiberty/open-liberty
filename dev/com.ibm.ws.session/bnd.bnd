@@ -75,4 +75,5 @@ instrument.disabled: true
 	com.ibm.ws.app.manager.lifecycle;version=latest,\
 	com.ibm.ws.serialization;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.kernel.boot.common;version=latest

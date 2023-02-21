@@ -35,10 +35,13 @@ addRequiredLibraries.dependsOn copyTestContainers
 
 configurations {
   db2
+  derbyClient
 }
 
 dependencies {
   db2 'com.ibm.db2:jcc:11.1.4.4'
+  derbyClient 'org.apache.derby:derbyclient:10.11.1.1'
+  requiredLibs 'org.apache.derby:derbynet:10.11.1.1'
 }
 
 task copyDB2(type: Copy) {
@@ -47,4 +50,15 @@ task copyDB2(type: Copy) {
   into new File(autoFvtDir, 'publish/shared/resources/db2')
 }
 
-addRequiredLibraries.dependsOn copyDB2
+task addDerbyClient(type: Copy) {
+  shouldRunAfter jar
+  from configurations.derbyClient
+  into new File(autoFvtDir, 'publish/shared/resources/derbyclient')
+  rename 'derbyclient.*.jar', 'derbyclient.jar'
+}
+
+addRequiredLibraries {
+  dependsOn addDerby
+  dependsOn addDerbyClient
+  dependsOn copyDB2
+}
