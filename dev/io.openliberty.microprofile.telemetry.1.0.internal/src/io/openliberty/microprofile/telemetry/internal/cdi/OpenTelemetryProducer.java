@@ -101,8 +101,7 @@ public class OpenTelemetryProducer {
         //Operations on a Tracer, or on Spans have no side effects and do nothing
         ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         String applicationName = cData.getJ2EEName().getApplication();
-        String msg = Tr.formatMessage(tc, "CWMOT5100.tracing.is.disabled", applicationName);
-        Tr.info(tc, msg);
+        Tr.info(tc, "CWMOT5100.tracing.is.disabled", applicationName);
         
         return OpenTelemetry.noop();
 
