@@ -22,6 +22,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.microprofile.config.Config;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
@@ -47,6 +49,8 @@ import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 
 public class OpenTelemetryProducer {
+
+    private static final TraceComponent tc = Tr.register(OpenTelemetryProducer.class);
 
     private static final String INSTRUMENTATION_NAME = "io.openliberty.microprofile.telemetry";
     private static final String ENV_DISABLE_PROPERTY = "OTEL_SDK_DISABLED";
@@ -95,6 +99,11 @@ public class OpenTelemetryProducer {
         //By default, MicroProfile Telemetry tracing is off.
         //The absence of an installed SDK is a “no-op” API
         //Operations on a Tracer, or on Spans have no side effects and do nothing
+        ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        String applicationName = cData.getJ2EEName().getApplication();
+        String msg = Tr.formatMessage(tc, "CWMOT5100.tracing.is.disabled", applicationName);
+        Tr.info(tc, msg);
+        
         return OpenTelemetry.noop();
 
     }

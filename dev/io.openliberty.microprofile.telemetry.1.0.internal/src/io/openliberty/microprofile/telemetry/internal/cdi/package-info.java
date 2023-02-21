@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,7 +13,7 @@
 /**
  * @version 1.0
  */
-@TraceOptions(traceGroup = "TELEMETRY")
+@TraceOptions(traceGroup = "TELEMETRY", messageBundle = "io.openliberty.microprofile.telemetry.internal.resources.MPTelemetry")
 @org.osgi.annotation.versioning.Version("1.0")
 package io.openliberty.microprofile.telemetry.internal.cdi;
 

@@ -72,6 +72,6 @@ public class TelemetryAPITest extends FATServletClient {
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWMOT5100I"); 
     }
 }
