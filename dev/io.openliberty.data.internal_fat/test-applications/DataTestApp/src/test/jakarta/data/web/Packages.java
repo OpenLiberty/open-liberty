@@ -71,7 +71,7 @@ public interface Packages extends PageableRepository<Package, Integer> {
                                                   @Param("max") float maxToExclude,
                                                   Pageable pagination);
 
-    @Query("SELECT o from Package o WHERE (o.length * o.width * o.height >= ?1 AND o.length * o.width * o.height <= ?2)")
+    @Query("SELECT p FROM Package p WHERE (p.length * p.width * p.height >= ?1 AND p.length * p.width * p.height <= ?2)")
     @OrderBy(value = "width", descending = true)
     @OrderBy(value = "length")
     @OrderBy(value = "id")

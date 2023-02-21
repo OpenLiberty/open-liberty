@@ -968,6 +968,22 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Verify that ORDER BY can be generated, taking into account the entity variable name of a custom query.
+     * The custom query in this case has no WHERE clause.
+     * Other tests cover similar scenarios in which a WHERE clause is present.
+     */
+    @Test
+    public void testGeneratedOrderAppendedToCustomQuery() {
+
+        Pageable page2request = Pageable.ofPage(2)
+                        .size(5)
+                        .sortBy(Sort.asc("number"));
+
+        assertIterableEquals(List.of("thirteen", "seventeen", "nineteen", "twenty-three", "twenty-nine"),
+                             primes.all(page2request));
+    }
+
+    /**
      * Keyset pagination with ignoreCase in the sort criteria.
      */
     @Test

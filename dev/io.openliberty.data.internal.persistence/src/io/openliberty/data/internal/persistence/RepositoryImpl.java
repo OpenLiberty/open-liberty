@@ -332,11 +332,18 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 queryInfo.sorts = queryInfo.sorts == null ? new ArrayList<>() : queryInfo.sorts;
                 queryInfo.jpqlCount = query.count().length() > 0 ? query.count() : null;
 
-                if (countPages && queryInfo.jpqlCount == null) {
-                    // Attempt to infer from provided query
-                    int select = upper.indexOf("SELECT");
-                    int from = upper.indexOf("FROM", select);
-                    if (from > 0) {
+                int select = upper.length() - upperTrimmed.length();
+                int from = find("FROM", upper, select + 9);
+                if (from > 0) {
+                    int entityName = find(entityInfo.name.toUpperCase(), upper, from + 5);
+                    if (entityName > 0) {
+                        String entityVar = findEntityVariable(queryInfo.jpql, entityName + entityInfo.name.length() + 1);
+                        if (entityVar != null)
+                            queryInfo.entityVar = entityVar;
+                    }
+
+                    if (countPages && queryInfo.jpqlCount == null) {
+                        // Attempt to infer from provided query
                         String s = queryInfo.jpql.substring(select + 6, from);
                         int comma = s.indexOf(',');
                         if (comma > 0)
@@ -550,6 +557,60 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             else
                 Tr.debug(tc, original.getClass().getName() + " replaced with " + x.getClass().getName());
         return x;
+    }
+
+    /**
+     * Finds the first occurrence of the text followed by a non-alphanumeric/non-underscore character.
+     *
+     * @param lookFor text to find.
+     * @param findIn  where to look for it.
+     * @param startAt starting position.
+     * @return index where found, otherwise -1.
+     */
+    private static int find(String lookFor, String findIn, int startAt) {
+        int totalLength = findIn.length();
+        for (int foundAt; startAt < totalLength && (foundAt = findIn.indexOf(lookFor, startAt)) > 0; startAt = foundAt + 1) {
+            int nextPosition = foundAt + lookFor.length();
+            if (nextPosition >= totalLength)
+                break;
+            char ch = findIn.charAt(nextPosition);
+            if (!Character.isLowerCase(ch) && !Character.isUpperCase(ch) && !Character.isDigit(ch) && ch != '_')
+                return foundAt;
+        }
+        return -1;
+    }
+
+    /**
+     * Finds the entity variable name after the start of the entity name.
+     * Examples of JPQL:
+     * ... FROM Order o, Product p ...
+     * ... FROM Product AS p ...
+     *
+     * @param findIn  where to look for it.
+     * @param startAt position after the end of the entity name.
+     * @return entity variable name. Null if none is found.
+     */
+    private static String findEntityVariable(String findIn, int startAt) {
+        int length = findIn.length();
+        boolean foundStart = false;
+        for (int c = startAt; c < length; c++) {
+            char ch = findIn.charAt(c);
+            if (Character.isLowerCase(ch) || Character.isUpperCase(ch) || Character.isDigit(ch) || ch == '_') {
+                if (!foundStart) {
+                    startAt = c;
+                    foundStart = true;
+                }
+            } else { // not part of the entity variable name
+                if (foundStart) {
+                    String found = findIn.substring(startAt, c);
+                    if ("AS".equalsIgnoreCase(found))
+                        foundStart = false;
+                    else
+                        return found;
+                }
+            }
+        }
+        return foundStart ? findIn.substring(startAt) : null;
     }
 
     /**
