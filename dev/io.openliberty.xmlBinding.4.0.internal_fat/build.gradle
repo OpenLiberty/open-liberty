@@ -10,7 +10,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 configurations {
   appLibs
 }
@@ -25,6 +24,9 @@ dependencies {
 task addAppLibs(type: Copy) {
   from configurations.appLibs
   into "${buildDir}/autoFVT/test-applications/thirdPartyJaxbImplContextApp/resources/WEB-INF/lib"
+  eachFile {
+    println "Third party jar file found: $it.name"
+  }
 }
 
 addRequiredLibraries {
