@@ -710,6 +710,7 @@ public class VisTest extends FATServletClient {
 
             Location resultLocation;
             try {
+            System.out.println("test");
                 resultLocation = Location.valueOf(locationString);
             } catch (IllegalArgumentException ex) {
                 // Additional result we don't care about
