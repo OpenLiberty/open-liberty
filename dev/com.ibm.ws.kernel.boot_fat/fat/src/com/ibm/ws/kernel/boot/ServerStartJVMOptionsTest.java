@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -662,5 +662,84 @@ public class ServerStartJVMOptionsTest {
         if (bootstrapPropFile.exists()) {
             bootstrapPropFile.delete();
         }
+    }
+
+    /**
+     * This test ensures the server can be started with one jvm.options file with a special character in comments
+     */
+    @Test
+    public void testServerStartTolerateJVMOption() throws Exception {
+        Log.entering(c, testName.getMethodName());
+
+        String[] parms = new String[2];
+        parms[0] = "start";
+        parms[1] = SERVER_NAME;
+
+        Properties envVars = new Properties();
+        envVars.put("CDPATH", ".");
+
+        initialize();
+
+        Writer isw = new OutputStreamWriter(new FileOutputStream(jvmoptionsconfigdefaults), "UTF-8");
+        BufferedWriter bw = new BufferedWriter(isw);
+        String badOptions = ("# �\n"
+                             + "# ------------------------------------------\n"
+                             + "-Dcom.ibm.test.system.property=True");
+        bw.write(badOptions);
+        bw.close();
+
+        ProgramOutput po = server.getMachine().execute(serverCommand, parms, executionDir, envVars);
+        Log.info(c, testName.getMethodName(), "server start stdout = " + po.getStdout());
+        Log.info(c, testName.getMethodName(), "server start stderr = " + po.getStderr());
+        server.waitForStringInLog("CWWKF0011I");
+        server.resetStarted();
+
+        server.serverDump();
+        File[] filesAfterDump = new File(executionDir + "/usr/servers/" + SERVER_NAME).listFiles();
+
+        File dumpFile = new File("");
+        for (File f : filesAfterDump) {
+            String fileName = f.getName();
+            Log.info(c, testName.getMethodName(), "Found file: " + fileName);
+            if (fileName.startsWith(SERVER_NAME + ".dump") && fileName.endsWith(".zip")) {
+                dumpFile = f;
+                break;
+            }
+        }
+
+        if (dumpFile.getPath().compareTo("") == 0) {
+            fail("The Dump File was not found");
+        }
+
+        ZipFile zipFile = new ZipFile(dumpFile);
+
+        boolean foundTest1 = false;
+        for (Enumeration<? extends ZipEntry> en = zipFile.entries(); en.hasMoreElements();) {
+            ZipEntry entry = en.nextElement();
+            String entryName = entry.getName();
+            if (entryName.endsWith("JavaRuntimeInformation.txt")) {
+                InputStream inputstream = zipFile.getInputStream(entry);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputstream));
+                String line;
+                int i = 0;
+                while ((line = reader.readLine()) != null) {
+                    Log.info(c, testName.getMethodName(), "Run" + i + ": " + line);
+                    if (line.contains("-Dcom.ibm.test.system.property=True")) {
+                        foundTest1 = true;
+                        break;
+                    }
+                    i++;
+                }
+
+                reader.close();
+                inputstream.close();
+            }
+        }
+
+        zipFile.close();
+        dumpFile.delete();
+        assertTrue("The jvm option was not found", foundTest1);
+
+        server.stopServer();
     }
 }
