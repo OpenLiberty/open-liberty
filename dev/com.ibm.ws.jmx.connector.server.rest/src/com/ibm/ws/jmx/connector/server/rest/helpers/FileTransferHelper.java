@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -46,6 +46,7 @@ import com.ibm.websphere.filetransfer.FileServiceMXBean;
 import com.ibm.websphere.jmx.connector.rest.ConnectorSettings;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.audit.context.AuditManager;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.filetransfer.util.FileServiceUtil;
 import com.ibm.ws.jmx.connector.server.rest.APIConstants;
@@ -95,6 +96,11 @@ public class FileTransferHelper {
 
     //Proxy MBean
     private volatile FileServiceMXBean fileService;
+
+    private static String originalFileContents = null;
+    private static String updatedFileContents = null;
+
+    private AuditManager auditManager = new AuditManager();
 
     @Activate
     protected void activate(ComponentContext cc) {
@@ -395,6 +401,12 @@ public class FileTransferHelper {
                     Tr.debug(this, tc, "Transfer until the end of file is reached.");
                 }
                 while ((bytesRead = downloadFile.read(buf)) > 0) {
+
+                    if (originalFileContents == null) {
+                        originalFileContents = new String(buf);
+                    } else {
+                        originalFileContents = originalFileContents.concat(new String(buf));
+                    }
                     outStream.write(buf, 0, bytesRead);
                 }
             } else {
@@ -409,6 +421,12 @@ public class FileTransferHelper {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(this, tc, "bytesToRead=" + bytesToRead + " : length=" + length + " : bytesRead=" + bytesRead);
                     }
+
+                    if (originalFileContents == null) {
+                        originalFileContents = new String(buf);
+                    } else {
+                        originalFileContents = originalFileContents.concat(new String(buf));
+                    }
                     outStream.write(buf, 0, bytesRead);
                     bytesToRead -= bytesRead;
                     if (bytesToRead <= 0) {
@@ -419,6 +437,15 @@ public class FileTransferHelper {
                     }
                 }
             }
+
+            if (originalFileContents != null) {
+                int endOfFile = originalFileContents.lastIndexOf("</server>");
+                originalFileContents = originalFileContents.substring(0, endOfFile + 9);
+            }
+
+            auditManager.setOriginalFileContents(originalFileContents);
+            originalFileContents = null;
+
             outStream.flush();
 
         } catch (FileNotFoundException e) {
@@ -478,10 +505,24 @@ public class FileTransferHelper {
             int bytesRead;
             long totalBytesRead = 0;
             while ((bytesRead = is.read(buf)) > 0) {
+                if (updatedFileContents == null) {
+                    updatedFileContents = new String(buf);
+                } else {
+                    updatedFileContents = updatedFileContents.concat(new String(buf));
+                }
+
                 uploadFile.write(buf, 0, bytesRead);
                 totalBytesRead += bytesRead;
             }
             uploadFile.setLength(totalBytesRead);
+
+            if (updatedFileContents != null) {
+                int endOfFile = updatedFileContents.lastIndexOf("</server>");
+                updatedFileContents = updatedFileContents.substring(0, endOfFile + 9);
+            }
+
+            auditManager.setUpdatedFileContents(updatedFileContents);
+            updatedFileContents = null;
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(this, tc, "Size of new file [" + processedPath + "] = " + uploadFile.length());
@@ -720,4 +761,13 @@ public class FileTransferHelper {
     public void routedDownloadInternal(RESTRequest request, RESTResponse response, String filePath, boolean legacyFileTransfer) {
         getRoutingHelper().routedDownloadInternal(this, request, response, filePath, legacyFileTransfer);
     }
+
+    public static String getOriginalFileContents() {
+        return originalFileContents;
+    }
+
+    public static String getUpdatedFileContents() {
+        return updatedFileContents;
+    }
+
 }

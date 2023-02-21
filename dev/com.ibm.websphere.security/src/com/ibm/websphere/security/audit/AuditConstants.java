@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -77,6 +77,7 @@ public class AuditConstants {
     static public final String JMS = "JMS";
     static public final String APPLICATION_TOKEN_MANAGEMENT = "APPLICATION_TOKEN_MANAGEMENT";
     static public final String CUSTOM = "CUSTOM";
+    static public final String SERVER_CONFIG_CHANGE = "SERVER_CONFIG_CHANGE";
 
     static public final String IS_ADMIN = "isAdmin";
     static public final String USER = "user";
@@ -110,8 +111,8 @@ public class AuditConstants {
     static public final String INTERNAL_ERROR = "internal error";
     static public final String FAILURE_TO_RETURN_REQUEST = "failure to return request";
 
-    static public final List<String> validEventNamesList = Arrays.asList("CONFIG_SNAPSHOT", "SECURITY_AUDIT_MGMT", "SECURITY_MEMBER_MGMT", "SECURITY_SERVICE_MGMT",
-                                                                         "SECURITY_SESSION_LOGIN",
+    static public final List<String> validEventNamesList = Arrays.asList("SERVER_CONFIG_CHANGE", "CONFIG_SNAPSHOT", "SECURITY_AUDIT_MGMT", "SECURITY_MEMBER_MGMT",
+                                                                         "SECURITY_SERVICE_MGMT", "SECURITY_SESSION_LOGIN",
                                                                          "SECURITY_SESSION_LOGOUT", "SECURITY_SESSION_EXPIRY", "SECURITY_API_AUTHN",
                                                                          "SECURITY_API_AUTHN_TERMINATE", "SECURITY_ROLE_MAPPING", "SECURITY_AUTHN",
                                                                          "SECURITY_AUTHN_FAILOVER", "SECURITY_AUTHN_DELEGATION", "SECURITY_AUTHZ_DELEGATION",

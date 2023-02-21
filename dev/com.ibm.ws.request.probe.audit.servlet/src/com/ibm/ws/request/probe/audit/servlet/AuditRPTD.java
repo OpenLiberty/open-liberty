@@ -36,7 +36,8 @@ public class AuditRPTD implements RequestProbeTransformDescriptor {
     TransformDescriptorHelper bob;
 
     @Activate
-    protected void activate(ComponentContext cc) {}
+    protected void activate(ComponentContext cc) {
+    }
 
     @Deactivate
     protected void deactivate(ComponentContext cc) {}
@@ -47,7 +48,7 @@ public class AuditRPTD implements RequestProbeTransformDescriptor {
 	private static final String classToInstrument = "com/ibm/ws/security/audit/Audit";
 	private static final String methodToInstrument = "audit";
 	private static final String descOfMethod = "(Lcom/ibm/ws/security/audit/Audit$EventID;[Ljava/lang/Object;)V";
-    private static final String requestProbeType = "websphere.security.audit.test";
+	private static final String requestProbeType = "websphere.security.audit.test";
 
     /** {@inheritDoc} */
     @Override
@@ -82,16 +83,6 @@ public class AuditRPTD implements RequestProbeTransformDescriptor {
     /** {@inheritDoc} */
     @Override
     public Object getContextInfo(Object thisInstance, Object methodArgs) {
-    	return methodArgs;
-//    	ArrayList contextObjects = new ArrayList<Object>(2);
-//        if(methodArgs!=null){
-//            Object[] params = null;
-//            if (Object[].class.isInstance(methodArgs)) {
-//                params = (Object[]) methodArgs;
-//                //Look at First Argument which would be "SQL" here.
-//                contextObjects.add(params[3]);
-//                contextObjects.add(params[4]);
-//            }           
-//        }
+	return methodArgs;
     }
 }

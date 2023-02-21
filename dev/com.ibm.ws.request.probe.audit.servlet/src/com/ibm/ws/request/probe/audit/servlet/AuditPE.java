@@ -42,7 +42,8 @@ import com.ibm.websphere.security.audit.AuditAuthenticationResult;
 import com.ibm.websphere.security.audit.AuditConstants;
 import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.websphere.security.audit.context.AuditManager;
-import com.ibm.ws.security.audit.Audit;
+//import com.ibm.ws.security.audit.utilities.Audit;
+//import com.ibm.ws.security.audit.utilities.Audit.EventID;
 import com.ibm.ws.security.audit.event.ApiAuthnEvent;
 import com.ibm.ws.security.audit.event.ApiAuthnTerminateEvent;
 import com.ibm.ws.security.audit.event.ApplicationPasswordTokenEvent;
@@ -67,6 +68,7 @@ import com.ibm.ws.security.audit.event.MemberManagementEvent;
 import com.ibm.ws.security.audit.event.RESTAuthorizationEvent;
 import com.ibm.ws.security.audit.event.SAFAuthorizationDetailsEvent;
 import com.ibm.ws.security.audit.event.SAFAuthorizationEvent;
+import com.ibm.ws.security.audit.event.ServerConfigEvent;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
 import com.ibm.ws.webcontainer.security.WebRequest;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -92,6 +94,9 @@ public class AuditPE implements ProbeExtension {
 	private static final String KEY_AUDIT_SERVICE = "auditService";
 	protected final AtomicServiceReference<AuditService> auditServiceRef = new AtomicServiceReference<AuditService>(
 			KEY_AUDIT_SERVICE);
+
+	private AuditManager auditManager = new AuditManager();
+	private String savedOriginalFileContents;
 
 	@Activate
 	protected void activate(ComponentContext cc) {
@@ -175,7 +180,6 @@ public class AuditPE implements ProbeExtension {
 	public void processCounter(Event event) {
         Object[] methodParams = (Object[]) event.getContextInfo();
         if (methodParams != null && methodParams.length > 0) {
-
 			if ((methodParams[0].toString()).equals("JMX_NOTIFICATION_01")) {
 				auditEventJMXNotification01(methodParams);
 			} else if ((methodParams[0].toString()).equals("JMX_MBEAN_01")) {
@@ -185,7 +189,7 @@ public class AuditPE implements ProbeExtension {
 			} else if ((methodParams[0].toString()).equals("JMX_MBEAN_REGISTER_01")) {
 				auditEventJMXMBeanRegister01(methodParams);
 			} else {
-				switch ((Audit.EventID) methodParams[0]) {
+				switch ((com.ibm.ws.security.audit.Audit.EventID) methodParams[0]) {
 				case SECURITY_AUTHN_01:
 					auditEventAuthn01(methodParams);
 					break;
@@ -249,12 +253,31 @@ public class AuditPE implements ProbeExtension {
 				case SECURITY_REST_HANDLER_AUTHZ:
 					auditEventRESTAuthz(methodParams);
 					break;
+				case SERVER_CONFIG_CHANGE_01:
+					auditEventServerConfigChange01(methodParams);
+					break;
 				default:
 					// TODO: emit error message
 					break;
 				}
 			}
         }
+	}
+
+	private void auditEventServerConfigChange01(Object[] methodParams) {
+		Object[] varargs = (Object[]) methodParams[1];
+		Object req = varargs[0];
+		Object response = varargs[1];
+		int statusCode = (Integer) varargs[2];
+
+		if (auditServiceRef.getService() != null
+				&& auditServiceRef.getService().isAuditRequired(
+						AuditConstants.SERVER_CONFIG_CHANGE,
+						statusCode == HttpServletResponse.SC_OK ? AuditConstants.SUCCESS : AuditConstants.FAILURE)) {
+					ServerConfigEvent sce = new ServerConfigEvent(req, response);
+					auditServiceRef.getService().sendEvent(sce);
+					savedOriginalFileContents = null;
+		}
 	}
 
 	private void auditEventAuthn01(Object[] methodParams) {

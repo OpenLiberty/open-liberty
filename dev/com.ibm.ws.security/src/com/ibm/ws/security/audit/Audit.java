@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -49,7 +49,8 @@ public class Audit {
         JMX_MBEAN_01(AuditConstants.JMX_MBEAN),
         JMX_MBEAN_ATTRIBUTES_01(AuditConstants.JMX_MBEAN_ATTRIBUTES),
         JMX_MBEAN_REGISTER_01(AuditConstants.JMX_MBEAN_REGISTER),
-        APPLICATION_PASSWORD_TOKEN_01(AuditConstants.APPLICATION_TOKEN_MANAGEMENT);
+        APPLICATION_PASSWORD_TOKEN_01(AuditConstants.APPLICATION_TOKEN_MANAGEMENT),
+        SERVER_CONFIG_CHANGE_01(AuditConstants.SERVER_CONFIG_CHANGE);
 
         final String eventType;
 
@@ -83,14 +84,13 @@ public class Audit {
      * audit feature is enabled and this method is invoked.
      *
      * @param eventId -
-     *                    The unique ID identifying the ProbeExtension method to be
-     *                    called to generate the audit record. The ID should be defined
-     *                    in the Audit.EventID enumeration. An ID should be defined
-     *                    for each unique set of params to be passed to the ProbeExtension.
-     * @param params  -
-     *                    The objects needed to produce the audit record.
+     *            The unique ID identifying the ProbeExtension method to be
+     *            called to generate the audit record. The ID should be defined
+     *            in the Audit.EventID enumeration. An ID should be defined
+     *            for each unique set of params to be passed to the ProbeExtension.
+     * @param params -
+     *            The objects needed to produce the audit record.
      */
     @Trivial
-    public static void audit(EventID eventId, Object... params) {
-    }
+    public static void audit(EventID eventId, Object... params) {}
 }

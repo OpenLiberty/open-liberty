@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,6 +13,7 @@
 package com.ibm.ws.rest.handler.internal.service;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -32,9 +33,11 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.audit.context.AuditManager;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.rest.handler.internal.ExtendedRESTRequestImpl;
 import com.ibm.ws.rest.handler.internal.helper.HandlerPath;
+import com.ibm.ws.rest.handler.internal.service.RESTHandlerContainerImpl.HandlerInfo;
 import com.ibm.ws.security.audit.Audit;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSetMap;
@@ -74,6 +77,8 @@ public class RESTHandlerContainerImpl implements RESTHandlerContainer {
     private final String KEY_ROUTING_HELPER = "routingHelper";
     private final AtomicServiceReference<RESTRoutingHelper> routingHelperRef = new AtomicServiceReference<RESTRoutingHelper>(KEY_ROUTING_HELPER);
 
+    private static AuditManager auditManager = new AuditManager();
+
     /**
      * This map holds the service references to our registered REST handlers.
      */
@@ -92,8 +97,7 @@ public class RESTHandlerContainerImpl implements RESTHandlerContainer {
     /**
      * This class is used, rather than a simple Object, as suggested by findbugs if there's ever a deadlock (helps serviceability)
      */
-    private class HandlerKeyMapSync {
-    }
+    private class HandlerKeyMapSync {}
 
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> properties) {
@@ -521,7 +525,7 @@ public class RESTHandlerContainerImpl implements RESTHandlerContainer {
     /**
      * Create any required auditing records for the request and response.
      *
-     * @param request  The REST request.
+     * @param request The REST request.
      * @param response The generated response.
      */
     private static void auditResponse(RESTRequest request, RESTResponse response) {
@@ -536,5 +540,13 @@ public class RESTHandlerContainerImpl implements RESTHandlerContainer {
             }
         }
         Audit.audit(Audit.EventID.SECURITY_REST_HANDLER_AUTHZ, request, response, response.getStatus());
+        try {
+            if (URLDecoder.decode(request.getContextPath() + request.getPath(), "UTF-8").equals("/IBMJMXConnectorREST/file/${server.config.dir}/server.xml")) {
+                Audit.audit(Audit.EventID.SERVER_CONFIG_CHANGE_01, request, response, response.getStatus());
+            }
+        } catch (Exception e) {
+
+        }
+
     }
 }

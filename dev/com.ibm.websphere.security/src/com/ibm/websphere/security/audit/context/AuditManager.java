@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,6 +22,72 @@ import com.ibm.websphere.ras.annotation.Trivial;
 public class AuditManager {
 
     private static ThreadLocal<AuditThreadContext> threadLocal = new AuditThreadLocal();
+
+    /**
+     * Sets the original file contents on the thread
+     */
+    public void setOriginalFileContents(String origFileContents) {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        auditThreadContext.setOriginalFileContents(origFileContents);
+    }
+
+    /**
+     * Sets the updated file contents on the thread
+     */
+    public void setUpdatedFileContents(String updateFileContents) {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        auditThreadContext.setUpdatedFileContents(updateFileContents);
+    }
+
+    /**
+     * Gets the original file contents on the thread
+     */
+    public String getOriginalFileContents() {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        return auditThreadContext.getOriginalFileContents();
+    }
+
+    /**
+     * Gets the updated file contents on the thread
+     */
+    public String getUpdatedFileContents() {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        return auditThreadContext.getUpdatedFileContents();
+    }
+
+    /**
+     * Sets the server config delta type on the thread
+     */
+    public void setConfigDeltaType(String configDeltaType) {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        auditThreadContext.setConfigDeltaType(configDeltaType);
+    }
+
+    /**
+     * Gets the config delta type
+     */
+
+    public String getConfigDeltaType() {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        return auditThreadContext.getConfigDeltaType();
+    }
+
+    /**
+     * Sets the server config element being changed
+     */
+    public void setConfigDeltaElement(String configDeltaElement) {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        auditThreadContext.setConfigDeltaElement(configDeltaElement);
+    }
+
+    /**
+     * Gets the server config element that was changed
+     */
+
+    public String getConfigDeltaElement() {
+        AuditThreadContext auditThreadContext = getAuditThreadContext();
+        return auditThreadContext.getConfigDeltaElement();
+    }
 
     /**
      * Sets the HttpServletRequest on the thread

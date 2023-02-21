@@ -27,7 +27,6 @@ Import-Package: \
 -dsannotations: \
    com.ibm.ws.request.probe.audit.servlet.AuditRPTD, \
    com.ibm.ws.request.probe.audit.servlet.AuditPE
-
 instrument.disabled: true
 
 

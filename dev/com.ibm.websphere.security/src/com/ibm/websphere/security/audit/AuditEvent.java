@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -137,6 +137,8 @@ public class AuditEvent {
     public static final String TARGET_SAF_ERROR_MESSAGE = "target.saf.error.message";
     public static final String TARGET_VOLSER = "target.volser";
     public static final String TARGET_VSAM = "target.vsam";
+    public static final String TARGET_ORIGINAL_FILE = "target.original.file";
+    public static final String TARGET_UPDATED_FILE = "target.updated.file";
 
     public final static String INITIATOR = "initiator";
     public final static String INITIATOR_ID = "initiator.id";
@@ -592,7 +594,7 @@ public class AuditEvent {
      * Check to see if auditing is required for an event type and outcome.
      *
      * @param eventType SECURITY_AUTHN, SECURITY_AUTHZ, etc
-     * @param outcome   OUTCOME_SUCCESS, OUTCOME_DENIED, etc.
+     * @param outcome OUTCOME_SUCCESS, OUTCOME_DENIED, etc.
      * @return true - events with the type/outcome should be audited
      *         false - events with the type/outcome should not be audited
      *
