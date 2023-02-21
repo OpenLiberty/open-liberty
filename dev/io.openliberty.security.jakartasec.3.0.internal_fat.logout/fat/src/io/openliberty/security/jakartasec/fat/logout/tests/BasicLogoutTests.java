@@ -39,6 +39,7 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonLogoutAndRefreshTests;
 import io.openliberty.security.jakartasec.fat.configs.TestConfigMaps;
+import io.openliberty.security.jakartasec.fat.utils.CommonExpectations;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
 import io.openliberty.security.jakartasec.fat.utils.MessageConstants;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
@@ -1171,14 +1172,12 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
 
     // Do not need tests with NotifyProvider = false since end_session won't be invoked - other tests that use the logout redirect uri already check for parms being passed
 
-    // TODO - not working yet - issue https://github.com/OpenLiberty/open-liberty/issues/24062
     /**
-     * Invoke an app protected by the @OpenIdAuthenticationMechanismDefinition annotation and are granted access - invoke the post method of the app to perform a request.logout() -
-     * expect TODO
+     * Invoke an app protected by the @OpenIdAuthenticationMechanismDefinition annotation and are granted access - invoke the post method of the app to perform a request.logout()
      *
      * @throws Exception
      */
-    //@Test
+    @Test
     public void BasicLogoutTests_invoke_reqLogout() throws Exception {
 
         String appName = "GoodRedirectNotifyProviderTrueTestEndSessionLogoutServlet";
@@ -1187,7 +1186,8 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
         runGoodEndToEndTest(webClient, appName, baseAppName);
 
         String url = rpHttpsBase + "/GoodRedirectNotifyProviderTrueTestEndSessionLogoutServlet/" + baseAppName;
-        actions.invokeUrlWithParametersUsingPost(_testName, webClient, url, null);
+        Page response = actions.invokeUrlWithParametersUsingPost(_testName, webClient, url, null);
+        validationUtils.validateResult(response, CommonExpectations.successfullyReachedTestEndSessiontPage(rpHttpsBase, true));
 
     }
 
