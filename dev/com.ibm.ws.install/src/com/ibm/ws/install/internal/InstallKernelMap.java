@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -963,9 +963,9 @@ public class InstallKernelMap implements Map {
                         } else {
                             if (repoResrc.getMavenCoordinates() == null) { //if user specified ESA file path
                                 if (repoResrc instanceof EsaResourceImpl) {
-                                    String shortName = ((EsaResourceImpl) repoResrc).getShortName();
+                                    String name = ((EsaResourceImpl) repoResrc).getShortName() == null ? repoResrc.getName() : ((EsaResourceImpl) repoResrc).getShortName();
                                     for (String k : shortNameMap.keySet()) {
-                                        if (shortNameMap.get(k).equals(shortName)) {
+                                        if (shortNameMap.get(k).equals(name)) {
                                             featuresResolved.add(k);
                                         }
                                     }

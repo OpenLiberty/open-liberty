@@ -37,10 +37,13 @@ public class Client {
     public static final TraceComponent tc = Tr.register(Client.class);
 
     private final OidcClientConfig oidcClientConfig;
+    private final LogoutConfig logoutConfig;
+
     private static JWKSet jwkSet = null;
 
     public Client(OidcClientConfig oidcClientConfig) {
         this.oidcClientConfig = oidcClientConfig;
+        logoutConfig = oidcClientConfig.getLogoutConfig();
     }
 
     public OidcClientConfig getOidcClientConfig() {
@@ -76,50 +79,37 @@ public class Client {
                                                             String idTokenString,
                                                             String refreshTokenString) {
         TokenRefresher tokenRefresher = new TokenRefresher(request, oidcClientConfig, isAccessTokenExpired, isIdTokenExpired, refreshTokenString);
-        LogoutConfig logoutConfig = oidcClientConfig.getLogoutConfig();
+
         if (tokenRefresher.isTokenExpired()) {
             if (oidcClientConfig.isTokenAutoRefresh()) {
                 // when there is no previously stored refresh_token field of the Token Response, a logout should be initiated
                 if (refreshTokenString == null) {
-                    return logout(request, response, logoutConfig, idTokenString);
+                    return logout(request, response, idTokenString);
                 }
                 ProviderAuthenticationResult providerAuthResult = tokenRefresher.refreshToken();
                 if (AuthResult.SUCCESS.equals(providerAuthResult.getStatus())) {
                     return providerAuthResult;
                 }
                 // When the call is not successful, ... a logout should be initiated.
-                return logout(request, response, logoutConfig, idTokenString);
+                return logout(request, response, idTokenString);
             } else {
+
                 if ((logoutConfig.isAccessTokenExpiry() && tokenRefresher.isAccessTokenExpired()) ||
                     (logoutConfig.isIdentityTokenExpiry() && tokenRefresher.isIdTokenExpired())) {
-                    return logout(request, response, logoutConfig, idTokenString);
+                    return logout(request, response, idTokenString);
                 }
             }
         }
 
         // The token expiration is ignored when none of the above conditions hold
+        // TODO: Return AuthResult.CONTINUE instead so that caller does not need to attempt to update context unnecessarily.
         return new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK);
     }
 
-    public ProviderAuthenticationResult logout(HttpServletRequest request, HttpServletResponse response,
-                                               LogoutConfig logoutConfig,
-                                               String idTokenString) {
+    public ProviderAuthenticationResult logout(HttpServletRequest request, HttpServletResponse response, String idTokenString) {
         LogoutHandler logoutHandler = new LogoutHandler(request, response, oidcClientConfig, logoutConfig, idTokenString);
         try {
             return logoutHandler.logout();
-        } catch (ServletException e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Logout failed with a ServletException exception on " + idTokenString, e);
-            }
-            return new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-
-        }
-    }
-
-    public ProviderAuthenticationResult logoutWithoutLocalLogout(HttpServletRequest request, HttpServletResponse response, String idTokenString) {
-        LogoutHandler logoutHandler = new LogoutHandler(request, response, oidcClientConfig, oidcClientConfig.getLogoutConfig(), idTokenString);
-        try {
-            return logoutHandler.logoutWithoutLocalLogout();
         } catch (ServletException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Logout failed with a ServletException exception on " + idTokenString, e);

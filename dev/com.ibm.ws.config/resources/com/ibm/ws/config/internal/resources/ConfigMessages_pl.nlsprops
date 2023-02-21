@@ -31,7 +31,7 @@
 # Message prefix block: CWWKG0001 - CWWKG1000
 # -------------------------------------------------------------------------------------------------
 
-copyright=\nCopyright (c) 2010 IBM Corporation and others.\nWszelkie prawa zastrze\u017cone. Program ten oraz do\u0142\u0105czone do niego materia\u0142y\ns\u0105 udost\u0119pniane na warunkach licencji Eclipse Public License 2.0\ndo\u0142\u0105czonej do tego programu; licencja EPL jest dost\u0119pna pod adresem\nhttp://www.eclipse.org/legal/epl-2.0/
+copyright=\nCopyright (c) 2010 IBM Corporation and others.\nWszelkie prawa zastrze\u017cone. Program ten oraz do\u0142\u0105czone do niego materia\u0142y s\u0105 udost\u0119pniane \nna warunkach licencji Eclipse Public License 2.0 \ndo\u0142\u0105czonej do tego programu. Licencja ta jest r\u00f3wnie\u017c dost\u0119pna pod adresem \nhttp://www.eclipse.org/legal/epl-2.0/
 
 error.parse.server=CWWKG0001E: Analizator sk\u0142adni konfiguracji wykry\u0142 b\u0142\u0105d podczas analizowania elementu g\u0142\u00f3wnego konfiguracji i przywo\u0142ywanych dokument\u00f3w konfiguracyjnych. B\u0142\u0105d: {0}
 error.parse.server.explanation=Nie mo\u017cna odczyta\u0107 konfiguracji serwera, poniewa\u017c jeden z plik\u00f3w konfiguracyjnych zawiera b\u0142\u0105d.

@@ -21,7 +21,7 @@ var messages = {
     DOCS: "文档", // Translate 'Documentation'
     COPYRIGHT: "版权",
     OPEN_LIBERTY_FOOTER: "Liberty 页脚徽标",
-    COPYRIGHT_OPEN_LIBERTY: "Licensed Materials — Property of the Open Liberty project, Copyright IBM Corp and others 1997, 2019. 本项目在分发时遵循 Eclipse Public License V2 的条款。", // COPYRIGHT_URL
+    COPYRIGHT_OPEN_LIBERTY: "Licensed Materials — Property of the Open Liberty project, Copyright IBM Corp and others 1997, 2019. 项目根据 Eclipse Public License v2 的条款进行分发。", // COPYRIGHT_URL
     UPDATE_BANNER_SECTION: "更新条幅部分",
     UPDATE_BANNER_SECTION_CONTENT: "更新条幅部分内容",
     HEADER_UPDATE_AVAILABLE: "提供了更新：",

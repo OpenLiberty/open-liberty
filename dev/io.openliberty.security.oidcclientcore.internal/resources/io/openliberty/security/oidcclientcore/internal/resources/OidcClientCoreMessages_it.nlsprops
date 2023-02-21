@@ -1,9 +1,11 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -119,3 +121,7 @@ OIDC_CLIENT_INVALID_RESPONSE_TYPE.useraction=Specificare uno dei tipi di rispost
 TOKEN_CLAIM_VALUE_MISMATCH=CWWKS2424E: Il valore [{0}] per la richiesta [{1}] nel token non corrisponde al valore previsto [{2}].
 TOKEN_CLAIM_VALUE_MISMATCH.explanation=Il valore della richiesta non \u00e8 corretto o non \u00e8 conforme. La configurazione per il client OpenID Connect potrebbe non essere corretta oppure il token \u00e8 stato creato con valori non corretti.
 TOKEN_CLAIM_VALUE_MISMATCH.useraction=Accertarsi che l'attributo nella configurazione del client OpenID Connect correlato alla richiesta specificata nel messaggio sia configurato correttamente.
+
+TOKEN_MISSING_CLAIMS=CWWKS2425E: Il token del client {0} OpenID Connect non \u00e8 valido. Il valore jwtClaims nell''oggetto JwtContext \u00e8 null o vuoto.
+TOKEN_MISSING_CLAIMS.explanation=Mancano informazioni dal token e non \u00e8 possibile completare la convalida del token.
+TOKEN_MISSING_CLAIMS.useraction=Esaminare eventuali errori precedenti nel log, per i dettagli. Controllare il formato e il contenuto del token restituito dal provider OpenID Connect.

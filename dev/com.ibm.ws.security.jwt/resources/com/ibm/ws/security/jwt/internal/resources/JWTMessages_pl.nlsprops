@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2021 IBM Corporation and others.
+# Copyright (c) 2016, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -312,7 +312,7 @@ JWT_TRUSTED_ISSUERS_NULL=CWWKS6052E: Wystawca [{0}] podanego znacznika JSON Web 
 JWT_TRUSTED_ISSUERS_NULL.explanation=W konfiguracji serwera wskazano, kt\u00f3rzy wystawcy s\u0105 zaufani w przypadku sprawdzania poprawno\u015bci znacznik\u00f3w JWT. W konfiguracji znacznika JWT nie podano \u017cadnych zaufanych wystawc\u00f3w, wi\u0119c nie mo\u017cna sprawdzi\u0107 poprawno\u015bci znacznika.
 JWT_TRUSTED_ISSUERS_NULL.useraction=W konfiguracji znacznika JWT podanej w komunikacie zdefiniuj co najmniej jednego zaufanego wystawc\u0119. Upewnij si\u0119, \u017ce wystawca JWT jest zgodny z jednym z zaufanych wystawc\u00f3w podanych w konfiguracji znacznika JWT.
 
-SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6053E: U\u017cyto schematu HTTP w okre\u015blonym punkcie ko\u0144cowym: {0}. Wymagany jest protok\u00f3\u0142 HTTPS.
+SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME=CWWKS6052E: U\u017cyto schematu HTTP w okre\u015blonym punkcie ko\u0144cowym: {0}. Wymagany jest protok\u00f3\u0142 HTTPS.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.explanation=Podany punkt ko\u0144cowy wymaga protoko\u0142u HTTPS, ale w adresie URL \u017c\u0105dania u\u017cyto protoko\u0142u HTTP.
 SECURITY.JWT.ERROR.WRONG.HTTP.SCHEME.useraction=Sprawd\u017a adres URL \u017c\u0105dania i upewnij si\u0119, \u017ce u\u017cywany jest w nim protok\u00f3\u0142 HTTPS, lub zmie\u0144 konfiguracj\u0119, tak aby protok\u00f3\u0142 HTTPS nie by\u0142 wymagany. 
 
@@ -388,3 +388,21 @@ NESTED_JWS_REQUIRED_BUT_NOT_FOUND.useraction=Upewnij si\u0119, \u017ce \u0142adu
 JWE_DECRYPTION_KEY_MISSING=CWWKS6066E: Nie mo\u017cna zdeszyfrowa\u0107 znacznika JWE (JSON Web Encryption), poniewa\u017c nie znaleziono klucza deszyfrowania. Atrybut konfiguracji serwera {0} jest ustawiony na [{1}].
 JWE_DECRYPTION_KEY_MISSING.explanation=Do deszyfrowania znacznika JWE wymagany jest klucz deszyfrowania. Klucz deszyfrowania musi by\u0107 obecny w magazynie kluczy konsumenta JWT lub musi by\u0107 okre\u015blony we w\u0142a\u015bciwo\u015bciach konfiguracji MicroProfile.
 JWE_DECRYPTION_KEY_MISSING.useraction=Upewnij si\u0119, \u017ce alias klucza podany w komunikacie istnieje w magazynie kluczy konsumenta JWT. Je\u015bli alias nie jest skonfigurowany, klucz deszyfrowany musi by\u0107 okre\u015blony we w\u0142a\u015bciwo\u015bciach konfiguracji MicroProfile.
+
+# Do not translate "JSON Web Token", "JWT", "iat"
+# 0=iat claim time value (date), 1=Current time, 2=Clock skew configuration value, 3=Token age configuration value
+JWT_TOKEN_AGED=CWWKS6067E: Token JSON Web Token (JWT) nie jest poprawny z powodu wieku tokenu od momentu wydania (iat) roszczenia. Czas \u017c\u0105dania iat to {0}. Bie\u017c\u0105cy czas pomniejszony o przesuni\u0119cie zegara to {1}. Skonfigurowane przesuni\u0119cie zegara wynosi {2} sekund. Skonfigurowany wiek tokenu wynosi {3} sekund.
+JWT_TOKEN_AGED.explanation=Tokeny, kt\u00f3re s\u0105 w tym wieku, s\u0105 niepoprawne.
+JWT_TOKEN_AGED.useraction=Uzyskaj nowy token, kt\u00f3ry nie jest stary. Zsynchronizuj zegary mi\u0119dzy wystawc\u0105 token\u00f3w i konsumentem albo zwi\u0119ksz przesuni\u0119cie zegara lub wiek tokenu w konfiguracji JWT.
+
+# Do not translate "JSON Web Encryption", "JWE", "alg"
+# 0=Key management key algorithm configuration value
+JWE_MISSING_ALG_HEADER=CWWKS6068E: Token szyfrowania WWW JSON (JWE) nie jest poprawny, poniewa\u017c brakuje w nim nag\u0142\u00f3wka alg. Skonfigurowany algorytm klucza funkcji zarz\u0105dzania kluczami: {0}.
+JWE_MISSING_ALG_HEADER.explanation=Token jest zniekszta\u0142cony, nie jest zaszyfrowany albo nie zawiera informacji o szyfrowaniu.
+JWE_MISSING_ALG_HEADER.useraction=Upewnij si\u0119, \u017ce nag\u0142\u00f3wek algorytmu tokenu JWE jest ustawiony na wymagan\u0105 warto\u015b\u0107.
+
+# Do not translate "JSON Web Encryption", "JWE", "JWT", "Content Encryption Key", "CEK"
+# 0=Cryptographic algorithm used to encrypt the Content Encryption Key (e.g. RSA-OAEP), 1=Cryptographic algorithm required for decrypting the Content Encryption Key (e.g. RSA-OAEP)
+JWE_ALGORITHM_MISMATCH=CWWKS6069E: Szyfrowanie WWW JSON (JSON Web Encryption \u2013 JWE) jest niepoprawne, poniewa\u017c jego klucz szyfrowania tre\u015bci (Content Encryption Key \u2013 CEK) zosta\u0142 zaszyfrowany algorytmem {0}. Klucze szyfrowania tre\u015bci musz\u0105 by\u0107 szyfrowane algorytmem {1}.
+JWE_ALGORITHM_MISMATCH.explanation=Klucze szyfrowania tre\u015bci musz\u0105 by\u0107 szyfrowane algorytmem podanym w komunikacie. Klucze szyfrowania tre\u015bci zaszyfrowane ka\u017cdym innym algorytmem szyfrowania nie mog\u0105 by\u0107 sprawdzone.
+JWE_ALGORITHM_MISMATCH.useraction=Uzyskaj nowy token z kluczem szyfrowania tre\u015bci, kt\u00f3ry zosta\u0142 zaszyfrowany przy u\u017cyciu wymaganego algorytmu okre\u015blonego w komunikacie. Alternatywnie zaktualizuj konfiguracj\u0119 JWT, aby zezwala\u0107 na tokeny z kluczami szyfrowania tre\u015bci zaszyfrowanymi przy u\u017cyciu innego algorytmu szyfrowania.

@@ -1,9 +1,11 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -119,3 +121,7 @@ OIDC_CLIENT_INVALID_RESPONSE_TYPE.useraction=Adja meg az \u00e9rv\u00e9nyes v\u0
 TOKEN_CLAIM_VALUE_MISMATCH=CWWKS2424E: A(z) [{0}] \u00e9rt\u00e9k [{1}] k\u00f6vetel\u00e9se nem felel meg a(z) [{2}] v\u00e1rt \u00e9rt\u00e9knek.
 TOKEN_CLAIM_VALUE_MISMATCH.explanation=A k\u00f6vetel\u00e9si \u00e9rt\u00e9k helytelen vagy rossz form\u00e1tum\u00fa. Az OpenID Connect \u00fcgyf\u00e9l konfigur\u00e1ci\u00f3ja helytelen lehet, vagy a kulcssz\u00f3 helytelen \u00e9rt\u00e9kekkel ker\u00fclt l\u00e9trehoz\u00e1sra.
 TOKEN_CLAIM_VALUE_MISMATCH.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetben megadott k\u00f6vetel\u00e9shez kapcsol\u00f3d\u00f3 OpenID Connect \u00fcgyf\u00e9l-konfigur\u00e1ci\u00f3ban tal\u00e1lhat\u00f3 attrib\u00fatum helyesen van be\u00e1ll\u00edtva.
+
+TOKEN_MISSING_CLAIMS=CWWKS2425E: A {0} OpenID Connect \u00fcgyf\u00e9l token \u00e9rv\u00e9nytelen. A JwtContext objektum jwtClaims \u00e9rt\u00e9ke null vagy \u00fcres.
+TOKEN_MISSING_CLAIMS.explanation=Hi\u00e1nyz\u00f3 inform\u00e1ci\u00f3k hi\u00e1nyoznak a tokenb\u0151l \u00e9s a token \u00e9rv\u00e9nyes\u00edt\u00e9se nem hajthat\u00f3 v\u00e9gre.
+TOKEN_MISSING_CLAIMS.useraction=A hib\u00e1val kapcsolatos r\u00e9szletek\u00e9rt tekintse \u00e1t a napl\u00f3ban a kor\u00e1bbi hib\u00e1kat. Ellen\u0151rizze az OpenID Connect szolg\u00e1ltat\u00f3t\u00f3l visszaadott kulcssz\u00f3t form\u00e1tum\u00e1t \u00e9s tartalm\u00e1t.

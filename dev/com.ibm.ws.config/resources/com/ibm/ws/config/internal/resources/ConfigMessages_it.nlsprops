@@ -31,7 +31,7 @@
 # Message prefix block: CWWKG0001 - CWWKG1000
 # -------------------------------------------------------------------------------------------------
 
-copyright=\nCopyright (c) 2010 IBM Corporation e altri.\nTutti i diritti riservati. Questo programma e i materiali di accompagnamento \n sono resi disponibili in base ai termini di Eclipse Public License 2.0 \n che accompagna questa distribuzione ed \u00e8 disponibile all'indirizzo \nhttp://www.eclipse.org/legal/epl-2.0/
+copyright=\nCopyright (c) 2010 IBM Corporation e altri.\nTutti i diritti riservati. La disponibilit\u00e0 di questo programma e dei materiali di accompagnamento\n\u00e8 soggetta ai termini di Eclipse Public License 2.0\nche accompagna questa distribuzione ed \u00e8 reperibile all'indirizzo\nhttp://www.eclipse.org/legal/epl-2.0/
 
 error.parse.server=CWWKG0001E: Il parser di configurazione ha rilevato un errore durante l''analisi del root della configurazione e dei documenti di configurazione di riferimento. Errore: {0}
 error.parse.server.explanation=Non \u00e8 stato possibile leggere la configurazione del server a causa di un errore in uno dei file di configurazione.

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -101,6 +101,12 @@ public class PackageRunnableTest {
 
     @BeforeClass
     public static void setupClass() throws Exception {
+        final String METHOD_NAME = "setUpBeforeClass";
+
+        // Save this off for the tearDown method to manually copy logs from /NonDefaultUser
+        // folder to /autoFVT/output/servers/ folder.
+        outputAutoFVTDirectory = new File("output/servers", serverName);
+        Log.info(c, METHOD_NAME, "outputAutoFVTDirectory: " + outputAutoFVTDirectory.getAbsolutePath());
     }
 
     @AfterClass

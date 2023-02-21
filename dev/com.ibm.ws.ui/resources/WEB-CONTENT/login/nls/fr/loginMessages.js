@@ -11,11 +11,11 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 define({
-        LOGIN_BUTTON: "Soumettre",
-        LOGIN_TITLE: "Centre d'administration Liberty",
-        LOGIN_USER: "Nom d'utilisateur",
-        LOGIN_PASSWORD: "Mot de passe",
-        LOGIN_COPYRIGHT: "Copyright (c) 2013, 2016 IBM Corporation and others. All rights reserved.\nCe programme et les produits qui l'accompagnent sont fournis sous licence Eclipse Public 2.0 associée à cette distribution et disponibles à l'adresse suivante : http://www.eclipse.org/legal/epl-2.0/",
-        LOGIN_ERROR_MESSAGE: "Erreur de connexion : nom d'utilisateur et/ou mot de passe non reconnu",
-        ACCESS_ERROR_MESSAGE: "Erreur d'accès : le compte utilisateur n'est pas autorisé à accéder au centre d'administration"
+	"LOGIN_BUTTON": "Soumettre",
+	"LOGIN_TITLE": "Centre d\'administration Liberty",
+	"LOGIN_USER": "Nom d\'utilisateur",
+	"LOGIN_PASSWORD": "Mot de passe",
+	"LOGIN_COPYRIGHT": "Copyright (c) 2013, 2016 IBM Corporation and others. All rights reserved.\nCe programme et les documents qui l\'accompagnent sont fournis sous licence Eclipse Public License 2.0 associée à cette distribution et disponible à l\'adresse http://www.eclipse.org/legal/epl-2.0/",
+	"LOGIN_ERROR_MESSAGE": "Erreur de connexion : nom d\'utilisateur et/ou mot de passe non reconnu",
+	"ACCESS_ERROR_MESSAGE": "Erreur d\'accès : le compte utilisateur n\'est pas autorisé à accéder au centre d\'administration"
 });

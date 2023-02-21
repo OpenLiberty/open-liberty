@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,11 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.token;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jmock.Expectations;
@@ -21,6 +24,7 @@ import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.NumericDate;
 import org.jose4j.jwt.consumer.JwtContext;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -56,8 +60,8 @@ public class TokenValidatorTest {
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
+        outputMgr.captureStreams();
         jwtClaims = JwtParsingUtils.parseJwtWithoutValidation(idToken).getJwtClaims();
-
     }
 
     /**
@@ -65,6 +69,8 @@ public class TokenValidatorTest {
      */
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
+        outputMgr.dumpStreams();
+        outputMgr.restoreStreams();
     }
 
     /**
@@ -80,6 +86,7 @@ public class TokenValidatorTest {
      */
     @After
     public void tearDown() throws Exception {
+        outputMgr.resetStreams();
     }
 
     /**
@@ -130,6 +137,7 @@ public class TokenValidatorTest {
             });
             tokenValidator = tokenValidator.issuer(iss_claim_from_token).issuerconfigured(iss_from_config);
             tokenValidator.validateIssuer();
+            fail("Should have thrown an exception but didn't.");
         } catch (TokenValidationException e) {
             String error = e.getMessage();
             assertTrue("message", error.contains("issuer"));
@@ -158,6 +166,7 @@ public class TokenValidatorTest {
             });
             tokenValidator = tokenValidator.issuer(iss_claim_from_token).issuerconfigured(iss_from_config);
             tokenValidator.validateIssuer();
+            fail("Should have thrown an exception but didn't.");
 
         } catch (TokenValidationException e) {
             String error = e.getMessage();
@@ -182,7 +191,64 @@ public class TokenValidatorTest {
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }
-
+    }
+    
+    @Test
+    public void testValidateSubject_emptyClaim() {
+        final String methodName = "testValidateSubject_emptyClaim";
+        String subject_claim_from_token = "";
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(oidcClientConfig).getClientId();
+                    will(returnValue("client01"));
+                }
+            });
+            tokenValidator = tokenValidator.subject(subject_claim_from_token);
+            tokenValidator.validateSubject();
+            fail("Should have thrown an exception but didn't.");
+        } catch(TokenValidationException e) {
+            String received = e.getMessage();
+            String expected = "CWWKS2426E: The token has an empty [sub] claim.";
+            assertTrue("error message should have empty [sub] claim", received.contains(expected));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+    
+    @Test
+    public void testValidateSubject_nullSubject_claim() {
+        final String methodName = "testValidateSubject_nullSubject_claim";
+        String subject_claim_from_token = null;
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(oidcClientConfig).getClientId();
+                    will(returnValue("client01"));
+                }
+            });
+            tokenValidator = tokenValidator.subject(subject_claim_from_token);
+            tokenValidator.validateSubject();
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+    
+    @Test
+    public void testValidateSubject_missingSubject_claim() {
+        final String methodName = "testValidateSubject_missingSubject_claim";
+        tokenValidator = new IdTokenValidator(oidcClientConfig);
+        try {
+            mock.checking(new Expectations() {
+                {
+                    allowing(oidcClientConfig).getClientId();
+                    will(returnValue("client01"));
+                }
+            });          
+            tokenValidator.validateSubject();
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
     }
 
     /**
@@ -192,7 +258,6 @@ public class TokenValidatorTest {
     public void testValidateAudiences() {
         final String methodName = "testValidateAudiences";
         List<String> aud_claim_from_token = null;
-        String aud_from_config = "clientid";
 
         try {
             aud_claim_from_token = jwtClaims.getAudience();
@@ -210,7 +275,93 @@ public class TokenValidatorTest {
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }
+    }
+    
+    @Test
+    public void testValidateAudiences_multipleAudiences_matchingClientId_missingAzp() {
+        final String methodName = "testValidateAudiences_multipleAudiences_matchingClientId_missingAzp";
+        List<String> aud_claim_from_token = new ArrayList<String>();
 
+        try {
+            aud_claim_from_token.add("client01");
+            aud_claim_from_token.add("client02");
+            aud_claim_from_token.add("client03");
+            
+            mock.checking(new Expectations() {
+                {
+                    allowing(oidcClientConfig).getProviderMetadata();//.getIssuer();
+                    will(returnValue(oidcmd));
+                    allowing(oidcClientConfig).getClientId();
+                    will(returnValue("client01"));
+                }
+            });
+            tokenValidator = tokenValidator.audiences(aud_claim_from_token);
+            tokenValidator.validateAudiences();
+            fail("Should have thrown an exception but didn't.");
+        } catch (TokenValidationException e) {
+            String error = e.getMessage();
+            assertTrue("error message should include - The token is missing the required [azp] claim", error.contains("CWWKS2417E: The token is missing the required [azp] claim."));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+    
+    @Test
+    public void testValidateAudiences_multipleAudiences_matchingClientId() {
+        final String methodName = "testValidateAudiences_multipleAudiences_matchingClientId";
+        List<String> aud_claim_from_token = new ArrayList<String>();
+
+        try {
+            aud_claim_from_token.add("client01");
+            aud_claim_from_token.add("client02");
+            aud_claim_from_token.add("client03");
+            
+            mock.checking(new Expectations() {
+                {
+                    allowing(oidcClientConfig).getProviderMetadata();//.getIssuer();
+                    will(returnValue(oidcmd));
+                    allowing(oidcClientConfig).getClientId();
+                    will(returnValue("client01"));
+                }
+            });
+            tokenValidator = tokenValidator.audiences(aud_claim_from_token);
+            tokenValidator = tokenValidator.azp("some azp");
+            tokenValidator.validateAudiences();
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+    
+    @Test
+    public void testValidateAudiences_multipleAudiences_clientIdNotMatching() {
+        final String methodName = "testValidateAudiences_multipleAudiences_clientIdNotMatching";
+        List<String> aud_claim_from_token = new ArrayList<String>();
+
+        try {
+            aud_claim_from_token.add("client04");
+            aud_claim_from_token.add("client02");
+            aud_claim_from_token.add("client03");
+  
+            mock.checking(new Expectations() {
+                {
+                    allowing(oidcClientConfig).getProviderMetadata();//.getIssuer();
+                    will(returnValue(oidcmd));
+                    allowing(oidcClientConfig).getClientId();
+                    will(returnValue("client01"));
+                }
+            });
+            tokenValidator = tokenValidator.audiences(aud_claim_from_token);
+            tokenValidator.validateAudiences();
+            fail("Should have thrown an exception but didn't.");
+        } catch (TokenClaimMismatchException e) {
+            //error message = "CWWKS2424E: The [\"client04\" \"client02\" \"client03\" ] value for the [aud] claim in the token does not match the [client01] expected value.]";
+            String expected = "value for the [aud] claim in the token does not match the [client01]";
+            String received = e.getMessage();
+            assertTrue("error should include - value for the [aud] claim in the token does not match the [client01]", received.contains("CWWKS2424E:")&&received.contains(expected));
+            
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
     }
 
     /**
@@ -245,7 +396,79 @@ public class TokenValidatorTest {
      */
     @Test
     public void testIat() {
-        //fail("Not yet implemented");
+        final String methodName = "testIat";
+        NumericDate iat;
+
+        try {
+            iat = NumericDate.now();
+            mock.checking(new Expectations() {
+                {
+                    allowing(oidcClientConfig).getProviderMetadata();
+                    will(returnValue(oidcmd));
+                    allowing(oidcClientConfig).getClientId();
+                    will(returnValue("oidcclientid"));
+                }
+            });
+            tokenValidator = tokenValidator.iat(iat);
+            tokenValidator.validateIssuedAt();
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+    
+    @Test
+    public void testIatInFuture() {
+        final String methodName = "testIatInFuture";
+        NumericDate iat;
+
+        try {
+            iat = NumericDate.now();
+            iat.addSeconds(240);
+            mock.checking(new Expectations() {
+                {
+                    allowing(oidcClientConfig).getProviderMetadata();
+                    will(returnValue(oidcmd));
+                    allowing(oidcClientConfig).getClientId();
+                    will(returnValue("oidcclientid"));
+                }
+            });
+            tokenValidator = tokenValidator.iat(iat);
+            tokenValidator.validateIssuedAt();
+            fail("Should have thrown an exception but didn't.");
+
+        } catch(TokenValidationException e) {
+            String received = e.getMessage();
+            String expected = "CWWKS2428E: The token is deemed invalid";
+            assertTrue("iat is in future and should have received an error", received.contains(expected) && received.contains("[iat] claim"));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+    
+    @Test
+    public void testIatInPast() {
+        final String methodName = "testIatInPast";
+        NumericDate iat;
+
+        try {
+            iat = NumericDate.now();
+            long now = iat.getValue();
+            iat.setValue(now-240);
+            mock.checking(new Expectations() {
+                {
+                    allowing(oidcClientConfig).getProviderMetadata();
+                    will(returnValue(oidcmd));
+                    allowing(oidcClientConfig).getClientId();
+                    will(returnValue("oidcclientid"));
+                }
+            });
+            tokenValidator = tokenValidator.iat(iat);
+            tokenValidator.validateIssuedAt();
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
     }
 
     /**
@@ -253,7 +476,79 @@ public class TokenValidatorTest {
      */
     @Test
     public void testExp() {
-        //fail("Not yet implemented");
+        final String methodName = "testExp";
+        NumericDate exp;
+
+        try {
+            exp = NumericDate.now();
+            mock.checking(new Expectations() {
+                {
+                    allowing(oidcClientConfig).getProviderMetadata();
+                    will(returnValue(oidcmd));
+                    allowing(oidcClientConfig).getClientId();
+                    will(returnValue("oidcclientid"));
+                }
+            });
+            tokenValidator = tokenValidator.exp(exp);
+            tokenValidator.validateExpiration();
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+    
+    @Test
+    public void testExpInPast() {
+        final String methodName = "testExpInPast";
+        NumericDate exp;
+
+        try {
+            exp = NumericDate.now();
+            long now = exp.getValue();
+            exp.setValue(now-240);
+            mock.checking(new Expectations() {
+                {
+                    allowing(oidcClientConfig).getProviderMetadata();
+                    will(returnValue(oidcmd));
+                    allowing(oidcClientConfig).getClientId();
+                    will(returnValue("oidcclientid"));
+                }
+            });
+            tokenValidator = tokenValidator.exp(exp);
+            tokenValidator.validateExpiration();
+            fail("Should have thrown an exception but didn't.");
+
+        } catch(TokenValidationException e) {
+            String received = e.getMessage();
+            String expected = "CWWKS2427E: The token is not valid because the token expired.";
+            assertTrue("exp is in past and should have received an error", received.contains(expected));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+    
+    @Test
+    public void testExpInFuture() {
+        final String methodName = "testExpInFuture";
+        NumericDate exp;
+
+        try {
+            exp = NumericDate.now();
+            exp.addSeconds(240);
+            mock.checking(new Expectations() {
+                {
+                    allowing(oidcClientConfig).getProviderMetadata();
+                    will(returnValue(oidcmd));
+                    allowing(oidcClientConfig).getClientId();
+                    will(returnValue("oidcclientid"));
+                }
+            });
+            tokenValidator = tokenValidator.exp(exp);
+            tokenValidator.validateExpiration();
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
     }
 
     /**
@@ -261,7 +556,79 @@ public class TokenValidatorTest {
      */
     @Test
     public void testNbf() {
-        //fail("Not yet implemented");
+        final String methodName = "testNbf";
+        NumericDate nbf;
+
+        try {
+            nbf = NumericDate.now();
+            mock.checking(new Expectations() {
+                {
+                    allowing(oidcClientConfig).getProviderMetadata();
+                    will(returnValue(oidcmd));
+                    allowing(oidcClientConfig).getClientId();
+                    will(returnValue("oidcclientid"));
+                }
+            });
+            tokenValidator = tokenValidator.nbf(nbf);
+            tokenValidator.validateNotBefore();
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+    
+    @Test
+    public void testNbfInFuture() {
+        final String methodName = "testNbfInFuture";
+        NumericDate nbf;
+
+        try {
+            nbf = NumericDate.now();
+            nbf.addSeconds(240);
+            mock.checking(new Expectations() {
+                {
+                    allowing(oidcClientConfig).getProviderMetadata();
+                    will(returnValue(oidcmd));
+                    allowing(oidcClientConfig).getClientId();
+                    will(returnValue("oidcclientid"));
+                }
+            });
+            tokenValidator = tokenValidator.nbf(nbf);
+            tokenValidator.validateNotBefore();
+            fail("Should have thrown an exception but didn't.");
+
+        } catch(TokenValidationException e) {
+            String received = e.getMessage();
+            String expected = "CWWKS2428E: The token is deemed invalid";
+            assertTrue("nbf is in future and should have received an error", received.contains(expected)&&received.contains("[nbf] claim"));
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
+    }
+    
+    @Test
+    public void testNbfInPast() {
+        final String methodName = "testNbfInPast";
+        NumericDate nbf;
+
+        try {
+            nbf = NumericDate.now();
+            long now = nbf.getValue();
+            nbf.setValue(now-240);
+            mock.checking(new Expectations() {
+                {
+                    allowing(oidcClientConfig).getProviderMetadata();
+                    will(returnValue(oidcmd));
+                    allowing(oidcClientConfig).getClientId();
+                    will(returnValue("oidcclientid"));
+                }
+            });
+            tokenValidator = tokenValidator.nbf(nbf);
+            tokenValidator.validateNotBefore();
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(methodName, t);
+        }
     }
 
     /**

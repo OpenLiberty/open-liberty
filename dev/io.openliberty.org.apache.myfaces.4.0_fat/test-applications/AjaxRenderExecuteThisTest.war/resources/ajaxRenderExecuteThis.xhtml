@@ -7,9 +7,6 @@
     http://www.eclipse.org/legal/epl-2.0/
     
     SPDX-License-Identifier: EPL-2.0
-   
-    Contributors:
-        IBM Corporation - initial API and implementation
  -->
 <html
     xmlns:f="jakarta.faces.core"
@@ -20,23 +17,32 @@
         <title>Ajax Render and Execute This Tests</title>
     </h:head>
     <h:body>
-        <h:form id="form1">
-            <my:component id="inputs" input1="#{ajaxBean.form1input1}" input2="#{ajaxBean.form1input2}" input3="#{ajaxBean.form1input3}">
+        <h:form id="testRender">
+            <my:addressComponent id="inputs" 
+            	street="#{addressBean.testRenderStreet}" 
+            	city="#{addressBean.testRenderCity}" 
+            	state="#{addressBean.testRenderState}">
                 <f:ajax render="messages" />
-            </my:component>
-            <h:messages id="messages" for="form1" />
+            </my:addressComponent>
+            <h:messages id="messages" for="testRender" />
         </h:form>
-        <h:form id="form2">
-            <my:component id="inputs" input1="#{ajaxBean.form2input1}" input2="#{ajaxBean.form2input2}" input3="#{ajaxBean.form2input3}">
+        <h:form id="testExecuteThis">
+            <my:addressComponent id="inputs" 
+            	street="#{addressBean.testExecuteThisStreet}" 
+            	city="#{addressBean.testExecuteThisCity}" 
+            	state="#{addressBean.testExecuteThisState}">
                 <f:ajax execute="@this" render="messages" />
-            </my:component>
-            <h:messages id="messages" for="form2" />
+            </my:addressComponent>
+            <h:messages id="messages" for="testExecuteThis" />
         </h:form>
-        <h:form id="form3">
-            <my:component id="inputs" input1="#{ajaxBean.form3input1}" input2="#{ajaxBean.form3input2}" input3="#{ajaxBean.form3input3}">
+        <h:form id="testRenderThis">
+            <my:addressComponent id="inputs" 
+            	street="#{addressBean.testRenderThisStreet}" 
+            	city="#{addressBean.testRenderThisCity}" 
+            	state="#{addressBean.testRenderThisState}">
                 <f:ajax render="@this messages" />
-            </my:component>
-            <h:messages id="messages" for="form3" />
+            </my:addressComponent>
+            <h:messages id="messages" for="testRenderThis" />
         </h:form>
     </h:body>
 </html>

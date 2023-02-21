@@ -1,12 +1,11 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 ###############################################################################
 #CMVCPATHNAME io.openliberty.security.common.jwt/resources/io/openliberty/security/common/jwt/internal/resources/SecurityCommonJwtMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -17,10 +16,10 @@
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS2520 - CWWKS2549
 
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER=CWWKS2520E: L''algoritmo di firma {0} nell''intestazione JWT non corrisponde all''algoritmo di firma previsto {1} .
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.explanation=Il token deve essere firmato con l'algoritmo specificato nel messaggio.
-EXPECTED_SIG_ALG_DOES_NOT_MATCH_HEADER.useraction=Assicurarsi che il token sia firmato con l'algoritmo previsto o aggiornare la configurazione per il componente che riceve il token in modo da utilizzare l'algoritmo specificato nel messaggio.
-
-SIG_ALG_IN_HEADER_NOT_ALLOWED=CWWKS2521E: L''algoritmo di firma {0} nell''intestazione JWT non \u00e8 uno degli algoritmi di firma consentiti: {1}.
+SIG_ALG_IN_HEADER_NOT_ALLOWED=CWWKS2520E: L''algoritmo di firma {0} nell''intestazione JWT non \u00e8 uno degli algoritmi di firma consentiti: {1}.
 SIG_ALG_IN_HEADER_NOT_ALLOWED.explanation=Il token deve essere firmato con uno degli algoritmi specificati nel messaggio.
 SIG_ALG_IN_HEADER_NOT_ALLOWED.useraction=Assicurarsi che il token sia firmato con uno degli algoritmi consentiti o aggiornare la configurazione per il componente che riceve il token per consentire l'algoritmo specificato nel messaggio.
+
+SIGNING_KEY_NOT_SPECIFIED=CWWKS2521E: L''algoritmo di firma {0} nell''intestazione JWT richiede una chiave di firma, ma non \u00e8 specificata alcuna chiave di firma.
+SIGNING_KEY_NOT_SPECIFIED.explanation=Il server non \u00e8 riuscito a richiamare la chiave necessaria per verificare la firma JWT. La chiave potrebbe essere caricata da un URL JWK (JSON Web Key), da un keystore o da una chiave condivisa specificata nella configurazione del server.
+SIGNING_KEY_NOT_SPECIFIED.useraction=Verificare che la configurazione per il componente che riceve il token specifichi un URL JWK, un keystore appropriato o una chiave condivisa.
