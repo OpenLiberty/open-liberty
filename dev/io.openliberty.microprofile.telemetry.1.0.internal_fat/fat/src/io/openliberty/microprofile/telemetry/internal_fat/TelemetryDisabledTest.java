@@ -62,7 +62,8 @@ public class TelemetryDisabledTest extends FATServletClient {
         assertNotNull(server.waitForStringInLogUsingMark("CWMOT5100I: The MicroProfile Telemetry Tracing feature is enabled but has not been configured to create traces for the "
                                                          + APP_NAME + " application."));
         
-        assertEquals(1, server.waitForMultipleStringsInLogUsingMark(2,"CWMOT5100I"));
+        //Checks 
+        assertEquals(1, server.waitForMultipleStringsInLogUsingMark(2,"CWMOT5100I",1000,server.getDefaultLogFile()));
 
         server.setMarkToEndOfLog();
         runTest(server, APP_NAME + "/TracingDisabledServlet", "testCreateSpan");
