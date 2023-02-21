@@ -32,7 +32,7 @@ public class JakartaOidcTokenRequestTest extends CommonTestClass {
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
 
     private static final String CWWKS2416E_TOKEN_REQUEST_ERROR = "CWWKS2416E";
-    private static final String CWWKS2426E_TOKEN_RESPONSE_MISSING_PARAMETER = "CWWKS2426E";
+    private static final String CWWKS2429E_TOKEN_RESPONSE_MISSING_PARAMETER = "CWWKS2429E";
 
     private final OidcClientConfig oidcClientConfig = mockery.mock(OidcClientConfig.class);
     private final HttpServletRequest request = mockery.mock(HttpServletRequest.class);
@@ -76,7 +76,7 @@ public class JakartaOidcTokenRequestTest extends CommonTestClass {
             tokenRequest.verifyTokenResponseContainsRequiredParameters(tokenResponse);
             fail("Should have thrown an exception but didn't.");
         } catch (TokenRequestException e) {
-            verifyException(e, CWWKS2416E_TOKEN_REQUEST_ERROR + ".*" + CWWKS2426E_TOKEN_RESPONSE_MISSING_PARAMETER + ".*" + TokenConstants.ACCESS_TOKEN + ",.*"
+            verifyException(e, CWWKS2416E_TOKEN_REQUEST_ERROR + ".*" + CWWKS2429E_TOKEN_RESPONSE_MISSING_PARAMETER + ".*" + TokenConstants.ACCESS_TOKEN + ",.*"
                                + TokenConstants.TOKEN_TYPE + ",.*" + TokenConstants.ID_TOKEN);
         }
     }
@@ -98,7 +98,7 @@ public class JakartaOidcTokenRequestTest extends CommonTestClass {
             tokenRequest.verifyTokenResponseContainsRequiredParameters(tokenResponse);
             fail("Should have thrown an exception but didn't.");
         } catch (TokenRequestException e) {
-            verifyException(e, CWWKS2416E_TOKEN_REQUEST_ERROR + ".*" + CWWKS2426E_TOKEN_RESPONSE_MISSING_PARAMETER + ".*" + TokenConstants.ACCESS_TOKEN);
+            verifyException(e, CWWKS2416E_TOKEN_REQUEST_ERROR + ".*" + CWWKS2429E_TOKEN_RESPONSE_MISSING_PARAMETER + ".*" + TokenConstants.ACCESS_TOKEN);
             verifyExceptionDoesNotContain(e, TokenConstants.TOKEN_TYPE);
             verifyExceptionDoesNotContain(e, TokenConstants.ID_TOKEN);
         }
@@ -121,7 +121,7 @@ public class JakartaOidcTokenRequestTest extends CommonTestClass {
             tokenRequest.verifyTokenResponseContainsRequiredParameters(tokenResponse);
             fail("Should have thrown an exception but didn't.");
         } catch (TokenRequestException e) {
-            verifyException(e, CWWKS2416E_TOKEN_REQUEST_ERROR + ".*" + CWWKS2426E_TOKEN_RESPONSE_MISSING_PARAMETER + ".*" + TokenConstants.TOKEN_TYPE);
+            verifyException(e, CWWKS2416E_TOKEN_REQUEST_ERROR + ".*" + CWWKS2429E_TOKEN_RESPONSE_MISSING_PARAMETER + ".*" + TokenConstants.TOKEN_TYPE);
             verifyExceptionDoesNotContain(e, TokenConstants.ACCESS_TOKEN);
             verifyExceptionDoesNotContain(e, TokenConstants.ID_TOKEN);
         }
@@ -144,7 +144,7 @@ public class JakartaOidcTokenRequestTest extends CommonTestClass {
             tokenRequest.verifyTokenResponseContainsRequiredParameters(tokenResponse);
             fail("Should have thrown an exception but didn't.");
         } catch (TokenRequestException e) {
-            verifyException(e, CWWKS2416E_TOKEN_REQUEST_ERROR + ".*" + CWWKS2426E_TOKEN_RESPONSE_MISSING_PARAMETER + ".*" + TokenConstants.ID_TOKEN);
+            verifyException(e, CWWKS2416E_TOKEN_REQUEST_ERROR + ".*" + CWWKS2429E_TOKEN_RESPONSE_MISSING_PARAMETER + ".*" + TokenConstants.ID_TOKEN);
             verifyExceptionDoesNotContain(e, TokenConstants.ACCESS_TOKEN);
             verifyExceptionDoesNotContain(e, TokenConstants.TOKEN_TYPE);
         }
