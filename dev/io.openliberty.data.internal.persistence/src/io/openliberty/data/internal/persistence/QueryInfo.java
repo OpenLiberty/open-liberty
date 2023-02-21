@@ -46,6 +46,11 @@ class QueryInfo {
     EntityInfo entityInfo;
 
     /**
+     * Entity variable name. "o" is used as the default in generated queries.
+     */
+    String entityVar = "o";
+
+    /**
      * Indicates if the query has a WHERE clause.
      * This is accurate only for generated or partially provided queries.
      */
@@ -505,6 +510,7 @@ class QueryInfo {
     QueryInfo withJPQL(String jpql, List<Sort> sorts) {
         QueryInfo q = new QueryInfo(method, returnArrayType, returnTypeParam);
         q.entityInfo = entityInfo;
+        q.entityVar = entityVar;
         q.hasWhere = hasWhere;
         q.jpql = jpql;
         q.jpqlAfterKeyset = jpqlAfterKeyset;
