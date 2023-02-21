@@ -95,7 +95,7 @@ public class FacesJSResourceLoader extends ResourceLoaderWrapper
                 getHttpServletRequest(FacesContext.getCurrentInstance().getExternalContext());
 
         //name mapping does not happen on meta level
-        if(!(libraryName.equals(JsfLibrary.NAMESPACE) &&
+        if(!(JsfLibrary.NAMESPACE.equals(libraryName) &&
                 (
                  resourceName.contains(facesJsShortName) ||
                  resourceName.contains(facesJsLongName) //  just in case the behavior is altered in the future
