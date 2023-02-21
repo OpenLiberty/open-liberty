@@ -13,6 +13,7 @@
 package io.openliberty.security.oidcclientcore.token;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.jose4j.jwt.NumericDate;
@@ -91,8 +92,10 @@ public class TokenValidator {
     protected void validateNotBefore() throws TokenValidationException {
         if (this.notBefore != null) {
             long now = System.currentTimeMillis();
-            if (now + (this.clockSkewInSeconds * 1000) < this.iat.getValueInMillis()) {
-                throw new TokenValidationException(oidcConfig.getClientId(), "nbf claim must be in past");
+            if (now + (this.clockSkewInSeconds * 1000) < this.notBefore.getValueInMillis()) {
+                NumericDate nd = NumericDate.now();
+                nd.addSeconds(this.clockSkewInSeconds);
+                throw new TokenValidationException(oidcConfig.getClientId(), Tr.formatMessage(tc, "TOKEN_CLAIM_IN_FUTURE", this.notBefore, "nbf",  nd, this.clockSkewInSeconds));
             }
         }
     }
@@ -100,14 +103,18 @@ public class TokenValidator {
     protected void validateIssuedAt() throws TokenValidationException {
         long now = System.currentTimeMillis();
         if (now + (this.clockSkewInSeconds * 1000) < this.iat.getValueInMillis()) {
-            throw new TokenValidationException(oidcConfig.getClientId(), "iat claim must be in past");
+            NumericDate nd = NumericDate.now();
+            nd.addSeconds(this.clockSkewInSeconds);
+            throw new TokenValidationException(oidcConfig.getClientId(), Tr.formatMessage(tc, "TOKEN_CLAIM_IN_FUTURE", this.iat, "iat",  nd, this.clockSkewInSeconds));
         }
     }
 
     protected void validateExpiration() throws TokenValidationException {
         long now = System.currentTimeMillis();
         if (now - (this.clockSkewInSeconds * 1000) > this.exp.getValueInMillis()) {
-            throw new TokenValidationException(oidcConfig.getClientId(), "exp claim must be in future");
+            NumericDate nd = NumericDate.now();
+            nd.setValue((now/1000) - this.clockSkewInSeconds);            
+            throw new TokenValidationException(oidcConfig.getClientId(), Tr.formatMessage(tc, "TOKEN_EXP_IN_PAST", this.exp, nd, this.clockSkewInSeconds));
         }
     }
 
@@ -140,7 +147,7 @@ public class TokenValidator {
     protected void validateSubject() throws TokenValidationException {
         if (this.subject != null) {
             if (this.subject.isEmpty()) {
-                throw new TokenValidationException(oidcConfig.getClientId(), "subject claim is present but empty");
+                throw new TokenValidationException(oidcConfig.getClientId(), Tr.formatMessage(tc, "TOKEN_EMPTY_CLAIM", "sub"));
             }
         }
     }
