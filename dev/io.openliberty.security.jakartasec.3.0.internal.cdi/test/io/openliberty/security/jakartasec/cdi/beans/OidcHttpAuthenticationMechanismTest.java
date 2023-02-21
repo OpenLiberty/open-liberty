@@ -44,6 +44,7 @@ import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseE
 import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
 import io.openliberty.security.oidcclientcore.exceptions.UnsupportedResponseTypeException;
 import io.openliberty.security.oidcclientcore.http.OriginalResourceRequest;
+import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
 import io.openliberty.security.oidcclientcore.token.JakartaOidcTokenRequest;
 import io.openliberty.security.oidcclientcore.token.TokenResponse;
 import jakarta.enterprise.inject.Instance;
@@ -400,12 +401,24 @@ public class OidcHttpAuthenticationMechanismTest {
     }
 
     private void withRestoreOriginalRequest() {
+        String state = "myState";
+        String stateHash = io.openliberty.security.oidcclientcore.utils.Utils.getStrHashCode(state);
+        String storedMethod = "R0VU"; // encoded GET
+
         mockery.checking(new Expectations() {
             {
                 one(client).getOidcClientConfig();
                 will(returnValue(oidcClientConfig));
                 one(oidcClientConfig).isRedirectToOriginalResource();
                 will(returnValue(true));
+                one(oidcClientConfig).isUseSession();
+                will(returnValue(true));
+                one(request).getParameter(OpenIdConstant.STATE);
+                will(returnValue(state));
+                one(request).getSession();
+                will(returnValue(httpSession));
+                one(httpSession).getAttribute(OidcClientStorageConstants.WAS_OIDC_REQ_METHOD + stateHash);
+                will(returnValue(storedMethod));
                 one(oidcClientConfig).isUseSession();
                 will(returnValue(true));
                 one(httpMessageContext).setRequest(originalResourceRequest);
@@ -574,7 +587,7 @@ public class OidcHttpAuthenticationMechanismTest {
         }
 
         @Override
-        protected OriginalResourceRequest getOriginalResourceRequest(HttpServletRequest request, HttpServletResponse response, boolean useSession) {
+        protected OriginalResourceRequest recreateOriginalResourceRequest(HttpServletRequest request, HttpServletResponse response, boolean useSession) {
             return originalResourceRequest;
         }
 

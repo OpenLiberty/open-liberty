@@ -44,6 +44,7 @@ import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseE
 import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
 import io.openliberty.security.oidcclientcore.exceptions.UnsupportedResponseTypeException;
 import io.openliberty.security.oidcclientcore.http.OriginalResourceRequest;
+import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import io.openliberty.security.oidcclientcore.storage.Storage;
 import io.openliberty.security.oidcclientcore.storage.StorageFactory;
@@ -257,32 +258,50 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
         if (status == AuthenticationStatus.SUCCESS) {
-            Optional<HttpServletRequest> originalResourceRequest = getOriginalResourceRequest(client.getOidcClientConfig(), httpMessageContext);
-            if (originalResourceRequest.isPresent()) {
-                httpMessageContext.setRequest(originalResourceRequest.get());
-                httpMessageContext.getMessageInfo().setRequestMessage(originalResourceRequest.get());
+            OidcClientConfig clientConfig = client.getOidcClientConfig();
+            if (clientConfig.isRedirectToOriginalResource()) {
+                restoreOriginalResourceRequest(clientConfig, httpMessageContext);
             }
         }
         return status;
     }
 
-    private Optional<HttpServletRequest> getOriginalResourceRequest(OidcClientConfig clientConfig, HttpMessageContext httpMessageContext) {
-        HttpServletRequest originalResourceRequest = null;
+    private void restoreOriginalResourceRequest(OidcClientConfig clientConfig, HttpMessageContext httpMessageContext) {
+        Optional<HttpServletRequest> originalResourceRequest = getOriginalResourceRequest(clientConfig, httpMessageContext);
+        if (originalResourceRequest.isPresent()) {
+            httpMessageContext.setRequest(originalResourceRequest.get());
+            httpMessageContext.getMessageInfo().setRequestMessage(originalResourceRequest.get());
+        }
+    }
 
-        if (shouldRestoreOriginalRequest(clientConfig, httpMessageContext)) {
-            HttpServletRequest request = httpMessageContext.getRequest();
-            HttpServletResponse response = httpMessageContext.getResponse();
-            originalResourceRequest = getOriginalResourceRequest(request, response, clientConfig.isUseSession());
+    private Optional<HttpServletRequest> getOriginalResourceRequest(OidcClientConfig clientConfig, HttpMessageContext httpMessageContext) {
+        HttpServletRequest request = httpMessageContext.getRequest();
+        HttpServletResponse response = httpMessageContext.getResponse();
+
+        HttpServletRequest originalResourceRequest = null;
+        if (hasPreviouslyStoredOriginalResourceRequest(request, response, clientConfig)) {
+            originalResourceRequest = recreateOriginalResourceRequest(request, response, clientConfig.isUseSession());
         }
 
         return Optional.ofNullable(originalResourceRequest);
     }
 
-    private boolean shouldRestoreOriginalRequest(OidcClientConfig clientConfig, HttpMessageContext httpMessageContext) {
-        return clientConfig.isRedirectToOriginalResource() && !httpMessageContext.isAuthenticationRequest();
+    /**
+     * Determine if the original request was stored based on if there is a stored method.
+     * There will always be a stored method if the original request was stored.
+     * If nothing was stored even though isRedirectToOriginalResource was set to true, then the request was likely caller-initiated.
+     * Note: Cannot rely on HttpMessageContext#isAuthenticationRequest here, since that info is lost in the callback.
+     */
+    private boolean hasPreviouslyStoredOriginalResourceRequest(HttpServletRequest request, HttpServletResponse response, OidcClientConfig clientConfig) {
+        Storage storage = StorageFactory.instantiateStorage(request, response, clientConfig.isUseSession());
+        String state = request.getParameter(OpenIdConstant.STATE);
+        String stateHash = io.openliberty.security.oidcclientcore.utils.Utils.getStrHashCode(state);
+        String storedMethod = storage.get(OidcClientStorageConstants.WAS_OIDC_REQ_METHOD + stateHash);
+
+        return storedMethod != null && !storedMethod.isEmpty();
     }
 
-    protected OriginalResourceRequest getOriginalResourceRequest(HttpServletRequest request, HttpServletResponse response, boolean useSession) {
+    protected OriginalResourceRequest recreateOriginalResourceRequest(HttpServletRequest request, HttpServletResponse response, boolean useSession) {
         return new OriginalResourceRequest(request, response, useSession);
     }
 
