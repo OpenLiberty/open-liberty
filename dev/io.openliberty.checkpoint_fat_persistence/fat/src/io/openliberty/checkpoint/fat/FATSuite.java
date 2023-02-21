@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,8 +22,9 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                DB2Test.class,
-                JPATest.class
+                DB2Test.class
+// Comment out JPA pending upcoming changes to support JPA with checkpoint
+// JPATest.class
 })
 
 public class FATSuite extends TestContainerSuite {
