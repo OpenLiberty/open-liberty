@@ -21,7 +21,9 @@ Include-Resource:\
     resources
     
 Export-Package: \
-    com.ibm.ws.simple.base
+    com.ibm.ws.test.featurestart,\
+    com.ibm.ws.test.featurestart.features,\
+    com.ibm.ws.test.featurestart.utils
 
 test.project: true
 

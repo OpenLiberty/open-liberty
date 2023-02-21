@@ -10,14 +10,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.simple;
+package com.ibm.ws.test.featurestart;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ FeaturesStartTest2.class })
+@SuiteClasses({ FeaturesStartTest3.class })
 public class FATSuite {
     // EMPTY
 }
