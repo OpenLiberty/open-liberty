@@ -56,6 +56,7 @@ public class ProxyServicesImpl implements ProxyServices {
 
     @Override
     public ClassLoader getClassLoader(final Class<?> proxiedBeanType) {
+System.out.println("Test");
         // Must always use the bean type's classloader;
         // Otherwise package private access does not work.
         // Unfortunately this causes us issues for types from OSGi bundles.
