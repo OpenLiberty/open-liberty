@@ -15,6 +15,7 @@ package io.openliberty.microprofile.telemetry.internal_fat;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -26,9 +27,9 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.tracingdisabled.TracingDisabledServlet;
@@ -58,11 +59,14 @@ public class TelemetryDisabledTest extends FATServletClient {
     public void testGetGlobalOpenTelemetry() throws Exception {
         server.setMarkToEndOfLog();
         runTest(server, APP_NAME + "/TracingDisabledServlet", "testCreateSpan");
-        assertNotNull(server.waitForStringInLogUsingMark("CWMOT5100I: The MicroProfile Telemetry Tracing feature is enabled but has not been configured to create traces for the " + APP_NAME + " application."));
+        assertNotNull(server.waitForStringInLogUsingMark("CWMOT5100I: The MicroProfile Telemetry Tracing feature is enabled but has not been configured to create traces for the "
+                                                         + APP_NAME + " application."));
+        
+        assertEquals(1, server.waitForMultipleStringsInLogUsingMark(2,"CWMOT5100I"));
 
         server.setMarkToEndOfLog();
         runTest(server, APP_NAME + "/TracingDisabledServlet", "testCreateSpan");
-        assertNull(server.verifyStringNotInLogUsingMark("CWMOT5100I: The MicroProfile Telemetry Tracing feature is enabled but has not been configured to create traces for the " + APP_NAME + " application.", 1000));
+        assertNull(server.verifyStringNotInLogUsingMark("CWMOT5100I", 1000));
     }
 
     @AfterClass
