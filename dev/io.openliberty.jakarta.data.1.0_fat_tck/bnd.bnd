@@ -21,10 +21,9 @@ fat.project: true
 tested.features:\
 	data-1.0
 
-# TODO - Jakarta 11 might require min of Java 17
-runtime.minimum.java.level: 11
+runtime.minimum.java.level: 17
 
-javac.source: 11
-javac.target: 11
+javac.source: 17
+javac.target: 17
 
 -buildpath: \

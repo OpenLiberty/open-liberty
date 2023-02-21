@@ -14,11 +14,10 @@
     <featureManager>
         <!-- Core profile features (no super feature that contains these) -->
         <feature>cdi-4.0</feature> <!-- Includes Annotations 2.1, Dependency Injection 2.0, and Interceptors 2.1 -->
-        <feature>jsonp-2.1</feature>
-        <feature>jsonb-3.0</feature>
         <feature>restfulWS-3.1</feature>
         <!-- Features being tested -->
         <feature>data-1.0</feature>
+        <feature>persistence-3.1</feature>
         <!-- Features needed for arquillan support -->
         <feature>localConnector-1.0</feature>
         <!-- Required by test infrastructure -->
@@ -29,7 +28,6 @@
     
     <include location="../fatTestPorts.xml" />
 
-
     <!-- Allow Arquillian to monitor application -->
     <applicationMonitor updateTrigger="mbean"/>
 
@@ -37,6 +35,16 @@
     <remoteFileAccess>
         <writeDir>${server.config.dir}/dropins</writeDir>
     </remoteFileAccess>
+    
+    <!-- The datasource used by JPA -->
+    <dataSource id="DefaultDataSource">
+      <jdbcDriver>
+        <library id="DerbyLib">
+          <file name="${shared.resource.dir}/derby/derby.jar"/>
+        </library>
+      </jdbcDriver>
+      <properties.derby.embedded createDatabase="create" databaseName="memory:testdb" user="dbuser1" password="dbpwd1"/>
+    </dataSource>
     
     <!-- Include test dependencies needed on the server at runtime at a global scope -->
     <library id="global">

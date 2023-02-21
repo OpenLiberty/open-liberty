@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-	~ Copyright (c) 2022 IBM Corporation and others. All rights reserved. 
+	~ Copyright (c) 2022, 2023 IBM Corporation and others. All rights reserved. 
 	~ This program and the accompanying materials are made available under the 
 	~ terms of the Eclipse Public License 2.0 which accompanies this distribution, 
 	~ and is available at 
@@ -44,10 +44,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<!-- TODO Jakarta 11 might require java 17 -->
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
-		<maven.compiler.release>11</maven.compiler.release>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
+		<maven.compiler.release>17</maven.compiler.release>
 
 		<!-- Jakarta EE API -->
 		<jakarta.data.groupid>jakarta.data</jakarta.data.groupid>
@@ -57,8 +56,8 @@
 
 		<!-- Test Infrastructure versions -->
 		<arquillian.version>1.7.0.Alpha13</arquillian.version>
-		<arquillian.liberty.managed.jakarta.junit5.version>2.1.2</arquillian.liberty.managed.jakarta.junit5.version>
-		<junit.version>5.9.0</junit.version>
+		<arquillian.wlp.version>2.1.2</arquillian.wlp.version>
+		<junit.version>5.9.2</junit.version>
 		<sigtest.version>1.6</sigtest.version>
 
 		<!-- Used in arquillian.xml passed from test suite -->
@@ -115,7 +114,7 @@
 		<dependency>
 			<groupId>io.openliberty.arquillian</groupId>
 			<artifactId>arquillian-liberty-managed-jakarta-junit5</artifactId>
-			<version>${arquillian.liberty.managed.jakarta.junit5.version}</version>
+			<version>${arquillian.wlp.version}</version>
 			<type>pom</type>
 		</dependency>
 
@@ -186,14 +185,14 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
-					<source>11</source>
-					<target>11</target>
+					<source>17</source>
+					<target>17</target>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M7</version>
+				<version>3.0.0</version>
 				<configuration>
 					<argLine>-Dfile.encoding=${project.build.sourceEncoding} -Dcom.ibm.tools.attach.enable=yes</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). Attach is needed becuase because arquillian uses com.sun.tools.attach to find VMs -->
 					<dependenciesToScan>
@@ -209,10 +208,11 @@
 						<tck_port>${tck_port}</tck_port>
 						<sun.rmi.transport.tcp.responseTimeout>${sun.rmi.transport.tcp.responseTimeout}</sun.rmi.transport.tcp.responseTimeout>
 						<java.util.logging.config.file>${basedir}/../logging.properties</java.util.logging.config.file>
+						<jimage.dir>${jimage.dir}</jimage.dir>
+						<jakarta.tck.profile>${jakarta.tck.profile}</jakarta.tck.profile>
 					</systemPropertyVariables>
-					<groups>${jakarta.tck.platform}</groups> <!-- Groups to include i.e. standalone/core/web -->
-					<excludedGroups>${test.excluded.groups}</excludedGroups> <!-- Groups to ignore i.e. signature -->
-					<reportNameSuffix>${jakarta.tck.platform}</reportNameSuffix>
+					<groups>${included.groups}</groups>
+					<reportNameSuffix>${jakarta.tck.profile}</reportNameSuffix>
 					<testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
 				</configuration>
 			</plugin>
