@@ -103,7 +103,7 @@ public class SingletonMonitor implements Introspector {
     }
 
     @Modified
-    public void modified(Map<String, Object> properties) {
+    public synchronized void modified(Map<String, Object> properties) {
     	if (isAnyTracingEnabled() && tc.isDebugEnabled()) Tr.entry(this, tc, "modified", properties);
         Set<String> oldSet = declaredSingletons;
         Set<String> newSet = findDeclaredSingletons(properties);
