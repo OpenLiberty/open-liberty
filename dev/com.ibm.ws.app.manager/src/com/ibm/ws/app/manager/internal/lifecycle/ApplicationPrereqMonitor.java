@@ -67,7 +67,7 @@ public class ApplicationPrereqMonitor implements Introspector {
     private Set<String> declaredPrereqs = new TreeSet<>();
     private final Set<String> realizedPrereqs = new TreeSet<>();
 
-    private boolean configModified = false;
+    private boolean configInconsistent = false;
 
     /**
      * Use constructor parameter references to ensure that mandatory references are supplied first.
@@ -93,6 +93,10 @@ public class ApplicationPrereqMonitor implements Introspector {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(this, tc, "modified");
         }
+
+        // Assume we now have a new consistent configuration, until proven otherwise.
+        configInconsistent = false;
+
         String[] pids = (String[]) properties.get("applicationPrereqDeclarations");
         Set<String> oldSet = declaredPrereqs;
         Set<String> newSet = Stream.of(pids).map(this::servicePidToConfigId).collect(TreeSet::new, Set::add, Set::addAll);
@@ -156,9 +160,8 @@ public class ApplicationPrereqMonitor implements Introspector {
             } catch (ConfigurationOutOfDateException cod) {
                 // AutoFFDC this instead
             }
-            // The config received is not reliable,
-            // so don't use it for error detection.
-            configModified = true;
+            // The config received is not reliable, so don't use it for error detection.
+            configInconsistent = true;
             return "Error converting servicePid: " + servicePid;
         }
 
@@ -178,8 +181,8 @@ public class ApplicationPrereqMonitor implements Introspector {
                          + "\n  Realized:" + realizedPrereqs);
         }
 
-        // If the configuration has been modified we cannot reliably detect surplus Prereqs.
-        if (configModified)
+        // If the configuration update processing failed we cannot reliably detect surplus Prereqs.
+        if (configInconsistent)
             return;
 
         // Check for unexpected Prereqs.
