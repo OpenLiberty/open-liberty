@@ -90,11 +90,12 @@ public class ContextAPIServlet extends FATServlet {
     public void testContextStorage() {
         ContextStorage storage = ContextStorage.get();
         Context context = Context.current();
-        Scope scope = storage.attach(context);
-        assertNotNull(scope);
-        assertNotSame(Scope.noop(), scope);
-        Context stored = storage.current();
-        assertEquals(context, stored);
+        try(Scope scope = storage.attach(context)){
+            assertNotNull(scope);
+            assertNotSame(Scope.noop(), scope);
+            Context stored = storage.current();
+            assertEquals(context, stored);
+        }
     }
 
     /**
@@ -106,11 +107,12 @@ public class ContextAPIServlet extends FATServlet {
         ContextStorageProvider provider = new MyContextStorageProvider();
         ContextStorage storage = provider.get();
         Context context = Context.current();
-        Scope scope = storage.attach(context);
-        assertNotNull(scope);
-        assertEquals(Scope.noop(), scope);
-        Context stored = storage.current();
-        assertEquals(context, stored);
+        try(Scope scope = storage.attach(context)){
+            assertNotNull(scope);
+            assertEquals(Scope.noop(), scope);
+            Context stored = storage.current();
+            assertEquals(context, stored);
+        }
     }
 
     private static class MyContextStorageProvider implements ContextStorageProvider {

@@ -219,49 +219,26 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     /**
      * Appends JQPL to sort based on the specified entity attribute.
      * For most properties will be of a form such as o.Name or LOWER(o.Name) DESC or ...
-     * For IdClass, will include all Id properties, such as: o.IdAttr1 DESC, o.idAttr2 DESC, o.idAttr3 DESC
      *
-     * @param q          builder for the JPQL query.
-     * @param entityInfo entity information.
-     * @param ignoreCase if ordering is to be independent of case.
-     * @param attribute  name of attribute (@OrderBy value or Sort property or parsed from OrderBy query-by-method).
-     * @param descending if ordering is to be in descending order
-     * @param keyset     keyset to populate with sort criteria. Null if not generating a query for keyset pagination.
+     * @param q             builder for the JPQL query.
+     * @param Sort          sort criteria for a single attribute (name must already be converted to a valid entity attribute name).
+     * @param sameDirection indicate to append the Sort in the normal direction. Otherwise reverses it (for keyset pagination in previous page direction).
      * @return the same builder for the JPQL query.
      */
     @Trivial
-    private void appendSort(StringBuilder q, EntityInfo entityInfo, boolean ignoreCase, String attribute, boolean descending, List<Sort> keyset) {
-        Set<String> names = entityInfo.idClass != null && "id".equalsIgnoreCase(attribute) //
-                        ? entityInfo.idClassAttributeAccessors.keySet() //
-                        : Set.of(attribute);
+    private void appendSort(StringBuilder q, Sort sort, boolean sameDirection) {
 
-        boolean first = true;
-        for (String name : names) {
-            if (first)
-                first = false;
-            else
-                q.append(", ");
+        q.append(sort.ignoreCase() ? "LOWER(o." : "o.").append(sort.property());
 
-            q.append(ignoreCase ? "LOWER(o." : "o.").append(name = entityInfo.getAttributeName(name));
+        if (sort.ignoreCase())
+            q.append(")");
 
-            if (ignoreCase)
-                q.append(")");
-
-            if (keyset == null) {
-                if (descending)
-                    q.append(" DESC");
-            } else {
-                if (!descending)
-                    q.append(" DESC");
-
-                keyset.add(ignoreCase ? //
-                                descending ? //
-                                                Sort.descIgnoreCase(name) : //
-                                                Sort.ascIgnoreCase(name) : //
-                                descending ? //
-                                                Sort.desc(name) : //
-                                                Sort.asc(name));
-            }
+        if (sameDirection) {
+            if (sort.isDescending())
+                q.append(" DESC");
+        } else {
+            if (sort.isAscending())
+                q.append(" DESC");
         }
     }
 
@@ -273,25 +250,19 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      * @return information about the query.
      */
     private QueryInfo completeQueryInfo(EntityInfo entityInfo, QueryInfo queryInfo) {
-
         queryInfo.entityInfo = entityInfo;
-        boolean isKeysetAwarePage = KeysetAwarePage.class.equals(queryInfo.method.getReturnType())
-                                    || KeysetAwarePage.class.equals(queryInfo.returnTypeParam);
-        boolean needsKeysetQueries = isKeysetAwarePage
-                                     || KeysetAwareSlice.class.equals(queryInfo.method.getReturnType())
-                                     || KeysetAwareSlice.class.equals(queryInfo.returnTypeParam)
-                                     || Iterator.class.equals(queryInfo.method.getReturnType())
-                                     || Iterator.class.equals(queryInfo.returnTypeParam);
-        boolean countPages = isKeysetAwarePage
-                             || Page.class.equals(queryInfo.method.getReturnType())
-                             || Page.class.equals(queryInfo.returnTypeParam);
+
+        boolean countPages = Page.class.equals(queryInfo.method.getReturnType())
+                             || KeysetAwarePage.class.equals(queryInfo.method.getReturnType())
+                             || Page.class.equals(queryInfo.returnTypeParam)
+                             || KeysetAwarePage.class.equals(queryInfo.returnTypeParam);
         StringBuilder q = null;
 
         // TODO would it be more efficient to invoke method.getAnnotations() once?
 
-        // @Query annotation
         Query query = queryInfo.method.getAnnotation(Query.class);
         if (query == null) {
+            // Query by annotations
             Filter[] filters = queryInfo.method.getAnnotationsByType(Filter.class);
             StringBuilder whereClause = filters.length > 0 ? generateWhereClause(queryInfo, filters) : null;
 
@@ -333,7 +304,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     throw new UnsupportedOperationException(queryInfo.method.getName() + " without any parameters");
                 queryInfo.saveParamType = paramTypes[0];
             } else {
-                // Repository method name pattern queries
+                // Query by method name
                 q = generateMethodNameQuery(queryInfo, countPages);//keyset queries before orderby
 
                 // @Select annotation only
@@ -353,9 +324,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             String upper = queryInfo.jpql.toUpperCase();
             String upperTrimmed = upper.stripLeading();
             if (upperTrimmed.startsWith("SELECT")) {
+                int orderBy = upper.lastIndexOf("ORDER BY");
                 queryInfo.type = QueryInfo.Type.SELECT;
-
+                queryInfo.sorts = queryInfo.sorts == null ? new ArrayList<>() : queryInfo.sorts;
                 queryInfo.jpqlCount = query.count().length() > 0 ? query.count() : null;
+
                 if (countPages && queryInfo.jpqlCount == null) {
                     // Attempt to infer from provided query
                     int select = upper.indexOf("SELECT");
@@ -365,7 +338,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         int comma = s.indexOf(',');
                         if (comma > 0)
                             s = s.substring(0, comma);
-                        int orderBy = upper.lastIndexOf("ORDER BY");
                         queryInfo.jpqlCount = new StringBuilder(queryInfo.jpql.length() + 7) //
                                         .append("SELECT COUNT(").append(s.trim()).append(") ") //
                                         .append(orderBy > from ? queryInfo.jpql.substring(from, orderBy) : queryInfo.jpql.substring(from)) //
@@ -388,10 +360,23 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         if (query != null || queryInfo.paramNames != null) {
             int initialParamCount = queryInfo.paramCount;
             Parameter[] params = queryInfo.method.getParameters();
-            for (int i = 0; i < params.length && !SPECIAL_PARAM_TYPES.contains(params[i].getType()); i++) {
+            Class<?> paramType;
+            for (int i = 0; i < params.length && !SPECIAL_PARAM_TYPES.contains(paramType = params[i].getType()); i++) {
                 Param param = params[i].getAnnotation(Param.class);
-                if (param != null)
-                    (queryInfo.paramNames == null ? (queryInfo.paramNames = new ArrayList<>()) : queryInfo.paramNames).add(param.value());
+                if (param != null) {
+                    if (queryInfo.paramNames == null)
+                        queryInfo.paramNames = new ArrayList<>();
+                    if (paramType.equals(queryInfo.entityInfo.idClass))
+                        for (int p = 1, numIdClassParams = queryInfo.entityInfo.idClassAttributeAccessors.size(); p <= numIdClassParams; p++) {
+                            queryInfo.paramNames.add(new StringBuilder(param.value()).append('_').append(p).toString());
+                            if (p > 1) {
+                                queryInfo.paramCount++;
+                                queryInfo.paramAddedCount++;
+                            }
+                        }
+                    else
+                        queryInfo.paramNames.add(param.value());
+                }
                 queryInfo.paramCount++;
                 if (initialParamCount != 0)
                     throw new MappingException("Cannot mix positional and named parameters on repository method " +
@@ -399,11 +384,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             }
         }
 
-        // The Sorts parameter is from JNoSQL and might get added to Jakarta Data.
-        // The @OrderBy annotation from Jakarta Data defines the same information annotatively.
+        // The @OrderBy annotation from Jakarta Data provides sort criteria statically
         OrderBy[] orderBy = queryInfo.method.getAnnotationsByType(OrderBy.class);
         if (orderBy.length > 0) {
             queryInfo.type = queryInfo.type == null ? QueryInfo.Type.SELECT : queryInfo.type;
+            queryInfo.sorts = queryInfo.sorts == null ? new ArrayList<>(orderBy.length + 2) : queryInfo.sorts;
             if (q == null)
                 if (queryInfo.jpql == null) {
                     q = generateSelectClause(queryInfo);
@@ -413,24 +398,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     q = new StringBuilder(queryInfo.jpql);
                 }
 
-            StringBuilder o = needsKeysetQueries ? new StringBuilder(100) : q;
-            StringBuilder r = needsKeysetQueries ? new StringBuilder(100) : null; // reverse order
-            List<Sort> keyset = needsKeysetQueries ? new ArrayList<>(orderBy.length) : null;
+            for (int i = 0; i < orderBy.length; i++)
+                queryInfo.addSort(orderBy[i].ignoreCase(), orderBy[i].value(), orderBy[i].descending());
 
-            for (int i = 0; i < orderBy.length; i++) {
-                o.append(i == 0 ? " ORDER BY " : ", ");
-                appendSort(o, entityInfo, orderBy[i].ignoreCase(), orderBy[i].value(), orderBy[i].descending(), null);
-
-                if (needsKeysetQueries) {
-                    r.append(i == 0 ? " ORDER BY " : ", ");
-                    appendSort(r, entityInfo, orderBy[i].ignoreCase(), orderBy[i].value(), orderBy[i].descending(), keyset);
-                }
-            }
-
-            if (needsKeysetQueries) {
-                generateKeysetQueries(queryInfo, keyset, q, o, r);
-                q.append(o);
-            }
+            if (!queryInfo.hasDynamicSortCriteria())
+                generateOrderBy(queryInfo, q);
         }
 
         queryInfo.jpql = q == null ? queryInfo.jpql : q.toString();
@@ -648,7 +620,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     q.delete(where, len); // Remove " WHERE " because there are no conditions
                 queryInfo.hasWhere = false;
             } else if (queryInfo.entityInfo.idClass != null && attribute.equalsIgnoreCase("id")) {
-                generateConditionsForIdClass(queryInfo, condition, ignoreCase, negated, q);
+                generateConditionsForIdClass(queryInfo, null, condition, ignoreCase, negated, q);
             }
             return;
         }
@@ -721,12 +693,17 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     /**
      * Generates JPQL for a *By condition on the IdClass, which expands to multiple conditions in JPQL.
      */
-    private void generateConditionsForIdClass(QueryInfo queryInfo, Condition condition, boolean ignoreCase, boolean negate, StringBuilder q) {
+    private void generateConditionsForIdClass(QueryInfo queryInfo, Filter filter, Condition condition, boolean ignoreCase, boolean negate, StringBuilder q) {
+        if (filter != null && filter.value().length != 0)
+            throw new MappingException("IdClass parameter cannot be represented as a hard-coded value of the @Filter annotation."); // TODO NLS
+
+        String paramName = filter == null || filter.param().length == 0 ? null : filter.param()[0];
+
         q.append(negate ? "NOT (" : "(");
 
-        boolean first = true;
+        int count = 0;
         for (String idClassAttr : queryInfo.entityInfo.idClassAttributeAccessors.keySet()) {
-            if (!first)
+            if (++count != 1)
                 q.append(" AND ");
 
             String name = queryInfo.entityInfo.getAttributeName(idClassAttr);
@@ -739,9 +716,16 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 case EQUALS:
                 case NOT_EQUALS:
                     q.append(condition.operator);
-                    appendParam(q, ignoreCase, ++queryInfo.paramCount);
-                    if (!first)
-                        queryInfo.paramAddedCount++;
+                    if (paramName == null) { // positional parameter
+                        appendParam(q, ignoreCase, ++queryInfo.paramCount);
+                        if (count != 1)
+                            queryInfo.paramAddedCount++;
+                    } else { // named parameter
+                        q.append(ignoreCase ? "LOWER(:" : ":");
+                        q.append(paramName).append('_').append(count);
+                        if (ignoreCase)
+                            q.append(')');
+                    }
                     break;
                 case NULL:
                 case EMPTY:
@@ -755,8 +739,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     throw new MappingException("Repository keyword " + condition.name() +
                                                " cannot be used when the Id of the entity is an IdClass."); // TODO NLS
             }
-
-            first = false;
         }
 
         q.append(')');
@@ -788,13 +770,12 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      * _ OR (o.lastName = ?5 AND o.firstName = ?6 AND o.ssn > ?7) )
      *
      * @param queryInfo query information
-     * @param keyset    key names and direction
      * @param q         query up to the WHERE clause, if present
      * @param o         ORDER BY clause in forward direction. Null if forward direction is not needed.
      * @param r         ORDER BY clause in reverse direction. Null if reverse direction is not needed.
      */
-    private void generateKeysetQueries(QueryInfo queryInfo, List<Sort> keyset, StringBuilder q, StringBuilder o, StringBuilder r) {
-        int numKeys = keyset.size();
+    private void generateKeysetQueries(QueryInfo queryInfo, StringBuilder q, StringBuilder o, StringBuilder r) {
+        int numKeys = queryInfo.sorts.size();
         String paramPrefix = queryInfo.paramNames == null ? "?" : ":keyset";
         StringBuilder a = o == null ? null : new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (");
         StringBuilder b = r == null ? null : new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (");
@@ -804,7 +785,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             if (b != null)
                 b.append(i == 0 ? "(" : " OR (");
             for (int k = 0; k <= i; k++) {
-                Sort keyInfo = keyset.get(k);
+                Sort keyInfo = queryInfo.sorts.get(k);
                 String name = keyInfo.property();
                 boolean asc = keyInfo.isAscending();
                 boolean lower = keyInfo.ignoreCase();
@@ -838,7 +819,6 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             queryInfo.jpqlAfterKeyset = new StringBuilder(q).append(a).append(')').append(o).toString();
         if (b != null)
             queryInfo.jpqlBeforeKeyset = new StringBuilder(q).append(b).append(')').append(r).toString();
-        queryInfo.keyset = keyset;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "forward & reverse keyset queries", queryInfo.jpqlAfterKeyset, queryInfo.jpqlBeforeKeyset);
@@ -866,7 +846,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     generateCount(queryInfo, q.substring(where));
             }
             if (orderBy >= c)
-                generateOrderBy(queryInfo, orderBy, q);
+                parseOrderBy(queryInfo, orderBy, q);
             queryInfo.type = QueryInfo.Type.SELECT;
         } else if (methodName.startsWith("delete")) {
             int by = methodName.indexOf("By", 6);
@@ -926,54 +906,33 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     }
 
     /**
-     * Generates the JPQL ORDER BY clause for a repository findBy method such as findByLastNameLikeOrderByLastNameAscFirstNameDesc
+     * Generates the JPQL ORDER BY clause. This method is common between the OrderBy annotation and keyword.
      */
-    private void generateOrderBy(QueryInfo queryInfo, int orderBy, StringBuilder q) {
-        String methodName = queryInfo.method.getName();
+    private void generateOrderBy(QueryInfo queryInfo, StringBuilder q) {
         boolean needsKeysetQueries = KeysetAwarePage.class.equals(queryInfo.method.getReturnType())
                                      || KeysetAwareSlice.class.equals(queryInfo.method.getReturnType())
                                      || Iterator.class.equals(queryInfo.method.getReturnType())
                                      || KeysetAwarePage.class.equals(queryInfo.returnTypeParam)
                                      || KeysetAwareSlice.class.equals(queryInfo.returnTypeParam)
                                      || Iterator.class.equals(queryInfo.returnTypeParam);
+
         StringBuilder o = needsKeysetQueries ? new StringBuilder(100) : q; // forward order
-        StringBuilder r = needsKeysetQueries ? new StringBuilder(100).append(" ORDER BY ") : null; // reverse order
-        List<Sort> keyset = needsKeysetQueries ? new ArrayList<>() : null;
+        StringBuilder r = needsKeysetQueries ? new StringBuilder(100) : null; // previous page order
 
-        o.append(" ORDER BY ");
+        boolean first = true;
+        for (Sort sort : queryInfo.sorts) {
+            o.append(first ? " ORDER BY " : ", ");
+            appendSort(o, sort, true);
 
-        for (int length = methodName.length(), asc = 0, desc = 0, iNext, i = orderBy + 7; i >= 0 && i < length; i = iNext) {
-            asc = asc == -1 || asc > i ? asc : methodName.indexOf("Asc", i);
-            desc = desc == -1 || desc > i ? desc : methodName.indexOf("Desc", i);
-            iNext = Math.min(asc, desc);
-            if (iNext < 0)
-                iNext = Math.max(asc, desc);
-
-            boolean ignoreCase;
-            boolean descending = iNext > 0 && iNext == desc;
-            int endBefore = iNext < 0 ? methodName.length() : iNext;
-            if (ignoreCase = endsWith("IgnoreCase", methodName, i, endBefore))
-                endBefore -= 10;
-
-            String attribute = methodName.substring(i, endBefore);
-
-            appendSort(o, queryInfo.entityInfo, ignoreCase, attribute, descending, null);
-
-            if (needsKeysetQueries)
-                appendSort(r, queryInfo.entityInfo, ignoreCase, attribute, descending, keyset);
-
-            if (iNext > 0) {
-                iNext += (iNext == desc ? 4 : 3);
-                if (iNext < length) {
-                    o.append(", ");
-                    if (needsKeysetQueries)
-                        r.append(", ");
-                }
+            if (needsKeysetQueries) {
+                r.append(first ? " ORDER BY " : ", ");
+                appendSort(r, sort, false);
             }
+            first = false;
         }
 
         if (needsKeysetQueries) {
-            generateKeysetQueries(queryInfo, keyset, q, o, r);
+            generateKeysetQueries(queryInfo, q, o, r);
             q.append(o);
         }
     }
@@ -1109,7 +1068,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
             if (name == null) {
                 if (op == '=') {
-                    generateUpdatesForIdClass(queryInfo, first, q);
+                    generateUpdatesForIdClass(queryInfo, null, first, q);
                 } else {
                     String opName = op == '+' ? Operation.Add.name() : op == '*' ? Operation.Multiply.name() : Operation.Divide.name();
                     throw new MappingException("The " + opName +
@@ -1158,7 +1117,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
             if (name == null) {
                 if (op == Operation.Assign)
-                    generateUpdatesForIdClass(queryInfo, first, q);
+                    generateUpdatesForIdClass(queryInfo, update, first, q);
                 else
                     throw new MappingException("The " + op.name() +
                                                " repository update operation cannot be used on the Id of the entity when the Id is an IdClass."); // TODO NLS
@@ -1230,18 +1189,27 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     /**
      * Generates JPQL to assign the entity properties of which the IdClass consists.
      */
-    private void generateUpdatesForIdClass(QueryInfo queryInfo, boolean firstOperation, StringBuilder q) {
-        boolean firstIdClassAttr = true;
+    private void generateUpdatesForIdClass(QueryInfo queryInfo, Update update, boolean firstOperation, StringBuilder q) {
+        if (update != null && update.value().length != 0)
+            throw new MappingException("IdClass parameter cannot be represented as a hard-coded value of the @Update annotation."); // TODO NLS
+
+        String paramName = update == null || update.param().length() == 0 ? null : update.param();
+
+        int count = 0;
         for (String idClassAttr : queryInfo.entityInfo.idClassAttributeAccessors.keySet()) {
+            count++;
             String name = queryInfo.entityInfo.getAttributeName(idClassAttr);
 
-            q.append(firstOperation ? " o." : ", o.").append(name).append("=?").append(++queryInfo.paramCount);
-            firstOperation = false;
+            q.append(firstOperation ? " o." : ", o.").append(name);
+            if (paramName == null) { // positional parameter
+                q.append("=?").append(++queryInfo.paramCount);
+                if (count != 1)
+                    queryInfo.paramAddedCount++;
+            } else { // named parameter
+                q.append("=:").append(paramName).append('_').append(count);
+            }
 
-            if (firstIdClassAttr)
-                firstIdClassAttr = false;
-            else
-                queryInfo.paramAddedCount++;
+            firstOperation = false;
         }
     }
 
@@ -1300,7 +1268,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
             String name = queryInfo.entityInfo.getAttributeName(attribute);
             if (name == null) {
-                generateConditionsForIdClass(queryInfo, Condition.forIdClass(comparison), ignoreCase, negated, q);
+                generateConditionsForIdClass(queryInfo, filter, Condition.forIdClass(comparison), ignoreCase, negated, q);
                 continue;
             }
 
@@ -1486,23 +1454,32 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         for (int i = queryInfo.paramCount - queryInfo.paramAddedCount; i < (args == null ? 0 : args.length); i++) {
                             Object param = args[i];
                             if (param instanceof Limit)
-                                limit = (Limit) param; // TODO must fail if 2 Limits
+                                if (limit == null)
+                                    limit = (Limit) param;
+                                else
+                                    throw new DataException("Repository method " + method + " cannot have multiple Limit parameters."); // TODO NLS
                             else if (param instanceof Pageable)
-                                pagination = (Pageable) param; // TODO must fail if 2 Pageables
+                                if (pagination == null)
+                                    pagination = (Pageable) param;
+                                else
+                                    throw new DataException("Repository method " + method + " cannot have multiple Pageable parameters."); // TODO NLS
                             else if (param instanceof Sort)
-                                sortList = queryInfo.entityInfo.getSorts(sortList, (Sort) param);
+                                sortList = queryInfo.combineSorts(sortList, (Sort) param);
                             else if (param instanceof Sort[])
-                                sortList = queryInfo.entityInfo.getSorts(sortList, (Sort[]) param);
+                                sortList = queryInfo.combineSorts(sortList, (Sort[]) param);
                         }
 
                         if (pagination != null) {
                             if (limit != null)
-                                throw new DataException("Repository method " + method + " cannot have both Limit and Pageable as parameters."); // TODO
-                            if (sortList == null || sortList.isEmpty())
-                                sortList = queryInfo.entityInfo.getSorts(pagination);
+                                throw new DataException("Repository method " + method + " cannot have both Limit and Pageable as parameters."); // TODO NLS
+                            if (sortList == null)
+                                sortList = queryInfo.combineSorts(sortList, pagination.sorts());
                             else if (sortList != null && !pagination.sorts().isEmpty())
-                                throw new DataException("Repository method " + method + " cannot specify Sort parameters if Pageable also has Sort parameters."); // TODO
+                                throw new DataException("Repository method " + method + " cannot specify Sort parameters if Pageable also has Sort parameters."); // TODO NLS
                         }
+
+                        if (sortList == null && queryInfo.hasDynamicSortCriteria())
+                            sortList = queryInfo.sorts;
 
                         if (sortList != null && !sortList.isEmpty()) {
                             boolean forward = pagination == null || pagination.mode() != Pageable.Mode.CURSOR_PREVIOUS;
@@ -1510,17 +1487,13 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             StringBuilder o = null; // ORDER BY clause based on Sorts
                             for (Sort sort : sortList) {
                                 o = o == null ? new StringBuilder(100).append(" ORDER BY ") : o.append(", ");
-                                o.append(sort.ignoreCase() ? "LOWER(o." : "o.").append(sort.property());
-                                if (sort.ignoreCase())
-                                    o.append(')');
-                                if (forward ? sort.isDescending() : sort.isAscending())
-                                    o.append(" DESC");
+                                appendSort(o, sort, forward);
                             }
 
                             if (pagination == null || pagination.mode() == Pageable.Mode.OFFSET)
-                                (queryInfo = queryInfo.withJPQL(q.append(o).toString())).keyset = sortList; // offset pagination can be a starting point for keyset pagination
+                                queryInfo = queryInfo.withJPQL(q.append(o).toString(), sortList); // offset pagination can be a starting point for keyset pagination
                             else // CURSOR_NEXT or CURSOR_PREVIOUS
-                                generateKeysetQueries(queryInfo = queryInfo.withJPQL(null), sortList, q, forward ? o : null, forward ? null : o);
+                                generateKeysetQueries(queryInfo = queryInfo.withJPQL(null, sortList), q, forward ? o : null, forward ? null : o);
                         }
 
                         boolean asyncCompatibleResultForPagination = pagination != null &&
@@ -1548,7 +1521,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             TypedQuery<?> query = em.createQuery(queryInfo.jpql, queryInfo.entityInfo.type);
                             queryInfo.setParameters(query, args);
 
-                            int maxResults = limit != null ? (int) limit.maxResults() // TODO fix data type in spec
+                            int maxResults = limit != null ? limit.maxResults() //
                                             : pagination != null ? pagination.size() //
                                                             : queryInfo.maxResults;
 
@@ -1818,6 +1791,40 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     }
 
     /**
+     * Identifies the statically specified sort criteria for a repository findBy method such as
+     * findByLastNameLikeOrderByLastNameAscFirstNameDesc
+     */
+    private void parseOrderBy(QueryInfo queryInfo, int orderBy, StringBuilder q) {
+        String methodName = queryInfo.method.getName();
+
+        queryInfo.sorts = queryInfo.sorts == null ? new ArrayList<>() : queryInfo.sorts;
+
+        for (int length = methodName.length(), asc = 0, desc = 0, iNext, i = orderBy + 7; i >= 0 && i < length; i = iNext) {
+            asc = asc == -1 || asc > i ? asc : methodName.indexOf("Asc", i);
+            desc = desc == -1 || desc > i ? desc : methodName.indexOf("Desc", i);
+            iNext = Math.min(asc, desc);
+            if (iNext < 0)
+                iNext = Math.max(asc, desc);
+
+            boolean ignoreCase;
+            boolean descending = iNext > 0 && iNext == desc;
+            int endBefore = iNext < 0 ? methodName.length() : iNext;
+            if (ignoreCase = endsWith("IgnoreCase", methodName, i, endBefore))
+                endBefore -= 10;
+
+            String attribute = methodName.substring(i, endBefore);
+
+            queryInfo.addSort(ignoreCase, attribute, descending);
+
+            if (iNext > 0)
+                iNext += (iNext == desc ? 4 : 3);
+        }
+
+        if (!queryInfo.hasDynamicSortCriteria())
+            generateOrderBy(queryInfo, q);
+    }
+
+    /**
      * Converts to the specified type, raising an error if the conversion cannot be made.
      *
      * @param type type to convert to.
@@ -1912,7 +1919,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         if (limit.startAt() != 1L)
             throw new DataException(new IllegalArgumentException("Limit with starting point " + limit.startAt() +
                                                                  ", which is greater than 1, cannot be used to request pages or slices."));
-        return Pageable.ofSize((int) limit.maxResults()); // TODO remove cast once spec is updated
+        return Pageable.ofSize(limit.maxResults());
     }
 
     private static final Object toReturnValue(int i, Class<?> returnType, QueryInfo queryInfo) {

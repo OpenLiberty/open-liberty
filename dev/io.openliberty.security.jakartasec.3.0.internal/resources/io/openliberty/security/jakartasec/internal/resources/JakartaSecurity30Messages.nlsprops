@@ -48,3 +48,7 @@ JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS.useraction=Review the logs for earlier
 JAKARTASEC_CLAIMS_PROCESSING_ERROR=CWWKS2506E: The OpenID Connect client {0} Claims key value is incorrect. The value is {1} and the expected type is {2}. The error is {3}.
 JAKARTASEC_CLAIMS_PROCESSING_ERROR.explanation=The OpenID Connect client encountered an error while verifying the expected type of fields on the OpenID Claims object. A frequent error is that the actual type of the returned value does not match the expected type.
 JAKARTASEC_CLAIMS_PROCESSING_ERROR.useraction=For more information, see the error in the message.
+
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT=CWWKS2507W: The value of the {0} attribute of the OpenID authentication mechanism definition annotation must not be a negative integer. If the attribute value is an Expression Language (EL) expression, it must not resolve to a negative integer. The value provided was ''{1}''. The default attribute value of ''{2}'' is used instead.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.explanation=The value of the attribute must not be a negative integer. If the attribute value is an EL expression, the value must not resolve to a negative integer.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.useraction=Update the attribute to use a non-negative integer. If the attribute value is an EL expression, update the referenced bean to resolve to a non-negative integer.

@@ -131,11 +131,19 @@ public interface Primes {
 
     Stream<Prime> findByNumberLessThan(long max);
 
+    @OrderBy("even")
+    @OrderBy("sumOfBits")
+    Page<Prime> findByNumberLessThan(long max, Pageable pagination);
+
     Streamable<Prime> findByNumberLessThanEqualOrderByNumberAsc(long max, Pageable pagination);
 
     Streamable<Prime> findByNumberLessThanEqualOrderByNumberDesc(long max, Limit limit);
 
     Page<Prime> findByNumberLessThanEqualOrderByNumberDesc(long max, Pageable pagination);
+
+    Stream<Prime> findByNumberLessThanOrderByEven(long max, Sort... sorts);
+
+    KeysetAwareSlice<Prime> findByNumberLessThanOrderByEvenAscSumOfBitsAsc(long max, Pageable pagination);
 
     @Asynchronous
     CompletionStage<KeysetAwarePage<Prime>> findByNumberLessThanOrderByNumberDesc(long max, Pageable pagination);
@@ -233,4 +241,9 @@ public interface Primes {
     Page<Integer> romanNumeralLengths(long maxNumber, Pageable pagination);
 
     void save(Prime... primes);
+
+    @Query("SELECT o FROM Prime o WHERE (o.number <= ?1)")
+    @OrderBy(value = "even", descending = true)
+    @OrderBy(value = "sumOfBits", descending = true)
+    KeysetAwarePage<Prime> upTo(long maxNumber, Pageable pagination);
 }

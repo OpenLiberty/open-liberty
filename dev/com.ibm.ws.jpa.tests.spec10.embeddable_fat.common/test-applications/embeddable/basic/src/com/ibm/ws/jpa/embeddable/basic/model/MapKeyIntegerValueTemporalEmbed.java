@@ -1,0 +1,141 @@
+/*******************************************************************************
+ * Copyright (c) 2021 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+package com.ibm.ws.jpa.embeddable.basic.model;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapKeyColumn;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+@Embeddable
+public class MapKeyIntegerValueTemporalEmbed implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
+
+    public static Map<Integer, Date> INIT;
+    public static Map<Integer, Date> UPDATE;
+    static {
+        /*
+         * JPA Specification, section 11.1.51:
+         * public enum TemporalType {
+         * DATE, //java.sql.Date
+         * TIME, //java.sql.Time
+         * TIMESTAMP //java.sql.Timestamp
+         * }
+         *
+         * JDBC Specification, TABLE B-6
+         * DATE java.sql.Date
+         * TIME java.sql.Time
+         * TIMESTAMP java.sql.Timestamp
+         *
+         * java.util.Date stores Hours, Minutes, Seconds, ect. However, the DATE jdbc type
+         * only supports Year, Month, Day.
+         */
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            Map<Integer, Date> map = new HashMap<Integer, Date>();
+            map.put(new Integer(2), formatter.parse(formatter.format(new Date(System.currentTimeMillis() - 200000000))));
+            map.put(new Integer(1), formatter.parse(formatter.format(new Date(1))));
+            INIT = Collections.unmodifiableMap(map);
+
+            map = new HashMap<Integer, Date>();
+            map.put(new Integer(2), formatter.parse(formatter.format(new Date(System.currentTimeMillis() - 200000000))));
+            map.put(new Integer(3), formatter.parse(formatter.format(new Date())));
+            map.put(new Integer(1), formatter.parse(formatter.format(new Date(1))));
+            UPDATE = Collections.unmodifiableMap(map);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @CollectionTable(name = "MapIntDate", joinColumns = @JoinColumn(name = "parent_id"))
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Temporal(TemporalType.DATE)
+    @MapKeyColumn(name = "mykey")
+    @Column(name = "value")
+    private Map<Integer, Date> mapKeyIntegerValueTemporal;
+
+    public MapKeyIntegerValueTemporalEmbed() {
+    }
+
+    public MapKeyIntegerValueTemporalEmbed(Map<Integer, Date> mapKeyIntegerValueTemporal) {
+        this.mapKeyIntegerValueTemporal = mapKeyIntegerValueTemporal;
+    }
+
+    public Map<Integer, Date> getMapKeyIntegerValueTemporal() {
+        return this.mapKeyIntegerValueTemporal;
+    }
+
+    public void setMapKeyIntegerValueTemporal(Map<Integer, Date> mapKeyIntegerValueTemporal) {
+        this.mapKeyIntegerValueTemporal = mapKeyIntegerValueTemporal;
+    }
+
+    @Override
+    public int hashCode() {
+        return (37 * 17 + toString().hashCode());
+    }
+
+    @Override
+    public boolean equals(Object otherObject) {
+
+        if (otherObject == this)
+            return true;
+        if (!(otherObject instanceof MapKeyIntegerValueTemporalEmbed))
+            return false;
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy");
+        Set<String> dateOnly = new HashSet<String>();
+        Set<Integer> keys = mapKeyIntegerValueTemporal.keySet();
+        for (Integer key : keys)
+            dateOnly.add(key + "=" + sdf.format(mapKeyIntegerValueTemporal.get(key)));
+        Set<String> otherDateOnly = new HashSet<String>();
+        Map<Integer, Date> otherMap = ((MapKeyIntegerValueTemporalEmbed) otherObject).getMapKeyIntegerValueTemporal();
+        Set<Integer> otherKeys = otherMap.keySet();
+        for (Integer key : otherKeys)
+            otherDateOnly.add(key + "=" + sdf.format(otherMap.get(key)));
+        return (otherDateOnly.equals(dateOnly)); // Can't use hash b/c not sorted.
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (mapKeyIntegerValueTemporal != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy");
+            sb.append("mapKeyIntegerValueTemporal=[");
+            Set<Integer> keys = mapKeyIntegerValueTemporal.keySet();
+            for (Integer key : keys) {
+                sb.append(key + "=");
+                sb.append(sdf.format(mapKeyIntegerValueTemporal.get(key)).toString());
+                sb.append(", ");
+            }
+            sb.deleteCharAt(sb.length() - 1);
+            sb.deleteCharAt(sb.length() - 1);
+            sb.append("]");
+        } else
+            sb.append("mapKeyIntegerValueTemporal=null");
+        return sb.toString();
+    }
+
+}

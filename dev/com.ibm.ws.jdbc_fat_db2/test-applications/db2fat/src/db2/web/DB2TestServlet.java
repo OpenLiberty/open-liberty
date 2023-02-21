@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017,2021 IBM Corporation and others.
+ * Copyright (c) 2017,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -40,6 +40,7 @@ import org.junit.Test;
 import com.ibm.db2.jcc.DB2JccDataSource;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -187,6 +188,7 @@ public class DB2TestServlet extends FATServlet {
     //Test that a datasource backed by Driver can be used with both the generic properties element and properties.db2.jcc
     //element when type="java.sql.Driver"
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to additional Db2 JDBC driver in JDK
     public void testDSUsingDriver() throws Exception {
         Connection conn = db2_using_driver_type.getConnection();
         assertFalse("db2_using_driver_type should not wrap DB2JccDataSource", db2_using_driver_type.isWrapperFor(DB2JccDataSource.class));
@@ -217,6 +219,7 @@ public class DB2TestServlet extends FATServlet {
     //Test that the proper implementation classes are used for the various datasources configured in this test bucket
     //since the JDBC Driver used is named so as not to be recognized by the built-in logic
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testInferDB2DataSource() throws Exception {
         //The default datasource should continue to be inferred as an XADataSource, since it has properties.db2.jcc configured
         assertTrue("default datasource should wrap XADataSource", ds.isWrapperFor(XADataSource.class));

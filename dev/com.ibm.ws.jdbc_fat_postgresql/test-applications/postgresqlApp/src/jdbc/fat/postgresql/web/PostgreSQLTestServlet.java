@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -46,6 +46,7 @@ import org.postgresql.jdbc.AutoSave;
 import org.postgresql.largeobject.LargeObjectManager;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -54,14 +55,12 @@ public class PostgreSQLTestServlet extends FATServlet {
 
     private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
-    @Resource(lookup = "jdbc/anonymous/XADataSource")
-    DataSource resRefDS;
-
     @Resource
     UserTransaction tx;
 
     // Test that we can obtain a Connection from a datasource that uses the generic <properties> element with PostgreSQL
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testPostgresGenericProps() throws Exception {
         DataSource ds = InitialContext.doLookup("jdbc/postgres/genericprops");
         ds.getConnection().close();
@@ -71,6 +70,7 @@ public class PostgreSQLTestServlet extends FATServlet {
     // and a JDBC driver that does not match the jar name heuristic detection. This will confirm that our java.sql.Driver
     // detection mechanism works properly for PostgreSQL
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testAnonymousPostgresDriver() throws Exception {
         DataSource ds = InitialContext.doLookup("jdbc/anonymous/Driver");
         ds.getConnection().close();
@@ -78,6 +78,7 @@ public class PostgreSQLTestServlet extends FATServlet {
 
     // Verify we can auto-detect an XA DataSource implementation using a generically named PostgreSQL JDBC Driver
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testAnonymousPostgresDS() throws Exception {
         DataSource ds = InitialContext.doLookup("jdbc/anonymous/XADataSource");
         ds.getConnection().close();
@@ -92,6 +93,7 @@ public class PostgreSQLTestServlet extends FATServlet {
 
     // Verify that we can configure a <properties.postgresql> element by specifying only the 'URL' property
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testPostgresURLOnly() throws Exception {
         DataSource ds = InitialContext.doLookup("jdbc/postgres/urlOnly");
         ds.getConnection().close();
@@ -143,7 +145,8 @@ public class PostgreSQLTestServlet extends FATServlet {
 
     // Test that a basic PostgreSQL-only bean property (defaultFetchSize) gets set on a DataSource when configured in server.xml
     @Test
-    public void testBaiscPostgreSpecificProp() throws Exception {
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
+    public void testBasicPostgreSpecificProp() throws Exception {
         DataSource ds = InitialContext.doLookup("jdbc/anonymous/XADataSource");
 
         // Insert 6 rows into the DB. Uses ID's 0, 1, 2, 3, 4, and 5
@@ -169,6 +172,7 @@ public class PostgreSQLTestServlet extends FATServlet {
 
     // Verify behavior of the defaultReadOnly setting on <properties.postgresql>
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testReadOnly() throws Exception {
         // On a regular DS, should be able to write data
         DataSource regularDS = InitialContext.doLookup("jdbc/anonymous/XADataSource");
@@ -203,6 +207,7 @@ public class PostgreSQLTestServlet extends FATServlet {
     // Verify that the defaultAutoCommit setting defaults to true, and when it is set to false
     // connections obtained from these DataSources have autoCommit=false when initially obtained
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testDefaultAutoCommit() throws Exception {
         // On a regular DS, default AC should be true in an LTC, or false in a global tran
         DataSource writingDS = InitialContext.doLookup("jdbc/anonymous/XADataSource");

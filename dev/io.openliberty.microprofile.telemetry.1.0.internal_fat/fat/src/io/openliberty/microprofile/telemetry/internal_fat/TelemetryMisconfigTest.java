@@ -12,6 +12,7 @@ package io.openliberty.microprofile.telemetry.internal_fat;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static org.junit.Assert.assertFalse;
 
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -178,7 +179,7 @@ public class TelemetryMisconfigTest extends FATServletClient {
                         .expectCode(200)
                         .run(String.class);
 
-        assertFalse(server.waitForStringInLogUsingMark("Failed to export spans. The request could not be executed. Full error message: " + INVALID_JAEGER_ENDPOINT.toLowerCase())
+        assertFalse(server.waitForStringInLogUsingMark("Failed to export spans. The request could not be executed. Full error message:.*" + INVALID_JAEGER_ENDPOINT.toLowerCase())
                         .isEmpty());
     }
 

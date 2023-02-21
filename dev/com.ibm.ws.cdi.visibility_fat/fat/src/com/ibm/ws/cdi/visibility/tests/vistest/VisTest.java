@@ -731,10 +731,7 @@ public class VisTest extends FATServletClient {
         if (server != null) {
             server.stopServer();
         }
-    }
 
-    @AfterClass
-    public static void cleanupFeatures() throws Exception {
         server.uninstallSystemFeature("visTest-1.2");
         server.uninstallSystemFeature("visTest-3.0");
     }

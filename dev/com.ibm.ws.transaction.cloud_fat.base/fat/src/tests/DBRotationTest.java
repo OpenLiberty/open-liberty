@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -27,15 +28,17 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
-import com.ibm.ws.transaction.fat.util.TxShrinkHelper;
 import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerType;
@@ -46,6 +49,7 @@ import servlets.Simple2PCCloudServlet;
 
 @RunWith(FATRunner.class)
 @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException" })
+@SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
 public class DBRotationTest extends FATServletClient {
     private static final Class<?> c = DBRotationTest.class;
 
@@ -83,6 +87,9 @@ public class DBRotationTest extends FATServletClient {
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001.noShutdown",
     };
 
+    private LibertyServer[] serversToCleanup;
+    private static final String[] toleratedMsgs = new String[] { ".*" };
+
     public static SetupRunner runner = new SetupRunner() {
         @Override
         public void run(LibertyServer s) throws Exception {
@@ -94,11 +101,14 @@ public class DBRotationTest extends FATServletClient {
     public static void init() throws Exception {
         Log.info(c, "init", "BeforeClass");
         TxTestContainerSuite.beforeSuite();
-        TxShrinkHelper.defaultApp(server1, APP_NAME, APP_PATH, "servlets.*");
-        TxShrinkHelper.defaultApp(server2, APP_NAME, APP_PATH, "servlets.*");
-        TxShrinkHelper.defaultApp(longLeaseCompeteServer1, APP_NAME, APP_PATH, "servlets.*");
-        TxShrinkHelper.defaultApp(longLeaseLogFailServer1, APP_NAME, APP_PATH, "servlets.*");
-        TxShrinkHelper.defaultApp(noShutdownServer1, APP_NAME, APP_PATH, "servlets.*");
+        final WebArchive app = ShrinkHelper.buildDefaultAppFromPath(APP_NAME, APP_PATH, "servlets.*");
+        final DeployOptions[] dO = new DeployOptions[0];
+
+        ShrinkHelper.exportAppToServer(server1, app, dO);
+        ShrinkHelper.exportAppToServer(server2, app, dO);
+        ShrinkHelper.exportAppToServer(longLeaseCompeteServer1, app, dO);
+        ShrinkHelper.exportAppToServer(longLeaseLogFailServer1, app, dO);
+        ShrinkHelper.exportAppToServer(noShutdownServer1, app, dO);
     }
 
     public static void setUp(LibertyServer server) throws Exception {
@@ -114,8 +124,12 @@ public class DBRotationTest extends FATServletClient {
 
     @After
     public void cleanup() throws Exception {
-
-        // Servers should be stopped
+        // If any servers have been added to the serversToCleanup array, we'll stop them now
+        // test is long gone so we don't care about messages & warnings anymore
+        if (serversToCleanup != null && serversToCleanup.length > 0) {
+            FATUtils.stopServers(toleratedMsgs, serversToCleanup);
+            serversToCleanup = null;
+        }
 
         // Clean up XA resource files
         server1.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
@@ -126,9 +140,6 @@ public class DBRotationTest extends FATServletClient {
 
     @AfterClass
     public static void teardown() throws Exception {
-
-        // In case any server is left running
-        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E" }, server1, server2, longLeaseCompeteServer1, longLeaseLogFailServer1, noShutdownServer1);
 
         TxTestContainerSuite.afterSuite();
     }
@@ -145,13 +156,14 @@ public class DBRotationTest extends FATServletClient {
         final String method = "testLeaseTableAccess";
         StringBuilder sb = null;
         String id = "001";
+
+        serversToCleanup = new LibertyServer[] { server1 };
+
         FATUtils.startServers(runner, server1);
 
         sb = runTestWithResponse(server1, SERVLET_NAME, "testLeaseTableAccess");
 
         Log.info(c, method, "testLeaseTableAccess" + id + " returned: " + sb);
-
-        FATUtils.stopServers(server1);
     }
 
     /**
@@ -168,6 +180,9 @@ public class DBRotationTest extends FATServletClient {
         final String method = "testDBBaseRecovery";
         StringBuilder sb = null;
         String id = "001";
+
+        serversToCleanup = new LibertyServer[] { server1 };
+
         Log.info(c, method, "Starting testDBBaseRecovery in DBRotationTest");
         FATUtils.startServers(runner, server1);
         try {
@@ -193,8 +208,6 @@ public class DBRotationTest extends FATServletClient {
 
         // Server appears to have started ok. Check for key string to see whether recovery has succeeded
         assertNotNull("peer recovery failed", server1.waitForStringInTrace("Performed recovery for cloud0011", LOG_SEARCH_TIMEOUT));
-
-        FATUtils.stopServers(server1);
     }
 
     /**
@@ -212,6 +225,9 @@ public class DBRotationTest extends FATServletClient {
         final String method = "testDBRecoveryTakeover";
         StringBuilder sb = null;
         String id = "001";
+
+        serversToCleanup = new LibertyServer[] { server1, server2 };
+
         FATUtils.startServers(runner, server1);
         try {
             // We expect this to fail since it is gonna crash the server
@@ -264,6 +280,8 @@ public class DBRotationTest extends FATServletClient {
         final String method = "testDBRecoveryCompeteForLog";
         String id = "001";
 
+        serversToCleanup = new LibertyServer[] { longLeaseCompeteServer1, server2 };
+
         FATUtils.startServers(runner, longLeaseCompeteServer1);
         try {
             runTest(longLeaseCompeteServer1, SERVLET_NAME, "modifyLeaseOwner");
@@ -305,7 +323,6 @@ public class DBRotationTest extends FATServletClient {
 
         // Server appears to have started ok. Check for 2 key strings to see whether peer recovery has succeeded
         assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud0011", LOG_SEARCH_TIMEOUT));
-        FATUtils.stopServers(server2);
     }
 
     @Test
@@ -313,6 +330,7 @@ public class DBRotationTest extends FATServletClient {
     public void testLogFailure() throws Exception {
         final String method = "testLogFailure";
         if (TxTestContainerSuite.databaseContainerType != DatabaseContainerType.Derby) { // Embedded Derby cannot support tests with concurrent server startup
+            serversToCleanup = new LibertyServer[] { longLeaseLogFailServer1, server2 };
 
             longLeaseLogFailServer1.setFFDCChecking(false);
             server2.setHttpDefaultPort(cloud2ServerPort);
@@ -353,6 +371,8 @@ public class DBRotationTest extends FATServletClient {
     public void testLogFailureNoShutdown() throws Exception {
         final String method = "testLogFailureNoShutdown";
         if (TxTestContainerSuite.databaseContainerType != DatabaseContainerType.Derby) { // Embedded Derby cannot support tests with concurrent server startup
+            serversToCleanup = new LibertyServer[] { noShutdownServer1, server2 };
+
             noShutdownServer1.setFFDCChecking(false);
             server2.setHttpDefaultPort(cloud2ServerPort);
             try {

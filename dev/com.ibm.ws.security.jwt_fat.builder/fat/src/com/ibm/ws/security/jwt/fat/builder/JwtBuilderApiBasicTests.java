@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -79,7 +79,6 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipForRepeat(SkipForRepeat.EE9_FEATURES) // TODO openidConnectClient-1.0 has not been transformed.
 public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
     @Server("com.ibm.ws.security.jwt_fat.builder")

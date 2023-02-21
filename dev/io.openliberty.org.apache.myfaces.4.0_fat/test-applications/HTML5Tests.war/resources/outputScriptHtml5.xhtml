@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright (c) 2023 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="jakarta.faces.html"
+    xmlns:ui="jakarta.faces.facelets"
+    xmlns:f="jakarta.faces.core">
+
+    <h:head>
+        <title>HTML 5 outputScript test.</title>
+    </h:head>
+
+    <h:body>
+        <p>Verify the 'type' attribute for &lt;script&gt; is not rendered when using outputScript in HTML 5.</p>
+        
+        <div>
+            <p id="helloMessage"></p>
+        </div>
+        
+        <h:outputScript library="scripts" name="helloMessage.js"/>
+    </h:body>
+
+</html>
+

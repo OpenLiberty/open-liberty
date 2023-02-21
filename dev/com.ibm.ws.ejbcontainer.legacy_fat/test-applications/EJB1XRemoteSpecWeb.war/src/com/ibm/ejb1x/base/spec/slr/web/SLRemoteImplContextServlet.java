@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2021 IBM Corporation and others.
+ * Copyright (c) 2002, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,6 +13,7 @@
 
 package com.ibm.ejb1x.base.spec.slr.web;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -168,7 +169,7 @@ public class SLRemoteImplContextServlet extends FATServlet {
      * (ixc04) Test Stateless remote EJBContext.getEnvironment().
      */
     @Test
-    @SkipForRepeat({ EE9_FEATURES })
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
     public void test1XSLEJBContext_getEnvironment() throws Exception {
         String tempStr = fejb1.context_getEnvironment("value1");
         assertEquals("Get Environment string from context was unexpected value", tempStr, "value of value1");
@@ -179,7 +180,7 @@ public class SLRemoteImplContextServlet extends FATServlet {
      */
     @Test
     @SuppressWarnings("deprecation")
-    @SkipForRepeat({ EE9_FEATURES })
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
     public void test1XSLEJBContext_getCallerIdentity() throws Exception {
         Object o = fejb1.context_getCallerIdentity();
         if (o instanceof Throwable) {
@@ -219,7 +220,7 @@ public class SLRemoteImplContextServlet extends FATServlet {
      */
     @Test
     @SuppressWarnings("deprecation")
-    @SkipForRepeat({ EE9_FEATURES })
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
     public void test1XSLEJBContext_isCallerInRole_Identity() throws Exception {
         Object o = fejb1.context_isCallerInRole((java.security.Identity) null);
         if (o instanceof Throwable) {

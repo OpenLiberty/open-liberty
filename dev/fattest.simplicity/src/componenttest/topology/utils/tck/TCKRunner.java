@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -47,7 +47,9 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -215,6 +217,7 @@ public class TCKRunner {
      * run the TCK and process the results
      */
     private void runTCK() throws Exception {
+        Assume.assumeThat(System.getProperty("os.name"), CoreMatchers.not("OS/400")); // skip tests on IBM i due to mvn issue.
         String[] testOutput = runCleanTestCmd();
         List<String> failingTestsList = postProcessTestResults(testOutput);
         assertTestsPassed(this.bucketName, this.testName, failingTestsList);
@@ -229,6 +232,7 @@ public class TCKRunner {
      * runs "mvn clean test" in the tck folder, passing through all the required properties
      */
     private String[] runCleanTestCmd() throws Exception {
+
         String[] testcmd = getMvnCommandArray(MVN_CLEAN, MVN_TEST);
         String[] mvnOutput = runCmd(testcmd, getTCKRunnerDir());
         TCKUtilities.writeStringsToFile(mvnOutput, getMvnTestOutputFile());
