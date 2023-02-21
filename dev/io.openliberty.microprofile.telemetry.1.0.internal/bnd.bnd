@@ -52,6 +52,8 @@ Service-Component: \
 # created for other API classes
 Import-Package: \
 	io.opentelemetry.api.common,\
+  com.ibm.websphere.ras,\
+  com.ibm.websphere.ras.annotation,\
 	*
 
 Export-Package: \
@@ -59,7 +61,8 @@ Export-Package: \
 
 Private-Package: \
   io.openliberty.microprofile.telemetry.internal.cdi,\
-  io.openliberty.microprofile.telemetry.internal.helper
+  io.openliberty.microprofile.telemetry.internal.helper,\
+  io.openliberty.microprofile.telemetry.internal.resources
 
 -buildpath: \
     io.openliberty.jakarta.restfulWS.3.1;version=latest,\
