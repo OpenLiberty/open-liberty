@@ -20,8 +20,6 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -108,10 +106,7 @@ public class Servlet60URIPathCanonicalizationTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Create the WAR and add resources
-        WebArchive uriPathCanonicalizeWar = ShrinkWrap.create(WebArchive.class, WAR_NAME);
-        ShrinkHelper.addDirectory(uriPathCanonicalizeWar, "test-applications/" + WAR_NAME + "/resources");
-        ShrinkHelper.defaultDropinApp(server, WAR_NAME, "servlets");
+        ShrinkHelper.defaultDropinApp(server, WAR_NAME, "uripath.servlets");
 
         server.startServer(Servlet60URIPathCanonicalizationTest.class.getSimpleName() + ".log");
     }

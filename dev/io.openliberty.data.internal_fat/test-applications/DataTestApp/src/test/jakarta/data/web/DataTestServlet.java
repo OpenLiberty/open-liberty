@@ -1935,7 +1935,7 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testKeysetWithLimit() {
         // This is not a recommended pattern. Testing to see how it is handled.
-        KeysetAwarePage<Prime> page = primes.findByNumberBetween(15L, 45L, Limit.of(5L));
+        KeysetAwarePage<Prime> page = primes.findByNumberBetween(15L, 45L, Limit.of(5));
 
         assertEquals(1L, page.number());
         assertEquals(5L, page.numberOfElements());
@@ -3280,7 +3280,7 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testSliceWithLimit() {
         // This is not a recommended pattern. Testing to see how it is handled.
-        Slice<Prime> slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("II", 50L, Limit.of(4L), Sort.desc("number"));
+        Slice<Prime> slice = primes.findByRomanNumeralEndsWithAndNumberLessThan("II", 50L, Limit.of(4), Sort.desc("number"));
 
         assertEquals(1L, slice.number());
         assertEquals(4L, slice.numberOfElements());
@@ -3420,6 +3420,169 @@ public class DataTestServlet extends FATServlet {
                              slice.stream().map(p -> p.number).collect(Collectors.toList()));
 
         assertEquals(null, slice.nextPageable());
+    }
+
+    /**
+     * When sort criteria is specified statically via the OrderBy annotation and
+     * dynamically via Sorts from pagination, the static sort criteria is applied
+     * before the dynamic sort criteria.
+     */
+    @Test
+    public void testSortCriteriaOfOrderByAnnoTakesPrecedenceOverPaginationSorts() {
+
+        Pageable pagination = Pageable.ofSize(9).sortBy(Sort.desc("number"));
+        Page<Prime> page1 = primes.findByNumberLessThan(49L, pagination);
+
+        assertIterableEquals(List.of("17(2)", "5(2)", "3(2)",
+                                     "41(3)", "37(3)", "19(3)", "13(3)", "11(3)", "7(3)"),
+                             page1.stream()
+                                             .map(p -> p.number + "(" + p.sumOfBits + ")")
+                                             .collect(Collectors.toList()));
+
+        Page<Prime> page2 = primes.findByNumberLessThan(49L, page1.nextPageable());
+
+        assertIterableEquals(List.of("43(4)", "29(4)", "23(4)",
+                                     "47(5)", "31(5)",
+                                     "2(1)"),
+                             page2.stream()
+                                             .map(p -> p.number + "(" + p.sumOfBits + ")")
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * When sort criteria is specified statically via the Query annotation and
+     * dynamically via Sorts from keyset pagination, the static sort criteria is applied
+     * before the dynamic sort criteria.
+     */
+    @Test
+    public void testSortCriteriaOfOrderByAnnoTakesPrecedenceOverPaginationSortsOnCustomQueryUsingKeysetPagination() {
+
+        Pageable pagination = Pageable.ofSize(7).sortBy(Sort.asc("binary"));
+        KeysetAwarePage<Prime> page1 = primes.upTo(47L, pagination);
+
+        assertEquals(7, page1.numberOfElements());
+        assertEquals(15L, page1.totalElements());
+
+        assertIterableEquals(List.of("10",
+                                     "101111", "11111",
+                                     "101011", "10111", "11101",
+                                     "100101"),
+                             page1.stream()
+                                             .map(p -> p.binary)
+                                             .collect(Collectors.toList()));
+
+        KeysetAwarePage<Prime> page2 = primes.upTo(47L, page1.nextPageable());
+
+        assertIterableEquals(List.of("10011", "101001", "1011", "1101", "111",
+                                     "10001", "101"),
+                             page2.stream()
+                                             .map(p -> p.binary)
+                                             .collect(Collectors.toList()));
+
+        KeysetAwarePage<Prime> page3 = primes.upTo(47L, page2.nextPageable());
+
+        assertIterableEquals(List.of("11"),
+                             page3.stream()
+                                             .map(p -> p.binary)
+                                             .collect(Collectors.toList()));
+
+        page2 = primes.upTo(47L, page3.previousPageable());
+
+        assertIterableEquals(List.of("10011", "101001", "1011", "1101", "111",
+                                     "10001", "101"),
+                             page2.stream()
+                                             .map(p -> p.binary)
+                                             .collect(Collectors.toList()));
+
+        page1 = primes.upTo(47L, page2.previousPageable());
+
+        assertIterableEquals(List.of("10",
+                                     "101111", "11111",
+                                     "101011", "10111", "11101",
+                                     "100101"),
+                             page1.stream()
+                                             .map(p -> p.binary)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * When sort criteria is specified statically via the OrderBy keyword and
+     * dynamically via Sorts from keyset pagination, the static sort criteria is applied
+     * before the dynamic sort criteria.
+     */
+    @Test
+    public void testSortCriteriaOfOrderByKeywordTakesPrecedenceOverKeysetPaginationSorts() {
+
+        Pageable pagination = Pageable.ofSize(6).sortBy(Sort.desc("binary"));
+        KeysetAwareSlice<Prime> page1 = primes.findByNumberLessThanOrderByEvenAscSumOfBitsAsc(52L, pagination);
+
+        assertIterableEquals(List.of("11", "101", "10001",
+                                     "111", "1101", "1011"),
+                             page1.stream()
+                                             .map(p -> p.binary)
+                                             .collect(Collectors.toList()));
+
+        KeysetAwareSlice<Prime> page2 = primes.findByNumberLessThanOrderByEvenAscSumOfBitsAsc(52L, page1.nextPageable());
+
+        assertIterableEquals(List.of("101001", "10011", "100101",
+                                     "11101", "10111", "101011"),
+                             page2.stream()
+                                             .map(p -> p.binary)
+                                             .collect(Collectors.toList()));
+
+        KeysetAwareSlice<Prime> page3 = primes.findByNumberLessThanOrderByEvenAscSumOfBitsAsc(52L, page2.nextPageable());
+
+        assertIterableEquals(List.of("11111", "101111",
+                                     "10"),
+                             page3.stream()
+                                             .map(p -> p.binary)
+                                             .collect(Collectors.toList()));
+
+        pagination = Pageable.ofSize(6)
+                        .sortBy(Sort.desc("binary"))
+                        .beforeKeysetCursor(page3.getKeysetCursor(1)); // before the middle element of page 3
+
+        KeysetAwareSlice<Prime> page = primes.findByNumberLessThanOrderByEvenAscSumOfBitsAsc(52L, pagination);
+
+        assertIterableEquals(List.of("10011", "100101",
+                                     "11101", "10111", "101011",
+                                     "11111"),
+                             page.stream()
+                                             .map(p -> p.binary)
+                                             .collect(Collectors.toList()));
+
+        page = primes.findByNumberLessThanOrderByEvenAscSumOfBitsAsc(52L, page.previousPageable());
+
+        assertIterableEquals(List.of("101", "10001",
+                                     "111", "1101", "1011", "101001"),
+                             page.stream()
+                                             .map(p -> p.binary)
+                                             .collect(Collectors.toList()));
+
+        page = primes.findByNumberLessThanOrderByEvenAscSumOfBitsAsc(52L, page.previousPageable());
+
+        assertIterableEquals(List.of("11"),
+                             page.stream()
+                                             .map(p -> p.binary)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * When sort criteria is specified statically via the OrderBy keyword and
+     * dynamically via Sorts, the static sort criteria is applied
+     * before the dynamic sort criteria.
+     */
+    @Test
+    public void testSortCriteriaOfOrderByKeywordTakesPrecedenceOverSorts() {
+
+        assertIterableEquals(List.of("3(2)", "5(2)", "17(2)",
+                                     "7(3)", "11(3)", "13(3)", "19(3)", "37(3)", "41(3)",
+                                     "23(4)", "29(4)", "43(4)",
+                                     "31(5)", "47(5)",
+                                     "2(1)"),
+                             primes.findByNumberLessThanOrderByEven(50L, Sort.asc("sumOfBits"), Sort.asc("number"))
+                                             .map(p -> p.number + "(" + p.sumOfBits + ")")
+                                             .collect(Collectors.toList()));
     }
 
     /**

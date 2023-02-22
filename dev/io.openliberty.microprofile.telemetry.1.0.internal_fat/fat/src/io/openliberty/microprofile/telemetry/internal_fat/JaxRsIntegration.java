@@ -170,7 +170,6 @@ public class JaxRsIntegration extends FATServletClient {
         ShrinkHelper.exportAppToServer(server, jaegerApp, SERVER_ONLY);
         ShrinkHelper.exportAppToServer(server, asyncServerApp, SERVER_ONLY);
         ShrinkHelper.exportAppToServer(server, methodsApp, SERVER_ONLY);
-
         server.startServer();
     }
 

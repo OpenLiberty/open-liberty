@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.security.jakartasec.fat.utils;
 
@@ -50,12 +47,15 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS2420E_ID_TOKEN_VERIFY = "CWWKS2420E";
     public static final String CWWKS2422E_FAILED_TO_READ_DATA = "CWWKS2422E";
     public static final String CWWKS2423E_OIDC_CLIENT_INVALID_RESPONSE_TYPE = "CWWKS2423E";
+    public static final String CWWKS2424E_ISSUER_MISMATCH = "CWWKS2424E";
     public static final String CWWKS2429E_TOKEN_RESPONSE_MISSING_PARAMETER = "CWWKS2429E";
 
     public static final String CWWKS2500W_MISSING_CLIENTID_EL = "CWWKS2500W";
     public static final String CWWKS2504E_CREDENTIAL_VALIDATION_ERROR = "CWWKS2504E";
+    public static final String CWWKS2507W_OIDC_MECH_CONFIG_NEGATIVE_INT = "CWWKS2507W";
 
     public static final String CWWKS2520E_SIGNATURE_NOT_ALLOWED = "CWWKS2520E";
+    public static final String CWWKS2521E_SIGNING_KEY_MISSING = "CWWKS2521E";
 
     public static final String CWWKS9104A_NO_ACCESS_FOR_USER = "CWWKS9104A";
 

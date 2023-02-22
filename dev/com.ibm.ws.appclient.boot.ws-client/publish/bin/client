@@ -2,10 +2,13 @@
 ###############################################################################
 # WebSphere Application Client liberty launch script
 #
-# Copyright IBM Corp. 2011, 2014
-# The source code for this program is not published or other-
-# wise divested of its trade secrets, irrespective of what has
-# been deposited with the U.S. Copyright Office.
+# Copyright (c) 2011, 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+#  are made available under the terms of the Eclipse Public License 2.0
+#  which accompanies this distribution, and is available at
+#  http://www.eclipse.org/legal/epl-2.0/
+# 
+#  SPDX-License-Identifier: EPL-2.0
 # 
 # ----------------------------------------------------------------------------
 #
@@ -450,7 +453,7 @@ mergeJVMOptions()
       saveIFS=$IFS
       IFS=$newline
       
-      for option in `readNativeFile "$jvmOptions" '[#-]' | tr -d '\r'`; do
+      for option in `readNativeFile "$jvmOptions" '[#-]' | LC_ALL=C tr -d '\r'`; do
         if [ -n "$option" ]; then
           case $option in
           \#*);;

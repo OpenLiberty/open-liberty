@@ -1,0 +1,235 @@
+--------------------
+
+Feature Start Testing
+
+Overview - Feature Start Testing
+
+Open Liberty feature start testing comprises a number of FAT components which do a test start of all available features.  For each individual startable feature, test implementation to configure a liberty server with that feature and then start and stop the server.  With specific exceptions, the server start and stop are expected to be successful, and with no logged errors or warnings.
+
+--------------------
+
+Hightlights - Feature Start Testing
+
+For a quick tour, see these sections:
+
+Overview
+Build Components
+LITE and FAT Feature Counts
+Timing Results
+Java 8 Comparison
+Stable Feature Comparison
+Notable Features
+Feature Information
+
+--------------------
+
+Build Components - Feature Start Testing
+
+Open Liberty feature start testing is performed by these build components:
+
+  build.featureStart.base
+  build.featureStart.part1_fat
+  build.featureStart.part2_fat
+  build.featureStart.part3_fat
+  build.featureStart.part4_fat
+
+WAS Liberty feature testing uses these parallel build components:
+
+  build.featureStart.base.was
+  build.featureStart.part1.was_fat
+  build.featureStart.part2.was_fat
+  build.featureStart.part3.was_fat
+  build.featureStart.part4.was_fat
+
+Feature starts are distributed evenly across the four "part" test components.
+
+The WAS Liberty feature testing components are copies of the Open Liberty components, with modifications as needed to fit in the WAS Liberty build environment.  Currently, for single feature startup testing, test strategy and test code are the same comparing Open Liberty and WAS Liberty.
+
+Multiple "parts" are used to reduce component FAT times.  To further reduce FAT times, additional parts may be created by cloning and renumbering one of the existing parts, and by adjusting the "number of parts" value specified by each FAT test class.
+
+--------------------
+
+Feature Selection - Feature Start Testing
+
+Start tests are performed on all features listed under build.image/wlp/lib/features, with the following exceptions:
+
+* Test, client, and non-public features are not tested.
+* Features cannot be started by themselves are not tested.
+* Features which are Z/OS only are only test when the test environment is Z/OS.
+* Conversely, tests which cannot be started on Z/OS are not run when the test environment is not Z/OS.
+* When running in LITE mode, stable features (see below) are not tested.
+
+"Stable" features are current specified as all but the last available version of the feature.  For example, microProfile versions 1.0, 1.2, 1.3, 1.4, 2.0, 2.1, 2.2, 3.0, 3.2, 3.3, 4.0, 4.1, and 5.0 are marked as stable.  microProfile-6.0, unmarked, is "not-stable".
+
+--------------------
+
+Allowed Errors - Feature Start Testing
+
+Generally, feature startup requires that no errors or warnings are produced in server logs.  Exceptions are:
+
+* Features are identified as requiring a specific java version: The java version may be "Default", which is currently "Java 8", or may be "Java 11".  No features currently specify a required java version which is higher than Java 11.  For a given feature, when the test environment is running a java version which is less than the java version which is required for that feature, the startup is expected to produce error messages indicating that the required java version is not present.
+
+* Each feature has a list of expected error and warning messages.  (For most features the list is empty.)  The listed errors and warnings are ignored when starting a particular feature.
+
+--------------------
+
+Unrunnable Feature Counts - Feature Start Testing
+
+All feature counts are for a non-ZOS environment.  Counts for a ZOS environment differ very slightly from these non-ZOS counts.
+
+Open Liberty builds produce 279 features under build.image.
+
+Of these features, 34 are unrunnable as client, non-public, or, test, or are unrunnable as single features:
+
+ 23 Client
+  3 Non-public
+  5 Test features
+  3 Unrunnable as single
+---
+ 34 Unrunnable
+
+--------------------
+
+Runnable Feature Counts - Feature Start Testing
+
+Of the remaining 245 features, 117 are stable and 128 are not stable.  Of the 128 features which are not stable, 34 require Java 11.
+No stable features require Java 11.
+
+117 Stable, Java 8
+  0 Stable, Java 11
+ 94 Not-Stable, Java 8
+ 34 Not-Stable, Java 11
+---
+245 Runnable
+
+--------------------
+
+LITE and FAT Feature Counts - Feature Start Testing
+
+When running in LITE mode, stable features are skipped, giving these counts of features:
+
+Mode  Total | Unrunnable Stable Runnable | Java 8 Java 11
+----------------------------------------------------------
+LITE    279 | 34         117    128      | 94     34
+FULL    279 | 34         -      245      | 211    34
+----------------------------------------------------------
+
+--------------------
+
+Timing Methodology - Feature Start Testing
+
+Test Environment:
+
+  Win 10 Explorer 10.0.19045 Build 19045
+  Lenovo Thinkpad P50
+  Intel i7 @2.70GHz, 4 cores, 8 logical processors
+  32 GB
+
+Timing Results:
+
+ * The overall timing result is as reported reported externally by the FAT runner.
+ * The timing breakdown is as reported by the java system time.
+
+--------------------
+
+Timing Cases - Feature Start Testing
+
+Cases: Part1 | Part2 | Part3 | Part4
+       LITE | FULL,
+       Java8 | Java11,
+
+Timing results are reported:
+
+  * For each of the four feature start FAT buckets
+  * For LITE and FULL mode tests
+  * For starting the server using Java 8 and for Java 11
+
+--------------------
+
+Timing Results - Feature Start Testing
+
+=======================================================================
+      || LITE       Times            || Full       Times            ||
+      || Features | Java 8 | Java 11 || Features | Java 8 | Java 11 || 
+=======================================================================
+Part1 || 32 : 9   | 448 s  | 426 s   || 62 : 12  | 924 s  | 809 s   ||
+Part2 || 32 : 8   | 458 s  | 416 s   || 61 : 7   | 827 s  | 786 s   ||
+Part3 || 32 : 8   | 459 s  | 434 s   || 61 : 4   | 1160 s | 1065 s  ||
+Part4 || 32 : 9   | 555 s  | 570 s   || 61 : 11  | 1029 s | 929 s   ||
+=======================================================================
+Total || 128 : 34 | 1920 s | 1846 s  || 245 : 34 | 3940 s | 3589 s  ||
+=======================================================================
+
+Feature counts are ( Java 8 + Java 11 Features : Java 11 Features )
+
+--------------------
+
+Java 8 Comparison - Feature Start Testing
+
+Java 8 time as a percentage of the Java 11 time:
+
+=======================================================================
+      || LITE       Times            || Full       Times            ||
+      || Features | Java 8 | Java 11 || Features | Java 8 | Java 11 || 
+=======================================================================
+Part1 || 32 : 9   | 105%   | 426 s   || 62 : 12  | 114%   | 809     ||
+Part2 || 32 : 8   | 110%   | 416 s   || 61 : 7   | 105%   | 786     ||
+Part3 || 32 : 8   | 106%   | 434 s   || 61 : 4   | 109%   | 1065    ||
+Part4 || 32 : 9   | 97%    | 570 s   || 61 : 11  | 111%   | 929     ||
+=======================================================================
+Total || 128 : 34 | 104%   | 1846 s  || 245 : 34 | 110%   | 3589 s  ||
+=======================================================================
+
+Feature counts are ( Java 8 + Java 11 Features : Java 11 Features )
+
+--------------------
+
+Stable Feature Comparison - Feature Start Testing
+
+LITE mode time as a percentage of the FULL mode time:
+
+=======================================================================
+      || LITE       Times            || Full       Times            ||
+      || Features | Java 8 | Java 11 || Features | Java 8 | Java 11 || 
+=======================================================================
+Part1 || 32 : 9   | 48%    | 53%     || 62 : 12  | 924 s  | 809 s   ||
+Part2 || 32 : 8   | 55%    | 53%     || 61 : 7   | 827 s  | 786 s   ||
+Part3 || 32 : 8   | 40%    | 41%     || 61 : 4   | 1160 s | 1065 s  ||
+Part4 || 32 : 9   | 54%    | 61%     || 61 : 11  | 1029 s | 929 s   ||
+=======================================================================
+Total || 128 : 34 | 49%    | 51%     || 245 : 34 | 3940 s | 3589 s  ||
+=======================================================================
+
+Feature counts are ( Java 8 + Java 11 Features : Java 11 Features )
+
+--------------------
+
+Notable Features - Feature Start Testing
+
+Very roughly, feature startups average about 14 s., with about 2/3 performing startup, and about 1/3 performing shutdown.
+
+Specific features required much more time:
+
+Unsurprisingly, jakartaee-10.0 required about 38s to startup and shutdown.
+
+Possibly suprisingly, batchManagement-1.0 required about 35s to startup and shutdown, and wsSecuritySaml-1.1 required about 44s to startup and shutdown.
+
+--------------------
+
+Feature Information - Feature Start Testing
+
+"Stable Features" are currently defined to be the latest version of related features.  For example, "microProfile" has 14 versions.  All but the latest of these, "microProfile-6.0", are marked as stable.
+
+Stable features are specified by:
+
+dev/build.featureStart.base/resources/com/ibm/ws/test/featurestart/features/
+  feature-stable.txt
+
+Feature java levels are specified by:
+
+dev/build.featureStart.base/resources/com/ibm/ws/test/featurestart/features/
+  feature-stable.txt
+
+Preferably, for each feature, which is stable and what java level is required would be specified by the feature itself, most likely using a BND directive.
+
+--------------------

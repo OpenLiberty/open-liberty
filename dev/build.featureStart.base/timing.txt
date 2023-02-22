@@ -1,0 +1,1484 @@
+========================================
+
+Feature Summary:
+
+Features read from: open-liberty/dev/build.image/wlp
+
+Feature Counts [LITE]:
+----------------------------------------
+ 23 Client
+  3 Non-public
+  5 Test features
+  3 Unrunnable
+---
+ 34 Skipped - Unrunnable
+117 Skipped [LITE] - Runnable, Stable
+---
+151 Skipped [LITE]
+
+ 94 Run [LITE] - Runnable, Unstable, Java 8
+ 34 Run [LITE] - Runnable, Unstable, Java 11
+---
+128 Run [LITE]
+
+===
+279 Total
+----------------------------------------
+
+Feature Counts [FULL]:
+----------------------------------------
+ 23 Client
+  3 Non-public
+  5 Test features
+  3 Unrunnable
+---
+ 34 Skipped - Unrunnable
+
+211 Run [FULL] - Runnable, Java 8
+ 34 Run [FULL] - Runnable, Java 11
+---
+245 Run [FULL]
+
+===
+279 Total
+----------------------------------------
+
+---
+
+Test Environment:
+
+Win 10 Explorer 10.0.19045 Build 19045
+Lenovo Thinkpad P50
+Intel i7 @2.70GHz, 4 cores, 8 logical processors
+32 GB
+
+---
+
+Timing Methodology:
+
+The overall timing result is as reported reported externally by the FAT runner.
+The timing breakdown is as reported by the java system time.
+
+---
+
+Timing Results:
+
+Cases: Part1 | Part2 | Part3 | Part4
+       LITE | FULL,
+       Java8 | Java11,
+       
+Part1: [LITE]
+  32 Features [9 Java11]
+ 448 Seconds [Java8]
+ 426 Seconds [Java11]
+Part1: [FULL]
+  62 Features [12 Java11]
+ 924 Seconds [Java8]
+ 809 Seconds [Java11]
+
+Part2: [LITE]
+  32 Features [8 Java11]
+ 458 Seconds [Java8]
+ 416 Seconds [Java11]
+Part2: [FULL]
+  61 Features [7 Java11]
+ 827 Seconds [Java8]
+ 786 Seconds [Java11]
+
+Part3: [LITE]
+  32 Features [8 Java11]
+ 459 Seconds [Java8]
+ 434 Seconds [Java11]
+Part3: [FULL]
+  61 Features [4 Java11]
+1160 Seconds [Java8]
+1065 Seconds [Java11]
+
+Part4: [LITE]
+  32 Features [9 Java11]
+ 555 Seconds [Java8]
+ 570 Seconds [Java11]
+Part4: [FULL]
+  61 Features [11 Java11]
+1029 Seconds [Java8]
+ 929 Seconds [Java11]
+
+---
+
+Source:
+
+Branch: https://github.com/tbitonti/open-liberty/tree/ol-28618
+
+Current commit:
+
+commit c34f80989f64d9fb5f6b3c65510d19c6bf3e5489 (HEAD -> ol-28618, tbitonti/ol-28618)
+Author: Thomas Bitonti <bitonti@us.ibm.com>
+Date:   Wed Feb 8 13:33:04 2023 -0500
+
+Relative to:
+
+commit ceb1f6d7217705a103533d5b443fa8469e8abb11 (origin/integration, origin/HEAD, integration)
+Merge: 59f36dba35 2a190f6c63
+Author: ANJUM FATIMA <31773161+anjumfatima90@users.noreply.github.com>
+Date:   Tue Jan 31 10:44:53 2023 -0600
+
+========================================
+
+Timing Breakdown:
+
+Steps:
+
+  Update: Update the server.xml to specify the feature which is to be started.
+  Start:  Start the Liberty server
+  PID:    Obtain the PID of the running Liberty server
+  Verify: Verify expected messages
+  Stop:   Stop the Liberty server
+  Kill:   Kill the Liberty server PID
+
+Part1 (LITE, Java8):
+
+ [ Update ]: Avg [ 0.0032 ] ( 32 ): Total [ 0.1012 ]
+   Min [ 0.0025 ] ( ejbPersistentTimer-3.2 )
+   Max [ 0.0045 ] ( ejbRemote-3.2 )
+ [ Start ]: Avg [ 10.3016 ] ( 32 ): Total [ 329.6510 ]
+   Min [ 5.4321 ] ( checkpoint-1.0 )
+   Max [ 26.4688 ] ( batchManagement-1.0 )
+ [ PID ]: Avg [ 0.0871 ] ( 32 ): Total [ 2.7858 ]
+   Min [ 0.0751 ] ( acmeCA-2.0 )
+   Max [ 0.0978 ] ( audit-1.0 )
+ [ Verify ]: Avg [ 0.0068 ] ( 32 ): Total [ 0.2162 ]
+   Min [ 0.0015 ] ( ejbLite-3.2 )
+   Max [ 0.0345 ] ( appAuthorization-2.1 )
+ [ Stop ]: Avg [ 3.2520 ] ( 32 ): Total [ 104.0652 ]
+   Min [ 2.1145 ] ( el-3.0 )
+   Max [ 8.3038 ] ( acmeCA-2.0 )
+ [ Kill ]: Avg [ 1.3283 ] ( 8 ): Total [ 10.6267 ]
+   Min [ 1.3010 ] ( appAuthentication-3.0 )
+   Max [ 1.3743 ] ( audit-1.0 )
+ [ Total ]: Avg [ 13.9827 ] ( 32 ): Total [ 447.4461 ]
+   Min [ 7.6653 ] ( checkpoint-1.0 )
+   Max [ 34.9362 ] ( batchManagement-1.0 )
+
+Part2 (LITE, Java8):
+
+ [ Update ]: Avg [ 0.0030 ] ( 32 ): Total [ 0.0970 ]
+   Min [ 0.0025 ] ( jsf-2.3 )
+   Max [ 0.0039 ] ( jaxws-2.2 )
+ [ Start ]: Avg [ 10.5719 ] ( 32 ): Total [ 338.2996 ]
+   Min [ 5.6176 ] ( jsonp-2.1 )
+   Max [ 32.1310 ] ( jakartaee-10.0 )
+ [ PID ]: Avg [ 0.0878 ] ( 32 ): Total [ 2.8105 ]
+   Min [ 0.0804 ] ( jaxws-2.2 )
+   Max [ 0.1115 ] ( jdbc-4.3 )
+ [ Verify ]: Avg [ 0.0072 ] ( 32 ): Total [ 0.2311 ]
+   Min [ 0.0014 ] ( jaxrs-2.1 )
+   Max [ 0.1099 ] ( jakartaee-10.0 )
+ [ Stop ]: Avg [ 3.1260 ] ( 32 ): Total [ 100.0321 ]
+   Min [ 2.1704 ] ( jsonp-2.1 )
+   Max [ 6.4719 ] ( jwtSso-1.0 )
+ [ Kill ]: Avg [ 1.3302 ] ( 12 ): Total [ 15.9624 ]
+   Min [ 1.3098 ] ( jwt-1.0 )
+   Max [ 1.3707 ] ( jsfContainer-2.3 )
+ [ Total ]: Avg [ 14.2948 ] ( 32 ): Total [ 457.4326 ]
+   Min [ 7.8775 ] ( jsonp-2.1 )
+   Max [ 37.6445 ] ( jakartaee-10.0 )
+
+Part3 (LITE, Java8):
+
+ [ Update ]: Avg [ 0.0030 ] ( 32 ): Total [ 0.0962 ]
+   Min [ 0.0023 ] ( mpReactiveStreams-1.0 )
+   Max [ 0.0043 ] ( mdb-4.0 )
+ [ Start ]: Avg [ 10.3973 ] ( 32 ): Total [ 332.7135 ]
+   Min [ 5.5064 ] ( noShip-1.0 )
+   Max [ 20.0417 ] ( microProfile-6.0 )
+ [ PID ]: Avg [ 0.0888 ] ( 32 ): Total [ 2.8409 ]
+   Min [ 0.0796 ] ( mpContextPropagation-1.3 )
+   Max [ 0.1084 ] ( mpHealth-4.0 )
+ [ Verify ]: Avg [ 0.0076 ] ( 32 ): Total [ 0.2420 ]
+   Min [ 0.0016 ] ( mpLRA-1.0 )
+   Max [ 0.0496 ] ( microProfile-6.0 )
+ [ Stop ]: Avg [ 3.3048 ] ( 32 ): Total [ 105.7542 ]
+   Min [ 2.0880 ] ( nosql-1.0 )
+   Max [ 6.5871 ] ( openapi-3.1 )
+ [ Kill ]: Avg [ 1.3209 ] ( 13 ): Total [ 17.1718 ]
+   Min [ 1.2997 ] ( mpLRA-1.0 )
+   Max [ 1.3538 ] ( mpGraphQL-2.0 )
+ [ Total ]: Avg [ 14.3381 ] ( 32 ): Total [ 458.8186 ]
+   Min [ 7.7123 ] ( noShip-1.0 )
+   Max [ 26.7801 ] ( oauth-2.0 )
+
+Part4 (LITE, Java8):
+
+ [ Update ]: Avg [ 0.0033 ] ( 32 ): Total [ 0.1042 ]
+   Min [ 0.0023 ] ( transportSecurity-1.0 )
+   Max [ 0.0051 ] ( springBoot-2.0 )
+ [ Start ]: Avg [ 12.6804 ] ( 32 ): Total [ 405.7723 ]
+   Min [ 5.5768 ] ( osgiConsole-1.0 )
+   Max [ 36.5992 ] ( wsSecuritySaml-1.1 )
+ [ PID ]: Avg [ 0.0877 ] ( 32 ): Total [ 2.8073 ]
+   Min [ 0.0777 ] ( scim-2.0 )
+   Max [ 0.1197 ] ( ssl-1.0 )
+ [ Verify ]: Avg [ 0.0081 ] ( 32 ): Total [ 0.2579 ]
+   Min [ 0.0016 ] ( ssl-1.0 )
+   Max [ 0.0817 ] ( webProfile-10.0 )
+ [ Stop ]: Avg [ 3.7760 ] ( 32 ): Total [ 120.8309 ]
+   Min [ 2.2105 ] ( ssl-1.0 )
+   Max [ 6.9628 ] ( restConnector-2.0 )
+ [ Kill ]: Avg [ 1.3170 ] ( 19 ): Total [ 25.0234 ]
+   Min [ 1.2966 ] ( restfulWS-3.1 )
+   Max [ 1.3491 ] ( spnego-1.0 )
+ [ Total ]: Avg [ 17.3374 ] ( 32 ): Total [ 554.7961 ]
+   Min [ 7.8863 ] ( osgiConsole-1.0 )
+   Max [ 44.4536 ] ( wsSecuritySaml-1.1 )
+
+Part1 (LITE, Java11):
+
+ [ Update ]: Avg [ 0.0033 ] ( 32 ): Total [ 0.1060 ]
+   Min [ 0.0024 ] ( enterpriseBeansLite-4.0 )
+   Max [ 0.0053 ] ( batchManagement-1.0 )
+ [ Start ]: Avg [ 8.9742 ] ( 32 ): Total [ 287.1738 ]
+   Min [ 4.9828 ] ( checkpoint-1.0 )
+   Max [ 32.9575 ] ( batchManagement-1.0 )
+ [ PID ]: Avg [ 0.1073 ] ( 32 ): Total [ 3.4339 ]
+   Min [ 0.0790 ] ( acmeCA-2.0 )
+   Max [ 0.2438 ] ( audit-1.0 )
+ [ Verify ]: Avg [ 0.0037 ] ( 32 ): Total [ 0.1191 ]
+   Min [ 0.0015 ] ( enterpriseBeansPersistentTimer-4.0 )
+   Max [ 0.0132 ] ( audit-1.0 )
+ [ Stop ]: Avg [ 3.8906 ] ( 32 ): Total [ 124.5001 ]
+   Min [ 2.7120 ] ( enterpriseBeansLite-4.0 )
+   Max [ 9.8171 ] ( audit-1.0 )
+ [ Kill ]: Avg [ 1.3545 ] ( 8 ): Total [ 10.8358 ]
+   Min [ 1.2965 ] ( adminCenter-1.0 )
+   Max [ 1.4117 ] ( audit-1.0 )
+ [ Total ]: Avg [ 13.3178 ] ( 32 ): Total [ 426.1688 ]
+   Min [ 8.0340 ] ( checkpoint-1.0 )
+   Max [ 41.9613 ] ( batchManagement-1.0 )
+
+Part2 (LITE, Java11):
+
+ [ Update ]: Avg [ 0.0033 ] ( 32 ): Total [ 0.1050 ]
+   Min [ 0.0024 ] ( jsonb-3.0 )
+   Max [ 0.0060 ] ( jaxb-2.2 )
+ [ Start ]: Avg [ 8.7810 ] ( 32 ): Total [ 280.9911 ]
+   Min [ 4.6132 ] ( json-1.0 )
+   Max [ 37.6745 ] ( jakartaee-10.0 )
+ [ PID ]: Avg [ 0.0853 ] ( 32 ): Total [ 2.7302 ]
+   Min [ 0.0774 ] ( faces-4.0 )
+   Max [ 0.0954 ] ( jsonbContainer-3.0 )
+ [ Verify ]: Avg [ 0.0031 ] ( 32 ): Total [ 0.0997 ]
+   Min [ 0.0018 ] ( jsonpContainer-2.1 )
+   Max [ 0.0054 ] ( jakartaee-10.0 )
+ [ Stop ]: Avg [ 3.6491 ] ( 32 ): Total [ 116.7723 ]
+   Min [ 2.4688 ] ( jsonp-2.1 )
+   Max [ 8.6411 ] ( jakartaee-10.0 )
+ [ Kill ]: Avg [ 1.3208 ] ( 12 ): Total [ 15.8498 ]
+   Min [ 1.2997 ] ( jaxrs-2.1 )
+   Max [ 1.3582 ] ( jsf-2.3 )
+ [ Total ]: Avg [ 13.0171 ] ( 32 ): Total [ 416.5481 ]
+   Min [ 7.2471 ] ( jsonp-2.1 )
+   Max [ 47.7281 ] ( jakartaee-10.0 )
+
+Part3 (LITE, Java11):
+
+ [ Update ]: Avg [ 0.0032 ] ( 32 ): Total [ 0.1011 ]
+   Min [ 0.0022 ] ( noShip-1.0 )
+   Max [ 0.0045 ] ( mail-2.1 )
+ [ Start ]: Avg [ 8.8264 ] ( 32 ): Total [ 282.4435 ]
+   Min [ 4.4432 ] ( noShip-1.0 )
+   Max [ 20.3710 ] ( microProfile-6.0 )
+ [ PID ]: Avg [ 0.0897 ] ( 32 ): Total [ 2.8693 ]
+   Min [ 0.0793 ] ( monitor-1.0 )
+   Max [ 0.1318 ] ( openid-2.0 )
+ [ Verify ]: Avg [ 0.0028 ] ( 32 ): Total [ 0.0892 ]
+   Min [ 0.0016 ] ( noShip-1.0 )
+   Max [ 0.0059 ] ( mail-2.1 )
+ [ Stop ]: Avg [ 4.1010 ] ( 32 ): Total [ 131.2314 ]
+   Min [ 2.5257 ] ( netty-1.0 )
+   Max [ 7.7928 ] ( mpMetrics-5.0 )
+ [ Kill ]: Avg [ 1.3371 ] ( 13 ): Total [ 17.3819 ]
+   Min [ 1.3052 ] ( openid-2.0 )
+   Max [ 1.3507 ] ( oauth-2.0 )
+ [ Total ]: Avg [ 13.5661 ] ( 32 ): Total [ 434.1165 ]
+   Min [ 7.1221 ] ( noShip-1.0 )
+   Max [ 29.1475 ] ( microProfile-6.0 )
+
+Part4 (LITE, Java11):
+
+ [ Update ]: Avg [ 0.0034 ] ( 32 ): Total [ 0.1102 ]
+   Min [ 0.0024 ] ( wasJmsSecurity-1.0 )
+   Max [ 0.0054 ] ( restfulWS-3.1 )
+ [ Start ]: Avg [ 12.0581 ] ( 32 ): Total [ 385.8590 ]
+   Min [ 4.6682 ] ( transportSecurity-1.0 )
+   Max [ 51.4194 ] ( wsSecuritySaml-1.1 )
+ [ PID ]: Avg [ 0.1095 ] ( 32 ): Total [ 3.5025 ]
+   Min [ 0.0833 ] ( wasJmsSecurity-1.0 )
+   Max [ 0.2626 ] ( openidConnectServer-1.0 )
+ [ Verify ]: Avg [ 0.0031 ] ( 32 ): Total [ 0.0998 ]
+   Min [ 0.0016 ] ( persistenceContainer-3.1 )
+   Max [ 0.0244 ] ( openidConnectServer-1.0 )
+ [ Stop ]: Avg [ 4.8040 ] ( 32 ): Total [ 153.7270 ]
+   Min [ 2.6089 ] ( transportSecurity-1.0 )
+   Max [ 10.2752 ] ( openidConnectServer-1.0 )
+ [ Kill ]: Avg [ 1.3855 ] ( 19 ): Total [ 26.3237 ]
+   Min [ 1.3394 ] ( wsSecuritySaml-1.1 )
+   Max [ 1.4687 ] ( openidConnectServer-1.0 )
+ [ Total ]: Avg [ 17.8007 ] ( 32 ): Total [ 569.6223 ]
+   Min [ 7.3747 ] ( transportSecurity-1.0 )
+   Max [ 60.2195 ] ( wsSecuritySaml-1.1 )
+
+Part1 (FULL, Java11):
+
+ [ Update ]: Avg [ 0.0029 ] ( 62 ): Total [ 0.1815 ]
+   Min [ 0.0023 ] ( ejbPersistentTimer-3.2 )
+   Max [ 0.0048 ] ( appSecurity-1.0 )
+ [ Start ]: Avg [ 8.9226 ] ( 62 ): Total [ 553.2017 ]
+   Min [ 4.3784 ] ( expressionLanguage-4.0 )
+   Max [ 33.5424 ] ( jakartaee-10.0 )
+ [ PID ]: Avg [ 0.0849 ] ( 62 ): Total [ 5.2613 ]
+   Min [ 0.0765 ] ( jakartaee-10.0 )
+   Max [ 0.0999 ] ( j2eeManagement-1.1 )
+ [ Verify ]: Avg [ 0.0025 ] ( 62 ): Total [ 0.1559 ]
+   Min [ 0.0014 ] ( expressionLanguage-4.0 )
+   Max [ 0.0069 ] ( appAuthentication-3.0 )
+ [ Stop ]: Avg [ 3.5267 ] ( 62 ): Total [ 218.6541 ]
+   Min [ 2.3702 ] ( eventLogging-1.0 )
+   Max [ 8.7934 ] ( jakartaee-10.0 )
+ [ Kill ]: Avg [ 1.3138 ] ( 24 ): Total [ 31.5303 ]
+   Min [ 1.2915 ] ( facesContainer-4.0 )
+   Max [ 1.3689 ] ( appSecurity-3.0 )
+ [ Total ]: Avg [ 13.0481 ] ( 62 ): Total [ 808.9848 ]
+   Min [ 6.8551 ] ( expressionLanguage-5.0 )
+   Max [ 43.7284 ] ( jakartaee-10.0 )
+
+Part2 (FULL, Java11):
+
+ [ Update ]: Avg [ 0.0036 ] ( 61 ): Total [ 0.2210 ]
+   Min [ 0.0024 ] ( mail-2.0 )
+   Max [ 0.0279 ] ( jsonp-1.1 )
+ [ Start ]: Avg [ 8.5474 ] ( 61 ): Total [ 521.3905 ]
+   Min [ 4.5441 ] ( jsonp-2.0 )
+   Max [ 39.0300 ] ( microProfile-1.2 )
+ [ PID ]: Avg [ 0.0890 ] ( 61 ): Total [ 5.4300 ]
+   Min [ 0.0786 ] ( jcaInboundSecurity-1.0 )
+   Max [ 0.1129 ] ( messaging-3.1 )
+ [ Verify ]: Avg [ 0.0022 ] ( 61 ): Total [ 0.1371 ]
+   Min [ 0.0014 ] ( jsonp-2.0 )
+   Max [ 0.0064 ] ( javaee-7.0 )
+ [ Stop ]: Avg [ 3.8484 ] ( 61 ): Total [ 234.7520 ]
+   Min [ 2.4320 ] ( localConnector-1.0 )
+   Max [ 8.4438 ] ( microProfile-2.1 )
+ [ Kill ]: Avg [ 1.3469 ] ( 18 ): Total [ 24.2438 ]
+   Min [ 1.3147 ] ( javaee-8.0 )
+   Max [ 1.3867 ] ( microProfile-1.0 )
+ [ Total ]: Avg [ 12.8881 ] ( 61 ): Total [ 786.1743 ]
+   Min [ 7.1239 ] ( jsonp-2.0 )
+   Max [ 48.4197 ] ( microProfile-1.2 )
+
+Part3 (FULL, Java11):
+
+ [ Update ]: Avg [ 0.0032 ] ( 61 ): Total [ 0.1931 ]
+   Min [ 0.0024 ] ( mpFaultTolerance-1.1 )
+   Max [ 0.0049 ] ( microProfile-3.3 )
+ [ Start ]: Avg [ 11.1833 ] ( 61 ): Total [ 682.1784 ]
+   Min [ 4.8035 ] ( mpContextPropagation-1.2 )
+   Max [ 20.4298 ] ( microProfile-6.0 )
+ [ PID ]: Avg [ 0.0847 ] ( 61 ): Total [ 5.1644 ]
+   Min [ 0.0761 ] ( mpHealth-1.0 )
+   Max [ 0.1165 ] ( mpOpenAPI-3.1 )
+ [ Verify ]: Avg [ 0.0028 ] ( 61 ): Total [ 0.1685 ]
+   Min [ 0.0015 ] ( mpFaultTolerance-3.0 )
+   Max [ 0.0062 ] ( microProfile-2.2 )
+ [ Stop ]: Avg [ 5.2487 ] ( 61 ): Total [ 320.1736 ]
+   Min [ 2.4607 ] ( mpContextPropagation-1.2 )
+   Max [ 10.8077 ] ( microProfile-5.0 )
+ [ Kill ]: Avg [ 1.3170 ] ( 43 ): Total [ 56.6325 ]
+   Min [ 1.2845 ] ( mpMetrics-1.1 )
+   Max [ 1.3804 ] ( mpOpenTracing-2.0 )
+ [ Total ]: Avg [ 17.4510 ] ( 61 ): Total [ 1064.5104 ]
+   Min [ 7.3564 ] ( mpContextPropagation-1.2 )
+   Max [ 31.1424 ] ( microProfile-5.0 )
+
+Part4 (FULL, Java11):
+
+ [ Update ]: Avg [ 0.0033 ] ( 61 ): Total [ 0.1996 ]
+   Min [ 0.0024 ] ( webCache-1.0 )
+   Max [ 0.0065 ] ( mpReactiveStreams-1.0 )
+ [ Start ]: Avg [ 10.3532 ] ( 61 ): Total [ 631.5439 ]
+   Min [ 4.3917 ] ( nosql-1.0 )
+   Max [ 40.7198 ] ( wsSecuritySaml-1.1 )
+ [ PID ]: Avg [ 0.0834 ] ( 61 ): Total [ 5.0896 ]
+   Min [ 0.0744 ] ( servlet-3.1 )
+   Max [ 0.1148 ] ( websocket-2.1 )
+ [ Verify ]: Avg [ 0.0025 ] ( 61 ): Total [ 0.1521 ]
+   Min [ 0.0015 ] ( transportSecurity-1.0 )
+   Max [ 0.0092 ] ( oauth-2.0 )
+ [ Stop ]: Avg [ 3.9258 ] ( 61 ): Total [ 239.4727 ]
+   Min [ 2.3857 ] ( ssl-1.0 )
+   Max [ 7.2434 ] ( wsAtomicTransaction-1.2 )
+ [ Kill ]: Avg [ 1.3089 ] ( 40 ): Total [ 52.3572 ]
+   Min [ 1.2824 ] ( scim-2.0 )
+   Max [ 1.3655 ] ( wsAtomicTransaction-1.2 )
+ [ Total ]: Avg [ 15.2265 ] ( 61 ): Total [ 928.8151 ]
+   Min [ 6.8735 ] ( nosql-1.0 )
+   Max [ 48.8178 ] ( wsSecuritySaml-1.1 )
+
+Part1 (Full, Java8):
+
+ [ Update ]: Avg [ 0.0030 ] ( 62 ): Total [ 0.1852 ]
+   Min [ 0.0023 ] ( faces-3.0 )
+   Max [ 0.0060 ] ( acmeCA-2.0 )
+ [ Start ]: Avg [ 11.0929 ] ( 62 ): Total [ 687.7619 ]
+   Min [ 5.2584 ] ( checkpoint-1.0 )
+   Max [ 36.3360 ] ( jakartaee-9.1 )
+ [ PID ]: Avg [ 0.0867 ] ( 62 ): Total [ 5.3740 ]
+   Min [ 0.0771 ] ( batch-1.0 )
+   Max [ 0.1135 ] ( jacc-1.5 )
+ [ Verify ]: Avg [ 0.0068 ] ( 62 ): Total [ 0.4224 ]
+   Min [ 0.0014 ] ( couchdb-1.0 )
+   Max [ 0.1057 ] ( jakartaee-10.0 )
+ [ Stop ]: Avg [ 3.1904 ] ( 62 ): Total [ 197.8078 ]
+   Min [ 2.0123 ] ( checkpoint-1.0 )
+   Max [ 8.4726 ] ( jakartaee-9.1 )
+ [ Kill ]: Avg [ 1.3267 ] ( 24 ): Total [ 31.8403 ]
+   Min [ 1.2842 ] ( faces-3.0 )
+   Max [ 1.3820 ] ( grpc-1.0 )
+ [ Total ]: Avg [ 14.8934 ] ( 62 ): Total [ 923.3915 ]
+   Min [ 7.3574 ] ( checkpoint-1.0 )
+   Max [ 46.2604 ] ( jakartaee-9.1 )
+
+Part2 (Full, Java8):
+
+ [ Update ]: Avg [ 0.0029 ] ( 61 ): Total [ 0.1761 ]
+   Min [ 0.0022 ] ( managedBeans-1.0 )
+   Max [ 0.0042 ] ( jaxb-2.2 )
+ [ Start ]: Avg [ 9.8783 ] ( 61 ): Total [ 602.5770 ]
+   Min [ 5.3871 ] ( json-1.0 )
+   Max [ 32.8461 ] ( microProfile-1.2 )
+ [ PID ]: Avg [ 0.0880 ] ( 61 ): Total [ 5.3654 ]
+   Min [ 0.0757 ] ( jsonbContainer-3.0 )
+   Max [ 0.1093 ] ( jsfContainer-2.3 )
+ [ Verify ]: Avg [ 0.0025 ] ( 61 ): Total [ 0.1547 ]
+   Min [ 0.0014 ] ( jsonpContainer-1.1 )
+   Max [ 0.0152 ] ( messaging-3.1 )
+ [ Stop ]: Avg [ 3.1967 ] ( 61 ): Total [ 194.9987 ]
+   Min [ 2.0323 ] ( jsonp-1.1 )
+   Max [ 7.2520 ] ( microProfile-1.3 )
+ [ Kill ]: Avg [ 1.3151 ] ( 18 ): Total [ 23.6723 ]
+   Min [ 1.2948 ] ( jsfContainer-2.2 )
+   Max [ 1.3358 ] ( microProfile-2.0 )
+ [ Total ]: Avg [ 13.5565 ] ( 61 ): Total [ 826.9443 ]
+   Min [ 7.6418 ] ( jsonp-2.0 )
+   Max [ 41.0318 ] ( microProfile-1.2 )
+
+Part3 (Full, Java8):
+
+ [ Update ]: Avg [ 0.0032 ] ( 61 ): Total [ 0.1947 ]
+   Min [ 0.0024 ] ( mpConfig-1.4 )
+   Max [ 0.0053 ] ( mpOpenTracing-2.0 )
+ [ Start ]: Avg [ 13.2815 ] ( 61 ): Total [ 810.1738 ]
+   Min [ 6.2172 ] ( mpConfig-1.1 )
+   Max [ 21.3172 ] ( microProfile-5.0 )
+ [ PID ]: Avg [ 0.0851 ] ( 61 ): Total [ 5.1907 ]
+   Min [ 0.0766 ] ( mpConfig-1.4 )
+   Max [ 0.1009 ] ( mpMetrics-5.0 )
+ [ Verify ]: Avg [ 0.0044 ] ( 61 ): Total [ 0.2694 ]
+   Min [ 0.0014 ] ( mpOpenTracing-1.1 )
+   Max [ 0.0592 ] ( microProfile-6.0 )
+ [ Stop ]: Avg [ 4.7232 ] ( 61 ): Total [ 288.1142 ]
+   Min [ 2.1622 ] ( mpConfig-1.2 )
+   Max [ 7.4726 ] ( microProfile-5.0 )
+ [ Kill ]: Avg [ 1.3089 ] ( 43 ): Total [ 56.2822 ]
+   Min [ 1.2822 ] ( mpOpenAPI-2.0 )
+   Max [ 1.3880 ] ( mpHealth-2.1 )
+ [ Total ]: Avg [ 19.0201 ] ( 61 ): Total [ 1160.2251 ]
+   Min [ 8.4842 ] ( mpConfig-1.2 )
+   Max [ 30.1903 ] ( microProfile-5.0 )
+
+Part4 (Full, Java8):
+
+ [ Update ]: Avg [ 0.0032 ] ( 61 ): Total [ 0.1935 ]
+   Min [ 0.0023 ] ( restConnector-2.0 )
+   Max [ 0.0044 ] ( mpReactiveStreams-1.0 )
+ [ Start ]: Avg [ 12.3555 ] ( 61 ): Total [ 753.6829 ]
+   Min [ 5.4416 ] ( transportSecurity-1.0 )
+   Max [ 37.2351 ] ( wsSecuritySaml-1.1 )
+ [ PID ]: Avg [ 0.0858 ] ( 61 ): Total [ 5.2340 ]
+   Min [ 0.0775 ] ( opentracing-1.1 )
+   Max [ 0.0998 ] ( restConnector-2.0 )
+ [ Verify ]: Avg [ 0.0052 ] ( 61 ): Total [ 0.3164 ]
+   Min [ 0.0014 ] ( websocket-1.0 )
+   Max [ 0.0726 ] ( webProfile-10.0 )
+ [ Stop ]: Avg [ 3.5499 ] ( 61 ): Total [ 216.5435 ]
+   Min [ 2.0297 ] ( transportSecurity-1.0 )
+   Max [ 6.7898 ] ( wsSecuritySaml-1.1 )
+ [ Kill ]: Avg [ 1.3104 ] ( 40 ): Total [ 52.4154 ]
+   Min [ 1.2920 ] ( webProfile-8.0 )
+   Max [ 1.3834 ] ( xmlWS-4.0 )
+ [ Total ]: Avg [ 16.8588 ] ( 61 ): Total [ 1028.3857 ]
+   Min [ 7.5665 ] ( transportSecurity-1.0 )
+   Max [ 45.4917 ] ( wsSecuritySaml-1.1 )
+
+===
+
+All Open-Liberty features:
+
+================================================================================
+   acmeCA-2.0           : com.ibm.websphere.appserver.acmeCA-2.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   adminCenter-1.0      : com.ibm.websphere.appserver.adminCenter-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   appAuthentication-2.0 : io.openliberty.appAuthentication-2.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   appAuthentication-3.0 : io.openliberty.appAuthentication-3.0
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   appAuthorization-2.0 : io.openliberty.appAuthorization-2.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   appAuthorization-2.1 : io.openliberty.appAuthorization-2.1
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   appClientSupport-1.0 : com.ibm.websphere.appserver.appClientSupport-1.0
+      isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   appClientSupport-2.0 : io.openliberty.appClientSupport-2.0
+      isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   appSecurity-1.0      : com.ibm.websphere.appserver.appSecurity-1.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   appSecurity-2.0      : com.ibm.websphere.appserver.appSecurity-2.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   appSecurity-3.0      : com.ibm.websphere.appserver.appSecurity-3.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   appSecurity-4.0      : io.openliberty.appSecurity-4.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   appSecurity-5.0      : io.openliberty.appSecurity-5.0
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   appSecurityClient-1.0 : com.ibm.websphere.appserver.appSecurityClient-1.0
+      isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   arquillian-support-1.0 : io.openliberty.arquillian.arquillian-support-1.0
+     !isClient  isPublic  isTest !isStable java DEF
+ ------------------------------------------------------------
+   arquillian-support-jakarta-2.1 : io.openliberty.arquillian.arquillian-support-jakarta-2.1
+     !isClient  isPublic  isTest !isStable java DEF
+ ------------------------------------------------------------
+   audit-1.0            : com.ibm.websphere.appserver.audit-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   batch-1.0            : com.ibm.websphere.appserver.batch-1.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   batch-2.0            : io.openliberty.batch-2.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   batch-2.1            : io.openliberty.batch-2.1
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   batchManagement-1.0  : com.ibm.websphere.appserver.batchManagement-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   beanValidation-1.1   : com.ibm.websphere.appserver.beanValidation-1.1
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   beanValidation-2.0   : com.ibm.websphere.appserver.beanValidation-2.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   beanValidation-3.0   : io.openliberty.beanValidation-3.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   bells-1.0            : com.ibm.websphere.appserver.bells-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   cdi-1.2              : com.ibm.websphere.appserver.cdi-1.2
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   cdi-2.0              : com.ibm.websphere.appserver.cdi-2.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   cdi-3.0              : io.openliberty.cdi-3.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   cdi-4.0              : io.openliberty.cdi-4.0
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   checkpoint-1.0       : io.openliberty.checkpoint-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   cloudant-1.0         : com.ibm.websphere.appserver.cloudant-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   componenttest-1.0    : com.ibm.websphere.appserver.componenttest-1.0
+     !isClient  isPublic  isTest  isStable java DEF
+ ------------------------------------------------------------
+   componenttest-2.0    : com.ibm.websphere.appserver.componenttest-2.0
+     !isClient  isPublic  isTest !isStable java DEF
+ ------------------------------------------------------------
+   concurrent-1.0       : com.ibm.websphere.appserver.concurrent-1.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   concurrent-2.0       : io.openliberty.concurrent-2.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   concurrent-3.0       : io.openliberty.concurrent-3.0
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   connectors-2.0       : io.openliberty.connectors-2.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   connectors-2.1       : io.openliberty.connectors-2.1
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   connectorsInboundSecurity-2.0 : io.openliberty.connectorsInboundSecurity-2.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   constrainedDelegation-1.0 : com.ibm.websphere.appserver.constrainedDelegation-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+   Filtered: Requires spnego-1.0 or OIDC
+ ------------------------------------------------------------
+   couchdb-1.0          : com.ibm.websphere.appserver.couchdb-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   data-1.0             : io.openliberty.data-1.0
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   distributedMap-1.0   : com.ibm.websphere.appserver.distributedMap-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   ejb-3.2              : com.ibm.websphere.appserver.ejb-3.2
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   ejbHome-3.2          : com.ibm.websphere.appserver.ejbHome-3.2
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   ejbLite-3.2          : com.ibm.websphere.appserver.ejbLite-3.2
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   ejbPersistentTimer-3.2 : com.ibm.websphere.appserver.ejbPersistentTimer-3.2
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   ejbRemote-3.2        : com.ibm.websphere.appserver.ejbRemote-3.2
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   el-3.0               : com.ibm.websphere.appserver.el-3.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   enterpriseBeans-4.0  : io.openliberty.enterpriseBeans-4.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   enterpriseBeansHome-4.0 : io.openliberty.enterpriseBeansHome-4.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   enterpriseBeansLite-4.0 : io.openliberty.enterpriseBeansLite-4.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   enterpriseBeansPersistentTimer-4.0 : io.openliberty.enterpriseBeansPersistentTimer-4.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   enterpriseBeansRemote-4.0 : io.openliberty.enterpriseBeansRemote-4.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   eventLogging-1.0     : com.ibm.websphere.appserver.eventLogging-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   explore-1.0          : com.ibm.websphere.appserver.adminCenter.tool.explore-1.0
+     !isClient !isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   expressionLanguage-4.0 : io.openliberty.expressionLanguage-4.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   expressionLanguage-5.0 : io.openliberty.expressionLanguage-5.0
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   faces-3.0            : io.openliberty.faces-3.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   faces-4.0            : io.openliberty.faces-4.0
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   facesContainer-3.0   : io.openliberty.facesContainer-3.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   facesContainer-4.0   : io.openliberty.facesContainer-4.0
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   federatedRegistry-1.0 : com.ibm.websphere.appserver.federatedRegistry-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   grpc-1.0             : io.openliberty.grpc-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   grpcClient-1.0       : io.openliberty.grpcClient-1.0
+      isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   http2clienttest-1.0  : com.ibm.websphere.appserver.http2clienttest-1.0
+      isClient  isPublic  isTest !isStable java DEF
+ ------------------------------------------------------------
+   j2eeManagement-1.1   : com.ibm.websphere.appserver.j2eeManagement-1.1
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   jacc-1.5             : com.ibm.websphere.appserver.jacc-1.5
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   jakartaee-10.0       : io.openliberty.jakartaee-10.0
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   jakartaee-8.0        : com.ibm.websphere.appserver.jakartaee-8.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   jakartaee-9.1        : io.openliberty.jakartaee-9.1
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   jakartaeeClient-10.0 : io.openliberty.jakartaeeClient-10.0
+      isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   jakartaeeClient-9.1  : io.openliberty.jakartaeeClient-9.1
+      isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   jaspic-1.1           : com.ibm.websphere.appserver.jaspic-1.1
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   javaBatch-1.0        : com.ibm.websphere.appserver.adminCenter.tool.javaBatch-1.0
+     !isClient !isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   javaMail-1.5         : com.ibm.websphere.appserver.javaMail-1.5
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   javaMail-1.6         : com.ibm.websphere.appserver.javaMail-1.6
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   javaee-7.0           : com.ibm.websphere.appserver.javaee-7.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   javaee-8.0           : com.ibm.websphere.appserver.javaee-8.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   javaeeClient-7.0     : com.ibm.websphere.appserver.javaeeClient-7.0
+      isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   javaeeClient-8.0     : com.ibm.websphere.appserver.javaeeClient-8.0
+      isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   jaxb-2.2             : com.ibm.websphere.appserver.jaxb-2.2
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   jaxrs-2.0            : com.ibm.websphere.appserver.jaxrs-2.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   jaxrs-2.1            : com.ibm.websphere.appserver.jaxrs-2.1
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   jaxrsClient-2.0      : com.ibm.websphere.appserver.jaxrsClient-2.0
+      isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   jaxrsClient-2.1      : com.ibm.websphere.appserver.jaxrsClient-2.1
+      isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   jaxws-2.2            : com.ibm.websphere.appserver.jaxws-2.2
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   jca-1.7              : com.ibm.websphere.appserver.jca-1.7
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   jcaInboundSecurity-1.0 : com.ibm.websphere.appserver.jcaInboundSecurity-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   jcacheContainer-1.1  : com.ibm.websphere.appserver.jcacheContainer-1.1
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   jdbc-4.0             : com.ibm.websphere.appserver.jdbc-4.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   jdbc-4.1             : com.ibm.websphere.appserver.jdbc-4.1
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   jdbc-4.2             : com.ibm.websphere.appserver.jdbc-4.2
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   jdbc-4.3             : com.ibm.websphere.appserver.jdbc-4.3
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   jms-2.0              : com.ibm.websphere.appserver.jms-2.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   jmsMdb-3.2           : com.ibm.websphere.appserver.jmsMdb-3.2
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   jndi-1.0             : com.ibm.websphere.appserver.jndi-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   jpa-2.1              : com.ibm.websphere.appserver.jpa-2.1
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   jpa-2.2              : com.ibm.websphere.appserver.jpa-2.2
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   jpaContainer-2.1     : com.ibm.websphere.appserver.jpaContainer-2.1
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   jpaContainer-2.2     : com.ibm.websphere.appserver.jpaContainer-2.2
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   jsf-2.2              : com.ibm.websphere.appserver.jsf-2.2
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   jsf-2.3              : com.ibm.websphere.appserver.jsf-2.3
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   jsfContainer-2.2     : com.ibm.websphere.appserver.jsfContainer-2.2
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   jsfContainer-2.3     : com.ibm.websphere.appserver.jsfContainer-2.3
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   json-1.0             : com.ibm.websphere.appserver.json-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   jsonb-1.0            : com.ibm.websphere.appserver.jsonb-1.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   jsonb-2.0            : io.openliberty.jsonb-2.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   jsonb-3.0            : io.openliberty.jsonb-3.0
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   jsonbContainer-1.0   : com.ibm.websphere.appserver.jsonbContainer-1.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   jsonbContainer-2.0   : io.openliberty.jsonbContainer-2.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   jsonbContainer-3.0   : io.openliberty.jsonbContainer-3.0
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   jsonp-1.0            : com.ibm.websphere.appserver.jsonp-1.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   jsonp-1.1            : com.ibm.websphere.appserver.jsonp-1.1
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   jsonp-2.0            : io.openliberty.jsonp-2.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   jsonp-2.1            : io.openliberty.jsonp-2.1
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   jsonpContainer-1.1   : com.ibm.websphere.appserver.jsonpContainer-1.1
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   jsonpContainer-2.0   : io.openliberty.jsonpContainer-2.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   jsonpContainer-2.1   : io.openliberty.jsonpContainer-2.1
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   jsp-2.2              : com.ibm.websphere.appserver.jsp-2.2
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   jsp-2.3              : com.ibm.websphere.appserver.jsp-2.3
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   jwt-1.0              : com.ibm.websphere.appserver.jwt-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   jwtSso-1.0           : com.ibm.websphere.appserver.jwtSso-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   ldapRegistry-3.0     : com.ibm.websphere.appserver.ldapRegistry-3.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   localConnector-1.0   : com.ibm.websphere.appserver.localConnector-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   logstashCollector-1.0 : com.ibm.websphere.appserver.logstashCollector-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+   Filtered: Requires Health Center
+   ZOS filtered: Requires the attach API, which is disabled on z/OS
+ ------------------------------------------------------------
+   mail-2.0             : io.openliberty.mail-2.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mail-2.1             : io.openliberty.mail-2.1
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   managedBeans-1.0     : com.ibm.websphere.appserver.managedBeans-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   managedBeans-2.0     : io.openliberty.managedBeans-2.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   mdb-3.2              : com.ibm.websphere.appserver.mdb-3.2
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mdb-4.0              : io.openliberty.mdb-4.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   messaging-3.0        : io.openliberty.messaging-3.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   messaging-3.1        : io.openliberty.messaging-3.1
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   messagingClient-3.0  : io.openliberty.messagingClient-3.0
+      isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   messagingSecurity-3.0 : io.openliberty.messagingSecurity-3.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   messagingServer-3.0  : io.openliberty.messagingServer-3.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   microProfile-1.0     : com.ibm.websphere.appserver.microProfile-1.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   microProfile-1.2     : com.ibm.websphere.appserver.microProfile-1.2
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   microProfile-1.3     : com.ibm.websphere.appserver.microProfile-1.3
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   microProfile-1.4     : com.ibm.websphere.appserver.microProfile-1.4
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   microProfile-2.0     : com.ibm.websphere.appserver.microProfile-2.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   microProfile-2.1     : com.ibm.websphere.appserver.microProfile-2.1
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   microProfile-2.2     : com.ibm.websphere.appserver.microProfile-2.2
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   microProfile-3.0     : com.ibm.websphere.appserver.microProfile-3.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   microProfile-3.2     : com.ibm.websphere.appserver.microProfile-3.2
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   microProfile-3.3     : com.ibm.websphere.appserver.microProfile-3.3
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   microProfile-4.0     : com.ibm.websphere.appserver.microProfile-4.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   microProfile-4.1     : com.ibm.websphere.appserver.microProfile-4.1
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   microProfile-5.0     : io.openliberty.microProfile-5.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   microProfile-6.0     : io.openliberty.microProfile-6.0
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   mongodb-2.0          : com.ibm.websphere.appserver.mongodb-2.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   monitor-1.0          : com.ibm.websphere.appserver.monitor-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   mpConfig-1.1         : com.ibm.websphere.appserver.mpConfig-1.1
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpConfig-1.2         : com.ibm.websphere.appserver.mpConfig-1.2
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpConfig-1.3         : com.ibm.websphere.appserver.mpConfig-1.3
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpConfig-1.4         : com.ibm.websphere.appserver.mpConfig-1.4
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpConfig-2.0         : com.ibm.websphere.appserver.mpConfig-2.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpConfig-3.0         : io.openliberty.mpConfig-3.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   mpContextPropagation-1.0 : com.ibm.websphere.appserver.mpContextPropagation-1.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpContextPropagation-1.2 : com.ibm.websphere.appserver.mpContextPropagation-1.2
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpContextPropagation-1.3 : io.openliberty.mpContextPropagation-1.3
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   mpFaultTolerance-1.0 : com.ibm.websphere.appserver.mpFaultTolerance-1.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpFaultTolerance-1.1 : com.ibm.websphere.appserver.mpFaultTolerance-1.1
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpFaultTolerance-2.0 : com.ibm.websphere.appserver.mpFaultTolerance-2.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpFaultTolerance-2.1 : com.ibm.websphere.appserver.mpFaultTolerance-2.1
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpFaultTolerance-3.0 : com.ibm.websphere.appserver.mpFaultTolerance-3.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpFaultTolerance-4.0 : io.openliberty.mpFaultTolerance-4.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   mpGraphQL-1.0        : com.ibm.websphere.appserver.mpGraphQL-1.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpGraphQL-2.0        : io.openliberty.mpGraphQL-2.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   mpHealth-1.0         : com.ibm.websphere.appserver.mpHealth-1.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpHealth-2.0         : com.ibm.websphere.appserver.mpHealth-2.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpHealth-2.1         : com.ibm.websphere.appserver.mpHealth-2.1
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpHealth-2.2         : com.ibm.websphere.appserver.mpHealth-2.2
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpHealth-3.0         : com.ibm.websphere.appserver.mpHealth-3.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpHealth-3.1         : com.ibm.websphere.appserver.mpHealth-3.1
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpHealth-4.0         : io.openliberty.mpHealth-4.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   mpJwt-1.0            : com.ibm.websphere.appserver.mpJwt-1.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpJwt-1.1            : com.ibm.websphere.appserver.mpJwt-1.1
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpJwt-1.2            : com.ibm.websphere.appserver.mpJwt-1.2
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpJwt-2.0            : io.openliberty.mpJwt-2.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpJwt-2.1            : io.openliberty.mpJwt-2.1
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   mpLRA-1.0            : io.openliberty.mpLRA-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   mpLRACoordinator-1.0 : io.openliberty.mpLRACoordinator-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   mpMetrics-1.0        : com.ibm.websphere.appserver.mpMetrics-1.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpMetrics-1.1        : com.ibm.websphere.appserver.mpMetrics-1.1
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpMetrics-2.0        : com.ibm.websphere.appserver.mpMetrics-2.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpMetrics-2.2        : com.ibm.websphere.appserver.mpMetrics-2.2
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpMetrics-2.3        : com.ibm.websphere.appserver.mpMetrics-2.3
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpMetrics-3.0        : com.ibm.websphere.appserver.mpMetrics-3.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpMetrics-4.0        : io.openliberty.mpMetrics-4.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpMetrics-5.0        : io.openliberty.mpMetrics-5.0
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   mpOpenAPI-1.0        : com.ibm.websphere.appserver.mpOpenAPI-1.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpOpenAPI-1.1        : com.ibm.websphere.appserver.mpOpenAPI-1.1
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpOpenAPI-2.0        : com.ibm.websphere.appserver.mpOpenAPI-2.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpOpenAPI-3.0        : io.openliberty.mpOpenAPI-3.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpOpenAPI-3.1        : io.openliberty.mpOpenAPI-3.1
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   mpOpenTracing-1.0    : com.ibm.websphere.appserver.mpOpenTracing-1.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpOpenTracing-1.1    : com.ibm.websphere.appserver.mpOpenTracing-1.1
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpOpenTracing-1.2    : com.ibm.websphere.appserver.mpOpenTracing-1.2
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpOpenTracing-1.3    : com.ibm.websphere.appserver.mpOpenTracing-1.3
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpOpenTracing-2.0    : com.ibm.websphere.appserver.mpOpenTracing-2.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpOpenTracing-3.0    : io.openliberty.mpOpenTracing-3.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   mpReactiveMessaging-1.0 : com.ibm.websphere.appserver.mpReactiveMessaging-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   mpReactiveStreams-1.0 : com.ibm.websphere.appserver.mpReactiveStreams-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   mpRestClient-1.0     : com.ibm.websphere.appserver.mpRestClient-1.0
+      isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpRestClient-1.1     : com.ibm.websphere.appserver.mpRestClient-1.1
+      isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpRestClient-1.2     : com.ibm.websphere.appserver.mpRestClient-1.2
+      isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpRestClient-1.3     : com.ibm.websphere.appserver.mpRestClient-1.3
+      isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   mpRestClient-1.4     : com.ibm.websphere.appserver.mpRestClient-1.4
+      isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   mpRestClient-2.0     : com.ibm.websphere.appserver.mpRestClient-2.0
+      isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   mpRestClient-3.0     : io.openliberty.mpRestClient-3.0
+      isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   mpTelemetry-1.0      : io.openliberty.mpTelemetry-1.0
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   netty-1.0            : io.openliberty.netty-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   noShip-1.0           : io.openliberty.noShip-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   nosql-1.0            : io.openliberty.nosql-1.0
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   oauth-2.0            : com.ibm.websphere.appserver.oauth-2.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   openapi-3.1          : com.ibm.websphere.appserver.openapi-3.1
+     !isClient  isPublic !isTest !isStable java DEF
+   Allowed errors: [CWWKE1102W, CWWKE1107W]
+ ------------------------------------------------------------
+   openid-2.0           : com.ibm.websphere.appserver.openid-2.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   openidConnectClient-1.0 : com.ibm.websphere.appserver.openidConnectClient-1.0
+      isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   openidConnectServer-1.0 : com.ibm.websphere.appserver.openidConnectServer-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   opentracing-1.0      : com.ibm.websphere.appserver.opentracing-1.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   opentracing-1.1      : com.ibm.websphere.appserver.opentracing-1.1
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   opentracing-1.2      : com.ibm.websphere.appserver.opentracing-1.2
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   opentracing-1.3      : com.ibm.websphere.appserver.opentracing-1.3
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   opentracing-2.0      : com.ibm.websphere.appserver.opentracing-2.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   osgiConsole-1.0      : com.ibm.websphere.appserver.osgiConsole-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   pages-3.0            : io.openliberty.pages-3.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   pages-3.1            : io.openliberty.pages-3.1
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   passwordUtilities-1.0 : com.ibm.websphere.appserver.passwordUtilities-1.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   passwordUtilities-1.1 : com.ibm.websphere.appserver.passwordUtilities-1.1
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   persistence-3.0      : io.openliberty.persistence-3.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   persistence-3.1      : io.openliberty.persistence-3.1
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   persistenceContainer-3.0 : io.openliberty.persistenceContainer-3.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   persistenceContainer-3.1 : io.openliberty.persistenceContainer-3.1
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   persistentExecutor-1.0 : com.ibm.websphere.appserver.persistentExecutor-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   requestTiming-1.0    : com.ibm.websphere.appserver.requestTiming-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   restConnector-2.0    : com.ibm.websphere.appserver.restConnector-2.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   restfulWS-3.0        : io.openliberty.restfulWS-3.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   restfulWS-3.1        : io.openliberty.restfulWS-3.1
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   restfulWSClient-3.0  : io.openliberty.restfulWSClient-3.0
+      isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   restfulWSClient-3.1  : io.openliberty.restfulWSClient-3.1
+      isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   restfulWSLogging-3.0 : io.openliberty.restfulWSLogging-3.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   samlWeb-2.0          : com.ibm.websphere.appserver.samlWeb-2.0
+     !isClient  isPublic !isTest !isStable java DEF
+   Allowed errors: [CWWKS5207W: .* inboundPropagation]
+ ------------------------------------------------------------
+   scim-2.0             : com.ibm.websphere.appserver.scim-2.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   serverConfig-1.0     : com.ibm.websphere.appserver.adminCenter.tool.serverConfig-1.0
+     !isClient !isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   servlet-3.1          : com.ibm.websphere.appserver.servlet-3.1
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   servlet-4.0          : com.ibm.websphere.appserver.servlet-4.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   servlet-5.0          : com.ibm.websphere.appserver.servlet-5.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   servlet-6.0          : com.ibm.websphere.appserver.servlet-6.0
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   sessionCache-1.0     : com.ibm.websphere.appserver.sessionCache-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   sessionDatabase-1.0  : com.ibm.websphere.appserver.sessionDatabase-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   sipServlet-1.1       : com.ibm.websphere.appserver.sipServlet-1.1
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   socialLogin-1.0      : com.ibm.websphere.appserver.socialLogin-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   spnego-1.0           : com.ibm.websphere.appserver.spnego-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   springBoot-1.5       : com.ibm.websphere.appserver.springBoot-1.5
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   springBoot-2.0       : com.ibm.websphere.appserver.springBoot-2.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   ssl-1.0              : com.ibm.websphere.appserver.ssl-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   timedexit-1.0        : com.ibm.websphere.appserver.timedexit-1.0
+     !isClient  isPublic  isTest !isStable java DEF
+ ------------------------------------------------------------
+   transportSecurity-1.0 : com.ibm.websphere.appserver.transportSecurity-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   wasJmsClient-2.0     : com.ibm.websphere.appserver.wasJmsClient-2.0
+      isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   wasJmsSecurity-1.0   : com.ibm.websphere.appserver.wasJmsSecurity-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   wasJmsServer-1.0     : com.ibm.websphere.appserver.wasJmsServer-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   webCache-1.0         : com.ibm.websphere.appserver.webCache-1.0
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   webProfile-10.0      : io.openliberty.webProfile-10.0
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   webProfile-7.0       : com.ibm.websphere.appserver.webProfile-7.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   webProfile-8.0       : com.ibm.websphere.appserver.webProfile-8.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   webProfile-9.1       : io.openliberty.webProfile-9.1
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   websocket-1.0        : com.ibm.websphere.appserver.websocket-1.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   websocket-1.1        : com.ibm.websphere.appserver.websocket-1.1
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   websocket-2.0        : io.openliberty.websocket-2.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   websocket-2.1        : io.openliberty.websocket-2.1
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   wsAtomicTransaction-1.2 : com.ibm.websphere.appserver.wsAtomicTransaction-1.2
+     !isClient  isPublic !isTest !isStable java DEF
+ ------------------------------------------------------------
+   wsSecurity-1.1       : com.ibm.websphere.appserver.wsSecurity-1.1
+     !isClient  isPublic !isTest !isStable java DEF
+   Filtered: Cannot start by itself
+ ------------------------------------------------------------
+   wsSecuritySaml-1.1   : com.ibm.websphere.appserver.wsSecuritySaml-1.1
+     !isClient  isPublic !isTest !isStable java DEF
+   Allowed errors: [CWWKS5207W: .* inboundPropagation]
+ ------------------------------------------------------------
+   xmlBinding-3.0       : io.openliberty.xmlBinding-3.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   xmlBinding-4.0       : io.openliberty.xmlBinding-4.0
+     !isClient  isPublic !isTest !isStable java 11
+ ------------------------------------------------------------
+   xmlWS-3.0            : io.openliberty.xmlWS-3.0
+     !isClient  isPublic !isTest  isStable java DEF
+ ------------------------------------------------------------
+   xmlWS-4.0            : io.openliberty.xmlWS-4.0
+     !isClient  isPublic !isTest !isStable java 11
+ ================================================================================
+
+Skip client-only features [ 23 ]:
+    appClientSupport-1.0, appClientSupport-2.0, appSecurityClient-1.0,
+    grpcClient-1.0, http2clienttest-1.0, jakartaeeClient-10.0,
+    jakartaeeClient-9.1, javaeeClient-7.0, javaeeClient-8.0, jaxrsClient-2.0,
+    jaxrsClient-2.1, messagingClient-3.0, mpRestClient-1.0, mpRestClient-1.1,
+    mpRestClient-1.2, mpRestClient-1.3, mpRestClient-1.4, mpRestClient-2.0,
+    mpRestClient-3.0, openidConnectClient-1.0, restfulWSClient-3.0,
+    restfulWSClient-3.1, wasJmsClient-2.0
+Skip non-public features [ 3 ]:
+    explore-1.0, javaBatch-1.0, serverConfig-1.0
+Skip test features [ 5 ]:
+    arquillian-support-1.0, arquillian-support-jakarta-2.1, componenttest-1.0,
+    componenttest-2.0, timedexit-1.0
+Skip filtered features [ 3 ]:
+    constrainedDelegation-1.0: Requires spnego-1.0 or OIDC
+    logstashCollector-1.0: Requires Health Center
+    wsSecurity-1.1: Cannot start by itself
+Run features [ 245 ]:
+    microProfile-5.0, nosql-1.0, appSecurity-1.0, jndi-1.0,
+    appAuthentication-2.0, jms-2.0, netty-1.0, pages-3.1, pages-3.0,
+    webProfile-9.1, xmlBinding-4.0, jsonb-2.0, opentracing-2.0, jacc-1.5,
+    mdb-3.2, mpGraphQL-1.0, jpaContainer-2.2, wsAtomicTransaction-1.2,
+    jpaContainer-2.1, connectorsInboundSecurity-2.0, openapi-3.1,
+    springBoot-1.5, microProfile-4.1, servlet-3.1, microProfile-4.0,
+    appSecurity-2.0, messagingSecurity-3.0, mpMetrics-1.1, appAuthorization-2.0,
+    mpMetrics-1.0, cloudant-1.0, enterpriseBeansPersistentTimer-4.0,
+    webProfile-8.0, adminCenter-1.0, couchdb-1.0, cdi-4.0,
+    jcaInboundSecurity-1.0, xmlBinding-3.0, jsonb-1.0, passwordUtilities-1.1,
+    mpReactiveStreams-1.0, passwordUtilities-1.0, jaxws-2.2, xmlWS-4.0,
+    sessionCache-1.0, expressionLanguage-5.0, connectors-2.0, microProfile-3.0,
+    microProfile-3.2, servlet-4.0, connectors-2.1, transportSecurity-1.0,
+    checkpoint-1.0, samlWeb-2.0, j2eeManagement-1.1, mpOpenTracing-2.0,
+    microProfile-3.3, ejbLite-3.2, managedBeans-1.0, jsf-2.2, jsf-2.3,
+    jsonp-1.1, xmlWS-3.0, jsonp-1.0, jaxb-2.2, openidConnectServer-1.0,
+    javaee-8.0, jaspic-1.1, mpOpenAPI-3.1, webProfile-10.0,
+    expressionLanguage-4.0, mpOpenAPI-3.0, microProfile-2.1, acmeCA-2.0,
+    microProfile-2.0, beanValidation-1.1, microProfile-2.2, servlet-5.0,
+    jdbc-4.2, appAuthentication-3.0, jdbc-4.3, mpLRA-1.0, osgiConsole-1.0,
+    jdbc-4.0, jdbc-4.1, jaxrs-2.0, opentracing-1.3, opentracing-1.2, jaxrs-2.1,
+    mpOpenTracing-1.3, mpOpenTracing-1.1, monitor-1.0, mpOpenTracing-1.2,
+    mpOpenTracing-1.0, sessionDatabase-1.0, jcacheContainer-1.1,
+    wsSecuritySaml-1.1, jsonbContainer-1.0, managedBeans-2.0, jsonb-3.0,
+    messaging-3.1, requestTiming-1.0, messaging-3.0, jsonp-2.0, ejbRemote-3.2,
+    springBoot-2.0, opentracing-1.1, opentracing-1.0, eventLogging-1.0,
+    jsonp-2.1, ejb-3.2, ldapRegistry-3.0, mpOpenAPI-2.0, microProfile-1.2,
+    beanValidation-2.0, microProfile-1.4, mpFaultTolerance-4.0,
+    microProfile-1.3, jca-1.7, mpHealth-2.2, enterpriseBeansHome-4.0,
+    microProfile-1.0, appSecurity-5.0, ejbPersistentTimer-3.2, mpHealth-2.1,
+    mpHealth-2.0, mail-2.0, mail-2.1, restConnector-2.0, cdi-1.2, mpMetrics-4.0,
+    servlet-6.0, jsp-2.3, jsp-2.2, jsonbContainer-2.0, localConnector-1.0,
+    federatedRegistry-1.0, mpConfig-3.0, mpTelemetry-1.0, concurrent-1.0,
+    mpJwt-1.2, facesContainer-3.0, batch-1.0, mpJwt-1.0, mpJwt-1.1,
+    mpOpenAPI-1.0, websocket-2.1, websocket-2.0, faces-4.0, mpOpenAPI-1.1,
+    grpc-1.0, beanValidation-3.0, mpFaultTolerance-3.0, enterpriseBeansLite-4.0,
+    mpHealth-1.0, mpOpenTracing-3.0, jakartaee-10.0, jpa-2.2, spnego-1.0,
+    jpa-2.1, mpMetrics-5.0, jsonbContainer-3.0, ejbHome-3.2,
+    restfulWSLogging-3.0, enterpriseBeans-4.0, mpConfig-2.0, el-3.0, jwt-1.0,
+    javaee-7.0, jmsMdb-3.2, facesContainer-4.0, json-1.0, distributedMap-1.0,
+    jwtSso-1.0, enterpriseBeansRemote-4.0, wasJmsSecurity-1.0, data-1.0,
+    messagingServer-3.0, mpFaultTolerance-2.0, mpLRACoordinator-1.0,
+    mpFaultTolerance-2.1, mpHealth-4.0, persistentExecutor-1.0, jakartaee-8.0,
+    mpReactiveMessaging-1.0, appSecurity-3.0, jsonpContainer-2.0,
+    jsonpContainer-2.1, mpMetrics-2.0, cdi-3.0, webProfile-7.0, mpMetrics-2.2,
+    mpMetrics-2.3, sipServlet-1.1, audit-1.0, appAuthorization-2.1,
+    mpConfig-1.1, mpConfig-1.2, mpConfig-1.3, socialLogin-1.0, mpConfig-1.4,
+    mpContextPropagation-1.0, concurrent-3.0, mongodb-2.0, noShip-1.0,
+    jakartaee-9.1, webCache-1.0, mpContextPropagation-1.3,
+    mpContextPropagation-1.2, mpFaultTolerance-1.1, mpFaultTolerance-1.0,
+    persistence-3.1, ssl-1.0, cdi-2.0, mpHealth-3.1, oauth-2.0,
+    batchManagement-1.0, appSecurity-4.0, mpHealth-3.0, javaMail-1.6,
+    persistence-3.0, wasJmsServer-1.0, javaMail-1.5, jsonpContainer-1.1,
+    persistenceContainer-3.0, persistenceContainer-3.1, openid-2.0,
+    microProfile-6.0, mpMetrics-3.0, bells-1.0, scim-2.0, jsfContainer-2.3,
+    mpJwt-2.1, restfulWS-3.0, mdb-4.0, concurrent-2.0, jsfContainer-2.2,
+    restfulWS-3.1, batch-2.0, batch-2.1, mpGraphQL-2.0, mpJwt-2.0,
+    websocket-1.0, websocket-1.1, faces-3.0
+Out-of-level features [ 34 ]:
+    appAuthentication-3.0: Required level [ 11 ]
+    appAuthorization-2.1: Required level [ 11 ]
+    appSecurity-5.0: Required level [ 11 ]
+    batch-2.1: Required level [ 11 ]
+    cdi-4.0: Required level [ 11 ]
+    concurrent-3.0: Required level [ 11 ]
+    connectors-2.1: Required level [ 11 ]
+    data-1.0: Required level [ 11 ]
+    expressionLanguage-5.0: Required level [ 11 ]
+    faces-4.0: Required level [ 11 ]
+    facesContainer-4.0: Required level [ 11 ]
+    jakartaee-10.0: Required level [ 11 ]
+    jdbc-4.3: Required level [ 11 ]
+    jsonb-3.0: Required level [ 11 ]
+    jsonbContainer-3.0: Required level [ 11 ]
+    jsonp-2.1: Required level [ 11 ]
+    jsonpContainer-2.1: Required level [ 11 ]
+    mail-2.1: Required level [ 11 ]
+    messaging-3.1: Required level [ 11 ]
+    microProfile-6.0: Required level [ 11 ]
+    mpJwt-2.1: Required level [ 11 ]
+    mpMetrics-5.0: Required level [ 11 ]
+    mpOpenAPI-3.1: Required level [ 11 ]
+    mpTelemetry-1.0: Required level [ 11 ]
+    nosql-1.0: Required level [ 11 ]
+    pages-3.1: Required level [ 11 ]
+    persistence-3.1: Required level [ 11 ]
+    persistenceContainer-3.1: Required level [ 11 ]
+    restfulWS-3.1: Required level [ 11 ]
+    servlet-6.0: Required level [ 11 ]
+    webProfile-10.0: Required level [ 11 ]
+    websocket-2.1: Required level [ 11 ]
+    xmlBinding-4.0: Required level [ 11 ]
+    xmlWS-4.0: Required level [ 11 ]
+
+========================================

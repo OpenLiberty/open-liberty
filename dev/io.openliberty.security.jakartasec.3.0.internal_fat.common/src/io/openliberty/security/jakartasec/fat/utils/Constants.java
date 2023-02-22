@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -44,6 +44,8 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String PROMPT_EXPRESSION = "promptExpression";
     public static final String DISPLAY = "display";
     public static final String DISPLAY_EXPRESSION = "displayExpression";
+    public static final String TOKEN_MIN_VALIDITY = "tokenMinValidity";
+    public static final String TOKEN_MIN_VALIDITY_EXPRESSION = "tokenMinValidityExpression";
 
     public static final String CALLER_NAME_CLAIM = "callerNameClaim";
     public static final String CALLER_GROUPS_CLAIM = "callerGroupsClaim";
@@ -58,10 +60,14 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String TOKEN_AUTO_REFRESH_EXPRESSION = "tokenAutoRefreshExpression";
 
     public static final String AUTHORIZATION_ENDPOINT = "authorizationEndpoint";
-    public static final String USERINFOENDPOINT = "userinfoEndpoint";
+    public static final String TOKEN_ENDPOINT = "tokenEndpoint";
+    public static final String USERINFO_ENDPOINT = "userinfoEndpoint";
     public static final String ENDSESSION_ENDPOINT = "endSessionEndpoint";
     public static final String JWKSURI = "jwksURI";
+    public static final String ISSUER = "issuer";
+    public static final String SUBJECTTYPESUPPORTED = "subjectTypeSupported";
     public static final String IDTOKENSIGNINGALGORITHMSSUPPORTED = "idTokenSigningAlgorithmsSupported";
+    public static final String RESPONSETYPESUPPORTED = "responseTypeSupported";
     public static final String JWKSCONNECTTIMEOUTEXPRESSION = "jwksConnectTimeoutExpression";
     public static final String JWKSREADTIMEOUTEXPRESSION = "jwksReadTimeoutExpression";
 
@@ -96,7 +102,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final int DEFAULT_JWKS_CONN_TIMEOUT = 500;
     public static final int DEFAULT_JWKS_READ_TIMEOUT = 500;
     public static final int OVERRIDE_DEFAULT_JWKS_READ_TIMEOUT = 60000;
-    public static final int TOKEN_MIN_VALIDITY = 10 * 1000;
+    public static final int DEFAULT_TOKEN_MIN_VALIDITY = 10 * 1000;
 
     public static final String OPEN_LIBERTY = "Open Liberty";
 

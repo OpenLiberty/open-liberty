@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -129,9 +129,9 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
 
         T entity = results.get(index);
 
-        final Object[] keyValues = new Object[queryInfo.keyset.size()];
+        final Object[] keyValues = new Object[queryInfo.sorts.size()];
         int k = 0;
-        for (Sort keyInfo : queryInfo.keyset)
+        for (Sort keyInfo : queryInfo.sorts)
             try {
                 List<Member> accessors = queryInfo.entityInfo.attributeAccessors.get(keyInfo.property());
                 Object value = entity;

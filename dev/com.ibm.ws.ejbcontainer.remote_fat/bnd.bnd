@@ -61,11 +61,10 @@ fat.project: true
 tested.features: \
 	appSecurity-3.0,\
 	appSecurity-4.0,\
+	appSecurity-5.0,\
 	enterpriseBeansHome-4.0,\
 	enterpriseBeansLite-4.0,\
-	enterpriseBeansRemote-4.0,\
-	servlet-4.0,\
-	servlet-5.0
+	enterpriseBeansRemote-4.0
 
 -buildpath: \
 	com.ibm.ws.org.apache.yoko.corba.spec.1.5;version=latest,\

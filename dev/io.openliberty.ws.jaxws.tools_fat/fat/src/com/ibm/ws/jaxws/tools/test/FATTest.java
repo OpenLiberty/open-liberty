@@ -71,6 +71,10 @@ public class FATTest {
      */
     private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
     /**
+     * True if running on IBM i and a different shell should be used.
+     */
+    private static final boolean isIBMi = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("os/400");
+    /**
      * Environment variable that can be set to test the UNIX script on Windows.
      */
     private static final String WLP_CYGWIN_HOME = System.getenv("WLP_CYGWIN_HOME");
@@ -153,7 +157,11 @@ public class FATTest {
             commandBuilder.append(wsgenBat);
         } else {
             if (WLP_CYGWIN_HOME == null) {
-                commandBuilder.append("/bin/sh");
+                if (isIBMi) {
+                    commandBuilder.append("/QOpenSys/usr/bin/sh"); // IBM i
+                } else {
+                    commandBuilder.append("/bin/sh");
+                }
             } else {
                 commandBuilder.append(WLP_CYGWIN_HOME + "/bin/sh");
             }
@@ -208,7 +216,11 @@ public class FATTest {
             commandBuilder.append(wsgenBat);
         } else {
             if (WLP_CYGWIN_HOME == null) {
-                commandBuilder.append("/bin/sh");
+                if (isIBMi) {
+                    commandBuilder.append("/QOpenSys/usr/bin/sh"); // IBM i
+                } else {
+                    commandBuilder.append("/bin/sh");
+                }
             } else {
                 commandBuilder.append(WLP_CYGWIN_HOME + "/bin/sh");
             }
@@ -253,7 +265,11 @@ public class FATTest {
             commandBuilder.append(wsgenBat);
         } else {
             if (WLP_CYGWIN_HOME == null) {
-                commandBuilder.append("/bin/sh");
+                if (isIBMi) {
+                    commandBuilder.append("/QOpenSys/usr/bin/sh"); // IBM i
+                } else {
+                    commandBuilder.append("/bin/sh");
+                }
             } else {
                 commandBuilder.append(WLP_CYGWIN_HOME + "/bin/sh");
             }
@@ -280,7 +296,11 @@ public class FATTest {
             commandBuilder.append(wsimportBat.getAbsolutePath());
         } else {
             if (WLP_CYGWIN_HOME == null) {
-                commandBuilder.append("/bin/sh");
+                if (isIBMi) {
+                    commandBuilder.append("/QOpenSys/usr/bin/sh"); // IBM i
+                } else {
+                    commandBuilder.append("/bin/sh");
+                }
             } else {
                 commandBuilder.append(WLP_CYGWIN_HOME + "/bin/sh");
             }
@@ -341,7 +361,11 @@ public class FATTest {
             commandBuilder.append(wsimportBat.getAbsolutePath());
         } else {
             if (WLP_CYGWIN_HOME == null) {
-                commandBuilder.append("/bin/sh");
+                if (isIBMi) {
+                    commandBuilder.append("/QOpenSys/usr/bin/sh"); // IBM i
+                } else {
+                    commandBuilder.append("/bin/sh");
+                }
             } else {
                 commandBuilder.append(WLP_CYGWIN_HOME + "/bin/sh");
             }
@@ -370,7 +394,11 @@ public class FATTest {
             commandBuilder.append(wsimportBat.getAbsolutePath());
         } else {
             if (WLP_CYGWIN_HOME == null) {
-                commandBuilder.append("/bin/sh");
+                if (isIBMi) {
+                    commandBuilder.append("/QOpenSys/usr/bin/sh"); // IBM i
+                } else {
+                    commandBuilder.append("/bin/sh");
+                }
             } else {
                 commandBuilder.append(WLP_CYGWIN_HOME + "/bin/sh");
             }

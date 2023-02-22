@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -357,7 +357,9 @@ public class JAXRS21ClientSSLProxyAuthTest extends JAXRS21AbstractTest {
         // amF4cnNVc2VyOm15UGEkJHdvcmQ=").withSecure(false)); //jaxrsUser:myPa$$word
     }
 
+    // TODO: https://github.com/OpenLiberty/open-liberty/issues/18849
     @Test
+    @MinimumJavaLevel(javaLevel = 11)
     @SkipForRepeat({"EE9_FEATURES","EE10_FEATURES"}) // RESTEasy only supports properties set on ClientBuilder
     public void testTunnelThroughProxyToHTTPSEndpoint_WebTarget() throws Exception {
         Map<String, String> p = new HashMap<String, String>();

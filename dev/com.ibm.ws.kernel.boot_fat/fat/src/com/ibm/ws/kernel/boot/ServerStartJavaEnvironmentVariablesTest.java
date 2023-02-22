@@ -1,11 +1,12 @@
 package com.ibm.ws.kernel.boot;
+
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -37,6 +38,7 @@ import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -82,6 +84,7 @@ public class ServerStartJavaEnvironmentVariablesTest {
      * that IBM_JAVA_OPTIONS is set to the same value.
      */
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to ENV vars being overwritten when running in test framework
     public void testServerStartOpenJ9JavaOptionsSet() throws Exception {
         Log.entering(c, testName.getMethodName());
 
@@ -117,6 +120,7 @@ public class ServerStartJavaEnvironmentVariablesTest {
      * @throws Exception
      */
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to ENV vars being overwritten when running in test framework
     public void testServerStartIBMJavaOptionsSet() throws Exception {
         Log.entering(c, testName.getMethodName());
         try {

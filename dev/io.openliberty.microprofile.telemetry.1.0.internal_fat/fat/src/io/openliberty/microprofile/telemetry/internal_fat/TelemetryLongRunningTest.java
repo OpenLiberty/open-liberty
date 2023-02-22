@@ -58,6 +58,7 @@ public class TelemetryLongRunningTest extends FATServletClient {
                                        "META-INF/microprofile-config.properties");
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
+
         server.startServer();
     }
 

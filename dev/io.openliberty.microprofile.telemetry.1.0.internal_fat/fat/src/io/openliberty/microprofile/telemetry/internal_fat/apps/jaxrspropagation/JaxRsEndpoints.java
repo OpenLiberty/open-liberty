@@ -41,6 +41,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.context.Scope;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -178,19 +179,20 @@ public class JaxRsEndpoints extends Application {
         LOGGER.info(">>> getJax");
         assertNotNull(Span.current());
 
-        Baggage.builder().put("foo", "bar").build().makeCurrent();
-        Baggage baggage = Baggage.current();
-        assertEquals("bar", baggage.getEntryValue("foo"));
+        try (Scope s = Baggage.builder().put("foo", "bar").build().makeCurrent()) {
+            Baggage baggage = Baggage.current();
+            assertEquals("bar", baggage.getEntryValue("foo"));
 
-        String url = new String(uriInfo.getAbsolutePath().toString());
-        url = url.replace("jaxrsclient", "jaxrstwo"); //The jaxrsclient will use the URL as given so it needs the final part to be provided.
+            String url = new String(uriInfo.getAbsolutePath().toString());
+            url = url.replace("jaxrsclient", "jaxrstwo"); //The jaxrsclient will use the URL as given so it needs the final part to be provided.
 
-        String result = client.target(url)
-                        .request(MediaType.TEXT_PLAIN)
-                        .get(String.class);
-        assertEquals(TEST_PASSED, result);
-
-        LOGGER.info("<<< getJax");
+            String result = client.target(url)
+                            .request(MediaType.TEXT_PLAIN)
+                            .get(String.class);
+            assertEquals(TEST_PASSED, result);
+        } finally {
+            LOGGER.info("<<< getJax");
+        }
         return Response.ok(Span.current().getSpanContext().getTraceId()).build();
     }
 
@@ -202,29 +204,31 @@ public class JaxRsEndpoints extends Application {
         LOGGER.info(">>> getJaxAsync");
         assertNotNull(Span.current());
 
-        Baggage.builder().put("foo", "bar").build().makeCurrent();
-        Baggage baggage = Baggage.current();
-        assertEquals("bar", baggage.getEntryValue("foo"));
+        try (Scope s = Baggage.builder().put("foo", "bar").build().makeCurrent()) {
+            Baggage baggage = Baggage.current();
+            assertEquals("bar", baggage.getEntryValue("foo"));
 
-        String url = new String(uriInfo.getAbsolutePath().toString());
-        url = url.replace("jaxrsclientasync", "jaxrstwo"); //The jaxrsclient will use the URL as given so it needs the final part to be provided.
+            String url = new String(uriInfo.getAbsolutePath().toString());
+            url = url.replace("jaxrsclientasync", "jaxrstwo"); //The jaxrsclient will use the URL as given so it needs the final part to be provided.
 
-        Client client = ClientBuilder.newClient();
-        Future<String> result = client.target(url)
-                        .request(MediaType.TEXT_PLAIN)
-                        .async()
-                        .get(String.class);
+            Client client = ClientBuilder.newClient();
+            Future<String> result = client.target(url)
+                            .request(MediaType.TEXT_PLAIN)
+                            .async()
+                            .get(String.class);
 
-        try {
-            String resultValue = result.get(10, SECONDS);
-            assertEquals(TEST_PASSED, resultValue);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            try {
+                String resultValue = result.get(10, SECONDS);
+                assertEquals(TEST_PASSED, resultValue);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } finally {
+                client.close();
+            }
+
         } finally {
-            client.close();
+            LOGGER.info("<<< getJax");
         }
-
-        LOGGER.info("<<< getJaxAsync");
         return Response.ok(Span.current().getSpanContext().getTraceId()).build();
     }
 
@@ -251,28 +255,30 @@ public class JaxRsEndpoints extends Application {
         LOGGER.info(">>> getMP");
         assertNotNull(Span.current());
 
-        Baggage.builder().put("foo", "bar").build().makeCurrent();
-        Baggage baggage = Baggage.current();
-        assertEquals("bar", baggage.getEntryValue("foo"));
+        try (Scope s = Baggage.builder().put("foo", "bar").build().makeCurrent()) {
+            Baggage baggage = Baggage.current();
+            assertEquals("bar", baggage.getEntryValue("foo"));
 
-        String baseUrl = uriInfo.getAbsolutePath().toString().replace("/mpclient", ""); //The mpclient will add the final part of the URL for you, so we remove the final part.
-        URI baseUri = null;
-        try {
-            baseUri = new URI(baseUrl);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            String baseUrl = uriInfo.getAbsolutePath().toString().replace("/mpclient", ""); //The mpclient will add the final part of the URL for you, so we remove the final part.
+            URI baseUri = null;
+            try {
+                baseUri = new URI(baseUrl);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            assertNotNull(Span.current());
+            MPTwo two = RestClientBuilder.newBuilder()
+                            .baseUri(baseUri)
+                            .build(MPTwo.class);
+
+            String result = two.getMPTwo();
+            assertEquals(TEST_PASSED, result);
+        } finally {
+            LOGGER.info("<<< getMP");
         }
-
-        assertNotNull(Span.current());
-        MPTwo two = RestClientBuilder.newBuilder()
-                        .baseUri(baseUri)
-                        .build(MPTwo.class);
-
-        String result = two.getMPTwo();
-        assertEquals(TEST_PASSED, result);
-
-        LOGGER.info("<<< getMP");
         return Response.ok(Span.current().getSpanContext().getTraceId()).build();
+        
     }
 
     //This method is called via mpClient from the entry methods.
@@ -307,27 +313,29 @@ public class JaxRsEndpoints extends Application {
         LOGGER.info(">>> getMPAsync");
         assertNotNull(Span.current());
 
-        Baggage.builder().put("foo", "bar").build().makeCurrent();
-        Baggage baggage = Baggage.current();
-        assertEquals("bar", baggage.getEntryValue("foo"));
+        try (Scope s = Baggage.builder().put("foo", "bar").build().makeCurrent()) {
 
-        String baseUrl = uriInfo.getAbsolutePath().toString().replace("/mpclientasync", ""); //The mpclient will add the final part of the URL for you, so we remove the final part.
-        URI baseUri = null;
-        try {
-            baseUri = new URI(baseUrl);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            Baggage baggage = Baggage.current();
+            assertEquals("bar", baggage.getEntryValue("foo"));
+
+            String baseUrl = uriInfo.getAbsolutePath().toString().replace("/mpclientasync", ""); //The mpclient will add the final part of the URL for you, so we remove the final part.
+            URI baseUri = null;
+            try {
+                baseUri = new URI(baseUrl);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            assertNotNull(Span.current());
+            MPTwoAsync two = RestClientBuilder.newBuilder()
+                            .baseUri(baseUri)
+                            .build(MPTwoAsync.class);
+
+            String result = two.getMPTwo().toCompletableFuture().join();
+            assertEquals(TEST_PASSED, result);
+
+            LOGGER.info("<<< getMPAsync");
         }
-
-        assertNotNull(Span.current());
-        MPTwoAsync two = RestClientBuilder.newBuilder()
-                        .baseUri(baseUri)
-                        .build(MPTwoAsync.class);
-
-        String result = two.getMPTwo().toCompletableFuture().join();
-        assertEquals(TEST_PASSED, result);
-
-        LOGGER.info("<<< getMPAsync");
         return Response.ok(Span.current().getSpanContext().getTraceId()).build();
     }
 

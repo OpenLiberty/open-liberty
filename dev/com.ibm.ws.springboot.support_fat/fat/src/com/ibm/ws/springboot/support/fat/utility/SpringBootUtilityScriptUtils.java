@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -32,6 +32,11 @@ public class SpringBootUtilityScriptUtils {
      * True if running on Windows and the .bat file should be used.
      */
     private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
+
+    /**
+     * True if running on IBM i and a different shell should be used.
+     */
+    private static final boolean isIBMi = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("os/400");
 
     /**
      * Environment variable that can be set to test the UNIX script on Windows.
@@ -66,7 +71,11 @@ public class SpringBootUtilityScriptUtils {
             command.add(WLP_INSTALL_DIR + "/bin/" + commandName + ".bat");
         } else {
             if (WLP_CYGWIN_HOME == null) {
-                command.add("/bin/sh");
+                if (isIBMi) {
+                    command.add("/QOpenSys/usr/bin/sh"); // IBM i
+                } else {
+                    command.add("/bin/sh");
+                }
             } else {
                 command.add(WLP_CYGWIN_HOME + "/bin/sh");
             }

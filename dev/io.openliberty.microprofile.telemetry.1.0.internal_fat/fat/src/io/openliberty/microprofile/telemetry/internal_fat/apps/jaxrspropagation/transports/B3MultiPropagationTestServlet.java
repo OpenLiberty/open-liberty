@@ -31,6 +31,7 @@ import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.baggage.BaggageEntryMetadata;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.context.Scope;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
@@ -59,9 +60,10 @@ public class B3MultiPropagationTestServlet extends FATServlet {
     public void testB3Propagation() throws URISyntaxException {
         Span span = testSpans.withTestSpan(() -> {
             Baggage baggage = Baggage.builder().put(BAGGAGE_KEY, BAGGAGE_VALUE, BaggageEntryMetadata.create(BAGGAGE_METADATA)).build();
-            baggage.makeCurrent();
-            PropagationHeaderClient client = RestClientBuilder.newBuilder().baseUri(PropagationHeaderEndpoint.getBaseUri(request)).build(PropagationHeaderClient.class);
-            client.get();
+            try (Scope s = baggage.makeCurrent()) {
+                PropagationHeaderClient client = RestClientBuilder.newBuilder().baseUri(PropagationHeaderEndpoint.getBaseUri(request)).build(PropagationHeaderClient.class);
+                client.get();
+            }
         });
 
         List<SpanData> spanData = spanExporter.getFinishedSpanItems(3, span);

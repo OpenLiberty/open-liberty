@@ -56,7 +56,7 @@ public class ClientFeatureTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKE1102W","CWWKE1107W");  //ignore server quiesce timeouts due to slow test machines
     }
 
 }

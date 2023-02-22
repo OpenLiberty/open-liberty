@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -46,7 +46,7 @@ public class EEConcurrencySpecTest extends FATServletClient {
     public static RepeatTests r = RepeatTests
                     .withoutModification()
                     .andWith(new JakartaEE9Action())
-                    .andWith(new JakartaEE10Action()); // TODO This doesn't use real Jakarta EE 10 features yet
+                    .andWith(new JakartaEE10Action());
 
     @Server("concurrent.spec.fat")
     @TestServlet(servlet = EEConcurrencyTestServlet.class, path = APP_NAME)

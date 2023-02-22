@@ -76,5 +76,6 @@ Service-Component: \
 Include-Resource: \
   @${repo;org.jboss.weld:weld-osgi-bundle;[2.4.8.Final,3)}!/!META-INF/maven/*, \
   org/jboss/weld/config=${bin}/org/jboss/weld/config, \
-  org/jboss/weld/context=${bin}/org/jboss/weld/context
+  org/jboss/weld/context=${bin}/org/jboss/weld/context, \
+  org/jboss/weld/bean/proxy=${bin}/org/jboss/weld/bean/proxy
 

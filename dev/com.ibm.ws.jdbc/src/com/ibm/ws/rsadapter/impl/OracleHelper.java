@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2021 IBM Corporation and others.
+ * Copyright (c) 2003, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.XMLFormatter;
@@ -68,14 +69,9 @@ import com.ibm.ws.rsadapter.jdbc.WSJdbcTracer;
 public class OracleHelper extends DatabaseHelper {
 
     private static TraceComponent tc = Tr.register(OracleHelper.class, AdapterUtil.TRACE_GROUP, AdapterUtil.NLS_FILE);
-
-    private static final String
-        ORACLELOG_FILE_SIZE_LIMIT = "oracleLogFileSizeLimit",
-        ORACLELOG_FILE_COUNT = "oracleLogFileCount",
-        ORACLELOG_FILENAME = "oracleLogFileName",
-        ORACLELOG_TRACELEVEL = "oracleLogTraceLevel",
-        ORACLELOG_FORMAT = "oracleLogFormat",
-        ORACLELOG_PACKAGENAME = "oracleLogPackageName";
+    
+    @SuppressWarnings("deprecation")
+    private static final TraceComponent oraTc = com.ibm.ejs.ras.Tr.register("com.ibm.ws.oracle.logwriter", "WAS.database", null); 
 
     private static final int NOT_CACHED = -99;
     private int driverMajorVersion = NOT_CACHED;
@@ -125,9 +121,8 @@ public class OracleHelper extends DatabaseHelper {
     private String matrix[];
     
     private static final AtomicBoolean warnedAboutReadOnly = new AtomicBoolean();
+    
 
-    @SuppressWarnings("deprecation")
-    private static final TraceComponent oraTc = com.ibm.ejs.ras.Tr.register("com.ibm.ws.oracle.logwriter", "WAS.database", null); 
 
     /**
      * Construct a helper class for Oracle.
@@ -143,102 +138,6 @@ public class OracleHelper extends DatabaseHelper {
         xaEndResetsAutoCommit = true;
 
         matrix = new String[4]; // OracleConnection.END_TO_END_STATE_INDEX_MAX
-
-        int limit = 0; // unlimited
-        int count = 1; // only one file to rotate through
-        String _oracleLogFileName = null;
-
-        Logger _logger = null;
-        Formatter _formatter = null;
-        Handler _handler = null;
-
-        String _oraclePackageName = "oracle.jdbc.driver";
-        String _oracleLogTraceLevel = "INFO";
-        String _oracleLogFormat = "SimpleFormat";
-        String holder = null;
-
-        Properties props = mcf.dsConfig.get().vendorProps;
-        if (props != null) {
-            // get the package name:
-            holder = props.getProperty(ORACLELOG_PACKAGENAME);
-            if (holder != null && !holder.equals(""))
-                _oraclePackageName = holder;
-
-            //now getting the file name  
-            holder = props.getProperty(ORACLELOG_FILENAME);
-            if (holder != null && !holder.equals(""))
-                _oracleLogFileName = holder;
-
-            if (oraTc.isDebugEnabled()) {
-                Tr.debug(oraTc, "DSConfigHelper.ORACLELOG_PACKAGENAME is: ", _oraclePackageName); 
-                Tr.debug(oraTc, "DSConfigHelper.ORACLELOG_FILENAME is:  ", _oracleLogFileName); 
-            }
-
-            //now get the logger for the package name specified above
-            _logger = Logger.getLogger(_oraclePackageName);
-
-            //if the file name is not set, then we can't set any other values and we have to use 
-            // the WAS logging file and settings. 
-            if (_oracleLogFileName != null && (!_oracleLogFileName.equals(""))) {
-
-                // now get the trace level
-                holder = props.getProperty(ORACLELOG_TRACELEVEL);
-                if (holder != null && !holder.equals(""))
-                    _oracleLogTraceLevel = holder;
-
-                // now get the log format needed
-                holder = props.getProperty(ORACLELOG_FORMAT);
-                if (holder != null && !holder.equals(""))
-                    _oracleLogFormat = holder;
-
-                //now set the format of the oracle log output                   
-                if (_oracleLogFormat != null && (_oracleLogFormat.charAt(0) == 'S' || _oracleLogFormat.charAt(0) == 's')) {
-                    if (oraTc.isDebugEnabled())
-                        Tr.debug(oraTc, "SimpleFormatter is used");
-                    _formatter = new SimpleFormatter();
-                } else // default for everything else
-                {
-                    if (oraTc.isDebugEnabled())
-                        Tr.debug(oraTc, "XMLFormatter is used");
-                    _formatter = new XMLFormatter();
-                }
-
-                // GET limit setting which is how big each file is in bytes before switching (approximate)
-                holder = props.getProperty(ORACLELOG_FILE_SIZE_LIMIT);
-                if (holder != null && (!holder.equals("")))
-                    limit = Integer.parseInt(holder);
-
-                holder = props.getProperty(ORACLELOG_FILE_COUNT);
-                // Get file count Setting which is how many files to rotate through
-                if (holder != null && (!holder.equals("")))
-                    count = Integer.parseInt(holder);
-
-                if (oraTc.isDebugEnabled()) {
-                    Tr.debug(oraTc, "DSConfigHelper.ORACLELOG_FILE_COUNT is: " + count); 
-                    Tr.debug(oraTc, "DSConfigHelper.ORACLELOG_FILE_SIZE_LIMIT is: " + limit); 
-                    Tr.debug(oraTc, "DSConfigHelper.ORACLELOG_FORMAT is: ", _oracleLogFormat); 
-                    Tr.debug(oraTc, "DSConfigHelper.ORACLELOG_TRACELEVEL is: ", _oracleLogTraceLevel); 
-                }
-                // now setting up the file handlers and the logger since at this point we know the user wanted to 
-                // to log/trace to a seperate file                              
-                try {
-                    _handler = new FileHandler(_oracleLogFileName + "%g.%u", limit, count); // g is generation number, u is unique number
-                    _handler.setFormatter(_formatter);
-                    _handler.setLevel(Level.ALL); // for the handler, i will set it to all so that only the logger 
-                                                  // controls the output
-                    _logger.setLevel(AdapterUtil.getLevelBasedOnName(_oracleLogTraceLevel));
-                    _logger.setUseParentHandlers(false); // this will make sure that we don't send oracle trace to WAS trace file                                           
-                    _logger.addHandler(_handler);
-                } catch (IOException iox) {
-                    // No FFDC needed
-                    Tr.warning(tc, "ORACLE_TRACE_WARNING", _oracleLogFileName, iox);
-                }
-            } else // merge logs with WAS logs since no file is specified
-            {
-                if (oraTc.isDebugEnabled())
-                    Tr.debug(oraTc, "Oracle trace file is not set, Oracle logging/tracing will be mergned with WAS logging based on WAS logging settings");
-            }
-        }
         
         Collections.addAll(staleConCodes,
                            20,

@@ -26,6 +26,7 @@ import componenttest.app.FATServlet;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.baggage.BaggageBuilder;
 import io.opentelemetry.context.Context;
+import io.opentelemetry.context.Scope;
 import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -48,75 +49,79 @@ public class MultiThreadedContextServlet extends FATServlet {
     @Test
     public void testContextTaskWrapping() throws InterruptedException, ExecutionException, TimeoutException {
         //add some baggage to the current context
-        addBaggage(MY_KEY_1, MY_VALUE_1);
+        try (Scope s = addBaggage(MY_KEY_1, MY_VALUE_1)) {
 
-        // execute my async sub-task
-        ExecutorService executorService = Context.taskWrapping(managedExecutorService);
-        Future<Map<String, String>> future = executorService.submit(new GetBaggageValueCallable(MY_KEY_1));
-        Map<String, String> baggageValues = future.get(5, TimeUnit.SECONDS);
-        assertEquals(MY_VALUE_1, baggageValues.get(MY_KEY_1));
+            // execute my async sub-task
+            ExecutorService executorService = Context.taskWrapping(managedExecutorService);
+            Future<Map<String, String>> future = executorService.submit(new GetBaggageValueCallable(MY_KEY_1));
+            Map<String, String> baggageValues = future.get(5, TimeUnit.SECONDS);
+            assertEquals(MY_VALUE_1, baggageValues.get(MY_KEY_1));
 
-        //check that the baggage was not modified by the sub-task
-        assertCurrentBaggage(MY_KEY_1, MY_VALUE_1);
+            //check that the baggage was not modified by the sub-task
+            assertCurrentBaggage(MY_KEY_1, MY_VALUE_1);
+        }
     }
 
     @Test
     public void testCurrentContextWrap() throws InterruptedException, ExecutionException, TimeoutException {
         //add some baggage to the current context
-        addBaggage(MY_KEY_1, MY_VALUE_1);
+        try (Scope s = addBaggage(MY_KEY_1, MY_VALUE_1)) {
 
-        // execute my async sub-task
-        Context context = Context.current();
-        ExecutorService executorService = context.wrap(managedExecutorService);
-        Future<Map<String, String>> future = executorService.submit(new GetBaggageValueCallable(MY_KEY_1));
-        Map<String, String> baggageValues = future.get(5, TimeUnit.SECONDS);
-        assertEquals(MY_VALUE_1, baggageValues.get(MY_KEY_1));
+            // execute my async sub-task
+            Context context = Context.current();
+            ExecutorService executorService = context.wrap(managedExecutorService);
+            Future<Map<String, String>> future = executorService.submit(new GetBaggageValueCallable(MY_KEY_1));
+            Map<String, String> baggageValues = future.get(5, TimeUnit.SECONDS);
+            assertEquals(MY_VALUE_1, baggageValues.get(MY_KEY_1));
 
-        //check that the baggage was not modified by the sub-task
-        assertCurrentBaggage(MY_KEY_1, MY_VALUE_1);
+            //check that the baggage was not modified by the sub-task
+            assertCurrentBaggage(MY_KEY_1, MY_VALUE_1);
+        }
     }
 
     @Test
     public void testNewContextWrap() throws InterruptedException, ExecutionException, TimeoutException {
         //add some baggage to the current context
-        addBaggage(MY_KEY_1, MY_VALUE_1);
+        try(Scope s = addBaggage(MY_KEY_1, MY_VALUE_1)){
 
-        //create a new context with a different value in (should not contain MY_KEY_1)
-        Context context = newContextWithBaggage(MY_KEY_2, MY_VALUE_2);
-        // execute my async sub-task
-        ExecutorService executorService = context.wrap(managedExecutorService);
-        Future<Map<String, String>> future = executorService.submit(new GetBaggageValueCallable(MY_KEY_1, MY_KEY_2));
-        Map<String, String> baggageValues = future.get(5, TimeUnit.SECONDS);
-        //check that the value for MY_KEY_1 was null (from the new context)
-        assertEquals(null, baggageValues.get(MY_KEY_1));
-        //check that the value for MY_KEY_1 was MY_VALUE_2 (from the new context)
-        assertEquals(MY_VALUE_2, baggageValues.get(MY_KEY_2));
+            //create a new context with a different value in (should not contain MY_KEY_1)
+            Context context = newContextWithBaggage(MY_KEY_2, MY_VALUE_2);
+            // execute my async sub-task
+            ExecutorService executorService = context.wrap(managedExecutorService);
+            Future<Map<String, String>> future = executorService.submit(new GetBaggageValueCallable(MY_KEY_1, MY_KEY_2));
+            Map<String, String> baggageValues = future.get(5, TimeUnit.SECONDS);
+            //check that the value for MY_KEY_1 was null (from the new context)
+            assertEquals(null, baggageValues.get(MY_KEY_1));
+            //check that the value for MY_KEY_1 was MY_VALUE_2 (from the new context)
+            assertEquals(MY_VALUE_2, baggageValues.get(MY_KEY_2));
 
-        //check that the baggage of the current context was not modified by the sub-task
-        assertCurrentBaggage(MY_KEY_1, MY_VALUE_1);
+            //check that the baggage of the current context was not modified by the sub-task
+            assertCurrentBaggage(MY_KEY_1, MY_VALUE_1);
+        }
     }
 
     @Test
     public void testNewContextWrapCallable() throws InterruptedException, ExecutionException, TimeoutException {
         //add some baggage to the current context
-        addBaggage(MY_KEY_1, MY_VALUE_1);
+        try(Scope s = addBaggage(MY_KEY_1, MY_VALUE_1)){
 
-        //create a new context with a different value in (should not contain MY_KEY_1)
-        Context context = newContextWithBaggage(MY_KEY_2, MY_VALUE_2);
+            //create a new context with a different value in (should not contain MY_KEY_1)
+            Context context = newContextWithBaggage(MY_KEY_2, MY_VALUE_2);
 
-        //only wrap this one callable
-        Callable<Map<String, String>> callable = new GetBaggageValueCallable(MY_KEY_1, MY_KEY_2);
-        callable = context.wrap(callable);
-        // execute my async sub-task
-        Future<Map<String, String>> future = managedExecutorService.submit(callable);
-        Map<String, String> baggageValues = future.get(5, TimeUnit.SECONDS);
-        //check that the value for MY_KEY_1 was null (from the new context)
-        assertEquals(null, baggageValues.get(MY_KEY_1));
-        //check that the value for MY_KEY_1 was MY_VALUE_2 (from the new context)
-        assertEquals(MY_VALUE_2, baggageValues.get(MY_KEY_2));
+            //only wrap this one callable
+            Callable<Map<String, String>> callable = new GetBaggageValueCallable(MY_KEY_1, MY_KEY_2);
+            callable = context.wrap(callable);
+            // execute my async sub-task
+            Future<Map<String, String>> future = managedExecutorService.submit(callable);
+            Map<String, String> baggageValues = future.get(5, TimeUnit.SECONDS);
+            //check that the value for MY_KEY_1 was null (from the new context)
+            assertEquals(null, baggageValues.get(MY_KEY_1));
+            //check that the value for MY_KEY_1 was MY_VALUE_2 (from the new context)
+            assertEquals(MY_VALUE_2, baggageValues.get(MY_KEY_2));
 
-        //check that the baggage of the current context was not modified by the sub-task
-        assertCurrentBaggage(MY_KEY_1, MY_VALUE_1);
+            //check that the baggage of the current context was not modified by the sub-task
+            assertCurrentBaggage(MY_KEY_1, MY_VALUE_1);
+        }
     }
 
     //check that the current context contains baggage with a certain value
@@ -127,11 +132,11 @@ public class MultiThreadedContextServlet extends FATServlet {
     }
 
     //create a new current context by adding some baggage to the existing current context
-    private static void addBaggage(String key, String value) {
+    private static Scope addBaggage(String key, String value) {
         BaggageBuilder builder = Baggage.builder();
         builder.put(key, value);
         Baggage baggage = builder.build();
-        baggage.makeCurrent();
+        return baggage.makeCurrent();
     }
 
     //create a new context by adding some baggage to the root context
@@ -167,12 +172,12 @@ public class MultiThreadedContextServlet extends FATServlet {
 
                 //create a new baggage and make a new current context with it
                 //this new context should not affect the original one
-                addBaggage(key, MY_VALUE_3);
+                try (Scope s = addBaggage(key, MY_VALUE_3)) {
 
-                //check that the new baggage is in the current context
-                assertCurrentBaggage(key, MY_VALUE_3);
+                    //check that the new baggage is in the current context
+                    assertCurrentBaggage(key, MY_VALUE_3);
+                }
             }
-
             return results;
         }
 

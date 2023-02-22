@@ -14,6 +14,7 @@ package io.openliberty.security.jakartasec.fat.logout.tests;
 
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,8 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
+import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
+import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 
@@ -36,6 +39,7 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonLogoutAndRefreshTests;
 import io.openliberty.security.jakartasec.fat.configs.TestConfigMaps;
+import io.openliberty.security.jakartasec.fat.utils.CommonExpectations;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
 import io.openliberty.security.jakartasec.fat.utils.MessageConstants;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
@@ -252,6 +256,13 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
                                        buildUpdatedConfigMap("GoodRedirectNotifyProviderTrueWithTrackingLogoutServlet", "OP4", NotifyProvider, IDTokenHonorExpiry,
                                                              AccessTokenHonorExpiry,
                                                              goodRedirectUri, PromptType.LOGIN),
+                                       "oidc.client.basicLogout.servlets",
+                                       "oidc.client.base.*");
+
+        swh.deployConfigurableTestApps(rpServer, "BadEndSessionNotifyProviderTrueLogoutServlet.war", "BasicLogoutServlet.war",
+                                       buildUpdatedConfigMap("BadEndSessionNotifyProviderTrueLogoutServlet", "OP3", NotifyProvider, IDTokenHonorExpiry,
+                                                             AccessTokenHonorExpiry,
+                                                             emptyRedirectUri, PromptType.LOGIN, "EndSessionServlet/doesntExist"),
                                        "oidc.client.basicLogout.servlets",
                                        "oidc.client.base.*");
 
@@ -1161,14 +1172,12 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
 
     // Do not need tests with NotifyProvider = false since end_session won't be invoked - other tests that use the logout redirect uri already check for parms being passed
 
-    // TODO - not working yet - issue https://github.com/OpenLiberty/open-liberty/issues/24062
     /**
-     * Invoke an app protected by the @OpenIdAuthenticationMechanismDefinition annotation and are granted access - invoke the post method of the app to perform a request.logout() -
-     * expect TODO
+     * Invoke an app protected by the @OpenIdAuthenticationMechanismDefinition annotation and are granted access - invoke the post method of the app to perform a request.logout()
      *
      * @throws Exception
      */
-    //@Test
+    @Test
     public void BasicLogoutTests_invoke_reqLogout() throws Exception {
 
         String appName = "GoodRedirectNotifyProviderTrueTestEndSessionLogoutServlet";
@@ -1177,7 +1186,8 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
         runGoodEndToEndTest(webClient, appName, baseAppName);
 
         String url = rpHttpsBase + "/GoodRedirectNotifyProviderTrueTestEndSessionLogoutServlet/" + baseAppName;
-        actions.invokeUrlWithParametersUsingPost(_testName, webClient, url, null);
+        Page response = actions.invokeUrlWithParametersUsingPost(_testName, webClient, url, null);
+        validationUtils.validateResult(response, CommonExpectations.successfullyReachedTestEndSessiontPage(rpHttpsBase, true));
 
     }
 
@@ -1196,6 +1206,34 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
         trackingParms.put("clients_interacted_with", "");
 
         genericGoodLogoutAndRedirectTest("GoodRedirectNotifyProviderTrueWithTrackingLogoutServlet", "OP4", trackingParms);
+
+    }
+
+    /**
+     * Show that the request to access a request to the same app will result in a 404 when the tokens are expired and the end_session endpoint specified in the annotation is not
+     * valid
+     *
+     * @throws Exception
+     */
+    @Test
+    public void BasicLogoutTests_BadEndSessionEndpoint_NotifyProviderTrue_useTestEndSession() throws Exception {
+
+        String appName = "BadEndSessionNotifyProviderTrueLogoutServlet";
+        WebClient webClient = getAndSaveWebClient();
+        rspValues.setIssuer(opHttpsBase + "/oidc/endpoint/OP3");
+        runGoodEndToEndTest(webClient, appName, baseAppName);
+
+        // now logged in - wait for token to expire
+        actions.testLogAndSleep(35);
+        String url = rpHttpsBase + "/" + appName + "/" + baseAppName;
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectation(new ResponseStatusExpectation(Constants.NOT_FOUND_STATUS));
+        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_CONTAINS, MessageConstants.SRVE0190E_FILE_NOT_FOUND, "Did not receive a file not found message for the end_session endpoint"));
+
+        invokeApp(webClient, url, expectations);
+
+        rpServer.addIgnoredErrors(Arrays.asList(MessageConstants.SRVE0190E_FILE_NOT_FOUND));
 
     }
 

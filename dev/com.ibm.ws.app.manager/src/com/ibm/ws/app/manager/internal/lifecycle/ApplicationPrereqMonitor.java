@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,8 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.app.manager.internal.lifecycle;
 
-import static java.util.Collections.unmodifiableSet;
-import static java.util.stream.Collectors.toSet;
+import static com.ibm.websphere.ras.Tr.debug;
+import static com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -28,12 +28,11 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.cm.ConfigurationEvent;
-import org.osgi.service.cm.ConfigurationListener;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -50,9 +49,9 @@ import com.ibm.wsspi.logging.Introspector;
  * Immediate component to track prereqs as they appear.
  */
 @Component(immediate = true,
-           configurationPid = "com.ibm.ws.app.prereqmonitor",
+           configurationPid = "com.ibm.ws.app.prereqs",
            configurationPolicy = ConfigurationPolicy.REQUIRE)
-public class ApplicationPrereqMonitor implements ConfigurationListener, Introspector {
+public class ApplicationPrereqMonitor implements Introspector {
     private static class ConfigurationOutOfDateException extends RuntimeException {
         private static final long serialVersionUID = 1L;
 
@@ -65,10 +64,10 @@ public class ApplicationPrereqMonitor implements ConfigurationListener, Introspe
     private static final AtomicInteger counter = new AtomicInteger(0);
     private final int version = counter.incrementAndGet();
     private final ConfigurationAdmin configurationAdmin;
-    private final Set<String> declaredPrereqs;
+    private Set<String> declaredPrereqs = new TreeSet<>();
     private final Set<String> realizedPrereqs = new TreeSet<>();
 
-    private boolean configModified = false;
+    private boolean configInconsistent = false;
 
     /**
      * Use constructor parameter references to ensure that mandatory references are supplied first.
@@ -80,13 +79,47 @@ public class ApplicationPrereqMonitor implements ConfigurationListener, Introspe
         this.configurationAdmin = configurationAdmin;
 
         String[] pids = (String[]) properties.get("applicationPrereqDeclarations");
-        declaredPrereqs = unmodifiableSet(Stream.of(pids).map(this::servicePidToConfigId).collect(toSet()));
+        Stream.of(pids).map(this::servicePidToConfigId).forEach(declaredPrereqs::add);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, this
                          + "\nKnown configured application Prereq Pids:" + Arrays.toString(pids)
                          + "\nids:" + declaredPrereqs);
         }
+    }
+
+    @Modified
+    synchronized void modified(Map<String, Object> properties) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(this, tc, "modified");
+        }
+
+        // Assume we now have a new consistent configuration, until proven otherwise.
+        configInconsistent = false;
+
+        String[] pids = (String[]) properties.get("applicationPrereqDeclarations");
+        Set<String> oldSet = declaredPrereqs;
+        Set<String> newSet = Stream.of(pids).map(this::servicePidToConfigId).collect(TreeSet::new, Set::add, Set::addAll);
+        if (newSet.equals(oldSet))
+            return;
+        // Now we know there are some changes.
+        this.declaredPrereqs = newSet;
+        if (isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            // calculate the diffs
+            Set<String> removed = new TreeSet<>(oldSet), added = new TreeSet<>(newSet), unmodified = new TreeSet<>(oldSet);
+            removed.removeAll(newSet);
+            added.removeAll(oldSet);
+            unmodified.removeAll(removed);
+            // trace the diffs
+            if (unmodified.size() > 0)
+                debug(this, tc, "Prereq declarations unmodified:", unmodified);
+            if (removed.size() > 0)
+                debug(this, tc, "Prereq declarations removed:", removed);
+            if (added.size() > 0)
+                debug(this, tc, "Prereq declarations added:", added);
+        }
+        if (isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.exit(this, tc, "modified");
     }
 
     @Deactivate
@@ -127,15 +160,19 @@ public class ApplicationPrereqMonitor implements ConfigurationListener, Introspe
             } catch (ConfigurationOutOfDateException cod) {
                 // AutoFFDC this instead
             }
-            // The config received is not reliable,
-            // so don't use it for error detection.
-            configModified = true;
+            // The config received is not reliable, so don't use it for error detection.
+            configInconsistent = true;
             return "Error converting servicePid: " + servicePid;
         }
 
     }
 
-    @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE,
+               // The name must differ from the name in the metatype, so that cardinality.minimum does not apply
+               name = "candidateApplicationPrereq",
+               unbind = "unsetApplicationPrereq",
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
     synchronized void setApplicationPrereq(ApplicationPrereq applicationPrereq) {
         realizedPrereqs.add(applicationPrereq.getApplicationPrereqID());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -144,8 +181,8 @@ public class ApplicationPrereqMonitor implements ConfigurationListener, Introspe
                          + "\n  Realized:" + realizedPrereqs);
         }
 
-        // If the configuration has been modified we cannot reliably detect surplus Prereqs.
-        if (configModified)
+        // If the configuration update processing failed we cannot reliably detect surplus Prereqs.
+        if (configInconsistent)
             return;
 
         // Check for unexpected Prereqs.
@@ -178,20 +215,6 @@ public class ApplicationPrereqMonitor implements ConfigurationListener, Introspe
     }
 
     @Override
-    public void configurationEvent(ConfigurationEvent event) {
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, this + " Configuration changed, stop reporting invalid prereqs");
-        }
-
-        // It looks like we don't have permission to introspect all configuration events.
-        // Eg. [WARNING ] CWWKG0101W: The configuration with the persisted identity (PID) com.ibm.ws.app.prereqmonitor is bound to the bundle com.ibm.ws.app.manager. The configuration is not visible to other bundles.
-        // So we have to assume that this.declaredPrereqs is no longer current.
-
-        configModified = true;
-    }
-
-    @Override
     public String toString() {
         return ApplicationPrereqMonitor.class.getName() + "#" + version;
     }
@@ -208,7 +231,7 @@ public class ApplicationPrereqMonitor implements ConfigurationListener, Introspe
     }
 
     @Override
-    public void introspect(PrintWriter out) throws Exception {
+    public synchronized void introspect(PrintWriter out) throws Exception {
         Stream.concat(declaredPrereqs.stream(),
                       realizedPrereqs.stream()).sorted().distinct().sequential().peek(s -> out.print('[')).peek(s -> out.print(declaredPrereqs.contains(s) ? 'D' : ' ')).peek(s -> out.print(realizedPrereqs.contains(s) ? 'R' : ' ')).peek(s -> out.print("] ")).forEach(out::println);
 

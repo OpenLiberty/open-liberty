@@ -1,0 +1,200 @@
+### Open Liberty Stable Features for MVT Testing
+#
+## Purpose of this file:
+#
+# This file records stable feature versions.  Any feature version listed in this file are skipped during LITE mode testing when doing feature startup tests.
+#
+# This file will likely be used in the future for other MVT testing.
+#
+# All current features Å\ including client, non-public, and test features Å\ should be listed, even though
+# feature startup tests are not run on client, non-public, and test features.
+#
+# This file should be updated at major releases.  The current heuristic is to mark all but the last version of each feature is stable, then adjust the
+# setting as appropriate based on the actual stability of each feature.
+#
+## Overall formatting:
+#
+# Blank lines are ignored.  All white space characters collapse into either a
+# single character or a line end delimiter.
+#
+# The file supports comments delimited with a Åe#Åf character.  In the example,
+# the full list of available versions is present, with Åe#Åf placed after the
+# last stable version.
+#
+## Line formatting:
+#
+# The format for a single line is:
+#     weight short-name version* # version*
+#
+# This makes use of the comment delimiter to list all versions, which having
+# parsing only recognize as stable the versions before the comment.
+#
+# For example:
+#     null jdbc 4.0 4.1 # 4.2 4.3
+#
+# ÅgweightÅh is a currently unused cost weighing of the feature relative to other
+# features. Weight currently has a value of null in all cases.
+#
+# A feature which has no stable versions should be represented by placing the Åe#Åf
+# after the name.  For example:
+#     null ldapRegistry # 3.0
+#
+# Each of the "build.featureStart.part<x>_fat" FAT test buckets writes a report
+# of all features present in the FAT test server image.  The report is written
+# to the FAT standard output.  The report may be used to audit the stable features
+# list.
+
+# START START START
+
+null acmeCA # 2.0                         #
+null adminCenter # 1.0                    #
+null appAuthentication 2.0 # 3.0          #
+null appAuthorization 2.0 # 2.1           #
+null appClientSupport 1.0 # 2.0           # isClient
+null appSecurity 1.0 2.0 3.0 4.0 # 5.0    #
+null appSecurityClient # 1.0              # isClient
+null arquillian-support # 1.0             # isTest
+null arquillian-support-jakarta # 2.1     # isTest
+null audit # 1.0                          #
+null batch 1.0 2.0 # 2.1                  #
+null batchManagement # 1.0                #
+null beanValidation 1.1 2.0 # 3.0         #
+null bells # 1.0                          #
+null cdi 1.2 2.0 3.0 # 4.0                #
+null checkpoint # 1.0                     #
+null cloudant # 1.0                       #
+null componenttest 1.0 # 2.0              # isTest
+null concurrent 1.0 2.0 # 3.0             #
+null connectors 2.0 # 2.1                 #
+null connectorsInboundSecurity # 2.0      #
+null constrainedDelegation # 1.0          #
+null couchdb # 1.0                        #
+null data # 1.0                           #
+null distributedMap # 1.0                 #
+null ejb # 3.2                            #
+null ejbHome # 3.2                        #
+null ejbLite # 3.2                        #
+null ejbPersistentTimer # 3.2             #
+null ejbRemote # 3.2                      #
+null el # 3.0                             #
+null enterpriseBeans # 4.0                #
+null enterpriseBeansHome # 4.0            #
+null enterpriseBeansLite # 4.0            #
+null enterpriseBeansPersistentTimer # 4.0 #
+null enterpriseBeansRemote # 4.0          #
+null eventLogging # 1.0                   #
+null explore # 1.0                        # isPrivate
+null expressionLanguage 4.0 # 5.0         #
+null faces 3.0 # 4.0                      #
+null facesContainer 3.0 # 4.0             #
+null federatedRegistry # 1.0              #
+null grpc # 1.0                           #
+null grpcClient # 1.0                     # isClient
+null http2clienttest # 1.0                # isClient isTest
+null j2eeManagement # 1.1                 #
+null jacc # 1.5                           #
+null jakartaee 8.0 9.1 1# 0.0             #
+null jakartaeeClient 9.1 1# 0.0           # isClient
+null jaspic # 1.1                         #
+null javaBatch # 1.0                      # isPrivate
+null javaMail 1.5 # 1.6                   #
+null javaee 7.0  # 8.0                    #
+null javaeeClient 7.0 # 8.0               # isClient
+null jaxb # 2.2                           #
+null jaxrs 2.0 # 2.1                      #
+null jaxrsClient 2.0 # 2.1                # isClient
+null jaxws # 2.2                          #
+null jca # 1.7                            #
+null jcaInboundSecurity # 1.0             #
+null jcacheContainer # 1.1                #
+null jdbc 4.0 4.1 4.2 # 4.3               #
+null jms # 2.0                            #
+null jmsMdb # 3.2                         #
+null jndi # 1.0                           #
+null jpa 2.1 # 2.2                        #
+null jpaContainer 2.1 # 2.2               #
+null jsf 2.2 # 2.3                        #
+null jsfContainer 2.2 # 2.3               #
+null json # 1.0                           #
+null jsonb 1.0 2.0 # 3.0                  #
+null jsonbContainer 1.0 2.0 # 3.0         #
+null jsonp 1.0 1.1 2.0  # 2.1             #
+null jsonpContainer 1.1 2.0 # 2.1         #
+null jsp 2.2 # 2.3                        #
+null jwt # 1.0                            #
+null jwtSso # 1.0                         #
+null ldapRegistry # 3.0                   #
+null localConnector # 1.0                 #
+null logstashCollector # 1.0              #
+null mail 2.0 # 2.1                       #
+null managedBeans # 1.0                   #
+null managedBeans # 2.0                   #
+null mdb 3.2 # 4.0                        #
+null messaging 3.0 # 3.1                  #
+null messagingClient # 3.0                # isClient
+null messagingSecurity # 3.0              #
+null messagingServer # 3.0                #
+null microProfile 1.0 1.2 1.3 1.4 2.0 2.1 2.2 3.0 3.2 3.3 4.0 4.1 5.0 # 6.0 #
+null mongodb # 2.0                        #
+null monitor # 1.0                        #
+null mpConfig 1.1 1.2 1.3 1.4 2.0 # 3.0   #
+null mpContextPropagation 1.0 1.2 # 1.3   #
+null mpFaultTolerance 1.0 1.1 2.0 2.1 3.0 # 4.0 #  
+null mpGraphQL 1.0 # 2.0                  #
+null mpHealth 1.0 2.0 2.1 2.2 3.0 3.1 # 4.0 #  
+null mpJwt 1.0 1.1 1.2 2.0 # 2.1          #
+null mpLRA # 1.0                          #
+null mpLRACoordinator # 1.0               #
+null mpMetrics 1.0 1.1 2.0 2.2 2.3 3.0 4.0 # 5.0 #  
+null mpOpenAPI 1.0 1.1 2.0 3.0 # 3.1      #
+null mpOpenTracing 1.0 1.1 1.2 1.3 2.0 # 3.0 #  
+null mpReactiveMessaging # 1.0            #
+null mpReactiveStreams # 1.0              #
+null mpRestClient 1.0 1.1 1.2 1.31. 2.0 # 3.0 # isClient 
+null mpTelemetry # 1.0                    #
+null netty # 1.0                          #
+null noShip # 1.0                         #
+null nosql # 1.0                          #
+null oauth # 2.0                          #
+null openapi # 3.1                        #
+null openid # 2.0                         #
+null openidConnectClient # 1.0            # isClient
+null openidConnectServer # 1.0            #
+null opentracing 1.0 1.1 1.2 1.3 # 2.0    #
+null osgiConsole # 1.0                    #
+null pages 3.0 # 3.1                      #
+null passwordUtilities 1.0 # 1.1          #
+null persistence 3.0 # 3.1                #
+null persistenceContainer 3.0 # 3.1       #
+null persistentExecutor # 1.0             #
+null requestTiming # 1.0                  #
+null restConnector # 2.0                  #
+null restfulWS 3.0 # 3.1                  #
+null restfulWSClient 3.0 # 3.1            # isClient
+null restfulWSLogging # 3.0               #
+null samlWeb # 2.0                        #
+null scim # 2.0                           #
+null serverConfig # 1.0                   # isPrivate
+null servlet 3.1 4.0 5.0 # 6.0            #
+null sessionCache # 1.0                   #
+null sessionDatabase # 1.0                #
+null sipServlet # 1.1                     #
+null socialLogin # 1.0                    #
+null spnego # 1.0                         #
+null springBoot 1.5 # 2.0                 #
+null ssl # 1.0                            #
+null timedexit # 1.0                      # isTest
+null transportSecurity # 1.0              #
+null wasJmsClient # 2.0                   # isClient
+null wasJmsSecurity # 1.0                 #
+null wasJmsServer # 1.0                   #
+null webCache # 1.0                       #
+null webProfile 7.0 8.0 9.1 1# 0.0        #
+null websocket 1.0 1.1 2.0 # 2.1          #
+null wsAtomicTransaction # 1.2            #
+null wsSecurity # 1.1                     #
+null wsSecuritySaml # 1.1                 #
+null xmlBinding 3.0 # 4.0                 #
+null xmlWS 3.0 # 4.0                      #
+
+# END END END
