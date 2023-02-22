@@ -13,7 +13,6 @@
 package com.ibm.ws.transaction.fat.util;
 
 import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -33,22 +32,8 @@ public class TxTestContainerSuite extends TestContainerSuite {
         if (testContainer == null) {
           testContainer = DatabaseContainerFactory.createType(databaseContainerType);
         }
-
-        switch (databaseContainerType) {
-          case Derby:
-          case SQLServer:
-            testContainer.waitingFor(Wait.forHealthcheck()).start();
-            break;
-          case Oracle:
-            testContainer.waitingFor(Wait.forLogMessage(".*DATABASE IS READY TO USE!.*", 1)).start();
-            break;
-          case Postgres:
-            testContainer.waitingFor(Wait.forLogMessage(".*database system is ready.*", 2)).start();
-            break;
-          default:
-            testContainer.start();
-            break;
-        }
+        testContainer.setStartupAttempts(2);
+        testContainer.start();
         Log.info(TxTestContainerSuite.class, "beforeSuite", "started test container of type: " + databaseContainerType);
     }
 
