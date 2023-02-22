@@ -26,6 +26,6 @@
 #-----------------------------------------------------------------------------------------------------------------------------
 # Message prefix block for io.openliberty.microprofile.telemetry.1.0.internal: CWMOT5100 - CWMOT5199
 
-CWMOT5100.tracing.is.disabled=CWMOT5100I: The MicroProfile Telemetry Tracing feature is enabled but has not been configured to create traces for the {0} application.
-CWMOT5100.tracing.is.disabled.explanation=The MicroProfile Telemetry Tracing feature needs configuration to create traces and export them to a tracing system.
-CWMOT5100.tracing.is.disabled.useraction=To enable tracing, specify otel.sdk.disabled=false in any of the configuration sources available via MicroProfile Config. Further configuration may be required to allow MicroProfile Telemetry Tracing feature to export traces to your tracing system.
+CWMOT5100.tracing.is.disabled=CWMOT5100I: The MicroProfile Telemetry Tracing feature is enabled but not configured to generate traces for the {0} application.
+CWMOT5100.tracing.is.disabled.explanation=CWMOT5100.tracing.is.disabled.explanation=The MicroProfile Telemetry Tracing feature needs to be configured to create traces and export them to a tracing system.
+CWMOT5100.tracing.is.disabled.useraction=To enable tracing, specify otel.sdk.disabled=false in any of the configuration sources accessible through MicroProfile Config. Further configuration might be required to allow the MicroProfile Telemetry Tracing feature to export traces to your tracing system.

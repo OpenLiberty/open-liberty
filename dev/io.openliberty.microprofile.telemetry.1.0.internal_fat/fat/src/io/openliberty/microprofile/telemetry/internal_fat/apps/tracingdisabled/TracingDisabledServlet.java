@@ -31,7 +31,7 @@ public class TracingDisabledServlet extends FATServlet {
     OpenTelemetry openTelemetry;
 
     @Test
-    public void testCreateSpan() {
+    public void testTelemetryDisabled() {
         assertEquals(openTelemetry.getTracerProvider(), TracerProvider.noop());
     }
 }
