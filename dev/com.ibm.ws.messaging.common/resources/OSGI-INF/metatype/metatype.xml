@@ -13,8 +13,8 @@
  -->
 <metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
                    xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0">
-    <!-- Let config processing have a say in the properties provided to the start barrier service -->
-    <OCD id="com.ibm.ws.messaging.lifecycle.SingletonsReady" description="internal use only" name="internal">
+    <!-- Let config processing have a say in the properties provided to the SingletonsReady and SingletonMonitor services -->
+    <OCD id="com.ibm.ws.messaging.lifecycle.singletons" description="internal use only" name="internal">
         <!-- Config processing populates this attribute with a list of PIDs of every configured messaging-singleton -->
         <AD id="singletonDeclarations" name="internal" description="internal use only"
             type="String" cardinality="1000000" ibm:type="pid" ibm:final="true"
@@ -32,8 +32,9 @@
             type="String" ibm:final="true" cardinality="0"
             default="${servicePidOrFilter(singletonDeclarations)}" />
     </OCD>
-    <!-- SigletonsReady should be a singleton, declare it as a factoryPid to stop it being initialised too soon -->
-    <Designate factoryPid="com.ibm.ws.messaging.lifecycle.SingletonsReady"><Object ocdref="com.ibm.ws.messaging.lifecycle.SingletonsReady" /></Designate>
+    <!-- SingletonsReady should be a singleton, but declare it as a factoryPid to stop it being initialised too soon
+         This will also affect the construction of SingletonMonitor. -->
+    <Designate factoryPid="com.ibm.ws.messaging.lifecycle.singletons"><Object ocdref="com.ibm.ws.messaging.lifecycle.singletons" /></Designate>
 
     <OCD id="com.ibm.ws.messaging.lifecycle.SingletonAgent" name="internal" description="internal use only">
         <AD id="id" name="internal" description="internal use only" type="String" required="true" />
