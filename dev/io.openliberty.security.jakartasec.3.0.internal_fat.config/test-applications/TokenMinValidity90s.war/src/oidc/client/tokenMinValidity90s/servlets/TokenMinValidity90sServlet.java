@@ -10,7 +10,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package oidc.client.tokenMinValidity30s.servlets;
+package oidc.client.tokenMinValidity90s.servlets;
 
 import jakarta.annotation.security.DeclareRoles;
 import jakarta.security.enterprise.authentication.mechanism.http.OpenIdAuthenticationMechanismDefinition;
@@ -22,19 +22,19 @@ import jakarta.servlet.annotation.ServletSecurity;
 import jakarta.servlet.annotation.WebServlet;
 import oidc.client.base.servlets.BaseServlet;
 
-@WebServlet("/TokenMinValidity30sServlet")
+@WebServlet("/TokenMinValidity90sServlet")
 @OpenIdAuthenticationMechanismDefinition(providerURI = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1",
                                          clientId = "client_1",
                                          clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger",
                                          claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub", callerGroupsClaim = "groupIds"),
                                          redirectURI = "${baseURL}/Callback",
                                          jwksReadTimeoutExpression = "${openIdConfig.jwksReadTimeoutExpression}",
-                                         tokenMinValidity = 30 * 1000,
+                                         tokenMinValidity = 90 * 1000,
                                          prompt = PromptType.LOGIN,
                                          logout = @LogoutDefinition(accessTokenExpiry = true, identityTokenExpiry = true))
 @DeclareRoles("all")
 @ServletSecurity(@HttpConstraint(rolesAllowed = "all"))
-public class TokenMinValidity30sServlet extends BaseServlet {
+public class TokenMinValidity90sServlet extends BaseServlet {
 
     private static final long serialVersionUID = 1L;
 
