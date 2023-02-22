@@ -63,7 +63,12 @@ public class BasicLogoutServlet extends BaseServlet {
         }
 
         request.logout();
-        ServletLogger.printLine(outputStream, "BasicLogoutServlet: End");
+        // In some cases the response is already committed before we return to the app, so, catch that specific exception on the print that follows
+        try {
+            ServletLogger.printLine(outputStream, "BasicLogoutServlet: End");
+        } catch (IOException io) {
+            System.out.println("Ignoring an IO exception due to the already closed stream when we try to log that the logout app has completed.");
+        }
 
     }
 }
