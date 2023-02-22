@@ -728,12 +728,19 @@ public class VisTest extends FATServletClient {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        if (server != null) {
-            server.stopServer();
+
+        //We put this in an AutoCloseable because try-with-resource will order the exceptions correctly.
+        //That means an exception from stopServer will by the primary exception, and any errors from 
+        //uninstallSystemFeature will be recorded as suppressed exceptions.
+        AutoCloseable uninstallFeatures = () -> {
+            server.uninstallSystemFeature("visTest-1.2");
+            server.uninstallSystemFeature("visTest-3.0");
+        };
+        
+        try (AutoCloseable c = uninstallFeatures) {
+            if (server != null) {
+                server.stopServer();
+            }
         }
-
-        server.uninstallSystemFeature("visTest-1.2");
-        server.uninstallSystemFeature("visTest-3.0");
     }
-
 }
