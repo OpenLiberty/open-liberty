@@ -283,6 +283,7 @@ task autoFVT {
       from project.file('publish/files'), new File(publishDir, 'files')
       include '**/*'
       into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+      duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 
     // Copy the publish directory (minus the 'files' directory)
