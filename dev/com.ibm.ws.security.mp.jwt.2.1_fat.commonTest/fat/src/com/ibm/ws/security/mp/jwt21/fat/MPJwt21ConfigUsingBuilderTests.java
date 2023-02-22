@@ -17,6 +17,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.fat.common.jwt.utils.JwtTokenBuilderUtils;
 import com.ibm.ws.security.fat.common.mp.jwt.MPJwt21FatConstants;
 import com.ibm.ws.security.fat.common.mp.jwt.sharedTests.MPJwt21MPConfigTests;
@@ -26,6 +27,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
@@ -61,9 +63,10 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
+@SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipForRepeat({ MPJwt21FatConstants.MP_JWT_11, MPJwt21FatConstants.MP_JWT_12, MPJwt21FatConstants.MP_JWT_20 })
+@SkipForRepeat({ EmptyAction.ID })
 public class MPJwt21ConfigUsingBuilderTests extends MPJwt21MPConfigTests {
 
     protected static Class<?> thisClass = MPJwt21ConfigUsingBuilderTests.class;
@@ -91,7 +94,7 @@ public class MPJwt21ConfigUsingBuilderTests extends MPJwt21MPConfigTests {
 
         setUpAndStartBuilderServer(jwtBuilderServer, "server_using_buildApp.xml", false);
 
-        setUpAndStartRSServerForApiTests(resourceServer, jwtBuilderServer, "rs_server_orig_2_1.xml", false);
+        setUpAndStartRSServerForApiTests(resourceServer, jwtBuilderServer, "rs_server_orig.xml", false);
 
         skipRestoreServerTracker.addServer(resourceServer);
 
@@ -99,7 +102,6 @@ public class MPJwt21ConfigUsingBuilderTests extends MPJwt21MPConfigTests {
 
     /***************************************************** Tests ****************************************************/
 
-    // TODO - do we need the parms passed to genericConfigTest?
     /********************************* Start Token Age tests *********************************/
     /**
      * Tests specified, but longer token_age in config
@@ -109,7 +111,7 @@ public class MPJwt21ConfigUsingBuilderTests extends MPJwt21MPConfigTests {
      */
     @Test
     public void MPJwt21ConfigUsingBuilderTests_Default_TokenAge() throws Exception {
-        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_orig_2_1.xml");
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_orig.xml");
         // by default the test tooling puts the token in Authorization header using "Bearer"
         genericConfigTest(resourceServer, MPJwt21FatConstants.JWT_BUILDER_DEFAULT_ID, 5, null);
 
@@ -139,7 +141,49 @@ public class MPJwt21ConfigUsingBuilderTests extends MPJwt21MPConfigTests {
     /********************************** End Clock Skew tests *********************************/
 
     /********************************* Start (new encrypt attr) tests *********************************/
-    // keyManagementKeyAlias in the mpJwt config is not new and those tests are covered in the MPJwt12ConfigUsingBuilderTests in the com.ibm.ws.security.mp.jwt.1.2_fat.commonTest project
+    @Test
+    public void MPJwt21ConfigUsingBuilderTests_Empty_DecryptAlg() throws Exception {
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_DecryptAlg_empty.xml");
+        genericConfigTest(resourceServer, "sign_RS256_enc_RS256", 0, null);
+
+    }
+
+    @Test
+    public void MPJwt21ConfigUsingBuilderTests_RSA_OAEP_MatchToken_DecryptAlg() throws Exception {
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_DecryptAlg_RSA_OAEP.xml");
+        genericConfigTest(resourceServer, "sign_RS256_enc_RS256", 0, null);
+
+    }
+
+    // TODO (future) The Liberty build only supports RSA-OAEP - this test can be enabled once it supports RSA-OAEP-256    @Test
+    //    public void MPJwt21ConfigUsingBuilderTests_RSA_OAEP_MismatchToken_DecryptAlg() throws Exception {
+    //        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_DecryptAlg_RSA_OAEP.xml");
+    //        genericConfigTest(resourceServer, "sign_RS256_enc_RS256_RSA_OAEP_256", 0, setEncryptAlgMismatchExpectations(resourceServer, JwtConstants.DEFAULT_KEY_MGMT_KEY_ALG));
+    //
+    //    }
+    //
+    // TODO (future) The Liberty build only supports RSA-OAEP - this test can be enabled once it supports RSA-OAEP-256
+    //    @Test
+    //    public void MPJwt21ConfigUsingBuilderTests_RSA_OAEP_256_MatchToken_DecryptAlg() throws Exception {
+    //        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_DecryptAlg_RSA_OAEP_256.xml");
+    //        genericConfigTest(resourceServer, "sign_RS256_enc_RS256_RSA_OAEP_256", 0, null);
+    //
+    //    }
+
+    @Test
+    public void MPJwt21ConfigUsingBuilderTests_RSA_OAEP_256_MismatchToken_DecryptAlg() throws Exception {
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_DecryptAlg_RSA_OAEP_256.xml");
+        genericConfigTest(resourceServer, "sign_RS256_enc_RS256", 0, setEncryptAlgMismatchExpectations(resourceServer, JwtConstants.KEY_MGMT_KEY_ALG_256));
+
+    }
+
+    @Test
+    public void MPJwt21ConfigUsingBuilderTests_Invalid_DecryptAlg() throws Exception {
+        resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_DecryptAlg_Invalid.xml");
+        genericConfigTest(resourceServer, "sign_RS256_enc_RS256", 0, setEncryptAlgMismatchExpectations(resourceServer, "SomeString"));
+
+    }
+
     /********************************* End (new encrypt attr) tests ***********************************/
 
 }

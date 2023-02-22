@@ -28,8 +28,8 @@
 		id="mpJwt_1"
         authFilterRef="mpJwtAppAuthFilter"
 		jwksUri="${mpJwt_jwksUri}"
-		sslRef="rsa_trust"
-		keyName="rsacert"
+		sslRef="ssl_allSigAlg"
+		keyName="rs256"
 		issuer="testIssuer">
 	</mpJwt>
 

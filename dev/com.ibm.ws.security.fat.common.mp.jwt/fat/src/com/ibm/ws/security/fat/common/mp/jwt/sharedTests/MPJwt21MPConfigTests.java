@@ -25,7 +25,9 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
+import com.ibm.ws.security.fat.common.jwt.JwtConstants;
 import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwt12FatConstants;
 import com.ibm.ws.security.fat.common.mp.jwt.MPJwt21FatConstants;
 import com.ibm.ws.security.fat.common.mp.jwt.utils.MP21ConfigSettings;
 import com.ibm.ws.security.fat.common.mp.jwt.utils.MPJwtAppSetupUtils;
@@ -240,7 +242,13 @@ public class MPJwt21MPConfigTests extends MPJwtMPConfigTests {
      *            - issuer value to add to the properties file
      * @return - return the microprofile-config.properties file content
      */
+
     public static String buildMPConfigFileContent(MP21ConfigSettings mpConfigSettings, int rawTokenAge, int rawClockSkew, String decryptAlg) {
+
+        return buildMPConfigFileContent(mpConfigSettings, rawTokenAge, rawClockSkew, decryptAlg, mpConfigSettings.getAlgorithm(), mpConfigSettings.getDecryptKeyLoc());
+    }
+
+    public static String buildMPConfigFileContent(MP21ConfigSettings mpConfigSettings, int rawTokenAge, int rawClockSkew, String decryptAlg, String alg, String decryptKeyLoc) {
 
         String tokenAge = Integer.toString(rawTokenAge);
         String clockSkew = Integer.toString(rawClockSkew);
@@ -252,7 +260,7 @@ public class MPJwt21MPConfigTests extends MPJwtMPConfigTests {
                + System.lineSeparator() + "mp.jwt.token.header=" + mpConfigSettings.getHeader() + System.lineSeparator()
                + "mp.jwt.token.cookie=" + mpConfigSettings.getCookie() + System.lineSeparator() + "mp.jwt.verify.audiences=" + mpConfigSettings.getAudience()
                + System.lineSeparator() + "mp.jwt.verify.publickey.algorithm="
-               + mpConfigSettings.getAlgorithm() + System.lineSeparator() + "mp.jwt.decrypt.key.location=" + mpConfigSettings.getDecryptKeyLoc() + System.lineSeparator()
+               + alg + System.lineSeparator() + "mp.jwt.decrypt.key.location=" + decryptKeyLoc + System.lineSeparator()
                + MPJwt21FatConstants.TOKEN_AGE_KEY + "=" + tokenAge + System.lineSeparator()
                + MPJwt21FatConstants.CLOCK_SKEW_KEY + "=" + clockSkew + System.lineSeparator()
                + MPJwt21FatConstants.DECRYPT_KEY_ALG_KEY + "=" + decryptAlg + System.lineSeparator();
@@ -339,6 +347,40 @@ public class MPJwt21MPConfigTests extends MPJwtMPConfigTests {
             setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MPJwt21FatConstants.SHORT_CLOCK_SKEW_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
                                                                  buildMPConfigFileContent(mpConfigSettings, 1, 1,
                                                                                           MP21ConfigSettings.DefaultKeyMgmtKeyAlg));
+
+            // KeyMgmtKeyAlg test apps
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MPJwt21FatConstants.DEFAULT_KEYMGMTKEYALG_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(mpConfigSettings, MP21ConfigSettings.DefaultTokenAge, MP21ConfigSettings.DefaultClockSkew,
+                                                                                        MP21ConfigSettings.DefaultKeyMgmtKeyAlg, MPJwt12FatConstants.SIGALG_RS256,
+                                                                                        fileLoc + JwtKeyTools.getPrivateKeyFileNameForAlg(MPJwt12FatConstants.SIGALG_RS256)));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MPJwt21FatConstants.DEFAULT_KEYMGMTKEYALG_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(mpConfigSettings, MP21ConfigSettings.DefaultTokenAge, MP21ConfigSettings.DefaultClockSkew,
+                                                                                          MP21ConfigSettings.DefaultKeyMgmtKeyAlg, MPJwt12FatConstants.SIGALG_RS256,
+                                                                                          fileLoc + JwtKeyTools.getPrivateKeyFileNameForAlg(MPJwt12FatConstants.SIGALG_RS256)));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MPJwt21FatConstants.MATCH_KEYMGMTKEYALG_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(mpConfigSettings, MP21ConfigSettings.DefaultTokenAge, MP21ConfigSettings.DefaultClockSkew,
+                                                                                        MPJwt12FatConstants.DEFAULT_KEY_MGMT_KEY_ALG, MPJwt12FatConstants.SIGALG_RS256,
+                                                                                        fileLoc + JwtKeyTools.getPrivateKeyFileNameForAlg(MPJwt12FatConstants.SIGALG_RS256)));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MPJwt21FatConstants.MATCH_KEYMGMTKEYALG_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(mpConfigSettings, MP21ConfigSettings.DefaultTokenAge, MP21ConfigSettings.DefaultClockSkew,
+                                                                                          MPJwt12FatConstants.DEFAULT_KEY_MGMT_KEY_ALG, MPJwt12FatConstants.SIGALG_RS256,
+                                                                                          fileLoc + JwtKeyTools.getPrivateKeyFileNameForAlg(MPJwt12FatConstants.SIGALG_RS256)));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MPJwt21FatConstants.MISMATCH_KEYMGMTKEYALG_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(mpConfigSettings, MP21ConfigSettings.DefaultTokenAge, MP21ConfigSettings.DefaultClockSkew,
+                                                                                        MPJwt12FatConstants.KEY_MGMT_KEY_ALG_256, MPJwt12FatConstants.SIGALG_RS256,
+                                                                                        fileLoc + JwtKeyTools.getPrivateKeyFileNameForAlg(MPJwt12FatConstants.SIGALG_RS256)));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MPJwt21FatConstants.MISMATCH_KEYMGMTKEYALG_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(mpConfigSettings, MP21ConfigSettings.DefaultTokenAge, MP21ConfigSettings.DefaultClockSkew,
+                                                                                          MPJwt12FatConstants.KEY_MGMT_KEY_ALG_256, MPJwt12FatConstants.SIGALG_RS256,
+                                                                                          fileLoc + JwtKeyTools.getPrivateKeyFileNameForAlg(MPJwt12FatConstants.SIGALG_RS256)));
+            setupUtils.deployRSServerMPConfigInAppInMetaInfApp(server, MPJwt21FatConstants.INVALID_KEYMGMTKEYALG_IN_CONFIG_IN_META_INF_ROOT_CONTEXT,
+                                                               buildMPConfigFileContent(mpConfigSettings, MP21ConfigSettings.DefaultTokenAge, MP21ConfigSettings.DefaultClockSkew,
+                                                                                        "SomeString", MPJwt12FatConstants.SIGALG_RS256,
+                                                                                        fileLoc + JwtKeyTools.getPrivateKeyFileNameForAlg(MPJwt12FatConstants.SIGALG_RS256)));
+            setupUtils.deployRSServerMPConfigInAppUnderWebInfApp(server, MPJwt21FatConstants.INVALID_KEYMGMTKEYALG_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT,
+                                                                 buildMPConfigFileContent(mpConfigSettings, MP21ConfigSettings.DefaultTokenAge, MP21ConfigSettings.DefaultClockSkew,
+                                                                                          "SomeString", MPJwt12FatConstants.SIGALG_RS256,
+                                                                                          fileLoc + JwtKeyTools.getPrivateKeyFileNameForAlg(MPJwt12FatConstants.SIGALG_RS256)));
 
         } catch (Exception e) {
             Log.info(thisClass, "MPJwtAltConfig", "Hit an exception updating the war file" + e.getMessage());
@@ -434,13 +476,12 @@ public class MPJwt21MPConfigTests extends MPJwtMPConfigTests {
     public void standard21TestFlow(String builder, String testUrl, String className, int sleepTime, Expectations expectations) throws Exception {
 
         String builtToken = getToken(builder);
-//        if (tokenAge == 1 || clockSkew == 1) {
+
         Thread.sleep(sleepTime * 1000);
-//        }
+
         useToken(builtToken, testUrl, className, expectations);
     }
 
-    // TODO do we need the parms?  So far the answer is not, but after adding more tests, we might need them
     public void useToken(String builtToken, String testUrl, String className, Expectations expectations) throws Exception {
 
         WebClient webClient = actions.createWebClient();
@@ -463,21 +504,6 @@ public class MPJwt21MPConfigTests extends MPJwtMPConfigTests {
             builder = MPJwt21FatConstants.SIGALG_RS256;
         }
         return actions.getJwtTokenUsingBuilder(_testName, jwtBuilderServer, builder);
-
-    }
-
-    /**
-     * Set expectations for tests that have bad Header values
-     *
-     * @return Expectations
-     * @throws Exception
-     */
-    public Expectations setBadHeaderValueExpectations(LibertyServer server, String testUrl, String className) throws Exception {
-
-        Expectations expectations = setGoodAppExpectations(testUrl, className);
-        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5528W_BAD_HEADER_VALUE_IN_MP_CONFIG, "Message.log did not contain an error indicating a problem with the value specified for mp.jwt.token.header in the microprofile-config.properties file."));
-
-        return expectations;
 
     }
 
@@ -508,227 +534,25 @@ public class MPJwt21MPConfigTests extends MPJwtMPConfigTests {
 
     }
 
-    /**
-     * Sets expectations to check when the decryption key cannot be found
-     *
-     * @param server - server whose logs will be searched
-     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
-     * @return Expectations - built expectations
-     * @throws Exception
-     */
-    public Expectations setEncryptMissingKeyExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
-        Expectations expectations = setAllBadEncryptExpectations(server, extraMsgs);
-        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6066E_JWE_DECRYPTION_KEY_MISSING, "Messagelog did not contain an exception indicating that a JWE decryption key was missing."));
-        return expectations;
+    public Expectations setEncryptAlgMismatchExpectations(LibertyServer server, String alg) throws Exception {
 
-    }
-
-    /**
-     * Sets expectations to check when the keyManagementKeyAlias is not set
-     *
-     * @param server - server whose logs will be searched
-     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
-     * @return Expectations - built expectations
-     * @throws Exception
-     */
-    public Expectations setEncryptPlainTextKeyExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
-        Expectations expectations = setAllBadEncryptExpectations(server, extraMsgs);
-        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6062E_PLAINTEXT_KEY, "Messagelog did not contain an exception indicating that the mp.jwt.decrypt.key.location contained a plaintext key."));
-        return expectations;
-
-    }
-
-    /**
-     * Sets expectations to check when the keyManagementKeyAlias is not set
-     *
-     * @param server - server whose logs will be searched
-     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
-     * @return Expectations - built expectations
-     * @throws Exception
-     */
-    public Expectations setEncryptMismatchExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
-        Expectations expectations = setAllBadEncryptExpectations(server, extraMsgs);
-        expectations.addExpectation(new ServerMessageExpectation(server, "javax.crypto.AEADBadTagException", "Messagelog did not contain an exception indicating a tag mismatch."));
-        return expectations;
-
-    }
-
-    /**
-     * Sets expectations to check when the keyManagementKeyAlias is not set
-     *
-     * @param server - server whose logs will be searched
-     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
-     * @return Expectations - built expectations
-     * @throws Exception
-     */
-    public Expectations setEncryptMismatchKeyTypeExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
-        Expectations expectations = setAllBadEncryptExpectations(server, extraMsgs);
-        expectations.addExpectation(new ServerMessageExpectation(server, "java.lang.ClassCastException", "Messagelog did not contain an exception indicating a classcast exception due to the key type."));
-        return expectations;
-
-    }
-
-    /**
-     * Sets expectations to check when the keyManagementKeyAlias is not valid
-     *
-     * @param server - server whose logs will be searched
-     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
-     * @return Expectations - built expectations
-     * @throws Exception
-     */
-    public Expectations setEncryptInvalidKeyTypeExpectations(LibertyServer server, String keyName, boolean extraMsgs) throws Exception {
-        Expectations expectations = setAllBadEncryptExpectations(server, extraMsgs);
-        expectations.addExpectation(new ServerMessageExpectation(server, "alias.*" + keyName
-                                                                         + ".*is not present", "Messagelog did not contain an exception indicating that the key could not be found."));
-        return expectations;
-
-    }
-
-    /**
-     * Sets expectations to check when the keyManagementKeyAlias is not valid
-     *
-     * @param server - server whose logs will be searched
-     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
-     * @return Expectations - built expectations
-     * @throws Exception
-     */
-    public Expectations setEncryptShortKeyTypeExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
-        Expectations expectations = setAllBadEncryptExpectations(server, extraMsgs);
-        expectations.addExpectation(new ServerMessageExpectation(server, "InvalidKeyException.*bits or larger MUST be used with the all JOSE RSA algorithms", "Messagelog did not contain an exception indicating that the key could not be found."));
-        return expectations;
-
-    }
-
-    /**
-     * Sets expectations to check when the keyManagementKeyAlias is not valid
-     *
-     * @param server - server whose logs will be searched
-     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
-     * @return Expectations - built expectations
-     * @throws Exception
-     */
-    public Expectations setNoEncryptNotJWSTokenExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
-        Expectations expectations = setBadEncryptExpectations(server, extraMsgs);
-        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6063E_JWS_REQUIRED_BUT_TOKEN_NOT_JWS, "Messagelog did not contain an exception indicating that the token is NOT in JWS format."));
-        return expectations;
-
-    }
-
-    /**
-     * Sets expectations to check when the keyManagementKeyAlias is not valid
-     *
-     * @param server - server whose logs will be searched
-     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
-     * @return Expectations - built expectations
-     * @throws Exception
-     */
-    public Expectations setEncryptNotJWETokenExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
-        Expectations expectations = setBadEncryptExpectations(server, extraMsgs);
-        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6064E_JWE_REQUIRED_BUT_TOKEN_NOT_JWE, "Messagelog did not contain an exception indicating that the token is NOT in JWE format."));
-        return expectations;
-
-    }
-
-    /**
-     * Sets expectations to check when the keyManagementKeyAlias is not valid
-     *
-     * @param server - server whose logs will be searched
-     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
-     * @return Expectations - built expectations
-     * @throws Exception
-     */
-    public Expectations setEncryptInvalidPayloadExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
-        Expectations expectations = setBadEncryptExpectations(server, extraMsgs);
-        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6065E_JWE_DOES_NOT_CONTAIN_JWS, "Messagelog did not contain an exception indicating that the payload of the JWE was NOT a JWS."));
-        return expectations;
-
-    }
-
-    /**
-     * Sets expectations to check when the keyManagementKeyAlias is not valid
-     *
-     * @param server - server whose logs will be searched
-     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
-     * @return Expectations - built expectations
-     * @throws Exception
-     */
-    public Expectations setEncryptBadCtyExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
-        Expectations expectations = setBadEncryptExpectations(server, extraMsgs);
-        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6057E_BAD_CTY_VALUE, "Messagelog did not contain an exception indicating that the cty was not set to [jwt]."));
-        return expectations;
-
-    }
-
-    /**
-     * Set expectations for tests that have bad Signature Algorithms
-     *
-     * @param server - server whose logs will be searched
-     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
-     * @return Expectations - built expectations
-     * @throws Exception
-     */
-    public Expectations setAllBadEncryptExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
-
-        Expectations expectations = setBadEncryptExpectations(server, extraMsgs);
-        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6056E_CAN_NOT_EXTRACT_JWS, "Messagelog did not contain an exception indicating a problem extracting the JWS from the JWE."));
+        Expectations expectations = new Expectations();
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem authenticating the request using the provided token."));
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6069E_MISMATCH_ENCRYP_ALG + ".*" + JwtConstants.DEFAULT_KEY_MGMT_KEY_ALG + ".*"
+                                                                         + alg, "Message log did not contain an error indicating that the JWE could not be validated because it was not encrypted using the "
+                                                                                + alg + " algorithm."));
 
         return expectations;
 
     }
 
-    /**
-     * Set expectations for tests that have bad Signature Algorithms
-     *
-     * @param server - server whose logs will be searched
-     * @param extraMsgs - the tai drives the code down different paths depending on if it finds config info in server.xml - if it finds config settings, we'll get 2 extra messages.
-     * @return Expectations - built expectations
-     * @throws Exception
-     */
-    public Expectations setBadEncryptExpectations(LibertyServer server, boolean extraMsgs) throws Exception {
+    public Expectations setOnlyJWSAcceptedExpectations(LibertyServer server) throws Exception {
 
-        Expectations expectations = badAppExpectations(MPJwt21FatConstants.UNAUTHORIZED_MESSAGE);
-
-        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an error indicating a problem authenticating the request with the provided token."));
-        if (extraMsgs) {
-            expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5524E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an exception indicating a problem creating a JWT with the config and token provided."));
-            expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Messagelog did not contain an exception indicating a problem processing the token string."));
-        }
-
-        return expectations;
-
-    }
-
-    /**
-     * Runtime finds the Authorization header, but the name within the token is not recognized
-     *
-     * @param server - server whose logs will be searched
-     * @return Expectations - built expectations
-     * @throws Exception
-     */
-    public Expectations setMissingTokenBadNameExpectations(LibertyServer server) throws Exception {
-
-        Expectations expectations = badAppExpectations(MPJwt21FatConstants.UNAUTHORIZED_MESSAGE);
-
-        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6031E_CAN_NOT_PROCESS_TOKEN, "Messagelog did not contain an error indicating a problem processing the request."));
-
-        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain and exception indicating that the JWT feature cannot authenticate the request."));
-        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5524E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Messagelog did not contain an exception indicating that the Signature Algorithm is NOT valid."));
-
-        return expectations;
-
-    }
-
-    /**
-     * Set expectations for tests that are missing the token
-     *
-     * @param server - server whose logs will be searched
-     * @return Expectations - built expectations
-     * @throws Exception
-     */
-    public Expectations setMissingTokenExpectations(LibertyServer server) throws Exception {
-
-        Expectations expectations = badAppExpectations(MPJwt21FatConstants.UNAUTHORIZED_MESSAGE);
-        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5522E_MPJWT_TOKEN_NOT_FOUND, "Messagelog did not contain an error indicating that the JWT token was not found."));
+        Expectations expectations = new Expectations();
+        expectations.addExpectation(new ResponseStatusExpectation(HttpServletResponse.SC_UNAUTHORIZED));
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS5523E_ERROR_CREATING_JWT_USING_TOKEN_IN_REQ, "Message log did not contain an error indicating a problem authenticating the request using the provided token."));
+        expectations.addExpectation(new ServerMessageExpectation(server, MpJwtMessageConstants.CWWKS6063E_JWS_REQUIRED_BUT_TOKEN_NOT_JWS, "Message log did not contain an error indicating that only a JWS token is accepted (not a JWE)"));
 
         return expectations;
 
