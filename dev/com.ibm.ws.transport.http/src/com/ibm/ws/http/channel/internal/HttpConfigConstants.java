@@ -332,17 +332,6 @@ public class HttpConfigConstants {
     // PI11176 - Attempt to Flush the data at the end of the request
     public static final String PROPNAME_PURGE_DATA_DURING_CLOSE = "PurgeDataDuringClose";
 
-    public static final String PROPNAME_H2_CONN_CLOSE_TIMEOUT = "H2ConnCloseTimeout";
-
-    // This is the default value for all new streams and is sent to the client in the preface SETTINGS frame
-    // The spec defines this as the SETTINGS_INITIAL_WINDOW_SIZE
-    public static final String PROPNAME_H2_CONN_READ_WINDOW_SIZE = "H2SettingsInitialWindowSize";
-    // This is the connection level window size, sent out in a WINDOW_UPDATE frame just after the connection preface
-    public static final String PROPNAME_H2_CONN_WINDOW_SIZE = "H2ConnectionWindowSize";
-    // This turns on the ability to limit window_update frames to be sent only when 1/2 the window is gone.
-    // Turning this on may increase performance.
-    public static final String PROPNAME_H2_LIMIT_WINDOW_UPDATE_FRAMES = "H2LimitWindowUpdateFrames";
-
     //PI81572 - Purge the remaining response body off the wire
     public static final String PROPNAME_PURGE_REMAINING_RESPONSE = "PurgeRemainingResponseBody";
 
@@ -408,6 +397,14 @@ public class HttpConfigConstants {
     public static final String PROPNAME_H2_CONNECTION_IDLE_TIMEOUT = "http2ConnectionIdleTimeout";
     public static final String PROPNAME_H2_MAX_CONCURRENT_STREAMS = "maxConcurrentStreams";
     public static final String PROPNAME_H2_MAX_FRAME_SIZE = "maxFrameSize";
+    public static final String PROPNAME_H2_CONN_CLOSE_TIMEOUT = "H2ConnCloseTimeout";
+    // This is the default value for all new streams and is sent to the client in the preface SETTINGS frame
+    public static final String PROPNAME_H2_SETTINGS_INITIAL_WINDOW_SIZE = "settingsInitialWindowSize";
+    // This is the connection level window size, sent out in a WINDOW_UPDATE frame just after the connection preface
+    public static final String PROPNAME_H2_CONN_WINDOW_SIZE = "connectionWindowSize";
+    // This turns on the ability to limit window_update frames to be sent only when 1/2 the window is gone.
+    // Turning this on may increase performance.
+    public static final String PROPNAME_H2_LIMIT_WINDOW_UPDATE_FRAMES = "limitWindowUpdateFrames";
 
     public static final String DEFAULT_PROXIES_REGEX = "10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|192\\.168\\.\\d{1,3}\\.\\d{1,3}|169\\.254\\.\\d{1,3}\\.\\d{1,3}|127\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|172\\.1[6-9]{1}\\.\\d{1,3}\\.\\d{1,3}|172\\.2[0-9]{1}\\.\\d{1,3}\\.\\d{1,3}|172\\.3[0-1]{1}\\.\\d{1,3}\\.\\d{1,3}|0:0:0:0:0:0:0:1|::1";
 

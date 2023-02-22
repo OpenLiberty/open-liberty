@@ -104,14 +104,12 @@ public class H2InboundLink extends HttpInboundLink {
     };
 
     // Stream level window size variables
-    volatile long initialWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
+    volatile long initialWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // Write size default
     volatile long connectionReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // keep track of how much data the client is allowed to send to the us on the stream
     private final Object readWindowSync = new Object() {
     };
-    volatile long maxReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // user-set max window size on the stream
-    // Connection level window size variables
-    volatile long connectionMaxReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // configurable max window size on the connection
-    // Should we limit the number of window udpate frames sent?  Limiting may help with performance.
+
+    // Don't send window update frames until 1/2 the window is used
     volatile boolean limitWindowUpdateFrames = false;
 
     FrameReadProcessor frameReadProcessor = null;
@@ -210,16 +208,16 @@ public class H2InboundLink extends HttpInboundLink {
         localConnectionSettings = new H2ConnectionSettings();
         localConnectionSettings.setMaxConcurrentStreams(this.config.getH2MaxConcurrentStreams());
         localConnectionSettings.setMaxFrameSize(this.config.getH2MaxFrameSize());
+        // Set up the initial stream window size
+        localConnectionSettings.setInitialWindowSize(this.config.getH2SettingsInitialWindowSize());
         configuredInactivityTimeout = this.config.getH2ConnectionIdleTimeout();
         remoteConnectionSettings = new H2ConnectionSettings();
 
         h2MuxServiceContextImpl = (HttpInboundServiceContextImpl) this.getChannelAccessor();
 
-        // set up the initial connection read window size
-        maxReadWindowSize = config.getH2SettingsInitialWindowSize();
-        connectionMaxReadWindowSize = config.getH2ConnectionWindowSize();
-        connectionReadWindowSize = config.getH2ConnectionWindowSize();
-        limitWindowUpdateFrames = config.getH2LimitWindowUpdateFrames();
+        // Initial connection window size and window update limit config values
+        connectionReadWindowSize = this.config.getH2ConnectionWindowSize();
+        limitWindowUpdateFrames = this.config.getH2LimitWindowUpdateFrames();
 
         writeQ = new H2WriteTree();
         writeQ.init(h2MuxTCPWriteContext, h2MuxWriteCallback);
