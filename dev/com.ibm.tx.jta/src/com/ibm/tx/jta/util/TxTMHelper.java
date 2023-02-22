@@ -14,9 +14,9 @@
 package com.ibm.tx.jta.util;
 
 import javax.transaction.NotSupportedException;
+import javax.transaction.Status;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
-import javax.transaction.Status;
 import javax.transaction.SystemException;
 
 import org.osgi.framework.BundleContext;
@@ -508,7 +508,8 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                     if (preStatus != Status.STATUS_ROLLEDBACK &&
                         preStatus != Status.STATUS_COMMITTED &&
                         preStatus != Status.STATUS_COMMITTING &&
-                        preStatus != Status.STATUS_NO_TRANSACTION) {
+                        preStatus != Status.STATUS_NO_TRANSACTION &&
+                        preStatus != Status.STATUS_MARKED_ROLLBACK) {
                         rollbackTransaction(tx);
 
                         final int postStatus = tx.getStatus();
