@@ -221,14 +221,15 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      * For most properties will be of a form such as o.Name or LOWER(o.Name) DESC or ...
      *
      * @param q             builder for the JPQL query.
+     * @param o             variable referring to the entity.
      * @param Sort          sort criteria for a single attribute (name must already be converted to a valid entity attribute name).
      * @param sameDirection indicate to append the Sort in the normal direction. Otherwise reverses it (for keyset pagination in previous page direction).
      * @return the same builder for the JPQL query.
      */
     @Trivial
-    private void appendSort(StringBuilder q, Sort sort, boolean sameDirection) {
+    private void appendSort(StringBuilder q, String o, Sort sort, boolean sameDirection) {
 
-        q.append(sort.ignoreCase() ? "LOWER(o." : "o.").append(sort.property());
+        q.append(sort.ignoreCase() ? "LOWER(" : "").append(o).append('.').append(sort.property());
 
         if (sort.ignoreCase())
             q.append(")");
@@ -265,6 +266,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             // Query by annotations
             Filter[] filters = queryInfo.method.getAnnotationsByType(Filter.class);
             StringBuilder whereClause = filters.length > 0 ? generateWhereClause(queryInfo, filters) : null;
+            String o = queryInfo.entityVar;
 
             Update[] updates = queryInfo.method.getAnnotationsByType(Update.class);
             if (updates.length > 0) {
@@ -274,22 +276,23 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     q.append(whereClause);
             } else if (queryInfo.method.getAnnotation(Delete.class) != null) {
                 queryInfo.type = QueryInfo.Type.DELETE;
-                q = new StringBuilder(14 + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
-                                .append("DELETE FROM ").append(entityInfo.name).append(" o");
+                q = new StringBuilder(13 + o.length() + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
+                                .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o);
                 if (whereClause != null)
                     q.append(whereClause);
             } else if (queryInfo.method.getAnnotation(Count.class) != null) {
                 queryInfo.type = QueryInfo.Type.COUNT;
-                q = new StringBuilder(23 + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
-                                .append("SELECT COUNT(o) FROM ").append(entityInfo.name).append(" o");
+                q = new StringBuilder(21 + 2 * o.length() + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
+                                .append("SELECT COUNT(").append(o).append(") FROM ") //
+                                .append(entityInfo.name).append(' ').append(o);
                 if (whereClause != null)
                     q.append(whereClause);
             } else if (queryInfo.method.getAnnotation(Exists.class) != null) {
                 queryInfo.type = QueryInfo.Type.EXISTS;
                 String attrName = entityInfo.getAttributeName(entityInfo.idClass == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey());
-                q = new StringBuilder(17 + attrName.length() + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
-                                .append("SELECT o.").append(attrName) //
-                                .append(" FROM ").append(entityInfo.name).append(" o");
+                q = new StringBuilder(15 + 2 * o.length() + attrName.length() + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
+                                .append("SELECT ").append(o).append('.').append(attrName) //
+                                .append(" FROM ").append(entityInfo.name).append(' ').append(o);
                 if (whereClause != null)
                     q.append(whereClause);
             } else if (whereClause != null) {
@@ -329,11 +332,18 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 queryInfo.sorts = queryInfo.sorts == null ? new ArrayList<>() : queryInfo.sorts;
                 queryInfo.jpqlCount = query.count().length() > 0 ? query.count() : null;
 
-                if (countPages && queryInfo.jpqlCount == null) {
-                    // Attempt to infer from provided query
-                    int select = upper.indexOf("SELECT");
-                    int from = upper.indexOf("FROM", select);
-                    if (from > 0) {
+                int select = upper.length() - upperTrimmed.length();
+                int from = find("FROM", upper, select + 9);
+                if (from > 0) {
+                    int entityName = find(entityInfo.name.toUpperCase(), upper, from + 5);
+                    if (entityName > 0) {
+                        String entityVar = findEntityVariable(queryInfo.jpql, entityName + entityInfo.name.length() + 1);
+                        if (entityVar != null)
+                            queryInfo.entityVar = entityVar;
+                    }
+
+                    if (countPages && queryInfo.jpqlCount == null) {
+                        // Attempt to infer from provided query
                         String s = queryInfo.jpql.substring(select + 6, from);
                         int comma = s.indexOf(',');
                         if (comma > 0)
@@ -512,7 +522,21 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     x = new DataException(original);
             }
         } else if (original instanceof CompletionException) {
-            x = new MappingException(original); // TODO categorization is too broad
+            Throwable cause = original.getCause();
+            if (cause == null)
+                x = new MappingException(original);
+            else if (DataException.class.equals(cause.getClass()))
+                x = new DataException(cause.getMessage(), cause);
+            else if (DataConnectionException.class.equals(cause.getClass()))
+                x = new DataConnectionException(cause.getMessage(), cause);
+            else if (EmptyResultException.class.equals(cause.getClass()))
+                x = new EmptyResultException(cause.getMessage(), cause);
+            else if (MappingException.class.equals(cause.getClass()))
+                x = new MappingException(cause.getMessage(), cause);
+            else if (NonUniqueResultException.class.equals(cause.getClass()))
+                x = new NonUniqueResultException(cause.getMessage(), cause);
+            else
+                x = new MappingException(cause);
         } else if (original instanceof IllegalArgumentException) {
             // Example: Problem compiling [SELECT o FROM Account o WHERE (o.accountId>?1)]. The
             // relationship mapping 'o.accountId' cannot be used in conjunction with the > operator
@@ -527,9 +551,66 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             x = new DataException(original);
         }
 
-        if (trace && tc.isDebugEnabled() && x != original)
-            Tr.debug(tc, original.getClass().getName() + " replaced with " + x.getClass().getName());
+        if (trace && tc.isDebugEnabled())
+            if (x == original)
+                Tr.debug(tc, "Failure occurred: " + x.getClass().getName());
+            else
+                Tr.debug(tc, original.getClass().getName() + " replaced with " + x.getClass().getName());
         return x;
+    }
+
+    /**
+     * Finds the first occurrence of the text followed by a non-alphanumeric/non-underscore character.
+     *
+     * @param lookFor text to find.
+     * @param findIn  where to look for it.
+     * @param startAt starting position.
+     * @return index where found, otherwise -1.
+     */
+    private static int find(String lookFor, String findIn, int startAt) {
+        int totalLength = findIn.length();
+        for (int foundAt; startAt < totalLength && (foundAt = findIn.indexOf(lookFor, startAt)) > 0; startAt = foundAt + 1) {
+            int nextPosition = foundAt + lookFor.length();
+            if (nextPosition >= totalLength)
+                break;
+            char ch = findIn.charAt(nextPosition);
+            if (!Character.isLowerCase(ch) && !Character.isUpperCase(ch) && !Character.isDigit(ch) && ch != '_')
+                return foundAt;
+        }
+        return -1;
+    }
+
+    /**
+     * Finds the entity variable name after the start of the entity name.
+     * Examples of JPQL:
+     * ... FROM Order o, Product p ...
+     * ... FROM Product AS p ...
+     *
+     * @param findIn  where to look for it.
+     * @param startAt position after the end of the entity name.
+     * @return entity variable name. Null if none is found.
+     */
+    private static String findEntityVariable(String findIn, int startAt) {
+        int length = findIn.length();
+        boolean foundStart = false;
+        for (int c = startAt; c < length; c++) {
+            char ch = findIn.charAt(c);
+            if (Character.isLowerCase(ch) || Character.isUpperCase(ch) || Character.isDigit(ch) || ch == '_') {
+                if (!foundStart) {
+                    startAt = c;
+                    foundStart = true;
+                }
+            } else { // not part of the entity variable name
+                if (foundStart) {
+                    String found = findIn.substring(startAt, c);
+                    if ("AS".equalsIgnoreCase(found))
+                        foundStart = false;
+                    else
+                        return found;
+                }
+            }
+        }
+        return foundStart ? findIn.substring(startAt) : null;
     }
 
     /**
@@ -625,11 +706,12 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             return;
         }
 
+        String o = queryInfo.entityVar;
         StringBuilder attributeExpr = new StringBuilder();
         if (ignoreCase)
-            attributeExpr.append("LOWER(o.").append(name).append(')');
+            attributeExpr.append("LOWER(").append(o).append('.').append(name).append(')');
         else
-            attributeExpr.append("o.").append(name);
+            attributeExpr.append(o).append('.').append(name);
 
         if (negated) {
             Condition negatedCondition = condition.negate();
@@ -698,6 +780,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             throw new MappingException("IdClass parameter cannot be represented as a hard-coded value of the @Filter annotation."); // TODO NLS
 
         String paramName = filter == null || filter.param().length == 0 ? null : filter.param()[0];
+        String o = queryInfo.entityVar;
 
         q.append(negate ? "NOT (" : "(");
 
@@ -708,9 +791,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
             String name = queryInfo.entityInfo.getAttributeName(idClassAttr);
             if (ignoreCase)
-                q.append("LOWER(o.").append(name).append(')');
+                q.append("LOWER(").append(o).append('.').append(name).append(')');
             else
-                q.append("o.").append(name);
+                q.append(o).append('.').append(name);
 
             switch (condition) {
                 case EQUALS:
@@ -753,8 +836,10 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      * @param where     the WHERE clause
      */
     private void generateCount(QueryInfo queryInfo, String where) {
-        StringBuilder q = new StringBuilder(23 + queryInfo.entityInfo.name.length() + (where == null ? 0 : where.length())) //
-                        .append("SELECT COUNT(o) FROM ").append(queryInfo.entityInfo.name).append(" o");
+        String o = queryInfo.entityVar;
+        StringBuilder q = new StringBuilder(21 + 2 * o.length() + queryInfo.entityInfo.name.length() + (where == null ? 0 : where.length())) //
+                        .append("SELECT COUNT(").append(o).append(") FROM ") //
+                        .append(queryInfo.entityInfo.name).append(' ').append(o);
 
         if (where != null)
             q.append(where);
@@ -771,14 +856,15 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      *
      * @param queryInfo query information
      * @param q         query up to the WHERE clause, if present
-     * @param o         ORDER BY clause in forward direction. Null if forward direction is not needed.
-     * @param r         ORDER BY clause in reverse direction. Null if reverse direction is not needed.
+     * @param fwd       ORDER BY clause in forward page direction. Null if forward page direction is not needed.
+     * @param prev      ORDER BY clause in previous page direction. Null if previous page direction is not needed.
      */
-    private void generateKeysetQueries(QueryInfo queryInfo, StringBuilder q, StringBuilder o, StringBuilder r) {
+    private void generateKeysetQueries(QueryInfo queryInfo, StringBuilder q, StringBuilder fwd, StringBuilder prev) {
         int numKeys = queryInfo.sorts.size();
         String paramPrefix = queryInfo.paramNames == null ? "?" : ":keyset";
-        StringBuilder a = o == null ? null : new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (");
-        StringBuilder b = r == null ? null : new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (");
+        StringBuilder a = fwd == null ? null : new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (");
+        StringBuilder b = prev == null ? null : new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (");
+        String o = queryInfo.entityVar;
         for (int i = 0; i < numKeys; i++) {
             if (a != null)
                 a.append(i == 0 ? "(" : " OR (");
@@ -791,21 +877,21 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 boolean lower = keyInfo.ignoreCase();
                 if (a != null)
                     if (lower) {
-                        a.append(k == 0 ? "LOWER(o." : " AND LOWER(o.").append(name).append(')');
+                        a.append(k == 0 ? "LOWER(" : " AND LOWER(").append(o).append('.').append(name).append(')');
                         a.append(k < i ? '=' : (asc ? '>' : '<'));
                         a.append("LOWER(").append(paramPrefix).append(queryInfo.paramCount + 1 + k).append(')');
                     } else {
-                        a.append(k == 0 ? "o." : " AND o.").append(name);
+                        a.append(k == 0 ? "" : " AND ").append(o).append('.').append(name);
                         a.append(k < i ? '=' : (asc ? '>' : '<'));
                         a.append(paramPrefix).append(queryInfo.paramCount + 1 + k);
                     }
                 if (b != null)
                     if (lower) {
-                        b.append(k == 0 ? "LOWER(o." : " AND LOWER(o.").append(name).append(')');
+                        b.append(k == 0 ? "LOWER(" : " AND LOWER(").append(o).append('.').append(name).append(')');
                         b.append(k < i ? '=' : (asc ? '<' : '>'));
                         b.append("LOWER(").append(paramPrefix).append(queryInfo.paramCount + 1 + k).append(')');
                     } else {
-                        b.append(k == 0 ? "o." : " AND o.").append(name);
+                        b.append(k == 0 ? "" : " AND ").append(o).append('.').append(name);
                         b.append(k < i ? '=' : (asc ? '<' : '>'));
                         b.append(paramPrefix).append(queryInfo.paramCount + 1 + k);
                     }
@@ -816,16 +902,17 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 b.append(')');
         }
         if (a != null)
-            queryInfo.jpqlAfterKeyset = new StringBuilder(q).append(a).append(')').append(o).toString();
+            queryInfo.jpqlAfterKeyset = new StringBuilder(q).append(a).append(')').append(fwd).toString();
         if (b != null)
-            queryInfo.jpqlBeforeKeyset = new StringBuilder(q).append(b).append(')').append(r).toString();
+            queryInfo.jpqlBeforeKeyset = new StringBuilder(q).append(b).append(')').append(prev).toString();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "forward & reverse keyset queries", queryInfo.jpqlAfterKeyset, queryInfo.jpqlBeforeKeyset);
+            Tr.debug(this, tc, "forward & previous keyset queries", queryInfo.jpqlAfterKeyset, queryInfo.jpqlBeforeKeyset);
     }
 
     private StringBuilder generateMethodNameQuery(QueryInfo queryInfo, boolean countPages) {
         EntityInfo entityInfo = queryInfo.entityInfo;
+        String o = queryInfo.entityVar;
         String methodName = queryInfo.method.getName();
         StringBuilder q = null;
         if (methodName.startsWith("find")) {
@@ -875,7 +962,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         throw new MappingException("The deleteAll operation cannot be used on entities with composite IDs."); // TODO NLS
                     }
             }
-            q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(" o");
+            q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(' ').append(o);
             if (methodName.length() > c)
                 generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
             queryInfo.type = QueryInfo.Type.DELETE;
@@ -887,7 +974,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         } else if (methodName.startsWith("count")) {
             int by = methodName.indexOf("By", 5);
             int c = by < 0 ? 5 : by + 2;
-            q = new StringBuilder(150).append("SELECT COUNT(o) FROM ").append(entityInfo.name).append(" o");
+            q = new StringBuilder(150).append("SELECT COUNT(").append(o).append(") FROM ").append(entityInfo.name).append(' ').append(o);
             if (methodName.length() > c)
                 generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
             queryInfo.type = QueryInfo.Type.COUNT;
@@ -895,8 +982,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             int by = methodName.indexOf("By", 6);
             int c = by < 0 ? 6 : by + 2;
             String attrName = entityInfo.getAttributeName(entityInfo.idClass == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey());
-            q = new StringBuilder(200).append("SELECT o.").append(attrName) //
-                            .append(" FROM ").append(entityInfo.name).append(" o");
+            q = new StringBuilder(200).append("SELECT ").append(o).append('.').append(attrName) //
+                            .append(" FROM ").append(entityInfo.name).append(' ').append(o);
             if (methodName.length() > c)
                 generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
             queryInfo.type = QueryInfo.Type.EXISTS;
@@ -916,29 +1003,30 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                      || KeysetAwareSlice.class.equals(queryInfo.returnTypeParam)
                                      || Iterator.class.equals(queryInfo.returnTypeParam);
 
-        StringBuilder o = needsKeysetQueries ? new StringBuilder(100) : q; // forward order
-        StringBuilder r = needsKeysetQueries ? new StringBuilder(100) : null; // previous page order
+        StringBuilder fwd = needsKeysetQueries ? new StringBuilder(100) : q; // forward page order
+        StringBuilder prev = needsKeysetQueries ? new StringBuilder(100) : null; // previous page order
 
         boolean first = true;
         for (Sort sort : queryInfo.sorts) {
-            o.append(first ? " ORDER BY " : ", ");
-            appendSort(o, sort, true);
+            fwd.append(first ? " ORDER BY " : ", ");
+            appendSort(fwd, queryInfo.entityVar, sort, true);
 
             if (needsKeysetQueries) {
-                r.append(first ? " ORDER BY " : ", ");
-                appendSort(r, sort, false);
+                prev.append(first ? " ORDER BY " : ", ");
+                appendSort(prev, queryInfo.entityVar, sort, false);
             }
             first = false;
         }
 
         if (needsKeysetQueries) {
-            generateKeysetQueries(queryInfo, q, o, r);
-            q.append(o);
+            generateKeysetQueries(queryInfo, q, fwd, prev);
+            q.append(fwd);
         }
     }
 
     private StringBuilder generateSelectClause(QueryInfo queryInfo) {
         StringBuilder q = new StringBuilder(200);
+        String o = queryInfo.entityVar;
 
         Select select = queryInfo.method.getAnnotation(Select.class);
         String[] cols = select == null ? null : select.value();
@@ -957,10 +1045,10 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             || type.getName().startsWith("java")
             || queryInfo.entityInfo.inheritance && queryInfo.entityInfo.type.isAssignableFrom(type)) {
             if (cols == null || cols.length == 0) {
-                q.append(distinct ? "DISTINCT o" : "o");
+                q.append(distinct ? "DISTINCT " : "").append(o);
             } else {
                 for (int i = 0; i < cols.length; i++) {
-                    generateSelectExpression(q, i == 0, function, distinct, cols[i]);
+                    generateSelectExpression(q, i == 0, function, distinct, o, cols[i]);
                 }
             }
         } else {
@@ -972,37 +1060,37 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             if (cols != null && cols.length > 0)
                 for (int i = 0; i < cols.length; i++) {
                     String name = queryInfo.entityInfo.getAttributeName(cols[i]);
-                    generateSelectExpression(q, i == 0, function, distinct, name == null ? cols[i] : name);
+                    generateSelectExpression(q, i == 0, function, distinct, o, name == null ? cols[i] : name);
                 }
             else if (type.equals(queryInfo.entityInfo.idClass))
                 for (String idClassAttributeName : queryInfo.entityInfo.idClassAttributeAccessors.keySet()) {
                     String name = queryInfo.entityInfo.getAttributeName(idClassAttributeName);
-                    generateSelectExpression(q, first, function, distinct, name);
+                    generateSelectExpression(q, first, function, distinct, o, name);
                     first = false;
                 }
             else if ((embAttrNames = queryInfo.entityInfo.embeddableAttributeNames.get(type)) != null)
                 for (String name : embAttrNames) {
-                    generateSelectExpression(q, first, function, distinct, name);
+                    generateSelectExpression(q, first, function, distinct, o, name);
                     first = false;
                 }
             else
                 for (String name : queryInfo.entityInfo.attributeTypes.keySet()) {
-                    generateSelectExpression(q, first, function, distinct, name);
+                    generateSelectExpression(q, first, function, distinct, o, name);
                     first = false;
                 }
             q.append(')');
         }
-        q.append(" FROM ").append(queryInfo.entityInfo.name).append(" o");
+        q.append(" FROM ").append(queryInfo.entityInfo.name).append(' ').append(o);
         return q;
     }
 
-    private void generateSelectExpression(StringBuilder q, boolean isFirst, String function, boolean distinct, String attributeName) {
+    private void generateSelectExpression(StringBuilder q, boolean isFirst, String function, boolean distinct, String o, String attributeName) {
         if (!isFirst)
             q.append(", ");
         if (function != null)
             q.append(function).append('(');
-        q.append(distinct ? "DISTINCT o." : "o.");
-        q.append(attributeName);
+        q.append(distinct ? "DISTINCT " : "");
+        q.append(o).append('.').append(attributeName);
         if (function != null)
             q.append(')');
     }
@@ -1031,8 +1119,9 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         StringBuilder where = new StringBuilder(150);
         generateWhereClause(queryInfo, methodName, c, uFirst, where);
 
+        String o = queryInfo.entityVar;
         StringBuilder q = new StringBuilder(250);
-        q.append("UPDATE ").append(queryInfo.entityInfo.name).append(" o SET");
+        q.append("UPDATE ").append(queryInfo.entityInfo.name).append(' ').append(o).append(" SET");
 
         for (int u = uFirst; u > 0;) {
             boolean first = u == uFirst;
@@ -1075,18 +1164,19 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                                " repository update operation cannot be used on the Id of the entity when the Id is an IdClass."); // TODO NLS
                 }
             } else {
-                q.append(first ? " o." : ", o.").append(name).append("=");
+                q.append(first ? " " : ", ").append(o).append('.').append(name).append("=");
 
                 switch (op) {
                     case '+':
                         if (CharSequence.class.isAssignableFrom(queryInfo.entityInfo.attributeTypes.get(name))) {
-                            q.append("CONCAT(").append("o.").append(name).append(',').append('?').append(++queryInfo.paramCount).append(')');
+                            q.append("CONCAT(").append(o).append('.').append(name).append(',') //
+                                            .append('?').append(++queryInfo.paramCount).append(')');
                             break;
                         }
                         // else fall through
                     case '*':
                     case '/':
-                        q.append("o.").append(name).append(op);
+                        q.append(o).append('.').append(name).append(op);
                         // fall through
                     case '=':
                         q.append('?').append(++queryInfo.paramCount);
@@ -1107,7 +1197,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      * @return the JPQL UPDATE clause
      */
     private StringBuilder generateUpdateClause(QueryInfo queryInfo, Update[] updates) {
-        StringBuilder q = new StringBuilder(400).append("UPDATE ").append(queryInfo.entityInfo.name).append(" o SET");
+        String o = queryInfo.entityVar;
+        StringBuilder q = new StringBuilder(400).append("UPDATE ").append(queryInfo.entityInfo.name).append(' ').append(o).append(" SET");
 
         boolean first = true;
         for (Update update : updates) {
@@ -1122,7 +1213,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     throw new MappingException("The " + op.name() +
                                                " repository update operation cannot be used on the Id of the entity when the Id is an IdClass."); // TODO NLS
             } else {
-                q.append(first ? " o." : ", o.").append(name).append("=");
+                q.append(first ? " " : ", ").append(o).append('.').append(name).append("=");
 
                 boolean withFunction = false;
                 switch (op) {
@@ -1130,18 +1221,18 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         break;
                     case Add:
                         if (withFunction = CharSequence.class.isAssignableFrom(queryInfo.entityInfo.attributeTypes.get(name)))
-                            q.append("CONCAT(").append("o.").append(name).append(',');
+                            q.append("CONCAT(").append(o).append('.').append(name).append(',');
                         else
-                            q.append("o.").append(name).append('+');
+                            q.append(o).append('.').append(name).append('+');
                         break;
                     case Multiply:
-                        q.append("o.").append(name).append('*');
+                        q.append(o).append('.').append(name).append('*');
                         break;
                     case Subtract:
-                        q.append("o.").append(name).append('-');
+                        q.append(o).append('.').append(name).append('-');
                         break;
                     case Divide:
-                        q.append("o.").append(name).append('/');
+                        q.append(o).append('.').append(name).append('/');
                         break;
                     default:
                         throw new UnsupportedOperationException(op.name());
@@ -1200,7 +1291,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
             count++;
             String name = queryInfo.entityInfo.getAttributeName(idClassAttr);
 
-            q.append(firstOperation ? " o." : ", o.").append(name);
+            q.append(firstOperation ? " " : ", ").append(queryInfo.entityVar).append('.').append(name);
             if (paramName == null) { // positional parameter
                 q.append("=?").append(++queryInfo.paramCount);
                 if (count != 1)
@@ -1272,11 +1363,12 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 continue;
             }
 
+            String o = queryInfo.entityVar;
             StringBuilder attributeExpr = new StringBuilder();
             if (ignoreCase)
-                attributeExpr.append("LOWER(o.").append(name).append(')');
+                attributeExpr.append("LOWER(").append(o).append('.').append(name).append(')');
             else
-                attributeExpr.append("o.").append(name);
+                attributeExpr.append(o).append('.').append(name);
 
             boolean isCollection = Collection.class.equals(queryInfo.entityInfo.attributeTypes.get(name));
             if (isCollection)
@@ -1484,16 +1576,16 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                         if (sortList != null && !sortList.isEmpty()) {
                             boolean forward = pagination == null || pagination.mode() != Pageable.Mode.CURSOR_PREVIOUS;
                             StringBuilder q = new StringBuilder(queryInfo.jpql);
-                            StringBuilder o = null; // ORDER BY clause based on Sorts
+                            StringBuilder order = null; // ORDER BY clause based on Sorts
                             for (Sort sort : sortList) {
-                                o = o == null ? new StringBuilder(100).append(" ORDER BY ") : o.append(", ");
-                                appendSort(o, sort, forward);
+                                order = order == null ? new StringBuilder(100).append(" ORDER BY ") : order.append(", ");
+                                appendSort(order, queryInfo.entityVar, sort, forward);
                             }
 
                             if (pagination == null || pagination.mode() == Pageable.Mode.OFFSET)
-                                queryInfo = queryInfo.withJPQL(q.append(o).toString(), sortList); // offset pagination can be a starting point for keyset pagination
+                                queryInfo = queryInfo.withJPQL(q.append(order).toString(), sortList); // offset pagination can be a starting point for keyset pagination
                             else // CURSOR_NEXT or CURSOR_PREVIOUS
-                                generateKeysetQueries(queryInfo = queryInfo.withJPQL(null, sortList), q, forward ? o : null, forward ? null : o);
+                                generateKeysetQueries(queryInfo = queryInfo.withJPQL(null, sortList), q, forward ? order : null, forward ? null : order);
                         }
 
                         boolean asyncCompatibleResultForPagination = pagination != null &&
