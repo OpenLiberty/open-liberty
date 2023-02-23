@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -42,7 +42,7 @@ public class TestOLGH19342_EJB_SF_Servlet extends EJBDBTestVehicleServlet {
     }
 
     // testCaseExpressionOperatorConcurrency
-    @Test
+    // @Test // Not a valid scenario, see RTC 294860
     public void jpa_spec10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SF_AMJTA_Web() throws Exception {
         final String testName = "jpa10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SF_AMJTA_Web";
         final String testMethod = "testCaseExpressionOperatorConcurrency";
@@ -58,7 +58,7 @@ public class TestOLGH19342_EJB_SF_Servlet extends EJBDBTestVehicleServlet {
         executeTest(testName, testMethod, testResource);
     }
 
-    @Test
+    // @Test // Not a valid scenario, see RTC 294860
     public void jpa_spec10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SF_CMTS_Web() throws Exception {
         final String testName = "jpa10_query_olgh19342_testCaseExpressionOperatorConcurrency_EJB_SF_CMTS_Web";
         final String testMethod = "testCaseExpressionOperatorConcurrency";
