@@ -181,6 +181,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
     private boolean isNewAuthentication(AuthenticationParameters authParameters) {
         if (authParameters != null) {
             return authParameters.isNewAuthentication();
+            // TODO: Clear current state (OpenIdContext, subject from cache, and anything in storage if state has been set) if new authentication was requested.
         }
         return false;
     }
@@ -344,6 +345,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
             TokenResponse tokenResponse = (TokenResponse) customProperties.get(JakartaOidcTokenRequest.AUTH_RESULT_CUSTOM_PROP_TOKEN_RESPONSE);
             if (tokenResponse != null) {
                 credential = new OidcTokensCredential(tokenResponse, client, request, response);
+                credential.setOpenIdContext(getOpenIdContext());
             }
         }
 
@@ -352,6 +354,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
 
     private AuthenticationStatus validateCredentials(OidcTokensCredential credential, HttpMessageContext httpMessageContext) throws AuthenticationException {
         int rspStatus;
+        // TODO: Pass JavaEESecConstants.DEFAULT_REALM below as the issuer. OidcIdentityStore should return proper issuer in CredentialValidationResult (fix OidcIdentityStore to get issuer from metadata if not available in config for the token refresh case)
         String issuer = getIssuerFromIdentityToken();
 
         Subject clientSubject = httpMessageContext.getClientSubject();
@@ -416,6 +419,15 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
             }
         }
         return issuer;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected OpenIdContext getOpenIdContext() {
+        Instance<OpenIdContext> openIdContextInstance = getCDI().select(OpenIdContext.class);
+        if (openIdContextInstance != null) {
+            return openIdContextInstance.get();
+        }
+        return null;
     }
 
     private void setOpenIdContextInSubject(Subject clientSubject, OpenIdContext openIdContext) {

@@ -57,6 +57,7 @@ import jakarta.security.enterprise.authentication.mechanism.http.HttpMessageCont
 import jakarta.security.enterprise.authentication.mechanism.http.OpenIdAuthenticationMechanismDefinition;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
 import jakarta.security.enterprise.credential.Credential;
+import jakarta.security.enterprise.identitystore.openid.OpenIdContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -523,6 +524,8 @@ public class OidcHttpAuthenticationMechanismTest {
         mockery.checking(new Expectations() {
             {
                 // TODO: Check for issuer as the realm name
+                allowing(cdi).select(OpenIdContext.class);
+                will(returnValue(null)); // TODO: Return a mock for Instance<OpenIdContext> for coverage.
                 one(utils).handleAuthenticate(with(cdi), with(JavaEESecConstants.DEFAULT_REALM), with(aNonNull(Credential.class)), with(clientSubject), with(httpMessageContext));
                 will(returnValue(status));
             }
