@@ -56,6 +56,6 @@ public class FATSuite {
      * Run tests that use 2.1 attributes with the 2.0 feature and show that they're ignored
      */
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new SecurityTestFeatureEE9RepeatAction(MPJwt21FatConstants.MP_JWT_20).forServerConfigPaths("publish/servers", "publish/shared/config")).andWithoutModification();
+    public static RepeatTests repeat = RepeatTests.with(new SecurityTestFeatureEE9RepeatAction(MPJwt21FatConstants.MP_JWT_20).alwaysAddFeature("servlet-5.0").forServerConfigPaths("publish/servers", "publish/shared/config")).andWithoutModification();
 
 }

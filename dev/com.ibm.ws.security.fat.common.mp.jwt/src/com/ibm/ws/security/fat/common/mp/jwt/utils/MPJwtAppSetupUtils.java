@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -242,8 +242,9 @@ public class MPJwtAppSetupUtils {
 
     public WebArchive addDefaultFileAssetsForAppsToWar(String warName, WebArchive war) throws Exception {
         war.add(new FileAsset(new File("lib/com/ibm/ws/security/fat/common/mp/jwt/CommonMicroProfileApp.class")),
-                "com/ibm/ws/security/fat/common/mp/jwt/CommonMicroProfileApp.class");
-        war.add(new FileAsset(new File("lib/com/ibm/ws/security/fat/common/mp/jwt/MPJwtFatConstants.class")), "com/ibm/ws/security/fat/common/mp/jwt/MPJwtFatConstants.class");
+                "/WEB-INF/classes/com/ibm/ws/security/fat/common/mp/jwt/CommonMicroProfileApp.class");
+        war.add(new FileAsset(new File("lib/com/ibm/ws/security/fat/common/mp/jwt/MPJwtFatConstants.class")),
+                "/WEB-INF/classes/com/ibm/ws/security/fat/common/mp/jwt/MPJwtFatConstants.class");
         war.add(new FileAsset(new File("test-applications/" + warName + "/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml");
         war.add(new FileAsset(new File("test-applications/" + warName + "/resources/META-INF/permissions.xml")), "/META-INF/permissions.xml");
         return war;
