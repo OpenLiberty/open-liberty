@@ -1840,20 +1840,32 @@ public class LibertyServer implements LogMonitorClient {
      *
      * @param output
      */
-    private void checkpointValidate(ProgramOutput output, boolean expectStartFailure) throws Exception {
-        if (!expectStartFailure) {
-            assertEquals("Checkpoint operation return code should be zero", 0, output.getReturnCode());
+    private void checkpointValidate(ProgramOutput output, boolean expectCheckpointFailure) throws Exception {
+        String method = "checkpointValidate";
+        Log.info(c, method, method);
+        try {
+            resetStarted();
+            if (!expectCheckpointFailure) {
+                assertEquals("Checkpoint operation return code should be zero", 0, output.getReturnCode());
+            }
+            if (isStarted) {
+                Exception fail = new Exception("Server should not be started after a checkpoint operation");
+                Log.error(c, "Server should not be started after a checkpoint operation", fail);
+                throw fail;
+            }
+            assertCheckpointDirAsExpected();
+            assertNotNull("'CWWKC0451I: A server checkpoint was requested...' message not found in log.",
+                          waitForStringInLogUsingMark("CWWKC0451I:", 0));
+        } catch (AssertionError er) {
+            Log.info(c, method, "AssertionError: " + er);
+            if (isStarted) {
+                Log.info(c, method, "Stop running server after checkpointValidate AssertionError");
+                stopServer(false);
+            }
+            postStopServerArchive();
+            throw er;
         }
-        // validate server not started
-        resetStarted();
-        if (isStarted) {
-            Exception fail = new Exception("Server should not be started after a checkpoint operation");
-            Log.error(c, "Server should not be started after a checkpoint operation", fail);
-            throw fail;
-        }
-        assertCheckpointDirAsExpected();
-        assertNotNull("'CWWKC0451I: A server checkpoint was requested...' message not found in log.",
-                      waitForStringInLogUsingMark("CWWKC0451I:", 0));
+        Log.exiting(c, method);
     }
 
     /**
@@ -3258,13 +3270,13 @@ public class LibertyServer implements LogMonitorClient {
     private boolean isSkippableArchive(String srcPath, String dstName, String dumpName) {
         // Don't skip zips which are intended for a server dump.
 
-        if ( srcPath.endsWith(".jar") ||
-             srcPath.endsWith(".war") ||
-             srcPath.endsWith(".ear") ||
-             srcPath.endsWith(".rar") ) {
+        if (srcPath.endsWith(".jar") ||
+            srcPath.endsWith(".war") ||
+            srcPath.endsWith(".ear") ||
+            srcPath.endsWith(".rar")) {
             return true;
-        } else if ( srcPath.endsWith(".zip") ){
-            return ( !dstName.contains(dumpName) );
+        } else if (srcPath.endsWith(".zip")) {
+            return (!dstName.contains(dumpName));
         } else {
             return false;
         }
@@ -3275,14 +3287,14 @@ public class LibertyServer implements LogMonitorClient {
         //
         // FFDC log files cannot be moved because they must remain for FFDC checking.
 
-        if ( localPath.contains("logs") ) {
-            return ( !localPath.contains("ffdc") );
+        if (localPath.contains("logs")) {
+            return (!localPath.contains("ffdc"));
 
         } else {
-            return ( remoteName.contains("javacore") ||
-                     remoteName.contains("heapdump") ||
-                     remoteName.contains("Snap") ||
-                     remoteName.contains(dumpName) );
+            return (remoteName.contains("javacore") ||
+                    remoteName.contains("heapdump") ||
+                    remoteName.contains("Snap") ||
+                    remoteName.contains(dumpName));
         }
     }
 
@@ -3305,14 +3317,14 @@ public class LibertyServer implements LogMonitorClient {
 
         localDstDir.mkdirs();
 
-        if ( !localDstDir.exists() ) {
+        if (!localDstDir.exists()) {
             String msg = "Error: Failed to create local [ " + localDstDirPath + " ] to receive remote [ " + remoteSrcDirPath + " ]";
             Log.info(c, method, msg);
-            if ( ignoreFailures ) {
+            if (ignoreFailures) {
                 return;
             } else {
                 throw new IOException(msg);
-            } 
+            }
         }
 
         boolean isLocal = machine.isLocal();
@@ -3323,20 +3335,20 @@ public class LibertyServer implements LogMonitorClient {
         boolean isCheckpoint = !isWorkarea && remoteSrcDirName.equals("checkpoint");
         boolean isMessaging = !isWorkarea && !isCheckpoint && remoteSrcDirName.equals("messaging");
 
-        for ( String remoteSrcFileName : listDirectoryContents(remoteSrcDir) ) {
+        for (String remoteSrcFileName : listDirectoryContents(remoteSrcDir)) {
             String skipReason = null;
-            if ( isWorkarea ) {
-                if ( remoteSrcFileName.equals(OSGI_DIR_NAME) || remoteSrcFileName.startsWith(".s") ) {
+            if (isWorkarea) {
+                if (remoteSrcFileName.equals(OSGI_DIR_NAME) || remoteSrcFileName.startsWith(".s")) {
                     skipReason = "workarea element"; // too big / too racy
                 }
-            } else if ( isCheckpoint ) {
-                if ( remoteSrcFileName.equals("image") ) {
+            } else if (isCheckpoint) {
+                if (remoteSrcFileName.equals("image")) {
                     skipReason = "checkpoint/image element"; // too big
                 }
-            } else if ( isMessaging ) {
+            } else if (isMessaging) {
                 skipReason = "message store element"; // ?
             }
-            if ( skipReason != null ) {
+            if (skipReason != null) {
                 Log.finest(c, method, "Skip [ " + remoteSrcFileName + " ]: " + skipReason);
                 continue;
             }
@@ -3344,7 +3356,7 @@ public class LibertyServer implements LogMonitorClient {
             RemoteFile remoteSrcFile = new RemoteFile(machine, remoteSrcDir, remoteSrcFileName);
             LocalFile localDstFile = new LocalFile(localDstDir, remoteSrcFileName);
 
-            if ( remoteSrcFile.isDirectory() ) {
+            if (remoteSrcFile.isDirectory()) {
                 recursivelyCopyDirectory(remoteSrcFile, localDstFile, ignoreFailures, skipArchives, moveFile);
 
             } else {
@@ -3352,11 +3364,11 @@ public class LibertyServer implements LogMonitorClient {
 
                 Log.finest(c, method, "Remote source file [ " + remoteSrcFilePath + " ]");
 
-                if ( remoteSrcFilePath.endsWith(".log") ) {
-                    LogPolice.measureUsedTrace( remoteSrcFile.length() );
+                if (remoteSrcFilePath.endsWith(".log")) {
+                    LogPolice.measureUsedTrace(remoteSrcFile.length());
                 }
 
-                if ( skipArchives && isSkippableArchive(remoteSrcFilePath, remoteSrcFileName, dumpName) ) {
+                if (skipArchives && isSkippableArchive(remoteSrcFilePath, remoteSrcFileName, dumpName)) {
                     Log.finest(c, method, "Skip [ " + remoteSrcFilePath + " ]: Archive");
                     continue;
                 }
@@ -3375,15 +3387,15 @@ public class LibertyServer implements LogMonitorClient {
                 try {
                     boolean success = false;
 
-                    if ( moveFile && (isLog || isConfigBackup) ) {
-                        if ( isLocal ) {
+                    if (moveFile && (isLog || isConfigBackup)) {
+                        if (isLocal) {
                             opName = "rename";
                             success = remoteSrcFile.rename(localDstFile);
-                            if ( !success ) {
+                            if (!success) {
                                 Log.info(c, method, "Error: Failed rename of " + opDesc + "; falling back to copy and delete");
                             }
                         }
-                        if ( !success ) {
+                        if (!success) {
                             opName = "copy and delete";
                             success = localDstFile.copyFromSource(remoteSrcFile) && remoteSrcFile.delete();
                         }
@@ -3392,16 +3404,16 @@ public class LibertyServer implements LogMonitorClient {
                         success = localDstFile.copyFromSource(remoteSrcFile);
                     }
 
-                    if ( !success ) {
+                    if (!success) {
                         failure = new IOException("Error: Failed [ " + opName + " ] of " + opDesc);
                     }
 
-                } catch ( Exception e ) {
+                } catch (Exception e) {
                     failure = new IOException("Error: Failed [ " + opName + " ] of " + opDesc, e);
                 }
 
-                if ( failure != null ) {
-                    if ( !ignoreFailures ) {
+                if (failure != null) {
+                    if (!ignoreFailures) {
                         throw failure;
                     } else {
                         Log.error(c, method, failure, "Ignoring failure during transfer of [ " + remoteSrcDirPath + " ] to [ " + localDstDirPath + " ]");
