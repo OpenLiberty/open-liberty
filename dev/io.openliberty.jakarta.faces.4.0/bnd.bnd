@@ -16,7 +16,7 @@ javac.target: 11
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 Bundle-SymbolicName: io.openliberty.jakarta.faces.4.0; singleton:=true
-Bundle-Description:  Jakarta Server Faces, MyFaces 4.0 API
+Bundle-Description:  Jakarta Faces, MyFaces 4.0 API
 Implementation-Version: 4.0.0
 
 Export-Package: \
