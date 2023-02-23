@@ -73,7 +73,7 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
     @ClassRule
     public static RepeatTests repeat = createRandomTokenTypeRepeats();
 
-    private static int BUFFER_SECONDS = 1; // account for code execution delays
+    private static int BUFFER_SECONDS = 2; // account for code execution delays
 
     @BeforeClass
     public static void setUp() throws Exception {
