@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME io.openliberty.security.oidcclientcore.internal/resources/io/openliberty/security/oidcclientcore/internal/resources/OidcClientCoreMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -137,4 +134,8 @@ TOKEN_EXP_IN_PAST.useraction=Obtain a new token that is not expired. Synchronize
 TOKEN_CLAIM_IN_FUTURE=CWWKS2428E: The token is deemed invalid due to the [{0}] value for the [{1}] claim being in the future. The sum of the current time and clock skew is [{2}], and the configured clock skew is {3} seconds.
 TOKEN_CLAIM_IN_FUTURE.explanation=The value that is specified in the message for the claim must be a time in the past.
 TOKEN_CLAIM_IN_FUTURE.useraction=Use the token after the time that is specified in the message expires, or obtain a new token.
+
+TOKEN_RESPONSE_MISSING_PARAMETER=CWWKS2429E: The token response from the OpenID Connect provider is missing at least one required parameter: {0}.
+TOKEN_RESPONSE_MISSING_PARAMETER.explanation=Either the OpenID Connect provider did not return a required parameter or failed to process the token request.
+TOKEN_RESPONSE_MISSING_PARAMETER.useraction=Verify that the configured token endpoint is correct and capable of responding to OAuth token requests.
 

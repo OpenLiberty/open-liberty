@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.security.jakartasec.fat.config.tests;
 
@@ -427,6 +424,7 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.TokenRequestException" })
     @Test
     public void ConfigurationScopeTests_scopeExpression_noOpenId() throws Exception {
 
@@ -439,8 +437,8 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
         response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
 
         Expectations expectations = new Expectations();
-        expectations.addSuccessCodeForCurrentAction();
-        expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWWKS1619E_OPENID_SCOPE_MISSING, "Did not receive an error message stating that the scope is missing the 'openid' scope."));
+        expectations.addUnauthorizedStatusCodeAndMessageForCurrentAction();
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2416E_TOKEN_REQUEST_ERROR + ".*" + MessageConstants.CWWKS2429E_TOKEN_RESPONSE_MISSING_PARAMETER + ".*" + "id_token", "Did not receive an error message stating that the id_token parameter is missing from the token response."));
 
         validationUtils.validateResult(response, expectations);
 

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,7 +12,11 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclientcore.token;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
 import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletRequest;
@@ -50,6 +54,7 @@ public class JakartaOidcTokenRequest {
 
     public ProviderAuthenticationResult sendRequest() throws TokenRequestException {
         TokenResponse tokenEndpointResponse = sendTokenRequest();
+        verifyTokenResponseContainsRequiredParameters(tokenEndpointResponse);
         return createAuthenticationResultFromTokenResponse(tokenEndpointResponse);
     }
 
@@ -115,6 +120,24 @@ public class JakartaOidcTokenRequest {
 
     Builder createTokenRequestorBuilder(String tokenEndpoint, String clientId, @Sensitive String clientSecret, String authzCode) {
         return new TokenRequestor.Builder(tokenEndpoint, clientId, clientSecret, oidcClientConfig.getRedirectURI(), authzCode);
+    }
+
+    /**
+     * Verify the token response parameters in accordance with RFC 6749 Section 5.1.
+     */
+    void verifyTokenResponseContainsRequiredParameters(TokenResponse tokenEndpointResponse) throws TokenRequestException {
+        Map<String, String> responseMap = tokenEndpointResponse.asMap();
+        List<String> missingParameters = new ArrayList<>();
+        List<String> requiredParameters = Arrays.asList(TokenConstants.ACCESS_TOKEN, TokenConstants.TOKEN_TYPE, TokenConstants.ID_TOKEN);
+        for (String requiredParameter : requiredParameters) {
+            if (!responseMap.containsKey(requiredParameter)) {
+                missingParameters.add(requiredParameter);
+            }
+        }
+        if (!missingParameters.isEmpty()) {
+            String nlsMessage = Tr.formatMessage(tc, "TOKEN_RESPONSE_MISSING_PARAMETER", missingParameters);
+            throw new TokenRequestException(oidcClientConfig.getClientId(), nlsMessage);
+        }
     }
 
     ProviderAuthenticationResult createAuthenticationResultFromTokenResponse(TokenResponse tokenEndpointResponse) {
