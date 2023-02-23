@@ -15,8 +15,6 @@ package endpoints.servlets;
 import java.io.IOException;
 import java.util.Enumeration;
 
-import com.ibm.ws.security.fat.common.Constants;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.WebServlet;
@@ -33,20 +31,20 @@ public class GenericTestServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        doWorker(request, response, Constants.GETMETHOD);
+        doWorker(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        doWorker(request, response, Constants.POSTMETHOD);
+        doWorker(request, response);
     }
 
-    protected void doWorker(HttpServletRequest request, HttpServletResponse response, String method) throws ServletException, IOException {
+    protected void doWorker(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         ServletOutputStream outputStream = response.getOutputStream();
         String shortName = ServletLogger.getShortName(this.getClass().getName());
-        ServletLogger.printLine(outputStream, shortName + " method: " + method);
+        ServletLogger.printLine(outputStream, shortName + " method: " + request.getMethod());
 
         Enumeration<String> parmNames = request.getParameterNames();
         if (parmNames.hasMoreElements()) {

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -35,5 +35,7 @@ public class PayloadConstants {
     public static final String PAYLOAD_TOKEN_TYPE = "token_type";
     public static final String PAYLOAD_EVENTS = "events";
     public static final String PAYLOAD_SESSION_ID = "sid";
+    public static final String PAYLOAD_SCOPE = "scope";
+    public static final String PAYLOAD_REALMNAME = "realmName";
 
 }
