@@ -30,12 +30,12 @@
     
     <dataSource id="DefaultDataSource">
     	<jdbcDriver libraryRef="DBLib"/>
-    	<properties.oracle URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}"/>
+    	<properties.oracle URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}"/>
     </dataSource>
     
     <dataSource id="default-dup" jndiName="jdbc/default-dup">
     	<jdbcDriver libraryRef="DBLib"/>
-    	<properties.oracle URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}"/>
+    	<properties.oracle URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}"/>
     </dataSource>
     
 	<!--
@@ -44,7 +44,7 @@
     -->
     <dataSource id="conn-prop-ds" jndiName="jdbc/conn-prop-ds">
     	<jdbcDriver libraryRef="DBLib"/>
-    	<properties.oracle URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}" 
+    	<properties.oracle URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}" 
     	connectionProperties="
 	    	oracle.net.ssl_version=1.2;
 	    	oracle.net.authentication_services=(TCPS);
@@ -59,7 +59,7 @@
     
     <dataSource id="conn-prop-ds-generic" jndiName="jdbc/conn-prop-ds-generic">
     	<jdbcDriver libraryRef="DBLib"/>
-    	<properties URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}"
+    	<properties URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}"
     	connectionProperties="
 	    	oracle.net.ssl_version=1.2;
 	    	oracle.net.authentication_services=(TCPS);

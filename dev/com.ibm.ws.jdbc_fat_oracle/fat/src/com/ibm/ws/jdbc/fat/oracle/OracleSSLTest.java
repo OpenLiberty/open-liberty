@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -55,8 +55,8 @@ public class OracleSSLTest extends FATServletClient {
         // Set server environment variables
         server.addEnvVar("BASIC_URL", oracle.getJdbcUrl());
         server.addEnvVar("SSL_URL", oracle.getJdbcSSLUrl());
-        server.addEnvVar("USER", oracle.getUsername());
-        server.addEnvVar("PASS", oracle.getPassword());
+        server.addEnvVar("ORACLE_USER", oracle.getUsername());
+        server.addEnvVar("ORACLE_PASS", oracle.getPassword());
         server.addEnvVar("WALLET_PASS", oracle.getWalletPassword());
 
         // Create a normal Java EE application and export to server

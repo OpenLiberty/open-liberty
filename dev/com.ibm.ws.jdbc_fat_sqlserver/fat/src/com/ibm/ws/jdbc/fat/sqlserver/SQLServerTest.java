@@ -54,11 +54,11 @@ public class SQLServerTest extends FATServletClient {
     public static void setUp() throws Exception {
         FATSuite.setupDatabase(sqlserver, false);
 
-        server.addEnvVar("DBNAME", FATSuite.DB_NAME);
-        server.addEnvVar("HOST", sqlserver.getHost());
-        server.addEnvVar("PORT", Integer.toString(sqlserver.getFirstMappedPort()));
-        server.addEnvVar("USER", sqlserver.getUsername());
-        server.addEnvVar("PASSWORD", sqlserver.getPassword());
+        server.addEnvVar("SQL_DBNAME", FATSuite.DB_NAME);
+        server.addEnvVar("SQL_HOST", sqlserver.getHost());
+        server.addEnvVar("SQL_PORT", Integer.toString(sqlserver.getFirstMappedPort()));
+        server.addEnvVar("SQL_USER", sqlserver.getUsername());
+        server.addEnvVar("SQL_PASSWORD", sqlserver.getPassword());
 
         // Create a normal Java EE application and export to server
         ShrinkHelper.defaultApp(server, APP_NAME, "web");

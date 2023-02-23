@@ -94,9 +94,9 @@ public class OracleCustomTrace extends FATServletClient {
             server.stopServer("DSRA7043W");
         }
 
-        server.addEnvVar("URL", oracle.getJdbcUrl());
-        server.addEnvVar("USER", oracle.getUsername());
-        server.addEnvVar("PASSWORD", oracle.getPassword());
+        server.addEnvVar("ORACLE_URL", oracle.getJdbcUrl());
+        server.addEnvVar("ORACLE_USER", oracle.getUsername());
+        server.addEnvVar("ORACLE_PASSWORD", oracle.getPassword());
         server.addEnvVar("SSL_PASSWORD", SSL_PASSWORD);
 
         server.setJvmOptions(Stream.of(serverJvmOptClone, jvmOpts, TIME_ZONE_OPTION, TRACE_OPTION)

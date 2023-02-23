@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2016, 2021 IBM Corporation and others.
+    Copyright (c) 2016, 2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -34,29 +34,29 @@
     
     <dataSource id="DefaultDataSource">
     	<jdbcDriver libraryRef="DBLib"/>
-    	<properties.oracle URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}"/>
+    	<properties.oracle URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}"/>
     </dataSource>
 
     <dataSource id="casting-ds" jndiName="jdbc/casting-ds" enableConnectionCasting="true">
     	<jdbcDriver libraryRef="DBLib"/>
-    	<properties.oracle URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}" roleName="TestRole"/>
+    	<properties.oracle URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}" roleName="TestRole"/>
     	<onConnect>UPDATE CONCOUNT SET NUMCONNECTIONS = NUMCONNECTIONS + 1</onConnect>
     	<onConnect>CREATE GLOBAL TEMPORARY TABLE ${TEMP_TABLE_NAME}(CURTIME NVARCHAR2(100)) ON COMMIT PRESERVE ROWS</onConnect>
     	<onConnect>INSERT INTO ${TEMP_TABLE_NAME} VALUES (CURRENT_TIMESTAMP)</onConnect>
     </dataSource>
     
     <dataSource id="driver-ds" jndiName="jdbc/driver-ds" type="java.sql.Driver">
-    	<properties.oracle URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}"/>
+    	<properties.oracle URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}"/>
     	<jdbcDriver libraryRef="DBLib"/>
     </dataSource>
     
     <dataSource id="generic-driver-ds" jndiName="jdbc/generic-driver-ds">
-    	<properties URL="${env.URL}" user="${env.USER}" password="${env.PASSWORD}"/>
+    	<properties URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}"/>
     	<jdbcDriver libraryRef="DBLib"/>
     </dataSource>
     
     <dataSource id="inferred-ds" jndiName="jdbc/inferred-ds">
-    	<properties databaseName="${env.DBNAME}" portNumber="${env.PORT}" serverName="${env.HOST}" user="${env.USER}" password="${env.PASSWORD}" driverType="thin"/>
+    	<properties databaseName="${env.ORACLE_DBNAME}" portNumber="${env.ORACLE_PORT}" serverName="${env.ORACLE_HOST}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}" driverType="thin"/>
     	<jdbcDriver libraryRef="DBLib"/>
     </dataSource>
     
