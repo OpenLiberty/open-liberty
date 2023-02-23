@@ -41,7 +41,7 @@ public class TelemetryGlobalOpenTelemetryServlet extends FATServlet {
             fail("Able to set GlobalOpenTelemetry");
         } catch (IllegalStateException e) {
             assertThat(e.getMessage(),
-                       containsString("CWMOT5001E: Setting the GlobalOpenTelemetry class is not supported."));
+                       containsString("CWMOT5001E: Setting the GlobalOpenTelemetry object is not supported."));
         }
     }
 
