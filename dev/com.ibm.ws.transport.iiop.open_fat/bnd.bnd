@@ -25,15 +25,16 @@ tested.features: \
 	ejbRemote-3.2
 
 -buildpath: \
-    com.ibm.wsspi.org.osgi.core;version=latest,\
-    com.ibm.wsspi.org.osgi.service.component;version=latest, \
-    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
-    com.ibm.ws.org.apache.yoko.corba.spec.1.5;version=latest,\
-    com.ibm.ws.org.apache.yoko.core.1.5;version=latest,\
-    com.ibm.ws.org.apache.yoko.osgi.1.5;version=latest,\
-    com.ibm.ws.org.apache.yoko.rmi.impl.1.5;version=latest,\
-    com.ibm.ws.org.apache.yoko.rmi.spec.1.5;version=latest,\
-    com.ibm.ws.org.apache.yoko.util.1.5;version=latest,\
-    com.ibm.ws.transport.iiop;version=latest,\
-    com.ibm.websphere.javaee.ejb.3.1;version=latest,\
-    com.ibm.websphere.javaee.servlet.3.1;version=latest
+	com.ibm.wsspi.org.osgi.core;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.org.apache.yoko.corba.spec.1.5;version=latest,\
+	com.ibm.ws.org.apache.yoko.core.1.5;version=latest,\
+	com.ibm.ws.org.apache.yoko.osgi.1.5;version=latest,\
+	com.ibm.ws.org.apache.yoko.rmi.impl.1.5;version=latest,\
+	com.ibm.ws.org.apache.yoko.rmi.spec.1.5;version=latest,\
+	com.ibm.ws.org.apache.yoko.util.1.5;version=latest,\
+	com.ibm.ws.transport.iiop;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.1;version=latest
