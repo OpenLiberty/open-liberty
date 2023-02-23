@@ -72,10 +72,9 @@ public class ClientWindowScopedTest {
 
     /**
      * Ensure the same client window is used when navigating between pages in a flow.
-     * Assertion: ClientWindowScoped superscedes FlowScoped
      */
     @Test
-    public void testClientWindowSupersedesFlow() throws Exception {
+    public void testClientWindowReuseInFlow() throws Exception {
         try (WebClient webClient = new WebClient()) {
             URL url = HttpUtils.createURL(server, "/" + APP_NAME + "/clientWindowHierarchy.xhtml");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
@@ -97,11 +96,10 @@ public class ClientWindowScopedTest {
     }
 
     /**
-     * Ensure a new client window is used when accessing a new view.
-     * Assertion: ViewScoped supersedes ClientWindowScoped
+     * Ensure a new client window is used when refreshing view.
      */
     @Test
-    public void testViewSupersedesClientWindow() throws Exception {
+    public void testNewClientWindowSameView() throws Exception {
         try (WebClient webClient = new WebClient()) {
             URL url = HttpUtils.createURL(server, "/" + APP_NAME + "/clientWindowCount.xhtml");
 
@@ -123,8 +121,8 @@ public class ClientWindowScopedTest {
     }
 
     /**
-     * Ensure that only two concurrent client window objects are allowed.
-     * Assertion: jakarta.faces.NUMBER_OF_CLIENT_WINDOWS is honored
+     * Ensure that the jakarta.faces.NUMBER_OF_CLIENT_WINDOWS configuration is honored
+     * and only two concurrent client window objects are allowed.
      */
     @Test
     public void testNumberOfClientWindows() throws Exception {

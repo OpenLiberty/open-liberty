@@ -44,5 +44,4 @@ javac.target: 11
 	io.openliberty.org.apache.xercesImpl;version=latest,\
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
 	io.openliberty.jakarta.annotation.2.1;version=latest,\
-	io.openliberty.jakarta.expressionLanguage.5.0;version=latest,\
-	jakarta.enterprise.cdi-api
+	io.openliberty.jakarta.expressionLanguage.5.0;version=latest
