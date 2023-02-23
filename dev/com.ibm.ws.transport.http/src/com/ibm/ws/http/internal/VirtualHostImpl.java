@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,6 +24,8 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -50,6 +52,9 @@ import com.ibm.wsspi.http.VirtualHostListener;
 import com.ibm.wsspi.http.ee7.HttpInboundConnectionExtended;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
+
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  * Representation of VirtualHost configuration, for example:
@@ -109,7 +114,8 @@ public class VirtualHostImpl implements VirtualHost {
     private final CopyOnWriteArraySet<HttpContainerContext> httpContainers;
 
     /** Lock used when adding/removing contexts and containers. */
-    private final Object containerLock = new Object() {};
+    private final Object containerLock = new Object() {
+    };
 
     /** Required reference to mime types */
     private volatile DefaultMimeTypes defaultMimeTypes = null;
@@ -122,9 +128,11 @@ public class VirtualHostImpl implements VirtualHost {
     private final ConcurrentServiceReferenceSet<VirtualHostListener> _listeners = new ConcurrentServiceReferenceSet<VirtualHostListener>("listener");
 
     /** BundleContext: used to manage registration of secondary interface into the service registry */
-    private RegistrationHolder osgiService = null;
+    private final RegistrationHolder osgiService;
 
-    public VirtualHostImpl() {
+    @Activate
+    public VirtualHostImpl(ComponentContext context) {
+        osgiService = new RegistrationHolder(context.getBundleContext(), this);
         httpContainers = new CopyOnWriteArraySet<HttpContainerContext>();
         myEndpoints = new ConcurrentHashMap<HttpEndpointImpl, EndpointState>();
     }
@@ -135,7 +143,6 @@ public class VirtualHostImpl implements VirtualHost {
             Tr.event(this, tc, "Activating VirtualHost", properties);
         }
         activated = true;
-        osgiService = new RegistrationHolder(context.getBundleContext(), this);
         _listeners.activate(context);
 
         name = (String) properties.get("id");
@@ -227,7 +234,8 @@ public class VirtualHostImpl implements VirtualHost {
     }
 
     /** No-op: this is a required reference */
-    protected void unsetMimeTypeDefaults(DefaultMimeTypes mimeTypes) {}
+    protected void unsetMimeTypeDefaults(DefaultMimeTypes mimeTypes) {
+    }
 
     @Override
     public String getMimeType(String extension) {
@@ -517,16 +525,25 @@ public class VirtualHostImpl implements VirtualHost {
      * why a "target configuration" is passed in as a parameter to this method: the aliases associated
      * with the configuration are being updated before the modified method completes.
      *
-     * @param endpoint The endpoint that was started
-     * @param targetConfig The configuration that is being notified
-     * @param resolvedHostName A suitable hostname for use in messages
-     * @param port The port that is now listening
-     * @param isHttps True if this is an https port
+     * @param endpoint         The endpoint that was started
+     * @param targetConfig     The configuration that is being notified
+     * @param hostNameResolver A suitable hostname supplier for use in messages
+     * @param port             The port that is now listening
+     * @param isHttps          True if this is an https port
      * @see #listenerStopped(HttpEndpointImpl, String, int, boolean)
      */
-    synchronized void listenerStarted(HttpEndpointImpl endpoint, VirtualHostConfig targetConfig, String resolvedHostName, int port, boolean isHttps) {
+    synchronized void listenerStarted(HttpEndpointImpl endpoint, VirtualHostConfig targetConfig, Supplier<String> hostNameResolver, int port, boolean isHttps) {
+        if (!osgiService.listenOnRestore(endpoint, targetConfig, hostNameResolver, port, isHttps)) {
+            // start listener now, this is either after restore or not a checkpoint process at all (normal case)
+            listenerStarted0(endpoint, targetConfig, hostNameResolver, port, isHttps);
+        }
+    }
+
+    private synchronized void listenerStarted0(HttpEndpointImpl endpoint, VirtualHostConfig targetConfig, Supplier<String> hostNameResolver, int port, boolean isHttps) {
         if (!activated)
             return;
+
+        String resolvedHostName = hostNameResolver.get();
 
         // If allowed endpoints are specified for the host and this isn't one of them, don't add this endpoint
         Collection<String> allowedEndpoints = targetConfig.getAllowedEndpoints();
@@ -581,10 +598,10 @@ public class VirtualHostImpl implements VirtualHost {
      * This method is called by the VirtualHostMap when an endpoint that applies to
      * this virtual host (matches one of the configured aliases) has stopped.
      *
-     * @param endpoint The endpoint that was stopped
+     * @param endpoint         The endpoint that was stopped
      * @param resolvedHostName A suitable hostname for use in messages
-     * @param port The port that has stopped listening
-     * @param isHttps True if this is an https port
+     * @param port             The port that has stopped listening
+     * @param isHttps          True if this is an https port
      *
      * @see #listenerStarted(HttpEndpointImpl, String, int, boolean)
      */
@@ -712,10 +729,10 @@ public class VirtualHostImpl implements VirtualHost {
         /**
          * Notify existing contexts that a port has been started or stopped.
          *
-         * @param added True if the port was added/started/updated
+         * @param added    True if the port was added/started/updated
          * @param hostName HostName suitable for use in messages
-         * @param port Started/stopped port
-         * @param isHttps True if the port is associated with an https chain
+         * @param port     Started/stopped port
+         * @param isHttps  True if the port is associated with an https chain
          *
          * @see VirtualHostImpl#listenerStarted(HttpEndpointImpl, String, int, boolean)
          * @see VirtualHostImpl#listenerStopped(HttpEndpointImpl, String, int, boolean)
@@ -799,8 +816,8 @@ public class VirtualHostImpl implements VirtualHost {
          * thread safe: To prevent add/remove notifications from interleaving, this method
          * should only be called from synchronized methods on the inner class.
          *
-         * @param added True if this is a new/added context root, false if the context root is being removed
-         * @param urlString URL to use for availabilty message
+         * @param added       True if this is a new/added context root, false if the context root is being removed
+         * @param urlString   URL to use for availabilty message
          * @param contextRoot context root for VirtualHostListener notification
          */
         private void notifyContextRoot(boolean added, String urlString, String contextRoot) {
@@ -869,6 +886,34 @@ public class VirtualHostImpl implements VirtualHost {
         RegistrationHolder(BundleContext bContext, VirtualHostImpl vhost) {
             this.bContext = bContext;
             this.vhost = vhost;
+        }
+
+        public boolean listenOnRestore(HttpEndpointImpl endpoint, VirtualHostConfig targetConfig, Supplier<String> hostNameResolver, int port, boolean isHttps) {
+            if (bContext != null && !CheckpointPhase.getPhase().restored()) {
+                Hashtable<String, Object> hookProps = new Hashtable<>();
+                // We want this to be one of the last restore hooks called. It has to be after the hook in
+                // HttpEndpointImpl.registerCheckResolvedHostHook because this hook re-resolves the host name on restore
+                // Using max rank with multi-thread hook will run the restore hook "last"
+                hookProps.put(Constants.SERVICE_RANKING, Integer.MAX_VALUE);
+                hookProps.put(CheckpointHook.MULTI_THREADED_HOOK, Boolean.TRUE);
+                final AtomicReference<ServiceRegistration<CheckpointHook>> hookReg = new AtomicReference<>();
+                hookReg.set(bContext.registerService(CheckpointHook.class, new CheckpointHook() {
+                    @Override
+                    public void restore() {
+                        vhost.listenerStarted0(endpoint, targetConfig, hostNameResolver, port, isHttps);
+                        ServiceRegistration<CheckpointHook> currentReg = hookReg.get();
+                        if (currentReg == null) {
+                            // This should never be null, it would indicate the hook got called synchronously
+                            // while registering the service.
+                            // Throwing IllegalStateException so we can pinpoint the cause of the failure if this does happen.
+                            throw new IllegalStateException();
+                        }
+                        currentReg.unregister();
+                    }
+                }, hookProps));
+                return true;
+            }
+            return false;
         }
 
         /**

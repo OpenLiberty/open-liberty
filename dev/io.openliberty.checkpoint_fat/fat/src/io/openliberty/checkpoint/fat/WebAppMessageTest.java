@@ -17,18 +17,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
-import app1.TestServletA;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.MicroProfileActions;
@@ -39,12 +37,11 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
 @SkipIfCheckpointNotSupported
-public class BasicServletTest extends FATServletClient {
+public class WebAppMessageTest extends FATServletClient {
 
-    public static final String APP_NAME = "app1";
+    public static final String APP_NAME = "app2";
 
     @Server("checkpointFATServer")
-    @TestServlet(servlet = TestServletA.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @ClassRule
@@ -55,26 +52,41 @@ public class BasicServletTest extends FATServletClient {
 
     @BeforeClass
     public static void copyAppToDropins() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "app1");
+        ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, APP_NAME);
         FATSuite.copyAppsAppToDropins(server, APP_NAME);
     }
 
-    @Before
-    public void setUp() throws Exception {
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, true,
+    @Test
+    public void testApplicationsWebAppMessage() throws Exception {
+        doTest(CheckpointPhase.APPLICATIONS);
+    }
+
+    @Test
+    public void testDeploymentWebAppMessage() throws Exception {
+        doTest(CheckpointPhase.DEPLOYMENT);
+    }
+
+    private void doTest(CheckpointPhase phase) throws Exception {
+        server.setCheckpoint(phase, true,
                              server -> {
-                                 assertNotNull("'SRVE0169I: Loading Web Module: app1' message not found in log before rerstore",
-                                               server.waitForStringInLogUsingMark("SRVE0169I: Loading Web Module: app1", 0));
-                                 assertNotNull("'CWWKZ0001I: Application app1 started' message not found in log.",
-                                               server.waitForStringInLogUsingMark("CWWKZ0001I: Application app1 started", 0));
+                                 assertNotNull("'SRVE0169I: Loading Web Module: " + APP_NAME + "' message not found in log before rerstore",
+                                               server.waitForStringInLogUsingMark("SRVE0169I: Loading Web Module: " + APP_NAME, 0));
+                                 if (phase == CheckpointPhase.APPLICATIONS) {
+                                     assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
+                                                   server.waitForStringInLogUsingMark("CWWKZ0001I: Application " + APP_NAME + " started", 0));
+                                 }
                                  // make sure the web app URL is not logged on checkpoint side
                                  assertNull("'CWWKT0016I: Web application available' found in log.",
-                                            server.waitForStringInLogUsingMark("CWWKT0016I: .*app1", 0));
+                                            server.waitForStringInLogUsingMark("CWWKT0016I: .*" + APP_NAME, 0));
                              });
         server.startServer(getTestMethodNameOnly(testName) + ".log");
+        if (phase == CheckpointPhase.DEPLOYMENT) {
+            assertNotNull("'CWWKZ0001I: Application " + APP_NAME + " started' message not found in log.",
+                          server.waitForStringInLogUsingMark("CWWKZ0001I: Application " + APP_NAME + " started", 0));
+        }
         // make sure the web app URL is logged on restore side
         assertNotNull("'CWWKT0016I: Web application available' not found in log.",
-                      server.waitForStringInLogUsingMark("CWWKT0016I: .*app1"));
+                      server.waitForStringInLogUsingMark("CWWKT0016I: .*" + APP_NAME));
     }
 
     @After
