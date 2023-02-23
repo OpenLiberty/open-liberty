@@ -20,10 +20,10 @@ Bundle-Description: Jakarta Server Pages, version 3.1
 
 # Note: No files under jakarta.servlet.jsp.resources, but it's needed to resolve other jsp bundles (i.e. com.ibm.jsp.2.3.jakarta)
 Export-Package: \
-	jakarta.servlet.jsp; version="3.1.0",\
-	jakarta.servlet.jsp.el; version="3.1.0",\
-	jakarta.servlet.jsp.resources; version="3.1.0",\
-	jakarta.servlet.jsp.tagext; version="3.1.0"
+	jakarta.servlet.jsp; version="3.1.1",\
+	jakarta.servlet.jsp.el; version="3.1.1",\
+	jakarta.servlet.jsp.resources; version="3.1.1",\
+	jakarta.servlet.jsp.tagext; version="3.1.1"
 
 Import-Package: \
   !jakarta.servlet.jsp.*, \
