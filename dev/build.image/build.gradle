@@ -725,7 +725,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         baseName 'openliberty-webProfile10'
         from packageDir
-        destinationDir distsDirectory
+        destinationDirectory = distsDirectory
         version releaseVersion
         doLast {
             rootProject.userProps.setProperty('zipopenliberty.webprofile10.archivename', archivePath.toString())
@@ -740,7 +740,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         baseName 'openliberty-jakartaee10'
         from packageDir
-        destinationDir distsDirectory
+        destinationDirectory = distsDirectory
         version releaseVersion
         doLast {
             rootProject.userProps.setProperty('zipopenliberty.jakartaee10.archivename', archivePath.toString())
@@ -785,7 +785,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         baseName 'openliberty-microProfile6'
         from packageDir
-        destinationDir distsDirectory
+        destinationDirectory = distsDirectory
         version releaseVersion
         doLast {
             rootProject.userProps.setProperty('zipopenliberty.microprofile6.archivename', archivePath.toString())
@@ -853,7 +853,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
     task zipTestReport(type: Zip) {
         baseName 'openliberty_test_report'
         from cnf.file('generated/testReports/allUnitTests')
-        destinationDir cnf.file('generated/testReports')
+        destinationDirectory = cnf.file('generated/testReports')
         rootProject.userProps.setProperty('gradle.test.report.zip', archivePath.toString())
         rootProject.storeProps()
     }
