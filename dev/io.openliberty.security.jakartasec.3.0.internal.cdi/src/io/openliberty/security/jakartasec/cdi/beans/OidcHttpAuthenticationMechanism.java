@@ -18,7 +18,6 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.regex.Pattern;
 
 import javax.security.auth.Subject;
 
@@ -45,6 +44,7 @@ import io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseE
 import io.openliberty.security.oidcclientcore.exceptions.TokenRequestException;
 import io.openliberty.security.oidcclientcore.exceptions.UnsupportedResponseTypeException;
 import io.openliberty.security.oidcclientcore.http.OriginalResourceRequest;
+import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import io.openliberty.security.oidcclientcore.storage.Storage;
 import io.openliberty.security.oidcclientcore.storage.StorageFactory;
@@ -249,15 +249,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         HttpServletRequest request = httpMessageContext.getRequest();
         HttpServletResponse response = httpMessageContext.getResponse();
 
-        OidcClientConfig clientConfig = client.getOidcClientConfig();
-
-        Optional<String> originalRequestUrl = getOriginalRequestUrlForRedirect(request, response, clientConfig);
-        if (originalRequestUrl.isPresent()) {
-            return httpMessageContext.redirect(originalRequestUrl.get());
-        }
-
         AuthenticationStatus status = AuthenticationStatus.SEND_CONTINUE;
-        Optional<HttpServletRequest> originalResourceRequest = getOriginalResourceRequest(clientConfig, httpMessageContext);
         try {
             ProviderAuthenticationResult providerAuthenticationResult = client.continueFlow(request, response);
             status = processContinueFlowResult(providerAuthenticationResult, httpMessageContext, client);
@@ -265,62 +257,51 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
             Tr.error(tc, e.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
-        if (status == AuthenticationStatus.SUCCESS && originalResourceRequest.isPresent()) {
-            httpMessageContext.setRequest(originalResourceRequest.get());
-            httpMessageContext.getMessageInfo().setRequestMessage(originalResourceRequest.get());
+        if (status == AuthenticationStatus.SUCCESS) {
+            OidcClientConfig clientConfig = client.getOidcClientConfig();
+            if (clientConfig.isRedirectToOriginalResource()) {
+                restoreOriginalResourceRequest(clientConfig, httpMessageContext);
+            }
         }
         return status;
     }
 
-    private Optional<String> getOriginalRequestUrlForRedirect(HttpServletRequest request, HttpServletResponse response, OidcClientConfig clientConfig) {
-        if (clientConfig.isRedirectToOriginalResource()) {
-            String currentRequestUrl = request.getRequestURL().toString();
-            String originalRequestUrl = getOriginalRequestUrl(request, response, clientConfig.isUseSession());
-            if (originalRequestUrl != null && !originalRequestUrl.equals(currentRequestUrl)) {
-                originalRequestUrl = appendCodeAndStateParams(originalRequestUrl, request);
-                return Optional.of(originalRequestUrl);
-            }
+    private void restoreOriginalResourceRequest(OidcClientConfig clientConfig, HttpMessageContext httpMessageContext) {
+        Optional<HttpServletRequest> originalResourceRequest = getOriginalResourceRequest(clientConfig, httpMessageContext);
+        if (originalResourceRequest.isPresent()) {
+            httpMessageContext.setRequest(originalResourceRequest.get());
+            httpMessageContext.getMessageInfo().setRequestMessage(originalResourceRequest.get());
         }
-        return Optional.empty();
-    }
-
-    private String getOriginalRequestUrl(HttpServletRequest request, HttpServletResponse response, boolean useSession) {
-        String state = request.getParameter(OpenIdConstant.STATE);
-        if (state == null) {
-            return null;
-        }
-        Storage storage = StorageFactory.instantiateStorage(request, response, useSession);
-        String originalRequestUrl = storage.get(OidcStorageUtils.getOriginalReqUrlStorageKey(state));
-        if (originalRequestUrl == null) {
-            return null;
-        }
-        String originalRequestUrlWithoutQueryParams = originalRequestUrl.split(Pattern.quote("?"))[0];
-        return originalRequestUrlWithoutQueryParams;
-    }
-
-    private String appendCodeAndStateParams(String originalRequestUrl, HttpServletRequest request) {
-        originalRequestUrl += "?code=" + request.getParameter(OpenIdConstant.CODE);
-        originalRequestUrl += "&state=" + request.getParameter(OpenIdConstant.STATE);
-        return originalRequestUrl;
     }
 
     private Optional<HttpServletRequest> getOriginalResourceRequest(OidcClientConfig clientConfig, HttpMessageContext httpMessageContext) {
-        HttpServletRequest originalResourceRequest = null;
+        HttpServletRequest request = httpMessageContext.getRequest();
+        HttpServletResponse response = httpMessageContext.getResponse();
 
-        if (shouldRestoreOriginalRequest(clientConfig, httpMessageContext)) {
-            HttpServletRequest request = httpMessageContext.getRequest();
-            HttpServletResponse response = httpMessageContext.getResponse();
-            originalResourceRequest = getOriginalResourceRequest(request, response, clientConfig.isUseSession());
+        HttpServletRequest originalResourceRequest = null;
+        if (hasPreviouslyStoredOriginalResourceRequest(request, response, clientConfig)) {
+            originalResourceRequest = recreateOriginalResourceRequest(request, response, clientConfig.isUseSession());
         }
 
         return Optional.ofNullable(originalResourceRequest);
     }
 
-    private boolean shouldRestoreOriginalRequest(OidcClientConfig clientConfig, HttpMessageContext httpMessageContext) {
-        return clientConfig.isRedirectToOriginalResource() && !httpMessageContext.isAuthenticationRequest();
+    /**
+     * Determine if the original request was stored based on if there is a stored method.
+     * There will always be a stored method if the original request was stored.
+     * If nothing was stored even though isRedirectToOriginalResource was set to true, then the request was likely caller-initiated.
+     * Note: Cannot rely on HttpMessageContext#isAuthenticationRequest here, since that info is lost in the callback.
+     */
+    private boolean hasPreviouslyStoredOriginalResourceRequest(HttpServletRequest request, HttpServletResponse response, OidcClientConfig clientConfig) {
+        Storage storage = StorageFactory.instantiateStorage(request, response, clientConfig.isUseSession());
+        String state = request.getParameter(OpenIdConstant.STATE);
+        String stateHash = io.openliberty.security.oidcclientcore.utils.Utils.getStrHashCode(state);
+        String storedMethod = storage.get(OidcClientStorageConstants.WAS_OIDC_REQ_METHOD + stateHash);
+
+        return storedMethod != null && !storedMethod.isEmpty();
     }
 
-    protected OriginalResourceRequest getOriginalResourceRequest(HttpServletRequest request, HttpServletResponse response, boolean useSession) {
+    protected OriginalResourceRequest recreateOriginalResourceRequest(HttpServletRequest request, HttpServletResponse response, boolean useSession) {
         return new OriginalResourceRequest(request, response, useSession);
     }
 
@@ -333,6 +314,8 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
 
             if (AuthResult.SUCCESS.equals(authResult)) {
                 status = handleOidcLogin(providerAuthenticationResult, httpMessageContext, client);
+            } else if (AuthResult.REDIRECT.equals(authResult)) {
+                status = httpMessageContext.redirect(providerAuthenticationResult.getRedirectUrl());
             }
         }
 

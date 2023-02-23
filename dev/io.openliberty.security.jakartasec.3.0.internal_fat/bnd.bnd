@@ -27,7 +27,8 @@ src: \
     test-applications/MultipleServletsDifferentRoles.war/src,\
     test-applications/MultipleServletsSimilarAnnotations.war/src,\
     test-applications/IdentityStore.war/src,\
-    test-applications/MultipleIdentityStore.war/src
+    test-applications/MultipleIdentityStore.war/src,\
+    test-applications/RedirectToOriginalResourceTruePromptNone.war/src
     
 -dependson: \
     build.changeDetector,\
