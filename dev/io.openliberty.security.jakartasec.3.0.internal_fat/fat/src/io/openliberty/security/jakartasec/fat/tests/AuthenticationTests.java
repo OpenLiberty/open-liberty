@@ -279,7 +279,6 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
                 break;
             case TRUE:
                 appRoot = appRoot + "RedirectTrue";
-                callbackCount1 = 0;
                 break;
             case FALSE:
                 appRoot = appRoot + "RedirectFalse";
@@ -313,6 +312,11 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
                 parms.add(new NameValuePair("useNewAuth", "false"));
             }
             rspValues.setParms(parms);
+        }
+
+        if (redirect == BooleanPlusValues.TRUE) {
+            callbackCount1 = 0;
+            callbackCount2 = 0;
         }
 
         rspValues.setUseAuthApp(true);
@@ -785,15 +789,4 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
-//    // xxx
-//    @Test
-//    public void AuthenticationTests_redirectToOriginalResourceFalse_newAuthTrue_NoOpenIdContextInjection() throws Exception {
-//
-//        List<NameValuePair> parms = new ArrayList<NameValuePair>();
-//        parms.add(new NameValuePair("useNewAuth", "true"));
-//        rspValues.setParms(parms);
-//        rspValues.setBaseApp(Constants.DEFAULT_SERVLET);
-//
-//        runGoodEndToEndTest("AuthAppNoInjectRedirectFalseUseSessionFalseServlet", app);
-//    }
 }
