@@ -76,8 +76,8 @@ src: \
     test-applications/ProviderMetadata.war/src,\
     test-applications/TokenMinValidity5s.war/src,\
     test-applications/TokenMinValidity20s.war/src,\
-    test-applications/TokenMinValidity30s.war/src,\
     test-applications/TokenMinValidity60s.war/src,\
+    test-applications/TokenMinValidity90s.war/src,\
     test-applications/TokenMinValidity0s.war/src,\
     test-applications/TokenMinValidityNegative5s.war/src,\
     test-applications/TokenMinValidity5sWithEL.war/src,\

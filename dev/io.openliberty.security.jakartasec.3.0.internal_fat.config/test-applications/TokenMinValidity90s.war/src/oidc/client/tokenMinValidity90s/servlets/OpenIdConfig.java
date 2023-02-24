@@ -10,14 +10,16 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package oidc.client.tokenMinValidity30s.servlets;
+package oidc.client.tokenMinValidity90s.servlets;
 
-import jakarta.servlet.annotation.WebServlet;
-import oidc.client.base.servlets.BaseCallbackServlet;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Named;
+import oidc.client.base.servlets.BaseOpenIdConfig;
 
-@WebServlet("/Callback")
-public class CallbackServlet extends BaseCallbackServlet {
+@Named
+@Dependent
+public class OpenIdConfig extends BaseOpenIdConfig {
 
-    private static final long serialVersionUID = -417476984908088827L;
+    // override and/or create new get methods
 
 }
