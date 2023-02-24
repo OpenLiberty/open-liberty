@@ -69,9 +69,11 @@ public class Server2ServerTests extends AbstractTest {
                     .andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServerClient",
                                                                                 "com.ibm.ws.ejbcontainer.remote.fat.RemoteServer")) //
                     .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServerClient",
-                                                                                              "com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServer")) //
+                                                                                              "com.ibm.ws.ejbcontainer.remote.fat.RemoteServer")) //
                     .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.RemoteServerClient",
-                                                                                               "com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServer")) //
+                                                                                               "com.ibm.ws.ejbcontainer.remote.fat.RemoteServer")) //
+                    .andWith(new RepeatEE7Secure().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServerClient",
+                                                                            "com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServer")) //
                     .andWith(new RepeatEE8Secure().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServerClient",
                                                                             "com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServer")) //
                     .andWith(new RepeatEE9Secure().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11).forServers("com.ibm.ws.ejbcontainer.remote.fat.SecureRemoteServerClient",
