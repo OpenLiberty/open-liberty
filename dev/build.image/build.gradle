@@ -144,7 +144,9 @@ File packageDir = new File(project.buildDir, 'openliberty')
 
 
 class PackageLibertyWithFeatures extends DefaultTask {
+    @Internal
     Closure withFeatures
+    @Internal
     Boolean completeFeatureList
     // packageServerConflict does not need to be set unless the list of features includes conflicting features
     //
@@ -154,8 +156,12 @@ class PackageLibertyWithFeatures extends DefaultTask {
     //
     // To solve the issues with the use of a value of "true", this property can be set to a comma separated
     // list of base symbolic names (the feature name without the hyphen and version number).
+    @Internal
     String packageServerConflict
+    // ?
+    @OutputDirectory
     File outputTo
+    @Internal
     Boolean isBeta
 
     @TaskAction
@@ -861,7 +867,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
     task createJSONForPublicArtifacts {
         enabled isAutomatedBuild
         dependsOn zipTestReport
-
+        
         doLast {
             println "running createJSONForPublicArtifacts"
             delete "${buildDir}/info.json"
