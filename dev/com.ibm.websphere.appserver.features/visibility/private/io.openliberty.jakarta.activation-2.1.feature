@@ -10,6 +10,7 @@ IBM-API-Package: \
 -features=com.ibm.websphere.appserver.eeCompatible-10.0
 -bundles=\
   io.openliberty.jakarta.activation.2.1; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.activation:jakarta.activation-api:2.1.1", \
+  io.openliberty.org.eclipse.angus.activation, \
   io.openliberty.org.glassfish.hk2.osgi-resource-locator
 kind=beta
 edition=core
