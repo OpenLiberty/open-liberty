@@ -37,15 +37,11 @@ import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
-import jakarta.data.Column;
 import jakarta.data.DiscriminatorColumn;
 import jakarta.data.DiscriminatorValue;
 import jakarta.data.Embeddable;
 import jakarta.data.Entity;
-import jakarta.data.Generated;
-import jakarta.data.Id;
 import jakarta.data.Inheritance;
-import jakarta.data.MappedSuperclass;
 import jakarta.data.exceptions.MappingException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.Attribute;
@@ -81,8 +77,7 @@ class EntityDefiner implements Runnable {
      * unless the name is "id".
      *
      * Precedence is:
-     * Select the field/parameter/method that is annotated with @Id, (1)
-     * or lacking that is named Id, or ID, or id, (2)
+     * Field/parameter/method that is named Id, or ID, or id, (2)
      * or lacking that has a name that ends with Id (3), ID (4), or id (5).
      *
      * @param entityClass entity class.
@@ -95,9 +90,6 @@ class EntityDefiner implements Runnable {
 
         for (Field field : entityClass.getFields()) {
             String name = field.getName();
-
-            if (field.getAnnotation(Id.class) != null)
-                return name;
 
             if (precedence > 2)
                 if (name.length() > 2) {
@@ -134,9 +126,6 @@ class EntityDefiner implements Runnable {
             else
                 continue;
 
-            if (method.getAnnotation(Id.class) != null)
-                return name;
-
             if (precedence > 2)
                 if (name.length() > 2) {
                     if (precedence > 3) {
@@ -162,7 +151,7 @@ class EntityDefiner implements Runnable {
         }
 
         if (id == null)
-            throw new MappingException(entityClass + " lacks public field with @Id or of the form *ID"); // TODO
+            throw new MappingException(entityClass + " lacks public field of the form *ID or public method of the form get*ID."); // TODO NLS
         return id;
     }
 
@@ -388,28 +377,21 @@ class EntityDefiner implements Runnable {
 
         List<Field> fields = new ArrayList<Field>();
         for (Class<?> superc = c; superc != null; superc = superc.getSuperclass()) {
-            boolean isMappedSuperclass = superc.getAnnotation(MappedSuperclass.class) != null;
-            if (isMappedSuperclass || superc == c)
+            if (superc == c)
                 for (Field f : superc.getFields())
-                    if (isMappedSuperclass || c.equals(f.getDeclaringClass()))
+                    if (c.equals(f.getDeclaringClass()))
                         fields.add(f);
         }
 
         for (Field field : fields) {
-            Id id = field.getAnnotation(Id.class);
-            Column column = field.getAnnotation(Column.class);
-            Generated generated = field.getAnnotation(Generated.class);
             Embeddable embeddable = field.getType().getAnnotation(Embeddable.class);
 
             String attributeName = field.getName();
-            String columnName = column == null || column.value().length() == 0 ? //
-                            id == null || id.value().length() == 0 ? null : id.value() : //
-                            column.value();
             boolean isCollection = Collection.class.isAssignableFrom(field.getType());
 
             String columnType;
             if (embeddable == null) {
-                columnType = id != null || keyAttributeName != null && keyAttributeName.equals(attributeName) ? "id" : //
+                columnType = keyAttributeName != null && keyAttributeName.equals(attributeName) ? "id" : //
                                 "version".equals(attributeName) ? "version" : //
                                                 isCollection ? "element-collection" : //
                                                                 "basic";
@@ -421,10 +403,6 @@ class EntityDefiner implements Runnable {
             }
 
             xml.append("   <" + columnType + " name=\"" + attributeName + "\">").append(EOLN);
-            if (columnName != null)
-                xml.append("    <column name=\"" + columnName + "\"/>").append(EOLN);
-            if (generated != null)
-                xml.append("    <generated-value strategy=\"" + generated.value().name() + "\"/>").append(EOLN);
             xml.append("   </" + columnType + ">").append(EOLN);
         }
 
