@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -23,6 +23,7 @@ src: \
     test-applications/contextandCDI/src,\
     test-applications/dependentIntoJax/src,\
     test-applications/disable/src,\
+    test-applications/ejbsubresource/src,\
     test-applications/interceptor/src,\
     test-applications/lifecyclemethod/src,\
     test-applications/lifecyclemismatch/src,\
