@@ -37,11 +37,6 @@ import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
-import jakarta.data.DiscriminatorColumn;
-import jakarta.data.DiscriminatorValue;
-import jakarta.data.Embeddable;
-import jakarta.data.Entity;
-import jakarta.data.Inheritance;
 import jakarta.data.exceptions.MappingException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.Attribute;
@@ -182,29 +177,13 @@ class EntityDefiner implements Runnable {
             // XML to make all other classes into JPA entities:
             ArrayList<String> entityClassInfo = new ArrayList<>(entities.size());
 
-            List<Class<?>> embeddableTypes = new ArrayList<>();
-
             for (Class<?> c : entities) {
                 if (c.getAnnotation(jakarta.persistence.Entity.class) == null) {
-                    Entity entity = c.getAnnotation(Entity.class);
-                    StringBuilder xml = new StringBuilder(500).append(" <entity class=\"" + c.getName() + "\">").append(EOLN);
+                    StringBuilder xml = new StringBuilder(500).append(" <entity class=\"").append(c.getName()).append("\">").append(EOLN);
 
-                    if (c.getAnnotation(Inheritance.class) == null) {
-                        String tableName = tablePrefix + (entity == null || entity.value().length() == 0 ? c.getSimpleName() : entity.value());
-                        xml.append("  <table name=\"" + tableName + "\"/>").append(EOLN);
-                    } else {
-                        xml.append("  <inheritance strategy=\"SINGLE_TABLE\"/>").append(EOLN);
-                    }
+                    xml.append("  <table name=\"").append(tablePrefix).append(c.getSimpleName()).append("\"/>").append(EOLN);
 
-                    DiscriminatorValue discriminatorValue = c.getAnnotation(DiscriminatorValue.class);
-                    if (discriminatorValue != null)
-                        xml.append("  <discriminator-value>").append(discriminatorValue.value()).append("</discriminator-value>").append(EOLN);
-
-                    DiscriminatorColumn discriminatorColumn = c.getAnnotation(DiscriminatorColumn.class);
-                    if (discriminatorColumn != null)
-                        xml.append("  <discriminator-column name=\"").append(discriminatorColumn.value()).append("\"/>").append(EOLN);
-
-                    writeAttributes(xml, c, getID(c), embeddableTypes);
+                    writeAttributes(xml, c, getID(c));
 
                     xml.append(" </entity>").append(EOLN);
 
@@ -212,13 +191,6 @@ class EntityDefiner implements Runnable {
                 } else {
                     entityClassNames.add(c.getName());
                 }
-            }
-
-            for (Class<?> type : embeddableTypes) {
-                StringBuilder xml = new StringBuilder(500).append(" <embeddable class=\"").append(type.getName()).append("\">").append(EOLN);
-                writeAttributes(xml, type, null, null);
-                xml.append(" </embeddable>").append(EOLN);
-                entityClassInfo.add(xml.toString());
             }
 
             Map<String, ?> properties = Collections.singletonMap("io.openliberty.persistence.internal.entityClassInfo",
@@ -372,7 +344,7 @@ class EntityDefiner implements Runnable {
         }
     }
 
-    private void writeAttributes(StringBuilder xml, Class<?> c, String keyAttributeName, List<Class<?>> embeddableTypes) {
+    private void writeAttributes(StringBuilder xml, Class<?> c, String keyAttributeName) {
         xml.append("  <attributes>").append(EOLN);
 
         List<Field> fields = new ArrayList<Field>();
@@ -384,23 +356,13 @@ class EntityDefiner implements Runnable {
         }
 
         for (Field field : fields) {
-            Embeddable embeddable = field.getType().getAnnotation(Embeddable.class);
-
             String attributeName = field.getName();
             boolean isCollection = Collection.class.isAssignableFrom(field.getType());
 
-            String columnType;
-            if (embeddable == null) {
-                columnType = keyAttributeName != null && keyAttributeName.equals(attributeName) ? "id" : //
-                                "version".equals(attributeName) ? "version" : //
-                                                isCollection ? "element-collection" : //
-                                                                "basic";
-            } else if (embeddableTypes == null) {
-                throw new UnsupportedOperationException("TODO: Embeddedable within an Embeddable");
-            } else {
-                columnType = "embedded";
-                embeddableTypes.add(field.getType());
-            }
+            String columnType = keyAttributeName != null && keyAttributeName.equals(attributeName) ? "id" : //
+                            "version".equals(attributeName) ? "version" : //
+                                            isCollection ? "element-collection" : //
+                                                            "basic";
 
             xml.append("   <" + columnType + " name=\"" + attributeName + "\">").append(EOLN);
             xml.append("   </" + columnType + ">").append(EOLN);

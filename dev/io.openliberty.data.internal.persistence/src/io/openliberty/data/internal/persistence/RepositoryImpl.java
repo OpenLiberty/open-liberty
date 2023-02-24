@@ -51,7 +51,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import jakarta.data.Inheritance;
 import jakarta.data.exceptions.DataConnectionException;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
@@ -78,6 +77,7 @@ import jakarta.data.repository.Sort;
 import jakarta.data.repository.Streamable;
 import jakarta.data.repository.Update;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Inheritance;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceException;
 import jakarta.persistence.TypedQuery;
@@ -100,8 +100,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     public RepositoryImpl(PersistenceDataProvider provider, Class<R> repositoryInterface, Class<E> defaultEntityClass) {
         this.provider = provider;
         this.repositoryInterface = repositoryInterface;
-        boolean inheritance = defaultEntityClass.getAnnotation(Inheritance.class) != null ||
-                              defaultEntityClass.getAnnotation(jakarta.persistence.Inheritance.class) != null;
+        boolean inheritance = defaultEntityClass.getAnnotation(Inheritance.class) != null;
 
         CompletableFuture<EntityInfo> defaultEntityInfoFuture = provider.entityInfoMap.computeIfAbsent(defaultEntityClass, EntityInfo::newFuture);
 
