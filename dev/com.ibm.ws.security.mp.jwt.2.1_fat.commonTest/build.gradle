@@ -39,7 +39,7 @@ dependencies {
       project(':com.ibm.ws.org.slf4j.api')
 }
 
-addRequiredLibraries.dependsOn addJakartaTransformer
+/* addRequiredLibraries.dependsOn addJakartaTransformer */
 
 /* for debugging
  gradle.taskGraph.whenReady {taskGraph ->

@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt21.fat;
 
@@ -22,12 +22,15 @@ import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE10RepeatActio
 import com.ibm.ws.security.fat.common.mp.jwt.MPJwt21FatConstants;
 import com.ibm.ws.security.mp.jwt21.fat.configInAppTests.MPJwt21MPConfigInApp_Tests;
 import com.ibm.ws.security.mp.jwt21.fat.envVarsTests.MPJwtGoodMP21ConfigAsEnvVars_ClockSkew;
+import com.ibm.ws.security.mp.jwt21.fat.envVarsTests.MPJwtGoodMP21ConfigAsEnvVars_DecryptAlg;
 import com.ibm.ws.security.mp.jwt21.fat.envVarsTests.MPJwtGoodMP21ConfigAsEnvVars_TokenAge;
 import com.ibm.ws.security.mp.jwt21.fat.systemPropertiesTests.MPJwtGoodMP21ConfigAsSystemProperties_ClockSkew;
+import com.ibm.ws.security.mp.jwt21.fat.systemPropertiesTests.MPJwtGoodMP21ConfigAsSystemProperties_DecryptAlg;
 import com.ibm.ws.security.mp.jwt21.fat.systemPropertiesTests.MPJwtGoodMP21ConfigAsSystemProperties_TokenAge;
 
 import componenttest.rules.repeater.RepeatTests;
 
+@SuppressWarnings({ "restriction" })
 @RunWith(Suite.class)
 @SuiteClasses({
         AlwaysRunAndPassTest.class,
@@ -39,37 +42,17 @@ import componenttest.rules.repeater.RepeatTests;
         //         mp-config specified as system properties
         MPJwtGoodMP21ConfigAsSystemProperties_TokenAge.class,
         MPJwtGoodMP21ConfigAsSystemProperties_ClockSkew.class,
-        // TODO keyManagementKeyAlias
+        MPJwtGoodMP21ConfigAsSystemProperties_DecryptAlg.class,
         // mp-config specified as env vars
         MPJwtGoodMP21ConfigAsEnvVars_TokenAge.class,
         MPJwtGoodMP21ConfigAsEnvVars_ClockSkew.class,
-// TODO keyManagementKeyAlias tests
-//        //
-//        // Ensure 2.1 function not available with only 1.1 Feature enabled
-//        Feature11Enabled_ConfigInAppTests.class,
-//        Feature11Enabled_ConfigInServerXmlTests.class,
-//        Feature11Enabled_MpConfigAsEnvVars.class,
-//        Feature11Enabled_MpConfigAsSystemProperties.class
-
-//      // Ensure 2.1 function not available with only 1.2 Feature enabled
-//      Feature12Enabled_ConfigInAppTests.class,
-//      Feature12Enabled_ConfigInServerXmlTests.class,
-//      Feature12Enabled_MpConfigAsEnvVars.class,
-//      Feature12Enabled_MpConfigAsSystemProperties.class
-
-//      // Ensure 2.1 function not available with only 2.0 Feature enabled
-//      Feature20Enabled_ConfigInAppTests.class,
-//      Feature20Enabled_ConfigInServerXmlTests.class,
-//      Feature20Enabled_MpConfigAsEnvVars.class,
-//      Feature20Enabled_MpConfigAsSystemProperties.class
+        MPJwtGoodMP21ConfigAsEnvVars_DecryptAlg.class,
 
 })
 
 public class FATSuite {
 
     public static String authHeaderPrefix = MPJwt21FatConstants.TOKEN_TYPE_BEARER;
-    //    private static final Set<String> REMOVE = new HashSet<String>();
-    //    private static final Set<String> INSERT = new HashSet<String>();
 
     /**
      * Tests were written to use repeat to run the tests with each version of the mpJwt feature. Now that the project has been
@@ -78,10 +61,20 @@ public class FATSuite {
      * copy/use the proper version of some config files.
      */
     /**
-     * mpJwt 1.1 and-1.2 can NOT have EE9 enabled (and we need to test behavior of new attrs with the old feature levels)
-     * mpJwt 2.0 and-2.1 need EE9 enabled
+     * mpJwt 1.1 and-1.2 can NOT have EE9/EE10 enabled (and we need to test behavior of new attrs with the old feature levels)
+     * mpJwt 2.0 needs EE9 enabled
+     * mpJwt 2.0 needs EE10 enabled
+     * I will create new projects to handle testing with previous versions of mpJwt and the new attributes (since the EE*
+     * transforms cause problems with 1.1 and 1.2)
+     */
+    /**
+     * Adding a repeat with no modification - when we're running on Java 8, we can't enable EE10 which this project needs. No
+     * tests will run and the tooling
+     * will report 0 tests run which is not allowed. Adding the no modification pass so that AlwaysRunAndPass will at least run
+     * once. All of the other
+     * tests listed above will use a skip rule to NOT run in the no modification repeat.
      */
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new SecurityTestFeatureEE10RepeatAction(MPJwt21FatConstants.MP_JWT_21).forServerConfigPaths("publish/servers", "publish/shared/config"));
+    public static RepeatTests repeat = RepeatTests.with(new SecurityTestFeatureEE10RepeatAction(MPJwt21FatConstants.MP_JWT_21).forServerConfigPaths("publish/servers", "publish/shared/config").alwaysAddFeature("servlet-6.0")).andWithoutModification();
 
 }

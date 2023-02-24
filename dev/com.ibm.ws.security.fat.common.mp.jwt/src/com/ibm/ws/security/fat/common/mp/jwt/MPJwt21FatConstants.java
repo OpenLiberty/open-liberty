@@ -28,6 +28,15 @@ public class MPJwt21FatConstants extends MPJwtFatConstants {
     public static final String SHORT_CLOCK_SKEW_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileShortClockSkewInMP-ConfigInMETA-INF";
     public static final String SHORT_CLOCK_SKEW_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileShortClockSkewInMP-ConfigUnderWEB-INF";
 
+    public static final String DEFAULT_KEYMGMTKEYALG_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileDefaultKeyMgmtKeyAlgInMP-ConfigInMETA-INF";
+    public static final String DEFAULT_KEYMGMTKEYALG_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileDefaultKeyMgmtKeyAlgInMP-ConfigUnderWEB-INF";
+    public static final String MATCH_KEYMGMTKEYALG_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileMatchKeyMgmtKeyAlgInMP-ConfigInMETA-INF";
+    public static final String MATCH_KEYMGMTKEYALG_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileMatchKeyMgmtKeyAlgInMP-ConfigUnderWEB-INF";
+    public static final String MISMATCH_KEYMGMTKEYALG_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileMismatchKeyMgmtKeyAlgInMP-ConfigInMETA-INF";
+    public static final String MISMATCH_KEYMGMTKEYALG_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileMismatchKeyMgmtKeyAlgInMP-ConfigUnderWEB-INF";
+    public static final String INVALID_KEYMGMTKEYALG_IN_CONFIG_IN_META_INF_ROOT_CONTEXT = "microProfileInvalidKeyMgmtKeyAlgInMP-ConfigInMETA-INF";
+    public static final String INVALID_KEYMGMTKEYALG_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT = "microProfileInvalidKeyMgmtKeyAlgInMP-ConfigUnderWEB-INF";
+
     public static final String TOKEN_AGE_KEY = "mp.jwt.verify.token.age";
     public static final String CLOCK_SKEW_KEY = "mp.jwt.verify.clock.skew";
     public static final String DECRYPT_KEY_ALG_KEY = "mp.jwt.decrypt.key.algorithm";

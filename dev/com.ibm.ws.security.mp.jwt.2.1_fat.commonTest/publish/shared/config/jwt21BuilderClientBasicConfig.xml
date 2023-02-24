@@ -15,46 +15,37 @@
 
 	<jwtBuilder id="defaultJWT" 
 				jwkEnabled="${oidcJWKEnabled}"
-				keyStoreRef="rsa_key"
-        		keyAlias="rsacert"
-        		issuer="testIssuer"
+				keyStoreRef="key_allSigAlg"
+        			keyAlias="rs256"
+        			issuer="testIssuer"
 				signatureAlgorithm="RS256"
 				/>
 
-<!--				
-	<jwtBuilder id="shortLifetimeJWT" 
+	<jwtBuilder id="sign_RS256_enc_RS256" 
+				audiences="client01, client02"
+				issuer="testIssuer"
 				jwkEnabled="${oidcJWKEnabled}"
-				keyStoreRef="rsa_key"
-        		keyAlias="rsacert"
-        		issuer="testIssuer"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="rs256"
 				signatureAlgorithm="RS256"
-				expiresInSeconds="5s"
-				/>
-				
-	<jwtBuilder id="smallTokenAge" 
-				jwkEnabled="false"
-				keyStoreRef="rsa_key"
-        		keyAlias="rsacert"
-				signatureAlgorithm="RS256"
-				tokenAge="10s"
+				trustStoreRef="trust_allSigAlg"
+				keyManagementKeyAlgorithm="RSA-OAEP"
+				keyManagementKeyAlias="RS256"
+				contentEncryptionAlgorithm="A256GCM"
 				/>		
 
-	<jwtBuilder id="noClockSkew" 
-				jwkEnabled="false"
-				keyStoreRef="rsa_key"
-        		keyAlias="rsacert"
+	<jwtBuilder id="sign_RS256_enc_RS256_RSA_OAEP_256" 
+				audiences="client01, client02"
+				issuer="testIssuer"
+				jwkEnabled="${oidcJWKEnabled}"
+				keyStoreRef="key_allSigAlg"
+				keyAlias="rs256"
 				signatureAlgorithm="RS256"
-				clockSkew="0"
+				trustStoreRef="trust_allSigAlg"
+				keyManagementKeyAlgorithm="RSA-OAEP-256"
+				keyManagementKeyAlias="RS256"
+				contentEncryptionAlgorithm="A256GCM"
 				/>		
 
-	<jwtBuilder id="smallClockSkew" 
-				jwkEnabled="false"
-				keyStoreRef="rsa_key"
-        		keyAlias="rsacert"
-				signatureAlgorithm="RS256"
-				clockSkew="5s"
-				/>		
-			
--->				
 </server>
 			

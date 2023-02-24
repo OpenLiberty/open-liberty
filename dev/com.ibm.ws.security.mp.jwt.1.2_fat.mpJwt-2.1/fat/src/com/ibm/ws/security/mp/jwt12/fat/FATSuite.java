@@ -98,6 +98,6 @@ public class FATSuite {
      * mpJwt-2.1 needs EE10 enabled
      */
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new SecurityTestFeatureEE10RepeatAction(MPJwt11FatConstants.MP_JWT_21).forServerConfigPaths("publish/servers", "publish/shared/config"));
+    public static RepeatTests repeat = RepeatTests.with(new SecurityTestFeatureEE10RepeatAction(MPJwt11FatConstants.MP_JWT_21).alwaysAddFeature("servlet-6.0").forServerConfigPaths("publish/servers", "publish/shared/config"));
 
 }

@@ -229,4 +229,149 @@
 		</application-bnd>
 	</application>	
     
-</server>    
+
+	<application
+		type="war"
+		id="microProfileDefaultKeyMgmtKeyAlgInMP-ConfigInMETA-INF"
+		name="microProfileDefaultKeyMgmtKeyAlgInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileDefaultKeyMgmtKeyAlgInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+ 
+	<application
+		type="war"
+		id="microProfileDefaultKeyMgmtKeyAlgInMP-ConfigUnderWEB-INF"
+		name="microProfileDefaultKeyMgmtKeyAlgInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileDefaultKeyMgmtKeyAlgInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>	
+	
+	<application
+		type="war"
+		id="microProfileMatchKeyMgmtKeyAlgInMP-ConfigInMETA-INF"
+		name="microProfileMatchKeyMgmtKeyAlgInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileMatchKeyMgmtKeyAlgInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+ 
+	<application
+		type="war"
+		id="microProfileMatchKeyMgmtKeyAlgInMP-ConfigUnderWEB-INF"
+		name="microProfileMatchKeyMgmtKeyAlgInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileMatchKeyMgmtKeyAlgInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>	
+	
+	<application
+		type="war"
+		id="microProfileMismatchKeyMgmtKeyAlgInMP-ConfigInMETA-INF"
+		name="microProfileMismatchKeyMgmtKeyAlgInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileMismatchKeyMgmtKeyAlgInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+ 
+	<application
+		type="war"
+		id="microProfileMismatchKeyMgmtKeyAlgInMP-ConfigUnderWEB-INF"
+		name="microProfileMismatchKeyMgmtKeyAlgInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileMismatchKeyMgmtKeyAlgInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>	
+	
+	<application
+		type="war"
+		id="microProfileInvalidKeyMgmtKeyAlgInMP-ConfigInMETA-INF"
+		name="microProfileInvalidKeyMgmtKeyAlgInMP-ConfigInMETA-INF"
+		location="${server.config.dir}/apps/microProfileInvalidKeyMgmtKeyAlgInMP-ConfigInMETA-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+ 
+	<application
+		type="war"
+		id="microProfileInvalidKeyMgmtKeyAlgInMP-ConfigUnderWEB-INF"
+		name="microProfileInvalidKeyMgmtKeyAlgInMP-ConfigUnderWEB-INF"
+		location="${server.config.dir}/apps/microProfileInvalidKeyMgmtKeyAlgInMP-ConfigUnderWEB-INF.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>	
+
+    </server>    
