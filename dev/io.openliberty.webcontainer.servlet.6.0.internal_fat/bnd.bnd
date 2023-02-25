@@ -21,6 +21,7 @@ src: \
     test-applications/SessionCookieConfigSCI.jar/src,\
     test-applications/SimpleTest.war/src,\
     test-applications/URIPathCanonicalizationTest.war/src,\
+    test-applications/URIPathCanonicalInvalidWebXmlTest.war/src,\
     test-applications/URIPathCanonicalWebXmlTest.war/src
 
 fat.project: true

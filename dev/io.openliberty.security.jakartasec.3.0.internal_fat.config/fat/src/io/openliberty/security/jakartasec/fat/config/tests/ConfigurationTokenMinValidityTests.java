@@ -13,6 +13,9 @@ import static io.openliberty.security.jakartasec.fat.utils.Constants.DEFAULT_TOK
 
 import java.util.List;
 
+import javax.json.JsonObject;
+import javax.json.JsonValue;
+
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -22,6 +25,8 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
+import com.ibm.ws.security.fat.common.jwt.JwtTokenForTest;
+import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 
 import componenttest.annotation.Server;
@@ -33,7 +38,9 @@ import io.openliberty.security.jakartasec.fat.configs.TestConfigMaps;
 import io.openliberty.security.jakartasec.fat.utils.CommonExpectations;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
 import io.openliberty.security.jakartasec.fat.utils.MessageConstants;
+import io.openliberty.security.jakartasec.fat.utils.ServletMessageConstants;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
+import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
 
 /**
  * Tests @OpenIdAuthenticationMechanismDefinition tokenMinValidity and tokenMinValidityExpression
@@ -45,7 +52,7 @@ import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
  *
  * The test apps also set prompt=login, accessTokenExpiry=true, and identityTokenExpiry=true.
  * This is to make the RP redirect to the login page to make testing easier when the tokens are
- * consider expired based on the tokenMinValidity and token lifetime (30s).
+ * consider expired based on the tokenMinValidity and token lifetime (60s).
  */
 /**
  * Tests appSecurity-5.0
@@ -66,8 +73,7 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
     @ClassRule
     public static RepeatTests repeat = createRandomTokenTypeRepeats();
 
-    private static int TOKEN_LIFETIME_SECONDS = 30;
-    private static int BUFFER_SECONDS = 7; // account for code execution delays
+    private static int BUFFER_SECONDS = 2; // account for code execution delays
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -106,8 +112,8 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
 
         swh.defaultDropinApp(rpServer, "TokenMinValidity5s.war", "oidc.client.tokenMinValidity5s.servlets", "oidc.client.base.*");
         swh.defaultDropinApp(rpServer, "TokenMinValidity20s.war", "oidc.client.tokenMinValidity20s.servlets", "oidc.client.base.*");
-        swh.defaultDropinApp(rpServer, "TokenMinValidity30s.war", "oidc.client.tokenMinValidity30s.servlets", "oidc.client.base.*");
         swh.defaultDropinApp(rpServer, "TokenMinValidity60s.war", "oidc.client.tokenMinValidity60s.servlets", "oidc.client.base.*");
+        swh.defaultDropinApp(rpServer, "TokenMinValidity90s.war", "oidc.client.tokenMinValidity90s.servlets", "oidc.client.base.*");
         swh.defaultDropinApp(rpServer, "TokenMinValidity0s.war", "oidc.client.tokenMinValidity0s.servlets", "oidc.client.base.*");
         swh.defaultDropinApp(rpServer, "TokenMinValidityNegative5s.war", "oidc.client.tokenMinValidityNegative5s.servlets", "oidc.client.base.*");
         swh.defaultDropinApp(rpServer, "TokenMinValidityDefault.war", "oidc.client.tokenMinValidityDefault.servlets", "oidc.client.base.*");
@@ -120,13 +126,13 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
                                        buildUpdatedConfigMap(opServer, rpServer, "TokenMinValidityEL20s", "allValues.openIdConfig.properties",
                                                              TestConfigMaps.getTokenMinValidity20s()),
                                        "oidc.client.tokenMinValidityEL.servlets", "oidc.client.base.*");
-        swh.deployConfigurableTestApps(rpServer, "TokenMinValidityEL30s.war", "TokenMinValidityEL.war",
-                                       buildUpdatedConfigMap(opServer, rpServer, "TokenMinValidityEL30s", "allValues.openIdConfig.properties",
-                                                             TestConfigMaps.getTokenMinValidity30s()),
-                                       "oidc.client.tokenMinValidityEL.servlets", "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "TokenMinValidityEL60s.war", "TokenMinValidityEL.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "TokenMinValidityEL60s", "allValues.openIdConfig.properties",
                                                              TestConfigMaps.getTokenMinValidity60s()),
+                                       "oidc.client.tokenMinValidityEL.servlets", "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "TokenMinValidityEL90s.war", "TokenMinValidityEL.war",
+                                       buildUpdatedConfigMap(opServer, rpServer, "TokenMinValidityEL90s", "allValues.openIdConfig.properties",
+                                                             TestConfigMaps.getTokenMinValidity90s()),
                                        "oidc.client.tokenMinValidityEL.servlets", "oidc.client.base.*");
         swh.deployConfigurableTestApps(rpServer, "TokenMinValidityEL0s.war", "TokenMinValidityEL.war",
                                        buildUpdatedConfigMap(opServer, rpServer, "TokenMinValidityEL0s", "allValues.openIdConfig.properties",
@@ -146,10 +152,10 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
     /**
      * Perform a good end-to-end run using the specified tokenMinValidity.
      * The test:
-     * 1. Runs a good end-to-end test,
-     * 2. Waits the token lifetime minus the token min validity minus a small buffer period
-     * 3. Invokes the app again and makes sure we can still get to the protected app
-     * 4. Waits the small buffer period
+     * 1. Runs a good end-to-end test
+     * 2. Waits the remaining token lifetime minus the token min validity minus a small buffer period
+     * 3. Invokes the app again and makes sure we can still get to the protected app right before the tokens expire
+     * 4. Waits the small buffer period (x2) to ensure that the tokens have expired
      * 5. Invokes the app again and ensures that we need to authenticate again due to token expiry
      *
      * @param appRoot          - the root of the app to invoke
@@ -165,13 +171,27 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
         WebClient webClient = getAndSaveWebClient();
         Page response = runGoodEndToEndTest(webClient, appRoot, app);
 
-        actions.testLogAndSleep(TOKEN_LIFETIME_SECONDS - (tokenMinValidity / 1000) - BUFFER_SECONDS);
+        actions.testLogAndSleep(getSecondsTilTokenExpiration(response) - (tokenMinValidity / 1000) - BUFFER_SECONDS);
         response = invokeAppGetToApp(webClient, url);
 
-        actions.testLogAndSleep(BUFFER_SECONDS);
+        actions.testLogAndSleep(2 * BUFFER_SECONDS);
         response = invokeAppReturnLoginPage(webClient, url);
 
         return response;
+    }
+
+    private int getSecondsTilTokenExpiration(Page response) throws Exception {
+        long exp = getExpFromIdToken(response);
+        long now = (long) Math.ceil(System.currentTimeMillis() / 1000.0);
+        return (int) (exp - now);
+    }
+
+    private long getExpFromIdToken(Page response) throws Exception {
+        String token = AutomationTools.getTokenFromResponse(response, ServletMessageConstants.SERVLET + ServletMessageConstants.OPENID_CONTEXT + ServletMessageConstants.ID_TOKEN);
+        JwtTokenForTest jwtToken = new JwtTokenForTest(token);
+        JsonObject payload = jwtToken.getJsonPayload();
+        JsonValue exp = payload.get(OpenIdConstant.EXPIRATION_IDENTIFIER);
+        return Long.parseLong(exp.toString());
     }
 
     /**
@@ -220,7 +240,7 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
 
     /**
      * Tests with tokenMinValidity = 5 * 1000.
-     * The token lifetime should effectively be 30s - 5s = 25s.
+     * The token lifetime should effectively be 60s - 5s = 55s.
      *
      * @throws Exception
      */
@@ -233,7 +253,7 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
 
     /**
      * Tests with tokenMinValidity = 20 * 1000.
-     * The token lifetime should effectively be 30s - 20s = 10s.
+     * The token lifetime should effectively be 60s - 20s = 40s.
      *
      * @throws Exception
      */
@@ -245,22 +265,8 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
     }
 
     /**
-     * Tests with tokenMinValidity = 30 * 1000.
-     * The token lifetime should effectively be 30s - 30s = 0s.
-     * The protected app should not be able to be reached, since the token is effectively never valid.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void ConfigurationTokenMinValidityTests_tokenMinValidity_30s() throws Exception {
-
-        runBadEndToEndTokenMinValidityGreaterThanTokenLifetimeTest("TokenMinValidity30s", "TokenMinValidity30sServlet");
-
-    }
-
-    /**
      * Tests with tokenMinValidity = 60 * 1000.
-     * The token lifetime should effectively be 30s - 60s = -30s.
+     * The token lifetime should effectively be 60s - 60s = 0s.
      * The protected app should not be able to be reached, since the token is effectively never valid.
      *
      * @throws Exception
@@ -273,8 +279,22 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
     }
 
     /**
+     * Tests with tokenMinValidity = 90 * 1000.
+     * The token lifetime should effectively be 60s - 90s = -30s.
+     * The protected app should not be able to be reached, since the token is effectively never valid.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void ConfigurationTokenMinValidityTests_tokenMinValidity_90s() throws Exception {
+
+        runBadEndToEndTokenMinValidityGreaterThanTokenLifetimeTest("TokenMinValidity90s", "TokenMinValidity90sServlet");
+
+    }
+
+    /**
      * Tests with tokenMinValidity = 0.
-     * The token lifetime should effectively be 30s - 0s = 30s.
+     * The token lifetime should effectively be 60s - 0s = 60s.
      *
      * @throws Exception
      */
@@ -288,7 +308,7 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
     /**
      * Tests with tokenMinValidity = -5 * 1000.
      * Negative values must not be used and the default value of 10 * 1000 is used instead.
-     * The token lifetime should effectively be 30s - 10s = 20s.
+     * The token lifetime should effectively be 60s - 10s = 50s.
      *
      * @throws Exception
      */
@@ -300,7 +320,7 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
 
     /**
      * Tests with tokenMinValidityExpression = 5 * 1000.
-     * The token lifetime should effectively be 30s - 5s = 25s.
+     * The token lifetime should effectively be 60s - 5s = 55s.
      *
      * @throws Exception
      */
@@ -313,7 +333,7 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
 
     /**
      * Tests with tokenMinValidityExpression = 20 * 1000.
-     * The token lifetime should effectively be 30s - 20s = 10s.
+     * The token lifetime should effectively be 60s - 20s = 40s.
      *
      * @throws Exception
      */
@@ -325,22 +345,8 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
     }
 
     /**
-     * Tests with tokenMinValidityExpression = 30 * 1000.
-     * The token lifetime should effectively be 30s - 30s = 0s.
-     * The protected app should not be able to be reached, since the token is effectively never valid.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void ConfigurationTokenMinValidityTests_tokenMinValidityExpression_30s() throws Exception {
-
-        runBadEndToEndTokenMinValidityGreaterThanTokenLifetimeTest("TokenMinValidityEL30s", "TokenMinValidityELServlet");
-
-    }
-
-    /**
      * Tests with tokenMinValidityExpression = 60 * 1000.
-     * The token lifetime should effectively be 30s - 60s = -30s.
+     * The token lifetime should effectively be 60s - 60s = 0s.
      * The protected app should not be able to be reached, since the token is effectively never valid.
      *
      * @throws Exception
@@ -353,8 +359,22 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
     }
 
     /**
+     * Tests with tokenMinValidityExpression = 90 * 1000.
+     * The token lifetime should effectively be 60s - 90s = -30s.
+     * The protected app should not be able to be reached, since the token is effectively never valid.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void ConfigurationTokenMinValidityTests_tokenMinValidityExpression_90s() throws Exception {
+
+        runBadEndToEndTokenMinValidityGreaterThanTokenLifetimeTest("TokenMinValidityEL90s", "TokenMinValidityELServlet");
+
+    }
+
+    /**
      * Tests with tokenMinValidityExpression = 0 * 1000.
-     * The token lifetime should effectively be 30s - 0s = 30s.
+     * The token lifetime should effectively be 60s - 0s = 60s.
      *
      * @throws Exception
      */
@@ -368,7 +388,7 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
     /**
      * Tests with tokenMinValidityExpression = -5 * 1000.
      * Negative values must not be used and the default value of 10s is used instead.
-     * The token lifetime should effectively be 30s - 10s = 20s.
+     * The token lifetime should effectively be 60s - 10s = 50s.
      *
      * @throws Exception
      */
@@ -382,7 +402,7 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
     /**
      * Tests with tokenMinValidity = 5 * 1000 and tokenMinValidityExpression = 15 * 1000.
      * tokenMinValidityExpression should take precedence over tokenMinValidity.
-     * The token lifetime should effectively be 30s - 15s = 15s.
+     * The token lifetime should effectively be 60s - 15s = 45s.
      *
      * @throws Exception
      */
@@ -396,7 +416,7 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
     /**
      * Tests with no tokenMinValidity nor tokenMinValidityExpression.
      * tokenMinValidity should use the default value of 10 * 1000.
-     * The token lifetime should effectively be 30s - 10s = 20s.
+     * The token lifetime should effectively be 60s - 10s = 50s.
      *
      * @throws Exception
      */

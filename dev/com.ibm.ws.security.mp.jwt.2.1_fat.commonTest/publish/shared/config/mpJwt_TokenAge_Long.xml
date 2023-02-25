@@ -14,10 +14,10 @@
 
 	<mpJwt
 		id="mpJwt_1"
-        authFilterRef="mpJwtAppAuthFilter"
+        	authFilterRef="mpJwtAppAuthFilter"
 		jwksUri="${mpJwt_jwksUri}"
-		sslRef="rsa_trust"
-		keyName="rsacert"
+		sslRef="ssl_allSigAlg"
+		keyName="rs256"
 		signatureAlgorithm="RS256"
 		issuer="testIssuer"
 		tokenAge="100000s">

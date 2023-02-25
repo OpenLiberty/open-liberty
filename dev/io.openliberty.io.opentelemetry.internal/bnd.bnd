@@ -12,9 +12,11 @@
 bVersion=1.0
 openTelemetryVersion=1.19.0
 
-src: src
+src: src, resources
 
+Bundle-Name: io.openliberty.io.opentelemetry.internal
 Bundle-SymbolicName: io.openliberty.io.opentelemetry.internal; singleton:=true
+Bundle-Description: MicroProfile Telemetry Internal packages
 
 javac.source: 11
 javac.target: 11
@@ -31,11 +33,16 @@ Import-Package: \
   zipkin2.reporter.okhttp3,\
   jakarta.interceptor,\
   com.ibm.wsspi.classloading,\
-  org.osgi.framework
+  org.osgi.framework,\
+  com.ibm.websphere.ras,\
+  com.ibm.websphere.ras.annotation
 
 Export-Package: \
   io.opentelemetry.extension.trace.propagation;version=${openTelemetryVersion};thread-context=true,\
   io.opentelemetry.*;version=${openTelemetryVersion}
+  
+Private-Package: \
+  io.openliberty.io.opentelemetry.resources
 
 -includeresource: resources
 
@@ -79,6 +86,8 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 	io.opentelemetry:opentelemetry-sdk-trace;version='1.19.0';strategy=exact,\
 	io.opentelemetry:opentelemetry-semconv;version='1.19.0.alpha';strategy=exact,\
 	com.ibm.ws.classloading;version=latest,\
-	org.eclipse.osgi;version=latest
+	org.eclipse.osgi;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 WS-TraceGroup: TELEMETRY

@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt21.fat.envVarsTests;
 
@@ -16,7 +16,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.security.fat.common.mp.jwt.MPJwt21FatConstants;
 import com.ibm.ws.security.fat.common.mp.jwt.utils.MP21ConfigSettings;
 import com.ibm.ws.security.mp.jwt21.fat.sharedTests.GenericEnvVarsAndSystemPropertiesTests;
 
@@ -25,6 +24,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -38,7 +38,7 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipForRepeat({ MPJwt21FatConstants.MP_JWT_11, MPJwt21FatConstants.MP_JWT_12, MPJwt21FatConstants.MP_JWT_20 })
+@SkipForRepeat({ EmptyAction.ID })
 public class MPJwtGoodMP21ConfigAsEnvVars_ClockSkew extends GenericEnvVarsAndSystemPropertiesTests {
 
     public static Class<?> thisClass = MPJwtGoodMP21ConfigAsEnvVars_ClockSkew.class;

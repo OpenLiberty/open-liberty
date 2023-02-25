@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt21.fat.configInAppTests;
 
@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.ws.security.fat.common.jwt.utils.JwtKeyTools;
 import com.ibm.ws.security.fat.common.jwt.utils.JwtTokenBuilderUtils;
+import com.ibm.ws.security.fat.common.mp.jwt.MPJwt12FatConstants;
 import com.ibm.ws.security.fat.common.mp.jwt.MPJwt21FatConstants;
 import com.ibm.ws.security.fat.common.mp.jwt.sharedTests.MPJwt21MPConfigTests;
 import com.ibm.ws.security.fat.common.mp.jwt.utils.MP21ConfigSettings;
@@ -27,6 +28,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -40,9 +42,10 @@ import componenttest.topology.impl.LibertyServer;
  *
  **/
 
+@SuppressWarnings("restriction")
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipForRepeat({ MPJwt21FatConstants.MP_JWT_11, MPJwt21FatConstants.MP_JWT_12, MPJwt21FatConstants.MP_JWT_20 })
+@SkipForRepeat({ EmptyAction.ID })
 public class MPJwt21MPConfigInApp_Tests extends MPJwt21MPConfigTests {
 
     public static Class<?> thisClass = MPJwt21MPConfigInApp_Tests.class;
@@ -68,7 +71,7 @@ public class MPJwt21MPConfigInApp_Tests extends MPJwt21MPConfigTests {
 
         deployRSServerMPConfigInAppVariationApps(resourceServer, mpConfigSettings);
 
-        startRSServerForMPTests(resourceServer, "rs_server_orig_2_1_withOtherApps.xml");
+        startRSServerForMPTests(resourceServer, "rs_server_orig_withOtherApps.xml");
 
     }
 
@@ -153,7 +156,54 @@ public class MPJwt21MPConfigInApp_Tests extends MPJwt21MPConfigTests {
 
     /********************************** End Clock Skew tests *********************************/
     /********************************* Start (new encrypt attr) tests *********************************/
-    // TODO - add some tests
+    @Test
+    public void MPJwt21MPConfigInApp_NoMPJwt21ConfigInServerXml_DefaultKeyMgmtKeyAlg_inMetaInf_test() throws Exception {
+
+        standard21TestFlow("sign_RS256_enc_RS256", resourceServer, MPJwt21FatConstants.DEFAULT_KEYMGMTKEYALG_IN_CONFIG_IN_META_INF_ROOT_CONTEXT, MPJwt21FatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MPJwt21FatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
+    }
+
+    @Test
+    public void MPJwt21MPConfigInApp_NoMPJwt21ConfigInServerXml_DefaultKeyMgmtKeyAlg_underWebInf_test() throws Exception {
+
+        standard21TestFlow("sign_RS256_enc_RS256", resourceServer, MPJwt21FatConstants.DEFAULT_KEYMGMTKEYALG_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT, MPJwt21FatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MPJwt21FatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
+    }
+
+    @Test
+    public void MPJwt21MPConfigInApp_NoMPJwt21ConfigInServerXml_MatchKeyMgmtKeyAlg_inMetaInf_test() throws Exception {
+
+        standard21TestFlow("sign_RS256_enc_RS256", resourceServer, MPJwt21FatConstants.MATCH_KEYMGMTKEYALG_IN_CONFIG_IN_META_INF_ROOT_CONTEXT, MPJwt21FatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MPJwt21FatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF);
+    }
+
+    @Test
+    public void MPJwt21MPConfigInApp_NoMPJwt21ConfigInServerXml_MatchKeyMgmtKeyAlg_underWebInf_test() throws Exception {
+
+        standard21TestFlow("sign_RS256_enc_RS256", resourceServer, MPJwt21FatConstants.MATCH_KEYMGMTKEYALG_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT, MPJwt21FatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MPJwt21FatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF);
+    }
+
+    @Test
+    public void MPJwt21MPConfigInApp_NoMPJwt21ConfigInServerXml_MismatchKeyMgmtKeyAlg_inMetaInf_test() throws Exception {
+
+        standard21TestFlow("sign_RS256_enc_RS256", resourceServer, MPJwt21FatConstants.MISMATCH_KEYMGMTKEYALG_IN_CONFIG_IN_META_INF_ROOT_CONTEXT, MPJwt21FatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MPJwt21FatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF, setEncryptAlgMismatchExpectations(resourceServer, MPJwt12FatConstants.KEY_MGMT_KEY_ALG_256));
+    }
+
+    @Test
+    public void MPJwt21MPConfigInApp_NoMPJwt21ConfigInServerXml_MismatchKeyMgmtKeyAlg_underWebInf_test() throws Exception {
+
+        standard21TestFlow("sign_RS256_enc_RS256", resourceServer, MPJwt21FatConstants.MISMATCH_KEYMGMTKEYALG_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT, MPJwt21FatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MPJwt21FatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF, setEncryptAlgMismatchExpectations(resourceServer, MPJwt12FatConstants.KEY_MGMT_KEY_ALG_256));
+    }
+
+    @Test
+    public void MPJwt21MPConfigInApp_NoMPJwt21ConfigInServerXml_InvalidKeyMgmtKeyAlg_inMetaInf_test() throws Exception {
+
+        standard21TestFlow("sign_RS256_enc_RS256", resourceServer, MPJwt21FatConstants.INVALID_KEYMGMTKEYALG_IN_CONFIG_IN_META_INF_ROOT_CONTEXT, MPJwt21FatConstants.MP_CONFIG_IN_META_INF_TREE_APP, MPJwt21FatConstants.MPJWT_APP_CLASS_MP_CONFIG_IN_META_INF, setEncryptAlgMismatchExpectations(resourceServer, "SomeString"));
+    }
+
+    @Test
+    public void MPJwt21MPConfigInApp_NoMPJwt21ConfigInServerXml_InvalidKeyMgmtKeyAlg_underWebInf_test() throws Exception {
+
+        standard21TestFlow("sign_RS256_enc_RS256", resourceServer, MPJwt21FatConstants.INVALID_KEYMGMTKEYALG_IN_CONFIG_UNDER_WEB_INF_ROOT_CONTEXT, MPJwt21FatConstants.MP_CONFIG_UNDER_WEB_INF_TREE_APP, MPJwt21FatConstants.MPJWT_APP_CLASS_MP_CONFIG_UNDER_WEB_INF, setEncryptAlgMismatchExpectations(resourceServer, "SomeString"));
+    }
+
     /********************************* End (new encrypt attr) tests ***********************************/
 
 }
