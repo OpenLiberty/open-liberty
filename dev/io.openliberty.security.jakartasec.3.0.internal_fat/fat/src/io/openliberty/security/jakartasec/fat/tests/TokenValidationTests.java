@@ -335,21 +335,6 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
     }
 
     /**
-     * Build Issuer token validation failure expectations.
-     *
-     * @return - issuer specific token validation failure expectations
-     * @throws Exception
-     */
-    public Expectations getIssuerMismatchExpectations() throws Exception {
-
-        Expectations expectations = getBaseErrorExpectations();
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2424E_ISSUER_MISMATCH, "Did not receive a message stating that the expected issuer ["
-                                                                                                                        + rpHttpsBase
-                                                                                                                        + "/TokenEndpointServlet] was not found in the token."));
-        return expectations;
-    }
-
-    /**
      * Build Subject token validation failure expectations.
      *
      * @return - subject specific token validation failure expectations
@@ -370,29 +355,17 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
     }
 
     /**
-     * Build Audience token validation failure expectations.
+     * Build generic claim mismatch token validation failure expectations.
      *
-     * @return - audience specific token validation failure expectations
+     * @return - specific token validation failure expectations
      * @throws Exception
      */
-    public Expectations getAudiencetMismatchExpectations() throws Exception {
+    public Expectations getClaimMismatchExpectations(String claim, String expectedValue) throws Exception {
 
         Expectations expectations = getBaseErrorExpectations();
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2424E_ISSUER_MISMATCH, "Did not find a message in the server log stating that the audience did not match the clientId."));
-
-        return expectations;
-    }
-
-    /**
-     * Build authorized party token validation failure expectations.
-     *
-     * @return - azp specific token validation failure expectations
-     * @throws Exception
-     */
-    public Expectations getAuthorizedPartyMismatchExpectations() throws Exception {
-
-        Expectations expectations = getBaseErrorExpectations();
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2424E_ISSUER_MISMATCH, "Did not find a message in the server log stating that the audience did not match the clientId."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2424E_CLAIM_MISMATCH + ".*" + claim + ".*" + expectedValue
+                                                                           + ".*", "Did not find a message in the server log stating that the " + claim
+                                                                                   + " claim did not match the expected value of: " + expectedValue));
 
         return expectations;
     }
@@ -412,16 +385,17 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
     }
 
     /**
-     * Build Issued At in the future token validation failure expectations.
+     * Build Claim incorrectly in the future token validation failure expectations.
      *
-     * @return - iat specific token validation failure expectations
+     * @return - specific time in future token validation failure expectations
      * @throws Exception
      */
-    public Expectations getIatInFutureExpectations(String claim) throws Exception {
+    public Expectations getTimeValueInFutureExpectations(String claim) throws Exception {
 
         Expectations expectations = getBaseErrorExpectations();
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2428E_IAT_IN_FUTURE, "Did not find a message in the server log stating that the "
-                                                                                                                      + claim + " was in the future."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2428E_TIME_IN_FUTURE + ".*"
+                                                                           + claim, "Did not find a message in the server log stating that the "
+                                                                                    + claim + " was in the future."));
 
         return expectations;
     }
@@ -476,7 +450,7 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
         // omit the issuer
         saveTokenEndpointToken(builder);
 
-        runEndToEndTest("TokenTestAppServlet", getIssuerMismatchExpectations());
+        runEndToEndTest("TokenTestAppServlet", getClaimMismatchExpectations(PayloadConstants.PAYLOAD_ISSUER, rpHttpBase + "/TokenEndpointServlet"));
 
     }
 
@@ -492,7 +466,7 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
 
         saveTokenEndpointToken(builder);
 
-        runEndToEndTest("TokenTestAppServlet", getIssuerMismatchExpectations());
+        runEndToEndTest("TokenTestAppServlet", getClaimMismatchExpectations(PayloadConstants.PAYLOAD_ISSUER, rpHttpBase + "/TokenEndpointServlet"));
 
     }
 
@@ -507,7 +481,7 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
         builder.setIssuer(opHttpsBase + "/someValue");
         saveTokenEndpointToken(builder);
 
-        runEndToEndTest("TokenTestAppServlet", getIssuerMismatchExpectations());
+        runEndToEndTest("TokenTestAppServlet", getClaimMismatchExpectations(PayloadConstants.PAYLOAD_ISSUER, rpHttpBase + "/TokenEndpointServlet"));
 
     }
 
@@ -515,15 +489,15 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
      * Test that a token returned from the token endpoint with an iss claim that matches the issuer value from discovery, but does NOT match the value in
      * the @OpenIdAuthenticationMechanismDefinition annotation (which takes precidence) will result in the token validation to fail.
      */
-    @Test
-    public void TokenValidationTests_tokens_issMatchesDiscoveryMisMatceshProviderMetadata() throws Exception {
+    // @Test - equivalent to a test in ConfigurationProviderMetadataTests
+    public void TokenValidationTests_tokens_issMatchesDiscoveryMisMatchesProviderMetadata() throws Exception {
 
         JWTTokenBuilder builder = initTokenBuilder(PayloadConstants.PAYLOAD_ISSUER);
         // override issuer value with what the OP would return in discovery, but our annotation overrides that value with a different value
         builder.setIssuer(opHttpsBase + "/oidc/endpoint/OP1");
         saveTokenEndpointToken(builder);
 
-        runEndToEndTest("TokenTestAppServlet", getIssuerMismatchExpectations());
+        runEndToEndTest("TokenTestAppServlet", getClaimMismatchExpectations(PayloadConstants.PAYLOAD_ISSUER, rpHttpBase + "/TokenEndpointServlet"));
 
     }
 
@@ -531,7 +505,7 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
      * Test that a token returned from the token endpoint with an iss claim that does not match the issuer value from discovery, but does match the value in
      * the @OpenIdAuthenticationMechanismDefinition annotation (which takes precidence) will result in token validation to succeed.
      */
-    @Test
+    // @Test - equivalent to a test in ConfigurationProviderMetadataTests
     public void TokenValidationTests_tokens_issMismatchesDiscoveryMatchesProviderMetadata() throws Exception {
 
         JWTTokenBuilder builder = initTokenBuilder();
@@ -609,7 +583,7 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
         builder.setAudience("");
         saveTokenEndpointToken(builder);
 
-        runEndToEndTest("TokenTestAppServlet", getAudiencetMismatchExpectations());
+        runEndToEndTest("TokenTestAppServlet", getClaimMismatchExpectations(PayloadConstants.PAYLOAD_AUDIENCE, rspValues.getClientId()));
 
     }
 
@@ -624,7 +598,7 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
         builder.setAudience("badAudience");
         saveTokenEndpointToken(builder);
 
-        runEndToEndTest("TokenTestAppServlet", getAudiencetMismatchExpectations());
+        runEndToEndTest("TokenTestAppServlet", getClaimMismatchExpectations(PayloadConstants.PAYLOAD_AUDIENCE, rspValues.getClientId()));
 
     }
 
@@ -639,7 +613,7 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
         builder.setClaim(PayloadConstants.PAYLOAD_AUDIENCE, Arrays.asList("badAudience1", "badAudience2"));
         saveTokenEndpointToken(builder);
 
-        runEndToEndTest("TokenTestAppServlet", getIssuerMismatchExpectations());
+        runEndToEndTest("TokenTestAppServlet", getClaimMismatchExpectations(PayloadConstants.PAYLOAD_AUDIENCE, rspValues.getClientId()));
 
     }
 
@@ -656,7 +630,7 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
         builder.setClaim(PayloadConstants.PAYLOAD_AUTHORIZED_PARTY, "client_1");
         saveTokenEndpointToken(builder);
 
-        runEndToEndTest("TokenTestAppServlet", getAudiencetMismatchExpectations());
+        runEndToEndTest("TokenTestAppServlet", getClaimMismatchExpectations(PayloadConstants.PAYLOAD_AUDIENCE, rspValues.getClientId()));
 
     }
 
@@ -688,7 +662,7 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
         builder.setClaim(PayloadConstants.PAYLOAD_AUTHORIZED_PARTY, "");
         saveTokenEndpointToken(builder);
 
-        runEndToEndTest("TokenTestAppServlet", getAuthorizedPartyMismatchExpectations());
+        runEndToEndTest("TokenTestAppServlet", getClaimMismatchExpectations(PayloadConstants.PAYLOAD_AUTHORIZED_PARTY, rspValues.getClientId()));
 
     }
 
@@ -722,7 +696,7 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
         builder.setClaim(PayloadConstants.PAYLOAD_AUTHORIZED_PARTY, "badAudience");
         saveTokenEndpointToken(builder);
 
-        runEndToEndTest("TokenTestAppServlet", getAudiencetMismatchExpectations());
+        runEndToEndTest("TokenTestAppServlet", getClaimMismatchExpectations(PayloadConstants.PAYLOAD_AUTHORIZED_PARTY, rspValues.getClientId()));
 
     }
 
@@ -786,10 +760,10 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
     public void TokenValidationTests_tokens_iatInTheFuture() throws Exception {
 
         JWTTokenBuilder builder = initTokenBuilder(PayloadConstants.PAYLOAD_ISSUED_AT_TIME_IN_SECS);
-        builder.setIssuedAt(NumericDate.fromSeconds(1735689540)); // 12/31/2024 11:59:00 PM
+        builder.setIssuedAt(NumericDate.fromSeconds(System.currentTimeMillis() + (24 * 60 * 60 * 1000))); // 1000 days in the future
         saveTokenEndpointToken(builder);
 
-        runEndToEndTest("TokenTestAppServlet", getIatInFutureExpectations(PayloadConstants.PAYLOAD_ISSUED_AT_TIME_IN_SECS));
+        runEndToEndTest("TokenTestAppServlet", getTimeValueInFutureExpectations(PayloadConstants.PAYLOAD_ISSUED_AT_TIME_IN_SECS));
 
     }
 
@@ -826,11 +800,11 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
     public void TokenValidationTests_tokens_nbfInTheFuture() throws Exception {
 
         JWTTokenBuilder builder = initTokenBuilder(PayloadConstants.PAYLOAD_EXPIRATION_TIME_IN_SECS);
-        builder.setExpirationTime(NumericDate.fromSeconds(1735693200));// 01/01/2025 01:00:00 AM
-        builder.setNotBefore(NumericDate.fromSeconds(1735689540)); // 12/31/2024 11:59:00 PM
+        builder.setNotBefore(NumericDate.fromSeconds(System.currentTimeMillis() + (24 * 60 * 60 * 1000))); // 1000 days in the future
+        builder.setExpirationTime(NumericDate.fromSeconds(System.currentTimeMillis() + (24 * 60 * 60 * 1001))); // 1001 days in the future
         saveTokenEndpointToken(builder);
 
-        runEndToEndTest("TokenTestAppServlet", getIatInFutureExpectations(PayloadConstants.PAYLOAD_NOT_BEFORE_TIME_IN_SECS));
+        runEndToEndTest("TokenTestAppServlet", getTimeValueInFutureExpectations(PayloadConstants.PAYLOAD_NOT_BEFORE_TIME_IN_SECS));
 
     }
 
@@ -841,10 +815,10 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
     public void TokenValidationTests_tokens_nbfAfterExp() throws Exception {
 
         JWTTokenBuilder builder = initTokenBuilder();
-        builder.setNotBefore(NumericDate.fromSeconds(1735689540)); // 12/31/2024 11:59:00 PM
+        builder.setNotBefore(NumericDate.fromSeconds(System.currentTimeMillis() + (24 * 60 * 60 * 1000))); // 1000 days in the future
         saveTokenEndpointToken(builder);
 
-        runEndToEndTest("TokenTestAppServlet", getIatInFutureExpectations(PayloadConstants.PAYLOAD_NOT_BEFORE_TIME_IN_SECS));
+        runEndToEndTest("TokenTestAppServlet", getTimeValueInFutureExpectations(PayloadConstants.PAYLOAD_NOT_BEFORE_TIME_IN_SECS));
 
     }
 
