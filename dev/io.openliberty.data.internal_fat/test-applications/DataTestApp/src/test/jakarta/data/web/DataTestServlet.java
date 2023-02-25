@@ -51,7 +51,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jakarta.annotation.Resource;
-import jakarta.data.Entities;
 import jakarta.data.Template;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
@@ -77,7 +76,6 @@ import org.junit.Test;
 
 import componenttest.app.FATServlet;
 
-@Entities(WorkAddress.class) // TODO make inheritance work without this
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class DataTestServlet extends FATServlet {
@@ -110,6 +108,12 @@ public class DataTestServlet extends FATServlet {
 
     @Inject
     ShippingAddresses shippingAddresses;
+
+    // The only purpose of the injection here is to make the Jakarta Data provider aware
+    // of the existence of the WorkAddress entity as a subtype of the ShippingAddress entity.
+    // TODO is there a way to figure this out automatically?
+    @Inject
+    WorkAddresses shippingAddresses_unused;
 
     @Inject
     Tariffs tariffs;

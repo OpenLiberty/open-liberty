@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,23 +12,23 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import jakarta.data.Column;
-import jakarta.data.Generated;
-import jakarta.data.Id;
-import jakarta.data.MappedSuperclass;
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
 
 /**
- *
+ * Mapped superclass for the Tariff entity.
  */
 @MappedSuperclass
 public class Tax {
-    @Column("taxId")
-    @Generated
+    @Column(name = "taxId")
+    @GeneratedValue
     @Id
     public Long key;
 
     public String leviedBy;
 
-    @Column("taxRate")
+    @Column(name = "taxRate")
     public float rate;
 }
