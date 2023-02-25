@@ -25,29 +25,26 @@ import com.ibm.wsspi.session.ITimer;
 
 public class SessionInvalidatorWithThreadPool implements ITimer{
 
-    private int _invalInterval = 60; // default to 1 minute
     private long _delay = 0; // default is 0
-    private InvalidationTask _invalTask;
-    private ScheduledExecutorService _scheduler; 
-    private ScheduledFuture<?> _result;
+    private volatile ScheduledFuture<?> _result;
 
  
     public void start(IStore store, int interval) {
-        _invalInterval = interval;
-        
         /*Get reference to ScheduledExecutorService from SessionMgrComponentImpl*/
-        _scheduler = SessionMgrComponentImpl.INSTANCE.get().getScheduledExecutorService();
-        
-        _invalTask = new InvalidationTask(store);
-        
+        ScheduledExecutorService scheduler = SessionMgrComponentImpl.INSTANCE.get().getScheduledExecutorService();
+
+        InvalidationTask invalTask = new InvalidationTask(store);
+
         /*schedule periodic invalidation task and store in ScheduledFuture object*/
-        _result=_scheduler.scheduleWithFixedDelay(_invalTask, _delay * 1000, _invalInterval * 1000, TimeUnit.MILLISECONDS);
-        
+        _result=scheduler.scheduleWithFixedDelay(invalTask, _delay * 1000, interval * 1000, TimeUnit.MILLISECONDS);
     }
 
     public void stop() {
-        /*allows the current running task to continue to completion but stops any further tasks from running*/
-        _result.cancel(false);
+        ScheduledFuture<?> currentResult = _result;
+        if (currentResult != null) {
+            /*allows the current running task to continue to completion but stops any further tasks from running*/
+            currentResult.cancel(false);
+        }
     }
     
     public void setDelay(long invalStart) {
@@ -72,7 +69,6 @@ public class SessionInvalidatorWithThreadPool implements ITimer{
             _store.runInvalidation();
          
         }
-    }    
+    }
 
-    
 }

@@ -1,0 +1,48 @@
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>jdbc-4.2</feature>
+        <feature>jndi-1.0</feature>
+        <feature>sessionDatabase-1.0</feature>
+        <feature>checkpoint-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <httpSession maxInMemorySessionCount="1" allowOverflow="false" hideSessionValues="false"/>
+
+    <httpSessionDatabase id="FATDB" dataSourceRef="DerbyDS"/>
+
+    <httpSession storageRef="FATDB" maxInMemorySessionCount="1" allowOverflow="false" invalidationTimeout="30m" reaperPollInterval="300"/>
+
+    <variable name="DERBY_PORT" defaultValue="9099" />
+
+    <library id="FATJDBCClientLib" filesetRef="FATfileset"/>
+    <fileset id="FATfileset" dir="${shared.resource.dir}/derbyclient" includes="derbyclient.jar"/>
+    <dataSource id="DerbyDS" jndiName="jdbc/derby">
+      <jdbcDriver libraryRef="FATJDBCClientLib"/>
+      <properties.derby.client createDatabase="create" databaseName="memory:SessionDB" portNumber="${DERBY_PORT}" password="userPassword"/>
+    </dataSource>
+
+
+    <javaPermission codebase="${server.config.dir}/dropins/sessionDatabaseApp.war" className="java.security.AllPermission"/>
+    <!-- Needed for missing doPriv in JCache 1.1 API (see https://github.com/jsr107/jsr107spec/issues/398) -->
+    <javaPermission className="java.util.PropertyPermission" actions="read,write" name="*"/>
+
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/derbyclient/derbyclient.jar" className="java.security.AllPermission"/>
+</server>
