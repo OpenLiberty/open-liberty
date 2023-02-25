@@ -441,7 +441,7 @@ var Implementation;
     function resolveProjectStateFromURL() {
         /* run through all script tags and try to find the one that includes faces.js */
         const foundStage = ExtDomQuery_1.ExtDomQuery.searchJsfJsFor(/stage=([^&;]*)/).value;
-        return (foundStage in ProjectStages) ? foundStage : null;
+        return (foundStage in ProjectStages) ? foundStage : ProjectStages.Production; // MYFACES-4572: default is production
     }
     Implementation.resolveProjectStateFromURL = resolveProjectStateFromURL;
     /**
