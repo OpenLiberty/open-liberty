@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -246,6 +246,13 @@ public class FrameworkManager {
             String j2secNoRethrow = config.get(BootstrapConstants.JAVA_2_SECURITY_NORETHROW);
 
             if (j2secManager) {
+                CheckpointPhase.getPhase().addMultiThreadedHook(new CheckpointHook() {
+                    @Override
+                    // fail a checkpoint if j2secManager was requested.
+                    public void prepare() {
+                        throw new IllegalStateException(Tr.formatMessage(tc, "error.checkpoint.securitymanager.not.supported"));
+                    }
+                });
                 // OLGH#20289 -- Java 2 Security Manager is no longer supported with Java 18+
                 if (javaVersion() >= 18) {
                     Tr.error(tc, "error.set.securitymanager.jdk18", javaVersion());
