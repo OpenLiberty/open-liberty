@@ -113,7 +113,7 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
         rpHttpBase = "http://localhost:" + rpServer.getBvtPort();
         rpHttpsBase = "https://localhost:" + rpServer.getBvtSecurePort();
 
-        opServer.addIgnoredErrors(Arrays.asList(MessageConstants.CWWKS1616E_USERINFO_REQUEST_MISSING_ACCESS_TOKEN, MessageConstants.CWWKS1617E_USERINFO_REQUEST_BAD_TOKEN));
+        opServer.addIgnoredErrors(Arrays.asList(MessageConstants.CWWKS1617E_USERINFO_REQUEST_BAD_TOKEN));
         deployMyApps();
 
     }
@@ -960,6 +960,7 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
 
         JWTTokenBuilder builder = initTokenBuilder();
         saveTokenEndpointToken("", builder.buildAsIs(), Default_expires_in, Default_token_type, Default_scope, Default_refresh_token);
+        opServer.addIgnoredErrors(Arrays.asList(MessageConstants.CWWKS1616E_USERINFO_REQUEST_MISSING_ACCESS_TOKEN));
 
         runEndToEndTest("TokenTestAppServlet");
     }
