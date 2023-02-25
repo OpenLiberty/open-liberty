@@ -7,8 +7,6 @@
 # 
 # SPDX-License-Identifier: EPL-2.0
 #
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -33,7 +31,7 @@ app-resources= \
   META-INF/services/jakarta.activation.spi.MimeTypeRegistryProvider
 
 Service-Component: \
-  io.openliberty.jakarta.activation_2_1_${replace;${bVersion};\\.;_}.ResourceProvider; \
+  io.openliberty.org.eclipse.angus.activation_${replace;${bVersion};\\.;_}.ResourceProvider; \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
     configuration-policy:=ignore; \

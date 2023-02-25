@@ -5,12 +5,9 @@ singleton=true
 IBM-App-ForceRestart: uninstall, install
 IBM-Process-Types: client, server
 Subsystem-Name: Jakarta Activation 2.1
-IBM-API-Package: \
- jakarta.activation; type="spec"
 -features=com.ibm.websphere.appserver.eeCompatible-10.0
 -bundles=\
   io.openliberty.jakarta.activation.2.1; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.activation:jakarta.activation-api:2.1.1", \
-  io.openliberty.org.eclipse.angus.activation, \
   io.openliberty.org.glassfish.hk2.osgi-resource-locator
 kind=beta
 edition=core
