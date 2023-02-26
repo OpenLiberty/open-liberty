@@ -114,8 +114,8 @@ public class FATSuite {
         // EE10 requires Java 11.  If we only specify EE10 for lite mode it will cause no tests to run which causes an error.
         // If we are running on Java 8 have EE9 be the lite mode test to run.
         if (JavaInfo.JAVA_VERSION >= 11) {
-            // Repeat full fat for all features may exceed 3hrs limit on Fyre Windows and causes random build break.
-            // Skip EE9 on the windows platform when not running locally.
+            // Repeating the full FAT for multiple features may exceed the 3 hour limit on Fyre Windows.
+            // Skip the EE9 repeat on the windows platform when not running locally.
             if (isWindows && !FATRunner.FAT_TEST_LOCALRUN) {
                 repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
                                 .andWith(FeatureReplacementAction.EE10_FEATURES());
