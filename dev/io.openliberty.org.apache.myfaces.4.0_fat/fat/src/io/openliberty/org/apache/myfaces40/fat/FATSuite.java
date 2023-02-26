@@ -23,6 +23,7 @@ import componenttest.topology.impl.LibertyServer;
 import io.openliberty.org.apache.myfaces40.fat.tests.AcceptInputFileTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.AjaxRenderExecuteThisTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.AnnotationLiteralsTest;
+import io.openliberty.org.apache.myfaces40.fat.tests.ClientWindowScopedTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.ExtensionlessMappingTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.ExternalContextAddResponseCookieTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.Faces40ThirdPartyApiTests;
@@ -45,6 +46,7 @@ import io.openliberty.org.apache.myfaces40.fat.tests.WebSocketTests;
                 AcceptInputFileTest.class,
                 AjaxRenderExecuteThisTest.class,
                 AnnotationLiteralsTest.class,
+                ClientWindowScopedTest.class,
                 ExtensionlessMappingTest.class,
                 ExternalContextAddResponseCookieTest.class,
                 Faces40ThirdPartyApiTests.class,
