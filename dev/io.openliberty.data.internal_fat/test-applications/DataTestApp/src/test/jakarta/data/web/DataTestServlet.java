@@ -2361,43 +2361,43 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testPartialQueryAnnotations() {
         Shipment s1 = new Shipment();
-        s1.destination = "200 1st Ave SW, Rochester, MN 55902";
-        s1.location = "44.027354, -92.468482";
-        s1.id = 1;
-        s1.orderedAt = OffsetDateTime.now().minusMinutes(45);
-        s1.status = "IN_TRANSIT";
+        s1.setDestination("200 1st Ave SW, Rochester, MN 55902");
+        s1.setLocation("44.027354, -92.468482");
+        s1.setId(1);
+        s1.setOrderedAt(OffsetDateTime.now().minusMinutes(45));
+        s1.setStatus("IN_TRANSIT");
         shipments.save(s1);
 
         Shipment s2 = new Shipment();
-        s2.destination = "201 4th St SE, Rochester, MN 55904";
-        s2.location = "2800 37th St NW, Rochester, MN 55901";
-        s2.id = 2;
-        s2.orderedAt = OffsetDateTime.now().minusMinutes(20);
-        s2.status = "READY_FOR_PICKUP";
+        s2.setDestination("201 4th St SE, Rochester, MN 55904");
+        s2.setLocation("2800 37th St NW, Rochester, MN 55901");
+        s2.setId(2);
+        s2.setOrderedAt(OffsetDateTime.now().minusMinutes(20));
+        s2.setStatus("READY_FOR_PICKUP");
         shipments.save(s2);
 
         Shipment s3 = new Shipment();
-        s3.destination = "151 4th St SE, Rochester, MN 55904";
-        s3.location = "44.057840, -92.496301";
-        s3.id = 3;
-        s3.orderedAt = OffsetDateTime.now().minusMinutes(13);
-        s3.status = "IN_TRANSIT";
+        s3.setDestination("151 4th St SE, Rochester, MN 55904");
+        s3.setLocation("44.057840, -92.496301");
+        s3.setId(3);
+        s3.setOrderedAt(OffsetDateTime.now().minusMinutes(13));
+        s3.setStatus("IN_TRANSIT");
         shipments.save(s3);
 
         Shipment s4 = new Shipment();
-        s4.destination = "151 4th St SE, Rochester, MN 55904";
-        s4.location = "2800 37th St NW, Rochester, MN 55901 ";
-        s4.id = 4;
-        s4.orderedAt = OffsetDateTime.now().minusMinutes(4);
-        s4.status = "READY_FOR_PICKUP";
+        s4.setDestination("151 4th St SE, Rochester, MN 55904");
+        s4.setLocation("2800 37th St NW, Rochester, MN 55901 ");
+        s4.setId(4);
+        s4.setOrderedAt(OffsetDateTime.now().minusMinutes(4));
+        s4.setStatus("READY_FOR_PICKUP");
         shipments.save(s4);
 
         Shipment s5 = new Shipment();
-        s5.destination = "201 4th St SE, Rochester, MN 55904";
-        s5.location = "2800 37th St NW, Rochester, MN 55901";
-        s5.id = 5;
-        s5.orderedAt = OffsetDateTime.now().minusSeconds(50);
-        s5.status = "PREPARING";
+        s5.setDestination("201 4th St SE, Rochester, MN 55904");
+        s5.setLocation("2800 37th St NW, Rochester, MN 55901");
+        s5.setId(5);
+        s5.setOrderedAt(OffsetDateTime.now().minusSeconds(50));
+        s5.setStatus("PREPARING");
         shipments.save(s5);
 
         assertEquals(true, shipments.dispatch(2, "44.036217, -92.488040", OffsetDateTime.now()));
@@ -2408,21 +2408,21 @@ public class DataTestServlet extends FATServlet {
                                      "200 1st Ave SW, Rochester, MN 55902",
                                      "201 4th St SE, Rochester, MN 55904"),
                              shipments.find("IN_TRANSIT")
-                                             .map(o -> o.destination)
+                                             .map(o -> o.getDestination())
                                              .collect(Collectors.toList()));
 
         // @OrderBy "status", then "orderedAt" descending
         assertIterableEquals(List.of(3L, 2L, 1L, 5L, 4L),
-                             Stream.of(shipments.getAll()).map(o -> o.id).collect(Collectors.toList()));
+                             Stream.of(shipments.getAll()).map(o -> o.getId()).collect(Collectors.toList()));
 
         Shipment s = shipments.find(3);
-        String previousLocation = s.location;
+        String previousLocation = s.getLocation();
 
         assertEquals(true, shipments.updateLocation(3, previousLocation, "44.029468, -92.483191"));
         assertEquals(false, shipments.updateLocation(3, previousLocation, "44.029406, -92.489553"));
 
         s = shipments.find(3);
-        assertEquals("44.029468, -92.483191", s.location);
+        assertEquals("44.029468, -92.483191", s.getLocation());
 
         assertEquals(true, shipments.cancel(4, OffsetDateTime.now()));
         assertEquals(true, shipments.cancel(5, OffsetDateTime.now()));
