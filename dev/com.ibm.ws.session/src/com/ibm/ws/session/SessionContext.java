@@ -55,6 +55,9 @@ import com.ibm.wsspi.session.IStorer;
 import com.ibm.wsspi.session.ITimer;
 import com.ibm.wsspi.session.SessionAffinityContext;
 
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 
 public class SessionContext {
 
@@ -261,8 +264,20 @@ public class SessionContext {
 
         // invalidator
         _invalidator = createInvalidator();
-        int reaperInterval = getReaperInterval(sessionTimeout);
-        _invalidator.start(_store, reaperInterval);
+        final int reaperInterval = getReaperInterval(sessionTimeout);
+        if (CheckpointPhase.getPhase().restored()) {
+            // normal (non-checkpoint) case; start the invalidator now
+            _invalidator.start(_store, reaperInterval);
+        } else {
+            // for checkpoint case start invalidator after restore
+            final IStore fStore = _store;
+            CheckpointPhase.getPhase().addMultiThreadedHook(new CheckpointHook() {
+               @Override
+               public void restore() {
+                   _invalidator.start(fStore, reaperInterval);
+               }
+            });
+        }
 
         // storer - handles manual write, eos, and time based differences
         _storer = createStorer(_smc, _store);

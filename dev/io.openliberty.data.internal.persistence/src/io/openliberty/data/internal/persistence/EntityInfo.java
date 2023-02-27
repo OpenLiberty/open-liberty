@@ -22,9 +22,9 @@ import java.util.concurrent.CompletableFuture;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
-import jakarta.data.Inheritance;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.repository.Sort;
+import jakarta.persistence.Inheritance;
 
 /**
  */
@@ -66,9 +66,7 @@ class EntityInfo {
         this.idClassAttributeAccessors = idClassAttributeAccessors;
         this.persister = persister;
 
-        inheritance = entityClass.getAnnotation(Inheritance.class) != null ||
-                      entityClass.getAnnotation(jakarta.persistence.Inheritance.class) != null;
-
+        inheritance = entityClass.getAnnotation(Inheritance.class) != null;
     }
 
     String getAttributeName(String name) {

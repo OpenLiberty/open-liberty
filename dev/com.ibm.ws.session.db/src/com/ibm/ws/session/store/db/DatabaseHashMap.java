@@ -51,6 +51,8 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.resource.ResourceConfig;
 import com.ibm.wsspi.session.IStore;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 //PK78174 BEGIN
 //import com.ibm.wsspi.runtime.service.WsServiceRegistry;
 //import com.ibm.ws.runtime.service.Repository;
@@ -242,8 +244,14 @@ public class DatabaseHashMap extends BackedHashMap {
             tableName = smc.getTableNameValue();
         }
         suspendedTransactions = new Hashtable();
-        getDataSource();
-        initDBSettings();
+        if (CheckpointPhase.getPhase().restored()) {
+            // Only do this if we are restored (not during checkpoint).
+            // This is the "normal" case.
+            // In the checkpoint case we will lazily get it on the restore side.
+            getDataSource();
+            initDBSettings();
+        }
+
     }
 
     /*
@@ -2864,6 +2872,12 @@ public class DatabaseHashMap extends BackedHashMap {
     protected void performInvalidation() {
         if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
             LoggingUtil.SESSION_LOGGER_WAS.entering(methodClassName, methodNames[PERFORM_INVALIDATION]);
+        }
+
+        synchronized (this) {
+            if (!initialized) {
+                return;
+            }
         }
 
         long now = System.currentTimeMillis();

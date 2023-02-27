@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -36,8 +36,12 @@ public class DerbyNetworkUtilities {
     static final int portNumber = 1527;
 
     static public void startDerbyNetwork() throws UnknownHostException, Exception {
+        startDerbyNetwork(-1);
+    }
+
+    static public void startDerbyNetwork(int portSpec) throws UnknownHostException, Exception {
         final String m = "startDerbyNetwork";
-        NetworkServerControl serverControl = new NetworkServerControl(InetAddress.getByName(serverName), portNumber);
+        NetworkServerControl serverControl = new NetworkServerControl(InetAddress.getByName(serverName), portSpec == -1 ? portNumber : portSpec);
         serverControl.start(new PrintWriter(System.out));
         for (int i = 1; i <= NUMBER_OF_PINGS; i++) {
             try {
@@ -55,10 +59,15 @@ public class DerbyNetworkUtilities {
                 }
             }
         }
+        Log.info(c, m, "Done " + m + " info:" + serverControl.getSysinfo() + " properties:" + serverControl.getCurrentProperties());
     }
 
     static public void stopDerbyNetwork() throws Exception {
-        NetworkServerControl serverControl = new NetworkServerControl(InetAddress.getByName(serverName), portNumber);
+        stopDerbyNetwork(-1);
+    }
+
+    static public void stopDerbyNetwork(int portSpec) throws Exception {
+        NetworkServerControl serverControl = new NetworkServerControl(InetAddress.getByName(serverName), portSpec == -1 ? portNumber : portSpec);
         serverControl.shutdown();
     }
 

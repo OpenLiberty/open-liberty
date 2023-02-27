@@ -15,3 +15,4 @@ Subsystem-Name: Database Session Persistence 1.0
  com.ibm.ws.serialization
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true

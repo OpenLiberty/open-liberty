@@ -26,10 +26,8 @@ import com.ibm.wsspi.session.ITimer;
  */
 public class SessionInvalidator implements ITimer {
 
-    private int _invalInterval = 60; // default to 1 minute
     private long _delay = 0; // default is 0
-    private Timer _timer;
-    private InvalidationTask _invalTask;
+    private volatile Timer _timer;
 
     /**
      * Method setStorageInterval
@@ -39,16 +37,15 @@ public class SessionInvalidator implements ITimer {
      * @see com.ibm.wsspi.session.IStorer#setStorageInterval(int)
      */
     public void start(IStore store, int interval) {
-        synchronized (this) {
-            _invalInterval = interval;
-            _timer = new Timer(true);
-            _invalTask = new InvalidationTask(store);
-            _timer.schedule(_invalTask, _delay * 1000, _invalInterval * 1000);
-        }
+        _timer = new Timer(true);
+        _timer.schedule(new InvalidationTask(store), _delay * 1000, interval * 1000);
     }
 
     public void stop() {
-        _timer.cancel();
+        Timer currentTimer = _timer;
+        if (currentTimer != null) {
+            _timer.cancel();
+        }
     }
     
     //PM74718

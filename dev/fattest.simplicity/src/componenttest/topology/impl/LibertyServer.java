@@ -2194,7 +2194,7 @@ public class LibertyServer implements LogMonitorClient {
                 }
                 // Trigger a serverDump: this will contain the output of server introspectors, which can
                 // help pinpoint service resolution issues or missing dependencies.
-                serverDump();
+                serverDump("thread");
 
                 // If apps failed to start, try to make sure the port opened so we correctly
                 // flag a port issue as the culprit.
@@ -2623,7 +2623,7 @@ public class LibertyServer implements LogMonitorClient {
                 TopologyException serverStartException = new TopologyException(exMessage);
                 Log.error(c, method, serverStartException, errMessage);
                 // since a startup error was not expected, trigger a dump to help with debugging
-                serverDump();
+                serverDump("thread");
                 postStopServerArchive();
                 throw serverStartException;
             }
