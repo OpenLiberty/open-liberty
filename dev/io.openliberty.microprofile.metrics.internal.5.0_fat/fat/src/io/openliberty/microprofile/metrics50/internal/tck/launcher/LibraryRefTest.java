@@ -1,0 +1,247 @@
+/*******************************************************************************
+ * Copyright (c) 2023 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package io.openliberty.microprofile.metrics50.internal.tck.launcher;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.ConnectException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.Base64;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.log.Log;
+
+import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
+
+@RunWith(FATRunner.class)
+public class LibraryRefTest {
+
+    private static Class<?> c = LibraryRefTest.class;
+
+    @Server("MicrometerPrometheus")
+    public static LibertyServer serverMicrometerPrometheus;
+
+    @Server("MicrometerUseless")
+    public static LibertyServer serverMicrometerUseless;
+
+    @Server("NonExistentLibrary")
+    public static LibertyServer serverNonExistentLibrary;
+
+    @Server("NoMicrometerCore")
+    public static LibertyServer serverNoMicrometerCore;
+
+    public static LibertyServer server;
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        trustAll();
+    }
+
+    @After
+    public void after() throws Exception {
+        //catch if a server is still running.
+        if (server != null && server.isStarted()) {
+            server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWPMI2006W", "CWMMC0013E", "CWWKG0033W");
+        }
+    }
+
+    /*
+     * Not actually a test regarding metrics and libraryRef attribute.
+     * This is emitted by the Config component when it can't find a matching library reference.
+     * Might as well test it anyways.
+     */
+    @Test
+    public void nonExistentLibrary() throws Exception {
+        server = serverNonExistentLibrary;
+        server.startServer();
+
+        //CWWKG0033W The value [<value>] specified for the reference attribute [libraryRef] was not found in the configuration.
+        Assert.assertNotNull("CWWKG0033W Not found", server.waitForStringInLogUsingMark("CWWKG0033W"));
+
+    }
+
+    /*
+     * Provided a libray that is missing the micrometer core jar.
+     * This emits a CWMMC0013E
+     * Also an FFDC is created which tells us what is missing.
+     */
+    @Test
+    @AllowedFFDC
+    public void noMicrometerCore() throws Exception {
+        server = serverNoMicrometerCore;
+        server.startServer();
+
+        //CWMMC0014I emits that metrics is using libraryRef
+        Assert.assertNotNull("CWMMC0014I Not found", server.waitForStringInLogUsingMark("CWMMC0014I"));
+
+        //Realize that we don't have the classes necessary (i.e. micrometer core)
+
+        //CWMMC0013E The MicroProfile Metrics feature was unable to initialize. A class that is required for a user-provided Micrometer Library is missing.
+        Assert.assertNotNull("CWMMC0013E Not found", server.waitForStringInLogUsingMark("CWMMC0013E"));
+
+    }
+
+    /*
+     * This MicrometerPrometheus is configured to use external Micrometer Libraries.
+     * Configured via the libraryRef attribute of mpMetrics
+     * The <library> referenced contains Micrometer Core, Prometheus registry, and its dependencies
+     *
+     * Note: see build.gradle
+     */
+    @Test
+    public void externalPrometheusMicrometer() throws Exception {
+        server = serverMicrometerPrometheus;
+        server.startServer();
+
+        //CWMMC0014I emits that metrics is using libraryRef
+        Assert.assertNotNull("CWMMC0014I Not found", server.waitForStringInLogUsingMark("CWMMC0014I"));
+
+        //CWWKF0011I server ready
+        Assert.assertNotNull("CWWKF0011I Not found", server.waitForStringInLogUsingMark("CWWKF0011I"));
+
+        //Check SR implementation log that Promethues Registry created
+        //Note that SR makes THIS explicit log for Prometheus, other meter registries are logged differently following a template
+        String line = server.waitForStringInTrace("Prometheus MeterRegistry created");
+        Assert.assertNotNull(line);
+
+        String exceptionString = null;
+        try {
+            String output = getHttpsServlet("/metrics");
+            Log.info(c, "externalPrometheusMicrometer", output);
+            Assert.assertNotNull(output);
+
+            //just do simple check for jvm.uptime metric
+            boolean containsMetrics = (output.contains("jvm_uptime_seconds{mp_scope=\"base\",")) ? true : false;
+            Assert.assertTrue(containsMetrics);
+
+        } catch (
+
+        ConnectException exception) {
+            exceptionString = exception.toString();
+
+        }
+        Assert.assertNull(exceptionString);
+    }
+
+    /*
+     * This MicrometerPrometheus is configured to use no external Micrometer Libraries.
+     * Albeit the libraryRef is configured and does point to a micrometer core.
+     * The Micrometer Core is so that SR can actually initialize so that we can
+     * check that SmallRye does not emit the message indicating a registry is registered to global
+     * registry: "created and registered to the Micrometer global registry" which originates from the
+     * SharedMetricRegistires.java class
+     *
+     */
+    @Test
+    public void externalMicrometerUselessJar() throws Exception {
+        server = serverMicrometerUseless;
+        server.startServer();
+
+        //CWMMC0014I emits that metrics is using libraryRef
+        Assert.assertNotNull("CWMMC0014I Not found", server.waitForStringInLogUsingMark("CWMMC0014I"));
+
+        //CWWKF0011I server ready
+        Assert.assertNotNull("CWWKF0011I Not found", server.waitForStringInLogUsingMark("CWWKF0011I"));
+
+        /*
+         * Check that this SR log is not emmitted.
+         * This is emitted for every Meter Registry detected.
+         * Since we aren't using any real registries, we don't expect this.
+         */
+        String line = server.waitForStringInTrace("created and registered to the Micrometer global registry", 10000);
+        Assert.assertNull(line);
+    }
+
+    private static void trustAll() throws Exception {
+        try {
+            SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, new TrustManager[] { new X509TrustManager() {
+                @Override
+                public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+                }
+
+                @Override
+                public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+                }
+
+                @Override
+                public X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+            } }, new SecureRandom());
+            SSLContext.setDefault(sslContext);
+            HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+        } catch (Exception e) {
+            Log.error(c, "trustAll", e);
+        }
+    }
+
+    private String getHttpsServlet(String servletPath) throws Exception {
+        HttpsURLConnection con = null;
+        try {
+            String sURL = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() + servletPath;
+            URL checkerServletURL = new URL(sURL);
+            con = (HttpsURLConnection) checkerServletURL.openConnection();
+            con.setDoInput(true);
+            con.setDoOutput(true);
+            con.setUseCaches(false);
+            con.setHostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String arg0, SSLSession arg1) {
+                    return true;
+                }
+            });
+            String authorization = "Basic "
+                                   + Base64.getEncoder().encodeToString(("theUser:thePassword").getBytes(StandardCharsets.UTF_8)); // Java
+                                                                                                                                                                   // 8
+            con.setRequestProperty("Authorization", authorization);
+            con.setRequestProperty("Accept", "text/plain");
+            con.setRequestMethod("GET");
+
+            String sep = System.getProperty("line.separator");
+            String line = null;
+            StringBuilder lines = new StringBuilder();
+            BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+            while ((line = br.readLine()) != null && line.length() > 0) {
+                if (!line.startsWith("#"))
+                    lines.append(line).append(sep);
+            }
+            Log.info(c, "getHttpsServlet", sURL);
+            return lines.toString();
+        } finally {
+            if (con != null)
+                con.disconnect();
+        }
+    }
+
+}
