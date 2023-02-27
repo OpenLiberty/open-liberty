@@ -1,0 +1,85 @@
+/*******************************************************************************
+ * Copyright (c) 2023 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+apply from: '../wlp-gradle/subprojects/fat.gradle'
+
+dependencies {
+  requiredLibs project(':com.ibm.ws.security.fat.common.jwt'),
+	  project(':com.ibm.ws.security.fat.common.mp.jwt'),
+	  project(':com.ibm.ws.security.mp.jwt.2.1_fat.commonTest'),
+      project(':io.openliberty.org.apache.commons.logging'),
+      project(':com.ibm.ws.org.apache.httpcomponents'),
+      'net.sourceforge.htmlunit:htmlunit:2.44.0',
+      'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
+      'net.sourceforge.htmlunit:webdriver:2.6',
+      'org.seleniumhq.webdriver:webdriver-common:0.9.7376',
+      'org.brotli:dec:0.1.2',
+      'xalan:xalan:2.7.2',
+      project(':com.ibm.ws.org.apache.commons.io'),
+      'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
+      'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
+      'org.apache.commons:commons-lang3:3.5',
+      'org.eclipse.jetty:jetty-websocket:8.2.0.v20160908',
+      'org.eclipse.jetty.websocket:websocket-api:9.4.5.v20170502',
+      'org.eclipse.jetty.websocket:websocket-common:9.4.5.v20170502',
+      'org.eclipse.jetty.websocket:websocket-client:9.4.5.v20170502',
+      'org.eclipse.jetty:jetty-util:9.4.7.RC0',
+      'org.eclipse.birt.runtime:org.w3c.css.sac:1.3.1.v200903091627',
+      project(':io.openliberty.org.apache.commons.codec'),
+      'xml-apis:xml-apis:1.4.01',
+      project(':io.openliberty.org.apache.xercesImpl')
+}
+
+/*
+ gradle.taskGraph.whenReady {taskGraph ->
+    println "Found task graph: " + taskGraph
+    println "Found " + taskGraph.allTasks.size() + " tasks."
+    taskGraph.allTasks.forEach { task ->
+        println task
+        task.dependsOn.forEach { dep ->
+            println "  - " + dep
+        }
+    }
+}
+*/
+
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.fat.common.mp.jwt:assemble'
+autoFVT.dependsOn ':com.ibm.ws.security.mp.jwt.2.1_fat.commonTest:buildfat'
+
+autoFVT.doFirst {
+  /*
+   * This is a HACK to generate the fat-metadata.json file when starting the FVT framework.
+   */
+
+  copy {
+    from project(':com.ibm.ws.security.mp.jwt.2.1_fat.commonTest').autoFvtDir
+    into autoFvtDir
+    include 'publish/**'
+    include 'test-applications/**'
+    include 'lib/**'
+
+  }
+}
+
+/*
+autoFVT.doLast {
+  
+  println "In doLast"
+
+    
+}
+*/
+

@@ -53,10 +53,10 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS2420E_ID_TOKEN_VERIFY = "CWWKS2420E";
     public static final String CWWKS2422E_FAILED_TO_READ_DATA = "CWWKS2422E";
     public static final String CWWKS2423E_OIDC_CLIENT_INVALID_RESPONSE_TYPE = "CWWKS2423E";
-    public static final String CWWKS2424E_ISSUER_MISMATCH = "CWWKS2424E";
+    public static final String CWWKS2424E_CLAIM_MISMATCH = "CWWKS2424E";
     public static final String CWWKS2426E_TOKEN_HAS_EMPTY_CLAIM = "CWWKS2426E";
     public static final String CWWKS2427E_TOKEN_IS_EXPIRED = "CWWKS2427E";
-    public static final String CWWKS2428E_IAT_IN_FUTURE = "CWWKS2428E";
+    public static final String CWWKS2428E_TIME_IN_FUTURE = "CWWKS2428E";
     public static final String CWWKS2429E_TOKEN_RESPONSE_MISSING_PARAMETER = "CWWKS2429E";
 
     public static final String CWWKS2500W_MISSING_CLIENTID_EL = "CWWKS2500W";

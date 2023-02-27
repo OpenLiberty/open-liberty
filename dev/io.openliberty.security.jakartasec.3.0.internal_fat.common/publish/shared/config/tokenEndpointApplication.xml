@@ -18,16 +18,5 @@
 		name="TokenEndpointServlet"
 		location="${server.config.dir}/test-apps/TestTokenEndpoint.war"
 	>
-		<application-bnd>
-			<security-role name="Employee">
-				<special-subject type="ALL_AUTHENTICATED_USERS" />
-			</security-role>
-			<security-role name="Manager">
-				<special-subject type="ALL_AUTHENTICATED_USERS" />
-			</security-role>
-			<security-role name="AllAuthenticated">
-				<special-subject type="ALL_AUTHENTICATED_USERS" />
-			</security-role>
-		</application-bnd>
 	</application>
 </server>    

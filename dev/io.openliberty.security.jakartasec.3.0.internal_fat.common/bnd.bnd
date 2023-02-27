@@ -51,5 +51,4 @@ javac.target: 11
 	io.openliberty.jakarta.jsonp.2.1;version=latest,\
 	com.ibm.db2.jcc;version=latest,\
 	com.ibm.websphere.security;version=latest,\
-	com.ibm.ws.security.token;version=latest,\
-	io.openliberty.jakarta.jsonp.2.0;version=latest
+	com.ibm.ws.security.token;version=latest
