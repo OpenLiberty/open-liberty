@@ -45,6 +45,7 @@ public class JakartaOidcAuthenticationResponseValidatorTest extends CommonTestCl
     private static final String CWWKS2408E_CALLBACK_MISSING_STATE_PARAMETER = "CWWKS2408E";
     private static final String CWWKS2409E_STATE_VALUE_IN_CALLBACK_INCORRECT_LENGTH = "CWWKS2409E";
     private static final String CWWKS2410E_STATE_VALUE_IN_CALLBACK_NOT_STORED = "CWWKS2410E";
+    private static final String CWWKS2411E_STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE = "CWWKS2411E";
     private static final String CWWKS2412E_STATE_VALUE_IN_CALLBACK_OUTSIDE_ALLOWED_TIME_FRAME = "CWWKS2412E";
     private static final String CWWKS2413E_CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI = "CWWKS2413E";
     private static final String CWWKS2414E_CALLBACK_URL_INCLUDES_ERROR_PARAMETER = "CWWKS2414E";
@@ -190,6 +191,34 @@ public class JakartaOidcAuthenticationResponseValidatorTest extends CommonTestCl
             assertEquals(state, result);
         } catch (AuthenticationResponseException e) {
             outputMgr.failWithThrowable(testName.getMethodName(), e);
+        }
+    }
+
+    @Test
+    public void test_getAndVerifyStateValue_stateDoesNotMatch() {
+        String storageLookupKey = OidcStorageUtils.getStateStorageKey(state);
+        String storageValue = "someNonMatchingState";
+        mockery.checking(new Expectations() {
+            {
+                one(request).getParameter(AuthorizationRequestParameters.STATE);
+                will(returnValue(state));
+                one(config).getClientSecret();
+                will(returnValue(new ProtectedString(clientSecret.toCharArray())));
+                allowing(config).getClientId();
+                will(returnValue(clientId));
+                one(request).getCookies();
+                will(returnValue(new Cookie[] { cookie }));
+                one(cookie).getName();
+                will(returnValue(storageLookupKey));
+                one(cookie).getValue();
+                will(returnValue(storageValue));
+            }
+        });
+        try {
+            String result = validator.getAndVerifyStateValue();
+            fail("Should have thrown an exception but didn't. Method returned [" + result + "].");
+        } catch (AuthenticationResponseException e) {
+            verifyException(e, CWWKS2411E_STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE);
         }
     }
 
