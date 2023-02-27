@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015,2021 IBM Corporation and others.
+ * Copyright (c) 2015,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,7 @@ package com.ibm.tx.jta.cdi.interceptors;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.util.Set;
 
 import javax.enterprise.inject.Stereotype;
 import javax.interceptor.InvocationContext;
@@ -49,6 +50,19 @@ public abstract class TransactionalInterceptor implements Serializable {
             // Getting the class of the target only gives us a WELD proxy that won't have the annotations
             // if they're not defined as @Inherited, so we need to go a level higher in the class hierarchy.
             interceptor = findTransactionalInterceptor(context.getTarget().getClass().getSuperclass());
+
+            if (interceptor == null) {
+                @SuppressWarnings("unchecked")
+                Set<Annotation> bindings = (Set<Annotation>) context.getContextData().get("org.jboss.weld.interceptor.bindings");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "org.jboss.weld.interceptor.bindings:", bindings);
+                if (bindings != null)
+                    for (Annotation anno : bindings)
+                        if (Transactional.class.equals(anno.annotationType())) {
+                            interceptor = (Transactional) anno;
+                            break;
+                        }
+            }
         }
 
         if (interceptor == null) {
