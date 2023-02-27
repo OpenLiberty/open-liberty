@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -40,6 +40,11 @@ public class ServerMessageExpectation extends Expectation {
         this.server = server;
     }
 
+    public ServerMessageExpectation(LibertyServer server, String checkType, String searchFor, String failureMsg) {
+        super(null, Constants.MESSAGES_LOG, checkType, searchFor, failureMsg);
+        this.server = server;
+    }
+
     public ServerMessageExpectation(String testAction, LibertyServer server, String searchFor) {
         this(testAction, server, searchFor, String.format(DEFAULT_FAILURE_MSG, searchFor));
     }
@@ -52,8 +57,14 @@ public class ServerMessageExpectation extends Expectation {
     @Override
     protected void validate(Object contentToValidate) throws Exception {
         addMessageToIgnoredErrors();
-        if (!isMessageLogged()) {
-            throw new Exception(failureMsg);
+        if (Constants.STRING_DOES_NOT_MATCH.equals(checkType) || Constants.STRING_DOES_NOT_CONTAIN.equals(checkType)) {
+            if (isMessageLogged()) {
+                throw new Exception(failureMsg);
+            }
+        } else {
+            if (!isMessageLogged()) {
+                throw new Exception(failureMsg);
+            }
         }
     }
 

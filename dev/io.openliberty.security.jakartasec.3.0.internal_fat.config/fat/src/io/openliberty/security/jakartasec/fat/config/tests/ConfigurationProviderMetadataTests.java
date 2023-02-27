@@ -758,7 +758,7 @@ public class ConfigurationProviderMetadataTests extends CommonAnnotatedSecurityT
                                                                                                                               + Constants.UNAUTHORIZED_MESSAGE));
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2504E_CREDENTIAL_VALIDATION_ERROR, "Did not receive a messages stating that there was a problem validating the user credential"));
         expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2415E_TOKEN_VALIDATION_EXCEPTION, "Did not receive a message stating that there was an problem validating the token"));
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2424E_ISSUER_MISMATCH, "Did not receive a message stating that the expected issuer ["
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2424E_CLAIM_MISMATCH, "Did not receive a message stating that the expected issuer ["
                                                                                                                         + rpHttpsBase
                                                                                                                         + "/someProvider] was not found in the token."));
 

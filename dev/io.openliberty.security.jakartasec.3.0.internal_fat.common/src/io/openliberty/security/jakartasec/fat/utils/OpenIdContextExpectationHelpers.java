@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,6 +27,9 @@ public class OpenIdContextExpectationHelpers {
 
     public static void getOpenIdContextExpectations(String action, Expectations expectations, String requester, ResponseValues rspValues) throws Exception {
 
+        if (rspValues.getBaseApp().equals(Constants.DEFAULT_SERVLET)) {
+            return;
+        }
         // TODO
         String updatedRequester = requester + ServletMessageConstants.OPENID_CONTEXT;
         getOpenIdContextSubjectExpectations(action, expectations, updatedRequester, rspValues, false);
@@ -97,7 +100,9 @@ public class OpenIdContextExpectationHelpers {
                                                                                                        + ServletMessageConstants.KEY
                                                                                                        + PayloadConstants.PAYLOAD_EXPIRATION_TIME_IN_SECS, "Did not find an exp claim in the id token in the OpenIdContext."));
             expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, buildIssuedAtTimeString(requester), "Did not find an iat claim in the id token in the OpenIdContext."));
-            expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, buildNonceString(requester), "Did not find an nonce claim in the id token in the OpenIdContext."));
+            if (rspValues.getUseNonce()) {
+                expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, buildNonceString(requester), "Did not find an nonce claim in the id token in the OpenIdContext."));
+            }
             // TODO - remove sid check - will go away once the beta flag is removed
             expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, requester + ServletMessageConstants.ID_TOKEN + ServletMessageConstants.CLAIM
                                                                                                        + ServletMessageConstants.KEY

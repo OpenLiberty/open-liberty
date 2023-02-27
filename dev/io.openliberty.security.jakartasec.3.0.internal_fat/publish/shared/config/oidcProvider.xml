@@ -95,5 +95,29 @@
 			</client>
 		</localStore>
 	</oauthProvider>		
+
+	<openidConnectProvider
+		id="OP3"
+		oauthProviderRef="OAuth3" />
+
+	<oauthProvider
+		id="OAuth3"
+		autoAuthorize="true"
+		tokenFormat="${opTokenFormat}"
+	>
+		<autoAuthorizeClient>client_1</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client_1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/TokenTestAppServlet/Callback"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>		
+	
 			
 </server>

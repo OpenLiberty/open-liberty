@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
+import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 
 import componenttest.custom.junit.runner.RepeatTestFilter;
 
@@ -34,7 +35,7 @@ public class ServletRequestExpectationHelpers {
         if (RepeatTestFilter.getRepeatActionsAsString().contains("useRedirectToOriginalResource")) {
             getRequestHeaderExpectations(action, expectations, updatedRequester, rspValues.getHeaders());
         }
-        getRequestParmsExpectations(action, expectations, updatedRequester, rspValues.getParms());
+        getRequestParmsExpectations(action, expectations, updatedRequester, rspValues);
         getRequestCookieExpectations(action, expectations, updatedRequester, rspValues.getCookies());
 
     }
@@ -54,17 +55,29 @@ public class ServletRequestExpectationHelpers {
         }
     }
 
-    public static void getRequestParmsExpectations(String action, Expectations expectations, String requester, List<NameValuePair> parms) throws Exception {
+    public static void getRequestParmsExpectations(String action, Expectations expectations, String requester, ResponseValues rspValues) throws Exception {
 
         Log.info(thisClass, "getRequestParmsExpectations", "Setting extra parm expectations");
-        if (parms != null) {
-            for (NameValuePair parm : parms) {
+        if (rspValues.getParms() != null) {
+            for (NameValuePair parm : rspValues.getParms()) {
                 Log.info(thisClass, "getRequestParmsExpectations", "Adding expectation for " + parm.getName());
-                expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, requester + ServletMessageConstants.PARMS + ServletMessageConstants.NAME
+                if (rspValues.getUseAuthApp()) {
+                    expectations.addExpectation(new ServerMessageExpectation(rspValues.getRPServer(), Constants.STRING_CONTAINS, requester + ServletMessageConstants.PARMS
+                                                                                                                                 + ServletMessageConstants.NAME
+                                                                                                                                 + parm.getName() + " "
+                                                                                                                                 + ServletMessageConstants.VALUE
+                                                                                                                                 + parm.getValue(), "Did not find the expected parm name "
+                                                                                                                                                    + parm.getName()
+                                                                                                                                                    + " with the expected value "
+                                                                                                                                                    + parm.getValue()));
+                } else {
+                    expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, requester + ServletMessageConstants.PARMS
+                                                                                                               + ServletMessageConstants.NAME
                                                                                                            + parm.getName() + " " + ServletMessageConstants.VALUE
                                                                                                            + parm.getValue(), "Did not find the expected parm name "
                                                                                                                               + parm.getName() + " with the expected value "
                                                                                                                               + parm.getValue()));
+                }
             }
         }
     }
