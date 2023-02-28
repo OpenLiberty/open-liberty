@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2019 IBM Corporation and others.
+ * Copyright (c) 2010, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -368,6 +368,8 @@ public abstract class AbstractJPAComponent
     public abstract String getDataSourceBindingName(String dsName, boolean transactional);
 
     public abstract boolean isIgnoreDataSourceErrors();
+
+    public abstract boolean shouldDelayEntityManagerFactoryCreate();
 
     public abstract JPAExPcBindingContextAccessor getExPcBindingContext();
 

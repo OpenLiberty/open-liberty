@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2019 IBM Corporation and others.
+ * Copyright (c) 2005, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -329,8 +329,11 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
                 // be resolved. So, just return a 'generic' datasource, that should
                 // satisfy the provider, though will never actually be used. d510184
                 if (ivEMFactory == null &&
-                    (dsName.startsWith(JNDI_NAMESPACE_JAVA_COMP_ENV) ||
-                     dsName.startsWith(JNDI_NAMESPACE_JAVA_APP_ENV))) {
+                    (dsName.startsWith(JNDI_NAMESPACE_JAVA_COMP_ENV)
+                     || dsName.startsWith(JNDI_NAMESPACE_JAVA_APP_ENV)
+                     || getJPAComponent().shouldDelayEntityManagerFactoryCreate())) {
+                    if (isTraceOn && tc.isDebugEnabled())
+                        Tr.debug(tc, "returning GenericDataSource : " + ivArchivePuId + ", " + dsName);
                     ds = new GenericDataSource(ivArchivePuId, dsName);
                 }
 
@@ -822,7 +825,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
         // Assume the EMF to be returned is the one created during app start.
         EntityManagerFactory emf = ivEMFactory;
 
-        // An EntityManagerFactory Map is only created if one of the datasrouces
+        // An EntityManagerFactory Map is only created if one of the datasource
         // has been defined in java:comp/env.  When this is true, a component
         // specific EMF needs to be obtained from the map, or created and added
         // to the map.
