@@ -28,7 +28,6 @@ import componenttest.custom.junit.runner.Mode;
  * Test case for basic authentication with ssl configuration
  */
 @RunWith(FATRunner.class)
-@Mode(Mode.TestMode.FULL)
 public class BasicAuthWithSSLTest extends AbstractJaxWsTransportSecuritySSLTest {
     protected static final String SERVER_CONFIG_FILE_NAME = "basicAuthWithSSL.xml";
 
@@ -95,7 +94,6 @@ public class BasicAuthWithSSLTest extends AbstractJaxWsTransportSecuritySSLTest 
 
     // Valid name and valid plain password
     @Test
-    @Mode(Mode.TestMode.FULL)
     public void testValidNameAndValidPlainPassword() throws Exception {
         updateClientBndFile("bindings/validNameAndValidPlainPwd.xml");
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
@@ -108,7 +106,6 @@ public class BasicAuthWithSSLTest extends AbstractJaxWsTransportSecuritySSLTest 
 
     // Valid name but invalid password
     @Test
-    @Mode(Mode.TestMode.FULL)
     public void testValidNameButInvalidPassword() throws Exception {
         updateClientBndFile("bindings/validNameButInvalidPwd.xml");
 

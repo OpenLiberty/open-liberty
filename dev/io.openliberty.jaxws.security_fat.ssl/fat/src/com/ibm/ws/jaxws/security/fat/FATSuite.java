@@ -25,13 +25,11 @@ import componenttest.rules.repeater.RepeatTests;
  * TODO: Lite Mode
  */
 @RunWith(Suite.class)
-@SuiteClasses({ BasicAuthWithoutSSLTest.class,
-                EJBInJarServiceSecurityTest.class,
-                EJBInWarServiceSecurityTest.class,
-                POJOServiceSecurityTest.class,
-                TransportSecurityUsingDispatchClientCertTest.class,
-                TransportSecurityUsingDispatchTest.class,
-                WsdlLocationHttpsTest.class
+@SuiteClasses({ BasicAuthWithSSLTest.class,
+                SSLConfigurationNoTrustStoreTest.class,
+                SSLConfigurationTest.class,
+                SSLConfigurationUnmanagedTest.class,
+                SSLRefConfigurationTest.class,
 })
 public class FATSuite {
 

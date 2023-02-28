@@ -23,13 +23,11 @@ import org.junit.runner.RunWith;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
 
 /**
  * Test cases for client certificate fall back on basic-auth
  */
 @RunWith(FATRunner.class)
-@Mode(Mode.TestMode.FULL)
 public class ClientCertFailOverToBasicAuthTest extends AbstractJaxWsTransportSecurityTest {
 
     protected static final String FAIL_OVER_TO_BASIC_AUTH_CONFIG = "clientCertFailOverToBasicAuthConfiguration.xml";
@@ -121,7 +119,6 @@ public class ClientCertFailOverToBasicAuthTest extends AbstractJaxWsTransportSec
     // 1 Inexistent client cert and invalid basic-auth
     @ExpectedFFDC({ "java.lang.IllegalArgumentException", "javax.net.ssl.SSLException" })
     @Test
-    @Mode(Mode.TestMode.FULL)
     public void testInexistentClientCertAndInvalidBasicAuth() throws Exception {
         updateServerConfigFile("serverConfigs/" + FAIL_OVER_TO_BASIC_AUTH_CONFIG, checkAppUpdate);
         updateClientBndFile("bindings/inexistentCertAndInvalidBA.xml");
@@ -135,7 +132,6 @@ public class ClientCertFailOverToBasicAuthTest extends AbstractJaxWsTransportSec
 
     // 2 existent client cert and valid basic-auth
     @Test
-    @Mode(Mode.TestMode.FULL)
     public void testExistentClientCertAndValidBasicAuth() throws Exception {
         updateServerConfigFile("serverConfigs/" + FAIL_OVER_TO_BASIC_AUTH_CONFIG, checkAppUpdate);
         updateClientBndFile("bindings/existentCertAndValidBA.xml");
@@ -150,7 +146,6 @@ public class ClientCertFailOverToBasicAuthTest extends AbstractJaxWsTransportSec
 
     // 6 No client cert configured and invalid basic auth
     @Test
-    @Mode(Mode.TestMode.FULL)
     public void testNoClientCertConfiguredAndInvalidBasicAuth() throws Exception {
         updateServerConfigFile("serverConfigs/" + PATCHY_SERVER_TRUST_STORE_CONFIG, checkAppUpdate);
         updateClientBndFile("bindings/noAliasConfiguredAndInvalidBA.xml");

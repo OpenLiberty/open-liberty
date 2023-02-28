@@ -40,7 +40,7 @@ import componenttest.topology.utils.HttpUtils;
  * need to initialize SSL configuration before trying to access WSDL doc.
  */
 @RunWith(FATRunner.class)
-@Mode(Mode.TestMode.FULL)
+@Mode(Mode.TestMode.LITE)
 public class WsdlLocationHttpsTest {
 
     @Server("WsdlLocationHttpsServer")
