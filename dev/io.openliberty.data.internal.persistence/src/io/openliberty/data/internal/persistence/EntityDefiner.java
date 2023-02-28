@@ -17,6 +17,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -266,8 +267,9 @@ class EntityDefiner implements Runnable {
     private void writeAttributes(StringBuilder xml, Class<?> c) {
 
         // Identify attributes
-        // TODO cover records once compiling against Java 17
         SortedMap<String, Class<?>> attributes = new TreeMap<>();
+
+        // TODO cover records once compiling against Java 17
 
         for (Field f : c.getFields())
             attributes.putIfAbsent(f.getName(), f.getType());
@@ -275,9 +277,11 @@ class EntityDefiner implements Runnable {
         try {
             PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(c).getPropertyDescriptors();
             if (propertyDescriptors != null)
-                for (PropertyDescriptor p : propertyDescriptors)
-                    if (p.getWriteMethod() != null)
+                for (PropertyDescriptor p : propertyDescriptors) {
+                    Method setter = p.getWriteMethod();
+                    if (setter != null)
                         attributes.putIfAbsent(p.getName(), p.getPropertyType());
+                }
         } catch (IntrospectionException x) {
             throw new MappingException(x);
         }

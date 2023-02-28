@@ -17,7 +17,7 @@ import java.time.OffsetDateTime;
 /**
  * A simple unannotated entity with public accessor methods.
  */
-public class Shipment {
+public class Shipment implements ScheduledShipment {
 
     private long id;
 
@@ -37,6 +37,7 @@ public class Shipment {
         return deliveredAt;
     }
 
+    @Override
     public String getDestination() {
         return destination;
     }
@@ -49,6 +50,7 @@ public class Shipment {
         return location;
     }
 
+    @Override
     public OffsetDateTime getOrderedAt() {
         return orderedAt;
     }
@@ -69,6 +71,7 @@ public class Shipment {
         this.deliveredAt = deliveredAt;
     }
 
+    @Override
     public void setDestination(String destination) {
         this.destination = destination;
     }
@@ -81,6 +84,7 @@ public class Shipment {
         this.location = location;
     }
 
+    @Override
     public void setOrderedAt(OffsetDateTime orderedAt) {
         this.orderedAt = orderedAt;
     }

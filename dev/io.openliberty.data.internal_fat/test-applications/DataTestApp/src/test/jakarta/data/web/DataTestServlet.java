@@ -2464,6 +2464,7 @@ public class DataTestServlet extends FATServlet {
         r1.meetingID = 10020001;
         r1.start = OffsetDateTime.of(2022, 5, 23, 9, 0, 0, 0, CDT);
         r1.stop = OffsetDateTime.of(2022, 5, 23, 10, 0, 0, 0, CDT);
+        r1.setLengthInMinutes(60);
 
         assertEquals(false, reservations.existsById(r1.meetingID));
 
@@ -2486,6 +2487,7 @@ public class DataTestServlet extends FATServlet {
         r2.meetingID = 10020002;
         r2.start = OffsetDateTime.of(2022, 5, 23, 9, 0, 0, 0, CDT);
         r2.stop = OffsetDateTime.of(2022, 5, 23, 10, 0, 0, 0, CDT);
+        r2.setLengthInMinutes(60);
 
         Reservation r3 = new Reservation();
         r3.host = "testRepository-host2@example.org";
@@ -2494,6 +2496,7 @@ public class DataTestServlet extends FATServlet {
         r3.meetingID = 10020003;
         r3.start = OffsetDateTime.of(2022, 5, 24, 8, 30, 0, 0, CDT);
         r3.stop = OffsetDateTime.of(2022, 5, 24, 10, 00, 0, 0, CDT);
+        r3.setLengthInMinutes(90);
 
         Reservation r4 = new Reservation();
         r4.host = "testRepository-host1@example.org";
@@ -2502,6 +2505,7 @@ public class DataTestServlet extends FATServlet {
         r4.meetingID = 10020004;
         r4.start = OffsetDateTime.of(2022, 5, 24, 9, 0, 0, 0, CDT);
         r4.stop = OffsetDateTime.of(2022, 5, 24, 10, 0, 0, 0, CDT);
+        r4.setLengthInMinutes(60);
 
         r1.invitees = Set.of("testRepository-1a@example.org", "testRepository-1b@example.org", "testRepository-1c@example.org");
 
@@ -2544,6 +2548,8 @@ public class DataTestServlet extends FATServlet {
         assertEquals(true, found.containsKey(r4.meetingID));
         assertEquals(r2.location, found.get(r2.meetingID).location);
         assertEquals(r4.location, found.get(r4.meetingID).location);
+        assertEquals(60, found.get(r2.meetingID).getLengthInMinutes());
+        assertEquals(60, found.get(r4.meetingID).getLengthInMinutes());
 
         reservations.deleteById(r2.meetingID);
 
@@ -2568,6 +2574,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(r3.meetingID, r3found.meetingID);
         assertEquals(r3.start.toInstant(), r3found.start.toInstant());
         assertEquals(r3.stop.toInstant(), r3found.stop.toInstant());
+        assertEquals(90, r3found.getLengthInMinutes());
     }
 
     /**
@@ -2592,6 +2599,7 @@ public class DataTestServlet extends FATServlet {
         r1.meetingID = 10030001;
         r1.start = OffsetDateTime.of(2022, 5, 25, 9, 0, 0, 0, CDT);
         r1.stop = OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT);
+        r1.setLengthInMinutes(60);
 
         Reservation r2 = new Reservation();
         r2.host = "testRepositoryCustom-host2@example.org";
@@ -2600,6 +2608,7 @@ public class DataTestServlet extends FATServlet {
         r2.meetingID = 10030002;
         r2.start = OffsetDateTime.of(2022, 5, 25, 9, 0, 0, 0, CDT);
         r2.stop = OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT);
+        r2.setLengthInMinutes(60);
 
         Reservation r3 = new Reservation();
         r3.host = "testRepositoryCustom-host3@example.org";
@@ -2608,6 +2617,7 @@ public class DataTestServlet extends FATServlet {
         r3.meetingID = 10030003;
         r3.start = OffsetDateTime.of(2022, 5, 25, 9, 0, 0, 0, CDT);
         r3.stop = OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT);
+        r3.setLengthInMinutes(60);
 
         Reservation r4 = new Reservation();
         r4.host = "testRepositoryCustom-host4@example.org";
@@ -2616,6 +2626,7 @@ public class DataTestServlet extends FATServlet {
         r4.meetingID = 10030004;
         r4.start = OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT);
         r4.stop = OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT);
+        r4.setLengthInMinutes(60);
 
         Reservation r5 = new Reservation();
         r5.host = "testRepositoryCustom-host2@example.org";
@@ -2624,6 +2635,7 @@ public class DataTestServlet extends FATServlet {
         r5.meetingID = 10030005;
         r5.start = OffsetDateTime.of(2022, 5, 25, 10, 0, 0, 0, CDT);
         r5.stop = OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT);
+        r5.setLengthInMinutes(60);
 
         Reservation r6 = new Reservation();
         r6.host = "testRepositoryCustom-host3@example.org";
@@ -2632,6 +2644,7 @@ public class DataTestServlet extends FATServlet {
         r6.meetingID = 10030006;
         r6.start = OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT);
         r6.stop = OffsetDateTime.of(2022, 5, 25, 12, 0, 0, 0, CDT);
+        r6.setLengthInMinutes(60);
 
         Reservation r7 = new Reservation();
         r7.host = "testRepositoryCustom-host2@example.org";
@@ -2640,6 +2653,7 @@ public class DataTestServlet extends FATServlet {
         r7.meetingID = 10030007;
         r7.start = OffsetDateTime.of(2022, 5, 25, 13, 0, 0, 0, CDT);
         r7.stop = OffsetDateTime.of(2022, 5, 25, 15, 0, 0, 0, CDT);
+        r7.setLengthInMinutes(120);
 
         Reservation r8 = new Reservation();
         r8.host = "testRepositoryCustom-host4@example.org";
@@ -2648,6 +2662,7 @@ public class DataTestServlet extends FATServlet {
         r8.meetingID = 10030008;
         r8.start = OffsetDateTime.of(2022, 5, 25, 13, 0, 0, 0, CDT);
         r8.stop = OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT);
+        r8.setLengthInMinutes(60);
 
         Reservation r9 = new Reservation();
         r9.host = "testRepositoryCustom-host3@example.org";
@@ -2656,6 +2671,7 @@ public class DataTestServlet extends FATServlet {
         r9.meetingID = 10030009;
         r9.start = OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT);
         r9.stop = OffsetDateTime.of(2022, 5, 25, 15, 0, 0, 0, CDT);
+        r9.setLengthInMinutes(60);
 
         reservations.saveAll(List.of(r1, r2, r3, r4, r5, r6, r7, r8, r9));
 
@@ -2922,6 +2938,7 @@ public class DataTestServlet extends FATServlet {
         r1.meetingID = 1012001;
         r1.start = OffsetDateTime.of(2022, 8, 25, 8, 0, 0, 0, CDT);
         r1.stop = OffsetDateTime.of(2022, 8, 25, 9, 30, 0, 0, CDT);
+        r1.setLengthInMinutes(90);
 
         Reservation r2 = new Reservation();
         r2.host = "testRepositoryUpdateMethods-host1@example.org";
@@ -2930,6 +2947,7 @@ public class DataTestServlet extends FATServlet {
         r2.meetingID = 1012002;
         r2.start = OffsetDateTime.of(2022, 8, 25, 9, 0, 0, 0, CDT);
         r2.stop = OffsetDateTime.of(2022, 8, 25, 10, 0, 0, 0, CDT);
+        r2.setLengthInMinutes(60);
 
         Reservation r3 = new Reservation();
         r3.host = "testRepositoryUpdateMethods-host1@example.org";
@@ -2938,6 +2956,7 @@ public class DataTestServlet extends FATServlet {
         r3.meetingID = 1012003;
         r3.start = OffsetDateTime.of(2022, 8, 25, 10, 0, 0, 0, CDT);
         r3.stop = OffsetDateTime.of(2022, 8, 25, 11, 0, 0, 0, CDT);
+        r3.setLengthInMinutes(60);
 
         Reservation r4 = new Reservation();
         r4.host = "testRepositoryUpdateMethods-host4@example.org";
@@ -2946,6 +2965,7 @@ public class DataTestServlet extends FATServlet {
         r4.meetingID = 1012004;
         r4.start = OffsetDateTime.of(2022, 8, 25, 13, 0, 0, 0, CDT);
         r4.stop = OffsetDateTime.of(2022, 8, 25, 14, 30, 0, 0, CDT);
+        r4.setLengthInMinutes(90);
 
         reservations.saveAll(List.of(r1, r2, r3, r4));
 
@@ -3206,6 +3226,7 @@ public class DataTestServlet extends FATServlet {
         r1.meetingID = 10040001;
         r1.start = OffsetDateTime.of(2022, 6, 3, 13, 30, 0, 0, CDT);
         r1.stop = OffsetDateTime.of(2022, 6, 3, 15, 0, 0, 0, CDT);
+        r1.setLengthInMinutes(90);
 
         Reservation r2 = new Reservation();
         r2.host = "testSelectAsRecord-host2@example.org";
@@ -3214,6 +3235,7 @@ public class DataTestServlet extends FATServlet {
         r2.meetingID = 10040002;
         r2.start = OffsetDateTime.of(2022, 6, 3, 9, 0, 0, 0, CDT);
         r2.stop = OffsetDateTime.of(2022, 6, 3, 10, 0, 0, 0, CDT);
+        r2.setLengthInMinutes(60);
 
         Reservation r3 = new Reservation();
         r3.host = "testSelectAsRecord-host3@example.org";
@@ -3222,6 +3244,7 @@ public class DataTestServlet extends FATServlet {
         r3.meetingID = 10040003;
         r3.start = OffsetDateTime.of(2022, 6, 3, 15, 0, 0, 0, CDT);
         r3.stop = OffsetDateTime.of(2022, 6, 3, 16, 0, 0, 0, CDT);
+        r3.setLengthInMinutes(60);
 
         Reservation r4 = new Reservation();
         r4.host = "testSelectAsRecord-host3@example.org";
@@ -3230,6 +3253,7 @@ public class DataTestServlet extends FATServlet {
         r4.meetingID = 10040004;
         r4.start = OffsetDateTime.of(2022, 6, 3, 9, 0, 0, 0, CDT);
         r4.stop = OffsetDateTime.of(2022, 6, 3, 10, 0, 0, 0, CDT);
+        r4.setLengthInMinutes(60);
 
         reservations.saveAll(Set.of(r1, r2, r3, r4));
 
