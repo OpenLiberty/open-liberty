@@ -14,7 +14,7 @@ package com.ibm.ws.cache;
 
 import java.io.Serializable;
 import java.util.Enumeration;
-
+import java.util.concurrent.TimeUnit;
 import com.ibm.ws.cache.intf.DCacheConfig;
 import com.ibm.ws.util.ObjectPool;
 
@@ -454,8 +454,9 @@ public class EntryInfo implements com.ibm.websphere.cache.EntryInfo, Serializabl
 	  expirationTimeFlag = SET;
 	  this.timeLimit = timeLimit;
 	  if (timeLimit > 0) {
-         long ttlmsec = ((long)timeLimit) * 1000;  
-		 expirationTime = ttlmsec + System.currentTimeMillis();
+	      long ttlmsec = TimeUnit.SECONDS.toNanos(timeLimit);
+	      expirationTime = ttlmsec + System.nanoTime();
+
 	  }
    }
    /**

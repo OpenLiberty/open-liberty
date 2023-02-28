@@ -14,6 +14,7 @@ package com.ibm.ws.cache;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -69,7 +70,7 @@ public abstract class RealTimeDaemon {
    }
 
 	public void start() {
-		startDaemonTime = System.currentTimeMillis();
+		startDaemonTime = System.nanoTime();
 		stopDaemon = false;
 		Scheduler.createNonDeferrable(timeInterval, this, new Runnable() {
 			@Override
@@ -93,7 +94,7 @@ public abstract class RealTimeDaemon {
    public void alarm(final Object context) {
       long sleepInterval = 0;
       do {
-         long startWakeUpTime = System.currentTimeMillis();
+         long startWakeUpTime = System.nanoTime();
          try {
             wakeUp(startDaemonTime, startWakeUpTime);
          } catch (Exception ex) {
@@ -101,12 +102,12 @@ public abstract class RealTimeDaemon {
             if (tc.isDebugEnabled())
                Tr.debug(tc, "exception during wakeUp", ex);
          }
-         sleepInterval = timeInterval - (System.currentTimeMillis() - startWakeUpTime);
+         sleepInterval =  TimeUnit.MILLISECONDS.toNanos(timeInterval) - (System.nanoTime() - startWakeUpTime);
          // keep looping while we are behind... (i.e. execution time is greater than the time interval)
       } while (sleepInterval <= 0);
       
       if (false == stopDaemon){    	  
-			Scheduler.createNonDeferrable(sleepInterval, context,
+			Scheduler.createNonDeferrable(TimeUnit.NANOSECONDS.toMillis(sleepInterval), context,
 					new Runnable() {
 						@Override
 						public void run() {
