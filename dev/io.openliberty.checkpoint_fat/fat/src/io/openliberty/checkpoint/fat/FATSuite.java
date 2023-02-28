@@ -70,6 +70,7 @@ import componenttest.topology.impl.LibertyServer;
                 OpenAPITest.class,
                 MPJWTTest.class,
                 MPMetricsTest.class,
+                MPTelemetryTest.class,
                 WebProfileEARtest.class,
                 MPHealthTest.class,
                 SlowAppStartTest.class,

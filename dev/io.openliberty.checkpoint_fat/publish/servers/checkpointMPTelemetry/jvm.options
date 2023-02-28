@@ -1,0 +1,2 @@
+-Dcom.ibm.ws.beta.edition=true
+-Dio.opentelemetry.context.enableStrictContext=true
