@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,17 +23,17 @@ import com.ibm.ws.jaxws.transport.server.security.SayHelloLocal;
 @Singleton(name = "SayHelloSingleBean")
 @Startup
 public class SayHelloSingletonService implements SayHelloLocal {
-	@EJB(name = "ejb/singletondef/stateless", beanName = "SayHelloSessionBean")
-	SayHelloLocal stateless;
+    @EJB(name = "ejb/singletondef/singleton", beanName = "SayHelloSingleBean")
+    SayHelloLocal singleton;
 
-	@Override
-	public String sayHelloFromOther(String name) {
-		return "From other bean: Hello, " + name + " from " + getClass().getSimpleName();
-	}
+    @Override
+    public String sayHelloFromOther(String name) {
+        return "From other bean: Hello, " + name + " from " + getClass().getSimpleName();
+    }
 
-	@Override
-	public String sayHello(String name) {
-		return stateless.sayHelloFromOther(name);
-	}
+    @Override
+    public String sayHello(String name) {
+        return singleton.sayHelloFromOther(name);
+    }
 
 }
