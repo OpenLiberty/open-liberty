@@ -27,7 +27,6 @@ import org.testcontainers.containers.MSSQLServerContainer;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.TestServlet;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
@@ -94,7 +93,6 @@ public class SQLServerTest extends FATServletClient {
     }
 
     @Test
-    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDKs
     public void testAuthenticationSchemeNTLM() throws Exception {
         server.setTraceMarkToEndOfDefaultTrace();
         runTest(server, APP_NAME + "/SQLServerTestServlet", testName);
