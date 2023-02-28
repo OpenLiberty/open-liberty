@@ -105,7 +105,7 @@ var faces;
         return AjaxImpl_1.Implementation.getClientWindow(rootNode);
     }
     faces.getClientWindow = getClientWindow;
-    //private helper functions
+    // private helper functions
     function getSeparatorChar() {
         const sep = '#{facesContext.namingContainerSeparatorChar}';
         //We now enable standalone mode, the separator char was not mapped we make a fallback to 2.3 behavior
@@ -119,12 +119,12 @@ var faces;
         /**
          * this function has to send the ajax requests
          *
-         * following requestInternal conditions must be met:
+         * following request conditions must be met:
          * <ul>
-         *  <li> the requestInternal must be sent asynchronously! </li>
-         *  <li> the requestInternal must be a POST!!! requestInternal </li>
-         *  <li> the requestInternal url must be the form action attribute </li>
-         *  <li> all requests must be queued with a client side requestInternal queue to ensure the requestInternal ordering!</li>
+         *  <li> the request must be sent asynchronously! </li>
+         *  <li> the request must be a POST!!! request </li>
+         *  <li> the request url must be the form action attribute </li>
+         *  <li> all requests must be queued with a client side request queue to ensure the request ordering!</li>
          * </ul>
          *
          * @param {String|Node} element: any dom element no matter being it html or jsf, from which the event is emitted
@@ -140,7 +140,6 @@ var faces;
          * @param request the request object having triggered this response
          * @param context the request context
          *
-         * TODO add info on what can be in the context
          */
         function response(request, context) {
             AjaxImpl_1.Implementation.response(request, context);
@@ -155,13 +154,13 @@ var faces;
          *     <li> errorData.status : the error status message</li>
          *     <li> errorData.serverErrorName : the server error name in case of a server error</li>
          *     <li> errorData.serverErrorMessage : the server error message in case of a server error</li>
-         *     <li> errorData.source  : the issuing source element which triggered the requestInternal </li>
-         *     <li> eventData.responseCode: the response code (aka http requestInternal response code, 401 etc...) </li>
-         *     <li> eventData.responseText: the requestInternal response text </li>
-         *     <li> eventData.responseXML: the requestInternal response xml </li>
+         *     <li> errorData.source  : the issuing source element which triggered the request </li>
+         *     <li> eventData.responseCode: the response code (aka http request response code, 401 etc...) </li>
+         *     <li> eventData.responseText: the request response text </li>
+         *     <li> eventData.responseXML: the request response xml </li>
          * </ul>
          *
-         * @param errorListener error handler must be of the format <i>function errorListener(&lt;errorData&gt;)</i>
+         * @param errorFunc error handler must be of the format <i>function errorListener(&lt;errorData&gt;)</i>
          */
         function addOnError(errorFunc) {
             AjaxImpl_1.Implementation.addOnError(errorFunc);
@@ -171,7 +170,7 @@ var faces;
          * Adds a global event listener to the ajax event queue. The event listener must be a function
          * of following format: <i>function eventListener(&lt;eventData&gt;)</i>
          *
-         * @param eventListener event must be of the format <i>function eventListener(&lt;eventData&gt;)</i>
+         * @param eventFunc event must be of the format <i>function eventListener(&lt;eventData&gt;)</i>
          */
         function addOnEvent(eventFunc) {
             AjaxImpl_1.Implementation.addOnEvent(eventFunc);
@@ -186,7 +185,7 @@ var faces;
          * if any of the code returns false, the execution
          * is terminated prematurely skipping the rest of the code!
          *
-         * @param {DomNode} source, the callee object
+         * @param {HTMLElement | String} source, the callee object
          * @param {Event} event, the event object of the callee event triggering this function
          * @param funcs ... arbitrary array of functions or strings
          * @returns true if the chain has succeeded false otherwise
@@ -215,7 +214,7 @@ var faces;
         push.init = init;
         /**
          * Open the web socket on the given channel.
-         * @param  channel The name of the web socket channel.
+         * @param  socketClientId The name of the web socket channel.
          * @throws  Error is thrown, if the channel is unknown.
          */
         function open(socketClientId) {
@@ -224,7 +223,7 @@ var faces;
         push.open = open;
         /**
          * Close the web socket on the given channel.
-         * @param  channel The name of the web socket channel.
+         * @param  socketClientId The id of the web socket client.
          * @throws  Error is thrown, if the channel is unknown.
          */
         function close(socketClientId) {
@@ -244,8 +243,8 @@ var myfaces;
      * @param event the event
      * @param eventName event name for java.jakarta.faces.behavior.evemnt
      * @param execute execute list as passed down in faces.ajax.request
-     * @param render
-     * @param options
+     * @param render the render list as string
+     * @param options the options which need to be mered in
      */
     function ab(source, event, eventName, execute, render, options = {}) {
         var _a, _b;
@@ -262,6 +261,42 @@ var myfaces;
         ((_b = window === null || window === void 0 ? void 0 : window.faces) !== null && _b !== void 0 ? _b : window.jsf).ajax.request(source, event, options);
     }
     myfaces.ab = ab;
+    const onReadyChain = [];
+    let readyStateListener = null;
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     * Helper function in the myfaces namespace to handle document ready properly for the load case
+     * the ajax case, does not need proper treatment, since it is deferred anyway.
+     * Used by command script as helper function!
+     *
+     * @param executionFunc the function to be executed upon ready
+     */
+    function onDomReady(executionFunc) {
+        if (document.readyState !== "complete") {
+            onReadyChain.push(executionFunc);
+            if (!readyStateListener) {
+                readyStateListener = () => {
+                    window.removeEventListener("DOMContentLoaded", readyStateListener);
+                    readyStateListener = null;
+                    try {
+                        onReadyChain.forEach(func => func());
+                    }
+                    finally {
+                        //done we clear now the ready chain
+                        onReadyChain.length = 0;
+                    }
+                };
+                window.addEventListener("DOMContentLoaded", readyStateListener);
+            }
+        }
+        else {
+            if (readyStateListener) {
+                readyStateListener();
+            }
+            executionFunc();
+        }
+    }
+    myfaces.onDomReady = onDomReady;
     /**
      * legacy oam functions
      */
@@ -355,11 +390,15 @@ var Implementation;
      a) Monad like structures for querying because this keeps the code denser and adds abstractions
      that always was the strong point of jquery and it still is better in this regard than what ecmascript provides
     
-     b) Streams and lazystreams like java has, a pull like construct, ecmascript does not have anything like Lazystreams.
+     b) Streams and lazy streams like java has, a pull stream construct, ecmascript does not have anything like it.
+     (it has array filters and maps, but ES2015 does not support flatMap)
      Another option would have been rxjs but that would have introduced a code dependency and probably more code. We might
-     move to RXJS if the need arises however. But for now I would rather stick with my small self grown library which works
+     move to RXJS if the need arises, however. But for now I would rather stick with my small self grown library which works
      quite well and where I can patch quickly (I have used it in several industrial projects, so it works well
      and is heavily fortified by unit tests (140 testcases as time of writing this))
+     The long term plan is to eliminate the Stream usage as soon as we can move up to ES2019 (adding the missing
+     functions as shims, is a no go, because we are a library, and absolutey do not Shim anything which can leak
+     into the global namespace!)
     
      c) A neutral json like configuration which allows assignments of arbitrary values with reduce code which then can be
      transformed into different data representations
@@ -427,7 +466,7 @@ var Implementation;
     /**
      * @return the project stage also emitted by the server:
      * it cannot be cached and must be delivered over the server
-     * The value for it comes from the requestInternal parameter of the faces.js script called "stage".
+     * The value for it comes from the request parameter of the faces.js script called "stage".
      */
     function getProjectStage() {
         var _a, _b, _c;
