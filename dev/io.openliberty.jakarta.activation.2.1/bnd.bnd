@@ -19,37 +19,22 @@ javac.target: 11
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 jakarta-activation-version=2.1.1
-angus-activation-version=2.0.0
 
 Bundle-SymbolicName: io.openliberty.jakarta.activation.2.1; singleton:=true
 
 Export-Package: \
 	jakarta.activation;version="2.1",\
-	jakarta.activation.spi;thread-context=true;version="2.1", \
-    org.eclipse.angus.activation;thread-context=true
+	jakarta.activation.spi;thread-context=true;version="2.1"
 
 Import-Package: \
   *
 
 instrument.disabled: true
 
-app-resources= \
-  META-INF/services/jakarta.activation.spi.MailcapRegistryProvider | \
-  META-INF/services/jakarta.activation.spi.MimeTypeRegistryProvider
-
 -includeresource: \
-  @${repo;jakarta.activation:jakarta.activation-api;${jakarta-activation-version};EXACT}!/!(META-INF/maven/*|module-info.class),\
-  @${repo;org.eclipse.angus:angus-activation;${angus-activation-version};EXACT}!/!(META-INF/maven/*|module-info.class|META-INF/native-image|org/eclipse/angus/activation/nativeimage/*)
-
-Service-Component: \
-  io.openliberty.jakarta.activation_2_1_${replace;${bVersion};\\.;_}.ResourceProvider; \
-    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
-    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
-    configuration-policy:=ignore; \
-    properties:= "resources=${app-resources}"
+  @${repo;jakarta.activation:jakarta.activation-api;${jakarta-activation-version};EXACT}!/!(META-INF/maven/*|module-info.class)
     
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-    jakarta.activation:jakarta.activation-api;version=${jakarta-activation-version};strategy=exact, \
-    org.eclipse.angus:angus-activation;version=${angus-activation-version};strategy=exact
+    jakarta.activation:jakarta.activation-api;version=${jakarta-activation-version};strategy=exact

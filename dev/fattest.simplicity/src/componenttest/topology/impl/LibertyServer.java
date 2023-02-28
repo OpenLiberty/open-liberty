@@ -1853,20 +1853,32 @@ public class LibertyServer implements LogMonitorClient {
      *
      * @param output
      */
-    private void checkpointValidate(ProgramOutput output, boolean expectStartFailure) throws Exception {
-        if (!expectStartFailure) {
-            assertEquals("Checkpoint operation return code should be zero", 0, output.getReturnCode());
+    private void checkpointValidate(ProgramOutput output, boolean expectCheckpointFailure) throws Exception {
+        String method = "checkpointValidate";
+        Log.info(c, method, method);
+        try {
+            resetStarted();
+            if (!expectCheckpointFailure) {
+                assertEquals("Checkpoint operation return code should be zero", 0, output.getReturnCode());
+            }
+            if (isStarted) {
+                Exception fail = new Exception("Server should not be started after a checkpoint operation");
+                Log.error(c, "Server should not be started after a checkpoint operation", fail);
+                throw fail;
+            }
+            assertCheckpointDirAsExpected();
+            assertNotNull("'CWWKC0451I: A server checkpoint was requested...' message not found in log.",
+                          waitForStringInLogUsingMark("CWWKC0451I:", 0));
+        } catch (AssertionError er) {
+            Log.info(c, method, "AssertionError: " + er);
+            if (isStarted) {
+                Log.info(c, method, "Stop running server after checkpointValidate AssertionError");
+                stopServer(false);
+            }
+            postStopServerArchive();
+            throw er;
         }
-        // validate server not started
-        resetStarted();
-        if (isStarted) {
-            Exception fail = new Exception("Server should not be started after a checkpoint operation");
-            Log.error(c, "Server should not be started after a checkpoint operation", fail);
-            throw fail;
-        }
-        assertCheckpointDirAsExpected();
-        assertNotNull("'CWWKC0451I: A server checkpoint was requested...' message not found in log.",
-                      waitForStringInLogUsingMark("CWWKC0451I:", 0));
+        Log.exiting(c, method);
     }
 
     /**

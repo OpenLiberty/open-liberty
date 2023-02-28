@@ -17,4 +17,9 @@
         <fileset dir="${server.config.dir}/InjectionSharedLibrary" includes="sharedLibrary.jar" />
     </library> 
 
+    <logging traceSpecification="*=info:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:GenericBNF=all:com.ibm.ws.jsf*=all:com.sun.faces*=all:com.ibm.ws.webcontainer*=all:com.ibm.ws.jsp=all:com.ibm.ws.jsf*=all:org.apache.myfaces*=all:com.ibm.ws.webcontainer*=all:com.ibm.ws.jsp=all"
+		traceFileName="trace.log"
+		maxFileSize="2000"
+		maxFiles="20"/>
+
 </server>
