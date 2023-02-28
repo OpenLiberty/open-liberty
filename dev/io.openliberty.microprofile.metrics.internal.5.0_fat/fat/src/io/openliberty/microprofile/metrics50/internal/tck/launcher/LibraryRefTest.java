@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.microprofile.metrics50.internal.tck.launcher;
 
@@ -131,25 +128,22 @@ public class LibraryRefTest {
         //Check SR implementation log that Promethues Registry created
         //Note that SR makes THIS explicit log for Prometheus, other meter registries are logged differently following a template
         String line = server.waitForStringInTrace("Prometheus MeterRegistry created");
-        Assert.assertNotNull(line);
+        Assert.assertNotNull("Expected \"Prometheus MeterRegistry created\"", line);
 
         String exceptionString = null;
         try {
             String output = getHttpsServlet("/metrics");
             Log.info(c, "externalPrometheusMicrometer", output);
-            Assert.assertNotNull(output);
+            Assert.assertNotNull("Results of /metrics output should not have been null", output);
 
             //just do simple check for jvm.uptime metric
-            boolean containsMetrics = (output.contains("jvm_uptime_seconds{mp_scope=\"base\",")) ? true : false;
-            Assert.assertTrue(containsMetrics);
+            boolean containsMetrics = output.contains("jvm_uptime_seconds{mp_scope=\"base\",");
+            Assert.assertTrue("Expected to see the always present base metric jvm.uptime from /metriccs output", containsMetrics);
 
-        } catch (
-
-        ConnectException exception) {
+        } catch (ConnectException exception) {
             exceptionString = exception.toString();
-
         }
-        Assert.assertNull(exceptionString);
+        Assert.assertNull("Was not expecting ConnectException", exceptionString);
     }
 
     /*
@@ -178,7 +172,7 @@ public class LibraryRefTest {
          * Since we aren't using any real registries, we don't expect this.
          */
         String line = server.waitForStringInTrace("created and registered to the Micrometer global registry", 10000);
-        Assert.assertNull(line);
+        Assert.assertNull("Expected to see \"created and registered to the Micrometer global registry\" in trace.", line);
     }
 
     private static void trustAll() throws Exception {
