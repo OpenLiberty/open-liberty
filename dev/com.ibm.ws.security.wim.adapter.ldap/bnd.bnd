@@ -60,7 +60,8 @@ instrument.classesExcludes: com/ibm/ws/security/wim/adapter/ldap/resources/*.cla
 	com.ibm.ws.runtime.update;version=latest, \
 	com.ibm.ws.security.kerberos.auth;version=latest, \
 	com.ibm.ws.security;version=latest, \
-	com.ibm.ws.config;version=latest
+	com.ibm.ws.config;version=latest, \
+	com.ibm.ws.kernel.boot.common;version=latest
 	
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

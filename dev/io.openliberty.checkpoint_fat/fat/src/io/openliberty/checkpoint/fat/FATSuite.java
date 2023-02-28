@@ -74,6 +74,7 @@ import componenttest.topology.impl.LibertyServer;
                 BellsTest.class,
                 JaxWSVirtualHostTest.class,
                 WebAppMessageTest.class,
+                URAPIs_Federation_2LDAPsTest.class,
                 SkipIfCheckpointNotSupportedAnnotationTest.class,
                 RestConnectorTest.class,
                 AuditTest.class
