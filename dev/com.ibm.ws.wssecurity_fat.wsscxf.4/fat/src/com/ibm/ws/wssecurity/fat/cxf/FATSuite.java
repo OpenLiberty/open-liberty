@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,8 +18,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-//comment out temporarily
-//import com.ibm.ws.wssecurity.fat.cxf.caller.CxfCallerUNTCBHPackageTests;
+import com.ibm.ws.wssecurity.fat.cxf.caller.CxfCallerUNTCBHPackageTests;
 import com.ibm.ws.wssecurity.fat.cxf.caller.CxfCallerUNTTests;
 import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CxfSSLUNTBasicTests;
 import com.ibm.ws.wssecurity.fat.cxf.usernametoken.CxfSSLUNTNonceTests;
@@ -42,8 +41,7 @@ import componenttest.rules.repeater.RepeatTests;
 
                 //Full for EE7-wsseccbh-1.0 (also old ehcache) and EE7-wsseccbh-2.0 (also new ehcache)
                 //Full mode also runs Lite tests
-                //CxfCallerUNTCBHPackageTests.class,
-                //comment out temporarily until runtime update for bnd.overrides is ready; check back in Jan. 2023
+                CxfCallerUNTCBHPackageTests.class,
                 CxfSSLUNTNonceTimeOutTests.class,
                 CxfSSLUNTBasicTests.class,
                 CxfWssTemplatesTestsWithWSDL.class,

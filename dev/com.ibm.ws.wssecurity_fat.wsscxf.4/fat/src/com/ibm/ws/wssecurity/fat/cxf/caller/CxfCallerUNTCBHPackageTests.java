@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -159,9 +159,11 @@ public class CxfCallerUNTCBHPackageTests {
                         "" // Password; original "test2"; null password as intended
             );
         } catch (Exception e) {
-            Log.info(thisClass, thisMethod, "In test method testCxfCallerHttpsPolicy, exception occurred as expected: " + e);
-            String result = server.waitForStringInLog("java.lang.IncompatibleClassChangeError: org/apache/ws/security/WSPasswordCallback");
-            Log.info(thisClass, thisMethod, "Searching for: " + result);
+            Log.info(thisClass, thisMethod, "In test method testCxfCallerHttpsPolicy, exception occurred: " + e);
+            //The exception results to HTTP request error 500 status code as expected.  Next do the search for error messagee in server log.
+            Log.info(thisClass, thisMethod, "Searching the input string 'java.lang.IncompatibleClassChangeError' in the log");
+            String result = server.waitForStringInLog("java.lang.IncompatibleClassChangeError");
+            Log.info(thisClass, thisMethod, "The search result is: " + result);
             if (result == null) {
                 Log.info(thisClass, thisMethod, "The message '...IncompatibleClassChangeError...' is not found ");
                 throw e;
