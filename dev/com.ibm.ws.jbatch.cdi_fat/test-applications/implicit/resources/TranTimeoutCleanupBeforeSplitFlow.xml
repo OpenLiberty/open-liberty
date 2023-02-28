@@ -34,7 +34,7 @@
 			<step id="step2">
 				<properties>
 					<!-- Long enough that we never timeout just because the DB is slow -->
-					<property name="javax.transaction.global.timeout" value="#{jobParameters['chunkTimeSeconds']}?:2;"/>
+					<property name="javax.transaction.global.timeout" value="#{jobParameters['chunkTimeSeconds']}?:3;"/>
 				</properties>
 				<chunk item-count="3">
 					<reader ref="TranTimeoutCleanupReader" />
