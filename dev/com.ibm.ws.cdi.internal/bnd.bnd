@@ -17,8 +17,6 @@
 bVersion=1.0
 
 
-
-
 Export-Package: \
         com.ibm.ws.cdi.internal.interfaces,\
         com.ibm.ws.cdi.internal.archive,\
@@ -41,6 +39,7 @@ Import-Package: \
                  org.jboss.weld.bootstrap.spi.helpers;version="[2.4,4)",\
                  org.jboss.weld.ejb.spi;version="[2.4,4)",\
                  org.jboss.weld.injection.spi;version="[2.4,4)",\
+                 org.jboss.weld.interceptor;version="[2.4,4)",\
                  org.jboss.weld.resources.spi;version="[2.4,4)",\
                  org.jboss.weld.security.spi;version="[2.4,4)",\
                  org.jboss.weld.serialization.spi;version="[2.4,4)",\
