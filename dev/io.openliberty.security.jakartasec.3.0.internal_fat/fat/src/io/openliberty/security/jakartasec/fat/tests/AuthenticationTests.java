@@ -12,7 +12,10 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec.fat.tests;
 
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -28,9 +31,13 @@ import com.gargoylesoftware.htmlunit.util.NameValuePair;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
 import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
+import com.ibm.ws.security.fat.common.expectations.ResponseMessageExpectation;
+import com.ibm.ws.security.fat.common.expectations.ResponseStatusExpectation;
 import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
+import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
@@ -38,6 +45,7 @@ import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurityTests;
 import io.openliberty.security.jakartasec.fat.configs.TestConfigMaps;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
+import io.openliberty.security.jakartasec.fat.utils.MessageConstants;
 import io.openliberty.security.jakartasec.fat.utils.ServletMessageConstants;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 
@@ -107,6 +115,8 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
         deployMyApps();
 
+        // Allow error messages that are issued because the app tries to log information that may not be set
+        rpServer.addIgnoredErrors(Arrays.asList(MessageConstants.SESN0066E_RSP_COMMITTED_COOKIE_CANNOT_BE_SET, MessageConstants.SRVE8114W_CANNOT_SET_SESSION_COOKIE));
         // rspValues used to validate the app output will be initialized before each test - any unique values (other than the
         //  app need to be updated by the test case - the app is updated by the invokeApp* methods)
     }
@@ -254,16 +264,7 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
-    public Page genericAuthTest(boolean usesInjection, BooleanPlusValues redirect, BooleanPlusValues useSession, BooleanPlusValues newAuth) throws Exception {
-
-        rspValues.setRPServer(rpServer);
-        // the initial invocation of the apps should hit the app, then the callback and then the app again
-        int requestCount1 = 2;
-        int callbackCount1 = 1;
-
-        // TODO - the second invocation of the apps should hit the app, then the callback and then the app again
-        int requestCount2 = 1;
-        int callbackCount2 = 0;
+    public String buildAppName(boolean usesInjection, BooleanPlusValues redirect, BooleanPlusValues useSession, BooleanPlusValues newAuth) throws Exception {
 
         String appRoot = "AuthApp";
         if (usesInjection) {
@@ -271,7 +272,6 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
         } else {
             appRoot = appRoot + "NoInject";
             rspValues.setBaseApp(ServletMessageConstants.ALT_BASE_SERVLET);
-            callbackCount1 = 0;
         }
         switch (redirect) {
             case EMPTY:
@@ -300,6 +300,77 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
         appRoot = appRoot + "Servlet";
         Log.info(thisClass, _testName, "AppRoot is: " + appRoot);
 
+        return appRoot;
+    }
+
+    /**
+     * Invoke the app the first time and validate the response
+     *
+     * @param webClient - the webClient to use for both attempts to access the protected app
+     * @param appRoot - the app to invoke
+     * @param requestCount - the number of times we expect to land on the test app
+     * @param callbackCount - the number of times we expect to land on the callback (number was set based on the value of the redirect flag)
+     * @return - returns the page output
+     * @throws Exception
+     */
+    public Page invokeAppFirstTime(WebClient webClient, String appRoot, int requestCount, int callbackCount) throws Exception {
+
+        // reset the counters in the app and callback - these counters will tell us how many times each was invoked
+        resetAuthAppFlags(appRoot); // reset the call counters (counters for number of invocations of the app and the apps callback)
+
+        rspValues.printRspValues();
+
+        Page response = runGoodEndToEndTest(webClient, appRoot, app);
+
+        Expectations extraExpectations1 = new Expectations();
+        extraExpectations1 = setServletMessageExpectations(extraExpectations1, requestCount);
+        extraExpectations1 = setCallbackMessageExpectations(extraExpectations1, callbackCount);
+
+        validationUtils.validateResult(response, extraExpectations1);
+
+        return response;
+    }
+
+    /**
+     * All of the tests follow the same flow. Invoke a test app and validate what happens, then invoke the same app again using a different user and validate what happens. Finally,
+     * compare the responses for the 2 attempts.
+     * The test vary in
+     * 1) the app that they use - one inject openIdContext and the other does not
+     * 2) does the annotation in the app specify redirectToOriginalResource (true/false/default)
+     * 3) does the annotation in the app specify useSession (true/false/default)
+     * 4) does the securityContext.authenticate call specify newAuthentication (true/false/not specified)
+     *
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app and see:
+     ** We should land on the test app
+     ** Process a login
+     ** Print Basically unset request, openIdContext and WSSubject values
+     ** See the callback invoked and have it print the appropriate values for the request, openIdContext and WSSubject
+     ** See that we land on the test app again and that it logs the appropriate values for the request, openIdContext and WSSubject
+     * Test case validates the proper response values including a count of having landed on the app 2 times and the callback once
+     * Invoke the test app again and we should see:
+     ** We should land on the test app
+     ** Process a login
+     ** Print Basically unset request, openIdContext and WSSubject values
+     ** See the callback invoked and have it print the appropriate values for the request, openIdContext and WSSubject
+     ** See that we land on the test app again and that it logs the appropriate values for the request, openIdContext and WSSubject
+     ** Test case validates the proper response values including a count of having landed on the app 2 times and the callback once
+     *
+     */
+
+    public Page genericAuthTest(boolean usesInjection, BooleanPlusValues redirect, BooleanPlusValues useSession, BooleanPlusValues newAuth) throws Exception {
+
+        rspValues.setRPServer(rpServer);
+        // the initial invocation of the apps should hit the app, then the callback and then the app again
+        int requestCount1 = 2;
+        int callbackCount1 = 1;
+
+        int requestCount2 = 1;
+        int callbackCount2 = 0;
+
+        String appRoot = buildAppName(usesInjection, redirect, useSession, newAuth);
+
+        // setup newAuth parm and adjust
         if (newAuth != BooleanPlusValues.EMPTY) {
             List<NameValuePair> parms = new ArrayList<NameValuePair>();
             if (newAuth == BooleanPlusValues.TRUE) {
@@ -321,40 +392,93 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
         rspValues.setUseAuthApp(true);
 
-        // reset the counters in the app and callback - these counters will tell us how many times each was invoked
-        resetAuthAppFlags(appRoot); // reset the call counters (counters for number of invocations of the app and the apps callback)
-
         WebClient webClient = getAndSaveWebClient();
-
-        rspValues.printRspValues();
-
-        Page response1 = runGoodEndToEndTest(webClient, appRoot, app);
-
-        Expectations extraExpectations1 = new Expectations();
-        extraExpectations1 = setServletMessageExpectations(extraExpectations1, requestCount1);
-        extraExpectations1 = setCallbackMessageExpectations(extraExpectations1, callbackCount1);
-
-        validationUtils.validateResult(response1, extraExpectations1);
+        Page response1 = invokeAppFirstTime(webClient, appRoot, requestCount1, callbackCount1);
 
         rpServer.setMarkToEndOfLog(); // reset the marks in the log so we are only looking at the output from the second call to the app
+
         resetAuthAppFlags(appRoot); // reset the call counters (counters for number of invocations of the app and the apps callback)
         // invoke the app again, but use the context from the first call (we shouldn't need to re-authenticate, but, we're specifically invoking authenticate and will validate the proper behavior base on the annotation setting and the flag passed to authenticate
 
         Page response2 = null;
+        boolean extraChecks = true;
+        // if we're going to pass newAuthentication = true, we'll have to handle different behavior
+        // if we don't, we'll get to the app without having to log in again
         if (newAuth == BooleanPlusValues.TRUE) {
-            response2 = runGoodEndToEndTest(webClient, appRoot, app);
+            rspValues.setSubject("user1");
+            // if we're using the same session, the app will hit an UnauthorizedSessionRequestException exception because the session was created by testuser, but now user1 is trying to use it
+            if (useSession != BooleanPlusValues.FALSE & (!(!usesInjection && redirect == BooleanPlusValues.TRUE))) {
+                extraChecks = false;
+                String url = rpHttpsBase + "/" + appRoot + "/" + app;
+                Page response = invokeAppReturnLoginPage(webClient, url);
+                Expectations currentExpectations = new Expectations();
+                currentExpectations.addExpectation(new ResponseStatusExpectation(Constants.INTERNAL_SERVER_ERROR_STATUS));
+                currentExpectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, "Internal Server Error", "Did not receive the Internal ServerError message."));
+                currentExpectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, MessageConstants.SESN0008E_SESSION_OWNED_BY_OTHER_USER, "Did not receive the UnauthorizedSessionRequestException message."));
+                currentExpectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.SESN0008E_SESSION_OWNED_BY_OTHER_USER
+                                                                                          + ".*user1.*testuser", "Did not find a message stating that user1 attempted to access a session owned by testuser"));
+                currentExpectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.SRVE0777E_SECURITY_CHECK, "Did not find a message stating that the application encountered a security check error"));
+
+                response = actions.doFormLogin(response, "user1", "user1pwd");
+                // confirm protected resource was accessed
+                validationUtils.validateResult(response, currentExpectations);
+
+            } else {
+                // expect to login again and get different user info - no issues with conflicting sessions since we're not using session
+                response2 = runGoodEndToEndTest(webClient, appRoot, app, "user1", "user1pwd");
+            }
         } else {
             // invoke the app and expect to land on it without having to log in
             String url = rpHttpsBase + "/" + appRoot + "/AuthenticationApp";
             response2 = invokeApp(webClient, url, getProcessLoginExpectations(app));
         }
 
-        Expectations extraExpectations2 = new Expectations();
-        extraExpectations2 = setServletMessageExpectations(extraExpectations2, requestCount2);
-        extraExpectations2 = setCallbackMessageExpectations(extraExpectations2, callbackCount2);
+        // Extra checks for the second app invocation as well as comparison of results from the first and second call
+        // Skipped if we expect an UnauthorizedSessionRequestException exception
+        if (extraChecks) {
+            Expectations extraExpectations2 = new Expectations();
+            extraExpectations2 = setServletMessageExpectations(extraExpectations2, requestCount2);
+            extraExpectations2 = setCallbackMessageExpectations(extraExpectations2, callbackCount2);
 
-        validationUtils.validateResult(response2, extraExpectations2);
+            validationUtils.validateResult(response2, extraExpectations2);
+
+            compareOpenIdContext(response1, response2, usesInjection);
+        }
+
         return response2;
+    }
+
+    /**
+     * Compare the OpenIdContext reference between the first and second app invocations. The ref should be the same, but the content should be different. (the content is validated
+     * as part of the normal test flow)
+     *
+     * @param response1 - the response from the first call to the test app
+     * @param response2 - the response from the first call to the test app
+     * @param usesInjection - flag indicating if injection is used - if it is NOT, there should be no openidContext
+     * @throws Exception
+     */
+    public void compareOpenIdContext(Page response1, Page response2, boolean usesInjection) throws Exception {
+
+        String thisMethod = "compareOpenIdContext";
+
+        if (usesInjection) {
+            String context1 = AutomationTools.getTokenFromResponse(response1,
+                                                                   ServletMessageConstants.SERVLET + ServletMessageConstants.OPENID_CONTEXT
+                                                                              + ServletMessageConstants.OPENID_CONTEXT);
+            String context2 = AutomationTools.getTokenFromResponse(response2,
+                                                                   ServletMessageConstants.SERVLET + ServletMessageConstants.OPENID_CONTEXT
+                                                                              + ServletMessageConstants.OPENID_CONTEXT);
+            Log.info(thisClass, thisMethod, context1);
+            Log.info(thisClass, thisMethod, context2);
+
+            if (context1.equals(context2)) {
+                // context content is check as part of the call to runGoodEndToEndTest
+                Log.info(thisClass, thisMethod, "openIdContext's are the same - this is expected - content should be different, but the same context should be used.");
+            } else {
+                fail("openIdContext's are the NOT same - this is NOT expected");
+            }
+
+        }
 
     }
 
@@ -385,7 +509,22 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
     /* Tests */
     /****************************************************************************************************************/
     /**
-     * Test with apps that injects OpenIdContext.
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app and see:
+     ** We should land on the test app
+     ** Process a login
+     ** Print Basically unset request, openIdContext and WSSubject values
+     ** See the callback invoked and have it print the appropriate values for the request, openIdContext and WSSubject
+     ** See that we land on the test app again and that it logs the appropriate values for the request, openIdContext and WSSubject
+     * Test case validates the proper response values including a count of having landed on the app 2 times and the callback once
+     * Invoke the test app again and we should see:
+     ** We should land on the test app
+     ** Process a login
+     ** Print Basically unset request, openIdContext and WSSubject values
+     ** See the callback invoked and have it print the appropriate values for the request, openIdContext and WSSubject
+     ** See that we land on the test app again and that it logs the appropriate values for the request, openIdContext and WSSubject
+     ** Test case validates the proper response values including a count of having landed on the app 2 times and the callback once
+     *
      */
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceTrueUseSessionFalse_newAuthNotSet() throws Exception {
@@ -423,6 +562,7 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    @ExpectedFFDC({ "com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException" })
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceTrueUseSessionTrue_newAuthTrue() throws Exception {
 
@@ -445,6 +585,7 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    @ExpectedFFDC({ "com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException" })
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceTrueUseSessionEmpty_newAuthTrue() throws Exception {
 
@@ -490,6 +631,7 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    @ExpectedFFDC({ "com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException" })
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceFalseUseSessionTrue_newAuthTrue() throws Exception {
 
@@ -512,6 +654,7 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    @ExpectedFFDC({ "com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException" })
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceFalseUseSessionEmpty_newAuthTrue() throws Exception {
 
@@ -557,6 +700,7 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    @ExpectedFFDC({ "com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException" })
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceEmptyUseSessionTrue_newAuthTrue() throws Exception {
 
@@ -579,6 +723,7 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    @ExpectedFFDC({ "com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException" })
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceEmptyUseSessionEmpty_newAuthTrue() throws Exception {
 
@@ -693,6 +838,7 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    @ExpectedFFDC({ "com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException" })
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceFalseUseSessionTrue_newAuthTrue() throws Exception {
 
@@ -715,6 +861,7 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    @ExpectedFFDC({ "com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException" })
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceFalseUseSessionEmpty_newAuthTrue() throws Exception {
 
@@ -760,6 +907,7 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    @ExpectedFFDC({ "com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException" })
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceEmptyUseSessionTrue_newAuthTrue() throws Exception {
 
@@ -782,6 +930,7 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    @ExpectedFFDC({ "com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException" })
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceEmptyUseSessionEmpty_newAuthTrue() throws Exception {
 

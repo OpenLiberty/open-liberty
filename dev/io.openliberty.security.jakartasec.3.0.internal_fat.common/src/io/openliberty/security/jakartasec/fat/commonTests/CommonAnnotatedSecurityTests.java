@@ -231,7 +231,9 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
     public Page invokeApp(WebClient webClient, String url, Expectations expectations) throws Exception {
 
         Page response = null;
-        rspValues.setOriginalRequest(url);
+        if (!(rspValues.getOriginalRequest() != null && rspValues.getOriginalRequest().contains(ServletMessageConstants.UNAUTH_SESSION_REQUEST_EXCEPTION))) {
+            rspValues.setOriginalRequest(url);
+        }
 
         // the call to invokeUrlWithParametersAndHeaders mangles the headers, so make a copy
         HashMap<String, String> tempHeaders = null;

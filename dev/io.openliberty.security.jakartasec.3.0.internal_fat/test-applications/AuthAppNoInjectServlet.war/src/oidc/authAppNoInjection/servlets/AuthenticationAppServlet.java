@@ -74,39 +74,6 @@ public class AuthenticationAppServlet extends SimpleServlet {
         ServletOutputStream outputStream = response.getOutputStream();
         recordAppInfo(request, outputStream);
 
-//        ServletOutputStream ps = response.getOutputStream();
-//
-//        ServletLogger.printLine(ps, "Class: " + this.getClass().getName());
-//        ServletLogger.printLine(ps, "Super Class: " + this.getClass().getSuperclass().getName());
-//
-//        RequestLogger requestLogger = new RequestLogger(request, "Auth " + ServletMessageConstants.SERVLET + ServletMessageConstants.REQUEST);
-//        requestLogger.printRequest(ps);
-//
-//        OpenIdContextLogger contextLogger = new OpenIdContextLogger(request, response, "Auth " + ServletMessageConstants.SERVLET + ServletMessageConstants.OPENID_CONTEXT, context);
-//        contextLogger.logContext(ps);
-//
-//        WSSubjectLogger subjectLogger = new WSSubjectLogger(request, "Auth " + ServletMessageConstants.SERVLET + ServletMessageConstants.WSSUBJECT);
-//        subjectLogger.printProgrammaticApiValues(ps);
-
-//        securityContext.authenticate(request, response, AuthenticationParameters.withParams().newAuthentication(true));
-
-//        ServletOutputStream outputStream = response.getOutputStream();
-
-//        ServletLogger.printLine(outputStream, "Security context principal After authentication: " + securityContext.getCallerPrincipal());
-//        ServletLogger.printLine(outputStream, "Completed Authenticating");
-
-//        }
-
-//        recordAppInfo(request, response, outputStream);
-//
-//        ServletLogger.printLine(outputStream, "Completed calling recordAppInfo");
-
-//        super.doGet(request, response);
-
-//        if (request.getParameter(Constants.LOGOUT) != null) {
-//            request.logout();
-//        }
-
     }
 
 }

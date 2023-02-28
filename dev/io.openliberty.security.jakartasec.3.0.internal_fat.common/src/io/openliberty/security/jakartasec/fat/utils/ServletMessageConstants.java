@@ -81,4 +81,6 @@ public class ServletMessageConstants {
     public static final String ENDSESSION_CLIENTID = "EndSessionServlet - parmKey: client_id parmValue: ";
     public static final String APP_REQUEST_COUNT = "App request count: ";
     public static final String CALLBACK_REQUEST_COUNT = "Callback request count: ";
+
+    public static final String UNAUTH_SESSION_REQUEST_EXCEPTION = "UnauthorizedSessionRequestException";
 }
