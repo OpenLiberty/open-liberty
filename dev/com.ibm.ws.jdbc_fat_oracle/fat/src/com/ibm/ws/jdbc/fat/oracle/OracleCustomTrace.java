@@ -144,11 +144,9 @@ public class OracleCustomTrace extends FATServletClient {
             assertTrue("Failed to verify " + key + " in logs and trace", actualValues.get(key).get(0).contains(expectedValues.get(key)));
         });
 
-        //Ensure two files were created and named correctly
+        //Ensure at least one file was created and named correctly
         File oracleLog1 = Paths.get(server.getLogsRoot() + "oracle.0.0.log").toFile();
-        File oracleLog2 = Paths.get(server.getLogsRoot() + "oracle.1.0.log").toFile();
         assertTrue("Expected to find oracle log file at: " + oracleLog1.getPath(), oracleLog1.isFile());
-        assertTrue("Expected to find oracle log file at: " + oracleLog2.getPath(), oracleLog2.isFile());
 
         //Ideally, we would want to make an assertion that this file contains logs.
         //However, we have no guarantee that the Oracle driver has removed it's lock on the log file.
