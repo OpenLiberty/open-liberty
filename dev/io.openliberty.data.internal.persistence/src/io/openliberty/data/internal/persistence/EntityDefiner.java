@@ -15,6 +15,7 @@ package io.openliberty.data.internal.persistence;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -22,10 +23,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -97,13 +100,15 @@ class EntityDefiner implements Runnable {
             // XML to make all other classes into JPA entities:
             ArrayList<String> entityClassInfo = new ArrayList<>(entities.size());
 
+            Queue<Class<?>> embeddableTypesQueue = new LinkedList<>();
+
             for (Class<?> c : entities) {
                 if (c.getAnnotation(Entity.class) == null) {
                     StringBuilder xml = new StringBuilder(500).append(" <entity class=\"").append(c.getName()).append("\">").append(EOLN);
 
                     xml.append("  <table name=\"").append(tablePrefix).append(c.getSimpleName()).append("\"/>").append(EOLN);
 
-                    writeAttributes(xml, c);
+                    writeAttributes(xml, c, false, embeddableTypesQueue);
 
                     xml.append(" </entity>").append(EOLN);
 
@@ -112,6 +117,15 @@ class EntityDefiner implements Runnable {
                     entityClassNames.add(c.getName());
                 }
             }
+
+            Set<Class<?>> embeddableTypes = new HashSet<>();
+            for (Class<?> type; (type = embeddableTypesQueue.poll()) != null;)
+                if (embeddableTypes.add(type)) { // only write each type once
+                    StringBuilder xml = new StringBuilder(500).append(" <embeddable class=\"").append(type.getName()).append("\">").append(EOLN);
+                    writeAttributes(xml, type, true, embeddableTypesQueue);
+                    xml.append(" </embeddable>").append(EOLN);
+                    entityClassInfo.add(xml.toString());
+                }
 
             Map<String, ?> properties = Collections.singletonMap("io.openliberty.persistence.internal.entityClassInfo",
                                                                  entityClassInfo.toArray(new String[entityClassInfo.size()]));
@@ -264,7 +278,15 @@ class EntityDefiner implements Runnable {
         }
     }
 
-    private void writeAttributes(StringBuilder xml, Class<?> c) {
+    /**
+     * Write attributes for the specified entity or embeddable to XML.
+     *
+     * @param xml                  XML for defining the entity attributes
+     * @param c                    entity class
+     * @param isEmbeddable         indicates if the class is an embeddable type rather than an entity.
+     * @param embeddableTypesQueue queue of embeddable types. This method adds to the queue when an embeddable type is found.
+     */
+    private void writeAttributes(StringBuilder xml, Class<?> c, boolean isEmbeddable, Queue<Class<?>> embeddableTypesQueue) {
 
         // Identify attributes
         SortedMap<String, Class<?>> attributes = new TreeMap<>();
@@ -286,40 +308,42 @@ class EntityDefiner implements Runnable {
             throw new MappingException(x);
         }
 
-        // Determine which attribute is the id.
-        // Precedence is:
-        // (1) has name of Id, or ID, or id.
-        // (2) name ends with Id.
-        // (3) name ends with ID.
-        // (4) name ends with id.
         String keyAttributeName = null;
-        int precedence = 10;
-        for (String name : attributes.keySet())
-            if (name.length() > 2) {
-                if (precedence > 2) {
-                    char i = name.charAt(name.length() - 2);
-                    if (i == 'I') {
-                        char d = name.charAt(name.length() - 1);
-                        if (d == 'd') {
+        if (!isEmbeddable) {
+            // Determine which attribute is the id.
+            // Precedence is:
+            // (1) has name of Id, or ID, or id.
+            // (2) name ends with Id.
+            // (3) name ends with ID.
+            // (4) name ends with id.
+            int precedence = 10;
+            for (String name : attributes.keySet())
+                if (name.length() > 2) {
+                    if (precedence > 2) {
+                        char i = name.charAt(name.length() - 2);
+                        if (i == 'I') {
+                            char d = name.charAt(name.length() - 1);
+                            if (d == 'd') {
+                                keyAttributeName = name;
+                                precedence = 2;
+                            } else if (d == 'D' && precedence > 3) {
+                                keyAttributeName = name;
+                                precedence = 3;
+                            }
+                        } else if (i == 'i' && precedence > 4 && name.charAt(name.length() - 1) == 'd') {
                             keyAttributeName = name;
-                            precedence = 2;
-                        } else if (d == 'D' && precedence > 3) {
-                            keyAttributeName = name;
-                            precedence = 3;
+                            precedence = 4;
                         }
-                    } else if (i == 'i' && precedence > 4 && name.charAt(name.length() - 1) == 'd') {
-                        keyAttributeName = name;
-                        precedence = 4;
                     }
+                } else if (name.equalsIgnoreCase("ID")) {
+                    keyAttributeName = name;
+                    precedence = 1;
+                    break;
                 }
-            } else if (name.equalsIgnoreCase("ID")) {
-                keyAttributeName = name;
-                precedence = 1;
-                break;
-            }
 
-        if (keyAttributeName == null)
-            throw new MappingException("Entity class " + c.getName() + " lacks a public field of the form *ID or public method of the form get*ID."); // TODO NLS
+            if (keyAttributeName == null)
+                throw new MappingException("Entity class " + c.getName() + " lacks a public field of the form *ID or public method of the form get*ID."); // TODO NLS
+        }
 
         // Write the attributes to XML:
 
@@ -330,12 +354,22 @@ class EntityDefiner implements Runnable {
             Class<?> attributeType = attributeInfo.getValue();
             boolean isCollection = Collection.class.isAssignableFrom(attributeType);
 
-            String columnType = keyAttributeName != null && keyAttributeName.equalsIgnoreCase(attributeName) ? "id" : //
-                            "version".equalsIgnoreCase(attributeName) ? "version" : //
-                                            isCollection ? "element-collection" : //
-                                                            "basic";
+            String columnType;
+            if (attributeType.isInterface() || Serializable.class.isAssignableFrom(attributeType) || attributeType.isPrimitive()) {
+                columnType = keyAttributeName != null && keyAttributeName.equalsIgnoreCase(attributeName) ? "id" : //
+                                "version".equalsIgnoreCase(attributeName) ? "version" : //
+                                                isCollection ? "element-collection" : //
+                                                                "basic";
+            } else {
+                columnType = "embedded";
+                embeddableTypesQueue.add(attributeType);
+            }
 
             xml.append("   <" + columnType + " name=\"" + attributeName + "\">").append(EOLN);
+
+            if (isEmbeddable && !"embedded".equals(columnType))
+                xml.append("    <column name=\"").append(c.getSimpleName().toUpperCase()).append(attributeName.toUpperCase()).append("\"/>").append(EOLN);
+
             xml.append("   </" + columnType + ">").append(EOLN);
         }
 
