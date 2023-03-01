@@ -70,7 +70,13 @@ public class TemplateTestServlet extends FATServlet {
         h.area = 1800;
         h.garage = new Garage();
         h.garage.area = 200;
+        h.garage.door = new GarageDoor();
+        h.garage.door.setHeight(8);
+        h.garage.door.setWidth(10);
         h.garage.type = Garage.Type.Attached;
+        h.kitchen = new Kitchen();
+        h.kitchen.length = 15;
+        h.kitchen.width = 12;
         h.lotSize = 0.19f;
         h.numBedrooms = 4;
         h.parcelId = "TestEmbeddable-304-2288-60";
@@ -82,9 +88,17 @@ public class TemplateTestServlet extends FATServlet {
         Optional<House> found = template.find(House.class, "TestEmbeddable-304-2288-60");
         h = found.get();
 
+        assertNotNull(h.kitchen);
+        assertEquals(15, h.kitchen.length);
+        assertEquals(12, h.kitchen.width);
+
         assertNotNull(h.garage);
         assertEquals(200, h.garage.area);
         assertEquals(Garage.Type.Attached, h.garage.type);
+
+        assertNotNull(h.garage.door);
+        assertEquals(8, h.garage.door.getHeight());
+        assertEquals(10, h.garage.door.getWidth());
 
         template.delete(House.class, "TestEmbeddable-304-2288-60");
     }

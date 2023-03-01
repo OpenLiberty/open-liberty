@@ -13,16 +13,11 @@
 package test.jakarta.data.template.web;
 
 /**
- * An embeddable without annotations at depth 1, with a field that is another embeddable type.
+ * A simple embeddable without annotations.
  */
-public class Garage {
-    public static enum Type {
-        Attached, Detached, TuckUnder
-    };
+public class Kitchen {
 
-    public int area;
+    public int length;
 
-    public GarageDoor door;
-
-    public Type type;
+    public int width;
 }

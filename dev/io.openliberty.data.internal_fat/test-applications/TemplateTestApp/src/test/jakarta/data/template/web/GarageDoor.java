@@ -13,16 +13,27 @@
 package test.jakarta.data.template.web;
 
 /**
- * An embeddable without annotations at depth 1, with a field that is another embeddable type.
+ * A simple embeddable without annotations that is nesetd 2 levels deep.
  */
-public class Garage {
-    public static enum Type {
-        Attached, Detached, TuckUnder
-    };
+public class GarageDoor {
 
-    public int area;
+    private int height;
 
-    public GarageDoor door;
+    private int width;
 
-    public Type type;
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
 }

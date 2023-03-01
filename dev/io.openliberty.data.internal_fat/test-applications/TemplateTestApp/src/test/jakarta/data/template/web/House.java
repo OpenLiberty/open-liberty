@@ -22,6 +22,8 @@ public class House {
 
     public Garage garage;
 
+    public Kitchen kitchen;
+
     public float lotSize;
 
     public int numBedrooms;
