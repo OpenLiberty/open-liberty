@@ -30,6 +30,7 @@ import java.util.Properties;
 import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -42,6 +43,9 @@ import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServer.CheckpointInfo;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -63,6 +67,11 @@ public class URAPIs_Federation_2LDAPsTest {
     /** Test rule for testing for expected exceptions. */
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
+
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(new JakartaEE9Action().forServers(server.getServerName()).fullFATOnly())
+                    .andWith(new JakartaEE10Action().forServers(server.getServerName()).fullFATOnly());
 
     /**
      * Updates the sample, which is expected to be at the hard-coded path.
@@ -86,7 +95,13 @@ public class URAPIs_Federation_2LDAPsTest {
 
         Log.info(c, "setUp", "Starting the server... (will wait for userRegistry servlet to start)");
         server.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/securitylibertyinternals-1.0.mf");
+
         server.addInstalledAppForValidation("userRegistry");
+        // We have to explicitly transform the application here because the application is copied
+        // directly to dropins from the gradle.build file. If ShrinkHelper was used instead the export
+        // of the application would have transformed the application for us.
+        FATSuite.transformApps(server, "userRegistry.war");
+
         // start and stop server to generate LTPA keys
         server.startServer();
         // "CWWKG0075E" is ignored here because we do not have the ldap settings configured yet
