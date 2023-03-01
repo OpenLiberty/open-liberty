@@ -10,6 +10,7 @@
 package io.openliberty.microprofile.metrics50.internal.tck.launcher;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.net.ConnectException;
 import java.net.URL;
@@ -116,7 +117,38 @@ public class LibraryRefTest {
      */
     @Test
     public void externalPrometheusMicrometer() throws Exception {
+
         server = serverMicrometerPrometheus;
+
+        String installRoot = server.getInstallRoot();
+        String prometheusLibPath = installRoot + "/usr/shared/resources/prometheusLib";
+        String micrometerPath = installRoot + "/usr/shared/resources/micrometercore";
+
+        Log.info(c, "externalPrometheusMicrometer", "Prom library directory: " + prometheusLibPath);
+        Log.info(c, "externalPrometheusMicrometer", "Micrometer library directory: " + micrometerPath);
+        try {
+            File f = new File(prometheusLibPath);
+            if (f.isDirectory()) {
+                for (File ff : f.listFiles()) {
+                    Log.info(c, "externalPrometheusMicrometer", "Prom lib files found: " + ff.getName());
+                }
+            } else {
+                Log.info(c, "externalPrometheusMicrometer", "Not a directory: " + prometheusLibPath);
+            }
+
+            File f2 = new File(micrometerPath);
+            if (f.isDirectory()) {
+                for (File ff : f2.listFiles()) {
+                    Log.info(c, "externalPrometheusMicrometer", "Micrometer lib files found: " + ff.getName());
+                }
+            } else {
+                Log.info(c, "externalPrometheusMicrometer", "Not a directory: " + micrometerPath);
+            }
+
+        } catch (Exception e) {
+            Log.info(c, "externalPrometheusMicrometer", "Encountered exception while trying to list files of shared library " + e);
+        }
+
         server.startServer();
 
         //CWMMC0014I emits that metrics is using libraryRef
