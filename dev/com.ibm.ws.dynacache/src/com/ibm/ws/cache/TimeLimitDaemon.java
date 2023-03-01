@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,6 +17,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -246,7 +247,7 @@ public class TimeLimitDaemon extends RealTimeDaemon {
         if (inactivity > 0) {
             // For 7.0, use QuickApproxTime.getRef.getApproxTime()
             long inactivityLong = inactivity;
-            long adjustedExpirationTime = System.currentTimeMillis() + (inactivityLong * 1000);
+            long adjustedExpirationTime = System.nanoTime() + TimeUnit.SECONDS.toNanos(inactivityLong);
 
             if (adjustedExpirationTime < expirationTime ||
                 expirationTime <= 0) {

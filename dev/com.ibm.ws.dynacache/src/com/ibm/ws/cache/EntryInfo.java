@@ -511,8 +511,8 @@ public class EntryInfo implements com.ibm.websphere.cache.EntryInfo, Serializabl
 		 throw new IllegalStateException("EntryInfo is locked");
 	  }
 	  expirationTimeFlag = SET;
-	  this.expirationTime = expirationTime;
-	  this.timeLimit = (int) ((expirationTime - System.currentTimeMillis()) / 1000L);
+	  this.expirationTime = TimeUnit.SECONDS.toNanos(expirationTime);
+	  this.timeLimit = (int) ((expirationTime - System.nanoTime()) / 1000L);
    }
 
    /**
