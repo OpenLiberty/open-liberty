@@ -254,7 +254,18 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         try {
             ProviderAuthenticationResult providerAuthenticationResult = client.continueFlow(request, response);
             status = processContinueFlowResult(providerAuthenticationResult, httpMessageContext, client);
-        } catch (UnsupportedResponseTypeException | AuthenticationResponseException | TokenRequestException e) {
+        } catch (AuthenticationResponseException e) {
+            Tr.error(tc, e.getMessage());
+            switch (e.getValidationResult()) {
+                case NOT_VALIDATED_RESULT:
+                    status = AuthenticationStatus.NOT_DONE;
+                    break;
+                case INVALID_RESULT:
+                    status = AuthenticationStatus.SEND_CONTINUE;
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    break;
+            }
+        } catch (UnsupportedResponseTypeException | TokenRequestException e) {
             Tr.error(tc, e.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
