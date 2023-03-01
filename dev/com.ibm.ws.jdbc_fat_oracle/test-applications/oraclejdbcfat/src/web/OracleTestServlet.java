@@ -30,6 +30,7 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 
 import javax.annotation.Resource;
+import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.sql.DataSource;
 import javax.transaction.UserTransaction;
@@ -50,20 +51,14 @@ import oracle.jdbc.datasource.OracleXADataSource;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/OracleTestServlet")
 public class OracleTestServlet extends FATServlet {
-    @Resource
-    private DataSource ds;
-
-    @Resource(lookup = "jdbc/casting-ds")
-    private DataSource ds_casting;
+    @Resource(lookup = "jdbc/df-ds-jar")
+    private DataSource df_ds_jar;
 
     @Resource(lookup = "jdbc/driver-ds")
     private DataSource driver_ds;
 
     @Resource(lookup = "jdbc/generic-driver-ds")
     private DataSource generic_driver_ds;
-
-    @Resource(lookup = "jdbc/inferred-ds")
-    private DataSource inferred_ds;
 
     @Resource(name = "java:comp/jdbc/env/unsharable-ds-xa-loosely-coupled", shareable = false)
     private DataSource unsharable_ds_xa_loosely_coupled;
@@ -78,6 +73,10 @@ public class OracleTestServlet extends FATServlet {
     @Test
     @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to additional Db2 JDBC driver in JDK
     public void testConnectionCasting() throws Exception {
+        //Lookup instead of resource injection so this datasource is not looked up when running on IBMi
+        DataSource ds_casting = InitialContext.doLookup("jdbc/casting-ds");
+        DataSource ds = InitialContext.doLookup("java:comp/DefaultDataSource");
+
         OracleConnection ocon = (OracleConnection) ds_casting.getConnection();
         try {
             assertTrue(ocon.isUsable());
@@ -115,6 +114,7 @@ public class OracleTestServlet extends FATServlet {
     @Test
     @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to additional Db2 JDBC driver in JDK
     public void testCursor() throws Exception {
+        DataSource ds = InitialContext.doLookup("java:comp/DefaultDataSource");
         Connection con = ds.getConnection();
         try {
             PreparedStatement ps = con.prepareStatement("INSERT INTO MYTABLE VALUES(?,?)");
@@ -146,6 +146,7 @@ public class OracleTestServlet extends FATServlet {
     @Test
     @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to additional Db2 JDBC driver in JDK
     public void testOnConnectSQL() throws Exception {
+        DataSource ds_casting = InitialContext.doLookup("jdbc/casting-ds");
         Connection con = ds_casting.getConnection();
         try {
             con.setAutoCommit(false);
@@ -170,9 +171,8 @@ public class OracleTestServlet extends FATServlet {
     // Ensure that readOnly true throws an exception
     @Test
     @ExpectedFFDC({ "java.sql.SQLException" })
-    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to additional Db2 JDBC driver in JDK
     public void testReadOnlyException() throws Exception {
-        try (Connection con = ds.getConnection(); PreparedStatement ps = con.prepareStatement("INSERT INTO MYTABLE VALUES(?,?)");) {
+        try (Connection con = df_ds_jar.getConnection(); PreparedStatement ps = con.prepareStatement("INSERT INTO MYTABLE VALUES(?,?)");) {
             con.setReadOnly(true);
             ps.setInt(1, 4);
             ps.setString(2, "four");
@@ -188,9 +188,8 @@ public class OracleTestServlet extends FATServlet {
     // Test for JDBC 4.2 ref cursors.  Should be able to execute a procedure that returns a cursor
     // and use getObject to obtain a result set.  The parent statement of the result set should be the WAS statement wrapper.
     @Test
-    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to additional Db2 JDBC driver in JDK
     public void testRefCursor() throws Exception {
-        Connection con = ds.getConnection();
+        Connection con = df_ds_jar.getConnection();
         try {
             assertTrue(con.getMetaData().supportsRefCursors());
 
@@ -224,6 +223,7 @@ public class OracleTestServlet extends FATServlet {
     @Test
     @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to additional Db2 JDBC driver in JDK
     public void testReturnResultSet() throws Exception {
+        DataSource ds = InitialContext.doLookup("java:comp/DefaultDataSource");
         Connection con = ds.getConnection();
         try {
             PreparedStatement ps = con.prepareStatement("INSERT INTO MYTABLE VALUES(?,?)");
@@ -262,6 +262,8 @@ public class OracleTestServlet extends FATServlet {
             atLeastJava9 = false;
         }
         if (atLeastJava9) {
+            //Lookup instead of resource injection so this datasource is not looked up when running on IBMi
+            DataSource ds = InitialContext.doLookup("java:comp/DefaultDataSource");
             Connection con = ds.getConnection();
             try {
                 DatabaseMetaData metadata = con.getMetaData();
@@ -278,6 +280,8 @@ public class OracleTestServlet extends FATServlet {
             }
         }
 
+        //Lookup instead of resource injection so this datasource is not looked up when running on IBMi
+        DataSource ds_casting = InitialContext.doLookup("jdbc/casting-ds");
         OracleCommonDataSource ocds = ds_casting.unwrap(OracleCommonDataSource.class);
         assertEquals("TestRole", ocds.getRoleName());
 
@@ -295,7 +299,6 @@ public class OracleTestServlet extends FATServlet {
     //Test that a datasource backed by Driver can be used with both the generic properties element and properties.oracle
     //element when type="java.sql.Driver"
     @Test
-    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to additional Db2 JDBC driver in JDK
     public void testDSUsingDriver() throws Exception {
         Connection conn = driver_ds.getConnection();
         assertFalse("driver_ds should not wrap OracleCommonDataSource", driver_ds.isWrapperFor(OracleCommonDataSource.class));
@@ -328,6 +331,11 @@ public class OracleTestServlet extends FATServlet {
     @Test
     @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to additional Db2 JDBC driver in JDK
     public void testInferOracleDataSource() throws Exception {
+        //Lookup instead of resource injection so this datasource is not looked up when running on IBMi
+        DataSource inferred_ds = InitialContext.doLookup("jdbc/inferred-ds");
+        DataSource ds_casting = InitialContext.doLookup("jdbc/casting-ds");
+        DataSource ds = InitialContext.doLookup("java:comp/DefaultDataSource");
+
         //The default datasource should continue to be inferred as an XADataSource, since it has properties.oracle configured
         assertTrue("default datasource should wrap OracleXADataSource",
                    ds.isWrapperFor(OracleXADataSource.class));
@@ -367,7 +375,6 @@ public class OracleTestServlet extends FATServlet {
      * Confirm that locks are not shared between transaction branches that are loosely coupled.
      */
     @Test
-    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to additional Db2 JDBC driver in JDK
     public void testTransactionBranchesLooselyCoupled() throws Exception {
         tx.begin();
         try {
@@ -389,7 +396,6 @@ public class OracleTestServlet extends FATServlet {
      * Confirm that locks are shared between transaction branches that are tightly coupled.
      */
     @Test
-    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to additional Db2 JDBC driver in JDK
     public void testTransactionBranchesTightlyCoupled() throws Exception {
         tx.begin();
         try {
@@ -409,12 +415,11 @@ public class OracleTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testBlobCreation() throws Exception {
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("/data/myDataFile.txt");) {
 
             //First try to use setBlob
-            try (Connection con1 = ds.getConnection();
+            try (Connection con1 = df_ds_jar.getConnection();
                             PreparedStatement ps = con1.prepareStatement("INSERT INTO BLOBTABLE VALUES (?, ?)");) {
 
                 byte[] byteData = new byte[inputStream.available()];
@@ -431,7 +436,7 @@ public class OracleTestServlet extends FATServlet {
             }
 
             //Next try to use setBinaryStream
-            try (Connection con1 = ds.getConnection();
+            try (Connection con1 = df_ds_jar.getConnection();
                             PreparedStatement ps = con1.prepareStatement("INSERT INTO BLOBTABLE VALUES (?, ?)");) {
 
                 ps.setInt(1, 2);

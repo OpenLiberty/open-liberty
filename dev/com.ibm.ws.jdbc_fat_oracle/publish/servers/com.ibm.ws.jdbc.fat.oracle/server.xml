@@ -32,8 +32,17 @@
     	<fileset dir="${shared.resource.dir}/oracle"/>
     </library>
     
+    <library id="DBLibJar">
+    	<file name="${shared.resource.dir}/oracle/oracleunknown.jar"/>
+    </library>
+    
     <dataSource id="DefaultDataSource">
     	<jdbcDriver libraryRef="DBLib"/>
+    	<properties.oracle URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}"/>
+    </dataSource>
+    
+    <dataSource id="df-ds-jar" jndiName="jdbc/df-ds-jar">
+    	<jdbcDriver libraryRef="DBLibJar"/>
     	<properties.oracle URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}"/>
     </dataSource>
 
@@ -47,12 +56,12 @@
     
     <dataSource id="driver-ds" jndiName="jdbc/driver-ds" type="java.sql.Driver">
     	<properties.oracle URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}"/>
-    	<jdbcDriver libraryRef="DBLib"/>
+    	<jdbcDriver libraryRef="DBLibJar"/>
     </dataSource>
     
     <dataSource id="generic-driver-ds" jndiName="jdbc/generic-driver-ds">
     	<properties URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}"/>
-    	<jdbcDriver libraryRef="DBLib"/>
+    	<jdbcDriver libraryRef="DBLibJar"/>
     </dataSource>
     
     <dataSource id="inferred-ds" jndiName="jdbc/inferred-ds">
