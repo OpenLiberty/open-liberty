@@ -41,14 +41,15 @@ var fileExplorer = (function() {
             var overridesDeferred = null;
 
             // If defaults folder exists, retrieve file list
-            if(configDropinsDefaultsExists) {
+            // Reader role does not have access to JMXRestConnector FileService mbean to access the list of files
+            if(window.globalIsAdmin && configDropinsDefaultsExists) {
                 defaultsDeferred = fileUtils.retrieveFileList(constants.CONFIG_DROPINS_DEFAULTS_DIRECTORY, false, ".xml");
             } else {
                 defaultsDeferred = new $.Deferred().resolve(null);
             }
 
             // If overrides folder exists, retrieve file list
-            if(configDropinsOverridesExists) {
+            if(window.globalIsAdmin && configDropinsOverridesExists) {
                 overridesDeferred = fileUtils.retrieveFileList(constants.CONFIG_DROPINS_OVERRIDES_DIRECTORY, false, ".xml");
             } else {
                 overridesDeferred = new $.Deferred().resolve(null);
