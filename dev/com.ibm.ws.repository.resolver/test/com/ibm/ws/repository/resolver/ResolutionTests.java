@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,7 +14,6 @@ package com.ibm.ws.repository.resolver;
 
 import static com.ibm.ws.repository.resolver.MissingRequirementMatcher.missingRequirement;
 import static java.util.Collections.emptyList;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -25,9 +24,9 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeThat;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -769,6 +768,48 @@ public class ResolutionTests {
     }
 
     /**
+     * Test to make sure an auto feature is automatically installed if its capabilities are met by a combination of what is being installed and what is already installed
+     *
+     * @throws Throwable
+     */
+    @Test
+    public void testAutoFeatureSatisfiedByNewFeatureAndInstalledFeature() throws Throwable {
+        // Add a test resource which is going to be installed
+        String symbolicName = "com.ibm.ws.test-1.0";
+        EsaResourceWritable testResource = createEsaResource(symbolicName, null, null);
+
+        // Add a feature which is already installed
+        String installedName = "com.ibm.ws.installed-1.0";
+        MockFeature installedFeature = new MockFeature(installedName);
+        installedFeature.setVisibility(com.ibm.ws.kernel.feature.Visibility.PUBLIC);
+
+        // Now add the soon-to-be-satisfied auto feature
+        EsaResourceWritable autoFeature = createEsaResource("satisfied.auto.feature", null, null, null, null, Arrays.asList(symbolicName, installedName), true, null);
+
+        // Now see if we can resolve it!
+        RepositoryResolver resolver = createResolver(Collections.singletonList(installedFeature));
+        Collection<List<RepositoryResource>> resolvedResources = resolve(resolver, symbolicName);
+        assertEquals("There should be two lists of resources one for the feature being installed and one for the auto feature, set is:" + resolvedResources, 2,
+                     resolvedResources.size());
+        boolean foundFeatureList = false;
+        boolean foundAutoList = false;
+        for (List<RepositoryResource> resolvedList : resolvedResources) {
+            if (resolvedList.contains(testResource) && resolvedList.size() == 1) {
+                foundFeatureList = true;
+            } else if (resolvedList.contains(autoFeature)) {
+                foundAutoList = true;
+                assertEquals("There should be 2 resolved resources in the auto list", 2, resolvedList.size());
+                assertEquals("Auto should be installed last", autoFeature, resolvedList.get(1));
+                assertEquals("Main feature should be installed first", testResource, resolvedList.get(0));
+            } else {
+                fail("Unexpected list in the resolve resources: " + resolvedList);
+            }
+        }
+        assertTrue("Should have found feature", foundFeatureList);
+        assertTrue("Should have found auto", foundAutoList);
+    }
+
+    /**
      * Test to make sure an auto feature is automatically installed if its capabilities are met by what is being installed even if it is through an OR relationships
      *
      * @throws Throwable
@@ -986,9 +1027,6 @@ public class ResolutionTests {
      */
     @Test
     public void testAutoFeatureSatisfiedByInstalledFeature() throws RepositoryException, ResolutionException {
-        // Resolving as set does not install auto-features which are started as part of the set of enabled features.
-        assumeThat(testType, is(TestType.RESOLVE));
-
         // Add one test resource to massive, but make a dependency to an already installed feature
         String repoSymbolicName = "com.ibm.ws.test-1.0";
         String installedSymbolicName = "com.ibm.ws.test.installed-1.0";
@@ -1116,6 +1154,41 @@ public class ResolutionTests {
         assertEquals("There should only be a single list of resources as the auto feature isn't satisified, set is:" + resolvedResources, 1, resolvedResources.size());
         assertEquals("There should be one resolved resource", 1, resolvedResources.iterator().next().size());
         assertEquals("The resource being resolved should be the one in the list", testResource, resolvedResources.iterator().next().get(0));
+    }
+
+    /**
+     * Test that if additional dependencies are pulled in by autofeatures, we check whether they in turn satisfy more autofeatures
+     *
+     * Test setup:
+     * <ul>
+     * <li>There are regular features A, B and C
+     * <li>autoAB is enabled by A and B and depends on C
+     * <li>autoAC is enabled by A and C
+     */
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testAutoFeatureDependencySatisfiesAnotherAutoFeature() throws RepositoryException {
+        EsaResourceWritable featureA = createEsaResource("com.ibm.test.A", null, null);
+        EsaResourceWritable featureB = createEsaResource("com.ibm.test.B", null, null);
+        EsaResourceWritable featureC = createEsaResource("com.ibm.test.C", null, null);
+
+        Collection<String> acProvisionedBy = Arrays.asList(featureA.getProvideFeature(),
+                                                           featureC.getProvideFeature());
+        EsaResourceWritable autoAC = createEsaResource("com.ibm.test.autoAC", null, null, null, null, acProvisionedBy, true, null);
+
+        Collection<String> abDependencies = Collections.singleton(featureC.getProvideFeature());
+        Collection<String> abProvisionedBy = Arrays.asList(featureA.getProvideFeature(),
+                                                           featureB.getProvideFeature());
+        EsaResourceWritable autoAB = createEsaResource("com.ibm.test.autoAB", null, null, abDependencies, null, abProvisionedBy, true, null);
+
+        RepositoryResolver resolver = createResolver();
+        Collection<String> toResolve = Arrays.asList(featureA.getProvideFeature(),
+                                                     featureB.getProvideFeature());
+        Collection<List<RepositoryResource>> resolvedResources = resolve(resolver, toResolve);
+        assertThat(resolvedResources, containsInAnyOrder(contains(featureA),
+                                                         contains(featureB),
+                                                         contains(featureB, featureA, featureC, autoAB),
+                                                         contains(featureC, featureA, autoAC)));
     }
 
     /**
@@ -1565,7 +1638,7 @@ public class ResolutionTests {
         // Now see if we can resolve it!
         RepositoryResolver resolver = createResolver();
         Collection<List<RepositoryResource>> resolvedResources = resolve(resolver, name);
-        assertEquals("There should only be a single list of resources", 1, resolvedResources.size());
+        assertEquals("There should only be a single list of resources: " + resolvedResources, 1, resolvedResources.size());
         List<RepositoryResource> installList = resolvedResources.iterator().next();
         assertEquals("There should be two resolved resource", 2, installList.size());
         assertEquals("The feature needs installing first so it should be first in the list", feature, installList.get(0));
@@ -1959,14 +2032,12 @@ public class ResolutionTests {
      * Feature X -> Feature I 1.0
      * Feature Y -> Feature I 1.1 tolerate 1.0
      *
-     * Expected: Feature X, Feature Y, Feature I1.0
-     * Actual: Feature X, Feature Y, Feature I1.0
-     * This test case works as expected.
+     * Expected AsSet: Feature X, Feature Y, Feature I1.0
+     * Expected Basic: Feature X, Feature Y, Feature I1.0, Feature I1.1
      */
     @SuppressWarnings("unchecked")
     @Test
     public void testSet() throws RepositoryException {
-        assumeThat(testType, is(TestType.RESOLVE_AS_SET));
 
         // initialize all of the features
         EsaResourceWritable featureX = WritableResourceFactory.createEsa(null);
@@ -1997,9 +2068,13 @@ public class ResolutionTests {
         RepositoryResolver resolver = createResolver();
         Collection<List<RepositoryResource>> resolved = resolve(resolver, Arrays.asList(featureX.getProvideFeature(), featureY.getProvideFeature()));
 
-        assertThat(resolved, containsInAnyOrder(
-                                                Matchers.<RepositoryResource> contains(featureI10, featureX),
-                                                Matchers.<RepositoryResource> contains(featureI10, featureY)));
+        if (testType == TestType.RESOLVE_AS_SET) {
+            assertThat(resolved, containsInAnyOrder(contains(featureI10, featureX),
+                                                    contains(featureI10, featureY)));
+        } else {
+            assertThat(resolved, containsInAnyOrder(contains(featureI10, featureX),
+                                                    contains(featureI10, featureI11, featureY)));
+        }
 
     }
 
@@ -2012,11 +2087,12 @@ public class ResolutionTests {
      * Feature A -> Feature X -> Feature I 1.0
      * Feature B -> Feature Y -> Feature I 1.1 tolerate 1.0
      *
-     * Expected: resolution fails because Feature B does not tolerate Feature I 1.0
+     * Expected AsSet: resolution fails because Feature B does not tolerate Feature I 1.0
+     * Expected Basic: resolution succeeds, includes Feature I 1.1 and 1.0
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void testSetTransitivePublic() throws RepositoryException {
-        assumeThat(testType, is(TestType.RESOLVE_AS_SET));
 
         // initialize all the features
         EsaResourceWritable featureA = WritableResourceFactory.createEsa(null);
@@ -2057,11 +2133,18 @@ public class ResolutionTests {
 
         // build the repository and resolve the features
         RepositoryResolver resolver = createResolver();
-        try {
+
+        if (testType == TestType.RESOLVE_AS_SET) {
+            try {
+                Collection<List<RepositoryResource>> resolved = resolve(resolver, Arrays.asList(featureA.getProvideFeature(), featureB.getProvideFeature()));
+                fail("Resolution should fail, actual result: " + resolved);
+            } catch (RepositoryResolutionException e) {
+                // Expected
+            }
+        } else {
             Collection<List<RepositoryResource>> resolved = resolve(resolver, Arrays.asList(featureA.getProvideFeature(), featureB.getProvideFeature()));
-            fail("Resolution should fail, actual result: " + resolved);
-        } catch (RepositoryResolutionException e) {
-            // Expected
+            assertThat(resolved, containsInAnyOrder(contains(featureI10, featureX, featureA),
+                                                    contains(featureI10, featureI11, featureY, featureB)));
         }
 
     }
@@ -2075,12 +2158,12 @@ public class ResolutionTests {
      * Feature A -> Feature X -> Feature I 1.0
      * Feature B -> Feature Y -> Feature I 1.1 tolerate 1.0
      *
-     * Expected: resolution succeeds because although Feature B does not tolerate Feature I 1.0, Feature I is private.
+     * Expected AsSet: resolution succeeds because although Feature B does not tolerate Feature I 1.0, Feature I is private.
+     * Expected Basic: resolution succeeds and includes Feature I 1.1 and 1.0
      */
     @SuppressWarnings("unchecked")
     @Test
     public void testSetTransitivePrivate() throws RepositoryException {
-        assumeThat(testType, is(TestType.RESOLVE_AS_SET));
 
         // initialize all the features
         EsaResourceWritable featureA = WritableResourceFactory.createEsa(null);
@@ -2122,9 +2205,14 @@ public class ResolutionTests {
         // build the repository and resolve the features
         RepositoryResolver resolver = createResolver();
         Collection<List<RepositoryResource>> resolved = resolve(resolver, Arrays.asList(featureA.getProvideFeature(), featureB.getProvideFeature()));
-        assertThat(resolved, containsInAnyOrder(
-                                                Matchers.<RepositoryResource> contains(featureI10, featureX, featureA),
-                                                Matchers.<RepositoryResource> contains(featureI10, featureY, featureB)));
+
+        if (testType == TestType.RESOLVE_AS_SET) {
+            assertThat(resolved, containsInAnyOrder(contains(featureI10, featureX, featureA),
+                                                    contains(featureI10, featureY, featureB)));
+        } else {
+            assertThat(resolved, containsInAnyOrder(contains(featureI10, featureX, featureA),
+                                                    contains(featureI10, featureI11, featureY, featureB)));
+        }
 
     }
 
@@ -2141,12 +2229,12 @@ public class ResolutionTests {
      * Feature A -> Feature X -> Feature I 1.1
      * Feature B -> Feature Y -> Feature I 1.0 tolerate 1.1
      *
-     * Expected: resolution succeeds because although Feature B does not tolerate Feature I 1.1, Feature I is private.
+     * Expected AsSet: resolution succeeds because although Feature B does not tolerate Feature I 1.1, Feature I is private.
+     * Expected Basic: resolution succeeds and includes Feature I 1.0 and 1.1
      */
     @SuppressWarnings("unchecked")
     @Test
     public void testSetTransitivePrivateTolerateNewer() throws RepositoryException {
-        assumeThat(testType, is(TestType.RESOLVE_AS_SET));
 
         // initialize all the features
         EsaResourceWritable featureA = WritableResourceFactory.createEsa(null);
@@ -2188,9 +2276,14 @@ public class ResolutionTests {
         // build the repository and resolve the features
         RepositoryResolver resolver = createResolver();
         Collection<List<RepositoryResource>> resolved = resolve(resolver, Arrays.asList(featureA.getProvideFeature(), featureB.getProvideFeature()));
-        assertThat(resolved, containsInAnyOrder(
-                                                Matchers.<RepositoryResource> contains(featureI11, featureX, featureA),
-                                                Matchers.<RepositoryResource> contains(featureI11, featureY, featureB)));
+
+        if (testType == TestType.RESOLVE_AS_SET) {
+            assertThat(resolved, containsInAnyOrder(contains(featureI11, featureX, featureA),
+                                                    contains(featureI11, featureY, featureB)));
+        } else {
+            assertThat(resolved, containsInAnyOrder(contains(featureI11, featureX, featureA),
+                                                    contains(featureI11, featureI10, featureY, featureB)));
+        }
 
     }
 
@@ -2237,15 +2330,30 @@ public class ResolutionTests {
 
     /**
      * Test that if an installed feature has a tolerated dependency and satisfying the dependencies of the requested features requires a different tolerated dependency, that
-     * feature is included in the
-     * returned install lists.
+     * feature is included in the returned install lists.
+     *
+     * Dependency chart (starred features are already installed)
+     *
+     * <pre>
+     * *B-1.0 -> *base-1.0
+     *  B-2.0 ->  base-2.0
+     * *A-1.0 -> *A.internal-1.0 -> *base-1.0
+     *       `->  A.internal-2.0 ->  base-2.0
+     * </pre>
+     *
+     * Test: Attempt to resolve [A-1.0, B-2.0]
+     * Expected AsSet: Resolves B-2.0, Base-2.0 and A.internal-2.0 because A.internal-2.0 is required to form a valid set
+     * Expected Basic: Resolves B-2.0, Base-2.0 and A.internal-2.0 because all tolerated dependencies are installed, even for already installed features
+     *
+     * Test: Attempt to resolve [B-2.0]
+     * Expected AsSet: Resolves B-2.0, Base-2.0
+     * Expected Basic: Resolves B-2.0, Base-2.0 and A.internal-2.0 because all tolerated dependencies are installed, even for already installed features
      *
      * @throws RepositoryException
      */
     @SuppressWarnings("unchecked")
     @Test
     public void testInstalledFeatureNeedsDifferentToleratedDependency() throws RepositoryException {
-        assumeThat(testType, is(TestType.RESOLVE_AS_SET));
 
         ArrayList<ProvisioningFeatureDefinition> installedFeatures = new ArrayList<>();
 
@@ -2291,21 +2399,47 @@ public class ResolutionTests {
         repoFeatures.add(b20);
 
         RepositoryResolver resolver = createResolver(installedFeatures);
+
+        // First test: resolve [A-1.0, B-2.0]
         Collection<List<RepositoryResource>> resolved = resolve(resolver, Arrays.asList(a10.getSymbolicName(), b20.getProvideFeature()));
         assertThat(resolved, containsInAnyOrder(Matchers.contains(base20, b20),
                                                 Matchers.contains(base20, aInternal20)));
+
+        // Second test: resolve [B-2.0]
+        Collection<List<RepositoryResource>> resolved2 = resolve(resolver, Arrays.asList(b20.getProvideFeature()));
+        if (testType == TestType.RESOLVE_AS_SET) {
+            assertThat(resolved2, contains(contains(base20, b20)));
+        } else {
+            assertThat(resolved2, containsInAnyOrder(contains(base20, b20),
+                                                     contains(base20, aInternal20)));
+        }
     }
 
     /**
      * Test that if an installed auto feature has a tolerated dependency and satisfying the dependencies of the requested features requires a different tolerated dependency, that
      * feature is included in the returned install lists.
      *
+     * Dependency chart (starred features are already installed)
+     *
+     * <pre>
+     * *C-1.0
+     * *B-1.0 -> *base-1.0
+     *  B-2.0 ->  base-2.0
+     * *A-1.0 -> *A.internal-1.0 -> *base-1.0
+     *       `->  A.internal-2.0 ->  base-2.0
+     * </pre>
+     *
+     * A-1.0 is an autofeature, activated when C-1.0 is present
+     *
+     * Test: Attempt to resolve [C-1.0, B-2.0]
+     * Expected AsSet: Resolves B-2.0, Base-2.0 and A.internal-2.0 because A.internal-2.0 is required to form a valid set
+     * Expected Basic: Resolves B-2.0, Base-2.0 and A.internal-2.0 because all tolerated dependencies are installed, even for already installed features
+     *
      * @throws RepositoryException
      */
     @SuppressWarnings("unchecked")
     @Test
     public void testInstalledAutoFeatureNeedsDifferentToleratedDependency() throws RepositoryException {
-        assumeThat(testType, is(TestType.RESOLVE_AS_SET));
 
         ArrayList<ProvisioningFeatureDefinition> installedFeatures = new ArrayList<>();
 
@@ -2427,6 +2561,12 @@ public class ResolutionTests {
         }
     }
 
+    /**
+     * Test that when trying to resolve as a set two conflicting features which also have missing dependencies, resolution fails and reports the conflict and not the missing
+     * dependency.
+     *
+     * @throws RepositoryException
+     */
     @SuppressWarnings("unchecked")
     @Test
     public void testConflictAndMissingDeps() throws RepositoryException {
@@ -2458,6 +2598,11 @@ public class ResolutionTests {
         }
     }
 
+    /**
+     * Test that an unsatisfied installed feature doesn't cause resolution to fail
+     *
+     * @throws RepositoryException
+     */
     @Test
     public void testUnsatisfiedInstalledFeature() throws RepositoryException {
         ArrayList<ProvisioningFeatureDefinition> installedFeatures = new ArrayList<>();
@@ -2477,8 +2622,8 @@ public class ResolutionTests {
     /**
      * Run a test to make sure that a sample with an applies to set is resolved correctly
      *
-     * @param name The name of the sample
-     * @param appliesTo The applies to to put onto the sample
+     * @param name           The name of the sample
+     * @param appliesTo      The applies to to put onto the sample
      * @param productVersion The product version to be
      * @throws RepositoryResourceException
      * @throws RepositoryBackendException
@@ -2499,9 +2644,9 @@ public class ResolutionTests {
     /**
      * Run a test against a product definition with the supplied version and expect a single result back.
      *
-     * @param name The name to resolve
+     * @param name           The name to resolve
      * @param productVersion The product version to use
-     * @param testResource The resource to expect
+     * @param testResource   The resource to expect
      * @throws IOException
      * @throws ProductInfoParseException
      * @throws RepositoryException
@@ -2546,8 +2691,8 @@ public class ResolutionTests {
      * Creates an {@link EsaResourceWritable} and adds it to the list of features in the repo with just the core fields set.
      *
      * @param symbolicName The symbolic name of the resource
-     * @param shortName The short name of the resource
-     * @param version The version of the resource
+     * @param shortName    The short name of the resource
+     * @param version      The version of the resource
      * @return The resource
      * @throws RepositoryResourceException
      * @throws RepositoryBackendException
@@ -2559,11 +2704,11 @@ public class ResolutionTests {
     /**
      * Creates an {@link EsaResourceWritable} and adds it to the list of features in the repo
      *
-     * @param symbolicName The symbolic name of the resource
-     * @param shortName The short name of the resource
-     * @param version The version of the resource
+     * @param symbolicName           The symbolic name of the resource
+     * @param shortName              The short name of the resource
+     * @param version                The version of the resource
      * @param dependencySymoblicName The symbolic names of dependencies
-     * @param appliesTo The product this feature applies to
+     * @param appliesTo              The product this feature applies to
      * @return The resource
      * @throws RepositoryBackendException
      */
@@ -2575,14 +2720,14 @@ public class ResolutionTests {
     /**
      * Creates an {@link EsaResourceWritable} and adds it to the list of features in the repo.
      *
-     * @param symbolicName The symbolic name of the resource
-     * @param shortName The short name of the resource
-     * @param version The version of the resource
-     * @param appliesTo The product this feature applies to
+     * @param symbolicName           The symbolic name of the resource
+     * @param shortName              The short name of the resource
+     * @param version                The version of the resource
+     * @param appliesTo              The product this feature applies to
      * @param dependencySymoblicName The symbolic names of dependencies
      * @param provisionSymbolicNames The symbolic name(s) of the capability required for this feature to be auto provision
-     * @param autoInstallable The autoInstallable value to use
-     * @param requiredFixes fixes required by this feature
+     * @param autoInstallable        The autoInstallable value to use
+     * @param requiredFixes          fixes required by this feature
      * @return The resource
      * @throws RepositoryBackendException
      */
