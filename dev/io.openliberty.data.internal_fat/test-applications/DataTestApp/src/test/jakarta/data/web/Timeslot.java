@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,26 +12,24 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import java.util.Set;
+import java.time.OffsetDateTime;
 
 /**
- * An unannotated entity that relies on an unannotated superclass.
+ * An unannotated superclass for the unannotated Reservation entity.
  */
-public class Reservation extends Timeslot {
-    public String host;
+public class Timeslot {
 
-    public Set<String> invitees;
+    private int lengthInMinutes;
 
-    public String location;
+    public OffsetDateTime start;
 
-    public long meetingID;
+    public OffsetDateTime stop;
 
-    // OffsetDateTime start is inherited from Timeslot
+    public int getLengthInMinutes() {
+        return lengthInMinutes;
+    }
 
-    // OffsetDateTime stop is inherited from Timeslot
-
-    @Override
-    public String toString() {
-        return "Reservation[" + meetingID + "]@" + Integer.toHexString(hashCode());
+    public void setLengthInMinutes(int minutes) {
+        lengthInMinutes = minutes;
     }
 }

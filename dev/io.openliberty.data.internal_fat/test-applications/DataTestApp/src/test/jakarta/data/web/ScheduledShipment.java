@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,26 +12,18 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import java.util.Set;
+import java.time.OffsetDateTime;
 
 /**
- * An unannotated entity that relies on an unannotated superclass.
+ * Interface that is implemented by the Shipment entity that declares some of the same accessor methods.
  */
-public class Reservation extends Timeslot {
-    public String host;
+public interface ScheduledShipment {
 
-    public Set<String> invitees;
+    public String getDestination();
 
-    public String location;
+    public OffsetDateTime getOrderedAt();
 
-    public long meetingID;
+    public void setDestination(String destination);
 
-    // OffsetDateTime start is inherited from Timeslot
-
-    // OffsetDateTime stop is inherited from Timeslot
-
-    @Override
-    public String toString() {
-        return "Reservation[" + meetingID + "]@" + Integer.toHexString(hashCode());
-    }
+    public void setOrderedAt(OffsetDateTime orderedAt);
 }
