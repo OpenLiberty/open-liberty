@@ -752,6 +752,10 @@ info.checkpoint.restore.failed=CWWKE0957I: Restoring the checkpoint server proce
 info.checkpoint.restore.failed.explanation=An error occurred restoring a checkpoint server process.  The server launched without using the checkpoint image.
 info.checkpoint.restore.failed.useraction=Check the logs to determine why the checkpoint process was not restored.
 
+error.checkpoint.securitymanager.not.supported=CWWKE0958E: The server checkpoint request failed because the websphere.java.security property was set in the bootstrap.properties file. This property enables the Java Security Manager and is not valid when a server checkpoint occurs.
+error.checkpoint.securitymanager.not.supported.explanation=Liberty does not support the Java Security Manager when a server checkpoint is requested. The Java Security Manager is deprecated, as specified by JEP 411.
+error.checkpoint.securitymanager.not.supported.useraction=Remove the websphere.java.security property from the bootstrap.properties file.
+
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.
 info.serverStartedWithPID=Server {0} started with process ID {1}.
