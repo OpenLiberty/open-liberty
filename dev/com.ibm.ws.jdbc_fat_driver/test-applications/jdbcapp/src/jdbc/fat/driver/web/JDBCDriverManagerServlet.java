@@ -89,9 +89,6 @@ import jdbc.fat.driver.derby.FATVendorSpecificSomething;
 @WebServlet("/JDBCDriverManagerServlet")
 public class JDBCDriverManagerServlet extends FATServlet {
 
-    @Resource
-    DataSource xads;
-
     @Resource(name = "jdbc/fatDriver")
     DataSource fatDriverDS;
 
@@ -386,6 +383,7 @@ public class JDBCDriverManagerServlet extends FATServlet {
     public void testTransactionEnlistment() throws Exception {
         InitialContext context = new InitialContext();
         DataSource ds = (DataSource) context.lookup("java:comp/env/jdbc/fatDataSourceRef");
+        DataSource xads = (DataSource) context.lookup("java:comp/DefaultDataSource");
         Connection con = ds.getConnection();
         try {
             // Set up table
@@ -543,6 +541,7 @@ public class JDBCDriverManagerServlet extends FATServlet {
     @Test
     @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testUnwrapToVendorSpecificInterface() throws Exception {
+        DataSource xads = InitialContext.doLookup("java:comp/DefaultDataSource");
         FATJDBCSpecialOps vendorApi = xads.unwrap(FATJDBCSpecialOps.class);
         assertNotNull(vendorApi);
 
