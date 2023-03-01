@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2021 IBM Corporation and others.
+ * Copyright (c) 2019,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -244,26 +244,18 @@ public class BatchEventsPublisherImpl implements BatchEventsPublisher {
 				Exception linkedException = ex.getLinkedException() != null ? ex.getLinkedException() : ex;
 				Tr.warning(tc, "warning.batch.events.unable.to.publish", new Object[] {topicName, jsonObj.toString(), linkedException});            
 			} finally {
-				cleanUpJms(topicConnection, topicSession);
+			
+				// According to the API doc, there is no need to close the sessions,
+				// producers, and consumers of a closed connection
+				if(topicConnection != null)
+					try {
+						topicConnection.close();
+					} catch (Throwable x) {/* ffdc */}
 			}
 		}
 
 		if (tc.isEntryEnabled()) {
 			Tr.exit(tc, "publishEventWithCorrelationId");
-		}
-	}
-
-	/**
-	 * Clean up jms objects
-	 * @param myConn
-	 * @param session
-	 */
-	private void cleanUpJms(Connection connection, Session session) {
-		try {
-			connection.close();
-			session.close();
-		} catch (Exception e) {
-			//ffdc
 		}
 	}
 
