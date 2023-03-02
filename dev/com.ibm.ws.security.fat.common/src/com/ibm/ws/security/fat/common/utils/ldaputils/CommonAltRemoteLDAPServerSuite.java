@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.fat.common.utils.ldaputils;
 
@@ -40,7 +40,17 @@ public class CommonAltRemoteLDAPServerSuite {
                 LDAPUtils.LDAP_SERVER_12_NAME, LDAPUtils.LDAP_SERVER_12_PORT, null);
 
         Log.info(c, "setUp", "Calling LocalLDAPServerSuite.setUpUsingServers()");
-        LocalLDAPServerSuite.setUpUsingServers(testServers, false, false);
+
+        try {
+            LocalLDAPServerSuite.setUpUsingServers(testServers, false, false);
+        } catch (Exception e) {
+            Log.info(c, "setUp", "######################################################");
+            Log.info(c, "setUp", "##### Failed setting up LDAP Servers for FAT     #####");
+            Log.info(c, "setUp", "##### The Failure is being logged, but the       #####");
+            Log.info(c, "setUp", "##### FAT will continue - expect other failures. #####");
+            Log.info(c, "setUp", "######################################################");
+            Log.info(c, "setUp", e.getMessage());
+        }
     }
 
     @AfterClass

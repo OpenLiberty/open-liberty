@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,11 +34,14 @@ import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.OAuth.OAuthMapT
 import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.OAuth.OAuthMapToUserRegistryWithRegMismatch2ServerTests;
 import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.OAuth.OAuthValidationMethod2ServerTests;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.RepeatTests;
 
 @SuppressWarnings("restriction")
 @RunWith(Suite.class)
 @SuiteClasses({
+
+        AlwaysPassesTest.class,
 
         // specify OAuth tests
         OAuthExistingAttributes2ServerTests.class,

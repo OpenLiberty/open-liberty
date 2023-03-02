@@ -33,10 +33,13 @@ import com.ibm.ws.security.saml.fat.SPInitiated.UserFeatureOnlySolicitedSPInitia
 import com.ibm.ws.security.saml.fat.SPInitiated.UserFeatureSolicitedSPInitiatedTests;
 import com.ibm.ws.security.saml.fat.common.DefaultConfigMissingMetaDataTests;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+
+        AlwaysPassesTest.class,
 
         // running default config tests not possible for unsolicited SP initiated flow
         // as the trigger for that flow is a modified value for loginPageURL

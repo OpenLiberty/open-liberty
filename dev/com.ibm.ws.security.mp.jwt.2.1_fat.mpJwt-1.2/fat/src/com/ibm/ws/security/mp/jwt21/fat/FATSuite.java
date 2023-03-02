@@ -17,7 +17,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.security.fat.common.AlwaysRunAndPassTest;
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.fat.common.mp.jwt.MPJwt21FatConstants;
 import com.ibm.ws.security.mp.jwt21.fat.featureSupportTests.FeatureSupport_ConfigInAppTests;
@@ -29,12 +28,13 @@ import com.ibm.ws.security.mp.jwt21.fat.featureSupportTests.FeatureSupport_Syste
 import com.ibm.ws.security.mp.jwt21.fat.featureSupportTests.FeatureSupport_SystemProperties_DecryptAlg;
 import com.ibm.ws.security.mp.jwt21.fat.featureSupportTests.FeatureSupport_SystemProperties_TokenAge;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.RepeatTests;
 
 @SuppressWarnings({ "restriction" })
 @RunWith(Suite.class)
 @SuiteClasses({
-        AlwaysRunAndPassTest.class,
+        AlwaysPassesTest.class,
 
         // Ensure 2.1 function not available with only 1.2 Feature enabled
         FeatureSupport_ConfigInAppTests.class,
