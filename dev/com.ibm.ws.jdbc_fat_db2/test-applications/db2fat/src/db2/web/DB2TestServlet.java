@@ -50,8 +50,8 @@ public class DB2TestServlet extends FATServlet {
     @Resource(shareable = false)
     private DataSource ds;
 
-    @Resource(lookup = "jdbc/db2jar", authenticationType = Resource.AuthenticationType.APPLICATION)
-    private DataSource ds_db2_jar;
+    @Resource(lookup = "jdbc/db2", authenticationType = Resource.AuthenticationType.APPLICATION)
+    private DataSource ds_db2;
 
     @Resource(lookup = "jdbc/db2-using-driver")
     private DataSource db2_using_driver;
@@ -112,7 +112,7 @@ public class DB2TestServlet extends FATServlet {
             tran.begin();
             try {
                 // ensure two-phase commit
-                Connection c2 = ds_db2_jar.getConnection();
+                Connection c2 = ds_db2.getConnection();
                 c2.createStatement().executeUpdate("INSERT INTO MYTABLE VALUES (3, 'third')");
                 c2.close();
 
@@ -141,7 +141,7 @@ public class DB2TestServlet extends FATServlet {
     // Verify that properties which represent durations of time are set properly on the data source.
     @Test
     public void testDurationProperties() throws Exception {
-        Referenceable referenceable = ds_db2_jar.unwrap(javax.naming.Referenceable.class);
+        Referenceable referenceable = ds_db2.unwrap(javax.naming.Referenceable.class);
         Reference ref = referenceable.getReference();
 
         RefAddr affinityFailbackInterval = ref.get("affinityFailbackInterval");
@@ -161,7 +161,7 @@ public class DB2TestServlet extends FATServlet {
     // Verify that WAS JDBC statement wrappers can properly handle the NULL result set.
     @Test
     public void testNullResultOfExecuteQuery() throws Exception {
-        Connection con = ds_db2_jar.getConnection();
+        Connection con = ds_db2.getConnection();
         try {
             con.createStatement()
                             .execute("CREATE OR REPLACE PROCEDURE insertNewEntry (IN NEWID SMALLINT, IN NEWVAL NVARCHAR(40))"
@@ -220,7 +220,6 @@ public class DB2TestServlet extends FATServlet {
     public void testInferDB2DataSource() throws Exception {
         //Lookup instead of resource injection so this datasource is not looked up when running on IBMi
         DataSource db2_inferred_ds = InitialContext.doLookup("jdbc/db2-inferred");
-        DataSource ds_db2 = InitialContext.doLookup("jdbc/db2");
 
         //The default datasource should continue to be inferred as an XADataSource, since it has properties.db2.jcc configured
         assertTrue("default datasource should wrap XADataSource", ds.isWrapperFor(XADataSource.class));
