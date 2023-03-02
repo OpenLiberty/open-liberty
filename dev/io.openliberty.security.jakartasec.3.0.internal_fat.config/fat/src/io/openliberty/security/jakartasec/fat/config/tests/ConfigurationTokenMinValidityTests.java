@@ -71,7 +71,7 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
     protected static ShrinkWrapHelpers swh = null;
 
     @ClassRule
-    public static RepeatTests repeat = createRandomTokenTypeRepeats();
+    public static RepeatTests repeat = createTokenTypeRepeat(Constants.OPAQUE_TOKEN_FORMAT);
 
     private static int BUFFER_SECONDS = 2; // account for code execution delays
 
@@ -158,8 +158,8 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
      * 4. Waits the small buffer period (x2) to ensure that the tokens have expired
      * 5. Invokes the app again and ensures that we need to authenticate again due to token expiry
      *
-     * @param appRoot          - the root of the app to invoke
-     * @param app              - the name of the app to invoke
+     * @param appRoot - the root of the app to invoke
+     * @param app - the name of the app to invoke
      * @param tokenMinValidity - the token minimum validity in milliseconds
      * @return the HtmlUnit Page response
      * @throws Exception
@@ -200,7 +200,7 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
      * tokenMinValidity values must not be used and checks that the appropriate warning message is logged by the RP.
      *
      * @param appRoot - the root of the app to invoke
-     * @param app     - the name of the app to invoke
+     * @param app - the name of the app to invoke
      * @throws Exception
      */
     private void runGoodEndToEndNegativeTokenMinValidityTest(String appRoot, String app) throws Exception {
@@ -219,8 +219,8 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
      * tokens, the RP should immediately redirect to the authentication endpoint for re-authentication,
      * since the tokens should be immediately considered expired based on the tokenMinValidity.
      *
-     * @param appRoot          - the root of the app to invoke
-     * @param app              - the name of the app to invoke
+     * @param appRoot - the root of the app to invoke
+     * @param app - the name of the app to invoke
      * @param tokenMinValidity - the token minimum validity in milliseconds
      * @throws Exception
      */

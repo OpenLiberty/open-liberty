@@ -59,7 +59,7 @@ public class ConfigurationDisplayTests extends CommonAnnotatedSecurityTests {
     protected static ShrinkWrapHelpers swh = null;
 
     @ClassRule
-    public static RepeatTests repeat = createRandomTokenTypeRepeats();
+    public static RepeatTests repeat = createTokenTypeRepeats();
 
     @BeforeClass
     public static void setUp() throws Exception {

@@ -65,7 +65,7 @@ public class ConfigurationPromptTests extends CommonAnnotatedSecurityTests {
     protected static ShrinkWrapHelpers swh = null;
 
     @ClassRule
-    public static RepeatTests repeat = createRandomTokenTypeRepeats();
+    public static RepeatTests repeat = createTokenTypeRepeats();
 
     private static String LOGIN_REQUIRED = "login_required";
     private static String CONSENT_REQUIRED = "consent_required";
@@ -201,7 +201,9 @@ public class ConfigurationPromptTests extends CommonAnnotatedSecurityTests {
         Expectations errorExpectations = new Expectations();
         errorExpectations.addUnauthorizedStatusCodeAndMessageForCurrentAction();
         errorExpectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2407E_ERROR_VERIFYING_RESPONSE, "Did not receive an error message stating that the client encountered an error verifying the authentication response."));
-        errorExpectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2414E_CALLBACK_URL_INCLUDES_ERROR_PARAMETER + ".*\\[" + error + "]", "Did not receive an error message stating that the callback url includes the [" + error + "] error param."));
+        errorExpectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2414E_CALLBACK_URL_INCLUDES_ERROR_PARAMETER + ".*\\[" + error
+                                                                                + "]", "Did not receive an error message stating that the callback url includes the [" + error
+                                                                                       + "] error param."));
         validationUtils.validateResult(response, errorExpectations);
 
     }

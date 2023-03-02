@@ -31,7 +31,6 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
-import com.ibm.ws.security.fat.common.Utils;
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
@@ -92,12 +91,12 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
         }
     }
 
-    public static RepeatTests createRandomTokenTypeRepeats() {
-
-        String accessTokenType = Utils.getRandomSelection(Constants.JWT_TOKEN_FORMAT, Constants.OPAQUE_TOKEN_FORMAT);
-        return createTokenTypeRepeat(accessTokenType);
-    }
-
+//    public static RepeatTests createRandomTokenTypeRepeats() {
+//
+//        String accessTokenType = Utils.getRandomSelection(Constants.JWT_TOKEN_FORMAT, Constants.OPAQUE_TOKEN_FORMAT);
+//        return createTokenTypeRepeat(accessTokenType);
+//    }
+//
     public static RepeatTests createTokenTypeRepeat(String accessTokenType) {
 
         Log.info(thisClass, "createRepeats", "Will be running tests using a/an " + accessTokenType + " access_token");
