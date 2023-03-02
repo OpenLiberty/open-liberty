@@ -65,13 +65,37 @@ dependencies {
   jaegerClient project(':com.ibm.ws.org.slf4j.simple')
   jaegerClient project(':io.openliberty.com.google.gson')
   yasson 'org.eclipse:yasson:1.0.8'
-  jsonbapi 'javax.json.bind:javax.json.bind-api:1.0'
+  jsonbapi 'javax.json.bind:javax.json.bind-api:1.0',
+  project(':com.ibm.ws.security.registry_test.servlet'),
+  project(':com.ibm.ws.org.apache.directory.server')
 }
 
 autoFVT {
+  dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
   doLast {
     // Manually clear out JSON-P 1.0 (automatically added to all FATs) because we want to use JSON-P 1.1
     delete new File(buildDir, 'autoFVT/lib/com.ibm.ws.org.glassfish.json.1.0.jar')
+
+    /*
+     * Copy the local ApacheDS LDAP instances. 
+     */
+    copy {
+      from project(':com.ibm.ws.org.apache.directory.server').projectDir
+      into autoFvtDir
+      include 'apacheds-2.0.0-M15/**'
+    }
+    /*
+     * Copy the userRegistry WAR into test servers.
+     */
+    def servers = [
+      'com.ibm.ws.security.wim.adapter.ldap.fat.federation',
+    ]
+    servers.each { server ->
+      copy { 
+        from new File(project(':com.ibm.ws.security.registry_test.servlet').buildDir, 'test-application/userRegistry.war')
+        into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+      }
+    }
   }
 }
 
