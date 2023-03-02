@@ -33,6 +33,8 @@ import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonLogoutAndRefreshTests;
@@ -49,6 +51,7 @@ import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
  * Tests appSecurity-5.0
  */
 @SuppressWarnings("restriction")
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
 
@@ -70,8 +73,9 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     protected static final boolean TokenWasRefreshedSecondTime = true;
     protected static final boolean TokenWasNotRefreshedSecondTime = false;
 
-    @ClassRule
-    public static RepeatTests repeat = createTokenTypeRepeat(Constants.JWT_TOKEN_FORMAT);
+    // create repeats for opaque and jwt tokens - in lite mode, only run with jwt tokens
+   @ClassRule
+    public static RepeatTests repeat = createTokenTypeRepeats(TestMode.LITE, Constants.JWT_TOKEN_FORMAT);
 
     static Map<String, String> appMap = new HashMap<String, String>();
 
@@ -466,6 +470,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicRefreshTests_tokenAutoRefreshTrue_providerAllowsRefreshTrue_notifyProviderTrue_idTokenExpiryTrue_accessTokenExpiryTrue() throws Exception {
 
@@ -572,6 +577,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicRefreshTests_tokenAutoRefreshTrue_providerAllowsRefreshFalse_notifyProviderTrue_idTokenExpiryTrue_accessTokenExpiryTrue() throws Exception {
 
@@ -626,6 +632,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicRefreshTests_tokenAutoRefreshTrue_providerAllowsRefreshFalse_notifyProviderFalse_idTokenExpiryTrue_accessTokenExpiryTrue() throws Exception {
 
@@ -684,6 +691,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicRefreshTests_tokenAutoRefreshFalse_providerAllowsRefreshTrue_notifyProviderTrue_idTokenExpiryTrue_accessTokenExpiryTrue() throws Exception {
 
@@ -738,6 +746,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicRefreshTests_tokenAutoRefreshFalse_providerAllowsRefreshTrue_notifyProviderFalse_idTokenExpiryTrue_accessTokenExpiryTrue() throws Exception {
 
@@ -843,6 +852,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
 
     }
 
+    @Mode(TestMode.LITE)
     @Test
     public void BasicRefreshTests_GoodRedirectUri_tokenAutoRefreshTrue_providerAllowsRefreshFalse_notifyProviderFalse_ExpiryFalse_TokensExpiredTrue() throws Exception {
 

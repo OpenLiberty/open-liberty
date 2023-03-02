@@ -92,8 +92,9 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         NULL, UNKNOWN_HOST, TEST_APP
     };
 
+    // create repeats for opaque and jwt tokens - in lite mode, only run with jwt tokens
     @ClassRule
-    public static RepeatTests repeat = createTokenTypeRepeats();
+    public static RepeatTests repeat = createTokenTypeRepeats(TestMode.LITE, Constants.JWT_TOKEN_FORMAT);
 
     @BeforeClass
     public static void setUp() throws Exception {

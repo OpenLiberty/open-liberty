@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.security.jakartasec.fat.config.tests;
@@ -30,6 +30,8 @@ import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurityTests;
@@ -55,6 +57,7 @@ import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
  * Tests appSecurity-5.0
  */
 @SuppressWarnings("restriction")
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
 
@@ -187,6 +190,7 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationScopeTests_scope_openId() throws Exception {
 
@@ -216,6 +220,7 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationScopeTests_scope_openIdProfile() throws Exception {
 
@@ -304,6 +309,7 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationScopeTests_scope_openIdProfileEmail_scopeExpression_openId() throws Exception {
 
@@ -424,6 +430,7 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.TokenRequestException" })
     @Test
     public void ConfigurationScopeTests_scopeExpression_noOpenId() throws Exception {
@@ -479,6 +486,7 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationScopeTests_scopeExpression_noScopesInCommonExceptOpenId() throws Exception {
 
@@ -567,6 +575,7 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException", "com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidScopeException" })
     @Test
     public void ConfigurationScopeTests_scopeExpression_unknownScope() throws Exception {

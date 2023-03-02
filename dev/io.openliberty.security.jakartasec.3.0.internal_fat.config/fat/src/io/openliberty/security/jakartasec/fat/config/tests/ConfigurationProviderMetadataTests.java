@@ -34,6 +34,8 @@ import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurityTests;
@@ -86,8 +88,9 @@ public class ConfigurationProviderMetadataTests extends CommonAnnotatedSecurityT
 
     protected static final String client_secret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger";
 
+    // create repeats for opaque and jwt tokens - in lite mode, only run with jwt tokens
     @ClassRule
-    public static RepeatTests repeat = createTokenTypeRepeats();
+    public static RepeatTests repeat = createTokenTypeRepeats(TestMode.LITE, Constants.JWT_TOKEN_FORMAT);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -523,6 +526,7 @@ public class ConfigurationProviderMetadataTests extends CommonAnnotatedSecurityT
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationProviderMetadataTests_BadAuthorizationEndpoint() throws Exception {
 
@@ -545,6 +549,7 @@ public class ConfigurationProviderMetadataTests extends CommonAnnotatedSecurityT
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @ExpectedFFDC({ "java.io.IOException", "io.openliberty.security.oidcclientcore.exceptions.TokenRequestException" })
     @Test
     public void ConfigurationProviderMetadataTests_TokenEndpoint_validateParms() throws Exception {
@@ -668,6 +673,7 @@ public class ConfigurationProviderMetadataTests extends CommonAnnotatedSecurityT
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationProviderMetadataTests_JwksURI_validateParms() throws Exception {
 
@@ -740,6 +746,7 @@ public class ConfigurationProviderMetadataTests extends CommonAnnotatedSecurityT
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationProviderMetadataTests_InvalidIssuer() throws Exception {
 

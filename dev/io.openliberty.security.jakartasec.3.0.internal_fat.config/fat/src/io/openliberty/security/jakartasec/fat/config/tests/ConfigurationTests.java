@@ -30,6 +30,8 @@ import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurityTests;
@@ -46,6 +48,7 @@ import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
  * Tests appSecurity-5.0
  */
 @SuppressWarnings("restriction")
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class ConfigurationTests extends CommonAnnotatedSecurityTests {
 
@@ -58,8 +61,9 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
 
     protected static ShrinkWrapHelpers swh = null;
 
+    // create repeats for opaque and jwt tokens - in lite mode, only run with jwt tokens
     @ClassRule
-    public static RepeatTests repeat = createTokenTypeRepeats();
+    public static RepeatTests repeat = createTokenTypeRepeats(TestMode.LITE, Constants.JWT_TOKEN_FORMAT);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -209,6 +213,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationTests_minimumAnnotation() throws Exception {
 
@@ -249,6 +254,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationTests_noProviderURI_withoutProviderMetadata() throws Exception {
 
@@ -277,6 +283,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.OidcClientConfigurationException" })
     @Test
     public void ConfigurationTests_noProviderURI_withProviderMetadata() throws Exception {
@@ -344,6 +351,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @ExpectedFFDC({ "com.ibm.oauth.core.api.error.oauth20.OAuth20MissingParameterException" })
     @Test
     public void ConfigurationTests_omittedClientId() throws Exception {
@@ -370,6 +378,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.http.BadPostRequestException", "io.openliberty.security.oidcclientcore.exceptions.TokenRequestException" })
     @Test
     public void ConfigurationTests_badClientSecret() throws Exception {
@@ -467,6 +476,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationTests_doesNotExistRedirectURI() throws Exception {
 
@@ -697,6 +707,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.UnsupportedResponseTypeException" })
     @Test
     public void ConfigurationTests_responseType_idTokenToken() throws Exception {

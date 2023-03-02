@@ -31,6 +31,8 @@ import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurityTests;
@@ -58,6 +60,7 @@ import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdCo
  * Tests appSecurity-5.0
  */
 @SuppressWarnings("restriction")
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityTests {
 
@@ -257,6 +260,7 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationTokenMinValidityTests_tokenMinValidity_20s() throws Exception {
 
@@ -312,6 +316,7 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationTokenMinValidityTests_tokenMinValidity_negative5s() throws Exception {
 
@@ -406,6 +411,7 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationTokenMinValidityTests_tokenMinValidity_5s_tokenMinValidityExpression_15s() throws Exception {
 

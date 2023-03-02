@@ -31,6 +31,8 @@ import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurityTests;
@@ -52,6 +54,7 @@ import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
  * Tests appSecurity-5.0
  */
 @SuppressWarnings("restriction")
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class ConfigurationExtraParametersTests extends CommonAnnotatedSecurityTests {
 
@@ -64,8 +67,9 @@ public class ConfigurationExtraParametersTests extends CommonAnnotatedSecurityTe
 
     protected static ShrinkWrapHelpers swh = null;
 
+    // create repeats for opaque and jwt tokens - in lite mode, only run with jwt tokens
     @ClassRule
-    public static RepeatTests repeat = createTokenTypeRepeats();
+    public static RepeatTests repeat = createTokenTypeRepeats(TestMode.LITE, Constants.JWT_TOKEN_FORMAT);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -258,6 +262,7 @@ public class ConfigurationExtraParametersTests extends CommonAnnotatedSecurityTe
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationExtraParametersTests_extraParameters_oneParam_extraParametersExpression_twoDifferentParams() throws Exception {
 
@@ -328,6 +333,7 @@ public class ConfigurationExtraParametersTests extends CommonAnnotatedSecurityTe
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationExtraParametersTests_extraParametersExpression_spaceInValue() throws Exception {
 
@@ -426,6 +432,7 @@ public class ConfigurationExtraParametersTests extends CommonAnnotatedSecurityTe
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationExtraParametersTests_extraParametersExpression_twoEqualsSigns() throws Exception {
 
@@ -496,6 +503,7 @@ public class ConfigurationExtraParametersTests extends CommonAnnotatedSecurityTe
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationExtraParametersTests_extraParametersExpression_specialCharacterInValue() throws Exception {
 

@@ -28,6 +28,8 @@ import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurityTests;
@@ -46,6 +48,7 @@ import io.openliberty.security.jakartasec.fat.utils.WsSubjectExpectationHelpers;
  * Tests appSecurity-5.0
  */
 @SuppressWarnings("restriction")
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class ConfigurationClaimsDefinitionTests extends CommonAnnotatedSecurityTests {
 
@@ -60,8 +63,9 @@ public class ConfigurationClaimsDefinitionTests extends CommonAnnotatedSecurityT
 
     protected static String app = "ClaimsDefinitionServlet";
 
+    // create repeats for opaque and jwt tokens - in lite mode, only run with jwt tokens
     @ClassRule
-    public static RepeatTests repeat = createTokenTypeRepeats();
+    public static RepeatTests repeat = createTokenTypeRepeats(TestMode.LITE, Constants.JWT_TOKEN_FORMAT);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -161,6 +165,7 @@ public class ConfigurationClaimsDefinitionTests extends CommonAnnotatedSecurityT
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationClaimsDefinitionTests_badCallerNameClaim() throws Exception {
 
@@ -183,6 +188,7 @@ public class ConfigurationClaimsDefinitionTests extends CommonAnnotatedSecurityT
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationClaimsDefinitionTests_emptyCallerNameClaim() throws Exception {
 
@@ -217,6 +223,7 @@ public class ConfigurationClaimsDefinitionTests extends CommonAnnotatedSecurityT
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationClaimsDefinitionTests_badCallerGroupsClaim() throws Exception {
 
@@ -241,6 +248,7 @@ public class ConfigurationClaimsDefinitionTests extends CommonAnnotatedSecurityT
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationClaimsDefinitionTests_emptyCallerGroupsClaim() throws Exception {
 

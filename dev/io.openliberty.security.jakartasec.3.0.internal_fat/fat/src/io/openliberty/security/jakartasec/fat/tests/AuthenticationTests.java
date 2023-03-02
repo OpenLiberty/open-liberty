@@ -40,6 +40,8 @@ import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurityTests;
@@ -61,6 +63,7 @@ import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
  * Tests appSecurity-5.0
  */
 @SuppressWarnings("restriction")
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
@@ -77,8 +80,9 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     public static LibertyServer rpServer;
 
+    // create repeats for opaque and jwt tokens - in lite mode, only run with jwt tokens
     @ClassRule
-    public static RepeatTests repeat = createTokenTypeRepeats();
+    public static RepeatTests repeat = createTokenTypeRepeats(TestMode.LITE, Constants.JWT_TOKEN_FORMAT);
 
     private static final String app = "AuthenticationApp";
 
@@ -572,6 +576,7 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
      * is set to true. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
      *
      */
+    @Mode(TestMode.LITE)
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceTrueUseSessionFalse_newAuthNotSet() throws Exception {
 
@@ -639,6 +644,7 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
      * UnauthorizedSessionRequestException exception since the session was created by testuser and user1 is trying to access it.
      *
      */
+    @Mode(TestMode.LITE)
     @ExpectedFFDC({ "com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException" })
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceTrueUseSessionTrue_newAuthTrue() throws Exception {
@@ -723,6 +729,7 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
      * is set to false. On the second request to the test app, make sure that we have to log in and that we land on the app 2 times and on the callback 1 time.
      *
      */
+    @Mode(TestMode.LITE)
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceFalseUseSessionFalse_newAuthTrue() throws Exception {
 
@@ -1333,6 +1340,7 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
      * OpenIdContext is not available.
      *
      */
+    @Mode(TestMode.LITE)
     @ExpectedFFDC({ "com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException" })
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceEmptyUseSessionEmpty_newAuthTrue() throws Exception {

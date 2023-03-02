@@ -25,6 +25,8 @@ import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurityTests;
@@ -46,6 +48,7 @@ import jakarta.security.enterprise.authentication.mechanism.http.openid.DisplayT
  * Tests appSecurity-5.0
  */
 @SuppressWarnings("restriction")
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class ConfigurationDisplayTests extends CommonAnnotatedSecurityTests {
 
@@ -58,8 +61,9 @@ public class ConfigurationDisplayTests extends CommonAnnotatedSecurityTests {
 
     protected static ShrinkWrapHelpers swh = null;
 
+    // create repeats for opaque and jwt tokens - in lite mode, only run with opaque tokens
     @ClassRule
-    public static RepeatTests repeat = createTokenTypeRepeats();
+    public static RepeatTests repeat = createTokenTypeRepeats(TestMode.LITE, Constants.OPAQUE_TOKEN_FORMAT);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -165,6 +169,7 @@ public class ConfigurationDisplayTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationDisplayTests_display_page() throws Exception {
 
@@ -179,6 +184,7 @@ public class ConfigurationDisplayTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationDisplayTests_display_popup() throws Exception {
 
@@ -193,6 +199,7 @@ public class ConfigurationDisplayTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationDisplayTests_display_touch() throws Exception {
 
@@ -207,6 +214,7 @@ public class ConfigurationDisplayTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void ConfigurationDisplayTests_display_wap() throws Exception {
 
