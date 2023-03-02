@@ -128,6 +128,7 @@ public class LibraryRefTest {
         Log.info(c, "externalPrometheusMicrometer", "Micrometer library directory: " + micrometerPath);
         try {
             File f = new File(prometheusLibPath);
+
             if (f.isDirectory()) {
                 for (File ff : f.listFiles()) {
                     Log.info(c, "externalPrometheusMicrometer", "Prom lib files found: " + ff.getName());
@@ -156,6 +157,10 @@ public class LibraryRefTest {
 
         //CWWKF0011I server ready
         Assert.assertNotNull("CWWKF0011I Not found", server.waitForStringInLogUsingMark("CWWKF0011I"));
+
+        server.resetLogMarks();
+
+        Assert.assertNotNull("CWWKO0219I Not found", server.waitForStringInLogUsingMark("CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl"));
 
         //Check SR implementation log that Promethues Registry created
         //Note that SR makes THIS explicit log for Prometheus, other meter registries are logged differently following a template
@@ -205,7 +210,7 @@ public class LibraryRefTest {
          * Since we aren't using any real registries, we don't expect this.
          */
         String line = server.waitForStringInTrace("created and registered to the Micrometer global registry", 10000);
-        Assert.assertNull("Expected to see \"created and registered to the Micrometer global registry\" in trace.", line);
+        Assert.assertNull("Expected not to see \"created and registered to the Micrometer global registry\" in trace.", line);
     }
 
     private static void trustAll() throws Exception {
@@ -236,6 +241,7 @@ public class LibraryRefTest {
         HttpsURLConnection con = null;
         try {
             String sURL = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() + servletPath;
+            Log.info(c, "getHttpsServlet", sURL);
             URL checkerServletURL = new URL(sURL);
             con = (HttpsURLConnection) checkerServletURL.openConnection();
             con.setDoInput(true);
