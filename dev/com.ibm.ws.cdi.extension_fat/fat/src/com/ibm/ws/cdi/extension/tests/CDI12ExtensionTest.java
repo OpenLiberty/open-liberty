@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import com.ibm.ws.cdi.extension.apps.enablementWar.EnablementSharedLibServlet;
 import com.ibm.ws.cdi.extension.apps.enablementWar.EnablementTestServlet;
 import com.ibm.ws.cdi.extension.apps.helloworld.HelloWorldExtensionBean;
 import com.ibm.ws.cdi.extension.apps.helloworld.HelloWorldExtensionTestServlet;
+import com.ibm.ws.cdi.extension.apps.invocationContext.InvocationContextTestServlet;
 import com.ibm.ws.cdi.extension.apps.multipleWar.NoBeansTestServlet;
 import com.ibm.ws.cdi.extension.apps.multipleWar.ejb.EmbeddedJarMyEjb;
 import com.ibm.ws.cdi.extension.apps.multipleWar.war1.WAR1MyBean;
@@ -58,7 +59,8 @@ public class CDI12ExtensionTest extends FATServletClient {
 
     @TestServlets({
                     @TestServlet(contextRoot = "enablement", servlet = EnablementTestServlet.class),
-                    @TestServlet(contextRoot = "enablementSharedLib", servlet = EnablementSharedLibServlet.class)
+                    @TestServlet(contextRoot = "enablementSharedLib", servlet = EnablementSharedLibServlet.class),
+                    @TestServlet(contextRoot = "invocationContext", servlet = InvocationContextTestServlet.class)
     })
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -71,6 +73,7 @@ public class CDI12ExtensionTest extends FATServletClient {
     public static void setUp() throws Exception {
         System.out.println("Install the user feature bundle... cdi.helloworld.extension");
         CDIExtensionRepeatActions.installUserExtension(server, CDIExtensionRepeatActions.HELLOWORLD_EXTENSION_BUNDLE_ID);
+        System.out.println("Install the user feature bundle... cdi.internals");
         CDIExtensionRepeatActions.installSystemFeature(server, CDIExtensionRepeatActions.CDI_INTERNALS_BUNDLE_ID);
 
         // multipleWar2.ear
@@ -127,6 +130,13 @@ public class CDI12ExtensionTest extends FATServletClient {
 
         ShrinkHelper.exportAppToServer(server, enablementWar, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportToServer(server, "", enablementSharedLib, DeployOptions.SERVER_ONLY);
+
+        // invocationContext.war
+
+        WebArchive invocationContextWar = ShrinkWrap.create(WebArchive.class, "invocationContext.war")
+                                             .addPackage(InvocationContextTestServlet.class.getPackage());
+
+        ShrinkHelper.exportDropinAppToServer(server, invocationContextWar, DeployOptions.SERVER_ONLY);
 
         server.startServer(true);
         server.waitForStringInLogUsingMark("CWWKZ0001I.*Application helloWorldExension started");
