@@ -49,6 +49,7 @@ Import-Package: \
     javax.servlet.http; version="[2.6,3)", \
     javax.servlet.resources; version="[2.6,3)", \
     com.ibm.ws.webcontainer.resources, \
+    com.ibm.wsspi.webcontainer.facade, \
     *
 
 

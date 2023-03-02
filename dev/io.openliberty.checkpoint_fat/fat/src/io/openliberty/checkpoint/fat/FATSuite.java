@@ -49,6 +49,7 @@ import componenttest.topology.impl.LibertyServer;
                 OSGiConsoleTest.class,
                 LocalEJBTest.class,
                 CheckpointSPITest.class,
+                CheckpointWithSecurityManager.class,
                 MPConfigTest.class,
                 SSLTest.class,
                 MPOpenTracingJaegerTraceTest.class,

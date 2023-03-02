@@ -57,6 +57,7 @@ public class ServletMessageConstants {
     public static final String JAKARTA_OIDC = "JAKARTA_OIDC";
     public static final String BASIC = "BASIC";
     public static final String BASE_SERVLET = "BaseServlet";
+    public static final String ALT_BASE_SERVLET = "SimpleServlet";
     public static final String PROVIDER_METADATA = "ProviderMetadata: ";
 
     /** messages **/
@@ -78,5 +79,8 @@ public class ServletMessageConstants {
     public static final String ENDSESSION_POSTLOGOUTREDIRECTURI = "EndSessionServlet - parmKey: post_logout_redirect_uri parmValue: ";
     public static final String POSTLOGOUTREDIRECTURIAPP = "/PostLogoutServlet/PostLogout";
     public static final String ENDSESSION_CLIENTID = "EndSessionServlet - parmKey: client_id parmValue: ";
+    public static final String APP_REQUEST_COUNT = "App request count: ";
+    public static final String CALLBACK_REQUEST_COUNT = "Callback request count: ";
 
+    public static final String UNAUTH_SESSION_REQUEST_EXCEPTION = "UnauthorizedSessionRequestException";
 }

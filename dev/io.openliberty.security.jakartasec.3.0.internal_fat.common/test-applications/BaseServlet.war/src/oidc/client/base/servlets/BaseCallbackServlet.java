@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,7 @@ package oidc.client.base.servlets;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import io.openliberty.security.jakartasec.fat.utils.ServletMessageConstants;
 import jakarta.inject.Inject;
@@ -33,6 +34,12 @@ public class BaseCallbackServlet extends HttpServlet {
 
     private static final long serialVersionUID = -417476984908088827L;
 
+    protected final AtomicInteger counter = new AtomicInteger();
+
+    public int getCounter() {
+        return counter.incrementAndGet();
+    }
+
     @Inject
     private OpenIdContext context;
 
@@ -46,8 +53,20 @@ public class BaseCallbackServlet extends HttpServlet {
         doWorker(request, response, "got here post callback");
     }
 
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        counter.set(0);
+
+    }
+
     private void doWorker(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
         ServletOutputStream ps = response.getOutputStream();
+
+        getCounter();
+
+        ServletLogger.printBlankLine(ps);
+        ServletLogger.printLine(ps, ServletMessageConstants.CALLBACK_REQUEST_COUNT + counter.get());
 
         ServletLogger.printLine(ps, "Class: " + this.getClass().getName());
         ServletLogger.printLine(ps, "Super Class: " + this.getClass().getSuperclass().getName());
