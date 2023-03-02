@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,25 +12,28 @@
  *******************************************************************************/
 package test.jakarta.data.template.web;
 
-import java.time.Year;
-
 /**
- * A simple entity without annotations.
+ * A simple embeddable without annotations that is nesetd 2 levels deep.
  */
-public class House {
-    public int area;
+public class GarageDoor {
 
-    public Garage garage;
+    private int height;
 
-    public Kitchen kitchen;
+    private int width;
 
-    public float lotSize;
+    public int getHeight() {
+        return height;
+    }
 
-    public int numBedrooms;
+    public int getWidth() {
+        return width;
+    }
 
-    public String parcelId;
+    public void setWidth(int width) {
+        this.width = width;
+    }
 
-    public float purchasePrice;
-
-    public Year sold;
+    public void setHeight(int height) {
+        this.height = height;
+    }
 }

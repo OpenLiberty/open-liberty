@@ -13,6 +13,7 @@
 package test.jakarta.data.template.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.time.Duration;
@@ -57,6 +58,50 @@ public class TemplateTestServlet extends FATServlet {
 
     @Resource
     private UserTransaction tran;
+
+    /**
+     * Unannotated entity with an attribute that is an embeddable type.
+     */
+    @Test
+    public void testEmbeddable() {
+        template.delete(House.class, "TestEmbeddable-304-2288-60");
+
+        House h = new House();
+        h.area = 1800;
+        h.garage = new Garage();
+        h.garage.area = 200;
+        h.garage.door = new GarageDoor();
+        h.garage.door.setHeight(8);
+        h.garage.door.setWidth(10);
+        h.garage.type = Garage.Type.Attached;
+        h.kitchen = new Kitchen();
+        h.kitchen.length = 15;
+        h.kitchen.width = 12;
+        h.lotSize = 0.19f;
+        h.numBedrooms = 4;
+        h.parcelId = "TestEmbeddable-304-2288-60";
+        h.purchasePrice = 162000;
+        h.sold = Year.of(2018);
+
+        h = template.insert(h);
+
+        Optional<House> found = template.find(House.class, "TestEmbeddable-304-2288-60");
+        h = found.get();
+
+        assertNotNull(h.kitchen);
+        assertEquals(15, h.kitchen.length);
+        assertEquals(12, h.kitchen.width);
+
+        assertNotNull(h.garage);
+        assertEquals(200, h.garage.area);
+        assertEquals(Garage.Type.Attached, h.garage.type);
+
+        assertNotNull(h.garage.door);
+        assertEquals(8, h.garage.door.getHeight());
+        assertEquals(10, h.garage.door.getWidth());
+
+        template.delete(House.class, "TestEmbeddable-304-2288-60");
+    }
 
     /**
      * Uses a template to insert, update, find, and delete entities.
