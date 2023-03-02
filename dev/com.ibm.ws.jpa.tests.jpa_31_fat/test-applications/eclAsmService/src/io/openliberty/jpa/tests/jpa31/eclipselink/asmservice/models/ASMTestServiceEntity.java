@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,50 +11,55 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package io.openliberty.jpa.tests.jpa31.json.models;
+package io.openliberty.jpa.tests.jpa31.eclipselink.asmservice.models;
 
-import jakarta.json.JsonValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
 @Entity
-public class JSONEntity {
+public class ASMTestServiceEntity {
     @Id
-    private long id;
+    @GeneratedValue
+    private int id;
 
-    private JsonValue json;
+    private String strData;
+
+    public ASMTestServiceEntity() {
+
+    }
 
     /**
      * @return the id
      */
-    public long getId() {
+    public int getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
     /**
-     * @return the json
+     * @return the strData
      */
-    public JsonValue getJson() {
-        return json;
+    public String getStrData() {
+        return strData;
     }
 
     /**
-     * @param json the json to set
+     * @param strData the strData to set
      */
-    public void setJson(JsonValue json) {
-        this.json = json;
+    public void setStrData(String strData) {
+        this.strData = strData;
     }
 
     @Override
     public String toString() {
-        return "JSONEntity [id=" + id + ", json=" + json + "]";
+        return "ASMTestServiceEntity [id=" + id + ", strData=" + strData + "]";
     }
 
 }
