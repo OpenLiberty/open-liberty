@@ -96,10 +96,12 @@ public final class DatabaseContainerUtil {
             DatabaseContainerType.valueOf(cont) == DatabaseContainerType.DerbyClient)
             return; //Derby used by default no need to change DS properties
 
+        //If a test suite legitimately wants to call this method outside of the Database Rotation SOE
+        //Then we need to fail them on the IBMi SOE to avoid generic errors that arise when trying to infer datasource types.
         if (System.getProperty("os.name").equalsIgnoreCase("OS/400")) {
-            Log.warning(c, "Attempting to modify the DataSource server configuration with a generic <properties /> element on an IBMi server. "
-                           + " IBMi ships with a JDK that has a DB2 driver globally available. "
-                           + " Using generic property elements is not advised, consider switching to use the setupDataSourceDatabaseProperties method.");
+            throw new IllegalStateException("Attempting to modify the DataSource server configuration with a generic <properties /> element on an IBMi server. "
+                                            + " IBMi ships with a JDK that has a DB2 driver globally available which means we cannot infer the datasource type. "
+                                            + " Switch to use the setupDataSourceDatabaseProperties method.");
         }
 
         //Get server config
