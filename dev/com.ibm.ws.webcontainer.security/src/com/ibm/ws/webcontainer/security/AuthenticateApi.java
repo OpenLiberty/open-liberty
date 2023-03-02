@@ -205,12 +205,8 @@ public class AuthenticateApi {
 
         removeEntryFromAuthCache(req, res, config);
         invalidateSession(req);
-
-        // A JASPIC provider's cleanSubject may have committed the response.
-        if (!res.isCommitted()) {
-            ssoCookieHelper.removeSSOCookieFromResponse(res);
-            ssoCookieHelper.createLogoutCookies(req, res);
-        }
+        ssoCookieHelper.removeSSOCookieFromResponse(res);
+        ssoCookieHelper.createLogoutCookies(req, res);
 
         // if we have jwt, put on mpjwt's list of logged out jwt's so it cannot be reused.
         // will be null if mpJwt feature not active, or no jwt in principal
