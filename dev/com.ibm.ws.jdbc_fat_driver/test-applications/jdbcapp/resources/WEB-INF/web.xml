@@ -24,5 +24,12 @@
       <value>1m16s</value>
     </property>
   </data-source>
+  
+  <resource-ref>
+    <res-ref-name>jdbc/fatDataSourceRef</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Application</res-auth>
+    <res-sharing-scope>Unshareable</res-sharing-scope>
+  </resource-ref>
 
 </web-app>
