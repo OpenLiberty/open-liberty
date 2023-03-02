@@ -27,9 +27,9 @@ repositories {
 
 dependencies {
    requiredLibs project(':com.ibm.ws.security.social_fat'),
-   				project(':com.ibm.ws.security.fat.common'),
-	  	  		project(':com.ibm.ws.security.fat.common.jwt'),
-	            project(':com.ibm.ws.com.meterware.httpunit.1.7'),
+                project(':com.ibm.ws.security.fat.common'),
+                project(':com.ibm.ws.security.fat.common.jwt'),
+                project(':com.ibm.ws.com.meterware.httpunit.1.7'),
                 fileTree("${project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir}/collectedJars") { include '*.jar' },
                 'jtidy:jtidy:4aug2000r7-dev',
                 'rhino:js:1.6R5'

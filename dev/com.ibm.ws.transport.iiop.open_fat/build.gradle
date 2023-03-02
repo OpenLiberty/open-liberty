@@ -21,6 +21,6 @@ repositories {
 }
 
 dependencies {
-  //compile "com.ibm.wsspi.org.osgi:org.osgi.core:.+"
-  compile 'dev:com.ibm.ws.org.apache.yoko.osgi.1.5:1.+'
+  //implementation "com.ibm.wsspi.org.osgi:org.osgi.core:.+"
+  implementation 'dev:com.ibm.ws.org.apache.yoko.osgi.1.5:1.+'
 }

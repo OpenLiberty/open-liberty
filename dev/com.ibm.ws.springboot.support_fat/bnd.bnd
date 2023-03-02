@@ -34,7 +34,6 @@ tested.features: \
 -buildpath: \
     com.ibm.ws.org.apache.httpcomponents;version=latest, \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.ws.springboot.support.version15.test.app;version=latest,\
 	com.ibm.ws.springboot.support.version20.test.app;version=latest,\
     com.ibm.ws.springboot.support.version20.test.war.app;version=latest,\
     com.ibm.ws.springboot.support.version20.test.java.app;version=latest,\

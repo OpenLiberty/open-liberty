@@ -150,10 +150,10 @@ task updatePluginClasses(type: Copy) {
 
 
 task cleanPublishedOutputs(type: Delete) {
-	doLast {
-		println rootProject.file(rootProject.ext.get('published.outputs'))
-		rootProject.delete rootProject.file(rootProject.ext.get('published.outputs'))
-	}
+    doLast {
+        println rootProject.file(rootProject.ext.get('published.outputs'))
+        rootProject.delete rootProject.file(rootProject.ext.get('published.outputs'))
+    }
 }
 
 task cleanRepos(type: Delete) {
@@ -168,7 +168,7 @@ task cleanRepos(type: Delete) {
 
 task initialize {
     dependsOn cleanRepos
-	dependsOn cleanPublishedOutputs
+    dependsOn cleanPublishedOutputs
     dependsOn copyMavenLibs
     dependsOn updatePluginClasses
     doLast {
@@ -178,7 +178,7 @@ task initialize {
 
 clean {
     dependsOn cleanRepos
-	dependsOn cleanPublishedOutputs
+    dependsOn cleanPublishedOutputs
 }
 
 classes {
@@ -193,11 +193,7 @@ parent.subprojects {
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
-import org.apache.tools.ant.DirectoryScanner
 import groovy.util.XmlSlurper
-
-DirectoryScanner.removeDefaultExclude("**/.gitignore")
-DirectoryScanner.removeDefaultExclude("**/.gitattributes")
 
 String getVersionFromReleaseRepo(String org, String name) {
     def versions = []
@@ -353,10 +349,10 @@ task createGeneratedReplacementProjects {
                     }
                     String artifact = bsn + '.jar'
                     classpathEntries = '<classpathentry exported="true" kind="lib" path="/prereq.published/lib/' + artifact + '"/>' + suffix + classpathEntries
-                    suffix = '\n	'
+                    suffix = '\n    '
                 }
                 if (relativePath.equals('com.ibm.ws.logging')) {
-                    classpathEntries = classpathEntries + '\n	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/com.ibm.ws.kernel.boot"/>'
+                    classpathEntries = classpathEntries + '\n    <classpathentry combineaccessrules="false" exported="true" kind="src" path="/com.ibm.ws.kernel.boot"/>'
                 }
                 excludeList.add('dev/' + relativePath + '/')
                 File targetDir = new File(buildDir, 'replacements/' + relativePath)
