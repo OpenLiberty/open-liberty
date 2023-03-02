@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
-	<classpathentry kind="src" path="test-applications/AuthAppInjectServlet.war/src"/>
-	<classpathentry kind="src" path="test-applications/AuthAppNoInjectServlet.war/src"/>
-	<classpathentry kind="src" path="test-applications/ApplicationScoped.war/src"/>
-	<classpathentry kind="src" path="test-applications/RequestScoped.war/src"/>
-	<classpathentry kind="src" path="test-applications/SessionScoped.war/src"/>
-	<classpathentry kind="src" path="test-applications/SimplestAnnotated.war/src"/>
-	<classpathentry kind="src" path="test-applications/SimplestAnnotatedWithEL.war/src"/>
-	<classpathentry kind="src" path="test-applications/SimplestAnnotatedWithELAltOP.war/src"/>
-	<classpathentry kind="src" path="test-applications/SimplestAnnotatedWithELAltOPAndRole.war/src"/>"
-	<classpathentry kind="src" path="test-applications/SimplestAnnotatedWithELAltRole.war/src"/>"
-	<classpathentry kind="src" path="test-applications/MultipleServletsDifferentProviders.war/src"/>
-	<classpathentry kind="src" path="test-applications/MultipleServletsDifferentRoles.war/src"/>
-	<classpathentry kind="src" path="test-applications/MultipleServletsSimilarAnnotations.war/src"/>
-	<classpathentry kind="src" path="test-applications/IdentityStore.war/src"/>
-	<classpathentry kind="src" path="test-applications/MultipleIdentityStore.war/src"/>
-	<classpathentry kind="src" path="test-applications/RedirectToOriginalResourceTruePromptNone.war/src"/>
-	<classpathentry kind="src" path="test-applications/TokenTestAppServlet.war/src"/>
+    <classpathentry kind="src" path="test-applications/ApplicationScoped.war/src"/>
+    <classpathentry kind="src" path="test-applications/AuthAppInjectServlet.war/src"/>
+    <classpathentry kind="src" path="test-applications/AuthAppNoInjectServlet.war/src"/>
+    <classpathentry kind="src" path="test-applications/IdentityStore.war/src"/>
+    <classpathentry kind="src" path="test-applications/MultipleIdentityStore.war/src"/>
+    <classpathentry kind="src" path="test-applications/MultipleServletsDifferentProviders.war/src"/>
+    <classpathentry kind="src" path="test-applications/MultipleServletsDifferentRoles.war/src"/>
+    <classpathentry kind="src" path="test-applications/MultipleServletsSimilarAnnotations.war/src"/>
+    <classpathentry kind="src" path="test-applications/RedirectToOriginalResourceTruePromptNone.war/src"/>
+    <classpathentry kind="src" path="test-applications/RequestScoped.war/src"/>
+    <classpathentry kind="src" path="test-applications/SessionScoped.war/src"/>
+    <classpathentry kind="src" path="test-applications/SimplestAnnotated.war/src"/>
+    <classpathentry kind="src" path="test-applications/SimplestAnnotatedWithEL.war/src"/>
+    <classpathentry kind="src" path="test-applications/SimplestAnnotatedWithELAltOP.war/src"/>
+    <classpathentry kind="src" path="test-applications/SimplestAnnotatedWithELAltOPAndRole.war/src"/>"
+    <classpathentry kind="src" path="test-applications/SimplestAnnotatedWithELAltRole.war/src"/>"
+    <classpathentry kind="src" path="test-applications/TokenTestAppServlet.war/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>	
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11">
 		<attributes>

@@ -15,74 +15,75 @@ bVersion=1.0
 
 src: \
     fat/src,\
+    test-applications/Authorization.war/src,\
     test-applications/ClaimsDefinition.war/src,\
     test-applications/ClaimsDefinitionNoRole.war/src,\
-    test-applications/OnlyProviderInAnnotation.war/src,\
-    test-applications/NoProviderURIInAnnotationWithProviderMetadata.war/src,\
-    test-applications/NoProviderURIInAnnotationWithoutProviderMetadata.war/src,\
-    test-applications/MinimumAnnotation.war/src,\
-    test-applications/MaximumAnnotation.war/src,\
-    test-applications/MaximumAnnotationUsingEL.war/src,\
-    test-applications/UseSessionTrue.war/src,\
-    test-applications/UseSessionFalse.war/src,\
-    test-applications/UserInfo.war/src,\
-    test-applications/Discovery.war/src,\
-    test-applications/ScopeOpenId.war/src,\
-    test-applications/ScopeOpenIdProfile.war/src,\
-    test-applications/ScopeOpenIdEmail.war/src,\
-    test-applications/ScopeOpenIdProfileEmail.war/src,\
-    test-applications/ScopeOpenIdProfileEmailWithEL.war/src,\
-    test-applications/ResponseModeWithMockAuthEndpoint.war/src,\
-    test-applications/Authorization.war/src,\
-    test-applications/Signing.war/src,\
     test-applications/ComplexSigning1.war/src,\
     test-applications/ComplexSigning2.war/src,\
     test-applications/ComplexSigning3.war/src,\
     test-applications/ComplexSigning4.war/src,\
     test-applications/ComplexSigning5.war/src,\
-    test-applications/EmptySigning.war/src,\
-    test-applications/SigningShortJwksConnectionTimeoutELOverride.war/src,\
-    test-applications/SigningShortJwksConnectionTimeout.war/src,\
-    test-applications/SigningShortJwksReadTimeoutELOverride.war/src,\
-    test-applications/SigningShortJwksReadTimeout.war/src,\
-    test-applications/UserinfoAnnotation.war/src,\
-    test-applications/UseNonceTrue.war/src,\
-    test-applications/UseNonceFalse.war/src,\
-    test-applications/UseNonceTrueWithEL.war/src,\
-    test-applications/UseNonceFalseWithEL.war/src,\
-    test-applications/ExtraParametersOneParam.war/src,\
-    test-applications/ExtraParametersTwoParams.war/src,\
-    test-applications/ExtraParametersOneParamWithEL.war/src,\
-    test-applications/ExtraParametersUsingEL.war/src,\
-    test-applications/ExtraParametersSpaceAsKey.war/src,\
-    test-applications/ExtraParametersLeadingSpaceInKey.war/src,\
-    test-applications/PromptNone.war/src,\
-    test-applications/PromptLogin.war/src,\
-    test-applications/PromptConsent.war/src,\
-    test-applications/PromptSelectAccount.war/src,\
-    test-applications/PromptEL.war/src,\
-    test-applications/PromptLoginConsent.war/src,\
-    test-applications/PromptEmpty.war/src,\
-    test-applications/PromptLoginWithEL.war/src,\
-    test-applications/DisplayPage.war/src,\
-    test-applications/DisplayPopup.war/src,\
-    test-applications/DisplayTouch.war/src,\
-    test-applications/DisplayWap.war/src,\
+    test-applications/Discovery.war/src,\
     test-applications/DisplayEL.war/src,\
     test-applications/DisplayEmpty.war/src,\
+    test-applications/DisplayPage.war/src,\
+    test-applications/DisplayPopup.war/src,\
     test-applications/DisplayPopupWithEL.war/src,\
-    test-applications/JwksEndpoint.war/src,\
+    test-applications/DisplayTouch.war/src,\
+    test-applications/DisplayWap.war/src,\
+    test-applications/EmptySigning.war/src,\
     test-applications/Endpoints.war/src,\
+    test-applications/ExtraParametersLeadingSpaceInKey.war/src,\
+    test-applications/ExtraParametersOneParam.war/src,\
+    test-applications/ExtraParametersOneParamWithEL.war/src,\
+    test-applications/ExtraParametersSpaceAsKey.war/src,\
+    test-applications/ExtraParametersTwoParams.war/src,\
+    test-applications/ExtraParametersUsingEL.war/src,\
+    test-applications/JwksEndpoint.war/src,\
+    test-applications/MaximumAnnotation.war/src,\
+    test-applications/MaximumAnnotationUsingEL.war/src,\
+    test-applications/MinimumAnnotation.war/src,\
+    test-applications/NoProviderURIInAnnotationWithProviderMetadata.war/src,\
+    test-applications/NoProviderURIInAnnotationWithoutProviderMetadata.war/src,\
+    test-applications/OnlyProviderInAnnotation.war/src,\
+    test-applications/PromptConsent.war/src,\
+    test-applications/PromptEL.war/src,\
+    test-applications/PromptEmpty.war/src,\
+    test-applications/PromptLogin.war/src,\
+    test-applications/PromptLoginConsent.war/src,\
+    test-applications/PromptLoginWithEL.war/src,\
+    test-applications/PromptNone.war/src,\
+    test-applications/PromptSelectAccount.war/src,\
     test-applications/ProviderMetadata.war/src,\
-    test-applications/TokenMinValidity5s.war/src,\
+    test-applications/ResponseModeWithMockAuthEndpoint.war/src,\
+    test-applications/ScopeOpenId.war/src,\
+    test-applications/ScopeOpenIdEmail.war/src,\
+    test-applications/ScopeOpenIdProfile.war/src,\
+    test-applications/ScopeOpenIdProfileEmail.war/src,\
+    test-applications/ScopeOpenIdProfileEmailWithEL.war/src,\
+    test-applications/Signing.war/src,\
+    test-applications/SigningShortJwksConnectionTimeout.war/src,\
+    test-applications/SigningShortJwksConnectionTimeoutELOverride.war/src,\
+    test-applications/SigningShortJwksReadTimeout.war/src,\
+    test-applications/SigningShortJwksReadTimeoutELOverride.war/src,\
+    test-applications/TokenMinValidity0s.war/src,\
     test-applications/TokenMinValidity20s.war/src,\
+    test-applications/TokenMinValidity5s.war/src,\
+    test-applications/TokenMinValidity5sWithEL.war/src,\
     test-applications/TokenMinValidity60s.war/src,\
     test-applications/TokenMinValidity90s.war/src,\
-    test-applications/TokenMinValidity0s.war/src,\
-    test-applications/TokenMinValidityNegative5s.war/src,\
-    test-applications/TokenMinValidity5sWithEL.war/src,\
+    test-applications/TokenMinValidityDefault.war/src,\
     test-applications/TokenMinValidityEL.war/src,\
-    test-applications/TokenMinValidityDefault.war/src
+    test-applications/TokenMinValidityNegative5s.war/src,\
+    test-applications/UseNonceFalse.war/src,\
+    test-applications/UseNonceFalseWithEL.war/src,\
+    test-applications/UseNonceTrue.war/src,\
+    test-applications/UseNonceTrueWithEL.war/src,\
+    test-applications/UseSessionFalse.war/src,\
+    test-applications/UseSessionTrue.war/src,\
+    test-applications/UserInfo.war/src,\
+    test-applications/UserinfoAnnotation.war/src
+
     
 -dependson: \
     build.changeDetector,\

@@ -18,6 +18,12 @@ src: \
     test-applications/ApplicationScoped.war/src,\
     test-applications/AuthAppInjectServlet.war/src,\
     test-applications/AuthAppNoInjectServlet.war/src,\
+    test-applications/IdentityStore.war/src,\
+    test-applications/MultipleIdentityStore.war/src,\
+    test-applications/MultipleServletsDifferentProviders.war/src,\
+    test-applications/MultipleServletsDifferentRoles.war/src,\
+    test-applications/MultipleServletsSimilarAnnotations.war/src,\
+    test-applications/RedirectToOriginalResourceTruePromptNone.war/src,\
     test-applications/RequestScoped.war/src,\
     test-applications/SessionScoped.war/src,\
     test-applications/SimplestAnnotated.war/src,\
@@ -25,14 +31,8 @@ src: \
     test-applications/SimplestAnnotatedWithELAltOP.war/src,\
     test-applications/SimplestAnnotatedWithELAltOPAndRole.war/src,\
     test-applications/SimplestAnnotatedWithELAltRole.war/src,\
-    test-applications/MultipleServletsDifferentProviders.war/src,\
-    test-applications/MultipleServletsDifferentRoles.war/src,\
-    test-applications/MultipleServletsSimilarAnnotations.war/src,\
-    test-applications/IdentityStore.war/src,\
-    test-applications/MultipleIdentityStore.war/src,\
-    test-applications/RedirectToOriginalResourceTruePromptNone.war/src,\
     test-applications/TokenTestAppServlet.war/src
-    
+        
 -dependson: \
     build.changeDetector,\
     com.ibm.ws.security.fat.common,\
