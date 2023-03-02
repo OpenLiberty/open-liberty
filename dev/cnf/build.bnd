@@ -68,6 +68,7 @@ instrument.taskInjection: false
 # -maven-dependencies:
 -groupid: ${if;${test.project};test;dev}
 -pom: true
+-maven-scope: runtime
 #-dsannotations-options: version;minimum=1.2
 
 buildEngineName: defaultEngine
