@@ -78,8 +78,7 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
     public static LibertyServer rpServer;
 
     @ClassRule
-    public static RepeatTests repeat = createTokenTypeRepeat(Constants.JWT_TOKEN_FORMAT);
-//  public static RepeatTests repeat = createTokenTypeRepeats();
+    public static RepeatTests repeat = createTokenTypeRepeats();
 
     private static final String app = "AuthenticationApp";
 
@@ -87,6 +86,7 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    // Attribute states can be true, false or not set (empty) - not set/empty will mean something different for different attributes
     public static enum BooleanPlusValues implements ExpressionValues {
         EMPTY, TRUE, FALSE
     }
@@ -216,6 +216,16 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Build the map used to create openIdConfig.properties
+     *
+     * @param appName - the appName that will be invoked and redirected to
+     * @param provider - the provider that the test uses (most use OP1)
+     * @param redirectToOriginalResource - flag indicating if redirectToOriginalResource should be set to true, false, or not set
+     * @param useSession - flag indicating if useSession should be set to true, false, or not set
+     * @return - return a map of openIdConfig.properties values to be set
+     * @throws Exception
+     */
     public static Map<String, Object> buildUpdatedConfigMap(String appName, String provider, BooleanPlusValues redirectToOriginalResource,
                                                             BooleanPlusValues useSession) throws Exception {
 
@@ -250,6 +260,14 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * The test and callback servlets track how many times they're called/invoked so that the tests can determine if the proper behavior is happening in the server.
+     * Since the same apps may be used by multiple tests (and in some cases, the counter is defined in the base app) we need to reset the counter at the beginning
+     * of each test and between the first and second invocation of the test app in each test case.
+     *
+     * @param appRoot - the app whose counters should be rest
+     * @throws Exception
+     */
     public void resetAuthAppFlags(String appRoot) throws Exception {
 
         WebClient webClient = getAndSaveWebClient();
@@ -264,6 +282,16 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Build the name of the test app that the test will use - the name is bases on he parms passed in
+     *
+     * @param usesInjection - does the app inject openIdContext (the first part of the app name is based on this)
+     * @param redirect - is redirectToOriginalResource true/false/empty (meaning not set)
+     * @param useSession - is useSession true/false/empty (meaning not set)
+     * @param newAuth - is newAuthentication true/false/empty (meaning not set)
+     * @return - returns the built app name
+     * @throws Exception
+     */
     public String buildAppName(boolean usesInjection, BooleanPlusValues redirect, BooleanPlusValues useSession, BooleanPlusValues newAuth) throws Exception {
 
         String appRoot = "AuthApp";
@@ -332,29 +360,22 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
     }
 
     /**
+     *
      * All of the tests follow the same flow. Invoke a test app and validate what happens, then invoke the same app again using a different user and validate what happens. Finally,
      * compare the responses for the 2 attempts.
-     * The test vary in
+     * The tests vary based on
      * 1) the app that they use - one inject openIdContext and the other does not
      * 2) does the annotation in the app specify redirectToOriginalResource (true/false/default)
      * 3) does the annotation in the app specify useSession (true/false/default)
      * 4) does the securityContext.authenticate call specify newAuthentication (true/false/not specified)
      *
-     * Test with app that injects OpenIdContext.
-     * Invoke the test app and see:
-     ** We should land on the test app
-     ** Process a login
-     ** Print Basically unset request, openIdContext and WSSubject values
-     ** See the callback invoked and have it print the appropriate values for the request, openIdContext and WSSubject
-     ** See that we land on the test app again and that it logs the appropriate values for the request, openIdContext and WSSubject
-     * Test case validates the proper response values including a count of having landed on the app 2 times and the callback once
-     * Invoke the test app again and we should see:
-     ** We should land on the test app
-     ** Process a login
-     ** Print Basically unset request, openIdContext and WSSubject values
-     ** See the callback invoked and have it print the appropriate values for the request, openIdContext and WSSubject
-     ** See that we land on the test app again and that it logs the appropriate values for the request, openIdContext and WSSubject
-     ** Test case validates the proper response values including a count of having landed on the app 2 times and the callback once
+     * We'll invoke the test app and validate that the proper info is logged/returned in the servlet output. We'll also check the log and validate that we landed on the test app
+     * and callback the correct number of times
+     * Reset the app/callback counters and reset the mark in the server logs and then
+     * Invoke the test app again - if we're not specifing newAuth=true, expect to land on the app again without having to log in.
+     * if we do specify newAuth=true, expect a failure in the app if we have use_session=true since user1 will try to access the session created by testuser
+     *
+     * Finally, if we're able to get to the app a second time, compare the response from the first and second invocations.
      *
      */
 
@@ -370,7 +391,7 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
         String appRoot = buildAppName(usesInjection, redirect, useSession, newAuth);
 
-        // setup newAuth parm and adjust
+        // setup newAuth parm and adjust counters for the second app invocation based on setting newAuth to true
         if (newAuth != BooleanPlusValues.EMPTY) {
             List<NameValuePair> parms = new ArrayList<NameValuePair>();
             if (newAuth == BooleanPlusValues.TRUE) {
@@ -385,18 +406,23 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
             rspValues.setParms(parms);
         }
 
+        // If we're redirecting automatically, we won't invoke the callback, so set the counts for that to 0
         if (redirect == BooleanPlusValues.TRUE) {
             callbackCount1 = 0;
             callbackCount2 = 0;
         }
 
+        // set a flag to tell some of the expectation builds to skip/alter some checks
         rspValues.setUseAuthApp(true);
 
         WebClient webClient = getAndSaveWebClient();
+        // invoke the app for the first time and validate the response
         Page response1 = invokeAppFirstTime(webClient, appRoot, requestCount1, callbackCount1);
 
+        // set the mark in the logs so that we find information for the second request (not the first)
         rpServer.setMarkToEndOfLog(); // reset the marks in the log so we are only looking at the output from the second call to the app
 
+        // reset the counters in the test apps and callback
         resetAuthAppFlags(appRoot); // reset the call counters (counters for number of invocations of the app and the apps callback)
         // invoke the app again, but use the context from the first call (we shouldn't need to re-authenticate, but, we're specifically invoking authenticate and will validate the proper behavior base on the annotation setting and the flag passed to authenticate
 
@@ -411,18 +437,9 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
                 extraChecks = false;
                 String url = rpHttpsBase + "/" + appRoot + "/" + app;
                 Page response = invokeAppReturnLoginPage(webClient, url);
-                Expectations currentExpectations = new Expectations();
-                currentExpectations.addExpectation(new ResponseStatusExpectation(Constants.INTERNAL_SERVER_ERROR_STATUS));
-                currentExpectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, "Internal Server Error", "Did not receive the Internal ServerError message."));
-                currentExpectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, MessageConstants.SESN0008E_SESSION_OWNED_BY_OTHER_USER, "Did not receive the UnauthorizedSessionRequestException message."));
-                currentExpectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.SESN0008E_SESSION_OWNED_BY_OTHER_USER
-                                                                                          + ".*user1.*testuser", "Did not find a message stating that user1 attempted to access a session owned by testuser"));
-                currentExpectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.SRVE0777E_SECURITY_CHECK, "Did not find a message stating that the application encountered a security check error"));
-
                 response = actions.doFormLogin(response, "user1", "user1pwd");
                 // confirm protected resource was accessed
-                validationUtils.validateResult(response, currentExpectations);
-
+                validationUtils.validateResult(response, setUnauthorizedSessionRequestExpectations());
             } else {
                 // expect to login again and get different user info - no issues with conflicting sessions since we're not using session
                 response2 = runGoodEndToEndTest(webClient, appRoot, app, "user1", "user1pwd");
@@ -482,6 +499,35 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Create expectations for failures when user1 tries to use a session created by testuser. The test app will return a status code of 500 as it hits an exception thrown by the
+     * runtime.
+     * We'll check the status code, messages in the response as well as messages in the log.
+     *
+     * @return - UnauthorizedSessionRequestException expectations
+     * @throws Exception
+     */
+    public Expectations setUnauthorizedSessionRequestExpectations() throws Exception {
+
+        Expectations expectations = new Expectations();
+        expectations.addExpectation(new ResponseStatusExpectation(Constants.INTERNAL_SERVER_ERROR_STATUS));
+        expectations.addExpectation(new ResponseMessageExpectation(Constants.STRING_CONTAINS, "Internal Server Error", "Did not receive the Internal ServerError message."));
+        expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, MessageConstants.SESN0008E_SESSION_OWNED_BY_OTHER_USER, "Did not receive the UnauthorizedSessionRequestException message."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.SESN0008E_SESSION_OWNED_BY_OTHER_USER
+                                                                           + ".*user1.*testuser", "Did not find a message stating that user1 attempted to access a session owned by testuser"));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.SRVE0777E_SECURITY_CHECK, "Did not find a message stating that the application encountered a security check error"));
+
+        return expectations;
+    }
+
+    /**
+     * Create expectations for checking that we landed on the test app the correct number of times.
+     *
+     * @param expectations - expectations to add to
+     * @param requestCount - the number of times that we're expecting to land on the test app
+     * @return - updated expectations
+     * @throws Exception
+     */
     public Expectations setServletMessageExpectations(Expectations expectations, int requestCount) throws Exception {
 
         expectations.addExpectation(new ResponseFullExpectation(Constants.STRING_CONTAINS, ServletMessageConstants.APP_REQUEST_COUNT
@@ -492,6 +538,14 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
         return expectations;
     }
 
+    /**
+     * Create expectations for checking that we landed on the callback the correct number of times.
+     *
+     * @param expectations - expectations to add to
+     * @param requestCount - the number of times that we're expecting to land on the callback
+     * @return - updated expectations
+     * @throws Exception
+     */
     public Expectations setCallbackMessageExpectations(Expectations expectations, int callbackCount) throws Exception {
 
         if (callbackCount == 0) {
@@ -510,20 +564,12 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
     /****************************************************************************************************************/
     /**
      * Test with app that injects OpenIdContext.
-     * Invoke the test app and see:
-     ** We should land on the test app
-     ** Process a login
-     ** Print Basically unset request, openIdContext and WSSubject values
-     ** See the callback invoked and have it print the appropriate values for the request, openIdContext and WSSubject
-     ** See that we land on the test app again and that it logs the appropriate values for the request, openIdContext and WSSubject
-     * Test case validates the proper response values including a count of having landed on the app 2 times and the callback once
-     * Invoke the test app again and we should see:
-     ** We should land on the test app
-     ** Process a login
-     ** Print Basically unset request, openIdContext and WSSubject values
-     ** See the callback invoked and have it print the appropriate values for the request, openIdContext and WSSubject
-     ** See that we land on the test app again and that it logs the appropriate values for the request, openIdContext and WSSubject
-     ** Test case validates the proper response values including a count of having landed on the app 2 times and the callback once
+     */
+
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and that we DO NOT use the callback because redirect
+     * is set to true. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
      *
      */
     @Test
@@ -533,6 +579,12 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and that we DO NOT use the callback because redirect
+     * is set to true. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     *
+     */
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceTrueUseSessionFalse_newAuthFalse() throws Exception {
 
@@ -540,6 +592,12 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and that we DO NOT use the callback because redirect
+     * is set to true. On the second request to the test app, make sure that we have to log in and that we land on the app 2 times.
+     *
+     */
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceTrueUseSessionFalse_newAuthTrue() throws Exception {
 
@@ -548,6 +606,12 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
     }
 
     //---------------------/
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and that we DO NOT use the callback because redirect
+     * is set to true. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     *
+     */
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceTrueUseSessionTrue_newAuthNotSet() throws Exception {
 
@@ -555,6 +619,12 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and that we DO NOT use the callback because redirect
+     * is set to true. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     *
+     */
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceTrueUseSessionTrue_newAuthFalse() throws Exception {
 
@@ -562,6 +632,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and that we DO NOT use the callback because redirect
+     * is set to true. On the second request to the test app, make sure that we have to log in and that we land on the app 2 times. That last time should result in an
+     * UnauthorizedSessionRequestException exception since the session was created by testuser and user1 is trying to access it.
+     *
+     */
     @ExpectedFFDC({ "com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException" })
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceTrueUseSessionTrue_newAuthTrue() throws Exception {
@@ -571,6 +648,12 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
     }
 
     //---------------------/
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and that we DO NOT use the callback because redirect
+     * is set to true. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     *
+     */
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceTrueUseSessionEmpty_newAuthNotSet() throws Exception {
 
@@ -578,6 +661,12 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and that we DO NOT use the callback because redirect
+     * is set to true. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     *
+     */
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceTrueUseSessionEmpty_newAuthFalse() throws Exception {
 
@@ -585,6 +674,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and that we DO NOT use the callback because redirect
+     * is set to true. On the second request to the test app, make sure that we have to log in and that we land on the app 2 times. That last time should result in an
+     * UnauthorizedSessionRequestException exception since the session was created by testuser and user1 is trying to access it.
+     *
+     */
     @ExpectedFFDC({ "com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException" })
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceTrueUseSessionEmpty_newAuthTrue() throws Exception {
@@ -595,6 +691,12 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     //---------------------/
     //---------------------/
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set to false. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     *
+     */
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceFalseUseSessionFalse_newAuthNotSet() throws Exception {
 
@@ -602,6 +704,12 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set to false. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     *
+     */
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceFalseUseSessionFalse_newAuthFalse() throws Exception {
 
@@ -609,6 +717,12 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set to false. On the second request to the test app, make sure that we have to log in and that we land on the app 2 times and on the callback 1 time.
+     *
+     */
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceFalseUseSessionFalse_newAuthTrue() throws Exception {
 
@@ -617,6 +731,12 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
     }
 
     //---------------------/
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set to false. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     *
+     */
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceFalseUseSessionTrue_newAuthNotSet() throws Exception {
 
@@ -624,6 +744,12 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set to false. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     *
+     */
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceFalseUseSessionTrue_newAuthFalse() throws Exception {
 
@@ -631,6 +757,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set to false. On the second request to the test app, make sure that we have to log in and that we land on the app 1 time and on the callback 1 time. Running the callback
+     * should result in an UnauthorizedSessionRequestException exception since the session was created by testuser and user1 is trying to access it.
+     *
+     */
     @ExpectedFFDC({ "com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException" })
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceFalseUseSessionTrue_newAuthTrue() throws Exception {
@@ -640,6 +773,12 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
     }
 
     //---------------------/
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set to false. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     *
+     */
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceFalseUseSessionEmpty_newAuthNotSet() throws Exception {
 
@@ -647,6 +786,12 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set to false. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     *
+     */
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceFalseUseSessionEmpty_newAuthFalse() throws Exception {
 
@@ -654,6 +799,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set to false. On the second request to the test app, make sure that we have to log in and that we land on the app 1 time and on the callback 1 time. Running the callback
+     * should result in an UnauthorizedSessionRequestException exception since the session was created by testuser and user1 is trying to access it.
+     *
+     */
     @ExpectedFFDC({ "com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException" })
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceFalseUseSessionEmpty_newAuthTrue() throws Exception {
@@ -664,6 +816,12 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     //---------------------/
     //---------------------/
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is not set (and defaults to false). On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     *
+     */
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceEmptyUseSessionFalse_newAuthNotSet() throws Exception {
 
@@ -671,6 +829,12 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is not set (and defaults to false). On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     *
+     */
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceEmptyUseSessionFalse_newAuthFalse() throws Exception {
 
@@ -678,6 +842,12 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set to false. On the second request to the test app, make sure that we have to log in and that we land on the app 2 time and on the callback 1 time.
+     *
+     */
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceEmptyUseSessionFalse_newAuthTrue() throws Exception {
 
@@ -686,6 +856,12 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
     }
 
     //---------------------/
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is not set (and defaults to false). On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     *
+     */
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceEmptyUseSessionTrue_newAuthNotSet() throws Exception {
 
@@ -693,6 +869,12 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is not set (and defaults to false). On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     *
+     */
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceEmptyUseSessionTrue_newAuthFalse() throws Exception {
 
@@ -700,6 +882,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set to false. On the second request to the test app, make sure that we have to log in and that we land on the app 1 time and on the callback 1 time. Running the callback
+     * should result in an UnauthorizedSessionRequestException exception since the session was created by testuser and user1 is trying to access it.
+     *
+     */
     @ExpectedFFDC({ "com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException" })
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceEmptyUseSessionTrue_newAuthTrue() throws Exception {
@@ -709,6 +898,12 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
     }
 
     //---------------------/
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is not set (and defaults to false). On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     *
+     */
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceEmptyUseSessionEmpty_newAuthNotSet() throws Exception {
 
@@ -716,6 +911,12 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is not set (and defaults to false). On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     *
+     */
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceEmptyUseSessionEmpty_newAuthFalse() throws Exception {
 
@@ -723,6 +924,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that injects OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set to false. On the second request to the test app, make sure that we have to log in and that we land on the app 1 time and on the callback 1 time. Running the callback
+     * should result in an UnauthorizedSessionRequestException exception since the session was created by testuser and user1 is trying to access it (useSession defaults to true).
+     *
+     */
     @ExpectedFFDC({ "com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException" })
     @Test
     public void AuthenticationTests_injectOpenIdContext_redirectToOriginalResourceEmptyUseSessionEmpty_newAuthTrue() throws Exception {
@@ -733,7 +941,14 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     //-----------------------------------------------------------------------/
     /**
-     * Test with apps that injects OpenIdContext.
+     * Test with apps that DO NOT inject OpenIdContext.
+     */
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and that we DO NOT use the callback because redirect
+     * is set to true. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     * OpenIdContext is not available.
+     *
      */
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceTrueUseSessionFalse_newAuthNotSet() throws Exception {
@@ -742,6 +957,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and that we DO NOT use the callback because redirect
+     * is set to true. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     * OpenIdContext is not available.
+     *
+     */
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceTrueUseSessionFalse_newAuthFalse() throws Exception {
 
@@ -749,6 +971,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and that we DO NOT use the callback because redirect
+     * is set to true. On the second request to the test app, make sure that we have to log in and that we land on the app 2 times.
+     * OpenIdContext is not available.
+     *
+     */
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceTrueUseSessionFalse_newAuthTrue() throws Exception {
 
@@ -757,6 +986,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
     }
 
     //---------------------/
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and that we DO NOT use the callback because redirect
+     * is set to true. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     * OpenIdContext is not available.
+     *
+     */
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceTrueUseSessionTrue_newAuthNotSet() throws Exception {
 
@@ -764,6 +1000,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and that we DO NOT use the callback because redirect
+     * is set to true. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     * OpenIdContext is not available.
+     *
+     */
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceTrueUseSessionTrue_newAuthFalse() throws Exception {
 
@@ -771,6 +1014,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and that we DO NOT use the callback because redirect
+     * is set to true. On the second request to the test app, make sure that we have to log in and that we land on the app 2 times.
+     * OpenIdContext is not available.
+     *
+     */
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceTrueUseSessionTrue_newAuthTrue() throws Exception {
 
@@ -779,6 +1029,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
     }
 
     //---------------------/
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and that we DO NOT use the callback because redirect
+     * is set to true. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     * OpenIdContext is not available.
+     *
+     */
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceTrueUseSessionEmpty_newAuthNotSet() throws Exception {
 
@@ -786,6 +1043,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and that we DO NOT use the callback because redirect
+     * is set to true. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     * OpenIdContext is not available.
+     *
+     */
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceTrueUseSessionEmpty_newAuthFalse() throws Exception {
 
@@ -793,6 +1057,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and that we DO NOT use the callback because redirect
+     * is set to true. On the second request to the test app, make sure that we have to log in and that we land on the app 2 times.
+     * OpenIdContext is not available.
+     *
+     */
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceTrueUseSessionEmpty_newAuthTrue() throws Exception {
 
@@ -802,6 +1073,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     //---------------------/
     //---------------------/
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set to false. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     * OpenIdContext is not available.
+     *
+     */
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceFalseUseSessionFalse_newAuthNotSet() throws Exception {
 
@@ -809,6 +1087,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set to false. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     * OpenIdContext is not available.
+     *
+     */
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceFalseUseSessionFalse_newAuthFalse() throws Exception {
 
@@ -816,6 +1101,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set to false. On the second request to the test app, make sure that we have to log in and that we land on the app 2 times and on the callback one time.
+     * OpenIdContext is not available.
+     *
+     */
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceFalseUseSessionFalse_newAuthTrue() throws Exception {
 
@@ -824,6 +1116,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
     }
 
     //---------------------/
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set to false. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     * OpenIdContext is not available.
+     *
+     */
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceFalseUseSessionTrue_newAuthNotSet() throws Exception {
 
@@ -831,6 +1130,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set to false. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     * OpenIdContext is not available.
+     *
+     */
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceFalseUseSessionTrue_newAuthFalse() throws Exception {
 
@@ -838,6 +1144,14 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set to false. On the second request to the test app, make sure that we have to log in and that we land on the app 1 time and on the callback 1 time. Running the callback
+     * should result in an UnauthorizedSessionRequestException exception since the session was created by testuser and user1 is trying to access it (useSession defaults to true).
+     * OpenIdContext is not available.
+     *
+     */
     @ExpectedFFDC({ "com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException" })
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceFalseUseSessionTrue_newAuthTrue() throws Exception {
@@ -847,6 +1161,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
     }
 
     //---------------------/
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set to false. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     * OpenIdContext is not available.
+     *
+     */
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceFalseUseSessionEmpty_newAuthNotSet() throws Exception {
 
@@ -854,6 +1175,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set to false. On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     * OpenIdContext is not available.
+     *
+     */
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceFalseUseSessionEmpty_newAuthFalse() throws Exception {
 
@@ -861,6 +1189,14 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set to false. On the second request to the test app, make sure that we have to log in and that we land on the app 1 time and on the callback 1 time. Running the callback
+     * should result in an UnauthorizedSessionRequestException exception since the session was created by testuser and user1 is trying to access it (useSession defaults to true).
+     * OpenIdContext is not available.
+     *
+     */
     @ExpectedFFDC({ "com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException" })
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceFalseUseSessionEmpty_newAuthTrue() throws Exception {
@@ -871,6 +1207,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     //---------------------/
     //---------------------/
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set not set (default is false). On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     * OpenIdContext is not available.
+     *
+     */
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceEmptyUseSessionFalse_newAuthNotSet() throws Exception {
 
@@ -878,6 +1221,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set not set (default is false). On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     * OpenIdContext is not available.
+     *
+     */
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceEmptyUseSessionFalse_newAuthFalse() throws Exception {
 
@@ -885,6 +1235,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is not set (default is false). On the second request to the test app, make sure that we have to log in and that we land on the app 2 times and on the callback one time.
+     * OpenIdContext is not available.
+     *
+     */
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceEmptyUseSessionFalse_newAuthTrue() throws Exception {
 
@@ -893,6 +1250,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
     }
 
     //---------------------/
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set not set (default is false). On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     * OpenIdContext is not available.
+     *
+     */
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceEmptyUseSessionTrue_newAuthNotSet() throws Exception {
 
@@ -900,6 +1264,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set not set (default is false). On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     * OpenIdContext is not available.
+     *
+     */
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceEmptyUseSessionTrue_newAuthFalse() throws Exception {
 
@@ -907,6 +1278,15 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is not set (default is false). On the second request to the test app, make sure that we have to log in and that we land on the app 1 time and on the callback 1 time. Running
+     * the callback
+     * should result in an UnauthorizedSessionRequestException exception since the session was created by testuser and user1 is trying to access it (useSession defaults to true).
+     * OpenIdContext is not available.
+     *
+     */
     @ExpectedFFDC({ "com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException" })
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceEmptyUseSessionTrue_newAuthTrue() throws Exception {
@@ -916,6 +1296,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
     }
 
     //---------------------/
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set not set (default is false). On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     * OpenIdContext is not available.
+     *
+     */
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceEmptyUseSessionEmpty_newAuthNotSet() throws Exception {
 
@@ -923,6 +1310,13 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is set not set (default is false). On the second request to the test app, make sure that we do not have to log in and that we only land on the app one time.
+     * OpenIdContext is not available.
+     *
+     */
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceEmptyUseSessionEmpty_newAuthFalse() throws Exception {
 
@@ -930,6 +1324,15 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
     }
 
+    /**
+     * Test with app that DOES NOT inject OpenIdContext.
+     * Invoke the test app that uses injection of openIdContext - make sure that on the first call, we land on the app 2 times and use the callback one time because redirect
+     * is not set (default is false). On the second request to the test app, make sure that we have to log in and that we land on the app 1 time and on the callback 1 time. Running
+     * the callback
+     * should result in an UnauthorizedSessionRequestException exception since the session was created by testuser and user1 is trying to access it (useSession defaults to true).
+     * OpenIdContext is not available.
+     *
+     */
     @ExpectedFFDC({ "com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException" })
     @Test
     public void AuthenticationTests_noOpenIdContextInjection_redirectToOriginalResourceEmptyUseSessionEmpty_newAuthTrue() throws Exception {
