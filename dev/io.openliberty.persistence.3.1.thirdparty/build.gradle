@@ -97,7 +97,7 @@ task validateNLS {
       // change the translation files in the resources directory so it can be translated by the translation team. 
       // Note: if you're running into issues where the tool is showing changes in the translation files when there aren't, try running .././gradlew clean or deleting the build directory
       throw new GradleException("The current NLS files (" + ant.properties['resource.existing.count'] + " files, checksum: " + ant.properties['resource.existing.checksum'] 
-        + ") have changed (" + ant.properties['resource.new.count'] + " files, checksum: " + ant.properties['resource.new.checksum'] + ") since the last build - please update the NLS resources and notify the ID team that new translation may be required. To find what changed you need to diff ${projectDir}/resources.new to ${projectDir}/resources.existing.")
+        + ") have changed (" + ant.properties['resource.new.count'] + " files, checksum: " + ant.properties['resource.new.checksum'] + ") since the last build - please update the NLS resources and notify the ID team that new translation may be required. To find what changed you need to diff ${projectDir}/build/resources.new to ${projectDir}/build/resources.existing.")
     }
     delete existingResourceDir, newResourcesDir
   }
