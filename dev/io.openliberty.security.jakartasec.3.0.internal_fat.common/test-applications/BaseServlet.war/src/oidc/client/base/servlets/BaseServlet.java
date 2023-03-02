@@ -13,6 +13,7 @@
 package oidc.client.base.servlets;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import io.openliberty.security.jakartasec.fat.utils.Constants;
 import io.openliberty.security.jakartasec.fat.utils.ServletMessageConstants;
@@ -34,10 +35,16 @@ public class BaseServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Inject
-    private OpenIdContext context;
+    protected OpenIdContext context;
 
     public BaseServlet() {
         super();
+    }
+
+    protected final AtomicInteger counter = new AtomicInteger();
+
+    public int getCounter() {
+        return counter.incrementAndGet();
     }
 
     @Override
@@ -48,6 +55,23 @@ public class BaseServlet extends HttpServlet {
         if (request.getParameter(Constants.LOGOUT) != null) {
             request.logout();
         }
+
+        recordAppInfo(request, response, outputStream);
+
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        counter.set(0);
+
+    }
+
+    protected void recordAppInfo(HttpServletRequest request, HttpServletResponse response, ServletOutputStream outputStream) throws IOException {
+
+        ServletLogger.printBlankLine(outputStream);
+
+        ServletLogger.printLine(outputStream, ServletMessageConstants.APP_REQUEST_COUNT + counter.get());
 
         recordWhichApp(outputStream);
 

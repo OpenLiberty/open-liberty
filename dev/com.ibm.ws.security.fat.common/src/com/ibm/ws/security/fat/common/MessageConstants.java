@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,7 +30,13 @@ public class MessageConstants {
     public static final String CWWKO0227E_EXECUTOR_SERVICE_MISSING = "CWWKO0227E";
     public static final String CWWKO0801E_UNABLE_TO_INIT_SSL = "CWWKO0801E";
 
+    public static final String SESN0008E_SESSION_OWNED_BY_OTHER_USER = "SESN0008E";
+    public static final String SESN0066E_RSP_COMMITTED_COOKIE_CANNOT_BE_SET = "SESN0066E";
+
     public static final String SRVE0190E_FILE_NOT_FOUND = "SRVE0190E";
+    public static final String SRVE0777E_SECURITY_CHECK = "SRVE0777E";
+
+    public static final String SRVE8114W_CANNOT_SET_SESSION_COOKIE = "SRVE8114W";
 
     public static final String SSL_NOT_RESTARTED_PROPERLY = "SSL may not have started properly";
 

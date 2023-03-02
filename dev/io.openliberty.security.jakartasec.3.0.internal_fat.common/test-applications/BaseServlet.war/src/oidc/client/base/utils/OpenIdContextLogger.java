@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -214,31 +214,50 @@ public class OpenIdContextLogger {
             ServletLogger.printLine(ps, caller, ServletMessageConstants.NULL_CLAIMS);
         } else {
             // profile claims
-            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.NAME + " " + ServletMessageConstants.VALUE + claims.getName());
-            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.FAMILY_NAME + " " + ServletMessageConstants.VALUE + claims.getFamilyName());
-            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.GIVEN_NAME + " " + ServletMessageConstants.VALUE + claims.getGivenName());
-            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.MIDDLE_NAME + " " + ServletMessageConstants.VALUE + claims.getMiddleName());
-            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.NICKNAME + " " + ServletMessageConstants.VALUE + claims.getNickname());
-            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.PREFERRED_USERNAME + " " + ServletMessageConstants.VALUE + claims.getPreferredUsername());
-            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.PROFILE + " " + ServletMessageConstants.VALUE + claims.getProfile());
-            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.PICTURE + " " + ServletMessageConstants.VALUE + claims.getPicture());
-            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.WEBSITE + " " + ServletMessageConstants.VALUE + claims.getWebsite());
-            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.GENDER + " " + ServletMessageConstants.VALUE + claims.getGender());
-            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.BIRTHDATE + " " + ServletMessageConstants.VALUE + claims.getBirthdate());
-            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.ZONEINFO + " " + ServletMessageConstants.VALUE + claims.getZoneinfo());
-            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.LOCALE + " " + ServletMessageConstants.VALUE + claims.getLocale());
-            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.UPDATED_AT + " " + ServletMessageConstants.VALUE + claims.getUpdatedAt());
+            ServletLogger.printLine(ps, caller,
+                                    ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.NAME + " " + ServletMessageConstants.VALUE + claims.getName());
+            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.FAMILY_NAME + " " + ServletMessageConstants.VALUE
+                                                + claims.getFamilyName());
+            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.GIVEN_NAME + " " + ServletMessageConstants.VALUE
+                                                + claims.getGivenName());
+            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.MIDDLE_NAME + " " + ServletMessageConstants.VALUE
+                                                + claims.getMiddleName());
+            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.NICKNAME + " " + ServletMessageConstants.VALUE
+                                                + claims.getNickname());
+            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.PREFERRED_USERNAME + " "
+                                                + ServletMessageConstants.VALUE + claims.getPreferredUsername());
+            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.PROFILE + " " + ServletMessageConstants.VALUE
+                                                + claims.getProfile());
+            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.PICTURE + " " + ServletMessageConstants.VALUE
+                                                + claims.getPicture());
+            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.WEBSITE + " " + ServletMessageConstants.VALUE
+                                                + claims.getWebsite());
+            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.GENDER + " " + ServletMessageConstants.VALUE
+                                                + claims.getGender());
+            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.BIRTHDATE + " " + ServletMessageConstants.VALUE
+                                                + claims.getBirthdate());
+            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.ZONEINFO + " " + ServletMessageConstants.VALUE
+                                                + claims.getZoneinfo());
+            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.LOCALE + " " + ServletMessageConstants.VALUE
+                                                + claims.getLocale());
+            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.UPDATED_AT + " " + ServletMessageConstants.VALUE
+                                                + claims.getUpdatedAt());
 
             // email claims
-            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.EMAIL + " " + ServletMessageConstants.VALUE + claims.getEmail());
-            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.EMAIL_VERIFIED + " " + ServletMessageConstants.VALUE + claims.getEmailVerified());
+            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.EMAIL + " " + ServletMessageConstants.VALUE
+                                                + claims.getEmail());
+            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.EMAIL_VERIFIED + " " + ServletMessageConstants.VALUE
+                                                + claims.getEmailVerified());
 
             // address claims
-            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.ADDRESS + " " + ServletMessageConstants.VALUE + claims.getAddress());
+            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.ADDRESS + " " + ServletMessageConstants.VALUE
+                                                + claims.getAddress());
 
             // phone claims
-            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.PHONE_NUMBER + " " + ServletMessageConstants.VALUE + claims.getPhoneNumber());
-            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.PHONE_NUMBER_VERIFIED + " " + ServletMessageConstants.VALUE + claims.getPhoneNumberVerified());
+            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.PHONE_NUMBER + " " + ServletMessageConstants.VALUE
+                                                + claims.getPhoneNumber());
+            ServletLogger.printLine(ps, caller, ServletMessageConstants.USERINFO + ServletMessageConstants.KEY + OpenIdConstant.PHONE_NUMBER_VERIFIED + " "
+                                                + ServletMessageConstants.VALUE + claims.getPhoneNumberVerified());
         }
         // TODO - do something with the claims - many individual get methods...
 

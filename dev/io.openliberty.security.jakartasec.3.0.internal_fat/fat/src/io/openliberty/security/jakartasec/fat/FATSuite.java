@@ -17,6 +17,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import io.openliberty.security.jakartasec.fat.tests.AuthenticationTests;
 import io.openliberty.security.jakartasec.fat.tests.BasicOIDCAnnotationUseCallbacksTests;
 import io.openliberty.security.jakartasec.fat.tests.BasicOIDCAnnotationUseRedirectToOriginalResourceTests;
 import io.openliberty.security.jakartasec.fat.tests.BasicOIDCAnnotationWithOidcClientConfigTests;
@@ -32,7 +33,8 @@ import io.openliberty.security.jakartasec.fat.tests.TokenValidationTests;
                 BasicOIDCAnnotationWithOidcClientConfigTests.class,
                 InjectionScopedTests.class,
                 IdentityStoreTests.class,
-                TokenValidationTests.class
+                TokenValidationTests.class,
+                AuthenticationTests.class
 })
 public class FATSuite {
 
