@@ -3884,8 +3884,9 @@ public class DataTestServlet extends FATServlet {
      * Use a repository interface that uses the Transactional annotation to manage transactions.
      */
     @Test
-    public void testTransactional() throws IllegalStateException, NotSupportedException, SecurityException, SystemException {
-        personnel.removeAll();
+    public void testTransactional() throws ExecutionException, IllegalStateException, InterruptedException, //
+                    NotSupportedException, SecurityException, SystemException, TimeoutException {
+        personnel.removeAll().get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
 
         Person p1 = new Person();
         p1.firstName = "Thomas";
@@ -4020,7 +4021,7 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals("Tyler", people.getFirstNameInCurrentOrNoTransaction(p3.ssn));
 
-        personnel.removeAll();
+        personnel.removeAll().get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
     }
 
     /**

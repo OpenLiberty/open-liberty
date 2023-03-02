@@ -15,15 +15,20 @@ package com.ibm.tx.jta.cdi.interceptors;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.security.AccessController;
 import java.util.Set;
 
 import javax.enterprise.inject.Stereotype;
 import javax.interceptor.InvocationContext;
 import javax.transaction.Transactional;
 
+import org.osgi.framework.FrameworkUtil;
+
 import com.ibm.tx.TranConstants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.cdi.CDIService;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.tx.jta.embeddable.UserTransactionController;
 import com.ibm.wsspi.uow.ExtendedUOWAction;
 import com.ibm.wsspi.uow.UOWManager;
@@ -34,6 +39,8 @@ public abstract class TransactionalInterceptor implements Serializable {
     private static final long serialVersionUID = 485903803670044161L;
 
     private static final TraceComponent tc = Tr.register(TransactionalInterceptor.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
+
+    private static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     /*
      * Find the Transactional annotation being processed
@@ -52,16 +59,18 @@ public abstract class TransactionalInterceptor implements Serializable {
             interceptor = findTransactionalInterceptor(context.getTarget().getClass().getSuperclass());
 
             if (interceptor == null) {
-                @SuppressWarnings("unchecked")
-                Set<Annotation> bindings = (Set<Annotation>) context.getContextData().get("org.jboss.weld.interceptor.bindings");
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "org.jboss.weld.interceptor.bindings:", bindings);
-                if (bindings != null)
-                    for (Annotation anno : bindings)
-                        if (Transactional.class.equals(anno.annotationType())) {
-                            interceptor = (Transactional) anno;
-                            break;
-                        }
+                CDIService cdiService = priv.getService(FrameworkUtil.getBundle(CDIService.class), CDIService.class);
+                if (cdiService != null) {
+                    Set<Annotation> bindings = cdiService.getInterceptorBindingsFromInvocationContext(context);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "bindings:", bindings);
+                    if (bindings != null)
+                        for (Annotation anno : bindings)
+                            if (Transactional.class.equals(anno.annotationType())) {
+                                interceptor = (Transactional) anno;
+                                break;
+                            }
+                }
             }
         }
 
