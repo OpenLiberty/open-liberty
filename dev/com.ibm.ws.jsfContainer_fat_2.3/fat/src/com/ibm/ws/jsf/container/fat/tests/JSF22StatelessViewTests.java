@@ -52,7 +52,7 @@ public class JSF22StatelessViewTests extends FATServletClient {
         isEE10 = JakartaEE10Action.isActive();
 
         WebArchive mojarraApp = ShrinkWrap.create(WebArchive.class, MOJARRA_APP + ".war")
-                        .addPackage(isEE10 ? "jsf.view.beans.faces40" : "jsf.view.beans.jsf22");
+                        .addPackages(false, isEE10 ? "jsf.view.beans.faces40" : "jsf.view.beans.jsf22", "jsf.view.beans");
         mojarraApp = FATSuite.addMojarra(mojarraApp);
         mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "publish/files/permissions");
         mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "test-applications/" + MOJARRA_APP + "/resources");
@@ -63,7 +63,7 @@ public class JSF22StatelessViewTests extends FATServletClient {
         server.addInstalledAppForValidation(MOJARRA_APP);
 
         WebArchive myfacesApp = ShrinkWrap.create(WebArchive.class, MYFACES_APP + ".war")
-                        .addPackage(isEE10 ? "jsf.view.beans.faces40" : "jsf.view.beans.jsf22");
+                        .addPackages(false, isEE10 ? "jsf.view.beans.faces40" : "jsf.view.beans.jsf22", "jsf.view.beans");
         myfacesApp = FATSuite.addMyFaces(myfacesApp);
         myfacesApp = (WebArchive) ShrinkHelper.addDirectory(myfacesApp, "publish/files/permissions");
         myfacesApp = (WebArchive) ShrinkHelper.addDirectory(myfacesApp, "test-applications/" + MOJARRA_APP + "/resources");
@@ -271,12 +271,15 @@ public class JSF22StatelessViewTests extends FATServletClient {
      * Checks the behavior of a ViewScoped ManagedBean, when embedded in a stateless view.
      * Since the view here is stateless, the ViewScoped bean should be re-initialized on every submit.
      */
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) // Bug in Mojarra?
+    // Faces 4.0 doesn't support ManagedBeans and there is already a CDI test.
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22StatelessView_TestViewScopeManagedBeanTransient_Mojarra() throws Exception {
         testViewScopeManagedBeanTransient(MOJARRA_APP, "/JSF22StatelessView_ViewScope_Transient.xhtml");
     }
 
+    // Faces 4.0 doesn't support ManagedBeans and there is already a CDI test.
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
     @Test
     public void JSF22StatelessView_TestViewScopeManagedBeanTransient_MyFaces() throws Exception {
         testViewScopeManagedBeanTransient(MYFACES_APP, "/JSF22StatelessView_ViewScope_Transient.xhtml");
