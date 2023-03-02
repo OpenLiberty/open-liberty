@@ -26,10 +26,8 @@ instrument.ffdc: false
 instrument.classesExcludes: \
   org/**/*.class
 
-# Use this format once we have an official release and not an RC5
-# @${repo;org.apache.myfaces.core:myfaces-impl;${Implementation-Version};EXACT}!/jakarta/faces, \
 Include-Resource: \
-  @${repo;org.apache.myfaces.core:myfaces-impl;4.0.0.RC5;EXACT}!/META-INF/**, \
+  @${repo;org.apache.myfaces.core:myfaces-impl;${Implementation-Version};EXACT}!/jakarta/faces, \
   @${repo;io.openliberty.jakarta.faces.4.0}!/META-INF/resources/**, \
   @${repo;io.openliberty.jakarta.faces.4.0}!/META-INF/internal-resources/**, \
   META-INF=@src/META-INF
@@ -115,10 +113,8 @@ Import-Package: \
   !org.apache.tomcat, \
   *
 
-# Use this once we have a non RC5 release
-# org.apache.myfaces.core:myfaces-impl;strategy=exact;version=${Implementation-Version},\
 -buildpath: \
-  org.apache.myfaces.core:myfaces-impl;strategy=exact;version=4.0.0.RC5,\
+  org.apache.myfaces.core:myfaces-impl;strategy=exact;version=${Implementation-Version},\
   io.openliberty.jakarta.faces.4.0;version=latest,\
   com.ibm.ws.classloading;version=latest,\
   com.ibm.ws.webcontainer.jakarta;version=latest,\
