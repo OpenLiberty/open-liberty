@@ -174,6 +174,7 @@ public class LibraryRefTest {
 
         } catch (ConnectException exception) {
             exceptionString = exception.toString();
+            Log.error(c, "externalPrometheusMicrometer", exception);
         }
         Assert.assertNull("Was not expecting ConnectException", exceptionString);
     }
