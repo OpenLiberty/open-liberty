@@ -246,6 +246,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
      * and the WebContainerSecurityCollaboratorImpl allows access to unprotected resources for AuthResult.RETURN. SEND_CONTINUE will prevent this by properly
      * returning a 401 and not continue to the redirectUri.
      */
+    @FFDCIgnore(AuthenticationResponseException.class)
     private AuthenticationStatus processCallback(Client client, HttpMessageContext httpMessageContext) throws AuthenticationException {
         HttpServletRequest request = httpMessageContext.getRequest();
         HttpServletResponse response = httpMessageContext.getResponse();
@@ -255,12 +256,12 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
             ProviderAuthenticationResult providerAuthenticationResult = client.continueFlow(request, response);
             status = processContinueFlowResult(providerAuthenticationResult, httpMessageContext, client);
         } catch (AuthenticationResponseException e) {
-            Tr.error(tc, e.getMessage());
             switch (e.getValidationResult()) {
                 case NOT_VALIDATED_RESULT:
                     status = AuthenticationStatus.NOT_DONE;
                     break;
                 case INVALID_RESULT:
+                    Tr.error(tc, e.getMessage());
                     status = AuthenticationStatus.SEND_CONTINUE;
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     break;

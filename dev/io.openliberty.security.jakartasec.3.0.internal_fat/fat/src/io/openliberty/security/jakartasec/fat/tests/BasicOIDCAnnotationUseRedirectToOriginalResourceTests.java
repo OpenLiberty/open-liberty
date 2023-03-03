@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -78,7 +78,7 @@ public class BasicOIDCAnnotationUseRedirectToOriginalResourceTests extends Basic
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "com.ibm.oauth.core.api.error.oauth20.OAuth20Exception", "io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException" })
+    @ExpectedFFDC({ "com.ibm.oauth.core.api.error.oauth20.OAuth20Exception" })
     @Test
     public void BasicOIDCAnnotationUseRedirectToOriginalResourceTests_callbackHasError() throws Exception {
 

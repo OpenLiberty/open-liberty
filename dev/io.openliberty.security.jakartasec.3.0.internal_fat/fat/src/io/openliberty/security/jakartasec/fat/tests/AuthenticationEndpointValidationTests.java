@@ -26,7 +26,6 @@ import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
@@ -151,7 +150,6 @@ public class AuthenticationEndpointValidationTests extends CommonAnnotatedSecuri
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException" })
     @Test
     public void AuthenticationEndpointValidationTests_request_doesNotMatchRedirectUri() throws Exception {
 
@@ -167,8 +165,6 @@ public class AuthenticationEndpointValidationTests extends CommonAnnotatedSecuri
 
         Expectations expectations = new Expectations();
         expectations.addSuccessCodeForCurrentAction();
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2407E_ERROR_VERIFYING_RESPONSE, "Did not receive an error message stating that the client encountered an error verifying the authentication response."));
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2413E_CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI, "Did not receive an error message stating that callback url does not match the configured redirect uri."));
         validationUtils.validateResult(response, expectations);
 
     }
@@ -181,7 +177,6 @@ public class AuthenticationEndpointValidationTests extends CommonAnnotatedSecuri
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException" })
     @Test
     public void AuthenticationEndpointValidationTests_request_doesNotMatchStoredRequest() throws Exception {
 
@@ -206,8 +201,6 @@ public class AuthenticationEndpointValidationTests extends CommonAnnotatedSecuri
 
         Expectations expectations = new Expectations();
         expectations.addSuccessCodeForCurrentAction();
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2407E_ERROR_VERIFYING_RESPONSE, "Did not receive an error message stating that the client encountered an error verifying the authentication response."));
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2413E_CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI, "Did not receive an error message stating that callback url does not match the configured redirect uri."));
         validationUtils.validateResult(response, expectations);
 
     }
@@ -220,7 +213,6 @@ public class AuthenticationEndpointValidationTests extends CommonAnnotatedSecuri
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException" })
     @Test
     public void AuthenticationEndpointValidationTests_state_notStored() throws Exception {
 
@@ -243,8 +235,6 @@ public class AuthenticationEndpointValidationTests extends CommonAnnotatedSecuri
 
         Expectations expectations = new Expectations();
         expectations.addSuccessCodeForCurrentAction();
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2407E_ERROR_VERIFYING_RESPONSE, "Did not receive an error message stating that the client encountered an error verifying the authentication response."));
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2410E_CANNOT_FIND_STATE, "Did not receive an error message stating that the stored state cannot be found."));
         validationUtils.validateResult(response, expectations);
 
     }
@@ -257,7 +247,6 @@ public class AuthenticationEndpointValidationTests extends CommonAnnotatedSecuri
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException" })
     @Test
     public void AuthenticationEndpointValidationTests_state_doesNotMatch() throws Exception {
 
@@ -295,7 +284,6 @@ public class AuthenticationEndpointValidationTests extends CommonAnnotatedSecuri
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException" })
     @Test
     public void AuthenticationEndpointValidationTests_error() throws Exception {
 
