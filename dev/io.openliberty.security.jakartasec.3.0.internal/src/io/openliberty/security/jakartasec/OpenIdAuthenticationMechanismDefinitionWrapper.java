@@ -12,6 +12,8 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec;
 
+import static io.openliberty.security.jakartasec.JakartaSec30Constants.DEFAULT_JWKS_CONNECT_TIMEOUT;
+import static io.openliberty.security.jakartasec.JakartaSec30Constants.DEFAULT_JWKS_READ_TIMEOUT;
 import static io.openliberty.security.jakartasec.JakartaSec30Constants.DEFAULT_TOKEN_MIN_VALIDITY;
 import static io.openliberty.security.jakartasec.JakartaSec30Constants.EMPTY_DEFAULT;
 
@@ -310,13 +312,13 @@ public class OpenIdAuthenticationMechanismDefinitionWrapper implements OidcClien
     }
 
     private Integer evaluateJwksConnectTimeout(boolean immediateOnly) {
-        return ELUtils.evaluateIntegerAttribute("jwksConnectTimeoutExpression", oidcMechanismDefinition.jwksConnectTimeout(), 500,
-                                                oidcMechanismDefinition.jwksConnectTimeoutExpression(), immediateOnly);
+        return evaluateNonNegativeInteger("jwksConnectTimeout", oidcMechanismDefinition.jwksConnectTimeout(), DEFAULT_JWKS_CONNECT_TIMEOUT,
+                                          "jwksConnectTimeoutExpression", oidcMechanismDefinition.jwksConnectTimeoutExpression(), immediateOnly);
     }
 
     private Integer evaluateJwksReadTimeout(boolean immediateOnly) {
-        return ELUtils.evaluateIntegerAttribute("jwksReadTimeoutExpression", oidcMechanismDefinition.jwksReadTimeout(), 500,
-                                                oidcMechanismDefinition.jwksReadTimeoutExpression(), immediateOnly);
+        return evaluateNonNegativeInteger("jwksReadTimeout", oidcMechanismDefinition.jwksReadTimeout(), DEFAULT_JWKS_READ_TIMEOUT,
+                                          "jwksReadTimeoutExpression", oidcMechanismDefinition.jwksReadTimeoutExpression(), immediateOnly);
     }
 
     private Boolean evaluateTokenAutoRefresh(boolean immediateOnly) {
