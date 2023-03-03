@@ -13,6 +13,7 @@
 package com.ibm.ws.jsf23.fat.tests;
 
 import static org.junit.Assert.assertTrue;
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 
 import java.net.URL;
 import java.util.List;
@@ -31,6 +32,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf23.fat.JSFUtils;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -77,6 +79,7 @@ public class JSF23CommandScriptTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(EE10_FEATURES)  // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testCommandScriptAutorunDefaultExecute() throws Exception {
         String contextRoot = "CommandScript";
         try (WebClient webClient = new WebClient()) {
@@ -103,6 +106,7 @@ public class JSF23CommandScriptTests {
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat(EE10_FEATURES)  // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testCommandScriptAutorun() throws Exception {
         String contextRoot = "CommandScript";
         try (WebClient webClient = new WebClient()) {
@@ -130,6 +134,7 @@ public class JSF23CommandScriptTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(EE10_FEATURES)  // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testCommandScriptActionListener() throws Exception {
         String contextRoot = "CommandScript";
         try (WebClient webClient = new WebClient()) {
@@ -162,6 +167,7 @@ public class JSF23CommandScriptTests {
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat(EE10_FEATURES)  // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testCommandScriptActionListenerAttr() throws Exception {
         String contextRoot = "CommandScript";
         try (WebClient webClient = new WebClient()) {
@@ -194,6 +200,7 @@ public class JSF23CommandScriptTests {
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat(EE10_FEATURES)  // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testCommandScriptParam() throws Exception {
         String contextRoot = "CommandScript";
         try (WebClient webClient = new WebClient()) {
@@ -221,6 +228,7 @@ public class JSF23CommandScriptTests {
      */
     @Test
     @Mode(TestMode.FULL)
+    @SkipForRepeat(EE10_FEATURES)  // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testCommandScriptButton() throws Exception {
         String contextRoot = "CommandScript";
         try (WebClient webClient = new WebClient()) {

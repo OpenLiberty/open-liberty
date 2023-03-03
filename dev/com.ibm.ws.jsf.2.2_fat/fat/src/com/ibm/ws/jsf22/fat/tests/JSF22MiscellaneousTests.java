@@ -191,6 +191,7 @@ public class JSF22MiscellaneousTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(EE10_FEATURES)  // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testResetValues() throws Exception {
         try (WebClient webClient = new WebClient()) {
             // Use a synchronizing ajax controller to allow proper ajax updating
