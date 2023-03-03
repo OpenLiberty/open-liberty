@@ -78,10 +78,21 @@ module.exports = {
         use: ["source-map-loader"],
       },
       {
-        test: /\.jsx?$/,
+        test: /\.m?jsx?$/,
         include: [
           path.resolve(__dirname, 'src/'),
           path.resolve(__dirname, 'node_modules/swagger-ui/dist/'),
+          // Additional libraries which need transformed for IE11 compatibility
+          path.resolve(__dirname, 'node_modules/buffer/'),
+          path.resolve(__dirname, 'node_modules/fraction.js/'),
+          path.resolve(__dirname, 'node_modules/patch-package/'),
+          path.resolve(__dirname, 'node_modules/drange/'),
+          path.resolve(__dirname, 'node_modules/serialize-error/'),
+          path.resolve(__dirname, 'node_modules/highlight.js/'),
+          path.resolve(__dirname, 'node_modules/randexp/'),
+          path.resolve(__dirname, 'node_modules/ret/'),
+          path.resolve(__dirname, 'node_modules/formdata-node/'),
+          path.resolve(__dirname, 'node_modules/fast-json-patch/'),
         ],
         loader: "babel-loader",
         options: {
