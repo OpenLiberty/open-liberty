@@ -90,10 +90,10 @@ src: \
     com.ibm.ws.security.fat.common,\
     io.openliberty.security.jakartasec.3.0.internal_fat.common
 	
-fat.project: true
-publish.wlp.jar.disabled: true
+test.project: true
+#publish.wlp.jar.disabled: true
 
-tested.features: pages-3.1, transportsecurity-1.0, distributedmap-1.0, ssl-1.0, appsecurity-5.0, jndi-1.0, jsonp-2.1, federatedregistry-1.0, oauth-2.0, openidconnectserver-1.0, json-1.0, cdi-4.0, ldapregistry-3.0
+#tested.features: pages-3.1, transportsecurity-1.0, distributedmap-1.0, ssl-1.0, appsecurity-5.0, jndi-1.0, jsonp-2.1, federatedregistry-1.0, oauth-2.0, openidconnectserver-1.0, json-1.0, cdi-4.0, ldapregistry-3.0
 
 javac.source: 11
 javac.target: 11

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ dependencies {
   requiredLibs project(':com.ibm.ws.security.fat.common'),
   	  project(':com.ibm.ws.security.fat.common.jwt'),
       project(':io.openliberty.security.jakartasec.3.0.internal_fat.common'),
+      project(':io.openliberty.security.jakartasec.3.0.internal_fat.config.commonTest'),
       project(':io.openliberty.org.apache.commons.logging'),
       project(':com.ibm.ws.org.apache.httpcomponents'),
       'net.sourceforge.htmlunit:htmlunit:2.44.0',
@@ -45,6 +46,8 @@ dependencies {
 autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
 autoFVT.dependsOn ':io.openliberty.security.jakartasec.3.0.internal_fat.common:assemble'
+autoFVT.dependsOn ':io.openliberty.security.jakartasec.3.0.internal_fat.config.commonTest:assemble'
+
 autoFVT.doLast {
   
    copy {
@@ -58,8 +61,12 @@ autoFVT.doLast {
       from project(':io.openliberty.security.jakartasec.3.0.internal_fat.common').file('publish/shared/config')
       into new File(autoFvtDir, 'publish/shared/config')
       exclude 'oidcProvider.xml'
-      exclude 'oidcProvider_useNonce.xml'
       include '**/*.xml'
+   }
+ 
+    copy {
+      from project(':io.openliberty.security.jakartasec.3.0.internal_fat.config.commonTest').file('publish')
+      into new File(autoFvtDir, 'publish')
    }
  
     copy {
@@ -102,12 +109,6 @@ autoFVT.doLast {
      def rpCopyServers = [
 	'jakartasec-3.0_fat.config.rp.claimsDef',
 	'jakartasec-3.0_fat.config.rp.ELOverride',
-	'jakartasec-3.0_fat.config.rp.scope',
-	'jakartasec-3.0_fat.config.rp.responseMode',
-	'jakartasec-3.0_fat.config.rp.useNonce',
-	'jakartasec-3.0_fat.config.rp.extraParameters',
-	'jakartasec-3.0_fat.config.rp.prompt',
-	'jakartasec-3.0_fat.config.rp.display',
 	'jakartasec-3.0_fat.config.rp.tokenMinValidity',
 	'jakartasec-3.0_fat.config.rp.userinfo.jwt.jwt',
 	'jakartasec-3.0_fat.config.rp.userinfo.jwt.opaque',
