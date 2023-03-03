@@ -1,0 +1,9 @@
+{
+  "name": "ws.ui",
+  "version": "0.0.1",
+  "description": "OpenLiberty package refs for ws.ui",
+  "author": "OpenLiberty",
+  "dependencies": {
+    "dojo": "^1.12.9"
+  }
+}

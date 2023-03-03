@@ -65,9 +65,10 @@ instrument.taskInjection: false
 
 # Don't upload sources or javadoc unless bundle overrides
 -maven-release: ${if;${driver;gradle};remote;local}, sources;path=NONE, javadoc;path=NONE
--maven-dependencies:
+# -maven-dependencies:
 -groupid: ${if;${test.project};test;dev}
 -pom: true
+-maven-scope: runtime
 #-dsannotations-options: version;minimum=1.2
 
 buildEngineName: defaultEngine

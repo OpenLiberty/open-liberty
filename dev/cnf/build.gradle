@@ -236,8 +236,8 @@ task createGradleBootstrap {
                     } catch (GradleException e) {
                         throw e
                     }
-                    depsList.add('    compile \'' + org + ':' + bsn + ':' + version + '\'')
-                    depsList.add('    compile \'' + org + ':' + bsn + ':' + version + '@pom\'')
+                    depsList.add('    compile(\'' + org + ':' + bsn + ':' + version + '\') { transitive = false }')
+                    depsList.add('    compile(\'' + org + ':' + bsn + ':' + version + '@pom\') { transitive = false }')
                 }
             }
         }

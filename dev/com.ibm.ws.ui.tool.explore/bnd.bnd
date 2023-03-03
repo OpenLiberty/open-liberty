@@ -34,6 +34,8 @@ Include-Resource: \
   ${if;${driver;gradle};jsShared/utils/apiMsgUtils.js=build/jsShared/utils/apiMsgUtils.js}, \
   ${if;${driver;gradle};jsShared/utils/globalization.js=build/jsShared/utils/globalization.js}, \
   WEB-INF=resources/WEB-INF, \
+  package.json, \
+  package-lock.json, \
   images=resources/WEB-CONTENT/images, \
   index.jsp=resources/WEB-CONTENT/index.jsp, \
   feature=resources/WEB-CONTENT/feature

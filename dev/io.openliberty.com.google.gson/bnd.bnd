@@ -13,7 +13,7 @@
 -include= jar:${fileuri;${repo;com.google.code.gson:gson;2.9.0;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
-   @${repo;com.google.code.gson:gson;2.9.0;EXACT}!/com/google/gson/*
+   @${repo;com.google.code.gson:gson;2.9.0;EXACT}!/!META-INF/maven/*
 
 -buildpath: \
     com.google.code.gson:gson;version=2.9.0
