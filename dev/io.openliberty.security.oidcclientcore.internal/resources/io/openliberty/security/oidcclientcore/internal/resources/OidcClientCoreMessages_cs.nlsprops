@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME io.openliberty.security.oidcclientcore.internal/resources/io/openliberty/security/oidcclientcore/internal/resources/OidcClientCoreMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -125,3 +122,20 @@ TOKEN_CLAIM_VALUE_MISMATCH.useraction=Ujist\u011bte se, \u017ee je atribut v kon
 TOKEN_MISSING_CLAIMS=CWWKS2425E: Token klienta {0} OpenID Connect je neplatn\u00fd. Hodnota jwtClaims v objektu JwtContext m\u00e1 hodnotu null, nebo je pr\u00e1zdn\u00e1.
 TOKEN_MISSING_CLAIMS.explanation=V tokenu chyb\u00ed informace a ov\u011b\u0159en\u00ed tokenu nelze dokon\u010dit.
 TOKEN_MISSING_CLAIMS.useraction=Zkontrolujte, zda nejsou v protokolu n\u011bjak\u00e9 d\u0159\u00edv\u011bj\u0161\u00ed chyby, abyste se dozv\u011bd\u011bli podrobnosti o selh\u00e1n\u00ed. Zkontrolujte form\u00e1t a obsah tokenu, kter\u00fd je vr\u00e1cen od poskytovatele OpenID Connect.
+
+TOKEN_EMPTY_CLAIM=CWWKS2426E: Token m\u00e1 pr\u00e1zdn\u00fd n\u00e1rok [{0}].
+TOKEN_EMPTY_CLAIM.explanation=N\u00e1rok, kter\u00fd je uvedeno ve zpr\u00e1v\u011b, mus\u00ed m\u00edt platnou hodnotu.
+TOKEN_EMPTY_CLAIM.useraction=Poskytovatel p\u0159ipojen\u00ed OpenID vr\u00e1t\u00ed token ID s pr\u00e1zdn\u00fdm n\u00e1rokem. Je-li n\u00e1rok p\u0159\u00edtomen, mus\u00ed obsahovat platnou hodnotu. Zkontrolujte form\u00e1t a obsah tokenu, kter\u00fd je vr\u00e1cen od poskytovatele OpenID Connect.
+
+TOKEN_EXP_IN_PAST=CWWKS2427E: Token nen\u00ed platn\u00fd, proto\u017ee vypr\u0161ela platnost tokenu. \u010cas vypr\u0161en\u00ed platnosti tokenu je [{0}]. Aktu\u00e1ln\u00ed \u010das minus posun hodin je [{1}]. Nakonfigurovan\u00fd posun hodin je {2} sekund.
+TOKEN_EXP_IN_PAST.explanation=Tokeny, jejich\u017e platnost vypr\u0161ela, jsou neplatn\u00e9.
+TOKEN_EXP_IN_PAST.useraction=Z\u00edskejte nov\u00fd token, jeho\u017e platnost dosud nevypr\u0161ela. Synchronizujte \u010dasy hodin mezi vydavatelem tokenu a klientem p\u0159ipojen\u00ed OpenID.
+
+TOKEN_CLAIM_IN_FUTURE=CWWKS2428E: Token je pova\u017eov\u00e1n za neplatn\u00fd kv\u016fli hodnot\u011b [{0}] pro n\u00e1rok [{1}], kter\u00e1 je v budoucnosti. Sou\u010det aktu\u00e1ln\u00edho \u010dasov\u00e9ho posunu a posunu hodin je [{2}] a nakonfigurovan\u00fd posun hodin je {3} sekund.
+TOKEN_CLAIM_IN_FUTURE.explanation=Hodnota uveden\u00e1 ve zpr\u00e1v\u011b pro n\u00e1rok mus\u00ed b\u00fdt \u010dasem v minulosti.
+TOKEN_CLAIM_IN_FUTURE.useraction=Pou\u017eijte token po uplynut\u00ed doby uveden\u00e9 ve zpr\u00e1v\u011b, nebo z\u00edskejte nov\u00fd token.
+
+TOKEN_RESPONSE_MISSING_PARAMETER=CWWKS2429E: V odezv\u011b tokenu od poskytovatele p\u0159ipojen\u00ed OpenID chyb\u00ed alespo\u0148 jeden povinn\u00fd parametr: {0}.
+TOKEN_RESPONSE_MISSING_PARAMETER.explanation=Poskytovatel p\u0159ipojen\u00ed OpenID nevr\u00e1til povinn\u00fd parametr, nebo selhal p\u0159i zpracov\u00e1n\u00ed po\u017eadavku tokenu.
+TOKEN_RESPONSE_MISSING_PARAMETER.useraction=Ov\u011b\u0159te, zda je nakonfigurovan\u00fd koncov\u00fd bod tokenu spr\u00e1vn\u00fd a schopn\u00fd odpov\u00eddat na po\u017eadavky tokenu OAuth.
+

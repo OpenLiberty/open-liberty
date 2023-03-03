@@ -1,9 +1,11 @@
 ###############################################################################
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -46,3 +48,7 @@ JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS.useraction=Examina\u021bi istoricele p
 JAKARTASEC_CLAIMS_PROCESSING_ERROR=CWWKS2506E: Valoarea cheii {0} Claims pentru clientul OpenID Connect este incorect\u0103. Valoarea este {1} \u0219i tipul a\u0219teptat este {2}. Eroarea este {3}.
 JAKARTASEC_CLAIMS_PROCESSING_ERROR.explanation=Clientul OpenID Connect a detectat o eroare la verificarea tipului a\u0219teptat de c\u00e2mpuri pentru obiectul OpenID Claims. O eroare frecvent\u0103 este faptul c\u0103 tipul real al valorii returnate nu se potrive\u0219te cu tipul a\u0219teptat.
 JAKARTASEC_CLAIMS_PROCESSING_ERROR.useraction=Pentru mai multe informa\u021bii, vede\u021bi eroarea din mesaj.
+
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT=CWWKS2507W: Valoarea atributului {0} din adnotarea defini\u021biei mecanismului de autentificare OpenID trebuie s\u0103 nu fie un num\u0103r \u00eentreg negativ. Dac\u0103 valoarea atributului este o expresie EL (Expression Language), aceasta trebuie s\u0103 nu se rezolve la un num\u0103r \u00eentreg negativ. Valoarea furnizat\u0103 a fost "{1}". Este utilizat\u0103 \u00een loc valoarea de atribut implicit\u0103 ''{2}''.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.explanation=Valoarea atributului trebuie s\u0103 nu fie un num\u0103r \u00eentreg negativ. Dac\u0103 valoarea atributului este o expresie EL, valoarea trebuie s\u0103 nu se rezolve la un num\u0103r \u00eentreg negativ.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.useraction=Actualiza\u021bi atributul pentru a utiliza un num\u0103r \u00eentreg care nu este negativ. Dac\u0103 valoarea atributului este o expresie EL, actualiza\u021bi bean-ul de referin\u021b\u0103 pentru rezolvarea la un num\u0103r \u00eentreg care nu este negativ.

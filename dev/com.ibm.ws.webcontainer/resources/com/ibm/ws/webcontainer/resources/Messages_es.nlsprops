@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 1997, 2020 IBM Corporation and others.
+# Copyright (c) 1997, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 
 # This file has been modified to follow the WebSphere Message Guidelines.
@@ -1616,3 +1613,12 @@ duplicate.samesite.attribute.for.cookie.name.useraction=Consulte la configuraci\
 duplicate.reported.for.samesite.attribute.cookie.name=CWWWC0004W: Un nombre de cookie {0} configurado para el valor de atributo de SameSite {1} se ha identificado anteriormente como duplicado. No se a\u00f1ade ning\u00fan atributo de SameSite para este cookie.
 duplicate.reported.for.samesite.attribute.cookie.name.explanation=Un nombre de cookie no se puede configurar para varios valores de atributo de SameSite. Este nombre de cookie ya se ha identificado como duplicado.
 duplicate.reported.for.samesite.attribute.cookie.name.useraction=Consulte la configuraci\u00f3n de descriptor de despliegue para asegurarse de que el nombre de cookie se ha configurado s\u00f3lo para uno de los siguientes valores de atributo de SameSite: 'SameSiteCookies_Lax', 'SameSiteCookies_None' o 'SameSiteCookies_Strict'. 
+
+bad.request.uri\:.{0}=CWWWC0005I: El URI de la petici\u00f3n contiene caracteres no v\u00e1lidos o codificados incorrectamente: [{0}]
+bad.request.uri\:.{0}.explanation=El URI de la petici\u00f3n contiene par\u00e1metros de ruta no v\u00e1lidos, segmentos de punto no v\u00e1lidos o caracteres codificados incorrectamente.
+bad.request.uri\:.{0}.useraction=Compruebe que el URI la petici\u00f3n no contiene una combinaci\u00f3n de par\u00e1metros de punto o ruta no v\u00e1lida ni ning\u00fan car\u00e1cter codificado incorrectamente.
+
+uri.has.fragment.character=El URI contiene un car\u00e1cter de fragmento [#]; codificado [%23] o no.
+uri.has.dot.character=El URI contiene el car\u00e1cter de punto [%2E] codificado.
+uri.has.forwarslash.character=El URI contiene un car\u00e1cter de barra inclinada [%2F] codificado.
+uri.has.backslash.character=El URI contiene un car\u00e1cter de barra inclinada invertida; codificado [%5C] o no.

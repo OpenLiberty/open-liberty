@@ -1,9 +1,11 @@
 ###############################################################################
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -46,3 +48,7 @@ JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS.useraction=Suchen Sie in den Protokoll
 JAKARTASEC_CLAIMS_PROCESSING_ERROR=CWWKS2506E: Der Wert des OpenID Connect-Clientschl\u00fcssels {0} ist falsch. Der Wert ist {1} und der erwartete Typ ist {2}. Der Fehler ist {3}.
 JAKARTASEC_CLAIMS_PROCESSING_ERROR.explanation=Der OpenID Connect-Client hat beim \u00dcberpr\u00fcfen des erwarteten Feldtyps im OpenID-Claims-Objekt einen Fehler festgestellt. Ein h\u00e4ufiger Fehler ist, dass der tats\u00e4chliche Typ des zur\u00fcckgegebenen Werts nicht dem erwarteten Typ entspricht.
 JAKARTASEC_CLAIMS_PROCESSING_ERROR.useraction=Weitere Informationen k\u00f6nnen Sie dem Fehler in der Nachricht entnehmen.
+
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT=CWWKS2507W: Der Wert des Attributs {0} der Annotation OpenID f\u00fcr die Definition des Authentifizierungsverfahrens darf keine negative ganze Zahl sein. Wenn der Attributwert ein EL-Ausdruck (Expression Language) ist, darf er nicht in eine negative ganze Zahl aufgel\u00f6st werden. Es war ''{1}'' als Wert angegeben. Stattdessen wird der Standardattributwert ''{2}'' verwendet.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.explanation=Der Wert des Attributs darf keine negative ganze Zahl sein. Wenn der Attributwert ein EL-Ausdruck ist, darf der Wert nicht in eine negative ganze Zahl aufgel\u00f6st werden.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.useraction=Aktualisieren Sie das Attribut so, dass eine nicht negative ganze Zahl verwendet wird. Wenn der Attributwert ein EL-Ausdruck ist, aktualisieren Sie die referenzierte Bean so, dass sie in eine nicht negative ganze Zahl aufgel\u00f6st wird.

@@ -1,9 +1,11 @@
 ###############################################################################
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -46,3 +48,7 @@ JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS.useraction=Keressen kor\u00e1bbi, Open
 JAKARTASEC_CLAIMS_PROCESSING_ERROR=CWWKS2506E: Az OpenID Connect \u00fcgyf\u00e9l {0} Claims kulcs\u00e9rt\u00e9ke helytelen. Az \u00e9rt\u00e9k {1} \u00e9s a v\u00e1rt t\u00edpus: {2}. A hiba: {3}.
 JAKARTASEC_CLAIMS_PROCESSING_ERROR.explanation=Az OpenID Connect \u00fcgyf\u00e9l hib\u00e1ba \u00fctk\u00f6z\u00f6tt az OpenID Claims objektum elv\u00e1rt t\u00edpus\u00e1nak ellen\u0151rz\u00e9se sor\u00e1n. Gyakori hiba, hogy a visszaadott \u00e9rt\u00e9k t\u00e9nyleges t\u00edpusa nem egyezik a v\u00e1rt t\u00edpussal.
 JAKARTASEC_CLAIMS_PROCESSING_ERROR.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben szerepl\u0151 hib\u00e1t.
+
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT=CWWKS2507W: A OpenID hiteles\u00edt\u00e9si mechanizmus meghat\u00e1roz\u00e1s {0} attrib\u00fatum\u00e1nak \u00e9rt\u00e9ke nem lehet negat\u00edv eg\u00e9sz sz\u00e1m. Ha az attrib\u00fatum\u00e9rt\u00e9k egy Kifejez\u00e9s nyelv (EL) kifejez\u00e9s, akkor nem oldhat\u00f3 fel negat\u00edv eg\u00e9sz sz\u00e1mra. A megadott \u00e9rt\u00e9k: ''{1}''. Helyette a(z) ''{2}'' alap\u00e9rtelmezett attrib\u00fatum\u00e9rt\u00e9ke ker\u00fcl felhaszn\u00e1l\u00e1sra.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.explanation=Az attrib\u00fatum \u00e9rt\u00e9ke nem lehet negat\u00edv eg\u00e9sz sz\u00e1m. Ha az attrib\u00fatum\u00e9rt\u00e9k egy EL kifejez\u00e9s, az \u00e9rt\u00e9k nem oldhat\u00f3 fel negat\u00edv eg\u00e9sz sz\u00e1mra.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.useraction=Friss\u00edtse az attrib\u00fatumot egy nem negat\u00edv eg\u00e9sz sz\u00e1m haszn\u00e1lat\u00e1ra. Ha az attrib\u00fatum\u00e9rt\u00e9k egy EL kifejez\u00e9s, akkor friss\u00edtse a hivatkozott komponenst egy nem negat\u00edv eg\u00e9sz sz\u00e1mra.

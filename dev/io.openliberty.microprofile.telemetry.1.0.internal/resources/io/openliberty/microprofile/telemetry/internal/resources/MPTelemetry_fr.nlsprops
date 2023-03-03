@@ -1,0 +1,31 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMOT
+#COMPONENTNAMEFOR CWMOT MicroProfile Telemetry Tracing
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# -------------------------------------------------------------------------------------------------
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+# 
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block: CWMOT5000 - CWMOT5999
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block for io.openliberty.microprofile.telemetry.1.0.internal: CWMOT5100 - CWMOT5199
+
+CWMOT5100.tracing.is.disabled=CWMOT5100I: La fonction MicroProfile Telemetry Tracing est activ\u00e9e mais n'est pas configur\u00e9e pour g\u00e9n\u00e9rer des traces pour l'application {0}.
+CWMOT5100.tracing.is.disabled.explanation=La fonction MicroProfile Telemetry Tracing doit \u00eatre configur\u00e9e pour cr\u00e9er des traces et les exporter vers un syst\u00e8me de tra\u00e7age.
+CWMOT5100.tracing.is.disabled.useraction=Pour activer le tra\u00e7age, sp\u00e9cifiez otel.sdk.disabled= false dans toutes les sources de configuration accessibles via MicroProfile Config. Une configuration suppl\u00e9mentaire peut \u00eatre n\u00e9cessaire pour permettre \u00e0 la fonction MicroProfile Telemetry Tracing d'exporter les traces vers votre syst\u00e8me de tra\u00e7age.

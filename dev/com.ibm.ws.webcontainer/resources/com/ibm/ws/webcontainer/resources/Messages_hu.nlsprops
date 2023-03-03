@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 1997, 2020 IBM Corporation and others.
+# Copyright (c) 1997, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 
 # This file has been modified to follow the WebSphere Message Guidelines.
@@ -1616,3 +1613,12 @@ duplicate.samesite.attribute.for.cookie.name.useraction=Ellen\u0151rizze a telep
 duplicate.reported.for.samesite.attribute.cookie.name=CWWWC0004W: A(z) {1} SameSite attrib\u00fatum\u00e9rt\u00e9khez be\u00e1ll\u00edtott {0} cookie n\u00e9v kor\u00e1bban t\u00f6bbsz\u00f6r szerepl\u0151k\u00e9nt lett azonos\u00edtva. Ehhez a cookie-hoz nem ker\u00fcl hozz\u00e1ad\u00e1sra SameSite attrib\u00fatum.
 duplicate.reported.for.samesite.attribute.cookie.name.explanation=Egy cookie n\u00e9v nem konfigur\u00e1lhat\u00f3 t\u00f6bb SameSite attrib\u00fatum\u00e9rt\u00e9khez. Ez a cookie n\u00e9v m\u00e1r azonos\u00edt\u00e1sra ker\u00fclt t\u00f6bbsz\u00f6r szerepl\u0151k\u00e9nt.
 duplicate.reported.for.samesite.attribute.cookie.name.useraction=Ellen\u0151rizze a telep\u00edt\u00e9sle\u00edr\u00f3 konfigur\u00e1ci\u00f3j\u00e1t, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a cookie neve csak az egyik SameSite attrib\u00fatum\u00e9rt\u00e9khez van be\u00e1ll\u00edtva a k\u00f6vetkez\u0151k k\u00f6z\u00fcl: 'SameSiteCookies_Lax', 'SameSiteCookies_None' vagy 'SameSiteCookies_Strict'. 
+
+bad.request.uri\:.{0}=CWWWC0005I: A k\u00e9r\u00e9s URI \u00e9rv\u00e9nytelen vagy helytelen\u00fcl k\u00f3dolt karaktereket tartalmaz: [{0}]
+bad.request.uri\:.{0}.explanation=A k\u00e9r\u00e9s URI \u00e9rv\u00e9nytelen \u00fatvonalparam\u00e9tereket, \u00e9rv\u00e9nytelen pontszegmenseket vagy helytelen\u00fcl k\u00f3dolt karaktereket tartalmaz.
+bad.request.uri\:.{0}.useraction=Ellen\u0151rizze, hogy a k\u00e9r\u00e9s URI nem tartalmaz-e \u00e9rv\u00e9nytelen pont vagy \u00fatvonal param\u00e9ter kombin\u00e1ci\u00f3t vagy nem megfelel\u0151en k\u00f3dolt karaktereket.
+
+uri.has.fragment.character=Az URI egy t\u00f6red\u00e9k [#] karakterrel rendelkezik, k\u00f3dolt [%23] vagy nem.
+uri.has.dot.character=Az URI k\u00f3dolt pont [%2E] karaktert tartalmaz.
+uri.has.forwarslash.character=Az URI k\u00f3dolt oszt\u00e1sjelet [%2F] karaktert tartalmaz.
+uri.has.backslash.character=Az URI ford\u00edtott t\u00f6rtvonal karakter; k\u00f3dolt [%5C] vagy nem.

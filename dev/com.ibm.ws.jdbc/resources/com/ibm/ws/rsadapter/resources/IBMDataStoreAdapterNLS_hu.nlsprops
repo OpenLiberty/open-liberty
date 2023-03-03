@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2021 IBM Corporation and others.
+# Copyright (c) 2001, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -165,7 +165,8 @@ TBC_DB_NOT_SUPPORTED.useraction=Az adatforr\u00e1st be kell \u00e1ll\u00edtania,
 
 # {0}        The datasource JNDI name.
 TBC_JCC_NOT_SUPPORTED=DSRA0403W: A(z) {0} adatforr\u00e1s nem t\u00e1mogatja a szoros \u00e1gcsatol\u00e1st, mivel a DB2 JCC illeszt\u0151program nem megfelel\u0151 szint\u0171
-TBC_JCC_NOT_SUPPORTED.explanation=Az adatforr\u00e1s \u00e1ltal megadott JDBC szolg\u00e1ltat\u00f3 nem t\u00e1mogatja a szoros \u00e1gcsatol\u00e1si lehet\u0151s\u00e9get.  A szoros \u00e1gcsatol\u00e1si lehet\u0151s\u00e9g t\u00e1mogat\u00e1s\u00e1hoz legal\u00e1bb a DB2 Universal JCC illeszt\u0151program 3.51-es vagy 3.6-os v\u00e1ltozata sz\u00fcks\u00e9ges, amik a DB2 9.5-\u00f6s vagy 9-es szolg\u00e1ltat\u00e1si szintjeihez, valamint a JCC4 illeszt\u0151program 4.1-es v\u00e1ltozat\u00e1hoz tartoznak.  Az alap\u00e9rtelmezett laza \u00e1gcsatol\u00e1si lehet\u0151s\u00e9get haszn\u00e1lja a program.  Ez a be\u00e1ll\u00edt\u00e1s z\u00e1rol\u00e1si id\u0151t\u00fall\u00e9p\u00e9seket, holtpontokat \u00e9s/vagy tranzakci\u00f3k vissza\u00e1ll\u00edt\u00e1s\u00e1t okozhatja, amennyiben az alkalmaz\u00e1s szoros \u00e1gcsatol\u00e1sra lett tervezve, mivel az adatb\u00e1zis-z\u00e1rol\u00e1sokat nem osztja meg a rendszer a tranzakci\u00f3s \u00e1gakon a glob\u00e1lis tranzakci\u00f3n bel\u00fcl.
+TBC_JCC_NOT_SUPPORTED.explanation=Az adatforr\u00e1s \u00e1ltal megadott JDBC szolg\u00e1ltat\u00f3 nem t\u00e1mogatja a szoros \u00e1gcsatol\u00e1si lehet\u0151s\u00e9get.  A szoros \u00e1gcsatol\u00e1si lehet\u0151s\u00e9g t\u00e1mogat\u00e1s\u00e1hoz legal\u00e1bb a DB2 Universal JCC illeszt\u0151program 3.51-es vagy 3.6-os v\u00e1ltozata sz\u00fcks\u00e9ges, amik a DB2 9.5-\u00f6s vagy 9-es szolg\u00e1ltat\u00e1si szintjeihez, valamint a JCC4 illeszt\u0151program 4.1-es v\u00e1ltozat\u00e1hoz tartoznak.  Az alap\u00e9rtelmezett laza \u00e1gcsatol\u00e1si lehet\u0151s\u00e9get haszn\u00e1lja a program.  Ez a be\u00e1ll\u00edt\u00e1s z\u00e1rol\u00e1si id\u0151t\u00fall\u00e9p\u00e9seket, holtpontokat \u00e9s/vagy tranzakci\u00f3k vissza\u00e1ll\u00edt\u00e1s\u00e1t okozhatja, amennyiben az alkalmaz\u00e1s szoros \u00e1gcsatol\u00e1sra lett tervezve, mivel az adatb\u00e1zis-z\u00e1rol\u00e1sokat nem osztja meg a rendszer a tranzakci\u00f3s \u00e1gakon a glob\u00e1lis tranzakci\u00f3\
+    n bel\u00fcl.
 TBC_JCC_NOT_SUPPORTED.useraction=Az adatforr\u00e1st be kell \u00e1ll\u00edtania, hogy a t\u00e1mogatott szint\u0171 JDBC illeszt\u0151programot \u00e9s adatb\u00e1zist haszn\u00e1lja, vagy \u00fagy kell konfigur\u00e1lnia az alkalmaz\u00e1st, hogy az ne ig\u00e9nyeljen szoros \u00e1gcsatol\u00e1st.
 
 # ----------------------------------------------------------------------------
@@ -215,7 +216,7 @@ DSRA4003.driver.null.useraction=Friss\u00edtse a konfigur\u00e1ci\u00f3t \u00fag
 
 # {0} SQL command
 # {1} data source JNDI name or config display id 
-DSRA4004.onconnect.sql=DSRA4004E: Nem lehet v\u00e9grehajtani a(z) \"{0}\"  onConnect SQL parancsot a(z) {1} adatforr\u00e1sb\u00f3l beszerzett kapcsolaton. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt olvassa el a kiv\u00e9tel sz\u00f6veg\u00e9t.
+DSRA4004.onconnect.sql=DSRA4004E: Nem lehet v\u00e9grehajtani a(z) "{0}"  onConnect SQL parancsot a(z) {1} adatforr\u00e1sb\u00f3l beszerzett kapcsolaton. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt olvassa el a kiv\u00e9tel sz\u00f6veg\u00e9t.
 DSRA4004.onconnect.sql.explanation=Hiba t\u00f6rt\u00e9nt a megadott SQL parancs v\u00e9grehajt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
 DSRA4004.onconnect.sql.useraction=A probl\u00e9ma ok\u00e1nak meghat\u00e1roz\u00e1s\u00e1ban seg\u00edts\u00e9g\u00e9re lehet a kiv\u00e9tel \u00fczenete.
 
@@ -299,6 +300,16 @@ META_DATA_EXCEPTION.useraction=Ellen\u0151rizze, hogy a metaadatok a h\u00e1tt\u
 # 7019 deleted
 # 7020 reserved for other NLS file
 # 7021-7042 deleted
+
+# Do not translate: java.util.Logging
+ORACLE_TRACE_PARSE_WARNING=DSRA7043W: A {0} rendszertulajdons\u00e1ghoz alap\u00e9rtelmezett \u00e9rt\u00e9k ker\u00fclt felhaszn\u00e1l\u00e1sra a k\u00f6vetkez\u0151 \u00e9rtelmez\u00e9si hiba miatt: {1}
+ORACLE_TRACE_PARSE_WARNING.explanation=Az Oracle rendszertulajdons\u00e1g karaktersorozatok \u00e9rtelmez\u00e9sre ker\u00fclnek \u00e9s \u00e1tad\u00e1sra ker\u00fclnek a java.util.logging f\u00fcggv\u00e9nyt\u00e1rnak. Ha egy tulajdons\u00e1g\u00e9rt\u00e9k nem \u00e9rtelmezhet\u0151, akkor az alap\u00e9rtelmezett \u00e9rt\u00e9k ker\u00fcl felhaszn\u00e1l\u00e1sra.
+ORACLE_TRACE_PARSE_WARNING.useraction=Vizsg\u00e1lja meg a \u00e9rtelmez\u00e9si hib\u00e1t \u00e9s m\u00f3dos\u00edtsa a rendszertulajdons\u00e1got. Az \u00e9rv\u00e9nyes napl\u00f3z\u00e1si tulajdons\u00e1gok a java.util.logging csomagban vannak dokument\u00e1lva.
+
+ORACLE_TRACE_ENABLE_INFO=DSRA7044I: Oracle JDBC illeszt\u0151program nyomk\u00f6vet\u00e9st enged\u00e9lyezett a {0} rendszertulajdons\u00e1g. Az Oracle napl\u00f3f\u00e1jlok elv\u00e1laszt\u00e1s\u00e1hoz sz\u00fcks\u00e9ges [{1}] rendszertulajdons\u00e1gok k\u00f6z\u00fcl legal\u00e1bb egy hi\u00e1nyzik.
+ORACLE_TRACE_ENABLE_INFO.explanation=Az Oracle JDBC hibakeres\u00e9si illeszt\u0151program a java.util.logging csomagot haszn\u00e1lja a nyomk\u00f6vet\u00e9shez. Az Oracle JDBC hibakeres\u00e9si napl\u00f3k alap\u00e9rtelmez\u00e9sben a Liberty napl\u00f3ba vannak integr\u00e1lva. Az Oracle JDBC hibakeres\u00e9si nyomk\u00f6vet\u00e9si elk\u00fcl\u00f6n\u00edt\u00e9s konfigur\u00e1l\u00e1s\u00e1hoz az \u00fczenet \u00f6sszes tulajdons\u00e1g\u00e1t rendszertulajdons\u00e1gk\u00e9nt kell be\u00e1ll\u00edtani.
+ORACLE_TRACE_ENABLE_INFO.useraction=Ha el k\u00edv\u00e1nja k\u00fcl\u00f6n\u00edteni az Oracle JDBC napl\u00f3f\u00e1jlokat, akkor ellen\u0151rizze a rendszer tulajdons\u00e1gait, \u00e9s adja hozz\u00e1 a hi\u00e1nyz\u00f3 tulajdons\u00e1gokat. Egy\u00e9bk\u00e9nt figyelmen k\u00edv\u00fcl hagyhatja ezt az \u00fczenetet.
+
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------

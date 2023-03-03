@@ -1,0 +1,31 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMOT
+#COMPONENTNAMEFOR CWMOT MicroProfile Telemetry Tracing
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# -------------------------------------------------------------------------------------------------
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+# 
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block: CWMOT5000 - CWMOT5999
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block for io.openliberty.microprofile.telemetry.1.0.internal: CWMOT5100 - CWMOT5199
+
+CWMOT5100.tracing.is.disabled=CWMOT5100I: MicroProfile Telemetry \ucd94\uc801 \uae30\ub2a5\uc774 \uc0ac\uc6a9 \uac00\ub2a5\ud558\uc9c0\ub9cc {0} \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ub300\ud55c \ucd94\uc801\uc744 \uc0dd\uc131\ud558\ub3c4\ub85d \uad6c\uc131\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+CWMOT5100.tracing.is.disabled.explanation=\ucd94\uc801\uc744 \uc791\uc131\ud558\uace0 \ucd94\uc801 \uc2dc\uc2a4\ud15c\uc73c\ub85c \ub0b4\ubcf4\ub0b4\ub824\uba74 MicroProfile Telemetry \ucd94\uc801 \uae30\ub2a5\uc744 \uad6c\uc131\ud574\uc57c \ud569\ub2c8\ub2e4.
+CWMOT5100.tracing.is.disabled.useraction=\ucd94\uc801\uc744 \uc0ac\uc6a9\ud558\ub824\uba74 MicroProfile \uad6c\uc131\uc744 \ud1b5\ud574 \uc561\uc138\uc2a4 \uac00\ub2a5\ud55c \uad6c\uc131 \uc18c\uc2a4\uc5d0 otel.sdk.disabled= false\ub97c \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624. MicroProfile Telemetry \ucd94\uc801 \uae30\ub2a5\uc744 \uc0ac\uc6a9\ud558\uc5ec \ucd94\uc801\uc744 \ucd94\uc801 \uc2dc\uc2a4\ud15c\uc73c\ub85c \ub0b4\ubcf4\ub0b4\ub824\uba74 \ucd94\uac00 \uad6c\uc131\uc774 \ud544\uc694\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.

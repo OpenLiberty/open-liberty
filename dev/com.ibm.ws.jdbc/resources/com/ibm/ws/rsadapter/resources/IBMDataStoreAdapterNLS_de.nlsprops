@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2021 IBM Corporation and others.
+# Copyright (c) 2001, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -212,9 +212,10 @@ DSRA4001.no.suitable.driver.nested.useraction=Stellen Sie sicher, dass die Konfi
 DSRA4003.driver.null=DSRA4003E: Es wurde kein g\u00fcltiges jdbcDriver-Element f\u00fcr die Datenquelle {0} gefunden.
 DSRA4003.driver.null.explanation=Es wurde kein g\u00fcltiges jdbcDriver-Element f\u00fcr die angegebene Datenquelle gefunden.
 DSRA4003.driver.null.useraction=Aktualisieren Sie die Konfiguration so, dass sie entweder ein g\u00fcltiges verschachteltes jdbcDriver-Element oder ein jdbcDriver-Element der Ausgangsebene mit demselben Namen wie das jdbcDriverRef-Attribut in der Datenquelle enth\u00e4lt. 
+
 # {0} SQL command
 # {1} data source JNDI name or config display id 
-DSRA4004.onconnect.sql=DSRA4004E: Der onConnect-SQL-Befehl \"{0}\" konnte nicht f\u00fcr die aus dataSource {1} abgerufene Verbindung ausgef\u00fchrt werden. Suchen Sie in der Ursachenausnahme nach weiteren Informationen.
+DSRA4004.onconnect.sql=DSRA4004E: Der onConnect-SQL-Befehl "{0}" konnte nicht f\u00fcr die aus dataSource {1} abgerufene Verbindung ausgef\u00fchrt werden. Suchen Sie in der Ursachenausnahme nach weiteren Informationen.
 DSRA4004.onconnect.sql.explanation=Beim Versuch, den angegebenen SQL-Befehl auszuf\u00fchren, ist ein Fehler aufgetreten.
 DSRA4004.onconnect.sql.useraction=Bestimmen Sie die Problemursache anhand der Ausnahmenachricht.
 
@@ -231,7 +232,6 @@ DSRA4006.null.connection.useraction=Melden Sie den Fehler dem Anbieter des JDBC-
 DSRA4008.tran.none.unsupported=DSRA4008E: Der JDBC-Treiber unterst\u00fctzt die Isolationsstufe TRANSACTION_NONE, die in der Datenquelle {0} konfiguriert ist, nicht.
 DSRA4008.tran.none.unsupported.explanation=Die Isolationsstufe TRANSACTION_NONE, die in der Datenquelle konfiguriert ist, wird vom JDBC-Treiber nicht unterst\u00fctzt.
 DSRA4008.tran.none.unsupported.useraction=Aktualisieren Sie die Datenquellenkonfiguration so, dass eine Isolationsstufe verwendet wird, die vom Treiber unterst\u00fctzt wird, oder verwenden Sie einen Treiber, der die Isolationsstufe TRANSACTION_NONE unterst\u00fctzt.
-
 
 DSRA4009.tran.none.transactional.unsupported=DSRA4009E: Die Datenquelle {0} darf nicht mit der Isolationsstufe TRANSACTION_NONE und transactional=true konfiguriert werden.
 DSRA4009.tran.none.transactional.unsupported.explanation=Ein JDBC-Treiber, der mit der Isolationsstufe TRANSACTION_NONE konfiguriert ist, unterst\u00fctzt keine Transaktionen.
@@ -299,6 +299,16 @@ META_DATA_EXCEPTION.useraction=Stellen Sie sicher, dass die Metadaten in der Bac
 # 7019 deleted
 # 7020 reserved for other NLS file
 # 7021-7042 deleted
+
+# Do not translate: java.util.Logging
+ORACLE_TRACE_PARSE_WARNING=DSRA7043W: F\u00fcr die Systemeigenschaft {0} wurde aufgrund des folgenden Syntaxanalysefehlers ein Standardwert verwendet: {1}
+ORACLE_TRACE_PARSE_WARNING.explanation=Die Systemeigenschaftszeichenfolgen f\u00fcr Oracle werden syntaktisch analysiert und an die Bibliothek java.util.logging \u00fcbergeben. Wenn ein Eigenschaftswert nicht analysiert werden kann, wird ein Standardwert verwendet.
+ORACLE_TRACE_PARSE_WARNING.useraction=Untersuchen Sie den Analysefehler und \u00e4ndern Sie die Systemeigenschaft. Die g\u00fcltigen Protokollierungseigenschaften sind im Paket java.util.logging dokumentiert.
+
+ORACLE_TRACE_ENABLE_INFO=DSRA7044I: Die Tracefunktion des Oracle-JDBC-Treibers wurde durch die Systemeigenschaft {0} aktiviert. Mindestens eine der [{1}]-Systemeigenschaften, die zum Trennen von Oracle-Protokolldateien erforderlich sind, fehlt.
+ORACLE_TRACE_ENABLE_INFO.explanation=Der Oracle-JDBC-Debugtreiber verwendet das Paket java.util.logging f\u00fcr die Tracefunktion. Die Oracle-JDBC-Debugprotokolle sind standardm\u00e4\u00dfig in Liberty-Protokolle integriert. Zum Konfigurieren der Oracle-JDBC-Debug-Trace-Trennung m\u00fcssen alle Eigenschaften in dieser Nachricht als Systemeigenschaften konfiguriert werden.
+ORACLE_TRACE_ENABLE_INFO.useraction=Wenn Sie getrennte Oracle-JDBC-Protokolldateien konfigurieren m\u00f6chten, \u00fcberpr\u00fcfen Sie Ihre Systemeigenschaften und f\u00fcgen Sie die fehlenden Eigenschaften hinzu. Andernfalls k\u00f6nnen Sie diese Nachricht ignorieren.
+
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------

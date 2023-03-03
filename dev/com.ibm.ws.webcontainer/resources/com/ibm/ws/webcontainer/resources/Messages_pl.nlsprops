@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 1997, 2020 IBM Corporation and others.
+# Copyright (c) 1997, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 
 # This file has been modified to follow the WebSphere Message Guidelines.
@@ -1413,9 +1410,9 @@ Null.filter.config.object=SRVE8079E: Obiekt konfiguracji filtru ma warto\u015b\u
 Null.filter.config.object.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek konfiguracji.
 Null.filter.config.object.useraction=Zbierz dzienniki serwera i skontaktuj si\u0119 z Serwisem IBM.
 
-isUserInRole.caught.exception=SRVE8080E: Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek metody isUserInRole.	Metoda isUserInRole zwraca warto\u015b\u0107 false.
-isUserInRole.caught.exception.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek metody isUserInRole.	Metoda isUserInRole zwraca warto\u015b\u0107 false.
-isUserInRole.caught.exception.useraction=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek metody isUserInRole.	Metoda isUserInRole zwraca warto\u015b\u0107 false.
+isUserInRole.caught.exception=SRVE8080E: Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek metody isUserInRole.\tMetoda isUserInRole zwraca warto\u015b\u0107 false.
+isUserInRole.caught.exception.explanation=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek metody isUserInRole.\tMetoda isUserInRole zwraca warto\u015b\u0107 false.
+isUserInRole.caught.exception.useraction=Wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek metody isUserInRole.\tMetoda isUserInRole zwraca warto\u015b\u0107 false.
 
 Error.occurred.while.adding.WebAppCollaborator=SRVE8081E: Podczas dodawania wsp\u00f3\u0142pracownika aplikacji WWW wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d wewn\u0119trzny serwera.
 Error.occurred.while.adding.WebAppCollaborator.explanation=Podczas dodawania wsp\u00f3\u0142pracownika aplikacji WWW wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d wewn\u0119trzny serwera.
@@ -1616,3 +1613,12 @@ duplicate.samesite.attribute.for.cookie.name.useraction=Sprawd\u017a konfiguracj
 duplicate.reported.for.samesite.attribute.cookie.name=CWWWC0004W: Nazwa informacji cookie {0}, kt\u00f3ra jest skonfigurowana dla warto\u015bci atrybutu SameSite {1}, zosta\u0142a wcze\u015bniej zidentyfikowana jako duplikat. Dla tej informacji cookie nie dodano atrybutu SameSite.
 duplicate.reported.for.samesite.attribute.cookie.name.explanation=Nazwa informacji cookie nie mo\u017ce by\u0107 skonfigurowana dla wielu warto\u015bci atrybut\u00f3w SameSite. Ta nazwa informacji cookie zosta\u0142a ju\u017c zidentyfikowana jako duplikat.
 duplicate.reported.for.samesite.attribute.cookie.name.useraction=Sprawd\u017a konfiguracj\u0119 deskryptora wdra\u017cania, aby upewni\u0107 si\u0119, \u017ce nazwa informacji cookie zosta\u0142a skonfigurowana dla tylko jednej z nast\u0119puj\u0105cych warto\u015bci atrybut\u00f3w SameSite: 'SameSiteCookies_Lax', 'SameSiteCookies_None' albo 'SameSiteCookies_Strict'. 
+
+bad.request.uri\:.{0}=CWWWC0005I: Identyfikator URI \u017c\u0105dania zawiera niepoprawne lub niepoprawnie zakodowane znaki: [{0}]
+bad.request.uri\:.{0}.explanation=Identyfikator URI \u017c\u0105dania ma niepoprawne parametry \u015bcie\u017cki, niepoprawne segmenty kropki lub niepoprawnie zakodowane znaki.
+bad.request.uri\:.{0}.useraction=Upewnij si\u0119, \u017ce identyfikator URI \u017c\u0105dania nie zawiera niepoprawnej kombinacji parametr\u00f3w kropki lub \u015bcie\u017cki ani niew\u0142a\u015bciwie zakodowanych znak\u00f3w.
+
+uri.has.fragment.character=Identyfikator URI ma znak fragmentu [#]; zakodowany [%23] lub nie.
+uri.has.dot.character=Identyfikator URI ma zakodowany znak kropki [%2E].
+uri.has.forwarslash.character=Identyfikator URI ma zakodowany znak uko\u015bnika [%2F].
+uri.has.backslash.character=Identyfikator URI ma znak uko\u015bnika odwrotnego; zakodowany [%5C] lub nie.

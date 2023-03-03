@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2021 IBM Corporation and others.
+# Copyright (c) 2001, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -215,7 +215,7 @@ DSRA4003.driver.null.useraction=Mettez \u00e0 jour la configuration pour inclure
 
 # {0} SQL command
 # {1} data source JNDI name or config display id 
-DSRA4004.onconnect.sql=DSRA4004E: Impossible d''ex\u00e9cuter la commande SQL onConnect \"{0}\" lors de la connexion obtenue de dataSource {1}. Pour plus d''informations, consultez l''exception source.
+DSRA4004.onconnect.sql=DSRA4004E: Impossible d''ex\u00e9cuter la commande SQL onConnect "{0}" lors de la connexion obtenue de dataSource {1}. Pour plus d''informations, consultez l''exception source.
 DSRA4004.onconnect.sql.explanation=Une erreur s'est produite lors de la tentative d'ex\u00e9cution de la commande SQL sp\u00e9cifi\u00e9e.
 DSRA4004.onconnect.sql.useraction=Veuillez vous r\u00e9f\u00e9rer au message d'exception pour d\u00e9terminer la cause du probl\u00e8me.
 
@@ -299,6 +299,16 @@ META_DATA_EXCEPTION.useraction=V\u00e9rifiez que les m\u00e9tadonn\u00e9es sont 
 # 7019 deleted
 # 7020 reserved for other NLS file
 # 7021-7042 deleted
+
+# Do not translate: java.util.Logging
+ORACLE_TRACE_PARSE_WARNING=DSRA7043W: Une valeur par d\u00e9faut a \u00e9t\u00e9 utilis\u00e9e pour la propri\u00e9t\u00e9 syst\u00e8me {0} en raison de l''erreur d''analyse suivante : {1}
+ORACLE_TRACE_PARSE_WARNING.explanation=Les cha\u00eenes de propri\u00e9t\u00e9 syst\u00e8me pour Oracle sont analys\u00e9es et transmises \u00e0 la biblioth\u00e8que java.util.logging. Si une valeur de propri\u00e9t\u00e9 ne peut pas \u00eatre analys\u00e9e, une valeur par d\u00e9faut est utilis\u00e9e \u00e0 la place.
+ORACLE_TRACE_PARSE_WARNING.useraction=Examinez l'erreur d'analyse et modifiez la propri\u00e9t\u00e9 syst\u00e8me. Les propri\u00e9t\u00e9s de journalisation valides sont document\u00e9es dans le package java.util.logging.
+
+ORACLE_TRACE_ENABLE_INFO=DSRA7044I: Le tra\u00e7age du pilote JDBC Oracle a \u00e9t\u00e9 activ\u00e9 par la propri\u00e9t\u00e9 syst\u00e8me {0}. Une ou plusieurs des propri\u00e9t\u00e9s syst\u00e8me [{1}] requises pour s\u00e9parer les fichiers journaux Oracle sont manquantes.
+ORACLE_TRACE_ENABLE_INFO.explanation=Le pilote de d\u00e9bogage JDBC Oracle utilise le package java.util.logging pour le tra\u00e7age. Les journaux de d\u00e9bogage JDBC Oracle sont int\u00e9gr\u00e9s aux journaux Liberty par d\u00e9faut. Pour configurer la s\u00e9paration de la trace de d\u00e9bogage JDBC Oracle, il faut que toutes les propri\u00e9t\u00e9s de ce message soient configur\u00e9es en tant que propri\u00e9t\u00e9s syst\u00e8me.
+ORACLE_TRACE_ENABLE_INFO.useraction=Si vous souhaitez configurer des fichiers journaux JDBC Oracle s\u00e9par\u00e9s, v\u00e9rifiez vos propri\u00e9t\u00e9s syst\u00e8me et ajoutez les propri\u00e9t\u00e9s manquantes. Sinon, vous pouvez ignorer ce message.
+
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------
