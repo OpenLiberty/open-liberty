@@ -2496,6 +2496,51 @@ public class ResolutionTests {
     }
 
     /**
+     * If the user requests we install an auto-feature with basic resolution, we will install any features which enable that autofeature.
+     * <p>
+     * However, we don't want to install any features which enable an already installed autofeature.
+     * <p>
+     * Scenario: <ul>
+     * <li>A-1.0 is an autofeature which is enabled by either B-1.0 or C-1.0.
+     * <li>A-1.0 and B-1.0 are already installed.
+     * <li>User requests we install D-1.0.
+     * </ul>
+     * Expected: D-1.0 is resolved, C-1.0 is not resolved.
+     *
+     * @throws RepositoryException
+     */
+    @Test
+    public void testDontInstallFeaturesWhichEnableInstalledAutoFeature() throws RepositoryException {
+
+        ArrayList<ProvisioningFeatureDefinition> installedFeatures = new ArrayList<>();
+
+        MockFeature b10 = new MockFeature("com.example.b-1.0");
+        b10.setVisibility(com.ibm.ws.kernel.feature.Visibility.PUBLIC);
+        installedFeatures.add(b10);
+
+        MockFeature a10 = new MockFeature("com.example.a-1.0");
+        a10.setVisibility(com.ibm.ws.kernel.feature.Visibility.PRIVATE);
+        a10.setProvisionCapability("osgi.identity; filter:=\"(&(type=osgi.subsystem.feature)(|(osgi.identity=com.example.b-1.0)(osgi.identity=com.example.c-1.0)))\"");
+        installedFeatures.add(a10);
+
+        EsaResourceWritable c10 = WritableResourceFactory.createEsa(null);
+        c10.setProvideFeature("com.example.c-1.0");
+        c10.setVisibility(Visibility.PUBLIC);
+        repoFeatures.add(c10);
+
+        EsaResourceWritable d10 = WritableResourceFactory.createEsa(null);
+        d10.setProvideFeature("com.example.d-1.0");
+        d10.setVisibility(Visibility.PUBLIC);
+        repoFeatures.add(d10);
+
+        RepositoryResolver resolver = createResolver(installedFeatures);
+        Collection<List<RepositoryResource>> resolved = resolve(resolver, Arrays.asList(d10.getProvideFeature()));
+
+        // Expected: D-1.0 is resolved, C-1.0 is not resolved.
+        assertThat(resolved, contains(contains(d10)));
+    }
+
+    /**
      * Test that trying to resolve as a set two conflicting features fails
      *
      * @throws RepositoryException
