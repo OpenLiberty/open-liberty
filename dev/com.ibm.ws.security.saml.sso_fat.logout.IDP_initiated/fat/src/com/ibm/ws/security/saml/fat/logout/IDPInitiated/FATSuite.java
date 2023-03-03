@@ -18,7 +18,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.security.fat.common.AlwaysRunAndPassTest;
 import com.ibm.ws.security.fat.common.actions.LargeProjectRepeatActions;
 import com.ibm.ws.security.saml.fat.logout.IDPInitiated_Login.IDPInitiatedLogin_IDPInitiated_LogoutUrl_LTPA_Tests;
 import com.ibm.ws.security.saml.fat.logout.IDPInitiated_Login.IDPInitiatedLogin_IDPInitiated_LogoutUrl_Tests;
@@ -27,6 +26,7 @@ import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.SolicitedSPInitiate
 import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.UnsolicitedSPInitiatedLogin_IDPInitiated_LogoutUrl_LTPA_Tests;
 import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.UnsolicitedSPInitiatedLogin_IDPInitiated_LogoutUrl_Tests;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.RepeatTests;
 
 /**
@@ -34,7 +34,7 @@ import componenttest.rules.repeater.RepeatTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-        AlwaysRunAndPassTest.class,
+        AlwaysPassesTest.class,
         // login using each of the 3 flows, use the IDP logout url to logout to do an IDP initiated Logout
         // Using SP Cookies
         IDPInitiatedLogin_IDPInitiated_LogoutUrl_Tests.class,

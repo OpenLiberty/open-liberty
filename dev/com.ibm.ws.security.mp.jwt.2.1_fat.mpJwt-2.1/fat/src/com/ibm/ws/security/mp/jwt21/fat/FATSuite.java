@@ -17,7 +17,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.security.fat.common.AlwaysRunAndPassTest;
 import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE10RepeatAction;
 import com.ibm.ws.security.fat.common.mp.jwt.MPJwt21FatConstants;
 import com.ibm.ws.security.mp.jwt21.fat.configInAppTests.MPJwt21MPConfigInApp_Tests;
@@ -28,12 +27,13 @@ import com.ibm.ws.security.mp.jwt21.fat.systemPropertiesTests.MPJwtGoodMP21Confi
 import com.ibm.ws.security.mp.jwt21.fat.systemPropertiesTests.MPJwtGoodMP21ConfigAsSystemProperties_DecryptAlg;
 import com.ibm.ws.security.mp.jwt21.fat.systemPropertiesTests.MPJwtGoodMP21ConfigAsSystemProperties_TokenAge;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.RepeatTests;
 
 @SuppressWarnings({ "restriction" })
 @RunWith(Suite.class)
 @SuiteClasses({
-        AlwaysRunAndPassTest.class,
+        AlwaysPassesTest.class,
 
         // 2.1 tests
         MPJwt21ConfigUsingBuilderTests.class,
