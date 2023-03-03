@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2022 IBM Corporation and others.
+ * Copyright (c) 2020,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -225,7 +225,7 @@ public class AcmeValidityAndRenewTest {
 		 */
 
 		ServerConfiguration configuration = ORIGINAL_CONFIG.clone();
-		configuration.getAcmeCA().setRenewBeforeExpiration(365 * 5 + 1 + "d");
+		configuration.getAcmeCA().setRenewBeforeExpiration(365 * 5 + 10 + "d");
 		AcmeFatUtils.configureAcmeCA(server, caContainer, configuration, DOMAINS1);
 
 		/***********************************************************************
