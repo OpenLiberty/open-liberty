@@ -22,6 +22,3 @@
 -Dmp.jwt.verify.token.age=xxx_tokenAge_xxx
 -Dmp.jwt.verify.clock.skew=xxx_clockSkew_xxx
 -Dmp.jwt.decrypt.key.algorithm=xxx_decryptKeyAlg_xxx
-
-# beta fence for mpJwt 2.1 testing
--Dcom.ibm.ws.beta.edition=true
