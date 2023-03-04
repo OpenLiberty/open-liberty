@@ -13,10 +13,6 @@ import jakarta.ws.rs.core.MediaType;
 @SuppressWarnings("deprecation")
 public class AttachmentBuilderTest {
 
-	static {
-		System.setProperty("com.ibm.ws.beta.edition", "true");
-	}
-
 	@Test
 	public void testBasicAttachment() throws Exception {
 		IAttachment att = AttachmentBuilder.newBuilder("abc")
