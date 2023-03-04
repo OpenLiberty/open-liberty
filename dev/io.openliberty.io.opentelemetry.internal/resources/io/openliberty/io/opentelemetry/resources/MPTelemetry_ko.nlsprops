@@ -1,0 +1,34 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMOT
+#COMPONENTNAMEFOR CWMOT MicroProfile Telemetry Tracing
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# -------------------------------------------------------------------------------------------------
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block: CWMOT5000 - CWMOT5999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+CWMOT5000.cannot.get.globalopentelemetry=CWMOT5000W: GlobalOpenTelemetry.get \uba54\uc18c\ub4dc\uac00 \ud638\ucd9c\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc774 \uba54\uc18c\ub4dc\ub294 \ube44\uae30\ub2a5\uc801 OpenTelemetry \uc624\ube0c\uc81d\ud2b8\ub97c \ub9ac\ud134\ud569\ub2c8\ub2e4. \ub300\uc2e0 CDI\ub97c \uc0ac\uc6a9\ud558\uc5ec OpenTelemetry \uc624\ube0c\uc81d\ud2b8\ub97c \uc0bd\uc785\ud558\uc2ed\uc2dc\uc624.
+CWMOT5000.cannot.get.globalopentelemetry.explanation=\uae00\ub85c\ubc8c OpenTelemetry \uc624\ube0c\uc81d\ud2b8\uac00 \uc5c6\uc73c\ubbc0\ub85c GlobalOpenTelemetry \ud074\ub798\uc2a4\uac00 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ub300\uc2e0, \uac01 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc740 CDI\ub97c \uc0ac\uc6a9\ud558\uc5ec \ud574\ub2f9 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ub300\ud574 OpenTelemetry \uc624\ube0c\uc81d\ud2b8\ub97c \uc0bd\uc785\ud574\uc57c \ud569\ub2c8\ub2e4.
+CWMOT5000.cannot.get.globalopentelemetry.useraction=CDI\ub97c \uc0ac\uc6a9\ud558\uc5ec OpenTelemetry \uc624\ube0c\uc81d\ud2b8\ub97c \uc0bd\uc785\ud558\uc2ed\uc2dc\uc624.
+
+CWMOT5001.cannot.set.globalopentelemetry=CWMOT5001E: GlobalOpen Telemetry \uc624\ube0c\uc81d\ud2b8 \uc124\uc815\uc740 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+CWMOT5001.cannot.set.globalopentelemetry.explanation=\uae00\ub85c\ubc8c OpenTelemetry \uc624\ube0c\uc81d\ud2b8\uac00 \uc5c6\uc73c\ubbc0\ub85c GlobalOpenTelemetry \ud074\ub798\uc2a4\uac00 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ub300\uc2e0, \uac01 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc740 CDI\ub97c \uc0ac\uc6a9\ud558\uc5ec \ud574\ub2f9 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ub300\ud574 OpenTelemetry \uc624\ube0c\uc81d\ud2b8\ub97c \uc0bd\uc785\ud574\uc57c \ud569\ub2c8\ub2e4.
+CWMOT5001.cannot.set.globalopentelemetry.useraction=GlobalOpenTelemetry.get \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\uc9c0 \ub9c8\uc2ed\uc2dc\uc624. \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucf54\ub4dc\uac00 OpenTelemetry \uc624\ube0c\uc81d\ud2b8\ub97c \ud655\ubcf4\ud574\uc57c \ud558\ub294 \uacbd\uc6b0 CDI\ub97c \uc0ac\uc6a9\ud558\uc5ec \uc0bd\uc785\ud558\uc2ed\uc2dc\uc624.

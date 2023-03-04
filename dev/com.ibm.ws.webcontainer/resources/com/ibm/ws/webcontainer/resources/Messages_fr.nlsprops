@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 1997, 2020 IBM Corporation and others.
+# Copyright (c) 1997, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 
 # This file has been modified to follow the WebSphere Message Guidelines.
@@ -1616,3 +1613,12 @@ duplicate.samesite.attribute.for.cookie.name.useraction=V\u00e9rifiez la configu
 duplicate.reported.for.samesite.attribute.cookie.name=CWWWC0004W: Un nom de cookie {0} qui est configur\u00e9 pour la valeur d''attribut SameSite {1} a \u00e9t\u00e9 pr\u00e9c\u00e9demment identifi\u00e9 en tant que doublon. Aucun attribut SameSite n''est ajout\u00e9 pour ce cookie.
 duplicate.reported.for.samesite.attribute.cookie.name.explanation=Un nom de cookie ne peut pas \u00eatre configur\u00e9 pour plusieurs valeurs d'attribut SameSite. Ce nom de cookie a d\u00e9j\u00e0 \u00e9t\u00e9 identifi\u00e9 en tant que doublon.
 duplicate.reported.for.samesite.attribute.cookie.name.useraction=V\u00e9rifiez la configuration du descripteur de d\u00e9ploiement pour vous assurer que le nom de cookie est configur\u00e9 pour l'une des valeurs d'attribut SameSite suivantes seulement : 'SameSiteCookies_Lax', 'SameSiteCookies_None' ou 'SameSiteCookies_Strict'. 
+
+bad.request.uri\:.{0}=CWWWC0005I: L''URI de la demande comporte des caract\u00e8res non valides ou cod\u00e9s de mani\u00e8re incorrecte : [{0}]
+bad.request.uri\:.{0}.explanation=L'URI de la demande comporte des param\u00e8tres de chemin non valides, des segments point\u00e9s non valides ou des caract\u00e8res cod\u00e9s de mani\u00e8re incorrecte.
+bad.request.uri\:.{0}.useraction=V\u00e9rifiez que l'URI de la demande ne contient pas de combinaison de points ou de param\u00e8tres de chemin non valide ni de caract\u00e8res cod\u00e9s de mani\u00e8re incorrecte.
+
+uri.has.fragment.character=L'URI comporte un caract\u00e8re fragment [#] ; cod\u00e9 [%23] ou non.
+uri.has.dot.character=L'URI comporte un point cod\u00e9 [%2E].
+uri.has.forwarslash.character=L'URI comporte une barre oblique cod\u00e9e [%2F].
+uri.has.backslash.character=L'URI comporte une barre oblique invers\u00e9e ; cod\u00e9e [%5C] ou non.

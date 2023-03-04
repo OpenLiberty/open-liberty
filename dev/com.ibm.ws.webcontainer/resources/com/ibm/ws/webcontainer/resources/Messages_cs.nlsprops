@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 1997, 2020 IBM Corporation and others.
+# Copyright (c) 1997, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 
 # This file has been modified to follow the WebSphere Message Guidelines.
@@ -1616,3 +1613,12 @@ duplicate.samesite.attribute.for.cookie.name.useraction=Zkontrolujte konfiguraci
 duplicate.reported.for.samesite.attribute.cookie.name=CWWWC0004W: N\u00e1zev souboru cookie {0}, kter\u00fd je nakonfigurov\u00e1n pro hodnotu atributu {1} SameSite, byl d\u0159\u00edve identifikov\u00e1n jako duplicitn\u00ed. Pro tento soubor cookie nen\u00ed p\u0159id\u00e1n \u017e\u00e1dn\u00fd atribut SameSite.
 duplicate.reported.for.samesite.attribute.cookie.name.explanation=N\u00e1zev souboru cookie nem\u016f\u017ee b\u00fdt konfigurov\u00e1n pro v\u00edce hodnot atributu SameSite. Tento n\u00e1zev souboru cookie ji\u017e byl identifikov\u00e1n jako duplicitn\u00ed.
 duplicate.reported.for.samesite.attribute.cookie.name.useraction=Zkontrolujte konfiguraci deskriptoru implementace a ujist\u011bte se, \u017ee n\u00e1zev souboru cookie je nakonfigurov\u00e1n pouze pro jednu z n\u00e1sleduj\u00edc\u00edch hodnot atributu SameSite: 'SameSiteCookies_Lax', 'SameSiteCookies_None' nebo 'SameSiteUCookies_SURI'. 
+
+bad.request.uri\:.{0}=CWWWC0005I: Identifik\u00e1tor URI po\u017eadavku obsahuje neplatn\u00e9 nebo nespr\u00e1vn\u011b k\u00f3dovan\u00e9 znaky: [{0}]
+bad.request.uri\:.{0}.explanation=Identifik\u00e1tor URI po\u017eadavku m\u00e1 neplatn\u00e9 parametry cesty, neplatn\u00e9 te\u010dkov\u00e9 segmenty nebo nespr\u00e1vn\u011b k\u00f3dovan\u00e9 znaky.
+bad.request.uri\:.{0}.useraction=Ov\u011b\u0159te, \u017ee identifik\u00e1tor URI po\u017eadavku neobsahuje neplatnou kombinaci parametr\u016f te\u010dek nebo cesty nebo n\u011bkter\u00e9 nespr\u00e1vn\u011b k\u00f3dovan\u00e9 znaky.
+
+uri.has.fragment.character=Identifik\u00e1tor URI m\u00e1 znak fragmentu [#]; k\u00f3dovan\u00fd [%23] nebo ne.
+uri.has.dot.character=Identifik\u00e1tor URI zak\u00f3doval znak te\u010dky [%2E].
+uri.has.forwarslash.character=Identifik\u00e1tor URI zak\u00f3doval znak dop\u0159edn\u00e9ho lom\u00edtka [%2F].
+uri.has.backslash.character=Identifik\u00e1tor URI m\u00e1 znak zp\u011btn\u00e9ho lom\u00edtka; zak\u00f3dovan\u00fd [%5C] nebo ne.

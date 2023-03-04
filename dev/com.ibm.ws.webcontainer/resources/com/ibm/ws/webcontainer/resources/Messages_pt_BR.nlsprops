@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 1997, 2020 IBM Corporation and others.
+# Copyright (c) 1997, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 
 # This file has been modified to follow the WebSphere Message Guidelines.
@@ -1616,3 +1613,12 @@ duplicate.samesite.attribute.for.cookie.name.useraction=Verifique a configura\u0
 duplicate.reported.for.samesite.attribute.cookie.name=CWWWC0004W: Um nome de cookie {0} que est\u00e1 configurado para o valor de atributo do SameSite {1} foi identificado anteriormente como uma duplicata. Nenhum atributo do SameSite \u00e9 inclu\u00eddo para este cookie.
 duplicate.reported.for.samesite.attribute.cookie.name.explanation=Um nome de cookie n\u00e3o pode ser configurado para v\u00e1rios valores de atributo do SameSite. Esse nome de cookie j\u00e1 foi identificado como uma duplicata.
 duplicate.reported.for.samesite.attribute.cookie.name.useraction=Verifique a configura\u00e7\u00e3o do descritor de implementa\u00e7\u00e3o para certificar-se de que o nome do cookie esteja configurado para apenas um dos valores de atributo do SameSite a seguir: 'SameSiteCookies_Lax', 'SameSiteCookies_None' ou 'SameSiteCookies_Strict'. 
+
+bad.request.uri\:.{0}=CWWWC0005I: O URI de solicita\u00e7\u00e3o tem caracteres inv\u00e1lidos ou codificados incorretamente: [{0}]
+bad.request.uri\:.{0}.explanation=O URI de solicita\u00e7\u00e3o tem par\u00e2metros de caminho inv\u00e1lidos, segmentos de ponto inv\u00e1lidos ou caracteres codificados incorretamente.
+bad.request.uri\:.{0}.useraction=Verifique se o URI de solicita\u00e7\u00e3o n\u00e3o cont\u00e9m uma combina\u00e7\u00e3o inv\u00e1lida de ponto ou par\u00e2metro de caminho ou caracteres codificados incorretamente.
+
+uri.has.fragment.character=O URI tem um caractere de fragmento [#]; codificado [%23] ou n\u00e3o.
+uri.has.dot.character=O URI tem um caractere de ponto codificado [%2E].
+uri.has.forwarslash.character=O URI codificou um caractere de barra codificado [%2F].
+uri.has.backslash.character=O URI tem um caractere de barra invertida; codificado [%5C] ou n\u00e3o.

@@ -1,9 +1,11 @@
 ###############################################################################
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -46,3 +48,7 @@ JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS.useraction=Esaminare i file di log per
 JAKARTASEC_CLAIMS_PROCESSING_ERROR=CWWKS2506E: Il valore chiave della richiesta del client OpenID Connect {0} non \u00e8 corretto. Il valore \u00e8 {1} e il tipo previsto \u00e8 {2}. Errore: {3}.
 JAKARTASEC_CLAIMS_PROCESSING_ERROR.explanation=Il client OpenID Connect ha rilevato un errore durante la verifica del tipo previsto di campi nell'oggetto OpenID Claims. Un errore frequente \u00e8 che il tipo effettivo del valore restituito non corrisponde al tipo previsto.
 JAKARTASEC_CLAIMS_PROCESSING_ERROR.useraction=Per ulteriori informazioni, consultare l'errore nel messaggio.
+
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT=CWWKS2507W: Il valore dell''attributo {0} dell''annotazione relativa alla definizione del meccanismo di autenticazione OpenID non deve essere un numero intero negativo. Se il valore dell''attributo \u00e8 un''espressione EL (Expression Language), non deve risolversi in un numero intero negativo. Il valore fornito \u00e8 ''{1}''. Invece, viene utilizzato il valore di attributo predefinito ''{2}''.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.explanation=Il valore dell'attributo non deve essere un numero intero negativo. Se il valore dell'attributo \u00e8 un'espressione EL, il valore non deve risolversi in un numero intero negativo.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.useraction=Aggiornare l'attributo in modo che utilizzi un numero intero non negativo. Se il valore dell'attributo \u00e8 un'espressione EL, aggiornare il bean di riferimento in modo che si risolva in un numero intero non negativo.

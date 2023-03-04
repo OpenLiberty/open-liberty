@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2021 IBM Corporation and others.
+# Copyright (c) 2001, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -215,7 +215,7 @@ DSRA4003.driver.null.useraction=Actualiza\u0163i configura\u0163ia pentru a incl
 
 # {0} SQL command
 # {1} data source JNDI name or config display id 
-DSRA4004.onconnect.sql=DSRA4004E: Nu se poate executa comanda SQL onConnect \"{0}\" pe conexiunea ob\u0163inut\u0103 din dataSource {1}. Referi\u0163i-v\u0103 la excep\u0163ia cauz\u0103 pentru informa\u0163ii suplimentare.
+DSRA4004.onconnect.sql=DSRA4004E: Nu se poate executa comanda SQL onConnect "{0}" pe conexiunea ob\u0163inut\u0103 din dataSource {1}. Referi\u0163i-v\u0103 la excep\u0163ia cauz\u0103 pentru informa\u0163ii suplimentare.
 DSRA4004.onconnect.sql.explanation=A ap\u0103rut o eroare la \u00eencercarea de a executa comanda SQL specificat\u0103.
 DSRA4004.onconnect.sql.useraction=Referi\u0163i-v\u0103 la mesajul de excep\u0163ie pentru a ajuta la determinarea cauzei problemei.
 
@@ -299,6 +299,16 @@ META_DATA_EXCEPTION.useraction=Verifica\u0163i c\u0103 metadatele sunt activate 
 # 7019 deleted
 # 7020 reserved for other NLS file
 # 7021-7042 deleted
+
+# Do not translate: java.util.Logging
+ORACLE_TRACE_PARSE_WARNING=DSRA7043W: A fost utilizat\u0103 o valoare implicit\u0103 pentru proprietatea de sistem {0}, din cauza urm\u0103toarei erori de parsare: {1}
+ORACLE_TRACE_PARSE_WARNING.explanation=\u0218irurile de proprietate de sistem pentru Oracle sunt parsate \u0219i transmise la biblioteca java.util.logging. Dac\u0103 o valoare de proprietate nu poate fi parsat\u0103, se utilizeaz\u0103 \u00een locul ei o valoare implicit\u0103.
+ORACLE_TRACE_PARSE_WARNING.useraction=Examina\u021bi eroarea de parsare \u0219i modifica\u021bi proprietatea de sistem. Propriet\u0103\u021bile de jurnalizare valide sunt documentate \u00een pachetul java.util.logging.
+
+ORACLE_TRACE_ENABLE_INFO=DSRA7044I: A fost activat\u0103 urm\u0103rirea pentru driver-ul Oracle JDBC de proprietatea de sistem {0}. Una sau mai multe dintre propriet\u0103\u021bile de sistem [{1}] care sunt necesare pentru separarea fi\u0219ierelor de istoric Oracle lipsesc.
+ORACLE_TRACE_ENABLE_INFO.explanation=Driver-ul de depanare Oracle JDBC utilizeaz\u0103 pachetul java.util.logging pentru urm\u0103rire. Istoricele pentru depanarea Oracle JDBC sunt integrate \u00een istoricele Liberty \u00een mod implicit. Pentru a configura separarea urm\u0103ririi de depanare Oracle JDBC, toate propriet\u0103\u021bile din acest mesaj trebuie s\u0103 fie configurate ca propriet\u0103\u021bi de sistem.
+ORACLE_TRACE_ENABLE_INFO.useraction=Dac\u0103 vre\u021bi s\u0103 configura\u021bi fi\u0219iere de istoric Oracle JDBC separate, verifica\u021bi propriet\u0103\u021bile dumneavoastr\u0103 de sistem \u0219i ad\u0103uga\u021bi propriet\u0103\u021bile care lipsesc. Altfel, pute\u021bi ignora acest mesaj.
+
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------

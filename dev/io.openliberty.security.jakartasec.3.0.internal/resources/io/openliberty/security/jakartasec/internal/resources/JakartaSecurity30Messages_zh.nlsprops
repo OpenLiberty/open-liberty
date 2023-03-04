@@ -1,9 +1,11 @@
 ###############################################################################
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -46,3 +48,7 @@ JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS.useraction=\u8bf7\u67e5\u770b\u65e5\u5
 JAKARTASEC_CLAIMS_PROCESSING_ERROR=CWWKS2506E: OpenID Connect \u5ba2\u6237\u673a {0} \u58f0\u660e\u5bc6\u94a5\u503c\u4e0d\u6b63\u786e\u3002 \u503c\u4e3a {1}\uff0c\u671f\u671b\u7684\u7c7b\u578b\u4e3a {2}\u3002 \u9519\u8bef\u4e3a {3}\u3002
 JAKARTASEC_CLAIMS_PROCESSING_ERROR.explanation=OpenID Connect \u5ba2\u6237\u673a\u5728\u9a8c\u8bc1 OpenID \u58f0\u660e\u5bf9\u8c61\u4e0a\u7684\u9884\u671f\u5b57\u6bb5\u7c7b\u578b\u65f6\u9047\u5230\u9519\u8bef\u3002 \u9891\u7e41\u53d1\u751f\u7684\u9519\u8bef\u662f\u6240\u8fd4\u56de\u503c\u7684\u5b9e\u9645\u7c7b\u578b\u4e0e\u9884\u671f\u7c7b\u578b\u4e0d\u5339\u914d\u3002
 JAKARTASEC_CLAIMS_PROCESSING_ERROR.useraction=\u6709\u5173\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u6d88\u606f\u4e2d\u7684\u9519\u8bef\u3002
+
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT=CWWKS2507W: OpenID \u8ba4\u8bc1\u673a\u5236\u5b9a\u4e49\u6ce8\u91ca\u7684 {0} \u5c5e\u6027\u7684\u503c\u4e0d\u5f97\u4e3a\u8d1f\u6574\u6570\u3002 \u5982\u679c\u5c5e\u6027\u503c\u662f\u8868\u8fbe\u5f0f\u8bed\u8a00 (EL) \u8868\u8fbe\u5f0f\uff0c\u90a3\u4e48\u4e0d\u80fd\u5c06\u5176\u89e3\u6790\u4e3a\u8d1f\u6574\u6570\u3002 \u63d0\u4f9b\u7684\u503c\u4e3a\u201c{1}\u201d\u3002 \u5c06\u6539\u4e3a\u4f7f\u7528\u7f3a\u7701\u5c5e\u6027\u503c\u201c{2}\u201d\u3002
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.explanation=\u5c5e\u6027\u7684\u503c\u4e0d\u5f97\u4e3a\u8d1f\u6574\u6570\u3002 \u5982\u679c\u5c5e\u6027\u503c\u662f EL \u8868\u8fbe\u5f0f\uff0c\u90a3\u4e48\u8be5\u503c\u4e0d\u5f97\u89e3\u6790\u4e3a\u8d1f\u6574\u6570\u3002
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.useraction=\u66f4\u65b0\u5c5e\u6027\u4ee5\u4f7f\u7528\u975e\u8d1f\u6574\u6570\u3002 \u5982\u679c\u5c5e\u6027\u503c\u662f EL \u8868\u8fbe\u5f0f\uff0c\u8bf7\u66f4\u65b0\u5f15\u7528\u7684 bean \u4ee5\u89e3\u6790\u4e3a\u975e\u8d1f\u6574\u6570\u3002

@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME io.openliberty.security.oidcclientcore.internal/resources/io/openliberty/security/oidcclientcore/internal/resources/OidcClientCoreMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -125,3 +122,20 @@ TOKEN_CLAIM_VALUE_MISMATCH.useraction=Assegure-se de que o atributo na configura
 TOKEN_MISSING_CLAIMS=CWWKS2425E: O token do cliente {0} OpenID Connect \u00e9 inv\u00e1lido. O valor jwtClaims no objeto JwtContext \u00e9 nulo ou vazio.
 TOKEN_MISSING_CLAIMS.explanation=Informa\u00e7\u00f5es est\u00e3o ausentes do token e a valida\u00e7\u00e3o do token n\u00e3o pode ser conclu\u00edda.
 TOKEN_MISSING_CLAIMS.useraction=Revise o log em busca de erros anteriores para obter detalhes sobre a falha. Verifique o formato e o conte\u00fado do token retornado do provedor da conex\u00e3o OpenID.
+
+TOKEN_EMPTY_CLAIM=CWWKS2426E: O token tem uma solicita\u00e7\u00e3o [{0}] vazia.
+TOKEN_EMPTY_CLAIM.explanation=A solicita\u00e7\u00e3o especificada na mensagem deve ter um valor v\u00e1lido.
+TOKEN_EMPTY_CLAIM.useraction=O provedor OpenID Connect retorna um token de ID com uma solicita\u00e7\u00e3o vazia. Se uma solicita\u00e7\u00e3o estiver presente, ela dever\u00e1 conter um valor v\u00e1lido. Verifique o formato e o conte\u00fado do token retornado do provedor da conex\u00e3o OpenID.
+
+TOKEN_EXP_IN_PAST=CWWKS2427E: O token n\u00e3o \u00e9 v\u00e1lido porque expirou. O prazo de expira\u00e7\u00e3o do token \u00e9 [{0}]. O hor\u00e1rio atual menos o clock skew \u00e9 [{1}]. O clock skew configurado \u00e9 {2} segundos.
+TOKEN_EXP_IN_PAST.explanation=Os tokens expirados n\u00e3o s\u00e3o v\u00e1lidos.
+TOKEN_EXP_IN_PAST.useraction=Obtenha um novo token que n\u00e3o esteja expirado. Sincronize os hor\u00e1rios do clock entre o emissor do token e o cliente do OpenID Connect.
+
+TOKEN_CLAIM_IN_FUTURE=CWWKS2428E: O token \u00e9 considerado inv\u00e1lido devido ao valor [{0}] para a solicita\u00e7\u00e3o [{1}] estar no futuro. A soma do hor\u00e1rio atual e do clock skew \u00e9 [{2}] e o clock skew configurado \u00e9 {3} segundos.
+TOKEN_CLAIM_IN_FUTURE.explanation=O valor especificado na mensagem para a solicita\u00e7\u00e3o deve ser um hor\u00e1rio no passado.
+TOKEN_CLAIM_IN_FUTURE.useraction=Use o token ap\u00f3s o tempo especificado na mensagem expirar ou obtenha um novo token.
+
+TOKEN_RESPONSE_MISSING_PARAMETER=CWWKS2429E: A resposta do token do provedor OpenID Connect n\u00e3o tem pelo menos um par\u00e2metro necess\u00e1rio: {0}.
+TOKEN_RESPONSE_MISSING_PARAMETER.explanation=O provedor OpenID Connect n\u00e3o retornou um par\u00e2metro necess\u00e1rio ou falhou ao processar a solicita\u00e7\u00e3o de token.
+TOKEN_RESPONSE_MISSING_PARAMETER.useraction=Verifique se o terminal do token configurado est\u00e1 correto e \u00e9 capaz de responder \u00e0s solicita\u00e7\u00f5es de token OAuth.
+

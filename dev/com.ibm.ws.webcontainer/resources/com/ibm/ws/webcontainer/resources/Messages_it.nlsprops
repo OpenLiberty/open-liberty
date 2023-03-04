@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 1997, 2020 IBM Corporation and others.
+# Copyright (c) 1997, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 
 # This file has been modified to follow the WebSphere Message Guidelines.
@@ -1616,3 +1613,12 @@ duplicate.samesite.attribute.for.cookie.name.useraction=Controllare la configura
 duplicate.reported.for.samesite.attribute.cookie.name=CWWWC0004W: Un nome cookie {0} configurato per il valore dell''attributo SameSite {1} \u00e8 stato precedentemente identificato come un duplicato. Non viene aggiunto alcun attributo SameSite per questo cookie.
 duplicate.reported.for.samesite.attribute.cookie.name.explanation=Un nome cookie non pu\u00f2 essere configurato per pi\u00f9 valori attributo SameSite. Questo nome cookie \u00e8 gi\u00e0 stato identificato come un duplicato.
 duplicate.reported.for.samesite.attribute.cookie.name.useraction=Controllare la configurazione del descrittore di distribuzione per assicurarsi che il nome cookie sia configurato per uno solo dei seguenti valori di attributo SameSite: 'SameSiteCookies_Lax', 'SameSiteCookies_None' o 'SameSiteCookies_Strict'. 
+
+bad.request.uri\:.{0}=CWWWC0005I: L''URI della richiesta contiene caratteri non validi o codificati non correttamente: [{0}]
+bad.request.uri\:.{0}.explanation=L'URI della richiesta contiene parametri di percorso non validi, segmenti a punti non validi o caratteri codificati in modo non corretto.
+bad.request.uri\:.{0}.useraction=Verificare che l'URI della richiesta non contenga una combinazione di punti o parametri di percorso non validi o caratteri codificati in modo non corretto.
+
+uri.has.fragment.character=L'URI ha un carattere [#] di frammento; codificato [%23] o meno.
+uri.has.dot.character=L'URI contiene un carattere [%2E] punto codificato.
+uri.has.forwarslash.character=L'URI contiene un carattere [%2F] barra codificato.
+uri.has.backslash.character=L'URI contiene un carattere barra retroversa; codificato [%5C] o meno.

@@ -1,9 +1,11 @@
 ###############################################################################
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -46,3 +48,7 @@ JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS.useraction=Zkontrolujte protokoly, zda
 JAKARTASEC_CLAIMS_PROCESSING_ERROR=CWWKS2506E: Hodnota kl\u00ed\u010de Claims {0} klienta OpenID Connect je nespr\u00e1vn\u00e1. Hodnota je {1} a o\u010dek\u00e1van\u00fd typ je {2}. Chyba: {3}
 JAKARTASEC_CLAIMS_PROCESSING_ERROR.explanation=Klient pro OpenID Connect zjistil chybu p\u0159i ov\u011b\u0159ov\u00e1n\u00ed o\u010dek\u00e1van\u00e9ho typu pol\u00ed v objektu OpenID Claims. \u010cast\u00e1 chyba spo\u010d\u00edv\u00e1 v tom, \u017ee skute\u010dn\u00fd typ navr\u00e1cen\u00e9 hodnoty neodpov\u00edd\u00e1 o\u010dek\u00e1van\u00e9mu typu.
 JAKARTASEC_CLAIMS_PROCESSING_ERROR.useraction=Dal\u0161\u00ed informace viz chyba v t\u00e9to zpr\u00e1v\u011b.
+
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT=CWWKS2507W: Hodnota atributu {0} anotace definice mechanismu ov\u011b\u0159ov\u00e1n\u00ed OpenID nesm\u00ed b\u00fdt z\u00e1porn\u00e9 cel\u00e9 \u010d\u00edslo. Je-li hodnotou atributu v\u00fdraz jazyka v\u00fdrazu (EL), nesm\u00ed se interpretovat do z\u00e1porn\u00e9ho cel\u00e9ho \u010d\u00edsla. Poskytnut\u00e1 hodnota byla ''{1}''. M\u00edsto toho bude pou\u017eita v\u00fdchoz\u00ed hodnota atributu ''{2}''.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.explanation=Hodnota atributu nesm\u00ed b\u00fdt z\u00e1porn\u00e9 cel\u00e9 \u010d\u00edslo. Je-li hodnotou atributu v\u00fdraz EL, nesm\u00ed se hodnota interpretovat do z\u00e1porn\u00e9ho cel\u00e9ho \u010d\u00edsla.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.useraction=Aktualizujte atribut tak, aby pou\u017e\u00edval nez\u00e1porn\u00e9 cel\u00e9 \u010d\u00edslo. Je-li hodnotou atributu v\u00fdraz EL, aktualizujte odkazovan\u00fd objekt typu bean tak, aby byl interpretov\u00e1n do nez\u00e1porn\u00e9ho cel\u00e9ho \u010d\u00edsla.
