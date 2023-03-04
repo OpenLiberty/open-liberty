@@ -7,24 +7,21 @@
     http://www.eclipse.org/legal/epl-2.0/
     
     SPDX-License-Identifier: EPL-2.0
-
-    Contributors:
-        IBM Corporation - initial API and implementation
  -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="jakarta.faces.core"
-	xmlns:h="jakarta.faces.html" xmlns:c="jakarta.tags.core">
+    xmlns:h="jakarta.faces.html" xmlns:c="jakarta.tags.core">
 
-<h:head>
-	<title>Flow start</title>
-</h:head>
+    <h:head>
+        <title>Flow start</title>
+    </h:head>
 
-<h:body>
+    <h:body>
         NESTED FLOW
         <h:form id="form">
-		<h:commandLink id="init" value="init"
-			action="#{flowMapNextBean.initFoo()}" />
-		<h:commandLink id="next" value="next" action="testFlowNext2" />
-	</h:form>
-</h:body>
+            <h:commandButton id="init" value="init"
+                action="#{flowMapNextBean.initFoo()}" />
+            <h:commandButton id="next" value="next" action="testFlowNext2" />
+        </h:form>
+    </h:body>
 
 </html>
