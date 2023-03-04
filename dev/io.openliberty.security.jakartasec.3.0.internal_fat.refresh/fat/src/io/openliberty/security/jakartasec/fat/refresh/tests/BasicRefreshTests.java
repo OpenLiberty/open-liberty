@@ -59,7 +59,11 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
 
     @Server("jakartasec-3.0_fat.refresh.op")
     public static LibertyServer opServer;
-    @Server("jakartasec-3.0_fat.refresh.rp")
+    @Server("jakartasec-3.0_fat.refresh.rp.jwt")
+    public static LibertyServer rpJwtServer;
+    @Server("jakartasec-3.0_fat.refresh.rp.opaque")
+    public static LibertyServer rpOpaqueServer;
+
     public static LibertyServer rpServer;
 
     protected static ShrinkWrapHelpers swh = null;
@@ -74,7 +78,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     protected static final boolean TokenWasNotRefreshedSecondTime = false;
 
     // create repeats for opaque and jwt tokens - in lite mode, only run with jwt tokens
-   @ClassRule
+    @ClassRule
     public static RepeatTests repeat = createTokenTypeRepeats(TestMode.LITE, Constants.JWT_TOKEN_FORMAT);
 
     static Map<String, String> appMap = new HashMap<String, String>();
@@ -83,7 +87,7 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
     public static void setUp() throws Exception {
 
         // write property that is used to configure the OP to generate JWT or Opaque tokens
-        setTokenTypeInBootstrap(opServer);
+        rpServer = setTokenTypeInBootstrap(opServer, rpJwtServer, rpOpaqueServer);
 
         // Add servers to server trackers that will be used to clean servers up and prevent servers
         // from being restored at the end of each test (so far, the tests are not reconfiguring the servers)

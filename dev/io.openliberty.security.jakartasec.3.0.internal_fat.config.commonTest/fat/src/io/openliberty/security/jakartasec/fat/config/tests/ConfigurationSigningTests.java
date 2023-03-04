@@ -35,7 +35,6 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurityTests;
@@ -68,6 +67,7 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
     @Server("jakartasec-3.0_fat.config.rp.signing.opaque")
     public static LibertyServer rpOpaqueServer;
     public static LibertyServer rpServer;
+
     protected static ShrinkWrapHelpers swh = null;
 
     protected static boolean CallerNameClaimDefault = true;
@@ -100,15 +100,8 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
     public static void setUp() throws Exception {
 
         // write property that is used to configure the OP to generate JWT or Opaque tokens
-        setTokenTypeInBootstrap(opServer);
+        rpServer = setTokenTypeInBootstrap(opServer, rpJwtServer, rpOpaqueServer);
 
-        // due to the way we create the test apps on the fly, we need a unique rp server instance for each repeat.
-
-        if (RepeatTestFilter.getRepeatActionsAsString().contains(Constants.JWT_TOKEN_FORMAT)) {
-            rpServer = rpJwtServer;
-        } else {
-            rpServer = rpOpaqueServer;
-        }
         // Add servers to server trackers that will be used to clean servers up and prevent servers
         // from being restored at the end of each test (so far, the tests are not reconfiguring the servers)
         updateTrackers(opServer, rpServer, false);

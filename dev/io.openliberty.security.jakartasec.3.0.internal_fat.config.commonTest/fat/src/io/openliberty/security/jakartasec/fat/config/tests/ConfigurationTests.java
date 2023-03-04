@@ -56,7 +56,11 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
 
     @Server("jakartasec-3.0_fat.config.op")
     public static LibertyServer opServer;
-    @Server("jakartasec-3.0_fat.config.rp")
+    @Server("jakartasec-3.0_fat.config.rp.jwt")
+    public static LibertyServer rpJwtServer;
+    @Server("jakartasec-3.0_fat.config.rp.opaque")
+    public static LibertyServer rpOpaqueServer;
+
     public static LibertyServer rpServer;
 
     protected static ShrinkWrapHelpers swh = null;
@@ -69,7 +73,7 @@ public class ConfigurationTests extends CommonAnnotatedSecurityTests {
     public static void setUp() throws Exception {
 
         // write property that is used to configure the OP to generate JWT or Opaque tokens
-        setTokenTypeInBootstrap(opServer);
+        rpServer = setTokenTypeInBootstrap(opServer, rpJwtServer, rpOpaqueServer);
 
         // Add servers to server trackers that will be used to clean servers up and prevent servers
         // from being restored at the end of each test (so far, the tests are not reconfiguring the servers)

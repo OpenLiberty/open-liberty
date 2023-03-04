@@ -99,24 +99,24 @@ autoFVT.doLast {
      into new File(autoFvtDir, 'publish/servers/' + server + '/')
      include '**/allAlg*.p12'
     }
-    copy { 
-     from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
-     into new File(autoFvtDir, 'publish/servers/' + server + '/')
-     include '**/*private-key.pem'
-     include '**/*public-key.pem'
-     exclude '**/short_*private-key.pem'
-     exclude '**/short_*public-key.pem'
-    }
 
   }    
   
      def rpCopyServers = [
-	'jakartasec-3.0_fat.config.rp.scope',
-	'jakartasec-3.0_fat.config.rp.responseMode',
-	'jakartasec-3.0_fat.config.rp.useNonce',
-	'jakartasec-3.0_fat.config.rp.extraParameters',
-	'jakartasec-3.0_fat.config.rp.prompt',
-	'jakartasec-3.0_fat.config.rp.display'
+	'jakartasec-3.0_fat.config.rp.jwt',
+	'jakartasec-3.0_fat.config.rp.opaque',
+	'jakartasec-3.0_fat.config.rp.scope.jwt',
+	'jakartasec-3.0_fat.config.rp.scope.opaque',
+	'jakartasec-3.0_fat.config.rp.responseMode.jwt',
+	'jakartasec-3.0_fat.config.rp.responseMode.opaque',
+	'jakartasec-3.0_fat.config.rp.useNonce.jwt',
+	'jakartasec-3.0_fat.config.rp.useNonce.opaque',
+	'jakartasec-3.0_fat.config.rp.extraParameters.jwt',
+	'jakartasec-3.0_fat.config.rp.extraParameters.opaque',
+	'jakartasec-3.0_fat.config.rp.prompt.jwt',
+	'jakartasec-3.0_fat.config.rp.prompt.opaque',
+	'jakartasec-3.0_fat.config.rp.display.jwt',
+	'jakartasec-3.0_fat.config.rp.display.opaque'
 
   ]
 
@@ -136,82 +136,5 @@ autoFVT.doLast {
 
   }   
 }
-autoFVT.doLast {
-  
-   copy {
-      from project(':com.ibm.ws.security.fat.common').file('publish/shared/config')
-      into new File(autoFvtDir, 'publish/shared/config')
-      include '**/allAlgSSLSettings.xml'
-   }
 
-   /** copy common config files **/
-   copy {
-      from project(':io.openliberty.security.jakartasec.3.0.internal_fat.common').file('publish/shared/config')
-      into new File(autoFvtDir, 'publish/shared/config')
-      exclude 'oidcProvider.xml'
-      exclude 'oidcProvider_useNonce.xml'
-      include '**/*.xml'
-   }
- 
-    copy {
-      from project(':io.openliberty.security.jakartasec.3.0.internal_fat.common').file('publish/shared/config/oidcClient')
-      into new File(autoFvtDir, 'publish/shared/config/oidcClient')
-      include '**/*.properties'
-   }
-   
-  def servers = [
-	'jakartasec-3.0_fat.config.op',
-	'jakartasec-3.0_fat.config.rp'
-  ]
-
-  servers.each { server ->
-
-    copy { 
-      from new File(project(':io.openliberty.security.jakartasec.3.0.internal_fat.common').buildDir, 'test-application/testmarker.war')
-      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
-   }
-      
-    copy { 
-     from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
-     into new File(autoFvtDir, 'publish/servers/' + server + '/')
-     include '**/allAlg*.p12'
-    }
-    
-//    copy { 
-//     from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
-//     into new File(autoFvtDir, 'publish/servers/' + server + '/')
-//     include '**/*private-key.pem'
-//     include '**/*public-key.pem'
-//     exclude '**/short_*private-key.pem'
-//     exclude '**/short_*public-key.pem'
-//    }
-
-  }    
-  
-     def rpCopyServers = [
-	'jakartasec-3.0_fat.config.rp.scope',
-	'jakartasec-3.0_fat.config.rp.responseMode',
-	'jakartasec-3.0_fat.config.rp.useNonce',
-	'jakartasec-3.0_fat.config.rp.extraParameters',
-	'jakartasec-3.0_fat.config.rp.prompt',
-	'jakartasec-3.0_fat.config.rp.display'
-
-  ]
-
-/** The RP's used in this FAT install multiple applications using shrinkwrapper **/
-/** If each test class uses the same server we end up accumulating test apps    **/
-/** The last rp server ends up with all of its own apps plus the apps of the    **/
-/** servers that started before it.  This code will copy the original server    **/
-/** so that each server can have its own instance, but, we won't need multiple  **/
-/** copies of the same source for each server                                   **/
-  rpCopyServers.each { rpServer ->
-
-    copy { 
-      from new File(autoFvtDir, 'publish/servers/jakartasec-3.0_fat.config.rp')
-      into new File(autoFvtDir, 'publish/servers/' + rpServer )
-      include '**/**'
-   }
-
-  }   
-}
 

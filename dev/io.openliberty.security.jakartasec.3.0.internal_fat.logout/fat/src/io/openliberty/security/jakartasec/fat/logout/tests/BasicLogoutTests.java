@@ -64,7 +64,11 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
 
     @Server("jakartasec-3.0_fat.logout.op")
     public static LibertyServer opServer;
-    @Server("jakartasec-3.0_fat.logout.rp")
+    @Server("jakartasec-3.0_fat.logout.rp.jwt")
+    public static LibertyServer rpJwtServer;
+    @Server("jakartasec-3.0_fat.logout.rp.opaque")
+    public static LibertyServer rpOpaqueServer;
+
     public static LibertyServer rpServer;
 
     protected static ShrinkWrapHelpers swh = null;
@@ -86,7 +90,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     public static void setUp() throws Exception {
 
         // write property that is used to configure the OP to generate JWT or Opaque tokens
-        setTokenTypeInBootstrap(opServer);
+        rpServer = setTokenTypeInBootstrap(opServer, rpJwtServer, rpOpaqueServer);
 
         // Add servers to server trackers that will be used to clean servers up and prevent servers
         // from being restored at the end of each test (so far, the tests are not reconfiguring the servers)

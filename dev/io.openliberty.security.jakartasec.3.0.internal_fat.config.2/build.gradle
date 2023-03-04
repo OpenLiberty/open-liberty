@@ -78,8 +78,6 @@ autoFVT.doLast {
   def servers = [
 	'jakartasec-3.0_fat.config.op',
 	'jakartasec-3.0_fat.config.rp',
-	'jakartasec-3.0_fat.config.rp.claimsDef',
-	'jakartasec-3.0_fat.config.rp.ELOverride',
 	'jakartasec-3.0_fat.config.rp.ELOverrideHttpSession'
   ]
 
@@ -106,10 +104,13 @@ autoFVT.doLast {
 
   }    
   
-     def rpCopyServers = [
-	'jakartasec-3.0_fat.config.rp.claimsDef',
-	'jakartasec-3.0_fat.config.rp.ELOverride',
-	'jakartasec-3.0_fat.config.rp.tokenMinValidity',
+    def rpCopyServers = [
+	'jakartasec-3.0_fat.config.rp.claimsDef.jwt',
+	'jakartasec-3.0_fat.config.rp.claimsDef.opaque',
+	'jakartasec-3.0_fat.config.rp.ELOverride.jwt',
+	'jakartasec-3.0_fat.config.rp.ELOverride.opaque',
+	'jakartasec-3.0_fat.config.rp.tokenMinValidity.jwt',
+	'jakartasec-3.0_fat.config.rp.tokenMinValidity.opaque',
 	'jakartasec-3.0_fat.config.rp.userinfo.jwt.jwt',
 	'jakartasec-3.0_fat.config.rp.userinfo.jwt.opaque',
 	'jakartasec-3.0_fat.config.rp.userinfo.json.jwt',
@@ -136,4 +137,28 @@ autoFVT.doLast {
    }
 
   }   
+  
+   def rpCopyServers2 = [
+	'jakartasec-3.0_fat.config.rp.ELOverrideHttpSession.jwt',
+	'jakartasec-3.0_fat.config.rp.ELOverrideHttpSession.opaque'
+
+  ]
+
+/** The RP's used in this FAT install multiple applications using shrinkwrapper **/
+/** If each test class uses the same server we end up accumulating test apps    **/
+/** The last rp server ends up with all of its own apps plus the apps of the    **/
+/** servers that started before it.  This code will copy the original server    **/
+/** so that each server can have its own instance, but, we won't need multiple  **/
+/** copies of the same source for each server                                   **/
+  rpCopyServers2.each { rpServer ->
+
+    copy { 
+      from new File(autoFvtDir, 'publish/servers/jakartasec-3.0_fat.config.rp.ELOverrideHttpSession')
+      into new File(autoFvtDir, 'publish/servers/' + rpServer )
+      include '**/**'
+   }
+
+  }   
+
+   
 }

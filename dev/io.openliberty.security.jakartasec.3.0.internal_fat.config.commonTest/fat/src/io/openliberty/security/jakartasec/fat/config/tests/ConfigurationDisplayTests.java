@@ -56,7 +56,11 @@ public class ConfigurationDisplayTests extends CommonAnnotatedSecurityTests {
 
     @Server("jakartasec-3.0_fat.config.op")
     public static LibertyServer opServer;
-    @Server("jakartasec-3.0_fat.config.rp.display")
+    @Server("jakartasec-3.0_fat.config.rp.display.jwt")
+    public static LibertyServer rpJwtServer;
+    @Server("jakartasec-3.0_fat.config.rp.display.opaque")
+    public static LibertyServer rpOpaqueServer;
+
     public static LibertyServer rpServer;
 
     protected static ShrinkWrapHelpers swh = null;
@@ -69,7 +73,7 @@ public class ConfigurationDisplayTests extends CommonAnnotatedSecurityTests {
     public static void setUp() throws Exception {
 
         // write property that is used to configure the OP to generate JWT or Opaque tokens
-        setTokenTypeInBootstrap(opServer);
+        rpServer = setTokenTypeInBootstrap(opServer, rpJwtServer, rpOpaqueServer);
 
         // Add servers to server trackers that will be used to clean servers up and prevent servers
         // from being restored at the end of each test (so far, the tests are not reconfiguring the servers)
@@ -141,7 +145,8 @@ public class ConfigurationDisplayTests extends CommonAnnotatedSecurityTests {
         response = actions.invokeUrl(_testName, webClient, authEndpoint);
 
         String displayString = displayType.toString().toLowerCase();
-        String authEndpointDisplayRegex = "https:\\/\\/localhost:" + opServer.getBvtSecurePort() + "\\/oidc\\/endpoint\\/OP[0-9]*\\/authorize\\?.*display=" + displayString + "(&|$)";
+        String authEndpointDisplayRegex = "https:\\/\\/localhost:" + opServer.getBvtSecurePort() + "\\/oidc\\/endpoint\\/OP[0-9]*\\/authorize\\?.*display=" + displayString
+                                          + "(&|$)";
 
         Expectations authExpectations = new Expectations();
         authExpectations.addFoundStatusCodeAndMessageForCurrentAction();
