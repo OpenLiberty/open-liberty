@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.client.fat;
 
+import java.util.Locale;
+
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -50,9 +52,10 @@ import com.ibm.ws.jaxrs20.client.fat.test.TimeoutClientTest;
 import com.ibm.ws.jaxrs20.client.fat.test.XmlBindingTest;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -91,9 +94,27 @@ import componenttest.rules.repeater.RepeatTests;
                 XmlBindingTest.class
 })
 public class FATSuite {
+    private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
+    private static final boolean isAIX = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("aix");
+    private static final boolean isISeries = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("iseries");
+
+    // To avoid going over 3 hour test limit on slow hardware, run only the first an last versions
+    // on slow hardware.
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
-        .andWith(FeatureReplacementAction.EE8_FEATURES().withID("JAXRS-2.1").fullFATOnly())
-        .andWith(new JakartaEE9Action().alwaysAddFeature("jsonb-2.0").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-        .andWith(new JakartaEE10Action().alwaysAddFeature("jsonb-3.0").alwaysAddFeature("servlet-6.0"));
+    public static RepeatTests r;
+    static {
+        if (!(isWindows || isAIX || isISeries) || FATRunner.FAT_TEST_LOCALRUN) {
+            r = RepeatTests.withoutModificationInFullMode()
+                            .andWith(FeatureReplacementAction.EE8_FEATURES().withID("JAXRS-2.1").fullFATOnly())
+                            .andWith(new JakartaEE9Action().alwaysAddFeature("jsonb-2.0").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                            .andWith(new JakartaEE10Action().alwaysAddFeature("jsonb-3.0").alwaysAddFeature("servlet-6.0"));
+
+        } else {
+            r = RepeatTests.withoutModificationInFullMode()
+                             .andWith(new JakartaEE10Action().alwaysAddFeature("jsonb-3.0").alwaysAddFeature("servlet-6.0"));
+
+        }
+    }
+
+
 }
