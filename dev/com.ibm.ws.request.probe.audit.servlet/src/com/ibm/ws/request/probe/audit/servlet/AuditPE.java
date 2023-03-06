@@ -81,10 +81,7 @@ import com.ibm.wsspi.security.audit.AuditService;
  *
  */
 @Component(service = { ProbeExtension.class }, 
-           name = "com.ibm.ws.security.audit.pe", 
-           configurationPolicy = ConfigurationPolicy.IGNORE, 
-           property = "service.vendor=IBM", 
-           immediate = true)
+		name = "com.ibm.ws.security.audit.pe", configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM", immediate = true)
 public class AuditPE implements ProbeExtension {
 
 	private static final TraceComponent tc = Tr.register(AuditPE.class, "requestProbe",
@@ -95,7 +92,7 @@ public class AuditPE implements ProbeExtension {
 	protected final AtomicServiceReference<AuditService> auditServiceRef = new AtomicServiceReference<AuditService>(
 			KEY_AUDIT_SERVICE);
 
-	private AuditManager auditManager = new AuditManager();
+	private final AuditManager auditManager = new AuditManager();
 	private String savedOriginalFileContents;
 
 	@Activate
@@ -105,11 +102,12 @@ public class AuditPE implements ProbeExtension {
 
 	@Deactivate
 	protected void deactivate(ComponentContext cc) {
+
 		auditServiceRef.deactivate(cc);
 	}
 
 	@Reference(service = AuditService.class, 
-			   name = KEY_AUDIT_SERVICE)
+			name = KEY_AUDIT_SERVICE)
 	protected void setAuditService(ServiceReference<AuditService> reference) {
 		auditServiceRef.setReference(reference);
 	}
@@ -124,7 +122,7 @@ public class AuditPE implements ProbeExtension {
 	}
 
 	/** {@inheritDoc} */
-	@Override
+        @Override
 	public int getRequestSampleRate() {
 		return 1;
 	}
@@ -178,8 +176,8 @@ public class AuditPE implements ProbeExtension {
 	@Override
 	// @FFDCIgnore(ClassCastException.class)
 	public void processCounter(Event event) {
-        Object[] methodParams = (Object[]) event.getContextInfo();
-        if (methodParams != null && methodParams.length > 0) {
+		Object[] methodParams = (Object[]) event.getContextInfo();
+		if (methodParams != null && methodParams.length > 0) {
 			if ((methodParams[0].toString()).equals("JMX_NOTIFICATION_01")) {
 				auditEventJMXNotification01(methodParams);
 			} else if ((methodParams[0].toString()).equals("JMX_MBEAN_01")) {
@@ -261,7 +259,7 @@ public class AuditPE implements ProbeExtension {
 					break;
 				}
 			}
-        }
+		}
 	}
 
 	private void auditEventServerConfigChange01(Object[] methodParams) {
@@ -274,9 +272,10 @@ public class AuditPE implements ProbeExtension {
 				&& auditServiceRef.getService().isAuditRequired(
 						AuditConstants.SERVER_CONFIG_CHANGE,
 						statusCode == HttpServletResponse.SC_OK ? AuditConstants.SUCCESS : AuditConstants.FAILURE)) {
-					ServerConfigEvent sce = new ServerConfigEvent(req, response);
-					auditServiceRef.getService().sendEvent(sce);
-					savedOriginalFileContents = null;
+			ServerConfigEvent sce = new ServerConfigEvent(req, response);
+
+			auditServiceRef.getService().sendEvent(sce);
+			savedOriginalFileContents = null;
 		}
 	}
 
@@ -294,7 +293,7 @@ public class AuditPE implements ProbeExtension {
 					new AuthenticationEvent(webRequest, authResult, statusCode);
 			auditServiceRef.getService().sendEvent(av);
 		}
-		
+
 		try {
 			/*
 			 * Store user and webrequest information for possible VMM related
@@ -448,9 +447,7 @@ public class AuditPE implements ProbeExtension {
 		Integer statusCode = (Integer) varargs[3];
 		if (auditServiceRef.getService() != null
 				&& auditServiceRef
-						.getService()
-						.isAuditRequired(
-								AuditConstants.SECURITY_AUTHZ,
+						.getService().isAuditRequired(AuditConstants.SECURITY_AUTHZ,
 						statusCode == HttpServletResponse.SC_OK ? AuditConstants.SUCCESS : AuditConstants.FAILURE)) {
 			AuthorizationEvent av =
 					new AuthorizationEvent(webRequest, authResult, uriname, statusCode);
@@ -757,20 +754,20 @@ public class AuditPE implements ProbeExtension {
 
 	}
 
-    private void auditEventSafAuth(Object[] methodParams) {
-        Object[] varargs = (Object[]) methodParams[1];
+	private void auditEventSafAuth(Object[] methodParams) {
+		Object[] varargs = (Object[]) methodParams[1];
 
-        int safReturnCode = (Integer) varargs[0];
-        int racfReturnCode = (Integer) varargs[1];
-        int racfReasonCode = (Integer) varargs[2];
-        String userSecurityName = (String) varargs[3];
-        String safProfile = (String) varargs[4];
-        String safClass = (String) varargs[5];
-        Boolean authDecision = (Boolean) varargs[6];
-        String principleName = (String) varargs[7];
-        String applid = (String) varargs[8];
-        String accessLevel = (String) varargs[9];
-        String errorMessage = (String) varargs[10];
+		int safReturnCode = (Integer) varargs[0];
+		int racfReturnCode = (Integer) varargs[1];
+		int racfReasonCode = (Integer) varargs[2];
+		String userSecurityName = (String) varargs[3];
+		String safProfile = (String) varargs[4];
+		String safClass = (String) varargs[5];
+		Boolean authDecision = (Boolean) varargs[6];
+		String principleName = (String) varargs[7];
+		String applid = (String) varargs[8];
+		String accessLevel = (String) varargs[9];
+		String errorMessage = (String) varargs[10];
 		// Case where WS-CD may have this field but OL may not. This check will make
 		// sure there is no IndexOutOfBoundsException. The size of varargs should be
 		// at least 12 for us to get the value of the methodName
@@ -788,11 +785,12 @@ public class AuditPE implements ProbeExtension {
 			vsam = (String) varargs[13];
 		}
 
-        if (auditServiceRef.getService() != null && auditServiceRef.getService().isAuditRequired(AuditConstants.SECURITY_SAF_AUTHZ, AuditConstants.SUCCESS)) {
+		if (auditServiceRef.getService() != null && auditServiceRef.getService()
+				.isAuditRequired(AuditConstants.SECURITY_SAF_AUTHZ, AuditConstants.SUCCESS)) {
 			SAFAuthorizationEvent safAuth = new SAFAuthorizationEvent(safReturnCode, racfReturnCode, racfReasonCode,
 					userSecurityName, applid, safProfile, safClass, authDecision, principleName, accessLevel,
 					errorMessage, methodName, volser, vsam);
-            auditServiceRef.getService().sendEvent(safAuth);
-        }
-    }
+			auditServiceRef.getService().sendEvent(safAuth);
+		}
+	}
 }

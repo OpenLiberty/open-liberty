@@ -137,8 +137,8 @@ public class AuditEvent {
     public static final String TARGET_SAF_ERROR_MESSAGE = "target.saf.error.message";
     public static final String TARGET_VOLSER = "target.volser";
     public static final String TARGET_VSAM = "target.vsam";
-    public static final String TARGET_ORIGINAL_FILE = "target.original.file";
-    public static final String TARGET_UPDATED_FILE = "target.updated.file";
+    public static final String TARGET_ORIGINAL_FILE = "target.originalServerConfigFile";
+    public static final String TARGET_UPDATED_FILE = "target.updatedServerConfigFile";
 
     public final static String INITIATOR = "initiator";
     public final static String INITIATOR_ID = "initiator.id";

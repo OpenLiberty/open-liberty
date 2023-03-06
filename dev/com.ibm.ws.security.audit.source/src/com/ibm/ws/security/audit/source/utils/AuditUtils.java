@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -37,7 +37,6 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.audit.AuditService;
 import com.ibm.wsspi.security.registry.RegistryHelper;
-
 
 /**
  * Various and sundry utility methods for auditing.
@@ -96,6 +95,7 @@ public class AuditUtils {
             if ((e.getException()) instanceof com.ibm.websphere.servlet.session.UnauthorizedSessionRequestException) {
                 if (!req.isRequestedSessionIdFromCookie()) {
                     sessionID = AccessController.doPrivileged(new PrivilegedAction<String>() {
+
                         @Override
                         public String run() {
                             return f_req.getSession().getId();
@@ -186,15 +186,16 @@ public class AuditUtils {
      * @return string with any passwords obfuscated
      */
     public static String hidePassword(@Sensitive String s) {
+
         if ((s.indexOf("password") == -1) && (s.indexOf("PASSWORD") == -1)) {
             return s;
         } else {
             String ss = "";
             int indexLowerCase = s.indexOf("password");
             int indexUpperCase = s.indexOf("PASSWORD");
-
             if (indexLowerCase != -1) {
                 ss = s.substring(0, indexLowerCase + 9);
+
                 for (int index = (indexLowerCase + 10); index < s.length(); index++) {
                     ss = ss.concat("*");
                 }
@@ -209,7 +210,92 @@ public class AuditUtils {
         }
     }
 
+    /**
+     * Hide the password
+     *
+     * @param string
+     * @return string with any passwords obfuscated
+     */
+    public static String hidePasswordInConfigXML(@Sensitive String s) {
+        Boolean checkForPasswords = true;
+        String ss = "";
+        String finalString = "";
+        int intervals = 0;
+
+        while (checkForPasswords) {
+            intervals = intervals + 1;
+            if ((s.indexOf("password") == -1) && (s.indexOf("PASSWORD") == -1)) {
+                return s;
+            } else {
+                int indexLowerCase = s.indexOf("password");
+                int indexUpperCase = s.indexOf("PASSWORD");
+                if (indexLowerCase != -1) {
+                    ss = s.substring(0, indexLowerCase + 9);
+
+                    String restofString = s.substring(indexLowerCase + 9, s.length());
+
+                    int indexOfBeginningPassword = restofString.indexOf("\"");
+                    restofString = restofString.substring(indexOfBeginningPassword + 1, restofString.length());
+
+                    int indexOfEndingPassword = restofString.indexOf("\"");
+
+                    String replacedString = new String("\"");
+
+                    if (!restofString.startsWith("*")) {
+                        for (int index = 0; index < (indexOfEndingPassword - indexOfBeginningPassword - 1); index++) {
+                            replacedString = replacedString.concat("*");
+                        }
+                        replacedString = replacedString.concat("\"");
+                    }
+
+                    restofString = restofString.substring(indexOfEndingPassword + 1, restofString.length());
+
+                    finalString = finalString.concat(ss.concat(replacedString));
+
+                    ss = restofString;
+
+                } else if (indexUpperCase != -1) {
+                    ss = s.substring(0, indexUpperCase + 9);
+
+                    String restofString = s.substring(indexUpperCase + 9, s.length());
+
+                    int indexOfBeginningPassword = restofString.indexOf("\"");
+                    restofString = restofString.substring(indexOfBeginningPassword + 1, restofString.length());
+
+                    int indexOfEndingPassword = restofString.indexOf("\"");
+
+                    String replacedString = new String("\"");
+
+                    if (!restofString.startsWith("*")) {
+                        for (int index = 0; index < (indexOfEndingPassword - indexOfBeginningPassword - 1); index++) {
+                            replacedString = replacedString.concat("*");
+                        }
+                        replacedString = replacedString.concat("\"");
+                    }
+
+                    restofString = restofString.substring(indexOfEndingPassword + 1, restofString.length());
+
+                    finalString = finalString.concat(ss.concat(replacedString));
+
+                    ss = restofString;
+
+                }
+            }
+            if (ss.indexOf("password") == -1 && ss.indexOf("PASSWORD") == -1) {
+                checkForPasswords = false;
+                ss = finalString.concat(ss);
+            } else {
+                s = ss;
+            }
+        }
+
+        return ss;
+
+    }
+
     /*
+     *
+     * /*
      * Get the J2EE component name
      *
      */

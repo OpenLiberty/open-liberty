@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.audit.event;
 
+import java.lang.Object;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -52,7 +53,6 @@ public class ServerConfigEvent extends AuditEvent {
 
     public ServerConfigEvent(Object request, Object resp) {
         this();
-
         try {
             RESTRequest req = (RESTRequest) request;
             RESTResponse response = (RESTResponse) resp;
@@ -75,10 +75,12 @@ public class ServerConfigEvent extends AuditEvent {
             String updatedFileContents = auditManager.getUpdatedFileContents();
 
             if (originalFileContents != null) {
+                originalFileContents = AuditUtils.hidePasswordInConfigXML(originalFileContents);
                 int endOfFile = originalFileContents.lastIndexOf("</server>");
                 set(AuditEvent.TARGET_ORIGINAL_FILE, originalFileContents.substring(0, endOfFile + 9));
             }
             if (updatedFileContents != null) {
+                updatedFileContents = AuditUtils.hidePasswordInConfigXML(updatedFileContents);
                 int endOfFile = updatedFileContents.lastIndexOf("</server>");
                 set(AuditEvent.TARGET_UPDATED_FILE, updatedFileContents.substring(0, endOfFile + 9));
             }
@@ -122,4 +124,5 @@ public class ServerConfigEvent extends AuditEvent {
             }
         }
     }
+
 }

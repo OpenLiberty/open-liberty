@@ -37,7 +37,6 @@ import com.ibm.websphere.security.audit.context.AuditManager;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.rest.handler.internal.ExtendedRESTRequestImpl;
 import com.ibm.ws.rest.handler.internal.helper.HandlerPath;
-import com.ibm.ws.rest.handler.internal.service.RESTHandlerContainerImpl.HandlerInfo;
 import com.ibm.ws.security.audit.Audit;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSetMap;
