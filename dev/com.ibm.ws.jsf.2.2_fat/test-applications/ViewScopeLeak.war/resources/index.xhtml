@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * Copyright (c)  2022  IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
           "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -26,11 +23,9 @@
             <h:form id="form1">
                 <h:outputText id="out1" value="#{ViewScopedCDIBean.value}"/>
                 <p/>
-                <h:commandButton id="ajaxButton" value="Count CDI" action="#{ViewScopedCDIBean.increment}">
-                    <f:ajax render="out1"/>
-                </h:commandButton>
+                <h:commandButton id="ajaxButton" value="Count CDI" action="#{ViewScopedCDIBean.increment}"/>
 
-                <h:commandButton id="invalidate" value="Change View" action="#{ViewScopedCDIBean.reset}"/>
+                <h:commandButton id="invalidate" value="Invalidate" action="#{ViewScopedCDIBean.reset}"/>
             </h:form>
         </f:view>
     </body>
