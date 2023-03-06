@@ -34,6 +34,7 @@ import com.ibm.ws.transaction.fat.util.FATUtils;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import suite.FATSuite;
@@ -117,6 +118,8 @@ import suite.FATSuite;
  */
 @RunWith(FATRunner.class)
 @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException", })
+//Skip on IBM i test class depends on datasource inferrence
+@SkipIfSysProp(SkipIfSysProp.OS_IBMI)
 public class FailoverTest1 extends FailoverTest {
     public static final String APP_NAME = "transaction";
     public static final String SERVLET_NAME = "transaction/FailoverServlet";
