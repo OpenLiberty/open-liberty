@@ -85,7 +85,7 @@ public class FailoverTest extends TxFATServletClient {
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
         //Setup server DataSource properties
-        DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
+        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, testContainer);
 
         server.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
     }
