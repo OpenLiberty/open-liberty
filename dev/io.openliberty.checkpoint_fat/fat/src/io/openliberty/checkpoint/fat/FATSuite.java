@@ -56,6 +56,7 @@ import componenttest.topology.impl.LibertyServer;
                 CheckpointWithSecurityManager.class,
                 MPConfigTest.class,
                 SSLTest.class,
+                PasswordUtilsTest.class,
                 MPOpenTracingJaegerTraceTest.class,
                 MPFaultToleranceTimeoutTest.class,
                 ValidFeaturesTest.class,
