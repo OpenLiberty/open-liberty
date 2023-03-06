@@ -1,0 +1,2 @@
+-Dcom.ibm.ws.beta.edition=true
+-Dcom.ibm.websphere.tx.propagateXAResourceTransactionTimeout=true
