@@ -1,0 +1,25 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+Bundle-Name: IIOP Test Interceptor Bundle
+Bundle-SymbolicName: test.iiop.interceptor; singleton:=true
+Bundle-Description: This bundle provides some interceptors to use in testing IIOP; version=${bVersion}
+
+# Force the package import versions for all ORB API packages
+Import-Package: javax.rmi*;version="[2.4,3)", \
+                org.omg.*;version="[2.4,3)", \
+                *
+
+# export nothing
+Export-Package:
+
+# specify any non-exported packages that need to be bundled
+Private-Package: test.iiop.interceptor
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+Include-Resource: OSGI-INF=test-bundles/test.iiop.interceptor/OSGI-INF
+
+-dsannotations: test.iiop.interceptor.TestSubsystemFactory
