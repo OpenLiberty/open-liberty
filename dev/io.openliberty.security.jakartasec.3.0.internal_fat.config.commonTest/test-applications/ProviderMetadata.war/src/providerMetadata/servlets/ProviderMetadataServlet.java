@@ -26,6 +26,7 @@ import oidc.client.base.servlets.BaseServlet;
                                          clientId = "${openIdConfig.clientId}", clientSecret = "${openIdConfig.clientSecret}", redirectURI = "${openIdConfig.redirectURI}",
                                          claimsDefinition = @ClaimsDefinition(callerNameClaim = "${openIdConfig.callerNameClaim}",
                                                                               callerGroupsClaim = "${openIdConfig.callerGroupsClaim}"),
+                                         jwksReadTimeoutExpression = "${openIdConfig.jwksReadTimeoutExpression}",
                                          providerMetadata = @OpenIdProviderMetadata(authorizationEndpoint = "${openIdConfig.authorizationEndpoint}",
                                                                                     tokenEndpoint = "${openIdConfig.tokenEndpoint}",
                                                                                     userinfoEndpoint = "${openIdConfig.userinfoEndpoint}",
