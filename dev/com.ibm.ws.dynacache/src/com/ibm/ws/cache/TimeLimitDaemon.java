@@ -82,7 +82,7 @@ public class TimeLimitDaemon extends RealTimeDaemon {
         this.isLruToDiskRunnning = false;
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Creating TimeLimitDaemon - set time granularity to " + timeGranularityInSeconds + " lruToDiskTriggerTime=" + this.lruToDiskTriggerTime);
-        this.lastTimeReleaseDiskCachePool = System.currentTimeMillis();
+        this.lastTimeReleaseDiskCachePool = System.nanoTime();
         if (timeGranularityInSeconds <= 0) {
             throw new IllegalArgumentException("timeGranularityInSeconds must be positive");
         }
@@ -197,9 +197,9 @@ public class TimeLimitDaemon extends RealTimeDaemon {
 
     private void diskCacheHouseKeeping() {
         boolean bReleaseDiskCachePool = false;
-        if ((System.currentTimeMillis() - this.lastTimeReleaseDiskCachePool) > CacheConfig.DEFAULT_DISKCACHE_POOL_ENTRY_LIFE * 12) {
+        if ((System.nanoTime() - this.lastTimeReleaseDiskCachePool) >  (long)CacheConfig.DEFAULT_DISKCACHE_POOL_ENTRY_LIFE * 12000000) {
             bReleaseDiskCachePool = true;
-            this.lastTimeReleaseDiskCachePool = System.currentTimeMillis();
+            this.lastTimeReleaseDiskCachePool = System.nanoTime();
         }
         String cacheName = null;
         DCache ci = null;
