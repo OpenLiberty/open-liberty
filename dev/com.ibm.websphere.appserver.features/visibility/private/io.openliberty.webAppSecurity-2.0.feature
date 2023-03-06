@@ -3,9 +3,6 @@ symbolicName=io.openliberty.webAppSecurity-2.0
 IBM-App-ForceRestart: install, \
  uninstall
 IBM-API-Package: com.ibm.websphere.security.web; type="ibm-api"
-IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=com.ibm.websphere.appserver.servlet-5.0)(osgi.identity=io.openliberty.servlet.internal-6.0)))", \
- osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=io.openliberty.appSecurity-4.0)(osgi.identity=io.openliberty.appSecurity-5.0)(osgi.identity=io.openliberty.mpJwt-2.1)))"
-IBM-Install-Policy: when-satisfied
 -features=com.ibm.websphere.appserver.containerServices-1.0, \
   com.ibm.websphere.appserver.distributedMap-1.0
 -bundles=com.ibm.ws.webcontainer.security.app, \
