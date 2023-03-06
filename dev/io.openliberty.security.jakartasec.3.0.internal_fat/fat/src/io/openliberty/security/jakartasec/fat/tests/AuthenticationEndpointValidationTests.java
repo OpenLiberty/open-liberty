@@ -103,10 +103,14 @@ public class AuthenticationEndpointValidationTests extends CommonAnnotatedSecuri
 
         swh = new ShrinkWrapHelpers(opHttpBase, opHttpsBase, rpHttpBase, rpHttpsBase);
 
-        swh.defaultDropinApp(rpServer, "SimplestAnnotated.war", "oidc.client.servlets", "oidc.client.base.*");
+        swh.defaultDropinApp(rpServer, "SimplestAnnotatedWithEL.war", "oidc.client.withEL.servlets", "oidc.client.base.*");
 
-        swh.deployConfigurableTestApps(rpServer, "SimplestAnnotatedWithEL.war", "SimplestAnnotatedWithEL.war",
-                                       buildUpdatedConfigMap(opServer, rpServer, "SimplestAnnotatedWithEL", null,
+        swh.deployConfigurableTestApps(rpServer, "SimplestAnnotatedWithCookies.war", "SimplestAnnotatedWithEL.war",
+                                       buildUpdatedConfigMap(opServer, rpServer, "SimplestAnnotatedWithCookies", null,
+                                                             TestConfigMaps.getUseSessionExpressionFalse()),
+                                       "oidc.client.withEL.servlets", "oidc.client.base.*");
+        swh.deployConfigurableTestApps(rpServer, "SimplestAnnotatedWithRedirectToOriginalResource.war", "SimplestAnnotatedWithEL.war",
+                                       buildUpdatedConfigMap(opServer, rpServer, "SimplestAnnotatedWithRedirectToOriginalResource", null,
                                                              TestConfigMaps.getRedirectToOriginalResourceExpressionTrue()),
                                        "oidc.client.withEL.servlets", "oidc.client.base.*");
 
@@ -155,8 +159,8 @@ public class AuthenticationEndpointValidationTests extends CommonAnnotatedSecuri
 
         WebClient webClient = getAndSaveWebClient();
 
-        String app = "OidcAnnotatedServlet";
-        String url = rpHttpsBase + "/SimplestAnnotated/" + app;
+        String app = "OidcAnnotatedServletWithEL";
+        String url = rpHttpsBase + "/SimplestAnnotatedWithEL/" + app;
 
         String callbackUrl = invokeUrlAndGetToCallback(webClient, url);
         String newCallbackUrl = callbackUrl.replaceFirst("/Callback", "/UnsecuredServlet");
@@ -184,7 +188,7 @@ public class AuthenticationEndpointValidationTests extends CommonAnnotatedSecuri
         WebClientOptions webClientOptions = webClient.getOptions();
 
         String app = "OidcAnnotatedServletWithEL";
-        String url = rpHttpsBase + "/SimplestAnnotatedWithEL/" + app;
+        String url = rpHttpsBase + "/SimplestAnnotatedWithRedirectToOriginalResource/" + app;
 
         String callbackUrl = invokeUrlAndGetToCallback(webClient, url);
 
@@ -218,8 +222,8 @@ public class AuthenticationEndpointValidationTests extends CommonAnnotatedSecuri
 
         WebClient webClient = getAndSaveWebClient();
 
-        String app = "OidcAnnotatedServlet";
-        String url = rpHttpsBase + "/SimplestAnnotated/" + app;
+        String app = "OidcAnnotatedServletWithEL";
+        String url = rpHttpsBase + "/SimplestAnnotatedWithCookies/" + app;
 
         String callbackUrl = invokeUrlAndGetToCallback(webClient, url);
 
@@ -252,8 +256,8 @@ public class AuthenticationEndpointValidationTests extends CommonAnnotatedSecuri
 
         WebClient webClient = getAndSaveWebClient();
 
-        String app = "OidcAnnotatedServlet";
-        String url = rpHttpsBase + "/SimplestAnnotated/" + app;
+        String app = "OidcAnnotatedServletWithEL";
+        String url = rpHttpsBase + "/SimplestAnnotatedWithCookies/" + app;
 
         String callbackUrl = invokeUrlAndGetToCallback(webClient, url);
 
@@ -289,8 +293,8 @@ public class AuthenticationEndpointValidationTests extends CommonAnnotatedSecuri
 
         WebClient webClient = getAndSaveWebClient();
 
-        String app = "OidcAnnotatedServlet";
-        String url = rpHttpsBase + "/SimplestAnnotated/" + app;
+        String app = "OidcAnnotatedServletWithEL";
+        String url = rpHttpsBase + "/SimplestAnnotatedWithEL/" + app;
 
         String callbackUrl = invokeUrlAndGetToCallback(webClient, url);
         String callbackUrlWithError = callbackUrl.replaceFirst("code=[^&]+", "error=login_required");
