@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 1997, 2020 IBM Corporation and others.
+# Copyright (c) 1997, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 
 # This file has been modified to follow the WebSphere Message Guidelines.
@@ -1616,3 +1613,12 @@ duplicate.samesite.attribute.for.cookie.name.useraction=Verifica\u0163i configur
 duplicate.reported.for.samesite.attribute.cookie.name=CWWWC0004W: Un nume de cookie {0} care este configurat pentru valoarea de atribut SameSite {1} a fost identificat anterior ca un duplicat. Niciun atribut SameSite nu este ad\u0103ugat pentru acest cookie.
 duplicate.reported.for.samesite.attribute.cookie.name.explanation=Un nume de cookie nu poate fi configurat pentru mai multe valori de atribute SameSite. Numele de cookie a fost identificat deja ca un duplicat.
 duplicate.reported.for.samesite.attribute.cookie.name.useraction=Verifica\u0163i configura\u0163ia descriptorului de implementare pentru a v\u0103 asigura c\u0103 numele de cookie este configurat doar pentru una din urm\u0103toarele valori ale atributului SameSite: 'SameSiteCookies_Lax', 'SameSiteCookies_None' sau 'SameSiteCookies_Strict'. 
+
+bad.request.uri\:.{0}=CWWWC0005I: URI-ul cererii are caractere invalide sau codate necorespunz\u0103tor: [{0}]
+bad.request.uri\:.{0}.explanation=URI-ul cererii are parametri de cale invalizi, segmente de punct invalide sau caractere codate necorespunz\u0103tor.
+bad.request.uri\:.{0}.useraction=Verifica\u021bi URI-ul cererii, astfel \u00eenc\u00e2t s\u0103 nu con\u021bin\u0103 un punct sau o combina\u021bie de parametri de cale invalid\u0103 sau caractere codate necorespunz\u0103tor.
+
+uri.has.fragment.character=URI-ul are un caracter [#] de fragment; codat [%23] sau nu.
+uri.has.dot.character=URI-ul are un caracter [%2E] de punct codat.
+uri.has.forwarslash.character=URI-ul are un caracter [%2F] de slash \u00eenainte.
+uri.has.backslash.character=URI-ul are un caracter [%5C] de backslash, codat sau nu.

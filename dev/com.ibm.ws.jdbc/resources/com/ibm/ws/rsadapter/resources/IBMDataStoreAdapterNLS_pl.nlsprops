@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2021 IBM Corporation and others.
+# Copyright (c) 2001, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -215,7 +215,7 @@ DSRA4003.driver.null.useraction=Zaktualizuj konfiguracj\u0119 w taki spos\u00f3b
 
 # {0} SQL command
 # {1} data source JNDI name or config display id 
-DSRA4004.onconnect.sql=DSRA4004E: Nie mo\u017cna wykona\u0107 komendy SQL onConnect \"{0}\" dla po\u0142\u0105czenia uzyskanego ze \u017ar\u00f3d\u0142a danych {1}. Wi\u0119cej informacji zawiera wyj\u0105tek przyczyny.
+DSRA4004.onconnect.sql=DSRA4004E: Nie mo\u017cna wykona\u0107 komendy SQL onConnect "{0}" dla po\u0142\u0105czenia uzyskanego ze \u017ar\u00f3d\u0142a danych {1}. Wi\u0119cej informacji zawiera wyj\u0105tek przyczyny.
 DSRA4004.onconnect.sql.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by wykonania podanej komendy SQL.
 DSRA4004.onconnect.sql.useraction=Przejrzyj komunikat wyj\u0105tku, aby znale\u017a\u0107 przyczyn\u0119 b\u0142\u0119du.
 
@@ -299,6 +299,16 @@ META_DATA_EXCEPTION.useraction=Sprawd\u017a, czy metadane s\u0105 w\u0142\u0105c
 # 7019 deleted
 # 7020 reserved for other NLS file
 # 7021-7042 deleted
+
+# Do not translate: java.util.Logging
+ORACLE_TRACE_PARSE_WARNING=DSRA7043W: Dla w\u0142a\u015bciwo\u015bci systemowej {0} zosta\u0142a u\u017cyta warto\u015b\u0107 domy\u015blna, poniewa\u017c wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d analizowania: {1}
+ORACLE_TRACE_PARSE_WARNING.explanation=\u0141a\u0144cuchy w\u0142a\u015bciwo\u015bci systemowych dla bazy danych Oracle s\u0105 analizowane i przekazywane do biblioteki java.util.logging. Je\u015bli warto\u015b\u0107 w\u0142a\u015bciwo\u015bci nie mo\u017ce zosta\u0107 przeanalizowana, zamiast niej zostanie u\u017cyta warto\u015b\u0107 domy\u015blna.
+ORACLE_TRACE_PARSE_WARNING.useraction=Sprawd\u017a b\u0142\u0105d analizowania i zmodyfikuj w\u0142a\u015bciwo\u015b\u0107 systemow\u0105. Poprawne w\u0142a\u015bciwo\u015bci rejestrowania s\u0105 udokumentowane w pakiecie java.util.logging.
+
+ORACLE_TRACE_ENABLE_INFO=DSRA7044I: \u015aledzenie sterownika JDBC Oracle zosta\u0142o w\u0142\u0105czone przez w\u0142a\u015bciwo\u015b\u0107 systemow\u0105 {0}. Przynajmniej jedna z w\u0142a\u015bciwo\u015bci systemowych [{1}], kt\u00f3re s\u0105 wymagane do oddzielenia plik\u00f3w dziennika Oracle, nie s\u0105 dost\u0119pne.
+ORACLE_TRACE_ENABLE_INFO.explanation=Sterownik debugowania JDBC Oracle do \u015bledzenia u\u017cywa pakietu java.util.logging. Dzienniki debugowania sterownika JDBC Oracle s\u0105 domy\u015blnie zintegrowane z dziennikami Liberty. Aby skonfigurowa\u0107 separacj\u0119 \u015bledzenia debugowania JDBC Oracle, wszystkie w\u0142a\u015bciwo\u015bci w tym komunikacie musz\u0105 by\u0107 skonfigurowane jako w\u0142a\u015bciwo\u015bci systemowe.
+ORACLE_TRACE_ENABLE_INFO.useraction=Aby skonfigurowa\u0107 oddzielne pliki dziennika JDBC Oracle, sprawd\u017a w\u0142a\u015bciwo\u015bci systemu i dodaj brakuj\u0105ce w\u0142a\u015bciwo\u015bci. W przeciwnym razie mo\u017cesz zignorowa\u0107 ten komunikat.
+
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------

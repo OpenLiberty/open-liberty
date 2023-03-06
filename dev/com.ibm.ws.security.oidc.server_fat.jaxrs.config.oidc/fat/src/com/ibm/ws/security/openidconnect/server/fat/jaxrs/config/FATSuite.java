@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -37,11 +37,14 @@ import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.OIDC.OIDCMapToU
 import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.OIDC.OIDCSignatureAttributes2ServerTests;
 import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.OIDC.OIDCValidationMethod2ServerTests;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.RepeatTests;
 
 @SuppressWarnings("restriction")
 @RunWith(Suite.class)
 @SuiteClasses({
+
+        AlwaysPassesTest.class,
 
         // specify OIDC tests
         OIDCExistingAttributes2ServerTests.class,

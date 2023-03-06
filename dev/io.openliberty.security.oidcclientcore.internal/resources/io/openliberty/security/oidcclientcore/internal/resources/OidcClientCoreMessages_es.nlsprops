@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME io.openliberty.security.oidcclientcore.internal/resources/io/openliberty/security/oidcclientcore/internal/resources/OidcClientCoreMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -125,3 +122,20 @@ TOKEN_CLAIM_VALUE_MISMATCH.useraction=Aseg\u00farese de que est\u00e9 configurad
 TOKEN_MISSING_CLAIMS=CWWKS2425E: El token de cliente de {0} OpenID Connect no es v\u00e1lido. El valor de jwtClaims en el objeto JwtContext es nulo o est\u00e1 vac\u00edo.
 TOKEN_MISSING_CLAIMS.explanation=Falta informaci\u00f3n en el token y su validaci\u00f3n no se puede completar.
 TOKEN_MISSING_CLAIMS.useraction=Revise en el registro los errores anteriores para obtener detalles sobre la anomal\u00eda. Compruebe el formato y el contenido del token devuelto por el proveedor de OpenID Connect.
+
+TOKEN_EMPTY_CLAIM=CWWKS2426E: El token tiene una reclamaci\u00f3n [{0}] vac\u00eda.
+TOKEN_EMPTY_CLAIM.explanation=La reclamaci\u00f3n especificada en el mensaje ha de tener un valor v\u00e1lido.
+TOKEN_EMPTY_CLAIM.useraction=El proveedor de OpenID Connect devuelve un token de ID con una reclamaci\u00f3n vac\u00eda. Si hay una reclamaci\u00f3n, ha de contener un valor v\u00e1lido. Compruebe el formato y el contenido del token devuelto por el proveedor de OpenID Connect.
+
+TOKEN_EXP_IN_PAST=CWWKS2427E: El token no es v\u00e1lido porque ha caducado. La hora de caducidad del token es [{0}]. La hora actual menos el desfase horario es [{1}]. El desfase horario configurado es de {2} segundos.
+TOKEN_EXP_IN_PAST.explanation=Los tokens caducados no son v\u00e1lidos.
+TOKEN_EXP_IN_PAST.useraction=Obtenga un token nuevo que no est\u00e9 caducado. Sincronice las horas de reloj entre el emisor de tokens y el cliente de OpenID Connect.
+
+TOKEN_CLAIM_IN_FUTURE=CWWKS2428E: El token ha perdido validez porque el valor [{0}] de la reclamaci\u00f3n [{1}] pertenece al futuro. La suma de la hora actual y el desfase horario es [{2}], y el desfase horario configurado es de {3} segundos.
+TOKEN_CLAIM_IN_FUTURE.explanation=El valor especificado en el mensaje de la reclamaci\u00f3n tiene que ser una hora en el pasado.
+TOKEN_CLAIM_IN_FUTURE.useraction=Utilice el token una vez vencido el tiempo especificado en el mensaje, u obtenga un token nuevo.
+
+TOKEN_RESPONSE_MISSING_PARAMETER=CWWKS2429E: Al token de respuesta del proveedor de OpenID Connect le falta al menos un par\u00e1metro obligatorio: {0}.
+TOKEN_RESPONSE_MISSING_PARAMETER.explanation=El proveedor de OpenID Connect no ha devuelto un par\u00e1metro obligatorio o no ha podido procesar la petici\u00f3n de token.
+TOKEN_RESPONSE_MISSING_PARAMETER.useraction=Compruebe que el punto final del token configurado es correcto y que es capaz de responder a las peticiones de tokens OAuth.
+

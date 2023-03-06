@@ -103,10 +103,6 @@ public class OpenIdContextExpectationHelpers {
             if (rspValues.getUseNonce()) {
                 expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, buildNonceString(requester), "Did not find an nonce claim in the id token in the OpenIdContext."));
             }
-            // TODO - remove sid check - will go away once the beta flag is removed
-            expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, requester + ServletMessageConstants.ID_TOKEN + ServletMessageConstants.CLAIM
-                                                                                                       + ServletMessageConstants.KEY
-                                                                                                       + PayloadConstants.PAYLOAD_SESSION_ID, "Did not find an sid claim in the id token in the OpenIdContext."));
         } else {
             expectations.addExpectation(new ResponseFullExpectation(action, Constants.STRING_CONTAINS, requester + ServletMessageConstants.ID_TOKEN
                                                                                                        + ServletMessageConstants.NULL, "Found an id token in the OpenIdContext and should not have."));

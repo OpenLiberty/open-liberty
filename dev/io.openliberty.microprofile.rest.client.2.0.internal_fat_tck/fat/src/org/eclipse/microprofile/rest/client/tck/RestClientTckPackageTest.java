@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Locale;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -37,6 +38,8 @@ import componenttest.topology.utils.tck.TCKRunner;
  */
 @RunWith(FATRunner.class)
 public class RestClientTckPackageTest {
+	
+    private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
 
     @Server("FATServer")
     public static LibertyServer server;
@@ -67,11 +70,14 @@ public class RestClientTckPackageTest {
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void testRestClient20Tck() throws Exception {
-        String bucketName = "io.openliberty.microprofile.rest.client.2.0.internal_fat_tck";
-        String testName = this.getClass() + ":testRestClient20Tck";
-        Type type = Type.MICROPROFILE;
-        String specName = "Rest Client";
-        TCKRunner.runTCK(server, bucketName, testName, type, specName);
+    	// Skip running on the windows platform when not running locally.
+    	if (!(isWindows) || FATRunner.FAT_TEST_LOCALRUN) { 
+    		String bucketName = "io.openliberty.microprofile.rest.client.2.0.internal_fat_tck";
+    		String testName = this.getClass() + ":testRestClient20Tck";
+    		Type type = Type.MICROPROFILE;
+    		String specName = "Rest Client";
+    		TCKRunner.runTCK(server, bucketName, testName, type, specName);
+    	}
     }
 
 }

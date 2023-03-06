@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 1997, 2020 IBM Corporation and others.
+# Copyright (c) 1997, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 
 # This file has been modified to follow the WebSphere Message Guidelines.
@@ -64,7 +61,6 @@ Illegal.Argument\:.{0}.is.not.a.directory..useraction=Vergewissern Sie sich, das
 # --------------------------------
 WebAppSecurityCollaborator=SRVE0035E: WebAppSecurityCollaborator
 WebAppSecurityCollaborator.explanation=WebAppSecurityCollaborator. Dies ist ein Systemfehler.
-
 WebAppSecurityCollaborator.useraction=Untersuchen Sie die Serverprotokolle, um die eigentliche Ursache des Fehlers zu ermitteln. Sollten keine zugeh\u00f6rigen Nachrichten vorhanden sein oder der Fehler mit Hilfe zugeh\u00f6riger Nachrichten nicht ermittelt werden k\u00f6nnen, wenden Sie sich an die IBM Unterst\u00fctzungsfunktion.
 
 # --------------------------------
@@ -220,7 +216,7 @@ failed.to.load.converter.properties.useraction=Stellen Sie sicher, dass die ange
 # --------------------------------
 setbuffer.size.called.after.write=SRVE0157E: setBufferSize() nach erstem Schreibzugriff auf Ausgabedatenstrom/Ausgabeprogramm aufgerufen
 setbuffer.size.called.after.write.explanation=Es wurde versucht, die Gr\u00f6\u00dfe des Antwortpuffers zu definieren, nachdem die Antwort bereits festgeschrieben war. Dies ist ein Anwendungsfehler.
-setbuffer.size.called.after.write.useraction= Entfernen Sie den Aufruf von setBufferSize() oder verschieben Sie ihn an eine Position, die vor dem Festschreiben der Antwort liegt.
+setbuffer.size.called.after.write.useraction=Entfernen Sie den Aufruf von setBufferSize() oder verschieben Sie ihn an eine Position, die vor dem Festschreiben der Antwort liegt.
 
 # --------------------------------
 usertransaction.rollback.exception=SRVE0160E: Ausnahme bei ROLLBACK-Operation f\u00fcr Benutzertransaktion: {0}
@@ -334,7 +330,6 @@ host.has.not.been.defined.useraction=\u00dcberpr\u00fcfen Sie die Konfiguration 
 
 # -----------------------------------------------
 host.on.port.has.not.been.defined=SRVE0205E: Der Host {0} an Port {1} ist nicht definiert.
-
 host.on.port.has.not.been.defined.explanation=Der f\u00fcr die Bearbeitung dieses Anforderungs-URI definierte virtuelle Host wurde nicht gefunden. Es ist eine Systemaktion erforderlich.
 host.on.port.has.not.been.defined.useraction=\u00dcberpr\u00fcfen Sie die Konfiguration f\u00fcr virtuelles Hosts in der Datei "virtualhosts.xml" oder \u00fcber die Administrationskonsole.
 
@@ -367,18 +362,22 @@ be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application
 class.{0}.could.not.be.instantiated=SRVE0211E: Die Klasse {0} konnte nicht instanziiert werden.
 class.{0}.could.not.be.instantiated.explanation=Interne Ausnahme.
 class.{0}.could.not.be.instantiated.useraction=CMSG0002                                                   
+
 # -----------------------------------------------
 class.{0}.not.accessible=SRVE0212E: Die Klasse {0} ist nicht verf\u00fcgbar.
 class.{0}.not.accessible.explanation=Interne Ausnahme.
 class.{0}.not.accessible.useraction=CMSG0002                                                   
+
 # -----------------------------------------------
 class.not.found=SRVE0213E: Die Klasse wurde nicht gefunden.
 class.not.found.explanation=Interne Ausnahme.
 class.not.found.useraction=CMSG0002                                                   
+
 # -----------------------------------------------
 invalid.count=SRVE0214E: Ung\u00fcltiger Z\u00e4hler
 invalid.count.explanation=Interne Ausnahme.
 invalid.count.useraction=CMSG0002                                                   
+
 # -----------------------------------------------
 non-HTTP.request.or.response=SRVE0215E: Keine HTTP-Anforderung oder -Antwort
 non-HTTP.request.or.response.explanation=Die definierte Servletkette kann nur HTTP-Anforderungen bearbeiten. Dies ist ein Anwendungsfehler.
@@ -532,7 +531,6 @@ reaper.destroying.servlet.[{0}].useraction=Keine.
 # -----------------------------------------------
 reaper.thread.error=SRVE0247E: Fehler beim Ausf\u00fchren des Reaper-Thread.
 reaper.thread.error.explanation=Bei der Verarbeitung des Reaper-Thread ist eine Ausnahme eingetreten. Dies ist ein Systemfehler.
-
 reaper.thread.error.useraction=Die Reaper-Verarbeitung ist eine Form der Garbage-Collection.
 
 # -----------------------------------------------
@@ -638,7 +636,6 @@ error.initializing.filters.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
 #------------------------------------------------
 error.obtaining.session.context=SRVE0268E: Fehler beim Abrufen des Sitzungskontextes f\u00fcr die Webanwendung: {0}
 error.obtaining.session.context.explanation=Es konnte kein g\u00fcltiger Sitzungskontext f\u00fcr die Webanwendung abgerufen werden. Es ist eine Systemaktion erforderlich.
-
 error.obtaining.session.context.useraction=Pr\u00fcfen Sie, ob der Sitzungsmanager ordnungsgem\u00e4\u00df konfiguriert ist.
 
 #-------------------------------------------------
@@ -708,7 +705,6 @@ request.processor.already.present.for.mapping.useraction=\u00dcberpr\u00fcfen Si
 
 #---------------------------------------------------
 error.while.setting.WebAppAttributes=SRVE0282E: Fehler beim Festlegen der Attribute der Webanwendung: {0}
-
 error.while.setting.WebAppAttributes.explanation=Dies ist ein Systemfehler.
 error.while.setting.WebAppAttributes.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
 
@@ -839,7 +835,6 @@ Null.Filter.Mapping.useraction=\u00c4ndern Sie die Anwendungsdeskriptoren auf de
 
 #------------------------------------------------
 filtering.by.asterisk=SRVE0308E: Eine Filterung mit Stern ist nicht zul\u00e4ssig.
-
 filtering.by.asterisk.explanation=Eine Filterung mit Stern ist nicht zul\u00e4ssig, weil die Inaktivierung der Bereitstellung aller Servlets nach Klassenname \u00fcber die angepasste Eigenschaft "com.ibm.ws.webcontainer.disallowserveservletsbyclassname" behandelt wird. Dies ist ein Anwendungsfehler.
 filtering.by.asterisk.useraction=Setzen Sie "com.ibm.ws.webcontainer.disallowserveservletsbyclassname" auf "true", um die Bereitstellung aller Klassen nach Klassenname zu blockieren.
 
@@ -1201,6 +1196,7 @@ Filter.found.but.injection.failure.useraction=Vergewissern Sie sich, dass die in
 init.exception.thrown.by.filter.at.startup=SRVE0321E: Der Filter [{0}] wurde w\u00e4hrend des Starts nicht geladen.
 init.exception.thrown.by.filter.at.startup.explanation=Der Filter wurde w\u00e4hrend des Starts nicht geladen.
 init.exception.thrown.by.filter.at.startup.useraction=Untersuchen Sie die Serverprotokolle, um die eigentliche Ursache des Fehlers zu ermitteln. 
+
 # --------------------------------
 # Notes for translation:
 # {0} is the listener class name
@@ -1562,7 +1558,6 @@ servlet.with.same.name.already.exists=SRVE8500W: Das Servlet mit dem Namen {0} k
 servlet.with.same.name.already.exists.explanation=Es ist bereits ein Servlet mit dem angegebenen Namen f\u00fcr diese Anwendung vorhanden.
 servlet.with.same.name.already.exists.useraction=Es ist keine Aktion erforderlich. Suchen Sie nach Konflikten im Implementierungsdeskriptor, in den Annotationen und in den Quellcodes, \u00fcber die diese Servletkonfiguration dynamisch hinzugef\u00fcgt werden k\u00f6nnte.
 
-
 servlet.feature.not.loaded.correctly=SRVE8501E: Der Servlet-Container wurde nicht mit einer zul\u00e4ssigen Version geladen.
 servlet.feature.not.loaded.correctly.explanation=Der Servlet-Container wurde mit einer Version geladen, die der Java EE-Spezifikation dieses Servlet-Features entspricht. Der Container wurde ohne definierte Version geladen.
 servlet.feature.not.loaded.correctly.useraction=Pr\u00fcfen Sie, ob in der Datei server.xml das Feature servlet-3.0 oder das Feature servlet-3.1 enthalten ist. Es darf nur ein einziges dieser beiden Features definiert werden.
@@ -1618,3 +1613,12 @@ duplicate.samesite.attribute.for.cookie.name.useraction=\u00dcberpr\u00fcfen Sie
 duplicate.reported.for.samesite.attribute.cookie.name=CWWWC0004W: Ein {0}-Cookiename, der mit dem SameSite-Attributwert {1} konfiguriert wurde, wurde als Duplikat erkannt. Diesem Cookie wurde kein SameSite-Attribut hinzugef\u00fcgt.
 duplicate.reported.for.samesite.attribute.cookie.name.explanation=Ein Cookiename kann nicht mit mehreren SameSite-Attributwerten konfiguriert werden. Dieser Cookiename wurde bereits als Duplikat erkannt.
 duplicate.reported.for.samesite.attribute.cookie.name.useraction=\u00dcberpr\u00fcfen Sie die Implementierungsdeskriptorkonfiguration, um sicherzustellen, dass der Cookiename nur f\u00fcr einen einzigen der folgenden SameSite-Attributwerte konfiguriert wurde: 'SameSiteCookies_Lax', 'SameSiteCookies_None' oder 'SameSiteCookies_Strict'. 
+
+bad.request.uri\:.{0}=CWWWC0005I: Der Anforderungs-URI enth\u00e4lt ung\u00fcltige oder falsch codierte Zeichen: [{0}]
+bad.request.uri\:.{0}.explanation=Der Anforderungs-URI enth\u00e4lt ung\u00fcltige Pfadparameter, ung\u00fcltige Punktsegmente oder falsch codierte Zeichen.
+bad.request.uri\:.{0}.useraction=Stellen Sie sicher, dass der Anforderungs-URI keine ung\u00fcltige Kombination aus Punkt- oder Pfadparametern oder falsch codierte Zeichen enth\u00e4lt.
+
+uri.has.fragment.character=URI hat ein Fragmentzeichen [#]; codiert [%23] oder nicht.
+uri.has.dot.character=URI hat einen codierten Punkt [%2E].
+uri.has.forwarslash.character=Der URI enth\u00e4lt einen codierten Schr\u00e4gstrich [%2F].
+uri.has.backslash.character=URI enth\u00e4lt einen umgekehrten Schr\u00e4gstrich; codiert [%5C] oder nicht.

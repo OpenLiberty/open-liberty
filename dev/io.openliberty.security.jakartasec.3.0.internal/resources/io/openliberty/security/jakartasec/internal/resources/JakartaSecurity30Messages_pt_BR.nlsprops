@@ -1,9 +1,11 @@
 ###############################################################################
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -46,3 +48,7 @@ JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS.useraction=Revise os logs para erros a
 JAKARTASEC_CLAIMS_PROCESSING_ERROR=CWWKS2506E: O valor da chave Claims {0} do cliente da conex\u00e3o do OpenID est\u00e1 incorreto. O valor \u00e9 {1} e o tipo esperado \u00e9 {2}. O erro \u00e9 {3}.
 JAKARTASEC_CLAIMS_PROCESSING_ERROR.explanation=O cliente da conex\u00e3o OpenID encontrou um erro ao verificar o tipo esperado de campos no objeto Claims do OpenID. Um erro frequente \u00e9 que o tipo real do valor retornado n\u00e3o corresponde ao tipo esperado.
 JAKARTASEC_CLAIMS_PROCESSING_ERROR.useraction=Para obter mais informa\u00e7\u00f5es, veja o erro na mensagem.
+
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT=CWWKS2507W: O valor do atributo {0} da anota\u00e7\u00e3o de defini\u00e7\u00e3o do mecanismo de autentica\u00e7\u00e3o OpenID n\u00e3o deve ser um n\u00famero inteiro negativo. Se o valor do atributo for uma express\u00e3o de Linguagem de Express\u00e3o (EL), ele n\u00e3o dever\u00e1 ser resolvido para um n\u00famero inteiro negativo. O valor fornecido foi ''{1}''. O valor do atributo padr\u00e3o de ''{2}'' \u00e9 usado no lugar.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.explanation=O valor do atributo n\u00e3o deve ser um n\u00famero inteiro negativo. Se o valor do atributo for uma express\u00e3o EL, o valor n\u00e3o dever\u00e1 ser resolvido para um n\u00famero inteiro negativo.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.useraction=Atualize o atributo para usar um n\u00famero inteiro n\u00e3o negativo. Se o valor do atributo for uma express\u00e3o EL, atualize o bean referenciado para resolver para um n\u00famero inteiro n\u00e3o negativo.

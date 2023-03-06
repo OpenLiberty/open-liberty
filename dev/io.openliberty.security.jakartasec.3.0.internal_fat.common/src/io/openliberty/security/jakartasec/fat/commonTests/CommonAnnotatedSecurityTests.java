@@ -31,7 +31,6 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.CommonSecurityFat;
-import com.ibm.ws.security.fat.common.Utils;
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.fat.common.actions.TestActions;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
@@ -43,7 +42,9 @@ import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.ibm.ws.security.fat.common.utils.MySkipRule;
 import com.ibm.ws.security.fat.common.validation.TestValidationUtils;
 
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.utils.CommonExpectations;
@@ -92,18 +93,38 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
         }
     }
 
-    public static RepeatTests createRandomTokenTypeRepeats() {
-
-        String accessTokenType = Utils.getRandomSelection(Constants.JWT_TOKEN_FORMAT, Constants.OPAQUE_TOKEN_FORMAT);
-        return createTokenTypeRepeat(accessTokenType);
-    }
-
+//    public static RepeatTests createRandomTokenTypeRepeats() {
+//
+//        String accessTokenType = Utils.getRandomSelection(Constants.JWT_TOKEN_FORMAT, Constants.OPAQUE_TOKEN_FORMAT);
+//        return createTokenTypeRepeat(accessTokenType);
+//    }
+//
     public static RepeatTests createTokenTypeRepeat(String accessTokenType) {
 
         Log.info(thisClass, "createRepeats", "Will be running tests using a/an " + accessTokenType + " access_token");
 
         RepeatTests rTests = addRepeat(null, new SecurityTestRepeatAction(accessTokenType));
 
+        return rTests;
+
+    }
+
+    /**
+     * Repeat the tests with both opaque and jwt access tokens unless the mode specified matches the current mode, then only use the access_token type provided
+     *
+     * @param accessTokenType
+     * @return
+     */
+    public static RepeatTests createTokenTypeRepeats(TestMode mode, String accessTokenType) {
+
+        RepeatTests rTests = null;
+        if (TestModeFilter.FRAMEWORK_TEST_MODE == mode) {
+            Log.info(thisClass, "createTokenTypeRepeat", "Will be running tests using a/an " + accessTokenType + " access_token");
+            rTests = addRepeat(null, new SecurityTestRepeatAction(accessTokenType));
+        } else {
+            Log.info(thisClass, "createTokenTypeRepeat", "Will be running tests using both access_tokens and jwt tokens");
+            rTests = createTokenTypeRepeats(null);
+        }
         return rTests;
 
     }

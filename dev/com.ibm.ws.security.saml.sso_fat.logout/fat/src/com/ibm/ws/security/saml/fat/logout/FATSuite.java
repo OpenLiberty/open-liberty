@@ -19,7 +19,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.security.fat.common.AlwaysRunAndPassTest;
 import com.ibm.ws.security.fat.common.actions.LargeProjectRepeatActions;
 import com.ibm.ws.security.saml.fat.logout.IDPInitiated_Login.IDPInitiatedLogin_2ServerLogout_usingApps_Tests;
 import com.ibm.ws.security.saml.fat.logout.IDPInitiated_Login.IDPInitiatedLogin_2ServerLogout_usingServlets_Tests;
@@ -34,6 +33,7 @@ import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.UnsolicitedSPInitia
 import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.UnsolicitedSPInitiatedLogin_Timeout_usingApps_Tests;
 import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.UnsolicitedSPInitiatedLogin_Timeout_usingServlets_Tests;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.RepeatTests;
 
 /**
@@ -51,7 +51,7 @@ import componenttest.rules.repeater.RepeatTests;
         //   com.ibm.ws.security.saml.sso_fat.logout.httpServletRequest
         //   com.ibm.ws.security.saml.sso_fat.logout.ibm_security_logout
         //   com.ibm.ws.security.saml.sso_fat.logout.IDP_initiated
-        AlwaysRunAndPassTest.class,
+        AlwaysPassesTest.class,
         // 2 server tests
         IDPInitiatedLogin_2ServerLogout_usingServlets_Tests.class,
         IDPInitiatedLogin_2ServerLogout_usingApps_Tests.class,

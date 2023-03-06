@@ -18,7 +18,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.security.fat.common.AlwaysRunAndPassTest;
 import com.ibm.ws.security.fat.common.actions.LargeProjectRepeatActions;
 import com.ibm.ws.security.saml.fat.logout.IDPInitiated_Login.IDPInitiatedLogin_ibmSecurityLogout_spLogoutFalse_LTPA_Tests;
 import com.ibm.ws.security.saml.fat.logout.IDPInitiated_Login.IDPInitiatedLogin_ibmSecurityLogout_spLogoutFalse_Tests;
@@ -33,6 +32,7 @@ import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.UnsolicitedSPInitia
 import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.UnsolicitedSPInitiatedLogin_ibmSecurityLogout_spLogoutTrue_LTPA_Tests;
 import com.ibm.ws.security.saml.fat.logout.SPInitiated_Login.UnsolicitedSPInitiatedLogin_ibmSecurityLogout_spLogoutTrue_Tests;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.RepeatTests;
 
 /**
@@ -40,7 +40,7 @@ import componenttest.rules.repeater.RepeatTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-        AlwaysRunAndPassTest.class,
+        AlwaysPassesTest.class,
         // login using each of the 3 flows, use ibm_security_logout with spLogout set to false (implying that we'll just logout locally)
         // SP Cookie
         IDPInitiatedLogin_ibmSecurityLogout_spLogoutFalse_Tests.class,

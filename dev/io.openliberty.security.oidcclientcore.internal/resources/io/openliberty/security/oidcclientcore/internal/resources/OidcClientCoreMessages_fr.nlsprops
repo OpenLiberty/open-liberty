@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME io.openliberty.security.oidcclientcore.internal/resources/io/openliberty/security/oidcclientcore/internal/resources/OidcClientCoreMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -125,3 +122,20 @@ TOKEN_CLAIM_VALUE_MISMATCH.useraction=Assurez-vous que l'attribut de la configur
 TOKEN_MISSING_CLAIMS=CWWKS2425E: Le jeton de client OpenID Connect {0} n''est pas valide. La valeur jwtClaims de l''objet JwtContext est nulle ou vide.
 TOKEN_MISSING_CLAIMS.explanation=Il manque des informations au jeton et sa validation ne peut pas \u00eatre effectu\u00e9e.
 TOKEN_MISSING_CLAIMS.useraction=Recherchez dans le journal toute erreur pr\u00e9c\u00e9dente pour des d\u00e9tails sur l'\u00e9chec. V\u00e9rifiez le format et le contenu du jeton renvoy\u00e9 par le fournisseur OpenID Connect.
+
+TOKEN_EMPTY_CLAIM=CWWKS2426E: Le jeton comporte une demande [{0}] vide.
+TOKEN_EMPTY_CLAIM.explanation=La demande indiqu\u00e9e dans le message doit avoir une valeur valide.
+TOKEN_EMPTY_CLAIM.useraction=Le fournisseur OpenID Connect renvoie un jeton d'ID avec une demande vide. Si une demande est pr\u00e9sente, elle doit contenir une valeur valide. V\u00e9rifiez le format et le contenu du jeton renvoy\u00e9 par le fournisseur OpenID Connect.
+
+TOKEN_EXP_IN_PAST=CWWKS2427E: Le jeton n''est pas valide car il a expir\u00e9. Le d\u00e9lai d''expiration de jeton est de [{0}]. L''heure en cours moins le d\u00e9calage d''horloge est [{1}]. Le d\u00e9calage d''horloge configur\u00e9 est de {2} secondes.
+TOKEN_EXP_IN_PAST.explanation=Les jetons arriv\u00e9s \u00e0 expiration ne sont pas valides.
+TOKEN_EXP_IN_PAST.useraction=Obtenez un nouveau jeton qui ne soit pas arriv\u00e9 \u00e0 expiration. Synchronisez les heures d'horloge entre l'\u00e9metteur du jeton et le client OpenID Connect.
+
+TOKEN_CLAIM_IN_FUTURE=CWWKS2428E: Le jeton est consid\u00e9r\u00e9 comme non valide car la valeur [{0}] de la demande [{1}] est dans le futur. La somme de l''heure courante et du d\u00e9calage d''horloge est [{2}], et le d\u00e9calage d''horloge configur\u00e9 est de {3} secondes.
+TOKEN_CLAIM_IN_FUTURE.explanation=La valeur indiqu\u00e9e dans le message pour la demande doit \u00eatre une heure pass\u00e9e.
+TOKEN_CLAIM_IN_FUTURE.useraction=Utilisez le jeton apr\u00e8s l'expiration du d\u00e9lai sp\u00e9cifi\u00e9 dans le message ou obtenez un nouveau jeton.
+
+TOKEN_RESPONSE_MISSING_PARAMETER=CWWKS2429E: Il manque au moins un param\u00e8tre obligatoire dans la r\u00e9ponse de jeton du fournisseur OpenID Connect : {0}.
+TOKEN_RESPONSE_MISSING_PARAMETER.explanation=Le fournisseur OpenID Connect n'a pas renvoy\u00e9 un param\u00e8tre obligatoire ou n'a pas trait\u00e9 la demande de jeton.
+TOKEN_RESPONSE_MISSING_PARAMETER.useraction=V\u00e9rifiez que le noeud final de jeton configur\u00e9 est correct et qu'il est capable de r\u00e9pondre aux demandes de jeton OAuth.
+

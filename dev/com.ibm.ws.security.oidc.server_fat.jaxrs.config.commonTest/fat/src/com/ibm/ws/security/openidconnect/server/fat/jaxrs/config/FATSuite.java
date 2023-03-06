@@ -17,15 +17,16 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.security.fat.common.AlwaysRunAndPassTest;
 import com.ibm.ws.security.fat.common.utils.ldaputils.CommonAltRemoteLDAPServerSuite;
+
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 
 @SuppressWarnings("restriction")
 @RunWith(Suite.class)
 @SuiteClasses({
 
         // All tests are run from the different jaxrs.config version FAT projects - this project is just the source of all of those tests
-        AlwaysRunAndPassTest.class
+        AlwaysPassesTest.class
 
 })
 /**

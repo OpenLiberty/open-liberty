@@ -111,8 +111,6 @@ public class AuthenticateApiTest {
 
                 one(req).getAuthType();
                 one(resp).getStatus();
-                one(resp).isCommitted();
-                will(returnValue(false));
                 allowing(ssoCookieHelper).createLogoutCookies(req, resp);
                 one(ssoCookieHelper).removeSSOCookieFromResponse(resp);
                 one(req).getSession(false);
@@ -156,8 +154,6 @@ public class AuthenticateApiTest {
 
                 one(req).getAuthType();
                 one(resp).getStatus();
-                one(resp).isCommitted();
-                will(returnValue(false));
                 allowing(ssoCookieHelper).createLogoutCookies(req, resp);
                 one(req).getSession(false);
                 will(returnValue(null));
@@ -201,8 +197,6 @@ public class AuthenticateApiTest {
 
                 one(req).getAuthType();
                 one(resp).getStatus();
-                one(resp).isCommitted();
-                will(returnValue(false));
                 one(ssoCookieHelper).createLogoutCookies(req, resp);
                 allowing(config).getWebAlwaysLogin();
                 will(returnValue(true));

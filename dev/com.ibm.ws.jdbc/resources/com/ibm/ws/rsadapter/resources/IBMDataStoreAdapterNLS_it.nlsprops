@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2021 IBM Corporation and others.
+# Copyright (c) 2001, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -215,7 +215,7 @@ DSRA4003.driver.null.useraction=Aggiornare la configurazione per includere un el
 
 # {0} SQL command
 # {1} data source JNDI name or config display id 
-DSRA4004.onconnect.sql=DSRA4004E: Impossibile eseguirer il comando SQL onConnect \"{0}\" sulla connessione ottenuta dall''origine dati on connection obtained from dataSource {1}. Fare riferimento all''eccezione che ha causato l''errore per ulteriori informazioni.
+DSRA4004.onconnect.sql=DSRA4004E: Impossibile eseguirer il comando SQL onConnect "{0}" sulla connessione ottenuta dall''origine dati on connection obtained from dataSource {1}. Fare riferimento all''eccezione che ha causato l''errore per ulteriori informazioni.
 DSRA4004.onconnect.sql.explanation=Si \u00e8 verificato un errore durante il tentativo di eseguire il comando SQL specificato.
 DSRA4004.onconnect.sql.useraction=Fare riferimento al messaggio di eccezione per contribuire alla determinazione della causa del problema.
 
@@ -299,6 +299,16 @@ META_DATA_EXCEPTION.useraction=Verificare che i metadati siano stati abilitati s
 # 7019 deleted
 # 7020 reserved for other NLS file
 # 7021-7042 deleted
+
+# Do not translate: java.util.Logging
+ORACLE_TRACE_PARSE_WARNING=DSRA7043W: \u00c8 stato utilizzato un valore predefinito per la propriet\u00e0 di sistema {0} a causa del seguente errore di analisi: {1}
+ORACLE_TRACE_PARSE_WARNING.explanation=Le stringhe delle propriet\u00e0 di sistema per Oracle vengono analizzate e trasmesse alla libreria java.util.logging. Se non \u00e8 possibile analizzare un valore di propriet\u00e0, viene utilizzato un valore predefinito.
+ORACLE_TRACE_PARSE_WARNING.useraction=Esaminare l'errore di analisi e modificare la propriet\u00e0 di sistema. Le propriet\u00e0 di registrazione valide sono documentate nel pacchetto java.util.logging.
+
+ORACLE_TRACE_ENABLE_INFO=DSRA7044I: La traccia del driver Oracle JDBC \u00e8 stata abilitata dalla propriet\u00e0 di sistema {0}. Non sono presenti una o pi\u00f9 propriet\u00e0 di sistema [{1}] richieste per separare i file di log Oracle.
+ORACLE_TRACE_ENABLE_INFO.explanation=Il driver di debug Oracle JDBC utilizza il pacchetto java.util.logging per la traccia. Per impostazione predefinita, i log di debug Oracle JDBC sono integrati nei log Liberty. Per configurare la separazione della traccia di debug Oracle JDBC, tutte le propriet\u00e0 in questo messaggio devono essere configurate come propriet\u00e0 di sistema.
+ORACLE_TRACE_ENABLE_INFO.useraction=Se si desidera configurare file di log Oracle JDBC separati, controllare le propriet\u00e0 di sistema e aggiungere le propriet\u00e0 mancanti. Altrimenti, si pu\u00f2 ignorare questo messaggio.
+
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------

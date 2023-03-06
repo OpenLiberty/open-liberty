@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.org.apache.myfaces40.fat.tests;
 
@@ -31,7 +28,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -305,7 +301,6 @@ public class AnnotationLiteralsTest {
      * and that we are able to lookup the Flow, FlowBuilder, and FlowMap
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testFlowMap() throws Exception {
         try (WebClient webClient = new WebClient()) {
             // Start on initial (non-flow) view

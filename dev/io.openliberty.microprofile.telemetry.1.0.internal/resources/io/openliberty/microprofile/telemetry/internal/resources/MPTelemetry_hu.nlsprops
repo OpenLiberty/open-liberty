@@ -1,0 +1,31 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMOT
+#COMPONENTNAMEFOR CWMOT MicroProfile Telemetry Tracing
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# -------------------------------------------------------------------------------------------------
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+# 
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block: CWMOT5000 - CWMOT5999
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block for io.openliberty.microprofile.telemetry.1.0.internal: CWMOT5100 - CWMOT5199
+
+CWMOT5100.tracing.is.disabled=CWMOT5100I: A MicroProfile Telemetry nyomk\u00f6vet\u00e9si szolg\u00e1ltat\u00e1s enged\u00e9lyezve van, de nincs be\u00e1ll\u00edtva a {0} alkalmaz\u00e1s nyomk\u00f6vet\u00e9s\u00e9nek el\u0151\u00e1ll\u00edt\u00e1s\u00e1ra.
+CWMOT5100.tracing.is.disabled.explanation=A MicroProfile Telemetria nyomk\u00f6vet\u00e9si szolg\u00e1ltat\u00e1st be kell \u00e1ll\u00edtani nyomk\u00f6vet\u00e9sek l\u00e9trehoz\u00e1s\u00e1hoz \u00e9s egy nyomk\u00f6vet\u00e9si rendszerbe val\u00f3 export\u00e1l\u00e1s\u00e1hoz.
+CWMOT5100.tracing.is.disabled.useraction=A nyomk\u00f6vet\u00e9s enged\u00e9lyez\u00e9s\u00e9hez adja meg a otel.sdk.disabled= false \u00e9rt\u00e9ket a MicroProfile be\u00e1ll\u00edt\u00e1s \u00e1ltal el\u00e9rhet\u0151 konfigur\u00e1ci\u00f3s forr\u00e1sokban. Tov\u00e1bbi be\u00e1ll\u00edt\u00e1sokra lehet sz\u00fcks\u00e9g ahhoz, hogy a MicroProfile Telemetria nyomk\u00f6vet\u00e9si szolg\u00e1ltat\u00e1s nyomk\u00f6vet\u00e9seket export\u00e1ljon a nyomk\u00f6vet\u00e9si rendszerbe.

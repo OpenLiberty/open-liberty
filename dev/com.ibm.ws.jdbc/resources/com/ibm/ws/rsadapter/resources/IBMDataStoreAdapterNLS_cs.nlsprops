@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2021 IBM Corporation and others.
+# Copyright (c) 2001, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -215,7 +215,7 @@ DSRA4003.driver.null.useraction=Aktualizujte konfiguraci, aby obsahovala platn\u
 
 # {0} SQL command
 # {1} data source JNDI name or config display id 
-DSRA4004.onconnect.sql=DSRA4004E: Nelze prov\u00e9st p\u0159\u00edkaz onConnect SQL \"{0}\" u p\u0159ipojen\u00ed z\u00edskan\u00e9ho ze zdroje dat {1}. Dal\u0161\u00ed informace naleznete v p\u0159\u00ed\u010dinn\u00e9 v\u00fdjimce.
+DSRA4004.onconnect.sql=DSRA4004E: Nelze prov\u00e9st p\u0159\u00edkaz onConnect SQL "{0}" u p\u0159ipojen\u00ed z\u00edskan\u00e9ho ze zdroje dat {1}. Dal\u0161\u00ed informace naleznete v p\u0159\u00ed\u010dinn\u00e9 v\u00fdjimce.
 DSRA4004.onconnect.sql.explanation=Do\u0161lo k chyb\u011b p\u0159i pokusu o proveden\u00ed ur\u010den\u00e9ho p\u0159\u00edkazu SQL.
 DSRA4004.onconnect.sql.useraction=Na z\u00e1klad\u011b zpr\u00e1vy v\u00fdjimky ur\u010dete p\u0159\u00ed\u010dinu probl\u00e9mu.
 
@@ -299,6 +299,16 @@ META_DATA_EXCEPTION.useraction=Ov\u011b\u0159te, \u017ee jsou povolena v datab\u
 # 7019 deleted
 # 7020 reserved for other NLS file
 # 7021-7042 deleted
+
+# Do not translate: java.util.Logging
+ORACLE_TRACE_PARSE_WARNING=DSRA7043W: Pro syst\u00e9movou vlastnost {0} byla pou\u017eita v\u00fdchoz\u00ed hodnota z d\u016fvodu n\u00e1sleduj\u00edc\u00ed chyby p\u0159i anal\u00fdze: {1}
+ORACLE_TRACE_PARSE_WARNING.explanation=\u0158et\u011bzce syst\u00e9mov\u00fdch vlastnost\u00ed pro datab\u00e1zi Oracle jsou analyzov\u00e1ny a p\u0159ed\u00e1ny do knihovny java.util.logging. Pokud nelze hodnotu vlastnosti analyzovat, pou\u017eije se v\u00fdchoz\u00ed hodnota.
+ORACLE_TRACE_PARSE_WARNING.useraction=Zkontrolujte chybu p\u0159i anal\u00fdze a upravte syst\u00e9movou vlastnost. Platn\u00e9 vlastnosti protokolov\u00e1n\u00ed jsou zdokumentov\u00e1ny v r\u00e1mci bal\u00edku java.util.logging.
+
+ORACLE_TRACE_ENABLE_INFO=DSRA7044I: Trasov\u00e1n\u00ed ovlada\u010de JDBC Oracle bylo povoleno syst\u00e9movou vlastnost\u00ed {0}. Chyb\u00ed jedna nebo v\u00edce syst\u00e9mov\u00fdch vlastnost\u00ed [{1}], kter\u00e9 jsou vy\u017eadov\u00e1ny pro odd\u011blen\u00ed soubor\u016f protokolu Oracle.
+ORACLE_TRACE_ENABLE_INFO.explanation=Ovlada\u010d lad\u011bn\u00ed JDBC Oracle pou\u017e\u00edv\u00e1 bal\u00edk java.util.logging pro trasov\u00e1n\u00ed. Protokoly lad\u011bn\u00ed JDBC Oracle jsou standardn\u011b integrov\u00e1ny do protokol\u016f Liberty. Chcete-li nakonfigurovat odd\u011blen\u00ed trasov\u00e1n\u00ed lad\u011bn\u00ed JDBC Oracle, mus\u00ed b\u00fdt v\u0161echny vlastnosti v t\u00e9to zpr\u00e1v\u011b nakonfigurov\u00e1ny jako syst\u00e9mov\u00e9 vlastnosti.
+ORACLE_TRACE_ENABLE_INFO.useraction=Chcete-li nakonfigurovat odd\u011blen\u00e9 soubory protokolu JDBC Oracle, zkontrolujte syst\u00e9mov\u00e9 vlastnosti a p\u0159idejte chyb\u011bj\u00edc\u00ed vlastnosti. Jinak m\u016f\u017eete tuto zpr\u00e1vu ignorovat.
+
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------
