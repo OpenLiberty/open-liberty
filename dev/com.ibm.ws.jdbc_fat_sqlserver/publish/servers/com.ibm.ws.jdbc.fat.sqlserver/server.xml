@@ -15,6 +15,7 @@
     <feature>componenttest-1.0</feature>
     <feature>concurrent-1.0</feature>
     <feature>jdbc-4.1</feature>
+    <feature>jndi-1.0</feature>
     <feature>servlet-3.1</feature>
   </featureManager>
     
@@ -69,7 +70,7 @@
   
   <dataSource jndiName="jdbc/ntlm">
     <jdbcDriver libraryRef="SQLServerLibAnon"/>
-    <properties user="${env.SQL_USER}" password="${env.SQL_PASSWORD}"
+    <properties.microsoft.sqlserver user="${env.SQL_USER}" password="${env.SQL_PASSWORD}"
       databaseName="${env.SQL_DBNAME}" serverName="${env.SQL_HOST}" portNumber="${env.SQL_PORT}" authenticationScheme="NTLM" />
   </dataSource>
 

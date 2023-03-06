@@ -56,7 +56,7 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
 
                 AlwaysPassesTest.class,
-                // Basic OIDC functionality tests
+// Basic OIDC functionality tests
                 OIDCWebClientAuthCodeTest.class,
                 OIDCWebClientAuthTaiTest.class,
                 OIDCWebClientAuthCertTest.class,

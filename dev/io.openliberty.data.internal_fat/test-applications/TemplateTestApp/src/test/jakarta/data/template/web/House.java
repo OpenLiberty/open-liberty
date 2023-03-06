@@ -20,6 +20,10 @@ import java.time.Year;
 public class House {
     public int area;
 
+    public Garage garage;
+
+    public Kitchen kitchen;
+
     public float lotSize;
 
     public int numBedrooms;

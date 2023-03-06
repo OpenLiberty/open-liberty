@@ -17,7 +17,11 @@
  */
 subprojects {
   apply plugin: 'java'
-  
+
+  tasks.withType(Copy).all {
+  	duplicatesStrategy 'include'
+  }
+
   task publishJunitReport() {
     ext {
       outputFilesDir = rootProject.file(rootProject.ext.get('published.outputs.files'))
@@ -90,13 +94,18 @@ subprojects {
 
   
   tasks.withType(JavaCompile).configureEach({
+      int javaVersionNumVal = Integer.parseInt(JavaVersion.current().getMajorVersion())
       // javac 12 has a min target of 1.7, so upgrade any 1.6 projects to 1.7 if running on Java 12
-      if (JavaVersion.current().isJava12Compatible()) {
-        if ('1.6'.equals(sourceCompatibility)) {
+      // javac 20 has a min target of 1.8, so upgrade any 1.7 projects to 1.8 if running on Java 20
+      
+      if (('1.6'.equals(sourceCompatibility) || '1.7'.equals(sourceCompatibility)) && javaVersionNumVal >= 20) {
+          sourceCompatibility = "1.8"
+          targetCompatibility = "1.8"
+      } else if ('1.6'.equals(sourceCompatibility) && javaVersionNumVal >= 12) {
           sourceCompatibility = "1.7"
           targetCompatibility = "1.7"
-        }
       }
+
       // Set the --release compiler flag to keep bootclasspath in sync 
       if(!'off'.equals(bnd.get('javac.args.release'))) {
         def release = sourceCompatibility

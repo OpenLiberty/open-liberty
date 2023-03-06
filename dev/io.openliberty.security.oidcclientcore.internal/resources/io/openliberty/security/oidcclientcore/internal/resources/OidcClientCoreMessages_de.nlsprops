@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME io.openliberty.security.oidcclientcore.internal/resources/io/openliberty/security/oidcclientcore/internal/resources/OidcClientCoreMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -125,3 +122,20 @@ TOKEN_CLAIM_VALUE_MISMATCH.useraction=Stellen Sie sicher, dass das Attribut in d
 TOKEN_MISSING_CLAIMS=CWWKS2425E: Das {0} OpenID Connect-Client-Token ist ung\u00fcltig. Der Wert jwtClaims im Objekt JwtContext ist null oder leer.
 TOKEN_MISSING_CLAIMS.explanation=Im Token fehlen Informationen und die Validierung des Tokens kann nicht abgeschlossen werden.
 TOKEN_MISSING_CLAIMS.useraction=Suchen Sie im Protokoll nach fr\u00fcheren Fehlern, um Details zum Fehler zu erhalten. \u00dcberpr\u00fcfen Sie Format und Inhalt des Tokens, das vom OpenID Connect-Provider zur\u00fcckgegeben wird.
+
+TOKEN_EMPTY_CLAIM=CWWKS2426E: Das Token hat eine leere [{0}] Anforderung.
+TOKEN_EMPTY_CLAIM.explanation=Die in der Nachricht angegebene Anforderung muss einen g\u00fcltigen Wert aufweisen.
+TOKEN_EMPTY_CLAIM.useraction=Der OpenID Connect-Provider gibt ein ID-Token mit einer leeren Anforderung zur\u00fcck. Wenn eine Anforderung vorhanden ist, muss sie einen g\u00fcltigen Wert enthalten. \u00dcberpr\u00fcfen Sie Format und Inhalt des Tokens, das vom OpenID Connect-Provider zur\u00fcckgegeben wird.
+
+TOKEN_EXP_IN_PAST=CWWKS2427E: Das Token ist ung\u00fcltig, weil es abgelaufen ist. Die Ablaufzeit des Tokens ist [{0}]. Die aktuelle Zeit plus Zeitabweichung ist [{1}]. Die konfigurierte Zeitabweichung betr\u00e4gt {2} Sekunden.
+TOKEN_EXP_IN_PAST.explanation=Abgelaufene Token sind ung\u00fcltig.
+TOKEN_EXP_IN_PAST.useraction=Fordern Sie ein neues Token an, das nicht abgelaufen ist. Synchronisieren Sie die Uhrzeiten zwischen dem Tokenaussteller und dem OpenID Connect-Client.
+
+TOKEN_CLAIM_IN_FUTURE=CWWKS2428E: Das Token wird als ung\u00fcltig betrachtet, da der Wert [{0}] f\u00fcr die Anforderung [{1}] in der Zukunft liegt. Die Summe aus aktueller Zeit und Zeitabweichung ist [{2}] und die konfigurierte Zeitabweichung ist {3} Sekunden.
+TOKEN_CLAIM_IN_FUTURE.explanation=Der in der Nachricht f\u00fcr die Anforderung angegebene Wert muss in der Vergangenheit liegen.
+TOKEN_CLAIM_IN_FUTURE.useraction=Verwenden Sie das Token nach Ablauf der in der Nachricht angegebenen Zeit oder fordern Sie ein neues Token an.
+
+TOKEN_RESPONSE_MISSING_PARAMETER=CWWKS2429E: In der Tokenantwort des OpenID Connect-Providers fehlt mindestens ein erforderlicher Parameter: {0}.
+TOKEN_RESPONSE_MISSING_PARAMETER.explanation=Der OpenID Connect-Provider hat einen erforderlichen Parameter nicht zur\u00fcckgegeben oder die Tokenanforderung konnte nicht verarbeitet werden.
+TOKEN_RESPONSE_MISSING_PARAMETER.useraction=Stellen Sie sicher, dass der konfigurierte Tokenendpunkt korrekt ist und auf OAuth-Tokenanforderungen antworten kann.
+

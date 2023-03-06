@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  * IBM Corporation - initial API and implementation
-*******************************************************************************/
+ *******************************************************************************/
 
 package com.ibm.ws.security.openidconnect.server.fat.jaxrs.config;
 
@@ -24,11 +24,14 @@ import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.noOP.NoOPAudien
 import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.noOP.NoOPEncryptionRSServerTests;
 import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.noOP.NoOPSignatureRSServerTests;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.RepeatTests;
 
 @SuppressWarnings("restriction")
 @RunWith(Suite.class)
 @SuiteClasses({
+
+        AlwaysPassesTest.class,
 
         // No OP (No OAuth or OIDC server) tests
         NoOPAudiences1ServerTests.class,

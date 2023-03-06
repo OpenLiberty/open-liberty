@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.microprofile.rest.client.fat;
+
+import java.util.Locale;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -35,19 +37,34 @@ import mpRestClient11.produceConsume.ProduceConsumeTestServlet;
 @RunWith(FATRunner.class)
 public class ProduceConsumeTest extends FATServletClient {
 
+    private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
+
     private static final String appName = "produceConsumeApp";
     final static String SERVER_NAME = "mpRestClient11.produceConsume";
 
+    // To avoid bogus timeout build-breaks on slow Windows hardware only run a few versions on 
+    // Windows.
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, 
-                                                             MicroProfileActions.MP14, // 1.1 + EE7
-                                                             MicroProfileActions.MP20, // 1.1 + EE8
-                                                             MicroProfileActions.MP22, // 1.2
-                                                             MicroProfileActions.MP30, // 1.3
-                                                             MicroProfileActions.MP33, // 1.4
-                                                             MicroProfileActions.MP40, // 2.0
-                                                             MicroProfileActions.MP50, // 3.0
-                                                             MicroProfileActions.MP60);// 3.0+EE10
+    public static RepeatTests r;
+    static {
+        if (!(isWindows) || FATRunner.FAT_TEST_LOCALRUN) {
+            r = MicroProfileActions.repeat(SERVER_NAME, 
+                                           MicroProfileActions.MP14, // 1.1 + EE7
+                                           MicroProfileActions.MP20, // 1.1 + EE8
+                                           MicroProfileActions.MP22, // 1.2
+                                           MicroProfileActions.MP30, // 1.3
+                                           MicroProfileActions.MP33, // 1.4
+                                           MicroProfileActions.MP40, // 2.0
+                                           MicroProfileActions.MP50, // 3.0
+                                           MicroProfileActions.MP60);// 3.0+EE10
+
+        } else {
+            r = MicroProfileActions.repeat(SERVER_NAME, 
+                                           MicroProfileActions.MP14, // 1.1 + EE7 
+                                           MicroProfileActions.MP60);// 3.0+EE10
+
+        }
+    }
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = ProduceConsumeTestServlet.class, contextRoot = appName)

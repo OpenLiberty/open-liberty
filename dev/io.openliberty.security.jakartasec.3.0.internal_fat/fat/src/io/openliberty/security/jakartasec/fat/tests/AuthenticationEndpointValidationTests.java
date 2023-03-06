@@ -28,6 +28,7 @@ import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurityTests;
@@ -63,8 +64,9 @@ public class AuthenticationEndpointValidationTests extends CommonAnnotatedSecuri
 
     public static LibertyServer rpServer;
 
+    // create repeats for opaque and jwt tokens - in lite mode, only run with opaque tokens
     @ClassRule
-    public static RepeatTests repeat = createRandomTokenTypeRepeats();
+    public static RepeatTests repeat = createTokenTypeRepeats(TestMode.LITE, Constants.OPAQUE_TOKEN_FORMAT);
 
     private static final String STATE_COOKIE_PREFIX = "WASOidcState";
 

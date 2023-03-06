@@ -20,7 +20,7 @@ dependencies {
 def appBuildDir = "${buildDir}/test-application"
 
 //Formerly com.ibm.ws.jbatch.test.dbservlet.client.jar
-task buildCommonClientJar(type: Jar, , dependsOn: classes) {
+task buildCommonClientJar(type: Jar, dependsOn: classes) {
   def appName = "CommonClient"
   destinationDir file("${appBuildDir}")
   archiveName "${appName}.jar"

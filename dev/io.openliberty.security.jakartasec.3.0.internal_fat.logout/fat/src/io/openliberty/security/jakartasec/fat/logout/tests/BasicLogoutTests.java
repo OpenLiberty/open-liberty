@@ -35,6 +35,8 @@ import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonLogoutAndRefreshTests;
@@ -54,6 +56,7 @@ import jakarta.security.enterprise.authentication.mechanism.http.openid.PromptTy
  * Tests appSecurity-5.0
  */
 @SuppressWarnings("restriction")
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
 
@@ -61,7 +64,11 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
 
     @Server("jakartasec-3.0_fat.logout.op")
     public static LibertyServer opServer;
-    @Server("jakartasec-3.0_fat.logout.rp")
+    @Server("jakartasec-3.0_fat.logout.rp.jwt")
+    public static LibertyServer rpJwtServer;
+    @Server("jakartasec-3.0_fat.logout.rp.opaque")
+    public static LibertyServer rpOpaqueServer;
+
     public static LibertyServer rpServer;
 
     protected static ShrinkWrapHelpers swh = null;
@@ -73,8 +80,9 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
 
     protected static final String EndSessionTestApp = "EndSessionServlet/end_session";
 
+    // create repeats for opaque and jwt tokens - in lite mode, only run with opaque tokens
     @ClassRule
-    public static RepeatTests repeat = createTokenTypeRepeat(Constants.OPAQUE_TOKEN_FORMAT);
+    public static RepeatTests repeat = createTokenTypeRepeats(TestMode.LITE, Constants.OPAQUE_TOKEN_FORMAT);
 
     static Map<String, String> appMap = new HashMap<String, String>();
 
@@ -82,7 +90,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
     public static void setUp() throws Exception {
 
         // write property that is used to configure the OP to generate JWT or Opaque tokens
-        setTokenTypeInBootstrap(opServer);
+        rpServer = setTokenTypeInBootstrap(opServer, rpJwtServer, rpOpaqueServer);
 
         // Add servers to server trackers that will be used to clean servers up and prevent servers
         // from being restored at the end of each test (so far, the tests are not reconfiguring the servers)
@@ -524,6 +532,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicLogoutTests_notifyProviderTrue_idTokenExpiryTrue_shortIdTokenLifetime_accessTokenExpiryTrue_shortAccessTokenLifetime() throws Exception {
 
@@ -585,6 +594,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicLogoutTests_notifyProviderTrue_idTokenExpiryTrue_longIdTokenLifetime_accessTokenExpiryTrue_longAccessTokenLifetime() throws Exception {
 
@@ -636,6 +646,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicLogoutTests_notifyProviderTrue_idTokenExpiryFalse_shortIdTokenLifetime_accessTokenExpiryTrue_longAccessTokenLifetime() throws Exception {
 
@@ -737,6 +748,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicLogoutTests_notifyProviderFalse_idTokenExpiryTrue_shortIdTokenLifetime_accessTokenExpiryTrue_longAccessTokenLifetime() throws Exception {
 
@@ -914,6 +926,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicLogoutTests_notifyProviderFalse_idTokenExpiryFalse_longIdTokenLifetime_accessTokenExpiryFalse_longAccessTokenLifetime() throws Exception {
 
@@ -940,6 +953,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicLogoutTests_badRedirectUri_NotifyProviderTrue() throws Exception {
 
@@ -972,6 +986,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicLogoutTests_goodRedirectUriWithExtraParms_NotifyProviderTrue() throws Exception {
 
@@ -1010,6 +1025,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicLogoutTests_goodRedirectUri_NotifyProviderFalse_PromptLogin() throws Exception {
 
@@ -1133,6 +1149,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicLogoutTests_goodRedirectUri_NotifyProviderTrue_useTestEndSession() throws Exception {
 
@@ -1177,6 +1194,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicLogoutTests_invoke_reqLogout() throws Exception {
 
@@ -1198,6 +1216,7 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void BasicLogoutTests_goodRedirectUri_NotifyProviderTrue_trackClient() throws Exception {
 

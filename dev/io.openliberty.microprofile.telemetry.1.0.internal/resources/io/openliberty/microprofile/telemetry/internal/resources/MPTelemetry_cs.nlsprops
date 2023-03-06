@@ -1,0 +1,31 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMOT
+#COMPONENTNAMEFOR CWMOT MicroProfile Telemetry Tracing
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# -------------------------------------------------------------------------------------------------
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+# 
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block: CWMOT5000 - CWMOT5999
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block for io.openliberty.microprofile.telemetry.1.0.internal: CWMOT5100 - CWMOT5199
+
+CWMOT5100.tracing.is.disabled=CWMOT5100I: Funkce trasov\u00e1n\u00ed telemetrie produktu MicroProfile je povolena, ale nen\u00ed nakonfigurov\u00e1na pro generov\u00e1n\u00ed trasov\u00e1n\u00ed pro aplikaci {0}.
+CWMOT5100.tracing.is.disabled.explanation=Funkci trasov\u00e1n\u00ed telemetrie produktu MicroProfile je t\u0159eba nakonfigurovat tak, aby vytv\u00e1\u0159ela trasov\u00e1n\u00ed a exportovala je do syst\u00e9mu trasov\u00e1n\u00ed.
+CWMOT5100.tracing.is.disabled.useraction=Chcete-li povolit trasov\u00e1n\u00ed, zadejte hodnotu otel.sdk.disabled=false v jak\u00e9mkoli z konfigura\u010dn\u00edch zdroj\u016f dostupn\u00fdch prost\u0159ednictv\u00edm konfigurace produktu MicroProfile. Je mo\u017en\u00e9, \u017ee bude vy\u017eadov\u00e1na dal\u0161\u00ed konfigurace, kter\u00e1 umo\u017en\u00ed funkci trasov\u00e1n\u00ed telemetrie produktu MicroProfile pro export trasov\u00e1n\u00ed do syst\u00e9mu trasov\u00e1n\u00ed.

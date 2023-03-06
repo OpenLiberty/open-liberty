@@ -21,8 +21,8 @@ configurations {
 }
 
 dependencies {
-   sourceJar 'org.apache.myfaces.core:myfaces-api:4.0.0-RC4:sources'
-   javadocJar 'org.apache.myfaces.core:myfaces-api:4.0.0-RC4:javadoc'
+//    sourceJar 'org.apache.myfaces.core:myfaces-api:4.0.0:sources'
+//    javadocJar 'org.apache.myfaces.core:myfaces-api:4.0.0:javadoc'
 }
 
 task copySource(type: Copy) {

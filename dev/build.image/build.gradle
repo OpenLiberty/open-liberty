@@ -21,7 +21,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 def releaseVersion = "${bnd.libertyRelease}-" + rootProject.userProps.getProperty("version.qualifier")
 
@@ -144,7 +144,9 @@ File packageDir = new File(project.buildDir, 'openliberty')
 
 
 class PackageLibertyWithFeatures extends DefaultTask {
+    @Internal
     Closure withFeatures
+    @Internal
     Boolean completeFeatureList
     // packageServerConflict does not need to be set unless the list of features includes conflicting features
     //
@@ -154,8 +156,12 @@ class PackageLibertyWithFeatures extends DefaultTask {
     //
     // To solve the issues with the use of a value of "true", this property can be set to a comma separated
     // list of base symbolic names (the feature name without the hyphen and version number).
+    @Internal
     String packageServerConflict
+    // ?
+    @OutputDirectory
     File outputTo
+    @Internal
     Boolean isBeta
 
     @TaskAction
@@ -607,7 +613,7 @@ task zipOpenLibertyDev(type: Zip) {
     from projectDir
     include 'wlp/**'
     exclude 'wlp/usr/servers/**'
-    destinationDir distsDir
+    destinationDirectory = distsDirectory
     version releaseVersion
 }
 publish.dependsOn zipOpenLibertyDev
@@ -620,7 +626,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         baseName 'openliberty-all'
         from packageDir
-        destinationDir distsDir
+        destinationDirectory = distsDirectory
         version releaseVersion
         doLast {
             rootProject.userProps.setProperty('zipopenliberty.archivename', archivePath.toString())
@@ -635,7 +641,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         baseName 'openliberty'
         from packageDir
-        destinationDir distsDir
+        destinationDirectory = distsDirectory
         version releaseVersion
         doLast {
             rootProject.userProps.setProperty('zipopenliberty.runtime.archivename', archivePath.toString())
@@ -650,7 +656,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         baseName 'openliberty-kernel'
         from packageDir
-        destinationDir distsDir
+        destinationDirectory = distsDirectory
         version releaseVersion
         doLast {
             rootProject.userProps.setProperty('zipopenliberty.kernel.archivename', archivePath.toString())
@@ -665,7 +671,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         baseName 'openliberty-webProfile8'
         from packageDir
-        destinationDir distsDir
+        destinationDirectory = distsDirectory
         version releaseVersion
         doLast {
             rootProject.userProps.setProperty('zipopenliberty.webprofile8.archivename', archivePath.toString())
@@ -680,7 +686,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         baseName 'openliberty-javaee8'
         from packageDir
-        destinationDir distsDir
+        destinationDirectory = distsDirectory
         version releaseVersion
         doLast {
             rootProject.userProps.setProperty('zipopenliberty.javaee8.archivename', archivePath.toString())
@@ -695,7 +701,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         baseName 'openliberty-webProfile9'
         from packageDir
-        destinationDir distsDir
+        destinationDirectory = distsDirectory
         version releaseVersion
         doLast {
             rootProject.userProps.setProperty('zipopenliberty.webprofile9.archivename', archivePath.toString())
@@ -710,7 +716,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         baseName 'openliberty-jakartaee9'
         from packageDir
-        destinationDir distsDir
+        destinationDirectory = distsDirectory
         version releaseVersion
         doLast {
             rootProject.userProps.setProperty('zipopenliberty.jakartaee9.archivename', archivePath.toString())
@@ -725,7 +731,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         baseName 'openliberty-webProfile10'
         from packageDir
-        destinationDir distsDir
+        destinationDirectory = distsDirectory
         version releaseVersion
         doLast {
             rootProject.userProps.setProperty('zipopenliberty.webprofile10.archivename', archivePath.toString())
@@ -740,7 +746,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         baseName 'openliberty-jakartaee10'
         from packageDir
-        destinationDir distsDir
+        destinationDirectory = distsDirectory
         version releaseVersion
         doLast {
             rootProject.userProps.setProperty('zipopenliberty.jakartaee10.archivename', archivePath.toString())
@@ -755,7 +761,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         baseName 'openliberty-microProfile4'
         from packageDir
-        destinationDir distsDir
+        destinationDirectory = distsDirectory
         version releaseVersion
         doLast {
             rootProject.userProps.setProperty('zipopenliberty.microprofile4.archivename', archivePath.toString())
@@ -770,7 +776,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         baseName 'openliberty-microProfile5'
         from packageDir
-        destinationDir distsDir
+        destinationDirectory = distsDirectory
         version releaseVersion
         doLast {
             rootProject.userProps.setProperty('zipopenliberty.microprofile5.archivename', archivePath.toString())
@@ -785,7 +791,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         baseName 'openliberty-microProfile6'
         from packageDir
-        destinationDir distsDir
+        destinationDirectory = distsDirectory
         version releaseVersion
         doLast {
             rootProject.userProps.setProperty('zipopenliberty.microprofile6.archivename', archivePath.toString())
@@ -800,7 +806,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         baseName 'openliberty'
         from packageDir
-        destinationDir distsDir
+        destinationDirectory = distsDirectory
         version betaVersion
         doLast {
             rootProject.userProps.setProperty('zipopenliberty.beta.archivename', archivePath.toString())
@@ -827,7 +833,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn zipOpenLibertyBeta
         doLast {
           generateZipChecksums(ant)
-          ant.calcZipChecksums(installRoot:"${distsDir}") {}
+          ant.calcZipChecksums(installRoot:"${distsDirectory}") {}
         }
     }   
     publish.dependsOn genZipChecksums
@@ -853,7 +859,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
     task zipTestReport(type: Zip) {
         baseName 'openliberty_test_report'
         from cnf.file('generated/testReports/allUnitTests')
-        destinationDir cnf.file('generated/testReports')
+        destinationDirectory = cnf.file('generated/testReports')
         rootProject.userProps.setProperty('gradle.test.report.zip', archivePath.toString())
         rootProject.storeProps()
     }
@@ -861,7 +867,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
     task createJSONForPublicArtifacts {
         enabled isAutomatedBuild
         dependsOn zipTestReport
-
+        
         doLast {
             println "running createJSONForPublicArtifacts"
             delete "${buildDir}/info.json"
@@ -959,7 +965,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         }
 
         task buildOsNativePackages(type: Exec) {
-	    description 'builds OS Native packages'
+	        description 'builds OS Native packages'
 
             dependsOn copyOpenLiberty
             dependsOn updateRulesTemplate

@@ -1,9 +1,11 @@
 ###############################################################################
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -46,3 +48,7 @@ JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS.useraction=Przejrzyj dzienniki pod k\u
 JAKARTASEC_CLAIMS_PROCESSING_ERROR=CWWKS2506E: Warto\u015b\u0107 klucza Claims klienta OpenID Connect {0} nie jest poprawna. Warto\u015b\u0107 to {1}, a oczekiwany typ to {2}. B\u0142\u0105d: {3}.
 JAKARTASEC_CLAIMS_PROCESSING_ERROR.explanation=Klient OpenID Connect napotka\u0142 b\u0142\u0105d podczas weryfikowania oczekiwanego typu p\u00f3l w obiekcie OpenID Claims. Cz\u0119sto b\u0142\u0105d wynika z tego, \u017ce rzeczywisty typ zwracanej warto\u015bci nie jest zgodny z oczekiwanym typem.
 JAKARTASEC_CLAIMS_PROCESSING_ERROR.useraction=Wi\u0119cej informacji na ten temat zawiera opis b\u0142\u0119du w komunikacie.
+
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT=CWWKS2507W: Warto\u015b\u0107 atrybutu {0} adnotacji definicji mechanizmu uwierzytelniania OpenID nie mo\u017ce by\u0107 ca\u0142kowit\u0105 liczb\u0105 ujemn\u0105. Je\u015bli warto\u015bci\u0105 atrybutu jest wyra\u017cenie w j\u0119zyku wyra\u017ce\u0144 EL (Expression Language), nie mo\u017ce ono by\u0107 t\u0142umaczone na ujemn\u0105 liczb\u0119 ca\u0142kowit\u0105. Podana warto\u015b\u0107: ''{1}''. Zamiast niej u\u017cywana jest domy\u015blna warto\u015b\u0107 atrybutu ''{2}''.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.explanation=Warto\u015b\u0107 atrybutu nie mo\u017ce by\u0107 ujemn\u0105 liczb\u0105 ca\u0142kowit\u0105. Je\u015bli warto\u015bci\u0105 atrybutu jest wyra\u017cenie EL, warto\u015b\u0107 ta nie mo\u017ce by\u0107 t\u0142umaczona na ujemn\u0105 liczb\u0119 ca\u0142kowit\u0105.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.useraction=Zaktualizuj atrybut, aby u\u017cy\u0107 nieujemnej liczby ca\u0142kowitej. Je\u015bli warto\u015bci\u0105 atrybutu jest wyra\u017cenie EL, nale\u017cy zaktualizowa\u0107 przywo\u0142ywany komponent bean w taki spos\u00f3b, aby by\u0142 on t\u0142umaczony na nieujemn\u0105 liczb\u0119 ca\u0142kowit\u0105.

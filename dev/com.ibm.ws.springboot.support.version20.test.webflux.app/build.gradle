@@ -12,7 +12,7 @@ sourceCompatibility = 1.8
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 dependencies {
-	compile('org.springframework.boot:spring-boot-starter-webflux')
+    implementation('org.springframework.boot:spring-boot-starter-webflux')
 }
 
 bootJar {

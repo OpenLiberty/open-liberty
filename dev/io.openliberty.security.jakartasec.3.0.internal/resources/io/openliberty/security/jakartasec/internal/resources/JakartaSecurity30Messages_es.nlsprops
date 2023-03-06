@@ -1,9 +1,11 @@
 ###############################################################################
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -46,3 +48,7 @@ JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS.useraction=Revise los registros para v
 JAKARTASEC_CLAIMS_PROCESSING_ERROR=CWWKS2506E: El valor de clave de aserciones (claims) del cliente de OpenID Connect {0} es incorrecto. El valor es {1} y el tipo esperado es {2}. El error es {3}.
 JAKARTASEC_CLAIMS_PROCESSING_ERROR.explanation=El cliente de OpenID Connect ha encontrado un error al verificar el tipo esperado de campos en el objeto de aserciones (claims) de OpenID. Un error frecuente consiste en que el tipo del valor devuelto no coincide con el tipo esperado.
 JAKARTASEC_CLAIMS_PROCESSING_ERROR.useraction=Para obtener m\u00e1s informaci\u00f3n, consulte el error en el mensaje.
+
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT=CWWKS2507W: El valor del atributo {0} de la anotaci\u00f3n de definici\u00f3n del mecanismo de autenticaci\u00f3n OpenID no puede ser un entero negativo. Si el valor del atributo es una expresi\u00f3n en Lenguaje de Expresiones (EL), no puede resolver a un entero negativo. El valor proporcionado era ''{1}''. En su lugar se utiliza el valor de atributo predeterminado de ''{2}''.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.explanation=El valor del atributo no puede ser un entero negativo. Si el valor de atributo es una expresi\u00f3n en EL, el valor no puede resolver a un entero negativo.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.useraction=Actualice el atributo para utilizar un entero no negativo. Si el valor de atributo es una expresi\u00f3n en EL, actualice el bean referenciado para que resuelva a un entero no negativo.

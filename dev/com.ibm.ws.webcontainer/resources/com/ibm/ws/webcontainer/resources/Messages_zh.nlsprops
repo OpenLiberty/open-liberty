@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 1997, 2020 IBM Corporation and others.
+# Copyright (c) 1997, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 
 # This file has been modified to follow the WebSphere Message Guidelines.
@@ -333,7 +330,6 @@ host.has.not.been.defined.useraction=\u8bf7\u68c0\u67e5 virtualhosts.xml \u6587\
 
 # -----------------------------------------------
 host.on.port.has.not.been.defined=SRVE0205E: \u5c1a\u672a\u5b9a\u4e49\u7aef\u53e3 {1} \u4e0a\u7684\u4e3b\u673a {0}\u3002
-
 host.on.port.has.not.been.defined.explanation=\u627e\u4e0d\u5230\u5b9a\u4e49\u4e3a\u5904\u7406\u6b64\u8bf7\u6c42 URI \u7684\u865a\u62df\u4e3b\u673a\u3002\u9700\u8981\u7cfb\u7edf\u64cd\u4f5c\u3002
 host.on.port.has.not.been.defined.useraction=\u8bf7\u68c0\u67e5 virtualhosts.xml \u6587\u4ef6\u4e2d\u7684\u865a\u62df\u4e3b\u673a\u914d\u7f6e\u6216\u901a\u8fc7\u7ba1\u7406\u63a7\u5236\u53f0\u8fdb\u884c\u68c0\u67e5\u3002
 
@@ -366,18 +362,22 @@ be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application
 class.{0}.could.not.be.instantiated=SRVE0211E: \u65e0\u6cd5\u5b9e\u4f8b\u5316\u7c7b {0}
 class.{0}.could.not.be.instantiated.explanation=\u5185\u90e8\u5f02\u5e38\u3002
 class.{0}.could.not.be.instantiated.useraction=CMSG0002
+
 # -----------------------------------------------
 class.{0}.not.accessible=SRVE0212E: \u65e0\u6cd5\u8bbf\u95ee\u7c7b {0}
 class.{0}.not.accessible.explanation=\u5185\u90e8\u5f02\u5e38\u3002
 class.{0}.not.accessible.useraction=CMSG0002
+
 # -----------------------------------------------
 class.not.found=SRVE0213E: \u627e\u4e0d\u5230\u7c7b
 class.not.found.explanation=\u5185\u90e8\u5f02\u5e38\u3002
 class.not.found.useraction=CMSG0002
+
 # -----------------------------------------------
 invalid.count=SRVE0214E: \u8ba1\u6570\u65e0\u6548
 invalid.count.explanation=\u5185\u90e8\u5f02\u5e38\u3002
 invalid.count.useraction=CMSG0002
+
 # -----------------------------------------------
 non-HTTP.request.or.response=SRVE0215E: \u975e HTTP \u8bf7\u6c42\u6216\u54cd\u5e94
 non-HTTP.request.or.response.explanation=\u5df2\u5b9a\u4e49\u7684 servlet \u94fe\u53ea\u80fd\u5904\u7406 HTTP \u8bf7\u6c42\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
@@ -705,7 +705,6 @@ request.processor.already.present.for.mapping.useraction=\u8bf7\u67e5\u770b\u65e
 
 #---------------------------------------------------
 error.while.setting.WebAppAttributes=SRVE0282E: \u8bbe\u7f6e Web \u5e94\u7528\u7a0b\u5e8f\u5c5e\u6027\u65f6\u51fa\u9519\uff1a{0}
-
 error.while.setting.WebAppAttributes.explanation=\u8fd9\u662f\u7cfb\u7edf\u9519\u8bef\u3002
 error.while.setting.WebAppAttributes.useraction=\u8bf7\u67e5\u770b\u65e5\u5fd7\u3002
 
@@ -1453,7 +1452,6 @@ Error.creating.stats.group.useraction=\u8bf7\u6536\u96c6\u670d\u52a1\u5668\u65e5
 
 Error.occurred.while.preparing.the.servlet.for.initialization=SRVE8090E: \u51c6\u5907 servlet \u5305\u88c5\u5668\u4ee5\u8fdb\u884c\u521d\u59cb\u5316\u65f6\u51fa\u9519\u3002
 Error.occurred.while.preparing.the.servlet.for.initialization.explanation=\u51c6\u5907 servlet \u5305\u88c5\u5668\u4ee5\u8fdb\u884c\u521d\u59cb\u5316\u65f6\u51fa\u9519\u3002
-
 Error.occurred.while.preparing.the.servlet.for.initialization.useraction=\u8bf7\u67e5\u770b\u6839\u672c\u539f\u56e0\u3002
 
 servlet.wrapper.unavailable=SRVE8091W: servlet {0} \u5f53\u524d\u4e0d\u53ef\u7528\uff1a{1}
@@ -1560,7 +1558,6 @@ servlet.with.same.name.already.exists=SRVE8500W: \u65e0\u6cd5\u52a8\u6001\u5730\
 servlet.with.same.name.already.exists.explanation=\u6b64\u5e94\u7528\u7a0b\u5e8f\u5df2\u5b58\u5728\u7528\u4e8e\u6b64\u914d\u7f6e\u7684\u540c\u540d servlet\u3002
 servlet.with.same.name.already.exists.useraction=\u65e0\u9700\u64cd\u4f5c\u3002\u5728\u90e8\u7f72\u63cf\u8ff0\u7b26\u3001\u6ce8\u91ca\u4ee5\u53ca\u6e90\u4ee3\u7801\u4e2d\u68c0\u67e5\u53ef\u4ee5\u52a8\u6001\u6dfb\u52a0\u6b64 servlet \u7684\u914d\u7f6e\u51b2\u7a81\u3002
 
-
 servlet.feature.not.loaded.correctly=SRVE8501E: servlet \u5bb9\u5668\u672a\u4f7f\u7528\u53ef\u63a5\u53d7\u7248\u672c\u88c5\u5165\u3002
 servlet.feature.not.loaded.correctly.explanation=servlet \u5bb9\u5668\u662f\u4f7f\u7528\u5bf9\u5e94\u8be5 servlet \u529f\u80fd\u90e8\u4ef6\u7684 Java EE \u89c4\u8303\u7684\u7248\u672c\u88c5\u5165\u7684\u3002\u88c5\u5165\u8be5\u5bb9\u5668\u65f6\u672a\u5b9a\u4e49\u4efb\u4f55\u7248\u672c\u3002
 servlet.feature.not.loaded.correctly.useraction=\u8bf7\u68c0\u67e5 server.xml \u6587\u4ef6\u4ee5\u4e86\u89e3 servlet-3.0 \u6216 servlet-3.1 \u529f\u80fd\u90e8\u4ef6\u662f\u5426\u5b58\u5728\u3002\u5e94\u8be5\u5b9a\u4e49\u8fd9\u4e9b\u529f\u80fd\u90e8\u4ef6\u7684\u5176\u4e2d\u4e00\u4e2a\u800c\u4e0d\u662f\u5168\u90e8\u3002
@@ -1616,3 +1613,12 @@ duplicate.samesite.attribute.for.cookie.name.useraction=\u8bf7\u68c0\u67e5\u90e8
 duplicate.reported.for.samesite.attribute.cookie.name=CWWWC0004W: \u5df2\u914d\u7f6e {1} SameSite \u5c5e\u6027\u503c\u7684 {0} cookie \u540d\u79f0\u4e4b\u524d\u88ab\u6807\u8bc6\u4e3a\u91cd\u590d\u9879\u3002\u672a\u5bf9\u6b64 cookie \u6dfb\u52a0\u4efb\u4f55 SameSite \u5c5e\u6027\u3002
 duplicate.reported.for.samesite.attribute.cookie.name.explanation=\u4e0d\u80fd\u5bf9\u4e00\u4e2a cookie \u540d\u79f0\u914d\u7f6e\u591a\u4e2a SameSite \u5c5e\u6027\u503c\u3002\u6b64 cookie \u540d\u79f0\u5df2\u88ab\u6807\u8bc6\u4e3a\u91cd\u590d\u9879\u3002
 duplicate.reported.for.samesite.attribute.cookie.name.useraction=\u8bf7\u68c0\u67e5\u90e8\u7f72\u63cf\u8ff0\u7b26\u914d\u7f6e\u4ee5\u786e\u4fdd\u4ec5\u5bf9\u8be5 cookie \u540d\u79f0\u914d\u7f6e\u4e0b\u5217\u5176\u4e2d\u4e00\u4e2a SameSite \u5c5e\u6027\u503c\uff1a\u201cSameSiteCookies_Lax\u201d\u3001\u201cSameSiteCookies_None\u201d\u6216\u201cSameSiteCookies_Strict\u201d\u3002
+
+bad.request.uri\:.{0}=CWWWC0005I: \u8bf7\u6c42 URI \u5305\u542b\u65e0\u6548\u6216\u672a\u6b63\u786e\u7f16\u7801\u7684\u5b57\u7b26\uff1a[{0}]
+bad.request.uri\:.{0}.explanation=\u8bf7\u6c42 URI \u5305\u542b\u65e0\u6548\u7684\u8def\u5f84\u53c2\u6570\u3001\u65e0\u6548\u7684\u70b9\u6bb5\u6216\u9519\u8bef\u7f16\u7801\u7684\u5b57\u7b26\u3002
+bad.request.uri\:.{0}.useraction=\u8bf7\u9a8c\u8bc1\u8bf7\u6c42 URI \u662f\u5426\u4e0d\u5305\u542b\u65e0\u6548\u7684\u70b9\u6216\u8def\u5f84\u53c2\u6570\u7ec4\u5408\u6216\u4efb\u4f55\u9519\u8bef\u7f16\u7801\u7684\u5b57\u7b26\u3002
+
+uri.has.fragment.character=URI \u5177\u6709\u7247\u6bb5 [#] \u5b57\u7b26\uff1b\u5df2\u7f16\u7801\u6216\u672a\u7f16\u7801\u7684 [%23]\u3002
+uri.has.dot.character=URI \u5177\u6709\u5df2\u7f16\u7801\u7684\u70b9 [%2E] \u5b57\u7b26\u3002
+uri.has.forwarslash.character=URI \u5177\u6709\u5df2\u7f16\u7801\u7684\u6b63\u659c\u6760 [%2F] \u5b57\u7b26\u3002
+uri.has.backslash.character=URI \u5177\u6709\u53cd\u659c\u6760\u5b57\u7b26\uff1b\u5df2\u7f16\u7801\u6216\u672a\u7f16\u7801\u7684 [%5C]\u3002

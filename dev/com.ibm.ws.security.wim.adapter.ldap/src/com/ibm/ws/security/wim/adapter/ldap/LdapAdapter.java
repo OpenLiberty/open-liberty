@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -86,6 +86,8 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
+import org.osgi.service.component.propertytypes.SatisfyingConditionTarget;
+import org.osgi.service.condition.Condition;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -160,9 +162,21 @@ import com.ibm.wsspi.security.wim.model.PropertyControl;
 import com.ibm.wsspi.security.wim.model.Root;
 import com.ibm.wsspi.security.wim.model.SearchControl;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
+/**
+ * This is a user repository for LDAP v3.
+ * <p>
+ * The SatisfyingConditionTarget annotation is necessary for InstantOn. It causes the
+ * service component to only be satisfied when the process running condition is available.
+ * This condition is always available unless a checkpoint operation is happening. In that
+ * case the condition becomes available when restoring the process. We delay the activation
+ * of this component to avoid doing any connections to LDAP during checkpoint.
+ */
 @Component(configurationPolicy = ConfigurationPolicy.REQUIRE,
            configurationPid = "com.ibm.ws.security.registry.ldap.config",
            property = "service.vendor=IBM")
+@SatisfyingConditionTarget("(" + Condition.CONDITION_ID + "=" + CheckpointPhase.CONDITION_PROCESS_RUNNING_ID + ")")
 public class LdapAdapter extends BaseRepository implements ConfiguredRepository, RealmConfigChangeListener {
 
     /**

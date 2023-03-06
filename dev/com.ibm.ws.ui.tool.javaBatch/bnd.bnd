@@ -31,6 +31,8 @@ Include-Resource: \
   ${if;${driver;gradle};jsShared/utils/globalization.js=build/jsShared/utils/globalization.js}, \
   ${if;${driver;gradle};=lib/dojo-release}, \
   ${if;${driver;gradle};fonts=lib/fonts}, \
+  package.json, \
+  package-lock.json, \
   WEB-INF=resources/WEB-INF, \
   images=resources/WEB-CONTENT/images, \
   index.jsp=resources/WEB-CONTENT/index.jsp

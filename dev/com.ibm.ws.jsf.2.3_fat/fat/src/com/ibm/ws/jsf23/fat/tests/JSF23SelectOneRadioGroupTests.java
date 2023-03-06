@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
@@ -78,7 +79,7 @@ public class JSF23SelectOneRadioGroupTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
+    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testSelectOneRadioGroup_AjaxRequest() throws Exception {
         try (WebClient webClient = new WebClient(BrowserVersion.CHROME)) {
             // Use a synchronizing ajax controller to allow proper ajax updating

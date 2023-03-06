@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,10 +23,13 @@ import com.ibm.ws.security.saml.fat.IDPInitiated.BasicIDPInitiatedTests;
 import com.ibm.ws.security.saml.fat.SPInitiated.BasicSolicitedSPInitiatedTests;
 import com.ibm.ws.security.saml.fat.SPInitiated.BasicUnsolicitedSPInitiatedTests;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+
+                AlwaysPassesTest.class,
 
                 BasicIDPInitiatedTests.class,
                 BasicSolicitedSPInitiatedTests.class,

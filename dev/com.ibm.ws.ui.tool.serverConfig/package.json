@@ -1,0 +1,11 @@
+{
+  "name": "ui.tool.serverConfig",
+  "version": "0.0.1",
+  "description": "OpenLiberty package refs for ui.serverConfig",
+  "author": "OpenLiberty",
+  "dependencies": {
+    "jquery": "^3.5.1",
+    "carbon-components": "^10.44.0",
+    "bootstrap": "^5.1.3"
+  }
+}

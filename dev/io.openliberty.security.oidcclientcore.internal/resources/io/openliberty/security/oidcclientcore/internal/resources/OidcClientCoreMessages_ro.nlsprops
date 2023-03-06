@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME io.openliberty.security.oidcclientcore.internal/resources/io/openliberty/security/oidcclientcore/internal/resources/OidcClientCoreMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -125,3 +122,20 @@ TOKEN_CLAIM_VALUE_MISMATCH.useraction=Asigura\u021bi-v\u0103 c\u0103 este config
 TOKEN_MISSING_CLAIMS=CWWKS2425E: Jetonul de client {0} OpenID Connect nu este valid. Valoarea jwtClaims pentru obiectul JwtContext este nul\u0103 sau goal\u0103.
 TOKEN_MISSING_CLAIMS.explanation=Validarea jetonului nu poate fi finalizat\u0103, deoarece lipsesc informa\u021bii din jeton.
 TOKEN_MISSING_CLAIMS.useraction=Examina\u0163i istoricul pentru orice erori anterioare pentru detalii despre e\u015fec. Verifica\u021bi formatul \u0219i con\u021binutul jetonului care este returnat de la furnizorul OpenID Connect.
+
+TOKEN_EMPTY_CLAIM=CWWKS2426E: Jetonul are o revendicare [{0}] goal\u0103.
+TOKEN_EMPTY_CLAIM.explanation=Revendicarea care este specificat\u0103 \u00een mesaj trebuie s\u0103 aib\u0103 o valoare valid\u0103.
+TOKEN_EMPTY_CLAIM.useraction=Furnizorul OpenID Connect returneaz\u0103 un jeton de ID cu o revendicare goal\u0103. Dac\u0103 este prezent\u0103 o revendicare, aceasta trebuie s\u0103 con\u021bin\u0103 o valoare valid\u0103. Verifica\u021bi formatul \u0219i con\u021binutul jetonului care este returnat de la furnizorul OpenID Connect.
+
+TOKEN_EXP_IN_PAST=CWWKS2427E: Jetonul nu este valid, deoarece a expirat. Timpul de expirare al jetonului este [{0}]. Ora curent\u0103 minus devia\u0163ia ceasului este  [{1}]. Decalajul de ceas configurat este {2} secunde.
+TOKEN_EXP_IN_PAST.explanation=Jetoanele expirate nu sunt valide.
+TOKEN_EXP_IN_PAST.useraction=Ob\u021bine\u021bi un jeton nou, care nu este expirat. Sincroniza\u021bi orele ceasului \u00eentre emitentul jetonului \u0219i clientul OpenID Connect.
+
+TOKEN_CLAIM_IN_FUTURE=CWWKS2428E: Jetonul este considerat invalid, deoarece valoarea [{0}] pentru revendicarea [{1}] este \u00een viitor. Suma orei curente \u0219i a decalajului de ceas este [{2}], iar decalajul de ceas configurat este {3} secunde.
+TOKEN_CLAIM_IN_FUTURE.explanation=Valoarea care este specificat\u0103 \u00een mesaj pentru revendicare trebuie s\u0103 fie un moment din trecut.
+TOKEN_CLAIM_IN_FUTURE.useraction=Folosi\u021bi jetonul dup\u0103 ce timpul specificat \u00een mesaj expir\u0103 sau ob\u021bine\u021bi un jeton nou.
+
+TOKEN_RESPONSE_MISSING_PARAMETER=CWWKS2429E: \u00cen r\u0103spunsul jetonului de la furnizorul OpenID Connect lipse\u0219te cel pu\u021bin un parametru necesar: {0}.
+TOKEN_RESPONSE_MISSING_PARAMETER.explanation=Fie furnizorul OpenID Connect nu a returnat un parametru necesar, fie nu a reu\u0219it s\u0103 proceseze cererea jetonului.
+TOKEN_RESPONSE_MISSING_PARAMETER.useraction=Verifica\u021bi dac\u0103 punctul final de jeton configurat este corect \u0219i capabil s\u0103 r\u0103spund\u0103 la cererile de jeton OAuth.
+

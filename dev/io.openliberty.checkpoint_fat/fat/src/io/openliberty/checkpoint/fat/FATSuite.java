@@ -22,6 +22,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -37,6 +39,8 @@ import com.ibm.websphere.simplicity.config.Variable;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -74,6 +78,7 @@ import componenttest.topology.impl.LibertyServer;
                 BellsTest.class,
                 JaxWSVirtualHostTest.class,
                 WebAppMessageTest.class,
+                URAPIs_Federation_2LDAPsTest.class,
                 SkipIfCheckpointNotSupportedAnnotationTest.class,
                 RestConnectorTest.class,
                 AuditTest.class
@@ -154,5 +159,19 @@ public class FATSuite {
             }
         }
         return config;
+    }
+
+    public static void transformApps(LibertyServer myServer, String... apps) {
+        if (JakartaEE9Action.isActive()) {
+            for (String app : apps) {
+                Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + app);
+                JakartaEE9Action.transformApp(someArchive);
+            }
+        } else if (JakartaEE10Action.isActive()) {
+            for (String app : apps) {
+                Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + app);
+                JakartaEE10Action.transformApp(someArchive);
+            }
+        }
     }
 }

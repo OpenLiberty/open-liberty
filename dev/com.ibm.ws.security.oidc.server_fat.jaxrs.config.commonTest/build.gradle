@@ -125,7 +125,7 @@ autoFVT.doLast {
       include 'commonTrustStore.jks'
     }
     
-  	/* copy shared key/trust stores from the common security fat project */
+    /* copy shared key/trust stores from the common security fat project */
     copy { 
      from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
      into new File(autoFvtDir, 'publish/servers/' + server + '/')
@@ -151,24 +151,23 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
       rename 'oauthclient.zip', 'oauthclient.war'
     }
-    
+
     copy {
       from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, "/securitykeys")
       into new File(autoFvtDir, 'publish/servers/' + server)
       include 'commonMultiKeyBasicKeyStore.jks'
-	  include 'rsaKeys.jks'
-	  include 'ec.jks' 
-	}    
+      include 'rsaKeys.jks'
+      include 'ec.jks' 
+    }
 
-	/* copy keys used to encrypt tokens */
-	copy { 
-		from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
-		into new File(autoFvtDir, 'publish/servers/' + server + '/')
-		include '*.pem'
-	}  	
+    /* copy keys used to encrypt tokens */
+    copy { 
+      from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/')
+      include '*.pem'
+    }
 
-	/* copy the jwtbuilder app config file from security_fat.common.jwt */
-
+    /* copy the jwtbuilder app config file from security_fat.common.jwt */
     copy {
       from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/config')
       include "jwtBuilderApplication.xml"
@@ -180,7 +179,6 @@ autoFVT.doLast {
       from new File(project(':com.ibm.ws.security.fat.common.jwt').buildDir, 'test-application/jwtbuilder.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
     }
-    
   }
 
   /*
@@ -191,18 +189,17 @@ autoFVT.doLast {
   ]
   servers.each { server ->
     copy {
-		from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/helloworld.war.zip')
-    	into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
-   	 	rename 'helloworld.war.zip', 'helloworld.war'
-  	}
- 
+      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/helloworld.war.zip')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+      rename 'helloworld.war.zip', 'helloworld.war'
+    }
+
     copy {
       from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, "/securitykeys")
       into new File(autoFvtDir, 'publish/servers/' + server)
       include 'commonMultiKeyTrustStore.jks'
-	  include 'commonDummyServerTrustFile.jks'
-	  include 'ec.jks' 
-	}     	
- 
-   }
+      include 'commonDummyServerTrustFile.jks'
+      include 'ec.jks' 
+    }
+  }
 }

@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME io.openliberty.security.oidcclientcore.internal/resources/io/openliberty/security/oidcclientcore/internal/resources/OidcClientCoreMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -125,3 +122,20 @@ TOKEN_CLAIM_VALUE_MISMATCH.useraction=Upewnij si\u0119, \u017ce atrybut w konfig
 TOKEN_MISSING_CLAIMS=CWWKS2425E: Token klienta produktu {0} OpenID Connect nie jest poprawny. Warto\u015b\u0107 jwtClaims w obiekcie JwtContext ma warto\u015b\u0107 NULL lub jest pusta.
 TOKEN_MISSING_CLAIMS.explanation=Brak informacji w tokenie i nie mo\u017cna zako\u0144czy\u0107 sprawdzania poprawno\u015bci tokenu.
 TOKEN_MISSING_CLAIMS.useraction=Sprawd\u017a, czy w dzienniku nie odnotowano wcze\u015bniejszych b\u0142\u0119d\u00f3w zwi\u0105zanych z tym niepowodzeniem. Sprawd\u017a format i tre\u015b\u0107 tokenu, kt\u00f3ry jest zwracany przez dostawc\u0119 OpenID Connect.
+
+TOKEN_EMPTY_CLAIM=CWWKS2426E: Token ma puste roszczenie [{0}].
+TOKEN_EMPTY_CLAIM.explanation=Roszczenie podane w komunikacie musi mie\u0107 poprawn\u0105 warto\u015b\u0107.
+TOKEN_EMPTY_CLAIM.useraction=Dostawca OpenID Connect zwraca token identyfikatora z pustym roszczeniem. Je\u015bli roszczenie jest obecne, musi zawiera\u0107 poprawn\u0105 warto\u015b\u0107. Sprawd\u017a format i tre\u015b\u0107 tokenu, kt\u00f3ry jest zwracany przez dostawc\u0119 OpenID Connect.
+
+TOKEN_EXP_IN_PAST=CWWKS2427E: Token nie jest poprawny, poniewa\u017c utraci\u0142 on wa\u017cno\u015b\u0107. Czas utraty wa\u017cno\u015bci tokenu to [{0}]. Bie\u017c\u0105ca godzina pomniejszona o przesuni\u0119cie zegara: [{1}]. Skonfigurowane przesuni\u0119cie zegara wynosi {2} sekund.
+TOKEN_EXP_IN_PAST.explanation=Tokeny, kt\u00f3re utraci\u0142y wa\u017cno\u015b\u0107, s\u0105 niepoprawne.
+TOKEN_EXP_IN_PAST.useraction=Uzyskaj nowy token, kt\u00f3ry nie utraci\u0142 wa\u017cno\u015bci. Zsynchronizuj zegary wystawcy token\u00f3w i klienta OpenID Connect.
+
+TOKEN_CLAIM_IN_FUTURE=CWWKS2428E: Token zosta\u0142 uznany za niepoprawny ze wzgl\u0119du na warto\u015b\u0107 [{0}] dla roszczenia [{1}] wskazuj\u0105c\u0105 przysz\u0142o\u015b\u0107. Suma bie\u017c\u0105cego czasu i przesuni\u0119cia zegara wynosi [{2}], a skonfigurowane przesuni\u0119cie zegara wynosi {3} sekund.
+TOKEN_CLAIM_IN_FUTURE.explanation=Warto\u015b\u0107 podana w komunikacie dla roszczenia musi by\u0107 czasem z przesz\u0142o\u015bci.
+TOKEN_CLAIM_IN_FUTURE.useraction=U\u017cyj tokenu po up\u0142ywie czasu okre\u015blonego w komunikacie lub uzyskaj nowy token.
+
+TOKEN_RESPONSE_MISSING_PARAMETER=CWWKS2429E: W odpowiedzi tokenu od dostawcy OpenID Connect brakuje przynajmniej jednego wymaganego parametru: {0}.
+TOKEN_RESPONSE_MISSING_PARAMETER.explanation=Dostawca OpenID Connect nie zwr\u00f3ci\u0142 wymaganego parametru lub nie uda\u0142o si\u0119 przetworzy\u0107 \u017c\u0105dania tokenu.
+TOKEN_RESPONSE_MISSING_PARAMETER.useraction=Sprawd\u017a, czy skonfigurowany punkt ko\u0144cowy tokenu jest poprawny i czy mo\u017ce odpowiada\u0107 na \u017c\u0105dania tokenu OAuth.
+

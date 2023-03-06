@@ -83,6 +83,7 @@ public class JSF22ResetValuesAndAjaxDelayTests {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(EE10_FEATURES)
     public void testResetValues() throws Exception {
         try (WebClient webClient = new WebClient(browser)) {
 

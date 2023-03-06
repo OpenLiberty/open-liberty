@@ -30,6 +30,12 @@
   
    <welcome-file-list>  
    <welcome-file>index.jsf</welcome-file>  
-  </welcome-file-list>  
+  </welcome-file-list> 
+  
+  <!-- Added for Faces 4.0 Context Parameter Info Logging Change (MYFACES-4561) -->
+  <context-param>
+    <param-name>javax.faces.PROJECT_STAGE</param-name>
+    <param-value>Development</param-value>
+  </context-param>
   
 </web-app>

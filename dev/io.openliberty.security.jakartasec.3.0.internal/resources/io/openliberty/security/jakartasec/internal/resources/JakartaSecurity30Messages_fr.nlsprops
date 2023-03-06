@@ -1,9 +1,11 @@
 ###############################################################################
 # Copyright (c) 2022 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
+# are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
@@ -46,3 +48,7 @@ JAKARTASEC_WARNING_MISSING_SUBJECT_CLAIMS.useraction=Recherchez dans les journau
 JAKARTASEC_CLAIMS_PROCESSING_ERROR=CWWKS2506E: La valeur de la cl\u00e9 Claims du client OpenID Connect {0} est incorrecte. La valeur est {1} et le type attendu est {2}. Erreur : {3}.
 JAKARTASEC_CLAIMS_PROCESSING_ERROR.explanation=Le client OpenID Connect a rencontr\u00e9 une erreur en v\u00e9rifiant le type des zones dans l'objet OpenID Claims. Une erreur fr\u00e9quente est que le type r\u00e9el de la valeur renvoy\u00e9e ne correspond pas au type attendu.
 JAKARTASEC_CLAIMS_PROCESSING_ERROR.useraction=Pour plus d'informations, voir l'erreur dans le message.
+
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT=CWWKS2507W: La valeur de l''attribut {0} de l''annotation de d\u00e9finition du m\u00e9canisme d''authentification OpenID ne doit pas \u00eatre un entier n\u00e9gatif. Si la valeur de l''attribut est une expression EL (Expression Language), celle-ci ne doit pas donner un entier n\u00e9gatif. La valeur fournie \u00e9tait ''{1}''. La valeur de l''attribut par d\u00e9faut ''{2}'' est utilis\u00e9e \u00e0 la place.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.explanation=La valeur de l'attribut ne doit pas \u00eatre un entier n\u00e9gatif. Si la valeur de l'attribut est une expression EL, celle-ci ne doit pas donner un entier n\u00e9gatif.
+JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.useraction=Modifiez l'attribut pour utiliser un entier non n\u00e9gatif. Si la valeur de l'attribut est une expression EL, modifiez le bean r\u00e9f\u00e9renc\u00e9 pour qu'il donne un entier non n\u00e9gatif.

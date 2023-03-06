@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2021 IBM Corporation and others.
+# Copyright (c) 2001, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -215,7 +215,7 @@ DSRA4003.driver.null.useraction=Atualize a configura\u00e7\u00e3o para incluir u
 
 # {0} SQL command
 # {1} data source JNDI name or config display id 
-DSRA4004.onconnect.sql=DSRA4004E: N\u00e3o \u00e9 poss\u00edvel executar o comando SQL \"{0}\" do onConnect na conex\u00e3o obtida de dataSource {1}. Consulte a exce\u00e7\u00e3o de causa para obter informa\u00e7\u00f5es adicionais.
+DSRA4004.onconnect.sql=DSRA4004E: N\u00e3o \u00e9 poss\u00edvel executar o comando SQL "{0}" do onConnect na conex\u00e3o obtida de dataSource {1}. Consulte a exce\u00e7\u00e3o de causa para obter informa\u00e7\u00f5es adicionais.
 DSRA4004.onconnect.sql.explanation=Ocorreu um erro ao tentar executar o comando SQL especificado.
 DSRA4004.onconnect.sql.useraction=Consulte a mensagem de exce\u00e7\u00e3o para ajud\u00e1-lo a determinar a causa do problema.
 
@@ -299,6 +299,16 @@ META_DATA_EXCEPTION.useraction=Verifique se os metadados est\u00e3o ativados no 
 # 7019 deleted
 # 7020 reserved for other NLS file
 # 7021-7042 deleted
+
+# Do not translate: java.util.Logging
+ORACLE_TRACE_PARSE_WARNING=DSRA7043W: Um valor padr\u00e3o foi usado para a propriedade de sistema {0} devido ao erro de an\u00e1lise sint\u00e1tica a seguir: {1}
+ORACLE_TRACE_PARSE_WARNING.explanation=As sequ\u00eancias de propriedades de sistema para o Oracle s\u00e3o analisadas e transmitidas para a biblioteca java.util.logging. Se um valor da propriedade n\u00e3o puder ser analisado, um valor padr\u00e3o ser\u00e1 usado no lugar.
+ORACLE_TRACE_PARSE_WARNING.useraction=Examine o erro de an\u00e1lise sint\u00e1tica e modifique a propriedade de sistema. As propriedades de cria\u00e7\u00e3o de log v\u00e1lidas s\u00e3o documentadas no pacote java.util.logging.
+
+ORACLE_TRACE_ENABLE_INFO=DSRA7044I: O rastreio do driver Oracle JDBC foi ativado pela propriedade de sistema {0}. Uma ou mais propriedades do sistema [{1}] necess\u00e1rias para separar arquivos de log Oracle est\u00e3o ausentes.
+ORACLE_TRACE_ENABLE_INFO.explanation=O driver de depura\u00e7\u00e3o Oracle JDBC usa o pacote java.util.logging para rastreio. Os logs de depura\u00e7\u00e3o do Oracle JDBC s\u00e3o integrados aos logs do Liberty por padr\u00e3o. Para configurar a separa\u00e7\u00e3o de rastreio de depura\u00e7\u00e3o do Oracle JDBC, todas as propriedades nesta mensagem devem ser configuradas como propriedades de sistema.
+ORACLE_TRACE_ENABLE_INFO.useraction=Se voc\u00ea deseja configurar arquivos de log do Oracle JDBC separados, verifique as propriedades de sistema e inclua as propriedades ausentes. Caso contr\u00e1rio, voc\u00ea pode ignorar essa mensagem.
+
 # 7600-7606 deleted
 
 # ----------------------------------------------------------------------------

@@ -38,6 +38,8 @@ import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils.HTTPRequestMethod;
@@ -61,6 +63,7 @@ import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
  * Tests appSecurity-5.0
  */
 @SuppressWarnings("restriction")
+@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class TokenValidationTests extends CommonAnnotatedSecurityTests {
 
@@ -77,8 +80,9 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
 
     public static LibertyServer rpServer;
 
+    // create repeats for opaque and jwt tokens - in lite mode, only run with opaque tokens
     @ClassRule
-    public static RepeatTests repeat = createTokenTypeRepeats();
+    public static RepeatTests repeat = createTokenTypeRepeats(TestMode.LITE, Constants.OPAQUE_TOKEN_FORMAT);
 
     public static final SecurityFatHttpUtils secHttpUtils = new SecurityFatHttpUtils();
     public static final JwtTokenBuilderUtils tokenBuilderHelpers = new JwtTokenBuilderUtils();
@@ -443,6 +447,7 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
     /**
      * Test that a token returned from the token endpoint without an iss claim will fail validation.
      */
+    @Mode(TestMode.LITE)
     @Test
     public void TokenValidationTests_tokens_issMissing() throws Exception {
 
@@ -532,6 +537,7 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
     /**
      * Test that a token returned from the token endpoint with an empty sub claim will fail validation.
      */
+    @Mode(TestMode.LITE)
     @Test
     public void TokenValidationTests_tokens_subEmpty() throws Exception {
 
@@ -561,6 +567,7 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
     /**
      * Test that a token returned from the token endpoint without an aud claim will fail validation.
      */
+    @Mode(TestMode.LITE)
     @Test
     public void TokenValidationTests_tokens_audMissing() throws Exception {
 
@@ -716,6 +723,7 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
     /**
      * Test that a token returned from the token endpoint with an exp claim value that is in the past will fail validation.
      */
+    @Mode(TestMode.LITE)
     @Test
     public void TokenValidationTests_tokens_expInThePast() throws Exception {
 
@@ -756,6 +764,7 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
     /**
      * Test that a token returned from the token endpoint with an iat claim value that is in the future will fail validation.
      */
+    @Mode(TestMode.LITE)
     @Test
     public void TokenValidationTests_tokens_iatInTheFuture() throws Exception {
 
@@ -939,6 +948,7 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.TokenRequestException" })
     @Test
     public void TokenValidationTests_response_accessTokenMissing() throws Exception {
@@ -985,6 +995,7 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.TokenRequestException" })
     @Test
     public void TokenValidationTests_response_idTokenMissing() throws Exception {
@@ -1031,6 +1042,7 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void TokenValidationTests_response_expiresInMissing() throws Exception {
 
@@ -1152,6 +1164,7 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
+    @Mode(TestMode.LITE)
     @Test
     public void TokenValidationTests_response_refreshTokenMissing() throws Exception {
 
