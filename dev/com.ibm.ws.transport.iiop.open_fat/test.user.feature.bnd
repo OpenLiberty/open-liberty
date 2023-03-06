@@ -1,0 +1,11 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+Bundle-Name: User Feature Bundle
+Bundle-SymbolicName: test.user.feature; singleton:=true
+Bundle-Description: This bundle provides some classes to use in testing a user feature; version=${bVersion}
+
+# export nothing
+Export-Package: test.user.feature

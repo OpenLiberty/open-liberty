@@ -1,0 +1,10 @@
+<server>
+    <include location="../fatTestPorts.xml"/>
+    <featureManager>
+        <feature>osgiconsole-1.0</feature>
+        <feature>concurrent-1.0</feature>
+        <feature>test.iiop-1.0</feature>
+        <feature>test.iiop.interceptor-1.0</feature>
+    </featureManager>
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP.secondary}" />
+</server>
