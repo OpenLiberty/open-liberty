@@ -553,7 +553,6 @@ public class JSF22MiscellaneousTests {
      * There was previously a memory leak with the ViewScopeBeanHolder's storageMap. See issues above.
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES) // This requires further investigation.
     public void testMyFaces4433() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
