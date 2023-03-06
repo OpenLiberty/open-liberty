@@ -26,12 +26,15 @@ import com.ibm.ws.transaction.fat.util.SetupRunner;
 import com.ibm.ws.transaction.fat.util.TxFATServletClient;
 import com.ibm.ws.transaction.fat.util.TxShrinkHelper;
 
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import suite.FATSuite;
 
+//Skip on IBM i test class depends on datasource inferrence
+@SkipIfSysProp(SkipIfSysProp.OS_IBMI)
 public class FailoverTest extends TxFATServletClient {
 
     public static final String APP_NAME = "transaction";
@@ -85,7 +88,7 @@ public class FailoverTest extends TxFATServletClient {
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
         //Setup server DataSource properties
-        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, testContainer);
+        DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
 
         server.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
     }

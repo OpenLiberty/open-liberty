@@ -19,6 +19,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.container.DatabaseContainerType;
@@ -26,7 +27,9 @@ import tests.DualServerDynamicDBRotationTest2;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                DualServerDynamicDBRotationTest2.class,
+    //Ensure failures in @BeforeClass don't prevent zero tests run
+    AlwaysPassesTest.class,
+    DualServerDynamicDBRotationTest2.class,
 })
 public class FATSuite extends TxTestContainerSuite {
 

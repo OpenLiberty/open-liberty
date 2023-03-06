@@ -19,13 +19,18 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.container.DatabaseContainerType;
 import tests.FailoverTestLease;
 
 @RunWith(Suite.class)
-@SuiteClasses({ FailoverTestLease.class })
+@SuiteClasses({ 
+    //Ensure something runs when failover tests are skipped on IBMi
+    AlwaysPassesTest.class,
+    FailoverTestLease.class
+})
 public class FATSuite extends TxTestContainerSuite {
 
     static {
