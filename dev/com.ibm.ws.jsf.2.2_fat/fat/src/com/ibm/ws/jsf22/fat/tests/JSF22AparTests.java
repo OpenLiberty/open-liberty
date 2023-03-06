@@ -1,14 +1,11 @@
 /*
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  */
 package com.ibm.ws.jsf22.fat.tests;
 
@@ -476,7 +473,6 @@ public class JSF22AparTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES)
     public void testViewScopedJSFManagedBeanPreDestroy() throws Exception {
         try (WebClient webClient = new WebClient()) {
             URL url = JSFUtils.createHttpUrl(jsfAparServer, "ViewScopedJSFBean", "");
@@ -485,7 +481,7 @@ public class JSF22AparTests {
 
             HtmlPage page = webClient.getPage(url);
 
-            page = findAndClickButton(page, "form1:button1");
+            page = findAndClickButton(page, "form1:invalidateButton");
 
             String str = "ViewScopedBean1 PreDestroy Invoked";
             String ret = jsfAparServer.waitForStringInLogUsingLastOffset(str);
@@ -507,7 +503,7 @@ public class JSF22AparTests {
     // Skipping for EE10 as this test uses both a CDI bean and a ManagedBean and ManagedBeans are
     // no longer available in Faces 4.0. The testViewScopedJSFManagedBeanPreDestroy test will
     // be executed for EE10 with just a CDI bean to verify that PreDestroy is called.
-    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
+    @SkipForRepeat(EE10_FEATURES)
     public void testViewScopedCDIManagedBeanPreDestroy() throws Exception {
         try (WebClient webClient = new WebClient()) {
             URL url = JSFUtils.createHttpUrl(jsfAparServer, "ViewScopedCDIBean", "");
@@ -516,7 +512,7 @@ public class JSF22AparTests {
 
             HtmlPage page = webClient.getPage(url);
 
-            page = findAndClickButton(page, "form1:button1");
+            page = findAndClickButton(page, "form1:invalidateButton");
 
             String str1 = "ViewScopedBean2 PreDestroy Invoked";
             String str2 = "ViewScopedCDIBean PreDestroy Invoked";
