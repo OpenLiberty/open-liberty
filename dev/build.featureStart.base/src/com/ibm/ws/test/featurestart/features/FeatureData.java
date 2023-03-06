@@ -112,7 +112,7 @@ public class FeatureData {
                 String line = scanner.nextLine();
                 if (line.startsWith("IBM-ShortName:")) {
                     shortName = line.substring(SHORT_PREFIX_LEN).trim();
-                    if (shortName.toLowerCase().contains("client")) {
+                    if (FeatureFilter.isClient(shortName)) {
                         isClientOnly = true;
                     }
 

@@ -73,7 +73,7 @@ public class FeatureFilter {
     }
 
     /**
-     * if a feature is not to be run depending on whether the test environment
+     * Tell if a feature is not to be run depending on whether the test environment
      * is ZOS.
      *
      * Irrespective of the value returned by this method, other tests may cause
@@ -100,4 +100,22 @@ public class FeatureFilter {
             }
         }
     }
+
+    /**
+     * Tell if a feature is a client-only feature.  Currently,
+     * features which have names which contain 'eeClient' or 'securityClient'
+     * are client-only features.  Those are 'jakartaeeClient' and
+     * 'securityClient'.
+     *
+     * Previously, the test was against 'client', but that was incorrect.
+     *
+     * @param shortName The short name of the feature which is to be tested.
+     * @return True or false telling if the feature is a client-only feature.
+     */
+    public static boolean isClient(String shortName) {
+        String upperShortName = shortName.toUpperCase();
+        return ( upperShortName.contains("EECLIENT") ||
+                 upperShortName.contains("SECURITYCLIENT") );
+    }
 }
+

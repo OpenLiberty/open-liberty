@@ -39,6 +39,8 @@ import com.ibm.ws.test.featurestart.features.FeatureLevels;
 import com.ibm.ws.test.featurestart.features.FeatureReports;
 import com.ibm.ws.test.featurestart.features.FeatureStability;
 
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -548,12 +550,11 @@ public class FeaturesStartTestBase {
             } else if (!featureData.isPublic()) {
                 nonPublicFeatures.add(name);
                 continue;
-            }
 
-            // } else if ((TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.LITE) && isStable(name)) {
-            //     stableFeatures.add(name);
-            //     continue;
-            // }
+            } else if ((TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.LITE) && isStable(name)) {
+                stableFeatures.add(name);
+                continue;
+            }
 
             String filterReason = isFiltered(name);
             if (filterReason != null) {
