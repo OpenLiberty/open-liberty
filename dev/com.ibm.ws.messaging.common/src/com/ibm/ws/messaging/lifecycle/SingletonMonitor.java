@@ -75,66 +75,23 @@ public class SingletonMonitor implements Introspector {
     // OSGi allows unbind calls to happen after logically subsequent bind calls, so Set<> semantics will not suffice.
     // List<> allows duplicates, so the eventual result of out-of-order operations will be correct.
     private final List<String> errors = new ArrayList<>();
-    private final List<String> realizedSingletons = new ArrayList<>();
     private final List<String> pendingSingletons = new ArrayList<>();
+    private final List<String> realizedSingletons = new ArrayList<>();
     private int singletonsReadyBindCount, singletonsReadyUnbindCount;
 
     @Activate
     public SingletonMonitor(@Reference(name="configAdmin") ConfigurationAdmin configAdmin, Map<String, Object> properties) {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(tc, "<init>");
         this.configAdmin = configAdmin;
-        this.declaredSingletons = unmodifiableSet(findDeclaredSingletons(properties));
+        this.declaredSingletons = unmodifiableSet(findDeclarations(properties));
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(tc, "<init>");
-    }
-
-    /**
-     * Get the current set of ids of declared SingletonAgents.
-     */
-    private Set<String> findDeclaredSingletons(Map<String, Object> properties) {
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "findDeclaredSingletons", (Object[])properties.get("singletonDeclarations"));
-        final Set<String> result = Optional.of(properties)
-            .map(props -> props.get("singletonDeclarations"))
-            .filter(String[].class::isInstance)
-            .map(String[].class::cast)
-            .map(Stream::of)
-            .orElse(Stream.empty())
-            .map(this::retrieveId)
-            .filter(Objects::nonNull)
-            .collect(TreeSet::new, Set::add, Set::addAll);
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "findDeclaredSingletons", result);
-        return unmodifiableSet(result);
-    }
-
-    private String retrieveId(String servicePid) {
-        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "retrieveId", servicePid);
-        try {
-            Configuration[] configs = configAdmin.listConfigurations("(" + SERVICE_PID + "=" + servicePid + ")");
-            if (configs == null)
-                // We may be processing a pid from a deleted application
-                throw new IllegalStateException("No configs found matching servicePid=" + servicePid);
-            if (configs.length > 1)
-                throw new IllegalStateException("Non unique servicePid=" + servicePid + " matched configs=" + Arrays.toString(configs));
-
-            // even if we get to here, the config we successfully retrieved may have been deleted
-            // which will result in an IllegalStateException
-            String id = (String) configs[0].getProperties().get("id");
-            if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "retrieveId", id);
-            return id;
-        } catch (Exception e) {
-            // This is unlikely to be a genuine problem.
-            // These exceptions result from config changes being drip-fed to this component while other config changes are being processed.
-            // Record this error for any future dumps, but otherwise just return null.
-            errors.add("" + e);
-            if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "retrieveId", e);
-            return null;
-        }
     }
 
     @Modified
     public synchronized void modified(Map<String, Object> properties) {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "modified");
         Set<String> oldSet = declaredSingletons;
-        Set<String> newSet = findDeclaredSingletons(properties);
+        Set<String> newSet = findDeclarations(properties);
         if (newSet.equals(oldSet)) return;
         // Now we know there are some changes.
         this.declaredSingletons = newSet;
@@ -157,6 +114,49 @@ public class SingletonMonitor implements Introspector {
         if (isAnyTracingEnabled() && tc.isEntryEnabled()) {
             entry(this, tc, "deactivate");
             exit(this, tc, "deactivate");
+        }
+    }
+
+    /**
+     * Get the current set of ids of declared SingletonAgents.
+     */
+    private Set<String> findDeclarations(Map<String, Object> properties) {
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "findDeclaredSingletons", (Object[])properties.get("singletonDeclarations"));
+        final Set<String> result = Optional.of(properties)
+            .map(props -> props.get("singletonDeclarations"))
+            .filter(String[].class::isInstance)
+            .map(String[].class::cast)
+            .map(Stream::of)
+            .orElse(Stream.empty())
+            .map(this::servicePidToConfigId)
+            .filter(Objects::nonNull)
+            .collect(TreeSet::new, Set::add, Set::addAll);
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "findDeclaredSingletons", result);
+        return unmodifiableSet(result);
+    }
+
+    private String servicePidToConfigId(String servicePid) {
+        if (isAnyTracingEnabled() && tc.isEntryEnabled()) entry(this, tc, "retrieveId", servicePid);
+        try {
+            Configuration[] configs = configAdmin.listConfigurations("(" + SERVICE_PID + "=" + servicePid + ")");
+            if (configs == null)
+                // We may be processing a pid from a deleted application
+                throw new IllegalStateException("No configs found matching servicePid=" + servicePid);
+            if (configs.length > 1)
+                throw new IllegalStateException("Non unique servicePid=" + servicePid + " matched configs=" + Arrays.toString(configs));
+
+            // even if we get to here, the config we successfully retrieved may have been deleted
+            // which will result in an IllegalStateException
+            String id = (String) configs[0].getProperties().get("id");
+            if (isAnyTracingEnabled() && tc.isEntryEnabled()) exit(this, tc, "retrieveId", id);
+            return id;
+        } catch (Exception e) {
+            // This is unlikely to be a genuine problem.
+            // These exceptions result from config changes being drip-fed to this component while other config changes are being processed.
+            // Record this error for any future dumps, but otherwise just return null.
+            errors.add("" + e);
+            if (isAnyTracingEnabled() && tc.isDebugEnabled()) debug(this, tc, "retrieveId", e);
+            return null;
         }
     }
 

@@ -6,7 +6,7 @@
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
     http://www.eclipse.org/legal/epl-2.0/
-    
+
     SPDX-License-Identifier: EPL-2.0
 
     Contributors:
@@ -18,8 +18,7 @@
     <!-- messagingEngine tag -->
     <OCD id="com.ibm.ws.messaging.runtime" name="%messagingEngine" description="%messagingEngine.desc" ibm:objectClass="com.ibm.wsspi.application.lifecycle.ApplicationPrereq"
         ibm:alias="messagingEngine">
-        <!-- An id is required for ApplicationPrereq processing; the value defaultME is traditional -->
-        <AD id="id" name="internal" description="internal use only" required="false" type="String" default="defaultME" />
+        <AD id="application.prereq.id" name="internal" description="internal use only" ibm:final="true" type="String" default="messaging runtime" ibm:unique="application.prereq.id" />
         <AD id="className" description="internal use only" name="internal" type="String" required="false" default="com.ibm.ws.sib.admin.internal.JsMainAdminComponentImpl" />
         <AD id="highMessageThreshold" name="internal" description="internal use only" required="false" type="Long" min="1" default="50000" />
         <AD id="fileStore" name="%fileStore" description="%fileStore.desc" required="false" ibm:reference="com.ibm.ws.sib.fileStore" cardinality="1" ibm:type="pid" type="String"
