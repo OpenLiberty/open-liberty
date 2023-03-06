@@ -1,4 +1,4 @@
-### Open Liberty Stable Features for MVT Testing
+### Open Liberty Stable Features
 #
 ## Purpose of this file:
 #
@@ -7,7 +7,7 @@
 #
 # This file will likely be used in the future for other MVT testing.
 #
-# All current features Å\ including client, non-public, and test features Å\ should be listed,
+# All current features -- including client, non-public, and test features -- should be listed,
 # even though feature startup tests are not run on client, non-public, and test features.
 #
 # This file should be updated at major releases.  The current heuristic is to mark all but
@@ -47,6 +47,8 @@
 # list.
 
 # START START START
+
+# Open-Liberty:
 
 null acmeCA # 2.0                         #
 null adminCenter # 1.0                    #
@@ -103,17 +105,17 @@ null javaMail 1.5 # 1.6                   #
 null javaee 7.0  # 8.0                    #
 null javaeeClient 7.0 # 8.0               # isClient
 null jaxb # 2.2                           #
-null jaxrs 2.0 # 2.1                      #
+null jaxrs 1.1 2.0 # 2.1                  #
 null jaxrsClient 2.0 # 2.1                #
 null jaxws # 2.2                          #
-null jca # 1.7                            #
+null jca 1.6 # 1.7                        #
 null jcaInboundSecurity # 1.0             #
 null jcacheContainer # 1.1                #
 null jdbc 4.0 4.1 4.2 # 4.3               #
-null jms # 2.0                            #
-null jmsMdb # 3.2                         #
+null jms 1.1 # 2.0                        #
+null jmsMdb 3.1 # 3.2                     #
 null jndi # 1.0                           #
-null jpa 2.1 # 2.2                        #
+null jpa 2.0 2.1 # 2.2                    #
 null jpaContainer 2.1 # 2.2               #
 null jsf 2.2 # 2.3                        #
 null jsfContainer 2.2 # 2.3               #
@@ -131,7 +133,7 @@ null logstashCollector # 1.0              #
 null mail 2.0 # 2.1                       #
 null managedBeans # 1.0                   #
 null managedBeans # 2.0                   #
-null mdb 3.2 # 4.0                        #
+null mdb 3.1 3.2 # 4.0                    #
 null messaging 3.0 # 3.1                  #
 null messagingClient # 3.0                #
 null messagingSecurity # 3.0              #
@@ -158,7 +160,7 @@ null netty # 1.0                          #
 null noShip # 1.0                         #
 null nosql # 1.0                          #
 null oauth # 2.0                          #
-null openapi # 3.1                        #
+null openapi 2.0 3.0 # 3.1                #
 null openid # 2.0                         #
 null openidConnectClient # 1.0            #
 null openidConnectServer # 1.0            #
@@ -175,9 +177,9 @@ null restfulWS 3.0 # 3.1                  #
 null restfulWSClient 3.0 # 3.1            #
 null restfulWSLogging # 3.0               #
 null samlWeb # 2.0                        #
-null scim # 2.0                           #
+null scim 1.0 # 2.0                       #
 null serverConfig # 1.0                   # isPrivate
-null servlet 3.1 4.0 5.0 # 6.0            #
+null servlet 3.0 3.1 4.0 5.0 # 6.0        #
 null sessionCache # 1.0                   #
 null sessionDatabase # 1.0                #
 null sipServlet # 1.1                     #
@@ -187,11 +189,11 @@ null springBoot 1.5 # 2.0                 #
 null ssl # 1.0                            #
 null timedexit # 1.0                      # isTest
 null transportSecurity # 1.0              #
-null wasJmsClient # 2.0                   #
+null wasJmsClient 1.1 # 2.0               #
 null wasJmsSecurity # 1.0                 #
 null wasJmsServer # 1.0                   #
 null webCache # 1.0                       #
-null webProfile 7.0 8.0 9.1 # 10.0        #
+null webProfile 6.0 7.0 8.0 9.1 # 10.0    #
 null websocket 1.0 1.1 2.0 # 2.1          #
 null wsAtomicTransaction # 1.2            #
 null wsSecurity # 1.1                     #
