@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,7 @@ package test.app.prereq;
 import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -29,21 +30,16 @@ import com.ibm.wsspi.application.lifecycle.ApplicationPrereq;
 
 @Component(configurationPolicy = REQUIRE, immediate = true)
 public class Widget implements ApplicationPrereq {
-    final String id;
+    final String prereqId;
 
     @Activate
     public Widget(Map<String, Object> props, @Reference WidgetEnabler enabler) {
-        id = (String) props.getOrDefault("id", "ERROR: we didn't find an id in the properties for Widget");
-        System.out.println("### created Widget[" + id + "]");
+        this.prereqId = Optional.of(props).map(p -> (String) p.get("application.prereq.id")).orElseThrow(() -> new Error("application prereq id property not found on Widget"));
+        System.out.println("### created Widget[" + prereqId + "]");
     }
 
     @Deactivate
     public void deactivate() {
-        System.out.println("### deactivated Widget[" + id + "]");
-    }
-
-    @Override
-    public String getApplicationPrereqID() {
-        return id;
+        System.out.println("### deactivated Widget[" + prereqId + "]");
     }
 }
