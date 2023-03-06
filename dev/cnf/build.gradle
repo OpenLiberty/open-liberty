@@ -24,7 +24,7 @@ dependencies {
     binaries "com.fasterxml.jackson.core:jackson-databind:2.13.4.2"
     binaries "org.osgi:org.osgi.core:6.0.0"
     binaries "org.apache.aries:org.apache.aries.util:1.1.3"
-    binaries "commons-io:commons-io:2.8.0"
+    binaries "commons-io:commons-io:2.11.0"
     binaries "commons-lang:commons-lang:2.4"
     binaries "org.apache.commons:commons-math:2.2"
     binaries "org.eclipse.jdt:ecj:3.22.0"
