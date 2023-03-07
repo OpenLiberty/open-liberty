@@ -36,7 +36,6 @@ import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.Select;
 import jakarta.data.repository.Slice;
 import jakarta.data.repository.Sort;
 import jakarta.data.repository.Streamable;
@@ -188,7 +187,6 @@ public interface Primes {
     @Filter(by = "romanNumeral", ignoreCase = true, op = Compare.Like, value = "%v%")
     @Filter(by = "name", op = Compare.Contains)
     @OrderBy(value = "number", descending = true)
-    @Select("number")
     List<Long> inRangeHavingVNumeralAndSubstringOfName(long min, long max, String nameSuffix);
 
     @Filter(by = "number", op = Compare.LessThan)
@@ -237,7 +235,6 @@ public interface Primes {
     @Filter(by = "number", op = Compare.NotBetween)
     @Filter(by = "number", op = Compare.LessThan)
     @OrderBy("number")
-    @Select("number")
     List<Long> notWithinButBelow(int rangeMin, int rangeMax, int below);
 
     @Query("SELECT DISTINCT LENGTH(p.romanNumeral) FROM Prime p WHERE p.number <= ?1 ORDER BY LENGTH(p.romanNumeral) DESC")

@@ -12,7 +12,10 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import java.util.stream.Stream;
+
 import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
 
 /**
@@ -23,4 +26,6 @@ public interface Drivers extends CrudRepository<Driver, Integer> {
 
     int deleteByFullNameEndsWith(String ending);
 
+    @OrderBy("birthday")
+    Stream<DriversLicense> findByFullNameEndsWith(String ending);
 }

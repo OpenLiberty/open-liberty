@@ -810,19 +810,26 @@ public class DataJPATestServlet extends FATServlet {
         Driver d1 = new Driver("Owen TestOneToOne", 100101000, LocalDate.of(2000, 1, 1), 71, 210, //
                         "T121-100-100-100", "Minnesota", LocalDate.of(2021, 1, 1), LocalDate.of(2025, 1, 1));
 
-        Driver d2 = new Driver("Oliver TestOneToOne", 100202000, LocalDate.of(2000, 2, 2), 72, 220, //
+        Driver d2 = new Driver("Oliver TestOneToOne", 100202000, LocalDate.of(2002, 2, 2), 72, 220, //
                         "T121-200-200-200", "Wisconsin", LocalDate.of(2022, 2, 2), LocalDate.of(2026, 2, 2));
 
         Driver d3 = new Driver("Olivia TestOneToOne", 100303000, LocalDate.of(2000, 3, 3), 63, 130, //
                         "T121-300-300-300", "Minnesota", LocalDate.of(2023, 3, 3), LocalDate.of(2027, 3, 3));
 
-        Driver d4 = new Driver("Oscar TestOneToOne", 100404000, LocalDate.of(2000, 4, 4), 74, 240, //
+        Driver d4 = new Driver("Oscar TestOneToOne", 100404000, LocalDate.of(2004, 4, 4), 74, 240, //
                         "T121-400-400-400", "Iowa", LocalDate.of(2020, 4, 4), LocalDate.of(2024, 4, 4));
 
         Driver d5 = new Driver("Ozzy TestOneToOne", 100505000, LocalDate.of(2000, 5, 5), 65, 150, //
                         "T121-500-500-500", "Wisconsin", LocalDate.of(2021, 5, 5), LocalDate.of(2025, 5, 5));
 
         drivers.saveAll(List.of(d1, d2, d3, d4, d5));
+
+        assertIterableEquals(List.of("Minnesota T121-100-100-100", "Minnesota T121-300-300-300",
+                                     "Wisconsin T121-500-500-500", "Wisconsin T121-200-200-200",
+                                     "Iowa T121-400-400-400"),
+                             drivers.findByFullNameEndsWith(" TestOneToOne")
+                                             .map(license -> license.stateName + " " + license.licenseNum)
+                                             .collect(Collectors.toList()));
 
         drivers.deleteByFullNameEndsWith(" TestOneToOne");
     }

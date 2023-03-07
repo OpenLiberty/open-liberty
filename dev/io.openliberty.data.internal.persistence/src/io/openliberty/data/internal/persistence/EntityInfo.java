@@ -48,7 +48,8 @@ class EntityInfo {
     final PersistenceServiceUnit persister;
     final Class<?> type;
 
-    EntityInfo(String entityName, Class<?> entityClass,
+    EntityInfo(String entityName,
+               Class<?> entityClass,
                Map<String, List<Member>> attributeAccessors,
                Map<String, String> attributeNames,
                SortedMap<String, Class<?>> attributeTypes,

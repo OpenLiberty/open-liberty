@@ -17,7 +17,6 @@ import java.util.List;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.Select;
 
 /**
  *
@@ -26,7 +25,6 @@ import jakarta.data.repository.Select;
 public interface ShippingAddresses {
     long countByRecipientInfoEmpty();
 
-    @Select({ "houseNumber", "streetName" })
     StreetAddress[] findByHouseNumberBetweenOrderByStreetNameAscHouseNumber(int minHouseNumber, int maxHouseNumber);
 
     List<ShippingAddress> findByRecipientInfoNotEmpty();

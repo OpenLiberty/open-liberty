@@ -18,7 +18,10 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -34,7 +37,7 @@ import jakarta.persistence.Query;
  * Query information.
  */
 class QueryInfo {
-    private final TraceComponent tc = Tr.register(QueryInfo.class);
+    private static final TraceComponent tc = Tr.register(QueryInfo.class);
 
     static enum Type {
         COUNT, DELETE, EXISTS, MERGE, SELECT, UPDATE
@@ -128,14 +131,19 @@ class QueryInfo {
     final Class<?> returnArrayType;
 
     /**
-     * Type parameter of the repository method return value.
-     * Null if the return type is not parameterized or is generic.
+     * Return type of the repository method return value,
+     * split into levels of depth for each type parameter and array component.
      * This is useful in cases such as
      * <code>&#64;Query(...) Optional&lt;Float&gt; priceOf(String productId)</code>
+     * which resolves to { Optional.class, Float.class }
      * and
      * <code>CompletableFuture&lt;Stream&lt;Product&gt&gt; findByNameLike(String namePattern)</code>
+     * which resolves to { CompletableFuture.class, Stream.class, Product.class }
+     * and
+     * <code>CompletionStage&lt;Product[]&gt; findByNameIgnoreCaseLike(String namePattern)</code>
+     * which resolves to { CompletionStage.class, Product[].class, Product.class }
      */
-    final Class<?> returnTypeParam;
+    final List<Class<?>> returnTypeAtDepth;
 
     /**
      * Type of the first parameter to a save operation. Null if not a save operation.
@@ -161,10 +169,10 @@ class QueryInfo {
     /**
      * Construct partially complete query information.
      */
-    QueryInfo(Method method, Class<?> returnArrayType, Class<?> returnTypeParam) {
+    QueryInfo(Method method, Class<?> returnArrayType, List<Class<?>> returnTypeAtDepth) {
         this.method = method;
         this.returnArrayType = returnArrayType;
-        this.returnTypeParam = returnTypeParam;
+        this.returnTypeAtDepth = returnTypeAtDepth;
     }
 
     /**
@@ -278,6 +286,37 @@ class QueryInfo {
                 throw new DataException(x instanceof InvocationTargetException ? x.getCause() : x);
             }
         return keyValues.toArray();
+    }
+
+    /**
+     * @return returns the type of data structure that returns multiple results for this query.
+     *         Null if the query return type limits to single results.
+     */
+    @Trivial
+    Class<?> getMultipleResultType() {
+        Class<?> type = null;
+        int depth = returnTypeAtDepth.size();
+        for (int d = 0; d < depth - 1 && type == null; d++) {
+            type = returnTypeAtDepth.get(d);
+            if (Optional.class.equals(type) || CompletionStage.class.equals(type) || CompletableFuture.class.equals(type))
+                type = null;
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "getMultipleResultType: " + (type == null ? null : type.getName()));
+        return type;
+    }
+
+    /**
+     * @return returns the type of a single result obtained by the query.
+     *         For example, a single result of a query that returns List<MyEntity> is of type MyEntity.
+     */
+    @Trivial
+    Class<?> getSingleResultType() {
+        Class<?> type = returnTypeAtDepth.get(returnTypeAtDepth.size() - 1);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "getSingleResultType: " + (type == null ? null : type.getName()));
+        return type;
     }
 
     /**
@@ -508,7 +547,7 @@ class QueryInfo {
      * Copy of query information, but with updated JPQL and sort criteria.
      */
     QueryInfo withJPQL(String jpql, List<Sort> sorts) {
-        QueryInfo q = new QueryInfo(method, returnArrayType, returnTypeParam);
+        QueryInfo q = new QueryInfo(method, returnArrayType, returnTypeAtDepth);
         q.entityInfo = entityInfo;
         q.entityVar = entityVar;
         q.hasWhere = hasWhere;
