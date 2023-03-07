@@ -41,6 +41,7 @@ import io.openliberty.security.jakartasec.fat.commonTests.CommonLogoutAndRefresh
 import io.openliberty.security.jakartasec.fat.configs.TestConfigMaps;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
+import oidc.client.base.utils.ShortTokenLifetimePrep;
 
 /**
  * Tests various flows using refresh.  Make sure that we refresh tokens when we should and do NOT refresh tokens when we should not.
@@ -108,6 +109,11 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
         deployMyApps(); // run this after starting the RP so we have the rp port to update the openIdConfig.properties file within the apps
 
         baseAppName = "BasicRefreshServlet";
+
+        ShortTokenLifetimePrep s = new ShortTokenLifetimePrep();
+        s.shortTokenLifetimePrep(rpHttpsBase,
+                                 getShortAppName(TokenAutoRefresh, ProvderAllowsRefresh, NotifyProvider, IDTokenHonorExpiry, AccessTokenHonorExpiry) + "/" + baseAppName);
+
     }
 
     /**
@@ -318,8 +324,8 @@ public class BasicRefreshTests extends CommonLogoutAndRefreshTests {
      * @return - returns the short app name of the app that has the parm values specified in the openIdConfig.properties file
      * @throws Exception
      */
-    public String getShortAppName(boolean tokenAutoRefresh, boolean providerAllowsRefresh, boolean notifyProvider, boolean idTokenExpiry,
-                                  boolean accessTokenExpiry) throws Exception {
+    public static String getShortAppName(boolean tokenAutoRefresh, boolean providerAllowsRefresh, boolean notifyProvider, boolean idTokenExpiry,
+                                         boolean accessTokenExpiry) throws Exception {
 
         String appName = buildAppName(tokenAutoRefresh, providerAllowsRefresh, notifyProvider, idTokenExpiry, accessTokenExpiry);
         return appMap.get(appName);
