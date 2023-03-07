@@ -401,6 +401,11 @@ public class LDAPRegressionTest {
     public void testUserFilterWithoutPercentV() throws Exception {
         ServerConfiguration clone = basicConfiguration.clone();
         LdapRegistry ldap = createLdapRegistry(clone);
+
+        // Update config to working server first. This is necessary in case the two filter tests
+        // are run first. We need LdapAdapter to activate successfully before we modify the config.
+        updateConfigDynamically(libertyServer, clone);
+
         ldap.getCustomFilters().setUserFilter("(uid=someuser)");
 
         updateConfigDynamically(libertyServer, clone);
@@ -415,6 +420,11 @@ public class LDAPRegressionTest {
     public void testGroupFilterWithoutPercentV() throws Exception {
         ServerConfiguration clone = basicConfiguration.clone();
         LdapRegistry ldap = createLdapRegistry(clone);
+
+        // Update config to working server first. This is necessary in case the two filter tests
+        // are run first. We need LdapAdapter to activate successfully before we modify the config.
+        updateConfigDynamically(libertyServer, clone);
+
         ldap.getCustomFilters().setGroupFilter("(cn=somegroup)");
 
         updateConfigDynamically(libertyServer, clone);
