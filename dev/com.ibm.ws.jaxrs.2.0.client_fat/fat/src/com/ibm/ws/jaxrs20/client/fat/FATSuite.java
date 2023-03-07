@@ -96,7 +96,7 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
     private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
     private static final boolean isAIX = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("aix");
-    private static final boolean isISeries = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("iseries");
+    private static final boolean isISeries = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("os/400");
 
     // To avoid going over 3 hour test limit on slow hardware, run only the first an last versions
     // on slow hardware.
