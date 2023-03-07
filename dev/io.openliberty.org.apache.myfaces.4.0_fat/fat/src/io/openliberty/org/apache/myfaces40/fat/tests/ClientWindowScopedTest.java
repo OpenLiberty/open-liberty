@@ -33,7 +33,6 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;
@@ -74,7 +73,6 @@ public class ClientWindowScopedTest {
     /**
      * Ensure the same client window is used when navigating between pages in a flow.
      */
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     @Test
     public void testClientWindowReuseInFlow() throws Exception {
         try (WebClient webClient = new WebClient()) {
