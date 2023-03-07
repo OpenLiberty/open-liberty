@@ -9,8 +9,11 @@
  *******************************************************************************/
 package io.openliberty.microprofile.metrics50.internal.tck.launcher;
 
+import static org.junit.Assume.assumeTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ConnectException;
 import java.net.URL;
@@ -29,6 +32,7 @@ import javax.net.ssl.X509TrustManager;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +42,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -59,9 +64,27 @@ public class LibraryRefTest {
 
     public static LibertyServer server;
 
+    public static boolean isJava11014 = false;
+
     @BeforeClass
     public static void setUp() throws Exception {
         trustAll();
+        //Check what JVM the server is running on the (remote) machine
+        server = serverMicrometerPrometheus;
+        isJava11014();
+    }
+
+    @Before
+    /*
+     * Check that Java is not 11.0.14; known to cause javacores
+     * Skip if it is the case.
+     */
+    public void checkJava() {
+        if (isJava11014) {
+            Log.info(c, "checkJava", "Detected Java to be 11.0.14. SKIPPING");
+        }
+
+        assumeTrue(!isJava11014);
     }
 
     @After
@@ -70,6 +93,22 @@ public class LibraryRefTest {
         if (server != null && server.isStarted()) {
             server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWPMI2006W", "CWMMC0013E", "CWWKG0033W");
         }
+    }
+
+    /*
+     * Java 11.0.14 known to cause issues.
+     */
+    private static void isJava11014() throws IOException {
+        JavaInfo javaInfo = JavaInfo.forServer(server);
+
+        Log.info(c, "isJava11014",
+                 "Major.minor.micro : [" + JavaInfo.forServer(server).majorVersion()
+                                   + "."
+                                   + JavaInfo.forServer(server).minorVersion()
+                                   + "." + JavaInfo.forServer(server).microVersion()
+                                   + "]");
+        if (javaInfo.majorVersion() == 11 && javaInfo.microVersion() == 17)
+            isJava11014 = true;
     }
 
     /*
