@@ -53,6 +53,7 @@ import com.ibm.ws.jaxrs20.client.fat.test.XmlBindingTest;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
