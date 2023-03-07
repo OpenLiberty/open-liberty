@@ -111,7 +111,7 @@ public class FATSuite {
                             .andWith(new JakartaEE10Action().alwaysAddFeature("jsonb-3.0").alwaysAddFeature("servlet-6.0"));
 
         } else {
-            r = RepeatTests.withoutModificationInFullMode()
+            r = RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_11))
                              .andWith(new JakartaEE10Action().alwaysAddFeature("jsonb-3.0").alwaysAddFeature("servlet-6.0"));
 
         }
