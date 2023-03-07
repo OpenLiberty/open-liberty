@@ -10,3 +10,4 @@ IBM-Feature-Version: 2
 IBM-API-Package: com.ibm.tx.jta.ut.util; type="internal",
  com.ibm.ws.cloudtx.ut.util; type="internal",
  com.ibm.ws.tx.jta.embeddable; type="internal"
+WLP-InstantOn-Enabled: true
