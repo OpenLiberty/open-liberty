@@ -51,6 +51,7 @@ public class ValidateJCATest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+
         ResourceAdapterArchive rar = ShrinkWrap.create(ResourceAdapterArchive.class, "TestValidationAdapter.rar")
                         .addAsLibraries(ShrinkWrap.create(JavaArchive.class)
                                         .addPackage("org.test.validator.adapter"));

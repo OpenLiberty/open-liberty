@@ -26,6 +26,7 @@ import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -43,12 +44,27 @@ public class FATSuite {
     private static final EE9PackageReplacementHelper packageReplacementHelper = new EE9PackageReplacementHelper();
 
     @ClassRule
-    public static RepeatTests r1 = MicroProfileActions.repeat(null, TestMode.FULL,
-                                                              MicroProfileActions.MP60,
-                                                              MicroProfileActions.MP50, // EE9
-                                                              MicroProfileActions.MP40, // EE8
-                                                              MicroProfileActions.MP30,
-                                                              MicroProfileActions.MP20);
+    public static RepeatTests r1;
+
+    static {
+        // EE10 requires Java 11.  If we only specify EE10 for lite mode it will cause no tests to run which causes an error.
+        // If we are running on Java 8 have EE9 be the lite mode test to run.
+        if (JavaInfo.JAVA_VERSION >= 11) {
+            r1 = MicroProfileActions.repeat(null, TestMode.FULL,
+                                            MicroProfileActions.MP60, // EE10
+                                            MicroProfileActions.MP50, // EE9
+                                            MicroProfileActions.MP40, // EE8
+                                            MicroProfileActions.MP30,
+                                            MicroProfileActions.MP20);
+        } else {
+            r1 = MicroProfileActions.repeat(null, TestMode.FULL,
+                                            MicroProfileActions.MP50, // EE9
+                                            MicroProfileActions.MP40, // EE8
+                                            MicroProfileActions.MP30,
+                                            MicroProfileActions.MP20);
+        }
+
+    }
 
     @BeforeClass
     public static void setup() throws Exception {
