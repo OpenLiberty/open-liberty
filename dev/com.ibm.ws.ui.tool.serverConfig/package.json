@@ -1,7 +1,7 @@
 {
   "name": "ui.tool.serverConfig",
   "version": "0.0.1",
-  "description": "OpenLiberty package refs for ui.serverConfig",
+  "description": "OpenLiberty package refs for ui.serverConfig ***USED FOR OSS SCANNING ONLY***",
   "author": "OpenLiberty",
   "dependencies": {
     "jquery": "^3.5.1",
