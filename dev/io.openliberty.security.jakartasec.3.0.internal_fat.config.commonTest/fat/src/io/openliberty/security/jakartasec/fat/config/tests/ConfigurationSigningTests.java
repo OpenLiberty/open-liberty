@@ -847,6 +847,7 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         // since the runtime will end up using the default of 500, make sure we see our app set the value to -1
         Expectations extraExpectations = new Expectations();
         extraExpectations.addExpectation(new ServerMessageExpectation(rpServer, "Setting the value for config attribute: jwksConnectTimeoutExpression to: -1", "Did not find a message indicating that the jwksConnectionTimeoutExpression was being set to -1."));
+        extraExpectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2507W_OIDC_MECH_CONFIG_NEGATIVE_INT, "Did not receive an error message stating that the OpenIdAuthenticationMechanismDefinition attribute should not be negative."));
 
         validationUtils.validateResult(response, extraExpectations);
 
@@ -911,6 +912,7 @@ public class ConfigurationSigningTests extends CommonAnnotatedSecurityTests {
         // since the runtime will end up using the default of 500, make sure we see our app set the value to -1
         Expectations extraExpectations = new Expectations();
         extraExpectations.addExpectation(new ServerMessageExpectation(rpServer, "Setting the value for config attribute: jwksReadTimeoutExpression to: -1", "Did not find a message indicating that the jwksReadTimeoutExpression was being set to -1."));
+        extraExpectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2507W_OIDC_MECH_CONFIG_NEGATIVE_INT, "Did not receive an error message stating that the OpenIdAuthenticationMechanismDefinition attribute should not be negative."));
 
         validationUtils.validateResult(response, extraExpectations);
 

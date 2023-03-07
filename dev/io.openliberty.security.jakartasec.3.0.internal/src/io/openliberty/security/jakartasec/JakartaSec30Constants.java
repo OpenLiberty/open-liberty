@@ -47,5 +47,7 @@ public class JakartaSec30Constants extends JavaEESecConstants {
     public static final String DELIMITER = ".";
 
     public static final int DEFAULT_TOKEN_MIN_VALIDITY = 10 * 1000;
+    public static final int DEFAULT_JWKS_CONNECT_TIMEOUT = 500;
+    public static final int DEFAULT_JWKS_READ_TIMEOUT = 500;
 
 }
