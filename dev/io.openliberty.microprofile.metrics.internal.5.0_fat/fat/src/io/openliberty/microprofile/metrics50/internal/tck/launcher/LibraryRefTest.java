@@ -107,7 +107,7 @@ public class LibraryRefTest {
                                    + JavaInfo.forServer(server).minorVersion()
                                    + "." + JavaInfo.forServer(server).microVersion()
                                    + "]");
-        if (javaInfo.majorVersion() == 11 && javaInfo.microVersion() == 17)
+        if (javaInfo.majorVersion() == 11 && javaInfo.microVersion() == 14)
             isJava11014 = true;
     }
 
