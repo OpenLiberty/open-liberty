@@ -18,6 +18,9 @@
  *
  * Configure 'assemble' to depend on above tasks.
  */
+
+def publishWlpJarDefault = parseBoolean(bnd.get('test.project', 'false')) ? 'true' : 'false'
+
 configurations {
    cleanPomClasspath
 } 
@@ -26,28 +29,30 @@ dependencies {
    cleanPomClasspath project(':build.cleanPom') 
 }
 
-task cleanAllEmbeddedPoms {
-    dependsOn jar
-    dependsOn ':build.cleanPom:jar'
-    doLast {
-      fileTree(project.buildDir).matching {
-      include "**/*.jar"
-          }.each { aFile ->
-            def myArgs = [
-              aFile, new File(project.buildDir, 'tmp')]                 
-            javaexec {
-                classpath configurations.cleanPomClasspath
-                main = 'io.openliberty.process.PostProcessBNDPom'
-                args = myArgs
+if(publishWlpJarDefault) {
+    task cleanAllEmbeddedPoms {
+        dependsOn jar
+        dependsOn ':build.cleanPom:jar'
+        doLast {
+          fileTree(project.buildDir).matching {
+          include "**/*.jar"
+              }.each { aFile ->
+                def myArgs = [
+                  aFile, new File(project.buildDir, 'tmp')]                 
+                javaexec {
+                    classpath configurations.cleanPomClasspath
+                    main = 'io.openliberty.process.PostProcessBNDPom'
+                    args = myArgs
+                }
+              }
             }
-          }
         }
-    }
-assemble.dependsOn cleanAllEmbeddedPoms
+    assemble.dependsOn cleanAllEmbeddedPoms
+}
 
 
 
-def publishWlpJarDefault = parseBoolean(bnd.get('test.project', 'false')) ? 'true' : 'false'
+
 if (bnd.get('publish.tool.jar', '').empty && !parseBoolean(bnd.get('publish.wlp.jar.disabled', publishWlpJarDefault))) {
     task publishWLPJars(type: Copy) {
         dependsOn jar
