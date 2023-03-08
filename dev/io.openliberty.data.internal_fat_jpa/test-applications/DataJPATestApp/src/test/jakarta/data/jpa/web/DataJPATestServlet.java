@@ -824,11 +824,39 @@ public class DataJPATestServlet extends FATServlet {
 
         drivers.saveAll(List.of(d1, d2, d3, d4, d5));
 
+        // Query by the entity to which OneToOne maps:
+        Driver d = drivers.findByLicense(d4.license);
+        assertEquals("Oscar TestOneToOne", d.fullName);
+
+        // Query by an attribute of the entity to which OneToOne maps:
+        d = drivers.findByLicenseNum("T121-200-200-200");
+        assertEquals("Oliver TestOneToOne", d.fullName);
+
+        // Query by and order by attributes of the entity to which OneToOne maps:
+        assertIterableEquals(List.of("Owen TestOneToOne", "Ozzy TestOneToOne", "Oliver TestOneToOne"),
+                             drivers.findByLicenseExpiresOnBetween(LocalDate.of(2024, 5, 1), LocalDate.of(2026, 5, 1))
+                                             .map(driver -> driver.fullName)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("Olivia TestOneToOne", "Owen TestOneToOne"),
+                             drivers.findByLicenseStateNameOrderByLicenseExpiresOnDesc("Minnesota")
+                                             .map(driver -> driver.fullName)
+                                             .collect(Collectors.toList()));
+
+        // Query that returns a collection of the entity type to which OneToOne maps:
         assertIterableEquals(List.of("Minnesota T121-100-100-100", "Minnesota T121-300-300-300",
                                      "Wisconsin T121-500-500-500", "Wisconsin T121-200-200-200",
                                      "Iowa T121-400-400-400"),
                              drivers.findByFullNameEndsWith(" TestOneToOne")
                                              .map(license -> license.stateName + " " + license.licenseNum)
+                                             .collect(Collectors.toList()));
+
+        // Order by attributes of the entity to which OneToOne maps, using various formats for referring to the attributes:
+        assertIterableEquals(List.of("Oscar TestOneToOne", // Iowa
+                                     "Owen TestOneToOne", "Olivia TestOneToOne", // Minnesota
+                                     "Ozzy TestOneToOne", "Oliver TestOneToOne"), // Wisconsin
+                             drivers.findByLicenseNotNull()
+                                             .map(driver -> driver.fullName)
                                              .collect(Collectors.toList()));
 
         drivers.deleteByFullNameEndsWith(" TestOneToOne");

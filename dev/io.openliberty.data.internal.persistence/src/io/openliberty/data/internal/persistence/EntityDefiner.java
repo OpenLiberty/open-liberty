@@ -48,8 +48,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.Attribute;
 import jakarta.persistence.metamodel.Attribute.PersistentAttributeType;
-import jakarta.persistence.metamodel.EmbeddableType;
 import jakarta.persistence.metamodel.EntityType;
+import jakarta.persistence.metamodel.ManagedType;
 import jakarta.persistence.metamodel.Metamodel;
 import jakarta.persistence.metamodel.SingularAttribute;
 
@@ -152,25 +152,26 @@ class EntityDefiner implements Runnable {
             em = punit.createEntityManager();
             Metamodel model = em.getMetamodel();
             for (EntityType<?> entityType : model.getEntities()) {
-                entityType.getName();//TODO
                 Map<String, String> attributeNames = new HashMap<>();
                 Map<String, List<Member>> attributeAccessors = new HashMap<>();
                 SortedMap<String, Class<?>> attributeTypes = new TreeMap<>();
-                Map<Class<?>, List<String>> embeddableAttributeNames = new HashMap<>();
-                Queue<Attribute<?, ?>> embeddables = new LinkedList<>();
-                Queue<String> embeddablePrefixes = new LinkedList<>();
-                Queue<List<Member>> embeddableAccessors = new LinkedList<>();
+                Map<Class<?>, List<String>> relationAttributeNames = new HashMap<>();
+                Queue<Attribute<?, ?>> relationships = new LinkedList<>();
+                Queue<String> relationPrefixes = new LinkedList<>();
+                Queue<List<Member>> relationAccessors = new LinkedList<>();
                 Class<?> idClass = null;
                 SortedMap<String, Member> idClassAttributeAccessors = null;
 
                 for (Attribute<?, ?> attr : entityType.getAttributes()) {
                     String attributeName = attr.getName();
                     PersistentAttributeType attributeType = attr.getPersistentAttributeType();
-                    if (PersistentAttributeType.EMBEDDED.equals(attributeType)) {
-                        embeddableAttributeNames.put(attr.getJavaType(), new ArrayList<>());
-                        embeddables.add(attr);
-                        embeddablePrefixes.add(attributeName);
-                        embeddableAccessors.add(Collections.singletonList(attr.getJavaMember()));
+                    if (PersistentAttributeType.EMBEDDED.equals(attributeType) ||
+                        PersistentAttributeType.ONE_TO_ONE.equals(attributeType) ||
+                        PersistentAttributeType.MANY_TO_ONE.equals(attributeType)) {
+                        relationAttributeNames.put(attr.getJavaType(), new ArrayList<>());
+                        relationships.add(attr);
+                        relationPrefixes.add(attributeName);
+                        relationAccessors.add(Collections.singletonList(attr.getJavaMember()));
                     }
                     attributeNames.put(attributeName.toLowerCase(), attributeName);
                     if (attr instanceof SingularAttribute && ((SingularAttribute<?, ?>) attr).isId())
@@ -181,49 +182,58 @@ class EntityDefiner implements Runnable {
                                     : attr.getJavaType());
                 }
 
-                for (Attribute<?, ?> attr; (attr = embeddables.poll()) != null;) {
-                    String prefix = embeddablePrefixes.poll();
-                    List<Member> accessors = embeddableAccessors.poll();
-                    EmbeddableType<?> embeddable = model.embeddable(attr.getJavaType());
-                    List<String> embAttributeList = embeddableAttributeNames.get(attr.getJavaType());
-                    for (Attribute<?, ?> embAttr : embeddable.getAttributes()) {
-                        String embeddableAttributeName = embAttr.getName();
-                        String fullAttributeName = prefix + '.' + embeddableAttributeName;
-                        List<Member> embAccessors = new LinkedList<>(accessors);
-                        embAccessors.add(embAttr.getJavaMember());
-                        embAttributeList.add(fullAttributeName);
+                // Guard against recursive processing of OneToOne (and similar) relationships
+                // by tracking whether we have already processed each entity class involved.
+                Set<Class<?>> entityTypeClasses = new HashSet<>();
+                entityTypeClasses.add(entityType.getJavaType());
 
-                        PersistentAttributeType attributeType = embAttr.getPersistentAttributeType();
-                        if (PersistentAttributeType.EMBEDDED.equals(attributeType)) {
-                            embeddableAttributeNames.put(embAttr.getJavaType(), new ArrayList<>());
-                            embeddables.add(embAttr);
-                            embeddablePrefixes.add(fullAttributeName);
-                            embeddableAccessors.add(embAccessors);
+                for (Attribute<?, ?> attr; (attr = relationships.poll()) != null;) {
+                    String prefix = relationPrefixes.poll();
+                    List<Member> accessors = relationAccessors.poll();
+                    ManagedType<?> relation = model.managedType(attr.getJavaType());
+                    if (relation instanceof EntityType && !entityTypeClasses.add(attr.getJavaType()))
+                        break;
+                    List<String> relAttributeList = relationAttributeNames.get(attr.getJavaType());
+                    for (Attribute<?, ?> relAttr : relation.getAttributes()) {
+                        String relationAttributeName = relAttr.getName();
+                        String fullAttributeName = prefix + '.' + relationAttributeName;
+                        List<Member> relAccessors = new LinkedList<>(accessors);
+                        relAccessors.add(relAttr.getJavaMember());
+                        relAttributeList.add(fullAttributeName);
+
+                        PersistentAttributeType attributeType = relAttr.getPersistentAttributeType();
+                        if (PersistentAttributeType.EMBEDDED.equals(attributeType) ||
+                            PersistentAttributeType.ONE_TO_ONE.equals(attributeType) ||
+                            PersistentAttributeType.MANY_TO_ONE.equals(attributeType)) {
+                            relationAttributeNames.put(relAttr.getJavaType(), new ArrayList<>());
+                            relationships.add(relAttr);
+                            relationPrefixes.add(fullAttributeName);
+                            relationAccessors.add(relAccessors);
                         }
 
                         // Allow the simple attribute name if it doesn't overlap
-                        embeddableAttributeName = embeddableAttributeName.toLowerCase();
-                        attributeNames.putIfAbsent(embeddableAttributeName, fullAttributeName);
+                        relationAttributeName = relationAttributeName.toLowerCase();
+                        attributeNames.putIfAbsent(relationAttributeName, fullAttributeName);
 
                         // Allow a qualified name such as @OrderBy("address.street.name")
-                        embeddableAttributeName = fullAttributeName.toLowerCase();
-                        attributeNames.put(embeddableAttributeName, fullAttributeName);
+                        relationAttributeName = fullAttributeName.toLowerCase();
+                        attributeNames.put(relationAttributeName, fullAttributeName);
 
                         // Allow a qualified name such as findByAddress_Street_Name if it doesn't overlap
-                        String embeddableAttributeName_ = embeddableAttributeName.replace('.', '_');
-                        attributeNames.putIfAbsent(embeddableAttributeName_, fullAttributeName);
+                        String relationAttributeName_ = relationAttributeName.replace('.', '_');
+                        attributeNames.putIfAbsent(relationAttributeName_, fullAttributeName);
 
                         // Allow a qualified name such as findByAddressStreetName if it doesn't overlap
-                        String embeddableAttributeNameUndelimited = embeddableAttributeName.replace(".", "");
-                        attributeNames.putIfAbsent(embeddableAttributeNameUndelimited, fullAttributeName);
+                        String relationAttributeNameUndelimited = relationAttributeName.replace(".", "");
+                        attributeNames.putIfAbsent(relationAttributeNameUndelimited, fullAttributeName);
 
-                        if (embAttr instanceof SingularAttribute && ((SingularAttribute<?, ?>) embAttr).isId())
+                        if (relAttr instanceof SingularAttribute && ((SingularAttribute<?, ?>) relAttr).isId())
                             attributeNames.put("id", fullAttributeName);
 
-                        attributeAccessors.put(fullAttributeName, embAccessors);
+                        attributeAccessors.put(fullAttributeName, relAccessors);
                         attributeTypes.put(fullAttributeName, PersistentAttributeType.ELEMENT_COLLECTION.equals(attributeType) //
                                         ? Collection.class //
-                                        : embAttr.getJavaType());
+                                        : relAttr.getJavaType());
                     }
                 }
 
@@ -259,7 +269,7 @@ class EntityDefiner implements Runnable {
                                 attributeAccessors, //
                                 attributeNames, //
                                 attributeTypes, //
-                                embeddableAttributeNames, //
+                                relationAttributeNames, //
                                 idClass, //
                                 idClassAttributeAccessors, //
                                 punit);
