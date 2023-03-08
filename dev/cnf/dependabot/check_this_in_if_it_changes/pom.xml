@@ -2864,12 +2864,12 @@
     <dependency>
       <groupId>org.glassfish.jersey.core</groupId>
       <artifactId>jersey-client</artifactId>
-      <version>2.12</version>
+      <version>3.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish.jersey.core</groupId>
       <artifactId>jersey-client</artifactId>
-      <version>2.26</version>
+      <version>3.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish.jersey.core</groupId>
