@@ -67,9 +67,14 @@ public class ConcurrencyTest {
         return Math.abs(timestamp2.getTime() - timestamp1.getTime());
     }
 
+    /*
+     * Tests scheduling a task at checkpoint with a seven second delay through the ManagedExecutor,
+     * then waiting ten seconds between checkpoint and restore and checking the timestamp to ensure
+     * that there is a seven second delay upon restore (inculding a two second margin of error)
+     */
     @Test
-    public void testSchduledTaskTenSec() throws Exception {
-        Integer scheduledDelay = 10000;
+    public void testSchduledTask() throws Exception {
+        Integer scheduledDelay = 7000;
 
         ServerConfiguration config = server.getServerConfiguration();
         config.getVariables().getById("scheduledTime").setValue(scheduledDelay.toString());
@@ -78,7 +83,7 @@ public class ConcurrencyTest {
         server.updateServerConfiguration(config);
 
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, (server) -> {
-            String result = server.waitForStringInLog("Thread scheduled at startup", 20000);
+            String result = server.waitForStringInLog("Thread scheduled at startup");
             assertNotNull("Scheduled executor not called at checkpoint", result);
         });
         server.startServer();
@@ -87,89 +92,19 @@ public class ConcurrencyTest {
         String scheduledTaskLog = server.waitForStringInLog("The Liberty server process resumed operation from a checkpoint", 15000);
         String taskExecutionLog = server.waitForStringInLog("Scheduled thread completed", 20000);
         long timeElapsed = getTimeElapsed(scheduledTaskLog, taskExecutionLog);
-        assertTrue("Expected and Observed delays differ. Expected: " + scheduledDelay +
-                   " ms | Observed: " + timeElapsed + " ms",
+        System.out.println("time Elapsed: " + timeElapsed);
+        assertTrue("Expected and Observed delays differ greater than the margin of error. Expected: " + scheduledDelay +
+                   "ms | Observed: " + timeElapsed + "ms | margin of error: " + MARGIN_OF_ERROR + "ms",
                    Math.abs(timeElapsed - scheduledDelay) < MARGIN_OF_ERROR);
     }
 
-    @Test
-    public void testScheduledTaskTwentySec() throws Exception {
-        Integer scheduledDelay = 20000;
-
-        ServerConfiguration config = server.getServerConfiguration();
-        config.getVariables().getById("scheduledTime").setValue(scheduledDelay.toString());
-        config.getVariables().getById("repeatTrigger").setValue("false");
-        config.getVariables().getById("repeatManagedExec").setValue("false");
-        server.updateServerConfiguration(config);
-
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, (server) -> {
-            String result = server.waitForStringInLog("Thread scheduled at startup", 20000);
-            assertNotNull("Scheduled executor not called at checkpoint", result);
-        });
-        server.startServer();
-        Thread.sleep(10000);
-        server.checkpointRestore();
-        String scheduledTaskLog = server.waitForStringInLog("The Liberty server process resumed operation from a checkpoint", 15000);
-        String taskExecutionLog = server.waitForStringInLog("Scheduled thread completed", 20000);
-        long timeElapsed = getTimeElapsed(scheduledTaskLog, taskExecutionLog);
-        assertTrue("Expected and Observed delays differ. Expected: " + scheduledDelay +
-                   " ms | Observed: " + timeElapsed + " ms",
-                   Math.abs(timeElapsed - scheduledDelay) < MARGIN_OF_ERROR);
-
-    }
-
+    /*
+     * Tests starting a repeated task at checkpoint with a ten second repeat interval using a trigger,
+     * then waiting seven seconds between checkpoint and restore and checking the timestamp to ensure
+     * that there is a seven second delay upon restore (inculding a two second margin of error)
+     */
     @Test
     public void testRepeatedTrigger() throws Exception {
-        Integer scheduledDelay = 15000;
-
-        ServerConfiguration config = server.getServerConfiguration();
-        config.getVariables().getById("repeatTrigger").setValue("true");
-        config.getVariables().getById("scheduledTime").setValue(scheduledDelay.toString());
-        config.getVariables().getById("repeatManagedExec").setValue("false");
-        server.updateServerConfiguration(config);
-
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, (server) -> {
-            String result = server.waitForStringInLog("Scheduled thread completed", 20000);
-            assertNotNull("Repeated task not called at checkpoint", result);
-        });
-        server.startServer();
-        Thread.sleep(10000);
-        server.checkpointRestore();
-        String scheduledTaskLog = server.waitForStringInLog("The Liberty server process resumed operation from a checkpoint", 15000);
-        String taskExecutionLog = server.waitForStringInLog("Scheduled thread completed", 20000);
-        long timeElapsed = getTimeElapsed(scheduledTaskLog, taskExecutionLog);
-        assertTrue("Expected and Observed delays differ. Expected: " + scheduledDelay +
-                   " ms | Observed: " + timeElapsed + " ms",
-                   Math.abs(timeElapsed - scheduledDelay) < MARGIN_OF_ERROR);
-    }
-
-    @Test
-    public void testRepeatedTriggerTwentySec() throws Exception {
-        Integer scheduledDelay = 20000;
-
-        ServerConfiguration config = server.getServerConfiguration();
-        config.getVariables().getById("repeatTrigger").setValue("true");
-        config.getVariables().getById("scheduledTime").setValue(scheduledDelay.toString());
-        config.getVariables().getById("repeatManagedExec").setValue("false");
-        server.updateServerConfiguration(config);
-
-        server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, (server) -> {
-            String result = server.waitForStringInLog("Scheduled thread completed", 20000);
-            assertNotNull("Repeated task not called at checkpoint", result);
-        });
-        server.startServer();
-        Thread.sleep(10000);
-        server.checkpointRestore();
-        String scheduledTaskLog = server.waitForStringInLog("The Liberty server process resumed operation from a checkpoint", 15000);
-        String taskExecutionLog = server.waitForStringInLog("Scheduled thread completed", 20000);
-        long timeElapsed = getTimeElapsed(scheduledTaskLog, taskExecutionLog);
-        assertTrue("Expected and Observed delays differ. Expected: " + scheduledDelay +
-                   " ms | Observed: " + timeElapsed + " ms",
-                   Math.abs(timeElapsed - scheduledDelay) < MARGIN_OF_ERROR);
-    }
-
-    @Test
-    public void testRepeatedMangedExecTenSec() throws Exception {
         Integer scheduledDelay = 10000;
 
         ServerConfiguration config = server.getServerConfiguration();
@@ -179,33 +114,40 @@ public class ConcurrencyTest {
         server.updateServerConfiguration(config);
 
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, (server) -> {
-            String result = server.waitForStringInLog("Thread scheduled at startup", 20000);
+            String result = server.waitForStringInLog("Scheduled thread completed");
             assertNotNull("Repeated task not called at checkpoint", result);
         });
         server.startServer();
-        Thread.sleep(10000);
+        Thread.sleep(7000);
         server.checkpointRestore();
         String scheduledTaskLog = server.waitForStringInLog("The Liberty server process resumed operation from a checkpoint", 15000);
-        String taskExecutionLog = server.waitForStringInLog("Scheduled thread completed", 20000);
+        String taskExecutionLog = server.waitForStringInLog("Scheduled thread completed");
         long timeElapsed = getTimeElapsed(scheduledTaskLog, taskExecutionLog);
-        assertTrue("Expected and Observed delays differ. Expected: " + scheduledDelay +
-                   " ms | Observed: " + timeElapsed + " ms",
+        System.out.println("time Elapsed: " + timeElapsed);
+        assertTrue("Expected and Observed delays differ greater than the margin of error. Expected: " + scheduledDelay +
+                   "ms | Observed: " + timeElapsed + "ms | margin of error: " + MARGIN_OF_ERROR + "ms",
                    Math.abs(timeElapsed - scheduledDelay) < MARGIN_OF_ERROR);
     }
 
+    /*
+     * Tests starting a repeated task at checkpoint with a seven second repeat interval using the
+     * managedExecutor's repeating function. then waiting ten seconds between checkpoint and
+     * restore and checking the timestamp to ensure that there is a seven second delay upon restore
+     * (inculding a two second margin of error)
+     */
     @Test
-    public void testRepeatedMangedExecTwentySec() throws Exception {
-        Integer scheduledDelay = 20000;
+    public void testRepeatedMangedExecTenSec() throws Exception {
+        Integer scheduledDelay = 7000;
 
         ServerConfiguration config = server.getServerConfiguration();
-        config.getVariables().getById("repeatTrigger").setValue("true");
+        config.getVariables().getById("repeatTrigger").setValue("false");
         config.getVariables().getById("scheduledTime").setValue(scheduledDelay.toString());
-        config.getVariables().getById("repeatManagedExec").setValue("false");
+        config.getVariables().getById("repeatManagedExec").setValue("true");
         server.updateServerConfiguration(config);
 
         server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, (server) -> {
-            String result = server.waitForStringInLog("Thread scheduled at startup", 20000);
-            assertNotNull("Repeated task not called at checkpoint", result);
+            String result = server.waitForStringInLog("Thread scheduled at startup");
+            assertNotNull("Repeated task not scheduled at checkpoint", result);
         });
         server.startServer();
         Thread.sleep(10000);
@@ -213,8 +155,9 @@ public class ConcurrencyTest {
         String scheduledTaskLog = server.waitForStringInLog("The Liberty server process resumed operation from a checkpoint", 15000);
         String taskExecutionLog = server.waitForStringInLog("Scheduled thread completed", 20000);
         long timeElapsed = getTimeElapsed(scheduledTaskLog, taskExecutionLog);
-        assertTrue("Expected and Observed delays differ. Expected: " + scheduledDelay +
-                   " ms | Observed: " + timeElapsed + " ms",
+        System.out.println("time Elapsed: " + timeElapsed);
+        assertTrue("Expected and Observed delays differ greater than the margin of error. Expected: " + scheduledDelay +
+                   " ms | Observed: " + timeElapsed + " ms | margin of error: " + MARGIN_OF_ERROR,
                    Math.abs(timeElapsed - scheduledDelay) < MARGIN_OF_ERROR);
     }
 

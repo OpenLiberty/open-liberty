@@ -14,6 +14,7 @@ package concurrentApp;
 
 import java.time.Instant;
 import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
@@ -58,7 +59,7 @@ public class ConcurrentApp extends HttpServlet {
         if (REPEAT_TRIGGER) {
             managedExec.schedule(scheduledTask, new RepeatedTrigger(SCHEDULED_TIME, Instant.now()));
         } else if (REPEAT_MANAGED_EXEC) {
-            managedExec.scheduleAtFixedRate((Runnable) scheduledTask, SCHEDULED_TIME, SCHEDULED_TIME, TimeUnit.MILLISECONDS);
+            managedExec.scheduleAtFixedRate(new FutureTask<Integer>(scheduledTask), SCHEDULED_TIME, SCHEDULED_TIME, TimeUnit.MILLISECONDS);
         } else {
             managedExec.schedule(scheduledTask, SCHEDULED_TIME, TimeUnit.MILLISECONDS);
         }

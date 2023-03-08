@@ -26,7 +26,7 @@
     	<concurrencyPolicy startTimeout="10000"/>
     </managedScheduledExecutorService>
     
-    <variable id="scheduledTime" name="scheduledTime" value="10"/>
+    <variable id="scheduledTime" name="scheduledTime" value="5000"/>
     <variable id="repeatTrigger" name="repeatTrigger" value="false"/>
     <variable id="repeatManagedExec" name="repeatManagedExec" value="false" />
 

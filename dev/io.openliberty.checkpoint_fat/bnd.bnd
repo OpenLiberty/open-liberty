@@ -44,7 +44,6 @@ src: \
 	test-applications/bells/src,\
 	test-applications/virtualhost/src,\
 	test-applications/DefaultPrincipalMappingApp/src,\
-	test-applications/virtualhost/src,\
 	test-applications/concurrentApp/src
 
 fat.project: true
