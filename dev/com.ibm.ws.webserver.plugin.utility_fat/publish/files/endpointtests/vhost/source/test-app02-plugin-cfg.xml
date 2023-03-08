@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><!--HTTP server plugin config file for test-app02 -->
+<Config ASDisableNagle="false" AcceptAllContent="false" AppServerPortPreference="HostHeader" ChunkedResponse="false" ConfigHash="-307975992" FIPSEnable="false" IISDisableNagle="false" IISPluginPriority="High" IgnoreDNSFailures="false" RefreshInterval="60" ResponseChunkSize="64" SSLConsolidate="false" TrustedProxyEnable="false" VHostMatchingCompat="false">
+   <Log LogLevel="Error" Name="/opt/IBM/WebSphere/Plugins/logs/webserver1/http_plugin.log"/>
+   <Property Name="ESIEnable" Value="true"/>
+   <Property Name="ESIMaxCacheSize" Value="1024"/>
+   <Property Name="ESIInvalidationMonitor" Value="false"/>
+   <Property Name="ESIEnableToPassCookies" Value="false"/>
+   <Property Name="PluginInstallRoot" Value="/opt/IBM/WebSphere/Plugins"/>
+<!-- Configuration generated using httpEndpointRef=defaultHttpEndpoint-->
+<!-- The default_host contained only aliases for endpoint defaultHttpEndpoint.
+	 The generated VirtualHostGroup will contain only configured web server ports:
+		webserverPort=80
+		webserverSecurePort=443 -->
+   <VirtualHostGroup Name="default_host">
+      <VirtualHost Name="*:80"/>
+      <VirtualHost Name="*:443"/>
+   </VirtualHostGroup>
+   <ServerCluster CloneSeparatorChange="false" GetDWLMTable="false" IgnoreAffinityRequests="true" LoadBalance="Round Robin" Name="test-app02_default_node_Cluster" PostBufferSize="0" PostSizeLimit="-1" RemoveSpecialHeaders="true" RetryInterval="60" ServerIOTimeoutRetry="-1">
+      <Server CloneID="3c4289de-e3c4-431c-ab16-211bb4ee42d0" ConnectTimeout="5" ExtendedHandshake="false" LoadBalanceWeight="20" MaxConnections="-1" Name="default_node_test-app02" ServerIOTimeout="900" WaitForContinue="false">
+         <Transport Hostname="testapp.was.some.com" Port="9102" Protocol="http"/>
+         <Transport Hostname="testapp.was.some.com" Port="9502" Protocol="https">
+            <Property Name="keyring" Value="/opt/IBM/WebSphere/Plugins/config/webserver1/plugin-key.kdb"/>
+            <Property Name="stashfile" Value="/opt/IBM/WebSphere/Plugins/config/webserver1/plugin-key.sth"/>
+         </Transport>
+      </Server>
+      <PrimaryServers>
+         <Server Name="default_node_test-app02"/>
+      </PrimaryServers>
+   </ServerCluster>
+   <UriGroup Name="default_host_test-app02_default_node_Cluster_URIs">
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/IBMJMXConnectorREST/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/wasTestTool/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/ibm/api/*"/>
+   </UriGroup>
+   <Route ServerCluster="test-app02_default_node_Cluster" UriGroup="default_host_test-app02_default_node_Cluster_URIs" VirtualHostGroup="default_host"/>
+</Config>
