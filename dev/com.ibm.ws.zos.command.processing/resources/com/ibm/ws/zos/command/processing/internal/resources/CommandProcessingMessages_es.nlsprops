@@ -1,0 +1,94 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.command.processing/resources/com.ibm.ws.zos.command.processing.internal.resources/CommandProcessingMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Command Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0001-0050: command processing
+# -------------------------------------------------------------------------------------------------
+
+STOP_COMMAND_RECEIVED=CWWKB0001I: Se ha recibido un mandato de detenci\u00f3n para el servidor {0}.
+STOP_COMMAND_RECEIVED.explanation=El servidor ha recibido un mandato de detenci\u00f3n. El servidor empezar\u00e1 a cerrarse.
+STOP_COMMAND_RECEIVED.useraction=No se requiere ninguna acci\u00f3n.
+#{0} is target command
+#{1} is completion status
+MODIFY_COMMAND_COMPLETED=CWWKB0002I: EL MANDATO MODIFY {0} SE HA COMPLETADO {1}.
+MODIFY_COMMAND_COMPLETED.explanation=El servidor ha terminado de procesar el mandato indicado. Si el mandato no se ha completado satisfactoriamente, los mensaje anteriores indicar\u00e1n el motivo.
+MODIFY_COMMAND_COMPLETED.useraction=No se requiere ninguna acci\u00f3n.
+#{0} is native error code
+NATIVE_ERROR_COMMAND_RECEIVED=CWWKB0003E: El proceso de mandato ha recibido un c\u00f3digo de error de {0} de una llamada nativa.
+NATIVE_ERROR_COMMAND_RECEIVED.explanation=El servidor ha llamado al c\u00f3digo nativo de un servicio relacionado con el proceso del mandato.  El c\u00f3digo nativo ha encontrado el problema identificado por el c\u00f3digo de error mostrado.
+NATIVE_ERROR_COMMAND_RECEIVED.useraction=Examine los registros de servidor para determinar el motivo del fallo del c\u00f3digo nativo.
+
+#{0} is command response from the command handler
+MODIFY_COMMAND_HANDLER_MSG=CWWKB0004I: {0}
+MODIFY_COMMAND_HANDLER_MSG.explanation=El servidor ha recibido un mandato modify para procesarlo. Este es el mensaje de respuesta de mandato del manejador de mandatos. El mensaje CWWKB0005I identifica el manejador de mandatos.
+MODIFY_COMMAND_HANDLER_MSG.useraction=No se requiere ninguna acci\u00f3n.
+#{0} is the command handler completion status
+#{1} is the modify command handler name
+MODIFY_COMMAND_HANDLER_DONE=CWWKB0005I: MANDATO RESPONSES COMPLETADO {0} DESDE {1}.
+MODIFY_COMMAND_HANDLER_DONE.explanation=El servidor ha recibido un mandato modify para procesarlo. Este mensaje indica que el manejador de mandatos ha terminado de procesar el mandato.
+MODIFY_COMMAND_HANDLER_DONE.useraction=No se requiere ninguna acci\u00f3n.
+#{0} is target command
+MODIFY_COMMAND_UNKNOWN=CWWKB0006W: EL MANDATO MODIFY {0} NO SE CONOCE EN NING\u00daN MANEJADOR DE MANDATOS ACTIVO.
+MODIFY_COMMAND_UNKNOWN.explanation=El servidor ha terminado de procesar el mandato indicado. Ning\u00fan manejador de mandatos activos ha informado del proceso del mandato. 
+MODIFY_COMMAND_UNKNOWN.useraction=Compruebe la sintaxis del mandato para asegurarse de que es correcta y vuelva a emitirlo.
+
+#{0} is the modify command handler name
+MODIFY_HANDLER_ERROR=CWWKB0007E: SE HA RECIBIDO UN ERROR DESDE EL MANEJADOR DE MANDATOS {0}.
+MODIFY_HANDLER_ERROR.explanation=El servidor ha recibido un mandato modify para procesarlo. Este mensaje indica que el manejador de mandatos ha encontrado un error mientras procesaba el mandato.
+MODIFY_HANDLER_ERROR.useraction=Examine los registros de servidor para determinar el motivo del error del manejador de mandatos.
+
+#{0} is command response related message 
+MODIFY_NLSBUILDMSG_FAILED=CWWKB0008E: {0}.
+MODIFY_NLSBUILDMSG_FAILED.explanation=El servidor ha intentado emitir un mensaje de respuesta del mandato. No ha podido resolver el mensaje con su paquete de mensajes. 
+MODIFY_NLSBUILDMSG_FAILED.useraction=Examine los registros de servidor para determinar el motivo de un error de manejador de mandatos relacionado.
+
+
+MESSAGE_TRANSLATE_ERROR=CWWKB0009E: UNA RESPUESTA DE MANDATO NO HA PODIDO CONVERTIRSE A LA CODIFICACI\u00d3N NATIVA.
+MESSAGE_TRANSLATE_ERROR.explanation=El servidor ha intentado emitir un mensaje de respuesta del mandato. No ha podido convertir la respuesta del mensaje a la codificaci\u00f3n nativa ("Cp1047").
+MESSAGE_TRANSLATE_ERROR.useraction=Examine los registros de servidor para determinar el motivo del error.
+
+COMMAND_TRANSLATE_ERROR=CWWKB0010E: Formato incorrecto del mandato modify recibido. 
+COMMAND_TRANSLATE_ERROR.explanation=El servidor ha recibido un mandato modify. No ha podido convertir el texto del mandato de la codificaci\u00f3n nativa ("Cp1047").
+COMMAND_TRANSLATE_ERROR.useraction=Examine los registros de servidor para determinar el motivo del error.
+
+#{0} is the modify command handler name
+MODIFY_COMMAND_HANDLER_HELP_HDR=CWWKB0011I: INICIO DE INFORMACI\u00d3N DE AYUDA DE {0}.
+MODIFY_COMMAND_HANDLER_HELP_HDR.explanation=Este mensaje representa el inicio de la informaci\u00f3n de ayuda desde el manejador de mandatos indicado.
+MODIFY_COMMAND_HANDLER_HELP_HDR.useraction=No se requiere ninguna acci\u00f3n.
+#{0} is the help text from a command handler
+MODIFY_COMMAND_HANDLER_HELP_TXT=CWWKB0012I: {0}
+MODIFY_COMMAND_HANDLER_HELP_TXT.explanation=Se visualiza informaci\u00f3n de ayuda del manejador de mandatos indicado.
+MODIFY_COMMAND_HANDLER_HELP_TXT.useraction=No se requiere ninguna acci\u00f3n.
+#{0} is the modify command handler name
+MODIFY_COMMAND_HANDLER_HELP_END=CWWKB0013I: FIN DE INFORMACI\u00d3N DE AYUDA DE {0}.
+MODIFY_COMMAND_HANDLER_HELP_END.explanation=Este mensaje representa el final de la informaci\u00f3n de ayuda del manejador de mandatos indicado.
+MODIFY_COMMAND_HANDLER_HELP_END.useraction=No se requiere ninguna acci\u00f3n.
+FILE_DELETE_UNSUCCESSFUL=CWWKB0014W: EL ARCHIVO PID NO SE HA PODIDO SUPRIMIR.
+FILE_DELETE_UNSUCCESSFUL.explanation=El servidor ha intentado suprimir el archivo pid durante la detenci\u00f3n del servidor. No se ha podido suprimir el archivo pid especificado por {0}.
+FILE_DELETE_UNSUCCESSFUL.useraction=Examine los registros de servidor si el servidor se ha detenido correctamente. 

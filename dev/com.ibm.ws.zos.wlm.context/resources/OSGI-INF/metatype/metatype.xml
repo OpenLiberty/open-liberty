@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2012, 2013 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"  
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+  <Designate factoryPid="com.ibm.ws.zos.wlm.context">
+    <Object ocdref="com.ibm.ws.zos.wlm.context"/>
+  </Designate>
+
+  <OCD id="com.ibm.ws.zos.wlm.context" ibm:extendsAlias="!zosWLMContext" ibm:extends="com.ibm.wsspi.threadcontext.config"
+    name="%zos.wlm.context.config.name"
+    description="%zos.wlm.context.config.description">
+      <AD id="defaultTransactionClass" name="%defaultTClass" description="%defaultTClass.desc" required="false" type="String" default="ASYNCBN" />
+      <AD id="daemonTransactionClass" name="%daemonTClass" description="%daemonTClass.desc" required="false" type="String" default="ASYNCDMN" />
+      <AD id="wlm" name="%wlm" description="%wlm.desc" required="false" type="String" default="Propagate">
+        <Option value="Propagate"           label="%wlm.Propagate.desc"/>
+        <Option value="PropagateOrNew"      label="%wlm.PropagateOrNew.desc"/>
+        <Option value="New"                 label="%wlm.New.desc"/>
+      </AD>
+  </OCD>
+
+</metatype:MetaData>

@@ -1,0 +1,46 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.registry.saf/resources/com/ibm/ws/security/registry/saf/internal/resources/SAFRegistryMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security SAF Registry
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2930 - CWWKS2959
+
+PENALTY_BOX_FALLBACK=CWWKS2930W: Un tentativo di autenticazione SAF tramite i servizi SAF autorizzati \u00e8 stato rifiutato perch\u00e9 il server non \u00e8 autorizzato ad accedere all''APPL-ID {0}. L''autenticazione proceder\u00e0 tramite i servizi SAF non autorizzati.
+PENALTY_BOX_FALLBACK.explanation=Il server ha tentato di utilizzare i servizi SAF autorizzati per eseguire l'autenticazione, tuttavia il tentativo ha avuto esito negativo perch\u00e9 il server non dispone dell'autorit\u00e0 per accedere alla risorsa APPL-ID indicata, in base a WZSSAD (WLP z/OS System Security Access Domain). Il server, quindi, dovr\u00e0 utilizzare i servizi SAF non autorizzati forniti da Unix System Services per eseguire l'autenticazione.
+PENALTY_BOX_FALLBACK.useraction=Se si desidera utilizzare i servizi SAF autorizzati, concedere all'utente associato al server l'autorit\u00e0 appropriata per la risorsa APPL-ID nel WZSSAD (WLP z/OS System Security Access Domain). Fare riferimento al Centro Informazioni per ulteriori informazioni su WZSSAD. Se non si desidera utilizzare i servizi SAF autorizzati, configurare il server in modo che utilizzi il registro SAF non autorizzato anzich\u00e9 quello autorizzato. Per ulteriori dettagli fare riferimento al centro informazioni.
+
+PENALTY_BOX_RECOVERY=CWWKS2931I: Il server ora \u00e8 autorizzato ad accedere all''APPL-ID {0}. L''autenticazione proceder\u00e0 tramite i servizi SAF autorizzati.
+PENALTY_BOX_RECOVERY.explanation=Un precedente tentativo di autenticazione ha avuto esito negativo perch\u00e9 il server non era autorizzato ad accedere alla risorsa APPL-ID indicata (vedere il messaggio CWWKS2930W), tuttavia il server ora \u00e8 autorizzato ad accedere all'APPL-ID. Ulteriori tentativi di autenticazione procederanno tramite i servizi SAF autorizzati.
+PENALTY_BOX_RECOVERY.useraction=Nessuna.
+
+ACTIVATION_MESSAGE=CWWKS2932I: La versione {0} del registro utente SAF \u00e8 attivata. \
+L''autenticazione proceder\u00e0 tramite i servizi nativi {0}.
+ACTIVATION_MESSAGE.explanation=Il messaggio indica quale versione del registro utente SAF \u00e8 in uso.  \
+Vi sono due versioni: (1) la versione non autorizzata, che utilizza servizi di sistema UNIX non autorizzati quali as __passwd; (2) la versione autorizzata, che utilizza servizi SAF autorizzati quali initACEE.  
+ACTIVATION_MESSAGE.useraction=Per poter utilizzare la versione autorizzata del registro SAF, il server deve disporre dell'accesso alle risorse autorizzate SAFCRED e a WZSSAD (WLP z/OS System Security Access Domain).
+ 
+DAEMON_LOGIN_ERROR=CWWKS2933E: Impossibile verificare il nome utente e la password in quanto il profilo BPX.DAEMON \u00e8 attivo e lo spazio indirizzi non fa parte del controllo programma.
+DAEMON_LOGIN_ERROR.explanation=L'utilizzo di una versione non autorizzata del registro SAF su un sistema in cui BPX.DAEMON \u00e8 attivo richiede che tutte le librerie utilizzate da Liberty facciano parte del controllo programma. In alternativa, \u00e8 possibile utilizzare la versione autorizzata del registro SAF.
+DAEMON_LOGIN_ERROR.useraction=Se l'intento \u00e8 di utilizzare la versione autorizzata del registro SAF, cercare eventuali errori nelle sezioni precedenti del file message.log che potrebbero impedire l'avvio del registro autorizzato. Altrimenti, valutare la disabilitazione del profilo BPX.DAEMON oppure inserire tutte le librerie nel controllo programma.
+
+ENABLE_FAILOVER_MESSAGE=CWWKS2934E: Al server non \u00e8 consentito utilizzare il registro SAF autorizzato.
+ENABLE_FAILOVER_MESSAGE.explanation=Al server non \u00e8 consentito utilizzare il registro SAF autorizzato. \
+Il valore enableFailover impedisce al server di utilizzare il registro SAF non autorizzato. Tutti i futuri tentativi di autenticazione avranno esito negativo.
+ENABLE_FAILOVER_MESSAGE.useraction=Se l'intento era che il server utilizzasse il registro SAF autorizzato, controllare che il processo angel sia in esecuzione e che il server possa accedere ai profili SAF necessari per utilizzare il registro SAF autorizzato. Se l'intento era che il server utilizzasse il registro SAF non autorizzato, \u00e8 necessario modificare l'impostazione enableFailover in true, che \u00e8 l'impostazione predefinita.
+
+UNAUTH_INCLUDE_SAF=CWWKS2935W: L'attributo server includeSafGroups \u00e8 abilitato, ma il server non ha accesso alle funzioni autorizzate richieste.
+UNAUTH_INCLUDE_SAF.explanation=L'attributo per ottenere i gruppi non OMVS \u00e8 abilitato; tuttavia, il server non dispone di accesso alle funzioni autorizzate e non pu\u00f2 ottenere i gruppi SAF.
+UNAUTH_INCLUDE_SAF.useraction=L'utente deve abilitare le funzioni autorizzate per accedere ai gruppi non OMVS. 

@@ -1,0 +1,179 @@
+###############################################################################
+# Copyright (c) 2011, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.core/resources/com/ibm/ws/zos/core/internal/resources/CoreMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Core
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0001-0050: Command processing (com.ibm.ws.zos.command.processing/resources/com.ibm.ws.zos.command.processing.internal.resources/CommandProcessingMessages.nlsprops)
+#0051-0100: Native code (com.ibm.zos.native/resources/com/ibm/ws/zos/native/native_messages.nlsprops)
+#0101-0150: core (here)
+# -------------------------------------------------------------------------------------------------
+
+#{0} is an integer reason code.
+ANGEL_NOT_AVAILABLE=CWWKB0101I: The angel process is not available.  No authorized services will be loaded.  The reason code is {0}.
+ANGEL_NOT_AVAILABLE.explanation=Either no angel process exists or one exists but the server could not connect to the angel process due to an error.
+ANGEL_NOT_AVAILABLE.useraction=If the server does not require authorized services, then no action is required. If the server requires authorized services, start an angel process on this system so that this server can load its authorized code, and make the authorized services available.  The message text includes an internal reason code to be used by product support.  If the problem persists, see the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL=CWWKB0102I: This server is not authorized to connect to the angel process.  No authorized services will be loaded.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL.explanation=The user ID which started this server does not have access to the BBG.ANGEL profile of the SAF server class.  Read access to this profile is required to connect to the angel process.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL.useraction=If no authorized services are required by this server, then no action is required. If the server requires authorized services, give the user ID that starts the server read access to the BBG.ANGEL profile of the SAF server class. 
+
+#{0} is the name of a service group (a text string between 1-8 characters)
+AUTHORIZED_SERVICE_AVAILABLE=CWWKB0103I: Authorized service group {0} is available.
+AUTHORIZED_SERVICE_AVAILABLE.explanation=The authorized service group named in the message has been loaded successfully.
+AUTHORIZED_SERVICE_AVAILABLE.useraction=No action is required.
+
+#{0} is the name of a service group (a text string between 1-8 characters)
+AUTHORIZED_SERVICE_NOT_AVAILABLE=CWWKB0104I: Authorized service group {0} is not available.
+AUTHORIZED_SERVICE_NOT_AVAILABLE.explanation=The user ID that started this server does not have access to the appropriate profile in the SAF server class.  The profile name is BBG.BBGZSAFM.<name> where <name> is the service group name in this message.
+AUTHORIZED_SERVICE_NOT_AVAILABLE.useraction=If this authorized service group is not required by this server, then no action is required. If the server requires services that are provided by this authorized service group, give the user ID that starts the server read access to the appropriate profiles in the SAF server class.
+
+#{0} is the name of the unauthorized function module
+#{1} is the return value from BPX4LOD
+#{2} is the return code from BPX4LOD
+#{3} is the reason code from BPX4LOD
+UNABLE_TO_LOAD_UNAUTHORIZED_BPX4LOD=CWWKB0105E: Unable to load the z/OS native code library {0}.  BPX4LOD failed, rv = {1} rc = {2} rsn = {3}.
+UNABLE_TO_LOAD_UNAUTHORIZED_BPX4LOD.explanation=A portion of the z/OS native libraries for the application server could not be loaded.  Unix system service BPX4LOD failed while trying to load the library indicated in the message.  The return value, return code, and reason code returned by BPX4LOD are also indicated in the message.  The return and reason codes are printed as hexadecimal integers.
+UNABLE_TO_LOAD_UNAUTHORIZED_BPX4LOD.useraction=Confirm that all installation steps were completed when installing the application server on this system.  The return value, return code, and reason code can be looked up in "z/OS UNIX System Services Messages and Codes", publication number SA22-7807-xx.  If the problem persists, contact your next level of support.
+
+#{0} is the name of the library
+LIBRARY_DOES_NOT_EXIST=CWWKB0106E: The z/OS native library {0} does not exist in the file system.
+LIBRARY_DOES_NOT_EXIST.explanation=A z/OS native code library was not found in the file system.  The library name is indicated in the message.
+LIBRARY_DOES_NOT_EXIST.useraction=Confirm that all installation steps were completed when installing the application server on this system.  If the problem persists, contact your next level of support.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+PRODUCT_REGISTRATION_FAILED_BAD_PARM=CWWKB0107E: {0} product {1} version {2} failed to register with z/OS due to problems translating required strings to EBCDIC.
+PRODUCT_REGISTRATION_FAILED_BAD_PARM.explanation=One of the product identification strings could not be translated into EBCDIC to pass to the IFAUSAGE service.
+PRODUCT_REGISTRATION_FAILED_BAD_PARM.useraction=Contact the owner of the product to get the identifying string(s) corrected.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+PRODUCT_REGISTRATION_SUCCESSFUL=CWWKB0108I: {0} product {1} version {2} successfully registered with z/OS.
+PRODUCT_REGISTRATION_SUCCESSFUL.explanation=The named product was registered with z/OS using the IFAUSAGE service.
+PRODUCT_REGISTRATION_SUCCESSFUL.useraction=No action is required.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+#{3} is the return code
+PRODUCT_REGISTRATION_UNSUCCESSFUL=CWWKB0109E: {0} product {1} version {2} failed to register with z/OS, return code = {3}.
+PRODUCT_REGISTRATION_UNSUCCESSFUL.explanation=The named product failed to register with z/OS using the IFAUSAGE service.  Return codes greater than zero come from the IFAUSAGE service itself.  Negative return codes indicate an internal problem processing the registration request.   
+PRODUCT_REGISTRATION_UNSUCCESSFUL.useraction=A return code of eight (8) might indicate that the server is trying to register for too many products at the same time.  
+
+#No fill-ins
+SERVER_SAFM_NOT_APF_AUTHORIZED=CWWKB0110I: Module bbgzsafm is not APF authorized. No authorized services will be available.
+SERVER_SAFM_NOT_APF_AUTHORIZED.explanation=Module bbgzsafm is not APF authorized. bbgzsafm must be APF authorized to enable access to authorized services.
+SERVER_SAFM_NOT_APF_AUTHORIZED.useraction=If no authorized services are required by this server, then no action is required. If the server requires authorized services, APF authorize module bbgzsafm. See the extattr command in the "z/OS UNIX System Services Command Reference", publication number SA22-7802-xx.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+PRODUCT_DEREGISTRATION_SUCCESSFUL=CWWKB0111I: {0} product {1} version {2} successfully deregistered from z/OS.
+PRODUCT_DEREGISTRATION_SUCCESSFUL.explanation=The named product was deregistered from z/OS using the IFAUSAGE service.
+PRODUCT_DEREGISTRATION_SUCCESSFUL.useraction=No action is required.
+
+#{0} successful product registration count
+PRODUCT_REGISTRATION_SUMMARY_AUTHORIZED=CWWKB0112I: The number of successfully registered products with z/OS is {0}. The server will attempt to deregister these products from z/OS during server shutdown.
+PRODUCT_REGISTRATION_SUMMARY_AUTHORIZED.explanation=The server will attempt to explicitly deregister all successfully registered products from z/OS during server shutdown. The z/OS service used to deregister products is IFAUSAGE.
+PRODUCT_REGISTRATION_SUMMARY_AUTHORIZED.useraction=No action is required.
+
+#{0} successful product registration count
+PRODUCT_REGISTRATION_SUMMARY_NOT_AUTHORIZED=CWWKB0113I: The number of successfully registered products with z/OS is {0}. These products will deregister from z/OS when the address space terminates.
+PRODUCT_REGISTRATION_SUMMARY_NOT_AUTHORIZED.explanation=All successfully registered products will be deregistered from z/OS when the address space terminates. If explicit product deregistration during server shutdown is needed, create and enable the server profile to access authorized services under group PRODMGR, and start the angel process. The angel process must be started before the server is started.
+PRODUCT_REGISTRATION_SUMMARY_NOT_AUTHORIZED.useraction=No action is required.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+#{3} is the return code
+PRODUCT_DEREGISTRATION_UNSUCCESSFUL=CWWKB0114E: {0} product {1} version {2} failed to deregister from z/OS. Return code = {3}.
+PRODUCT_DEREGISTRATION_UNSUCCESSFUL.explanation=The named product failed to deregister from z/OS using the IFAUSAGE service.  Return codes greater than zero come from the IFAUSAGE service itself.  Negative return codes indicate an internal problem processing the deregistration request.
+PRODUCT_DEREGISTRATION_UNSUCCESSFUL.useraction=A return code of eight (8) indicates that the product was never registered first.
+
+SERVER_SAFM_NOT_SAF_AUTHORIZED=CWWKB0115I: This server is not authorized to load module bbgzsafm.  No authorized services will be loaded.
+SERVER_SAFM_NOT_SAF_AUTHORIZED.explanation=The user ID which that started this server does not have access to the BBG.AUTHMOD.BBGZSAFM profile of the SAF server class.  Read access to this profile is required to connect to the angel process and load authorized services.
+SERVER_SAFM_NOT_SAF_AUTHORIZED.useraction=If no authorized services are required by this server, then no action is required. If the server requires authorized services, give the user ID that starts the server read access to the BBG.AUTHMOD.BBGZSAFM profile of the SAF server class. 
+
+NOT_REGISTERED_WITH_REQUIRED_ANGEL=CWWKB0116I: This server is not registered with an angel process even though it is configured to require registration with an angel process. This server is attempting to stop.
+NOT_REGISTERED_WITH_REQUIRED_ANGEL.explanation=The server is configured to abort startup when it is not registered with an angel process. The server is not registered with an angel process and is stopping.
+NOT_REGISTERED_WITH_REQUIRED_ANGEL.useraction=Make sure that the angel process is started and that the server is able to connect to and register with it. Alternatively, change the configuration to allow the server to start without registering with an angel process.
+
+#{0} is the name of the angel process.  1-54 characters.
+#{1} is an integer reason code.
+ANGEL_NOT_AVAILABLE_NAME=CWWKB0117W: The {0} angel process is not available. No authorized services will be loaded. The reason code is {1}.
+ANGEL_NOT_AVAILABLE_NAME.explanation=Either no angel process with the name displayed in the message exists or one exists but the server could not connect to it due to an error.
+ANGEL_NOT_AVAILABLE_NAME.useraction=If the server requires authorized services, start an angel process on this system so that this server can load its authorized code and make the authorized services available. The message text includes an internal reason code to be used by product support. If the problem persists, see the problem determination information on the following WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support. If no authorized services are required by this server, then no action is required. To prevent this message from appearing, remove the com.ibm.ws.zos.core.angelName property from the bootstrap.properties file.
+
+#{0} is the name of the angel process. 1-54 characters.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL_NAME=CWWKB0118W: This server is not authorized to connect to the {0} angel process. No authorized services will be loaded.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL_NAME.explanation=The user ID that started this server does not have access to the System Authorization Facility (SAF) profile for the angel process named in the message. Read access to that profile is required to connect to this angel process.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL_NAME.useraction=If the server requires authorized services, consult the documentation on how to set up a named angel. If no authorized services are required by this server, then no action is required. To prevent this message from appearing, remove the com.ibm.ws.zos.core.angelName property from the bootstrap.properties file.
+
+ANGEL_NAME_TOO_LONG=CWWKB0119E: The angel name specified in bootstrap.properties is greater than 54 characters.
+ANGEL_NAME_TOO_LONG.explanation=The com.ibm.ws.zos.core.angelName property specifies the name of the angel process that this server should connect to. The property is specified in bootstrap.properties and must be 54 characters or less.  
+ANGEL_NAME_TOO_LONG.useraction=This server will not connect to an angel process. To connect to an angel process, specify a value of 54 characters or less for the com.ibm.ws.zos.core.angelName property, and restart the server.
+
+#{0} is an unsupported character
+#{1} is a number between 1 and 54
+ANGEL_NAME_UNSUPPORTED_CHARACTER=CWWKB0120E: The angel name specified in bootstrap.properties contains the unsuppored character {0} at position {1}.
+ANGEL_NAME_UNSUPPORTED_CHARACTER.explanation=The com.ibm.ws.zos.core.angelName property specifies the name of the angel process that this server should connect to. The property is specified in boostrap.properties, and can only contain characters from the following character set:  A-Z 0-9 ! # $ + - / : < > = ? @ [ ] ^ _ ` { } | ~
+ANGEL_NAME_UNSUPPORTED_CHARACTER.useraction=This server will not connect to an angel process. To connect to an angel process, specify a value using the supported character set for the com.ibm.ws.zos.core.angelName property, and restart the server.
+
+#{0} is the server's UMASK value.
+SERVER_CURRENT_UMASK=CWWKB0121I: The server process UMASK value is set to {0}.
+SERVER_CURRENT_UMASK.explanation=The server process UMASK value. By default the UMASK value is inherited from the process that started the liberty server, but is then further modified to disallow any read, write, or execute access to OTHER users. Setting the WLP_SKIP_UMASK environment variable to true prevents the server from modifying the UMASK in this way. When a Liberty server is started using a z/OS procedure, you can customize the UMASK used by the server process by defining the WLP_SKIP_UMASK and the _BPX_BATCH_UMASK environment variables. WLP_SKIP_UMASK can be specified either in the server.env file or, if the server is started using a z/OS procedure, it can be specified using the STDENDV DD entry. In contrast, _BPX_BATCH_UMASK cannot be specified in the server.env file. It must only be specified using the STDENV DD entry in the z/OS procedure.
+SERVER_CURRENT_UMASK.useraction=No action is required.
+
+#{0} is the name of the angel process. 1-54 characters.
+SERVER_CONNECTED_TO_ANGEL=CWWKB0122I: This server is connected to the {0} angel process.
+SERVER_CONNECTED_TO_ANGEL.explanation=This server is connected to the configured angel process.
+SERVER_CONNECTED_TO_ANGEL.useraction=No action is required.
+
+ANGEL_WAIT_TIME_OUT_OF_RANGE_OR_INVLID=CWWKB0123W: The angel's startup waiting time that specified in bootstrap.properties is outside the range of allowed values or it is invalid. The default value of 0(s) will be used.
+ANGEL_WAIT_TIME_OUT_OF_RANGE_OR_INVLID.explanation=The server has the wrong configuration for angel's startup waiting time. The allowable range is from 0 to 300 seconds.
+ANGEL_WAIT_TIME_OUT_OF_RANGE_OR_INVLID.useraction=This server will use the default waiting time 0(s) to connect to the required Angel. To configure the valid startup waiting time, specify an integer value between 0 and 300 in the com.ibm.ws.zos.core.angelWaitTimeSeconds property, and restart the server.
+
+#{0} is the configured time that liberty server will wait the required angel to start, {1} is the name of the required angel process.
+REQUIRED_ANGEL_WAITTIME_NAME_PROMPT=CWWKB0124I: Angel {1} is required, server was configured to wait up to {0} seconds to connect to the targeted Angel.
+REQUIRED_ANGEL_WAITTIME_NAME_PROMPT.explanation=This server requires the Angel to start, also has specified a maximum startup wait time until shutdown if it fails to register with the required Angel.
+REQUIRED_ANGEL_WAITTIME_NAME_PROMPT.useraction=No action is required.
+
+
+REGION_REQUESTED=CWWKB0125I: This server requested a REGION size of {0}. The below-the-line storage limit is {1} and the above-the-line storage limit is {2}.
+REGION_REQUESTED.explanation=This message displays various values from the Local Data Area (LDA) control block, which can be useful for debugging an out-of-storage condition. The region size is the storage region that is allocated to the address space, indicated in kilobytes. The below and above the line limits are given in megabytes. The "LINE" is the boundary between 24-bit and 31-bit storage addresses. The limits indicate the actual storage limits for addresses that are below the line (24-bit addresses) and addresses that are above the line (31-bit addresses).
+REGION_REQUESTED.useraction=No action is required.
+
+MEMORY_LIMIT_INFORMATION=CWWKB0126I: MEMLIMIT={0}. MEMLIMIT CONFIGURATION SOURCE={1}.
+MEMORY_LIMIT_INFORMATION.explanation=Displays the configured MEMLIMIT for the address space, and the MEMLIMIT configuration source. The MEMLIMIT CONFIGURATION SOURCE is one of the following values. "SMF" either set by SMF in SMFPRMxx or set to 0 by default. "JCL" set by the JCL. "REG0" Unlimited size based on the REGION=0 specification. "USI" is configured by the IEFSMFIE field and set by using the IEFUSI exit. "OMVS" set by the UNIX OMVS segment. "SETR" set by the UNIX setrlimit. "SPW" set by UNIX spawn. "SETO" set by the UNIX SETOMVS command. "AUTH" set by the authorized application modification."URG" set in IEFSMFIE by the IEFUSI exit. "UNKNOWN" set by unknown source. "BAD" Error setting MEMLIMIT.
+MEMORY_LIMIT_INFORMATION.useraction=No action is required.
+
+OLD_ANGEL_VERSION=CWWKB0127W: The current angel version is earlier than the version that the server expects. Update the angel version to the latest available version.
+OLD_ANGEL_VERSION.explanation=The server has an expected value for the version of the angel process. The current version is earlier than the expected version. If a Liberty server instance connects to an angel that is running at an earlier service level, some features of the server might not be available.
+OLD_ANGEL_VERSION.useraction=To ensure that all features of the server are available to the angel process, update the angel to the latest version.

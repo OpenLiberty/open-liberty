@@ -1,0 +1,36 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.channel.console/resources/com.ibm.ws.zos.channel.console.internal.resources/ZConsoleChannelMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE zOS Pause and Resume Console Command
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0651-0700: zOS Console Channel
+# -------------------------------------------------------------------------------------------------
+
+#{0} is the command type.
+ERROR.PAUSEABLE.COMPONENT.NOTAVAILABLE=CWWKE0651E: \u63a5\u6536\u5230\u670d\u52a1\u5668 {0} \u547d\u4ee4\uff0c\u4f46\u662f\u6682\u505c\u7ec4\u4ef6\u7684\u57fa\u7840\u7ed3\u6784\u4e0d\u53ef\u7528\u3002\u65e0\u6cd5\u5904\u7406\u8bf7\u6c42\u3002
+ERROR.PAUSEABLE.COMPONENT.NOTAVAILABLE.explanation=\u7528\u6237\u53d1\u51fa\u4e86\u7531\u6682\u505c\u7ec4\u4ef6\u7684\u57fa\u7840\u7ed3\u6784\u5904\u7406\u7684\u547d\u4ee4\u3002\u4f46\u662f\uff0c\u672a\u80fd\u5904\u7406\u8be5\u547d\u4ee4\u3002\u670d\u52a1\u5668\u53ef\u80fd\u6b63\u5728\u521d\u59cb\u5316\u6216\u8005\u6b63\u5728\u5173\u95ed\u3002
+ERROR.PAUSEABLE.COMPONENT.NOTAVAILABLE.useraction=\u8bf7\u9a8c\u8bc1\u670d\u52a1\u5668\u662f\u5426\u5df2\u5b8c\u5168\u521d\u59cb\u5316\u5e76\u4e14\u672a\u5728\u5173\u95ed\u8fc7\u7a0b\u4e2d\u3002

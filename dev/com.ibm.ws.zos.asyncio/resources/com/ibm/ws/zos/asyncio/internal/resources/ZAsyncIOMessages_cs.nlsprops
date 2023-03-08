@@ -1,0 +1,40 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.asyncio/resources/com.ibm.ws.zos.asyncio.internal.resources/ZAsyncIOMessages.nlsprops
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO zOS Async IO
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0NNN-0NNN: zOS Async IO
+# -------------------------------------------------------------------------------------------------
+
+ZOSAIO_ACTIVATED=CWWKO0229I: Nativn\u00ed podpora asynchronn\u00edho I/O pro z/OS byla aktivov\u00e1na.
+ZOSAIO_ACTIVATED.explanation=Slu\u017eba Asynchronous TCP/IP sockets I/O for Liberty (AsyncIO) on z/OS, kter\u00e1 poskytuje z\u00e1kladn\u00ed funkce bal\u00edku asynchronn\u00edho I/O na \u00farovni opera\u010dn\u00edho syst\u00e9mu, je aktivov\u00e1na.
+ZOSAIO_ACTIVATED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+ZOSAIO_DEACTIVATED=CWWKO0230I: Nativn\u00ed podpora asynchronn\u00edho I/O pro z/OS byla deaktivov\u00e1na.
+ZOSAIO_DEACTIVATED.explanation=Slu\u017eba Asynchronous TCP/IP sockets I/O for Liberty (AsyncIO) on z/OS, kter\u00e1 poskytuje z\u00e1kladn\u00ed funkce bal\u00edku asynchronn\u00edho I/O na \u00farovni opera\u010dn\u00edho syst\u00e9mu, je deaktivov\u00e1na.
+ZOSAIO_DEACTIVATED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.

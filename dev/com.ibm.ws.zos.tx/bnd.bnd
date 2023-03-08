@@ -1,0 +1,108 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: z/OS Transaction Service Extensions
+Bundle-SymbolicName: com.ibm.ws.zos.tx
+Bundle-Description: Transaction Service Extensions for z/OS; version=${bVersion}
+
+WS-TraceGroup: zTransaction
+
+Import-Package: com.ibm.ws.tx.rrs, *
+
+Private-Package: com.ibm.ws.zos.tx.internal*
+
+Include-Resource: \
+    OSGI-INF=resources/OSGI-INF
+    
+Service-Component: \
+  com.ibm.ws.zos.tx;\
+    implementation:=com.ibm.ws.zos.tx.internal.NativeTransactionManager; \
+    rRSServices=com.ibm.ws.zos.tx.internal.rrs.RRSServices; \
+    contextManager=com.ibm.ws.zos.tx.internal.ContextManager; \
+    locationAdmin=com.ibm.wsspi.kernel.service.location.WsLocationAdmin; \
+    provide:='com.ibm.wsspi.tx.UOWEventListener,com.ibm.ws.tx.rrs.RRSXAResourceFactory,com.ibm.wsspi.logging.IntrospectableService'; \
+    configuration-policy:=optional;\
+    modified:='modify'; \
+    version:=1.1; \
+    properties:="service.vendor=IBM", \
+  com.ibm.ws.zos.tx.rrs;\
+    implementation:=com.ibm.ws.zos.tx.internal.rrs.RRSServicesImpl; \
+    nativeMethodManager=com.ibm.ws.zos.jni.NativeMethodManager; \
+    provide:=com.ibm.ws.zos.tx.internal.rrs.RRSServices; \
+    NativeServiceRegisterResourceManager='com.ibm.ws.zos.core.NativeService(&(native.service.name=CRG4GRM)(is.authorized=true))';\
+    NativeServiceDeregisterResourceManager='com.ibm.ws.zos.core.NativeService(&(native.service.name=CRG4DRM)(is.authorized=true))';\
+    NativeServiceSetExitInformation='com.ibm.ws.zos.core.NativeService(&(native.service.name=ATR4SEIF)(is.authorized=true))';\
+    NativeServiceBeginRestart='com.ibm.ws.zos.core.NativeService(&(native.service.name=ATR4IBRS)(is.authorized=true))';\
+    NativeServiceEndRestart='com.ibm.ws.zos.core.NativeService(&(native.service.name=ATR4IERS)(is.authorized=true))';\
+    NativeServiceRetrieveLogName='com.ibm.ws.zos.core.NativeService(&(native.service.name=ATR4IRLN)(is.authorized=true))';\
+    NativeServiceSetLogName='com.ibm.ws.zos.core.NativeService(&(native.service.name=ATR4ISLN)(is.authorized=true))';\
+    NativeServiceRetrieveWorkID='com.ibm.ws.zos.core.NativeService(&(native.service.name=ATR4RWID)(is.authorized=true))';\
+    NativeServiceSetWorkID='com.ibm.ws.zos.core.NativeService(&(native.service.name=ATR4SWID)(is.authorized=true))';\
+    NativeServiceExpressInterest='com.ibm.ws.zos.core.NativeService(&(native.service.name=ATR4EINT)(is.authorized=true))';\
+    NativeServiceRetrieveSideInformation='com.ibm.ws.zos.core.NativeService(&(native.service.name=ATR4RUSI)(is.authorized=true))';\
+    NativeServiceRetrieveNextInterest='com.ibm.ws.zos.core.NativeService(&(native.service.name=ATR4IRNI)(is.authorized=true))';\
+    NativeServiceSetEnvironment='com.ibm.ws.zos.core.NativeService(&(native.service.name=ATR4SENV)(is.authorized=true))';\
+    NativeServiceAgentPrepare='com.ibm.ws.zos.core.NativeService(&(native.service.name=ATR4APRP)(is.authorized=true))';\
+    NativeServiceAgentCommit='com.ibm.ws.zos.core.NativeService(&(native.service.name=ATR4ACMT)(is.authorized=true))';\
+    NativeServiceAgentDelegatedCommit='com.ibm.ws.zos.core.NativeService(&(native.service.name=ATR4ADCT)(is.authorized=true))';\
+    NativeServiceAgentBackout='com.ibm.ws.zos.core.NativeService(&(native.service.name=ATR4ABAK)(is.authorized=true))';\
+    NativeServiceAgentForget='com.ibm.ws.zos.core.NativeService(&(native.service.name=ATR4AFGT)(is.authorized=true))';\
+    NativeServicePostDeferredURExit='com.ibm.ws.zos.core.NativeService(&(native.service.name=ATR4PDUE)(is.authorized=true))';\
+    NativeServiceRespondToRetrievedInterest='com.ibm.ws.zos.core.NativeService(&(native.service.name=ATR4IRRI)(is.authorized=true))';\
+    NativeServiceSetPersistentInterestData='com.ibm.ws.zos.core.NativeService(&(native.service.name=ATR4SPID)(is.authorized=true))';\
+    NativeServiceSetSyncpointControls='com.ibm.ws.zos.core.NativeService(&(native.service.name=ATR4SSPC)(is.authorized=true))';\
+    NativeServiceSetSideInformation='com.ibm.ws.zos.core.NativeService(&(native.service.name=ATR4SUSI)(is.authorized=true))';\
+    NativeServiceSetRMMetadata='com.ibm.ws.zos.core.NativeService(&(native.service.name=ATR4SDTA)(is.authorized=true))';\
+    NativeServiceRetrieveRMMetadata='com.ibm.ws.zos.core.NativeService(&(native.service.name=ATR4RDTA)(is.authorized=true))';\
+    NativeServiceBeginContext='com.ibm.ws.zos.core.NativeService(&(native.service.name=CTX4BEGC)(is.authorized=true))';\
+    NativeServiceSwitchContext='com.ibm.ws.zos.core.NativeService(&(native.service.name=CTX4SWCH)(is.authorized=true))';\
+    NativeServiceEndContext='com.ibm.ws.zos.core.NativeService(&(native.service.name=CTX4ENDC)(is.authorized=true))';\
+    configuration-policy:=optional;\
+    version:=1.1; \
+    properties:="service.vendor=IBM", \
+  com.ibm.ws.zos.tx.internal.ContextManager; \
+    implementation:=com.ibm.ws.zos.tx.internal.ContextManagerImpl; \
+    rRSServices=com.ibm.ws.zos.tx.internal.rrs.RRSServices; \
+    provide:='com.ibm.ws.zos.tx.internal.ContextManager,com.ibm.wsspi.logging.IntrospectableService,com.ibm.ws.zos.core.thread.ThreadLifecycleEventListener'; \
+    version:=1.1; \
+    properties:="service.vendor=IBM"
+
+instrument.classesExcludes: com/ibm/ws/zos/tx/internal/resources/*.class
+
+-buildpath: \
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.ws.zos.core;version=latest,\
+	com.ibm.tx.jta;version=latest,\
+	com.ibm.tx.util;version=latest,\
+	com.ibm.ws.channelfw;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.zos.thread.term;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+	com.ibm.ws.tx.embeddable;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.ws.context;version=latest
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
+	com.ibm.ws.junit.extensions;version=latest,\
+	org.hamcrest:hamcrest-all;version=1.3,\
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1,\
+	org.jmock:jmock;strategy=exact;version=2.5.1,\
+	com.ibm.tx.ltc;version=latest,\
+	com.ibm.ws.transaction;version=latest,\
+	com.ibm.ws.componenttest:public.api;version=1.0.0,\
+	fattest.simplicity;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.kernel.boot;version=latest,\
+	com.ibm.ws.recoverylog;version=latest

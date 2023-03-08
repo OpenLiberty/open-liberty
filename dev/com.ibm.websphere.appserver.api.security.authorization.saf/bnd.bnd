@@ -1,0 +1,32 @@
+#*******************************************************************************
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion: 1.3
+
+Bundle-Name: WebSphere SAF Authorization Service API
+Bundle-Description: WebSphere SAF Authorization Service API, version ${bVersion}
+Bundle-SymbolicName: com.ibm.websphere.appserver.api.security.authorization.saf
+
+Import-Package: com.ibm.wsspi.security.auth.callback,com.ibm.wsspi.security.authorization.saf,com.ibm.wsspi.security.common.auth.module,com.ibm.wsspi.security.credentials.saf,com.ibm.wsspi.security.tai,com.ibm.wsspi.security.token
+
+Export-Package: com.ibm.wsspi.security.auth.callback,com.ibm.wsspi.security.authorization.saf,com.ibm.wsspi.security.common.auth.module,com.ibm.wsspi.security.credentials.saf,com.ibm.wsspi.security.tai,com.ibm.wsspi.security.token
+
+-includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.security.authorization.saf/pom.xml=com.ibm.websphere.appserver.api.security.authorization.saf.pom}
+
+publish.wlp.jar.suffix: dev/api/ibm
+
+-buildpath: \
+	com.ibm.ws.security.jaas.common,\
+	com.ibm.ws.security.authentication.builtin,\
+	com.ibm.ws.security.authorization.saf,\
+	com.ibm.ws.security.credentials.saf,\
+	com.ibm.ws.security.authentication.tai,\
+	com.ibm.ws.security.token

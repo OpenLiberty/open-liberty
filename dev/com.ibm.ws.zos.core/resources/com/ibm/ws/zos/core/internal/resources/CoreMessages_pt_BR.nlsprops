@@ -1,0 +1,179 @@
+###############################################################################
+# Copyright (c) 2011, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.core/resources/com/ibm/ws/zos/core/internal/resources/CoreMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Core
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0001-0050: Command processing (com.ibm.ws.zos.command.processing/resources/com.ibm.ws.zos.command.processing.internal.resources/CommandProcessingMessages.nlsprops)
+#0051-0100: Native code (com.ibm.zos.native/resources/com/ibm/ws/zos/native/native_messages.nlsprops)
+#0101-0150: core (here)
+# -------------------------------------------------------------------------------------------------
+
+#{0} is an integer reason code.
+ANGEL_NOT_AVAILABLE=CWWKB0101I: O processo angel n\u00e3o est\u00e1 dispon\u00edvel.  Nenhum servi\u00e7o autorizado ser\u00e1 carregado.  O c\u00f3digo de raz\u00e3o \u00e9 {0}.
+ANGEL_NOT_AVAILABLE.explanation=N\u00e3o existe um processo angel ou existe um processo angel, mas o servidor n\u00e3o p\u00f4de conectar-se a ele devido a um erro.
+ANGEL_NOT_AVAILABLE.useraction=Caso o servidor n\u00e3o requeira servi\u00e7os autorizados, nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria. Se o servidor requerer servi\u00e7os autorizados, inicie um processo angel nesse sistema para que esse servidor possa carregar seu c\u00f3digo autorizado e disponibilizar os servi\u00e7os autorizados.  O texto da mensagem inclui um c\u00f3digo de raz\u00e3o interno para ser usado pelo suporte do produto.  Se o problema persistir, consulte as informa\u00e7\u00f5es de determina\u00e7\u00e3o de problema na p\u00e1gina da web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL=CWWKB0102I: Este servidor n\u00e3o est\u00e1 autorizado a se conectar ao processo angel.  Nenhum servi\u00e7o autorizado ser\u00e1 carregado.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL.explanation=O ID do usu\u00e1rio que iniciou este servidor n\u00e3o possui acesso ao perfil BBG.ANGEL da classe do servidor SAF. O acesso de leitura a este perfil \u00e9 requerido para se conectar ao processo angel.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL.useraction=Se nenhum servi\u00e7o autorizado for requerido por este servidor, nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria. Se o servidor precisar de servi\u00e7os autorizados, forne\u00e7a o ID do usu\u00e1rio que inicia o acesso de leitura do servidor ao perfil BBG.ANGEL da classe de servidor SAF. 
+
+#{0} is the name of a service group (a text string between 1-8 characters)
+AUTHORIZED_SERVICE_AVAILABLE=CWWKB0103I: O grupo de servi\u00e7os autorizados {0} est\u00e1 dispon\u00edvel.
+AUTHORIZED_SERVICE_AVAILABLE.explanation=O grupo de servi\u00e7os autorizados nomeado na mensagem foi carregado com \u00eaxito.
+AUTHORIZED_SERVICE_AVAILABLE.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#{0} is the name of a service group (a text string between 1-8 characters)
+AUTHORIZED_SERVICE_NOT_AVAILABLE=CWWKB0104I: O grupo de servi\u00e7os autorizados {0} n\u00e3o est\u00e1 dispon\u00edvel.
+AUTHORIZED_SERVICE_NOT_AVAILABLE.explanation=O ID do usu\u00e1rio que iniciou este servidor n\u00e3o possui acesso ao perfil apropriado na classe do servidor SAF.  O nome do perfil \u00e9 BBG.BBGZSAFM.<name>, em que <name> \u00e9 o nome do grupo de servi\u00e7os nesta mensagem.
+AUTHORIZED_SERVICE_NOT_AVAILABLE.useraction=Se este grupo de servi\u00e7os autorizados n\u00e3o for requerido por este servidor, nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria. Se o servidor requer servi\u00e7os que s\u00e3o fornecidos por este grupo de servi\u00e7os autorizados, forne\u00e7a o ID do usu\u00e1rio que inicia o acesso de leitura do servidor aos perfis apropriados na classe do servidor SAF.
+
+#{0} is the name of the unauthorized function module
+#{1} is the return value from BPX4LOD
+#{2} is the return code from BPX4LOD
+#{3} is the reason code from BPX4LOD
+UNABLE_TO_LOAD_UNAUTHORIZED_BPX4LOD=CWWKB0105E: Imposs\u00edvel carregar a biblioteca de c\u00f3digos nativos do z/OS {0}.  BPX4LOD com falha, rv = {1} rc = {2} rsn = {3}.
+UNABLE_TO_LOAD_UNAUTHORIZED_BPX4LOD.explanation=Uma parte das bibliotecas nativas do z/OS para o servidor de aplicativos n\u00e3o p\u00f4de ser carregada.  O Unix System Service BPX4LOD falhou ao tentar carregar a biblioteca indicada na mensagem.  O valor de retorno, o c\u00f3digo de retorno e o c\u00f3digo de raz\u00e3o retornados por BPX4LOD tamb\u00e9m s\u00e3o indicados na mensagem.  Os c\u00f3digos de retorno e raz\u00e3o s\u00e3o impressos como n\u00fameros inteiros hexadecimais.
+UNABLE_TO_LOAD_UNAUTHORIZED_BPX4LOD.useraction=Confirme se todas as etapas de instala\u00e7\u00e3o foram conclu\u00eddas ao instalar o servidor de aplicativos nesse sistema.  O valor de retorno, o c\u00f3digo de retorno e o c\u00f3digo de raz\u00e3o podem ser consultados em "Mensagens e C\u00f3digos de Servi\u00e7os do Sistema z/OS UNIX", n\u00famero de publica\u00e7\u00e3o SA22-7807-xx.  Se o problema persistir, entre em contato com o seu pr\u00f3ximo n\u00edvel de suporte.
+
+#{0} is the name of the library
+LIBRARY_DOES_NOT_EXIST=CWWKB0106E: A biblioteca nativa do z/OS {0} n\u00e3o existe no sistema de arquivos.
+LIBRARY_DOES_NOT_EXIST.explanation=Uma biblioteca nativa de c\u00f3digos do z/OS n\u00e3o foi localizada no sistema de arquivos.  O nome da biblioteca \u00e9 indicado na mensagem.
+LIBRARY_DOES_NOT_EXIST.useraction=Confirme se todas as etapas de instala\u00e7\u00e3o foram conclu\u00eddas ao instalar o servidor de aplicativos nesse sistema.  Se o problema persistir, entre em contato com o seu pr\u00f3ximo n\u00edvel de suporte.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+PRODUCT_REGISTRATION_FAILED_BAD_PARM=CWWKB0107E: O {0} produto {1} vers\u00e3o {2} falhou ao registrar com z/OS devido a problemas ao converter sequ\u00eancias necess\u00e1rias para EBCDIC.
+PRODUCT_REGISTRATION_FAILED_BAD_PARM.explanation=Uma das sequ\u00eancias de identifica\u00e7\u00e3o do produto n\u00e3o p\u00f4de ser convertida em EBCDIC para transmitir ao servi\u00e7o IFAUSAGE.
+PRODUCT_REGISTRATION_FAILED_BAD_PARM.useraction=Entre em contato com o produto para obter a(s) sequ\u00eancia(s) de identifica\u00e7\u00e3o corrigida(s).
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+PRODUCT_REGISTRATION_SUCCESSFUL=CWWKB0108I: {0} produto {1} vers\u00e3o {2} registrado com \u00eaxito  com z/OS.
+PRODUCT_REGISTRATION_SUCCESSFUL.explanation=O produto nomeado foi registrado com z/OS usando o servi\u00e7o IFAUSAGE.
+PRODUCT_REGISTRATION_SUCCESSFUL.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+#{3} is the return code
+PRODUCT_REGISTRATION_UNSUCCESSFUL=CWWKB0109E: O {0} produto {1} vers\u00e3o {2} falhou ao registrar com z/OS, c\u00f3digo de retorno = {3}.
+PRODUCT_REGISTRATION_UNSUCCESSFUL.explanation=O produto nomeado falhou ao registrar com z/OS usando o servi\u00e7o IFAUSAGE.  Os c\u00f3digos de retorno superiores a zero s\u00e3o provenientes do pr\u00f3prio servi\u00e7o IFAUSAGE.  Os c\u00f3digos de retorno negativos indicam um problema interno ao processar a solicita\u00e7\u00e3o de registro.   
+PRODUCT_REGISTRATION_UNSUCCESSFUL.useraction=Um c\u00f3digo de retorno de oito (8) poderia indicar que o servidor est\u00e1 tentando registrar excessivos produtos ao mesmo tempo.  
+
+#No fill-ins
+SERVER_SAFM_NOT_APF_AUTHORIZED=CWWKB0110I: O m\u00f3dulo bbgzsafm n\u00e3o \u00e9 autorizado por APF. Nenhum servi\u00e7o autorizado estar\u00e1 dispon\u00edvel.
+SERVER_SAFM_NOT_APF_AUTHORIZED.explanation=O m\u00f3dulo bbgzsafm n\u00e3o \u00e9 autorizado por APF. O bbgzsafm deve ser autorizado por APF para permitir o acesso aos servi\u00e7os autorizados.
+SERVER_SAFM_NOT_APF_AUTHORIZED.useraction=Se nenhum servi\u00e7o autorizado for requerido por este servidor, nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria. Se o servidor exigir servi\u00e7os autorizados, o APF autorizar\u00e1 o m\u00f3dulo bbgzsafm. Consulte o comando extattr na publica\u00e7\u00e3o n\u00famero SA22-7802-xx "Refer\u00eancia de Comando do UNIX System Services z/OS".
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+PRODUCT_DEREGISTRATION_SUCCESSFUL=CWWKB0111I: {0} produto {1} vers\u00e3o {2} teve seu registro removido do z/OS com \u00eaxito.
+PRODUCT_DEREGISTRATION_SUCCESSFUL.explanation=O produto nomeado teve seu registro removido do z/OS usando o servi\u00e7o IFAUSAGE.
+PRODUCT_DEREGISTRATION_SUCCESSFUL.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#{0} successful product registration count
+PRODUCT_REGISTRATION_SUMMARY_AUTHORIZED=CWWKB0112I: O n\u00famero de produtos registrados com \u00eaxito com z/OS \u00e9 {0}. O servidor tentar\u00e1 remover o registro desses produtos do z/OS durante o encerramento do servidor.
+PRODUCT_REGISTRATION_SUMMARY_AUTHORIZED.explanation=O servidor tentar\u00e1 remover explicitamente o registro de todos os produtos registrados com \u00eaxito do z/OS durante o encerramento do servidor. O servi\u00e7o do z/OS usado para remover o registro dos produtos \u00e9 IFAUSAGE.
+PRODUCT_REGISTRATION_SUMMARY_AUTHORIZED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#{0} successful product registration count
+PRODUCT_REGISTRATION_SUMMARY_NOT_AUTHORIZED=CWWKB0113I: O n\u00famero de produtos registrados com \u00eaxito com z/OS \u00e9 {0}. Esses produtos remover\u00e3o o registro do z/OS quando o espa\u00e7o de endere\u00e7o terminar.
+PRODUCT_REGISTRATION_SUMMARY_NOT_AUTHORIZED.explanation=Todos os produtos registrados com \u00eaxito ter\u00e3o seu registro removido do z/OS quando o espa\u00e7o de endere\u00e7o terminar. Se a remo\u00e7\u00e3o de registro expl\u00edcita do produto durante o encerramento do servidor for necess\u00e1ria, crie e ative o perfil do servidor para acessar os servi\u00e7os autorizados sob o grupo PRODMGR e inicie o processo angel. O processo angel deve ser iniciado antes de o servidor ser iniciado.
+PRODUCT_REGISTRATION_SUMMARY_NOT_AUTHORIZED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#{0} is the product owner
+#{1} is the product name
+#{2} is the product version
+#{3} is the return code
+PRODUCT_DEREGISTRATION_UNSUCCESSFUL=CWWKB0114E: {0} produto {1} vers\u00e3o {2} falhou ao remover o registro do z/OS. C\u00f3digo de retorno = {3}.
+PRODUCT_DEREGISTRATION_UNSUCCESSFUL.explanation=O produto nomeado falhou ao remover o registro do z/OS usando o servi\u00e7o IFAUSAGE.  Os c\u00f3digos de retorno superiores a zero s\u00e3o provenientes do pr\u00f3prio servi\u00e7o IFAUSAGE.  C\u00f3digos de retorno negativos indicam um problema interno durante o processamento da solicita\u00e7\u00e3o de remo\u00e7\u00e3o de registro.
+PRODUCT_DEREGISTRATION_UNSUCCESSFUL.useraction=Um c\u00f3digo de retorno de oito (8) indica que o produto nunca foi registrado antes.
+
+SERVER_SAFM_NOT_SAF_AUTHORIZED=CWWKB0115I: Este servidor n\u00e3o est\u00e1 autorizado a carregar o m\u00f3dulo bbgzsafm. Nenhum servi\u00e7o autorizado ser\u00e1 carregado.
+SERVER_SAFM_NOT_SAF_AUTHORIZED.explanation=O ID do usu\u00e1rio que iniciou este servidor n\u00e3o tem acesso ao perfil BBG.AUTHMOD.BBGZSAFM da classe do servidor SAF. \u00c9 necess\u00e1rio ter acesso de leitura a este perfil para se conectar ao processo angel e carregar os servi\u00e7os autorizados.
+SERVER_SAFM_NOT_SAF_AUTHORIZED.useraction=Se nenhum servi\u00e7o autorizado for requerido por este servidor, nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria. Caso o servidor requeira servi\u00e7os autorizados, forne\u00e7a ao ID do usu\u00e1rio que inicia o servidor acesso de leitura ao perfil BBG.AUTHMOD.BBGZSAFM da classe do servidor SAF. 
+
+NOT_REGISTERED_WITH_REQUIRED_ANGEL=CWWKB0116I: Este servidor n\u00e3o est\u00e1 registrado com um processo angel, embora esteja configurado para requerer o registro com um processo angel. Este servidor est\u00e1 tentando parar.
+NOT_REGISTERED_WITH_REQUIRED_ANGEL.explanation=O servidor est\u00e1 configurado para interromper a inicializa\u00e7\u00e3o quando n\u00e3o estiver registrado com um processo angel. O servidor n\u00e3o est\u00e1 registrado com um processo angel e est\u00e1 parando.
+NOT_REGISTERED_WITH_REQUIRED_ANGEL.useraction=Certifique-se de que o processo angel seja iniciado e de que o servidor possa se conectar e registrar com ele. Como alternativa, mude a configura\u00e7\u00e3o para permitir que o servidor inicie sem se registrar com um processo angel.
+
+#{0} is the name of the angel process.  1-54 characters.
+#{1} is an integer reason code.
+ANGEL_NOT_AVAILABLE_NAME=CWWKB0117W: O processo angel {0} n\u00e3o est\u00e1 dispon\u00edvel. Nenhum servi\u00e7o autorizado ser\u00e1 carregado. O c\u00f3digo de raz\u00e3o \u00e9 {1}.
+ANGEL_NOT_AVAILABLE_NAME.explanation=Nenhum processo angel com o nome exibido na mensagem existe ou um existe, mas o servidor n\u00e3o p\u00f4de se conectar a ele devido a um erro.
+ANGEL_NOT_AVAILABLE_NAME.useraction=Se o servidor requerer servi\u00e7os autorizados, inicie um processo angel neste sistema para que este servidor possa carregar seu c\u00f3digo autorizado e torne os servi\u00e7os autorizados dispon\u00edveis. O texto da mensagem inclui um c\u00f3digo de raz\u00e3o interno para ser usado pelo suporte do produto. Se o problema persistir, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na seguinte p\u00e1gina da web de suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support. Se nenhum servi\u00e7o autorizado for requerido por este servidor, nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria. Para evitar que essa mensagem apare\u00e7a, remova a propriedade com.ibm.ws.zos.core.angelName do arquivo bootstrap.properties.
+
+#{0} is the name of the angel process. 1-54 characters.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL_NAME=CWWKB0118W: Este servidor n\u00e3o est\u00e1 autorizado a se conectar ao processo angel {0}. Nenhum servi\u00e7o autorizado ser\u00e1 carregado.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL_NAME.explanation=O ID do usu\u00e1rio que iniciou este servidor n\u00e3o possui acesso ao perfil do System Authorization Facility (SAF) para o processo angel nomeado na mensagem. O acesso de leitura a este perfil \u00e9 necess\u00e1rio para se conectar ao processo angel.
+SERVER_NOT_AUTHORIZED_TO_CONNECT_TO_ANGEL_NAME.useraction=Se o servidor requerer servi\u00e7os autorizados, consulte a documenta\u00e7\u00e3o sobre como configurar um angel nomeado. Se nenhum servi\u00e7o autorizado for requerido por este servidor, nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria. Para evitar que essa mensagem apare\u00e7a, remova a propriedade com.ibm.ws.zos.core.angelName do arquivo bootstrap.properties.
+
+ANGEL_NAME_TOO_LONG=CWWKB0119E: O nome do angel especificado em bootstrap.properties \u00e9 maior que 54 caracteres.
+ANGEL_NAME_TOO_LONG.explanation=A propriedade com.ibm.ws.zos.core.angelName especifica o nome do processo angel ao qual este servidor deve se conectar. A propriedade \u00e9 especificada em bootstrap.properties e deve ter 54 caracteres ou menos.  
+ANGEL_NAME_TOO_LONG.useraction=Este servidor n\u00e3o se conectar\u00e1 a um processo angel. Para conectar-se a um processo angel, especifique um valor de 54 caracteres ou menos para a propriedade com.ibm.ws.zos.core.angelName e reinicie o servidor.
+
+#{0} is an unsupported character
+#{1} is a number between 1 and 54
+ANGEL_NAME_UNSUPPORTED_CHARACTER=CWWKB0120E: O nome do angel especificado em bootstrap.properties cont\u00e9m o caractere n\u00e3o suportado {0} na posi\u00e7\u00e3o {1}.
+ANGEL_NAME_UNSUPPORTED_CHARACTER.explanation=A propriedade com.ibm.ws.zos.core.angelName especifica o nome do processo angel ao qual este servidor deve se conectar. A propriedade \u00e9 especificada em boostrap.properties e pode conter somente caracteres do conjunto de caracteres a seguir: A-Z 0-9 ! # $ + - / : < > = ? @ [ ] ^ _ ` { } | ~
+ANGEL_NAME_UNSUPPORTED_CHARACTER.useraction=Este servidor n\u00e3o se conectar\u00e1 a um processo angel. Para conectar-se a um processo angel, especifique um valor usando o conjunto de caracteres suportado para a propriedade com.ibm.ws.zos.core.angelName e reinicie o servidor.
+
+#{0} is the server's UMASK value.
+SERVER_CURRENT_UMASK=CWWKB0121I: O valor UMASK do processo do servidor \u00e9 configurado como {0}.
+SERVER_CURRENT_UMASK.explanation=O valor UMASK do processo do servidor. Por padr\u00e3o, o valor UMASK \u00e9 herdado do processo que iniciou o servidor Liberty, mas \u00e9 modificado ainda mais para desaprovar qualquer acesso de leitura, grava\u00e7\u00e3o ou execu\u00e7\u00e3o para OUTROS usu\u00e1rios. Configurar a vari\u00e1vel de ambiente WLP_SKIP_UMASK para true impede que o servidor modifique o UMASK desta forma. Quando um servidor Liberty \u00e9 iniciado usando um procedimento z/OS, \u00e9 poss\u00edvel customizar o UMASK usado pelo processo do servidor definindo as vari\u00e1veis de ambiente WLP_SKIP_UMASK e _BPX_BATCH_UMASK. WLP_SKIP_UMASK pode ser especificado no arquivo server.env ou, se o servidor for iniciado usando um procedimento z/OS, ele poder\u00e1 ser especificado usando a entrada STDENDV DD. Em contrapartida, _BPX_BATCH_UMASK n\u00e3o pode ser especificado no arquivo server.env. Ele deve ser especificado somente usando a entrada STDENV DD no procedimento do z/OS.
+SERVER_CURRENT_UMASK.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#{0} is the name of the angel process. 1-54 characters.
+SERVER_CONNECTED_TO_ANGEL=CWWKB0122I: Este servidor est\u00e1 conectado ao processo angel {0}.
+SERVER_CONNECTED_TO_ANGEL.explanation=Este servidor est\u00e1 conectado ao processo angel configurado.
+SERVER_CONNECTED_TO_ANGEL.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+ANGEL_WAIT_TIME_OUT_OF_RANGE_OR_INVLID=CWWKB0123W: O tempo de espera de inicializa\u00e7\u00e3o do angel especificado em bootstrap.properties est\u00e1 fora do intervalo de valores permitidos ou \u00e9 inv\u00e1lido. O valor padr\u00e3o de 0 (s) ser\u00e1 usado.
+ANGEL_WAIT_TIME_OUT_OF_RANGE_OR_INVLID.explanation=O servidor tem a configura\u00e7\u00e3o incorreta para o tempo de espera de inicializa\u00e7\u00e3o do angel. O intervalo permitido \u00e9 de 0 a 300 segundos.
+ANGEL_WAIT_TIME_OUT_OF_RANGE_OR_INVLID.useraction=Este servidor utilizar\u00e1 o tempo de espera padr\u00e3o 0 (s) para se conectar ao Angel necess\u00e1rio. Para configurar o tempo de espera de inicializa\u00e7\u00e3o v\u00e1lido, especifique um valor de n\u00famero inteiro entre 0 e 300 na propriedade com.ibm.ws.zos.core.angelWaitTimeSeconds e reinicie o servidor.
+
+#{0} is the configured time that liberty server will wait the required angel to start, {1} is the name of the required angel process.
+REQUIRED_ANGEL_WAITTIME_NAME_PROMPT=CWWKB0124I: O angel {1} \u00e9 necess\u00e1rio, o servidor foi configurado para esperar at\u00e9 {0} segundos para se conectar ao Angel de destino.
+REQUIRED_ANGEL_WAITTIME_NAME_PROMPT.explanation=Este servidor requer o Angel para ser iniciado e, al\u00e9m disso, especificou um tempo de espera de inicializa\u00e7\u00e3o m\u00e1ximo at\u00e9 o encerramento, caso haja falha ao se registrar com o Angel necess\u00e1rio.
+REQUIRED_ANGEL_WAITTIME_NAME_PROMPT.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+
+REGION_REQUESTED=CWWKB0125I: Este servidor solicitou um tamanho de REGION {0}. O limite de armazenamento abaixo da linha \u00e9 {1} e o limite de armazenamento acima da linha \u00e9 {2}.
+REGION_REQUESTED.explanation=Esta mensagem exibe v\u00e1rios valores do bloco de controle de \u00c1rea de Dados Local (LDA), que pode ser \u00fatil para depurar uma condi\u00e7\u00e3o de falta de armazenamento. O tamanho da regi\u00e3o \u00e9 a regi\u00e3o de armazenamento que est\u00e1 alocada para o espa\u00e7o de endere\u00e7o, indicado em kilobytes. Os limites abaixo e acima dos limites de linha s\u00e3o fornecidos em megabytes. "LINE" \u00e9 o limite entre endere\u00e7os de armazenamento de 24 bits e 31 bits. Os limites indicam os limites de armazenamento reais para endere\u00e7os que est\u00e3o abaixo da linha (endere\u00e7os de 24 bits) e os endere\u00e7os que est\u00e3o acima da linha (endere\u00e7os de 31 bits).
+REGION_REQUESTED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+MEMORY_LIMIT_INFORMATION=CWWKB0126I: MEMLIMIT={0}. FONTE DE CONFIGURA\u00c7\u00c3O DE MEMLIMIT = {1}.
+MEMORY_LIMIT_INFORMATION.explanation=Exibe o MEMLIMIT configurado para o espa\u00e7o de endere\u00e7o e a origem de configura\u00e7\u00e3o MEMLIMIT. O MEMLIMIT CONFIGURATION SOURCE \u00e9 um dos valores a seguir. "SMF" \u00e9 configurado por SMF em SMFPRMxx ou configurado como 0 por padr\u00e3o. "JCL" \u00e9 configurado por JCL. "REG0" Tamanho ilimitado com base na especifica\u00e7\u00e3o REGION=0. "USI" \u00e9 configurado pelo campo IEFSMFIE e configurado usando a sa\u00edda IEFUSI. "OMVS" configurado pelo segmento OMVS do UNIX. "SETR" definido pelo setrlimit do UNIX. "SPW" configurado pela spawn do UNIX. "SETO" configurado pelo comando SETOMVS do UNIX. "AUTH" configurado pela modifica\u00e7\u00e3o de aplicativo autorizado. "URG" configurado em IEFSMFIE pela sa\u00edda IEFUSI. "UNKNOWN" definido por fonte desconhecida. "BAD" Erro ao configurar MEMLIMIT.
+MEMORY_LIMIT_INFORMATION.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+OLD_ANGEL_VERSION=CWWKB0127W: A vers\u00e3o angel atual \u00e9 anterior \u00e0 vers\u00e3o que o servidor espera. Atualize a vers\u00e3o angel para a vers\u00e3o mais recente dispon\u00edvel.
+OLD_ANGEL_VERSION.explanation=O servidor tem um valor esperado para a vers\u00e3o do processo angel. A vers\u00e3o atual \u00e9 anterior \u00e0 vers\u00e3o esperada. Se uma inst\u00e2ncia do servidor Liberty se conectar a um angel em execu\u00e7\u00e3o em um n\u00edvel de servi\u00e7o anterior, alguns recursos do servidor poder\u00e3o n\u00e3o estar dispon\u00edveis.
+OLD_ANGEL_VERSION.useraction=Para garantir que todos os recursos do servidor estejam dispon\u00edveis para o processo angel, atualize o angel para a vers\u00e3o mais recente.

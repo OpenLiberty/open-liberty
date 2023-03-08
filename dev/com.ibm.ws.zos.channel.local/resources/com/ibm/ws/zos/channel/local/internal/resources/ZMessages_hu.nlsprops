@@ -1,0 +1,66 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.zos.channel.local/resources/com.ibm.ws.zos.channel.local.internal.resources/ZMessages.nlsprops
+#COMPONENTPREFIX CWWKB
+#COMPONENTNAMEFOR CWWKB zOS Local Channel Processing
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR 
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0301-0350: Local Channel Services
+# -------------------------------------------------------------------------------------------------
+
+#{0}
+#{1}
+NATIVE_SERVICE_LCOM_FAILURE=CWWKB0301E: A be\u00e9p\u00edtett rutin ({0}) hib\u00e1t jelz\u0151 okk\u00f3dot ({1}) kapott a Helyi kommunik\u00e1ci\u00f3t\u00f3l.
+NATIVE_SERVICE_LCOM_FAILURE.explanation=A kiszolg\u00e1l\u00f3 be\u00e9p\u00edtett met\u00f3dust futtatott, amely a hivatkozott Helyi kommunik\u00e1ci\u00f3t h\u00edvta.  A hiba ok\u00e1t a Helyi kommunik\u00e1ci\u00f3t\u00f3l kapott okk\u00f3d jelzi.
+NATIVE_SERVICE_LCOM_FAILURE.useraction=A hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1s\u00e1hoz haszn\u00e1lja a Helyi kommunik\u00e1ci\u00f3 okk\u00f3dot.
+
+#{0}
+#{1}
+#{2}
+#{3}
+#{4}
+NATIVE_SERVICE_FAILED_GENERIC=CWWKB0302E: A be\u00e9p\u00edtett rutin meghib\u00e1sodott; WebSphere Application Server szolg\u00e1ltat\u00e1s ({0}) RC({1}), Helyi kommunik\u00e1ci\u00f3s szolg\u00e1ltat\u00e1s ({2}) RC({3}) RSN({4}).
+NATIVE_SERVICE_FAILED_GENERIC.explanation=A kiszolg\u00e1l\u00f3 be\u00e9p\u00edtett met\u00f3dust futtatott, amely meghib\u00e1sodott.  A c\u00e9l WebSphere Application Server szolg\u00e1ltat\u00e1s \u00e9s a visszat\u00e9r\u00e9si k\u00f3d rendelkez\u00e9sre \u00e1llnak.  A c\u00e9l Helyi kommunik\u00e1ci\u00f3 szolg\u00e1ltat\u00e1s, valamint a hozz\u00e1 tartoz\u00f3 visszat\u00e9r\u00e9si \u00e9s okk\u00f3dok szint\u00e9n rendelkez\u00e9sre \u00e1llnak.
+NATIVE_SERVICE_FAILED_GENERIC.useraction=A hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1s\u00e1hoz haszn\u00e1lja a visszat\u00e9r\u00e9si k\u00f3dot \u00e9s az okk\u00f3dot.
+
+#{0}
+#{1}
+NATIVE_SERVICE_PC=CWWKB0303E: A be\u00e9p\u00edtett rutin ({0}) egy v\u00e1ratlan visszat\u00e9r\u00e9si k\u00f3dot ({1}) kapott vissza felhatalmazott PC szolg\u00e1ltat\u00e1s\u00e1t\u00f3l.
+NATIVE_SERVICE_PC.explanation=A kiszolg\u00e1l\u00f3 be\u00e9p\u00edtett met\u00f3dust futtat\u00e1s\u00e1val hajtott v\u00e9gre felhatalmazott szolg\u00e1ltat\u00e1sh\u00edv\u00e1st.  A felhatalmazott Programh\u00edv\u00e1s (PC) szolg\u00e1ltat\u00e1st\u00f3l nem-nulla visszat\u00e9r\u00e9si k\u00f3dot kapott vissza.
+NATIVE_SERVICE_PC.useraction=Vizsg\u00e1lja meg a kiszolg\u00e1l\u00f3napl\u00f3kat \u00e9s fut\u00e1si k\u00f6rnyezetet a nat\u00edv k\u00f3dhiba ok\u00e1nak kider\u00edt\u00e9s\u00e9hez.
+
+# Do not use 304-305 - deleted prior to WOLA Beta driver.
+
+#{0} 
+INVALID_NATIVE_REQUESTTYPE=CWWKB0306W: A Helyi kommunik\u00e1ci\u00f3 ismeretlen be\u00e9p\u00edtett k\u00e9r\u00e9st\u00edpust ({0}) kapott.
+INVALID_NATIVE_REQUESTTYPE.explanation=A helyi kommunik\u00e1ci\u00f3s k\u00e9r\u00e9s ismeretlen k\u00e9r\u00e9st\u00edpussal \u00e9rkezett.  A k\u00e9r\u00e9st a program figyelmen k\u00edv\u00fcl hagyja.
+INVALID_NATIVE_REQUESTTYPE.useraction=Enged\u00e9lyezze a be\u00e9p\u00edtett nyomk\u00f6vet\u00e9s az ismeretlen k\u00e9r\u00e9st\u00edpus ok\u00e1nak meg\u00e1llap\u00edt\u00e1s\u00e1hoz.
+
+#{0} is an integer
+#{1} is an integer
+ANGEL_VERSION_INCOMPATIBLE=CWWKB0307E: Az angel folyamat ezen a rendszeren nem kompatibilis a helyi kommunik\u00e1ci\u00f3s szolg\u00e1ltat\u00e1ssal. Az aktu\u00e1lis angel v\u00e1ltozat: {0}, azonban a k\u00f6telez\u0151 angel v\u00e1ltozat: {1}.
+ANGEL_VERSION_INCOMPATIBLE.explanation=A helyi kommunik\u00e1ci\u00f3s szolg\u00e1ltat\u00e1s az ezen kiszolg\u00e1l\u00f3p\u00e9ld\u00e1nnyal azonos rendszeren fut\u00f3 \u00fcgyfelekkel val\u00f3 kommunik\u00e1ci\u00f3 c\u00e9ljaira szolg\u00e1l.  Az angel folyamatnak a helyi kommunik\u00e1ci\u00f3s szolg\u00e1ltat\u00e1s minim\u00e1lis sz\u00fcks\u00e9ges szintj\u00e9n kell futnia.  A minim\u00e1lis sz\u00fcks\u00e9ges szint megjelenik az \u00fczenetben.
+ANGEL_VERSION_INCOMPATIBLE.useraction=Vizsg\u00e1lja meg az angel folyamat elind\u00edt\u00e1s\u00e1hoz haszn\u00e1lt JCL k\u00f3dot, hogy l\u00e1ssa, az melyik k\u00f6nyvt\u00e1rb\u00f3l ker\u00fclt bet\u00f6lt\u00e9sre.  Az adott k\u00f6nyvt\u00e1rban tal\u00e1lhat\u00f3 term\u00e9kv\u00e1ltozatnak az ezen kiszolg\u00e1l\u00f3p\u00e9ld\u00e1ny PTF szintj\u00e9vel megegyez\u0151 vagy ann\u00e1l magasabb PTF szinten kell lennie.
