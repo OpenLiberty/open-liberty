@@ -37,7 +37,7 @@ public class JakartaSingletonResourcesBean {
         try {
             Context namingCtx = new InitialContext();
             SessionContext sctx = (SessionContext) namingCtx.lookup("java:comp/env/SessionContext");
-            fail("lookup of javax Resrouce was successful : " + sctx);
+            fail("lookup of javax Resource was successful : " + sctx);
         } catch (NamingException nex) {
             System.out.println("Expected NamingException occurred : " + nex);
         }

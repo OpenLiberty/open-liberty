@@ -796,21 +796,21 @@ public abstract class AnnotationsImpl implements Annotations {
         foundClasses.addAll(targets.getClassesWithFieldAnnotation(JAVAX_RESOURCE, scanPolicies));
         foundClasses.addAll(targets.getClassesWithMethodAnnotation(JAVAX_RESOURCE, scanPolicies));
         if (!foundClasses.isEmpty()) {
-            Tr.audit(tc, "wrong.annotation.package.CWWKM0483I", JAVAX_RESOURCE, modName, JAKARTA_RESOURCE, String.join(", ", foundClasses));
+            Tr.audit(tc, "wrong.annotation.package.CWWKM0483I", JAVAX_RESOURCE, modName, appName, JAKARTA_RESOURCE, String.join(", ", foundClasses));
             foundClasses.clear();
         }
 
         // Look for @PostConstruct at method level
         foundClasses.addAll(targets.getClassesWithMethodAnnotation(JAVAX_POST_CONSTRUCT, scanPolicies));
         if (!foundClasses.isEmpty()) {
-            Tr.audit(tc, "wrong.annotation.package.CWWKM0483I", JAVAX_POST_CONSTRUCT, modName, JAKARTA_POST_CONSTRUCT, String.join(", ", foundClasses));
+            Tr.audit(tc, "wrong.annotation.package.CWWKM0483I", JAVAX_POST_CONSTRUCT, modName, appName, JAKARTA_POST_CONSTRUCT, String.join(", ", foundClasses));
             foundClasses.clear();
         }
 
         // Look for @PreDestroy at method level
         foundClasses.addAll(targets.getClassesWithMethodAnnotation(JAVAX_PRE_DESTROY, scanPolicies));
         if (!foundClasses.isEmpty()) {
-            Tr.audit(tc, "wrong.annotation.package.CWWKM0483I", JAVAX_PRE_DESTROY, modName, JAKARTA_PRE_DESTROY, String.join(", ", foundClasses));
+            Tr.audit(tc, "wrong.annotation.package.CWWKM0483I", JAVAX_PRE_DESTROY, modName, appName, JAKARTA_PRE_DESTROY, String.join(", ", foundClasses));
             foundClasses.clear();
         }
     }

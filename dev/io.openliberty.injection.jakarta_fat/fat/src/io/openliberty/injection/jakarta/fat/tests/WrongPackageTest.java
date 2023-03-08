@@ -36,11 +36,13 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class WrongPackageTest extends FATServletClient {
     public static final String WRONG_PACKAGE_PATH = "WrongPackageWeb/WrongPackageServlet";
+    public static final String WRONG_PACKAGE_WEBAPP_PATH = "WrongPackageWebApp/WrongPackageWebAppServlet";
 
-    private static final String CWWKM0483I_EJB_MOD_RESOURCE = "CWWKM0483I:.*javax.annotation.Resource.*WrongPackageEJB.*jakarta.annotation.Resource.*io.openliberty.injection.jakarta.ejb.JakartaSingletonBean, io.openliberty.injection.jakarta.ejb.JakartaSingletonResourcesBean, io.openliberty.injection.jakarta.ejb.JakartaStatelessBean";
-    private static final String CWWKM0483I_EJB_MOD_PREDESTROY = "CWWKM0483I:.*javax.annotation.PreDestroy.*WrongPackageEJB.*jakarta.annotation.PreDestroy.*io.openliberty.injection.jakarta.ejb.JakartaStatefulPreDestroyBean";
-    private static final String CWWKM0483I_WEB_MOD_RESOURCE = "CWWKM0483I:.*javax.annotation.Resource.*WrongPackageWeb.*jakarta.annotation.Resource.*io.openliberty.injection.jakarta.web.JakartaSingletonWarBean, io.openliberty.injection.jakarta.web.JakartaStatelessWarBean, io.openliberty.injection.jakarta.web.WrongPackageServlet";
-    private static final String CWWKM0483I_WEB_MOD_POSTCONSTRUCT = "CWWKM0483I:.*javax.annotation.PostConstruct.*WrongPackageWeb.*jakarta.annotation.PostConstruct.*io.openliberty.injection.jakarta.web.JakartaStatelessWarPostConstructBean";
+    private static final String CWWKM0483I_EJB_MOD_RESOURCE = "CWWKM0483I:.*javax.annotation.Resource.*WrongPackageEJB.*WrongPackageApp.*jakarta.annotation.Resource.*io.openliberty.injection.jakarta.ejb.JakartaSingletonBean, io.openliberty.injection.jakarta.ejb.JakartaSingletonResourcesBean, io.openliberty.injection.jakarta.ejb.JakartaStatelessBean";
+    private static final String CWWKM0483I_EJB_MOD_PREDESTROY = "CWWKM0483I:.*javax.annotation.PreDestroy.*WrongPackageEJB.*WrongPackageApp.*jakarta.annotation.PreDestroy.*io.openliberty.injection.jakarta.ejb.JakartaStatefulPreDestroyBean";
+    private static final String CWWKM0483I_WEB_MOD_RESOURCE = "CWWKM0483I:.*javax.annotation.Resource.*WrongPackageWeb.*WrongPackageApp.*jakarta.annotation.Resource.*io.openliberty.injection.jakarta.web.JakartaSingletonWarBean, io.openliberty.injection.jakarta.web.JakartaStatelessWarBean, io.openliberty.injection.jakarta.web.WrongPackageServlet";
+    private static final String CWWKM0483I_WEB_MOD_POSTCONSTRUCT = "CWWKM0483I:.*javax.annotation.PostConstruct.*WrongPackageWeb.*WrongPackageApp.*jakarta.annotation.PostConstruct.*io.openliberty.injection.jakarta.web.JakartaStatelessWarPostConstructBean";
+    private static final String CWWKM0483I_WEB_APP_RESOURCE = "CWWKM0483I:.*javax.annotation.Resource.*WrongPackageWebApp.*WrongPackageWebApp.*jakarta.annotation.Resource.*io.openliberty.injection.jakarta.webapp.WrongPackageWebAppServlet";
 
     @Server("InjectionJakartaEE9Server")
     public static LibertyServer ee9server;
@@ -58,6 +60,11 @@ public class WrongPackageTest extends FATServletClient {
 
         ShrinkHelper.exportDropinAppToServer(ee9server, WrongPackageApp, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportDropinAppToServer(ee10server, WrongPackageApp, DeployOptions.SERVER_ONLY);
+
+        WebArchive WrongPackageWebApp = ShrinkHelper.buildDefaultApp("WrongPackageWebApp.war", "io.openliberty.injection.jakarta.webapp.");
+
+        ShrinkHelper.exportDropinAppToServer(ee9server, WrongPackageWebApp, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(ee10server, WrongPackageWebApp, DeployOptions.SERVER_ONLY);
     }
 
     @AfterClass
@@ -89,7 +96,11 @@ public class WrongPackageTest extends FATServletClient {
                          ee9server.findStringsInLogsUsingMark(CWWKM0483I_WEB_MOD_RESOURCE, ee9server.getDefaultLogFile()).size());
             assertEquals("Expected CWWKM0483I message not found for @PostConstruct in WEB module : " + CWWKM0483I_WEB_MOD_POSTCONSTRUCT, 1,
                          ee9server.findStringsInLogsUsingMark(CWWKM0483I_WEB_MOD_POSTCONSTRUCT, ee9server.getDefaultLogFile()).size());
+            ee9server.resetLogMarks(); // application start order undefined
+            assertEquals("Expected CWWKM0483I message not found for @Resource in WEB application : " + CWWKM0483I_WEB_APP_RESOURCE, 1,
+                         ee9server.findStringsInLogsUsingMark(CWWKM0483I_WEB_APP_RESOURCE, ee9server.getDefaultLogFile()).size());
             FATServletClient.runTest(ee9server, WRONG_PACKAGE_PATH, "testWrongPackageCommonAnnotations");
+            FATServletClient.runTest(ee9server, WRONG_PACKAGE_WEBAPP_PATH, "testWrongPackageCommonAnnotations");
         } finally {
             if (ee9server != null && ee9server.isStarted()) {
                 ee9server.stopServer();
@@ -117,7 +128,11 @@ public class WrongPackageTest extends FATServletClient {
                          ee10server.findStringsInLogsUsingMark(CWWKM0483I_WEB_MOD_RESOURCE, ee10server.getDefaultLogFile()).size());
             assertEquals("Expected CWWKM0483I message not found for @PostConstruct in WEB module : " + CWWKM0483I_WEB_MOD_POSTCONSTRUCT, 1,
                          ee10server.findStringsInLogsUsingMark(CWWKM0483I_WEB_MOD_POSTCONSTRUCT, ee10server.getDefaultLogFile()).size());
+            ee10server.resetLogMarks(); // application start order undefined
+            assertEquals("Expected CWWKM0483I message not found for @Resource in WEB application : " + CWWKM0483I_WEB_APP_RESOURCE, 1,
+                         ee10server.findStringsInLogsUsingMark(CWWKM0483I_WEB_APP_RESOURCE, ee10server.getDefaultLogFile()).size());
             FATServletClient.runTest(ee10server, WRONG_PACKAGE_PATH, "testWrongPackageCommonAnnotations");
+            FATServletClient.runTest(ee9server, WRONG_PACKAGE_WEBAPP_PATH, "testWrongPackageCommonAnnotations");
         } finally {
             if (ee10server != null && ee10server.isStarted()) {
                 ee10server.stopServer();

@@ -34,7 +34,7 @@ public class JakartaStatelessWarBean {
     JakartaSingletonWarBean bean;
 
     public void verifyInjection() {
-        assertNotNull("Jakarta Resrouce EJBContext is null", ctx);
+        assertNotNull("Jakarta Resource EJBContext is null", ctx);
         assertNull("Javax Resource ctx is not null", sctx);
         assertNotNull("Jakarta EJB Singleton is null", bean);
     }

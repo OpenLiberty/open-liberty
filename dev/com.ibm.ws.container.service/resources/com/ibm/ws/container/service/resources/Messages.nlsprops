@@ -166,6 +166,6 @@ ordered.list.already.contains.CWWKM0482E=CWWKM0482E: WebSphere Application Serve
 ordered.list.already.contains.CWWKM0482E.explanation=CMSG0001
 ordered.list.already.contains.CWWKM0482E.useraction=See the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support.
 
-wrong.annotation.package.CWWKM0483I=CWWKM0483I: The {0} annotation is ignored on classes in the {1} module. Jakarta EE applications must use the {2} annotation. The affected classes are: {3}
+wrong.annotation.package.CWWKM0483I=CWWKM0483I: The {0} annotation is ignored on classes in the {1} module of the {2} application. Jakarta EE applications must use the {3} annotation. The affected classes are: {4}
 wrong.annotation.package.CWWKM0483I.explanation=The application contains a Java EE annotation with the 'javax' package name, but the application server has Jakarta EE features enabled. The application server did not process the 'javax' package name annotation.
 wrong.annotation.package.CWWKM0483I.useraction=Modify the application to use the 'jakarta' package name version of the annotation or modify the application server configuration to enable Java EE features.

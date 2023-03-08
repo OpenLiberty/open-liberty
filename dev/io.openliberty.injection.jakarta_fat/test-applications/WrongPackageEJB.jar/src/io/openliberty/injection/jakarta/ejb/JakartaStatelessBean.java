@@ -34,7 +34,7 @@ public class JakartaStatelessBean {
     JakartaSingletonBean bean;
 
     public void verifyInjection() {
-        assertNotNull("jakarta Resrouce EJBContext is null", ctx);
+        assertNotNull("jakarta Resource EJBContext is null", ctx);
         assertNull("javax Resource SessionContext is not null", sctx);
         assertNotNull("jakarta EJB Singleton is null", bean);
     }
