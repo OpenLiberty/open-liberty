@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,7 @@ package io.openliberty.microprofile.metrics50.internal.tck.launcher;
 
 import static org.junit.Assume.assumeTrue;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +22,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -40,8 +43,31 @@ public class MetricsTCKLauncher {
     @Server("MetricsTCKServer")
     public static LibertyServer server;
 
+    /*
+     * Java 11.0.14 known to cause issues.
+     */
+    private static boolean isJava11014() throws IOException {
+        JavaInfo javaInfo = JavaInfo.forServer(server);
+
+        Log.info(MetricsTCKLauncher.class, "isJava11014",
+                 "Major.minor.micro : [" + JavaInfo.forServer(server).majorVersion()
+                                                          + "."
+                                                          + JavaInfo.forServer(server).minorVersion()
+                                                          + "." + JavaInfo.forServer(server).microVersion()
+                                                          + "]");
+        if (javaInfo.majorVersion() == 11 && javaInfo.microVersion() == 14) {
+            Log.info(MetricsTCKLauncher.class, "isJava11014", "JDK matches with 11.0.14. Will be skipping.");
+            return true;
+        }
+
+        return false;
+    }
+
     @BeforeClass
     public static void setUp() throws Exception {
+        //Skip running FAT if (remote) server JVM detected to be 11.0.14
+        assumeTrue(!isJava11014());
+
         server.startServer();
     }
 
