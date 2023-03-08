@@ -3089,7 +3089,7 @@
     <dependency>
       <groupId>org.jboss.narayana.rts</groupId>
       <artifactId>lra-service-base</artifactId>
-      <version>5.10.6.Final</version>
+      <version>5.11.1.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.narayana.rts</groupId>
