@@ -7,8 +7,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jaxws.security.fat;
 
@@ -31,8 +29,6 @@ abstract public class AbstractJaxWsTransportSecurityTest extends AbstractJaxWsTr
 
     static {
         SERVER_CONFIG_WITHOUT_SSL.add("serverConfigs/basicAuthWithoutSSL.xml");
-        SERVER_CONFIG_WITHOUT_SSL.add("serverConfigs/noAppSecurityFeature.xml");
-        SERVER_CONFIG_WITHOUT_SSL.add("serverConfigs/noSSLConfiguration.xml");
     }
 
     protected void prepareForTest(String serverConfigFile, String providerWebXMLFile, String clientBindingFile) throws Exception {

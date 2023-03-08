@@ -7,8 +7,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jaxws.security.fat;
 
@@ -37,6 +35,10 @@ public class SSLConfigurationTest extends AbstractJaxWsTransportSecuritySSLTest 
     private static final String NO_SSL_CONFIG = "noSSLConfiguration.xml";
 
     protected static final String DEFAULT_SSL_WITHOUT_TRUST_STORE_SERVER_CONFIG = "noTrustStoreInDefaultSSLConfiguration.xml";
+
+    private static final String SCHEMA = "https";
+
+    private static final int SECURE_PORT = server.getHttpDefaultSecurePort();
 
     static {
         invalidSSLHandshakeResps.add("SSLHandshakeException");
@@ -87,9 +89,9 @@ public class SSLConfigurationTest extends AbstractJaxWsTransportSecuritySSLTest 
         prepareForTest("serverConfigs/" + DEFAULT_SSL_SERVER_CONFIG, "basicAuthWithSSL_provider_web.xml", null);
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("employee", "pojo", "https", server.getHttpDefaultSecurePort(), "/unauthorized/employPojoService", "Hello, employee from SayHelloPojoService"),
-                                                                   new RequestParams("employee", "stateless", "https", server.getHttpDefaultSecurePort(), "/unauthorized/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
-                                                                   new RequestParams("employee", "singleton", "https", server.getHttpDefaultSecurePort(), "/unauthorized/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
+                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/unauthorized/employPojoService", "Hello, employee from SayHelloPojoService"),
+                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/unauthorized/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/unauthorized/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
 
         runTest(params, null);
     }
@@ -102,9 +104,9 @@ public class SSLConfigurationTest extends AbstractJaxWsTransportSecuritySSLTest 
         prepareForTest("serverConfigs/" + NO_SSL_CONFIG, "basicAuthWithSSL_provider_web.xml", null);
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("employee", "pojo", "https", server.getHttpDefaultSecurePort(), "/unauthorized/employPojoService", noSSLResps),
-                                                                   new RequestParams("employee", "stateless", "https", server.getHttpDefaultSecurePort(), "/unauthorized/employStatelessService", noSSLResps),
-                                                                   new RequestParams("employee", "singleton", "https", server.getHttpDefaultSecurePort(), "/unauthorized/employSingletonService", noSSLResps)));
+                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/unauthorized/employPojoService", noSSLResps),
+                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/unauthorized/employStatelessService", noSSLResps),
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/unauthorized/employSingletonService", noSSLResps)));
 
         runTest(params, null);
     }
@@ -127,9 +129,9 @@ public class SSLConfigurationTest extends AbstractJaxWsTransportSecuritySSLTest 
                        "basicAuthWithSSL_provider_web.xml", null);
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("employee", "pojo", "https", server.getHttpDefaultSecurePort(), "/unauthorized/employPojoService", "Hello, employee from SayHelloPojoService"),
-                                                                   new RequestParams("employee", "stateless", "https", server.getHttpDefaultSecurePort(), "/unauthorized/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
-                                                                   new RequestParams("employee", "singleton", "https", server.getHttpDefaultSecurePort(), "/unauthorized/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
+                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/unauthorized/employPojoService", "Hello, employee from SayHelloPojoService"),
+                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/unauthorized/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/unauthorized/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
 
         runTest(params, null);
     }
@@ -144,9 +146,9 @@ public class SSLConfigurationTest extends AbstractJaxWsTransportSecuritySSLTest 
                        "basicAuthWithSSL_provider_web.xml", "bindings/customizeSSLConfig.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("employee", "pojo", "https", server.getHttpDefaultSecurePort(), "/unauthorized/employPojoService", invalidSSLHandshakeResps),
-                                                                   new RequestParams("employee", "stateless", "https", server.getHttpDefaultSecurePort(), "/unauthorized/employStatelessService", invalidSSLHandshakeResps),
-                                                                   new RequestParams("employee", "singleton", "https", server.getHttpDefaultSecurePort(), "/unauthorized/employSingletonService", invalidSSLHandshakeResps)));
+                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/unauthorized/employPojoService", invalidSSLHandshakeResps),
+                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/unauthorized/employStatelessService", invalidSSLHandshakeResps),
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/unauthorized/employSingletonService", invalidSSLHandshakeResps)));
 
         runTest(params, null);
     }
@@ -159,9 +161,9 @@ public class SSLConfigurationTest extends AbstractJaxWsTransportSecuritySSLTest 
                        "bindings/inexistentCustomizeButFallbackOnDefaultSSLConfig.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("employee", "pojo", "https", server.getHttpDefaultSecurePort(), "/unauthorized/employPojoService", "Hello, employee from SayHelloPojoService"),
-                                                                   new RequestParams("employee", "stateless", "https", server.getHttpDefaultSecurePort(), "/unauthorized/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
-                                                                   new RequestParams("employee", "singleton", "https", server.getHttpDefaultSecurePort(), "/unauthorized/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
+                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/unauthorized/employPojoService", "Hello, employee from SayHelloPojoService"),
+                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/unauthorized/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/unauthorized/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
 
         runTest(params, null);
     }
@@ -172,9 +174,9 @@ public class SSLConfigurationTest extends AbstractJaxWsTransportSecuritySSLTest 
     public void testCustomizeSSLConfig() throws Exception {
         prepareForTest("serverConfigs/" + CUSTOMIZE_SSL_CONFIG, "basicAuthWithSSL_provider_web.xml",
                        "bindings/customizeSSLConfig.xml");
-        List<RequestParams> params = new ArrayList<>(Arrays.asList(new RequestParams("employee", "pojo", "https", server.getHttpDefaultSecurePort(), "/unauthorized/employPojoService", "Hello, employee from SayHelloPojoService"),
-                                                                   new RequestParams("employee", "stateless", "https", server.getHttpDefaultSecurePort(), "/unauthorized/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
-                                                                   new RequestParams("employee", "singleton", "https", server.getHttpDefaultSecurePort(), "/unauthorized/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
+        List<RequestParams> params = new ArrayList<>(Arrays.asList(new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/unauthorized/employPojoService", "Hello, employee from SayHelloPojoService"),
+                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/unauthorized/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/unauthorized/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
 
         runTest(params, null);
     }

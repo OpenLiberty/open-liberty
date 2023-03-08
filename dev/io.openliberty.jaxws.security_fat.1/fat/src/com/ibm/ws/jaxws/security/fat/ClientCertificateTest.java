@@ -7,10 +7,10 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jaxws.security.fat;
+
+import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +31,7 @@ import componenttest.custom.junit.runner.Mode;
  */
 @RunWith(FATRunner.class)
 public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
+
     private static final List<String> INEXISTENT_ALIAS_SERVER_INFO = new ArrayList<String>();
 
     protected static final String DEFAULT_CLIENT_CERT_CONFIG = "defaultClientCertConfiguration.xml";
@@ -47,7 +48,13 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
 
     protected static final String SCHEMA = "https";
 
-    protected static final int PORT = server.getHttpDefaultSecurePort();
+    protected static final int SECURE_PORT = server.getHttpDefaultSecurePort();
+
+    protected static final int PORT = server.getHttpDefaultPort();
+
+    protected static final int WAIT_TIME_OUT = 10 * 1000;
+
+    private boolean checkAppUpdate = false;
 
     static {
         INEXISTENT_ALIAS_SERVER_INFO.add("CWPKI0023E.*");
@@ -88,7 +95,7 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
         if (!dynamicUpdate) {
             if (server != null && server.isStarted()) {
                 server.stopServer("CWPKI0023E.*", "CWWKW0601E.*", "CWPKI0022E.*", "CWWKO0801E.*"); // trust stop server to ensure server
-                                                                                                   // is stopped
+                // is stopped
             }
         }
     }
@@ -101,9 +108,12 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
                        "bindings/validCertAlias.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("employee", "pojo", SCHEMA, PORT, "/employee/employPojoService", "Hello, employee from SayHelloPojoService"),
-                                                                   new RequestParams("employee", "stateless", SCHEMA, PORT, "/employee/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
-                                                                   new RequestParams("employee", "singleton", SCHEMA, PORT, "/employee/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
+                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/employee/employPojoService", "Hello, employee from SayHelloPojoService"),
+                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/employee/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
+
+        assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
+
         runTest(params, null);
     }
 
@@ -115,21 +125,14 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
         prepareForTest("serverConfigs/" + DEFAULT_CLIENT_CERT_CONFIG, "clientCert_provider_web.xml", "bindings/inexistentCertAlias.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("employee", "pojo", SCHEMA, PORT, "/employee/employPojoService", "CWPKI0023E"),
-                                                                   new RequestParams("employee", "stateless", SCHEMA, PORT, "/employee/employStatelessService", "CWPKI0023E"),
-                                                                   new RequestParams("employee", "singleton", SCHEMA, PORT, "/employee/employSingletonService", "CWPKI0023E")));
+                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/employee/employPojoService", "CWPKI0023E"),
+                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/employee/employStatelessService", "CWPKI0023E"),
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "CWPKI0023E")));
+
+        assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
 
         runTest(params, INEXISTENT_ALIAS_SERVER_INFO);
-
     }
-
-    // private static final String WITH_CLIENT_ALIAS_CONFIG =
-    // "withAliasClientCertConfiguration.xml";
-
-    // private static final String PATCHY_SERVER_TRUST_STORE_CONFIG =
-    // "patchyServerTrustStoreConfiguration.xml";
-
-    private static final int WAIT_TIME_OUT = 10 * 1000;
 
     // 1 Override alias configured in ssl element with customize one
     @Test
@@ -138,7 +141,9 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
         prepareForTest("serverConfigs/" + WITH_CLIENT_ALIAS_CONFIG, "clientCert_provider_web.xml",
                        "bindings/overrideCertAlias.xml");
 
-        List<RequestParams> params = new ArrayList<>(Arrays.asList(new RequestParams("employee", "pojo", SCHEMA, PORT, "/manager/employPojoService", "403")));
+        List<RequestParams> params = new ArrayList<>(Arrays.asList(new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/manager/employPojoService", "403")));
+
+        assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
 
         runTest(params, NOT_AUTHORIZED_SERVER_INFO);
     }
@@ -150,8 +155,10 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
                        "bindings/overrideCertAlias.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("manager", "stateless", SCHEMA, PORT, "/manager/employStatelessService", "From other bean: Hello, manager from SayHelloStatelessService"),
-                                                                   new RequestParams("manager", "singleton", SCHEMA, PORT, "/manager/employSingletonService", "From other bean: Hello, manager from SayHelloSingletonService")));
+                                                                   new RequestParams("manager", "stateless", SCHEMA, SECURE_PORT, "/manager/employStatelessService", "From other bean: Hello, manager from SayHelloStatelessService"),
+                                                                   new RequestParams("manager", "singleton", SCHEMA, SECURE_PORT, "/manager/employSingletonService", "From other bean: Hello, manager from SayHelloSingletonService")));
+
+        assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
 
         runTest(params, null);
     }
@@ -166,9 +173,12 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
                        "bindings/certInClientKSButNotInServerTS.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("employee", "pojo", SCHEMA, PORT, "/employee/employPojoService", "Could not send Message"),
-                                                                   new RequestParams("manager", "stateless", SCHEMA, PORT, "/manager/employStatelessService", "Could not send Message"),
-                                                                   new RequestParams("employee", "singleton", SCHEMA, PORT, "/employee/employSingletonService", "Could not send Message")));
+                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/employee/employPojoService", "Could not send Message"),
+                                                                   new RequestParams("manager", "stateless", SCHEMA, SECURE_PORT, "/manager/employStatelessService", "Could not send Message"),
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "Could not send Message")));
+
+        assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
+
         runTest(params, CERT_NOT_TRUST_SERVER_INFO);
 
     }
@@ -183,10 +193,12 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
                        "bindings/validCertAlias.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("employee", "pojo", SCHEMA, PORT, "/employee/employPojoService", "Hello, employee from SayHelloPojoService"),
-                                                                   new RequestParams("employee", "stateless", SCHEMA, PORT, "/employee/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
+                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/employee/employPojoService", "Hello, employee from SayHelloPojoService"),
+                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/employee/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
 
-                                                                   new RequestParams("employee", "singleton", SCHEMA, PORT, "/employee/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
+
+        assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
 
         runTest(params, null);
 
@@ -233,9 +245,11 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
                        "bindings/validCertAlias.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("employee", "pojo", SCHEMA, PORT, "/manager/employPojoService", "403"),
-                                                                   new RequestParams("employee", "stateless", SCHEMA, PORT, "/manager/employStatelessService", "403"),
-                                                                   new RequestParams("employee", "singleton", SCHEMA, PORT, "/manager/employSingletonService", "403")));
+                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/manager/employPojoService", "403"),
+                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/manager/employStatelessService", "403"),
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/manager/employSingletonService", "403")));
+
+        assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
 
         runTest(params, NOT_AUTHORIZED_SERVER_INFO);
     }
@@ -248,9 +262,77 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
                        "bindings/enableCNCheck.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("employee", "pojo", SCHEMA, PORT, "/employee/employPojoService", "disableCNCheck"),
-                                                                   new RequestParams("employee", "stateless", SCHEMA, PORT, "/employee/employStatelessService", "disableCNCheck"),
-                                                                   new RequestParams("employee", "singleton", SCHEMA, PORT, "/employee/employSingletonService", "disableCNCheck")));
+                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/employee/employPojoService", "disableCNCheck"),
+                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/employee/employStatelessService", "disableCNCheck"),
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "disableCNCheck")));
+
+        assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
+
+        runTest(params, null);
+    }
+
+    @AllowedFFDC({ "java.lang.NullPointerException" })
+    @Test
+    @Mode(Mode.TestMode.FULL)
+    public void testValidClientCertDispatch() throws Exception {
+        prepareForTest("serverConfigs/" + DEFAULT_CLIENT_CERT_CONFIG, "clientCert_provider_web.xml",
+                       "bindings/validCertAlias.xml", checkAppUpdate);
+
+        List<RequestParams> params = new ArrayList<>(Arrays.asList(new RequestParams("employee", TestMode.DISPATCH, "pojo", SCHEMA, SECURE_PORT, "/employee/employPojoService", "Hello, employee from SayHelloPojoService"),
+                                                                   new RequestParams("employee", TestMode.DISPATCH, "stateless", SCHEMA, SECURE_PORT, "/employee/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
+                                                                   new RequestParams("employee", TestMode.DISPATCH, "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
+
+        assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
+
+        runTest(params, null);
+        checkAppUpdate = false;
+    }
+
+//  1 Valid name and valid plain password without SSL
+    @Test
+    @Mode(Mode.TestMode.FULL)
+    public void testValidNameAndValidPlainPasswordWithoutSSLDispatch() throws Exception {
+        prepareForTest("serverConfigs/basicAuthWithoutSSL.xml", "basicAuthWithoutSSL_provider_web.xml",
+                       "bindings/validNameAndValidPlainPwd.xml", checkAppUpdate);
+
+        List<RequestParams> params = new ArrayList<>(Arrays.asList(new RequestParams("employee", TestMode.DISPATCH, "pojo", "http", PORT, "/employee/employPojoService", "Hello, employee from SayHelloPojoService"),
+                                                                   new RequestParams("employee", TestMode.DISPATCH, "stateless", "http", PORT, "/employee/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
+                                                                   new RequestParams("employee", TestMode.DISPATCH, "singleton", "http", PORT, "/employee/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
+
+        runTest(params, null);
+        checkAppUpdate = false;
+    }
+
+    // 2 Valid name and valid plain password with SSL
+    @Test
+    @Mode(Mode.TestMode.FULL)
+    public void testValidNameAndValidPlainPasswordWithSSLDispatch() throws Exception {
+        prepareForTest("serverConfigs/basicAuthWithSSL.xml", "basicAuthWithSSL_provider_web.xml",
+                       "bindings/validNameAndValidPlainPwd.xml", checkAppUpdate);
+
+        List<RequestParams> params = new ArrayList<>(Arrays.asList(new RequestParams("employee", TestMode.DISPATCH, "pojo", SCHEMA, SECURE_PORT, "/employee/employPojoService", "Hello, employee from SayHelloPojoService"),
+                                                                   new RequestParams("employee", TestMode.DISPATCH, "stateless", SCHEMA, SECURE_PORT, "/employee/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
+                                                                   new RequestParams("employee", TestMode.DISPATCH, "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
+
+        assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
+
+        runTest(params, null);
+        checkAppUpdate = false;
+    }
+
+    // 3 Customize SSL configuration
+    @Test
+    @Mode(Mode.TestMode.FULL)
+    public void testCustomizeSSLConfigDispatch() throws Exception {
+        prepareForTest("serverConfigs/customizeSSLConfiguration.xml", "basicAuthWithSSL_provider_web.xml",
+                       "bindings/customizeSSLConfig.xml");
+
+        List<RequestParams> params = new ArrayList<>(Arrays.asList(new RequestParams("employee", TestMode.DISPATCH, "pojo", SCHEMA, SECURE_PORT, "/unauthorized/employPojoService", "Hello, employee from SayHelloPojoService"),
+                                                                   new RequestParams("employee", TestMode.DISPATCH, "stateless", SCHEMA, SECURE_PORT, "/unauthorized/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
+                                                                   new RequestParams("employee", TestMode.DISPATCH, "singleton", SCHEMA, SECURE_PORT, "/unauthorized/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
+
+        assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
+
         runTest(params, null);
     }
 }

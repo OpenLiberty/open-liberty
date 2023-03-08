@@ -7,8 +7,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jaxws.security.fat;
 
@@ -29,7 +27,12 @@ import componenttest.custom.junit.runner.Mode;
  */
 @RunWith(FATRunner.class)
 public class BasicAuthWithSSLTest extends AbstractJaxWsTransportSecuritySSLTest {
+
     protected static final String SERVER_CONFIG_FILE_NAME = "basicAuthWithSSL.xml";
+
+    private static final String SCHEMA = "https";
+
+    private static final int SECURE_PORT = server.getHttpDefaultSecurePort();
 
     @BeforeClass
     public static void beforeAllTests() throws Exception {
@@ -56,9 +59,9 @@ public class BasicAuthWithSSLTest extends AbstractJaxWsTransportSecuritySSLTest 
         updateClientBndFile("bindings/validNameAndValidEncodedPwd.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("employee", "pojo", "https", server.getHttpDefaultSecurePort(), "/employee/employPojoService", "Hello, employee from SayHelloPojoService"),
-                                                                   new RequestParams("employee", "stateless", "https", server.getHttpDefaultSecurePort(), "/employee/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
-                                                                   new RequestParams("employee", "singleton", "https", server.getHttpDefaultSecurePort(), "/employee/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
+                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/employee/employPojoService", "Hello, employee from SayHelloPojoService"),
+                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/employee/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
 
         runTest(params, null);
     }
@@ -70,9 +73,9 @@ public class BasicAuthWithSSLTest extends AbstractJaxWsTransportSecuritySSLTest 
         updateClientBndFile("bindings/invalidName.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("employee", "pojo", "https", server.getHttpDefaultSecurePort(), "/employee/employPojoService", "401"),
-                                                                   new RequestParams("employee", "stateless", "https", server.getHttpDefaultSecurePort(), "/employee/employStatelessService", "401"),
-                                                                   new RequestParams("employee", "singleton", "https", server.getHttpDefaultSecurePort(), "/employee/employSingletonService", "401")));
+                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/employee/employPojoService", "401"),
+                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/employee/employStatelessService", "401"),
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "401")));
         List<String> serverInfos = new ArrayList<String>(1);
         serverInfos.add("CWWKS1100A.*inexisteduser");
         runTest(params, serverInfos);
@@ -84,9 +87,9 @@ public class BasicAuthWithSSLTest extends AbstractJaxWsTransportSecuritySSLTest 
         updateClientBndFile("bindings/validNameAndValidPlainPwd.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("employee", "pojo", "https", server.getHttpDefaultSecurePort(), "/manager/employPojoService", "403"),
-                                                                   new RequestParams("employee", "stateless", "https", server.getHttpDefaultSecurePort(), "/manager/employStatelessService", "403"),
-                                                                   new RequestParams("employee", "singleton", "https", server.getHttpDefaultSecurePort(), "/manager/employSingletonService", "403")));
+                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/manager/employPojoService", "403"),
+                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/manager/employStatelessService", "403"),
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/manager/employSingletonService", "403")));
         List<String> serverInfos = new ArrayList<String>(1);
         serverInfos.add("CWWKS9104A.*employee");
         runTest(params, serverInfos);
@@ -97,9 +100,9 @@ public class BasicAuthWithSSLTest extends AbstractJaxWsTransportSecuritySSLTest 
     public void testValidNameAndValidPlainPassword() throws Exception {
         updateClientBndFile("bindings/validNameAndValidPlainPwd.xml");
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("employee", "pojo", "https", server.getHttpDefaultSecurePort(), "/employee/employPojoService", "Hello, employee from SayHelloPojoService"),
-                                                                   new RequestParams("employee", "stateless", "https", server.getHttpDefaultSecurePort(), "/employee/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
-                                                                   new RequestParams("employee", "singleton", "https", server.getHttpDefaultSecurePort(), "/employee/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
+                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/employee/employPojoService", "Hello, employee from SayHelloPojoService"),
+                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/employee/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
 
         runTest(params, null);
     }
@@ -110,9 +113,9 @@ public class BasicAuthWithSSLTest extends AbstractJaxWsTransportSecuritySSLTest 
         updateClientBndFile("bindings/validNameButInvalidPwd.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("employee", "pojo", "https", server.getHttpDefaultSecurePort(), "/employee/employPojoService", "401"),
-                                                                   new RequestParams("employee", "stateless", "https", server.getHttpDefaultSecurePort(), "/employee/employStatelessService", "401"),
-                                                                   new RequestParams("employee", "singleton", "https", server.getHttpDefaultSecurePort(), "/employee/employSingletonService", "401")));
+                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/employee/employPojoService", "401"),
+                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/employee/employStatelessService", "401"),
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "401")));
         List<String> serverInfos = new ArrayList<String>(1);
         serverInfos.add("CWWKS1100A.*employee");
         runTest(params, serverInfos);

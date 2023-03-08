@@ -21,6 +21,10 @@ import componenttest.custom.junit.runner.Mode;
 @RunWith(FATRunner.class)
 public class SSLConfigurationNoTrustStoreTest extends AbstractJaxWsTransportSecuritySSLTest {
 
+    private static final String SCHEMA = "https";
+
+    private static final int SECURE_PORT = server.getHttpDefaultSecurePort();
+
     static {
         invalidSSLHandshakeResps.add("SSLHandshakeException");
         invalidSSLHandshakeResps.add("java.security.cert.CertPathBuilderException");
@@ -72,9 +76,9 @@ public class SSLConfigurationNoTrustStoreTest extends AbstractJaxWsTransportSecu
                        "basicAuthWithSSL_provider_web.xml", "bindings/customizeSSLConfig.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("employee", "pojo", "https", server.getHttpDefaultSecurePort(), "/unauthorized/employPojoService", invalidSSLHandshakeResps),
-                                                                   new RequestParams("employee", "stateless", "https", server.getHttpDefaultSecurePort(), "/unauthorized/employStatelessService", invalidSSLHandshakeResps),
-                                                                   new RequestParams("employee", "singleton", "https", server.getHttpDefaultSecurePort(), "/unauthorized/employSingletonService", invalidSSLHandshakeResps)));
+                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/unauthorized/employPojoService", invalidSSLHandshakeResps),
+                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/unauthorized/employStatelessService", invalidSSLHandshakeResps),
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/unauthorized/employSingletonService", invalidSSLHandshakeResps)));
 
         runTest(params, null);
     }

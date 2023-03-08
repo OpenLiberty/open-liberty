@@ -7,8 +7,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jaxws.security.fat;
 
@@ -33,10 +31,10 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
 
 /**
@@ -48,7 +46,8 @@ import componenttest.topology.utils.HttpUtils;
 @Mode(Mode.TestMode.FULL)
 public class EJBInWarServiceSecurityTest {
 
-    private static LibertyServer server = LibertyServerFactory.getLibertyServer("EJBInWarSecurityServer");
+    @Server("EJBInWarSecurityServer")
+    public static LibertyServer server;
 
     private final static int REQUEST_TIMEOUT = 10;
     private static String wsdlUrl;

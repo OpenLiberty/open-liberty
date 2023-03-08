@@ -7,8 +7,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jaxws.security.fat;
 
@@ -36,8 +34,12 @@ abstract public class AbstractJaxWsTransportSecurityTest extends AbstractJaxWsTr
     }
 
     protected void prepareForTest(String serverConfigFile, String providerWebXMLFile, String clientBindingFile) throws Exception {
+        prepareForTest(serverConfigFile, providerWebXMLFile, clientBindingFile, true); // checkAppUpdate default value is true
+    }
+
+    protected void prepareForTest(String serverConfigFile, String providerWebXMLFile, String clientBindingFile, boolean checkAppUpdate) throws Exception {
         if (dynamicUpdate) {
-            updateServerConfigFile(serverConfigFile);
+            updateServerConfigFile(serverConfigFile, checkAppUpdate);
             updateProviderWEBXMLFile(providerWebXMLFile);
             updateClientBndFile(clientBindingFile);
         } else {

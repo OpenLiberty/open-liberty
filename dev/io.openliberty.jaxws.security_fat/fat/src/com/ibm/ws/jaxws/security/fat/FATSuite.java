@@ -7,8 +7,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jaxws.security.fat;
 
@@ -29,8 +27,6 @@ import componenttest.rules.repeater.RepeatTests;
                 EJBInJarServiceSecurityTest.class,
                 EJBInWarServiceSecurityTest.class,
                 POJOServiceSecurityTest.class,
-                TransportSecurityUsingDispatchClientCertTest.class,
-                TransportSecurityUsingDispatchTest.class,
                 WsdlLocationHttpsTest.class
 })
 public class FATSuite {

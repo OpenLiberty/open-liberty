@@ -7,8 +7,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jaxws.security.fat;
 
@@ -279,7 +277,7 @@ abstract public class AbstractJaxWsTransportSecurityBaseTest {
         for (RequestParams param : params) {
             StringBuilder urlBuilder = new StringBuilder("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append(SERVLET_PATH).append("?user=").append(param.userName).append("&serviceType=").append(param.serviceType).append("&schema=").append(param.schema).append("&port=").append(param.port).append("&path=").append(param.path).append("&testMethod=").append(testName.getMethodName());
             if (null != param.testMode) {
-                urlBuilder.append("&testMode=").append(param.testMode.getVale());
+                urlBuilder.append("&testMode=").append(param.testMode.getValue());
             }
 
             if (null != param.expectedResp) {
@@ -447,7 +445,7 @@ abstract public class AbstractJaxWsTransportSecurityBaseTest {
             this.innerValue = value;
         }
 
-        public String getVale() {
+        public String getValue() {
             return this.innerValue;
         }
     }

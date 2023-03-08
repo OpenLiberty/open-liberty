@@ -7,8 +7,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jaxws.security.fat;
 
@@ -42,7 +40,7 @@ public class ClientCertFailOverToBasicAuthTest extends AbstractJaxWsTransportSec
 
     protected static final String SCHEMA = "https";
 
-    protected static final int PORT = server.getHttpDefaultSecurePort();
+    protected static final int SECURE_PORT = server.getHttpDefaultSecurePort();
 
     protected static final boolean checkAppUpdate = false;
 
@@ -82,9 +80,10 @@ public class ClientCertFailOverToBasicAuthTest extends AbstractJaxWsTransportSec
         updateClientBndFile("bindings/inexistentCertButValidBA.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("employee", "pojo", SCHEMA, PORT, "/employee/employPojoService", "CWPKI0023E"),
-                                                                   new RequestParams("employee", "stateless", SCHEMA, PORT, "/employee/employStatelessService", "CWPKI0023E"),
-                                                                   new RequestParams("employee", "singleton", SCHEMA, PORT, "/employee/employSingletonService", "CWPKI0023E")));
+                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/employee/employPojoService", "CWPKI0023E"),
+                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/employee/employStatelessService", "CWPKI0023E"),
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "CWPKI0023E")));
+
         runTest(params, INEXISTENT_ALIAS_SERVER_INFO);
     }
 
@@ -95,9 +94,9 @@ public class ClientCertFailOverToBasicAuthTest extends AbstractJaxWsTransportSec
         updateClientBndFile("bindings/existentCertButInvalidBA.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("employee", "pojo", SCHEMA, PORT, "/employee/employPojoService", "Hello, employee from SayHelloPojoService"),
-                                                                   new RequestParams("employee", "stateless", SCHEMA, PORT, "/employee/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
-                                                                   new RequestParams("employee", "singleton", SCHEMA, PORT, "/employee/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
+                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/employee/employPojoService", "Hello, employee from SayHelloPojoService"),
+                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/employee/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
 
         runTest(params, null);
     }
@@ -109,9 +108,9 @@ public class ClientCertFailOverToBasicAuthTest extends AbstractJaxWsTransportSec
         updateClientBndFile("bindings/noAliasConfiguredButValidBA.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("manager", "pojo", SCHEMA, PORT, "/manager/employPojoService", "Hello, manager from SayHelloPojoService"),
-                                                                   new RequestParams("manager", "stateless", SCHEMA, PORT, "/manager/employStatelessService", "From other bean: Hello, manager from SayHelloStatelessService"),
-                                                                   new RequestParams("manager", "singleton", SCHEMA, PORT, "/manager/employSingletonService", "From other bean: Hello, manager from SayHelloSingletonService")));
+                                                                   new RequestParams("manager", "pojo", SCHEMA, SECURE_PORT, "/manager/employPojoService", "Hello, manager from SayHelloPojoService"),
+                                                                   new RequestParams("manager", "stateless", SCHEMA, SECURE_PORT, "/manager/employStatelessService", "From other bean: Hello, manager from SayHelloStatelessService"),
+                                                                   new RequestParams("manager", "singleton", SCHEMA, SECURE_PORT, "/manager/employSingletonService", "From other bean: Hello, manager from SayHelloSingletonService")));
 
         runTest(params, null);
     }
@@ -124,9 +123,10 @@ public class ClientCertFailOverToBasicAuthTest extends AbstractJaxWsTransportSec
         updateClientBndFile("bindings/inexistentCertAndInvalidBA.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("employee", "pojo", SCHEMA, PORT, "/employee/employPojoService", "CWPKI0023E"),
-                                                                   new RequestParams("employee", "stateless", SCHEMA, PORT, "/employee/employStatelessService", "CWPKI0023E"),
-                                                                   new RequestParams("employee", "singleton", SCHEMA, PORT, "/employee/employSingletonService", "CWPKI0023E")));
+                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/employee/employPojoService", "CWPKI0023E"),
+                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/employee/employStatelessService", "CWPKI0023E"),
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "CWPKI0023E")));
+
         runTest(params, INEXISTENT_ALIAS_SERVER_INFO);
     }
 
@@ -137,9 +137,9 @@ public class ClientCertFailOverToBasicAuthTest extends AbstractJaxWsTransportSec
         updateClientBndFile("bindings/existentCertAndValidBA.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("employee", "pojo", SCHEMA, PORT, "/employee/employPojoService", "Hello, employee from SayHelloPojoService"),
-                                                                   new RequestParams("employee", "stateless", SCHEMA, PORT, "/employee/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
-                                                                   new RequestParams("employee", "singleton", SCHEMA, PORT, "/employee/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
+                                                                   new RequestParams("employee", "pojo", SCHEMA, SECURE_PORT, "/employee/employPojoService", "Hello, employee from SayHelloPojoService"),
+                                                                   new RequestParams("employee", "stateless", SCHEMA, SECURE_PORT, "/employee/employStatelessService", "From other bean: Hello, employee from SayHelloStatelessService"),
+                                                                   new RequestParams("employee", "singleton", SCHEMA, SECURE_PORT, "/employee/employSingletonService", "From other bean: Hello, employee from SayHelloSingletonService")));
 
         runTest(params, null);
     }
@@ -151,9 +151,9 @@ public class ClientCertFailOverToBasicAuthTest extends AbstractJaxWsTransportSec
         updateClientBndFile("bindings/noAliasConfiguredAndInvalidBA.xml");
 
         List<RequestParams> params = new ArrayList<>(Arrays.asList(
-                                                                   new RequestParams("manager", "pojo", SCHEMA, PORT, "/manager/employPojoService", "401"),
-                                                                   new RequestParams("manager", "stateless", SCHEMA, PORT, "/manager/employStatelessService", "401"),
-                                                                   new RequestParams("manager", "singleton", SCHEMA, PORT, "/manager/employSingletonService", "401")));
+                                                                   new RequestParams("manager", "pojo", SCHEMA, SECURE_PORT, "/manager/employPojoService", "401"),
+                                                                   new RequestParams("manager", "stateless", SCHEMA, SECURE_PORT, "/manager/employStatelessService", "401"),
+                                                                   new RequestParams("manager", "singleton", SCHEMA, SECURE_PORT, "/manager/employSingletonService", "401")));
 
         runTest(params, AUTHENTICATION_FAILED_SERVER_INFO);
 
