@@ -2734,7 +2734,7 @@
     <dependency>
       <groupId>org.glassfish.hk2.external</groupId>
       <artifactId>javax.inject</artifactId>
-      <version>2.3.0-b10</version>
+      <version>2.5.0-b62</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish.hk2</groupId>
