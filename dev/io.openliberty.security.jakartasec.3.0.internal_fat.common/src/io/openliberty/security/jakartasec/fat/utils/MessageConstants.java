@@ -43,6 +43,8 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS2407E_ERROR_VERIFYING_RESPONSE = "CWWKS2407E";
 
     public static final String CWWKS2410E_CANNOT_FIND_STATE = "CWWKS2410E";
+    public static final String CWWKS2411E_STATE_VALUE_IN_CALLBACK_DOES_NOT_MATCH_STORED_VALUE = "CWWKS2411E";
+    public static final String CWWKS2413E_CALLBACK_URL_DOES_NOT_MATCH_REDIRECT_URI = "CWWKS2413E";
     public static final String CWWKS2414E_CALLBACK_URL_INCLUDES_ERROR_PARAMETER = "CWWKS2414E";
     public static final String CWWKS2415E_TOKEN_VALIDATION_EXCEPTION = "CWWKS2415E";
     public static final String CWWKS2416E_FAILED_TO_REACH_ENDPOINT = "CWWKS2416E";

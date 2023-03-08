@@ -55,7 +55,9 @@
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppNoInjectRedirectTrueUseSessionEmptyServlet/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppNoInjectRedirectEmptyUseSessionFalseServlet/Callback,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppNoInjectRedirectEmptyUseSessionTrueServlet/Callback,
-							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppNoInjectRedirectEmptyUseSessionEmptyServlet/Callback"
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppNoInjectRedirectEmptyUseSessionEmptyServlet/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SimplestAnnotatedWithCookies/Callback,
+							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/SimplestAnnotatedWithRedirectToOriginalResource/Callback"
 				scope="ALL_SCOPES"
 				enabled="true"
 			>

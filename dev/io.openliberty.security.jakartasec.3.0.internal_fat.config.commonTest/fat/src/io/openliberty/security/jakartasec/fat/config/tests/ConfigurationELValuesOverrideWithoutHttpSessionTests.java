@@ -22,11 +22,8 @@ import org.junit.runner.RunWith;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.ws.security.fat.common.expectations.Expectations;
-import com.ibm.ws.security.fat.common.expectations.ResponseFullExpectation;
-import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -36,7 +33,6 @@ import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurityTests;
 import io.openliberty.security.jakartasec.fat.configs.TestConfigMaps;
 import io.openliberty.security.jakartasec.fat.utils.Constants;
-import io.openliberty.security.jakartasec.fat.utils.MessageConstants;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 
 /**
@@ -132,10 +128,10 @@ public class ConfigurationELValuesOverrideWithoutHttpSessionTests extends Common
 
     /**
      * The annotation contains useSession=false, we'll test with useSessionExpression = true and expect the state validation to fail
+     * Despite state validation failing, the app should return a 200, since the validation fails with NOT_VALIDATED_RESULT as per the spec
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException" })
     @Test
     public void ConfigurationELValuesOverrideWithoutHttpSessionTests_useSession_true_useSessionExpression_true() throws Exception {
 
@@ -148,10 +144,8 @@ public class ConfigurationELValuesOverrideWithoutHttpSessionTests extends Common
         response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
 
         Expectations expectations = new Expectations();
-        expectations.addUnauthorizedStatusCodeAndMessageForCurrentAction();
-        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_DOES_NOT_CONTAIN, "got here", "Landed on the callback and should NOT have."));
+        expectations.addSuccessCodeForCurrentAction();
 //        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2407E_ERROR_VERIFYING_RESPONSE, "Did not receive an error message stating that the response could not be verified."));
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2410E_CANNOT_FIND_STATE, "Did not receive an error message stating that a matching client state could not be found."));
 //        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2416E_FAILED_TO_REACH_ENDPOINT, "Did not receive an error message stating that we couldn't react the token endpoint."));
 //        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1652A_AUTH_SEND_FAILURE, "Did not receive an error message stating that Authentication failed with a SEND_FAILURE."));
 //        expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWOAU0038E_CLIENT_COULD_NOT_BE_VERIFIED, "Did not receive an error message stating that the client could not be verified."));
@@ -175,10 +169,10 @@ public class ConfigurationELValuesOverrideWithoutHttpSessionTests extends Common
 
     /**
      * The annotation contains useSession=false, we'll test with useSessionExpression = true and expect the state validation to fail
+     * Despite state validation failing, the app should return a 200, since the validation fails with NOT_VALIDATED_RESULT as per the spec
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException" })
     @Test
     public void ConfigurationELValuesOverrideWithoutHttpSessionTests_useSession_false_useSessionExpression_true() throws Exception {
 
@@ -191,12 +185,10 @@ public class ConfigurationELValuesOverrideWithoutHttpSessionTests extends Common
         response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
 
         Expectations expectations = new Expectations();
-        expectations.addUnauthorizedStatusCodeAndMessageForCurrentAction();
-        expectations.addExpectation(new ResponseFullExpectation(null, Constants.STRING_DOES_NOT_CONTAIN, "got here", "Landed on the callback and should NOT have."));
+        expectations.addSuccessCodeForCurrentAction();
 ////        expectations.addExpectation(new ResponseUrlExpectation(Constants.STRING_CONTAINS, opHttpsBase
 ////                                                                                          + "/oidc/endpoint/OP1/authorize", "Did not fail to invoke the authorization endpoint."));
 //        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2407E_ERROR_VERIFYING_RESPONSE, "Did not receive an error message stating that the response could not be verified."));
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2410E_CANNOT_FIND_STATE, "Did not receive an error message stating that a matching client state could not be found."));
 //        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2416E_FAILED_TO_REACH_ENDPOINT, "Did not receive an error message stating that we couldn't react the token endpoint."));
 //        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS1652A_AUTH_SEND_FAILURE, "Did not receive an error message stating that Authentication failed with a SEND_FAILURE."));
 //        expectations.addExpectation(new ServerMessageExpectation(opServer, MessageConstants.CWOAU0038E_CLIENT_COULD_NOT_BE_VERIFIED, "Did not receive an error message stating that the client could not be verified."));

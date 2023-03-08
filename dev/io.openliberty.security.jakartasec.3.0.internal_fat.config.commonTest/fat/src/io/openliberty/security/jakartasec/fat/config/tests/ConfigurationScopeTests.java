@@ -464,7 +464,7 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException", "com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidScopeException" })
+    @ExpectedFFDC({ "com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidScopeException" })
     @Test
     public void ConfigurationScopeTests_scopeExpression_empty() throws Exception {
 
@@ -553,7 +553,7 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException", "com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidScopeException" })
+    @ExpectedFFDC({ "com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidScopeException" })
     @Test
     public void ConfigurationScopeTests_scopeExpression_uppercaseScopes() throws Exception {
 
@@ -582,7 +582,7 @@ public class ConfigurationScopeTests extends CommonAnnotatedSecurityTests {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException", "com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidScopeException" })
+    @ExpectedFFDC({ "com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidScopeException" })
     @Test
     public void ConfigurationScopeTests_scopeExpression_unknownScope() throws Exception {
 

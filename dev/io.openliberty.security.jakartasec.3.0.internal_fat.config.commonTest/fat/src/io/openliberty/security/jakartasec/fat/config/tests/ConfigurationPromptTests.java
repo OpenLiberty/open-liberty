@@ -364,7 +364,7 @@ public class ConfigurationPromptTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "com.ibm.oauth.core.api.error.oauth20.OAuth20Exception", "io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException" })
+    @ExpectedFFDC({ "com.ibm.oauth.core.api.error.oauth20.OAuth20Exception" })
     @Test
     public void ConfigurationPromptTests_promptEL_none_loginRequired() throws Exception {
 
@@ -380,7 +380,7 @@ public class ConfigurationPromptTests extends CommonAnnotatedSecurityTests {
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "com.ibm.oauth.core.api.error.oauth20.OAuth20Exception", "io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException" })
+    @ExpectedFFDC({ "com.ibm.oauth.core.api.error.oauth20.OAuth20Exception" })
     @Test
     public void ConfigurationPromptTests_promptEL_none_consentRequired() throws Exception {
 

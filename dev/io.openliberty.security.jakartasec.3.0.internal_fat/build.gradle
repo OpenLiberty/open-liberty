@@ -110,9 +110,11 @@ autoFVT.doLast {
 	'jakartasec-3.0_fat.identityStore.jwt.rp',
     'jakartasec-3.0_fat.identityStore.opaque.rp',
 	'jakartasec-3.0_fat.tokenValidation.jwt.rp',
-    'jakartasec-3.0_fat.tokenValidation.opaque.rp',
+    'jakartasec-3.0_fat.tokenValidation.opaque.rp',    
 	'jakartasec-3.0_fat.authentication.jwt.rp',
-    'jakartasec-3.0_fat.authentication.opaque.rp'
+    'jakartasec-3.0_fat.authentication.opaque.rp',
+    'jakartasec-3.0_fat.authenticationEndpointValidation.jwt.rp',
+    'jakartasec-3.0_fat.authenticationEndpointValidation.opaque.rp'
   ]
 
   rpCopyServers.each { rpServer ->

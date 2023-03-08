@@ -32,7 +32,6 @@ import com.ibm.ws.security.fat.common.expectations.ServerMessageExpectation;
 import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.fat.common.web.WebResponseUtils;
 
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -304,7 +303,6 @@ public class ConfigurationResponseModeTests extends CommonAnnotatedSecurityTests
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "io.openliberty.security.oidcclientcore.exceptions.AuthenticationResponseException" })
     @Test
     public void ConfigurationResponseModeTests_responseMode_error() throws Exception {
 
