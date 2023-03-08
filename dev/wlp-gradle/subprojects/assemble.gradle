@@ -20,6 +20,7 @@
  */
 
 def publishWlpJarDefault = parseBoolean(bnd.get('test.project', 'false')) ? 'true' : 'false'
+def shouldIncludePoms = ('true'.equals(bnd.get('test.project', bnd.get('fat.project', 'false'))))
 
 configurations {
    cleanPomClasspath
@@ -29,7 +30,7 @@ dependencies {
    cleanPomClasspath project(':build.cleanPom') 
 }
 
-if(publishWlpJarDefault) {
+if(!shouldIncludePoms) {
     task cleanAllEmbeddedPoms {
         dependsOn jar
         dependsOn ':build.cleanPom:jar'

@@ -67,7 +67,7 @@ instrument.taskInjection: false
 -maven-release: ${if;${driver;gradle};remote;local}, sources;path=NONE, javadoc;path=NONE
 # -maven-dependencies:
 -groupid: ${if;${test.project};test;dev}
--pom: ${if;${test.project};false;true}
+-pom: ${if;${test.project}|${fat.project};TRUE;FALSE}
 -maven-scope: runtime
 #-dsannotations-options: version;minimum=1.2
 
