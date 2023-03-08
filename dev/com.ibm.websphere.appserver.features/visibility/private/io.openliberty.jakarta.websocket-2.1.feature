@@ -5,6 +5,6 @@ singleton=true
 -bundles=\
   io.openliberty.jakarta.websocket.2.1; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.websocket:jakarta.websocket-api:2.1.0", \
   io.openliberty.jakarta.websocket.client.2.1; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.websocket:jakarta.websocket-client-api:2.1.0"
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

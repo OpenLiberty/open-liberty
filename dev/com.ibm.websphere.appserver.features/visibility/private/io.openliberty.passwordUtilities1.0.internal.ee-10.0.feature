@@ -6,5 +6,5 @@ singleton=true
   io.openliberty.appSecurity-5.0, \
   com.ibm.websphere.appserver.servlet-6.0, \
   com.ibm.websphere.appserver.transaction-2.0
-kind=beta
+kind=ga
 edition=base

@@ -50,7 +50,7 @@ Subsystem-Name: Jakarta Faces 4.0
  io.openliberty.faces.4.0.internal, \
  com.ibm.ws.cdi.interfaces.jakarta, \
  io.openliberty.faces.4.0.thirdparty; location:="dev/api/third-party/"
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

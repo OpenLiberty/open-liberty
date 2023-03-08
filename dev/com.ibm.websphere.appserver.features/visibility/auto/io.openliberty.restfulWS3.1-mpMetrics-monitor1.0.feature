@@ -6,5 +6,5 @@ IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.restfulWS-3.1))"
 IBM-Install-Policy: when-satisfied
 -bundles=io.openliberty.restfulWS.mpMetrics.filter
-kind=beta
+kind=ga
 edition=core

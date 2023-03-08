@@ -43,7 +43,7 @@ Subsystem-Name: Application Security 5.0 (Jakarta Security 3.0)
   io.openliberty.security.sso.internal, \
   io.openliberty.security.jaspic.2.0.internal, \
   io.openliberty.security.common.jwt.internal
-kind=beta
+kind=ga
 edition=core
 -jars=io.openliberty.jaspic.spi; location:=dev/spi/ibm/
 -files=dev/spi/ibm/javadoc/io.openliberty.jaspic.spi_1.1-javadoc.zip

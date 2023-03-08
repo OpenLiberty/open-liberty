@@ -7,5 +7,5 @@ IBM-Provision-Capability:\
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.jsonpContainer-2.1))"
 IBM-Install-Policy: when-satisfied
 -bundles=io.openliberty.jakarta.jsonp.compatibility
-kind=beta
+kind=ga
 edition=core

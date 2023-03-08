@@ -13,6 +13,6 @@ Subsystem-Name: Jakarta XML Bindings 4.0
 -bundles=\
   io.openliberty.jakarta.xmlBinding.4.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.xml.bind:jakarta.xml.bind-api:4.0.0", \
   io.openliberty.org.glassfish.hk2.osgi-resource-locator
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

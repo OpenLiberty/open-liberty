@@ -13,7 +13,7 @@ IBM-API-Package: jakarta.json.bind; type="spec", \
 -features=com.ibm.websphere.appserver.eeCompatible-10.0, \
   io.openliberty.jsonbInternal-3.0
 -bundles=com.ibm.ws.jsonb.service
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

@@ -45,7 +45,7 @@ Subsystem-Name: Jakarta RESTful Web Services 3.1 Client
   io.openliberty.org.jboss.resteasy.common.ee10
 -files=\
   dev/api/ibm/javadoc/io.openliberty.jaxrs30_1.0-javadoc.zip
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

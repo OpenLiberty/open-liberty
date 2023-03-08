@@ -6,6 +6,6 @@ IBM-Process-Types: server, \
 -features=com.ibm.websphere.appserver.eeCompatible-10.0, \
   io.openliberty.jsonpInternal-2.1
 -bundles=io.openliberty.org.eclipse.persistence-3.1; location:=lib/
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

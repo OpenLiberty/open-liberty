@@ -2,6 +2,6 @@
 symbolicName=io.openliberty.jandex.internal-3.0
 singleton=true
 -bundles=io.openliberty.io.smallrye.jandex3
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

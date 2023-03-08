@@ -19,3 +19,4 @@ IBM-API-Package: \
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
+superseded-by=mpTelemetry-1.0

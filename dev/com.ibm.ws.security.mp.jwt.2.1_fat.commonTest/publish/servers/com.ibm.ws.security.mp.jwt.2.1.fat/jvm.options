@@ -10,5 +10,3 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
-# beta fence for mpJwt 2.1 testing
--Dcom.ibm.ws.beta.edition=true

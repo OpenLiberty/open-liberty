@@ -58,7 +58,6 @@ import com.ibm.websphere.security.jwt.Claims;
 import com.ibm.websphere.security.jwt.InvalidClaimException;
 import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.websphere.security.jwt.KeyException;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.common.random.RandomUtils;
 import com.ibm.ws.security.common.time.TimeUtils;
 import com.ibm.ws.security.jwt.config.JwtConsumerConfig;
@@ -159,12 +158,10 @@ public class ConsumerUtilTest {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         outputMgr.captureStreams();
-        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
     }
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        System.clearProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY);
         outputMgr.dumpStreams();
         outputMgr.resetStreams();
         outputMgr.restoreStreams();

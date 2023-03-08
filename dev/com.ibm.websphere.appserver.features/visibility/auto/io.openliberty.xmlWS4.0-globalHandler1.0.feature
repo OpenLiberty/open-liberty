@@ -6,6 +6,6 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
 -bundles=\
   io.openliberty.jaxws.globalhandler.internal.jakarta
 IBM-Install-Policy: when-satisfied
-kind=beta
+kind=ga
 edition=base
 WLP-Activation-Type: parallel

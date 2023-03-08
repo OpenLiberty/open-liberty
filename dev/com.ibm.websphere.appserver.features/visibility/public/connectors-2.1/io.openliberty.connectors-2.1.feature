@@ -13,6 +13,6 @@ Subsystem-Category: JakartaEE10Application
   com.ibm.websphere.appserver.transaction-2.0
 -bundles=com.ibm.ws.app.manager.rar, \
  com.ibm.ws.jca.1.7.jakarta
-kind=beta
+kind=ga
 edition=base
 WLP-Activation-Type: parallel

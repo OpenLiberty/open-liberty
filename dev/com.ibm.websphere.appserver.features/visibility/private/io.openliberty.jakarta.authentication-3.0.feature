@@ -5,6 +5,6 @@ singleton=true
   com.ibm.websphere.appserver.eeCompatible-10.0
 -bundles=\
   io.openliberty.jakarta.authentication.3.0; location:=dev/api/spec/; mavenCoordinates="jakarta.authentication:jakarta.authentication-api:3.0.0"
-kind=beta
+kind=ga
 edition=core
 

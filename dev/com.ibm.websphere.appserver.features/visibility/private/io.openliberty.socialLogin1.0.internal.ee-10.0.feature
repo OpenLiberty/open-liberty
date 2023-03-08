@@ -8,5 +8,5 @@ visibility = private
   io.openliberty.security.social.internal,\
   io.openliberty.security.openidconnect.internal.clients.common,\
   io.openliberty.security.oidcclientcore.internal.jakarta
-kind=beta
+kind=ga
 edition=core

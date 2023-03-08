@@ -11,5 +11,5 @@ visibility = private
   com.ibm.ws.wsat.webclient.jakarta, \
   com.ibm.ws.wsat.webservice.jakarta, \
   io.openliberty.jaxws.globalhandler.internal.jakarta
-kind=beta
+kind=ga
 edition=base

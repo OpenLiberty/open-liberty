@@ -11,6 +11,6 @@ IBM-API-Package: jakarta.activation; type="spec"
   com.ibm.websphere.appserver.classloading-1.0
 -bundles=\
   io.openliberty.org.eclipse.angus.activation
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

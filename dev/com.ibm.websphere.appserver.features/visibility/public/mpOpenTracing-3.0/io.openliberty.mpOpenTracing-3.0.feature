@@ -37,3 +37,4 @@ kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
+superseded-by=mpTelemetry-1.0

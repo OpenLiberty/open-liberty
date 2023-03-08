@@ -13,5 +13,5 @@ visibility = private
           io.openliberty.security.sso.internal
 
 edition=core
-kind=beta
+kind=ga
 WLP-Activation-Type: parallel

@@ -22,5 +22,5 @@ Subsystem-Name: Jakarta EE 10.0 Application Client
   com.ibm.websphere.appserver.transaction-2.0, \
   io.openliberty.jsonp-2.1, \
   io.openliberty.expressionLanguage-5.0
-kind=beta
+kind=ga
 edition=base
