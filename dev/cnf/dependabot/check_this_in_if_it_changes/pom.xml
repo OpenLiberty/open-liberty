@@ -3799,7 +3799,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-aop</artifactId>
-      <version>3.0.7.RELEASE</version>
+      <version>5.3.6</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -4494,12 +4494,12 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-aop</artifactId>
-      <version>4.3.13.RELEASE</version>
+      <version>5.3.6</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-aop</artifactId>
-      <version>5.0.4.RELEASE</version>
+      <version>5.3.6</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
