@@ -82,8 +82,7 @@ public class JCABVTTest extends FATServletClient {
      */
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        server.stopServer(
-                          "CWWKE0700W", // TODO remove this once RTC 290586 fixed
+        server.stopServer(                      
                           "J2CA0027E", // intentionally caused to require XA recovery
                           "J2CA8625E.*UnsupportedContext", // error path test for unsupported work context type
                           "J2CA8688E.*J2CA8624E.*CollectionContext", // error path test for duplicate work context
