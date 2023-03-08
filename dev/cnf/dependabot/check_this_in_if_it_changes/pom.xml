@@ -2849,7 +2849,7 @@
     <dependency>
       <groupId>org.glassfish.jersey.bundles.repackaged</groupId>
       <artifactId>jersey-guava</artifactId>
-      <version>2.12</version>
+      <version>2.25.1</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish.jersey.containers</groupId>
