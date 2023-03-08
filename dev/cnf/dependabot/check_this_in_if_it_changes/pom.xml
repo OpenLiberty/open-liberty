@@ -4044,7 +4044,7 @@
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>policy</artifactId>
-      <version>2.4</version>
+      <version>3.0.1</version>
     </dependency>
     <dependency>
       <groupId>commons-beanutils</groupId>
