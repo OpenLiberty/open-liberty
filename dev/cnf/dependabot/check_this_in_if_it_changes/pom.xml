@@ -1873,6 +1873,11 @@
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+      <version>3.6.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
       <artifactId>maven-model</artifactId>
       <version>3.5.0</version>
     </dependency>
@@ -2899,7 +2904,7 @@
     <dependency>
       <groupId>org.glassfish.jersey.inject</groupId>
       <artifactId>jersey-hk2</artifactId>
-      <version>2.26</version>
+      <version>3.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish.web</groupId>
