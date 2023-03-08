@@ -4239,7 +4239,7 @@
     <dependency>
       <groupId>javax.security.auth.message</groupId>
       <artifactId>javax.security.auth.message-api</artifactId>
-      <version>1.1</version>
+      <version>1.1.1</version>
     </dependency>
     <dependency>
       <groupId>javax.security.jacc</groupId>
