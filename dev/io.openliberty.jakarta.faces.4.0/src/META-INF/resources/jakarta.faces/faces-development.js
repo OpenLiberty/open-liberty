@@ -711,11 +711,26 @@ var Implementation;
         /*
          * the search root for the dom element search
          */
-        let searchRoot = new mona_dish_1.DQ(node || document.body).querySelectorAll(`form input [name='${Const_1.P_CLIENT_WINDOW}']`);
+        let searchRoot = ((node) ? mona_dish_1.DQ.byId(node) : (0, mona_dish_1.DQ$)("form"));
+        let inputs = searchRoot
+            .filterSelector(`input[name='${(0, Const_1.$nsp)(Const_1.P_CLIENT_WINDOW)}']`)
+            .orElseLazy(() => searchRoot.querySelectorAll(`input[name='${(0, Const_1.$nsp)(Const_1.P_CLIENT_WINDOW)}']`));
         /*
-         * lazy helper to fetch the window id from the window url
+         * lazy helper to fetch the window id from the included faces.js
          */
-        let fetchWindowIdFromUrl = () => ExtDomQuery_1.ExtDomQuery.searchJsfJsFor(/jfwid=([^&;]*)/).orElse(null).value;
+        let fetchWindowIdFromJSFJS = () => ExtDomQuery_1.ExtDomQuery.searchJsfJsFor(/jfwid=([^&;]*)/).orElse(null).value;
+        /*
+         * fetch window id from the url
+         */
+        let fetchWindowIdFromURL = function () {
+            const href = window.location.href, windowId = "jfwid";
+            const regex = new RegExp("[\\?&]" + windowId + "=([^&#\\;]*)");
+            const results = regex.exec(href);
+            //initial trial over the url and a regexp
+            if (results != null)
+                return results[1];
+            return null;
+        };
         /*
          * functional double check based on stream reduction
          * the values should be identical or on INIT value which is a premise to
@@ -738,19 +753,19 @@ var Implementation;
          *
          * @param item
          */
-        let getValue = (item) => item.attr("value").value;
+        let getValue = (item) => item.val;
         /*
          * fetch the window id from the forms
          * window ids must be present in all forms
          * or non-existent. If they exist all of them must be the same
          */
-        let formWindowId = searchRoot.stream.map(getValue).reduce(differenceCheck, INIT);
+        let formWindowId = inputs.stream.map(getValue).reduce(differenceCheck, INIT);
         //if the resulting window id is set on altered then we have an unresolvable problem
         assert(ALTERED != formWindowId.value, "Multiple different windowIds found in document");
         /*
          * return the window id or null
          */
-        return formWindowId.value != INIT ? formWindowId.value : fetchWindowIdFromUrl();
+        return formWindowId.value != INIT ? formWindowId.value : (fetchWindowIdFromURL() || fetchWindowIdFromJSFJS());
     }
     Implementation.getClientWindow = getClientWindow;
     /**
