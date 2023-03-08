@@ -8,20 +8,20 @@
     
     SPDX-License-Identifier: EPL-2.0
  -->
-<html xmlns="http://www.w3.org/1999/xhtml" 
-	xmlns:f="jakarta.faces.core"
-	xmlns:h="jakarta.faces.html" 
-	xmlns:c="jakarta.tags.core">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="jakarta.faces.core"
+    xmlns:h="jakarta.faces.html"
+    xmlns:c="jakarta.tags.core">
 
-<h:head>
-	<title>Enter flow page 1</title>
-</h:head>
+    <h:head>
+        <title>Enter flow page 1</title>
+    </h:head>
 
-<h:body>
-	<div id="result1">#{confirmBean.result}</div>
-    <h:form id="form">
-        <h:commandLink id="next" value="next" action="callConfirmNext" />
-    </h:form>
-</h:body>
+    <h:body>
+    <div id="result1">#{confirmBean.result}</div>
+        <h:form id="form">
+            <h:commandButton id="next" value="next" action="callConfirmNext" />
+        </h:form>
+    </h:body>
 
 </html>
