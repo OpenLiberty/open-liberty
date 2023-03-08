@@ -21,6 +21,8 @@ import java.util.Properties;
 
 import javax.security.auth.Subject;
 
+import org.jboss.weld.proxy.WeldClientProxy;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -35,6 +37,7 @@ import io.openliberty.security.jakartasec.JakartaSec30Constants;
 import io.openliberty.security.jakartasec.OpenIdAuthenticationMechanismDefinitionHolder;
 import io.openliberty.security.jakartasec.OpenIdAuthenticationMechanismDefinitionWrapper;
 import io.openliberty.security.jakartasec.credential.OidcTokensCredential;
+import io.openliberty.security.jakartasec.identitystore.OpenIdContextImpl;
 import io.openliberty.security.jakartasec.identitystore.OpenIdContextUtils;
 import io.openliberty.security.oidcclientcore.authentication.AuthorizationRequestUtils;
 import io.openliberty.security.oidcclientcore.client.Client;
@@ -434,12 +437,18 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
     }
 
     @SuppressWarnings("unchecked")
-    protected OpenIdContext getOpenIdContext() {
+    protected OpenIdContextImpl getOpenIdContext() {
+        OpenIdContextImpl openIdContextImpl = null;
         Instance<OpenIdContext> openIdContextInstance = getCDI().select(OpenIdContext.class);
+
         if (openIdContextInstance != null) {
-            return openIdContextInstance.get();
+            OpenIdContext openIdContext = openIdContextInstance.get();
+
+            if (openIdContext instanceof WeldClientProxy) {
+                openIdContextImpl = (OpenIdContextImpl) ((WeldClientProxy) openIdContext).getMetadata().getContextualInstance();
+            }
         }
-        return null;
+        return openIdContextImpl;
     }
 
     private void setOpenIdContextInSubject(Subject clientSubject, OpenIdContext openIdContext) {
