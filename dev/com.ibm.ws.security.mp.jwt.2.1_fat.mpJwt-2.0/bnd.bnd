@@ -20,6 +20,9 @@ src: \
 
 test.project: true
 
+javac.source: 11
+javac.target: 11
+
 -dependson: \
     build.changeDetector,\
     com.ibm.ws.security.fat.common.jwt,\
