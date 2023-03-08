@@ -84,6 +84,7 @@ Export-Package: \
   org.apache.myfaces.renderkit;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.context.flash;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.spi.impl;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.util.lang;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.view;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.view.facelets;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.view.facelets.compiler;thread-context=true;version=${Implementation-Version}, \
