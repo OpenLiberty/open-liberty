@@ -105,25 +105,41 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         CompletableFuture<EntityInfo> defaultEntityInfoFuture = provider.entityInfoMap.computeIfAbsent(defaultEntityClass, EntityInfo::newFuture);
 
         for (Method method : repositoryInterface.getMethods()) {
-            Class<?> returnType = method.getReturnType();
-            Class<?> returnArrayType = returnType.getComponentType();
-            Class<?> returnTypeParam = null;
-            Class<?> entityClass = returnType;
-            if (returnArrayType == null) {
-                Type type = method.getGenericReturnType();
-                Type typeParams[] = type instanceof ParameterizedType ? ((ParameterizedType) type).getActualTypeArguments() : null;
-                if (typeParams != null && typeParams.length == 1) {
-                    Type paramType = typeParams[0] instanceof ParameterizedType ? ((ParameterizedType) typeParams[0]).getRawType() : typeParams[0];
-                    if (paramType instanceof Class) {
-                        entityClass = returnTypeParam = (Class<?>) paramType;
-                        returnArrayType = returnTypeParam.getComponentType();
-                        if (returnArrayType != null)
-                            entityClass = returnArrayType;
+            Class<?> returnArrayType = null;
+            List<Class<?>> returnTypeAtDepth = new ArrayList<>(3);
+            Type type = method.getGenericReturnType();
+            for (int depth = 0; depth < 3 && type != null; depth++) {
+                if (type instanceof ParameterizedType) {
+                    returnTypeAtDepth.add((Class<?>) ((ParameterizedType) type).getRawType());
+                    Type[] typeParams = ((ParameterizedType) type).getActualTypeArguments();
+                    type = typeParams.length == 1 ? typeParams[0] : null;
+                } else if (type instanceof Class) {
+                    Class<?> c = (Class<?>) type;
+                    returnTypeAtDepth.add(c);
+                    if (IntStream.class.equals(type)) {
+                        returnTypeAtDepth.add(int.class);
+                        depth++;
+                    } else if (LongStream.class.equals(type)) {
+                        returnTypeAtDepth.add(long.class);
+                        depth++;
+                    } else if (DoubleStream.class.equals(type)) {
+                        returnTypeAtDepth.add(double.class);
+                        depth++;
+                    } else if (returnArrayType == null) {
+                        returnArrayType = c.getComponentType();
+                        if (returnArrayType != null) {
+                            returnTypeAtDepth.add(returnArrayType);
+                            depth++;
+                        }
                     }
+                    type = null;
+                } else {
+                    returnTypeAtDepth.add(defaultEntityClass);
+                    type = null;
                 }
-            } else {
-                entityClass = returnArrayType;
             }
+
+            Class<?> entityClass = returnTypeAtDepth.get(returnTypeAtDepth.size() - 1);
 
             if (!inheritance || !defaultEntityClass.isAssignableFrom(entityClass)) // TODO allow other entity types from model
                 entityClass = defaultEntityClass;
@@ -132,7 +148,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             ? defaultEntityInfoFuture //
                             : provider.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
 
-            queries.put(method, entityInfoFuture.thenCombine(CompletableFuture.completedFuture(new QueryInfo(method, returnArrayType, returnTypeParam)),
+            queries.put(method, entityInfoFuture.thenCombine(CompletableFuture.completedFuture(new QueryInfo(method, returnArrayType, returnTypeAtDepth)),
                                                              this::completeQueryInfo));
         }
     }
@@ -252,10 +268,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
     private QueryInfo completeQueryInfo(EntityInfo entityInfo, QueryInfo queryInfo) {
         queryInfo.entityInfo = entityInfo;
 
-        boolean countPages = Page.class.equals(queryInfo.method.getReturnType())
-                             || KeysetAwarePage.class.equals(queryInfo.method.getReturnType())
-                             || Page.class.equals(queryInfo.returnTypeParam)
-                             || KeysetAwarePage.class.equals(queryInfo.returnTypeParam);
+        Class<?> multiType = queryInfo.getMultipleResultType();
+        boolean countPages = Page.class.equals(multiType) || KeysetAwarePage.class.equals(multiType);
         StringBuilder q = null;
 
         // TODO would it be more efficient to invoke method.getAnnotations() once?
@@ -995,12 +1009,11 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
      * Generates the JPQL ORDER BY clause. This method is common between the OrderBy annotation and keyword.
      */
     private void generateOrderBy(QueryInfo queryInfo, StringBuilder q) {
-        boolean needsKeysetQueries = KeysetAwarePage.class.equals(queryInfo.method.getReturnType())
-                                     || KeysetAwareSlice.class.equals(queryInfo.method.getReturnType())
-                                     || Iterator.class.equals(queryInfo.method.getReturnType())
-                                     || KeysetAwarePage.class.equals(queryInfo.returnTypeParam)
-                                     || KeysetAwareSlice.class.equals(queryInfo.returnTypeParam)
-                                     || Iterator.class.equals(queryInfo.returnTypeParam);
+        Class<?> multiType = queryInfo.getMultipleResultType();
+
+        boolean needsKeysetQueries = KeysetAwarePage.class.equals(multiType)
+                                     || KeysetAwareSlice.class.equals(multiType)
+                                     || Iterator.class.equals(multiType);
 
         StringBuilder fwd = needsKeysetQueries ? new StringBuilder(100) : q; // forward page order
         StringBuilder prev = needsKeysetQueries ? new StringBuilder(100) : null; // previous page order
@@ -1032,53 +1045,79 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         boolean distinct = select != null && select.distinct();
         String function = select == null ? null : toFunctionName(select.function());
 
-        Class<?> type = queryInfo.returnArrayType != null ? queryInfo.returnArrayType //
-                        : queryInfo.returnTypeParam != null ? queryInfo.returnTypeParam //
-                                        : queryInfo.method.getReturnType();
+        Class<?> singleType = queryInfo.getSingleResultType();
+
+        if (singleType.isPrimitive())
+            singleType = toWrapperClass(singleType);
 
         q.append("SELECT ");
 
-        if (type.isAssignableFrom(queryInfo.entityInfo.type)
-            || type.isInterface()
-            || type.isPrimitive()
-            || type.getName().startsWith("java")
-            || queryInfo.entityInfo.inheritance && queryInfo.entityInfo.type.isAssignableFrom(type)) {
-            if (cols == null || cols.length == 0) {
+        if (cols == null || cols.length == 0) {
+            if (singleType.isAssignableFrom(queryInfo.entityInfo.type)
+                || queryInfo.entityInfo.inheritance && queryInfo.entityInfo.type.isAssignableFrom(singleType)) {
+                // Whole entity
                 q.append(distinct ? "DISTINCT " : "").append(o);
             } else {
+                // Look for single entity attribute with the desired type:
+                String singleAttributeName = null;
+                for (Map.Entry<String, Class<?>> entry : queryInfo.entityInfo.attributeTypes.entrySet()) {
+                    Class<?> attributeType = entry.getValue();
+                    if (attributeType.isPrimitive())
+                        attributeType = toWrapperClass(attributeType);
+                    if (singleType.isAssignableFrom(attributeType)) {
+                        singleAttributeName = entry.getKey();
+                        q.append(distinct ? "DISTINCT " : "").append(o).append('.').append(singleAttributeName);
+                        break;
+                    }
+                }
+
+                if (singleAttributeName == null) {
+                    // Construct new instance from IdClass, embeddable, or entity attributes.
+                    // It would be preferable if the spec included the Select annotation to explicitly identify parameters, but if that doesn't happen
+                    // TODO we could compare attribute types with known constructor to improve on guessing a correct order of parameters
+                    q.append("NEW ").append(singleType.getName()).append('(');
+                    List<String> embAttrNames;
+                    boolean first = true;
+                    if (singleType.equals(queryInfo.entityInfo.idClass))
+                        for (String idClassAttributeName : queryInfo.entityInfo.idClassAttributeAccessors.keySet()) {
+                            String name = queryInfo.entityInfo.getAttributeName(idClassAttributeName);
+                            generateSelectExpression(q, first, function, distinct, o, name);
+                            first = false;
+                        }
+                    else if ((embAttrNames = queryInfo.entityInfo.embeddableAttributeNames.get(singleType)) != null)
+                        for (String name : embAttrNames) {
+                            generateSelectExpression(q, first, function, distinct, o, name);
+                            first = false;
+                        }
+                    else
+                        for (String name : queryInfo.entityInfo.attributeTypes.keySet()) {
+                            generateSelectExpression(q, first, function, distinct, o, name);
+                            first = false;
+                        }
+                    q.append(')');
+                }
+            }
+        } else { // Individual columns are requested by @Select
+            if (singleType.isAssignableFrom(queryInfo.entityInfo.type)
+                || singleType.isInterface() // NEW instance doesn't apply to interfaces
+                || singleType.isPrimitive() // NEW instance should not be used on primitives
+                || singleType.getName().startsWith("java") // NEW instance constructor is unlikely for non-user-defined classes
+                || queryInfo.entityInfo.inheritance && queryInfo.entityInfo.type.isAssignableFrom(singleType)) {
+                // Specify columns without creating new instance
                 for (int i = 0; i < cols.length; i++) {
                     generateSelectExpression(q, i == 0, function, distinct, o, cols[i]);
                 }
-            }
-        } else {
-            // It would be preferable if the spec included the Select annotation to explicitly identify parameters, but if that doesn't happen
-            // TODO we could compare attribute types with known constructor to improve on guessing a correct order of parameters
-            q.append("NEW ").append(type.getName()).append('(');
-            List<String> embAttrNames;
-            boolean first = true;
-            if (cols != null && cols.length > 0)
+            } else {
+                // Construct new instance from defined columns
+                q.append("NEW ").append(singleType.getName()).append('(');
                 for (int i = 0; i < cols.length; i++) {
                     String name = queryInfo.entityInfo.getAttributeName(cols[i]);
                     generateSelectExpression(q, i == 0, function, distinct, o, name == null ? cols[i] : name);
                 }
-            else if (type.equals(queryInfo.entityInfo.idClass))
-                for (String idClassAttributeName : queryInfo.entityInfo.idClassAttributeAccessors.keySet()) {
-                    String name = queryInfo.entityInfo.getAttributeName(idClassAttributeName);
-                    generateSelectExpression(q, first, function, distinct, o, name);
-                    first = false;
-                }
-            else if ((embAttrNames = queryInfo.entityInfo.embeddableAttributeNames.get(type)) != null)
-                for (String name : embAttrNames) {
-                    generateSelectExpression(q, first, function, distinct, o, name);
-                    first = false;
-                }
-            else
-                for (String name : queryInfo.entityInfo.attributeTypes.keySet()) {
-                    generateSelectExpression(q, first, function, distinct, o, name);
-                    first = false;
-                }
-            q.append(')');
+                q.append(')');
+            }
         }
+
         q.append(" FROM ").append(queryInfo.entityInfo.name).append(' ').append(o);
         return q;
     }
@@ -1591,20 +1630,13 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                                                      (void.class.equals(returnType) || CompletableFuture.class.equals(returnType)
                                                                       || CompletionStage.class.equals(returnType));
 
-                        Class<?> type = queryInfo.returnTypeParam != null && (Optional.class.equals(returnType)
-                                                                              || CompletableFuture.class.equals(returnType)
-                                                                              || CompletionStage.class.equals(returnType)) //
-                                                                                              ? queryInfo.returnTypeParam //
-                                                                                              : returnType;
+                        Class<?> multiType = queryInfo.getMultipleResultType();
 
-                        if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "results to be returned as " + type.getName());
-
-                        if (pagination != null && Iterator.class.equals(type))
+                        if (pagination != null && Iterator.class.equals(multiType))
                             returnValue = new PaginatedIterator<E>(queryInfo, pagination, args);
-                        else if (KeysetAwareSlice.class.equals(type) || KeysetAwarePage.class.equals(type))
+                        else if (KeysetAwareSlice.class.equals(multiType) || KeysetAwarePage.class.equals(multiType))
                             returnValue = new KeysetAwarePageImpl<E>(queryInfo, limit == null ? pagination : toPageable(limit), args);
-                        else if (Slice.class.equals(type) || Page.class.equals(type) || pagination != null && Streamable.class.equals(type))
+                        else if (Slice.class.equals(multiType) || Page.class.equals(multiType) || pagination != null && Streamable.class.equals(multiType))
                             returnValue = new PageImpl<E>(queryInfo, limit == null ? pagination : toPageable(limit), args);
                         else {
                             em = queryInfo.entityInfo.persister.createEntityManager();
@@ -1625,24 +1657,26 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             if (startAt > 0)
                                 query.setFirstResult(startAt);
 
-                            if (BaseStream.class.isAssignableFrom(type)) {
+                            if (multiType != null && BaseStream.class.isAssignableFrom(multiType)) {
                                 Stream<?> stream = query.getResultStream();
-                                if (Stream.class.equals(type))
+                                if (Stream.class.equals(multiType))
                                     returnValue = stream;
-                                else if (IntStream.class.equals(type))
+                                else if (IntStream.class.equals(multiType))
                                     returnValue = stream.mapToInt(RepositoryImpl::toInt);
-                                else if (LongStream.class.equals(type))
+                                else if (LongStream.class.equals(multiType))
                                     returnValue = stream.mapToLong(RepositoryImpl::toLong);
-                                else if (DoubleStream.class.equals(type))
+                                else if (DoubleStream.class.equals(multiType))
                                     returnValue = stream.mapToDouble(RepositoryImpl::toDouble);
                                 else
-                                    throw new UnsupportedOperationException("Stream type " + type.getName());
+                                    throw new UnsupportedOperationException("Stream type " + multiType.getName());
                             } else {
+                                Class<?> singleType = queryInfo.getSingleResultType();
+
                                 List<?> results = query.getResultList();
 
-                                if (queryInfo.entityInfo.type.equals(type)) {
+                                if (multiType == null && queryInfo.entityInfo.type.equals(singleType)) {
                                     returnValue = results.isEmpty() ? nullIfOptional(returnType) : oneResult(results);
-                                } else if (type.isInstance(results) && (results.isEmpty() || !(results.get(0) instanceof Object[]))) {
+                                } else if (multiType != null && multiType.isInstance(results) && (results.isEmpty() || !(results.get(0) instanceof Object[]))) {
                                     returnValue = results;
                                 } else if (queryInfo.returnArrayType != null) {
                                     int size = results.size();
@@ -1657,55 +1691,55 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                                         for (Object result : results)
                                             Array.set(returnValue, i++, result);
                                     }
-                                } else if (Streamable.class.equals(type)) {
+                                } else if (Streamable.class.equals(multiType)) {
                                     returnValue = new StreamableImpl<>(results);
-                                } else if (Iterable.class.isAssignableFrom(type)) {
+                                } else if (multiType != null && Iterable.class.isAssignableFrom(multiType)) {
                                     try {
                                         Collection<Object> list;
-                                        if (type.isInterface()) {
-                                            if (type.isAssignableFrom(ArrayList.class)) // covers Iterable, Collection, List
+                                        if (multiType.isInterface()) {
+                                            if (multiType.isAssignableFrom(ArrayList.class)) // covers Iterable, Collection, List
                                                 list = new ArrayList<>(results.size());
-                                            else if (type.isAssignableFrom(ArrayDeque.class)) // covers Queue, Deque
+                                            else if (multiType.isAssignableFrom(ArrayDeque.class)) // covers Queue, Deque
                                                 list = new ArrayDeque<>(results.size());
-                                            else if (type.isAssignableFrom(LinkedHashSet.class)) // covers Set
+                                            else if (multiType.isAssignableFrom(LinkedHashSet.class)) // covers Set
                                                 list = new LinkedHashSet<>(results.size());
                                             else
-                                                throw new UnsupportedOperationException(type + " is an unsupported return type.");
+                                                throw new UnsupportedOperationException(multiType + " is an unsupported return type.");
                                         } else {
                                             @SuppressWarnings("unchecked")
-                                            Constructor<? extends Collection<Object>> c = (Constructor<? extends Collection<Object>>) type.getConstructor();
+                                            Constructor<? extends Collection<Object>> c = (Constructor<? extends Collection<Object>>) multiType.getConstructor();
                                             list = c.newInstance();
                                         }
                                         if (results.size() == 1 && results.get(0) instanceof Object[]) {
                                             Object[] a = (Object[]) results.get(0);
                                             for (int i = 0; i < a.length; i++)
-                                                list.add(queryInfo.returnTypeParam.isInstance(a[i]) ? a[i] : to(queryInfo.returnTypeParam, a[i]));
+                                                list.add(singleType.isInstance(a[i]) ? a[i] : to(singleType, a[i]));
                                         } else {
                                             list.addAll(results);
                                         }
                                         returnValue = list;
                                     } catch (NoSuchMethodException x) {
-                                        throw new UnsupportedOperationException(type + " lacks public zero parameter constructor.");
+                                        throw new UnsupportedOperationException(multiType + " lacks public zero parameter constructor.");
                                     }
-                                } else if (Iterator.class.equals(type)) {
+                                } else if (Iterator.class.equals(multiType)) {
                                     returnValue = results.iterator();
                                 } else if (results.isEmpty()) {
                                     returnValue = nullIfOptional(returnType);
                                 } else { // single result of other type
                                     returnValue = oneResult(results);
-                                    if (returnValue != null && !type.isAssignableFrom(returnValue.getClass())) {
+                                    if (returnValue != null && !singleType.isAssignableFrom(returnValue.getClass())) {
                                         // TODO these conversions are not all safe
-                                        if (double.class.equals(type) || Double.class.equals(type))
+                                        if (double.class.equals(singleType) || Double.class.equals(singleType))
                                             returnValue = ((Number) returnValue).doubleValue();
-                                        else if (float.class.equals(type) || Float.class.equals(type))
+                                        else if (float.class.equals(singleType) || Float.class.equals(singleType))
                                             returnValue = ((Number) returnValue).floatValue();
-                                        else if (long.class.equals(type) || Long.class.equals(type))
+                                        else if (long.class.equals(singleType) || Long.class.equals(singleType))
                                             returnValue = ((Number) returnValue).longValue();
-                                        else if (int.class.equals(type) || Integer.class.equals(type))
+                                        else if (int.class.equals(singleType) || Integer.class.equals(singleType))
                                             returnValue = ((Number) returnValue).intValue();
-                                        else if (short.class.equals(type) || Short.class.equals(type))
+                                        else if (short.class.equals(singleType) || Short.class.equals(singleType))
                                             returnValue = ((Number) returnValue).shortValue();
-                                        else if (byte.class.equals(type) || Byte.class.equals(type))
+                                        else if (byte.class.equals(singleType) || Byte.class.equals(singleType))
                                             returnValue = ((Number) returnValue).byteValue();
                                     }
                                 }
@@ -1742,11 +1776,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
 
                         Long result = query.getSingleResult();
 
-                        Class<?> type = queryInfo.returnTypeParam != null && (Optional.class.equals(returnType)
-                                                                              || CompletableFuture.class.equals(returnType)
-                                                                              || CompletionStage.class.equals(returnType)) //
-                                                                                              ? queryInfo.returnTypeParam //
-                                                                                              : returnType;
+                        Class<?> type = queryInfo.getSingleResultType();
+
                         if (trace && tc.isDebugEnabled())
                             Tr.debug(this, tc, "result " + result + " to be returned as " + type.getName());
 
@@ -2024,11 +2055,40 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
         else if (void.class.equals(returnType) || Void.class.equals(returnType))
             result = null;
         else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType))
-            result = CompletableFuture.completedFuture(toReturnValue(i, queryInfo.returnTypeParam, null));
+            result = CompletableFuture.completedFuture(toReturnValue(i, queryInfo.getSingleResultType(), null));
         else
             throw new UnsupportedOperationException("Return update count as " + returnType);
 
         return result;
+    }
+
+    /**
+     * Returns the wrapper class for a primitive class.
+     *
+     * @param primitiveClass primitive class.
+     * @return wrapper class. If the parameter wasn't a primitive, returns the original type.
+     */
+    @Trivial
+    private static Class<?> toWrapperClass(Class<?> primitiveClass) {
+        if (int.class.equals(primitiveClass))
+            return Integer.class;
+        if (long.class.equals(primitiveClass))
+            return Long.class;
+        if (float.class.equals(primitiveClass))
+            return Float.class;
+        if (double.class.equals(primitiveClass))
+            return Double.class;
+        if (char.class.equals(primitiveClass))
+            return Character.class;
+        if (boolean.class.equals(primitiveClass))
+            return Boolean.class;
+        if (short.class.equals(primitiveClass))
+            return Short.class;
+        if (byte.class.equals(primitiveClass))
+            return Byte.class;
+        if (void.class.equals(primitiveClass))
+            return Void.class;
+        return primitiveClass;
     }
 
     /**

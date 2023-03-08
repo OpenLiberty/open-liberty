@@ -95,7 +95,10 @@ class EntityDefiner implements Runnable {
                 Tr.debug(this, tc, databaseId + " databaseStore reference", ref);
 
             // Classes explicitly annotated with JPA @Entity:
-            ArrayList<String> entityClassNames = new ArrayList<>(entities.size());
+            Set<String> entityClassNames = new HashSet<>(entities.size() * 2);
+
+            // List of classes to inspect for the above
+            Queue<Class<?>> annotatedEntityClassQueue = new LinkedList<>();
 
             // XML to make all other classes into JPA entities:
             ArrayList<String> entityClassInfo = new ArrayList<>(entities.size());
@@ -103,7 +106,9 @@ class EntityDefiner implements Runnable {
             Queue<Class<?>> embeddableTypesQueue = new LinkedList<>();
 
             for (Class<?> c : entities) {
-                if (c.getAnnotation(Entity.class) == null) {
+                if (c.isAnnotationPresent(Entity.class)) {
+                    annotatedEntityClassQueue.add(c);
+                } else {
                     StringBuilder xml = new StringBuilder(500).append(" <entity class=\"").append(c.getName()).append("\">").append(EOLN);
 
                     xml.append("  <table name=\"").append(tablePrefix).append(c.getSimpleName()).append("\"/>").append(EOLN);
@@ -113,8 +118,6 @@ class EntityDefiner implements Runnable {
                     xml.append(" </entity>").append(EOLN);
 
                     entityClassInfo.add(xml.toString());
-                } else {
-                    entityClassNames.add(c.getName());
                 }
             }
 
@@ -125,6 +128,17 @@ class EntityDefiner implements Runnable {
                     writeAttributes(xml, type, true, embeddableTypesQueue);
                     xml.append(" </embeddable>").append(EOLN);
                     entityClassInfo.add(xml.toString());
+                }
+
+            // Discover entities that are indirectly referenced via OneToOne, ManyToMany, and so forth
+            for (Class<?> c; (c = annotatedEntityClassQueue.poll()) != null;)
+                if (entityClassNames.add(c.getName())) {
+                    for (Field f : c.getFields())
+                        if (f.getType().isAnnotationPresent(Entity.class))
+                            annotatedEntityClassQueue.add(f.getType());
+                    for (Method m : c.getMethods())
+                        if (m.getReturnType().isAnnotationPresent(Entity.class))
+                            annotatedEntityClassQueue.add(m.getReturnType());
                 }
 
             Map<String, ?> properties = Collections.singletonMap("io.openliberty.persistence.internal.entityClassInfo",
