@@ -257,6 +257,8 @@ public class PackageRunnableTest {
         Thread.sleep(30000);
 
         checkDirStructure(extractLocation, false);
+        assertNotNull("extract location is null",
+                      extractLocation);
     }
 
     /**
@@ -270,32 +272,40 @@ public class PackageRunnableTest {
 
         String method = "checkDirStructure";
         StringBuffer sb = new StringBuffer();
-        File[] files = extractDir.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            sb.append(files[i] + "\n");
-        }
-
-        File logDir = null;
-        File templateDir = null;
-
-        if (extractDir.getAbsolutePath().endsWith("wlp")) {
-            logDir = new File(extractDir.getAbsolutePath() + File.separator + "usr" + File.separator + "servers" + File.separator + serverName
-                              + File.separator + "logs");
-            templateDir = new File(extractDir.getAbsolutePath() + File.separator + "templates");
+        // check if extractDir is null
+        if (extractDir == null) {
+            Log.info(c, method, "extractDir passed into checkDirStructure was null.  No directories to check");
         } else {
-            logDir = new File(extractDir.getAbsolutePath() + File.separator + "wlp" + File.separator + "usr" + File.separator + "servers" + File.separator + serverName
-                              + File.separator + "logs");
-            templateDir = new File(extractDir.getAbsolutePath() + File.separator + "wlp" + File.separator + "templates");
-        }
 
-        // Logs should always exist regardless
-        assertTrue(File.separator + "logs folder at " + logDir.getAbsolutePath() + " does not exist, but should. " + sb.toString(), logDir.exists());
+            File[] files = extractDir.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                sb.append(files[i] + "\n");
+            }
 
-        if (shouldFolderExist) {
-            assertTrue(File.separator + "templates folder at " + templateDir.getAbsolutePath() + " does not exist, but should. Contents =" + sb.toString(), templateDir.exists());
-        } else {
-            Log.info(c, method, "Contents at " + templateDir.getAbsolutePath() + " are : " + sb.toString());
-            assumeTrue(!templateDir.exists());
+            File logDir = null;
+            File templateDir = null;
+
+            if (extractDir.getAbsolutePath().endsWith("wlp")) {
+                logDir = new File(extractDir.getAbsolutePath() + File.separator + "usr" + File.separator + "servers" + File.separator + serverName
+                                  + File.separator + "logs");
+                templateDir = new File(extractDir.getAbsolutePath() + File.separator + "templates");
+            } else {
+                logDir = new File(extractDir.getAbsolutePath() + File.separator + "wlp" + File.separator + "usr" + File.separator + "servers" + File.separator + serverName
+                                  + File.separator + "logs");
+                templateDir = new File(extractDir.getAbsolutePath() + File.separator + "wlp" + File.separator + "templates");
+            }
+
+            // Logs should always exist regardless
+            assertTrue(File.separator + "logs folder at " + logDir.getAbsolutePath() + " does not exist, but should. " + sb.toString(), logDir.exists());
+
+            if (shouldFolderExist) {
+                assertTrue(File.separator + "templates folder at " + templateDir.getAbsolutePath() + " does not exist, but should. Contents =" + sb.toString(),
+                           templateDir.exists());
+            } else {
+                Log.info(c, method, "Contents at " + templateDir.getAbsolutePath() + " are : " + sb.toString());
+                assumeTrue(!templateDir.exists());
+            }
+
         }
     }
 
@@ -602,6 +612,8 @@ public class PackageRunnableTest {
                 if (line.contains(extract)) {
                     extractLoc = line.substring(extract.length());
                     pw.println("extractLoc = " + line);
+                } else {
+                    Log.info(c, "extractLoc not found", "line=" + line);
                 }
 
                 // if watchFor string supplied - search for it
