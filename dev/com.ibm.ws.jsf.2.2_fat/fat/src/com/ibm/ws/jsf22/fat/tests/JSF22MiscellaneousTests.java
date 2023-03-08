@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  */
 package com.ibm.ws.jsf22.fat.tests;
 
@@ -191,7 +188,7 @@ public class JSF22MiscellaneousTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES)  // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
+    @SkipForRepeat(EE10_FEATURES) // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testResetValues() throws Exception {
         try (WebClient webClient = new WebClient()) {
             // Use a synchronizing ajax controller to allow proper ajax updating
@@ -553,7 +550,6 @@ public class JSF22MiscellaneousTests {
      * There was previously a memory leak with the ViewScopeBeanHolder's storageMap. See issues above.
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES) // This requires further investigation.
     public void testMyFaces4433() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
