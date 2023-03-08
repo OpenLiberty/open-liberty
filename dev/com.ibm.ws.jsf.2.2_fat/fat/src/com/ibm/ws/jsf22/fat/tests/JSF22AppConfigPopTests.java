@@ -4,11 +4,8 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  */
 package com.ibm.ws.jsf22.fat.tests;
 
@@ -189,10 +186,8 @@ public class JSF22AppConfigPopTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES)  // Skipped due to HTMLUnit / JavaScript Incompatabilty (New JS in RC5)
     public void testACPNavigationRule() throws Exception {
         try (WebClient webClient = new WebClient()) {
-
             URL url = JSFUtils.createHttpUrl(jsfTestServer2, contextRoot, "nav.jsf");
             HtmlPage page = (HtmlPage) webClient.getPage(url);
 
@@ -203,7 +198,7 @@ public class JSF22AppConfigPopTests {
             assertTrue(page.asText().contains("This page verifies Application Configuration Populator changes take effect through a navigation rule."));
 
             // Click the commandButton to execute the methods and update the page
-            HtmlElement button = (HtmlElement) page.getElementById("BasicNavTest:navLink");
+            HtmlElement button = (HtmlElement) page.getElementById("BasicNavTest:navButton");
             page = button.click();
 
             if (!page.asText().contains("SUCCESS")) {
