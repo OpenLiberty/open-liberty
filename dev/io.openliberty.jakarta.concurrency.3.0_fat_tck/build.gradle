@@ -19,13 +19,15 @@ configurations {
 }
 
 dependencies {
-  testNG 'org.testng:testng:6.14.3',
-	     'com.beust:jcommander:1.78',
+  testNG 'org.testng:testng:7.5.0-ibm230227',
+       'org.slf4j:slf4j-api:2.0.6',
+       'org.slf4j:slf4j-jdk14:2.0.6',
+       'com.beust:jcommander:1.78',
 	     'org.apache-extras.beanshell:bsh:2.0b6'
   
   sigTest 'org.netbeans.tools:sigtest-maven-plugin:1.6'
 
-  arquillian 'io.openliberty.arquillian:arquillian-liberty-support-jakarta:2.0.1'
+  arquillian 'io.openliberty.arquillian:arquillian-liberty-support-jakarta:2.1.1'
 
   //TODO Configure WLP dependency if doing verification testing, Example below:
   //wlp 'io.openliberty.beta:openliberty-runtime:22.0.0.3-beta@zip'
@@ -34,9 +36,11 @@ dependencies {
 task copyTestNG(type: Copy) {
   mustRunAfter jar
   from configurations.testNG
-  into new File(autoFvtDir, 'publish/shared/resources/testng/6.14.3')
+  into new File(autoFvtDir, 'publish/shared/resources/testng/7.5.0-ibm230227')
   rename 'testng-.*.jar', 'testng.jar'
   rename 'jcommander-.*.jar', 'jcommander.jar'
+  rename 'slf4j-api-.*.jar', 'slf4j-api.jar'
+  rename 'slf4j-jdk14-.*.jar', 'slf4j-jdk14.jar'
   rename 'bsh-.*.jar', 'bsh.jar'
 }
 
@@ -73,9 +77,11 @@ task createServer(type: Exec) {
 task copyTestNGWLP(type: Copy) {
   mustRunAfter createServer
   from configurations.testNG
-  into new File(project.projectDir, 'wlp/usr/shared/resources/testng/6.14.3')
+  into new File(project.projectDir, 'wlp/usr/shared/resources/7.5.0-ibm230227')
   rename 'testng-.*.jar', 'testng.jar'
   rename 'jcommander-.*.jar', 'jcommander.jar'
+  rename 'slf4j-api-.*.jar', 'slf4j-api.jar'
+  rename 'slf4j-jdk14-.*.jar', 'slf4j-jdk14.jar'
   rename 'bsh-.*.jar', 'bsh.jar'
 }
 
