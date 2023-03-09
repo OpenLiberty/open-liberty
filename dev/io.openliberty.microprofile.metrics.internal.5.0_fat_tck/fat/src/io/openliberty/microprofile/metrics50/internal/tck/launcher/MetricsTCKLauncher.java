@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -63,12 +63,11 @@ public class MetricsTCKLauncher {
         return false;
     }
 
-    @BeforeClass
-    public static void setUp() throws Exception {
+    @Before
+    public void checkJava() throws Exception {
         //Skip running FAT if (remote) server JVM detected to be 11.0.14
         assumeTrue(!isJava11014());
 
-        server.startServer();
     }
 
     @AfterClass
@@ -80,7 +79,7 @@ public class MetricsTCKLauncher {
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchMetrics50Tck() throws Exception {
-
+        server.startServer();
         //disable tests for Java versions 11.0.0 - 11.0.3 since there's a bug in TLS 1.3 implementation
         JavaInfo javaInfo = JavaInfo.forServer(server);
         assumeTrue(!(javaInfo.majorVersion() == 11 && javaInfo.minorVersion() == 0
