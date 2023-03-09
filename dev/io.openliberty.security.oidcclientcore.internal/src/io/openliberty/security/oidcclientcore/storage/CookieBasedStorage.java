@@ -86,7 +86,13 @@ public class CookieBasedStorage implements Storage {
             }
             return;
         }
-        referrerURLCookieHandler.invalidateCookie(request, response, name, true);
+        Cookie c = referrerURLCookieHandler.createCookie(name, "", request);
+        String domainName = webSsoUtils.getSsoDomain(request);
+        if (domainName != null && !domainName.isEmpty()) {
+            c.setDomain(domainName);
+        }
+        c.setMaxAge(0);
+        response.addCookie(c);
     }
 
     private void setAdditionalCookieProperties(Cookie cookie, CookieStorageProperties cookieProps) {

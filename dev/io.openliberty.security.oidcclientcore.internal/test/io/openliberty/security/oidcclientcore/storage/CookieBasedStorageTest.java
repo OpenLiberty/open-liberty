@@ -181,7 +181,14 @@ public class CookieBasedStorageTest extends CommonTestClass {
     public void test_remove() {
         mockery.checking(new Expectations() {
             {
-                one(referrerURLCookieHandler).invalidateCookie(request, response, testCookieName, true);
+                one(referrerURLCookieHandler).createCookie(testCookieName, "", request);
+                will(returnValue(cookie));
+                one(webSSOUtils).getSsoDomain(request);
+                will(returnValue(null));              
+                one(cookie).setSecure(true);
+                one(cookie).setHttpOnly(true);
+                one(cookie).setMaxAge(0);
+                one(response).addCookie(cookie);
             }
         });
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 IBM Corporation and others.
+ * Copyright (c) 2016, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ package com.ibm.ws.security.openidconnect.clients.common;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +32,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
+import com.ibm.ws.webcontainer.security.SSOCookieHelperImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 
@@ -50,6 +53,7 @@ public class OidcUtilTest {
     };
 
     private final WebAppSecurityConfig webAppSecConfig = mock.mock(WebAppSecurityConfig.class);
+    private final SSOCookieHelperImpl ssoCookieHelper = mock.mock(SSOCookieHelperImpl.class);
     private final Cookie cookie = mock.mock(Cookie.class);
     private final Cookie cookie2 = mock.mock(Cookie.class, "cookie2");
     private final HttpServletResponse response = mock.mock(HttpServletResponse.class, "response");
@@ -65,6 +69,19 @@ public class OidcUtilTest {
             {
                 allowing(webAppSecConfig).createReferrerURLCookieHandler();
                 will(returnValue(referCookieHandler));
+                allowing(webAppSecConfig).createSSOCookieHelper();
+                will(returnValue(ssoCookieHelper));
+
+                allowing(webAppSecConfig).getSSORequiresSSL();
+                will(returnValue(true));
+
+                allowing(webAppSecConfig).getSSODomainList();
+                will(returnValue(null));
+                allowing(webAppSecConfig).getSSOUseDomainFromURL();
+                will(returnValue(false));
+
+                allowing(ssoCookieHelper).getSSODomainName(with(any(javax.servlet.http.HttpServletRequest.class)), with(any(List.class)), with(any(Boolean.class)));
+                will(returnValue(null));
             }
         });
         OidcClientUtil.setReferrerURLCookieHandler(referCookieHandler);
@@ -79,7 +96,8 @@ public class OidcUtilTest {
     public void testInvalidateReferrerURLCookie() {
         mock.checking(new Expectations() {
             {
-                one(referCookieHandler).invalidateCookie(request, response, "fred", true);
+                one(referCookieHandler).createCookie("fred", "", request);
+                allowing(response).addCookie(with(any(Cookie.class)));
             }
         });
         OidcClientUtil.invalidateReferrerURLCookie(request, response, "fred");
@@ -136,7 +154,8 @@ public class OidcUtilTest {
                 will(returnValue(expectedNonceCookieName));
                 one(cookie).getValue();
                 will(returnValue(expectedNonceCookieValue));
-                one(referCookieHandler).invalidateCookie(request, response, expectedNonceCookieName, true);
+                one(referCookieHandler).createCookie(expectedNonceCookieName, "", request);
+                allowing(response).addCookie(with(any(Cookie.class)));
             }
         });
         boolean validNonceCookie = OidcUtil.verifyNonce(convClientRequest, nonceValue, convClientConfig, state);
