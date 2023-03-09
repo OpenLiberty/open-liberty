@@ -46,6 +46,7 @@ import io.openliberty.security.jakartasec.fat.utils.Constants;
 import io.openliberty.security.jakartasec.fat.utils.MessageConstants;
 import io.openliberty.security.jakartasec.fat.utils.ShrinkWrapHelpers;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.PromptType;
+import oidc.client.base.utils.ShortTokenLifetimePrep;
 
 /**
  * Tests various logout flows.  Make sure that we logout when we should and do NOT logout when we should not.
@@ -111,6 +112,10 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
         deployMyApps(); // run this after starting the RP so we have the rp port to update the openIdConfig.properties file within the apps
 
         baseAppName = "BasicLogoutServlet";
+
+        ShortTokenLifetimePrep s = new ShortTokenLifetimePrep();
+        s.shortTokenLifetimePrep(rpHttpsBase,
+                                 getShortAppName(NotifyProvider, IDTokenHonorExpiry, AccessTokenHonorExpiry, IDTokenShortLifetime, AccessTokenShortLifetime) + "/" + baseAppName);
 
     }
 
@@ -442,12 +447,12 @@ public class BasicLogoutTests extends CommonLogoutAndRefreshTests {
      * @return - returns the short app name of the app that has the parm values specified in the openIdConfig.properties file
      * @throws Exception
      */
-    public String getShortAppName(boolean notifyProvider, boolean idTokenExpiry, boolean accessTokenExpiry, boolean idTokenLifetimeShort,
-                                  boolean accessTokenLifetimeShort) throws Exception {
+    public static String getShortAppName(boolean notifyProvider, boolean idTokenExpiry, boolean accessTokenExpiry, boolean idTokenLifetimeShort,
+                                         boolean accessTokenLifetimeShort) throws Exception {
 
         String appName = buildAppName(notifyProvider, idTokenExpiry, accessTokenExpiry, idTokenLifetimeShort, accessTokenLifetimeShort);
         String shortAppName = appMap.get(appName);
-        Log.info(thisClass, _testName, "Using app: " + shortAppName + " which maps to an app with settings: " + appName);
+        Log.info(thisClass, "getShortAppName", "Using app: " + shortAppName + " which maps to an app with settings: " + appName);
         return shortAppName;
 
     }
