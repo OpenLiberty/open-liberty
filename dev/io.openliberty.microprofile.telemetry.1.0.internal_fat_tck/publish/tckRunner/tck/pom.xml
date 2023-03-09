@@ -13,6 +13,10 @@
     
     <properties>
         <arquillian.version>1.7.0.Alpha13</arquillian.version>
+		<arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
+		<testng.version>7.5.0-ibm230227</testng.version>
+		<slf4j.version>2.0.6</slf4j.version>
+
         <opentelemetry.version>1.19.0</opentelemetry.version>
         <mptelemetry.version>1.0</mptelemetry.version>
 
@@ -201,7 +205,7 @@
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed-jakarta</artifactId>
-            <version>2.1.1</version>
+            <version>${arquillian.liberty.managed.jakarta.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -224,7 +228,7 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>7.4.0</version>
+            <version>${testng.version}</version>
             <scope>test</scope>
         </dependency>
         
@@ -237,13 +241,13 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>2.0.3</version>
+            <version>${slf4j.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
-            <version>2.0.3</version>
+            <version>${slf4j.version}</version>
         </dependency>
         
         <dependency>
