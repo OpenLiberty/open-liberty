@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -49,6 +50,8 @@ import com.ibm.wsspi.annocache.targets.AnnotationTargets_Targets;
 
 import com.ibm.ws.container.service.annocache.Annotations;
 import com.ibm.ws.container.service.annocache.SpecificAnnotations;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 /**
  * Common annotations code.
@@ -57,7 +60,13 @@ public abstract class AnnotationsImpl implements Annotations {
     public static final TraceComponent tc = Tr.register(AnnotationsImpl.class);
     // private static final String CLASS_NAME = AnnotationsImpl.class.getSimpleName();
 
-    //
+    private static final String JAVAX_RESOURCE = "javax.annotation.Resource";
+    private static final String JAVAX_RESOURCES = "javax.annotation.Resources";
+    private static final String JAVAX_POST_CONSTRUCT = "javax.annotation.PostConstruct";
+    private static final String JAVAX_PRE_DESTROY = "javax.annotation.PreDestroy";
+    private static final String JAKARTA_RESOURCE = "jakarta.annotation.Resource";
+    private static final String JAKARTA_POST_CONSTRUCT = "jakarta.annotation.PostConstruct";
+    private static final String JAKARTA_PRE_DESTROY = "jakarta.annotation.PreDestroy";
 
     /**
      * Data from a path lookup.
@@ -735,7 +744,76 @@ public abstract class AnnotationsImpl implements Annotations {
         rootClassSource.addClassLoaderClassSource(classLoaderClassSource);
     }
 
-    //
+    /**
+     * Determine if the Jakarta EE Common Annotations APIs are enabled for the classloader
+     * of the current container.
+     *
+     * @return true if the Jakarta EE Common Annotations APIs are enabled, otherwise false.
+     */
+    @Trivial
+    @FFDCIgnore(ClassNotFoundException.class)
+    private boolean jakartaCommonAnnotationAPIs() {
+        if (classLoader == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Jakarta Common Annotations not present - ClassLoader not set");
+            }
+            return false;
+        }
+        try {
+            classLoader.loadClass(JAKARTA_RESOURCE);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Jakarta Common Annotations present");
+            }
+            return true;
+        } catch (ClassNotFoundException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Jakarta Common Annotations not present");
+            }
+            return false;
+        }
+    }
+
+    /**
+     * Check for use of the wrong package (javax.annotation instead of jakarta.annotation)
+     * for the Jakarta Common Annotation APIs where the "javax" version of the annotations
+     * were previously included in the JDK. An informational message will be logged to
+     * the console for each annotation type found.
+     *
+     * @param targets the scanned annotation targets for the current container
+     * @param scanPolicies The policies for which to select annotated classes, as bitwise
+     *            OR of scan policy values.
+     */
+    private void checkForWrongPackageCommonAnnotations(AnnotationTargets_Targets targets, int scanPolicies) {
+        if (modName == null || !jakartaCommonAnnotationAPIs()) {
+            return;
+        }
+
+        Set<String> foundClasses = new TreeSet<String>(); // provides natural ordering
+
+        // Look for @Resource at class, field, and method level and nested in @Resources at class level
+        foundClasses.addAll(targets.getAnnotatedClasses(JAVAX_RESOURCE, scanPolicies));
+        foundClasses.addAll(targets.getAnnotatedClasses(JAVAX_RESOURCES, scanPolicies));
+        foundClasses.addAll(targets.getClassesWithFieldAnnotation(JAVAX_RESOURCE, scanPolicies));
+        foundClasses.addAll(targets.getClassesWithMethodAnnotation(JAVAX_RESOURCE, scanPolicies));
+        if (!foundClasses.isEmpty()) {
+            Tr.audit(tc, "wrong.annotation.package.CWWKM0483I", JAVAX_RESOURCE, modName, appName, JAKARTA_RESOURCE, String.join(", ", foundClasses));
+            foundClasses.clear();
+        }
+
+        // Look for @PostConstruct at method level
+        foundClasses.addAll(targets.getClassesWithMethodAnnotation(JAVAX_POST_CONSTRUCT, scanPolicies));
+        if (!foundClasses.isEmpty()) {
+            Tr.audit(tc, "wrong.annotation.package.CWWKM0483I", JAVAX_POST_CONSTRUCT, modName, appName, JAKARTA_POST_CONSTRUCT, String.join(", ", foundClasses));
+            foundClasses.clear();
+        }
+
+        // Look for @PreDestroy at method level
+        foundClasses.addAll(targets.getClassesWithMethodAnnotation(JAVAX_PRE_DESTROY, scanPolicies));
+        if (!foundClasses.isEmpty()) {
+            Tr.audit(tc, "wrong.annotation.package.CWWKM0483I", JAVAX_PRE_DESTROY, modName, appName, JAKARTA_PRE_DESTROY, String.join(", ", foundClasses));
+            foundClasses.clear();
+        }
+    }
 
     public class TargetsLock {
         // EMPTY
@@ -747,13 +825,24 @@ public abstract class AnnotationsImpl implements Annotations {
 
     @Override
     public AnnotationTargets_Targets getTargets() {
+        boolean checkWrongPackage = false;
         synchronized( targetsLock ) {
             if ( !isSetTargets ) {
                 isSetTargets = true;
+                checkWrongPackage = true;
                 annotationTargets = createTargets();
             }
-            return annotationTargets;
         }
+
+        // If this is the first request to obtain the targets and this is for either a WEB or EJB
+        // module (module name and classloader set), then check for the presence of the Java EE common
+        // annotations when the Jakarta EE features are enabled. If found, then log one informational
+        // message per annotation type for the module.
+        if (checkWrongPackage && ProductInfo.getBetaEdition()) {
+            checkForWrongPackageCommonAnnotations(annotationTargets, AnnotationTargets_Targets.POLICY_SEED);
+        }
+
+        return annotationTargets;
     }
 
     @Override
