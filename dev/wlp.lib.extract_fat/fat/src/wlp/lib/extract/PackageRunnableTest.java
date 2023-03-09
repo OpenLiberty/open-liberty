@@ -256,6 +256,9 @@ public class PackageRunnableTest {
         // wait 30s to give the shutdown script time to run in the shutdown hook
         Thread.sleep(30000);
 
+        Log.info(c, method, "The value of extractLocation is: " + extractLocation);
+        Log.info(c, method, "extractLocation is a directory: " + extractLocation.isDirectory());
+
         checkDirStructure(extractLocation, false);
     }
 
@@ -271,6 +274,8 @@ public class PackageRunnableTest {
         String method = "checkDirStructure";
         StringBuffer sb = new StringBuffer();
         File[] files = extractDir.listFiles();
+        assertTrue("extractDir:" + extractDir + " is not a directory.", (files != null));
+
         for (int i = 0; i < files.length; i++) {
             sb.append(files[i] + "\n");
         }
@@ -292,11 +297,13 @@ public class PackageRunnableTest {
         assertTrue(File.separator + "logs folder at " + logDir.getAbsolutePath() + " does not exist, but should. " + sb.toString(), logDir.exists());
 
         if (shouldFolderExist) {
-            assertTrue(File.separator + "templates folder at " + templateDir.getAbsolutePath() + " does not exist, but should. Contents =" + sb.toString(), templateDir.exists());
+            assertTrue(File.separator + "templates folder at " + templateDir.getAbsolutePath() + " does not exist, but should. Contents =" + sb.toString(),
+                       templateDir.exists());
         } else {
             Log.info(c, method, "Contents at " + templateDir.getAbsolutePath() + " are : " + sb.toString());
             assumeTrue(!templateDir.exists());
         }
+
     }
 
     /**
