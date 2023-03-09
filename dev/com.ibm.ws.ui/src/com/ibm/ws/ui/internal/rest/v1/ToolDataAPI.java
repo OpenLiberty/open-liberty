@@ -263,6 +263,16 @@ public class ToolDataAPI extends CommonRESTHandler implements V1Constants {
                                                                                                                       child));
                 }
                 String tooldata = getReaderContents(request.getInputStream(), POST_MAX_PLAIN_TEXT_SIZE);
+                // validate user input data
+                if(!Utils.isValidJsonString(tooldata)) {
+                    throw new RESTException(HTTP_INTERNAL_ERROR);
+                }
+                // validate java batch data
+                if (child.indexOf("com.ibm.websphere.appserver.adminCenter.tool.javaBatch") != -1) {
+                    if (!Utils.isValidJavaBatchData(tooldata);) {
+                        throw new RESTException(HTTP_INTERNAL_ERROR);
+                    }
+                }
 
                 String td = toolDataService.addToolData(request.getUserPrincipal().getName(), child, tooldata);
 
