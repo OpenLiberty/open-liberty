@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,7 +12,6 @@
  *******************************************************************************/
 package com.ibm.ws.repository.resolver.internal.kernel;
 
-import static com.ibm.ws.repository.resolver.internal.ResolutionMode.IGNORE_CONFLICTS;
 import static com.ibm.ws.repository.resolver.internal.kernel.KernelResolverEsaMatcher.resolverEsaWrapping;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
@@ -43,7 +42,7 @@ public class KernelResolverRepositoryTest {
         EsaResourceWritable esa = WritableResourceFactory.createEsa(null);
         esa.setProvideFeature("com.example.featureA");
 
-        KernelResolverRepository repo = new KernelResolverRepository(null, null, IGNORE_CONFLICTS);
+        KernelResolverRepository repo = new KernelResolverRepository(null, null);
         repo.addFeature(esa);
 
         assertThat(repo.getFeature("com.example.featureA"), is(resolverEsaWrapping(esa)));
@@ -57,7 +56,7 @@ public class KernelResolverRepositoryTest {
         publicEsa.setShortName("publicFeature");
         publicEsa.setVisibility(Visibility.PUBLIC);
 
-        KernelResolverRepository repo = new KernelResolverRepository(null, null, IGNORE_CONFLICTS);
+        KernelResolverRepository repo = new KernelResolverRepository(null, null);
         repo.addFeature(publicEsa);
 
         // Lookup by symbolic name works case insensitively
@@ -76,12 +75,12 @@ public class KernelResolverRepositoryTest {
         privateEsa.setShortName("privateFeature");
         privateEsa.setVisibility(Visibility.PRIVATE);
 
-        KernelResolverRepository repo = new KernelResolverRepository(null, null, IGNORE_CONFLICTS);
+        KernelResolverRepository repo = new KernelResolverRepository(null, null);
         repo.addFeature(privateEsa);
 
-        // Lookup by symbolic name works case insensitively
+        // Lookup by symbolic name does not work case insensitively
         assertThat(repo.getFeature("com.example.privateFeature"), is(resolverEsaWrapping(privateEsa)));
-        assertThat(repo.getFeature("com.EXAMPLE.privatefeature"), is(resolverEsaWrapping(privateEsa)));
+        assertThat(repo.getFeature("com.EXAMPLE.privatefeature"), is(nullValue()));
 
         // Looking up by short name works case insensitively
         assertThat(repo.getFeature("privateFeature"), is(resolverEsaWrapping(privateEsa)));
@@ -95,12 +94,12 @@ public class KernelResolverRepositoryTest {
         protectedEsa.setShortName("protectedFeature");
         protectedEsa.setVisibility(Visibility.PROTECTED);
 
-        KernelResolverRepository repo = new KernelResolverRepository(null, null, IGNORE_CONFLICTS);
+        KernelResolverRepository repo = new KernelResolverRepository(null, null);
         repo.addFeature(protectedEsa);
 
-        // Lookup by symbolic name works case insensitively
+        // Lookup by symbolic name does not work case insensitively
         assertThat(repo.getFeature("com.example.protectedFeature"), is(resolverEsaWrapping(protectedEsa)));
-        assertThat(repo.getFeature("com.EXAMPLE.protectedfeature"), is(resolverEsaWrapping(protectedEsa)));
+        assertThat(repo.getFeature("com.EXAMPLE.protectedfeature"), is(nullValue()));
 
         // Looking up by short name works case insensitively
         assertThat(repo.getFeature("protectedFeature"), is(resolverEsaWrapping(protectedEsa)));
@@ -114,7 +113,7 @@ public class KernelResolverRepositoryTest {
         installEsa.setShortName("installFeature");
         installEsa.setVisibility(Visibility.INSTALL);
 
-        KernelResolverRepository repo = new KernelResolverRepository(null, null, IGNORE_CONFLICTS);
+        KernelResolverRepository repo = new KernelResolverRepository(null, null);
         repo.addFeature(installEsa);
 
         // Lookup by symbolic name works case insensitively
@@ -131,7 +130,7 @@ public class KernelResolverRepositoryTest {
         EsaResourceWritable esa = WritableResourceFactory.createEsa(null);
         esa.setProvideFeature("com.example.featureA");
 
-        KernelResolverRepository repo = new KernelResolverRepository(null, null, IGNORE_CONFLICTS);
+        KernelResolverRepository repo = new KernelResolverRepository(null, null);
         repo.addFeature(esa);
 
         // GetConfiguredTolerates should always return an empty list
@@ -142,7 +141,7 @@ public class KernelResolverRepositoryTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testGetAutoFeatures() {
-        KernelResolverRepository repo = new KernelResolverRepository(null, null, IGNORE_CONFLICTS);
+        KernelResolverRepository repo = new KernelResolverRepository(null, null);
 
         EsaResourceWritable featureA = WritableResourceFactory.createEsa(null);
         featureA.setProvideFeature("com.example.featureA");
@@ -177,7 +176,7 @@ public class KernelResolverRepositoryTest {
         featureAduplicate.setProvideFeature("com.example.featureA");
         featureAduplicate.setShortName("featureA");
 
-        KernelResolverRepository repo = new KernelResolverRepository(null, null, IGNORE_CONFLICTS);
+        KernelResolverRepository repo = new KernelResolverRepository(null, null);
         repo.addFeatures(Arrays.asList(featureA, featureB, featureAduplicate));
 
         assertThat(repo.getFeature("com.example.featureA"), is(resolverEsaWrapping(featureA)));
@@ -198,7 +197,7 @@ public class KernelResolverRepositoryTest {
         featureA_11.setProvideFeature("com.example.featureA-1.0");
         featureA_11.setVersion("1.1");
 
-        KernelResolverRepository repo = new KernelResolverRepository(null, null, IGNORE_CONFLICTS);
+        KernelResolverRepository repo = new KernelResolverRepository(null, null);
         repo.addFeatures(Arrays.asList(featureA_10, featureA_11));
 
         // The latest version should be returned
@@ -215,7 +214,7 @@ public class KernelResolverRepositoryTest {
         featureA_11.setProvideFeature("com.example.featureA-1.0");
         featureA_11.setVersion("1.1");
 
-        KernelResolverRepository repo = new KernelResolverRepository(null, null, IGNORE_CONFLICTS);
+        KernelResolverRepository repo = new KernelResolverRepository(null, null);
         repo.addFeatures(Arrays.asList(featureA_10, featureA_11));
         repo.setPreferredVersion("com.example.featureA-1.0", "1.0");
 
@@ -238,7 +237,7 @@ public class KernelResolverRepositoryTest {
         featureA_110.setProvideFeature("com.example.featureA-1.0");
         featureA_110.setVersion("1.10");
 
-        KernelResolverRepository repo = new KernelResolverRepository(null, null, IGNORE_CONFLICTS);
+        KernelResolverRepository repo = new KernelResolverRepository(null, null);
         repo.addFeatures(Arrays.asList(featureA_19, featureA_110));
         repo.setPreferredVersion("com.example.featureA-1.0", "1.9");
 
@@ -262,7 +261,7 @@ public class KernelResolverRepositoryTest {
         featureA_wibble.setProvideFeature("com.example.featureA-1.0");
         featureA_wibble.setVersion("wibble");
 
-        KernelResolverRepository repo = new KernelResolverRepository(null, null, IGNORE_CONFLICTS);
+        KernelResolverRepository repo = new KernelResolverRepository(null, null);
         repo.addFeatures(Arrays.asList(featureA_wibble, featureA_1));
 
         // The feature with the valid version should be returned
@@ -279,7 +278,7 @@ public class KernelResolverRepositoryTest {
         Mockery mockery = new Mockery();
         ProvisioningFeatureDefinition installedFeature = ResolverTestUtils.mockSimpleFeatureDefinition(mockery, "com.example.featureA", Version.valueOf("1.0.0"), null);
 
-        KernelResolverRepository repo = new KernelResolverRepository(null, null, IGNORE_CONFLICTS);
+        KernelResolverRepository repo = new KernelResolverRepository(null, null);
 
         // With just the esa added, it should be returned
         repo.addFeature(esa);
@@ -309,7 +308,7 @@ public class KernelResolverRepositoryTest {
         ProvisioningFeatureDefinition installedFeature = ResolverTestUtils.mockSimpleFeatureDefinition(mockery, "com.example.featureA", Version.valueOf("1.0.0"), "featureA",
                                                                                                        "foo:featureA", com.ibm.ws.kernel.feature.Visibility.PUBLIC, false);
 
-        KernelResolverRepository repo = new KernelResolverRepository(null, null, IGNORE_CONFLICTS);
+        KernelResolverRepository repo = new KernelResolverRepository(null, null);
         repo.addFeature(installedFeature);
         assertThat(repo.getFeature("foo:featureA"), is(installedFeature));
     }
