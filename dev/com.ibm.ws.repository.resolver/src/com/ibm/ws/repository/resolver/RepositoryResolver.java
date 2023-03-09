@@ -380,10 +380,9 @@ public class RepositoryResolver {
         } else {
             // Resolve all dependencies of installed features
             resolveFeaturesBasic();
+            // Basic resolve auto-features satisfied by installed + resolved features
+            resolveAutoFeatures();
         }
-
-        // Basic resolve auto-features satisfied by installed + resolved features
-        resolveAutoFeatures();
 
         // Find any any features which aren't direct dependencies of a requested feature
         // Can happen if resolveAsSet is used to install some features
@@ -549,10 +548,7 @@ public class RepositoryResolver {
     /**
      * Finds any autofeatures which are satisfied by the installed and resolved features and adds them to the resolvedFeatures set
      * <p>
-     * This is necessary for both basic resolve and resolveAsSet:
-     * <ul>
-     * <li>basic resolve won't have found any autofeatures yet
-     * <li>resolveAsSet will have found autofeatures needed for the resolution set, but won't have added any additional which could be enabled by already installed features.
+     * This is only used for basic resolve because the kernel resolver will find autofeatures for us when using resolveAsSet
      */
     void resolveAutoFeatures() {
 
