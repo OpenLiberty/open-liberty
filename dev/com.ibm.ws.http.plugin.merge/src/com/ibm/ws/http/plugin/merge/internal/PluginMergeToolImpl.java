@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2018 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -704,13 +704,6 @@ public class PluginMergeToolImpl implements PluginMergeTool {
         return passFail;
     }
 
-    /*
-     * Confirm each route in merged file exists in an input file
-     */
-    public static void validateMerged(String [] argv) {
-
-    }
-
     /**
      * lfmerge, output and confirm the merged plugin-cfg.xml
      *
@@ -796,7 +789,7 @@ public class PluginMergeToolImpl implements PluginMergeTool {
 
 
                 if(!done) {
-                    throw new RuntimeException("Merge FAILED. Unable to reconcile. Please provide the input files and tool ouput to IBM.");
+                    throw new RuntimeException(NO_MERGE_ERR);
                 }
             }
         } catch (Throwable t) {

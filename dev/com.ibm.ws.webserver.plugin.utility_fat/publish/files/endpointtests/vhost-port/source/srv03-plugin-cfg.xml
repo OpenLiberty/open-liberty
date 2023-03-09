@@ -31,7 +31,7 @@
       <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/openapi/ui/*"/>
       <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/openapi/*"/>
       <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/jwt/*"/>
-      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/rvarchiv/scs/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/some/thing/*"/>
       <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/health/*"/>
       <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/ibm/api/*"/>
       <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/metrics/*"/>

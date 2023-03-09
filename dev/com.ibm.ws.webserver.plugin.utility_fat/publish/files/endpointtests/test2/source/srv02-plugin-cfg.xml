@@ -28,7 +28,7 @@
       </PrimaryServers>
    </ServerCluster>
    <UriGroup Name="default_host_srv02_default_node_Cluster_URIs">
-      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/rvarchiv/console/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/some/console/*"/>
       <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/metrics/*"/>
    </UriGroup>
    <Route ServerCluster="srv02_default_node_Cluster" UriGroup="default_host_srv02_default_node_Cluster_URIs" VirtualHostGroup="default_host"/>

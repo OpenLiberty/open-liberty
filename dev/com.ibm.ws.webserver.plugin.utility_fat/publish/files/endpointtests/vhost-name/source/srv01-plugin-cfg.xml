@@ -35,7 +35,7 @@
       <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/health/*"/>
       <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/IBMJMXConnectorREST/*"/>
       <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/ibm/api/*"/>
-      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/elvd/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/other/*"/>
       <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/metrics/*"/>
    </UriGroup>
    <Route ServerCluster="srv01_default_node_Cluster" UriGroup="default_host_srv01_default_node_Cluster_URIs" VirtualHostGroup="default_host"/>
