@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import com.ibm.ws.fat.util.tck.TCKArchiveModifications;
 public class ArquillianLoadableExtension extends AbstractArquillianLoadableExtension {
     @Override
     public Set<TCKArchiveModifications> getModifications() {
-        return EnumSet.of(TCKArchiveModifications.JETTY, TCKArchiveModifications.TEST_LOGGER, TCKArchiveModifications.WIREMOCK);
+        return EnumSet.of(TCKArchiveModifications.JETTY, TCKArchiveModifications.TEST_LOGGER,
+                TCKArchiveModifications.WIREMOCK, TCKArchiveModifications.SLF4J);
     }
 }

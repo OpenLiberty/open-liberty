@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2021, 2022 IBM Corporation and others. All rights reserved.
+    Copyright (c) 2021, 2023 IBM Corporation and others. All rights reserved.
     This program and the accompanying materials are made available under the
     terms of the Eclipse Public License 2.0 which accompanies this distribution,
     and is available at
@@ -37,6 +37,8 @@
     <properties>
         <microprofile.graphql.version>2.0</microprofile.graphql.version>
         <arquillian.version>1.7.0.Alpha13</arquillian.version>
+        <arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
+        <testng.version>7.5.0-ibm230227</testng.version>
 
         <!-- the below is used in arquillian.xml -->
         <wlp>${wlp}</wlp>
@@ -147,7 +149,7 @@
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed-jakarta</artifactId>
-            <version>2.1.1</version>
+            <version>${arquillian.liberty.managed.jakarta.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

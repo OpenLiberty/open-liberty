@@ -15,7 +15,9 @@
         <surefire.version>2.17</surefire.version> <!-- Any changes to the surefire version must be tested against ZOS-->
 
         <arquillian.version>1.7.0.Alpha13</arquillian.version>
-        <arquillian-wlp.version>2.1.1</arquillian-wlp.version>
+		<arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
+		<testng.version>7.5.0-ibm230227</testng.version>
+        
 
         <defaultSuiteFiles>tck-suite.xml</defaultSuiteFiles>
         <suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
@@ -117,7 +119,7 @@
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed-jakarta</artifactId>
-            <version>${arquillian-wlp.version}</version>
+            <version>${arquillian.liberty.managed.jakarta.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

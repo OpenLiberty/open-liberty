@@ -18,7 +18,7 @@
         <microprofile.lra.version>1.0-M2</microprofile.lra.version>
         <microprofile.config.version>1.3</microprofile.config.version>
 
-        <arquillian.version>1.3.0.Final</arquillian.version>
+        <arquillian.version>1.7.0.Alpha13</arquillian.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
