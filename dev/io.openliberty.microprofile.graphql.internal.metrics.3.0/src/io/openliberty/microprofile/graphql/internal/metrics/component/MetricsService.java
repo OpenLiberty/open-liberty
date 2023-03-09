@@ -7,7 +7,7 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.microprofile.graphql.metrics.component;
+package io.openliberty.microprofile.graphql.internal.metrics.component;
 
 import java.time.Duration;
 import java.util.Collections;

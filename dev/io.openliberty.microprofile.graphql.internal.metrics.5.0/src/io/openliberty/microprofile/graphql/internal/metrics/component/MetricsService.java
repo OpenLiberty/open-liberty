@@ -7,7 +7,7 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.microprofile.graphql.metrics.component;
+package io.openliberty.microprofile.graphql.internal.metrics.component;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -16,7 +16,6 @@ import java.util.Map;
 
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.eclipse.microprofile.metrics.MetricType;
 
 import io.smallrye.graphql.api.Context;
 import io.smallrye.graphql.cdi.config.ConfigKey;
@@ -33,7 +32,7 @@ public class MetricsService implements EventingService {
     private final Map<Context, Long> startTimes = Collections.synchronizedMap(new IdentityHashMap<>());
 
     public MetricsService() {
-        metricRegistry = MetricsServiceComponent.getSharedMetricRegistries().getOrCreate(MetricRegistry.Type.VENDOR.getName());
+        metricRegistry = MetricsServiceComponent.getSharedMetricRegistries().getOrCreate(MetricRegistry.VENDOR_SCOPE);
     }
 
     @Override
@@ -43,10 +42,9 @@ public class MetricsService implements EventingService {
 
         Metadata metadata = Metadata.builder()
                 .withName(name)
-                .withType(MetricType.SIMPLE_TIMER)
                 .withDescription(description)
                 .build();
-        metricRegistry.simpleTimer(metadata);
+        metricRegistry.timer(metadata);
         return operation;
     }
 
@@ -60,8 +58,12 @@ public class MetricsService implements EventingService {
         Long startTime = startTimes.remove(context);
         if (startTime != null) {
             long duration = System.nanoTime() - startTime;
-            metricRegistry.simpleTimer(getName(context))
-            .update(Duration.ofNanos(duration));
+            Metadata metadata = Metadata.builder()
+                    .withName(getName(context))
+                    .withDescription(getDescription(context))
+                    .build();
+            metricRegistry.timer(metadata)
+                    .update(Duration.ofNanos(duration));
         }
     }
 
@@ -72,6 +74,14 @@ public class MetricsService implements EventingService {
 
     private String getName(Context context) {
         return PRE + context.getOperationType().toString() + UNDERSCORE + context.getFieldName();
+    }
+
+    private String getDescription(Context context) {
+        return "Call statistics for the "
+                + context.getOperationType().toString().toLowerCase()
+                + " '"
+                + context.getFieldName()
+                + "'";
     }
 
     private String getName(Operation operation) {
