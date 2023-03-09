@@ -20,6 +20,8 @@
         <microprofile.metrics.version>4.0</microprofile.metrics.version>
 
         <arquillian.version>1.7.0.Alpha13</arquillian.version>
+        <arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
+        <testng.version>7.5.0-ibm230227</testng.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -104,7 +106,7 @@
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed-jakarta</artifactId>
-            <version>2.1.1</version>
+            <version>${arquillian.liberty.managed.jakarta.version}</version>
             <scope>test</scope>
         </dependency>
 

@@ -57,7 +57,7 @@
 
 		<!-- Test Infrastructure versions -->
 		<arquillian.version>1.7.0.Alpha13</arquillian.version>
-		<arquillian.wlp.version>2.1.2</arquillian.wlp.version>
+		<arquillian.liberty.managed.jakarta.junit5.version>2.1.2</arquillian.liberty.managed.jakarta.junit5.version>
 		<junit.version>5.9.0</junit.version>
 		<sigtest.version>1.6</sigtest.version>
 
@@ -115,7 +115,7 @@
 		<dependency>
 			<groupId>io.openliberty.arquillian</groupId>
 			<artifactId>arquillian-liberty-managed-jakarta-junit5</artifactId>
-			<version>${arquillian.wlp.version}</version>
+			<version>${arquillian.liberty.managed.jakarta.junit5.version}</version>
 			<type>pom</type>
 		</dependency>
 

@@ -14,12 +14,13 @@
         <microprofile.openapi.version>2.0</microprofile.openapi.version>
 
         <surefire.version>2.17</surefire.version> <!-- Any changes to the surefire version must be tested against ZOS-->
-        <arquillian.version>1.6.0.Final</arquillian.version>
-        <arquillian-wlp.version>1.0.8</arquillian-wlp.version>
+        <testng.version>7.5.0-ibm230227</testng.version>
+        <arquillian.version>1.7.0.Alpha13</arquillian.version>
+        <arquillian.liberty.managed.version>1.0.8</arquillian.liberty.managed.version>
 
         <suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
         <targetDirectory>${project.basedir}/target</targetDirectory>
-        <testng.version>6.14.3</testng.version>
+        
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -111,7 +112,7 @@
         <dependency>
             <groupId>io.openliberty.arquillian</groupId>
             <artifactId>arquillian-liberty-managed</artifactId>
-            <version>${arquillian-wlp.version}</version>
+            <version>${arquillian.liberty.managed.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
