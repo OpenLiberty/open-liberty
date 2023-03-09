@@ -772,6 +772,7 @@ public class ResolutionTests {
      *
      * @throws Throwable
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void testAutoFeatureSatisfiedByNewFeatureAndInstalledFeature() throws Throwable {
         // Add a test resource which is going to be installed
@@ -789,24 +790,20 @@ public class ResolutionTests {
         // Now see if we can resolve it!
         RepositoryResolver resolver = createResolver(Collections.singletonList(installedFeature));
         Collection<List<RepositoryResource>> resolvedResources = resolve(resolver, symbolicName);
-        assertEquals("There should be two lists of resources one for the feature being installed and one for the auto feature, set is:" + resolvedResources, 2,
-                     resolvedResources.size());
-        boolean foundFeatureList = false;
-        boolean foundAutoList = false;
-        for (List<RepositoryResource> resolvedList : resolvedResources) {
-            if (resolvedList.contains(testResource) && resolvedList.size() == 1) {
-                foundFeatureList = true;
-            } else if (resolvedList.contains(autoFeature)) {
-                foundAutoList = true;
-                assertEquals("There should be 2 resolved resources in the auto list", 2, resolvedList.size());
-                assertEquals("Auto should be installed last", autoFeature, resolvedList.get(1));
-                assertEquals("Main feature should be installed first", testResource, resolvedList.get(0));
-            } else {
-                fail("Unexpected list in the resolve resources: " + resolvedList);
-            }
+
+        if (testType == TestType.RESOLVE) {
+            assertThat(resolvedResources, containsInAnyOrder(contains(testResource),
+                                                             contains(testResource, autoFeature)));
+        } else {
+            // Only restResource installed when installing as set because the autofeature isn't required to start the set with just the new feature
+            assertThat(resolvedResources, contains(contains(testResource)));
         }
-        assertTrue("Should have found feature", foundFeatureList);
-        assertTrue("Should have found auto", foundAutoList);
+
+        // Now see how it resolves when we ask for the installed feature as well
+        resolvedResources = resolve(resolver, Arrays.asList(symbolicName, installedName));
+        // Now resolveAsSet also returns the autofeature, because it is required by the set
+        assertThat(resolvedResources, containsInAnyOrder(contains(testResource),
+                                                         contains(testResource, autoFeature)));
     }
 
     /**
@@ -1025,6 +1022,7 @@ public class ResolutionTests {
     /**
      * Test to make sure an auto feature is automatically installed if its capabilities are met by what is already installed
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void testAutoFeatureSatisfiedByInstalledFeature() throws RepositoryException, ResolutionException {
         // Add one test resource to massive, but make a dependency to an already installed feature
@@ -1041,14 +1039,20 @@ public class ResolutionTests {
         RepositoryResolver resolver = new RepositoryResolver(Collections.<ProductDefinition> emptySet(), Collections.singleton(mockFeatureDefinition),
                                                              Collections.<IFixInfo> emptySet(), createConnectionList());
         Collection<List<RepositoryResource>> resolvedResources = resolve(resolver, repoSymbolicName);
-        assertEquals("There should be two lists of resources as the auto feature doesn't require the massive resource, set is:" + resolvedResources, 2, resolvedResources.size());
-        Collection<RepositoryResource> allResolvedResources = new ArrayList<RepositoryResource>();
-        for (List<RepositoryResource> massiveResourceList : resolvedResources) {
-            allResolvedResources.addAll(massiveResourceList);
+
+        if (testType == TestType.RESOLVE) {
+            assertThat(resolvedResources, containsInAnyOrder(contains(testResource),
+                                                             contains(autoFeature)));
+        } else {
+            // Autofeature not installed because it's not needed for the requested set of features
+            assertThat(resolvedResources, contains(contains(testResource)));
         }
-        assertEquals("There should be two resolved resources", 2, allResolvedResources.size());
-        assertTrue("The resolved resources should contain the one we were looking for", allResolvedResources.contains(testResource));
-        assertTrue("The resolved resources should contain the now satisified auto feature", allResolvedResources.contains(autoFeature));
+
+        // Now try resolving both the installed and the new feature
+        resolvedResources = resolve(resolver, Arrays.asList(repoSymbolicName, installedSymbolicName));
+        // Now resolveAsSet also installs the autofeature
+        assertThat(resolvedResources, containsInAnyOrder(contains(testResource),
+                                                         contains(autoFeature)));
 
         // Make sure the mockery was happy
         mockery.assertIsSatisfied();
@@ -2435,6 +2439,14 @@ public class ResolutionTests {
      * Expected AsSet: Resolves B-2.0, Base-2.0 and A.internal-2.0 because A.internal-2.0 is required to form a valid set
      * Expected Basic: Resolves B-2.0, Base-2.0 and A.internal-2.0 because all tolerated dependencies are installed, even for already installed features
      *
+     * Test: Attempt to resolve [C-1.0]
+     * Expected AsSet: Resolves nothing because C-1.0 and A-1.0 are already installed
+     * Expected Basic: Resolves Base-2.0 and A.internal-2.0 because all tolerated dependencies of autofeatures are installed
+     *
+     * Test: Attempt to resolve [B-2.0]
+     * Expected AsSet: Resolves B-2.0 and Base-2.0 because they are needed to form a valid set. A.internal-2.0 is not needed.
+     * Expected Basic: Resolves B-2.0, Base-2.0 and A.internal-2.0 because all tolerated dependencies of autofeatures are installed
+     *
      * @throws RepositoryException
      */
     @SuppressWarnings("unchecked")
@@ -2490,9 +2502,31 @@ public class ResolutionTests {
         repoFeatures.add(b20);
 
         RepositoryResolver resolver = createResolver(installedFeatures);
+
         Collection<List<RepositoryResource>> resolved = resolve(resolver, Arrays.asList(c10.getSymbolicName(), b20.getProvideFeature()));
-        assertThat(resolved, containsInAnyOrder(Matchers.contains(base20, b20),
-                                                Matchers.contains(base20, aInternal20)));
+        // AsSet: Resolves B-2.0, Base-2.0 and A.internal-2.0 because A.internal-2.0 is required to form a valid set
+        // Basic: Resolves B-2.0, Base-2.0 and A.internal-2.0 because all tolerated dependencies are installed, even for already installed features
+        assertThat(resolved, containsInAnyOrder(contains(base20, b20),
+                                                contains(base20, aInternal20)));
+
+        resolved = resolve(resolver, Arrays.asList(c10.getSymbolicName()));
+        if (testType == TestType.RESOLVE_AS_SET) {
+            // Resolves nothing because C-1.0 and A-1.0 are already installed
+            assertThat(resolved, contains(empty()));
+        } else {
+            // Resolves Base-2.0 and A.internal-2.0 because all tolerated dependencies of autofeatures are installed
+            assertThat(resolved, contains(contains(base20, aInternal20)));
+        }
+
+        resolved = resolve(resolver, Arrays.asList(b20.getProvideFeature()));
+        if (testType == TestType.RESOLVE_AS_SET) {
+            // Resolves B-2.0 and Base-2.0 because they are needed to form a valid set. A.internal-2.0 is not needed.
+            assertThat(resolved, contains(contains(base20, b20)));
+        } else {
+            // Resolves B-2.0, Base-2.0 and A.internal-2.0 because all tolerated dependencies of autofeatures are installed
+            assertThat(resolved, containsInAnyOrder(contains(base20, b20),
+                                                    contains(base20, aInternal20)));
+        }
     }
 
     /**
