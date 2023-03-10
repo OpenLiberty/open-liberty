@@ -29,9 +29,9 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
@@ -61,7 +61,9 @@ public class CdiPropsAndProvidersTest extends FATServletClient {
                                            MicroProfileActions.MP22, // 1.2
                                            MicroProfileActions.MP30, // 1.3
                                            MicroProfileActions.MP33, // 1.4
-                                           MicroProfileActions.MP40); // 2.0
+                                           MicroProfileActions.MP40, // 1.4
+//                                           MicroProfileActions.MP50, // 3.0+EE9
+                                           MicroProfileActions.MP60); //3.0+EE10
 
         } else {
             r = MicroProfileActions.repeat(SERVER_NAME, 
@@ -84,11 +86,17 @@ public class CdiPropsAndProvidersTest extends FATServletClient {
         if (JakartaEE9Action.isActive()) {
             remoteAppServer.changeFeatures(Arrays.asList("componenttest-2.0", "restfulWS-3.0", "ssl-1.0", "jsonb-2.0"));
         }
+        if (JakartaEE10Action.isActive()) {
+            remoteAppServer.changeFeatures(Arrays.asList("componenttest-2.0", "restfulWS-3.1", "ssl-1.0", "jsonb-3.0", "servlet-6.0")); 
+        }
         remoteAppServer.startServer();
 
         ShrinkHelper.defaultDropinApp(server, appName, "mpRestClient11.cdiPropsAndProviders");
         if (JakartaEE9Action.isActive()) {
             server.changeFeatures(Arrays.asList("componenttest-2.0", "mpRestClient-3.0", "mpConfig-3.0", "cdi-3.0", "jsonb-2.0"));
+        }
+        if (JakartaEE10Action.isActive()) {
+            server.changeFeatures(Arrays.asList("componenttest-2.0", "restfulWS-3.1", "ssl-1.0", "jsonb-3.0", "servlet-6.0"));        
         }
         server.startServer();
     }
