@@ -23,6 +23,7 @@
         <arquillian.version>1.7.0.Alpha13</arquillian.version>
 		<arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
 		<testng.version>7.5.0-ibm230227</testng.version>
+        <slf4j.version>2.0.6</slf4j.version>
         <microprofile.jwt.version>2.1</microprofile.jwt.version>
 
         <!-- the below is used in arquillian.xml -->

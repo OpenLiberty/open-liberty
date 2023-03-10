@@ -22,7 +22,8 @@
         <microprofile.opentracing.version>1.0.3</microprofile.opentracing.version>
         <arquillian.version>1.7.0.Alpha13</arquillian.version>
 		<arquillian.liberty.managed.version>1.0.8</arquillian.liberty.managed.version>
-		<testng.version>7.5.0-ibm230227</testng.version>        
+		<testng.version>7.5.0-ibm230227</testng.version>
+        <slf4j.version>2.0.6</slf4j.version>
 
         <!-- the below is used in arquillian.xml -->
         <wlp>${wlp}</wlp>
@@ -81,6 +82,19 @@
             <version>${testng.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.jboss.arquillian.testng</groupId>
             <artifactId>arquillian-testng-container</artifactId>

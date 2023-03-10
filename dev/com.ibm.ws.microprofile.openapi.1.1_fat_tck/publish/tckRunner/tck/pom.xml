@@ -15,11 +15,11 @@
         <surefire.version>2.17</surefire.version> <!-- Any changes to the surefire version must be tested against ZOS -->
         <arquillian.version>1.7.0.Alpha13</arquillian.version>
 		<arquillian.liberty.managed.version>1.0.8</arquillian.liberty.managed.version>
-		<testng.version>7.5.0-ibm230227</testng.version>        
+		<testng.version>7.5.0-ibm230227</testng.version>
+        <slf4j.version>2.0.6</slf4j.version>
 
         <suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
         <targetDirectory>${project.basedir}/target</targetDirectory>
-        <testng.version>7.5.0-ibm230227</testng.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -85,6 +85,18 @@
             <artifactId>testng</artifactId>
             <version>${testng.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.testng</groupId>
