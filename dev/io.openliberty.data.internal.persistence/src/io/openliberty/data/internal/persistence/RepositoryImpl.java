@@ -1105,7 +1105,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 || queryInfo.entityInfo.inheritance && queryInfo.entityInfo.type.isAssignableFrom(singleType)) {
                 // Specify columns without creating new instance
                 for (int i = 0; i < cols.length; i++) {
-                    generateSelectExpression(q, i == 0, function, distinct, o, cols[i]);
+                    generateSelectExpression(q, i == 0, function, distinct, o, queryInfo.entityInfo.getAttributeName(cols[i]));
                 }
             } else {
                 // Construct new instance from defined columns

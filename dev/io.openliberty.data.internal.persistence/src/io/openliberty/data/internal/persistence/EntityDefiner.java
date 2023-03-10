@@ -39,6 +39,7 @@ import org.osgi.framework.ServiceReference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
@@ -52,6 +53,7 @@ import jakarta.persistence.metamodel.EntityType;
 import jakarta.persistence.metamodel.ManagedType;
 import jakarta.persistence.metamodel.Metamodel;
 import jakarta.persistence.metamodel.SingularAttribute;
+import jakarta.persistence.metamodel.Type;
 
 /**
  * Runs asynchronously to supply orm.xml for entities that aren't already Jakarta Persistence entities
@@ -71,6 +73,32 @@ class EntityDefiner implements Runnable {
         this.databaseId = databaseId;
         this.loader = loader;
         this.entities = entities;
+    }
+
+    /**
+     * Request the Id type, allowing for an EclipseLink extension that lets the
+     * Id to be located on an attribute of an Embeddable of the entity.
+     *
+     * @param entityType
+     * @return the Id type. Null if the type of Id cannot be determined.
+     */
+    @FFDCIgnore(RuntimeException.class)
+    @Trivial
+    private static Type<?> getIdType(EntityType<?> entityType) {
+        Type<?> idType;
+        try {
+            idType = entityType.getIdType();
+        } catch (RuntimeException x) {
+            // occurs with EclipseLink extension to JPA that allows @Id on an embeddable attribute
+            if ("ConversionException".equals(x.getClass().getSimpleName()))
+                idType = null;
+            else
+                throw x;
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, entityType.getName() + " getIdType: " + idType);
+        return idType;
     }
 
     @Override
@@ -238,17 +266,24 @@ class EntityDefiner implements Runnable {
                 }
 
                 if (!entityType.hasSingleIdAttribute()) {
-                    String attrName = attributeNames.get("id");
-                    if (!attrName.contains(".")) { // Skip for Id on Embeddable. Only apply to IdClass
-                        attributeNames.remove("id");
-                        idClass = entityType.getIdType().getJavaType();
-                        idClassAttributeAccessors = new TreeMap<>();
-                        for (SingularAttribute<?, ?> attr : entityType.getIdClassAttributes()) {
-                            Member entityMember = attr.getJavaMember();
-                            Member idClassMember = entityMember instanceof Field //
-                                            ? idClass.getField(entityMember.getName()) //
-                                            : idClass.getMethod(entityMember.getName());
-                            idClassAttributeAccessors.put(attr.getName().toLowerCase(), idClassMember);
+                    // Per JavaDoc, the above means there is an IdClass.
+                    // An EclipseLink extension that allows an Id on an embeddable of an entity
+                    // is an exception to this, which we indicate with idClassType null.
+                    Type<?> idClassType = getIdType(entityType);
+                    if (idClassType != null) {
+                        @SuppressWarnings("unchecked")
+                        Set<SingularAttribute<?, ?>> idClassAttributes = (Set<SingularAttribute<?, ?>>) (Set<?>) entityType.getIdClassAttributes();
+                        if (idClassAttributes != null) {
+                            attributeNames.remove("id");
+                            idClass = idClassType.getJavaType();
+                            idClassAttributeAccessors = new TreeMap<>();
+                            for (SingularAttribute<?, ?> attr : idClassAttributes) {
+                                Member entityMember = attr.getJavaMember();
+                                Member idClassMember = entityMember instanceof Field //
+                                                ? idClass.getField(entityMember.getName()) //
+                                                : idClass.getMethod(entityMember.getName());
+                                idClassAttributeAccessors.put(attr.getName().toLowerCase(), idClassMember);
+                            }
                         }
                     }
                 }

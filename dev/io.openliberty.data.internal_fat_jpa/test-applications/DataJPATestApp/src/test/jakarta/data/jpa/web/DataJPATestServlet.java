@@ -38,6 +38,8 @@ import jakarta.transaction.UserTransaction;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import test.jakarta.data.jpa.web.CreditCard.CardId;
+import test.jakarta.data.jpa.web.CreditCard.Issuer;
 
 @SuppressWarnings("serial")
 @WebServlet("/*")
@@ -51,6 +53,9 @@ public class DataJPATestServlet extends FATServlet {
 
     @Inject
     Cities cities;
+
+    @Inject
+    CreditCards creditCards;
 
     @Inject
     Drivers drivers;
@@ -89,6 +94,37 @@ public class DataJPATestServlet extends FATServlet {
         cities.save(new City("Springfield", "Ohio", 58662, Set.of(326, 937)));
         cities.save(new City("Kansas City", "Missouri", 508090, Set.of(816, 975)));
         cities.save(new City("Kansas City", "Kansas", 156607, Set.of(913)));
+
+        Customer c1 = new Customer(9210001, "Matthew@tests.openliberty.io", 5075550101L);
+        Customer c2 = new Customer(9210002, "martin@tests.openliberty.io", 5075552222L);
+        Customer c3 = new Customer(9210003, "MICHELLE@TESTS.OPENLIBERTY.IO", 5075553333L);
+        Customer c4 = new Customer(9210004, "Megan@tests.openliberty.io", 5075552444L);
+        Customer c5 = new Customer(9210005, "Maximilian@tests.openliberty.io", 5075550055L);
+        Customer c6 = new Customer(9210006, "Monica@tests.openliberty.io", 5075550066L);
+        Customer c7 = new Customer(9210007, "Molly@tests.openliberty.io", 5075552277L);
+
+        CreditCard card1a = new CreditCard(c1, 1000921011110001L, 101, LocalDate.of(2021, 1, 1), LocalDate.of(2025, 1, 1), Issuer.AmericanExtravagance);
+        CreditCard card1m = new CreditCard(c1, 1000921011120002L, 102, LocalDate.of(2021, 1, 2), LocalDate.of(2025, 1, 2), Issuer.MonsterCard);
+        CreditCard card1v = new CreditCard(c1, 1000921011130003L, 103, LocalDate.of(2021, 1, 3), LocalDate.of(2025, 1, 3), Issuer.Feesa);
+
+        c2.addCard(new CreditCard(c2, 2000921021110001L, 201, LocalDate.of(2022, 2, 1), LocalDate.of(2026, 2, 1), Issuer.AmericanExtravagance));
+        c2.addCard(new CreditCard(c2, 2000921022220002L, 222, LocalDate.of(2022, 2, 2), LocalDate.of(2026, 2, 2), Issuer.Discrooger));
+
+        c3.addCard(new CreditCard(c3, 3000921031110001L, 301, LocalDate.of(2023, 3, 1), LocalDate.of(2027, 3, 1), Issuer.Discrooger));
+        c3.addCard(new CreditCard(c3, 3000921032220002L, 222, LocalDate.of(2023, 3, 2), LocalDate.of(2027, 3, 2), Issuer.MonsterCard));
+        c3.addCard(new CreditCard(c3, 3000921033330003L, 303, LocalDate.of(2023, 3, 3), LocalDate.of(2027, 3, 3), Issuer.Feesa));
+
+        c4.addCard(new CreditCard(c4, 4000921041110001L, 401, LocalDate.of(2020, 4, 1), LocalDate.of(2024, 4, 1), Issuer.MonsterCard));
+        c4.addCard(new CreditCard(c4, 4000921042220002L, 222, LocalDate.of(2020, 4, 2), LocalDate.of(2024, 4, 2), Issuer.Feesa));
+
+        c5.addCard(new CreditCard(c5, 5000921051110001L, 501, LocalDate.of(2021, 5, 1), LocalDate.of(2025, 5, 1), Issuer.Discrooger));
+        c5.addCard(new CreditCard(c5, 5000921052220002L, 502, LocalDate.of(2021, 5, 2), LocalDate.of(2025, 5, 2), Issuer.MonsterCard));
+
+        c6.addCard(new CreditCard(c6, 6000921061110001L, 601, LocalDate.of(2022, 6, 1), LocalDate.of(2026, 6, 1), Issuer.AmericanExtravagance));
+        c6.addCard(new CreditCard(c6, 6000921062220002L, 222, LocalDate.of(2022, 6, 2), LocalDate.of(2026, 6, 2), Issuer.Feesa));
+
+        creditCards.save(card1a, card1m, card1v);
+        creditCards.save(c2, c3, c4, c5, c6, c7); // TODO save some of these into a Customers repository?
     }
 
     /**
@@ -798,6 +834,74 @@ public class DataJPATestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         employees.deleteByLastName("TestIdOnEmbeddable");
+    }
+
+    /**
+     * Many-to-one entity mapping, where ordering is done based on a composite IdClass.
+     */
+    @Test
+    public void testManyToOneIdClass() {
+        assertIterableEquals(List.of("Discrooger card #2000921022220002",
+                                     "MonsterCard card #3000921032220002",
+                                     "Feesa card #4000921042220002",
+                                     "Feesa card #6000921062220002"),
+                             creditCards.findBySecurityCode(222)
+                                             .map(CardId::toString)
+                                             .collect(Collectors.toList()));
+
+    }
+
+    /**
+     * Many-to-one entity mapping, where a repository query from the many side
+     * filters on and orders by an attribute on the one side,
+     * returning results from the many side.
+     */
+    @Test
+    public void testManyToOneM11M() {
+        assertIterableEquals(List.of(5000921051110001L, 5000921052220002L,
+                                     1000921011110001L, 1000921011120002L, 1000921011130003L,
+                                     2000921021110001L, 2000921022220002L),
+                             creditCards.findByDebtorEmailIgnoreCaseStartsWith("ma")
+                                             .map(card -> card.number)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Many-to-one entity mapping, where a repository query from the many side
+     * filters on an attribute from the many side,
+     * orders by an attribute on the one side,
+     * returning results from the one side.
+     */
+    @Test
+    public void testManyToOneMM11() {
+        assertIterableEquals(List.of("MICHELLE@TESTS.OPENLIBERTY.IO",
+                                     "Matthew@tests.openliberty.io",
+                                     "Maximilian@tests.openliberty.io",
+                                     "Megan@tests.openliberty.io"),
+                             creditCards.findByIssuer(Issuer.MonsterCard)
+                                             .map(c -> c.email)
+                                             .collect(Collectors.toList()));
+
+        assertIterableEquals(List.of("MICHELLE@TESTS.OPENLIBERTY.IO",
+                                     "Matthew@tests.openliberty.io",
+                                     "Megan@tests.openliberty.io",
+                                     "Monica@tests.openliberty.io"),
+                             creditCards.findByIssuer(Issuer.Feesa)
+                                             .map(c -> c.email)
+                                             .collect(Collectors.toList()));
+    }
+
+    /**
+     * Many-to-one entity mapping, where a repository query from the many side
+     * filters on an attribute from the many side,
+     * orders by an attribute on the one side,
+     * returning distinct results from the one side.
+     */
+    @Test
+    public void testManyToOneMM11D() {
+        assertIterableEquals(List.of("Monica@tests.openliberty.io",
+                                     "martin@tests.openliberty.io"),
+                             creditCards.findByExpiresOnBetween(LocalDate.of(2026, 1, 1), LocalDate.of(2026, 12, 31)));
     }
 
     /**
