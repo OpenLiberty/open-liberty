@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019, 2022 IBM Corporation and others.
+# Copyright (c) 2019, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -35,7 +35,7 @@ fat.project: true
 
 
 tested.features: appsecurity-4.0, expressionlanguage-4.0, mpConfig-2.0, mpConfig-3.0, mpGraphQL-2.0, mpMetrics-2.0, mpMetrics-3.0, \
-  mpMetrics-4.0, mpRestClient-2.0, mpRestClient-3.0
+  mpMetrics-4.0, mpRestClient-2.0, mpRestClient-3.0, appsecurity-5.0, mpmetrics-5.0, restfulwsclient-3.1, concurrent-3.0, jsonb-3.0
 
 -buildpath: \
   io.smallrye:smallrye-graphql-client-api;strategy=exact;version=1.0.26,\

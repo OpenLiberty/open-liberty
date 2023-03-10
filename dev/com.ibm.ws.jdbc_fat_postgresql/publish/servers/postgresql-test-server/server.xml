@@ -12,13 +12,17 @@
     </application>
     
     <dataSource jndiName="jdbc/postgres/genericprops">
-      <jdbcDriver libraryRef="PostgresLib" />
+      <jdbcDriver libraryRef="PostgresLibJar" />
       <properties serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"/>
     </dataSource>
 
     <!-- Uses an anonymously named postgres JDBC driver, so that the file name heuristic doesn't discover the driver type -->    
     <library id="PostgresLib">
         <fileset dir="${server.config.dir}/jdbc"/>
+    </library>
+    
+    <library id="PostgresLibJar">
+        <file name="${shared.resource.dir}/postgres/postgresql.jar"/>
     </library>
     
     <!-- datasource type auto-detection should locate the java.sql.Driver in the driver.jar -->
@@ -33,8 +37,14 @@
                   defaultRowFetchSize="5" applicationName="postgresqlApp"/>
     </dataSource>
     
+    <dataSource jndiName="jdbc/postgres/XADataSource" type="javax.sql.XADataSource">
+      <jdbcDriver libraryRef="PostgresLibJar" />
+      <properties serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"
+                  defaultRowFetchSize="5" applicationName="postgresqlApp"/>
+    </dataSource>
+    
     <dataSource jndiName="jdbc/postgres/minimal">
-      <jdbcDriver libraryRef="PostgresLib" />
+      <jdbcDriver libraryRef="PostgresLibJar" />
       <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"/>
     </dataSource>
     
@@ -52,36 +62,36 @@
     </dataSource>
     
     <dataSource jndiName="jdbc/postgres/ConnectionPoolDataSource" type="javax.sql.ConnectionPoolDataSource">
-      <jdbcDriver libraryRef="PostgresLib" />
+      <jdbcDriver libraryRef="PostgresLibJar" />
       <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"/>
     </dataSource>
     
     <dataSource jndiName="jdbc/postgres/DataSource" type="javax.sql.DataSource">
-      <jdbcDriver libraryRef="PostgresLib" />
+      <jdbcDriver libraryRef="PostgresLibJar" />
       <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"/>
     </dataSource>
     
     <dataSource jndiName="jdbc/postgres/readOnly">
-      <jdbcDriver libraryRef="PostgresLib" />
+      <jdbcDriver libraryRef="PostgresLibJar" />
       <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"
                              readOnly="true" readOnlyMode="always"/>
     </dataSource>
     
     <dataSource jndiName="jdbc/postgres/defaultAutoCommit" type="javax.sql.ConnectionPoolDataSource">
-      <jdbcDriver libraryRef="PostgresLib" />
+      <jdbcDriver libraryRef="PostgresLibJar" />
       <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"
                              defaultAutoCommit="true" connectTimeout="10s"/>
     </dataSource>
     
     <dataSource jndiName="jdbc/postgres/defaultAutoCommitOff" type="javax.sql.ConnectionPoolDataSource">
-      <jdbcDriver libraryRef="PostgresLib" />
+      <jdbcDriver libraryRef="PostgresLibJar" />
       <connectionManager enableSharingForDirectLookups="false"/>
       <properties.postgresql serverName="${env.POSTGRES_HOST}" portNumber="${env.POSTGRES_PORT}" databaseName="${env.POSTGRES_DB}" user="${env.POSTGRES_USER}" password="${env.POSTGRES_PASS}"
                              defaultAutoCommit="false"/>
     </dataSource>
     
     <dataSource jndiName="jdbc/postgres/urlOnly">
-      <jdbcDriver libraryRef="PostgresLib" />
+      <jdbcDriver libraryRef="PostgresLibJar" />
       <properties.postgresql URL="${env.POSTGRES_URL}"/>
     </dataSource>
     
