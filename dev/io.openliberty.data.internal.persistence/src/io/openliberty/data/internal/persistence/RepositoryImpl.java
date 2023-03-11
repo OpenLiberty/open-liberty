@@ -1076,7 +1076,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                     // It would be preferable if the spec included the Select annotation to explicitly identify parameters, but if that doesn't happen
                     // TODO we could compare attribute types with known constructor to improve on guessing a correct order of parameters
                     q.append("NEW ").append(singleType.getName()).append('(');
-                    List<String> embAttrNames;
+                    List<String> relAttrNames;
                     boolean first = true;
                     if (singleType.equals(queryInfo.entityInfo.idClass))
                         for (String idClassAttributeName : queryInfo.entityInfo.idClassAttributeAccessors.keySet()) {
@@ -1084,8 +1084,8 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                             generateSelectExpression(q, first, function, distinct, o, name);
                             first = false;
                         }
-                    else if ((embAttrNames = queryInfo.entityInfo.embeddableAttributeNames.get(singleType)) != null)
-                        for (String name : embAttrNames) {
+                    else if ((relAttrNames = queryInfo.entityInfo.relationAttributeNames.get(singleType)) != null)
+                        for (String name : relAttrNames) {
                             generateSelectExpression(q, first, function, distinct, o, name);
                             first = false;
                         }
@@ -1105,7 +1105,7 @@ public class RepositoryImpl<R, E> implements InvocationHandler {
                 || queryInfo.entityInfo.inheritance && queryInfo.entityInfo.type.isAssignableFrom(singleType)) {
                 // Specify columns without creating new instance
                 for (int i = 0; i < cols.length; i++) {
-                    generateSelectExpression(q, i == 0, function, distinct, o, cols[i]);
+                    generateSelectExpression(q, i == 0, function, distinct, o, queryInfo.entityInfo.getAttributeName(cols[i]));
                 }
             } else {
                 // Construct new instance from defined columns
