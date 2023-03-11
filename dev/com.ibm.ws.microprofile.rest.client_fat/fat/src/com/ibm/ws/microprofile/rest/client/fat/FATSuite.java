@@ -28,6 +28,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 HeaderPropagationTest.class,
                 HeaderPropagation12Test.class,
                 HostnameVerifierTest.class,
+                HostnameVerifierProxyTest.class,
                 JsonbContextTest.class,
                 MultiClientCdiTest.class,
                 ProduceConsumeTest.class,
