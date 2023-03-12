@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -109,13 +109,13 @@ public class SessionCacheTestServlet extends FATServlet {
     @SuppressWarnings("rawtypes")
     public static Cache<String, ArrayList> getMetaCache() throws PrivilegedActionException {
         CacheManager cacheManager = AccessController.doPrivileged(getCacheManager);
-        Cache<String, ArrayList> cache = cacheManager.getCache("com.ibm.ws.session.meta.default_host%2FsessionCacheApp");
+        Cache<String, ArrayList> cache = cacheManager.getCache("com.ibm.ws.session.meta.default_host%2FsessionCacheApp.sessionCacheApp#sessionCacheApp.war");
         return cache;
     }
 
     public static Cache<String, byte[]> getAttrCache() throws PrivilegedActionException {
         CacheManager cacheManager = AccessController.doPrivileged(getCacheManager);
-        Cache<String, byte[]> cacheAttr = cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheApp");
+        Cache<String, byte[]> cacheAttr = cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheApp.sessionCacheApp#sessionCacheApp.war");
         return cacheAttr;
     }
 
@@ -128,21 +128,21 @@ public class SessionCacheTestServlet extends FATServlet {
 
         if (shouldFail) {
             try {
-                cacheManager.getCache("com.ibm.ws.session.meta.default_host%2FsessionCacheApp", String.class, ArrayList.class);
+                cacheManager.getCache("com.ibm.ws.session.meta.default_host%2FsessionCacheApp.sessionCacheApp#sessionCacheApp.war", String.class, ArrayList.class);
                 fail("ClassCastException not thrown when calling getCache(String, Class, Class)."
                      + " This may indicate that the ISPN021011 bug has been resolved.");
             } catch (ClassCastException cce) {
             } //expected
 
             try {
-                cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheApp", String.class, byte[].class);
+                cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheApp.sessionCacheApp#sessionCacheApp.war", String.class, byte[].class);
                 fail("ClassCastException not thrown when calling getCache(String, Class, Class)."
                      + " This may indicate that the ISPN021011 bug has been resolved.");
             } catch (ClassCastException cce) {
             } //expected
         } else {
-            cacheManager.getCache("com.ibm.ws.session.meta.default_host%2FsessionCacheApp", String.class, ArrayList.class);
-            cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheApp", String.class, byte[].class);
+            cacheManager.getCache("com.ibm.ws.session.meta.default_host%2FsessionCacheApp.sessionCacheApp#sessionCacheApp.war", String.class, ArrayList.class);
+            cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheApp.sessionCacheApp#sessionCacheApp.war", String.class, byte[].class);
         }
     }
 
@@ -300,7 +300,7 @@ public class SessionCacheTestServlet extends FATServlet {
         // CacheMXBean for session meta info cache
         CacheMXBean metaInfoCacheMXBean = //
                         JMX.newMBeanProxy(mbs,
-                                          new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=org.infinispan.jcache.remote.JCachingProvider,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheApp"),
+                                          new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=org.infinispan.jcache.remote.JCachingProvider,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheApp.sessionCacheApp#sessionCacheApp.war"),
                                           CacheMXBean.class);
         assertEquals(String.class.getName(), metaInfoCacheMXBean.getKeyType());
         assertEquals(ArrayList.class.getName(), metaInfoCacheMXBean.getValueType());
@@ -310,7 +310,7 @@ public class SessionCacheTestServlet extends FATServlet {
         // CacheMXBean for session attributes cache
         CacheMXBean attrCacheMXBean = //
                         JMX.newMBeanProxy(mbs,
-                                          new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=org.infinispan.jcache.remote.JCachingProvider,Cache=com.ibm.ws.session.attr.default_host%2FsessionCacheApp"),
+                                          new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=org.infinispan.jcache.remote.JCachingProvider,Cache=com.ibm.ws.session.attr.default_host%2FsessionCacheApp.sessionCacheApp#sessionCacheApp.war"),
                                           CacheMXBean.class);
         assertEquals(String.class.getName(), attrCacheMXBean.getKeyType());
         assertEquals("[B", attrCacheMXBean.getValueType()); // byte[]
@@ -320,7 +320,7 @@ public class SessionCacheTestServlet extends FATServlet {
         // CacheStatisticsMXBean for session meta info cache
         CacheStatisticsMXBean metaInfoCacheStatsMXBean = //
                         JMX.newMBeanProxy(mbs,
-                                          new ObjectName("javax.cache:type=CacheStatistics,CacheManager=org.infinispan.jcache.remote.JCachingProvider,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheApp"),
+                                          new ObjectName("javax.cache:type=CacheStatistics,CacheManager=org.infinispan.jcache.remote.JCachingProvider,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheApp.sessionCacheApp#sessionCacheApp.war"),
                                           CacheStatisticsMXBean.class);
         metaInfoCacheStatsMXBean.clear();
         assertEquals(0, metaInfoCacheStatsMXBean.getCacheRemovals());
@@ -328,7 +328,7 @@ public class SessionCacheTestServlet extends FATServlet {
         // CacheStatisticsMXBean for session attributes cache
         CacheStatisticsMXBean attrCacheStatsMXBean = //
                         JMX.newMBeanProxy(mbs,
-                                          new ObjectName("javax.cache:type=CacheStatistics,CacheManager=org.infinispan.jcache.remote.JCachingProvider,Cache=com.ibm.ws.session.attr.default_host%2FsessionCacheApp"),
+                                          new ObjectName("javax.cache:type=CacheStatistics,CacheManager=org.infinispan.jcache.remote.JCachingProvider,Cache=com.ibm.ws.session.attr.default_host%2FsessionCacheApp.sessionCacheApp#sessionCacheApp.war"),
                                           CacheStatisticsMXBean.class);
         long initialPuts = attrCacheStatsMXBean.getCachePuts();
 
