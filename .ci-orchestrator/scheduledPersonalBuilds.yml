@@ -159,7 +159,7 @@ steps:
     awaitOutputProperties: true
   timeoutInMinutes: 1440
   properties:
-    build.stub.target: build.CachedWSCD.CompileImage
+    build.stub.target: build.CachedWSCD.Combined
     run.packaging.verification: ${pr-changes:run.packaging.verification}
     fat.buckets.to.run: ${pr-changes:fat.buckets.to.run}
     disable.run.runBvtTests: ${pr-changes:disable.run.runBvtTests}
@@ -173,22 +173,6 @@ steps:
     skip.open.liberty.build.if.possible: ${pr-changes:skip.open.liberty.build.if.possible}
     skip.open.liberty.fats.if.possible: ${pr-changes:skip.open.liberty.fats.if.possible}
     spawn.fullfat.buckets: ${pr-changes:spawn.fullfat.buckets}
-  includeProperties:
-  - file: compilePersonal.properties
-  - file: compile.properties
-
-- stepName: unittest
-  workType: RTC
-  projectName: "Liberty Personal Build CI Orchestrator - EBC"
-  dependsOn:
-  - stepName: pr-changes
-    awaitOutputProperties: true
-  timeoutInMinutes: 1440
-  properties:
-    build.stub.target: build.CachedWSCD.OLTest
-    disable.run.runUnitTests: ${pr-changes:disable.run.runUnitTests}
-    skip.open.liberty.build.if.possible: ${pr-changes:skip.open.liberty.build.if.possible}
-    skip.open.liberty.fats.if.possible: ${pr-changes:skip.open.liberty.fats.if.possible}
   includeProperties:
   - file: compilePersonal.properties
   - file: compile.properties
