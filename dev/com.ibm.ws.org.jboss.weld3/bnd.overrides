@@ -73,12 +73,14 @@ Service-Component: \
       packages=org.jboss.weld.annotated\
         |org.jboss.weld.annotated.slim\
         |org.jboss.weld.annotated.slim.backed\
+        |org.jboss.weld.annotated.slim.unbacked\
         |org.jboss.weld.bean\
         |org.jboss.weld.bean.builtin\
         |org.jboss.weld.contexts.beanstore\
         |org.jboss.weld.contexts.conversation\
         |org.jboss.weld.contexts\
         |org.jboss.weld.ejb\
+        |org.jboss.weld.event\
         |org.jboss.weld.injection\
         |org.jboss.weld.injection.attributes\
         |org.jboss.weld.literal\

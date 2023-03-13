@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,6 +24,7 @@ import java.lang.reflect.Type;
 import java.util.Set;
 
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.TransientReference;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
@@ -47,6 +48,9 @@ public class PassivationBean implements Serializable {
         bean.setDestroyMessage("MyStatefulSessionBean injected into PassivationBean destroyed");
         bean.doNothing();
     }
+
+    @Inject
+    private Event<TestEvent> event;
 
     @Inject
     private BeanManager beanManager; // not transient to test serialize-ability
@@ -76,6 +80,10 @@ public class PassivationBean implements Serializable {
         // Call bh to ensure it gets instantiated and injected
         bh.doNothing();
 
+        // Fire test event to ensure it gets instantiated
+        assertNotNull("event should not be null", event);
+        event.fire(new TestEvent());
+
         // Assert that our transient references have been injected and the beans destroyed
         assertThat(GlobalState.getOutput(), containsInAnyOrder("MyStatefulSessionBean injected into BeanHolder destroyed",
                                                                "MyStatefulSessionBean injected into PassivationBean destroyed"));
@@ -97,6 +105,10 @@ public class PassivationBean implements Serializable {
 
         // Call bh to ensure it gets instantiated and injected
         bh.doNothing();
+
+        // Fire test event to ensure it gets instantiated
+        assertNotNull("event should not be null", event);
+        event.fire(new TestEvent());
 
         // Assert that there's no transient reference injected into PassivationBean
         // It's session scoped and should be passivated -> no new instance -> no injection of transient reference
