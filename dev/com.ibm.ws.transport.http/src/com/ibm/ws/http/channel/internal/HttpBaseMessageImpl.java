@@ -232,28 +232,28 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
     /*
      * @see com.ibm.ws.genericbnf.internal.BNFHeadersImpl#findKey(byte[], int,
-     * int)
+     * int, boolean)
      */
     @Override
-    protected HeaderKeys findKey(byte[] data, int offset, int length) {
-        return HttpHeaderKeys.find(data, offset, length);
+    protected HeaderKeys findKey(byte[] data, int offset, int length, boolean returnNullForInvalidName) {
+        return HttpHeaderKeys.find(data, offset, length, returnNullForInvalidName);
     }
 
     /*
-     * see com.ibm.ws.genericbnf.impl.BNFHeadersImpl#findKey(byte[])
+     * see com.ibm.ws.genericbnf.impl.BNFHeadersImpl#findKey(byte[], boolean)
      */
     @Override
-    protected HeaderKeys findKey(byte[] name) {
-        return HttpHeaderKeys.find(name, 0, name.length);
+    protected HeaderKeys findKey(byte[] name, boolean returnNullForInvalidName) {
+        return HttpHeaderKeys.find(name, 0, name.length, returnNullForInvalidName);
     }
 
     /*
      * @see
-     * com.ibm.ws.genericbnf.internal.BNFHeadersImpl#findKey(java.lang.String)
+     * com.ibm.ws.genericbnf.internal.BNFHeadersImpl#findKey(java.lang.String, boolean)
      */
     @Override
-    protected HeaderKeys findKey(String name) {
-        return HttpHeaderKeys.find(name);
+    protected HeaderKeys findKey(String name, boolean returnNullForInvalidName) {
+        return HttpHeaderKeys.find(name, returnNullForInvalidName);
     }
 
     /*

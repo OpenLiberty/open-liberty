@@ -1597,6 +1597,139 @@ public class HttpRequestMessageImplTest {
     }
 
     /**
+     * This test validates that for an invalid header name we get IllegalArgumentException for
+     * set and append operations. get, remove and contains methods should just no-op meaning
+     * that they should NOT populate the HeaderStorage with a HeaderKeys object. If it would then
+     * we would no longer get IllegalArgumentExceptions because once a HeaderKeys object is created
+     * we know that it was a valid headerName.
+     */
+    @Test
+    public void testInvalidHeaderName() {
+
+        // loop twice to make sure that nothing gets added to make it not throw an exception
+        String[] invalidHeaderNames = new String[] { "(0)", "2\n3", "4\r5" };
+        String valueString = "value";
+        byte[] valueBytes = valueString.getBytes();
+        HttpRequestMessageImpl r = getRequest();
+        for (String invalidHeaderName : invalidHeaderNames) {
+            byte[] invalidHeaderNameBytes = invalidHeaderName.getBytes();
+            for (int i = 0; i < 2; ++i) {
+                try {
+                    r.appendHeader(invalidHeaderNameBytes, valueBytes);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.appendHeader(invalidHeaderNameBytes, valueString);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.appendHeader(invalidHeaderName, valueBytes);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.appendHeader(invalidHeaderName, valueString);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.appendHeader(invalidHeaderNameBytes, valueBytes, 0, invalidHeaderNameBytes.length);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.appendHeader(invalidHeaderName, valueBytes, 0, invalidHeaderName.length());
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                assertFalse(r.containsHeader(invalidHeaderNameBytes));
+
+                assertFalse(r.containsHeader(invalidHeaderName));
+
+                assertEquals(0, r.getAllHeaderNames().size());
+
+                assertNull(r.getHeader(invalidHeaderNameBytes).getKey());
+
+                assertNull(r.getHeader(invalidHeaderName).getKey());
+
+                assertEquals(0, r.getHeaders(invalidHeaderNameBytes).size());
+
+                assertEquals(0, r.getHeaders(invalidHeaderName).size());
+
+                assertEquals(0, r.getNumberOfHeaderInstances(invalidHeaderNameBytes));
+
+                assertEquals(0, r.getNumberOfHeaderInstances(invalidHeaderName));
+
+                assertEquals(0, r.getNumberOfHeaders());
+
+                r.removeHeader(invalidHeaderNameBytes);
+
+                r.removeHeader(invalidHeaderNameBytes, 1);
+
+                r.removeHeader(invalidHeaderName);
+
+                r.removeHeader(invalidHeaderName, 1);
+
+                try {
+                    r.setHeader(invalidHeaderNameBytes, valueBytes);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.setHeader(invalidHeaderNameBytes, valueString);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.setHeader(invalidHeaderName, valueBytes);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.setHeader(invalidHeaderName, valueString);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.setHeader(invalidHeaderNameBytes, valueBytes, 0, invalidHeaderNameBytes.length);
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+
+                try {
+                    r.setHeader(invalidHeaderName, valueBytes, 0, invalidHeaderName.length());
+                    fail("Expected IllegalArgumentException");
+                } catch (IllegalArgumentException iae) {
+                    // expected
+                }
+            }
+        }
+    }
+
+    /**
      * Utility method for verifying the connection information
      *
      * @param ords

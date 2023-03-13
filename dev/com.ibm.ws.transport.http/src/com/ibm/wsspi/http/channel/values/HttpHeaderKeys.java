@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.ibm.wsspi.genericbnf.BNFHeaders;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.KeyMatcher;
 
@@ -240,7 +240,7 @@ public class HttpHeaderKeys extends HeaderKeys {
      *
      * @param name
      */
-    public HttpHeaderKeys(String name) {
+    private HttpHeaderKeys(String name) {
         super(name, generateNextOrdinal());
         if (NEXT_ORDINAL.get() <= ORD_MAX) {
 
@@ -275,7 +275,7 @@ public class HttpHeaderKeys extends HeaderKeys {
      * @param shouldLog
      * @param shouldFilter
      */
-    public HttpHeaderKeys(String name, boolean shouldLog, boolean shouldFilter) {
+    private HttpHeaderKeys(String name, boolean shouldLog, boolean shouldFilter) {
         super(name, generateNextOrdinal());
         super.setShouldLogValue(shouldLog);
         super.setUseFilters(shouldFilter);
@@ -336,16 +336,18 @@ public class HttpHeaderKeys extends HeaderKeys {
      *
      * @param name
      * @param offset
-     *                   - starting point in that input name
+     *                                     - starting point in that input name
      * @param length
-     *                   - length to use from that offset
+     *                                     - length to use from that offset
+     * @param returnNullForInvalidName
+     *                                     - return null instead of throw IllegalArgumentException for header name validation
      * @return HttpHeaderKeys
      * @throws NullPointerException
      *                                      if input name is null
      * @throws IllegalArgumentException
-     *                                      if the input name contains CR or LF chars
+     *                                      if the input name contains invalid chars
      */
-    public static HttpHeaderKeys find(byte[] name, int offset, int length) {
+    public static HttpHeaderKeys find(byte[] name, int offset, int length, boolean returnNullForInvalidName) {
         HttpHeaderKeys key = (HttpHeaderKeys) myMatcher.match(name, offset, length);
         if (null == key) {
             synchronized (HttpHeaderKeys.class) {
@@ -353,13 +355,11 @@ public class HttpHeaderKeys extends HeaderKeys {
                 // testing again inside a sync block
                 key = (HttpHeaderKeys) myMatcher.match(name, offset, length);
                 if (null == key) {
+                    String headerName = new String(name, offset, length);
                     // make sure the name is valid
-                    for (int i = offset; i < length; i++) {
-                        if (BNFHeaders.CR == name[i] || BNFHeaders.LF == name[i]) {
-                            throw new IllegalArgumentException("Invalid CRLF in name: " + i);
-                        }
+                    if (validateHeaderName(headerName, returnNullForInvalidName)) {
+                        key = new HttpHeaderKeys(headerName, true);
                     }
-                    key = new HttpHeaderKeys(new String(name, offset, length), true);
                 }
             } // end-sync
 
@@ -372,13 +372,15 @@ public class HttpHeaderKeys extends HeaderKeys {
      * never been seen prior, then a new object is created by this call.
      *
      * @param name
+     * @param returnNullForInvalidName
+     *                                     - return null instead of throw IllegalArgumentException for header name validation
      * @return HttpHeaderKeys
      * @throws NullPointerException
      *                                      if input name is null
      * @throws IllegalArgumentException
-     *                                      if the input name contains CR or LF chars
+     *                                      if the input name contains invalid chars
      */
-    public static HttpHeaderKeys find(String name) {
+    public static HttpHeaderKeys find(String name, boolean returnNullForInvalidName) {
         HttpHeaderKeys key = (HttpHeaderKeys) myMatcher.match(name, 0, name.length());
         if (null == key) {
             synchronized (HttpHeaderKeys.class) {
@@ -387,32 +389,55 @@ public class HttpHeaderKeys extends HeaderKeys {
                 key = (HttpHeaderKeys) myMatcher.match(name, 0, name.length());
                 if (null == key) {
                     // make sure the name is valid
-                    for (int i = 0, size = name.length(); i < size; i++) {
-                        char c = name.charAt(i);
-                        if (BNFHeaders.CR == c || BNFHeaders.LF == c) {
-                            throw new IllegalArgumentException("Invalid CRLF in name: " + i);
-                        }
+                    if (validateHeaderName(name, returnNullForInvalidName)) {
+                        key = new HttpHeaderKeys(name, true);
                     }
-                    key = new HttpHeaderKeys(name, true);
                 }
             } // end-sync
         }
         return key;
     }
 
-    /**
-     * Find the enumerated object matching the input name. If this name has
-     * never been seen prior, then a new object is created by this call.
+    /*
+     * A valid header name is "!" / "#" / "$" / "%" / "&" / "'" /
+     * "*" / "+" / "-" / "." / "^" / "_" / "`" / "|" / "~" / DIGIT / ALPHA
      *
-     * @param name
-     * @return HttpHeaderKeys
-     * @throws NullPointerException
-     *                                      if input name is null
-     * @throws IllegalArgumentException
-     *                                      if the input name contains CR or LF chars
+     * The information about valid chars in a header name comes from
+     * RCF 9110 section 5.6.2 tchars
+     * https://www.rfc-editor.org/rfc/rfc9110.html#section-5.6.2
+     *
+     * PH52074
      */
-    public static HttpHeaderKeys find(byte[] name) {
-        return find(name, 0, name.length);
+    private static boolean validateHeaderName(String name, boolean returnFalseForInvalidName) {
+        for (int i = 0, size = name.length(); i < size; i++) {
+            char c = name.charAt(i);
+            // if we found an error, throw the exception now
+            if (!isValidTchar(c)) {
+                if (returnFalseForInvalidName) {
+                    return false;
+                }
+                IllegalArgumentException iae = new IllegalArgumentException("Header name contained an invalid character " + i);
+                FFDCFilter.processException(iae, HttpHeaderKeys.class.getName() + ".validateHeaderName(String)", "1", name);
+                throw iae;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isValidTchar(char c) {
+        boolean valid = ((c >= 'a') && (c <= 'z')) ||
+                        ((c >= 'A') && (c <= 'Z')) ||
+                        ((c >= '0') && (c <= '9')) ||
+                        (c == '!') || (c == '#') ||
+                        (c == '$') || (c == '%') ||
+                        (c == '&') || (c == '\'') ||
+                        (c == '*') || (c == '+') ||
+                        (c == '-') || (c == '.') ||
+                        (c == '^') || (c == '_') ||
+                        (c == '`') || (c == '|') ||
+                        (c == '~');
+
+        return valid;
     }
 
     /** private headers defined as sensitive */
