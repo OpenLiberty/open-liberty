@@ -106,7 +106,7 @@ public class AccessTokenAuthenticator {
         ProviderAuthenticationResult oidcResult = new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_UNAUTHORIZED);
         String accessToken = null;
         if (clientConfig.getAccessTokenInLtpaCookie()) {
-            accessToken = getAccessTokenFromReqAsAttribute(req);
+            accessToken = getAccessTokenFromReqAsAttribute(req, true);
         }
         if (accessToken == null) {
             accessToken = getBearerAccessTokenToken(req, clientConfig);
@@ -233,11 +233,13 @@ public class AccessTokenAuthenticator {
         return OidcClientAuthenticator.fixSubject(oidcResult);
     }
 
-    private String getAccessTokenFromReqAsAttribute(HttpServletRequest req) {
+    private String getAccessTokenFromReqAsAttribute(HttpServletRequest req, boolean remove_attribute) {
         String token = null;
         if (req.getAttribute(OidcClient.OIDC_ACCESS_TOKEN) != null) {
             token = (String) req.getAttribute(OidcClient.OIDC_ACCESS_TOKEN);
-            req.removeAttribute(OidcClient.OIDC_ACCESS_TOKEN); // per request setting, so remove it here and sso authenticator will add again.
+            if (remove_attribute) {
+                req.removeAttribute(OidcClient.OIDC_ACCESS_TOKEN); // per request setting, so remove it here and sso authenticator will add again.
+            }  
         }
         return token;
     }
@@ -1010,13 +1012,13 @@ public class AccessTokenAuthenticator {
 
     public boolean canUseIssuerAsSelectorForInboundPropagation(HttpServletRequest req, OidcClientConfig clientConfig) {
         boolean result = false;
-
+        boolean remove_attribute_from_request = false; //do not alter the request as we need to go through the authenticate later
         // If inbound propagation is not enabled or "disableIssChecking" is set, return false
         if (!clientConfig.isInboundPropagationEnabled() || clientConfig.disableIssChecking()) {
             return false;
         }
 
-        String issuer = getIssuer(req, clientConfig);
+        String issuer = getIssuer(req, clientConfig, remove_attribute_from_request);
         if (issuer != null) {
             String issuers = null;
             if (issuer.isEmpty()
@@ -1032,9 +1034,9 @@ public class AccessTokenAuthenticator {
 
     @FFDCIgnore({ IOException.class })
     @Trivial
-    private String getIssuer(HttpServletRequest req, OidcClientConfig clientConfig) {
+    private String getIssuer(HttpServletRequest req, OidcClientConfig clientConfig, boolean remove_attribute) {
         String issuer = null;
-        String accessToken = getAccessToken(req, clientConfig);
+        String accessToken = getAccessToken(req, clientConfig, remove_attribute);
 
         if (accessToken != null && isTokenJWT(accessToken)) {
             try {
@@ -1047,11 +1049,11 @@ public class AccessTokenAuthenticator {
         return issuer;
     }
 
-    private String getAccessToken(HttpServletRequest req, OidcClientConfig clientConfig) {
+    private String getAccessToken(HttpServletRequest req, OidcClientConfig clientConfig, boolean remove_attribute) {
         String accessToken = null;
 
         if (clientConfig.getAccessTokenInLtpaCookie()) {
-            accessToken = getAccessTokenFromReqAsAttribute(req);
+            accessToken = getAccessTokenFromReqAsAttribute(req, remove_attribute);
         }
 
         if (accessToken == null) {
