@@ -18,7 +18,6 @@ commons-digester:commons-digester:1.8
 commons-discovery:commons-discovery:0.2
 commons-httpclient:commons-httpclient:3.1
 commons-io:commons-io:2.6
-commons-io:commons-io:2.8.0
 io.jaegertracing:jaeger-core:0.34.0
 io.opencensus:opencensus-api:0.28.0
 io.opencensus:opencensus-contrib-grpc-metrics:0.28.0
