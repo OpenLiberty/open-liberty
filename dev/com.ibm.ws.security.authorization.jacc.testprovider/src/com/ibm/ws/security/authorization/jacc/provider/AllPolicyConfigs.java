@@ -42,6 +42,9 @@ public class AllPolicyConfigs {
 
     public void setPolicyConfig(String contextId, WSPolicyConfigurationImpl policyConfig) {
         policyConfigTable.put(contextId, policyConfig);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Added contextId: " + contextId + "to the policyConfigTable");
+        }
     }
 
     public WSPolicyConfigurationImpl getPolicyConfig(String contextId) {
