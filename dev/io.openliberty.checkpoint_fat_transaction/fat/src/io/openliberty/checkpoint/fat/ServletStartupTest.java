@@ -13,12 +13,13 @@
 
 package io.openliberty.checkpoint.fat;
 
+import static io.openliberty.checkpoint.fat.FATSuite.deleteTranlogDir;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
+import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
+import static io.openliberty.checkpoint.fat.FATSuite.stopServer;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-
-import java.security.AccessController;
-import java.security.PrivilegedExceptionAction;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -28,9 +29,10 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.transaction.fat.util.FATUtils;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
@@ -38,11 +40,12 @@ import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServer.CheckpointInfo;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
- * Verify checkpoint fails when a servlet begins a transaction during application
+ * Verify checkpoint fails when a servlet begins a UserTransaction during application
  * startup.
  */
 
@@ -61,23 +64,11 @@ public class ServletStartupTest extends FATServletClient {
     static final String SERVLET_NAME = APP_NAME + "/StartupServlet";
 
     @Server(SERVER_NAME)
-//    @TestServlet(servlet = StartupServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, "servlets.startup.*");
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-        AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
-            @Override
-            public Void run() throws Exception {
-                ShrinkHelper.cleanAllExportedArchives();
-                return null;
-            }
-        });
     }
 
     TestMethod testMethod;
@@ -90,32 +81,30 @@ public class ServletStartupTest extends FATServletClient {
                 server.setCheckpoint(CheckpointPhase.DEPLOYMENT, false, null);
                 break;
             case testServletInitUserTranAtApplications:
-                server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+                // Expect server checkpoint and restore to fail
+                server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, true, true, null));
                 break;
             default:
                 break;
         }
-        server.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
-        server.startServer(getTestMethod(TestMethod.class, testName) + ".log");
     }
 
     @After
     public void tearDown() throws Exception {
-        stopServer();
+        stopServer(server);
+        deleteTranlogDir(server);
     }
 
-    static void stopServer() {
-        if (server.isStarted()) {
-            try {
-                server.stopServer();
-            } catch (final Exception e) {
-                e.printStackTrace();
-            }
-        }
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+        ShrinkHelper.cleanAllExportedArchives();
     }
 
     @Test
     public void testServletInitUserTranAtDeployment() throws Exception {
+        // Request a server checkpoint
+        server.startServer(getTestMethod(TestMethod.class, testName) + ".log");
+
         assertNull("The StartupServlet.init() method should not execute checkpoint at=deployment, but did.",
                    server.waitForStringInLogUsingMark("StartupServlet init starting", 1000));
 
@@ -125,15 +114,16 @@ public class ServletStartupTest extends FATServletClient {
                       server.waitForStringInLogUsingMark("StartupServlet init completed without exception"));
     }
 
-    // TODO: FEATURE SUPPORT NOT YET IMPLEMENTED
-    // Modify this test either to verify checkpoint fails when servlet.init() begins
-    // a user tx or verify Servlet.init() executes during restore.
     @Test
+    @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
     public void testServletInitUserTranAtApplications() throws Exception {
-        assertNotNull("The StartupServlet.init() method should complete a user transaction during checkpoint at=applications, but did not.",
-                      server.waitForStringInLogUsingMark("StartupServlet init completed without exception"));
+        // Request a server checkpoint
+        ProgramOutput output = server.startServer(getTestMethodNameOnly(testName) + ".log");
+        int returnCode = output.getReturnCode();
+        assertEquals("The server checkpoint request should have returned failure code 72, but did not.", 72, returnCode);
 
-        server.checkpointRestore();
+        assertNotNull("The transaction manager should report it is unable to begin a transaction during a checkpoint request, but did not.",
+                      server.waitForStringInLogUsingMark("WTRN0154"));
     }
 
     static enum TestMethod {

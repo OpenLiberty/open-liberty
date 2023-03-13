@@ -13,6 +13,8 @@
 
 package io.openliberty.checkpoint.fat;
 
+import static io.openliberty.checkpoint.fat.FATSuite.deleteTranlogDir;
+import static io.openliberty.checkpoint.fat.FATSuite.stopServer;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
@@ -40,7 +42,7 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
-import servlets.SimpleServlet;
+import servlets.simple.SimpleServlet;
 
 /**
  * Verify servlets have JNDI access to transaction mgmt APIs and can perform basic
@@ -50,7 +52,7 @@ import servlets.SimpleServlet;
  * restore time before the datasource is injected into the test servlet.
  *
  * Essentially, this is a bringup test for transaction management services and the
- * JTA provider for checkpoint+restore.
+ * JTA provider for checkpoint and restore.
  */
 @RunWith(FATRunner.class)
 @SkipIfCheckpointNotSupported
@@ -74,7 +76,7 @@ public class ServletTest extends FATServletClient {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "servlets.*");
+        ShrinkHelper.defaultApp(server, APP_NAME, "servlets.simple.*");
 
         Consumer<LibertyServer> preRestoreLogic = checkpointServer -> {
             // Configure the datasource jndiName used by the test servlet upon restore
@@ -98,18 +100,9 @@ public class ServletTest extends FATServletClient {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        stopServer();
+        stopServer(server, "WTRN0017W"); // Unable to begin nested tran; nested trans not supported
+        deleteTranlogDir(server);
         ShrinkHelper.cleanAllExportedArchives();
-    }
-
-    static void stopServer() {
-        if (server.isStarted()) {
-            try {
-                server.stopServer("WTRN0017W"); // Unable to begin nested tran; nested trans not supported
-            } catch (final Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
 }

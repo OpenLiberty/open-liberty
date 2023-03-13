@@ -12,6 +12,8 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import static io.openliberty.checkpoint.fat.FATSuite.deleteTranlogDir;
+import static io.openliberty.checkpoint.fat.FATSuite.stopServer;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
@@ -39,6 +41,8 @@ import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+//import componenttest.custom.junit.runner.Mode;
+//import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
@@ -47,16 +51,16 @@ import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
+//@Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 @SkipIfCheckpointNotSupported
-//@Mode(TestMode.FULL)
 public class TransactionScopedBeanTest extends FATServletClient {
 
     static final String SERVER_NAME = "checkpointTransactionScopedBean";
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification() //
-                    .andWith(new JakartaEE9Action().forServers(SERVER_NAME).fullFATOnly()) //
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(new JakartaEE9Action().forServers(SERVER_NAME).fullFATOnly())
                     .andWith(new JakartaEE10Action().forServers(SERVER_NAME).fullFATOnly());
 
     static final String APP_NAME = "transactionscopedbean";
@@ -93,21 +97,13 @@ public class TransactionScopedBeanTest extends FATServletClient {
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        stopServer();
+        stopServer(server);
+        deleteTranlogDir(server);
         ShrinkHelper.cleanAllExportedArchives();
     }
 
-    static void stopServer() {
-        if (server.isStarted()) {
-            try {
-                server.stopServer();
-            } catch (final Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    // Tests are here rather than servlet so they don't run twice because we have the app installed twice
+    // The test app is installed twice.
+    // Invoke tests are here rather than @TestServlet so they don't run twice.
 
     @Test
     public void testTransactionScopedBean001() throws Exception {
@@ -116,7 +112,6 @@ public class TransactionScopedBeanTest extends FATServletClient {
 
     @Test
     public void testTransactionScopedBean002() throws Exception {
-
         final ExecutorService executor = Executors.newFixedThreadPool(instances);
         final Collection<Future<Boolean>> tasks = new ArrayList<Future<Boolean>>();
 
@@ -140,7 +135,6 @@ public class TransactionScopedBeanTest extends FATServletClient {
                 throw new Exception("1", e);
             }
         }
-
     }
 
     @Test
