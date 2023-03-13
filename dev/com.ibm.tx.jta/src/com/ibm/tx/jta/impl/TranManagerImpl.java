@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2021 IBM Corporation and others.
+ * Copyright (c) 2002, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,9 @@ import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.Transaction.JTA.Util;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.tx.UOWEventListener;
+
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 public class TranManagerImpl {
     private static final TraceComponent tc = Tr.register(TranManagerImpl.class,
@@ -73,6 +76,14 @@ public class TranManagerImpl {
     {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "begin", "(SPI)");
+
+        CheckpointPhase.getPhase().addMultiThreadedHook(new CheckpointHook() {
+            @Override
+            // fail a checkpoint if a new transaction was requested
+            public void prepare() {
+                throw new IllegalStateException(Tr.formatMessage(tc, "WTRN0153_ERROR_CHECKPOINT_NEW_TX"));
+            }
+        });
 
         if (tx == null) {
             tx = createNewTransaction(timeout);
@@ -119,6 +130,14 @@ public class TranManagerImpl {
     {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "beginUserTran", this);
+
+        CheckpointPhase.getPhase().addMultiThreadedHook(new CheckpointHook() {
+            @Override
+            // fail a checkpoint if a new transaction was requested
+            public void prepare() {
+                throw new IllegalStateException(Tr.formatMessage(tc, "WTRN0153_ERROR_CHECKPOINT_NEW_TX"));
+            }
+        });
 
         if (tx == null) {
             tx = createNewTransaction(txTimeout);

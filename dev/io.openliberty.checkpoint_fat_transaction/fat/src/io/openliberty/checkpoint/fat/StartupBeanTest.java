@@ -12,7 +12,11 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import static io.openliberty.checkpoint.fat.FATSuite.deleteTranlogDir;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
+import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
+import static io.openliberty.checkpoint.fat.FATSuite.stopServer;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -24,8 +28,10 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfCheckpointNotSupported;
 import componenttest.custom.junit.runner.FATRunner;
@@ -33,6 +39,7 @@ import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServer.CheckpointInfo;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
@@ -78,7 +85,8 @@ public class StartupBeanTest extends FATServletClient {
                 TxStartupBeanEar.addAsModule(TxStartupBeanJar);
                 ShrinkHelper.exportDropinAppToServer(server, TxStartupBeanEar);
 
-                server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+                // Expect checkpoint and restore to fail
+                server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, true, true, null));
                 break;
             case testStartupBeanUserTranAtApplications:
                 TxStartupBeanJar = ShrinkHelper.buildJavaArchive(APP_NAME, "com.ibm.ws.transaction.ejb.second");
@@ -86,81 +94,70 @@ public class StartupBeanTest extends FATServletClient {
                 TxStartupBeanEar.addAsModule(TxStartupBeanJar);
                 ShrinkHelper.exportDropinAppToServer(server, TxStartupBeanEar);
 
-                server.setCheckpoint(CheckpointPhase.APPLICATIONS, false, null);
+                server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APPLICATIONS, false, true, true, null));
                 break;
             default:
                 break;
         }
-        server.setServerStartTimeout(300000);
-        server.startServer(getTestMethod(TestMethod.class, testName) + ".log");
     }
 
     @After
     public void tearDown() throws Exception {
-        stopServer();
+        stopServer(server);
+        deleteTranlogDir(server);
         ShrinkHelper.cleanAllExportedArchives();
     }
 
-    static void stopServer() {
-        if (server.isStarted()) {
-            try {
-                server.stopServer();
-            } catch (final Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     /**
-     * Verify checkpoint at=deployment completes, ensuring the EJB container does not begin
-     * a transaction for a startup bean during application deployment.
+     * Verify checkpoint at=deployment completes, ensuring the bean does not begin
+     * a container-managed transaction during application deployment.
      */
     @Test
     public void testStartupBeanRequiresNewAtDeployment() throws Exception {
+        // Request a server checkpoint
+        server.setServerStartTimeout(300000);
+        server.startServer(getTestMethod(TestMethod.class, testName) + ".log");
+
         assertNotNull("The container should bind startup bean InitNewTxBean1 during checkpoint at=deployment, but did not.",
                       server.waitForStringInLogUsingMark("CNTR0167I:.*InitNewTxBean1"));
 
         server.checkpointRestore();
 
-        assertNotNull("The container should construct startup bean InitNewTxBean1 during restore, but did not.",
-                      server.waitForStringInLogUsingMark("InitTx1"));
+        assertNotNull("The container should invoke @PostConstruct method InitNewTxBean1.initTx1() during restore, but did not.",
+                      server.waitForStringInLogUsingMark("initTx1"));
+
+        assertNotNull("Method InitNewTxBean1.initTx1() should complete a UOW in a CMT during restore, but did not.",
+                      server.waitForStringInLogUsingMark("Leaving the UOWAction"));
     }
 
-    // TODO: FEATURE SUPPORT NOT YET IMPLEMENTED
-    // Currently, the container binds the startup bean when the app is deployed and
-    // then constructs the bean when the app starts. So, the container begins a tx during
-    // checkpoint at=applications but not at=deployment.
-    //
-    // The TM should fail checkpoint whenever a transaction begins to ensure a tran log
-    // does not initialize.
-    //
-    // MODIFY THIS TEST either to verify checkpoint fails when the container begins
-    // the tx during @PostConstruct or verify @PostConstruct executes during restore.
     /**
-     * Verify checkpoint at=applications fails when the EJB container begins a transaction
-     * for a startup bean during application startup.
+     * Verify checkpoint at=applications fails when the startup bean begins a container-managed
+     * transaction during application startup.
      */
     @Test
+    @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
     public void testStartupBeanRequiresNewAtApplications() throws Exception {
-        assertNotNull("The container should bind startup bean InitNewTxBean1 during checkpoint at=deployment, but did not.",
-                      server.waitForStringInLogUsingMark("CNTR0167I:.*InitNewTxBean1"));
+        ProgramOutput output = server.startServer(getTestMethodNameOnly(testName) + ".log");
+        int returnCode = output.getReturnCode();
+        assertEquals("The server checkpoint request should have returned failure code 72, but did not.", 72, returnCode);
 
-        server.checkpointRestore();
+        assertNotNull("The transaction manager should report it is unable to begin a transaction during a checkpoint request, but did not.",
+                      server.waitForStringInLogUsingMark("WTRN0154"));
     }
 
-    // TODO: FEATURE SUPPORT NOT YET IMPLEMENTED
-    // Modify this test either to verify checkpoint fails when the container begins
-    // the tx during @PostConstruct or verify @PostConstruct executes during restore.
     /**
-     * Verify checkpoint at=applications fails when a startup beans begin a user transaction
+     * Verify checkpoint at=applications fails when a startup bean begins a user transaction
      * during application startup.
      */
     @Test
+    @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
     public void testStartupBeanUserTranAtApplications() throws Exception {
-        assertNotNull("The server should bind startup bean InitNewTxBean2 during checkpoint at=application, but did not.",
-                      server.waitForStringInLogUsingMark("CNTR0167I:.*InitNewTxBean2"));
+        ProgramOutput output = server.startServer(getTestMethodNameOnly(testName) + ".log");
+        int returnCode = output.getReturnCode();
+        assertEquals("The server checkpoint request should have returned failure code 72, but did not.", 72, returnCode);
 
-        server.checkpointRestore();
+        assertNotNull("The transaction manager should report it is unable to begin a transaction during a checkpoint request, but did not.",
+                      server.waitForStringInLogUsingMark("WTRN0154"));
     }
 
     static enum TestMethod {

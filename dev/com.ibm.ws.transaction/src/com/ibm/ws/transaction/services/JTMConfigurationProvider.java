@@ -43,6 +43,9 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 import com.ibm.wsspi.resource.ResourceFactory;
 
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 public class JTMConfigurationProvider extends DefaultConfigurationProvider implements ConfigurationProvider {
 
     private static final TraceComponent tc = Tr.register(JTMConfigurationProvider.class);
@@ -638,6 +641,16 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
 
         // get full path string from resource
         logDir = logDirResource.asFile().getPath().replaceAll("\\\\", "/");
+
+        if (logDirResource.exists()) {
+            CheckpointPhase.getPhase().addMultiThreadedHook(new CheckpointHook() {
+                @Override
+                // fail a checkpoint if tranlog dir already exists
+                public void prepare() {
+                    throw new IllegalStateException(Tr.formatMessage(tc, "ERROR_CHECKPOINT_TRANLOGS_EXIST", logDir));
+                }
+            });
+        }
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "parseTransactionLogDirectory", logDir);

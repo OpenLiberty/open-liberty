@@ -873,5 +873,11 @@ WTRN0152_UNUSUAL_HA_CONFIG.useraction=If this is the desired configuration, no a
 WTRN0153_INVALID_LOG_AT_SHUTDOWN=WTRN0153W: The transaction service shut down but the recovery log was marked as failed.
 WTRN0153_INVALID_LOG_AT_SHUTDOWN.explanation=The recovery log failed and access to the log did not occur at server shutdown.
 WTRN0153_INVALID_LOG_AT_SHUTDOWN.useraction=Correct any conditions that are indicated by the messages that reported the invalidation of the log. Restart the server so that the log can be repaired.
+
+WTRN0154_ERROR_CHECKPOINT_NEW_TX=WTRN0154E: The server checkpoint request failed because the transaction service is unable to begin a transaction.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.explanation=Liberty does not support applications that begin or require a transaction while the application starts when a server checkpoint is requested.
+WTRN0154_ERROR_CHECKPOINT_NEW_TX.useraction=Use the server checkpoint at=deployment option or modify the application to begin transactions after it has started.
+
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1
+
