@@ -181,6 +181,7 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
         final boolean isSybase = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.SYBASE);
         final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
         final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        final boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
 
         // Execute Test Case
         try {
@@ -202,7 +203,7 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
                 List<String> sql = SQLListener.getAndClearCallList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
 
-                if (isMySQL || isDB2 || isDerby) {
+                if (isMySQL || isDB2Z || isDB2 || isDerby) {
                     String expected = "SELECT STRVAL1 FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = TRIM(LEADING 'A' FROM 'AAHELLO WORDAAAAA'))";
                     Assert.assertEquals(expected, sql.get(0));
                 } else {
@@ -228,7 +229,7 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
                 sql = SQLListener.getAndClearCallList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
 
-                if (isMySQL || isDB2 || isDerby) {
+                if (isMySQL || isDB2Z || isDB2 || isDerby) {
                     String expected = "SELECT STRVAL1 FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = TRIM(LEADING 'A' FROM 'AAHELLO WORDAAAAA'))";
                     Assert.assertEquals(expected, sql.get(0));
                 } else {
@@ -284,6 +285,7 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
         final boolean isSybase = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.SYBASE);
         final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
         final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        final boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
 
         // Execute Test Case
         try {
@@ -305,7 +307,7 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
                 List<String> sql = SQLListener.getAndClearCallList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
 
-                if (isMySQL || isDB2 || isDerby) {
+                if (isMySQL || isDB2Z || isDB2 || isDerby) {
                     String expected = "SELECT STRVAL1 FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = TRIM(TRAILING 'A' FROM 'AAHELLO WORDAAAAA'))";
                     Assert.assertEquals(expected, sql.get(0));
                 } else {
@@ -331,7 +333,7 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
                 sql = SQLListener.getAndClearCallList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
 
-                if (isMySQL || isDB2 || isDerby) {
+                if (isMySQL || isDB2Z || isDB2 || isDerby) {
                     String expected = "SELECT STRVAL1 FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = TRIM(TRAILING 'A' FROM 'AAHELLO WORDAAAAA'))";
                     Assert.assertEquals(expected, sql.get(0));
                 } else {
@@ -492,6 +494,7 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
         final boolean isSybase = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.SYBASE);
         final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
         final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        final boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
 
         // Execute Test Case
         try {
@@ -513,7 +516,7 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
                 List<String> sql = SQLListener.getAndClearCallList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
 
-                if (isMySQL || isDB2 || isDerby) {
+                if (isMySQL || isDB2Z || isDB2 || isDerby) {
                     String expected = "SELECT TRIM(LEADING 'A' FROM 'AAHELLO WORDAAAAA') FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = 'HELLO')";
                     Assert.assertEquals(expected, sql.get(0));
                 } else {
@@ -539,7 +542,7 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
                 sql = SQLListener.getAndClearCallList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
 
-                if (isMySQL || isDB2 || isDerby) {
+                if (isMySQL || isDB2Z || isDB2 || isDerby) {
                     String expected = "SELECT TRIM(LEADING 'A' FROM 'AAHELLO WORDAAAAA') FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = 'HELLO')";
                     Assert.assertEquals(expected, sql.get(0));
                 } else {
@@ -595,6 +598,7 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
         final boolean isSybase = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.SYBASE);
         final boolean isDerby = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DERBY);
         final boolean isDB2 = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2LUW);
+        final boolean isDB2Z = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
 
         // Execute Test Case
         try {
@@ -616,7 +620,7 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
                 List<String> sql = SQLListener.getAndClearCallList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
 
-                if (isMySQL || isDB2 || isDerby) {
+                if (isMySQL || isDB2Z || isDB2 || isDerby) {
                     String expected = "SELECT TRIM(TRAILING 'A' FROM 'AAHELLO WORDAAAAA') FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = 'HELLO')";
                     Assert.assertEquals(expected, sql.get(0));
                 } else {
@@ -642,7 +646,7 @@ public class JPATestOLGH16772Logic extends AbstractTestLogic {
                 sql = SQLListener.getAndClearCallList();
                 Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
 
-                if (isMySQL || isDB2 || isDerby) {
+                if (isMySQL || isDB2Z || isDB2 || isDerby) {
                     String expected = "SELECT TRIM(TRAILING 'A' FROM 'AAHELLO WORDAAAAA') FROM TRIMENTITYOLGH16772 WHERE (STRVAL1 = 'HELLO')";
                     Assert.assertEquals(expected, sql.get(0));
                 } else {

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -159,11 +159,6 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 em.clear();
             }
 
-        } catch (java.lang.AssertionError /* | org.junit.internal.AssumptionViolatedException */ ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
@@ -228,7 +223,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                     List<String> sql = SQLListener.getAndClearSQLList();
                     Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                    if (isDerby || isDB2 || isDB2ZOS) {
+                    if (isDerby || isDB2) {
                         String expected = "SELECT 2, COUNT(ABS(?)) FROM SIMPLEENTITYOLGH8294 WHERE (ITEM_INTEGER1 = ABS(?))";
                         Assert.assertEquals(expected, sql.get(0));
                     } // TODO: other databases
@@ -253,29 +248,39 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                 String queryStr = "SELECT 2, COUNT(ABS(-3)) FROM SimpleEntityOLGH8294 s WHERE s.itemInteger1 = ABS(-3)";
                 Query query = em.createQuery(queryStr);
 
-                final List<?> resultList = query.getResultList();
-                Assert.assertNotNull(resultList);
+                // Expecting exception on db2/z
+                try {
+                    final List<?> resultList = query.getResultList();
+                    Assert.assertNotNull(resultList);
 
-                List<String> sql = SQLListener.getAndClearSQLList();
-                Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby || isDB2 || isDB2ZOS) {
-                    String expected = "SELECT 2, COUNT(ABS(-3)) FROM SIMPLEENTITYOLGH8294 WHERE (ITEM_INTEGER1 = ABS(-3))";
-
-                    // EclipseLink 4.0 (JPA 3.1) changed the default behavior to bind literals now that DB2/Derby know what is valid
-                    if (isUsingJPA31Feature()) {
-                        expected = "SELECT 2, COUNT(ABS(?)) FROM SIMPLEENTITYOLGH8294 WHERE (ITEM_INTEGER1 = ABS(?))";
+                    if (isDB2ZOS) {
+                        // Expected this to fail.
+                        Assert.fail("Query did not throw expected Exception on DB2 on Z platform.");
                     }
 
-                    Assert.assertEquals(expected, sql.get(0));
-                } // TODO: other databases
+                    List<String> sql = SQLListener.getAndClearSQLList();
+                    Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
+                    if (isDerby || isDB2) {
+                        String expected = "SELECT 2, COUNT(ABS(-3)) FROM SIMPLEENTITYOLGH8294 WHERE (ITEM_INTEGER1 = ABS(-3))";
+
+                        // EclipseLink 4.0 (JPA 3.1) changed the default behavior to bind literals now that DB2/Derby know what is valid
+                        if (isUsingJPA31Feature()) {
+                            expected = "SELECT 2, COUNT(ABS(?)) FROM SIMPLEENTITYOLGH8294 WHERE (ITEM_INTEGER1 = ABS(?))";
+                        }
+
+                        Assert.assertEquals(expected, sql.get(0));
+                    } // TODO: other databases
+                } catch (Throwable t) {
+                    // Expecting exception on db2/z
+                    if (isDB2ZOS) {
+                        // Expected
+                    } else {
+                        throw t;
+                    }
+                }
 
                 em.clear();
             }
-        } catch (java.lang.AssertionError /* | org.junit.internal.AssumptionViolatedException */ ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
@@ -408,11 +413,6 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 em.clear();
             }
-        } catch (java.lang.AssertionError /* | org.junit.internal.AssumptionViolatedException */ ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
@@ -509,11 +509,6 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 em.clear();
             }
-        } catch (java.lang.AssertionError /* | org.junit.internal.AssumptionViolatedException */ ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
@@ -649,11 +644,6 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 em.clear();
             }
-        } catch (java.lang.AssertionError /* | org.junit.internal.AssumptionViolatedException */ ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
@@ -885,11 +875,6 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 em.clear();
             }
-        } catch (java.lang.AssertionError /* | org.junit.internal.AssumptionViolatedException */ ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
@@ -931,40 +916,6 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
             EntityManager em = jpaResource.getEm();
             em.clear();
 
-            // Test 1
-            // Test the first operand of a LIKE predicate (the match-expression) is untyped parameter
-            // when at least one other operand (the pattern-expression or escape-expression)
-            // is not an untyped parameter marker
-            {
-                System.out.println("testLIKE_ForceBindJPQLParameters Test #001");
-                SQLListener.getAndClearSQLList();
-                String queryStr = "SELECT 1 FROM SimpleEntityOLGH8294 s " +
-                                  "WHERE ?1 LIKE ?2 ESCAPE '_'";
-                Query query = em.createQuery(queryStr);
-                query.setParameter(1, "HELLO_WORLD");
-                query.setParameter(2, "HELLO%");
-
-                final List<?> resultList = query.getResultList();
-                Assert.assertNotNull(resultList);
-                System.out.println("resultList size = " + resultList.size());
-                Assert.assertEquals("Expecting 40 entries in the result list", 40, resultList.size());
-
-                List<String> sql = SQLListener.getAndClearSQLList();
-                Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                if (isDerby || isDB2 || isDB2ZOS) {
-                    String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE ? LIKE ? ESCAPE '_'";
-
-                    // EclipseLink 4.0 (JPA 3.1) changed the default behavior to bind literals now that DB2/Derby know what is valid
-                    if (isUsingJPA31Feature()) {
-                        expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE ? LIKE ? ESCAPE ?";
-                    }
-
-                    Assert.assertEquals(expected, sql.get(0));
-                } // TODO: other databases
-
-                em.clear();
-            }
-
             // Test 2
             // Test the first operand of a LIKE predicate (the match-expression) is untyped parameter
             // when at least one other operand (the pattern-expression or escape-expression)
@@ -991,11 +942,47 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 em.clear();
             }
-        } catch (java.lang.AssertionError /* | org.junit.internal.AssumptionViolatedException */ ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
+
+            // https://www.ibm.com/docs/en/db2-for-zos/11?topic=codes-130
+            // The Escape Clause cannot be specified if the column name at the left of the LIKE or NOT LIKE has the MIXED subtype.
+            if (isDB2ZOS) {
+                System.out.println("Skipping test; platform (" + dbProductName + ", " + dbProductVersion + ")");
+                return;
+            }
+
+            // Test 1
+            // Test the first operand of a LIKE predicate (the match-expression) is untyped parameter
+            // when at least one other operand (the pattern-expression or escape-expression)
+            // is not an untyped parameter marker
+            {
+                System.out.println("testLIKE_ForceBindJPQLParameters Test #001");
+                SQLListener.getAndClearSQLList();
+                String queryStr = "SELECT 1 FROM SimpleEntityOLGH8294 s " +
+                                  "WHERE ?1 LIKE ?2 ESCAPE '_'";
+                Query query = em.createQuery(queryStr);
+                query.setParameter(1, "HELLO_WORLD");
+                query.setParameter(2, "HELLO%");
+
+                final List<?> resultList = query.getResultList();
+                Assert.assertNotNull(resultList);
+                System.out.println("resultList size = " + resultList.size());
+                Assert.assertEquals("Expecting 40 entries in the result list", 40, resultList.size());
+
+                List<String> sql = SQLListener.getAndClearSQLList();
+                Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
+                if (isDerby || isDB2) {
+                    String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE ? LIKE ? ESCAPE '_'";
+
+                    // EclipseLink 4.0 (JPA 3.1) changed the default behavior to bind literals now that DB2/Derby know what is valid
+                    if (isUsingJPA31Feature()) {
+                        expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE ? LIKE ? ESCAPE ?";
+                    }
+
+                    Assert.assertEquals(expected, sql.get(0));
+                } // TODO: other databases
+
+                em.clear();
+            }
         } finally {
             System.out.println(testName + ": End");
         }
@@ -1161,11 +1148,6 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                 em.clear();
             }
-        } catch (java.lang.AssertionError /* | org.junit.internal.AssumptionViolatedException */ ae) {
-            throw ae;
-        } catch (Throwable t) {
-            // Catch any Exceptions thrown by the test case for proper error logging.
-            Assert.fail("Caught an unexpected Exception during test execution." + t);
         } finally {
             System.out.println(testName + ": End");
         }
