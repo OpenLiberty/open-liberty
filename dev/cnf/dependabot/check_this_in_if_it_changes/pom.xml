@@ -389,7 +389,7 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.11.0</version>
+      <version>2.7</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
@@ -4074,7 +4074,7 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.6</version>
+      <version>2.7</version>
     </dependency>
     <dependency>
       <groupId>io.jaegertracing</groupId>
