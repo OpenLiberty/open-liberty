@@ -9,7 +9,7 @@ triggers:
   triggerMonitored: false
   triggerThreshold: 100
   every:
-    hours: 24
+    hours: 168
   propertyDefinitions:
   - name: git.laos.clone.repository.username
     defaultValue: "fritze2"
@@ -37,7 +37,7 @@ triggers:
   triggerMonitored: false
   triggerThreshold: 100
   every:
-    hours: 24
+    hours: 168
   propertyDefinitions:
   - name: git.laos.clone.repository.username
     defaultValue: "fritze2"
@@ -65,7 +65,7 @@ triggers:
   triggerMonitored: false
   triggerThreshold: 100
   every:
-    hours: 24
+    hours: 168
   propertyDefinitions:
   - name: git.laos.clone.repository.username
     defaultValue: "fritze2"
@@ -93,7 +93,7 @@ triggers:
   triggerMonitored: false
   triggerThreshold: 100
   every:
-    hours: 24
+    hours: 168
   propertyDefinitions:
   - name: git.laos.clone.repository.username
     defaultValue: "fritze2"
@@ -121,7 +121,7 @@ triggers:
   triggerMonitored: false
   triggerThreshold: 100
   every:
-    hours: 24
+    hours: 168
   propertyDefinitions:
   - name: git.laos.clone.repository.username
     defaultValue: "fritze2"
