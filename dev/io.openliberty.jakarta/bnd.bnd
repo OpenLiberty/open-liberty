@@ -25,4 +25,4 @@ publish.wlp.jar.suffix: dev/api/spec
 
 instrument.disabled: true
 
--buildpath:
+-buildpath: 

@@ -23,4 +23,8 @@ Bundle-SymbolicName: io.openliberty.jakarta.authorization.2.1; singleton:=true
 Export-Package: jakarta.security.jacc;version=2.1.0
 
 -includeresource: \
-   @${repo;jakarta.authorization:jakarta.authorization-api;2.1.0;EXACT}!/!(META-INF/maven/*|module-info.class)
+   @${repo;jakarta.authorization:jakarta.authorization-api;2.1.0;EXACT}!/!(META-INF/maven/*|module-info.class);lib:=true
+
+-maven-dependencies: \
+   dep1;groupId=jakarta.authorization;artifactId=jakarta.authorization-api;version=2.1.0;scope=runtime
+
