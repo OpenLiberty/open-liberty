@@ -82,7 +82,8 @@ import componenttest.topology.impl.LibertyServer;
                 URAPIs_Federation_2LDAPsTest.class,
                 SkipIfCheckpointNotSupportedAnnotationTest.class,
                 RestConnectorTest.class,
-                AuditTest.class
+                AuditTest.class,
+                ConcurrencyTest.class
 })
 
 public class FATSuite {
