@@ -1420,6 +1420,10 @@ public class PluginMergeToolImpl implements PluginMergeTool {
                         }
                     } else {
                         HashSet uris = (HashSet) knownUris.get(appName);
+                        if (uris == null) {
+                            debug("Continue for appName:" + appName);
+                            continue;
+                        }
                         if (!uris.contains(sharedAppInfo.getUri().getAttribute("Name"))) {
                             uris.add(sharedAppInfo.getUri().getAttribute("Name"));
                             ((Element) uriGrps.get(appName)).appendChild(sharedDoc.importNode((sharedAppInfo.getUri()).cloneNode(true), true));
