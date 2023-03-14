@@ -125,7 +125,7 @@ public class OidcRpInitiatedLogoutTest {
         try {
             context.checking(new Expectations() {
                 {
-                    one(oauth20Provider).getTokenCache();
+                    allowing(oauth20Provider).getTokenCache();
                     will(returnValue(oauth20tokencache));
                     one(oauth20tokencache).get(with(HashUtils.digest(idTokenHint)));
                     will(returnValue(idtokenimpl));
@@ -270,7 +270,7 @@ public class OidcRpInitiatedLogoutTest {
         try {
             context.checking(new Expectations() {
                 {
-                    one(oauth20Provider).getTokenCache();
+                    allowing(oauth20Provider).getTokenCache();
                     will(returnValue(oauth20tokencache));
                     one(oauth20tokencache).get(with(HashUtils.digest(idTokenHint)));
                     will(returnValue(idtokenimpl));
