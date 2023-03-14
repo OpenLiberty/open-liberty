@@ -53,7 +53,7 @@ public class Java20Test extends FATServletClient {
     }
 
     @Test
-    public void testJava19App() throws Exception {
+    public void testJava20App() throws Exception {
         String appResponse = HttpUtils.getHttpResponseAsString(server, APP_NAME + '/');
         assertContains(appResponse, "<<< EXIT SUCCESSFUL");
     }
