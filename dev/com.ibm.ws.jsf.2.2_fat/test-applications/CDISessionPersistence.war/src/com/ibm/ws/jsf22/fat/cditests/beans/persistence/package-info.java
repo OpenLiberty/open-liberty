@@ -7,7 +7,4 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  */
-/**
- *
- */
 package com.ibm.ws.jsf22.fat.cditests.beans.persistence;
