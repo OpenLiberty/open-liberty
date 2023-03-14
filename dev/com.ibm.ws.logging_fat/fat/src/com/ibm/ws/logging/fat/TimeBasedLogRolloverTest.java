@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -50,6 +50,8 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.HttpUtils;
@@ -168,6 +170,7 @@ public class TimeBasedLogRolloverTest {
      * in server.xml, with json logging.
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testTimedRolloverJsonLogs() throws Exception {
         setUp(server_json_logs, "testTimedRolloverXML");
         checkForRolledLogsAtTime(getNextRolloverTime(0,1));
@@ -178,6 +181,7 @@ public class TimeBasedLogRolloverTest {
      * <logging rolloverStartTime="00:00" rolloverInterval="2m"/>
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testTimedRolloverXMLOverrides() throws Exception {
         setUp(server_bootstrap, "testTimedRolloverXMLOverrides");
         /** 
@@ -199,6 +203,7 @@ public class TimeBasedLogRolloverTest {
      * <logging rolloverStartTime="00:00" rolloverInterval="1m"/>
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testMultipleRollovers() throws Exception {
         setUp(server_xml, "testMultipleRollovers");
         Calendar cal = getNextRolloverTime(0,1);
@@ -213,6 +218,7 @@ public class TimeBasedLogRolloverTest {
      * in server.xml.
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testTimedRolloverXMLUpdates() throws Exception {
         setUp(server_xml, "testTimedRolloverXMLUpdates");
         checkForRolledLogsAtTime(getNextRolloverTime(0,1));
@@ -236,6 +242,7 @@ public class TimeBasedLogRolloverTest {
      * <logging rolloverStartTime="00:00" rolloverInterval="1m"/>
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testRolloverNoTraceSpecification() throws Exception {
         setUp(server_no_trace, "testRolloverNoTraceSpecification");
         checkForRolledLogsAtTime(getNextRolloverTime(0,1), false);
@@ -293,6 +300,7 @@ public class TimeBasedLogRolloverTest {
      * <logging rolloverStartTime="00:00" rolloverInterval="1m"/>
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testEnableDisableTimedRollover() throws Exception {
         setUp(server_time_rollover_disabled, "testEnableDisableTimedRollover");
         setServerConfiguration(true, true, false, "00:00", "1m", 0); //enable
@@ -370,6 +378,7 @@ public class TimeBasedLogRolloverTest {
      * 
      */
     @Test
+    @Mode(TestMode.FULL)
     public void testMaxFileSizePriorityRolling() throws Exception {
         setUp(server_xml, "testMaxFileSizeRolling");
 
