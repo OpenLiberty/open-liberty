@@ -139,5 +139,33 @@
 		</localStore>
 	</oauthProvider>		
 	
+	<openidConnectProvider
+		id="OP4"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keystoreRef="key_allSigAlg"
+		idTokenLifetime="20s"
+		oauthProviderRef="OAuth4" />
+
+	<oauthProvider
+		id="OAuth4"
+		autoAuthorize="true"
+		issueRefreshToken="false"
+		tokenFormat="${opTokenFormat}"
+		accessTokenLifetime="20s"
+	>
+		<autoAuthorizeClient>client_1</autoAuthorizeClient>
+		
+		<localStore>
+			<client
+				name="client_1"
+				secret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/AuthAppInjectRedirectTrueUseSessionFalseExpiredTokenServlet/Callback"
+				scope="ALL_SCOPES"
+				enabled="true"
+			>
+			</client>
+		</localStore>
+	</oauthProvider>		
 			
 </server>

@@ -20,6 +20,7 @@ import jakarta.security.enterprise.SecurityContext;
 import jakarta.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
 import jakarta.security.enterprise.authentication.mechanism.http.OpenIdAuthenticationMechanismDefinition;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.ClaimsDefinition;
+import jakarta.security.enterprise.authentication.mechanism.http.openid.LogoutDefinition;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.PromptType;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletOutputStream;
@@ -30,12 +31,14 @@ import oidc.client.base.servlets.BaseServlet;
 
 @WebServlet("/AuthenticationApp")
 @ApplicationScoped
-@OpenIdAuthenticationMechanismDefinition(providerURI = "${providerBean.providerSecureRoot}/oidc/endpoint/OP1", clientId = "client_1",
+@OpenIdAuthenticationMechanismDefinition(providerURI = "${openIdConfig.providerURI}", clientId = "client_1",
                                          clientSecret = "mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger",
                                          jwksReadTimeoutExpression = "60000",
                                          redirectToOriginalResourceExpression = "${openIdConfig.redirectToOriginalResourceExpression}",
                                          useSessionExpression = "${openIdConfig.useSessionExpression}",
                                          prompt = PromptType.LOGIN,
+                                         logout = @LogoutDefinition(accessTokenExpiryExpression = "${openIdConfig.accessTokenExpiryExpression}",
+                                                                    identityTokenExpiryExpression = "${openIdConfig.identityTokenExpiryExpression}"),
                                          claimsDefinition = @ClaimsDefinition(callerNameClaim = "sub",
                                                                               callerGroupsClaim = "groupIds"))
 
@@ -50,8 +53,6 @@ public class AuthenticationAppServlet extends BaseServlet {
 
         String useNewAuth = request.getParameter("useNewAuth");
 
-        // TODO - need to modify this next line to handle cases where we call the app a second time (from the test) with a different user - when we're testing that we do actually honor the newAuthentiction setting
-        // TODO - pass another parm like user1 - the test case will login using user1 on the first pass, then use user2/testuser on the second request and newAuth set to true should force another login
         if (counter.incrementAndGet() == 1 || request.getUserPrincipal() == null) {
             System.out.println("Starting Authenticating");
             if (useNewAuth == null) {
