@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.fat;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
@@ -20,7 +21,6 @@ import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
-import java.util.regex.Matcher;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -464,9 +464,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
     @Test
     public void testNoJavaEESecOverrideClientCertWithFailOverToFormFailOverSuccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        myServer.stopServer("CWWKO0801E");
-        startServer(XML_CLIENT_CERT_FAILOVER_TO_FORM_NAME, APP_NAME, NOJAVAEESEC_APP_FORM, NOJAVAEESEC_APP_BASIC);
-        //setServerConfiguration(XML_CLIENT_CERT_FAILOVER_TO_FORM_NAME, APP_NAME);
+        setServerConfiguration(XML_CLIENT_CERT_FAILOVER_TO_FORM_NAME, APP_NAME);
         // ------------- accessing module1 ---------------
         // since the certificate won't be sent, fallback to the specified Form Login.
         setupClient(CERTUSER4_KEYFILE);
