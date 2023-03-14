@@ -1,0 +1,136 @@
+/*
+ * Usage:
+ *   gradlew -I ./timing.init.gradle <task>*
+ *
+ * From "gradlew --help":
+ *
+ *   -I, --init-script
+ *   Specify an initialization script.
+ */
+
+// Log timings per task.
+// Starting from: https://stackoverflow.com/questions/13031538/track-execution-time-per-task-in-gradle-script
+
+import java.util.Map
+
+class TimingsListener implements TaskExecutionListener, BuildListener {
+    @Override
+    void projectsLoaded(Gradle gradle) {
+        display(gradle, "Projects loaded")
+    }
+
+    @Override
+    void projectsEvaluated(Gradle gradle) {
+        display(gradle, "Projectes evaluated")
+    }
+
+    void display(Gradle gradle, String title) {
+        println "============================================================"
+        println "  $title"
+        println "------------------------------------------------------------"
+        println "Root:"
+        println "  [ ${gradle.getRootProject()} ]"
+        println "------------------------------------------------------------"
+        println "Tasks:"
+        gradle.getTaskGraph().getAllTasks().each { task ->
+            println "  [ ${task.getPath()} ] [ ${task.getGroup()} ]"
+            println("  Dependencies:");
+            task.getDependsOn().each { dep ->
+                println "    [ $dep ]"
+            }
+            println("  Actions:");
+            task.getActions().each { action ->
+                println "    [ $action ]"
+            }
+        }
+        println "------------------------------------------------------------"
+        println "Shared service registrations:"
+        gradle.getSharedServices().getRegistrations().each { serviceReg ->
+            println "  [ ${serviceReg.getName()} ] [ $serviceReg ]"
+        }
+        println "------------------------------------------------------------"
+        println "Plugins:"
+        gradle.getPlugins().each { plugin ->
+            println "  [ $plugin ]"
+        }
+        println "============================================================"
+    }
+
+
+    Map<String, Long> startTimes = new HashMap<>()
+    Map<String, Long> durations = new HashMap<>()
+
+    @Override
+    void beforeExecute(Task task) {
+        Date now = new Date()
+        long startTime = System.currentTimeMillis()
+
+        println "[ $now ]: BEGIN [ $task.name ]"
+        startTimes.put( task.path, Long.valueOf(startTime) )
+
+        println "Actions:"
+        task.getActions().each { action ->
+            println "  [ ${action.getDisplayName()} ]: [ $action ]"
+        }
+
+        println "Run after [ ${task.getMustRunAfter()} ]"
+
+        println "Dependencies:"
+        task.getDependsOn().each { dep ->
+            println "  [ $dep ]"
+        }
+
+        println "Destroyables:"
+        task.getDestroyables().each { taskDest ->
+            println "  [ $taskDest ]"
+        }
+
+        println "Finalized by [ ${task.getFinalizedBy()} ]"
+
+        println "Extensions: [ ${task.getExtensions()} ]"
+    }
+
+    @Override
+    void afterExecute(Task task, TaskState state) {
+        Date now = new Date()
+
+        long startTime = startTimes.get( task.path ).longValue()
+        long endTime = System.currentTimeMillis()
+        long duration = endTime - startTime
+
+        println "[ $now ]: END [ $task.name ] [ ${describe(state)} ]: [ $duration ms ]"
+        durations.put(task.path, Long.valueOf(duration))
+    }
+
+    String describe(TaskState state) {
+        if (state.getSkipped()) {
+            if (state.getNoSource()) {
+                return "Skipped: No inputs"
+            } else if (state.getUpToDate()) {
+                return "Skipped: Up-to-date"
+            } else {
+                return "Skipped: ${state.getSkipReason()}"
+            }
+        } else {
+            return "Executed"
+        }
+    }
+
+    @Override
+    void buildFinished(BuildResult result) {
+        println "Task timings:"
+        int longTasks = 0;
+        durations.each { k, v ->
+            if (v >= 50) {
+                println "$v ms $k"
+                longTasks++
+            }
+        }
+        println "Total [ ${durations.size()} ] Long [ $longTasks ]"
+    }
+
+    @Override
+    void settingsEvaluated(Settings settings) {}
+}
+
+gradle.addListener new TimingsListener()

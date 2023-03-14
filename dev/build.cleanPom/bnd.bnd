@@ -14,30 +14,35 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+Bundle-Name: Build Update POM
+Bundle-SymbolicName: build.update.pom
+Bundle-Description: Build Update POM Tasks; version=${bVersion}
 
-Bundle-Name: BND Pom cleaner
-Bundle-SymbolicName: build.cleanPom
-Bundle-Description: BND Pom cleaner; version=${bVersion}
-Main-Class: io.openliberty.process.PostProcessBNDPom
-
-Conditional-Package: \
-			org.apache.maven.*, \
-			org.json.simple.*, \
-			org.codehaus.plexus.*
-
+# io.openliberty.build.update.pom.UpdatePomJars.UpdatePomJars
+# -- update all jars (*.jar) in a target directory
+# io.openliberty.build.update.pom.UpdatePomJars.UpdatePomJar
+# -- update a single target file, which must be an archive
+# io.openliberty.build.update.pom.UpdatePomJars.UpdatePomFiles
+# -- update all pom.xml (**/pom.xml) in a target directory
+# io.openliberty.build.update.pom.UpdatePomJars.UpdatePomFile
+# -- update a single target file, which must be a POM file
+#
+# Common API:
+#   UpdateX.<init>(File rootDir, String tmpPath, boolean failOnError)
+#   UpdateX.run() throws Exception
 
 instrument.disabled: true
-
 publish.wlp.jar.disabled: true
 
+Export-Package: \
+    io.openliberty.build.update, \
+    io.openliberty.build.update.pom, \
+    io.openliberty.build.update.util
 
 -buildpath: \
-  org.apache.maven:maven-artifact;version=3.6.3, \
   org.apache.maven:maven-model;version=3.6.3, \
-  org.apache.maven.indexer:indexer-core;version=6.2.2, \
   org.codehaus.plexus:plexus-utils;version=3.2.1, \
-  com.googlecode.json-simple:json-simple;version=1.1.1
-  
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \
-	../build.sharedResources/lib/junit/old/junit.jar;version=file
+  ../build.sharedResources/lib/junit/old/junit.jar;version=file
