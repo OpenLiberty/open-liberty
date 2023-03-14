@@ -1,10 +1,10 @@
 {
   "name": "ui.tool.explore",
   "version": "0.0.1",
-  "description": "OpenLiberty package refs for ui.explore",
+  "description": "OpenLiberty package refs for ui.explore ***USED FOR OSS SCANNING ONLY***",
   "author": "OpenLiberty",
   "dependencies": {
     "svg4everybody": "^2.1.9",
-    "dojo": "^1.12.9"
+    "dojo": "^1.12.11"
   }
 }

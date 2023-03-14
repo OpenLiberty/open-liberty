@@ -43,6 +43,20 @@ public class PostProcessBNDPom {
     private static String jarPath;
     private static String pomEntryPath;
     private static List<String> filteredGroups = Arrays.asList("org.springframework", "org.springframework.boot", "com.ibm.ws.common.encoder");
+    private static List<String> filteredArtifacts = Arrays.asList("com.ibm.crypto.CmpCrmf",
+                                                                  "com.ibm.crypto.ibmjceprovider",
+                                                                  "com.ibm.crypto.ibmkeycert",
+                                                                  "com.ibm.crypto.ibmpkcs",
+                                                                  "com.ibm.mq.commonservices",
+                                                                  "com.ibm.ws.eba.blueprint.extensions.interceptors",
+                                                                  "com.ibm.ws.eba.blueprint.transform",
+                                                                  "com.ibm.ws.eba.jpa.container.annotations",
+                                                                  "com.ibm.ws.kernel.feature",
+                                                                  "com.ibm.ws.kernel.service",
+                                                                  "com.ibm.ws.prereq.rxa",
+                                                                  "dhbcore",
+                                                                  "java.ibmjgssprovider",
+                                                                  "wmq_java");
 
     /**
      * @param args
@@ -101,7 +115,8 @@ public class PostProcessBNDPom {
         List<Dependency> deps = pom.getDependencies();
         for (Iterator iterator = deps.iterator(); iterator.hasNext();) {
             Dependency dependency = (Dependency) iterator.next();
-            if (dependency.getGroupId().equals("dev") || dependency.getGroupId().equals("test") || (filteredGroups.contains(dependency.getGroupId())))
+            if (dependency.getGroupId().equals("dev") || dependency.getGroupId().equals("test") || (filteredGroups.contains(dependency.getGroupId()))
+                || (filteredArtifacts.contains(dependency.getArtifactId())))
                 iterator.remove();
         }
 
