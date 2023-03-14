@@ -29,7 +29,7 @@
     </application>
 
     <library id="DBLib">
-    	<fileset dir="${shared.resource.dir}/oracle"/>
+    	<fileset dir="${shared.resource.dir}/oracle" includes="oracleunknown.jar"/>
     </library>
     
     <dataSource id="DefaultDataSource">

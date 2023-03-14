@@ -26,6 +26,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.annotation.Resource;
+import javax.naming.InitialContext;
 import javax.naming.RefAddr;
 import javax.naming.Reference;
 import javax.naming.Referenceable;
@@ -52,14 +53,8 @@ public class DB2TestServlet extends FATServlet {
     @Resource(lookup = "jdbc/db2", authenticationType = Resource.AuthenticationType.APPLICATION)
     private DataSource ds_db2;
 
-    @Resource(lookup = "jdbc/db2-inferred")
-    private DataSource db2_inferred_ds;
-
     @Resource(lookup = "jdbc/db2-using-driver")
     private DataSource db2_using_driver;
-
-    @Resource(lookup = "jdbc/db2-using-driver-type")
-    private DataSource db2_using_driver_type;
 
     @Resource(lookup = "jdbc/db2-secure")
     DataSource db2_secure;
@@ -188,8 +183,10 @@ public class DB2TestServlet extends FATServlet {
     //Test that a datasource backed by Driver can be used with both the generic properties element and properties.db2.jcc
     //element when type="java.sql.Driver"
     @Test
-    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to additional Db2 JDBC driver in JDK
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testDSUsingDriver() throws Exception {
+        //Lookup instead of resource injection so this datasource is not looked up when running on IBMi
+        DataSource db2_using_driver_type = InitialContext.doLookup("jdbc/db2-using-driver-type");
         Connection conn = db2_using_driver_type.getConnection();
         assertFalse("db2_using_driver_type should not wrap DB2JccDataSource", db2_using_driver_type.isWrapperFor(DB2JccDataSource.class));
 
@@ -221,6 +218,9 @@ public class DB2TestServlet extends FATServlet {
     @Test
     @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testInferDB2DataSource() throws Exception {
+        //Lookup instead of resource injection so this datasource is not looked up when running on IBMi
+        DataSource db2_inferred_ds = InitialContext.doLookup("jdbc/db2-inferred");
+
         //The default datasource should continue to be inferred as an XADataSource, since it has properties.db2.jcc configured
         assertTrue("default datasource should wrap XADataSource", ds.isWrapperFor(XADataSource.class));
 

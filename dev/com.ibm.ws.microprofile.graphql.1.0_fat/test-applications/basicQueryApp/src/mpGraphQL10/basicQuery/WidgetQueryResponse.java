@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package mpGraphQL10.basicQuery;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class WidgetQueryResponse {
@@ -50,10 +51,16 @@ public class WidgetQueryResponse {
         if (errors != null) {
             sb.append(System.lineSeparator()).append("  errors [");
             for (Error e : errors) {
+                Extensions ext = e.getExtensions();
                 sb.append("    {").append(System.lineSeparator());
                 sb.append("      message : ").append(e.getMessage()).append(System.lineSeparator());
-                sb.append("      path : ").append(e.getPath()).append(System.lineSeparator());
-                sb.append("      extensions : ").append(e.getExtensions()).append(System.lineSeparator());
+                sb.append("      path : ").append(Arrays.toString(e.getPath())).append(System.lineSeparator());
+                sb.append("      extensions : ").append(System.lineSeparator());
+                sb.append("        {").append(System.lineSeparator());
+                sb.append("          exception : ").append(ext.getException()).append(System.lineSeparator());
+                sb.append("          classification : ").append(ext.getClassification()).append(System.lineSeparator());
+                sb.append("          code : ").append(ext.getCode()).append(System.lineSeparator());
+                sb.append("        }").append(System.lineSeparator());
                 sb.append("    }").append(System.lineSeparator());
             }
             sb.append("]");
