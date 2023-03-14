@@ -43,4 +43,4 @@ dependencies {
     }
 
 addRequiredLibraries.dependsOn addJakartaTransformer
-
+addRequiredLibraries.dependsOn addDerby

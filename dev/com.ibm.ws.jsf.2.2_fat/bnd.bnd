@@ -63,7 +63,8 @@ src: \
     test-applications/JSF22LocalizationTester.war/src,\
     test-applications/JSF22ThirdPartyApi.war/src,\
     test-applications/FunctionMapper.war/src, \
-    test-applications/ViewScopeLeak.war/src
+    test-applications/ViewScopeLeak.war/src, \
+    test-applications/CDISessionPersistence.war/src
 
 fat.project: true
 
