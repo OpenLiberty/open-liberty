@@ -27,4 +27,8 @@ Specification-Version: 3.1
 Export-Package: jakarta.jms;version="3.1.0"
 
 -includeresource: \
-   @${repo;jakarta.jms:jakarta.jms-api;3.1.0;EXACT}!/!(META-INF/maven/*|module-info.class)
+   @${repo;jakarta.jms:jakarta.jms-api;3.1.0;EXACT}!/!(META-INF/maven/*|module-info.class);lib:=true
+
+-maven-dependencies: \
+   dep1;groupId=jakarta.jms;artifactId=jakarta.jms-api;version=3.1.0;scope=runtime
+
