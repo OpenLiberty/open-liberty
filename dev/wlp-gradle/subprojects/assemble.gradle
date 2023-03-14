@@ -11,48 +11,77 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-/**
- * Create 'publishWLPJars', 'publishJavadoc', 'publishToolScripts', 'publishToolJars', 'publishSchemaResources',
- * 'publishPlatformManifests', 'publishPlatformFiles', 'publishTemplates', 'publishBinScripts', 'publishClientScripts',
- * and 'publishLibNative' tasks.
- *
- * Configure 'assemble' to depend on above tasks.
- */
+def testProject = parseBoolean(bnd.get('test.project', 'false'))
+def fatProject = parseBoolean(bnd.get('fat.project', 'false'))
+def skipPoms = testProject || fatProject
+def failOnError = true
 
-def publishWlpJarDefault = parseBoolean(bnd.get('test.project', 'false')) ? 'true' : 'false'
-def shouldIncludePoms = ('true'.equals(bnd.get('test.project', bnd.get('fat.project', 'false'))))
+// println "Project [ project ]: [ " + project + " ]"
+// println "  Test [ testProject ]: [ " + testProject + " ]"
+// println "  FAT [ fatProject ]: [ " + fatProject + " ]"
+// println "  Skip POMs [ skipPoms ]: [ " + skipPoms + " ]"
+// println "  Fail-on-error [ failOnError ]: [ " + failOnError + " ]"
 
 configurations {
-   cleanPomClasspath
-} 
+    cleanPomsClassPath
+}
 
 dependencies {
-   cleanPomClasspath project(':build.cleanPom') 
+  cleanPomsClassPath project(':build.cleanPom')
 }
 
-if(!shouldIncludePoms) {
-    task cleanAllEmbeddedPoms {
+if ( !skipPoms ) {
+    task cleanPoms {
         dependsOn jar
         dependsOn ':build.cleanPom:jar'
-        doLast {
-          fileTree(project.buildDir).matching {
-          include "**/*.jar"
-              }.each { aFile ->
-                def myArgs = [
-                  aFile, new File(project.buildDir, 'tmp')]                 
-                javaexec {
-                    classpath configurations.cleanPomClasspath
-                    main = 'io.openliberty.process.PostProcessBNDPom'
-                    args = myArgs
-                }
-              }
-            }
+
+        def updateClassName = "io.openliberty.build.update.pom.UpdatePomJars"
+
+        // Strangely, this is set to 'build/libs', not to 'build'.
+        def inputDir = project.buildDir
+        def tmpDir = new File(project.buildDir, '../pomsTmp')
+
+        // println "Project  [ " + project + " ] Task [ cleanPoms ]"
+        // println "  Update [ " + updateClassName + " ]"
+        // println "  Input  [ " + inputDir + " ]"
+        // println "  Tmp    [ " + tmpDir + " ]"
+        // println "Classpath [ " + sourceSets.main.runtimeClasspath.files + "]" 
+
+        // Use of the URL class loader 'UpdatePomJars' to be run from
+        // ':build.cleanPom'.  See the commented out code, below, which should
+        // run in other projects.
+        //
+        // Even if disabled, the 'new UpdatePomJars' step doesn't compile,
+        // so using that code doesn't work even if it is disabled for the
+        // ':build.cleanPom' projects.
+
+        URL[] urls = sourceSets.main.runtimeClasspath.files.collect {
+            it.toURI().toURL()
         }
-    assemble.dependsOn cleanAllEmbeddedPoms
+
+        doLast {
+            def updateLoader = new URLClassLoader(urls, (ClassLoader) null)
+            Class updateClass = updateLoader.loadClass(updateClassName)
+            def update = updateClass.newInstance(inputDir, tmpDir, failOnError)
+            java.lang.reflect.Method runMethod = updateClass.getMethod("run")
+            runMethod.invoke(update)
+        }
+    }
+
+    assemble.dependsOn cleanPoms
 }
 
+/*
+  buildscript {
+      dependencies {
+          classpath project(':build.cleanPom')
+      }
+  }
+  def processor = new io.openliberty.build.update.UpdatePomJars(inputDir, tmpPath, failOnError)
+  processor.run()
+ */
 
-
+def publishWlpJarDefault = testProject ? 'true' : 'false'
 
 if (bnd.get('publish.tool.jar', '').empty && !parseBoolean(bnd.get('publish.wlp.jar.disabled', publishWlpJarDefault))) {
     task publishWLPJars(type: Copy) {
