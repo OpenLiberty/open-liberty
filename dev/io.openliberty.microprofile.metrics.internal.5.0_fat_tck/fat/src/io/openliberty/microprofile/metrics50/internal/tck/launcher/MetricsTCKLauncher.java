@@ -46,17 +46,22 @@ public class MetricsTCKLauncher {
     /*
      * Java 11.0.14 known to cause issues.
      */
-    private static boolean isJava11014() throws IOException {
+    private static boolean isBadJava() throws IOException {
         JavaInfo javaInfo = JavaInfo.forServer(server);
 
-        Log.info(MetricsTCKLauncher.class, "isJava11014",
+        Log.info(MetricsTCKLauncher.class, "isBadJava",
                  "Major.minor.micro : [" + JavaInfo.forServer(server).majorVersion()
-                                                          + "."
-                                                          + JavaInfo.forServer(server).minorVersion()
-                                                          + "." + JavaInfo.forServer(server).microVersion()
-                                                          + "]");
+                                                        + "."
+                                                        + JavaInfo.forServer(server).minorVersion()
+                                                        + "." + JavaInfo.forServer(server).microVersion()
+                                                        + "]");
         if (javaInfo.majorVersion() == 11 && javaInfo.microVersion() == 14) {
-            Log.info(MetricsTCKLauncher.class, "isJava11014", "JDK matches with 11.0.14. Will be skipping.");
+            Log.info(MetricsTCKLauncher.class, "isBadJava", "JDK matches with 11.0.14. Will be skipping due to issue with JIT");
+            return true;
+        } else if (javaInfo.majorVersion() == 11 && javaInfo.minorVersion() == 0
+                   && javaInfo.microVersion() <= 3) {
+            //disable tests for Java versions 11.0.0 - 11.0.3 since there's a bug in TLS 1.3 implementation
+            Log.info(MetricsTCKLauncher.class, "isBadJava", "JDK matches with 11.0.0-11.3. Will be skipping due to TLS 1.3 implementation issue");
             return true;
         }
 
@@ -66,7 +71,7 @@ public class MetricsTCKLauncher {
     @Before
     public void checkJava() throws Exception {
         //Skip running FAT if (remote) server JVM detected to be 11.0.14
-        assumeTrue(!isJava11014());
+        assumeTrue(!isBadJava());
 
     }
 
@@ -80,10 +85,6 @@ public class MetricsTCKLauncher {
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchMetrics50Tck() throws Exception {
         server.startServer();
-        //disable tests for Java versions 11.0.0 - 11.0.3 since there's a bug in TLS 1.3 implementation
-        JavaInfo javaInfo = JavaInfo.forServer(server);
-        assumeTrue(!(javaInfo.majorVersion() == 11 && javaInfo.minorVersion() == 0
-                     && javaInfo.microVersion() <= 3));
 
         String protocol = "https";
         String host = server.getHostname();
