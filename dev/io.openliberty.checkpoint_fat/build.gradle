@@ -51,6 +51,7 @@ addRequiredLibraries {
 
 dependencies {
   requiredLibs project(':com.ibm.ws.security.fat.common.jwt')
+  requiredLibs project(':io.openliberty.mpTelemetry.1.0.thirdparty')
   requiredLibs 'org.glassfish:javax.json:1.1'
   requiredLibs 'org.glassfish.jersey.core:jersey-client:2.30.1'
   requiredLibs 'org.glassfish.jersey.inject:jersey-hk2:2.30.1'
