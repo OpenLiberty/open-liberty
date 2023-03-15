@@ -457,7 +457,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Audiences from JWT: " + audiences);
         }
-        if (audiences.size() > 1) {
+        if (audiences == null || audiences.size() > 1) {
             // TODO
             return null;
         }
@@ -485,7 +485,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
         return sharedKey;
     }
 
-    public Key getPublicKeyFromJsonWebStructure(JsonWebStructure jsonStruct, OidcServerConfig oidcServerConfig) {
+    Key getPublicKeyFromJsonWebStructure(JsonWebStructure jsonStruct, OidcServerConfig oidcServerConfig) {
         String alg = jsonStruct.getAlgorithmHeaderValue();
         String kid = jsonStruct.getKeyIdHeaderValue();
         String x5t = jsonStruct.getX509CertSha1ThumbprintHeaderValue();
