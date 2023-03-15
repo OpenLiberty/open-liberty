@@ -30,8 +30,6 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
 
 @SuppressWarnings("serial")
 @ApplicationScoped
