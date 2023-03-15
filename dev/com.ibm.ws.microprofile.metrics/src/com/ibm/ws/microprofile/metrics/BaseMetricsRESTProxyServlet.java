@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -35,7 +35,7 @@ public abstract class BaseMetricsRESTProxyServlet extends HttpServlet {
 
     /** {@inheritDoc} */
     @Override
-    protected void service(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+    protected synchronized void service(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         // Setup service - will handle
         getAndSetRESTHandlerContainer(request);
 
@@ -78,6 +78,7 @@ public abstract class BaseMetricsRESTProxyServlet extends HttpServlet {
         if (REST_HANDLER_CONTAINER == null) {
             // Get the bundle context
             HttpSession session = request.getSession();
+
             ServletContext sc = session.getServletContext();
             BundleContext ctxt = (BundleContext) sc.getAttribute("osgi-bundlecontext");
 
