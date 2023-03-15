@@ -3782,6 +3782,7 @@ public class LibertyServer implements LogMonitorClient {
 
     public RemoteFile getMostRecentTraceFile() throws Exception {
         List<String> files = listDirectoryContents(logsRoot, DEFAULT_TRACE_FILE_PREFIX);
+        Log.debug(c, "Current list of trace logs: " + files);
 
         if (files == null || files.isEmpty()) {
             return null;
@@ -3789,10 +3790,14 @@ public class LibertyServer implements LogMonitorClient {
 
         RemoteFile rf = null;
         long maxLastModified = 0;
+        int nameLength = 0;
         for (int i = 0; i < files.size(); i++) {
             final RemoteFile f = getTraceFile(files.get(i));
-            if (f.lastModified() > maxLastModified) {
+            Log.debug(c, "Trace file " + f + "[modified: " + f.lastModified() + "]");
+            if (f.lastModified() > maxLastModified ||
+                f.lastModified() == maxLastModified && f.getName().length() < nameLength) {
                 maxLastModified = f.lastModified();
+                nameLength = f.getName().length();
                 rf = f;
             }
         }
