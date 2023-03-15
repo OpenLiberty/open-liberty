@@ -52,7 +52,7 @@ IO.SMALLRYE.CONFIG.JAKARTA, GOOGLE-GUICE, IO.SMALLRYE.GRAPHQL, JASYPT,
 WSS4J, JBOSS.CLASSFILEWRITER, APACHE MYFACES, MONGODB, OAUTH,
 JAKARTA.ENTERPRISE.CDI-API, APACHE-MYFACES, COM.SQUAREUP.OKHTTP,
 JBOSS-JANDEX, MICROPROFILE.FAULTTOLERANCE, ECLIPSE MICROPROFIE, WELD,
-IO.SMALLRYE.OPENAPI3.CORE, REACTIVE.MESSAGING.KAFKA.ADAPTER,
+IO.SMALLRYE.OPENAPI.CORE, REACTIVE.MESSAGING.KAFKA.ADAPTER,
 SECURITY.OPENIDCONNECT.SERVER, IO.SMALLRYE.CONFIG, JSON-SIMPLE,
 IO.SMALLRYE.COMMON.JAKARTA, IO.SMALLRYE.OPENAPI.JAXRS,
 REACTIVE.MESSAGING.KAFKA.ADAPTER.IMPL, OSGI.SERVICE.HTTP, 
@@ -62,7 +62,7 @@ SMALLRYE.OPENAPI3.CORE, APACHE.JASPER.EXPRESSIONLANGUAGE,
 MICROPROFILE.LRA, JBOSS.WELD, MICROPROFILE-JWT, SMALLRYE.METRICS,
 JAKARTA.ENTERPRISE.CDI-API, JBOSS.RESTEASY.JAXB.PROVIDER.EE,
 MICROPROFILE.OPENAPI, ZIPKIN, JBOSS.RESTEASY.CDI.EE,
-JETBRAINS.ANNOTATION, SMALLRYE.OPENAPI3.JAXRS, JAKARTA BATCH,
+JETBRAINS.ANNOTATION, SMALLRYE.OPENAPI.JAXRS, JAKARTA BATCH,
 MICROPROFILE.JW, SQUAREUP.OKIO-JVM,
 JBOSS.RESTEASY.VALIDATOR.PROVIDER.EE, APACHE.TAGLIBS.STANDARD,
 MICROPROFILE.MERTICS, MICROPROFILE.JWT, MICROPROFILE.TELEMETRY,
@@ -81,7 +81,29 @@ ORG.ECLIPSE.MICROPROFILE.REACTIVE.MESSAGING, JAKARTA.BATCH,
 JAKARTA.ENTERPRISE.CONCURRENT,
 JBOSS.RESTEASY.PLUGINS.PROVIDERS.MULTIPART, ORG.JBOSS.WELD.CONTEXT,
 MONGO.SSL, SMALLRYE-GRAPHQL, JAVAX.ENTERPRISE.EVENT,
-MICROMETER-REGISTRY-PROMETHEUS, ORG.ECLIPSE.MICROPROFILE.OPENAPI.MODELS
+MICROMETER-REGISTRY-PROMETHEUS, ORG.ECLIPSE.MICROPROFILE.OPENAPI.MODELS,
+KOTLIN-STDLIB-COMMON, KOTLIN-STDLIB-JDK7, KOTLIN-STDLIB-JDK8, MICROMETER-CORE,
+MICROMETER-REGISTRY-PROMETHEUS,MICROPROFILE-CONFIG-API, MICROPROFILE-OPENAPI-API,
+OPENTELEMETRY-API, OPENTELEMETRY-API-LOGS, OPENTELEMETRY-API, OPENTELEMETRY-CONTEXT,
+OPENTELEMETRY-EXPORTER-COMMON, OPENTELEMETRY-EXPORTER-JAEGER, OPENTELEMETRY-EXPORTER-LOGGING,
+OPENTELEMETRY-EXPORTER-OTLP, OPENTELEMETRY-EXPORTER-OTLP-COMMON, OPENTELEMETRY-EXPORTER-ZIPKIN,
+OPENTELEMETRY-EXTENSION-TRACE-PROPAGATORS, OPENTELEMETRY-INSTRUMENTATION-ANNOTATIONS, 
+OPENTELEMETRY-INSTRUMENTATION-ANNOTATIONS-SUPPORT, OPENTELEMETRY-INSTRUMENTATION-API,
+OPENTELEMETRY-INSTRUMENTATION-API-SEMCONV, OPENTELEMETRY-SDK, OPENTELEMETRY-SDK-COMMON,
+OPENTELEMETRY-SDK-EXTENSION-AUTOCONFIGURE, OPENTELEMETRY-SDK-LOGS, OPENTELEMETRY-SDK-METRICS,
+OPENTELEMETRY-SDK-TRACE, OPENTELEMETRY-SEMCONV, SIMPLECLIENT, SIMPLECLIENT_COMMON,
+SIMPLECLIENT_TRACER_COMMON, SIMPLECLIENT_TRACER_OTEL, SIMPLECLIENT_TRACER_OTEL_AGENT,
+SMALLRYE-METRICS, JAKARTA.ENTERPRISE.LANG-MODEL, APACHE.MYFACES-IMPL,
+ZIPKIN-REPORTER, ZIPKIN-SENDER-OKHTTP3, JAKARTA.ENTERPRISE.CDI-API, RESTEASY-CDI, RESTEASY-CLIENT, RESTEASY-CLIENT-API, RESTEASY-CORE, RESTEASY-CORE-SPI,
+RESTEASY-JAXB-PROVIDER, RESTEASY-MULTIPART-PROVIDER, RESTEASY-SERVLET-INITIALIZER, RESTEASY-VALIDATOR-PROVIDER,
+WELD-ENVIRONMENT-COMMON, WELD-OSGI-BUNDLE, WELD-SE-CORE, 
+TOMCAT-JASPER-EL [JASPER EXPRESSION LANGUAGE IMPL], TOMCAT-EL-API [EXPRESSION LANGUAGE PACKAGE],
+MICROPROFILE CONFIG, MICROPROFILE CONTEXT PROPAGATION, MICROPROFILE FAULT TOLERANCE, MICROPROFILE GRAPHQL,
+MICROPROFILE HEALTH, MICROPROFILE JWT AUTH [JSON WEB TOKEN], MICROPROFILE METRICS, MICROPROFILE OPENAPI,
+MICROPROFILE OPENTRACING, MICROPROFILE REACTIVE STREAMS OPERATORS, MICROPROFILE REACTIVE MESSAGING,
+MICROPROFILE REST CLIENT
+
+
 
 Apache License
 Version 2.0, January 2004
@@ -271,14 +293,16 @@ obtained under the BSD-3-Clause License:
 JAKARTA.XMLWS (Copyright (c) 2007, Eclipse Foundation, Inc. and its
 licensors.), OBJECTWEB-ASM (Copyright (c) 2000-2011 INRIA, France
 Telecom), ASM (Copyright (c) 2000-2011 INRIA, France Telecom), 
-JAKARTA.XMLWS (Copyright (c) 2017; 2018 Oracle and/or its affiliates.
-All rights reserved.), XMLBINDING (Copyright (c) 2017; 2018 Oracle
-and/or its affiliates. All rights reserved.), JAKARTA ACTIVATION
-(Copyright (c) 2018 Oracle and/or its affiliates. All rights reserved.),
+JAKARTA.XMLWS (Copyright (c) 2017; 2018 Oracle and/or its affiliates.All rights reserved.),
+JAKARTA-XMLBINDING (Copyright (c) 2017; 2018 Oracle and/or its affiliates. All rights reserved.),
 JAKARTA.ACTIVATION (Copyright (c) 2018 Oracle and/or its affiliates. All
 rights reserved.), JAKARTA SOAP (Copyright (c) 2017 Oracle and/or its
 affiliates. All rights reserved.), JAKARTA.XMLBINDING (Copyright (c)
-2017; 2018 Oracle and/or its affiliates. All rights reserved.)
+2017; 2018 Oracle and/or its affiliates. All rights reserved.),
+JAKARTA.PERSISTENCE (Copyright (c)2017; 2018 Oracle and/or its affiliates. All rights reserved.),
+JAKARTA-XMLSOAP (Copyright (c) 2017 Oracle and/or its affiliates. All rights reserved),
+JAKARTA.RESTFULWS (Copyright (c) 2017, 2018 Oracle and/or its affiliates. All rights reserved.)
+
 
 
 Redistribution and use in source and binary forms, with or without 
@@ -489,7 +513,7 @@ JAKARTA.INTERCEPTOR
 (https://github.com/jakartaee/interceptors/tree/2.1.0-RELEASE),
 JAKARTA.PERSISTENCE
 (https://mvnrepository.com/artifact/jakarta.persistence/jakarta.persistence-api/3.1.0),
-JSON PROCESSING (not required), JAKARTA.CONNECTORS
+JSON PROCESSING (https://mvnrepository.com/artifact/jakarta.json/jakarta.json-api/2.1.0), JAKARTA.CONNECTORS
 (https://github.com/jakartaee/connectors/tree/2.1.0-RELEASE),
 JAKARTA.WEBSOCKET.CLIENT
 (https://repo1.maven.org/maven2/jakarta/websocket/jakarta.websocket-client-api/2.1.0/),
@@ -566,6 +590,36 @@ JAKARTA.AUTHORIZATION
 JAKARTA.FACES (https://jakarta.ee/specifications/faces/3.0/),
 JAKARTA.MESSAGING
 (https://github.com/jakartaee/messaging/tree/3.1.0-RELEASE)
+JAKARTA.AUTHENTICATION  
+(https://github.com/jakartaee/authentication/tree/3.0.0-RELEASE
+JAKARTA.AUTHORIZATION-API  
+ (https://repo.maven.apache.org/maven2/jakarta/authorization/jakarta.authorization-api/2.1.0/jakarta.authorization-api-2.1.0.jar)
+JAKARTA.ENTERPRISE.LANG-MODEL  
+ (https://repo1.maven.org/maven2/jakarta/enterprise/jakarta.enterprise.lang-model/4.0.1/)
+JAKARTA.JMS-API
+(https://repo1.maven.org/maven2/jakarta/jms/jakarta.jms-api/3.1.0/)
+JAKARTA.JSON-API
+ (https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/)
+JAKARTA.JSON.BIND-API
+ (https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/3.0.0/)
+JAKARTA.MAIL-API
+ (https://mvnrepository.com/artifact/jakarta.mail/jakarta.mail-api/2.1.0)
+JAKARTA.RESOURCE-API [Connectors]
+(https://mvnrepository.com/artifact/jakarta.resource/jakarta.resource-api/2.1.0)
+JAKARTA.SECURITY.ENTERPRISE-API
+ (https://repo.maven.apache.org/maven2/jakarta/security/enterprise/jakarta.security.enterprise-api/3.0.0/jakarta.security.enterprise-api-3.0.0.jar)
+JAKARTA.SERVLET-API
+ ( https://repo1.maven.org/maven2/jakarta/servlet/jsp/jakarta.servlet.jsp-api/3.1.1/)
+JAKARTA.SERVLET.JSP-API
+ (https://repo1.maven.org/maven2/jakarta/servlet/jsp/jakarta.servlet.jsp-api/3.1.1/)
+JAKARTA.SERVLET.JSP.JSTL-API [Jakarta Standard Tag]
+ (https://repo1.maven.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl-api/3.0.0/)
+JAKARTA.WEBSOCKET-CLIENT-API 
+ (https://repo1.maven.org/maven2/jakarta/websocket/jakarta.websocket-client-api/2.1.0/)
+ECLIPSE-PARSSON
+(https://repo1.maven.org/maven2/org/eclipse/parsson/parsson/1.1.0/parsson-1.1.0.jar)
+YASSON
+(https://repo1.maven.org/maven2/org/eclipse/yasson/3.0/yasson-3.0.jar)
 
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
@@ -1067,9 +1121,24 @@ SECTIONS:
 
 TABLE OF CONTENTS
 
+CC-BY-1.0
 SIL OPEN FONT LICENSE 1.1    
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CREATIVE COMMONS ATTRIBUTION 1.0
+
+The Program includes some or all of the following works licensed under
+the Creative Commons.
+The url to the license is https://creativecommons.org/licenses/by/1.0/legalcode
+
+HdrHistogram Copyright (c) 2012, 2013, 2014, 2015, 2016 Gil Tene
+Copyright (c) 2014 Michael Barker
+Copyright (c) 2014 Matt Warren
+  (https://mvnrepository.com/artifact/org.hdrhistogram/HdrHistogram/2.1.12)
+ 
+LatencyUtils Copyright (c) 2012, 2013, 2014 Gil Tene
+ (https://mvnrepository.com/artifact/org.latencyutils/LatencyUtils/2.0.3)
 
 SIL OPEN FONT LICENSE 1.1
 
