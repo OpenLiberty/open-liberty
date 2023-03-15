@@ -211,7 +211,7 @@ failed.to.load.encoding.properties.useraction=Be sure the specified file exists 
 # --------------------------------
 failed.to.load.converter.properties=SRVE0156E: Failed to load converter.properties file {0}
 failed.to.load.converter.properties.explanation=Could not load the specified file. System action is required.
-failed.to.load.converter.properties.useraction=Be sure the specified file existsand is in the correct format according to java.utils.Properties.
+failed.to.load.converter.properties.useraction=Be sure the specified file exists and is in the correct format according to java.utils.Properties.
 
 # --------------------------------
 setbuffer.size.called.after.write=SRVE0157E: setBufferSize() called after first write to Output Stream/Writer
@@ -224,7 +224,7 @@ usertransaction.rollback.exception.explanation=Problem encountered rolling back 
 usertransaction.rollback.exception.useraction=Examine the server logs in order to determine the root cause of the problem. If there are no related messages or they do not help to resolve the problem, contact IBM Support.
 
 # --------------------------------
-web.container.copyright=SRVE0161I: IBM WebSphere Application Server - Web Container.  Copyright IBM Corp. 1998-2012
+web.container.copyright=SRVE0161I: IBM WebSphere Application Server - Web Container. Copyright IBM Corp. 1998-2012
 web.container.copyright.explanation=Application server identifier.
 web.container.copyright.useraction=none.
 
@@ -520,7 +520,7 @@ reaper.unloading.servlet.[{0}].useraction=none.
 
 # -----------------------------------------------
 reaper.removing.mapping.[{0}].for.servlet.[{1}]=SRVE0245I: Reaper thread removing mapping: [{0}] for servlet: [{0}].
-reaper.removing.mapping.[{0}].for.servlet.[{1}].explanation=The reaper thread removes the mappings for jsps and other extensions that have been inactive longer the the reaper inactive limit.
+reaper.removing.mapping.[{0}].for.servlet.[{1}].explanation=The reaper thread removes the mappings for jsps and other extensions that have been inactive longer the reaper inactive limit.
 reaper.removing.mapping.[{0}].for.servlet.[{1}].useraction=none.
 
 # -----------------------------------------------
@@ -530,7 +530,7 @@ reaper.destroying.servlet.[{0}].useraction=none.
 
 # -----------------------------------------------
 reaper.thread.error=SRVE0247E: Error during reaper thread execution.
-reaper.thread.error.explanation=Exception occurred in the reaper thread processing. This is a system error.  
+reaper.thread.error.explanation=Exception occurred in the reaper thread processing. This is a system error.
 reaper.thread.error.useraction=Reaper processing is just a form of garbage collection.
 
 # -----------------------------------------------
@@ -614,22 +614,22 @@ annotation.helper.cannot.create.explanation=The specified annotation helper coul
 annotation.helper.cannot.create.useraction=Check the exception logs for the reason that the annotation helper could not be instantiated.
 
 #------------------------------------------------
-error.initializing.extension.factories=SRVE0264E: Error occured while initializing Extension Factories: {0}
+error.initializing.extension.factories=SRVE0264E: Error occurred while initializing Extension Factories: {0}
 error.initializing.extension.factories.explanation=This is a system error.
 error.initializing.extension.factories.useraction=Review the logs.
 
 #------------------------------------------------
-error.notifying.listeners.of.WebApp.start=SRVE0265E: Error occured while notifying listeners of web application start: {0}
+error.notifying.listeners.of.WebApp.start=SRVE0265E: Error occurred while notifying listeners of web application start: {0}
 error.notifying.listeners.of.WebApp.start.explanation=This is a system error.
 error.notifying.listeners.of.WebApp.start.useraction=Review the logs.
 
 #-------------------------------------------------
-error.while.initializing.servlets=SRVE0266E: Error occured while initializing servlets: {0}
+error.while.initializing.servlets=SRVE0266E: Error occurred while initializing servlets: {0}
 error.while.initializing.servlets.explanation=This is a system error.
 error.while.initializing.servlets.useraction=Review the logs.
 
 #-------------------------------------------------
-error.initializing.filters=SRVE0267E: Error occured while initializing filters: {0}
+error.initializing.filters=SRVE0267E: Error occurred while initializing filters: {0}
 error.initializing.filters.explanation=This is a system error.
 error.initializing.filters.useraction=Review the logs.
 
@@ -689,7 +689,7 @@ error.adding.servlet.mapping.file.handler.explanation=This is an application err
 error.adding.servlet.mapping.file.handler.useraction=Set fileServingEnabled=false in the ibm-web-ext.xmi file which is under WEB-INF folder.
 
 #--------------------------------------------------
-error.processing.global.listeners.for.webapp=SRVE0279E: Error occured while processing global listeners for the application {0}: {1}
+error.processing.global.listeners.for.webapp=SRVE0279E: Error occurred while processing global listeners for the application {0}: {1}
 error.processing.global.listeners.for.webapp.explanation=This is an application error.
 error.processing.global.listeners.for.webapp.useraction=Review the logs.
 
@@ -704,7 +704,7 @@ request.processor.already.present.for.mapping.explanation=This is a system error
 request.processor.already.present.for.mapping.useraction=Review the logs.
 
 #---------------------------------------------------
-error.while.setting.WebAppAttributes=SRVE0282E: Error occured while setting web application attribues: {0} 
+error.while.setting.WebAppAttributes=SRVE0282E: Error occurred while setting web application attribues: {0} 
 error.while.setting.WebAppAttributes.explanation=This is a system error.
 error.while.setting.WebAppAttributes.useraction=Review the logs.
 
@@ -720,7 +720,7 @@ exception.caught.in.notifyServletContextCreated.useraction=Review the logs.
 
 #---------------------------------------------------
 exception.caught.destroying.context=SRVE0285E: Exception caught while destroying context: {0}
-exception.caught.destroying.context.explanation=This is a system error error.
+exception.caught.destroying.context.explanation=This is a system error.
 exception.caught.destroying.context.useraction=Review the logs.
 
 #---------------------------------------------------
@@ -784,7 +784,7 @@ WebApp.destroy.encountered.errors.explanation=This is a system error.
 WebApp.destroy.encountered.errors.useraction=Review the logs.
 
 #------------------------------------------------
-exception.occured.while.creating.wrapper.for.servlet=SRVE0298E: Exception occured while creating wrapper for servlet [{0}]: {1}
+exception.occured.while.creating.wrapper.for.servlet=SRVE0298E: Exception occurred while creating wrapper for servlet [{0}]: {1}
 exception.occured.while.creating.wrapper.for.servlet.explanation=This is a system error.
 exception.occured.while.creating.wrapper.for.servlet.useraction=Review the logs.
 
@@ -859,7 +859,7 @@ error.adding.channel.explanation=This is a system error.
 error.adding.channel.useraction=Review the logs.
 
 #------------------------------------------------
-transport.migration.error=SRVE0313E: Error occured while migrating transport at port {0} to the corresponding chain: {1}
+transport.migration.error=SRVE0313E: Error occurred while migrating transport at port {0} to the corresponding chain: {1}
 transport.migration.error.explanation=This is a system error.
 transport.migration.error.useraction=Review the logs.
 
@@ -905,7 +905,7 @@ webAppModule.servlets.concurrentRequests.desc=The number of requests that are co
 
 # -------------------------------------------------------------------------------------------------
 # Data Description For Web Application (webapp) Module
-webAppModule.servlets.responseTime.desc=The average response time,in milliseconds, in which a servlet request is finished.
+webAppModule.servlets.responseTime.desc=The average response time, in milliseconds, in which a servlet request is finished.
 
 # -------------------------------------------------------------------------------------------------
 # Data Description For Web Application (webapp) Module
@@ -921,7 +921,7 @@ webAppModule.url.concurrentRequests.desc=The number of requests processing concu
 
 # -------------------------------------------------------------------------------------------------
 # Data Description For Web Application (webapp) Module
-webAppModule.url.responseTime.desc=The average service response time,in milliseconds, for a uri associated with a servlet.
+webAppModule.url.responseTime.desc=The average service response time, in milliseconds, for a uri associated with a servlet.
 
 # -------------------------------------------------------------------------------------------------
 # Data Name For Web Application (webapp) Module
@@ -1010,10 +1010,10 @@ need.to.add.a.new.virtual.host.alias.useraction=Follow the instructions in the I
 # --------------------------------
 Servlet.has.become.temporarily.unavailable.for.service\:.{0}=SRVE0095I: Servlet has become temporarily unavailable for service: {0}
 Servlet.has.become.temporarily.unavailable.for.service\:.{0}.explanation=Specified servlet is temporarily unavailable.
-Servlet.has.become.temporarily.unavailable.for.service\:.{0}.useraction=Wait and retry operation.  Servlet might have been removed from service by server administrator.
+Servlet.has.become.temporarily.unavailable.for.service\:.{0}.useraction=Wait and retry operation. Servlet might have been removed from service by server administrator.
 
-Session.Feature.Set.Not.Started=SRVE0096E: A session cannot be accessed.  The session manager feature set has not been started.
-Session.Feature.Set.Not.Started.explanation=A session cannot be accessed.  The session manager feature set has not been started.
+Session.Feature.Set.Not.Started=SRVE0096E: A session cannot be accessed. The session manager feature set has not been started.
+Session.Feature.Set.Not.Started.explanation=A session cannot be accessed. The session manager feature set has not been started.
 Session.Feature.Set.Not.Started.useraction=Make sure that the server configuration depends upon the session feature set.
 # --------------------------------
 invalid.query.string=SRVE0318W: Invalid character in query string.
@@ -1073,7 +1073,7 @@ Unsupported.op.from.servlet.context.listener.explanation=Certain operations cann
 Unsupported.op.from.servlet.context.listener.useraction=Add the listener via an annotation or via the web.xml to enable the execution of this method.
 
 Error.adding.ServletContextListener=SRVE8012E: Error adding ServletContextListener
-Error.adding.ServletContextListener.explanation=A ServletContextListener can not be added from another ServletContextListener
+Error.adding.ServletContextListener.explanation=A ServletContextListener cannot be added from another ServletContextListener.
 Error.adding.ServletContextListener.useraction=Either add the ServletContextListener to the web.xml or web-fragment.xml, annotate it with the @WebListener annotation, or programmatically add it from ServletContainerInitializer#onStartup
 
 Invalid.Listener=SRVE8013E: Not a valid listener to add programmatically
@@ -1088,12 +1088,12 @@ exception.occurred.while.adding.listener=SRVE8015E: An exception occurred while 
 exception.occurred.while.adding.listener.explanation=An exception occurred while trying to add a listener
 exception.occurred.while.adding.listener.useraction=Verify the listener is a valid type and available to the application
 
-error.validate.annotation.extension.class=SRVE8016E: The {0} annotation can not be applied to the class, {1}, because it extends the wrong super class
+error.validate.annotation.extension.class=SRVE8016E: The {0} annotation cannot be applied to the class, {1}, because it extends the wrong super class.
 error.validate.annotation.extension.class.explanation=Some annotations can only be applied to classes which extend the correct type.
 error.validate.annotation.extension.class.useraction=Modify the class to extend the correct super class
 
-error.validate.webServlet.urlPatterns.and.value=SRVE8017E: The class, {0}, can not specify both urlPatterns and value in the annotation
-error.validate.webServlet.urlPatterns.and.value.explanation=The class can not specify both urlPatterns and value in the annotation
+error.validate.webServlet.urlPatterns.and.value=SRVE8017E: The class, {0}, cannot specify both urlPatterns and value in the annotation.
+error.validate.webServlet.urlPatterns.and.value.explanation=The class cannot specify both urlPatterns and value in the annotation.
 error.validate.webServlet.urlPatterns.and.value.useraction=Modify the class to only include one of the urlPatterns or value attribute
 
 error.validate.webServlet.zero.mappings=SRVE8018E: The class, {0}, did not have any patterns specified in the annotation
@@ -1124,7 +1124,7 @@ multipart.request.not.multipart=SRVE8024E: The request is not of type multipart/
 multipart.request.not.multipart.explanation=The request must be of type multipart/form-data to be able to handle this method.
 multipart.request.not.multipart.useraction=Modify the servlets making previous requests such that the current request is of type multipart/form-data.
 
-error.occurred.during.async.servlet.handling=SRVE8025E: An error or timeout occured while doing async servlet processing.
+error.occurred.during.async.servlet.handling=SRVE8025E: An error or timeout occurred while doing async servlet processing.
 error.occurred.during.async.servlet.handling.explanation=An error or timeout resulting from an async dispatch will invoke any registered async listener and then the error page mechanism if not listener dispatches or completes.
 error.occurred.during.async.servlet.handling.useraction=Fix the cause of the error by looking at the exception and modifying application code or be sure to provide an AsyncListener or error page to gracefully handle the error case.
 
@@ -1136,11 +1136,11 @@ an.io.related.error.has.occurred.during.the.processing.of.the.given.AsyncEvent=S
 an.io.related.error.has.occurred.during.the.processing.of.the.given.AsyncEvent.explanation=I/O errors can occur when invoking an AsyncListener if it is writing to the response concurrently with another thread or something else has closed the response.
 an.io.related.error.has.occurred.during.the.processing.of.the.given.AsyncEvent.useraction=It is recommended that AsyncListeners should only call complete or dispatch, but not write to the response. Otherwise, the customer is responsible for doing their own synchronization to prevent an IOException.
 
-default.extension.exception.adding.mapping.target=SRVE8028W: An exception occured adding a mapping target for the default extension processor.
+default.extension.exception.adding.mapping.target=SRVE8028W: An exception occurred adding a mapping target for the default extension processor.
 default.extension.exception.adding.mapping.target.explanation=When two requests are made to the same resource the first time, a race condition can occur in trying to add the mapping to the web application.
 default.extension.exception.adding.mapping.target.useraction=This is normally a benign condition that can be ignored. Only report this if there are issues serving any requests to the resources in question.
 
-exception.creating.search.path=SRVE8029E: An IOException occured creating the Extended Document Root search path.
+exception.creating.search.path=SRVE8029E: An IOException occurred creating the Extended Document Root search path.
 exception.creating.search.path.explanation=Because creation of the search path involves file system access, IOExceptions may occur.
 exception.creating.search.path.useraction=Verify that the path is correct and there are no hardware issues.
 
@@ -1202,7 +1202,7 @@ init.exception.thrown.by.filter.at.startup.useraction=Examine the server logs to
 # {0} is the listener class name
 
 Listener.found.but.injection.failure=SRVE0322E: The [{0}] listener class was found, but a resource injection failure has occurred.
-Listener.found.but.injection.failure.explanation=The listener failed to initialize because an error occured when a resource was injected.
+Listener.found.but.injection.failure.explanation=The listener failed to initialize because an error occurred when a resource was injected.
 Listener.found.but.injection.failure.useraction=Verify that the injected resources exist and are accessible to the listener. To re-initialize the listener, restart the listener application.
 
 # --------------------------------
@@ -1217,7 +1217,7 @@ ARD.not.enabled.these.chains.not.supported.useraction=If Asynchronous Request Di
 # Notes for translation:
 # none
 
-ARD.not.enabled.request.on.chains.not.supported=SRVE0324W: Asynchronous Request Dispatcher is not enabled. Therefore, the HttpQueueInboundDefault and HttpQueueInboundDefaultSecure chains might not  handle your requests properly .
+ARD.not.enabled.request.on.chains.not.supported=SRVE0324W: Asynchronous Request Dispatcher is not enabled. Therefore, the HttpQueueInboundDefault and HttpQueueInboundDefaultSecure chains might not handle your requests properly.
 ARD.not.enabled.request.on.chains.not.supported.explanation=Your requests are on the HttpQueueInboundDefault or HttpQueueInboundDefaultSecure chain, but the Asynchronous Request Dispatcher is not enabled at the server level. Therefore,the HttpQueueInboundDefault and HttpQueueInboundDefaultSecure chains might not handle these requests properly.
 ARD.not.enabled.request.on.chains.not.supported.useraction=Either enable the Asynchronous Request Dispatcher at the server level, or enable either the WCInboundDefault or the WCInboundDefaultSecure chain, and make sure it is running.
 # --------------------------------
@@ -1262,12 +1262,12 @@ reference.context.not.set=SRVE8042E: An internal error caused the reference cont
 reference.context.not.set.explanation=An internal error caused the reference context that enables injection to not be initialized properly.
 reference.context.not.set.useraction=Check for errors earlier in the logs that may have caused initialization to fail.
 
-ioexception.searching.jar.for.resource=SRVE8043E: An IOException occured searching jarFile [{1}] for fileName [{2}] {0}
+ioexception.searching.jar.for.resource=SRVE8043E: An IOException occurred searching jarFile [{1}] for fileName [{2}] {0}
 ioexception.searching.jar.for.resource.explanation=IOExceptions can occur when looking at jar files if the file is changed or closed during traversal.
 ioexception.searching.jar.for.resource.useraction=Verify the jar file is valid and is not being updated during traversal.
 
-programmatic.sessions.already.been.initialized=SRVE8044E: The context has already been initialized.  No updates are allowed to the session configuration.
-programmatic.sessions.already.been.initialized.explanation=The context has already been initialized.  No updates are allowed to the session configuration.
+programmatic.sessions.already.been.initialized=SRVE8044E: The context has already been initialized. No updates are allowed to the session configuration.
+programmatic.sessions.already.been.initialized.explanation=The context has already been initialized. No updates are allowed to the session configuration.
 programmatic.sessions.already.been.initialized.useraction=You can only modify the session configuration before the application is initialized.
 
 programmatic.sessions.disabled=SRVE8045E: Programmatic session configuration has been disabled on this server.
@@ -1310,8 +1310,8 @@ setting.maxIdleTime.to.default.value.of.60000=SRVE8054E: A NumberFormatException
 setting.maxIdleTime.to.default.value.of.60000.explanation=A NumberFormatException occurred when trying to set the single thread model servlet maximum idle time.
 setting.maxIdleTime.to.default.value.of.60000.useraction=Verify the value for the single thread model servlet maximum idle time is a valid integer.
 
-Error.while.flushing.last.response=SRVE8055E: An unexpected exception occurred flushng out the rest of the response data.
-Error.while.flushing.last.response.explanation=An unexpected exception occurred flushng out the rest of the response data.
+Error.while.flushing.last.response=SRVE8055E: An unexpected exception occurred flushing out the rest of the response data.
+Error.while.flushing.last.response.explanation=An unexpected exception occurred flushing out the rest of the response data.
 Error.while.flushing.last.response.useraction=Gather server logs and contact IBM service.
 
 Error.while.closing.response.output=SRVE8056E: An unexpected exception occurred closing the output stream.
@@ -1375,7 +1375,7 @@ failed.to.initialize.webcontainer.required.to.start.chains.explanation=An unexpe
 failed.to.initialize.webcontainer.required.to.start.chains.useraction=Gather server logs and contact IBM service.
 
 Null.webcontainer.config.object=SRVE8071E: Null web container config object.
-Null.webcontainer.config.object.explanation=An unexpected configuration exceptoin occurred.
+Null.webcontainer.config.object.explanation=An unexpected configuration exception occurred.
 Null.webcontainer.config.object.useraction=Gather server logs and contact IBM service.
 
 Null.virtual.host.config.object=SRVE8072E: Null virtual host config object.
@@ -1383,31 +1383,31 @@ Null.virtual.host.config.object.explanation=An unexpected configuration exceptio
 Null.virtual.host.config.object.useraction=Gather server logs and contact IBM service.
 
 Null.webApp.configuration.object=SRVE8073E: Null web application configuration object.
-Null.webApp.configuration.object.explanation=An unexpected configuration exceptoin occurred.
+Null.webApp.configuration.object.explanation=An unexpected configuration exception occurred.
 Null.webApp.configuration.object.useraction=Gather server logs and contact IBM service.
 
 Null.webApp.object=SRVE8074E: Null web application object.
-Null.webApp.object.explanation=An unexpected configuration exceptoin occurred.
+Null.webApp.object.explanation=An unexpected configuration exception occurred.
 Null.webApp.object.useraction=Gather server logs and contact IBM service.
 
 Null.cachedServlet.object=SRVE8075E: Null cache servlet object.
-Null.cachedServlet.object.explanation=An unexpected configuration exceptoin occurred.
+Null.cachedServlet.object.explanation=An unexpected configuration exception occurred.
 Null.cachedServlet.object.useraction=Gather server logs and contact IBM service.
 
 Null.AsyncRequestDispatcherConfigImpl.object=SRVE8076E: Null AsyncRequestDispatcherConfigImpl object.
-Null.AsyncRequestDispatcherConfigImpl.object.explanation=An unexpected configuration exceptoin occurred.
+Null.AsyncRequestDispatcherConfigImpl.object.explanation=An unexpected configuration exception occurred.
 Null.AsyncRequestDispatcherConfigImpl.object.useraction=Gather server logs and contact IBM service.
 
 Null.webApp.config.object=SRVE8077E: Null web application config object.
-Null.webApp.config.object.explanation=An unexpected configuration exceptoin occurred.
+Null.webApp.config.object.explanation=An unexpected configuration exception occurred.
 Null.webApp.config.object.useraction=Gather server logs and contact IBM service.
 
 Null.servlet.config.object=SRVE8078E: Null servlet config object.
-Null.servlet.config.object.explanation=An unexpected configuration exceptoin occurred.
+Null.servlet.config.object.explanation=An unexpected configuration exception occurred.
 Null.servlet.config.object.useraction=Gather server logs and contact IBM service.
 
 Null.filter.config.object=SRVE8079E: Null filter config object.
-Null.filter.config.object.explanation=An unexpected configuration exceptoin occurred.
+Null.filter.config.object.explanation=An unexpected configuration exception occurred.
 Null.filter.config.object.useraction=Gather server logs and contact IBM service.
 
 isUserInRole.caught.exception=SRVE8080E: Unexpected isUserInRole exception, returning of isUserInRole false.
@@ -1466,7 +1466,7 @@ servlet.classname.is.null=SRVE8093W: The servlet class name is null for the serv
 servlet.classname.is.null.explanation=The servlet class name is null so the request cannot be handled.
 servlet.classname.is.null.useraction=Verify a valid servlet class was provided for the servlet.
 
-Cannot.set.header.Response.already.committed=SRVE8094W: WARNING: Cannot set header. Response already committed.  Stack trace of errant attempt to set header: {0}
+Cannot.set.header.Response.already.committed=SRVE8094W: WARNING: Cannot set header. Response already committed. Stack trace of errant attempt to set header: {0}
 Cannot.set.header.Response.already.committed.explanation=Once a response is committed, you cannot set more response headers.
 Cannot.set.header.Response.already.committed.useraction=Verify whether this call is necessary. If the header really needs to be sent, it should be set before committing the response.
 
@@ -1538,13 +1538,13 @@ programmatic.session.cookie.restricted.match=SRVE8111E: The application, {0}, is
 programmatic.session.cookie.restricted.match.explanation=The administrator has disabled changing the cookie configuration for the cookie matching the domain, name, and path
 programmatic.session.cookie.restricted.match.useraction=Either modify the application to use a different cookie name, domain, or path or modify the restricted programmatic session cookie values 
 
-programmatic.session.cookie.retrieve.cell.xml.failure=SRVE8112W: There was a problem retrieving the restricted cookie patterns.  No restrictions have been placed on the programmatic session configuration.
+programmatic.session.cookie.retrieve.cell.xml.failure=SRVE8112W: There was a problem retrieving the restricted cookie patterns. No restrictions have been placed on the programmatic session configuration.
 programmatic.session.cookie.retrieve.cell.xml.failure.explanation=There was a problem retrieving the restricted cookie patterns from the configuration.
 programmatic.session.cookie.retrieve.cell.xml.failure.useraction=Verify that the cell.xml exists and is readable.
 
-AsyncContext.lock.already.held=SRVE8113W: Unable to obtain a lock.  Error processing has already been invoked by another thread.
+AsyncContext.lock.already.held=SRVE8113W: Unable to obtain a lock. Error processing has already been invoked by another thread.
 AsyncContext.lock.already.held.explanation=Error processing has already been invoked by another thread.
-AsyncContext.lock.already.held.useraction=Make sure the application can handle an exception here.  If it is necessary that this method return even if the call doesn't succeed, consider setting custom property throwexceptionwhenunabletocompleteordispatch to false.
+AsyncContext.lock.already.held.useraction=Make sure the application can handle an exception here. If it is necessary that this method return even if the call doesn't succeed, consider setting custom property throwexceptionwhenunabletocompleteordispatch to false.
 
 Cannot.set.session.cookie.Response.already.committed=SRVE8114W: WARNING: Cannot set session cookie. Response already committed.
 Cannot.set.session.cookie.Response.already.committed.explanation=After a response is committed, you cannot set the session cookie.
@@ -1554,9 +1554,9 @@ Cannot.set.status.Response.already.committed=SRVE8115W: WARNING: Cannot set stat
 Cannot.set.status.Response.already.committed.explanation=After a response is committed, you cannot set the response status code.
 Cannot.set.status.Response.already.committed.useraction=Verify whether this call is necessary. If you need to set the response status code, set it before you commit the response.
 
-servlet.with.same.name.already.exists=SRVE8500W: A servlet named {0} can not be dynamically added because a servlet configuration with the same name already exists.  
+servlet.with.same.name.already.exists=SRVE8500W: A servlet named {0} cannot be dynamically added because a servlet configuration with the same name already exists.
 servlet.with.same.name.already.exists.explanation=A servlet with the same name already exists for this application.
-servlet.with.same.name.already.exists.useraction=No action necessary.  Check for conflicts in the deployment descriptor, annotations, and source code that could dynamically add this servlet configuration. 
+servlet.with.same.name.already.exists.useraction=No action necessary. Check for conflicts in the deployment descriptor, annotations, and source code that could dynamically add this servlet configuration. 
 
 servlet.feature.not.loaded.correctly=SRVE8501E: The servlet container did not load with an acceptable version.
 servlet.feature.not.loaded.correctly.explanation=The servlet container is loaded with a version that corresponds to the Java EE specification of that servlet feature. The container was loaded with no version defined.
@@ -1579,14 +1579,14 @@ uncaught.exception.during.AsyncListener.onComplete=SRVE8504W: The following unca
 uncaught.exception.during.AsyncListener.onComplete.explanation=The AsyncListener that is referenced in the error message threw an Exception. The Exception is an application error.
 uncaught.exception.during.AsyncListener.onComplete.useraction=Verify the AsyncListener source code and the server logs for the root cause of the application error.
 
-# Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
+# Since servlet 4.0. Use the registered and reserved prefix CWWWC from now on.
 # 0001 - 0199 for Base
 # 0200 - 0299 for Servlet 3.0
 # 0300 - 0399 for Servlet 3.1
 # 0400 - 0499 for Servlet 4
 
 #name.is.null=CWWWC0400E: An attribute name, or initial parameter name, is null.
-#name.is.null.explanation=This is an application error.  The name is null in either context getAttribute(), setAttribute(), getInitParameter(), or setInitParameter().
+#name.is.null.explanation=This is an application error. The name is null in either context getAttribute(), setAttribute(), getInitParameter(), or setInitParameter().
 #name.is.null.useraction=Update the attribute name, or initial parameter name, with a non-null value.
 
 # Notes for translation
