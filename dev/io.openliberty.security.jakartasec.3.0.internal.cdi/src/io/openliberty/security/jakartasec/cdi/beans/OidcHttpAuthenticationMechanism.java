@@ -78,6 +78,8 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
 
     private static final TraceComponent tc = Tr.register(OidcHttpAuthenticationMechanism.class);
 
+    private static final String AUTH_TYPE_PROPERTY = "jakarta.servlet.http.authType";
+    private static final String AUTH_TYPE_JAKARTA_OIDC = "JAKARTA_OIDC";
     private static final String CHECKING_FOR_EXPIRED_TOKEN = "CHECKING_FOR_EXPIRED_TOKEN";
     private static final String JASPIC_PROVIDER_PERFORMED_REQUEST_LOGOUT = "JASPIC_PROVIDER_PERFORMED_REQUEST_LOGOUT";
 
@@ -149,7 +151,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         } else if (isCallbackRequest(request)) {
             status = processCallback(client, httpMessageContext);
         } else if (alreadyAuthenticated) {
-            status = processExpiredTokenResult(processExpiredToken(client, request, response), client, httpMessageContext);
+            status = checkForExpiredTokensAndProcessIfNeeded(client, request, response, httpMessageContext);
         } else if (!httpMessageContext.isProtected()) {
             status = AuthenticationStatus.NOT_DONE;
         }
@@ -379,7 +381,7 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
             setOpenIdContextInSubject(clientSubject, credential.getOpenIdContext());
 
             Map<String, Object> messageInfoMap = httpMessageContext.getMessageInfo().getMap();
-            messageInfoMap.put("jakarta.servlet.http.authType", "JAKARTA_OIDC");
+            messageInfoMap.put(AUTH_TYPE_PROPERTY, AUTH_TYPE_JAKARTA_OIDC);
             messageInfoMap.put("jakarta.servlet.http.registerSession", Boolean.TRUE.toString());
 
             rspStatus = HttpServletResponse.SC_OK;
@@ -476,54 +478,35 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
         return null;
     }
 
-    private AuthenticationStatus processExpiredTokenResult(ProviderAuthenticationResult providerAuthenticationResult, Client client,
-                                                           HttpMessageContext httpMessageContext) throws AuthenticationException {
-        AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
-
-        if (providerAuthenticationResult != null) {
-            AuthResult authResult = providerAuthenticationResult.getStatus();
-
-            if (AuthResult.REDIRECT_TO_PROVIDER.equals(authResult)) {
-                status = httpMessageContext.redirect(providerAuthenticationResult.getRedirectUrl());
-            } else if (AuthResult.SUCCESS.equals(authResult)) {
-                status = updateOpenIdContextWithRefreshedTokens(providerAuthenticationResult, client, httpMessageContext);
-            }
-            // TODO convert an AuthResult.CONTINUE to AuthenticationStatus.NOT_DONE to signal that no further processing is needed.
-        }
-
-        return status;
-    }
-
-    private AuthenticationStatus updateOpenIdContextWithRefreshedTokens(ProviderAuthenticationResult providerAuthenticationResult, Client client,
-                                                                        HttpMessageContext httpMessageContext) throws AuthenticationException {
-        return createAndValidateOidcTokensCredential(providerAuthenticationResult, client, httpMessageContext);
-    }
-
-    private ProviderAuthenticationResult processExpiredToken(Client client, HttpServletRequest request, HttpServletResponse response) {
+    private AuthenticationStatus checkForExpiredTokensAndProcessIfNeeded(Client client, HttpServletRequest request, HttpServletResponse response,
+                                                                         HttpMessageContext httpMessageContext) throws AuthenticationException {
+        ProviderAuthenticationResult providerAuthenticationResult;
         OpenIdContext openIdContext = OpenIdContextUtils.getOpenIdContextFromSubject();
 
         if (openIdContext == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "The openIdContext from OpenIdContextUtils.getOpenIdContextFromSubject is null, the ProviderAuthenticationResult is set to failure");
             }
-            return new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
-        IdentityToken idToken = openIdContext.getIdentityToken();
-        boolean isAccessTokenExpired = openIdContext.getAccessToken().isExpired();
-        boolean isIdTokenExpired = false;
-        String idTokenString = null;
-        if (idToken != null) {
-            isIdTokenExpired = idToken.isExpired();
-            idTokenString = idToken.getToken();
-        }
-        String refreshTokenString = getRefreshToken(openIdContext);
+            providerAuthenticationResult = new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        } else {
+            IdentityToken idToken = openIdContext.getIdentityToken();
+            boolean isAccessTokenExpired = openIdContext.getAccessToken().isExpired();
+            boolean isIdTokenExpired = false;
+            String idTokenString = null;
 
-        request.setAttribute(CHECKING_FOR_EXPIRED_TOKEN, true);
-        ProviderAuthenticationResult providerAuthenticationResult = client.processExpiredToken(request, response, isAccessTokenExpired, isIdTokenExpired, idTokenString,
-                                                                                               refreshTokenString);
-        request.removeAttribute(CHECKING_FOR_EXPIRED_TOKEN);
+            if (idToken != null) {
+                isIdTokenExpired = idToken.isExpired();
+                idTokenString = idToken.getToken();
+            }
 
-        return providerAuthenticationResult;
+            request.setAttribute(CHECKING_FOR_EXPIRED_TOKEN, true);
+
+            providerAuthenticationResult = client.checkForExpiredTokensAndProcessIfNeeded(request, response, isAccessTokenExpired, isIdTokenExpired, idTokenString,
+                                                                                          getRefreshToken(openIdContext));
+            request.removeAttribute(CHECKING_FOR_EXPIRED_TOKEN);
+        }
+
+        return processResultFromExpirationCheck(providerAuthenticationResult, client, httpMessageContext);
     }
 
     private String getRefreshToken(OpenIdContext openIdContext) {
@@ -535,6 +518,37 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
             }
         }
         return null;
+    }
+
+    private AuthenticationStatus processResultFromExpirationCheck(ProviderAuthenticationResult providerAuthenticationResult, Client client,
+                                                           HttpMessageContext httpMessageContext) throws AuthenticationException {
+        AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
+
+        if (providerAuthenticationResult != null) {
+            AuthResult authResult = providerAuthenticationResult.getStatus();
+
+            if (AuthResult.REDIRECT_TO_PROVIDER.equals(authResult)) {
+                status = httpMessageContext.redirect(providerAuthenticationResult.getRedirectUrl());
+            } else if (AuthResult.SUCCESS.equals(authResult)) {
+                status = updateOpenIdContextWithRefreshedTokens(providerAuthenticationResult, client, httpMessageContext);
+            } else if (AuthResult.CONTINUE.equals(authResult)) {
+                status = noProcessingNeededFromExpirationCheck(httpMessageContext);
+            }
+        }
+
+        return status;
+    }
+
+    private AuthenticationStatus updateOpenIdContextWithRefreshedTokens(ProviderAuthenticationResult providerAuthenticationResult, Client client,
+                                                                        HttpMessageContext httpMessageContext) throws AuthenticationException {
+        return createAndValidateOidcTokensCredential(providerAuthenticationResult, client, httpMessageContext);
+    }
+
+    private AuthenticationStatus noProcessingNeededFromExpirationCheck(HttpMessageContext httpMessageContext) {
+        httpMessageContext.getResponse().setStatus(HttpServletResponse.SC_OK);
+        httpMessageContext.getMessageInfo().getMap().put(AUTH_TYPE_PROPERTY, AUTH_TYPE_JAKARTA_OIDC);
+
+        return AuthenticationStatus.NOT_DONE;
     }
 
     @Override
