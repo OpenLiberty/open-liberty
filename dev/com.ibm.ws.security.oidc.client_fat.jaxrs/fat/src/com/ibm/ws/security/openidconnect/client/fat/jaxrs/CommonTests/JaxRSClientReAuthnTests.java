@@ -43,7 +43,7 @@ public class JaxRSClientReAuthnTests extends CommonTest {
     public static HashMap<String, Integer> defRespStatusMap = null;
     protected static CommonCookieTools cookieTools = new CommonCookieTools();
     public static RSCommonTestTools rsTools = new RSCommonTestTools();
-    protected static int testsRun = 0;
+    protected static boolean needsOPWakeup = true;
 
     private final static Boolean DOES_NOT_USE_CUSHION = false;
     private final static Boolean USES_CUSHION = true;
@@ -66,7 +66,7 @@ public class JaxRSClientReAuthnTests extends CommonTest {
         super.setTestName();
 
         // if this is the first test, try to have the OP issue tokens before the test since it take so long the very first time this is done.
-        if (testsRun == 0) {
+        if (needsOPWakeup) {
             try {
                 Log.info(thisClass, "Before test method", "Prime the OP Pump");
                 WebConversation wc = new WebConversation();
@@ -84,7 +84,7 @@ public class JaxRSClientReAuthnTests extends CommonTest {
                 Log.info(thisClass, "Before test method - priming the pump failure - we'll continue with the tests anyway.", e.getMessage());
             }
         }
-        testsRun++;
+        needsOPWakeup = false;
 
     }
 

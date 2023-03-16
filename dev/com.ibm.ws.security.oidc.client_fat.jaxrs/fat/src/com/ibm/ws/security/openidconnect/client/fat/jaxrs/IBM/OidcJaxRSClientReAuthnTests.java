@@ -101,7 +101,7 @@ public class OidcJaxRSClientReAuthnTests extends JaxRSClientReAuthnTests {
         map.put(Constants.CONTEXT_SET, "true");
         testSettings.setRequestParms(map);
 
-        testsRun = 0;
+        needsOPWakeup = true;
     }
 
 }
