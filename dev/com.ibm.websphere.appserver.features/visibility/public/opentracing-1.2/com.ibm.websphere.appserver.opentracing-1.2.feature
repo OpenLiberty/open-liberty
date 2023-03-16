@@ -26,4 +26,3 @@ IBM-API-Package: io.opentracing;  type="third-party",\
 kind=ga
 edition=core
 WLP-Activation-Type: parallel
-superseded-by=mpTelemetry-1.0
