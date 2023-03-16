@@ -12,9 +12,11 @@ package io.openliberty.security.jakartasec.cdi.beans;
 import static io.openliberty.security.oidcclientcore.authentication.JakartaOidcAuthorizationRequest.IS_CONTAINER_INITIATED_FLOW;
 import static org.junit.Assert.assertEquals;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 
 import javax.security.auth.Subject;
@@ -29,6 +31,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.ws.security.context.SubjectManager;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.security.javaeesec.cdi.beans.Utils;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
@@ -57,7 +60,10 @@ import jakarta.security.enterprise.authentication.mechanism.http.HttpMessageCont
 import jakarta.security.enterprise.authentication.mechanism.http.OpenIdAuthenticationMechanismDefinition;
 import jakarta.security.enterprise.authentication.mechanism.http.openid.OpenIdConstant;
 import jakarta.security.enterprise.credential.Credential;
+import jakarta.security.enterprise.identitystore.openid.AccessToken;
+import jakarta.security.enterprise.identitystore.openid.IdentityToken;
 import jakarta.security.enterprise.identitystore.openid.OpenIdContext;
+import jakarta.security.enterprise.identitystore.openid.RefreshToken;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -70,9 +76,14 @@ public class OidcHttpAuthenticationMechanismTest {
     private static final ProviderAuthenticationResult END_SESSION_REDIRECT_URI_PROVIDER_AUTH_RESULT = createRedirectionResult(END_SESSION_REDIRECT_URI);
     private static final ProviderAuthenticationResult AUTHORIZATION_REQUEST_FAILURE_PROVIDER_AUTH_RESULT = new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
     private static final ProviderAuthenticationResult LOCAL_LOGOUT_FAILURE_PROVIDER_AUTH_RESULT = new ProviderAuthenticationResult(AuthResult.FAILURE, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+    private static final ProviderAuthenticationResult EXPIRATION_CHECK_CONTINUE = new ProviderAuthenticationResult(AuthResult.CONTINUE, HttpServletResponse.SC_OK);
     private static final AuthenticationResponseException AUTHENTICATION_RESPONSE_EXCEPTION_INVALID_RESULT = new AuthenticationResponseException(ValidationResult.INVALID_RESULT, "clientId", "nlsMessage");
     private static final TokenRequestException TOKEN_REQUEST_EXCEPTION = new TokenRequestException("clientId", "message");
     private static final String JASPIC_PROVIDER_PERFORMED_REQUEST_LOGOUT = "JASPIC_PROVIDER_PERFORMED_REQUEST_LOGOUT";
+    private static final String CHECKING_FOR_EXPIRED_TOKEN_ATTRIBUTE = "CHECKING_FOR_EXPIRED_TOKEN";
+    private static final String IDENTITY_TOKEN_STRING = "identity.token.string";
+    private static final String AUTH_TYPE_PROPERTY = "jakarta.servlet.http.authType";
+    private static final String AUTH_TYPE_JAKARTA_OIDC = "JAKARTA_OIDC";
 
     private final Mockery mockery = new JUnit4Mockery() {
         {
@@ -102,6 +113,13 @@ public class OidcHttpAuthenticationMechanismTest {
     private OriginalResourceRequest originalResourceRequest;
     private HttpSession httpSession;
 
+    private final SubjectManager subjectManager = new SubjectManager();
+    private Principal jaspicSessionPrincipal;
+    private Subject sessionSubject;
+    private OpenIdContext openidContext;
+    private IdentityToken identityToken;
+    private AccessToken accessToken;
+
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
     }
@@ -127,10 +145,15 @@ public class OidcHttpAuthenticationMechanismTest {
         httpSession = mockery.mock(HttpSession.class);
         messageInfoMap = new HashMap<String, Object>();
         clientSubject = new Subject();
+        jaspicSessionPrincipal = mockery.mock(Principal.class);
+        openidContext = mockery.mock(OpenIdContext.class);
+        identityToken = mockery.mock(IdentityToken.class);
+        accessToken = mockery.mock(AccessToken.class);
     }
 
     @After
     public void tearDown() throws Exception {
+        subjectManager.clearSubjects();
         mockery.assertIsSatisfied();
     }
 
@@ -264,10 +287,30 @@ public class OidcHttpAuthenticationMechanismTest {
     }
 
     @Test
+    public void testValidateRequest_authenticatedSubject_checkForExpiredTokens_notExpired_status200_authTypeSet() throws Exception {
+        boolean identityTokenExpired = false;
+        boolean accessTokenExpired = false;
+        String refreshTokenString = null;
+
+        mechanismChecksForExpiredTokens();
+        withSessionSubject();
+        withExpirationCheckExpectations(accessTokenExpired, identityTokenExpired, IDENTITY_TOKEN_STRING, refreshTokenString, EXPIRATION_CHECK_CONTINUE);
+        mechanismSetsResponseStatus(HttpServletResponse.SC_OK);
+        withMessageInfo();
+
+        OidcHttpAuthenticationMechanism mechanism = new TestOidcHttpAuthenticationMechanism();
+
+        AuthenticationStatus authenticationStatus = mechanism.validateRequest(request, response, httpMessageContext);
+
+        assertEquals("The AuthenticationStatus must be NOT_DONE.", AuthenticationStatus.NOT_DONE, authenticationStatus);
+        assertEquals("The jakarta.servlet.http.authType property must be set to JAKARTA_OIDC.", AUTH_TYPE_JAKARTA_OIDC, messageInfoMap.get(AUTH_TYPE_PROPERTY));
+    }
+
+    @Test
     public void testCleanSubject() throws Exception {
         setModulePropertiesProvider();
         withRequestAndResponseFromHttpMessageContext();
-        mechanismCheckingForExpiredToken(false);
+        mechanismGetsCheckingForExpiredTokenAttributeAs(false);
         clientPerformsLogout(END_SESSION_REDIRECT_URI_PROVIDER_AUTH_RESULT);
         mechanismRedirectsTo(END_SESSION_REDIRECT_URI);
 
@@ -280,7 +323,7 @@ public class OidcHttpAuthenticationMechanismTest {
     public void testCleanSubject_localLogoutFailure() throws Exception {
         setModulePropertiesProvider();
         withRequestAndResponseFromHttpMessageContext();
-        mechanismCheckingForExpiredToken(false);
+        mechanismGetsCheckingForExpiredTokenAttributeAs(false);
         clientPerformsLogout(LOCAL_LOGOUT_FAILURE_PROVIDER_AUTH_RESULT);
         mechanismDoesNotRedirect();
 
@@ -293,7 +336,7 @@ public class OidcHttpAuthenticationMechanismTest {
     public void testCleanSubject_reauthorizationRequestFailure() throws Exception {
         setModulePropertiesProvider();
         withRequestAndResponseFromHttpMessageContext();
-        mechanismCheckingForExpiredToken(false);
+        mechanismGetsCheckingForExpiredTokenAttributeAs(false);
         clientPerformsLogout(AUTHORIZATION_REQUEST_FAILURE_PROVIDER_AUTH_RESULT);
         mechanismDoesNotRedirect();
 
@@ -306,7 +349,7 @@ public class OidcHttpAuthenticationMechanismTest {
     public void testCleanSubject_checkingExpiredToken_skip() throws Exception {
         setModulePropertiesProvider();
         withRequestAndResponseFromHttpMessageContext();
-        mechanismCheckingForExpiredToken(true);
+        mechanismGetsCheckingForExpiredTokenAttributeAs(true);
         mechanismDoesNotRedirect();
 
         OidcHttpAuthenticationMechanism mechanism = new TestOidcHttpAuthenticationMechanism();
@@ -335,10 +378,33 @@ public class OidcHttpAuthenticationMechanismTest {
         withCallbackRequest();
     }
 
-    private void mechanismCheckingForExpiredToken(boolean checkingForExpiredToken) {
+    private void mechanismChecksForExpiredTokens() {
+        setModulePropertiesProvider();
+        setHttpMessageContextExpectations(true, false, false);
+        withJaspicSessionPrincipal();
+        withoutCallbackRequest();
+    }
+
+    private void mechanismSetsCheckingForExpiredTokenAttribute() {
         mockery.checking(new Expectations() {
             {
-                one(request).getAttribute("CHECKING_FOR_EXPIRED_TOKEN");
+                one(request).setAttribute(CHECKING_FOR_EXPIRED_TOKEN_ATTRIBUTE, true);
+            }
+        });
+    }
+
+    private void mechanismRemovesCheckingForExpiredTokenAttribute() {
+        mockery.checking(new Expectations() {
+            {
+                one(request).removeAttribute(CHECKING_FOR_EXPIRED_TOKEN_ATTRIBUTE);
+            }
+        });
+    }
+
+    private void mechanismGetsCheckingForExpiredTokenAttributeAs(boolean checkingForExpiredToken) {
+        mockery.checking(new Expectations() {
+            {
+                one(request).getAttribute(CHECKING_FOR_EXPIRED_TOKEN_ATTRIBUTE);
                 will(returnValue(checkingForExpiredToken));
             }
         });
@@ -448,11 +514,73 @@ public class OidcHttpAuthenticationMechanismTest {
         });
     }
 
+    private void withJaspicSessionPrincipal() {
+        mockery.checking(new Expectations() {
+            {
+                one(request).getUserPrincipal();
+                will(returnValue(jaspicSessionPrincipal));
+            }
+        });
+    }
+
+    private void withSessionSubject() {
+        sessionSubject = new Subject();
+        subjectManager.setCallerSubject(sessionSubject);
+    }
+
+    private void withOpenidContextInSessionSubject() {
+        sessionSubject.getPrivateCredentials().add(openidContext);
+    }
+
+    private void withIdentityTokenInOpenidContext(boolean expired, String tokenString) {
+        mockery.checking(new Expectations() {
+            {
+                one(openidContext).getIdentityToken();
+                will(returnValue(identityToken));
+                allowing(identityToken).isExpired();
+                will(returnValue(expired));
+                allowing(identityToken).getToken();
+                will(returnValue(tokenString));
+            }
+        });
+    }
+
+    private void withAccessTokenInOpenidContext(boolean expired) {
+        mockery.checking(new Expectations() {
+            {
+                one(openidContext).getAccessToken();
+                will(returnValue(accessToken));
+                allowing(accessToken).isExpired();
+                will(returnValue(expired));
+            }
+        });
+    }
+
+    private void withoutRefreshTokenInOpenidContext() {
+        Optional<RefreshToken> optionalRefreshToken = Optional.empty();
+
+        mockery.checking(new Expectations() {
+            {
+                one(openidContext).getRefreshToken();
+                will(returnValue(optionalRefreshToken));
+            }
+        });
+    }
+
     private void withCallbackRequest() {
         mockery.checking(new Expectations() {
             {
                 one(request).getParameter(OpenIdConstant.STATE);
                 will(returnValue("aStateValue"));
+            }
+        });
+    }
+
+    private void withoutCallbackRequest() {
+        mockery.checking(new Expectations() {
+            {
+                one(request).getParameter(OpenIdConstant.STATE);
+                will(returnValue(null));
             }
         });
     }
@@ -492,6 +620,33 @@ public class OidcHttpAuthenticationMechanismTest {
                 will(throwException(exception));
             }
         });
+    }
+
+    private void withExpirationCheckExpectations(boolean accessTokenExpired, boolean identityTokenExpired, String identityTokenString, String refreshTokenString,
+                                                ProviderAuthenticationResult providerAuthenticationResult) {
+        withOpenidContextInSessionSubject();
+        withIdentityTokenInOpenidContext(identityTokenExpired, IDENTITY_TOKEN_STRING);
+        withAccessTokenInOpenidContext(false);
+        if (refreshTokenString == null) {
+            withoutRefreshTokenInOpenidContext();
+        }
+
+        clientChecksForExpiredTokens(accessTokenExpired, identityTokenExpired, IDENTITY_TOKEN_STRING, refreshTokenString, EXPIRATION_CHECK_CONTINUE);
+    }
+
+    private void clientChecksForExpiredTokens(boolean isAccessTokenExpired, boolean isIdTokenExpired, String idTokenString, String refreshTokenString,
+                                              ProviderAuthenticationResult providerAuthenticationResult) {
+
+        mechanismSetsCheckingForExpiredTokenAttribute();
+
+        mockery.checking(new Expectations() {
+            {
+                one(client).checkForExpiredTokensAndProcessIfNeeded(request, response, isAccessTokenExpired, isIdTokenExpired, idTokenString, refreshTokenString);
+                will(returnValue(providerAuthenticationResult));
+            }
+        });
+
+        mechanismRemovesCheckingForExpiredTokenAttribute();
     }
 
     private void mechanismRedirectsTo(String location) {

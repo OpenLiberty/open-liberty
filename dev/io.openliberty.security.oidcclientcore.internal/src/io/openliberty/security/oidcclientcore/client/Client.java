@@ -73,7 +73,7 @@ public class Client {
         return jwkSet;
     }
 
-    public ProviderAuthenticationResult processExpiredToken(HttpServletRequest request, HttpServletResponse response,
+    public ProviderAuthenticationResult checkForExpiredTokensAndProcessIfNeeded(HttpServletRequest request, HttpServletResponse response,
                                                             boolean isAccessTokenExpired,
                                                             boolean isIdTokenExpired,
                                                             String idTokenString,
@@ -101,9 +101,8 @@ public class Client {
             }
         }
 
-        // The token expiration is ignored when none of the above conditions hold
-        // TODO: Return AuthResult.CONTINUE instead so that caller does not need to attempt to update context unnecessarily.
-        return new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK);
+        // The token expiration is ignored when none of the above conditions hold.
+        return new ProviderAuthenticationResult(AuthResult.CONTINUE, HttpServletResponse.SC_OK);
     }
 
     public ProviderAuthenticationResult logout(HttpServletRequest request, HttpServletResponse response, String idTokenString) {
