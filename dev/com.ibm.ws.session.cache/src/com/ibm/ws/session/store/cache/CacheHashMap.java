@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -155,6 +155,9 @@ public class CacheHashMap extends BackedHashMap {
             // the / and : characters (JCache spec does not allow these in cache names)
             // and also the % character (which is necessary because of percent encoding)
             String a = _iStore.getId();
+            if (_smc.isAppInCacheName()) {
+                a = a.concat(".").concat(_smc.getJ2EEName());
+            }
             if (Character.compare(_smc.getCacheSeparator(), '%') == 0) {
                 a = PERCENT.matcher(a).replaceAll("%25"); // must be done first to avoid replacing % that is added when replacing the others
                 a = SLASH.matcher(a).replaceAll("%2F");
