@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -92,7 +92,8 @@ public class HttpTrailersImpl extends BNFHeadersImpl implements HttpTrailers {
      * @return boolean (true if exists)
      */
     public boolean containsDeferredTrailer(String target) {
-        return containsDeferredTrailer(findKey(target));
+        HeaderKeys key = findKey(target, true);
+        return key != null && containsDeferredTrailer(key);
     }
 
     /**
@@ -172,7 +173,7 @@ public class HttpTrailersImpl extends BNFHeadersImpl implements HttpTrailers {
         if (null == htg) {
             throw new IllegalArgumentException("Null value generator");
         }
-        this.knownTGs.put(findKey(hdr), htg);
+        this.knownTGs.put(findKey(hdr, false), htg);
     }
 
     /**
@@ -196,7 +197,10 @@ public class HttpTrailersImpl extends BNFHeadersImpl implements HttpTrailers {
         if (null == hdr) {
             throw new IllegalArgumentException("Null header name");
         }
-        this.knownTGs.remove(findKey(hdr));
+        HeaderKeys key = findKey(hdr, true);
+        if (key != null) {
+            this.knownTGs.remove(key);
+        }
     }
 
     /**
@@ -314,24 +318,24 @@ public class HttpTrailersImpl extends BNFHeadersImpl implements HttpTrailers {
     }
 
     /**
-     * @see com.ibm.ws.genericbnf.internal.BNFHeadersImpl#findKey(byte[], int, int)
+     * @see com.ibm.ws.genericbnf.internal.BNFHeadersImpl#findKey(byte[], int, int, boolean)
      */
-    protected HeaderKeys findKey(byte[] data, int offset, int length) {
-        return HttpHeaderKeys.find(data, offset, length);
+    protected HeaderKeys findKey(byte[] data, int offset, int length, boolean returnNullForInvalidName) {
+        return HttpHeaderKeys.find(data, offset, length, returnNullForInvalidName);
     }
 
     /**
-     * see com.ibm.ws.genericbnf.impl.BNFHeadersImpl#findKey(byte[])
+     * see com.ibm.ws.genericbnf.impl.BNFHeadersImpl#findKey(byte[], boolean)
      */
-    protected HeaderKeys findKey(byte[] name) {
-        return HttpHeaderKeys.find(name, 0, name.length);
+    protected HeaderKeys findKey(byte[] name, boolean returnNullForInvalidName) {
+        return HttpHeaderKeys.find(name, 0, name.length, returnNullForInvalidName);
     }
 
     /**
      * @see com.ibm.ws.genericbnf.internal.BNFHeadersImpl#findKey(java.lang.String)
      */
-    protected HeaderKeys findKey(String name) {
-        return HttpHeaderKeys.find(name);
+    protected HeaderKeys findKey(String name, boolean returnNullForInvalidName) {
+        return HttpHeaderKeys.find(name, returnNullForInvalidName);
     }
 
 }

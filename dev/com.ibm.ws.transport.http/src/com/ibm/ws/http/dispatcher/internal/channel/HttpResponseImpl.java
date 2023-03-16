@@ -339,7 +339,7 @@ public class HttpResponseImpl implements HttpResponse, HttpResponseExt {
     public void setTrailer(String name, String value) {
 
         HttpTrailers trailers = message.createTrailers();
-        HeaderKeys key = HttpHeaderKeys.find(name);
+        HeaderKeys key = HttpHeaderKeys.find(name, false);
 
         if (trailers.containsDeferredTrailer(key)) {
             trailers.removeDeferredTrailer(key);

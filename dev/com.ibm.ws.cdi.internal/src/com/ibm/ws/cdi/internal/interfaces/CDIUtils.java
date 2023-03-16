@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -42,10 +42,12 @@ import javax.enterprise.inject.Model;
 import javax.enterprise.inject.Stereotype;
 import javax.enterprise.inject.spi.Extension;
 import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
 
 import org.jboss.weld.bean.proxy.ProxyObject;
 import org.jboss.weld.bootstrap.spi.Metadata;
 import org.jboss.weld.bootstrap.spi.helpers.MetadataImpl;
+import org.jboss.weld.interceptor.WeldInvocationContext;
 import org.jboss.weld.resources.spi.ResourceLoadingException;
 
 import com.ibm.websphere.ras.Tr;
@@ -392,5 +394,20 @@ public class CDIUtils {
         Class<?> clazz = obj.getClass();
         boolean result = isWeldProxy(clazz);
         return result;
+    }
+
+    /**
+     * Returns all interceptor bindings which apply to the current invocation or lifecycle event.
+     *
+     * @return a set of interceptor bindings which apply to the current invocation or lifecycle event. This will include all interceptor bindings that apply, not just those that were used to bind the current interceptor.
+     * @throws IllegalArgumentException if InvocationContext is not an instance of org.jboss.weld.interceptor.proxy.AbstractInvocationContext;
+     */
+    public static Set<Annotation> getInterceptorBindingsFromInvocationContext(InvocationContext invocationContext) throws IllegalArgumentException {
+        if (invocationContext instanceof WeldInvocationContext) {
+            WeldInvocationContext weldInvocationContext = (WeldInvocationContext) invocationContext;
+            return weldInvocationContext.getInterceptorBindings();            
+        } else {
+            throw new IllegalArgumentException("InvocationContext was not an instance of WeldInvocationContext");
+        }
     }
 }

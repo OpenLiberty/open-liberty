@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -68,6 +68,8 @@ public class LDAPRegressionTest {
     private static final String USER_1_DN = "uid=" + USER_1 + "," + BASE_DN;
     private static final String USER_2 = "Bob (Contractor)";
     private static final String USER_2_DN = "uid=" + USER_2 + "," + BASE_DN;
+    private static final String USER_3 = "user3";
+    private static final String USER_3_DN = "cn=" + USER_3 + "," + BASE_DN;
 
     /**
      * Setup the test case.
@@ -185,6 +187,16 @@ public class LDAPRegressionTest {
         entry.addAttribute("sn", USER_2);
         entry.addAttribute("cn", USER_2);
         entry.addAttribute("nickName", USER_2 + " nick name");
+        entry.addAttribute("userPassword", "password");
+        ds.add(entry);
+
+        /*
+         * Create user3.
+         */
+        entry = new Entry(USER_3_DN);
+        entry.addAttribute("objectclass", "person");
+        entry.addAttribute("sn", USER_3);
+        entry.addAttribute("cn", USER_3);
         entry.addAttribute("userPassword", "password");
         ds.add(entry);
     }
@@ -389,6 +401,11 @@ public class LDAPRegressionTest {
     public void testUserFilterWithoutPercentV() throws Exception {
         ServerConfiguration clone = basicConfiguration.clone();
         LdapRegistry ldap = createLdapRegistry(clone);
+
+        // Update config to working server first. This is necessary in case the two filter tests
+        // are run first. We need LdapAdapter to activate successfully before we modify the config.
+        updateConfigDynamically(libertyServer, clone);
+
         ldap.getCustomFilters().setUserFilter("(uid=someuser)");
 
         updateConfigDynamically(libertyServer, clone);
@@ -403,10 +420,33 @@ public class LDAPRegressionTest {
     public void testGroupFilterWithoutPercentV() throws Exception {
         ServerConfiguration clone = basicConfiguration.clone();
         LdapRegistry ldap = createLdapRegistry(clone);
+
+        // Update config to working server first. This is necessary in case the two filter tests
+        // are run first. We need LdapAdapter to activate successfully before we modify the config.
+        updateConfigDynamically(libertyServer, clone);
+
         ldap.getCustomFilters().setGroupFilter("(cn=somegroup)");
 
         updateConfigDynamically(libertyServer, clone);
 
         assertFalse("Did not find CWIML4523E in log", libertyServer.waitForStringInLogUsingMark("CWIML4523E.*cn=somegroup.*groupFilter") == null);
+    }
+
+    /**
+     * Verify that "objectClass" in camelCase works in userFilter.
+     * If the object class is not read correctly, getUserDisplayName
+     * returns nothing because we don't have a PersonAccount.
+     */
+    @Test
+    public void testObjectClassCamelCase() throws Exception {
+        ServerConfiguration clone = basicConfiguration.clone();
+        LdapRegistry ldap = createLdapRegistry(clone);
+        ldap.getCustomFilters().setUserFilter("(&(objectClass=person)(cn=%v))");
+        updateConfigDynamically(libertyServer, clone);
+
+        String dName = urServlet.getUserDisplayName(USER_3);
+        assertNotNull("DisplayName should be non-null", dName);
+        assertEquals("DisplayName should be user3", USER_3, dName);
+
     }
 }

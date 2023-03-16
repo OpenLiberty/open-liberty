@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,10 +35,12 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyServer;
+
 
 /**
  * Tests to execute on the jsfTestServer1 that use HtmlUnit.
@@ -234,6 +236,7 @@ public class JSFSimpleHtmlUnit {
      *
      * @throws Exception
      */
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) // Skipped until MYFACES-4594 is pulled in
     @Test
     public void check_default_FACELETS_BUFFER_SIZE() throws Exception {
         try (WebClient webClient = new WebClient()) {
@@ -255,6 +258,7 @@ public class JSFSimpleHtmlUnit {
      *
      * @throws Exception
      */
+    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) // Skipped until MYFACES-4594 is pulled in
     @Test
     public void check_defaultLogging_AUTOCOMPLETE_OFF_VIEW_STATE() throws Exception {
         try (WebClient webClient = new WebClient()) {

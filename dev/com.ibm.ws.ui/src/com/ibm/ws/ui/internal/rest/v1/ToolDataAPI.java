@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -262,7 +262,12 @@ public class ToolDataAPI extends CommonRESTHandler implements V1Constants {
                                                                                                                       request.getUserPrincipal().getName(),
                                                                                                                       child));
                 }
+
                 String tooldata = getReaderContents(request.getInputStream(), POST_MAX_PLAIN_TEXT_SIZE);
+                // validate user input data
+                if(!Utils.isValidJsonString(tooldata)) {
+                    throw new RESTException(HTTP_INTERNAL_ERROR);
+                }
 
                 String td = toolDataService.addToolData(request.getUserPrincipal().getName(), child, tooldata);
 

@@ -69,6 +69,7 @@ Export-Package: \
   org.apache.myfaces.cdi.model;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.cdi.view;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.cdi.util;thread-context=true;version=${Implementation-Version}, \
+  org.apache.myfaces.cdi.clientwindow;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.component;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.component.search;thread-context=true;version=${Implementation-Version}, \
   org.apache.myfaces.component.visit;thread-context=true;version=${Implementation-Version}, \

@@ -23,7 +23,8 @@ Subsystem-Name: Application Security 5.0 (Jakarta Security 3.0)
   io.openliberty.securityAPI.jakarta-1.0, \
   io.openliberty.jakarta.security.enterprise-3.0, \
   io.openliberty.expressionLanguage-5.0, \
-  io.openliberty.jsonp-2.1
+  io.openliberty.jsonp-2.1, \
+  io.openliberty.webAppSecurity-2.0
 -bundles=\
   com.ibm.json4j, \
   com.ibm.ws.org.apache.commons.lang3, \

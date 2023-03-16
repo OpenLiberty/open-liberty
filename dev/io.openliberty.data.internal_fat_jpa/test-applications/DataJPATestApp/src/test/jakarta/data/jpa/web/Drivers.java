@@ -12,6 +12,7 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import java.time.LocalDate;
 import java.util.stream.Stream;
 
 import jakarta.data.repository.CrudRepository;
@@ -28,4 +29,17 @@ public interface Drivers extends CrudRepository<Driver, Integer> {
 
     @OrderBy("birthday")
     Stream<DriversLicense> findByFullNameEndsWith(String ending);
+
+    Driver findByLicense(DriversLicense license);
+
+    @OrderBy("license.issuedOn")
+    Stream<Driver> findByLicenseExpiresOnBetween(LocalDate expiresOnOrAfter, LocalDate expiresOnOrBefore);
+
+    @OrderBy("license_stateName")
+    @OrderBy("licenseExpiresOn")
+    Stream<Driver> findByLicenseNotNull();
+
+    Driver findByLicenseNum(String licenseNumber);
+
+    Stream<Driver> findByLicenseStateNameOrderByLicenseExpiresOnDesc(String state);
 }
