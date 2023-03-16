@@ -862,6 +862,8 @@ public class OidcEndpointServicesTest {
                     will(returnValue(oauth20tokencache));
                     one(oauth20tokencache).get(with(HashUtils.digest(idTokenHint)));
                     will(returnValue(null));
+                    one(oidcServerConfig).getIdTokenSigningAlgValuesSupported();
+                    will(returnValue("HS256"));
                     one(oauth20Provider).getClientProvider();
                     will(returnValue(oidcoauth20clientprovider));
                     one(oidcoauth20clientprovider).get(with(clientId));
@@ -904,6 +906,8 @@ public class OidcEndpointServicesTest {
                     will(returnValue(oauth20tokencache));
                     one(oauth20tokencache).get(with(HashUtils.digest(idTokenHint)));
                     will(returnValue(null));
+                    one(oidcServerConfig).getIdTokenSigningAlgValuesSupported();
+                    will(returnValue("HS256"));
                     one(oauth20Provider).getClientProvider();
                     will(returnValue(oidcoauth20clientprovider));
                     one(oidcoauth20clientprovider).get(with(clientId));

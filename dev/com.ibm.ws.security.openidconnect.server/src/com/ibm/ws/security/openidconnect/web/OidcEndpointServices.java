@@ -14,11 +14,13 @@ package com.ibm.ws.security.openidconnect.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.Key;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -27,6 +29,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.MalformedClaimException;
+import org.jose4j.jwt.consumer.JwtContext;
+import org.jose4j.jwx.JsonWebStructure;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -53,6 +59,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.oauth20.AuthnContext;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.common.claims.UserClaims;
 import com.ibm.ws.security.oauth20.ProvidersService;
 import com.ibm.ws.security.oauth20.api.Constants;
@@ -75,11 +82,15 @@ import com.ibm.ws.security.openidconnect.token.IDTokenValidationFailedException;
 import com.ibm.ws.security.openidconnect.token.JWT;
 import com.ibm.ws.security.openidconnect.token.JWTPayload;
 import com.ibm.ws.security.openidconnect.token.JsonTokenUtil;
+import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.security.openidconnect.IDTokenMediator;
 import com.ibm.wsspi.security.openidconnect.UserinfoProvider;
+
+import io.openliberty.security.common.jwt.JwtParsingUtils;
+import io.openliberty.security.common.jwt.jws.JwsSignatureVerifier;
 
 @Component(service = { OidcEndpointServices.class }, name = "com.ibm.ws.security.openidconnect.web.OidcEndpointServices", immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
 public class OidcEndpointServices extends OAuth20EndpointServices {
@@ -402,7 +413,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
      * @throws OidcServerException
      *
      */
-    JWT createJwt(String tokenString, OAuth20Provider oauth20provider, OidcServerConfig oidcServerConfig) throws OidcServerException {
+    JWT createJwt(String tokenString, OAuth20Provider oauth20provider, OidcServerConfig oidcServerConfig) throws Exception {
         String aud = null;
         String issuer = null;
         JWTPayload payload = JsonTokenUtil.getPayload(tokenString);
@@ -410,9 +421,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
             aud = JsonTokenUtil.getAud(payload);
             issuer = JsonTokenUtil.getIss(payload);
         }
-        // TODO support RS256 by resolving key issue.
-        Object key = ((aud == null) ? null : getSharedKey(oauth20provider, aud));
-        // signatureAlgorithm
+        Object key = getJwtVerificationKey(tokenString, oauth20provider, oidcServerConfig);
         String signatureAlgorithm = oidcServerConfig.getSignatureAlgorithm();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -420,6 +429,40 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
         }
 
         return new JWT(tokenString, key, aud, issuer, signatureAlgorithm);
+    }
+
+    @Sensitive
+    Object getJwtVerificationKey(String tokenString, OAuth20Provider oauth20provider, OidcServerConfig oidcServerConfig) throws Exception {
+        Object key = null;
+        JwtContext jwtContext = JwtParsingUtils.parseJwtWithoutValidation(tokenString);
+        String signingAlgorithm = JwsSignatureVerifier.verifyJwsAlgHeaderOnly(jwtContext, Arrays.asList(oidcServerConfig.getIdTokenSigningAlgValuesSupported()));
+        if (signingAlgorithm.equals("none")) {
+            key = null;
+        } else if (signingAlgorithm.startsWith("HS")) {
+            key = getSharedKey(jwtContext, oauth20provider);
+        } else {
+            // TODO - remove beta guard when ready
+            if (ProductInfo.getBetaEdition()) {
+                JsonWebStructure jsonStruct = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
+                key = getPublicKeyFromJsonWebStructure(jsonStruct, oidcServerConfig);
+            }
+        }
+        return key;
+    }
+
+    @Sensitive
+    Object getSharedKey(JwtContext jwtContext, OAuth20Provider oauth20provider) throws OidcServerException, MalformedClaimException {
+        JwtClaims jwtClaims = jwtContext.getJwtClaims();
+        List<String> audiences = jwtClaims.getAudience();
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Audiences from JWT: " + audiences);
+        }
+        if (audiences.size() > 1) {
+            // TODO
+            return null;
+        }
+        String clientId = audiences.get(0);
+        return getSharedKey(oauth20provider, clientId);
     }
 
     /**
@@ -440,6 +483,25 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
             sharedKey = baseClient.getClientSecret();
         }
         return sharedKey;
+    }
+
+    public Key getPublicKeyFromJsonWebStructure(JsonWebStructure jsonStruct, OidcServerConfig oidcServerConfig) {
+        String alg = jsonStruct.getAlgorithmHeaderValue();
+        String kid = jsonStruct.getKeyIdHeaderValue();
+        String x5t = jsonStruct.getX509CertSha1ThumbprintHeaderValue();
+
+        Key publicKey = null;
+        JSONWebKey jwk = oidcServerConfig.getJSONWebKey();
+        if (jwk != null && alg.equals(jwk.getAlgorithm())) {
+            if (kid != null && kid.equals(jwk.getKeyID())) {
+                publicKey = jwk.getPublicKey();
+            } else if (x5t != null && x5t.equals(jwk.getKeyX5t())) {
+                publicKey = jwk.getPublicKey();
+            } else if (kid == null && x5t == null) {
+                publicKey = jwk.getPublicKey();
+            }
+        }
+        return publicKey;
     }
 
     /**
