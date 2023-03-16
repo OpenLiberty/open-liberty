@@ -22,6 +22,8 @@ package org.apache.cxf.binding.soap.interceptor;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -29,6 +31,10 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 import org.apache.cxf.binding.soap.SoapFault;
 import org.apache.cxf.binding.soap.SoapMessage;
@@ -40,16 +46,22 @@ import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.staxutils.StaxUtils;
 
-public abstract class AbstractSoapInterceptor extends AbstractPhaseInterceptor<SoapMessage>
-    implements SoapInterceptor {
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.Tr;
+
+public abstract class AbstractSoapInterceptor extends AbstractPhaseInterceptor<SoapMessage> implements SoapInterceptor {
+
+    private static final Logger LOG = Logger.getLogger(AbstractSoapInterceptor.class.getName());
+    
+    private static final TraceComponent tc = Tr.register(AbstractSoapInterceptor.class);
 
     public AbstractSoapInterceptor(String p) {
         super(p);
     }
+
     public AbstractSoapInterceptor(String i, String p) {
         super(i, p);
     }
-
 
     public Set<URI> getRoles() {
         return Collections.emptySet();
@@ -80,45 +92,79 @@ public abstract class AbstractSoapInterceptor extends AbstractPhaseInterceptor<S
     }
 
     protected void prepareStackTrace(SoapMessage message, SoapFault fault) throws Exception {
+        // Liberty Change Start: Reveals only the hidden stack trace. It does not repeat stack trace shown already in the log.
+        if (fault.getCause() != null && TraceComponent.isAnyTracingEnabled()) {
+            LOG.info("Fault occured, but exception message cause will be printed to trace only: ");
+            String stackTraceString = buildStackTrace(fault);
+            LOG.info(stackTraceString);
+        }// Liberty Change End
+
         boolean config = MessageUtils.getContextualBoolean(message, Message.FAULT_STACKTRACE_ENABLED, false);
         if (config && fault.getCause() != null) {
-            StringBuilder sb = new StringBuilder();
-            Throwable throwable = fault.getCause();
-            sb.append("Caused by: ").append(throwable.getClass().getCanonicalName())
-                .append(": " + throwable.getMessage() + "\n").append(Message.EXCEPTION_CAUSE_SUFFIX);
-            while (throwable != null) {
-                for (StackTraceElement ste : throwable.getStackTrace()) {
-                    sb.append(ste.getClassName() + "!" + ste.getMethodName() + "!" + ste.getFileName() + "!"
-                          + ste.getLineNumber() + Message.EXCEPTION_CAUSE_SUFFIX);
-                }
-                throwable = throwable.getCause();
-                if (throwable != null) {
-                    sb.append("Caused by: " +  throwable.getClass().getCanonicalName()
-                              + " : " + throwable.getMessage() + Message.EXCEPTION_CAUSE_SUFFIX);
-                }
-            }
+            String stackTraceString = buildStackTraceCXF(fault);
             Element detail = fault.getDetail();
             String soapNamespace = message.getVersion().getNamespace();
             if (detail == null) {
                 Document doc = DOMUtils.getEmptyDocument();
                 Element stackTrace = doc.createElementNS(
-                    Fault.STACKTRACE_NAMESPACE, Fault.STACKTRACE);
-                stackTrace.setTextContent(sb.toString());
+                                                         Fault.STACKTRACE_NAMESPACE, Fault.STACKTRACE);
+                stackTrace.setTextContent(stackTraceString);
                 detail = doc.createElementNS(
-                    soapNamespace, "detail");
+                                             soapNamespace, "detail");
                 fault.setDetail(detail);
                 detail.appendChild(stackTrace);
             } else {
-                Element stackTrace =
-                    detail.getOwnerDocument().createElementNS(Fault.STACKTRACE_NAMESPACE,
-                                                              Fault.STACKTRACE);
-                stackTrace.setTextContent(sb.toString());
+                Element stackTrace = detail.getOwnerDocument().createElementNS(Fault.STACKTRACE_NAMESPACE,
+                                                                               Fault.STACKTRACE);
+                stackTrace.setTextContent(stackTraceString);
                 detail.appendChild(stackTrace);
             }
         }
     }
 
-    static String getFaultMessage(SoapMessage message, SoapFault fault) {
+    /*
+     * Liberty Change: code creating standard exception formatted string from stack trace
+     * This code reveals only hidden log by CXF
+     */
+    private String buildStackTrace(SoapFault fault) {
+        StringBuilder sb = new StringBuilder();
+        Throwable throwable = fault.getCause();
+        sb.append(throwable.getClass().getCanonicalName()).append(": ").append(throwable.getMessage()).append("\n");
+        while (throwable != null) {
+            for (StackTraceElement ste : throwable.getStackTrace()) {
+                sb.append(ste.getClassName()).append(".").append(ste.getMethodName()).append("(").append(ste.getFileName()).append(":").append(ste.getLineNumber()).append(")\n");
+            }
+            throwable = throwable.getCause();
+            if (throwable != null) {
+                sb.append("Caused by: ").append(throwable.getClass().getCanonicalName()
+                         ).append(" : ").append(throwable.getMessage()).append("\n");
+            }
+        }
+        return sb.toString();
+    }
+    
+    /*
+     * Liberty Change: Original CXF code creating CXF formatted string from stack trace
+     */
+    private String buildStackTraceCXF(SoapFault fault) {
+        StringBuilder sb = new StringBuilder();
+        Throwable throwable = fault.getCause();
+        sb.append("Caused by: ").append(throwable.getClass().getCanonicalName()).append(": ").append(throwable.getMessage()).append("\n").append(Message.EXCEPTION_CAUSE_SUFFIX);
+        while (throwable != null) {
+            for (StackTraceElement ste : throwable.getStackTrace()) {
+                sb.append(ste.getClassName()).append("!").append(ste.getMethodName()).append("!").append(ste.getFileName()).append("!"
+                         ).append(ste.getLineNumber()).append(Message.EXCEPTION_CAUSE_SUFFIX);
+            }
+            throwable = throwable.getCause();
+            if (throwable != null) {
+                sb.append("Caused by: ").append(throwable.getClass().getCanonicalName()
+                         ).append(" : ").append(throwable.getMessage()).append(Message.EXCEPTION_CAUSE_SUFFIX);
+            }
+        }
+        return sb.toString();
+    }
+
+    static String getFaultMessage(SoapMessage message, SoapFault fault) {        
         if (message.get("forced.faultstring") != null) {
             return (String) message.get("forced.faultstring");
         }
