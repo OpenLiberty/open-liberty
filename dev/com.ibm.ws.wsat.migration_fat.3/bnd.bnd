@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2022 IBM Corporation and others.
+# Copyright (c) 2020, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -14,11 +14,7 @@
 bVersion=1.0
 
 src: \
-  fat/src,\
-  test-applications/LPSClient/src,\
-  test-applications/LPSServer/src,\
-  test-applications/simpleClient/src,\
-  test-applications/simpleServer/src
+  fat/src
 
 fat.project: true
 
@@ -40,20 +36,20 @@ tested.features: \
   xmlws-3.0, xmlws-4.0
 
 -buildpath: \
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-  com.ibm.websphere.javaee.jws.1.0;version=latest,\
   com.ibm.tx.jta;version=latest,\
-  javax.activation:activation;version=1.1,\
   com.ibm.websphere.javaee.annotation.1.1;version=latest,\
-  com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
   com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+  com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
   com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
+  com.ibm.websphere.javaee.jws.1.0;version=latest,\
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
   com.ibm.websphere.javaee.transaction.1.2;version=latest,\
   com.ibm.websphere.org.osgi.core,\
   com.ibm.websphere.org.osgi.service.component,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+  com.ibm.ws.transaction.fat.util,\
   com.ibm.ws.transaction.test.util;version=latest,\
   com.ibm.ws.tx.embeddable;version=latest,\
-  com.ibm.wsspi.org.osgi.service.component.annotations,\
   com.ibm.ws.wsat.migration_fat.1;version=latest,\
-  com.ibm.ws.transaction.fat.util
+  com.ibm.wsspi.org.osgi.service.component.annotations,\
+  javax.activation:activation;version=1.1
