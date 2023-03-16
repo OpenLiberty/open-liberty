@@ -153,7 +153,7 @@ steps:
 
 - stepName: compile
   workType: RTC
-  projectName: "Liberty Personal Build CI Orchestrator - EBC"
+  projectName: "Open Liberty Personal Build CI Orchestrator - EBC"
   dependsOn:
   - stepName: pr-changes
     awaitOutputProperties: true
